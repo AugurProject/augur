@@ -1,9 +1,4 @@
 import { formatNone, formatShares, formatBestPrice } from 'utils/format-number';
-import {
-  INVALID_OUTCOME_ID,
-  INVALID_BEST_BID_ALERT_VALUE,
-} from 'modules/common/constants';
-import { createBigNumber } from 'utils/create-big-number';
 import memoize from 'memoizee';
 
 export const selectMarketOutcomeBestBidAsk = memoize(
@@ -47,16 +42,3 @@ export const selectMarketOutcomeBestBidAsk = memoize(
   { max: 1 }
 );
 
-export const selectBestBidAlert = (
-  outcomeId: number,
-  bestBidPrice: number,
-  minPrice: string,
-  maxPrice: string
-) => {
-  if (outcomeId !== INVALID_OUTCOME_ID) return false;
-  const range = createBigNumber(maxPrice).minus(createBigNumber(minPrice));
-  const percentage = createBigNumber(bestBidPrice)
-    .minus(createBigNumber(minPrice))
-    .dividedBy(range);
-  return percentage.gte(INVALID_BEST_BID_ALERT_VALUE);
-};

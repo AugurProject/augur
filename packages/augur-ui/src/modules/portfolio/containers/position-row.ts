@@ -6,10 +6,13 @@ import Row from 'modules/common/row';
 import { Properties } from 'modules/common/row-column';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { calcPercentageFromPrice } from 'utils/format-number';
 
 const { COLUMN_TYPES, SHORT, BUY, SELL } = constants;
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (state: AppState) => ({
+  marketInfos: state.marketInfos,
+});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
@@ -22,7 +25,26 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     showExpandedToggleOnMobile,
     updateSelectedOrderProperties,
   } = oP;
+  let lastPrice = position.lastPrice;
+  let purchasePrice = position.purchasePrice;
 
+  const market = sP.marketInfos[position.marketId];
+  const usePercent = position.outcomeId === constants.INVALID_OUTCOME_ID && market.marketType === constants.SCALAR;
+  if (usePercent) {
+    const lastPricePercent = calcPercentageFromPrice(
+      String(lastPrice.value),
+      market.minPrice,
+      market.maxPrice
+    );
+    lastPrice = { ...lastPrice, percent: `${lastPricePercent}%` };
+
+    const purchasePricePercent = calcPercentageFromPrice(
+      String(purchasePrice.value),
+      market.minPrice,
+      market.maxPrice
+    );
+    purchasePrice = { ...purchasePrice, percent: `${purchasePricePercent}%` };
+  }
   const columnProperties: Array<Properties> = [
     {
       key: 'orderName',
@@ -48,9 +70,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       },
     },
     {
-      key: 'orderQuantity',
+      key: 'averagePrice',
       columnType: COLUMN_TYPES.VALUE,
-      value: position.purchasePrice,
+      value: purchasePrice,
+      usePercent: !!purchasePrice.percent,
       useFull: true,
       keyId: 'position-price-' + position.id,
     },
@@ -74,7 +97,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       hide: extendedView,
       key: 'lastPrice',
       columnType: COLUMN_TYPES.VALUE,
-      value: position.lastPrice,
+      value: lastPrice,
+      usePercent: !!lastPrice.percent,
       useFull: true,
       keyId: 'position-lastPrice-' + position.id,
     },

@@ -314,6 +314,7 @@ export const SKIPPED_TEST_TRADE = 'Onboarding - Skipped Test Trade';
 export const FINISHED_TEST_TRADE = 'Onboarding - Finished Test Trade';
 export const DO_A_TEST_BET = 'Onboarding - Do A Test Bet';
 export const BUY_DAI = 'Onboarding - Buy Dai';
+export const AUGUR_IS_P2P = 'Onboarding - Augur is p2p';
 export const AUGUR_USES_DAI = 'Onboarding - Augur Uses Dai';
 export const ADD_FUNDS = 'Add Funds Modal';
 export const ACCOUNT_CREATED = 'Onboarding - Account Created';

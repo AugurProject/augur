@@ -4,7 +4,6 @@ import {
   CANCELORDERS,
   BATCHCANCELORDERS,
   TX_ORDER_ID,
-  TX_ORDER_IDS,
   CREATEMARKET,
   CREATECATEGORICALMARKET,
   CREATESCALARMARKET,
@@ -18,7 +17,6 @@ import {
   MODAL_ERROR,
   MIGRATE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
-  APPROVE,
   TRADINGPROCEEDSCLAIMED,
   CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
@@ -36,13 +34,11 @@ import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { updateAppStatus, GNOSIS_STATUS } from 'modules/app/actions/update-app-status';
-import { GnosisSafeState } from '@augurproject/gnosis-relay-api/src/GnosisRelayAPI';
 
 const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
-  MIGRATE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
+  MIGRATE_FROM_LEG_REP_TOKEN,
   BATCHCANCELORDERS,
   TRADINGPROCEEDSCLAIMED
 ];
@@ -69,8 +65,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     }
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
-
-      dispatch(updateAppStatus(GNOSIS_STATUS, GnosisSafeState.ERROR));
 
       dispatch(updateModal({
         type: MODAL_ERROR,
@@ -131,6 +125,16 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     }
 
     switch (methodCall) {
+      case REDEEMSTAKE: {
+        const params = transaction.params;
+        params._reportingParticipants.map(participant => 
+          dispatch(addPendingData(participant, REDEEMSTAKE, eventName, hash, {...transaction}))
+        );
+        params._disputeWindows.map(window => 
+          dispatch(addPendingData(window, REDEEMSTAKE, eventName, hash, {...transaction}))
+        );
+        break;
+      }
       case CLAIMMARKETSPROCEEDS: {
         const params = transaction.params;
         if (params._markets.length === 1) {
@@ -204,8 +208,8 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         break;
       }
       case CANCELORDERS: {
-        const orderIds = transaction.params && transaction.params.order[TX_ORDER_IDS];
-        orderIds.map(orderId => dispatch(addCanceledOrder(orderId, eventName, hash)));
+        const orders = transaction.params && transaction.params._orders || [];
+        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
         break;
       }
 

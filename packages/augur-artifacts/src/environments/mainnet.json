@@ -21,10 +21,8 @@
       "Exchange": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef"
     }
   },
-  "gnosis": {
-    "enabled": true,
-    "http": "https://gnosis.kovan.augur.net/api/",
-    "relayerAddress": "0x01d640bff4b3a5e5cc720f0be37847f88edf626e"
+  "gsn": {
+    "enabled": true
   },
   "zeroX": {
     "rpc": {
@@ -65,5 +63,8 @@
     "SimulateTrade": "0xe24B48D0fF488D8307dB39fb74fd0055e007e53B",
     "Trade": "0x076173E37142c0123fD82Bce0C03eA56e7fEDEed",
     "ZeroXTrade": "0xF6e791393480eD275Cb1729b99C7806EBFc194C0"
+  },
+  "plugins": {
+    "chat": "orbit"
   }
 }

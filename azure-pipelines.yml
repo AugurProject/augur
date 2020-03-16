@@ -1,20 +1,20 @@
 variables:
-    DOCKER_CI_BUILD_TAG: monorepo.$(Build.BuildID)
-    CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
-    CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
-    PRIMARY_NODE_VERSION: 10.16.x
-    GETH_VERSION: v1.9.9
-    SOLC_VERSION: v0.5.15
-    SOLC_MD5: 884dbc8c8ed01cc34799a6ffab11bc3a
+  DOCKER_CI_BUILD_TAG: monorepo.$(Build.BuildID)
+  CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
+  CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
+  PRIMARY_NODE_VERSION: 10.16.x
+  GETH_VERSION: v1.9.9
+  SOLC_VERSION: v0.5.15
+  SOLC_MD5: 884dbc8c8ed01cc34799a6ffab11bc3a
 
 trigger:
   batch: false
   branches:
     include:
-    - master
-    - demo
-    - release/*
-    - azure/*
+      - master
+      - demo
+      - release/*
+      - azure/*
 
 jobs:
   - job: PreFlightCheck
@@ -78,7 +78,7 @@ jobs:
 
   - job: TestAndLint
     dependsOn:
-    - PreFlightCheck
+      - PreFlightCheck
     condition: |
       and
       (
@@ -168,8 +168,8 @@ jobs:
 
   - job: ContractSanityCheck
     dependsOn:
-    - TestAndLint
-    - PreFlightCheck
+      - TestAndLint
+      - PreFlightCheck
     condition: |
       and
       (
@@ -249,7 +249,7 @@ jobs:
 
   - job: DockerGethDev
     dependsOn:
-    - PreFlightCheck
+      - PreFlightCheck
     pool:
       vmImage: 'Ubuntu 16.04'
     condition: |
@@ -284,8 +284,8 @@ jobs:
 
   - job: TestAugurCore
     dependsOn:
-    - ContractSanityCheck
-    - DockerGethDev
+      - ContractSanityCheck
+      - DockerGethDev
     condition: |
       and
       (
@@ -308,8 +308,8 @@ jobs:
           TESTS: tests/unit
         geth_integration:
           TESTS: integration:geth
-        parity_integration:
-          TESTS: integration:parity
+        # TODO parity_integration:
+        #  TESTS: integration:parity
         security_mithril:
           TESTS: security:mythril
     variables:
@@ -354,7 +354,7 @@ jobs:
           export ETHEREUM_GAS_PRICE_IN_NANOETH=1
           export ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a
           if [[ "$(TESTS)" == "integration:geth" ]]; then
-            docker run -p 8545:8545 -p 47625:8546 --name geth --detach augurproject/dev-node-geth:latest
+            docker run -p 8545:8545 -p 47625:8546 --name geth --detach augurproject/dev-node-geth:v1.9.9
             yarn workspace @augurproject/core test:integration
             docker stop geth
           elif [[ "$(TESTS)" == "integration:parity" ]]; then
@@ -377,10 +377,10 @@ jobs:
 
   - job: Docker_populated_geth_images
     dependsOn:
-    - PreFlightCheck
-    - TestAugurCore
-    - TestAndLint
-    - ContractSanityCheck
+      - PreFlightCheck
+      - TestAugurCore
+      - TestAndLint
+      - ContractSanityCheck
     condition: |
       and
       (
@@ -410,7 +410,7 @@ jobs:
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
       ZEROX_RPC_ENABLED: false
       ZEROX_MESH_ENABLED: false
-      GNOSIS_ENABLED: false
+      GSN_ENABLED: false
     steps:
       - checkout: self
       - task: NodeTool@0
@@ -457,11 +457,11 @@ jobs:
 
   - job: test_3rd_party_integrations
     dependsOn:
-    - Docker_populated_geth_images
-    - PreFlightCheck
-    - TestAugurCore
-    - TestAndLint
-    - ContractSanityCheck
+      - Docker_populated_geth_images
+      - PreFlightCheck
+      - TestAugurCore
+      - TestAndLint
+      - ContractSanityCheck
     condition: |
       and
       (
@@ -501,7 +501,7 @@ jobs:
       - bash: |
           set -exuo pipefail
           yarn docker:all --detach
-          sleep 30
+          sleep 60
         displayName: Run 3rd Party Dockers
       - bash: |
           set -exuo pipefail
@@ -511,7 +511,6 @@ jobs:
       - bash: |
           set -exuo pipefail
           docker kill geth
-          yarn workspace @augurproject/gnosis-relay-api kill-relay
         displayName: Stop 3rd Party Dockers
 
 
@@ -652,6 +651,58 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+
+
+  - job: master_build
+    condition: |
+      and
+      (
+          succeeded(),
+          eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      )
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    steps:
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - script: |
+          yarn install --frozen-lockfile
+        displayName: Install Dependencies
+      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
+        inputs:
+          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
+          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
+          vstsFeed: npmPackages
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.6'
+      - bash: |
+          set -euo pipefail
+          yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          export ETHEREUM_NETWORK=kovan
+          ( cd packages/orbit-web && ./node_modules/.bin/webpack)
+          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
+          #yarn workspace @augurproject/ui build:kovan
+        displayName: ui build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
+      - script: |
+          set -euo pipefail
+          python3 -m venv venv && \
+          source venv/bin/activate && \
+          python3 -m pip install --no-cache-dir awscli
+          aws s3 sync packages/augur-ui/build/ s3://v2.augur.net/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
+        displayName: 'push build to S3'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+
 
   - job: github_release
     displayName: github release

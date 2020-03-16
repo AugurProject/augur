@@ -11,29 +11,52 @@ import { TXEventName } from '@augurproject/sdk/src/constants';
 import { OPEN } from 'modules/common/constants';
 import { selectCancelingOrdersState } from 'store/select-state';
 import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
+import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
+import { calcPercentageFromPrice } from 'utils/format-number';
 
 const { COLUMN_TYPES } = constants;
 
-const mapStateToProps = (state: AppState) => ({
-  currentTimestamp: state.blockchain.currentAugurTimestamp,
-  pendingOrderCancellations: selectCancelingOrdersState(state),
-});
+const mapStateToProps = (state: AppState, ownProps) => {
+  const { blockchain, marketInfos} = state;
+  const { openOrder, marketId }  = ownProps;
+  const market = marketInfos[marketId];
+  const { outcomeId } = openOrder;
+  const usePercent = !!market && outcomeId === constants.INVALID_OUTCOME_ID && market.marketType === constants.SCALAR;
+  return {
+    currentTimestamp: blockchain.currentAugurTimestamp,
+    pendingOrderCancellations: selectCancelingOrdersState(state),
+    usePercent,
+    minPrice: market && market.minPrice,
+    maxPrice: market && market.maxPrice,
+  }
+};
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   removeCanceledOrder: id => dispatch(removeCanceledOrder(id)),
+  removePendingOrder: (pendingId, marketId) => dispatch(removePendingOrder(pendingId, marketId)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
+  const marketId = oP.marketId;
   const openOrder = oP.openOrder;
-  const tokensEscrowed = getValue(openOrder, 'tokensEscrowed');
-  const sharesEscrowed = getValue(openOrder, 'sharesEscrowed');
-  const avgPrice = getValue(openOrder, 'avgPrice');
-  const unmatchedShares = getValue(openOrder, 'unmatchedShares');
+  const tokensEscrowed = openOrder.tokensEscrowed;
+  const sharesEscrowed = openOrder.sharesEscrowed;
+  let avgPrice = openOrder.avgPrice;
+  const unmatchedShares = openOrder.unmatchedShares;
   const isCanceling =
     sP.pendingOrderCancellations[openOrder.id];
 
   const orderLabel =
     openOrder.description || openOrder.name || openOrder.outcomeName;
+
+  if (sP.usePercent) {
+    const avgPricePercent = calcPercentageFromPrice(
+      avgPrice.value,
+      sP.minPrice,
+      sP.maxPrice
+    );
+    avgPrice = { ...avgPrice, percent: `${avgPricePercent}%` }
+  }
   const columnProperties = [
     {
       key: 'orderName',
@@ -58,7 +81,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     {
       key: 'avgPrice',
       columnType: COLUMN_TYPES.VALUE,
-      value: openOrder.avgPrice && avgPrice,
+      value: avgPrice,
+      usePercent: !!avgPrice.percent,
       useFull: true,
       keyId: 'openOrder-price-' + openOrder.id,
     },
@@ -80,19 +104,22 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     {
       key: 'cancel',
       columnType: COLUMN_TYPES.CANCEL_TEXT_BUTTON,
-      disabled: isCanceling,
+      disabled: !!isCanceling,
       text: null,
       showCountdown: true,
       expiry: openOrder.expiry,
       currentTimestamp: sP.currentTimestamp,
-      pending: isCanceling || (openOrder.status && openOrder.status !== OPEN),
-      status: isCanceling ? TXEventName.Pending : openOrder.status,
+      pending: !!isCanceling || (openOrder.status && openOrder.status !== OPEN),
+      status: !!isCanceling ? isCanceling.status : openOrder.status,
       action: async (e: Event) => {
         e.stopPropagation();
-        try {
+        if (!!isCanceling) {
+          dP.removeCanceledOrder(openOrder.id)
+        }
+        else if ((openOrder.status === TXEventName.Failure || openOrder.status === TXEventName.Success)) {
+          dP.removePendingOrder(openOrder.id, marketId);
+        } else {
           await openOrder.cancelOrder(openOrder);
-        } catch (error) {
-          dP.removeCanceledOrder(openOrder.id);
         }
       },
     },

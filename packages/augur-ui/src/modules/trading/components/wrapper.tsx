@@ -10,6 +10,7 @@ import {
   BUY,
   SELL,
   UPPER_FIXED_PRECISION_BOUND,
+  INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import Styles from 'modules/trading/components/wrapper.styles.less';
 import { OrderButton, PrimaryButton } from 'modules/common/buttons';
@@ -36,7 +37,6 @@ interface WrapperProps {
   selectedOutcome: OutcomeFormatted;
   selectedOrderProperties: SelectedOrderProperties;
   addFundsModal: Function;
-  addPendingOrder: Function;
   disclaimerModal: Function;
   handleFilledOnly: Function;
   loginModal: Function;
@@ -50,7 +50,7 @@ interface WrapperProps {
   updateTradeShares: Function;
   disclaimerSeen: boolean;
   gasPrice: number;
-  Gnosis_ENABLED: boolean;
+  GsnEnabled: boolean;
   hasFunds: boolean;
   hasHistory: boolean;
   isLogged: boolean;
@@ -59,7 +59,7 @@ interface WrapperProps {
   tradingTutorial?: boolean;
   currentTimestamp: number;
   availableDai: number;
-  GnosisUnavailable: boolean;
+  gsnUnavailable: boolean;
 }
 
 interface WrapperState {
@@ -163,16 +163,36 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         ) {
           return this.clearOrderForm();
         }
-
-        this.updateTradeTotalCost(
-          {
-            ...selectedOrderProperties,
-            orderQuantity: convertExponentialToDecimal(
-              selectedOrderProperties.orderQuantity
-            ),
-          },
-          true
-        );
+        // because of invalid outcome on scalars displaying percentage need to clear price before setting it.
+        if (
+          this.props.market.marketType === SCALAR
+        ) {
+          this.setState(
+            {
+              orderPrice: '',
+            },
+            () =>
+              this.updateTradeTotalCost(
+                {
+                  ...selectedOrderProperties,
+                  orderQuantity: convertExponentialToDecimal(
+                    selectedOrderProperties.orderQuantity
+                  ),
+                },
+                true
+              )
+          );
+        } else {
+          this.updateTradeTotalCost(
+            {
+              ...selectedOrderProperties,
+              orderQuantity: convertExponentialToDecimal(
+                selectedOrderProperties.orderQuantity
+              ),
+            },
+            true
+          );
+        }
       }
     }
   }
@@ -283,7 +303,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     } else {
       updateTradeCost(
         market.id,
-        selectedOutcome.id,
+        order.selectedOutcomeId ? order.selectedOutcomeId : selectedOutcome.id,
         {
           limitPrice: order.orderPrice,
           side: order.selectedNav,
@@ -334,14 +354,15 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     if (this.state.expirationDate) {
       trade = {
         ...trade,
-        expirationTime: (this.state.expirationDate)
-      }
+        expirationTime: this.state.expirationDate,
+      };
     }
     this.props.onSubmitPlaceTrade(
       market.id,
       selectedOutcome.id,
       trade,
-      s.doNotCreateOrders)
+      s.doNotCreateOrders
+    );
     this.clearOrderForm();
   }
 
@@ -395,7 +416,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       initialLiquidity,
       tradingTutorial,
       tutorialNext,
-      Gnosis_ENABLED,
+      GsnEnabled,
       hasFunds,
       isLogged,
       restoredAccount,
@@ -403,7 +424,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       addFundsModal,
       hasHistory,
       availableDai,
-      GnosisUnavailable,
+      gsnUnavailable,
     } = this.props;
     let {
       marketType,
@@ -433,6 +454,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       trade &&
       trade.costInDai &&
       createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
+
     let actionButton: any = (
       <OrderButton
         type={selectedNav}
@@ -456,7 +478,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             }
           }
         }}
-        disabled={!trade || !trade.limitPrice || GnosisUnavailable || insufficientFunds}
+        disabled={
+          !trade || !trade.limitPrice || gsnUnavailable || insufficientFunds
+        }
       />
     );
     switch (true) {
@@ -570,8 +594,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
               tradingTutorial={tradingTutorial}
-              Gnosis_ENABLED={Gnosis_ENABLED}
-              GnosisUnavailable={GnosisUnavailable}
+              GsnEnabled={GsnEnabled}
+              gsnUnavailable={gsnUnavailable}
             />
           )}
         <div>{actionButton}</div>

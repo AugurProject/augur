@@ -7,7 +7,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     warpSyncHash: state.universe.warpSyncHash,
     userAvailableRep: state.loginAccount.balances && state.loginAccount.balances.rep,
-    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
+    GsnEnabled: state.appStatus.gsnEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
     gasPrice: getGasPrice(state),
   };

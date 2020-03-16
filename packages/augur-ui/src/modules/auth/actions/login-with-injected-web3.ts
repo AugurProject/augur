@@ -20,7 +20,7 @@ import { logout } from 'modules/auth/actions/logout';
 import { AppState } from 'store';
 
 // MetaMask, dapper, Mobile wallets
-export const loginWithInjectedWeb3 = () => (
+export const loginWithInjectedWeb3 = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
@@ -84,16 +84,25 @@ export const loginWithInjectedWeb3 = () => (
     }
   };
 
-  return windowRef.ethereum
+  try {
+    // This is equivalent to ethereum.enable()
+    // Handle connecting, per EIP 1102
+    const request = await windowRef.ethereum.send('eth_requestAccounts');
+    const address = request.result[0];
+    success(address, false);
+  }
+  catch (err) {
+    return windowRef.ethereum
     .enable()
     .then((resolve: string[]) => success(resolve[0], false), failure);
+  }
 };
 
 const login = (account: string) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const useGnosis = getState().env['gnosis']?.enabled;
+  const useGSN = getState().env['gsn']?.enabled;
   const provider = new Web3Provider(windowRef.web3.currentProvider);
   const networkId = windowRef.web3.currentProvider.networkVersion;
   const address = toChecksumAddress(account);
@@ -110,5 +119,5 @@ const login = (account: string) => (
       isWeb3: true,
     },
   };
-  dispatch(updateSdk(accountObject, networkId, useGnosis));
+  dispatch(updateSdk(accountObject, networkId, useGSN));
 };

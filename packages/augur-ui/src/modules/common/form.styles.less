@@ -2149,6 +2149,23 @@ div.error > div > div > div > div > input {
   }
 }
 
+.PreFilled {
+  display: flex;
+  justify-content: space-between;
+
+  > div:nth-of-type(2) {
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    > span {
+      margin-bottom: 0;
+      margin-right: @size-4;
+    }
+  }
+}
+
 // Used in category-filters.styles.less
 .CategoryRow {
   display: flex;

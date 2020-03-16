@@ -11,6 +11,9 @@ export const DELETE_KEY = "DELETION_KEY_MARKER";
 
 // TODO The 'Rollback' DB should be cleared after every initial bulk sync
 
+const NUMBER_OF_BLOCKS_TO_KEEP = 10;
+
+
 export class RollbackTable extends AbstractTable {
 
     protected augur: Augur;
@@ -51,6 +54,9 @@ export class RollbackTable extends AbstractTable {
                 docIndex++;
             }
             await this.rollbackTable.bulkPut(rollbackDocuments, rollbackIds);
+
+            const maxBlock =_.get(_.maxBy(documents, 'blockNumber'), 'blockNumber');
+            await this.prune(maxBlock);
         }
         await super.bulkPutDocuments(documents);
     }
@@ -100,5 +106,12 @@ export class RollbackTable extends AbstractTable {
         });
         await this.table.bulkPut(docsToPut);
         await this.table.bulkDelete(docsToDelete);
+    }
+
+    async prune(blockNumber: number) {
+      if(!blockNumber) return;
+      await this.rollbackTable.where('[tableName+rollbackBlockNumber]').between(
+        [this.dbName, Dexie.minKey],
+        [this.dbName, blockNumber - NUMBER_OF_BLOCKS_TO_KEEP]).delete();
     }
 }

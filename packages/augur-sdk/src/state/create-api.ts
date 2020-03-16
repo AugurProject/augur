@@ -1,7 +1,7 @@
-import { getAddressesForNetwork, getStartingBlockForNetwork, SDKConfiguration } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersSigner } from 'contract-dependencies-ethers';
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
+import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { SupportedProvider } from 'ethereum-types';
 import { JsonRpcProvider } from 'ethers/providers';
 import { ContractEvents } from '../api/ContractEvents';
@@ -20,8 +20,7 @@ import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
 
 export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
   return async () => {
-    const uploadBlockNumber = getStartingBlockForNetwork(config.networkId);
-    const uploadBlockHeaders = await provider.getBlock(uploadBlockNumber);
+    const uploadBlockNumber = config.uploadBlockNumber;
     const currentBlockNumber = await provider.getBlockNumber();
     const contractAddresses = client.contractEvents.getAugurContractAddresses();
 
@@ -33,10 +32,12 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
       client.contractEvents.parseLogs,
     );
 
-    const warpController = new WarpController((await db), client, provider, uploadBlockHeaders);
+    const warpController = new WarpController((await db), client, provider, uploadBlockNumber);
     const warpSyncStrategy = new WarpSyncStrategy(warpController, logFilterAggregator.onLogsAdded);
 
-    const endWarpSyncBlockNumber = await warpSyncStrategy.start();
+    const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(client.contracts.universe.address);
+
+    const endWarpSyncBlockNumber = await warpSyncStrategy.start(warpSyncHash);
     const staringSyncBlock = Math.max(await (await db).getSyncStartingBlock(), endWarpSyncBlockNumber || uploadBlockNumber);
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
@@ -88,11 +89,11 @@ export async function createClient(
     throw Error('Config must include addresses');
   }
 
-  const contractDependencies = ContractDependenciesGnosis.create(
+  const contractDependencies = await ContractDependenciesGSN.create(
     ethersProvider,
     signer,
-    config.addresses.Cash,
-    config.gnosis?.http,
+    config.addresses.AugurWalletRegistry,
+    config.addresses.EthExchange
   );
 
   let zeroX: ZeroX = null;
@@ -154,7 +155,6 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     client.config.addresses.Augur,
     client.config.addresses.AugurTrading,
     client.config.addresses.ShareToken,
-    client.config.addresses.Exchange
   );
 
   const logFilterAggregator = LogFilterAggregator.create(
