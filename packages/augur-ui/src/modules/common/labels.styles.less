@@ -515,6 +515,30 @@ div.LinearPropertyViewTransaction {
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .MarketTypeLabel {
+    &.MarketScalarLabel {
+      .mono-10-semi-bold;
+
+      background: var(--color-module-background);
+      color: var(--color-secondary-text);
+      border: @size-1 solid var(--color-outline);
+      border-radius: @border-radius-default;
+      height: @size-20;
+      padding: 0px @size-7;
+
+      display: flex;
+      flex-direction: row-reverse;
+
+      > svg {
+        margin-left: 0px;
+        margin-right: @size-4;
+      }
+    }
+  }
+}
+
 .MarketStatus {
   .mono-9-bold;
 
