@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { Ticket } from 'modules/common/icons';
+import { Ticket, ThickChevron } from 'modules/common/icons';
 import { SecondaryButton } from 'modules/common/buttons';
 
 import Styles from 'modules/trading/betslip.styles';
@@ -9,10 +9,20 @@ export interface BetslipProps {}
 
 export const Betslip = ({  }: BetslipProps) => {
   const [selected, setSelected] = useState(0);
+  const [minimized, setMinimized] = useState(true);
   const betslipAmount = 0;
   const myBetsAmount = 0;
   return (
-    <aside className={Styles.Betslip}>
+    <aside className={classNames(Styles.Betslip, {
+      [Styles.Minimized]: minimized
+    })}>
+      <div>
+        <button
+          onClick={() => setMinimized(!minimized)}
+        >
+          Betslip ({betslipAmount}) {ThickChevron}
+        </button>
+      </div>
       <section className={Styles.Container}>
         <ul className={Styles.HeaderTabs}>
           <li

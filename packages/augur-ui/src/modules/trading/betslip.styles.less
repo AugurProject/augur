@@ -12,6 +12,88 @@
     align-items: center;
     justify-content: flex-start;
     padding: @size-32;
+
+    div {
+      display: none;
+    }
+
+    @media @breakpoint-tablet {
+      background: var(--color-module-background);
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      z-index: @mask-above;
+      padding: 0;
+      flex-flow: row nowrap;
+      align-items: flex-start;
+      justify-content: flex-end;
+
+      div {
+        align-items: flex-end;
+        background: var(--color-primary-text-80);
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+        width: 100%;
+
+        > button {
+          .text-12-bold;
+
+          align-content: center;
+          align-items: center;
+          color: var(--color-module-background);
+          background: transparent;
+          cursor: pointer;
+          display: flex;
+          flex-flow: row nowrap;
+          height: @size-36;
+          justify-content: center;
+          text-transform: uppercase;
+          transform: rotate(-0.25turn) translate(-@size-125, @size-36);
+          width: @size-106;
+
+          > svg {
+            height: @size-8;
+            width: @size-10;
+            margin-left: @size-8;
+            // transform: rotate(180deg);
+
+            > path {
+              fill: var(--color-module-background);
+            }
+          }
+        }
+      }
+
+      &.Minimized {
+        position: unset;
+        background: transparent;
+        padding: @size-32 0;
+        max-width: @size-36;
+
+        div {
+          width: @size-36;
+          height: @size-106;
+          display: block;
+
+          > button {
+            background: var(--color-primary-text);
+            transform: rotate(-0.25turn) translate(-@size-17, -@size-17);
+            transform-origin: bottom;
+
+            > svg {
+              transform: rotate(0.5turn);
+            }
+          }
+        }
+
+        > section {
+          display: None;
+        }
+      }
+    }
   }
 
   .Container {
@@ -21,6 +103,12 @@
     border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @border-radius-rounded;
     box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+
+    @media @breakpoint-mobile-tablet {
+      height: 100%;
+      border: 0;
+      border-radius: 0;
+    }
   }
 
   .HeaderTabs {
@@ -32,6 +120,10 @@
     flex-flow: row nowrap;
     height: @size-48;
     justify-content: space-around;
+
+    @media @breakpoint-mobile-tablet {
+      display: none;
+    }
 
     > li {
       .text-14-bold;
