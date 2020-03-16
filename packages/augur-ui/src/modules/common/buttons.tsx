@@ -13,8 +13,6 @@ import {
   StarIconSportsBetting,
   SortIcon,
   PercentIcon,
-  QRCodeIcon,
-  PaperAirplaneIcon,
   DoubleArrowIcon,
   RepLogoIcon,
   DaiLogoIcon,
@@ -504,6 +502,17 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
   >
     <span>{props.title ? props.title : 'REP Faucet'}</span>
     {RepLogoIcon}
+  </button>
+);
+
+export const FundGSNWalletButton = (props: DefaultActionButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.SecondaryButton}
+    disabled={props.disabled}
+    title={props.title ? props.title : 'Fund GSN Wallet'}
+  >
+  <span>{props.title}</span>
   </button>
 );
 

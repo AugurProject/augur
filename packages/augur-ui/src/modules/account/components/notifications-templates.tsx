@@ -84,7 +84,6 @@ const Template = ({
   type,
   message,
   buttonAction,
-  currentTime,
   isDisabled,
   buttonLabel,
   queueName,
@@ -98,7 +97,7 @@ const Template = ({
         className={Styles.BottomRow}
       >
         {showCounter && (
-          <Counter type={type} market={market} currentTime={currentTime} />
+          <Counter type={type} market={market} />
         )}
         {queueName && (queueId || (market && market.id)) ?
           <ProcessingButton
@@ -151,31 +150,27 @@ const TemplateBody = (props: TemplateBodyProps) => {
 interface CounterProps {
   type: string;
   market: MarketData;
-  currentTime?: DateFormattedObject;
   disputingWindowEndTime?: DateFormattedObject;
 }
 
-const Counter = ({ market, type, currentTime }: CounterProps) => {
+const Counter = ({ market, type }: CounterProps) => {
   let counter: any = null;
   const { endTime, reportingState, finalizationTime, disputeInfo } = market;
   const endTimeFormatted = formatTime(endTime);
   const finalizationTimeFormatted = formatTime(finalizationTime);
   if (
     type === NOTIFICATION_TYPES.proceedsToClaim &&
-    finalizationTimeFormatted &&
-    currentTime
+    finalizationTimeFormatted
   ) {
     counter = (
       <div className={Styles.Countdown}>
         <CountdownProgress
           label={MARKET_STATUS_MESSAGES.WAITING_PERIOD_ENDS}
           time={finalizationTimeFormatted}
-          currentTime={formatTime(currentTime)}
         />
       </div>
     );
   } else {
-    // if (currentTime && disputeInfo.disputeWindow.endTime) {
       const label =
         type === NOTIFICATION_TYPES[MARKET_IN_DISPUTE]
           ? DISPUTE_ENDS
@@ -184,14 +179,12 @@ const Counter = ({ market, type, currentTime }: CounterProps) => {
         <div className={Styles.Countdown}>
           <MarketProgress
             reportingState={reportingState}
-            currentTime={currentTime}
             endTimeFormatted={endTimeFormatted}
             reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
             customLabel={label}
           />
         </div>
       );
-    // }
   }
   return counter;
 };

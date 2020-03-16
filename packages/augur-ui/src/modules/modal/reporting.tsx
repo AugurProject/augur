@@ -13,6 +13,7 @@ import {
   ReportingRadioBarGroup,
   ReportingRadioBarProps,
   MigrateRepInfo,
+  Error
 } from 'modules/common/form';
 import {
   SCALAR,
@@ -39,7 +40,7 @@ import { Getters, TXEventName } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
 import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
 import { ExplainerBlock } from 'modules/create-market/components/common';
-import { EventDetailsContent } from 'modules/create-market/constants';
+import { EventDetailsContent, WarpSyncErrorHeader, WarpSyncErrorSubheader } from 'modules/create-market/constants';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 
@@ -352,6 +353,7 @@ export default class ModalReporting extends Component<
       migrateRep,
       isDisputing,
       getRepModal,
+      warpSyncHash
     } = this.props;
     const {
       checked,
@@ -371,6 +373,9 @@ export default class ModalReporting extends Component<
       <div className={Styles.ModalReporting}>
         <Title title={title} closeAction={closeAction} bright />
         <main>
+          {market.isWarpSync && !warpSyncHash &&
+            <Error header={WarpSyncErrorHeader} subheader={WarpSyncErrorSubheader} />
+          }
           {explainerBlockTitle && explainerBlockSubtexts && (
             <ExplainerBlock
               title={explainerBlockTitle}

@@ -27,19 +27,17 @@ export class Exchange extends c.Exchange<BigNumber> {
 }
 export class Augur extends c.Augur<BigNumber> {
 }
+export class AugurWallet extends c.AugurWallet<BigNumber> {
+}
+export class AugurWalletRegistry extends c.AugurWalletRegistry<BigNumber> {
+}
 export class Cash extends c.Cash<BigNumber> {
 }
 export class CashFaucet extends c.CashFaucet<BigNumber> {
 }
 export class EthExchange extends c.EthExchange<BigNumber> {
 }
-export class GnosisSafe extends c.GnosisSafe<BigNumber> {
-}
-export class GnosisSafeRegistry extends c.GnosisSafeRegistry<BigNumber> {
-}
 export class LegacyReputationToken extends c.LegacyReputationToken<BigNumber> {
-}
-export class ProxyFactory extends c.ProxyFactory<BigNumber> {
 }
 export class RepExchange extends c.RepExchange<BigNumber> {
 }
@@ -74,6 +72,8 @@ export class ReputationTokenFactory extends c.ReputationTokenFactory<BigNumber> 
 export class TestNetReputationTokenFactory extends c.TestNetReputationTokenFactory<BigNumber> {
 }
 export class UniverseFactory extends c.UniverseFactory<BigNumber> {
+}
+export class RelayHub extends c.RelayHub<BigNumber> {
 }
 export class AffiliateValidator extends c.AffiliateValidator<BigNumber> {
 }

@@ -61,11 +61,6 @@ import {
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
-import {
-  GNOSIS_STATUS,
-  updateAppStatus,
-} from 'modules/app/actions/update-app-status';
-import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -137,7 +132,6 @@ export const handleTxSuccess = (txStatus: Events.TXStatus) => (
 ) => {
   console.log('TxSuccess Transaction', txStatus.transaction.name);
   dispatch(addUpdateTransaction(txStatus));
-  dispatch(updateAssets());
 };
 
 export const handleTxFailure = (txStatus: Events.TXStatus) => (
@@ -163,31 +157,6 @@ export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
   console.log('TxFeeTooLow Transaction', txStatus.transaction.name);
   dispatch(addUpdateTransaction(txStatus));
   dispatch(updateModal({ type: MODAL_GAS_PRICE, feeTooLow: true }));
-};
-
-export const handleGnosisStateUpdate = (response) => async(
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  console.log('handleGnosisStateUpdate', response);
-  const status = response.status;
-  if (response && status) {
-    dispatch(updateAppStatus(GNOSIS_STATUS, status));
-
-    if (status === GnosisSafeState.ERROR) {
-      const loginAccount = getState().loginAccount;
-      const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
-
-      dispatch(updateModal({
-        type: MODAL_ERROR,
-        error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
-        showDiscordLink: false,
-        showAddFundsHelp: !hasEth,
-        walletType: loginAccount.meta.accountType,
-        title: 'We\'re having trouble processing transactions',
-      }));
-    }
-  }
 };
 
 export const handleSDKReadyEvent = () => (
@@ -307,6 +276,8 @@ export const handleReportingStateChanged = (event: any) => (
   if (event.data) {
     const marketIds = _.map(event.data, 'market');
     dispatch(loadMarketsInfo(marketIds));
+    if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
+    if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
   }
 };
 
@@ -435,7 +406,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
       orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
     );
     dispatch(throttleLoadUserOpenOrders());
-    handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
+    if (log.orderFiller) handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
   if (isOnTradePage()) {

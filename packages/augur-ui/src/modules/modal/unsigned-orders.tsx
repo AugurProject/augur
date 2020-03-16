@@ -143,7 +143,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
       )}
       {props.openOrders && (
         // @ts-ignore
-        <OpenOrdersTable openOrders={props.orders} />
+        <OpenOrdersTable relative openOrders={props.orders} marketId={props.marketId} />
       )}
       {props.breakdown && <Breakdown rows={props.breakdown} short />}
     </main>

@@ -10,7 +10,7 @@ export interface Document extends BaseDocument {
 }
 
 /**
- * Stores event logs for non-user-specific events.
+ * Stores most recent event logs by primary key.
  */
 export class DelayedSyncableDB extends BaseSyncableDB {
   constructor(

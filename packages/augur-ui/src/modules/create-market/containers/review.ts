@@ -24,7 +24,7 @@ const mapStateToProps = (state: AppState) => {
     availableDaiFormatted: formatDai(
       totalTradingBalance(loginAccount)
     ),
-    Gnosis_ENABLED: appStatus.gnosisEnabled,
+    GsnEnabled: appStatus.gsnEnabled,
     ethToDaiRate: appStatus.ethToDaiRate,
   };
 };

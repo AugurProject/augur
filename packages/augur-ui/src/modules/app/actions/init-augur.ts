@@ -41,10 +41,11 @@ import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { tryToPersistStorage } from 'utils/storage-manager';
-import Torus from '@toruslabs/torus-embed';
 import { isDevNetworkId, SDKConfiguration } from '@augurproject/artifacts';
 import { getNetwork } from 'utils/get-network-name';
 import { buildConfig } from '@augurproject/artifacts';
+import { showIndexedDbSize } from 'utils/show-indexed-db-size';
+import { isGoogleBot } from 'utils/is-google-bot';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -193,9 +194,13 @@ export function connectAugur(
         provider = new Web3Provider(windowRef.web3.currentProvider);
       } else {
         // Use torus provider
-        const host = getNetwork(networkId);
-        const torus: any = new Torus({});
 
+        // Use require instead of import for wallet SDK packages
+        // to conditionally load web3 into the DOM
+        const Torus = require('@toruslabs/torus-embed').default;
+        const torus = new Torus({});
+
+        const host = getNetwork(networkId);
         await torus.init({
           network: { host },
           showTorusButton: false,
@@ -214,12 +219,18 @@ export function connectAugur(
       provider = new JsonRpcProvider(config.ethereum.http);
     }
 
+    // Disable mesh/gsn for googleBot
+    if (isGoogleBot()) {
+      config.zeroX.mesh.enabled = false;
+      config.gsn.enabled = false;
+    }
+
     let sdk: Augur<Provider> = null;
     try {
       sdk = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
-      return callback('SDK could not be created', null);
+      return callback('SDK could not be created', { config });
     }
 
     let universeId = config.addresses?.Universe || sdk.contracts.universe.address;
@@ -304,5 +315,7 @@ export function initAugur(
     dispatch(updateEnv(config));
     tryToPersistStorage();
     connectAugur(history, config, true, callback)(dispatch, getState);
+
+    windowRef.showIndexedDbSize = showIndexedDbSize;
   };
 }

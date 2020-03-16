@@ -1,9 +1,10 @@
 export const LIST_VALUES = {
   YEARS: ['2020', '2021', '2022', '2023', '2024', '2025'],
+  NFL_YEARS: ['2021', '2022', '2023', '2024', '2025'],
   PRES_YEARS: ['2020', '2024', '2028'],
   SUMMER_OLYMPIC_YEARS: ['2020', '2024', '2028'],
   WINTER_OLYMPIC_YEARS: ['2022', '2026', '2030'],
-  YEAR_RANGE: ['2020-21', '2021-22', '2022-23'],
+  YEAR_RANGE: ['2019-20', '2020-21', '2021-22', '2022-23'],
   FOOTBALL_AWARDS: [
     'MVP',
     'Offensive Player of the year',

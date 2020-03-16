@@ -1,25 +1,28 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'store';
-import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL } from 'modules/common/constants';
-import { selectMarketOutcomeBestBidAsk, selectBestBidAlert } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
+import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL, SCALAR, INVALID_BEST_BID_ALERT_VALUE, SCALAR_INVALID_BEST_BID_ALERT_VALUE } from 'modules/common/constants';
+import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import Row from 'modules/common/row';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import { calcPercentageFromPrice, formatBlank } from 'utils/format-number';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { marketInfos, newMarket } = state;
-  const market = newMarket ? newMarket : marketInfos[ownProps.marketId];
+  const market = marketInfos[ownProps.marketId] ? marketInfos[ownProps.marketId] : newMarket ? newMarket : null;
   // default values for create market preview
   const minPrice = market ? market.minPrice : 0;
   const maxPrice = market ? market.maxPrice : 1;
   const tickSize = market ? market.tickSize : 100;
 
+  const usePercent = ownProps.outcome && ownProps.outcome.id === INVALID_OUTCOME_ID && market.marketType === SCALAR;
   return {
     orderBook: ownProps.orderBook,
     minPrice,
     maxPrice,
     tickSize,
     preview: ownProps.preview,
+    usePercent
   };
 };
 
@@ -37,15 +40,50 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     }
   }
   const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(outcomeOrderBook, sP.tickSize);
-  const bestBidAlert = selectBestBidAlert(outcome.id, topBid.price.value, sP.minPrice, sP.maxPrice)
   const topBidShares = topBid.shares;
   const topAskShares = topAsk.shares;
 
-  const topBidPrice = topBid.price;
-  const topAskPrice = topAsk.price;
+  let topBidPrice = topBid.price;
+  let topAskPrice = topAsk.price;
+  let lastPrice = outcome.lastPrice || formatBlank();
 
-  const lastPrice = outcome.lastPrice;
+  if (sP.usePercent) {
+    const topBidPercent = calcPercentageFromPrice(
+      topBidPrice.value,
+      sP.minPrice,
+      sP.maxPrice
+    );
+    topBidPrice =
+      topBidPrice.formatted !== '-'
+        ? { ...topBidPrice, percent: `${topBidPercent}%` }
+        : topBidPrice;
 
+    const topAskPercent = calcPercentageFromPrice(
+      topAskPrice.value,
+      sP.minPrice,
+      sP.maxPrice
+    );
+    topAskPrice =
+      topAskPrice.formatted !== '-'
+        ? { ...topAskPrice, percent: `${topAskPercent}%` }
+        : topAskPrice;
+    const lastPricePercent = calcPercentageFromPrice(
+      lastPrice.value,
+      sP.minPrice,
+      sP.maxPrice
+    );
+    lastPrice =
+      lastPrice.formatted !== '-'
+        ? { ...lastPrice, percent: `${lastPricePercent}%` }
+        : lastPrice;
+  }
+
+  const showInvalidAlert =
+    outcome.id === INVALID_OUTCOME_ID
+      ? !!topBidPrice.percent
+        ? topBidPrice.percent >= SCALAR_INVALID_BEST_BID_ALERT_VALUE
+        : topBidPrice.value >= INVALID_BEST_BID_ALERT_VALUE
+      : false;
   const columnProperties = [
     {
       key: "outcomeName",
@@ -66,10 +104,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       value: topBidPrice,
       useFull: true,
       showEmptyDash: true,
-      alert: bestBidAlert,
+      usePercent: !!topBidPrice.percent,
+      alert: showInvalidAlert,
       action: (e) => {
         oP.updateSelectedOutcome(outcome.id, true);
         oP.updateSelectedOrderProperties({
+          selectedOutcomeId: outcome.id,
           orderPrice: topBidPrice && topBidPrice.value.toString(),
           orderQuantity: topBidShares && topBidShares.value.toString(),
           selectedNav: SELL
@@ -83,9 +123,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       value: topAskPrice,
       useFull: true,
       showEmptyDash: true,
+      usePercent: !!topAskPrice.percent,
       action: (e) => {
         oP.updateSelectedOutcome(outcome.id, true);
         oP.updateSelectedOrderProperties({
+          selectedOutcomeId: outcome.id,
           orderPrice: topAskPrice && topAskPrice.value.toString(),
           orderQuantity: topAskShares && topAskShares.value.toString(),
           selectedNav: BUY
@@ -103,6 +145,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "lastPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: lastPrice,
+      usePercent: !!lastPrice.percent,
       useFull: true,
       addIndicator: true,
       outcome,
@@ -122,7 +165,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       noToggle: true,
       colorId: outcome.id + 1,
       active: oP.selectedOutcomeId === outcome.id,
-      isInvalid: outcome.id === INVALID_OUTCOME_ID
+      isInvalid: outcome.id === INVALID_OUTCOME_ID,
     }
   };
 };

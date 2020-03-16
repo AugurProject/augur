@@ -3,17 +3,21 @@
 import os
 
 methods = {
-    "transfer": {},
-    "balanceOf": {
-        "Market.sol": 1
+    "transfer": {
+        "AugurWallet.sol": 1,
     },
-    "allowance": {},
+    "balanceOf": {
+        "Market.sol": 1,
+        "AugurWalletRegistry.sol": 1,
+    },
+    "allowance": {
+    },
     "approve": {
         "Market.sol": 1,
-        "GnosisSafeRegistry.sol": 4,
         "Universe.sol": 2,
         "AugurTrading.sol": 1,
         "FillOrder.sol": 1,
+        "AugurWallet.sol": 4,
     }
 }
 

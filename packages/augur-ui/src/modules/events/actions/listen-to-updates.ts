@@ -12,7 +12,6 @@ import {
   handleTxRelayerDown,
   handleTxFeeTooLow,
   handleSDKReadyEvent,
-  handleGnosisStateUpdate,
   handleReportingStateChanged,
   handleWarpSyncHashUpdatedLog,
 } from 'modules/events/actions/log-handlers';
@@ -42,9 +41,6 @@ const EVENTS = {
   ),
   [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
     handleMarketsUpdatedLog
-  ),
-  [SubscriptionEventName.GnosisSafeStatus]: wrapLogHandler(
-    handleGnosisStateUpdate
   ),
   [SubscriptionEventName.ReportingStateChanged]: wrapLogHandler(
     handleReportingStateChanged
