@@ -12,20 +12,28 @@ import {
   ERROR,
   UPPER_FIXED_PRECISION_BOUND,
   ZERO,
+  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/trading/components/confirm.styles.less';
-import { XIcon, ExclamationCircle, InfoIcon, InformationIcon, QuestionIcon } from 'modules/common/icons';
+import { XIcon, ExclamationCircle, InformationIcon, QuestionIcon } from 'modules/common/icons';
 import { formatGasCostToEther, formatShares, formatDai } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { Trade } from 'modules/types';
+import { PrimaryButton } from 'modules/common/buttons';
+
+interface MessageButton {
+  action: Function;
+  text: string;
+}
 
 interface Message {
   header: string;
   type: string;
   message: string;
+  button?: MessageButton;
 }
 
 interface ConfirmProps {
@@ -46,6 +54,8 @@ interface ConfirmProps {
   GsnEnabled: boolean;
   gsnUnavailable: boolean;
   initialLiquidity: boolean;
+  initializeGsnWallet: Function;
+  walletStatus: string;
 }
 
 interface ConfirmState {
@@ -105,6 +115,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ethToDaiRate,
       GsnEnabled,
       gsnUnavailable,
+      initializeGsnWallet,
+      walletStatus,
     } = props || this.props;
 
     const {
@@ -114,6 +126,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       numFills,
       loopLimit,
     } = trade;
+
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
     let needsApproval = false;
     let messages: Message | null = null;
@@ -204,11 +217,16 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (gsnUnavailable && !tradingTutorial) {
+    // Show if OpenOrder and GSN wallet still needs to be initialized
+    if (gsnUnavailable && walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && !tradingTutorial && numFills === 0) {
       messages = {
-        header: 'Create GSN Wallet',
+        header: '',
         type: WARNING,
-        message: 'Please create GSN wallet to start trading',
+        message: 'Initialization of your account is needed',
+        button: {
+          text: 'Initialize Account',
+          action: () => initializeGsnWallet(),
+        }
       };
     }
 
@@ -407,7 +425,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             {messages.type === ERROR ? ExclamationCircle : InformationIcon}
             <span>{messages.header}</span>
             <div>{messages.message}</div>
-            {messages.type !== ERROR && (
+            {messages.button && (
+              <PrimaryButton text={messages.button.text} action={messages.button.action} />
+            )}
+            {messages.type !== ERROR && !messages.button && (
               <button onClick={this.clearErrorMessage}>{XIcon}</button>
             )}
           </div>
