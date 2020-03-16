@@ -197,10 +197,6 @@ export class Augur<TProvider extends Provider = Provider> {
     await this.dependencies.signer.sendTransaction(ethersTransaction);
   }
 
-  setGasPrice(gasPrice: BigNumber): void {
-    this.dependencies.setGasPrice(gasPrice);
-  }
-
   setUseWallet(useSafe: boolean): void {
     this.dependencies.setUseWallet(useSafe);
   }
@@ -540,7 +536,7 @@ export class Augur<TProvider extends Provider = Provider> {
   private registerTransactionStatusEvents() {
     this.registerTransactionStatusCallback(
       'Transaction Status Handler',
-      (transaction, status, hash) => {
+      (transaction, status, hash, reason) => {
         if (status === TransactionStatus.SUCCESS && this.txSuccessCallback) {
           const txn: TXStatus = {
             transaction,
@@ -576,6 +572,7 @@ export class Augur<TProvider extends Provider = Provider> {
             transaction,
             eventName: TXEventName.Failure,
             hash,
+            reason
           } as TXStatus;
           this.txFailureCallback(txn);
         } else if (

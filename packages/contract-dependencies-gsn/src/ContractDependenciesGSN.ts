@@ -17,10 +17,11 @@ import { formatBytes32String } from 'ethers/utils';
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 const RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494";
-const MIN_GAS_PRICE = new BigNumber(20e9); // Min: 1 Gwei
-const DEFAULT_GAS_PRICE = new BigNumber(20e9); // Default: GasPrice: 4 Gwei
 
 const OVEREAD_RELAY_GAS = 400000;
+
+const REFRESH_GAS_PRICE_INTERVAL_MS = 10000;
+const GAS_PRICE_MULTIPLIER = 1.2;
 
 const GSN_RELAY_CALL_STATUS = {
   0: "OK",                      // The transaction was successfully relayed and execution successful - never included in the event
@@ -32,6 +33,7 @@ const GSN_RELAY_CALL_STATUS = {
 
 interface SigningQueueTask {
   tx: Transaction<ethers.utils.BigNumber>,
+  txMetadata: TransactionMetadata,
 };
 
 interface RelayerQueueTask {
@@ -50,6 +52,8 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   referralAddress: string = NULL_ADDRESS;
   fingerprint: string = formatBytes32String('');
 
+  public gasPrice: BigNumber;
+
   _currentNonce = -1;
 
   _signingQueue: AsyncQueue<SigningQueueTask> = queue(async (task: SigningQueueTask) => {
@@ -57,7 +61,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
       const nonce = await this.relayHub.getNonce(await this.signer.getAddress());
       this._currentNonce = nonce.toNumber();
     }
-    const result = await this.validateAndSign(task.tx);
+    const result = await this.validateAndSign(task.tx, task.txMetadata);
     this._currentNonce++;
     return result;
   });
@@ -79,11 +83,13 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     signer: EthersSigner,
     augurWalletRegistryAddress: string,
     ethExchangeAddress: string,
-    public gasPrice: BigNumber = DEFAULT_GAS_PRICE,
     address?: string
   ) {
     super(provider, signer, address);
-    this.relayClient = new RelayClient(this.provider, { verbose: false });
+    this.relayClient = new RelayClient(this.provider, {
+      verbose: false,
+      allowedRelayNonceGap: 10,
+    });
     this.relayHub = new ethers.Contract(
       RELAY_HUB_ADDRESS,
       abi['RelayHub'],
@@ -106,9 +112,18 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     signer: EthersSigner,
     augurWalletRegistryAddress: string,
     ethExchangeAddress: string,
-    gasPrice: BigNumber = DEFAULT_GAS_PRICE,
     address?: string): Promise<ContractDependenciesGSN> {
-      return new ContractDependenciesGSN(provider, signer, augurWalletRegistryAddress, ethExchangeAddress, gasPrice, address);
+      const deps = new ContractDependenciesGSN(provider, signer, augurWalletRegistryAddress, ethExchangeAddress, address);
+      await deps.refreshGasPrice();
+      return deps;
+  }
+
+  async refreshGasPrice(): Promise<void> {
+    // We bypass the Provider wrapper here and directly get the eth rpc api gas price since we do not want overrides.
+    let reccomendedGasPrice = await this.provider.provider.getGasPrice();
+    this.gasPrice = new BigNumber(reccomendedGasPrice.toString()).multipliedBy(GAS_PRICE_MULTIPLIER);
+    console.log(`Set gas price to: ${this.gasPrice.toFixed()}`);
+    setTimeout(this.refreshGasPrice.bind(this), REFRESH_GAS_PRICE_INTERVAL_MS);
   }
 
   setUseWallet(useWallet: boolean): void {
@@ -125,11 +140,6 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
   setFingerprint(fingerprint: string): void {
     this.fingerprint = fingerprint;
-  }
-
-  setGasPrice(gasPrice: BigNumber): void {
-    if (gasPrice.lt(MIN_GAS_PRICE)) gasPrice = MIN_GAS_PRICE;
-    this.gasPrice = gasPrice;
   }
 
   async submitTransaction(transaction: Transaction<BigNumber>): Promise<TransactionReceipt> {
@@ -152,7 +162,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
       return receipt as TransactionReceipt;
     } catch (e) {
       this._currentNonce = -1;
-      this.onTransactionStatusChanged(txMetadata, TransactionStatus.FAILURE, hash);
+      this.onTransactionStatusChanged(txMetadata, TransactionStatus.FAILURE, hash, e.message);
       throw e;
     } finally {
       delete this.transactionDataMetaData[txMetadataKey];
@@ -182,7 +192,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     return TransactionStatus.SUCCESS;
   }
 
-  async validateAndSign(tx: Transaction<ethers.utils.BigNumber>): Promise<PreparedTransaction> {
+  async validateAndSign(tx: Transaction<ethers.utils.BigNumber>, txMetadata: TransactionMetadata): Promise<PreparedTransaction> {
     const relayOptions = this.relayClient.getTransactionOptions(tx, this.gasPrice.toNumber());
     const preparedTx = await this.relayClient.selectRelayAndGetTxHash(tx.data, relayOptions, this._currentNonce);
     preparedTx.signature = await this.signer.signMessage(ethers.utils.arrayify(preparedTx.txHash));
@@ -207,14 +217,14 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
       return super.sendTransaction(tx, txMetadata);
     }
 
-    const relayTransaction = await this.signTransaction(tx);
+    const relayTransaction = await this.signTransaction(tx, txMetadata);
 
     return this.waitForTx({ tx: relayTransaction, txMetadata });
   }
 
-  async signTransaction(tx: Transaction<ethers.utils.BigNumber>) {
+  async signTransaction(tx: Transaction<ethers.utils.BigNumber>, txMetadata: TransactionMetadata) {
     return new Promise<PreparedTransaction>((resolve, reject) => {
-      this._signingQueue.push( {tx }, (error, value: PreparedTransaction) => {
+      this._signingQueue.push( {tx, txMetadata }, (error, value: PreparedTransaction) => {
         if(error) reject(error);
         else resolve(value);
       });
@@ -267,7 +277,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     gasEstimate = gasEstimate.plus(OVEREAD_RELAY_GAS);
     let ethCost = gasEstimate.multipliedBy(this.gasPrice);
     ethCost = ethCost.multipliedBy((100+this.relayClient.config.txFee) / 100);
-    const cashCost: ethers.utils.BigNumber = await this.ethExchange.getTokenPurchaseCost('0x'+ethCost.toString(16));
+    const cashCost: ethers.utils.BigNumber = await this.ethExchange.getTokenPurchaseCost('0x'+ethCost.decimalPlaces(0).toString(16));
     let cost = new BigNumber(cashCost.toString());
     cost = cost.multipliedBy(1.15); // account for slippage; CONSIDER: make this configurable?
     return cost.decimalPlaces(0);

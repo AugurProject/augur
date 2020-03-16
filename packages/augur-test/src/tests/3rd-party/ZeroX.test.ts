@@ -61,7 +61,6 @@ describe('3rd Party :: ZeroX :: ', () => {
 
       await john.approveCentralAuthority();
       await john.getOrCreateWallet();
-      await john.augur.setGasPrice(new BigNumber(90000));
       john.setUseWallet(true);
       john.setUseRelay(true);
 
@@ -80,7 +79,6 @@ describe('3rd Party :: ZeroX :: ', () => {
       await mary
         .getOrCreateWallet()
         .catch(e => console.error(`Safe funding failed: ${JSON.stringify(e)}`));
-      await mary.augur.setGasPrice(new BigNumber(90000));
       mary.setUseWallet(true);
       mary.setUseRelay(true);
     }, 240000);
