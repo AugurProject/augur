@@ -14,6 +14,15 @@
   align-items: center;
   display: flex;
   justify-content: center;
+
+  > svg {
+    width: @size-7;
+    height: @size-11;
+
+    g > path {
+      fill: var(--color-primary-text);
+    }
+  }
 }
 
 .AddressPickerContent__directionDisabled {

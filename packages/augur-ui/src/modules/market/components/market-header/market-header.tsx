@@ -356,8 +356,8 @@ export default class MarketHeader extends Component<
                           }}
                         >
                           {!showReadMore
-                            ? ChevronDown({ stroke: '#D7DDE0' })
-                            : ChevronUp()}
+                            ? ChevronDown
+                            : ChevronUp}
                         </button>
                       )}
                     </div>
@@ -401,8 +401,8 @@ export default class MarketHeader extends Component<
                   }}
                 >
                   {!showProperties
-                    ? ChevronDown({ stroke: '#D7DDE0' })
-                    : ChevronUp()}
+                    ? ChevronDown
+                    : ChevronUp}
                 </button>
               </div>
               {showTutorialData && (
