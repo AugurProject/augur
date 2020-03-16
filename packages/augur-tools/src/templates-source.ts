@@ -1115,6 +1115,9 @@ export const TEMPLATES = {
                     {
                       text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
                     },
+                    {
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No'`,
+                    },
                   ],
                 },
               },
@@ -1157,6 +1160,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -1374,6 +1380,9 @@ export const TEMPLATES = {
                     {
                       text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No Winner'.`,
                     },
+                    {
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                    },
                   ],
                 },
               },
@@ -1421,6 +1430,9 @@ export const TEMPLATES = {
                     {
                       text: `This market is intended to be about a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`,
                     },
+                    {
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No'`,
+                    },
                   ],
                 },
               },
@@ -1466,6 +1478,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid.'`,
+                    },
+                    {
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No'`,
                     },
                   ],
                 },
@@ -1533,6 +1548,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If a team is disqualified or withdraws during the set named in the market question, the team moving forward to the next round should be declared the winner`,
+                    },
+                    {
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner/Not Played'`,
                     },
                   ],
                 },
@@ -1619,6 +1637,9 @@ export const TEMPLATES = {
                     {
                       text: `If the match is started and a player is disqualified or withdraws for any reason, and a player/team moves forward or is declared the winner, the final results should be based off of when the match was stopped.`,
                     },
+                    {
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner/Not Played'`,
+                    },
                   ],
                 },
               },
@@ -1678,6 +1699,9 @@ export const TEMPLATES = {
                     {
                       text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`,
                     },
+                    {
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                    },
                   ],
                 },
               },
@@ -1730,6 +1754,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                    },
+                    {
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
                     },
                   ],
                 },
@@ -1787,6 +1814,9 @@ export const TEMPLATES = {
                     {
                       text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
                     },
+                    {
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                    },
                   ],
                 },
               },
@@ -1843,6 +1873,9 @@ export const TEMPLATES = {
                     {
                       text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
                     },
+                    {
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                    },
                   ],
                 },
               },
@@ -1894,6 +1927,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `This market is intended to be about two sports teams, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
+                    {
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
                     },
                   ],
                 },
@@ -1951,6 +1987,9 @@ export const TEMPLATES = {
                     {
                       text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
                     },
+                    {
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                    },
                   ],
                 },
               },
@@ -2003,6 +2042,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`,
+                    },
+                    {
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
                     },
                   ],
                 },
