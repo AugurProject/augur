@@ -262,7 +262,7 @@ export const RedFlag = ({ market }: RedFlagProps) => market.mostLikelyInvalid ? 
       className={TooltipStyles.Tooltip}
       effect="solid"
       place="right"
-      type={getTheme() === THEMES.TRADING ? "light" : null}
+      type="light"
     >
       {PROBABLE_INVALID_MARKET}
     </ReactTooltip>
@@ -292,7 +292,7 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
         className={TooltipStyles.Tooltip}
         effect="solid"
         place="right"
-        type={getTheme() === THEMES.TRADING ? "light" : null}
+        type="light"
       >
         {yellowShield
           ? "Templated market question, contains market creator text. This text should match to highlighted section's tooltip"
@@ -521,7 +521,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="top"
-            type={getTheme() === THEMES.TRADING ? "light" : null}
+            type="light"
             data-event="mouseover"
             data-event-off="blur scroll"
           >
@@ -644,7 +644,7 @@ export const InvalidLabel = ({
         )}
         effect="solid"
         place={tooltipPositioning || 'left'}
-        type={getTheme() === THEMES.TRADING ? "light" : null}
+        type="dark"
         data-event="mouseover"
         data-event-off="blur scroll"
       >
