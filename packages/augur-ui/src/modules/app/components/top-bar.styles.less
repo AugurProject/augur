@@ -175,6 +175,18 @@
   padding: @size-16 @size-16 @size-16 @size-24;
   width: unset;
 
+  > svg {
+    path {
+      fill: var(--color-brand-secondary);
+      stroke: var(--color-brand-secondary);
+    }
+
+    g > rect {
+      fill: var(--color-outcome-five);
+      stroke: #211A32;
+    }
+  }
+
   @media @breakpoint-mobile {
     border-left: 1px solid var(--color-module-background);
     padding: 0 0 0 @size-18;
