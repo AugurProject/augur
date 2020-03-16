@@ -26,6 +26,7 @@ const mapStateToProps = (state: AppState) => {
     isSearching: state.marketsList.isSearching,
     allTemplateFilter: templateFilter,
     settings: state.loginAccount.settings || {},
+    isMobile: state.appStatus.isMobile,
   };
 };
 
