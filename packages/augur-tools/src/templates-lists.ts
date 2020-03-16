@@ -1,6 +1,5 @@
 export const LIST_VALUES = {
   YEARS: ['2020', '2021', '2022', '2023', '2024', '2025'],
-  NFL_YEARS: ['2021', '2022', '2023', '2024', '2025'],
   PRES_YEARS: ['2020', '2024', '2028'],
   SUMMER_OLYMPIC_YEARS: ['2020', '2024', '2028'],
   WINTER_OLYMPIC_YEARS: ['2022', '2026', '2030'],

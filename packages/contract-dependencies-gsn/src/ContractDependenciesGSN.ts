@@ -267,7 +267,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     gasEstimate = gasEstimate.plus(OVEREAD_RELAY_GAS);
     let ethCost = gasEstimate.multipliedBy(this.gasPrice);
     ethCost = ethCost.multipliedBy((100+this.relayClient.config.txFee) / 100);
-    const cashCost: ethers.utils.BigNumber = await this.ethExchange.getTokenPurchaseCost('0x'+ethCost.toString(16));
+    const cashCost: ethers.utils.BigNumber = await this.ethExchange.getTokenPurchaseCost('0x'+ethCost.decimalPlaces(0).toString(16));
     let cost = new BigNumber(cashCost.toString());
     cost = cost.multipliedBy(1.15); // account for slippage; CONSIDER: make this configurable?
     return cost.decimalPlaces(0);
