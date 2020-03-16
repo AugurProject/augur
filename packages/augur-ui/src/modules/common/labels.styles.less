@@ -956,6 +956,78 @@ span.PendingLabel {
   }
 }
 
+.RedFlag {
+  > svg {
+    height: @size-16;
+    width: @size-16;
+
+    > circle {
+      fill: var(--color-secondary-action);
+      stroke: var(--color-secondary-action-outline);
+    }
+
+    > g {
+      > path:first-of-type {
+        fill: var(--color-error);
+        stroke: none;
+      }
+
+      > path {
+        stroke: var(--color-error);
+      }
+    }
+
+    ClipPath > rect {
+      fill: var(--color-brand-secondary);
+    }
+  }
+}
+
+.Template {
+  > svg {
+    height: @size-16;
+    width: @size-16;
+
+    > circle {
+      fill: var(--color-secondary-action);
+      stroke: var(--color-secondary-action-outline);
+    }
+
+    > g {
+      > path:first-of-type {
+        fill: var(--color-tenative-winner);
+        stroke: none;
+      }
+
+      > path {
+        fill: var(--color-module-background);
+        stroke: var(--color-module-background);
+      }
+    }
+
+    ClipPath > rect {
+      fill: var(--color-brand-secondary);
+    }
+  }
+}
+
+.YellowTemplate {
+  .Template 
+
+  > svg {
+    > g {
+      > path:first-of-type {
+        fill: var(--color-highlight-template-text);
+      }
+
+      > path {
+        fill: var(--color-secondary-action);
+        stroke: var(--color-secondary-action);
+      }
+    }
+  }
+}
+
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   label.RedFlag {

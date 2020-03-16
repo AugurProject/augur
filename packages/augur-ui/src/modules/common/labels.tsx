@@ -278,7 +278,10 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
   return (
     <>
       <label
-        className={TooltipStyles.TooltipHint}
+        className={classNames(TooltipStyles.TooltipHint, {
+          [Styles.YellowTemplate]: yellowShield,
+          [Styles.Template]: !yellowShield,
+        })}
         data-tip
         data-for={`tooltip-${market.id}-templateShield`}
       >

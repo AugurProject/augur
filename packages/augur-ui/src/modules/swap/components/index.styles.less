@@ -13,8 +13,13 @@
     justify-content: center;
     margin: 0 @size-8;
 
-    > svg > path {
-      stroke: var(--color-dark-text);
+    > svg {
+      height: @size-16;
+      width: @size-16;
+
+      > path {
+        stroke: var(--color-dark-text);
+      }
     }
   }
 
@@ -26,8 +31,8 @@
 
       background: var(--color-primary-action);
       margin-top: @size-16;
-      border-radius: 3px;
-      padding: 9px 12px;
+      border-radius: @size-3;
+      padding: @size-9 @size-12;
       color: var(--color-dark-grey);
     }
   }
