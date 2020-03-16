@@ -50,6 +50,7 @@
     "@types/web3": "1.0.19",
     "async": "3.1.0",
     "bs58": "4.0.1",
+    "compressjs": "^1.0.3",
     "contract-dependencies-gsn": "2.0.0-alpha.2",
     "cors": "2.8.5",
     "cross-fetch": "3.0.4",
