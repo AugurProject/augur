@@ -15,8 +15,8 @@
     "docker:push": "bash ./docker-builder/push.sh",
     "docker:build-and-push": "yarn docker:build && yarn docker:push",
     "docker:pull": "./docker-builder/pull.sh",
-    "docker:geth": "docker network create augur 2>&1 >/dev/null; docker run --rm -e GETH_VERBOSITY=4 -e PERIOD_TIME=1 -it -p 8545:8545 -p 8546:8546 --name geth --network augur augurproject/dev-node-geth:latest",
-    "docker:geth:detached": "docker network create augur 2>&1 >/dev/null; docker run --detach --rm -e GETH_VERBOSITY=4 -e PERIOD_TIME=1 -it -p 8545:8545 -p 8546:8546 --name geth --network augur augurproject/dev-node-geth:latest",
+    "docker:geth": "docker network create augur 2>&1 >/dev/null; docker run --rm -e GETH_VERBOSITY=4 -e PERIOD_TIME=1 -it -p 8545:8545 -p 8546:8546 --name geth --network augur augurproject/dev-node-geth:v1.9.9",
+    "docker:geth:detached": "docker network create augur 2>&1 >/dev/null; docker run --detach --rm -e GETH_VERBOSITY=4 -e PERIOD_TIME=1 -it -p 8545:8545 -p 8546:8546 --name geth --network augur augurproject/dev-node-geth:v1.9.9",
     "docker:geth:dev": "cd ./ethereum-nodes/geth-poa && docker image build --tag augurproject/dev-node-geth .",
     "docker:geth:pop": "docker-builder/run.sh augurproject/dev-pop-geth-v2",
     "docker:geth:pop-normal-time": "docker-builder/run.sh augurproject/dev-pop-normtime-geth-v2",
@@ -25,7 +25,8 @@
     "deploy": "ts-node ./src/flash/cli deploy",
     "deploy:merge": "scripts/deploy-merge-addresses.py",
     "flash": "ts-node ./src/flash/cli",
-    "blockstream-console": "ts-node ./src/blockstream-console.ts"
+    "blockstream-console": "ts-node ./src/blockstream-console.ts",
+    "run:gsn": "oz-gsn run-relayer"
   },
   "repository": {
     "type": "git",
@@ -40,6 +41,7 @@
     "@augurproject/core": "2.0.0-alpha.2",
     "@augurproject/ethersjs-provider": "2.0.0-alpha.2",
     "@augurproject/sdk": "2.0.0-alpha.2",
+    "@openzeppelin/gsn-helpers": "0.2.3",
     "blockstream-adapters": "2.0.0-alpha.2",
     "commander": "4.1.0",
     "deepmerge": "4.2.2",

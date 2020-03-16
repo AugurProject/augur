@@ -70,6 +70,7 @@ export default class OpenOrders extends Component<OpenOrdersProps, OpenOrdersSta
     ) : (
         <OpenOrder
           key={'openOrder_' + data.id}
+          marketId={data.id}
           openOrder={ordersObj[data.id]}
           isSingle
         />

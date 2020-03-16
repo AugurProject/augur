@@ -7,9 +7,8 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { placeTrade, approveToTrade } from "modules/contracts/actions/contractCalls";
 import { Getters, TXEventName } from "@augurproject/sdk";
-import { addPendingOrder, removePendingOrder, updatePendingOrderStatus, generatePendingOrderId } from "modules/orders/actions/pending-orders-management";
+import { addPendingOrder, updatePendingOrderStatus, generatePendingOrderId } from "modules/orders/actions/pending-orders-management";
 import { convertUnixToFormattedDate } from "utils/format-date";
-import { generateTradeGroupId } from "utils/generate-trade-group-id";
 import { getOutcomeNameWithOutcome } from "utils/get-outcome";
 import { updateModal } from "modules/modal/actions/update-modal";
 

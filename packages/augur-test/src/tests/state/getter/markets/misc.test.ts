@@ -120,14 +120,27 @@ describe('State API :: Markets :: ', () => {
     beforeEach(async () => {
       await john.initializeUniverseForWarpSync();
 
-      const someHash = 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKChD2';
+      // This hash won't do anything because it is the IPFS for '0'. Which is an uninitialized warp sync market.
+      const someHash = 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51';
       expectedMarkets = [
         await john.createReasonableYesNoMarket(),
-        await john.reportWarpSyncMarket(someHash),
-        await john.reportWarpSyncMarket(someHash),
+        await john.reportAndFinalizeWarpSyncMarket(someHash),
+        await john.reportAndFinalizeWarpSyncMarket(someHash),
+        await john.getWarpSyncMarket()
       ];
 
       await john.sync();
+    });
+
+    test('should be filterable using MarketDB getAllWarpSyncMarkets method', async () => {
+      console.log('expectedMarkets', JSON.stringify(expectedMarkets.map((m) => m.address)));
+      const expectedMarketAssertions = expectedMarkets.map((item, i) => expect.objectContaining({
+          market: item.address,
+          isWarpSync: (i !== 0)
+        })
+      ).slice(1);
+
+      await expect(john.db.marketDatabase.getAllWarpSyncMarkets()).resolves.toEqual(expectedMarketAssertions);
     });
 
     test('should tag warp sync markets', async () => {
@@ -150,11 +163,11 @@ describe('State API :: Markets :: ', () => {
     test('should be able to filter out warp sync markets', async () => {
       const universe = john.augur.contracts.universe;
       // We only care about the warpsync markets, hence the slice.
-      const expectedMarketAssertions = expectedMarkets.slice(0).map((item, i) => expect.objectContaining({
+      const expectedMarketAssertions = expectedMarkets.map((item, i) => expect.objectContaining({
           id: item.address,
           isWarpSync: (i !== 0)
         })
-      );
+      ).slice(1);
 
       // Check the default value.
       await expect(john.api.route('getMarkets', {

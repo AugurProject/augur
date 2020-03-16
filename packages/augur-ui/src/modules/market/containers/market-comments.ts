@@ -9,6 +9,7 @@ const mapStateToProps = (state, ownProps) => ({
   numPosts: ownProps.numPosts || DEFAULT_NUM_POSTS,
   colorScheme: ownProps.colorScheme || COLOR_SCHEME,
   networkId: getNetworkId(),
+  whichCommentPlugin: state.env.plugins?.comments,
 });
 
 const MarketCommentsContainer = connect(mapStateToProps)(MarketComments);

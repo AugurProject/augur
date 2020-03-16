@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import Styles from 'modules/common/progress.styles.less';
 import * as format from 'utils/format-date';
 import classNames from 'classnames';
@@ -7,7 +7,6 @@ import { REPORTING_STATE } from 'modules/common/constants';
 
 export interface CountdownProgressProps {
   time?: DateFormattedObject;
-  currentTime?: DateFormattedObject;
   label: string;
   countdownBreakpoint?: number;
   firstColorBreakpoint?: number;
@@ -28,7 +27,6 @@ export interface TimeProgressBarProps {
 
 export interface MarketProgressProps {
   reportingState: string;
-  currentTime: DateFormattedObject | number;
   endTimeFormatted: DateFormattedObject;
   reportingWindowEndTime: DateFormattedObject | number;
   customLabel?: string;
@@ -138,7 +136,7 @@ const reportingStateToLabelTime = (
     case REPORTING_STATE.FINALIZED:
     default:
       label = 'Expired';
-      time = reportingEndTime;
+      time = endTimeFormatted;
       break;
   }
 
@@ -148,13 +146,11 @@ const reportingStateToLabelTime = (
 export const MarketProgress = (props: MarketProgressProps) => {
   const {
     reportingState,
-    currentTime,
     endTimeFormatted,
     reportingWindowEndTime,
     customLabel,
     alignRight,
   } = props;
-  const currTime = formatTime(currentTime);
   const reportingEndTime = formatTime(reportingWindowEndTime);
   const { label, time } = reportingStateToLabelTime(
     reportingState,
@@ -167,22 +163,34 @@ export const MarketProgress = (props: MarketProgressProps) => {
     <CountdownProgress
       label={customLabel || label}
       time={time}
-      currentTime={currTime}
       alignRight={alignRight}
     />
   );
 };
 
-export const CountdownProgress = (props: CountdownProgressProps) => {
-  const {
-    label,
-    time,
-    currentTime,
-    countdownBreakpoint,
-    firstColorBreakpoint,
-    finalColorBreakpoint,
-    alignRight,
-  } = props;
+export const useTimer = () => {
+  const [currentTime, setCurrentTime] = useState(Math.floor(Date.now() / 1000));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+        setCurrentTime(seconds => seconds + 1);
+      }, 1000);
+    return () => clearInterval(interval);
+  }, [currentTime]);
+
+  return currentTime;
+}
+
+export const CountdownProgress = ({
+  label,
+  time,
+  countdownBreakpoint,
+  firstColorBreakpoint,
+  finalColorBreakpoint,
+  alignRight,
+}: CountdownProgressProps) => {
+  const currentTime = useTimer();
+
   let valueString = '';
   let timeLeft = 1;
   let countdown = false;
@@ -191,30 +199,30 @@ export const CountdownProgress = (props: CountdownProgressProps) => {
   if (time && time !== null && currentTime) {
     const daysRemaining = format.getDaysRemaining(
       time.timestamp,
-      currentTime.timestamp
+      currentTime
     );
     const hoursRemaining = format.getHoursMinusDaysRemaining(
       time.timestamp,
-      currentTime.timestamp
+      currentTime
     );
     const minutesRemaining = format.getMinutesMinusHoursRemaining(
       time.timestamp,
-      currentTime.timestamp
+      currentTime
     );
 
     const secondsRemaining = format.getSecondsMinusMinutesRemaining(
       time.timestamp,
-      currentTime.timestamp
+      currentTime
     );
 
-    timeLeft = time.timestamp - currentTime.timestamp;
+    timeLeft = time.timestamp - currentTime;
     countdown = (countdownBreakpoint || OneWeek) >= timeLeft && timeLeft > 0;
     valueString = countdown
       ? `${daysRemaining}:${
-          hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
-        }:${
-          minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
-        }:${secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining}`
+        hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
+      }:${
+        minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
+      }:${secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining}`
       : time.formattedLocalShortDateSecondary;
   }
   const breakpointOne =

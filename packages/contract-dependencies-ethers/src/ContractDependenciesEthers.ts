@@ -199,7 +199,12 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   }
 
   async estimateGas(transaction: Transaction<BigNumber>): Promise<BigNumber> {
-    const estimate = await this.provider.estimateGas(this.transactionToEthersTransaction(transaction));
+    const ethersTransaction = this.transactionToEthersTransaction(transaction);
+    return this.estimateGasForEthersTransaction(ethersTransaction);
+  }
+
+  async estimateGasForEthersTransaction(transaction: Transaction<ethers.utils.BigNumber>): Promise<BigNumber> {
+    const estimate = await this.provider.estimateGas(transaction);
     return new BigNumber(estimate.toString());
   }
 }

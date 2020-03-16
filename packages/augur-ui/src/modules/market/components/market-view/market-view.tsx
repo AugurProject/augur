@@ -517,7 +517,7 @@ export default class MarketView extends Component<
       outcomeOrderBook = formatOrderBook(orderBook[outcomeId]);
     }
 
-    const networkId = getNetworkId();
+    const networkId = tradingTutorial ? null : getNetworkId();
     const cat5 = this.findType();
     let orders = null;
     if (tradingTutorial) {

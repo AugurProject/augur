@@ -7,7 +7,7 @@ import { MarketTypeName } from '@augurproject/sdk/build/state/logs/types';
 
 export async function fork(user: ContractAPI, market: MarketInfo): Promise<boolean> {
   const MAX_DISPUTES = 20;
-  const SOME_REP = new BigNumber(1e18).times(10e2);
+  let SOME_REP = new BigNumber(1e18).times(10e2);
 
   const payoutNumerators = getPayoutNumerators(market, 'invalid');
   const conflictOutcome = market.marketType === MarketTypeName.Scalar ? makeValidScalarOutcome(market) : 1;
@@ -25,6 +25,7 @@ export async function fork(user: ContractAPI, market: MarketInfo): Promise<boole
 
   // Contribution (dispute) fulfills the first dispute bond,
   // pushing into next dispute round that takes additional stake into account.
+  await user.repFaucet(SOME_REP);
   await user.contribute(marketContract, conflictNumerators, SOME_REP);
 
   for (let i = 0; i < MAX_DISPUTES; i++) {
@@ -39,11 +40,13 @@ export async function fork(user: ContractAPI, market: MarketInfo): Promise<boole
 
     // Contribute aka dispute. Opposing sides to keep raising the stakes.
     const numerators = i % 2 === 0 ? conflictNumerators : payoutNumerators;
+    await user.repFaucet(SOME_REP);
     await user.contribute(marketContract, numerators, SOME_REP);
     const remainingToFill = await user.getRemainingToFill(
       marketContract,
       numerators
     );
+    await user.repFaucet(remainingToFill);
     if (remainingToFill.gt(0)) await user.contribute(marketContract, numerators, remainingToFill);
   }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { Link } from 'react-router-dom';
@@ -9,10 +9,14 @@ import {
   ExternalLinkText,
   ProcessingButton,
 } from 'modules/common/buttons';
-import { GlobalChat } from 'modules/global-chat/components/global-chat';
+import GlobalChat from 'modules/global-chat/containers/global-chat';
 import { NavMenuItem, AccountBalances } from 'modules/types';
 import { helpIcon, Dot } from 'modules/common/icons';
-import { TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
+import {
+  TRANSACTIONS,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  CREATEAUGURWALLET
+} from 'modules/common/constants';
 
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 
@@ -25,6 +29,8 @@ interface TopNavProps {
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
   updateModal: Function;
+  showCreateAccountButton: boolean;
+  createFundedGsnWallet: Function;
 }
 
 const SPREAD_INDEX = 3;
@@ -35,7 +41,9 @@ const TopNav = ({
   menuData,
   currentBasePath,
   migrateV1Rep,
+  createFundedGsnWallet,
   showMigrateRepButton = false,
+  showCreateAccountButton = false,
   walletBalances,
 }: TopNavProps) => {
   const isCurrentItem = item => {
@@ -66,12 +74,12 @@ const TopNav = ({
             );
           }
           return (
-            <React.Fragment key={item.title}>
+            <Fragment key={item.title}>
               {index === SPREAD_INDEX && (
-                <li key={index} className={Styles.FillSpace} />
+                <li key='fill-space' className={Styles.FillSpace} />
               )}
               {index === SPREAD_INDEX && showMigrateRepButton && (
-                <li>
+                <li key='migrate-rep-button'>
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
                         text={'Migrate V1 to V2 REP'}
@@ -107,6 +115,41 @@ const TopNav = ({
                   </span>
                 </li>
               )}
+              {index === SPREAD_INDEX && showCreateAccountButton && (
+                <li>
+                  <div className={Styles.MigrateRep}>
+                    <ProcessingButton
+                      text={walletBalances.dai === 0 ? 'Waiting for Funding' : 'Initiaize GSN Wallet'}
+                      action={() => createFundedGsnWallet()}
+                      disabled={walletBalances.dai === 0}
+                      queueName={CREATEAUGURWALLET}
+                      queueId={CREATEAUGURWALLET}
+                    />
+                  </div>
+                  <span>
+                    <label
+                      className={classNames(TooltipStyles.TooltipHint)}
+                      data-tip
+                      data-for={'accountCreation'}
+                    >
+                      {helpIcon}
+                    </label>
+                    <ReactTooltip
+                      id={'accountCreation'}
+                      className={TooltipStyles.Tooltip}
+                      effect="solid"
+                      place="top"
+                      type="light"
+                    >
+                      <p>
+                        {
+                          'Account used to interact with Augur, needs to be funded before created'
+                        }
+                      </p>
+                    </ReactTooltip>
+                  </span>
+                </li>
+              )}
               <li
                 className={classNames({
                   [Styles['Selected']]: selected,
@@ -119,7 +162,7 @@ const TopNav = ({
                   {item.showAlert && Dot}
                 </Link>
               </li>
-            </ React.Fragment>
+            </Fragment>
           );
         })}
         {!isLogged && (
@@ -132,7 +175,7 @@ const TopNav = ({
           </div>
         )}
       </ul>
-      <GlobalChat show={false} numberOfPeers={15} />
+      <GlobalChat />
     </aside>
   );
 };

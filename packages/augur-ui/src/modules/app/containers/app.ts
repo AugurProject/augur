@@ -13,6 +13,7 @@ import {
   IS_HELP_MENU_OPEN,
   setTheme,
   updateAppStatus,
+  WALLET_STATUS
 } from "modules/app/actions/update-app-status";
 import { initAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
@@ -29,21 +30,27 @@ import {
 } from "modules/app/actions/update-sidebar-status";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 import { updateAuthStatus, IS_CONNECTION_TRAY_OPEN } from "modules/auth/actions/auth-status";
-import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
+import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, WALLET_STATUS_VALUES, TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
 import { saveAffiliateAddress } from "modules/account/actions/login-account";
+import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
 import { AppState } from "store";
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount, pendingQueue } = state;
+  const { appStatus, loginAccount, pendingQueue } = state;
   const { balances } = loginAccount;
+  const walletStatus = appStatus[WALLET_STATUS];
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   const notifications = selectNotifications(state);
   const walletBalances = loginAccount.balances;
   const pending =
     pendingQueue[TRANSACTIONS] &&
     pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
+  const showCreateAccountButton =
+    walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING ||
+    walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
   const showMigrateRepButton =
     !!balances.legacyRep || !!balances.legacyRepNonSafe || !!pending;
+
   return {
     notifications,
     blockchain: state.blockchain,
@@ -63,6 +70,7 @@ const mapStateToProps = (state: AppState) => {
     sidebarStatus: state.sidebarStatus,
     isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,
     walletBalances,
+    showCreateAccountButton,
     showMigrateRepButton,
   }
 };
@@ -87,7 +95,8 @@ const mapDispatchToProps = dispatch => ({
   showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
   migrateV1Rep: () => dispatch(updateModal({ type: MODAL_MIGRATE_REP })),
   setTheme: (theme) => dispatch(setTheme(theme)),
-  saveAffilateAddress: address => dispatch(saveAffiliateAddress(address))
+  saveAffilateAddress: address => dispatch(saveAffiliateAddress(address)),
+  createFundedGsnWallet: () => dispatch(createFundedGsnWallet()),
 });
 
 const AppContainer = compose(
