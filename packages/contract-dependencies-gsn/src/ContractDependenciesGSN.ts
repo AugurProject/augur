@@ -20,7 +20,8 @@ const RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494";
 
 const OVEREAD_RELAY_GAS = 400000;
 
-const REFRESH_GAS_PRICE_INTERVAL_MS = 10000;
+const REFRESH_INTERVAL_MS = 15000; // 15 seconds
+
 const GAS_PRICE_MULTIPLIER = 1.2;
 
 const GSN_RELAY_CALL_STATUS = {
@@ -53,6 +54,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   fingerprint: string = formatBytes32String('');
 
   public gasPrice: BigNumber;
+  public ethToDaiRate: BigNumber;
 
   _currentNonce = -1;
 
@@ -114,16 +116,23 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     ethExchangeAddress: string,
     address?: string): Promise<ContractDependenciesGSN> {
       const deps = new ContractDependenciesGSN(provider, signer, augurWalletRegistryAddress, ethExchangeAddress, address);
-      await deps.refreshGasPrice();
+      await deps.refreshGasPriceAndExchangeRate();
       return deps;
   }
 
-  async refreshGasPrice(): Promise<void> {
+  async refreshGasPriceAndExchangeRate(): Promise<void> {
+    // Refresh Gas price
     // We bypass the Provider wrapper here and directly get the eth rpc api gas price since we do not want overrides.
     let reccomendedGasPrice = await this.provider.provider.getGasPrice();
     this.gasPrice = new BigNumber(reccomendedGasPrice.toString()).multipliedBy(GAS_PRICE_MULTIPLIER);
     console.log(`Set gas price to: ${this.gasPrice.toFixed()}`);
-    setTimeout(this.refreshGasPrice.bind(this), REFRESH_GAS_PRICE_INTERVAL_MS);
+
+    // Refresh Exchange Rate
+    // TODO when we switch to uniswap this should be more robust than getting a specific purchase amount
+    const oneEth = new ethers.utils.BigNumber("0xDE0B6B3A7640000");
+    this.ethToDaiRate = new BigNumber((await this.ethExchange.getTokenPurchaseCost(oneEth)).toString());
+    console.log(`Set ETH to DAI rate to: ${this.ethToDaiRate.toFixed()}`);
+    setTimeout(this.refreshGasPriceAndExchangeRate.bind(this), REFRESH_INTERVAL_MS);
   }
 
   setUseWallet(useWallet: boolean): void {
@@ -274,12 +283,16 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   async getRelayPaymentForEthersTransaction(tx: Transaction<ethers.utils.BigNumber>): Promise<BigNumber> {
     if (!this.useWallet || !this.useRelay) return new BigNumber(0);
     let gasEstimate = await this.estimateGasForEthersTransaction(tx);
+    return this.convertGasEstimateToDaiCost(gasEstimate);
+  }
+
+  convertGasEstimateToDaiCost(gasEstimate: BigNumber | string): BigNumber {
+    gasEstimate = new BigNumber(gasEstimate);
     gasEstimate = gasEstimate.plus(OVEREAD_RELAY_GAS);
     let ethCost = gasEstimate.multipliedBy(this.gasPrice);
-    ethCost = ethCost.multipliedBy((100+this.relayClient.config.txFee) / 100);
-    const cashCost: ethers.utils.BigNumber = await this.ethExchange.getTokenPurchaseCost('0x'+ethCost.decimalPlaces(0).toString(16));
-    let cost = new BigNumber(cashCost.toString());
-    cost = cost.multipliedBy(1.15); // account for slippage; CONSIDER: make this configurable?
-    return cost.decimalPlaces(0);
+    ethCost = ethCost.multipliedBy((100 + this.relayClient.config.txFee) / 100);
+    let cashCost = ethCost.multipliedBy(this.ethToDaiRate).div(10**18);
+    cashCost = cashCost.multipliedBy(1.1); // account for slippage; CONSIDER: make this configurable?
+    return cashCost.decimalPlaces(0);
   }
 }

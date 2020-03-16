@@ -250,6 +250,10 @@ export class Augur<TProvider extends Provider = Provider> {
     );
   }
 
+  convertGasEstimateToDaiCost(gasEstimate: BigNumber): BigNumber {
+    return this.dependencies.convertGasEstimateToDaiCost(gasEstimate);
+  }
+
   registerTransactionStatusCallback(
     key: string,
     callback: TransactionStatusCallback
