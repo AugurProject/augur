@@ -49,7 +49,7 @@ describe('WarpSync', () => {
     const warpSyncData = await john.getLastWarpSyncData();
 
     await expect(await warpSyncData.warpSyncHash).toEqual(
-      reportedValue.toString()
+      'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKChD2'
     );
     await expect(await warpSyncData.timestamp).toEqual(
       marketEndTime.toNumber()

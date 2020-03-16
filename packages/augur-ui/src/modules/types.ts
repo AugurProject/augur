@@ -16,7 +16,6 @@ import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDepende
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
-import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 import { Template } from '@augurproject/artifacts';
 
 export enum SizeTypes {
@@ -164,6 +163,7 @@ export interface FormattedNumber {
   value: number;
   rounded: number | string;
   full: number | string;
+  percent: number | string;
 }
 
 export interface FormattedNumberOptions {
@@ -211,6 +211,7 @@ export interface PendingOrders {
 
 export interface QuantityOrderBookOrder extends Getters.Markets.MarketOrderBookOrder {
   quantityScale: number;
+  percent: number;
 }
 export interface QuantityOutcomeOrderBook {
   spread: string | BigNumber | null;
@@ -239,7 +240,7 @@ export interface TestTradingOrder {
   unmatchedShares: FormattedNumber;
 }
 export interface OrderBooks {
-  [marketId: string]: Getters.Markets.OutcomeOrderBook;
+  [marketId: string]: Getters.Markets.MarketOrderBook;
 }
 export interface IndividualOutcomeOrderBook {
   spread: string | BigNumber | null;
@@ -564,9 +565,8 @@ export interface AppStatus {
   isMobileSmall?: boolean;
   isHelpMenuOpen: boolean;
   ethToDaiRate: BigNumber;
-  gnosisEnabled: boolean;
+  gsnEnabled: boolean;
   zeroXEnabled: boolean;
-  gnosisStatus: GnosisSafeState;
 }
 
 export interface AuthStatus {
@@ -612,6 +612,7 @@ export interface AccountBalances {
   legacyRepNonSafe: number;
   attoRep: string;
   legacyAttoRep: string;
+  ethNonSafe: number;
 }
 
 export interface LoginAccountMeta {
@@ -660,12 +661,17 @@ export interface WindowApp extends Window {
   ethereum: {
     selectedAddress;
     networkVersion: string;
+    isMetaMask?: boolean;
+    on?: Function;
+    enable?: Function;
+    send?: Function;
   };
   localStorage: Storage;
   integrationHelpers: any;
   fm?: any;
   torus?: any;
   portis?: any;
+  showIndexedDbSize?: Function;
 }
 
 export type ButtonActionType = (
@@ -720,6 +726,7 @@ export interface Trade {
   side: typeof BUY | typeof SELL;
   orderShareProfit: FormattedNumber;
   orderShareTradingFee: FormattedNumber;
+  numFills: number;
 }
 
 export interface PriceTimeSeriesData {

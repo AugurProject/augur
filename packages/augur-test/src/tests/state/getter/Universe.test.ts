@@ -243,10 +243,10 @@ describe('State API :: Universe :: ', () => {
     const genesisUniverse = john.augur.contracts.universe;
 
     const legacyRep = new BigNumber(11000000).multipliedBy(10 ** 18);
-    let johnRep = legacyRep; // we faucet 11 million attoREP for john during deployment
+    let johnRep = await john.augur.contracts.reputationToken.balanceOf_(john.account.publicKey);
     let maryRep = new BigNumber(0);
     const bobRep = new BigNumber(0);
-    let totalRep = johnRep.plus(maryRep).plus(bobRep);
+    let totalRep = await john.augur.contracts.reputationToken.totalSupply_();
 
     await john.repFaucet(new BigNumber(91));
     johnRep = johnRep.plus(91);

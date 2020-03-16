@@ -891,7 +891,7 @@ export class Users {
         return value.plus(tradingPosition.frozenFunds);
       },
       new BigNumber(0)
-    );
+    ).div(QUINTILLION);
 
     const universe = params.universe
       ? params.universe
@@ -949,7 +949,7 @@ export class Users {
         return value.plus(tradingPosition.frozenFunds);
       },
       new BigNumber(0)
-    );
+    ).dividedBy(QUINTILLION);
     // includes validity bonds for market creations
     const ownedMarketsResponse = await db.Markets.where('marketCreator')
       .equals(params.account)
@@ -1069,7 +1069,7 @@ export class Users {
                 bucketTimestamp);
               // if market not traded in timeframe use last pl avg price
               let outcomeValue = new BigNumber(
-                last ? last.price : latestOutcomePLValue.avgPrice
+                last ? last.price : new BigNumber(latestOutcomePLValue.avgPrice).div(10**18)
               );
               if (
                 marketFinalizedByMarket[marketId] &&
@@ -1435,11 +1435,11 @@ function getTradingPositionFromProfitLossFrame(
   const numTicks = new BigNumber(marketDoc.numTicks);
   const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
 
-  const onChainFrozenFunds = new BigNumber(profitLossFrame.frozenFunds);
+  const onChainFrozenFunds = new BigNumber(profitLossFrame.frozenFunds).div(10**18);
   const onChainNetPosition = new BigNumber(profitLossFrame.netPosition);
-  const onChainAvgPrice = new BigNumber(profitLossFrame.avgPrice);
-  const onChainRealizedProfit = new BigNumber(profitLossFrame.realizedProfit);
-  const onChainRealizedCost = new BigNumber(profitLossFrame.realizedCost);
+  const onChainAvgPrice = new BigNumber(profitLossFrame.avgPrice).div(10**18);
+  const onChainRealizedProfit = new BigNumber(profitLossFrame.realizedProfit).div(10**18);
+  const onChainRealizedCost = new BigNumber(profitLossFrame.realizedCost).div(10**18);
   let onChainRawPosition = new BigNumber(0);
   if (
     shareTokenBalancesByMarketandOutcome &&

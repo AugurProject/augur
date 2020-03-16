@@ -6,8 +6,9 @@ import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = (state) => ({
   modal: state.modal,
+  whichChatPlugin: state.env.plugins?.chat,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

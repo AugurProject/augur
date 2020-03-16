@@ -7,14 +7,16 @@ import OpenOrder from 'modules/portfolio/containers/open-order';
 import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
 import { UIOrder } from 'modules/types';
 
-import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles';
+import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 
 interface OpenOrdersTableProps {
   openOrders?: UIOrder[];
+  relative?: Boolean;
+  marketId: string;
 }
 
 // Some component can be used in Betting UI
-const OpenOrdersTable: React.FC<OpenOrdersTableProps> = ({ openOrders }) => {
+const OpenOrdersTable: React.FC<OpenOrdersTableProps> = ({ openOrders, marketId, relative }) => {
   const dataTable = useRef(null);
   const [scrollable, setScrollable] = useState(false);
 
@@ -28,7 +30,8 @@ const OpenOrdersTable: React.FC<OpenOrdersTableProps> = ({ openOrders }) => {
 
   return (
     <div
-      className={classNames(Styles.Table, Styles.TableHeight, {
+      className={classNames(Styles.Table, {
+        [Styles.TableHeight]: !relative,
         [Styles.scrollable]: scrollable,
       })}
     >
@@ -36,7 +39,7 @@ const OpenOrdersTable: React.FC<OpenOrdersTableProps> = ({ openOrders }) => {
       <div ref={dataTable}>
         {openOrders.length > 0 &&
           openOrders.map((order, i) => (
-            <OpenOrder key={i} openOrder={order} extendedViewNotOnMobile />
+            <OpenOrder key={i} openOrder={order} marketId={marketId} extendedViewNotOnMobile />
           ))}
 
         {openOrders.length === 0 && (

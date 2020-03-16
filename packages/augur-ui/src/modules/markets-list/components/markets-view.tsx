@@ -58,6 +58,7 @@ interface MarketsViewProps {
   templateFilter: string;
   setMarketsListSearchInPlace: Function;
   marketListViewed: Function;
+  marketsInReportingState: MarketData[];
 }
 
 interface MarketsViewState {
@@ -114,6 +115,7 @@ export default class MarketsView extends Component<
       isLogged,
       templateFilter,
       marketListViewed,
+      marketsInReportingState
     } = this.props;
     const { marketCount, offset } = this.state;
 
@@ -146,6 +148,7 @@ export default class MarketsView extends Component<
     if (
       isConnected !== prevProps.isConnected ||
       isLogged !== prevProps.isLogged ||
+      marketsInReportingState.length !== prevProps.marketsInReportingState.length ||
       (search !== prevProps.search ||
         selectedCategories !== prevProps.selectedCategories ||
         maxLiquiditySpread !== prevProps.maxLiquiditySpread ||

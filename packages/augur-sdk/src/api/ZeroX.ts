@@ -20,8 +20,8 @@ import {
   NativePlaceTradeDisplayParams,
   TradeTransactionLimits,
 } from './OnChainTrade';
-import { sleep } from '../state/utils/utils';
 import { SubscriptionEventName } from '../constants';
+import { BigNumber as BN} from 'ethers/utils';
 
 
 export enum Verbosity {
@@ -342,6 +342,7 @@ export class ZeroX {
   async createZeroXOrder(params: ZeroXPlaceTradeParams) {
     if (!this.client) throw new Error('To place ZeroX order, make sure Augur client instance was initialized with it enabled.');
     const salt = new BigNumber(Date.now());
+    const sender = await this.client.getAccount();
     const result = await this.client.contracts.ZeroXTrade.createZeroXOrder_(
       new BigNumber(params.direction),
       params.amount,
@@ -349,15 +350,16 @@ export class ZeroX {
       params.market,
       new BigNumber(params.outcome),
       params.expirationTime,
-      salt
+      salt,
+      { sender }
     );
     const order = result[0];
     const hash = result[1];
-    const makerAddress: string = order[0]; // signer or gnosis safe
+    const makerAddress: string = order[0]; // signer or wallet
     const signature = await this.signOrder(
       order,
       hash,
-      this.client.getUseGnosisSafe()
+      this.client.getUseWallet()
     );
 
     return {
@@ -388,27 +390,28 @@ export class ZeroX {
   async signOrder(
     signedOrder: SignedOrder,
     orderHash: string,
-    gnosis = true
+    wallet = true
   ): Promise<string> {
-    if (gnosis) {
-      return this.signGnosisOrder(signedOrder, orderHash);
+    if (wallet) {
+      return this.signWalletOrder(signedOrder, orderHash);
     } else {
       return this.signSimpleOrder(orderHash);
     }
   }
 
-  async signGnosisOrder(signedOrder: SignedOrder, orderHash: string): Promise<string> {
-    const gnosisSafeAddress: string = signedOrder[0];
-
-    const gnosisSafe = this.client.contracts.gnosisSafeFromAddress(
-      gnosisSafeAddress
-    );
+  async signWalletOrder(signedOrder: SignedOrder, orderHash: string): Promise<string> {
+    const walletAddress: string = signedOrder[0];
 
     const eip1271OrderWithHash = await this.client.contracts.ZeroXTrade.encodeEIP1271OrderWithHash_(
       signedOrder,
       orderHash
     );
-    const messageHash = await gnosisSafe.getMessageHash_(eip1271OrderWithHash);
+
+    const augurWallet = this.client.contracts.augurWalletFromAddress(
+      walletAddress
+    );
+
+    const messageHash = await augurWallet.getMessageHash_(eip1271OrderWithHash);
 
     // In 0x v3, '07' is EIP1271Wallet
     // See https://github.com/0xProject/0x-mesh/blob/0xV3/zeroex/order.go#L51
@@ -418,9 +421,7 @@ export class ZeroX {
       ethers.utils.arrayify(messageHash)
     );
     const { r, s, v } = ethers.utils.splitSignature(signedMessage);
-    const signature = `0x${r.slice(2)}${s.slice(2)}${(v + 4).toString(
-      16
-    )}${signatureType}`;
+    const signature = `0x${r.slice(2)}${s.slice(2)}${v.toString(16)}${signatureType}`;
     return signature;
   }
 
@@ -448,14 +449,15 @@ export class ZeroX {
     }
   }
 
-  async cancelOrder(order) {
+  async cancelOrder(order, signature) {
     if (!this.client) throw new Error('To cancel ZeroX orders, make sure your Augur Client instance was initialized with it enabled.');
-    return this.client.contracts.zeroXExchange.cancelOrder(order);
+    return this.batchCancelOrders([order], [signature]);
   }
 
-  async batchCancelOrders(orders) {
+  async batchCancelOrders(orders, signatures) {
     if (!this.client) throw new Error('To cancel ZeroX orders, make sure your Augur Client instance was initialized with it enabled.');
-    return this.client.contracts.zeroXExchange.batchCancelOrders(orders);
+    const maxProtocolFeeInDai = new BigNumber(10).pow(18); // TODO: Calc the real max based on order length, protocol fee and gas price
+    return this.client.contracts.ZeroXTrade.cancelOrders(orders, signatures, maxProtocolFeeInDai);
   }
 
   async simulateTrade(
@@ -535,11 +537,13 @@ export class ZeroX {
   ): Promise<MatchingOrders> {
     const orderType = params.direction === 0 ? '1' : '0';
     const outcome = params.outcome.toString();
+    const price = new BN(params.price.toString()).toHexString().substr(2);
+
     const zeroXOrders = await this.client.getZeroXOrders({
       marketId: params.market,
       outcome: params.outcome,
       orderType,
-      matchPrice: `0x${params.price.toString(16).padStart(60, '0')}`,
+      matchPrice: `0x${price.padStart(20, '0')}`,
       ignoreOrders,
     });
 

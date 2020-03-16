@@ -43,8 +43,8 @@ interface ConfirmProps {
   numOutcomes: number;
   tradingTutorial?: boolean;
   ethToDaiRate: BigNumber;
-  Gnosis_ENABLED: boolean;
-  GnosisUnavailable: boolean;
+  GsnEnabled: boolean;
+  gsnUnavailable: boolean;
   initialLiquidity: boolean;
 }
 
@@ -73,10 +73,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasPrice,
       availableEth,
       availableDai,
-      GnosisUnavailable,
+      gsnUnavailable,
     } = this.props;
     if (
-      JSON.stringify(trade) !== JSON.stringify(prevProps.trade) ||
+      JSON.stringify({side: trade.side, numShares: trade.numShares, limitPrice: trade.limitPrice}) !==
+      JSON.stringify({side: prevProps.trade.side, numShares: prevProps.trade.numShares, limitPrice: prevProps.trade.limitPrice}) ||
       gasPrice !== prevProps.gasPrice ||
       !createBigNumber(prevProps.availableEth).eq(
         createBigNumber(availableEth)
@@ -84,7 +85,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !createBigNumber(prevProps.availableDai).eq(
         createBigNumber(availableDai)
       ) ||
-      prevProps.GnosisUnavailable !== GnosisUnavailable
+      prevProps.gsnUnavailable !== gsnUnavailable
     ) {
       this.setState({
         messages: this.constructMessages(this.props),
@@ -102,8 +103,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableDai,
       tradingTutorial,
       ethToDaiRate,
-      Gnosis_ENABLED,
-      GnosisUnavailable,
+      GsnEnabled,
+      gsnUnavailable,
     } = props || this.props;
 
     const {
@@ -123,7 +124,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = null;
 
-    if (Gnosis_ENABLED && ethToDaiRate) {
+    if (GsnEnabled && ethToDaiRate) {
       gasCostDai = formatDai(
         ethToDaiRate.multipliedBy(createBigNumber(gasCost))
       ).formattedValue;
@@ -160,10 +161,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    // GAS error in DAI [Gnosis]
+    // GAS error in DAI [Gsn]
     if (
       !tradingTutorial &&
-      Gnosis_ENABLED &&
+      GsnEnabled &&
       totalCost &&
       createBigNumber(gasCostDai).gte(createBigNumber(availableDai))
     ) {
@@ -177,7 +178,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     // GAS error in ETH
     if (
       !tradingTutorial &&
-      !Gnosis_ENABLED &&
+      !GsnEnabled &&
       totalCost &&
       createBigNumber(gasCost).gte(createBigNumber(availableEth))
     ) {
@@ -203,11 +204,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (GnosisUnavailable && !tradingTutorial) {
+    if (gsnUnavailable && !tradingTutorial) {
       messages = {
-        header: 'Waiting For Gnosis Safe',
+        header: 'Create GSN Wallet',
         type: WARNING,
-        message: 'Please hold on while we create your Augur wallet',
+        message: 'Please create GSN wallet to start trading',
       };
     }
 
@@ -229,7 +230,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ethToDaiRate,
       gasLimit,
       gasPrice,
-      Gnosis_ENABLED,
+      GsnEnabled,
       initialLiquidity,
     } = this.props;
 
@@ -243,6 +244,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       side,
       orderShareProfit,
       orderShareTradingFee,
+      numFills,
     } = trade;
 
     const { messages } = this.state;
@@ -262,7 +264,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasPrice
     );
 
-    if (Gnosis_ENABLED && ethToDaiRate) {
+    if (GsnEnabled && ethToDaiRate) {
       gasCostDai = formatDai(
         ethToDaiRate.multipliedBy(createBigNumber(gasCost))
       );
@@ -285,12 +287,17 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let newOrderAmount = formatShares('0').rounded;
     if (numShares && totalCost.fullPrecision && shareCost.fullPrecision) {
-      newOrderAmount = formatShares(
-        createBigNumber(numShares).minus(shareCost.fullPrecision),
-        {
-          decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
-        }
-      ).rounded;
+      newOrderAmount =
+        marketType !== SCALAR
+          ? formatShares(
+              createBigNumber(numShares).minus(shareCost.fullPrecision),
+              {
+                decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
+              }
+            ).rounded
+          : formatShares(
+              createBigNumber(numShares).minus(shareCost.fullPrecision)
+            ).rounded;
     }
 
     const notProfitable =
@@ -382,7 +389,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               value={potentialDaiLoss}
               showDenomination={true}
             />
-            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && (
+            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && numFills > 0 &&  (
               <LinearPropertyLabel
                 label="Est. TX Fee"
                 value={gasCostDai}

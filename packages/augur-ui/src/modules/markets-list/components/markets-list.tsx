@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { Pagination } from 'modules/common/pagination';
@@ -72,17 +72,14 @@ export default class MarketsList extends Component<
 
     const loadingLimit = 10;
     if (isSearchingMarkets) {
-      new Array(loadingLimit).fill(null).map((prop, index) => (
-        marketCards.push(
-          <LoadingMarketCard
-            key={index + 'loading'}
-          />)
-      ));
-    } else {
-      filteredMarkets.map((id) => {
-        const market = markets.find(
-          (market: MarketData) => market.id === id
+      new Array(loadingLimit)
+        .fill(null)
+        .map((prop, index) =>
+          marketCards.push(<LoadingMarketCard key={index + 'loading'} />)
         );
+    } else {
+      filteredMarkets.map(id => {
+        const market = markets.find((market: MarketData) => market.id === id);
         if (market && market.id) {
           marketCards.push(
             <MarketCard
@@ -102,29 +99,28 @@ export default class MarketsList extends Component<
     return (
       <article className={Styles.MarketsList} data-testid={testid}>
         {marketCards.length > 0 ? (
-          <>
-          {marketCards}
-          </>
+          <>{marketCards}</>
         ) : (
           <NullStateMessage
             icon={MagnifyingGlass}
             message={'No markets found'}
             subMessage={'Try a different category or filter'}
           />
-
         )}
-        <div className={PaginationStyles.PaginationContainer}>
-          <Pagination
-            showPagination={showPagination}
-            page={offset}
-            itemCount={marketCount}
-            itemsPerPage={limit}
-            updateLimit={updateLimit}
-            maxLimit={marketCount}
-            action={setOffset}
-            showLimitChanger
-          />
-        </div>
+        {marketCards.length > 0 && (
+          <div className={PaginationStyles.PaginationContainer}>
+            <Pagination
+              showPagination={showPagination}
+              page={offset}
+              itemCount={marketCount}
+              itemsPerPage={limit}
+              updateLimit={updateLimit}
+              maxLimit={marketCount}
+              action={setOffset}
+              showLimitChanger
+            />
+          </div>
+        )}
       </article>
     );
   }

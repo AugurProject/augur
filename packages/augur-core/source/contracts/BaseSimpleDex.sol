@@ -160,6 +160,12 @@ contract BaseSimpleDex is Initializable, ReentrancyGuard, VariableSupplyToken, C
         buyToken(_recipient);
     }
 
+    function autoBuyTokenAmount(address _recipient, uint256 _tokenAmount) external returns (uint256) {
+        uint256 _cashAmount = getTokenPurchaseCost(_tokenAmount);
+        augur.trustedCashTransfer(msg.sender, address(this), _cashAmount);
+        buyToken(_recipient);
+    }
+
     function buyToken(address _recipient) public nonReentrant returns (uint256 _tokenAmount) {
         uint256 _cashBalance = getCashBalance();
         uint256 _cashAmount = _cashBalance.sub(cashReserve);

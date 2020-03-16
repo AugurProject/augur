@@ -9,6 +9,7 @@ import { getSelectedTagsAndCategoriesFromLocation } from 'modules/markets/helper
 import {
   loadMarketsByFilter,
   LoadMarketsFilterOptions,
+  organizeReportingStates,
 } from 'modules/markets/actions/load-markets';
 import { buildSearchString } from 'modules/markets/selectors/build-search-string';
 import { AppState } from 'store';
@@ -23,7 +24,7 @@ import {
 } from '../actions/update-markets-list';
 import {
   MAX_SPREAD_ALL_SPREADS,
-  MAX_FEE_100_PERCENT,
+  MAX_FEE_100_PERCENT
 } from 'modules/common/constants';
 import {
   updateFilterSortOptions,
@@ -34,6 +35,11 @@ import {
 import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 import { updateLoginAccountSettings } from 'modules/markets-list/actions/update-login-account-settings';
 import { marketListViewed } from 'services/analytics/helpers';
+
+const findMarketsInReportingState = (markets, reportingState) => {
+  const reportingStates: String[] = organizeReportingStates(reportingState);
+  return markets.filter(market => reportingStates.find(state => state === market.reportingState))
+}
 
 const mapStateToProps = (state: AppState, { location }) => {
   const markets = selectMarkets(state);
@@ -52,6 +58,7 @@ const mapStateToProps = (state: AppState, { location }) => {
     search: searchPhrase,
     isMobile: state.appStatus.isMobile,
     markets,
+    marketsInReportingState: findMarketsInReportingState(markets, state.filterSortOptions.marketFilter),
     maxFee: state.filterSortOptions.maxFee,
     maxLiquiditySpread: state.filterSortOptions.maxLiquiditySpread,
     isSearching: state.marketsList.isSearching,
