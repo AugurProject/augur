@@ -5008,7 +5008,7 @@ export const TEMPLATES = {
                 denomination: 'wins',
                 tickSize: 0.1,
                 minPrice: 0,
-                maxPrice: 16,
+                maxPrice: 17,
                 inputs: [
                   {
                     id: 0,
