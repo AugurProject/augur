@@ -511,6 +511,11 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     const orderEmpty =
       orderPrice === '' && orderQuantity === '' && orderDaiEstimate === '';
     const showTip = !hasHistory && orderEmpty;
+    const showConfirm =
+      (!!trade &&
+        (trade.potentialDaiLoss && trade.potentialDaiLoss.value !== 0)) ||
+      (trade.orderShareProfit && trade.orderShareProfit.value !== 0) ||
+      (trade.sharesFilled && trade.sharesFilled.value !== 0);
     return (
       <section className={Styles.Wrapper}>
         <div>
@@ -581,9 +586,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             />
           )}
         </div>
-        {trade &&
-          ((trade.shareCost && trade.shareCost.value !== 0) ||
-            (trade.totalCost && trade.totalCost.value !== 0)) && (
+        { showConfirm && (
             <Confirm
               initialLiquidity={initialLiquidity}
               numOutcomes={market.numOutcomes}

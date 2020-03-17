@@ -5,7 +5,7 @@ import { ExclamationCircle } from 'modules/common/icons';
 import { CountdownProgress, formatTime } from 'modules/common/progress';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { DateFormattedObject } from 'modules/types';
-import { SIXTY_DAYS } from 'modules/common/constants';
+import { SIXTY_DAYS, MIGRATEOUTBYPAYOUT, TRANSACTIONS } from 'modules/common/constants';
 
 interface ForkingProps {
   show: boolean;
@@ -45,9 +45,11 @@ export const Forking = (props: ForkingProps) => (
           />
         )}
         {props.hasRepBalance && props.isForking && (
-          <PrimaryButton
+          <ProcessingButton
             action={props.hasRepMigrationAction}
             text={'Migrate REP'}
+            queueName={TRANSACTIONS}
+            queueId={MIGRATEOUTBYPAYOUT}
           />
         )}
       </div>
