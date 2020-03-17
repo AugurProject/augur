@@ -195,16 +195,19 @@ export function timestampComponents(timestamp: number): Partial<DateTimeComponen
   const endTimeFormatted = convertUnixToFormattedDate(timestamp);
   let meridiem = 'AM';
   let hour = date.hours()
-  if (hour > 12) {
+  if (hour == 0) {
+    hour = 12; // moment uses 0 for 24 (12 am)
+    meridiem = 'AM';
+  } else if (hour >= 12) {
+    hour = hour > 12 ? hour - 12 : hour;
     meridiem = 'PM'
-    hour = hour - 12;
   }
 
   return {
     endTime: timestamp,
     endTimeFormatted,
     setEndTime: timestamp,
-    hour,
+    hour: String(hour),
     minute: `0${date.minutes()}`.slice(-2),
     meridiem,
   }
