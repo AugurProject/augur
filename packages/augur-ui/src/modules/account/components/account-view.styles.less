@@ -140,10 +140,20 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .AccountView {
+    > div {
+      border: @size-1 solid var(--color-outline);
+      div[class*='BoxHeader'] {
+        background: var(--color-table-header-50);
+
+        > div:first-of-type {
+          background: transparent;
+        }
+      }
+    }
+
     > div:nth-of-type(2) {
       > div[class*='Headers'] {
         background: var(--color-table-header-50);
-        border: @size-1 solid var(--color-outline);
       }
     }
   }
