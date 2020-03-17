@@ -1721,7 +1721,6 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      this.config.gnosis.enabled = false;
       const user = await this.ensureUser();
       const marketId = args.marketId as string;
       const extraStake = args.extraStake as string;
@@ -1781,7 +1780,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      this.config = mergeConfig(this.config, { gnosis: { enabled: false }});
+      this.config.gsn.enabled = false;
       const user: ContractAPI = await this.ensureUser();
       const payout = String(args.payoutNumerators)
         .split(',')
@@ -1833,7 +1832,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      this.config.gnosis.enabled = false;
+      this.config.gsn.enabled = false;
       const user = await this.ensureUser();
       const marketId = args.marketId as string;
       const amount = args.amount as string;
@@ -1870,7 +1869,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      this.config.gnosis.enabled = false;
+      this.config.gsn.enabled = false;
       const user = await this.ensureUser();
       const marketId = args.marketId as string;
 
