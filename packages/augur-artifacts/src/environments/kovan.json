@@ -68,6 +68,7 @@
     "OICash": "0xE0C3D64eb11CeadCdFB5fd610D9bC15b836175c1",
     "AugurWalletRegistry": "0xedFe610D3eB2d3E9c55050E4C842E68D980331f9"
   },
+  "useWarpSync": true,
   "server": {
     "httpPort": 9003,
     "startHTTP": true,
