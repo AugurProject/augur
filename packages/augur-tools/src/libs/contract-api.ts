@@ -39,7 +39,7 @@ export class ContractAPI {
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = await makeGSNDependencies(provider, signer, config.addresses.AugurWalletRegistry, config.addresses.EthExchange, new BigNumber(0), account.publicKey);
+    const dependencies = await makeGSNDependencies(provider, signer, config.addresses.AugurWalletRegistry, config.addresses.EthExchange, account.publicKey);
 
     let zeroX = null;
     if (meshClient || meshBrowser) {
@@ -654,10 +654,6 @@ export class ContractAPI {
 
   getRepAllowance(owner: string, spender: string): Promise<BigNumber> {
     return this.augur.contracts.getReputationToken().allowance_(owner, spender);
-  }
-
-  setGasPrice(gasPrice: BigNumber): void {
-    this.augur.setGasPrice(gasPrice);
   }
 
   getGasPrice(): Promise<BigNumber> {
