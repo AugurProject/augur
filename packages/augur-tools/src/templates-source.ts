@@ -613,6 +613,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 6,
                 placeholder: `Date time`,
               },
             ],
@@ -656,6 +657,7 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 6,
                 placeholder: `Date time`,
               },
             ],
@@ -725,6 +727,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 6,
                 placeholder: `Date time`,
               },
               {
@@ -773,6 +776,7 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 6,
                 placeholder: `Date time`,
               },
               {
@@ -831,6 +835,7 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 6,
                 placeholder: `Date time`,
               },
               {
@@ -1220,6 +1225,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 9,
                     placeholder: `Date time`,
                   },
                 ],
@@ -1305,6 +1311,7 @@ export const TEMPLATES = {
                   {
                     id: 10,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 9,
                     placeholder: `Date time`,
                   },
                 ],
@@ -1366,6 +1373,7 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 9,
                     placeholder: `Date time`,
                   },
                 ],
@@ -1535,6 +1543,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 9,
                     placeholder: `Date time`,
                   },
                 ],
@@ -1623,6 +1632,7 @@ export const TEMPLATES = {
                   {
                     id: 10,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 9,
                     placeholder: `Date time`,
                   },
                 ],
@@ -1731,6 +1741,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -1785,6 +1796,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -1844,6 +1856,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -1901,6 +1914,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -1958,6 +1972,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -2017,6 +2032,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -2077,6 +2093,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -2118,6 +2135,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -2159,6 +2177,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -2268,6 +2287,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -2323,6 +2343,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -2363,6 +2384,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -2589,6 +2611,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -2630,6 +2653,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -2671,6 +2695,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -2780,6 +2805,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -2825,6 +2851,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -2875,6 +2902,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -3097,6 +3125,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -3144,6 +3173,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -3191,6 +3221,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -3314,6 +3345,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -3368,6 +3400,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -3432,6 +3465,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -3540,6 +3574,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -3627,6 +3662,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
                 placeholder: `Date time`,
               },
               {
@@ -3716,6 +3752,7 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
                 placeholder: `Date time`,
               },
               {
@@ -3777,6 +3814,7 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
                 placeholder: `Date time`,
               },
               {
@@ -4567,6 +4605,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 8,
                     placeholder: `Date time`,
                   },
                 ],
@@ -4618,6 +4657,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 8,
                     placeholder: `Date time`,
                   },
                 ],
@@ -4666,6 +4706,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 8,
                     placeholder: `Date time`,
                   },
                 ],
@@ -4815,6 +4856,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 8,
                     placeholder: `Date time`,
                   },
                   {
@@ -4868,6 +4910,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 8,
                     placeholder: `Date time`,
                   },
                   {
@@ -4931,6 +4974,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 8,
                     placeholder: `Date time`,
                   },
                   {
@@ -5116,6 +5160,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -5164,6 +5209,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -5212,6 +5258,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                 ],
@@ -5229,8 +5276,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0]: Which College Football Team will win: [1] vs. [2]?`,
-                example: `Week 1: Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `NCAA FB [0]: Which College Football Team will win: [1] vs. [2]?`,
+                example: `NCAA FB Week 1: Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -5254,6 +5301,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -5307,6 +5355,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -5370,6 +5419,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
