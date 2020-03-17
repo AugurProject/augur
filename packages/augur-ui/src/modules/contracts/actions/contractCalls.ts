@@ -507,8 +507,7 @@ export async function doInitialReportWarpSync_estimaetGas(report: doReportDisput
   return Augur.contracts.warpSync.doInitialReport_estimateGas(
     universe,
     payoutNumerators,
-    report.description,
-    createBigNumber(report.attoRepAmount || '0')
+    report.description
   );
 }
 
@@ -519,8 +518,7 @@ export async function doInitialReportWarpSync(report: doReportDisputeAddStake) {
   return Augur.contracts.warpSync.doInitialReport(
     universe,
     payoutNumerators,
-    report.description,
-    createBigNumber(report.attoRepAmount || '0')
+    report.description
   );
 }
 
