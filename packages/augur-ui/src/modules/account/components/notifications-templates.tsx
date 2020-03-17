@@ -69,6 +69,10 @@ interface MostLikelyInvalidMarketsTemplateProps extends BaseProps {
   market: MarketData;
 }
 
+interface LiquidityDepletionTemplateProps extends BaseProps {
+  market: MarketData;
+}
+
 interface TemplateProps extends BaseProps {
   message: string;
 }
@@ -281,6 +285,19 @@ export const MostLikelyInvalidMarketsTemplate = (
   return (
     <Template
       message={`A market you have a position in has a high chance of resolving invalid: "${description}"`}
+      {...props}
+    />
+  );
+};
+
+export const LiquidityDepletionTemplate = (
+  props: LiquidityDepletionTemplateProps
+) => {
+  const { description } = props.market;
+
+  return (
+    <Template
+      message={`A market you have a created does not pass default liquidity spread filter: "${description}"`}
       {...props}
     />
   );

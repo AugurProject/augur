@@ -20,7 +20,7 @@ import {
   DisputeTemplate,
   ClaimReportingFeesTemplate,
   UnsignedOrdersTemplate,
-  ProceedsToClaimTemplate, MostLikelyInvalidMarketsTemplate,
+  ProceedsToClaimTemplate, MostLikelyInvalidMarketsTemplate, LiquidityDepletionTemplate,
 } from "modules/account/components/notifications-templates";
 
 import { Notification, DateFormattedObject, QueryEndpoints } from "modules/types";
@@ -137,6 +137,7 @@ class Notifications extends React.Component<
         };
         break;
 
+      case NOTIFICATION_TYPES.liquidityDepleted:
       case NOTIFICATION_TYPES.marketIsMostLikelyInvalid:
         buttonAction = () => {
           this.markAsRead(notification);
@@ -283,6 +284,12 @@ class Notifications extends React.Component<
           ) as any : null}
           {type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid ? (
             <MostLikelyInvalidMarketsTemplate
+              isDisabled={isDisabled}
+              {...templateProps}
+            />
+          ) as any : null}
+          {type === NOTIFICATION_TYPES.liquidityDepleted ? (
+            <LiquidityDepletionTemplate
               isDisabled={isDisabled}
               {...templateProps}
             />

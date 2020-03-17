@@ -67,6 +67,19 @@ export const selectMostLikelyInvalidMarkets = createSelector(
       .map(getRequiredMarketData);
   }
 );
+export const selectLiquidityDepletedMarkets = createSelector(
+  selectUserMarketOpenOrders,
+  openOrders => {
+    return Object.keys(openOrders)
+      .map(id => selectMarket(id))
+      .filter(
+        market =>
+          market.mostLikelyInvalid
+      )
+      .filter(market => userOpenOrders(market.id).length > 0)
+      .map(getRequiredMarketData);
+  }
+);
 
 // Get all the users markets that are in DESIGNATED_REPORTING where they are the REPORTER
 export const selectReportOnMarkets = createSelector(
@@ -189,6 +202,7 @@ export const selectNotifications = createSelector(
   selectReportingWinningsByMarket,
   selectUnsignedOrders,
   selectMostLikelyInvalidMarkets,
+  selectLiquidityDepletedMarkets,
   selectReadNotificationState,
   (
     reportOnMarkets,
@@ -197,6 +211,7 @@ export const selectNotifications = createSelector(
     claimReportingFees,
     unsignedOrders,
     mostLikelyInvalidMarkets,
+    liquidityDepleted,
     readNotifications
   ): Notification[] => {
     // Generate non-unquie notifications
@@ -220,7 +235,10 @@ export const selectNotifications = createSelector(
       mostLikelyInvalidMarkets,
       NOTIFICATION_TYPES.marketIsMostLikelyInvalid
     );
-
+    const liquidityDepletedNotifications = generateCards(
+      liquidityDepleted,
+      NOTIFICATION_TYPES.liquidityDepleted
+    );
     // Add non unquie notifications
     let notifications = [
       ...reportOnMarketsNotifications,
@@ -228,6 +246,7 @@ export const selectNotifications = createSelector(
       ...marketsInDisputeNotifications,
       ...unsignedOrdersNotifications,
       ...mostLikelyInvalidMarketsNotifications,
+      ...liquidityDepletedNotifications,
     ];
 
     // Add unquie notifications
