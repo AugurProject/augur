@@ -1551,7 +1551,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
                 min={0}
                 max={59}
                 onChange={this.onChangeMinutes}
-                value={minute !== null ? minute : '12'}
+                value={minute !== null ? minute : '00'}
               />
               <IndividualTimeSelector
                 label="AM/PM"
