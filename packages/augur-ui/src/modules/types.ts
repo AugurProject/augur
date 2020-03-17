@@ -154,7 +154,7 @@ export interface UserReports {
 }
 export interface FormattedNumber {
   fullPrecision: number | string;
-  roundedValue: number | BigNumber;
+  roundedValue: BigNumber;
   roundedFormatted: string;
   formatted: string;
   formattedValue: number | string;
@@ -579,6 +579,7 @@ export interface AppStatus {
   ethToDaiRate: BigNumber;
   gsnEnabled: boolean;
   zeroXEnabled: boolean;
+  walletStatus: string;
 }
 
 export interface AuthStatus {

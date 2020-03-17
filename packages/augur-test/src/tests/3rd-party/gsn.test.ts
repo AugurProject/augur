@@ -42,7 +42,6 @@ describe('3rd Party :: GSN :: ', () => {
     john.setUseWallet(true);
     john.setUseRelay(true);
 
-    await john.augur.setGasPrice(new BigNumber(20 * 10**9));
   }, 120000);
 
   test('State API :: GSN :: getOrders', async () => {

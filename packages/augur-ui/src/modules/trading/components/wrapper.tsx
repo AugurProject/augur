@@ -455,6 +455,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       trade.costInDai &&
       createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
 
+    const isOpenOrder = trade && trade.numFills === 0;
+
     let actionButton: any = (
       <OrderButton
         type={selectedNav}
@@ -479,7 +481,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           }
         }}
         disabled={
-          !trade || !trade.limitPrice || gsnUnavailable || insufficientFunds
+          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds
         }
       />
     );
@@ -493,7 +495,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           />
         );
         break;
-      case !restoredAccount && isLogged && !hasFunds && !tradingTutorial:
+      case isLogged && !hasFunds && !tradingTutorial:
         actionButton = (
           <PrimaryButton
             id="add-funds"
