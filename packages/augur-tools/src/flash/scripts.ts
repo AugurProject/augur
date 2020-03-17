@@ -1781,7 +1781,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      this.config.gnosis.enabled = false;
+      this.config = mergeConfig(this.config, { gnosis: { enabled: false }});
       const user: ContractAPI = await this.ensureUser();
       const payout = String(args.payoutNumerators)
         .split(',')
