@@ -27,7 +27,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     migrateMarket,
     migrateRep,
     userAttoRep: convertAttoValueToDisplayValue(userAttoRep),
-    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
+    GsnEnabled: state.appStatus.gsnEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
     gasPrice: getGasPrice(state),
     openReporting,

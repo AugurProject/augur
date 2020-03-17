@@ -200,7 +200,6 @@ export default class MarketsView extends Component<
     } = this.props;
 
     const { limit, offset } = this.state;
-    this.componentWrapper.scrollIntoView();
     window.scrollTo(0, 1);
 
     this.props.setLoadMarketsPending(true);

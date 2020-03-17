@@ -141,7 +141,7 @@ module "task-0x-mesh-rpc" {
     },
     {
       name : "CUSTOM_ORDER_FILTER",
-      value : "{\"properties\":{\"makerAssetData\":{\"pattern\":\".*${var.zerox-trade-address}.*\"}}}"
+      value : "{\"properties\":{\"makerAssetData\":{\"pattern\":\".*${lower(trimprefix(var.zerox_trade_address, "0x"))}.*\"}}}"
     },
     {
       name : "ETHEREUM_CHAIN_ID",
@@ -181,7 +181,7 @@ module "task-0x-mesh-rpc" {
     },
     {
       name : "ZEROX_CONTRACT_ADDRESS"
-      value : var.zerox-trade-address
+      value : var.zerox_trade_address
     }
   ]
 }

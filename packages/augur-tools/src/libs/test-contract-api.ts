@@ -2,7 +2,6 @@ import { WSClient } from '@0x/mesh-rpc-client';
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 import {
   Augur,
   BrowserMesh,
@@ -15,12 +14,12 @@ import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { BlockAndLogStreamerSyncStrategy } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import { BigNumber } from 'bignumber.js';
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
 import { Account } from '../constants';
-import { makeGnosisDependencies, makeSigner } from './blockchain';
+import { makeGSNDependencies, makeSigner } from './blockchain';
 import { ContractAPI } from './contract-api';
 import { makeDbMock } from './MakeDbMock';
 import { API } from '@augurproject/sdk/build/state/getter/API';
+import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 
 export class TestContractAPI extends ContractAPI {
   protected bulkSyncStrategy: BulkSyncStrategy;
@@ -33,18 +32,15 @@ export class TestContractAPI extends ContractAPI {
     provider: EthersProvider,
     config: SDKConfiguration,
     connector: Connectors.BaseConnector = new EmptyConnector(),
-    gnosisRelay: IGnosisRelayAPI = undefined,
     meshClient: WSClient = undefined,
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = makeGnosisDependencies(
+    const dependencies = await makeGSNDependencies(
       provider,
-      gnosisRelay,
       signer,
-      config.addresses.Cash,
-      new BigNumber(0),
-      null,
+      config.addresses.AugurWalletRegistry,
+      config.addresses.EthExchange,
       account.publicKey,
     );
 
@@ -73,7 +69,7 @@ export class TestContractAPI extends ContractAPI {
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
-    readonly dependencies: ContractDependenciesGnosis,
+    readonly dependencies: ContractDependenciesGSN,
     public account: Account,
     public db: DB,
     public config: SDKConfiguration,

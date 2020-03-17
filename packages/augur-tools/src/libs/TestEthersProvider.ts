@@ -1,10 +1,10 @@
 import { ContractAddresses, SDKConfiguration, NetworkId } from '@augurproject/artifacts';
 import { MemDown } from 'memdown';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { ethers } from 'ethers';
 import { createSeed } from './ganache';
 import { makeProvider } from './LocalAugur';
 import { Account } from '../constants';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { buildConfig } from '@augurproject/artifacts';
 
 export class TestEthersProvider extends EthersProvider {

@@ -12,20 +12,28 @@ import {
   ERROR,
   UPPER_FIXED_PRECISION_BOUND,
   ZERO,
+  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/trading/components/confirm.styles.less';
-import { XIcon, ExclamationCircle, InfoIcon, InformationIcon, QuestionIcon } from 'modules/common/icons';
+import { XIcon, ExclamationCircle, InformationIcon, QuestionIcon } from 'modules/common/icons';
 import { formatGasCostToEther, formatShares, formatDai } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { Trade } from 'modules/types';
+import { PrimaryButton } from 'modules/common/buttons';
+
+interface MessageButton {
+  action: Function;
+  text: string;
+}
 
 interface Message {
   header: string;
   type: string;
   message: string;
+  button?: MessageButton;
 }
 
 interface ConfirmProps {
@@ -43,9 +51,11 @@ interface ConfirmProps {
   numOutcomes: number;
   tradingTutorial?: boolean;
   ethToDaiRate: BigNumber;
-  Gnosis_ENABLED: boolean;
-  GnosisUnavailable: boolean;
+  GsnEnabled: boolean;
+  gsnUnavailable: boolean;
   initialLiquidity: boolean;
+  initializeGsnWallet: Function;
+  walletStatus: string;
 }
 
 interface ConfirmState {
@@ -73,10 +83,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasPrice,
       availableEth,
       availableDai,
-      GnosisUnavailable,
+      gsnUnavailable,
     } = this.props;
     if (
-      JSON.stringify(trade) !== JSON.stringify(prevProps.trade) ||
+      JSON.stringify({side: trade.side, numShares: trade.numShares, limitPrice: trade.limitPrice}) !==
+      JSON.stringify({side: prevProps.trade.side, numShares: prevProps.trade.numShares, limitPrice: prevProps.trade.limitPrice}) ||
       gasPrice !== prevProps.gasPrice ||
       !createBigNumber(prevProps.availableEth).eq(
         createBigNumber(availableEth)
@@ -84,7 +95,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !createBigNumber(prevProps.availableDai).eq(
         createBigNumber(availableDai)
       ) ||
-      prevProps.GnosisUnavailable !== GnosisUnavailable
+      prevProps.gsnUnavailable !== gsnUnavailable
     ) {
       this.setState({
         messages: this.constructMessages(this.props),
@@ -102,8 +113,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableDai,
       tradingTutorial,
       ethToDaiRate,
-      Gnosis_ENABLED,
-      GnosisUnavailable,
+      GsnEnabled,
+      gsnUnavailable,
+      initializeGsnWallet,
+      walletStatus,
     } = props || this.props;
 
     const {
@@ -113,6 +126,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       numFills,
       loopLimit,
     } = trade;
+
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
     let needsApproval = false;
     let messages: Message | null = null;
@@ -123,7 +137,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = null;
 
-    if (Gnosis_ENABLED && ethToDaiRate) {
+    if (GsnEnabled && ethToDaiRate) {
       gasCostDai = formatDai(
         ethToDaiRate.multipliedBy(createBigNumber(gasCost))
       ).formattedValue;
@@ -160,10 +174,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    // GAS error in DAI [Gnosis]
+    // GAS error in DAI [Gsn]
     if (
       !tradingTutorial &&
-      Gnosis_ENABLED &&
+      GsnEnabled &&
       totalCost &&
       createBigNumber(gasCostDai).gte(createBigNumber(availableDai))
     ) {
@@ -177,7 +191,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     // GAS error in ETH
     if (
       !tradingTutorial &&
-      !Gnosis_ENABLED &&
+      !GsnEnabled &&
       totalCost &&
       createBigNumber(gasCost).gte(createBigNumber(availableEth))
     ) {
@@ -203,11 +217,16 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (GnosisUnavailable && !tradingTutorial) {
+    // Show if OpenOrder and GSN wallet still needs to be initialized
+    if (gsnUnavailable && walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && !tradingTutorial && numFills === 0) {
       messages = {
-        header: 'Waiting For Gnosis Safe',
+        header: '',
         type: WARNING,
-        message: 'Please hold on while we create your Augur wallet',
+        message: 'Initialization of your account is needed',
+        button: {
+          text: 'Initialize Account',
+          action: () => initializeGsnWallet(),
+        }
       };
     }
 
@@ -229,7 +248,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ethToDaiRate,
       gasLimit,
       gasPrice,
-      Gnosis_ENABLED,
+      GsnEnabled,
       initialLiquidity,
     } = this.props;
 
@@ -263,7 +282,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasPrice
     );
 
-    if (Gnosis_ENABLED && ethToDaiRate) {
+    if (GsnEnabled && ethToDaiRate) {
       gasCostDai = formatDai(
         ethToDaiRate.multipliedBy(createBigNumber(gasCost))
       );
@@ -406,7 +425,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             {messages.type === ERROR ? ExclamationCircle : InformationIcon}
             <span>{messages.header}</span>
             <div>{messages.message}</div>
-            {messages.type !== ERROR && (
+            {messages.button && (
+              <PrimaryButton text={messages.button.text} action={messages.button.action} />
+            )}
+            {messages.type !== ERROR && !messages.button && (
               <button onClick={this.clearErrorMessage}>{XIcon}</button>
             )}
           </div>

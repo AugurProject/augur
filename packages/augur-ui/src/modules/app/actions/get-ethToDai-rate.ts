@@ -7,6 +7,7 @@ import { updateAppStatus, ETH_TO_DAI_RATE } from 'modules/app/actions/update-app
 import { NodeStyleCallback } from 'modules/types';
 import logError from 'utils/log-error';
 import { formatDaiEstimate } from 'utils/format-number';
+import { augurSdk } from 'services/augursdk';
 
 export const getEthToDaiRate = (
   callback: NodeStyleCallback = logError
@@ -25,7 +26,9 @@ export const ethToDai = (ethAmount, ethToDaiRate) => {
 };
 
 export const displayGasInDai = (amount, ethToDaiRate) => {
-  const gasInDai = ethToDai(amount, ethToDaiRate);
+  const augur = augurSdk.get();
+  const gasInAttoDai = augur.convertGasEstimateToDaiCost(amount);
+  const gasInDai = formatDaiEstimate(gasInAttoDai.dividedBy(10**18));
   if (Number(gasInDai.roundedFormatted) === 0) {
     return '$0.01';
   }
