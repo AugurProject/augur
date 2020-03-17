@@ -1089,7 +1089,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
         const addHours = input.hoursAfterEst;
         userInput = String(endTimeFormatted.timestamp);
         const newEndTime = (addHours * 60 * 60) + endTimeFormatted.timestamp
-        const comps = timestampComponents(newEndTime);
+        const comps = timestampComponents(newEndTime, offset);
         onChange('updateEventExpiration', {
           setEndTime: newEndTime,
           hour: comps.hour,
