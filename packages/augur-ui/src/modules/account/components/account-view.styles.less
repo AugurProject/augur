@@ -142,11 +142,11 @@
   .AccountView {
     > div {
       border: @size-1 solid var(--color-outline);
-      border-radius: @size-6;
+      border-radius: @border-radius-rounded;
 
       div[class*='BoxHeader'] {
         background: var(--color-table-header-50);
-        border-radius: @size-6;
+        border-radius: @border-radius-rounded;
 
         > div:first-of-type {
           background: transparent;
@@ -164,16 +164,16 @@
       }
 
       > div:last-of-type {
-        border-bottom-left-radius: @size-6;
-        border-bottom-right-radius: @size-6;
+        border-bottom-left-radius: @border-radius-rounded;
+        border-bottom-right-radius: @border-radius-rounded;
       }
     }
 
     > div:nth-of-type(2) {
       > div[class*='Headers'] {
         background: var(--color-table-header-50);
-        border-top-left-radius: @size-6;
-        border-top-right-radius: @size-6;
+        border-top-left-radius: @border-radius-rounded;
+        border-top-right-radius: @border-radius-rounded;
 
         > ul > li {
           border-bottom: none;
