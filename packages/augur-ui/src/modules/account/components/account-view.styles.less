@@ -142,18 +142,49 @@
   .AccountView {
     > div {
       border: @size-1 solid var(--color-outline);
+      border-radius: @size-6;
+
       div[class*='BoxHeader'] {
         background: var(--color-table-header-50);
+        border-radius: @size-6;
 
         > div:first-of-type {
           background: transparent;
+          max-height: @size-56;
+          min-height: @size-56;
+
+
+          > div:first-of-type {
+            .text-16-bold;
+
+            text-transform: capitalize;
+            
+          }
         }
+      }
+
+      > div:last-of-type {
+        border-bottom-left-radius: @size-6;
+        border-bottom-right-radius: @size-6;
       }
     }
 
     > div:nth-of-type(2) {
       > div[class*='Headers'] {
         background: var(--color-table-header-50);
+        border-top-left-radius: @size-6;
+        border-top-right-radius: @size-6;
+
+        > ul > li {
+          border-bottom: none;
+
+          > button {
+            .text-16-bold;
+
+            text-transform: capitalize;
+            height: @size-56;
+          }
+        }
       }
     }
   }
