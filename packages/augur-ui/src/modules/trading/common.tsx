@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
 
-import { Ticket } from 'modules/common/icons';
-import { SecondaryButton } from 'modules/common/buttons';
+import { SecondaryButton, PrimaryButton } from 'modules/common/buttons';
+import { Ticket, Trash } from 'modules/common/icons';
+import { LinearPropertyLabel } from 'modules/common/labels';
 import { SelectedContext } from 'modules/trading/hooks/betslip';
 
 import Styles from 'modules/trading/common.styles';
@@ -45,3 +46,23 @@ export const BetslipHeader = ({ toggleSelected, betslipInfo }) => {
     </ul>
   );
 };
+
+export const BetslipFooter = () => {
+  return (
+    <footer className={Styles.BetslipFooter}>
+      <div>
+        <LinearPropertyLabel label="Total Stake" value="$75.00" />
+        <LinearPropertyLabel label="Potential Returns" value="$575.00" />
+      </div>
+      <SecondaryButton
+        text="Cancel Bet"
+        action={() => console.log('Bet Canceled')}
+        icon={Trash}
+      />
+      <PrimaryButton
+        text="Place Bet"
+        action={() => console.log('Bet Placed')}
+      />
+    </footer>
+  );
+}

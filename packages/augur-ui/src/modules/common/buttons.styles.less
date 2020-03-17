@@ -95,10 +95,13 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .PrimaryButton {
-
+    align-items: center;
     background: var(--color-primary-action-15);
-    color: var(--color-primary-text);
     border: @size-1 solid var(--color-primary-action);
+    color: var(--color-primary-text);
+    display: flex;
+    flex-flow: row-reverse nowrap;
+    justify-content: center;
     max-height: none;
 
     &:not(:disabled):hover {
@@ -326,10 +329,13 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .SecondaryButton {
-
+    align-items: center;
     background: var(--color-secondary-action);
-    color: var(--color-primary-text);
     border: @size-1 solid var(--color-primary-text);
+    color: var(--color-primary-text);
+    display: flex;
+    flex-flow: row-reverse nowrap;
+    justify-content: center;
     max-height: none;
 
     &:not(:disabled):hover {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { ThickChevron } from 'modules/common/icons';
-import { EmptyState, BetslipHeader } from 'modules/trading/common';
+import { EmptyState, BetslipHeader, BetslipFooter } from 'modules/trading/common';
 import {
   useSelected,
   useBetslipAmounts,
@@ -40,8 +40,12 @@ export const Betslip = ({  }: BetslipProps) => {
               [Styles.BetSlipEmpty]: isSelectedEmpty,
             })}
           >
-            {isSelectedEmpty && (
+            {isSelectedEmpty ? (
               <EmptyState emptyHeader={emptyHeader} />
+            ) : (
+              <>
+                <BetslipFooter />
+              </>
             )}
           </section>
         </SelectedContext.Provider>

@@ -122,48 +122,66 @@ export interface ExternalLinkTextProps {
   URL: string;
 }
 
-export const PrimaryButton = (props: DefaultButtonProps) => (
+export const PrimaryButton = ({
+  URL,
+  action,
+  disabled,
+  title,
+  text,
+  confirmed,
+  failed,
+  icon,
+}: DefaultButtonProps) => (
   <>
-    {props.URL && (
-      <a href={props.URL} target="_blank" rel="noopener noreferrer">
+    {URL && (
+      <a href={URL} target="_blank" rel="noopener noreferrer">
         <button
-          onClick={e => props.action(e)}
+          onClick={e => action(e)}
           className={Styles.PrimaryButton}
-          disabled={props.disabled}
-          title={props.title || props.text}
+          disabled={disabled}
+          title={title || text}
         >
-          {props.text}
+          {text}
         </button>
       </a>
     )}
-    {!props.URL && (
+    {!URL && (
       <button
-        onClick={e => props.action(e)}
+        onClick={e => action(e)}
         className={classNames(Styles.PrimaryButton, {
-          [Styles.Confirmed]: props.confirmed,
-          [Styles.Failed]: props.failed,
+          [Styles.Confirmed]: confirmed,
+          [Styles.Failed]: failed,
         })}
-        disabled={props.disabled}
-        title={props.title || props.text}
+        disabled={disabled}
+        title={title || text}
       >
-        {props.text} {props.icon}
+        {text} {icon}
       </button>
     )}
   </>
 );
 
-export const SecondaryButton = (props: DefaultButtonProps) => (
+export const SecondaryButton = ({
+  action,
+  small,
+  confirmed,
+  failed,
+  disabled,
+  title,
+  text,
+  icon,
+}: DefaultButtonProps) => (
   <button
-    onClick={e => props.action(e)}
+    onClick={e => action(e)}
     className={classNames(Styles.SecondaryButton, {
-      [Styles.Small]: props.small,
-      [Styles.Confirmed]: props.confirmed,
-      [Styles.Failed]: props.failed,
+      [Styles.Small]: small,
+      [Styles.Confirmed]: confirmed,
+      [Styles.Failed]: failed,
     })}
-    disabled={props.disabled}
-    title={props.title || props.text}
+    disabled={disabled}
+    title={title || text}
   >
-    {props.text} {!!props.icon && props.icon}
+    {text} {icon}
   </button>
 );
 
