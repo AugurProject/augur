@@ -34,6 +34,7 @@ export const THEMES = {
   TRADING: 'TRADING',
   SPORTS: 'SPORTS',
 };
+
 export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;
@@ -61,12 +62,14 @@ export const NETWORK_IDS = {
 
 export const MIN_ORDER_LIFESPAN = 70;
 export const GAS_PRICE_BACKUP_API_ENDPOINT = {
-  [NETWORK_IDS.Mainnet]: 'https://api.etherscan.io/api?module=gastracker&action=gasoracle',
-}
+  [NETWORK_IDS.Mainnet]:
+    'https://api.etherscan.io/api?module=gastracker&action=gasoracle',
+};
 
 export const GAS_CONFIRM_ESTIMATE = {
-  [NETWORK_IDS.Mainnet]: 'https://api.etherscan.io/api?module=gastracker&action=gasestimate&gasprice=',
-}
+  [NETWORK_IDS.Mainnet]:
+    'https://api.etherscan.io/api?module=gastracker&action=gasestimate&gasprice=',
+};
 
 export const GAS_SPEED_LABELS = {
   STANDARD: 'Standard',
@@ -86,7 +89,6 @@ export const WALLET_STATUS_VALUES = {
   FUNDED_NEED_CREATE: 'FUNDED_NEED_CREATE',
   CREATED: 'CREATED',
 };
-
 
 // ethereumNodeHttp
 export const ETHEREUM_NODE_HTTP = 'ethereum_node_http';
@@ -208,10 +210,16 @@ export const feeFilters = [
 
 export const TEMPLATE_FILTER_ALL = Getters.Markets.TemplateFilters.all;
 export const templateFilterValues = [
-  { header: 'All', value: TEMPLATE_FILTER_ALL},
-  { header: 'Augur templates', value: Getters.Markets.TemplateFilters.templateOnly},
-  { header: 'Custom markets', value: Getters.Markets.TemplateFilters.customOnly},
-]
+  { header: 'All', value: TEMPLATE_FILTER_ALL },
+  {
+    header: 'Augur templates',
+    value: Getters.Markets.TemplateFilters.templateOnly,
+  },
+  {
+    header: 'Custom markets',
+    value: Getters.Markets.TemplateFilters.customOnly,
+  },
+];
 
 // # Valid Market Liquidity Spreads
 export const MAX_SPREAD_ALL_SPREADS =
@@ -245,7 +253,8 @@ export const invalidFilters = [
   { header: 'show', value: INVALID_SHOW },
 ];
 
-export const PROBABLE_INVALID_MARKET = 'This market has a high probability of resolving invalid';
+export const PROBABLE_INVALID_MARKET =
+  'This market has a high probability of resolving invalid';
 
 // # Sorting Options
 export const NEUTRAL = 'neutral';
@@ -849,8 +858,9 @@ export const REPORTING_ENDS_SOON_TITLE = 'You need to report';
 export const SIGN_SEND_ORDERS = 'Sign to approve your orders';
 export const CLAIM_REPORTING_FEES_TITLE = 'Claim Stake and Fees';
 export const PROCEEDS_TO_CLAIM_TITLE = 'Claim Proceeds';
-export const CLAIM_ALL_TITLE = 'Claim All'
-export const MARKET_IS_MOST_LIKELY_INVALID_TITLE = 'Market is Failing Invalid Filter';
+export const CLAIM_ALL_TITLE = 'Claim All';
+export const MARKET_IS_MOST_LIKELY_INVALID_TITLE =
+  'Market is Failing Invalid Filter';
 export const OPEN_ORDERS_RESOLVED_MARKET = 'resolvedMarketsOpenOrders';
 export const REPORT_ON_MARKET = 'reportOnMarkets';
 export const MARKET_IN_DISPUTE = 'marketsInDispute';
@@ -1053,23 +1063,26 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Select Outcome',
     subheader: [
       {
-        text: "Select the outcome you believe will be correct or appreciate in price.",
+        text:
+          'Select the outcome you believe will be correct or appreciate in price.',
       },
       {
-        text: "To learn why invalid is an outcome, see our",
-        linkText: "guide.",
-        link: 'https://docs.augur.net'
+        text: 'To learn why invalid is an outcome, see our',
+        linkText: 'guide.',
+        link: 'https://docs.augur.net',
       },
     ],
-  },[TRADING_TUTORIAL_STEPS.QUANTITY]: {
+  },
+  [TRADING_TUTORIAL_STEPS.QUANTITY]: {
     title: 'Quantity',
     subheader: [
       {
-        text: 'Enter the amount of shares you wish to buy. Remember each share is priced between $0.01 - $0.99'
+        text:
+          'Enter the amount of shares you wish to buy. Remember each share is priced between $0.01 - $0.99',
       },
       {
         text: 'Please enter a quantity of 100.',
-        lighten: true
+        lighten: true,
       },
     ],
   },
@@ -1077,25 +1090,28 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Limit Price',
     subheader: [
       {
-        text: 'The Limit Price is the price you’re willing to buy or sell per share. This value is between $0.01 and $0.99, which can also be thought of as a probabilty in percentage terms.'
+        text:
+          'The Limit Price is the price you’re willing to buy or sell per share. This value is between $0.01 and $0.99, which can also be thought of as a probabilty in percentage terms.',
       },
       {
-        text: 'For example predicting that there is a 40% chance of this outcome occurring, you would buy $0.40 per share. If your prediction is right, you stand to make a profit of $0.60 per share.'
+        text:
+          'For example predicting that there is a 40% chance of this outcome occurring, you would buy $0.40 per share. If your prediction is right, you stand to make a profit of $0.60 per share.',
       },
       {
         text: 'Enter a limit price of $0.40.',
-        lighten: true
-      }
+        lighten: true,
+      },
     ],
   },
   [TRADING_TUTORIAL_STEPS.ORDER_VALUE]: {
     title: 'Total Order Value',
     subheader: [
       {
-        text: "This shows the amount of money required to make this trade.",
+        text: 'This shows the amount of money required to make this trade.',
       },
       {
-        text: "You can change this value to control the total cost of your order, and the quantity will adjust to compensate for the new total order value. So if you want to bet $40, enter 40 in here.",
+        text:
+          'You can change this value to control the total cost of your order, and the quantity will adjust to compensate for the new total order value. So if you want to bet $40, enter 40 in here.',
       },
     ],
   },
@@ -1103,12 +1119,13 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Place your order',
     subheader: [
       {
-        text: "Review your order and make sure everything looks correct.",
+        text: 'Review your order and make sure everything looks correct.',
       },
       {
-        text: "Now go ahead and press the 'Place Buy Order' button or click next.",
+        text:
+          "Now go ahead and press the 'Place Buy Order' button or click next.",
         lighten: true,
-      }
+      },
     ],
   },
   [TRADING_TUTORIAL_STEPS.ORDER_BOOK]: {
@@ -1198,61 +1215,71 @@ export const TRADING_TUTORIAL_OUTCOMES = [
 
 export const DISPUTING_GUIDE = {
   title: 'DISPUTING QUICK GUIDE',
-  content: [{
-    header: 'Disputing',
-    paragraphs: [
-      'After a market’s initial report, it will wait for the current dispute window to end before entering into the ‘Currently Disputing’ tab. This is the time for users to dispute a Tentative Outcome if thet believe the market has been reported on incorrectly. Markets awaiting their first or next dispute round can be seen in the ‘Awaiting Next Dispute Round’ tab. An exception to this is when markets have been selected for Fast Resolution.'
-    ]
-  }, {
-    header: 'How to dispute an outcome',
-    paragraphs: [
-      'A market has to have one of of its non-tentative outcomes bonds filled in order to successfully dispute the current tentative outcome. Choose a non-tentative outcome to either fill the bond completely using your own REP or contribute a smaller amount as part of a crowd sourced bond. If a bond for a non-tentative outcome is successfully filled then that outcome will become the new tentative outcome and the market waits for the next dispute round. This process can repeat itself until a Tentative Outcome is unsuccessfully disputed during a round. Each round the REP stake required to fill a dispute bond is increased.'
-    ]
-  }, {
-    header: 'How a market resolves',
-    paragraphs: [
-      'If a tentative outcome is not successfully disputed during a dispute round then the market resolves with the current tentative outcome becoming the winning outcome and the reporting phase for that market  is over.'
-    ]
-  }, {
-    header: 'The benefits of reporting',
-    paragraphs: [
-      'Users who correctly staked on the Winning Outcome get to take a share of the REP that was staked on the incorrect outcome(s). This means you can potentially earn 40% ROI by disputing (i.e staking) against liars and reporting the truth. This keeps the Augur oracle secure and ultimately the Augur platform working how it should.'
-    ]
-  }, {
-    header: 'Pre-filled Stake',
-    paragraphs: [
-      'Users can add extra support for a Tentative Winning Outcome by pre-staking REP that will be used to dispute in that outcome’s favor in the event that is no longer the Tentative Winning Outcome. Pre-filling can help accelerate a market’s resolution.',
-      'Pre-filled Stake yields ROI if and only if: ',
-      '1) the market resolves to the staked-on outcome and',
-      '2) the pre-stake ends up being used to dispute in that outcome’s favor',
-      'If the market resolves to the staked-on outcome but the pre-stake is not used, you will receive back the pre-stake but no ROI. If the market does not resolve to the staked-on outcome, you will lose the pre-stake.'
-    ]
-  }],
+  content: [
+    {
+      header: 'Disputing',
+      paragraphs: [
+        'After a market’s initial report, it will wait for the current dispute window to end before entering into the ‘Currently Disputing’ tab. This is the time for users to dispute a Tentative Outcome if thet believe the market has been reported on incorrectly. Markets awaiting their first or next dispute round can be seen in the ‘Awaiting Next Dispute Round’ tab. An exception to this is when markets have been selected for Fast Resolution.',
+      ],
+    },
+    {
+      header: 'How to dispute an outcome',
+      paragraphs: [
+        'A market has to have one of of its non-tentative outcomes bonds filled in order to successfully dispute the current tentative outcome. Choose a non-tentative outcome to either fill the bond completely using your own REP or contribute a smaller amount as part of a crowd sourced bond. If a bond for a non-tentative outcome is successfully filled then that outcome will become the new tentative outcome and the market waits for the next dispute round. This process can repeat itself until a Tentative Outcome is unsuccessfully disputed during a round. Each round the REP stake required to fill a dispute bond is increased.',
+      ],
+    },
+    {
+      header: 'How a market resolves',
+      paragraphs: [
+        'If a tentative outcome is not successfully disputed during a dispute round then the market resolves with the current tentative outcome becoming the winning outcome and the reporting phase for that market  is over.',
+      ],
+    },
+    {
+      header: 'The benefits of reporting',
+      paragraphs: [
+        'Users who correctly staked on the Winning Outcome get to take a share of the REP that was staked on the incorrect outcome(s). This means you can potentially earn 40% ROI by disputing (i.e staking) against liars and reporting the truth. This keeps the Augur oracle secure and ultimately the Augur platform working how it should.',
+      ],
+    },
+    {
+      header: 'Pre-filled Stake',
+      paragraphs: [
+        'Users can add extra support for a Tentative Winning Outcome by pre-staking REP that will be used to dispute in that outcome’s favor in the event that is no longer the Tentative Winning Outcome. Pre-filling can help accelerate a market’s resolution.',
+        'Pre-filled Stake yields ROI if and only if: ',
+        '1) the market resolves to the staked-on outcome and',
+        '2) the pre-stake ends up being used to dispute in that outcome’s favor',
+        'If the market resolves to the staked-on outcome but the pre-stake is not used, you will receive back the pre-stake but no ROI. If the market does not resolve to the staked-on outcome, you will lose the pre-stake.',
+      ],
+    },
+  ],
   learnMoreButtonText: 'Learn more about disputing',
-  closeButtonText: 'Close'
+  closeButtonText: 'Close',
 };
 
 export const REPORTING_GUIDE = {
   title: 'REPORTING QUICK GUIDE',
-  content: [{
-    header: 'Upcoming Designated Reporting',
-    paragraphs: [
-      'Markets in “Upcoming Designated Reporting” are about to enter the reporting phase. The UI displays how much time is remaining before the market will enter reporting'
-    ]
-  }, {
-    header: 'Designated Reporting',
-    paragraphs: [
-      'Once a market enters reporting, the Designated Reporter (DR) has 24 hours to submit a report on the market’s outcome. If the DR does not submit a report within 24 hours, the market will enter Open Reporting, and the market creator will not receive the No-Show Bond back.',
-      'The DR does not unilaterally decide on a market’s outcome. Once a DR submits an outcome, it is open to dispute. If the market ends up resolving to another outcome, the DR will lose their REP stake.'
-    ]
-  }, {
-    header: 'Open Reporting',
-    paragraphs: [
-      'A market enters Open Reporting if the Designated Reporter does not submit a report within 24 hours of a market’s Reporting Start Time. At this time, any user may report on the outcome and will receive the forfeited No-Show Bond if the market ends up resolving to the outcome that they report. Open Reporting does not require any staked REP on the part of the reporter.'
-    ]
-  }],
+  content: [
+    {
+      header: 'Upcoming Designated Reporting',
+      paragraphs: [
+        'Markets in “Upcoming Designated Reporting” are about to enter the reporting phase. The UI displays how much time is remaining before the market will enter reporting',
+      ],
+    },
+    {
+      header: 'Designated Reporting',
+      paragraphs: [
+        'Once a market enters reporting, the Designated Reporter (DR) has 24 hours to submit a report on the market’s outcome. If the DR does not submit a report within 24 hours, the market will enter Open Reporting, and the market creator will not receive the No-Show Bond back.',
+        'The DR does not unilaterally decide on a market’s outcome. Once a DR submits an outcome, it is open to dispute. If the market ends up resolving to another outcome, the DR will lose their REP stake.',
+      ],
+    },
+    {
+      header: 'Open Reporting',
+      paragraphs: [
+        'A market enters Open Reporting if the Designated Reporter does not submit a report within 24 hours of a market’s Reporting Start Time. At this time, any user may report on the outcome and will receive the forfeited No-Show Bond if the market ends up resolving to the outcome that they report. Open Reporting does not require any staked REP on the part of the reporter.',
+      ],
+    },
+  ],
   learnMoreButtonText: 'Learn more about reporting',
-  closeButtonText: 'Close'
+  closeButtonText: 'Close',
 };
 
 function createOrder(disappear, price, quantity, id, outcomeId, type) {
@@ -1278,12 +1305,12 @@ function createOrder(disappear, price, quantity, id, outcomeId, type) {
 function createOutcomeOrders(outcomeId) {
   return [
     createOrder(true, TUTORIAL_PRICE, TUTORIAL_QUANTITY, 0, outcomeId, SELL),
-    createOrder(false, .5, 150, 1, outcomeId, SELL),
-    createOrder(false, .6, 200, 2, outcomeId, SELL),
-    createOrder(false, .3, 100, 3, outcomeId, BUY),
-    createOrder(false, .2, 150, 4, outcomeId, BUY),
-    createOrder(false, .1, 200, 5, outcomeId, BUY),
-  ]
+    createOrder(false, 0.5, 150, 1, outcomeId, SELL),
+    createOrder(false, 0.6, 200, 2, outcomeId, SELL),
+    createOrder(false, 0.3, 100, 3, outcomeId, BUY),
+    createOrder(false, 0.2, 150, 4, outcomeId, BUY),
+    createOrder(false, 0.1, 200, 5, outcomeId, BUY),
+  ];
 }
 
 export const TUTORIAL_ORDER_BOOK = {
@@ -1342,12 +1369,20 @@ export const LOGGED_IN_USER_LOCAL_STORAGE_KEY = 'loggedInUser';
 
 // Help Center links
 export const HELP_CENTER = 'https://augur.gitbook.io/help-center/';
-export const HELP_CENTER_ADD_FUNDS = 'https://augur.gitbook.io/help-center/trading-ui-1/adding-funds';
-export const HELP_CENTER_HOW_TO_TRADE = 'https://augur.gitbook.io/help-center/market-creation-1/how-to-make-a-trade';
-export const HELP_CENTER_HOW_TO_DISPUTE = 'https://augur.gitbook.io/help-center/disputing-explained';
+export const HELP_CENTER_ADD_FUNDS =
+  'https://augur.gitbook.io/help-center/trading-ui-1/adding-funds';
+export const HELP_CENTER_HOW_TO_TRADE =
+  'https://augur.gitbook.io/help-center/market-creation-1/how-to-make-a-trade';
+export const HELP_CENTER_HOW_TO_DISPUTE =
+  'https://augur.gitbook.io/help-center/disputing-explained';
 // TODO update with GSN
-export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://augur.gitbook.io/help-center/trading-ui-1/logging-in#what-is-gnosis-safe';
-export const HELP_CENTER_MIGRATE_REP = 'https://augur.gitbook.io/help-center/migrating-rep-v1-greater-than-v2';
-export const HELP_CENTER_PARTICIPATION_TOKENS = 'https://augur.gitbook.io/help-center/reporting-or-disputing-faq#what-are-participation-tokens';
-export const HELP_CENTER_INVALID_MARKETS = 'https://augur.gitbook.io/help-center/market-creation-1/trading-faq#what-does-invalid-mean';
-export const HELP_CENTER_THIRD_PARTY_COOKIES = 'https://www.whatismybrowser.com/guides/how-to-enable-cookies';
+export const HELP_CENTER_LEARN_ABOUT_ADDRESS =
+  'https://augur.gitbook.io/help-center/trading-ui-1/logging-in#what-is-gnosis-safe';
+export const HELP_CENTER_MIGRATE_REP =
+  'https://augur.gitbook.io/help-center/migrating-rep-v1-greater-than-v2';
+export const HELP_CENTER_PARTICIPATION_TOKENS =
+  'https://augur.gitbook.io/help-center/reporting-or-disputing-faq#what-are-participation-tokens';
+export const HELP_CENTER_INVALID_MARKETS =
+  'https://augur.gitbook.io/help-center/market-creation-1/trading-faq#what-does-invalid-mean';
+export const HELP_CENTER_THIRD_PARTY_COOKIES =
+  'https://www.whatismybrowser.com/guides/how-to-enable-cookies';

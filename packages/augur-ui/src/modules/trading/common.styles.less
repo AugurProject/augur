@@ -1,1 +1,58 @@
 @import (reference) '~assets/styles/shared';
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .HeaderTabs {
+    align-items: center;
+    background: var(--color-primary-text);
+    border-top-left-radius: @border-radius-rounded;
+    border-top-right-radius: @border-radius-rounded;
+    display: flex;
+    flex-flow: row nowrap;
+    height: @size-48;
+    justify-content: space-around;
+  
+    @media @breakpoint-mobile-tablet {
+      display: none;
+    }
+  
+    > li {
+      .text-14-bold;
+  
+      align-items: center;
+      color: var(--color-dark-text);
+      cursor: pointer;
+      text-transform: uppercase;
+      display: flex;
+      flex: 1;
+      flex-flow: row nowrap;
+      height: 100%;
+      justify-content: center;
+  
+      > span {
+        .text-10;
+  
+        align-items: center;
+        align-content: center;
+        border: @size-1 solid var(--color-outline);
+        border-radius: @border-radius-default;
+        display: flex;
+        justify-content: center;
+        height: @size-20;
+        width: @size-20;
+        margin-left: @size-10;
+        color: var(--color-module-background);
+      }
+  
+      &.Selected {
+        color: var(--color-module-background);
+  
+        > span {
+          background: var(--color-module-background);
+          border: @size-1 solid var(--color-module-background);
+          color: var(--color-primary-text);
+        }
+      }
+    }
+  }
+}

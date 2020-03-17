@@ -1,58 +1,50 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { Ticket, ThickChevron } from 'modules/common/icons';
-import { SecondaryButton } from 'modules/common/buttons';
+import { ThickChevron } from 'modules/common/icons';
+import { EmptyState, BetslipHeader } from 'modules/trading/common';
+import {
+  useSelected,
+  useBetslipAmounts,
+  SelectedContext,
+} from 'modules/trading/hooks/betslip';
 
 import Styles from 'modules/trading/betslip.styles';
 
 export interface BetslipProps {}
 
 export const Betslip = ({  }: BetslipProps) => {
-  const [selected, setSelected] = useState(0);
   const [minimized, setMinimized] = useState(true);
-  const betslipAmount = 0;
-  const myBetsAmount = 0;
+  const { selected, toggleSelected, emptyHeader } = useSelected();
+  const betslipInfo = useBetslipAmounts(selected);
+  const { betslipAmount, isSelectedEmpty } = betslipInfo;
+
   return (
-    <aside className={classNames(Styles.Betslip, {
-      [Styles.Minimized]: minimized
-    })}>
+    <aside
+      className={classNames(Styles.Betslip, {
+        [Styles.Minimized]: minimized,
+      })}
+    >
       <div>
-        <button
-          onClick={() => setMinimized(!minimized)}
-        >
+        <button onClick={() => setMinimized(!minimized)}>
           Betslip ({betslipAmount}) {ThickChevron}
         </button>
       </div>
       <section className={Styles.Container}>
-        <ul className={Styles.HeaderTabs}>
-          <li
-            className={classNames({ [Styles.Selected]: selected === 0 })}
-            onClick={() => {
-              if (selected !== 0) setSelected(0);
-            }}
-          >
-            Betslip<span>{betslipAmount}</span>
-          </li>
-          <li
-            className={classNames({ [Styles.Selected]: selected === 1 })}
-            onClick={() => {
-              if (selected !== 1) setSelected(1);
-            }}
-          >
-            My Bets<span>{myBetsAmount}</span>
-          </li>
-        </ul>
-        <section
-          className={classNames(Styles.MainSection, Styles.BetSlipEmpty)}
-        >
-          <div>{Ticket}</div>
-          <h3>Betslip is empty</h3>
-          <h4>Need help placing a bet?</h4>
-          <SecondaryButton
-            text="View tutorial"
-            action={() => console.log('add tutorial link')}
+        <SelectedContext.Provider value={selected}>
+          <BetslipHeader
+            toggleSelected={toggleSelected}
+            betslipInfo={betslipInfo}
           />
-        </section>
+          <section
+            className={classNames(Styles.MainSection, {
+              [Styles.BetSlipEmpty]: isSelectedEmpty,
+            })}
+          >
+            {isSelectedEmpty && (
+              <EmptyState emptyHeader={emptyHeader} />
+            )}
+          </section>
+        </SelectedContext.Provider>
       </section>
     </aside>
   );
