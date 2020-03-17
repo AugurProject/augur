@@ -358,7 +358,7 @@ export interface DateTimeComponents {
   endTime: number;
   endTimeFormatted: DateFormattedObject;
   setEndTime: number;
-  hour: number;
+  hour: string;
   minute: string;
   meridiem: string;
   offsetName: string;

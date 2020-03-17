@@ -533,8 +533,8 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
         />
       </span>
       {!condensedStyle &&
-        endTimeFormatted &&
-        hour &&
+        !!endTimeFormatted &&
+        !!hour &&
         hour !== '' &&
         !!setEndTime && (
           <span>
@@ -1090,11 +1090,15 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
         userInput = String(endTimeFormatted.timestamp);
         const newEndTime = (addHours * 60 * 60) + endTimeFormatted.timestamp
         const comps = timestampComponents(newEndTime);
-        // adding timezone and offset
-        comps.offset = offset;
-        comps.offsetName = offsetName;
-        comps.timezone = offsetName;
-        Object.keys(comps).map(name => onChange([name], comps[name]));
+        onChange('updateEventExpiration', {
+          setEndTime: newEndTime,
+          hour: comps.hour,
+          minute: comps.minute,
+          meridiem: comps.meridiem,
+          offset,
+          offsetName,
+          timezone: offsetName,
+        });
       }
     }
     template.inputs[props.input.id].userInputObject = {
