@@ -21,7 +21,7 @@ export async function makeProvider(seed: Seed, accounts: Account[]): Promise<Tes
 export async function makeTestAugur(seed: Seed, accounts: Account[]): Promise<Augur> {
   const provider = await makeProvider(seed, accounts);
   const signer = await makeSigner(accounts[0], provider);
-  const dependencies = await makeGSNDependencies(provider, signer, seed.addresses.AugurWalletRegistry, seed.addresses.EthExchange, undefined, accounts[0].publicKey);
+  const dependencies = await makeGSNDependencies(provider, signer, seed.addresses.AugurWalletRegistry, seed.addresses.EthExchange, accounts[0].publicKey);
   const config = buildConfig('local', { addresses: seed.addresses })
 
   return Augur.create(provider, dependencies, config, new EmptyConnector(), null, true);

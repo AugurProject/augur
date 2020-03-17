@@ -154,7 +154,7 @@ export interface UserReports {
 }
 export interface FormattedNumber {
   fullPrecision: number | string;
-  roundedValue: number | BigNumber;
+  roundedValue: BigNumber;
   roundedFormatted: string;
   formatted: string;
   formattedValue: number | string;
@@ -352,6 +352,18 @@ export interface NewMarketPropertyValidations {
   affiliateFee?: string;
   inputs?: NewMarketPropertiesValidations[];
   outcomes?: string | string[];
+}
+
+export interface DateTimeComponents {
+  endTime: number;
+  endTimeFormatted: DateFormattedObject;
+  setEndTime: number;
+  hour: number;
+  minute: string;
+  meridiem: string;
+  offsetName: string;
+  offset: number;
+  timezone: string;
 }
 export interface NewMarket {
   uniqueId: string;
