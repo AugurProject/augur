@@ -160,6 +160,7 @@ export interface TemplateValidation {
   placeholderValues: PlaceholderValues;
   afterTuesdayDateNoFriday: number[];
   noAdditionalOutcomes: boolean;
+  hoursAfterEstimatedStartTime: number;
 }
 
 export interface TemplateValidationHash {
@@ -204,6 +205,7 @@ export interface TemplateInput {
   };
   setEndTime?: number;
   inputDateYearId?: number;
+  hoursAfterEst: number;
   holidayClosures?: {
     [key: string]: {
       [year: number]: {
@@ -404,11 +406,14 @@ function isDependencyOutcomesCorrect(
 
 function estimatedDateTimeAfterMarketEndTime(
   inputs: ExtraInfoTemplateInput[],
+  hoursAfterEstimatedStartTime: number,
   endTime: number
 ) {
   const input = inputs.find(i => i.type === TemplateInputType.ESTDATETIME);
   if (!input) return false;
-  return Number(input.timestamp) >= Number(endTime);
+  // add number of hours to estimated start timestamp then compare to market event expiration
+  const secondsAfterEst = hoursAfterEstimatedStartTime * 60 * 60;
+  return (Number(input.timestamp) + secondsAfterEst) > Number(endTime);
 }
 
 function dateStartAfterMarketEndTime(
@@ -639,10 +644,11 @@ export const isTemplateMarket = (
       return false;
     }
 
-    // check ESTDATETIME isn't after market event expiration
+    // check ESTDATETIME isn't after market event expiration or is within required hour buffer
     if (
       estimatedDateTimeAfterMarketEndTime(
         template.inputs,
+        validation.hoursAfterEstimatedStartTime,
         new BigNumber(endTime).toNumber()
       )
     ) {
