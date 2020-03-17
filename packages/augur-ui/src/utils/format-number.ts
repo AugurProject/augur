@@ -311,7 +311,7 @@ export function formatAttoRep(
   num: NumStrBigNumber,
   opts: FormattedNumberOptions = optionsBlank()
 ): FormattedNumber {
-  if (!num || num) return formatBlank();
+  if (!num) return formatBlank();
   return formatNumber(
     createBigNumber(num.toString())
       .dividedBy(ETHER),
