@@ -19,6 +19,7 @@ import {
   MIGRATE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
   APPROVE,
+  MIGRATEOUTBYPAYOUT,
   TRADINGPROCEEDSCLAIMED,
   CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
@@ -42,7 +43,8 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   REDEEMSTAKE,
   MIGRATE_FROM_LEG_REP_TOKEN,
   BATCHCANCELORDERS,
-  TRADINGPROCEEDSCLAIMED
+  TRADINGPROCEEDSCLAIMED,
+  MIGRATEOUTBYPAYOUT
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
