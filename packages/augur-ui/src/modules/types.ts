@@ -579,6 +579,7 @@ export interface AppStatus {
   ethToDaiRate: BigNumber;
   gsnEnabled: boolean;
   zeroXEnabled: boolean;
+  walletStatus: string;
 }
 
 export interface AuthStatus {
