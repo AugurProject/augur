@@ -4,14 +4,15 @@ import { ACCOUNT_TYPES } from 'modules/common/constants';
 import Web3 from 'web3';
 
 const mapStateToProps = ({loginAccount}) => {
-  const signer = loginAccount.meta && loginAccount.meta.signer;
+  const signer = loginAccount.meta?.signer;
 
   return signer ? {
     accountType: loginAccount.meta && loginAccount.meta.accountType,
     // // address: (await window.portis.provider.enable())[0],
     // provider: window.portis,
     // address: signer._address.toLowerCase(),
-    provider: signer.provider,
+    // provider: signer.provider._web3Provider,
+    provider: signer,
   } : window.ethereum ? {
     accountType: ACCOUNT_TYPES.METAMASK,
     // address: (await window.ethereum.enable())[0],
