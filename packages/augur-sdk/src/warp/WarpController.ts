@@ -5,7 +5,6 @@ import * as Unixfs from 'ipfs-unixfs';
 import { DAGNode } from 'ipld-dag-pb';
 import _ from 'lodash';
 import { Provider, Augur, NULL_ADDRESS, MarketReportingState } from '..';
-import { Lzp3 } from 'compressjs';
 
 import { DB } from '../state/db/DB';
 import { IpfsInfo } from '../state/db/WarpSyncCheckpointsDB';
@@ -110,7 +109,9 @@ export class WarpController {
     private _fileRetrievalFn: (ipfsPath: string) => Promise<any> = (
       ipfsPath: string
     ) =>
-      fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`)
+      fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`).then(item =>
+        item.json()
+      )
   ) {
     this.checkpoints = new Checkpoints(provider);
     if (ipfs) {
@@ -315,17 +316,14 @@ export class WarpController {
       ['asc', 'asc']
     );
 
-    const body = Buffer.from(
-      JSON.stringify({
-        startBlockNumber,
-        endBlockNumber,
-        logs: sortedLogs,
-      } as CheckpointInterface),
-      'utf8'
-    );
-    const content = Lzp3.compressFile(body)
     const [result] = await (await this.ipfs).add({
-      content,
+      content: Buffer.from(
+        JSON.stringify(<CheckpointInterface>{
+          startBlockNumber,
+          endBlockNumber,
+          logs: sortedLogs,
+        })
+      ),
     });
 
     return {
@@ -399,10 +397,7 @@ export class WarpController {
   };
 
   getFile(ipfsPath: string) {
-    return this._fileRetrievalFn(ipfsPath)
-      .then(Lzp3.decompressFile)
-      .then((r) => new Buffer(r).toString('utf8'))
-      .then(JSON.parse);
+    return this._fileRetrievalFn(ipfsPath);
   }
 
   async getAvailableCheckpointsByHash(
