@@ -68,15 +68,14 @@ export const selectMostLikelyInvalidMarkets = createSelector(
   }
 );
 export const selectLiquidityDepletedMarkets = createSelector(
-  selectUserMarketOpenOrders,
-  openOrders => {
-    return Object.keys(openOrders)
-      .map(id => selectMarket(id))
+  selectMarkets,
+  selectLoginAccountAddress,
+  (markets, address) => {
+    return markets
       .filter(
-        market =>
-          market.mostLikelyInvalid
+        market => market.author === address &&
+          !market.passDefaultLiquiditySpread
       )
-      .filter(market => userOpenOrders(market.id).length > 0)
       .map(getRequiredMarketData);
   }
 );
