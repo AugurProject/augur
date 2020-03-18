@@ -175,19 +175,7 @@ export function connectAugur(
     let provider = null;
     const networkId = config.networkId;
 
-    if (config.ethereum?.http) {
-      // Use node provided in the ethereum_node_http param
-      try {
-        provider = new JsonRpcProvider(config.ethereum.http);
-      } catch(error) {
-        dispatch(
-          updateModal({
-            type: MODAL_NETWORK_DISABLED,
-          })
-        );
-      }
-    }
-    else if (networkId && !isDevNetworkId(networkId)) {
+    if (networkId && !isDevNetworkId(networkId)) {
       // Unless DEV, use the provider on window if it exists, otherwise use torus provider
       if (windowRef.web3) {
         // Use window provider
