@@ -11,7 +11,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const { authStatus, loginAccount, appStatus, newMarket } = state;
   const {
     gsnEnabled: GsnEnabled,
-    ethToDaiRate,
     walletStatus: walletStatus,
   } = appStatus;
 
@@ -31,7 +30,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
     isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,
     GsnEnabled,
-    ethToDaiRate,
     walletStatus,
   };
 };

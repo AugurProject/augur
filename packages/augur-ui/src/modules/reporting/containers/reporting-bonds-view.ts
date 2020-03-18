@@ -28,7 +28,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
     migrateRep,
     userAttoRep: convertAttoValueToDisplayValue(userAttoRep),
     GsnEnabled: state.appStatus.gsnEnabled,
-    ethToDaiRate: state.appStatus.ethToDaiRate,
     gasPrice: getGasPrice(state),
     openReporting,
     enoughRepBalance

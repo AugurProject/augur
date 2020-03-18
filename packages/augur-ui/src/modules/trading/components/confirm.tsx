@@ -23,6 +23,7 @@ import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { Trade } from 'modules/types';
 import { PrimaryButton } from 'modules/common/buttons';
+import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface MessageButton {
   action: Function;
@@ -50,7 +51,6 @@ interface ConfirmProps {
   scalarDenomination: string | null;
   numOutcomes: number;
   tradingTutorial?: boolean;
-  ethToDaiRate: BigNumber;
   GsnEnabled: boolean;
   gsnUnavailable: boolean;
   initialLiquidity: boolean;
@@ -112,7 +112,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableEth,
       availableDai,
       tradingTutorial,
-      ethToDaiRate,
       GsnEnabled,
       gsnUnavailable,
       initializeGsnWallet,
@@ -137,10 +136,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = null;
 
-    if (GsnEnabled && ethToDaiRate) {
-      gasCostDai = formatDai(
-        ethToDaiRate.multipliedBy(createBigNumber(gasCost))
-      ).formattedValue;
+    if (GsnEnabled) {
+      gasCostDai = getGasInDai(gasLimit);
     }
 
     if (
@@ -245,7 +242,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       maxPrice,
       minPrice,
       scalarDenomination,
-      ethToDaiRate,
       gasLimit,
       gasPrice,
       GsnEnabled,
@@ -277,16 +273,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = null;
 
-    const gasCost = formatGasCostToEther(
-      gasLimit,
-      { decimalsRounded: 4 },
-      gasPrice
-    );
-
-    if (GsnEnabled && ethToDaiRate) {
-      gasCostDai = formatDai(
-        ethToDaiRate.multipliedBy(createBigNumber(gasCost))
-      );
+    if (GsnEnabled) {
+      gasCostDai = getGasInDai(gasLimit);
     }
 
     const limitPricePercentage = (side === BUY

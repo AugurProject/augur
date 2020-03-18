@@ -325,8 +325,10 @@ export async function uniswapRepForEthRate(rep: BigNumber): Promise<BigNumber> {
   return new BigNumber(100);
 }
 
-export async function uniswapEthForDaiRate(wei: BigNumber): Promise<BigNumber> {
-  return new BigNumber(148);
+export function getEthForDaiRate(): BigNumber {
+  const { dependencies } = augurSdk.get();
+  const ethToDaiRate = dependencies.ethToDaiRate
+  return ethToDaiRate;
 }
 
 export async function uniswapDaiForEthRate(dai: BigNumber): Promise<BigNumber> {
