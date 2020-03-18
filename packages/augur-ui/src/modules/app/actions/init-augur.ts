@@ -65,7 +65,6 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   try {
     if (loggedInAccount) {
       if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
-        console.log('showMetaMaskHelper::', !windowRef.ethereum.selectedAddress);
         if (!windowRef.ethereum.selectedAddress) {
           // show metamask signer
           dispatch(
@@ -223,6 +222,7 @@ export function connectAugur(
     if (isGoogleBot()) {
       config.zeroX.mesh.enabled = false;
       config.gsn.enabled = false;
+      config.useWarpSync = false;
     }
 
     let sdk: Augur<Provider> = null;
