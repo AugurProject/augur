@@ -337,15 +337,19 @@
     flex-flow: row-reverse nowrap;
     justify-content: center;
     max-height: none;
+    padding: 0 @size-24;
+    height: @size-44;
 
     &:not(:disabled):hover {
       background: var(--color-primary-text);
       color: var(--color-secondary-action);
     }
 
-    &:not(:disabled):focus {
+    &:not(:disabled):focus,
+    &:not(:disabled):focus:hover {
       background: var(--color-secondary-action);
-      border: @size-1 solid var(--color-focused);
+      color: var(--color-primary-text);
+      border: @size-2 solid var(--color-focused);
     }
 
     &:not(:disabled):active {
@@ -354,9 +358,6 @@
     }
 
     &:disabled {
-      background: var(--color-secondary-action);
-      color: var(--color-primary-text);
-      border: @size-1 solid var(--color-primary-text);
       opacity: 0.25;
     }
   }
