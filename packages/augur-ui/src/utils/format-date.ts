@@ -190,9 +190,8 @@ export function buildformattedDate(
   };
 }
 
-export function timestampComponents(timestamp: number): Partial<DateTimeComponents> {
-  const date = moment.unix(timestamp);
-  const endTimeFormatted = convertUnixToFormattedDate(timestamp);
+export function timestampComponents(timestamp: number, offset: number = 0): Partial<DateTimeComponents> {
+  const date = moment.unix(timestamp).utcOffset(offset);
   let meridiem = 'AM';
   let hour = date.hours()
   if (hour == 0) {
@@ -204,8 +203,6 @@ export function timestampComponents(timestamp: number): Partial<DateTimeComponen
   }
 
   return {
-    endTime: timestamp,
-    endTimeFormatted,
     setEndTime: timestamp,
     hour: String(hour),
     minute: `0${date.minutes()}`.slice(-2),

@@ -1,5 +1,5 @@
 import { createBigNumber } from 'utils/create-big-number';
-import { BUY, ZERO, ZEROX_GAS_FEE } from 'modules/common/constants';
+import { BUY, ZERO, ZEROX_GAS_FEE, BUY_INDEX } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import { AppState } from 'store';
@@ -164,9 +164,8 @@ async function runSimulateTrade(
   const fingerprint = undefined; // TODO: get this from state
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
 
-  let userShares = createBigNumber(marketOutcomeShares[outcomeId] || 0);
-
-  if (orderType === 0) {
+  let userShares = (orderType !== BUY_INDEX) ? createBigNumber(marketOutcomeShares[outcomeId] || 0) : ZERO;
+  if (!!reversal) {
     // ignore trading outcome shares and find min across all other outcome shares.
     const userSharesBalancesRemoveOutcome = Object.keys(
       marketOutcomeShares
@@ -230,7 +229,7 @@ async function runSimulateTrade(
     // Plus ZeroX Fee (150k Gas)
     gasLimit = gasLimit.plus(ZEROX_GAS_FEE);
   }
-  // ignore share cost when user is shorting another outcome or longing another outcome
+  // ignore share cost when user is shorting or longing another outcome
   // and the user doesn't have shares on the traded outcome
   if (
     reversal === null &&

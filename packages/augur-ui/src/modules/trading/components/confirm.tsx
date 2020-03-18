@@ -263,6 +263,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       orderShareProfit,
       orderShareTradingFee,
       numFills,
+      sharesFilled,
     } = trade;
 
     const { messages } = this.state;
@@ -316,6 +317,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
           : formatShares(
               createBigNumber(numShares).minus(shareCost.fullPrecision)
             ).rounded;
+    } else if (sharesFilled && sharesFilled.fullPrecision) {
+      newOrderAmount = sharesFilled.rounded;
     }
 
     const notProfitable =
