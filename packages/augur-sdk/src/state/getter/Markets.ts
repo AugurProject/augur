@@ -171,6 +171,7 @@ export interface MarketInfo {
   isTemplate: boolean;
   mostLikelyInvalid: boolean;
   isWarpSync: boolean;
+  passDefaultLiquiditySpread: boolean;
 }
 
 export interface DisputeInfo {
@@ -1154,7 +1155,7 @@ async function getMarketsInfo(
       bondSizeOfNewStake: totalRepStakedInMarket.multipliedBy(2).toFixed(),
       stakes: formatStakeDetails(augur, db, marketData, disputeDocsByMarket[marketData.market] || []),
     };
-
+    const passDefaultLiquiditySpread = marketData.liquidity['10'] !== '000000000000000000000000000000'
     return {
       id: marketData.market,
       universe: marketData.universe,
@@ -1196,6 +1197,7 @@ async function getMarketsInfo(
       isTemplate: marketData.isTemplate,
       mostLikelyInvalid: marketData.invalidFilter,
       isWarpSync: marketData.isWarpSync,
+      passDefaultLiquiditySpread,
     };
   });
 }
