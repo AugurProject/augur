@@ -1,4 +1,3 @@
-import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH } from '../constants';
@@ -8,6 +7,7 @@ import {
   abiV1,
   environments,
   buildConfig,
+  printConfig,
 } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import moment from 'moment';
@@ -15,7 +15,6 @@ import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ethers } from 'ethers';
 import {
-  calculatePayoutNumeratorsArray,
   QUINTILLION,
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
@@ -29,14 +28,14 @@ import { fork } from './fork';
 import { dispute } from './dispute';
 import { MarketList, MarketOrderBook } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
-import { spawn, spawnSync, execSync } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
-import { ContractAPI } from '../libs/contract-api';
+import { ContractAPI, deployContracts } from '..';
 import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { formatAddress, sleep, waitForSigint } from "./util";
+import { formatAddress, sleep, waitForSigint } from './util';
 import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
 import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
 
@@ -85,7 +84,7 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: 'show-config',
     async call(this: FlashSession) {
-      this.log(JSON.stringify(this.config, null, 2));
+      printConfig(this.config);
     }
   });
 
@@ -2028,23 +2027,23 @@ export function addScripts(flash: FlashSession) {
           await refreshSDKConfig(); // add pop-geth addresses to global
         }
 
-        this.log(`Waiting for Geth to start up`);
+        this.log('Waiting for Geth to start up');
         await sleep(10000); // give geth some time to start
         refreshSDKConfig();
         this.config = buildConfig('local');
         this.provider = flash.makeProvider(this.config);
 
         if (dev) {
-          this.log(`Deploying contracts`);
+          this.log('Deploying contracts');
           const deployMethod = fake ? 'fake-all' : 'normal-all';
           await this.call(deployMethod, { createMarkets: true, parallel: true });
         }
 
-        this.log(`Building`);
+        this.log('Building');
         await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
         // Run the GSN relay
-        this.log(`Running GSN relayer`);
+        this.log('Running GSN relayer');
         spawn('yarn', ['run:gsn'], {stdio: 'inherit'});
 
         env = {
