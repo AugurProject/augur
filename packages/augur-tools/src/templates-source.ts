@@ -2451,7 +2451,7 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
                     {
-                      text: `If the season is officially cancelled and no Final/Championship is played, this market should resolve as 'Invalid'`,
+                      text: `If the season is officially cancelled and event named in the market is not played, this market should resolve as 'Invalid'`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, and the winner of the event named in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
