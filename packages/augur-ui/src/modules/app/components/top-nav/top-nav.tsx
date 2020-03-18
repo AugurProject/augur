@@ -115,41 +115,6 @@ const TopNav = ({
                   </span>
                 </li>
               )}
-              {index === SPREAD_INDEX && showCreateAccountButton && (
-                <li>
-                  <div className={Styles.MigrateRep}>
-                    <ProcessingButton
-                      text={walletBalances.dai === 0 ? 'Waiting for Funding' : 'Initiaize GSN Wallet'}
-                      action={() => createFundedGsnWallet()}
-                      disabled={walletBalances.dai === 0}
-                      queueName={CREATEAUGURWALLET}
-                      queueId={CREATEAUGURWALLET}
-                    />
-                  </div>
-                  <span>
-                    <label
-                      className={classNames(TooltipStyles.TooltipHint)}
-                      data-tip
-                      data-for={'accountCreation'}
-                    >
-                      {helpIcon}
-                    </label>
-                    <ReactTooltip
-                      id={'accountCreation'}
-                      className={TooltipStyles.Tooltip}
-                      effect="solid"
-                      place="top"
-                      type="light"
-                    >
-                      <p>
-                        {
-                          'Account used to interact with Augur, needs to be funded before created'
-                        }
-                      </p>
-                    </ReactTooltip>
-                  </span>
-                </li>
-              )}
               <li
                 className={classNames({
                   [Styles['Selected']]: selected,

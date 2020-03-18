@@ -19,7 +19,7 @@ import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount } = state;
-  const { meta, balances } = loginAccount;
+  const { meta, balances, address } = loginAccount;
   const signingWallet = meta.signer?._address;
   const networkId = getNetworkId();
   const gsnEnabled = state.appStatus.gsnEnabled;
@@ -29,12 +29,13 @@ const mapStateToProps = (state: AppState) => {
     ? networkId !== NETWORK_IDS.Mainnet && gsnCreated
     : networkId !== NETWORK_IDS.Mainnet;
 
-  const localLabel = networkId !== NETWORK_IDS.Kovan ? 'Use flash to transfer ETH to address' : null;
+  const localLabel = networkId !== NETWORK_IDS.Kovan ? 'Use flash to faucet DAI to address' : null;
+  const targetAddress = networkId !== NETWORK_IDS.Kovan ? address : signingWallet;
 
   return {
     isMainnet: networkId === NETWORK_IDS.Mainnet,
     showFaucets,
-    signingWallet,
+    targetAddress,
     signingEth: balances.ethNonSafe,
     gsnCreated,
     localLabel
