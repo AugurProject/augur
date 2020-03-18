@@ -22,12 +22,12 @@
       align-items: center;
       color: var(--color-dark-text);
       cursor: pointer;
-      text-transform: uppercase;
       display: flex;
       flex: 1;
       flex-flow: row nowrap;
       height: 100%;
       justify-content: center;
+      text-transform: uppercase;
   
       > span {
         .text-10;
@@ -52,6 +52,35 @@
           border: @size-1 solid var(--color-module-background);
           color: var(--color-primary-text);
         }
+      }
+    }
+  }
+
+  .MyBetsSubheader {
+    align-items: center;
+    background: var(--color-page-background);
+    height: @size-36;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    width: 100%;
+
+    > li {
+      .text-12-bold;
+
+      align-items: center;
+      border-bottom: @size-1 solid var(--color-dark-grey);
+      color: var(--color-inactive-text);
+      cursor: pointer;
+      display: flex;
+      flex: 1;
+      height: 100%;
+      justify-content: center;
+      text-transform: uppercase;
+
+      &.Selected {
+        color: var(--color-primary-text);
+        border-bottom: @size-2 solid var(--color-primary-text);
       }
     }
   }

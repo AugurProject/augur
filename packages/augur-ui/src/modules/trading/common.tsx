@@ -26,22 +26,50 @@ export const EmptyState = ({ emptyHeader }) => {
   );
 };
 
+export const BetslipList = () => {
+  return (
+    <>
+      <section>market inputs/bets here</section>
+    </>
+  );
+};
+
 export const BetslipHeader = ({ toggleSelected, betslipInfo }) => {
-  const selected: number = useContext(SelectedContext);
+  const { header } = useContext(SelectedContext);
   const { betslipAmount, myBetsAmount } = betslipInfo;
   return (
     <ul className={Styles.HeaderTabs}>
       <li
-        className={classNames({ [Styles.Selected]: selected === 0 })}
-        onClick={() => toggleSelected(selected)}
+        className={classNames({ [Styles.Selected]: header === 0 })}
+        onClick={() => toggleSelected(0)}
       >
         Betslip<span>{betslipAmount}</span>
       </li>
       <li
-        className={classNames({ [Styles.Selected]: selected === 1 })}
-        onClick={() => toggleSelected(selected)}
+        className={classNames({ [Styles.Selected]: header === 1 })}
+        onClick={() => toggleSelected(1)}
       >
         My Bets<span>{myBetsAmount}</span>
+      </li>
+    </ul>
+  );
+};
+
+export const MyBetsSubheader = ({ toggleSelected }) => {
+  const { subHeader } = useContext(SelectedContext);
+  return (
+    <ul className={Styles.MyBetsSubheader}>
+      <li
+        className={classNames({ [Styles.Selected]: subHeader === 0 })}
+        onClick={() => toggleSelected(0)}
+      >
+        Unmatched Bets
+      </li>
+      <li
+        className={classNames({ [Styles.Selected]: subHeader === 1 })}
+        onClick={() => toggleSelected(1)}
+      >
+        Matched Bets
       </li>
     </ul>
   );
@@ -65,4 +93,4 @@ export const BetslipFooter = () => {
       />
     </footer>
   );
-}
+};

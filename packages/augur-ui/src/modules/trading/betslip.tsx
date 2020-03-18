@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { ThickChevron } from 'modules/common/icons';
-import { EmptyState, BetslipHeader, BetslipFooter } from 'modules/trading/common';
+import {
+  EmptyState,
+  BetslipHeader,
+  BetslipFooter,
+  BetslipList,
+  MyBetsSubheader,
+} from 'modules/trading/common';
 import {
   useSelected,
   useBetslipAmounts,
@@ -14,9 +20,15 @@ export interface BetslipProps {}
 
 export const Betslip = ({  }: BetslipProps) => {
   const [minimized, setMinimized] = useState(true);
-  const { selected, toggleSelected, emptyHeader } = useSelected();
+  const {
+    selected,
+    toggleHeaderSelected,
+    toggleSubHeaderSelected,
+    emptyHeader,
+  } = useSelected();
   const betslipInfo = useBetslipAmounts(selected);
   const { betslipAmount, isSelectedEmpty } = betslipInfo;
+  const { header } = selected;
 
   return (
     <aside
@@ -32,9 +44,12 @@ export const Betslip = ({  }: BetslipProps) => {
       <section className={Styles.Container}>
         <SelectedContext.Provider value={selected}>
           <BetslipHeader
-            toggleSelected={toggleSelected}
+            toggleSelected={toggleHeaderSelected}
             betslipInfo={betslipInfo}
           />
+          {header === 1 && (
+            <MyBetsSubheader toggleSelected={toggleSubHeaderSelected} />
+          )}
           <section
             className={classNames(Styles.MainSection, {
               [Styles.BetSlipEmpty]: isSelectedEmpty,
@@ -44,6 +59,7 @@ export const Betslip = ({  }: BetslipProps) => {
               <EmptyState emptyHeader={emptyHeader} />
             ) : (
               <>
+                <BetslipList />
                 <BetslipFooter />
               </>
             )}

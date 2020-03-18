@@ -27,17 +27,23 @@ function betslipAmountReducer(state, action) {
   }
 }
 
-export const SelectedContext = createContext(0);
+export const SelectedContext = createContext({ header: 0, subHeader: 0 });
 
-export const useSelected = (defaultSelected = 0) => {
+export const useSelected = (defaultSelected = { header: 0, subHeader: 0 }) => {
   const [selected, setSelected] = useState(defaultSelected);
-  const nextSelection = selected === 0 ? 1 : 0;
+  const nextSelection = selected.header === 0 ? 1 : 0;
+  const nextSubSelection = selected.subHeader === 0 ? 1 : 0;
 
   return {
     selected,
-    ...BETSLIP_OPTIONS[selected],
-    toggleSelected: currSelected => {
-      if (currSelected !== nextSelection) setSelected(nextSelection);
+    ...BETSLIP_OPTIONS[selected.header],
+    toggleHeaderSelected: selectedClicked => {
+      if (selectedClicked === nextSelection)
+        setSelected({ ...selected, header: nextSelection });
+    },
+    toggleSubHeaderSelected: selectedClicked => {
+      if (selectedClicked === nextSubSelection)
+        setSelected({ ...selected, subHeader: nextSubSelection });
     },
   };
 };
@@ -54,9 +60,13 @@ export const useBetslipAmounts = (selected: number) => {
     betslipAmount: state.betslipAmount,
     myBetsAmount: state.myBetsAmount,
     isSelectedEmpty,
-    incBetslipAmount: () => dispatch({ type: BETSLIP_ACTIONS.INC_BETSLIP_AMOUNT }),
-    incMyBetslipAmount: () => dispatch({ type: BETSLIP_ACTIONS.INC_MYBETS_AMOUNT }),
-    decBetslipAmount: () => dispatch({ type: BETSLIP_ACTIONS.DEC_BETSLIP_AMOUNT }),
-    decMyBetslipAmount: () => dispatch({ type: BETSLIP_ACTIONS.DEC_MYBETS_AMOUNT }),
+    incBetslipAmount: () =>
+      dispatch({ type: BETSLIP_ACTIONS.INC_BETSLIP_AMOUNT }),
+    incMyBetslipAmount: () =>
+      dispatch({ type: BETSLIP_ACTIONS.INC_MYBETS_AMOUNT }),
+    decBetslipAmount: () =>
+      dispatch({ type: BETSLIP_ACTIONS.DEC_BETSLIP_AMOUNT }),
+    decMyBetslipAmount: () =>
+      dispatch({ type: BETSLIP_ACTIONS.DEC_MYBETS_AMOUNT }),
   };
 };
