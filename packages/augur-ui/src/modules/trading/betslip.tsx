@@ -10,7 +10,7 @@ import {
 } from 'modules/trading/common';
 import {
   useSelected,
-  useBetslipAmounts,
+  useBetslip,
   SelectedContext,
 } from 'modules/trading/hooks/betslip';
 
@@ -26,7 +26,7 @@ export const Betslip = ({  }: BetslipProps) => {
     toggleSubHeaderSelected,
     emptyHeader,
   } = useSelected();
-  const betslipInfo = useBetslipAmounts(selected);
+  const betslipInfo = useBetslip(selected.header);
   const { betslipAmount, isSelectedEmpty } = betslipInfo;
   const { header } = selected;
 
@@ -52,15 +52,16 @@ export const Betslip = ({  }: BetslipProps) => {
           )}
           <section
             className={classNames(Styles.MainSection, {
-              [Styles.BetSlipEmpty]: isSelectedEmpty,
+              [Styles.BetslipEmpty]: isSelectedEmpty,
+              [Styles.BetslipList]: (!isSelectedEmpty && header === 0),
             })}
           >
             {isSelectedEmpty ? (
               <EmptyState emptyHeader={emptyHeader} />
             ) : (
               <>
-                <BetslipList />
-                <BetslipFooter />
+                <BetslipList ordersInfo={betslipInfo.ordersInfo} actions={betslipInfo.ordersActions} />
+                <BetslipFooter betslipInfo={betslipInfo} />
               </>
             )}
           </section>

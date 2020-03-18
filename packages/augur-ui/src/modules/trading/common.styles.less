@@ -73,7 +73,7 @@
       color: var(--color-inactive-text);
       cursor: pointer;
       display: flex;
-      flex: 1;
+      flex: 0.5;
       height: 100%;
       justify-content: center;
       text-transform: uppercase;
@@ -81,6 +81,111 @@
       &.Selected {
         color: var(--color-primary-text);
         border-bottom: @size-2 solid var(--color-primary-text);
+      }
+    }
+  }
+
+  .BetslipList {
+    display: grid;
+    grid-gap: @size-8 0;
+    flex: 1;
+    padding: @size-12;
+    width: 100%;
+    max-height: 65vh;
+    overflow: auto;
+  }
+
+  .SportsMarketBets {
+    border: @size-1 solid var(--color-dark-grey);
+    border-radius: @border-radius-rounded;
+    display: flex;
+    flex-flow: column nowrap;
+
+    > h4 {
+      .text-10-bold;
+
+      background: var(--color-page-background);
+      border-top-left-radius: @border-radius-rounded;
+      border-top-right-radius: @border-radius-rounded;
+      color: var(--color-primary-text);
+      padding: @size-8 @size-7;
+      height: @size-30;
+      white-space: nowrap;
+      word-break: break-all;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  .SportsBet {
+    border-top: @size-1 solid var(--color-dark-grey);
+    display: grid;
+    grid-gap: @size-8;
+    grid-template-columns: 1fr 1fr;
+    padding: @size-12;
+
+    &:last-of-type {
+      border-bottom-left-radius: @border-radius-rounded;
+      border-bottom-right-radius: @border-radius-rounded;
+    }
+
+    > header {
+      display: grid;
+      grid-column: span 2;
+      grid-template-columns: 1fr 0fr 0fr;
+      grid-gap: 0 @size-10;
+      margin: 0 @size-4;
+
+      > span {
+        .text-12-bold;
+
+        color: var(--color-primary-text);
+        
+        &:first-of-type {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-break: break-all;
+          white-space: nowrap;
+        }
+      }
+
+      > button > svg {
+        width: @size-12;
+        height: @size-14;
+
+        > path {
+          stroke: var(--color-dark-text);
+        }
+      }
+    }
+
+    > div {
+      border: @size-1 solid var(--color-dark-text);
+      border-radius: @border-radius-default;
+      display: flex;
+      height: @size-36;
+      position: relative;
+
+      > span {
+        .text-10-semi-bold;
+
+        background: var(--color-module-background);
+        color: var(--color-inactive-text);
+        text-transform: uppercase;
+        padding: 0 @size-3;
+        position: absolute;
+        top: -@size-6;
+        left: 33.3%;
+      }
+
+      > input {
+        .text-14;
+
+        background: var(--color-module-background);
+        border-radius: @border-radius-default;
+        color: var(--color-primary-text);
+        padding: 0;
+        text-align: center;
       }
     }
   }
@@ -97,7 +202,13 @@
 
     > div {
       grid-column: span 2;
-      grid-row: 1;
+    }
+
+    > span {
+      .text-12;
+
+      color: var(--color-primary-text);
+      grid-column: span 2;
     }
 
     > button:first-of-type {

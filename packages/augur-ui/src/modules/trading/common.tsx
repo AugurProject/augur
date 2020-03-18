@@ -5,8 +5,10 @@ import { SecondaryButton, PrimaryButton } from 'modules/common/buttons';
 import { Ticket, Trash } from 'modules/common/icons';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { SelectedContext } from 'modules/trading/hooks/betslip';
+import { formatDai } from 'utils/format-number';
 
 import Styles from 'modules/trading/common.styles';
+import { Orders } from 'modules/modal/modal.styles.less';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -26,10 +28,72 @@ export const EmptyState = ({ emptyHeader }) => {
   );
 };
 
-export const BetslipList = () => {
+export const SportsMarketBets = ({ market, removeOrder, modifyOrder }) => {
+  const marketId = market[0];
+  const { description, orders } = market[1];
+  const bets = orders.map((order, orderId) => ({
+    ...order,
+    orderId,
+    modifyOrder: updatedOrder => modifyOrder(marketId, updatedOrder),
+    cancelOrder: () => removeOrder(marketId, orderId),
+  }));
+  return (
+    <div className={Styles.SportsMarketBets}>
+      <h4>{description}</h4>
+      <>
+        {bets.map(bet => (
+          <SportsBet key={bet.orderId} bet={bet} />
+        ))}
+      </>
+    </div>
+  );
+};
+
+export const SportsBet = ({ bet }) => {
+  const { outcome, odds, wager, toWin, modifyOrder, cancelOrder } = bet;
+  return (
+    <div className={Styles.SportsBet}>
+      <header>
+        <span>{outcome}</span>
+        <span>{odds}</span>
+        <button onClick={() => cancelOrder()}>{Trash}</button>
+      </header>
+      <div>
+        <span>Wager</span>
+        <input
+          onChange={() => modifyOrder('this would be wager input')}
+          value={formatDai(wager).full}
+        />
+      </div>
+      <div>
+        <span>To Win</span>
+        <input
+          onChange={() => modifyOrder('this would be wager input')}
+          value={formatDai(toWin).full}
+        />
+      </div>
+    </div>
+  );
+};
+
+export const BetslipList = ({ ordersInfo, actions }) => {
+  const { removeOrder, modifyOrder } = actions;
+  const marketOrders = Object.entries(ordersInfo.orders);
+
   return (
     <>
-      <section>market inputs/bets here</section>
+      <section className={Styles.BetslipList}>
+        {marketOrders.map(market => {
+          return (
+            <SportsMarketBets
+              key={market[1]}
+              market={market}
+              removeOrder={removeOrder}
+              modifyOrder={modifyOrder}
+            />
+          );
+        })}
+      </section>
     </>
   );
 };
@@ -75,20 +139,33 @@ export const MyBetsSubheader = ({ toggleSelected }) => {
   );
 };
 
-export const BetslipFooter = () => {
+export const BetslipFooter = ({ betslipInfo }) => {
+  const { ordersInfo } = betslipInfo;
+  const { bettingTextValues } = ordersInfo;
+  const { betting, potential } = bettingTextValues;
+  const bet = formatDai(betting).full;
+  const win = formatDai(potential).full;
+
   return (
     <footer className={Styles.BetslipFooter}>
       <div>
         <LinearPropertyLabel label="Total Stake" value="$75.00" />
         <LinearPropertyLabel label="Potential Returns" value="$575.00" />
       </div>
+      <span>
+        {`You're Betting `}
+        <b>{bet}</b>
+        {` and will win `}
+        <b>{win}</b>
+        {` if you win`}
+      </span>
       <SecondaryButton
-        text="Cancel Bet"
+        text="Cancel Bets"
         action={() => console.log('Bet Canceled')}
         icon={Trash}
       />
       <PrimaryButton
-        text="Place Bet"
+        text="Place Bets"
         action={() => console.log('Bet Placed')}
       />
     </footer>
