@@ -16,7 +16,7 @@ import { FormattedNumber, LoginAccount } from 'modules/types';
 import { FormDropdown, TextInput } from 'modules/common/form';
 import { CloseButton } from 'modules/common/buttons';
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
-import { ethToDai, displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { ethToDai, displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface WithdrawFormProps {
   closeAction: Function;
@@ -34,7 +34,7 @@ interface WithdrawFormProps {
   };
   account: string;
   GsnEnabled: boolean;
-  ethToDaiRate: BigNumber;
+  ethToDaiRate: FormattedNumber;
   gasPrice: number;
 }
 
@@ -96,17 +96,13 @@ export class WithdrawForm extends Component<
     const { currency, relayerGasCosts } = this.state;
 
     const gasEstimate = GsnEnabled
-    ? formatGasCostToEther(
-        relayerGasCosts,
-        { decimalsRounded: 4 },
-        gasPrice,
-      )
-    : fallBackGasCosts[currency.toLowerCase()];
+      ? getGasInDai(relayerGasCosts)
+      : fallBackGasCosts[currency.toLowerCase()];
 
     const fullAmount = createBigNumber(
       balances[currency.toLowerCase()]
     );
-    const valueMinusGas = fullAmount.minus(createBigNumber(gasEstimate));
+    const valueMinusGas = fullAmount.minus(createBigNumber(gasEstimate.value));
     const resolvedValue = valueMinusGas.lt(ZERO) ? ZERO : valueMinusGas;
     this.amountChange(resolvedValue.toFixed(), true);
   };
@@ -134,7 +130,7 @@ export class WithdrawForm extends Component<
         { decimalsRounded: 4 },
         gasPrice
       );
-      const relayerGasCostsDAI = ethToDai(relayerGasCostsETH, ethToDaiRate);
+      const relayerGasCostsDAI = ethToDai(relayerGasCostsETH, createBigNumber(ethToDaiRate.value || 0));
 
       if (currency === DAI) {
         if (dontCheckMinusGas) {
@@ -239,8 +235,6 @@ export class WithdrawForm extends Component<
       balances,
       closeAction,
       GsnEnabled,
-      ethToDaiRate,
-      gasPrice,
     } = this.props;
     const { relayerGasCosts, amount, currency, address, errors } = this.state;
     const { amount: errAmount, address: errAddress } = errors;
@@ -256,11 +250,7 @@ export class WithdrawForm extends Component<
     }
 
     const gasEstimate = GsnEnabled
-      ? formatGasCostToEther(
-          relayerGasCosts,
-          { decimalsRounded: 4 },
-          gasPrice,
-        )
+      ? displayGasInDai(relayerGasCosts)
       : fallBackGasCosts[currency.toLowerCase()];
 
     const buttons = [
@@ -282,9 +272,7 @@ export class WithdrawForm extends Component<
       },
       {
         label: 'Transaction Fee',
-        value: GsnEnabled
-          ? displayGasInDai(gasEstimate, ethToDaiRate)
-          : gasEstimate,
+        value: gasEstimate,
       },
     ];
 
