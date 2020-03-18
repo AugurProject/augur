@@ -327,16 +327,33 @@ export const handleTokenBalanceChangedLog = (
   })
 };
 
-export const handleOrderLog = (log: any) => {
+export const handleOrderDepletionLog = (log: any) =>
+(dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  const { marketInfos, loginAccount } = getState();
+  const userMarketIds = Object.keys(marketInfos).filter(
+    id => isSameAddress(marketInfos[id].author, loginAccount.address)
+  );
+  if (userMarketIds.length === 0) return null;
+  const type = log.eventType;
+  if (type === OrderEventType.Create || type === OrderEventType.Expire || type === OrderEventType.Cancel) {
+    if (userMarketIds.includes(log.market)) {
+      dispatch(loadMarketsInfo([log.market]))
+    }
+  }
+  return null;
+}
+
+export const handleOrderLog = (log: any) =>
+(dispatch: ThunkDispatch<void, any, Action>) => {
   const type = log.eventType;
   switch (type) {
     case OrderEventType.Create:
-      return handleOrderCreatedLog(log);
+      return dispatch(handleOrderCreatedLog(log));
     case OrderEventType.Expire:
     case OrderEventType.Cancel:
-      return handleOrderCanceledLog(log);
+      return dispatch(handleOrderCanceledLog(log));
     case OrderEventType.Fill:
-      return handleOrderFilledLog(log);
+      return dispatch(handleOrderFilledLog(log));
     default:
       console.log(`Unknown order event type "${log.eventType}" for log`, log);
   }
@@ -359,6 +376,8 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(removePendingOrder(pendingOrderId, log.market));
   }
   dispatch(updateMarketOrderBook(log.market));
+  dispatch(handleOrderDepletionLog(log));
+  if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -387,7 +406,8 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
       dispatch(throttleLoadUserOpenOrders());
     }
   }
-  dispatch(updateMarketOrderBook(log.market));
+  dispatch(handleOrderDepletionLog(log));
+  if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -687,4 +707,5 @@ const EventHandlers = {
   [SubscriptionEventName.MarketCreated]: wrapLogHandler(
     handleMarketCreatedLog
   ),
+  [SubscriptionEventName.OrderEvent]: wrapLogHandler(handleOrderDepletionLog),
 }
