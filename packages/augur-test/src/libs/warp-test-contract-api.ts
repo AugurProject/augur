@@ -22,7 +22,9 @@ import * as IPFS from 'ipfs';
 
 const filterRetrievelFn = (ipfs: Promise<IPFS>) => async (ipfsPath: string) =>
   (await ipfs)
-  .cat(ipfsPath);
+  .cat(ipfsPath)
+  .then(item => item.toString())
+  .then(item => JSON.parse(item));
 
 export class WarpTestContractApi extends TestContractAPI {
   warpController: WarpController;
