@@ -3558,6 +3558,15 @@ export const TEMPLATES = {
                     {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
+                    {
+                      text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                    },
+                    {
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
+                    }
                   ],
                 },
               },
@@ -3649,13 +3658,13 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the season is officially cancelled and no World Series is played, this market should resolve as 'No'`,
+                  text: `If the season is officially cancelled and event in market is not played, this market should resolve as 'No'`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, and the winner of the World Series is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the event in market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, and the winner of the World Series is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the event in market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
                 }
               ]
             },
@@ -3702,44 +3711,6 @@ export const TEMPLATES = {
                 },
                 {
                   text: `Extra innings count towards settlement purposes`,
-                },
-              ],
-            },
-          },
-          {
-            marketType: CATEGORICAL,
-            question: `Which MLB team will win the [0] [1]?`,
-            example: `Which MLB team will win the 2020 World Series?`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                values: LIST_VALUES.YEARS,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Event`,
-                values: LIST_VALUES.BASEBALL_EVENT,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Other (Field)`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
-                inputSourceId: 1,
-                placeholder: `Select Team`,
-                values: BASEBALL_EVENT_DEP_TEAMS,
-              },
-            ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                 },
               ],
             },
@@ -3865,6 +3836,53 @@ export const TEMPLATES = {
                 {
                   text: `Extra innings count towards settlement purposes`,
                 },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Which MLB team will win the [0] [1]?`,
+            example: `Which MLB team will win the 2020 World Series?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.BASEBALL_EVENT,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                inputSourceId: 1,
+                placeholder: `Select Team`,
+                values: BASEBALL_EVENT_DEP_TEAMS,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
+                {
+                  text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
+                },
+                {
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                },
+                {
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
+                }
               ],
             },
           },
@@ -5078,13 +5096,13 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
                     {
-                      text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
+                      text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
                     }
                   ],
                 },
