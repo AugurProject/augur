@@ -148,37 +148,6 @@ const SideNav = ({
                   </ReactTooltip>
                 </span>
               )}
-              {showCreateAccountButton && (
-                <span className={Styles.SideNavMigrateRep}>
-                  <ProcessingButton
-                    text={walletBalances.dai === 0 ? 'Waiting for Funding' : 'Initiaize GSN Wallet'}
-                    action={() => createFundedGsnWallet()}
-                    disabled={walletBalances.dai === 0}
-                    queueName={CREATEAUGURWALLET}
-                    queueId={CREATEAUGURWALLET}
-                  />
-                  <label
-                    className={classNames(Styles.SideNavMigrateTooltipHint)}
-                    data-tip
-                    data-for={'accountCreation'}
-                  >
-                    {helpIcon}
-                  </label>
-                  <ReactTooltip
-                    id={'accountCreation'}
-                    className={TooltipStyles.Tooltip}
-                    effect='solid'
-                    place='top'
-                    type='light'
-                  >
-                    <p>
-                      {
-                        'Account used to interact with Augur, needs to be funded before created'
-                      }
-                    </p>
-                  </ReactTooltip>
-                </span>
-              )}
             </div>
           </ul>
 
