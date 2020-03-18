@@ -429,9 +429,9 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     if (log.orderFiller) handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
-  if (isOnTradePage()) {
+  if (isCurrentMarket(marketId)) {
     dispatch(loadMarketTradingHistory(marketId));
-    dispatch(updateMarketOrderBook(log.market));
+    dispatch(updateMarketOrderBook(marketId));
   }
 };
 
