@@ -5,6 +5,7 @@ import * as Unixfs from 'ipfs-unixfs';
 import { DAGNode } from 'ipld-dag-pb';
 import _ from 'lodash';
 import { Provider, Augur, NULL_ADDRESS, MarketReportingState } from '..';
+import LZString from 'lz-string';
 
 import { DB } from '../state/db/DB';
 import { IpfsInfo } from '../state/db/WarpSyncCheckpointsDB';
@@ -108,8 +109,7 @@ export class WarpController {
     // This is to simplify swapping out file retrieval mechanism.
     private _fileRetrievalFn: (ipfsPath: string) => Promise<any> = (
       ipfsPath: string
-    ) =>
-      fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`).then(item =>
+    ) => fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`).then(item =>
         item.json()
       )
   ) {
@@ -141,34 +141,32 @@ export class WarpController {
     const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
 
     // Universe not initialized.
-    if (
-      !mostRecentCheckpoint
-    ) {
+    if (!mostRecentCheckpoint) {
       return;
     }
 
     // Warp sync has been created. Need to report, dispute or create next unfinished checkpoint record.
-    if(mostRecentCheckpoint.end) {
+    if (mostRecentCheckpoint.end) {
       const [marketRecord] = await Markets.getMarketsInfo(this.augur, this.db, {
-        marketIds: [
-          mostRecentCheckpoint.market
-        ]
+        marketIds: [mostRecentCheckpoint.market],
       });
 
-
-
-
       switch (marketRecord.reportingState) {
-        case(MarketReportingState.OpenReporting):
-        // Emit event to notify UI to report.
+        case MarketReportingState.OpenReporting:
+          // Emit event to notify UI to report.
 
-        break;
-        case(MarketReportingState.Finalized):
-          const [begin, end] = await this.checkpoints.calculateBoundary(mostRecentCheckpoint.endTimestamp, mostRecentCheckpoint.end);
+          break;
+        case MarketReportingState.Finalized:
+          const [begin, end] = await this.checkpoints.calculateBoundary(
+            mostRecentCheckpoint.endTimestamp,
+            mostRecentCheckpoint.end
+          );
 
           await this.db.warpCheckpoints.createInitialCheckpoint(
             end,
-            await this.augur.warpSync.getWarpSyncMarket(this.augur.contracts.universe.address)
+            await this.augur.warpSync.getWarpSyncMarket(
+              this.augur.contracts.universe.address
+            )
           );
 
           break;
@@ -179,13 +177,15 @@ export class WarpController {
     }
 
     // WarpSync Market has ended. Need to create checkpoint.
-    if(mostRecentCheckpoint.endTimestamp < newBlock.timestamp) {
+    if (mostRecentCheckpoint.endTimestamp < newBlock.timestamp) {
       /*
-      * To create the checkpoint properly we need to discover the boundary blocks around the end time.
-      **/
+       * To create the checkpoint properly we need to discover the boundary blocks around the end time.
+       **/
       const hash = await this.createAllCheckpoints(newBlock);
 
-      this.augur.events.emit(SubscriptionEventName.WarpSyncHashUpdated, { hash});
+      this.augur.events.emit(SubscriptionEventName.WarpSyncHashUpdated, {
+        hash,
+      });
 
       return hash;
     }
@@ -196,11 +196,15 @@ export class WarpController {
   async createInitialCheckpoint() {
     const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
     if (!mostRecentCheckpoint) {
-      const market = await this.augur.warpSync.getWarpSyncMarket(this.augur.contracts.universe.address);
+      const market = await this.augur.warpSync.getWarpSyncMarket(
+        this.augur.contracts.universe.address
+      );
 
-      if(market.address === NULL_ADDRESS) {
-        console.log(`Warp sync market not initialized for current universe ${this.augur.contracts.universe.address}.`);
-        return
+      if (market.address === NULL_ADDRESS) {
+        console.log(
+          `Warp sync market not initialized for current universe ${this.augur.contracts.universe.address}.`
+        );
+        return;
       }
 
       await this.db.warpCheckpoints.createInitialCheckpoint(
@@ -298,7 +302,10 @@ export class WarpController {
     }));
   }
 
-  async createCheckpoint(startBlockNumber: number, endBlockNumber: number): Promise<IpfsInfo> {
+  async createCheckpoint(
+    startBlockNumber: number,
+    endBlockNumber: number
+  ): Promise<IpfsInfo> {
     const logs = [];
     for (const { databaseName } of databasesToSync) {
       // Awaiting here to reduce load on db.
@@ -316,14 +323,14 @@ export class WarpController {
       ['asc', 'asc']
     );
 
+    const body = JSON.stringify({
+      startBlockNumber,
+      endBlockNumber,
+      logs: sortedLogs,
+    } as CheckpointInterface);
+    const content = LZString.compressToUint8Array(body);
     const [result] = await (await this.ipfs).add({
-      content: Buffer.from(
-        JSON.stringify(<CheckpointInterface>{
-          startBlockNumber,
-          endBlockNumber,
-          logs: sortedLogs,
-        })
-      ),
+      content,
     });
 
     return {
@@ -333,12 +340,15 @@ export class WarpController {
     };
   }
 
-  async updateCheckpointDbByNumber(begin:number, checkPointIPFSObject: IpfsInfo) {
+  async updateCheckpointDbByNumber(
+    begin: number,
+    checkPointIPFSObject: IpfsInfo
+  ) {
     return this.db.warpCheckpoints.createCheckpoint(
       await this.provider.getBlock(begin),
       checkPointIPFSObject
     );
-  };
+  }
 
   async createCheckpoints(end: Block) {
     const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
@@ -368,7 +378,8 @@ export class WarpController {
     // We need to be sure we have a checkpoint record for each warp sync market regardless of market status.
     const allWarpSyncMarkets = await this.db.marketDatabase.getAllWarpSyncMarkets();
     const nextMarketToCheckpoint = allWarpSyncMarkets.find(
-      (market) => market.endTime < mostRecentCheckpoint.endTimestamp);
+      market => market.endTime < mostRecentCheckpoint.endTimestamp
+    );
 
     if (!nextMarketToCheckpoint) return;
 
@@ -397,7 +408,9 @@ export class WarpController {
   };
 
   getFile(ipfsPath: string) {
-    return this._fileRetrievalFn(ipfsPath);
+    return this._fileRetrievalFn(ipfsPath)
+      .then(LZString.decompressFromUint8Array)
+      .then(JSON.parse);
   }
 
   async getAvailableCheckpointsByHash(
