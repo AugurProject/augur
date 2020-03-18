@@ -21,6 +21,8 @@ import {
 } from 'modules/common/constants';
 import MarketTitle from 'modules/market/containers/market-title';
 import { MarketReportingState } from '@augurproject/sdk/build';
+import { Checkbox } from 'modules/common/form';
+import classNames from 'classnames';
 
 interface BaseProps {
   market: MarketData;
@@ -32,6 +34,10 @@ interface BaseProps {
   buttonLabel: string;
   queueName?: string;
   queueId?: string;
+  hideCheckbox?: boolean;
+  isChecked?: boolean;
+  checkCheckbox?: Function;
+  updateCheckboxOnNotification?: Function;
 }
 
 interface OpenOrdersResolvedMarketsTemplateProps extends BaseProps {
@@ -71,6 +77,8 @@ interface MostLikelyInvalidMarketsTemplateProps extends BaseProps {
 
 interface LiquidityDepletionTemplateProps extends BaseProps {
   market: MarketData;
+  updateCheckboxOnNotification: Function;
+  isChecked?: boolean;
 }
 
 interface TemplateProps extends BaseProps {
@@ -92,17 +100,29 @@ const Template = ({
   buttonLabel,
   queueName,
   queueId,
+  hideCheckbox,
+  isChecked,
+  updateCheckboxOnNotification
 }: TemplateProps) => {
   const showCounter = market && notificationsWithCountdown.includes(type);
   return (
     <>
       <TemplateBody market={market} message={message} />
       <div
-        className={Styles.BottomRow}
+        className={classNames(Styles.BottomRow, {[Styles.HasCheckbox]: hideCheckbox})}
       >
         {showCounter && (
           <Counter type={type} market={market} />
         )}
+       {hideCheckbox &&
+        <>
+          <Checkbox 
+            isChecked={isChecked} 
+            onClick={() => updateCheckboxOnNotification(market && market.id, type, !isChecked)}
+          />
+          Don’t show me this again
+        </>
+        }
         {queueName && (queueId || (market && market.id)) ?
           <ProcessingButton
             text={buttonLabel}
@@ -297,6 +317,8 @@ export const LiquidityDepletionTemplate = (
 
   return (
     <Template
+      hideCheckbox
+      isChecked={props.isChecked}
       message={`The liquidity provided has been depleted for the market "${description}" no longer is passing the liquidity spread filter. Add more liquidity to have your market seen.`}
       {...props}
     />
