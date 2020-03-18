@@ -297,8 +297,9 @@ export const LiquidityDepletionTemplate = (
 
   return (
     <Template
-      message={`A market you have a created does not pass default liquidity spread filter: "${description}"`}
+      message={`The liquidity provided has been depleted for the market "${description}" no longer is passing the liquidity spread filter. Add more liquidity to have your market seen.`}
       {...props}
     />
   );
 };
+

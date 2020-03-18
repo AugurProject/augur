@@ -29,6 +29,8 @@ import {
   TRANSACTIONS,
   SUBMIT_REPORT,
   CLAIMMARKETSPROCEEDS,
+  MARKET_LIQUIDITY_DEPLETED_TITLE,
+  TYPE_ADD_LIQUIDITY,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'store';
@@ -376,6 +378,14 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: MARKET_IS_MOST_LIKELY_INVALID_TITLE,
       buttonLabel: TYPE_VIEW_DETAILS,
+    };
+  } else if (type === NOTIFICATION_TYPES.liquidityDepleted) {
+    defaults = {
+      type,
+      isImportant: false,
+      isNew: true,
+      title: MARKET_LIQUIDITY_DEPLETED_TITLE,
+      buttonLabel: TYPE_ADD_LIQUIDITY,
     };
   }
 
