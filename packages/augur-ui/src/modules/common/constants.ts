@@ -363,6 +363,7 @@ export const TYPE_VIEW = 'view';
 export const TYPE_VIEW_ORDERS = 'view orders';
 export const TYPE_VIEW_SETS = 'view sets';
 export const TYPE_VIEW_DETAILS = 'view';
+export const TYPE_ADD_LIQUIDITY = 'add liquidity';
 export const TYPE_MIGRATE_REP = 'migrate-rep';
 export const TYPE_FINALIZE_MARKET = 'finalize market';
 
@@ -850,6 +851,8 @@ export const CLAIM_REPORTING_FEES = 'claimReportingFees';
 export const UNSIGNED_ORDERS = 'unsignedOrders';
 export const PROCEEDS_TO_CLAIM = 'proceedsToClaim';
 export const MARKET_IS_MOST_LIKELY_INVALID = 'marketIsMostLikelyInvalid';
+export const MARKET_LIQUIDITY_DEPLETED = 'liquidityDepleted';
+export const MARKET_LIQUIDITY_DEPLETED_TITLE = 'liquidity spread filter - fail';
 
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
@@ -859,6 +862,7 @@ export const NOTIFICATION_TYPES = {
   [UNSIGNED_ORDERS]: UNSIGNED_ORDERS,
   [PROCEEDS_TO_CLAIM]: PROCEEDS_TO_CLAIM,
   [MARKET_IS_MOST_LIKELY_INVALID]: MARKET_IS_MOST_LIKELY_INVALID,
+  [MARKET_LIQUIDITY_DEPLETED]: MARKET_LIQUIDITY_DEPLETED,
 };
 
 // Account View - Timeframe selection options
