@@ -445,7 +445,8 @@ export class ZeroX {
       }
     } catch (error) {
       console.error(error);
-      return setTimeout(this.addOrders(orders), 5000);
+      if (this._mesh || this._rpc)
+        return setTimeout(this.addOrders(orders), 5000);
     }
   }
 

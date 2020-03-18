@@ -72,6 +72,8 @@ import { removePendingOrder, constructPendingOrderid } from 'modules/orders/acti
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
+import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
+import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 
 const handleAlert = (
   log: any,
@@ -195,6 +197,10 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
       loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
     );
   }
+  // update ethToDaiRate/gasPrice each block
+  dispatch(getEthToDaiRate());
+  dispatch(registerUserDefinedGasPriceFunction());
+
   if (log.logs && log.logs.length > 0){
     console.log(log.logs);
     const eventLogs = log.logs.reduce(
