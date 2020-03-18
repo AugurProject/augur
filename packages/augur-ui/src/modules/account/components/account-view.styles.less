@@ -136,3 +136,56 @@
     }
   }
 }
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .AccountView {
+    > div {
+      border: @size-1 solid var(--color-outline);
+      border-radius: @border-radius-rounded;
+
+      div[class*='BoxHeader'] {
+        background: var(--color-table-header-50);
+        border-radius: @border-radius-rounded;
+
+        > div:first-of-type {
+          background: transparent;
+          max-height: @size-56;
+          min-height: @size-56;
+
+
+          > div:first-of-type {
+            .text-16-bold;
+
+            text-transform: capitalize;
+            
+          }
+        }
+      }
+
+      > div:last-of-type {
+        border-bottom-left-radius: @border-radius-rounded;
+        border-bottom-right-radius: @border-radius-rounded;
+      }
+    }
+
+    > div:nth-of-type(2) {
+      > div[class*='Headers'] {
+        background: var(--color-table-header-50);
+        border-top-left-radius: @border-radius-rounded;
+        border-top-right-radius: @border-radius-rounded;
+
+        > ul > li {
+          border-bottom: none;
+
+          > button {
+            .text-16-bold;
+
+            text-transform: capitalize;
+            height: @size-56;
+          }
+        }
+      }
+    }
+  }
+}
