@@ -38,9 +38,12 @@ export class Controller {
       marketIds
     });
 
-    this.augur.events.emit(SubscriptionEventName.MarketsUpdated,  {
-      marketsInfo
-    });
+    console.log('updateMarketsData from controller', marketIds);
+    if (marketsInfo.length > 0) {
+      this.augur.events.emit(SubscriptionEventName.MarketsUpdated,  {
+        marketsInfo
+      });
+    }
   };
 
   private allEvents = async (blockNumber: number, allLogs: ParsedLog[]) => {

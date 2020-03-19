@@ -238,7 +238,6 @@ export const handleMarketsUpdatedLog = ({
     marketsDataById[market.id] = market;
   }
   const marketIds = Object.keys(marketsDataById);
-  console.log('handleMarketsUpdatedChangedLog', marketIds);
   dispatch(updateMarketsData(marketsDataById));
   if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
   if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
@@ -333,22 +332,6 @@ export const handleTokenBalanceChangedLog = (
   })
 };
 
-export const handleOrderDepletionLog = (log: any) =>
-(dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { marketInfos, loginAccount } = getState();
-  const userMarketIds = Object.keys(marketInfos).filter(
-    id => isSameAddress(marketInfos[id].author, loginAccount.address)
-  );
-  if (userMarketIds.length === 0) return null;
-  const type = log.eventType;
-  if (type === OrderEventType.Create || type === OrderEventType.Expire || type === OrderEventType.Cancel) {
-    if (userMarketIds.includes(log.market)) {
-      dispatch(loadMarketsInfo([log.market]))
-    }
-  }
-  return null;
-}
-
 export const handleOrderLog = (log: any) =>
 (dispatch: ThunkDispatch<void, any, Action>) => {
   const type = log.eventType;
@@ -382,7 +365,6 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(removePendingOrder(pendingOrderId, log.market));
   }
   dispatch(updateMarketOrderBook(log.market));
-  dispatch(handleOrderDepletionLog(log));
   if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
@@ -412,7 +394,6 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
       dispatch(throttleLoadUserOpenOrders());
     }
   }
-  dispatch(handleOrderDepletionLog(log));
   if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
@@ -713,5 +694,4 @@ const EventHandlers = {
   [SubscriptionEventName.MarketCreated]: wrapLogHandler(
     handleMarketCreatedLog
   ),
-  [SubscriptionEventName.OrderEvent]: wrapLogHandler(handleOrderDepletionLog),
 }
