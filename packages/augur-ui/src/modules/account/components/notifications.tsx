@@ -48,6 +48,7 @@ export interface NotificationsProps extends RouteComponentProps {
   unsignedOrdersModal: Function;
   openOrdersModal: Function;
   toggle: Function;
+  updateCheckboxOnNotification: Function;
 }
 
 export interface NotificationsState {
@@ -188,7 +189,7 @@ class Notifications extends React.Component<
   }
 
   render() {
-    const { currentAugurTimestamp, disputingWindowEndTime, toggle } = this.props;
+    const { currentAugurTimestamp, disputingWindowEndTime, toggle, updateCheckboxOnNotification } = this.props;
     const notifications = this.props.notifications.map((notification) =>
       this.getButtonAction(notification)
     );
@@ -196,7 +197,7 @@ class Notifications extends React.Component<
     const newNotificationCount = notifications.filter((item) => item.isNew)
       .length;
 
-    const rows = orderBy(notifications, 'isNew', ['desc']).map((notification) => {
+    const rows = orderBy(notifications, 'isNew', ['desc']).filter(notification => !notification.hideNotification).map((notification) => {
       const {
         id,
         isImportant,
@@ -212,6 +213,8 @@ class Notifications extends React.Component<
         type,
         queueName,
         queueId,
+        hideCheckbox,
+        isChecked
       } = notification;
 
       const templateProps = {
@@ -226,6 +229,7 @@ class Notifications extends React.Component<
         type,
         queueName,
         queueId,
+        isChecked
       };
 
       const notificationCardProps = {
@@ -237,6 +241,7 @@ class Notifications extends React.Component<
         title,
         buttonLabel,
         buttonAction,
+        hideCheckbox
       };
 
       const isDisabled: boolean =
@@ -291,6 +296,7 @@ class Notifications extends React.Component<
           {type === NOTIFICATION_TYPES.liquidityDepleted ? (
             <LiquidityDepletionTemplate
               isDisabled={isDisabled}
+              updateCheckboxOnNotification={updateCheckboxOnNotification}
               {...templateProps}
             />
           ) as any : null}
