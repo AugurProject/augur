@@ -2098,49 +2098,6 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: '0x-docker',
-    async call(this: FlashSession) {
-      if (this.noProvider()) return null;
-
-      // const ethNode = this.network.http;
-      const ethNode = 'http://geth:8545';
-      console.log(`Starting 0x mesh. chainId=${this.config.networkId} ethnode=${ethNode}`);
-
-      const zeroXTradeAddress = formatAddress(this.config.addresses.ZeroXTrade, { prefix: false, lower: true });
-      const mesh = spawn('docker', [
-        'run',
-        '--rm',
-        '--network', 'augur',
-        '--name', '0x',
-        '-p', '60557:60557', // rpc_port_number
-        '-p', '60558:60558', // P2PTCPPort
-        '-p', '60559:60559', // P2PWebSocketsPort
-        '-e', `ETHEREUM_CHAIN_ID=${this.config.networkId}`,
-        '-e', `ETHEREUM_RPC_URL=${ethNode}`,
-        '-e', 'USE_BOOTSTRAP_LIST=false',
-        '-e', 'BLOCK_POLLING_INTERVAL=1s',
-        '-e', 'ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120', // needed when polling interval is 1s
-        '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(this.config.addresses)}`,
-        '-e', `CUSTOM_ORDER_FILTER={"properties":{"makerAssetData":{"pattern":".*${zeroXTradeAddress}.*"}}}`,
-        '-e', 'VERBOSITY=4', // 5=debug 6=trace
-        '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
-        '0xorg/mesh:9.0.0',
-      ]);
-
-      mesh.on('error', console.error);
-      mesh.on('exit', (code, signal) => {
-        console.log(`Exiting 0x mesh with code=${code} and signal=${signal}`)
-      });
-      mesh.stdout.on('data', (data) => {
-        console.log(data.toString());
-      });
-      mesh.stderr.on('data', (data) => {
-        console.error(data.toString());
-      });
-    },
-  });
-
-  flash.addScript({
     name: 'get-contract-address',
     options: [
       {
