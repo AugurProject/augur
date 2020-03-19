@@ -9,7 +9,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { TXEventName } from '@augurproject/sdk/src/constants';
 import { OPEN } from 'modules/common/constants';
-import { selectCancelingOrdersState } from 'store/select-state';
+import { selectCancelingOrdersState } from 'appStore/select-state';
 import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { calcPercentageFromPrice } from 'utils/format-number';

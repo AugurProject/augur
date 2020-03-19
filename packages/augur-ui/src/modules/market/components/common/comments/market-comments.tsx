@@ -68,61 +68,18 @@ export class MarketComments extends Component {
     }
 
     let box;
-    let address = (await window.portis.provider.enable())[0];
-    // let address = (await provider.enable())[0];
-    // let address = (await window.ethereum.enable())[0];
+    let address = (await provider.enable())[0];
 
     try {
-      // box = await Box.openBox({address}, provider);
-      // await box.onSyncDone();
-
-      // const box = await Box.openBox(adminEthAddr, ethereum);
-      // const space = await box.openSpace(spaceName, spaceOpts);
-      // box = await Box.openBox("0x48903df4d9b4d224f9f2306e408447d689546ef4", provider._web3Provider);
-      // const space = await box.openSpace('augur', {});
-
-      // const box = await Box.create(provider)
-      // const address = '0x12345abcde'
-      // const spaces = ['myDapp']
-      // await box.auth(spaces, { address })
-      // await box.syncDone
-      //
-      // const space = await box.openSpace('narwhal')
-      // await space.syncDone
-      //
-      // const thread = await space.joinThread(<name>)
-
       box = await Box.create(provider);
       console.log('box ###', box);
 
-      await box.auth(['augurtestone'], {address});
+      await box.auth(['augurtesteightportis'], {address});
       await box.syncDone;
       console.log('auth done ###');
-      //
-      // await box.syncDone;
-      //
-      // const space = await box.openSpace('augurtestone', {});
-      //
-      // await space.syncDone;
 
-      // const box = await Box.openBox(address, window.ethereum);
-      // await box.onSyncDone();
-      // const space = await box.openSpace('augurtestone', {});
-      // await space.onSyncDone();
-
-      // console.log('box sync done ###');
-      // const web3Provider = new Web3(window.ethereum).currentProvider;
-      // const box = await Box.create(web3Provider);
-      // const spaces = ['augurtestone'];
-      // await box.auth(spaces, { address });
-      // await box.syncDone;
-      //
-      // const space = await box.openSpace('augurtestone');
-      // await space.syncDone;
-
-      // const thread = await space.joinThread(this.props.marketId);
-      // const thread = await box.openThread('augurtestone', this.props.marketId, { firstModerator: address, members: false })
-
+      const space = await box.openSpace('augurtesteightportis', {});
+      await space.syncDone;
     } catch (error) {
       console.error(error);
       // return
@@ -144,7 +101,7 @@ export class MarketComments extends Component {
         {isReady && (
           <Comments
             // required
-            spaceName="augurtestone"
+            spaceName="augurtesteightportis"
             threadName={this.props.marketId}
             adminEthAddr={address}
 

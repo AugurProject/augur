@@ -11,7 +11,7 @@ const mapStateToProps = ({loginAccount}) => {
     // provider: window.portis,
     // address: signer._address.toLowerCase(),
     // provider: signer.provider._web3Provider,
-    provider: signer,
+    provider: window.portis.provider,
   } : window.ethereum ? {
     accountType: ACCOUNT_TYPES.METAMASK,
     // address: (await window.ethereum.enable())[0],

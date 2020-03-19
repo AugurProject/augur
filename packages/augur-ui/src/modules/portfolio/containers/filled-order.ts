@@ -1,12 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-<<<<<<< HEAD
 import { AppState } from 'appStore';
-import { formatDai, formatShares } from 'utils/format-number';
-=======
-import { AppState } from 'store';
 import { formatDai, formatShares, calcPercentageFromPrice } from 'utils/format-number';
->>>>>>> origin
 import {
   COLUMN_TYPES,
   SCALAR,
