@@ -115,6 +115,17 @@
   }
 }
 
+div.HasCheckbox {
+  > section > div.Message {
+    flex-direction: column;
+
+    > div.BottomRow {
+      margin-left: 0;
+      padding-left: 0;
+    }
+  }
+} 
+
 .NotificationCard button {
   margin-left: auto;
 }
@@ -135,6 +146,17 @@
       margin-left: 0;
       margin-top: @size-12;
       width: 100%;
+    }
+  }
+
+  &.HasCheckbox {
+    display: grid;
+    grid-template-columns: @size-30 1fr 1fr;
+    align-items: center;
+    margin-top: @size-6;
+
+    > div {
+      margin-bottom: 0;
     }
   }
 }
