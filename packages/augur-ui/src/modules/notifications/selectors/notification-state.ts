@@ -299,6 +299,8 @@ export const selectNotifications = createSelector(
         );
         if (storedNotification) {
           notification.isNew = storedNotification.isNew;
+          notification.isChecked = storedNotification.isChecked;
+          notification.hideNotification = storedNotification.hideNotification;
         }
         return notification;
       });
@@ -386,6 +388,7 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: MARKET_LIQUIDITY_DEPLETED_TITLE,
       buttonLabel: TYPE_ADD_LIQUIDITY,
+      hideCheckbox: true,
     };
   }
 

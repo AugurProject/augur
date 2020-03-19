@@ -65,7 +65,6 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   try {
     if (loggedInAccount) {
       if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
-        console.log('showMetaMaskHelper::', !windowRef.ethereum.selectedAddress);
         if (!windowRef.ethereum.selectedAddress) {
           // show metamask signer
           dispatch(
@@ -175,19 +174,7 @@ export function connectAugur(
     let provider = null;
     const networkId = config.networkId;
 
-    if (config.ethereum?.http) {
-      // Use node provided in the ethereum_node_http param
-      try {
-        provider = new JsonRpcProvider(config.ethereum.http);
-      } catch(error) {
-        dispatch(
-          updateModal({
-            type: MODAL_NETWORK_DISABLED,
-          })
-        );
-      }
-    }
-    else if (networkId && !isDevNetworkId(networkId)) {
+    if (networkId && !isDevNetworkId(networkId)) {
       // Unless DEV, use the provider on window if it exists, otherwise use torus provider
       if (windowRef.web3) {
         // Use window provider
@@ -223,6 +210,7 @@ export function connectAugur(
     if (isGoogleBot()) {
       config.zeroX.mesh.enabled = false;
       config.gsn.enabled = false;
+      config.useWarpSync = false;
     }
 
     let sdk: Augur<Provider> = null;

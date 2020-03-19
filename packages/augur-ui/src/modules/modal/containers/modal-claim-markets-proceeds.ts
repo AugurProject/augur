@@ -90,7 +90,6 @@ const mapStateToProps = (state: AppState) => {
     totalUnclaimedProceeds:
     accountMarketClaimablePositions.totals.totalUnclaimedProceeds,
     GsnEnabled: state.appStatus.gsnEnabled,
-    ethToDaiRate: state.appStatus.ethToDaiRate,
   };
 };
 
@@ -125,7 +124,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           {
             label: 'Transaction Fee',
             value: sP.GsnEnabled
-              ? displayGasInDai(totalGas.value, sP.ethToDaiRate)
+              ? displayGasInDai(totalGas.value)
               : totalGas.formattedValue,
           },
         ],
@@ -168,7 +167,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       },
       {
         label: 'Transaction Fee',
-        value: sP.GsnEnabled ? displayGasInDai(totalGas.value, sP.ethToDaiRate) : totalGas.formattedValue,
+        value: sP.GsnEnabled ? displayGasInDai(totalGas.value) : totalGas.formattedValue,
       },
     ] : null,
     closeAction: () => {
