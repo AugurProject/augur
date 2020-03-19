@@ -30,6 +30,10 @@ export class BaseSyncableDB extends RollbackTable {
     this.rollingBack = false;
   }
 
+  protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
+    return this.bulkAddDocuments(documents);
+  }
+
   async addNewBlock(blocknumber: number, logs: ParsedLog[]): Promise<number> {
     // don't do anything until rollback is complete. We'll sync back to this block later
     if (this.rollingBack) {
@@ -61,9 +65,9 @@ export class BaseSyncableDB extends RollbackTable {
         );
       }
 
-      await this.bulkUpsertDocuments(documents);
+      await this.saveDocuments(documents);
     }
-    if (documents && (documents as any[]).length) {
+    if (documents && (documents as any[]).length && !this.syncing) {
       _.each(documents, (document: any) => {
         this.augur.events.emitAfter(SubscriptionEventName.NewBlock,
           this.eventName,

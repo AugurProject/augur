@@ -48,8 +48,16 @@ contract AugurTrading is IAugurTrading {
     event OrderEvent(address indexed universe, address indexed market, OrderEventType indexed eventType, uint8 orderType, bytes32 orderId, bytes32 tradeGroupId, address[] addressData, uint256[] uint256Data);
     event ProfitLossChanged(address indexed universe, address indexed market, address indexed account, uint256 outcome, int256 netPosition, uint256 avgPrice, int256 realizedProfit, int256 frozenFunds, int256 realizedCost, uint256 timestamp);
     event MarketVolumeChanged(address indexed universe, address indexed market, uint256 volume, uint256[] outcomeVolumes, uint256 timestamp);
-    event GnosisSafeRegistered(address safe, address indexed owner);
-    event GnosisSafeDeRegistered(address safe, address indexed owner);
+    event CancelZeroXOrder(
+        address indexed universe,
+        address indexed market,
+        address indexed account,
+        uint256 outcome,
+        uint256 price,
+        uint256 amount,
+        uint8 orderType,
+        bytes32 orderHash
+    );
 
     mapping(address => bool) public trustedSender;
 
@@ -192,14 +200,9 @@ contract AugurTrading is IAugurTrading {
         emit OrderEvent(address(_universe), address(_market), OrderEventType.Fill, _orderType, _orderHash, _tradeGroupId, _addressData, _uint256Data);
         return true;
     }
-
-    function logGnosisSafeRegistered(address _safe, address _owner) public returns (bool) {
-        require(msg.sender == registry["GnosisSafeRegistry"]);
-        emit GnosisSafeRegistered(_safe, _owner);
-    }
-
-    function logGnosisSafeDeRegistered(address _safe, address _owner) public returns (bool) {
-        require(msg.sender == registry["GnosisSafeRegistry"]);
-        emit GnosisSafeDeRegistered(_safe, _owner);
+    
+    function logZeroXOrderCanceled(address _universe, address _market, address _account, uint256 _outcome, uint256 _price, uint256 _amount, uint8 _type, bytes32 _orderHash) public {
+        require(msg.sender == registry["ZeroXTrade"]);
+        emit CancelZeroXOrder(_universe, _market, _account, _outcome, _price, _amount, _type, _orderHash);
     }
 }

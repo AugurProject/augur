@@ -1,8 +1,7 @@
-import { NetworkId } from '@augurproject/artifacts';
+import { NetworkId, SDKConfiguration } from '@augurproject/artifacts';
 import { WebsocketConnector } from '@augurproject/sdk/build/connector/ws-connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
 import { NewBlock } from '@augurproject/sdk/build/events';
-import { SDKConfiguration } from '@augurproject/sdk/build/state';
 import { Markets } from '@augurproject/sdk/build/state/getter/Markets';
 
 jest.mock('websocket-as-promised', () => {
@@ -30,7 +29,11 @@ jest.mock('websocket-as-promised', () => {
           } else if (message.method === 'unsubscribe') {
             resolve(true);
           } else {
-            resolve(['0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407']);
+            resolve({
+              result: {
+                markets: ['0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407'],
+              }
+            });
           }
         });
       },
@@ -48,9 +51,9 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
       rpcConcurrency: 40,
     },
     sdk: {
+      enabled: true,
       ws: 'ws://localhost:9001',
     },
-    syncing: {},
   };
   const connector = new WebsocketConnector();
   await connector.connect(config);
@@ -73,9 +76,9 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
       const marketList = await getMarkets({
         universe: '123456',
       });
-      expect(marketList).toEqual([
-        '0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407',
-      ]);
+      expect(marketList).toEqual({
+        markets: ['0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407'],
+      });
 
       await connector.off(SubscriptionEventName.NewBlock);
       expect(connector.subscriptions).toEqual({});

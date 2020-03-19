@@ -29,7 +29,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: TestBet,
   analyticsEvent: () => dP.track(DO_A_TEST_BET, {}),
   largeHeader: sP.isTablet ? 'Learn how to bet on Augur' : 'Lastly, run a test bet!',
-  currentStep: 4,
+  currentStep: 5,
   linkContent: [
     {
       content:

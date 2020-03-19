@@ -115,6 +115,86 @@ describe('State API :: Markets :: ', () => {
     expect(marketIds).toContain(yesNoMarket2.address);
   });
 
+  describe('warp sync markets', () => {
+    let expectedMarkets;
+    beforeEach(async () => {
+      await john.initializeUniverseForWarpSync();
+
+      // This hash won't do anything because it is the IPFS for '0'. Which is an uninitialized warp sync market.
+      const someHash = 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51';
+      expectedMarkets = [
+        await john.createReasonableYesNoMarket(),
+        await john.reportAndFinalizeWarpSyncMarket(someHash),
+        await john.reportAndFinalizeWarpSyncMarket(someHash),
+        await john.getWarpSyncMarket()
+      ];
+
+      await john.sync();
+    });
+
+    test('should be filterable using MarketDB getAllWarpSyncMarkets method', async () => {
+      console.log('expectedMarkets', JSON.stringify(expectedMarkets.map((m) => m.address)));
+      const expectedMarketAssertions = expectedMarkets.map((item, i) => expect.objectContaining({
+          market: item.address,
+          isWarpSync: (i !== 0)
+        })
+      ).slice(1);
+
+      await expect(john.db.marketDatabase.getAllWarpSyncMarkets()).resolves.toEqual(expectedMarketAssertions);
+    });
+
+    test('should tag warp sync markets', async () => {
+      const universe = john.augur.contracts.universe;
+      const expectedMarketAssertions = expectedMarkets.map((item, i) => expect.objectContaining({
+          id: item.address,
+          isWarpSync: (i !== 0)
+        })
+      );
+
+      await expect(john.api.route('getMarkets', {
+        universe: universe.address,
+        includeWarpSyncMarkets: true,
+      })).resolves.toEqual({
+        markets: expect.arrayContaining(expectedMarketAssertions),
+        meta: expect.any(Object)
+      });
+    });
+
+    test('should be able to filter out warp sync markets', async () => {
+      const universe = john.augur.contracts.universe;
+      // We only care about the warpsync markets, hence the slice.
+      const expectedMarketAssertions = expectedMarkets.map((item, i) => expect.objectContaining({
+          id: item.address,
+          isWarpSync: (i !== 0)
+        })
+      ).slice(1);
+
+      // Check the default value.
+      await expect(john.api.route('getMarkets', {
+        universe: universe.address,
+      })).resolves.toEqual({
+        markets: expect.not.arrayContaining(expectedMarketAssertions),
+        meta: expect.any(Object)
+      });
+
+      await expect(john.api.route('getMarkets', {
+        universe: universe.address,
+        includeWarpSyncMarkets: true,
+      })).resolves.toEqual({
+        markets: expect.arrayContaining(expectedMarketAssertions),
+        meta: expect.any(Object)
+      });
+
+      await expect(john.api.route('getMarkets', {
+        universe: universe.address,
+        includeWarpSyncMarkets: false,
+      })).resolves.not.toEqual({
+        markets: expect.arrayContaining(expectedMarketAssertions),
+        meta: expect.any(Object)
+      });
+    });
+  });
+
   describe(':getMarketOrderBook', () => {
     const numShares = new BigNumber(10000000000000);
     const price = new BigNumber(22);
@@ -123,21 +203,21 @@ describe('State API :: Markets :: ', () => {
 
     beforeAll(async () => {
       blockProvider = await baseProvider.fork();
-      const addresses = blockProvider.getContractAddresses();
+      const config = blockProvider.getConfig();
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         blockProvider,
-        addresses
+        config
       );
       mary = await TestContractAPI.userWrapper(
         ACCOUNTS[1],
         blockProvider,
-        addresses
+        config
       );
       bob = await TestContractAPI.userWrapper(
         ACCOUNTS[2],
         blockProvider,
-        addresses
+        config
       );
 
       const yesNoMarket = await john.createReasonableYesNoMarket();
@@ -227,18 +307,18 @@ describe('State API :: Markets :: ', () => {
 
     beforeEach(async () => {
       const provider = await blockProvider.fork();
-      const addresses = blockProvider.getContractAddresses();
+      const config = blockProvider.getConfig();
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         provider,
-        addresses
+        config
       );
       mary = await TestContractAPI.userWrapper(
         ACCOUNTS[1],
         provider,
-        addresses
+        config
       );
-      bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, addresses);
+      bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, config);
 
       await john.sync();
     });
@@ -318,6 +398,7 @@ describe('State API :: Markets :: ', () => {
       })) as MarketOrderBook;
 
       expect(orderBook).toEqual({
+        expirationTime: 0,
         marketId: yesNoMarket.address,
         orderBook: {
           [outcome0.toString()]: {

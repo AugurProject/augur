@@ -11,7 +11,7 @@ export const CLEAR_ORDER_BOOK = 'CLEAR_ORDER_BOOK';
 
 export const updateOrderBook = (
   marketId: string,
-  orderBook: Getters.Markets.OutcomeOrderBook
+  orderBook: Getters.Markets.MarketOrderBook
 ) => ({
   type: UPDATE_ORDER_BOOK,
   data: {
@@ -40,6 +40,6 @@ export const loadMarketOrderBook = (
     : { marketId };
   const Augur = augurSdk.get();
   const marketOrderBook = await Augur.getMarketOrderBook(params);
-  dispatch(updateOrderBook(marketId, marketOrderBook.orderBook));
+  dispatch(updateOrderBook(marketId, marketOrderBook));
   callback(null, marketOrderBook);
 };

@@ -10,7 +10,6 @@ import {
   LargeDaiIcon,
   DaiLogoIcon,
   EthIcon,
-  ViewIcon,
   helpIcon,
 } from 'modules/common/icons';
 import {
@@ -19,6 +18,7 @@ import {
   SecondaryButton,
   SubmitTextButton,
   ExternalLinkButton,
+  ProcessingButton,
 } from 'modules/common/buttons';
 import {
   LinearPropertyLabel,
@@ -27,7 +27,7 @@ import {
   ConfirmedLabel,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS, DAI, FAILURE, ACCOUNT_TYPES, ETH } from 'modules/common/constants';
+import { PENDING, SUCCESS, DAI, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS } from 'modules/common/constants';
 import { LinkContent, LoginAccount } from 'modules/types';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { toChecksumAddress } from 'ethereumjs-util';
@@ -44,6 +44,12 @@ export interface TitleProps {
 
 export interface DescriptionProps {
   description: string[];
+}
+
+export interface DescriptionWithLinkProps {
+  description: string[];
+  link: string;
+  label: string;
 }
 
 export interface ButtonsRowProps {
@@ -109,6 +115,8 @@ export interface ActionRow {
   action: Function;
   status: typeof PENDING | typeof SUCCESS | typeof FAILURE;
   properties: Array<{ value: string; label: string; addExtraSpace: boolean }>;
+  queueName?: string;
+  queueId?: string;
 }
 
 export interface ActionRowsProps {
@@ -283,6 +291,21 @@ export const Description = (props: DescriptionProps) => {
   ));
 }
 
+export const DescriptionWithLink = (props: DescriptionWithLinkProps) => {
+  const description = props.description.toString().split('\n').map((descriptionText: string) => (
+    <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
+      {descriptionText}
+    </p>
+  ));
+
+  return (
+    <div className={Styles.DescriptionWithLink}>
+      {description}
+      <a href={props.link} target="_blank">{props.label}</a>
+    </div>
+  );
+}
+
 export const ButtonsRow = (props: ButtonsRowProps) => (
   <div className={Styles.ButtonsRow}>
     {props.buttons.map((Button: DefaultButtonProps, index: number) => {
@@ -339,7 +362,7 @@ export const MediumSubheader = (props: BaseSubheaderProps) => (
   <div className={Styles.MediumSubheader}>{props.text}</div>
 );
 
-interface LinkContentSectionProps {
+export interface LinkContentSectionProps {
   linkContent: LinkContent[];
 }
 
@@ -348,7 +371,7 @@ export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => 
     {linkContent.map((content, idx) => (
       <div key={idx}>
         {content.link && (
-          <a href={content.link} target="_blank">
+          <a href={content.link} target="_blank" rel="noopener noreferrer">
             <ExternalLinkButton label={content.content} />
           </a>
         )}
@@ -467,12 +490,12 @@ export const ActionRows = (props: ActionRowsProps) =>
         </div>
       </section>
       <div>
-        {row.status && row.status !== SUCCESS && <PendingLabel status={row.status} />}
-        {row.status === SUCCESS && <ConfirmedLabel />}
-        <SubmitTextButton
-          disabled={row.status === SUCCESS || row.status === PENDING}
+        <ProcessingButton
           text={row.text}
+          queueName={row.queueName}
+          queueId={row.queueId}
           action={row.action}
+          submitTextButtton={true}
         />
       </div>
       {row.notice && <DismissableNotice title={row.notice} description={''} show={true} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
@@ -577,9 +600,11 @@ interface FundsHelpProps {
 
 export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
-    <span>Need help?</span>
-    <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your Augur account address.</span>
-    <ExternalLinkButton URL='https://docs.augur.net/' label='Learn More' />
+    <p>Need help?</p>
+    <div>
+      <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your Augur account address.</span>
+      <ExternalLinkButton URL={HELP_CENTER_ADD_FUNDS} label='Learn More' />
+    </div>
   </div>
 );
 
@@ -737,7 +762,7 @@ export const CreditCard = ({
     )}
 
     {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
-      <a href='https://wallet.portis.io/buy/' target='_blank'>
+      <a href='https://wallet.portis.io/buy/' target='_blank' rel="noopener noreferrer">
         <PrimaryButton
           action={() => null}
           text={`Buy with ${accountMeta.accountType}`}
@@ -747,7 +772,7 @@ export const CreditCard = ({
     {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
       <PrimaryButton
         disabled={!isAmountValid}
-        action={() => addFundsTorus(amountToBuy)}
+        action={() => addFundsTorus(amountToBuy, toChecksumAddress(walletAddress))}
         text={`Buy with ${accountMeta.accountType}`}
       />
     )}
@@ -810,7 +835,7 @@ export const Coinbase = ({
     <ol>
       <li>
         Login to your account at{' '}
-        <a href='https://www.coinbase.com' target='blank'>
+        <a href='https://www.coinbase.com' target='_blank' rel="noopener noreferrer">
           www.coinbase.com
         </a>
       </li>
@@ -826,7 +851,7 @@ export const Coinbase = ({
     />
     {fundTypeToUse !== ETH && (
       <ExternalLinkButton
-        URL='https://docs.augur.net/'
+        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
         label={'Learn about your address'}
       />
     )}
@@ -863,7 +888,7 @@ export const Transfer = ({
           fundTypeLabel
         )}{' '}
         using an app or exchange (see our list of{' '}
-        <a target='blank' href='https://docs.augur.net/'>
+        <a target='_blank' href={HELP_CENTER_ADD_FUNDS}>
           popular ways to buy {fundTypeLabel})
         </a>
       </li>
@@ -878,7 +903,7 @@ export const Transfer = ({
     />
     {fundTypeToUse !== ETH && (
       <ExternalLinkButton
-        URL='https://docs.augur.net/'
+        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
         label={'Learn about your address'}
       />
     )}

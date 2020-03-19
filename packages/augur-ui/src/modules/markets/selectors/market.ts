@@ -53,14 +53,15 @@ export const selectSortedMarketOutcomes = (marketType, outcomes: OutcomeFormatte
 export const selectSortedDisputingOutcomes = (
   marketType: string,
   outcomes: OutcomeFormatted[],
-  stakes: Getters.Markets.StakeDetails[] | null
+  stakes: Getters.Markets.StakeDetails[] | null,
+  isWarpSync: boolean
 ): OutcomeFormatted[] => {
   if (!stakes || stakes.length === 0)
     return selectSortedMarketOutcomes(marketType, outcomes);
 
   const sortedStakes = sortStakes(stakes);
   if (marketType === SCALAR)
-    return buildScalarDisputingOutcomes(outcomes, sortedStakes);
+    return buildScalarDisputingOutcomes(outcomes, sortedStakes, isWarpSync);
   return buildYesNoCategoricalDisputingOutcomes(outcomes, sortedStakes);
 };
 
@@ -79,7 +80,8 @@ const sortStakes = (stakes: Getters.Markets.StakeDetails[]) => {
 
 const buildScalarDisputingOutcomes = (
   outcomes: OutcomeFormatted[],
-  sortedStakes: Getters.Markets.StakeDetails[]
+  sortedStakes: Getters.Markets.StakeDetails[],
+  isWarpSync: boolean,
 ) => {
   // always add invalid
   const invalidOutcome = outcomes[INVALID_OUTCOME_ID];
@@ -108,7 +110,7 @@ const buildScalarDisputingOutcomes = (
         ];
   }, []);
 
-  return results.find(o => o.id === INVALID_OUTCOME_ID)
+  return (results.find(o => o.id === INVALID_OUTCOME_ID) || isWarpSync)
     ? results
     : [...results, invalidOutcome];
 };

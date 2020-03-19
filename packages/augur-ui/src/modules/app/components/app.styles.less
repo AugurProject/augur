@@ -141,6 +141,17 @@ h6 {
   > .BettingUI {
     display: none;
 
+    path {
+      &:nth-child(odd) {
+        fill: @color-secondary-text;
+        stroke: none;
+      }
+
+      &:nth-child(even) {
+        stroke: @color-secondary-text;
+      }
+    }
+
     @media @breakpoint-mobile {
       display: flex;
       justify-content: center;
@@ -156,6 +167,10 @@ h6 {
 
   &.ModalShowing {
     @media @breakpoint-mobile-tablet {
+      overflow-y: hidden;
+    }
+
+    @media @breakpoint-mobile {
       overflow-y: hidden;
     }
   }

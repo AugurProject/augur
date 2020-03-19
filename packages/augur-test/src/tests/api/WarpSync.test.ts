@@ -14,7 +14,7 @@ describe('WarpSync', () => {
     john = await TestContractAPI.userWrapper(
       ACCOUNTS[0],
       provider,
-      seed.addresses
+      provider.getConfig()
     );
     await john.approveCentralAuthority();
     await john.initializeUniverseForWarpSync();
@@ -49,7 +49,7 @@ describe('WarpSync', () => {
     const warpSyncData = await john.getLastWarpSyncData();
 
     await expect(await warpSyncData.warpSyncHash).toEqual(
-      reportedValue.toString()
+      'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKChD2'
     );
     await expect(await warpSyncData.timestamp).toEqual(
       marketEndTime.toNumber()
@@ -76,6 +76,14 @@ describe('WarpSync', () => {
       'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKChD2'
     );
   });
+
+  test('Warp Sync :: getWarpSyncHashFromPayout to Hash', async () => {
+    const hashValue = 'Qme6s3PJJxqmCfgY7o5pK6sgSpem6ysgosYRuCSCNQ2X6t';
+    const calculatedPayouts = await john.getPayoutFromWarpSyncHash(hashValue);
+    const warpSyncHash = await john.getWarpSyncHashFromPayout(calculatedPayouts);
+    await expect(warpSyncHash).toEqual(hashValue);
+  });
+
 
   test('Warp Sync :: getPayoutFromWarpSyncHash', async () => {
     const warpSyncHash = 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKChD2';

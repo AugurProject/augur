@@ -1,8 +1,17 @@
 import React from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/market/components/market-header/market-header-reporting.styles.less';
-import { REPORTING_STATE, SCALAR, INVALID_OUTCOME_NAME } from 'modules/common/constants';
-import { PrimaryButton, ProcessingButton } from 'modules/common/buttons';
+import {
+  REPORTING_STATE,
+  SCALAR,
+  INVALID_OUTCOME_NAME,
+  SUBMIT_REPORT,
+  SUBMIT_DISPUTE,
+  PROCEEDS_TO_CLAIM_TITLE,
+  TRANSACTIONS,
+  CLAIMMARKETSPROCEEDS,
+} from 'modules/common/constants';
+import { ProcessingButton } from 'modules/common/buttons';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
@@ -15,7 +24,6 @@ interface MarketHeaderReportingProps {
   isDesignatedReporter?: boolean;
   claimMarketsProceeds: Function;
   showReportingModal: Function;
-  reportingStatus: string;
 }
 
 export const MarketHeaderReporting = ({
@@ -26,7 +34,6 @@ export const MarketHeaderReporting = ({
   isLogged,
   canClaimProceeds,
   showReportingModal,
-  reportingStatus
 }: MarketHeaderReportingProps) => {
   const { reportingState, id, consensusFormatted } = market;
   let content = null;
@@ -45,13 +52,12 @@ export const MarketHeaderReporting = ({
           </span>
         </div>
         {canClaimProceeds && (
-          <PrimaryButton
-            id="button"
-            text="Claim Proceeds"
+          <ProcessingButton
+            text={PROCEEDS_TO_CLAIM_TITLE}
+            action={() => claimMarketsProceeds([id])}
             disabled={!isLogged || !canClaimProceeds}
-            action={() => {
-              claimMarketsProceeds([id]);
-            }}
+            queueName={TRANSACTIONS}
+            queueId={CLAIMMARKETSPROCEEDS}
           />
         )}
       </div>
@@ -82,12 +88,14 @@ export const MarketHeaderReporting = ({
             )}
         </div>
         {reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE && (
-          <PrimaryButton
-            id="button"
+          <ProcessingButton
+            queueName={SUBMIT_DISPUTE}
+            queueId={id}
+            small
+            disabled={!isLogged}
             text={
               slowDisputing ? 'Dispute Outcome' : 'Support or Dispute Outcome'
             }
-            disabled={!isLogged}
             action={() => showReportingModal()}
           />
         )}
@@ -101,9 +109,11 @@ export const MarketHeaderReporting = ({
     content = (
       <div className={classNames(Styles.Content, Styles.Report)}>
         <ProcessingButton
+          text='Report'
           action={() => showReportingModal()}
-          reportingStatus={reportingStatus}
           disabled={!isLogged}
+          queueName={SUBMIT_REPORT}
+          queueId={id}
         />
       </div>
     );

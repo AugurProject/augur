@@ -16,7 +16,7 @@ import {
   TradingProceedsClaimedLog,
   MarketType,
   CommonOutcomes,
-  CancelledOrderLog
+  CancelZeroXOrderLog
 } from '../logs/types';
 import { sortOptions } from './types';
 import {
@@ -346,7 +346,7 @@ export class Accounts<TBigNumber> {
       (params.coin === Coin.DAI || params.coin === Coin.ALL)
     ) {
 
-      const zeroXCanceledOrders = await db.CancelledOrders.where('[makerAddress+market]')
+      const zeroXCanceledOrders = await db.CancelZeroXOrder.where('[account+market]')
         .between([params.account, Dexie.minKey],[params.account, Dexie.maxKey])
         .toArray();
 
@@ -666,7 +666,7 @@ function formatZeroXOrders(
 }
 
 function formatZeroXCancelledOrders(
-  storedOrders: CancelledOrderLog[],
+  storedOrders: CancelZeroXOrderLog[],
   marketInfo: MarketCreatedInfo
 ) {
   return storedOrders.map(order => {

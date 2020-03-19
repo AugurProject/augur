@@ -39,6 +39,7 @@ import {
 } from './OnChainTrading';
 import { Getter } from './Router';
 import { sortOptions } from './types';
+import { flattenZeroXOrders } from './ZeroXOrdersGetters';
 
 export enum GetMarketsSortBy {
   marketOI = 'marketOI',
@@ -90,6 +91,7 @@ const getMarketsParamsSpecific = t.intersection([
     maxEndTime: t.number,
     maxLiquiditySpread: GetMaxLiquiditySpread,
     includeInvalidMarkets: t.boolean,
+    includeWarpSyncMarkets: t.boolean,
     categories: t.array(t.string),
     sortBy: getMarketsSortBy,
     userPortfolioAddress: t.string,
@@ -168,6 +170,8 @@ export interface MarketInfo {
   template: ExtraInfoTemplate;
   isTemplate: boolean;
   mostLikelyInvalid: boolean;
+  isWarpSync: boolean;
+  passDefaultLiquiditySpread: boolean;
 }
 
 export interface DisputeInfo {
@@ -190,6 +194,7 @@ export interface StakeDetails {
   isInvalidOutcome: boolean;
   isMalformedOutcome: boolean;
   tentativeWinning: boolean;
+  warpSyncHash: string;
 }
 
 export interface MarketPriceCandlestick {
@@ -236,6 +241,7 @@ export interface OutcomeOrderBook {
 export interface MarketOrderBook {
   marketId: string;
   orderBook: OutcomeOrderBook;
+  expirationTime?: number; // expirationTimeSeconds of soonest order to expire in whole orderbook
 }
 
 export interface LiquidityOrderBookInfo {
@@ -308,7 +314,7 @@ export class Markets {
       );
     }
 
-    const orderFilledLogs = await db.ParsedOrderEvent.where("[market+eventType]").equals([params.marketId, OrderEventType.Fill]).toArray();
+    const orderFilledLogs = await db.ParsedOrderEvent.where('[market+eventType]').equals([params.marketId, OrderEventType.Fill]).toArray();
     const filteredOrderFilledLogs = filterOrderFilledLogs(
       orderFilledLogs,
       params
@@ -435,7 +441,7 @@ export class Markets {
     db: DB,
     params: t.TypeOf<typeof Markets.getMarketPriceHistoryParams>
   ): Promise<MarketPriceHistory> {
-    const orderFilledLogs = await db.ParsedOrderEvent.where("[market+eventType]").equals([params.marketId, OrderEventType.Fill]).toArray();
+    const orderFilledLogs = await db.ParsedOrderEvent.where('[market+eventType]').equals([params.marketId, OrderEventType.Fill]).toArray();
     orderFilledLogs.sort((a: ParsedOrderEventLog, b: ParsedOrderEventLog) => {
       return new BigNumber(a.timestamp).minus(b.timestamp).toNumber();
     });
@@ -470,7 +476,7 @@ export class Markets {
     if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
     }
-
+    params.includeWarpSyncMarkets = typeof params.includeWarpSyncMarkets === 'undefined' ? false : params.includeWarpSyncMarkets;
     params.maxLiquiditySpread = typeof params.maxLiquiditySpread === 'undefined' ? MaxLiquiditySpread.OneHundredPercent : params.maxLiquiditySpread;
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
     params.sortBy = typeof params.sortBy === 'undefined' ? GetMarketsSortBy.liquidity : params.sortBy;
@@ -481,15 +487,15 @@ export class Markets {
     // Get Market docs for all markets with the specified filters
     const numMarketDocs = await db.Markets.count();
     let marketIds: string[] = [];
-    let useMarketIds = params.search || (params.categories && params.categories.length > 0) || params.userPortfolioAddress;
+    const useMarketIds = params.search || (params.categories && params.categories.length > 0) || params.userPortfolioAddress;
     let useCreator = false;
 
     if (params.search || params.categories) {
       const marketsFTSResults = await getMarketsSearchResults(params.universe, params.search || '', params.categories || [], augur);
-      marketIds = _.map(marketsFTSResults, "market");
+      marketIds = _.map(marketsFTSResults, 'market');
     }
 
-    const reportingFeeLog = await db.ReportingFeeChanged.where("universe").equals(params.universe).first();
+    const reportingFeeLog = _.last(_.sortBy(await db.ReportingFeeChanged.where("universe").equals(params.universe).toArray(), 'blockNumber'));
     const reportingFeeDivisor = new BigNumber(reportingFeeLog ? reportingFeeLog.reportingFee : INIT_REPORTING_FEE_DIVISOR);
 
     // Filter out markets not related to the specified user
@@ -505,7 +511,7 @@ export class Markets {
       ]).toArray();
       const stakeLogs = await db.DisputeCrowdsourcerContribution.where('[universe+reporter]').equals([params.universe, params.userPortfolioAddress]).toArray();
       const initialReportLogs = await db.InitialReportSubmitted.where('[universe+reporter]').equals([params.universe, params.userPortfolioAddress]).toArray();
-      const creatorMarkets = await db.Markets.where("marketCreator").equals(params.userPortfolioAddress).toArray();
+      const creatorMarkets = await db.Markets.where('marketCreator').equals(params.userPortfolioAddress).toArray();
       const creatorMarketIds = _.map(creatorMarkets, 'market');
       const profitLossMarketIds = _.map(profitLossLogs, 'market');
       const stakeMarketIds = _.map(stakeLogs, 'market');
@@ -522,15 +528,15 @@ export class Markets {
     let usedReportingStates = false;
 
     if (useMarketIds) {
-      marketsCollection = db.Markets.where("market").anyOf(marketIds);
+      marketsCollection = db.Markets.where('market').anyOf(marketIds);
     } else if (params.creator) {
       useCreator = true;
-      marketsCollection = db.Markets.where("marketCreator").equals(params.creator);
+      marketsCollection = db.Markets.where('marketCreator').equals(params.creator);
     } else if (params.reportingStates) {
       usedReportingStates = true;
-      marketsCollection = db.Markets.where("reportingState").anyOf(params.reportingStates);
+      marketsCollection = db.Markets.where('reportingState').anyOf(params.reportingStates);
     } else {
-      console.warn("No indexed field is being used for this market query. This is probably not an efficient query");
+      console.warn('No indexed field is being used for this market query. This is probably not an efficient query');
       marketsCollection = db.Markets.toCollection();
     }
 
@@ -543,7 +549,24 @@ export class Markets {
       feePercent = maxMarketCreatorFee.toNumber();
     }
 
+    let tentativeWinningHashMatch = false;
+    if (params.includeWarpSyncMarkets) {
+      const marketId = await augur.contracts.warpSync.markets_(params.universe);
+      const warpSyncMarket = await db.Markets.where("market").anyOf(marketId).first();
+      if (warpSyncMarket && warpSyncMarket.tentativeWinningPayoutNumerators) {
+        const tentativeWinningHash = augur.getWarpSyncHashFromPayout(warpSyncMarket.tentativeWinningPayoutNumerators.map(p => new BigNumber(p)));
+        const currentWarpSyncHash = await db.warpSync.table.orderBy('end.number').last();
+        tentativeWinningHashMatch = tentativeWinningHash && currentWarpSyncHash ? tentativeWinningHash === currentWarpSyncHash.hash : false;
+      }
+    }
+
     let marketData = await marketsCollection.and((market) => {
+      if(!params.includeWarpSyncMarkets && market.isWarpSync) {
+        return false;
+      } else if (market.isWarpSync) {
+        return !tentativeWinningHashMatch;
+      }
+
       // Apply reporting states if we did the original query without using that index
       if (!usedReportingStates && params.reportingStates) {
         if (!params.reportingStates.includes(market.reportingState)) return false;
@@ -574,7 +597,7 @@ export class Markets {
           }
         }
         else if (params.maxLiquiditySpread !== MaxLiquiditySpread.OneHundredPercent) {
-          if (market.liquidity[params.maxLiquiditySpread] === "000000000000000000000000000000") return false;
+          if (market.liquidity[params.maxLiquiditySpread] === '000000000000000000000000000000') return false;
           if (market.invalidFilter && market.hasRecentlyDepletedLiquidity) return false;
         }
       }
@@ -589,8 +612,8 @@ export class Markets {
     }
 
     if (params.sortBy) {
-      let sortBy = params.sortBy;
-      marketData = _.orderBy(marketData, (item) => sortBy === "liquidity" ? item[sortBy][params.maxLiquiditySpread] : item[sortBy], params.isSortDescending ? "desc" : "asc");
+      const sortBy = params.sortBy;
+      marketData = _.orderBy(marketData, (item) => sortBy === 'liquidity' ? item[sortBy][params.maxLiquiditySpread] : item[sortBy], params.isSortDescending ? 'desc' : 'asc');
     }
 
     // If returning Recently Depleted Liquidity (spread===0)
@@ -605,7 +628,7 @@ export class Markets {
     marketData = marketData.slice(params.offset, params.offset + params.limit);
 
     // Get markets info to return
-    const marketsInfo: MarketInfo[] = await getMarketsInfo(db, marketData, reportingFeeDivisor);
+    const marketsInfo: MarketInfo[] = await getMarketsInfo(db, marketData, reportingFeeDivisor, augur);
 
     return {
       markets: marketsInfo,
@@ -714,8 +737,8 @@ export class Markets {
           );
 
 
-      var sortedOrders = prickKeysSorted.map(k => bucketsByPrice[k]);
-      for(var i = 0, size = sortedOrders.length; i < size; i++) {
+      const sortedOrders = prickKeysSorted.map(k => bucketsByPrice[k]);
+      for(let i = 0, size = sortedOrders.length; i < size; i++) {
         sortedOrders[i].sort(function(a, b) {
           return parseFloat(b.amount) - parseFloat(a.amount);
         });
@@ -741,9 +764,16 @@ export class Markets {
       );
     };
 
+    const expirationTime = flattenZeroXOrders(orders).reduce(
+      (p, o) => o.expirationTimeSeconds &&
+        (o.expirationTimeSeconds.lt(p) || p.eq(0)) ? o.expirationTimeSeconds : p,
+      new BigNumber(0)
+    ).toNumber();
+
     return {
       marketId: params.marketId,
       orderBook: processMarket(orders),
+      expirationTime,
     };
   }
 
@@ -755,10 +785,10 @@ export class Markets {
   ): Promise<MarketInfo[]> {
     if(params.marketIds.length === 0) return [];
 
-    const markets = await db.Markets.where("market").anyOfIgnoreCase(params.marketIds).toArray();
+    const markets = await db.Markets.where('market').anyOfIgnoreCase(params.marketIds).toArray();
     const reportingFeeDivisor = await augur.contracts.universe.getOrCacheReportingFeeDivisor_();
 
-    return getMarketsInfo(db, markets, reportingFeeDivisor);
+    return getMarketsInfo(db, markets, reportingFeeDivisor, augur);
   }
 
   @Getter('getCategoriesParams')
@@ -771,9 +801,9 @@ export class Markets {
 
     let marketLogs: MarketData[];
     if (reportingStates) {
-      marketLogs = await db.Markets.where("reportingState").anyOfIgnoreCase(reportingStates).and((log) => log.universe === universe).toArray();
+      marketLogs = await db.Markets.where('reportingState').anyOfIgnoreCase(reportingStates).and((log) => log.universe === universe).toArray();
     } else {
-      marketLogs = await db.Markets.where("universe").equals(universe).toArray();
+      marketLogs = await db.Markets.where('universe').equals(universe).toArray();
     }
 
     const allCategories: {[category: string]: null} = {};
@@ -799,7 +829,7 @@ export class Markets {
     // case-insensitive
     const primaryCategories = params.categories.map((category) => category.toLowerCase());
 
-    const allMarkets = await db.Markets.where("reportingState").noneOf([
+    const allMarkets = await db.Markets.where('reportingState').noneOf([
       MarketReportingState.AwaitingFinalization,
       MarketReportingState.Finalized
     ]).and((log) => log.universe === universe).toArray();
@@ -807,7 +837,7 @@ export class Markets {
     const markets = allMarkets.map((market) => {
       const extraInfo = market.extraInfo;
 
-      let categories = extraInfo && Array.isArray(extraInfo.categories) ? extraInfo.categories : [];
+      const categories = extraInfo && Array.isArray(extraInfo.categories) ? extraInfo.categories : [];
 
       return {
         categories,
@@ -1022,7 +1052,8 @@ function getPeriodStartTime(
 async function getMarketsInfo(
   db: DB,
   markets: MarketData[],
-  reportingFeeDivisor: BigNumber
+  reportingFeeDivisor: BigNumber,
+  augur: Augur,
 ): Promise<MarketInfo[]> {
   const marketIds = _.map(markets, 'market');
   // TODO This is just used to get the last price. This can be acheived far more efficiently than pulling all order events for all time
@@ -1067,7 +1098,7 @@ async function getMarketsInfo(
     let finalizationTime = null;
 
     if (marketData.winningPayoutNumerators) {
-      let payouts = [];
+      const payouts = [];
       for (let i = 0; i < marketData.winningPayoutNumerators.length; i++) {
         payouts[i] = new BigNumber(marketData.winningPayoutNumerators[i]).toString(10);
       }
@@ -1122,9 +1153,9 @@ async function getMarketsInfo(
       disputePacingOn: marketData.pacingOn ? marketData.pacingOn : false,
       stakeCompletedTotal: totalRepStakedInMarket.toFixed(),
       bondSizeOfNewStake: totalRepStakedInMarket.multipliedBy(2).toFixed(),
-      stakes: formatStakeDetails(db, marketData, disputeDocsByMarket[marketData.market] || []),
+      stakes: formatStakeDetails(augur, db, marketData, disputeDocsByMarket[marketData.market] || []),
     };
-
+    const passDefaultLiquiditySpread = marketData.liquidity['10'] !== '000000000000000000000000000000'
     return {
       id: marketData.market,
       universe: marketData.universe,
@@ -1164,12 +1195,14 @@ async function getMarketsInfo(
       disavowed: marketData.disavowed,
       template,
       isTemplate: marketData.isTemplate,
-      mostLikelyInvalid: marketData.invalidFilter
+      mostLikelyInvalid: marketData.invalidFilter,
+      isWarpSync: marketData.isWarpSync,
+      passDefaultLiquiditySpread,
     };
   });
 }
 
-function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc[]): StakeDetails[] {
+function formatStakeDetails(augur: Augur, db: DB, market: MarketData, stakeDetails: DisputeDoc[]): StakeDetails[] {
   const formattedStakeDetails: StakeDetails[] = [];
 
   for (let i = 0; i < stakeDetails.length; i++) {
@@ -1178,6 +1211,7 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
     let bondSizeCurrent = new BigNumber(market.totalRepStakedInMarket, 16)
       .multipliedBy(2)
       .minus(new BigNumber(outcomeDetails.totalRepStakedInPayout || 0).multipliedBy(3)).toFixed();
+    const warpSyncHash = market.isWarpSync ? augur.getWarpSyncHashFromPayout(outcomeDetails.payoutNumerators.map(p => new BigNumber(p))) : null;
     if (outcomeDetails.disputeRound < market.disputeRound) {
       formattedStakeDetails[i] = {
         outcome: outcomeValue.outcome,
@@ -1187,10 +1221,11 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
         stakeCurrent: '0',
         stakeRemaining: bondSizeCurrent,
         tentativeWinning: false,
+        warpSyncHash,
       };
     } else {
       const tentativeWinning = String(outcomeDetails.payoutNumerators) === String(market.tentativeWinningPayoutNumerators);
-      bondSizeCurrent = tentativeWinning ? "0" : bondSizeCurrent;
+      bondSizeCurrent = tentativeWinning ? '0' : bondSizeCurrent;
       formattedStakeDetails[i] = {
         outcome: outcomeValue.outcome,
         isInvalidOutcome: outcomeValue.invalid || false,
@@ -1199,6 +1234,7 @@ function formatStakeDetails(db: DB, market: MarketData, stakeDetails: DisputeDoc
         stakeCurrent: new BigNumber(outcomeDetails.stakeCurrent || '0x0', 16).toFixed(),
         stakeRemaining: new BigNumber(outcomeDetails.stakeRemaining || '0x0', 16).toFixed(),
         tentativeWinning,
+        warpSyncHash,
       };
     }
   }

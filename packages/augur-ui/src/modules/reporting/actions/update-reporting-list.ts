@@ -35,7 +35,7 @@ const loadPerReportingState = {
   },
 };
 
-export const reloadReportingPage = () => (dispatch, getState) => {
+export const reloadReportingPage = (marketIds: string[]) => (dispatch, getState) => {
   if (!getState) return;
   const states = Object.keys(loadPerReportingState.reporting);
   states.map(reportingState => {
@@ -45,7 +45,7 @@ export const reloadReportingPage = () => (dispatch, getState) => {
   });
 };
 
-export const reloadDisputingPage = () => (dispatch, getState) => {
+export const reloadDisputingPage = (marketIds: string[]) => (dispatch, getState) => {
   if (!getState) return;
   const states = Object.keys(loadPerReportingState.disputing);
   states.map(reportingState => {

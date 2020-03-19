@@ -4,7 +4,8 @@ import {
   JsonRpcResponse,
   SubscriptionEventName,
 } from '@augurproject/sdk';
-import * as _ from "lodash";
+import { SDKConfiguration } from '@augurproject/artifacts';
+import * as _ from 'lodash';
 import { Callback } from '@augurproject/sdk/src/events';
 import Worker from 'worker-loader?inline!./Sync.worker.ts';
 

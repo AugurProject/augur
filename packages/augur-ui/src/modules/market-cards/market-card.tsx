@@ -13,6 +13,7 @@ import {
   LabelValue,
   OutcomeGroup,
   ResolvedOutcomes,
+  TentativeWinner,
 } from 'modules/market-cards/common';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
@@ -129,6 +130,7 @@ export default class MarketCard extends React.Component<
       isTemplate,
       consensusFormatted,
       mostLikelyInvalid,
+      isWarpSync,
     } = market;
 
     if (loading) {
@@ -153,10 +155,11 @@ export default class MarketCard extends React.Component<
       );
     }
 
-    const InfoIcons = (
+    const InfoIcons = ({ id }) => (
       <>
         {address && isSameAddress(address, author) && (
           <HoverIcon
+            id={id}
             label="marketCreator"
             icon={MarketCreator}
             hoverText="Market Creator"
@@ -164,6 +167,7 @@ export default class MarketCard extends React.Component<
         )}
         {address && isSameAddress(address, designatedReporter) && (
           <HoverIcon
+            id={id}
             label="reporter"
             icon={DesignatedReporter}
             hoverText="Designated Reporter"
@@ -171,6 +175,7 @@ export default class MarketCard extends React.Component<
         )}
         {hasPosition && (
           <HoverIcon
+            id={id}
             label="Position"
             icon={PositionIcon}
             hoverText="Position"
@@ -178,6 +183,7 @@ export default class MarketCard extends React.Component<
         )}
         {hasStaked && (
           <HoverIcon
+            id={id}
             label="dispute"
             icon={DisputeStake}
             hoverText="Dispute Stake"
@@ -203,7 +209,7 @@ export default class MarketCard extends React.Component<
         ),
       }));
 
-    const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
+    const marketResolved = reportingState === REPORTING_STATE.FINALIZED || reportingState === REPORTING_STATE.AWAITING_FINALIZATION;
     const isScalar = marketType === SCALAR;
     const inDispute =
       reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
@@ -220,11 +226,6 @@ export default class MarketCard extends React.Component<
       isLogged;
     const canSupport = !disputeInfo.disputePacingOn;
 
-    const expandedOptionShowing =
-      outcomesFormatted &&
-      outcomesFormatted.length > showOutcomeNumber &&
-      !expandedView;
-
     const headerType =
       location.pathname === makePath(DISPUTING)
         ? HEADER_TYPE.H2
@@ -232,8 +233,13 @@ export default class MarketCard extends React.Component<
         ? HEADER_TYPE.H3
         : undefined;
 
-    const restOfOutcomes = isScalar && inDispute ? disputeInfo.stakes.length - showOutcomeNumber - 1 : outcomesFormatted.length - showOutcomeNumber;
-  
+    const restOfOutcomes =
+      isScalar && inDispute
+        ? disputeInfo.stakes.length - showOutcomeNumber - 1
+        : outcomesFormatted.length - showOutcomeNumber;
+
+    const expandedOptionShowing = restOfOutcomes > 0 && !expandedView;
+
     return (
       <div
         className={classNames(Styles.MarketCard, {
@@ -264,10 +270,12 @@ export default class MarketCard extends React.Component<
               <LabelValue
                 condensed
                 label="Total Dispute Stake"
-                value={formatAttoRep(disputeInfo.stakeCompletedTotal).formatted}
+                value={formatAttoRep(disputeInfo.stakeCompletedTotal).full}
               />
             )}
-            <div className={Styles.hoverIconTray}>{InfoIcons}</div>
+            <div className={Styles.hoverIconTray}>
+              <InfoIcons id={id} />
+            </div>
             <MarketProgress
               reportingState={reportingState}
               currentTime={currentAugurTimestamp}
@@ -287,9 +295,12 @@ export default class MarketCard extends React.Component<
                 marketStatus={marketStatus}
                 reportingState={reportingState}
                 disputeInfo={disputeInfo}
+                isWarpSync={market.isWarpSync}
               />
             )}
-            {isScalar && <MarketTypeLabel marketType={marketType} />}
+            {isScalar && !isWarpSync && (
+              <MarketTypeLabel marketType={marketType} />
+            )}
             <RedFlag market={market} />
             {isTemplate && <TemplateShield market={market} />}
             <CategoryTagTrail categories={categoriesWithClick} />
@@ -342,6 +353,7 @@ export default class MarketCard extends React.Component<
                 canDispute={canDispute}
                 canSupport={canSupport}
                 marketId={id}
+                isWarpSync={market.isWarpSync}
               />
               {expandedOptionShowing && (
                 <button onClick={this.expand}>
@@ -371,8 +383,20 @@ export default class MarketCard extends React.Component<
               expanded={expandedView}
             />
           )}
+          {condensed && inDispute && (
+            <TentativeWinner
+              market={market}
+              tentativeWinner={disputeInfo.stakes.find(
+                stake => stake.tentativeWinning
+              )}
+              dispute={dispute}
+              canDispute={canDispute}
+            />
+          )}
         </>
-        <div>{InfoIcons}</div>
+        <div>
+          <InfoIcons id={id} />
+        </div>
       </div>
     );
   }

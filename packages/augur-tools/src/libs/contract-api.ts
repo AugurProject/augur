@@ -1,14 +1,6 @@
 import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAddresses } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
-import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import {
-  GnosisSafeState,
-  GnosisSafeStateReponse,
-  IGnosisRelayAPI,
-  SafeResponse,
-} from '@augurproject/gnosis-relay-api';
 import {
   Augur,
   BrowserMesh,
@@ -28,10 +20,11 @@ import {
   ZeroXSimulateTradeData,
 } from '@augurproject/sdk';
 import { BigNumber } from 'bignumber.js';
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
 import { formatBytes32String } from 'ethers/utils';
 import { Account } from '../constants';
-import { makeGnosisDependencies, makeSigner } from './blockchain';
+import { makeGSNDependencies, makeSigner } from './blockchain';
+import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
@@ -40,21 +33,20 @@ export class ContractAPI {
   static async userWrapper(
     account: Account,
     provider: EthersProvider,
-    addresses: ContractAddresses,
+    config: SDKConfiguration,
     connector: Connectors.BaseConnector = new EmptyConnector(),
-    gnosisRelay: IGnosisRelayAPI = undefined,
     meshClient: WSClient = undefined,
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, addresses.Cash, new BigNumber(0), null, account.publicKey);
+    const dependencies = await makeGSNDependencies(provider, signer, config.addresses.AugurWalletRegistry, config.addresses.EthExchange, account.publicKey);
 
     let zeroX = null;
     if (meshClient || meshBrowser) {
       zeroX = new ZeroX();
       zeroX.rpc = meshClient;
     }
-    const augur = await Augur.create(provider, dependencies, addresses, connector, zeroX, true);
+    const augur = await Augur.create(provider, dependencies, config, connector, zeroX, true);
     if (zeroX && meshBrowser) {
       zeroX.mesh = meshBrowser;
     }
@@ -64,7 +56,7 @@ export class ContractAPI {
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
-    readonly dependencies: ContractDependenciesGnosis,
+    readonly dependencies: ContractDependenciesGSN,
     public account: Account
   ) {}
 
@@ -76,18 +68,18 @@ export class ContractAPI {
   }
 
   async approveCentralAuthority(): Promise<void> {
-    const authority = this.augur.addresses.Augur;
+    const authority = this.augur.config.addresses.Augur;
     await this.augur.contracts.cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
 
-    const fillOrder = this.augur.addresses.FillOrder;
+    const fillOrder = this.augur.config.addresses.FillOrder;
     await this.augur.contracts.cash.approve(fillOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
     await this.augur.contracts.shareToken.setApprovalForAll(fillOrder, true);
 
-    const createOrder = this.augur.addresses.CreateOrder;
+    const createOrder = this.augur.config.addresses.CreateOrder;
     await this.augur.contracts.cash.approve(createOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
     await this.augur.contracts.shareToken.setApprovalForAll(createOrder, true);
 
-    await this.augur.contracts.cash.approve(this.augur.addresses.ZeroXTrade, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+    await this.augur.contracts.cash.approve(this.augur.config.addresses.ZeroXTrade, new BigNumber(2).pow(256).minus(new BigNumber(1)));
   }
 
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
@@ -112,7 +104,9 @@ export class ContractAPI {
   async marketFauceting() {
     const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     const repBond = await this.getRepBond();
+    console.log("Cash Faucet for market creation");
     await this.faucet(marketCreationFee);
+    console.log("REP Faucet for market creation");
     await this.repFaucet(repBond.plus(10**18));
   }
 
@@ -565,7 +559,6 @@ export class ContractAPI {
     let balance = await this.getCashBalance(realAccount);
     const desired = attoCash;
     while (balance.lt(attoCash)) {
-      console.log(`CASH FAUCETING FOR ${realAccount}. BALANCE: ${balance}. DESIRED: ${desired}`);
       await this.augur.contracts.cashFaucet.faucet(attoCash);
       balance = await this.getCashBalance(realAccount);
     }
@@ -579,12 +572,16 @@ export class ContractAPI {
     await this.augur.contracts.cashFaucet.faucet(attoCash, { sender: account });
   }
 
-  async repFaucet(attoRep: BigNumber): Promise<void> {
+  async repFaucet(attoRep: BigNumber, useLegacy = false): Promise<void> {
     const reputationToken = this.augur.contracts.getReputationToken();
-    if (typeof reputationToken['faucet'] === 'function') {
-      await reputationToken['faucet'](attoRep);
+    if (useLegacy) {
+      await this.augur.contracts.legacyReputationToken.faucet(attoRep);
     } else {
-      throw Error('Cannot faucet REP with non-test version of REP contract.');
+      if (typeof reputationToken['faucet'] === 'function') {
+        await reputationToken['faucet'](attoRep);
+      } else {
+        throw Error('Cannot faucet REP with non-test version of REP contract.');
+      }
     }
   }
 
@@ -598,18 +595,22 @@ export class ContractAPI {
     await this.augur.contracts.ethExchange.publicMintAuto(owner, attoCash, {attachedEth: attoEth});
   }
 
+  async depositRelay(address: string, attoEth: BigNumber): Promise<void> {
+    await this.augur.contracts.relayHub.depositFor(address, {attachedEth: attoEth});
+  }
+
   async initWarpSync(universe: string): Promise<void> {
     await this.augur.contracts.warpSync.initializeUniverse(universe);
   }
 
   async approve(wei: BigNumber): Promise<void> {
-    await this.augur.contracts.cash.approve(this.augur.addresses.Augur, wei);
+    await this.augur.contracts.cash.approve(this.augur.config.addresses.Augur, wei);
 
-    await this.augur.contracts.cash.approve(this.augur.addresses.FillOrder, wei);
-    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.addresses.FillOrder, true);
+    await this.augur.contracts.cash.approve(this.augur.config.addresses.FillOrder, wei);
+    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.config.addresses.FillOrder, true);
 
-    await this.augur.contracts.cash.approve(this.augur.addresses.CreateOrder, wei);
-    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.addresses.CreateOrder, true);
+    await this.augur.contracts.cash.approve(this.augur.config.addresses.CreateOrder, wei);
+    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.config.addresses.CreateOrder, true);
   }
 
   getLegacyRepBalance(owner: string): Promise<BigNumber> {
@@ -632,7 +633,7 @@ export class ContractAPI {
     const childUniverseAddress = await this.augur.contracts.universe!.getChildUniverse_(parentPayoutDistributionHash);
     const childUniverse = this.augur.contracts.universeFromAddress(childUniverseAddress);
     const repContractAddress = await childUniverse.getReputationToken_();
-    return this.augur.contracts.reputationTokenFromAddress(repContractAddress, this.augur.networkId);
+    return this.augur.contracts.reputationTokenFromAddress(repContractAddress, this.augur.config.networkId);
   }
 
   // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
@@ -655,33 +656,25 @@ export class ContractAPI {
     return this.augur.contracts.getReputationToken().allowance_(owner, spender);
   }
 
-  setGnosisSafeAddress(safeAddress: string): void {
-    this.augur.setGnosisSafeAddress(safeAddress);
-  }
-
-  setGasPrice(gasPrice: BigNumber): void {
-    this.augur.setGasPrice(gasPrice);
-  }
-
   getGasPrice(): Promise<BigNumber> {
     return this.augur.getGasPrice()
   }
 
-  setUseGnosisSafe(useSafe: boolean): void {
-    this.augur.setUseGnosisSafe(useSafe);
+  setUseWallet(useSafe: boolean): void {
+    this.augur.setUseWallet(useSafe);
   }
 
-  setUseGnosisRelay(useRelay: boolean): void {
-    this.augur.setUseGnosisRelay(useRelay);
+  setUseRelay(useRelay: boolean): void {
+    this.augur.setUseRelay(useRelay);
   }
 
   async approveAugurEternalApprovalValue(owner: string) {
-    const augur = this.augur.addresses.Augur;
+    const augur = this.augur.config.addresses.Augur;
     const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, augur));
 
     if (!allowance.eq(ETERNAL_APPROVAL_VALUE)) {
-      const fillOrder = this.augur.addresses.FillOrder;
-      const createOrder = this.augur.addresses.CreateOrder;
+      const fillOrder = this.augur.config.addresses.FillOrder;
+      const createOrder = this.augur.config.addresses.CreateOrder;
       await this.augur.contracts.cash.approve(augur, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
       await this.augur.contracts.cash.approve(fillOrder, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
       await this.augur.contracts.cash.approve(createOrder, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
@@ -691,30 +684,8 @@ export class ContractAPI {
     }
   }
 
-  async createGnosisSafeDirectlyWithETH(): Promise<ContractInterfaces.GnosisSafe> {
-    const address = await this.augur.gnosis.createGnosisSafeDirectlyWithETH(this.account.publicKey);
-    return this.augur.contracts.gnosisSafeFromAddress(address);
-  }
-
-  async getGnosisSafeAddress(account: string): Promise<string> {
-    return this.augur.gnosis.getGnosisSafeAddress(account);
-  }
-
-  async createGnosisSafeViaRelay(paymentToken: string): Promise<SafeResponse> {
-    const params = {
-      paymentToken,
-      owner: this.account.publicKey,
-      affiliate: NULL_ADDRESS,
-      fingerprint: formatBytes32String('')
-    };
-    return this.augur.gnosis.createGnosisSafeViaRelay(params);
-  }
-
-  async getGnosisSafeDeploymentStatusViaRelay(owner: string, safe: string): Promise<GnosisSafeStateReponse> {
-    return this.augur.gnosis.getGnosisSafeDeploymentStatusViaRelay({
-      owner,
-      safe,
-    });
+  async getWalletAddress(account: string): Promise<string> {
+    return this.augur.gsn.calculateWalletAddress(account);
   }
 
   async getHotLoadingMarketData(market: string): Promise<HotLoadMarketInfo> {
@@ -755,52 +726,25 @@ export class ContractAPI {
     });
   }
 
-  async fundSafe(safe?: string, minimum=new BigNumber(1e21)) {
-    safe = safe || await this.getOrCreateSafe();
-
+  async fundSafe(safe: string, minimum=new BigNumber(1e21)) {
     if ((await this.getCashBalance(safe)).lt(minimum)) {
       await this.faucet(minimum, safe);
-      await this.waitForSafeFunding(safe);
     }
 
     return safe;
   }
 
-  async waitForSafeFunding(safe: string): Promise<void> {
-    let status: string;
-    for (let i = 0; i < 10; i++) {
-      status = await this.getSafeStatus(safe);
-      if (status !== GnosisSafeState.WAITING_FOR_FUNDS) {
-        break;
-      }
-      await sleep(2000);
+  async getOrCreateWallet(): Promise<string> {
+    const walletFromRegistry = await this.augur.contracts.augurWalletRegistry.getWallet_(this.account.publicKey);
+    if(walletFromRegistry !== NULL_ADDRESS) {
+      console.log(`Found wallet: ${walletFromRegistry}`);
+      return walletFromRegistry;
     }
 
-    // TODO this sleep call can be reduced or eliminated
-    await sleep(10000);
-  }
-
-  async getOrCreateSafe(): Promise<string> {
-    const safeFromRegistry = await this.augur.contracts.gnosisSafeRegistry.getSafe_(this.account.publicKey);
-    if(safeFromRegistry !== NULL_ADDRESS) {
-      console.log(`Found safe: ${safeFromRegistry}`);
-      return safeFromRegistry;
-    }
-
-    console.log('Attempting to create safe via relay');
-    const safeResponse = await this.createGnosisSafeViaRelay(this.augur.addresses.Cash);
-    return safeResponse.safe
-  }
-
-  async getSafeStatus(safe: string) {
-    const status = await this.augur.checkSafe(this.account.publicKey, safe);
-    if (typeof status === 'string') {
-      return status;
-    } else if (typeof status === 'object' && typeof status.status === 'string') {
-      return status.status
-    } else {
-      throw Error(`Received erroneous response when deploying safe via relay: "${status}"`);
-    }
+    const walletAddress = await this.augur.gsn.calculateWalletAddress(this.account.publicKey);
+    console.log(`Funding Wallet Address`);
+    await this.fundSafe(walletAddress);
+    return walletAddress;
   }
 
   async initializeUniverseForWarpSync(): Promise<void> {
@@ -816,7 +760,7 @@ export class ContractAPI {
   }
 
   async getWarpSyncHashFromPayout(payout: BigNumber[]): Promise<string> {
-    return this.augur.warpSync.getWarpSyncHashFromPayout(payout);
+    return this.augur.warpSync.getWarpSyncHashFromPayout(payout[2]);
   }
 
   async getPayoutFromWarpSyncHash(hash: string): Promise<BigNumber[]> {

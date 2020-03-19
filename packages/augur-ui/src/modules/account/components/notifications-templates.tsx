@@ -4,7 +4,7 @@ import {
   formatTime,
   MarketProgress,
 } from 'modules/common/progress';
-import { CancelTextButton } from 'modules/common/buttons';
+import { CancelTextButton, ProcessingButton } from 'modules/common/buttons';
 import {
   DateFormattedObject,
   MarketData,
@@ -30,6 +30,8 @@ interface BaseProps {
   isDisabled: boolean;
   buttonAction: Function;
   buttonLabel: string;
+  queueName?: string;
+  queueId?: string;
 }
 
 interface OpenOrdersResolvedMarketsTemplateProps extends BaseProps {
@@ -67,6 +69,10 @@ interface MostLikelyInvalidMarketsTemplateProps extends BaseProps {
   market: MarketData;
 }
 
+interface LiquidityDepletionTemplateProps extends BaseProps {
+  market: MarketData;
+}
+
 interface TemplateProps extends BaseProps {
   message: string;
 }
@@ -82,9 +88,10 @@ const Template = ({
   type,
   message,
   buttonAction,
-  currentTime,
   isDisabled,
   buttonLabel,
+  queueName,
+  queueId,
 }: TemplateProps) => {
   const showCounter = market && notificationsWithCountdown.includes(type);
   return (
@@ -94,13 +101,23 @@ const Template = ({
         className={Styles.BottomRow}
       >
         {showCounter && (
-          <Counter type={type} market={market} currentTime={currentTime} />
+          <Counter type={type} market={market} />
         )}
-        <CancelTextButton
-          text={buttonLabel}
-          action={() => buttonAction()}
-          disabled={isDisabled}
-        />
+        {queueName && (queueId || (market && market.id)) ?
+          <ProcessingButton
+            text={buttonLabel}
+            action={() => buttonAction()}
+            queueName={queueName}
+            queueId={queueId || market.id }
+            cancelButton
+          />
+        :
+          <CancelTextButton
+            text={buttonLabel}
+            action={() => buttonAction()}
+            disabled={isDisabled}
+          />
+        }
       </div>
     </>
   );
@@ -137,31 +154,27 @@ const TemplateBody = (props: TemplateBodyProps) => {
 interface CounterProps {
   type: string;
   market: MarketData;
-  currentTime?: DateFormattedObject;
   disputingWindowEndTime?: DateFormattedObject;
 }
 
-const Counter = ({ market, type, currentTime }: CounterProps) => {
+const Counter = ({ market, type }: CounterProps) => {
   let counter: any = null;
   const { endTime, reportingState, finalizationTime, disputeInfo } = market;
   const endTimeFormatted = formatTime(endTime);
   const finalizationTimeFormatted = formatTime(finalizationTime);
   if (
     type === NOTIFICATION_TYPES.proceedsToClaim &&
-    finalizationTimeFormatted &&
-    currentTime
+    finalizationTimeFormatted
   ) {
     counter = (
       <div className={Styles.Countdown}>
         <CountdownProgress
           label={MARKET_STATUS_MESSAGES.WAITING_PERIOD_ENDS}
           time={finalizationTimeFormatted}
-          currentTime={formatTime(currentTime)}
         />
       </div>
     );
   } else {
-    // if (currentTime && disputeInfo.disputeWindow.endTime) {
       const label =
         type === NOTIFICATION_TYPES[MARKET_IN_DISPUTE]
           ? DISPUTE_ENDS
@@ -170,14 +183,12 @@ const Counter = ({ market, type, currentTime }: CounterProps) => {
         <div className={Styles.Countdown}>
           <MarketProgress
             reportingState={reportingState}
-            currentTime={currentTime}
             endTimeFormatted={endTimeFormatted}
             reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
             customLabel={label}
           />
         </div>
       );
-    // }
   }
   return counter;
 };
@@ -190,17 +201,6 @@ export const OpenOrdersResolvedMarketsTemplate = (
   return (
     <Template
       message={`You have open orders in this resolved market: "${description}"`}
-      {...props}
-    />
-  );
-};
-
-export const FinalizeTemplate = (props: FinalizeTemplateProps) => {
-  const { description } = props.market;
-
-  return (
-    <Template
-      message={`The market: "${description}" is resolved and is ready to be finalized.`}
       {...props}
     />
   );
@@ -253,8 +253,8 @@ export const ClaimReportingFeesTemplate = (
   props: ClaimReportingFeesTemplateTemplateProps
 ) => {
   const { claimReportingFees } = props;
-  const unclaimedREP = claimReportingFees.totalUnclaimedRepFormatted.formatted;
-  const unclaimedDai = claimReportingFees.totalUnclaimedDaiFormatted.formatted;
+  const unclaimedREP = claimReportingFees.totalUnclaimedRepFormatted.formattedValue;
+  const unclaimedDai = claimReportingFees.totalUnclaimedDaiFormatted.formattedValue;
 
   return (
     <Template
@@ -289,3 +289,17 @@ export const MostLikelyInvalidMarketsTemplate = (
     />
   );
 };
+
+export const LiquidityDepletionTemplate = (
+  props: LiquidityDepletionTemplateProps
+) => {
+  const { description } = props.market;
+
+  return (
+    <Template
+      message={`The liquidity provided has been depleted for the market "${description}" no longer is passing the liquidity spread filter. Add more liquidity to have your market seen.`}
+      {...props}
+    />
+  );
+};
+

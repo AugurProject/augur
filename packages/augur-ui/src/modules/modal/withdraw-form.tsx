@@ -16,7 +16,7 @@ import { FormattedNumber, LoginAccount } from 'modules/types';
 import { FormDropdown, TextInput } from 'modules/common/form';
 import { CloseButton } from 'modules/common/buttons';
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
-import { ethToDai, displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { ethToDai, displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface WithdrawFormProps {
   closeAction: Function;
@@ -33,8 +33,8 @@ interface WithdrawFormProps {
     dai: number;
   };
   account: string;
-  Gnosis_ENABLED: boolean;
-  ethToDaiRate: BigNumber;
+  GsnEnabled: boolean;
+  ethToDaiRate: FormattedNumber;
   gasPrice: number;
 }
 
@@ -92,21 +92,17 @@ export class WithdrawForm extends Component<
   };
 
   handleMax = () => {
-    const { balances, fallBackGasCosts, Gnosis_ENABLED, gasPrice } = this.props;
+    const { balances, fallBackGasCosts, GsnEnabled, gasPrice } = this.props;
     const { currency, relayerGasCosts } = this.state;
 
-    const gasEstimate = Gnosis_ENABLED
-    ? formatGasCostToEther(
-        relayerGasCosts,
-        { decimalsRounded: 4 },
-        gasPrice,
-      )
-    : fallBackGasCosts[currency.toLowerCase()];
+    const gasEstimate = GsnEnabled
+      ? getGasInDai(relayerGasCosts)
+      : fallBackGasCosts[currency.toLowerCase()];
 
     const fullAmount = createBigNumber(
       balances[currency.toLowerCase()]
     );
-    const valueMinusGas = fullAmount.minus(createBigNumber(gasEstimate));
+    const valueMinusGas = fullAmount.minus(createBigNumber(gasEstimate.value));
     const resolvedValue = valueMinusGas.lt(ZERO) ? ZERO : valueMinusGas;
     this.amountChange(resolvedValue.toFixed(), true);
   };
@@ -115,7 +111,7 @@ export class WithdrawForm extends Component<
     const {
       balances,
       fallBackGasCosts,
-      Gnosis_ENABLED,
+      GsnEnabled,
       ethToDaiRate,
       gasPrice,
     } = this.props;
@@ -128,13 +124,13 @@ export class WithdrawForm extends Component<
     const availableDai = createBigNumber(balances.dai);
     let amountMinusGas = ZERO;
 
-    if (Gnosis_ENABLED) {
+    if (GsnEnabled) {
       const relayerGasCostsETH = formatGasCostToEther(
         relayerGasCosts,
         { decimalsRounded: 4 },
         gasPrice
       );
-      const relayerGasCostsDAI = ethToDai(relayerGasCostsETH, ethToDaiRate);
+      const relayerGasCostsDAI = ethToDai(relayerGasCostsETH, createBigNumber(ethToDaiRate.value || 0));
 
       if (currency === DAI) {
         if (dontCheckMinusGas) {
@@ -188,11 +184,11 @@ export class WithdrawForm extends Component<
       updatedErrors.amount = 'Quantity must be greater than zero.';
     }
 
-    if (Gnosis_ENABLED && amountMinusGas.lt(ZERO)) {
+    if (GsnEnabled && amountMinusGas.lt(ZERO)) {
       updatedErrors.amount = 'Not enough DAI available to pay gas cost.';
     }
 
-    if (!Gnosis_ENABLED && amountMinusGas.lt(ZERO)) {
+    if (!GsnEnabled && amountMinusGas.lt(ZERO)) {
       updatedErrors.amount = 'Not enough ETH available to pay gas cost.';
     }
 
@@ -238,9 +234,7 @@ export class WithdrawForm extends Component<
       transferFunds,
       balances,
       closeAction,
-      Gnosis_ENABLED,
-      ethToDaiRate,
-      gasPrice,
+      GsnEnabled,
     } = this.props;
     const { relayerGasCosts, amount, currency, address, errors } = this.state;
     const { amount: errAmount, address: errAddress } = errors;
@@ -255,12 +249,8 @@ export class WithdrawForm extends Component<
       formattedAmount = formatRep(amount || 0);
     }
 
-    const gasEstimate = Gnosis_ENABLED
-      ? formatGasCostToEther(
-          relayerGasCosts,
-          { decimalsRounded: 4 },
-          gasPrice,
-        )
+    const gasEstimate = GsnEnabled
+      ? displayGasInDai(relayerGasCosts)
       : fallBackGasCosts[currency.toLowerCase()];
 
     const buttons = [
@@ -282,9 +272,7 @@ export class WithdrawForm extends Component<
       },
       {
         label: 'Transaction Fee',
-        value: Gnosis_ENABLED
-          ? displayGasInDai(gasEstimate, ethToDaiRate)
-          : gasEstimate,
+        value: gasEstimate,
       },
     ];
 

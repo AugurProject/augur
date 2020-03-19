@@ -9,6 +9,7 @@ import { AsyncQueue, queue, retry } from 'async';
 import { isInstanceOfBigNumber, isInstanceOfArray } from './utils';
 import { JSONRPCRequestPayload, JSONRPCErrorCallback, JSONRPCResponsePayload } from 'ethereum-types';
 import { BigNumber } from "bignumber.js";
+import { FasterAbiInterface } from './FasterAbiInterface';
 
 interface MultiAddressFilter {
   blockhash?: string;
@@ -19,7 +20,7 @@ interface MultiAddressFilter {
 }
 
 interface ContractMapping {
-  [contractName: string]: ethers.utils.Interface;
+  [contractName: string]: FasterAbiInterface;
 }
 
 interface PerformQueueTask {
@@ -65,9 +66,9 @@ export class EthersProvider extends ethers.providers.BaseProvider
           { times, interval },
           async () => {
             if (item.message === "send") {
-              return await _this.provider.send(item.params.method, item.params.params);
+              return await _this.providerSend(item.params.method, item.params.params);
             } else {
-              return await _this.provider.perform(item.message, item.params);
+              return await _this.providerPerform(item.message, item.params);
             }
           },
           callback
@@ -75,6 +76,14 @@ export class EthersProvider extends ethers.providers.BaseProvider
       },
       concurrency
     );
+  }
+
+  async providerSend(method: string, params: any): Promise<any> {
+    return this.provider.send(method, params);
+  }
+
+  async providerPerform(message: string, params: any): Promise<any> {
+    return this.provider.perform(message, params);
   }
 
   async listAccounts(): Promise<string[]> {
@@ -123,7 +132,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   }
 
   storeAbiData(abi: Abi, contractName: string): void {
-    this.contractMapping[contractName] = new ethers.utils.Interface(abi);
+    this.contractMapping[contractName] = new FasterAbiInterface(abi);
   }
 
   async getEthBalance(address: string): Promise<string> {
@@ -173,7 +182,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
 
   parseLogValues(contractName: string, log: Log): LogValues {
     const contractInterface = this.getContractInterface(contractName);
-    const parsedLog = contractInterface.parseLog(log);
+    const parsedLog = contractInterface.fastParseLog(log);
     const omittedValues = _.map(_.range(parsedLog.values.length), n =>
       n.toString()
     );
@@ -197,7 +206,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     };
   }
 
-  private getContractInterface(contractName: string): ethers.utils.Interface {
+  private getContractInterface(contractName: string): FasterAbiInterface {
     const contractInterface = this.contractMapping[contractName];
     if (!contractInterface) {
       throw new Error(
@@ -275,7 +284,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     }));
   }
 
-  // This is to support the 0x Web3 Provider Engine requirements
+  // This is to support the Web3 Spec
   sendAsync(payload: JSONRPCRequestPayload, callback?: JSONRPCErrorCallback): void {
     this.performQueue.push({ message: "send", params: payload }, (error, result) => {
       if (callback) callback(error, {

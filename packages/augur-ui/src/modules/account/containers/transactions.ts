@@ -9,26 +9,36 @@ import {
   MODAL_ADD_FUNDS,
   MODAL_TRANSACTIONS,
   MODAL_ACCOUNT_APPROVAL,
+  MODAL_GSN_FAUCET,
 } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls'
-import getValue from 'utils/get-value';
-import { isGnosisUnavailable } from 'modules/app/selectors/gnosis';
+import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 
 const mapStateToProps = (state: AppState) => {
+  const { loginAccount } = state;
+  const { meta, balances, address } = loginAccount;
+  const signingWallet = meta.signer?._address;
   const networkId = getNetworkId();
-  const Gnosis_ENABLED = getValue(state, 'appStatus.gnosisEnabled');
-  const GnosisUnavailable = isGnosisUnavailable(state);
+  const gsnEnabled = state.appStatus.gsnEnabled;
+  const gsnCreated = !isGSNUnavailable(state);
 
-  const showFaucets = Gnosis_ENABLED
-    ? networkId !== NETWORK_IDS.Mainnet && !GnosisUnavailable
+  const showFaucets = gsnEnabled
+    ? networkId !== NETWORK_IDS.Mainnet && gsnCreated
     : networkId !== NETWORK_IDS.Mainnet;
+
+  const localLabel = networkId !== NETWORK_IDS.Kovan ? 'Use flash to faucet DAI to address' : null;
+  const targetAddress = networkId !== NETWORK_IDS.Kovan ? address : signingWallet;
 
   return {
     isMainnet: networkId === NETWORK_IDS.Mainnet,
     showFaucets,
+    targetAddress,
+    signingEth: balances.ethNonSafe,
+    gsnCreated,
+    localLabel
   };
 };
 
@@ -40,6 +50,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   transactions: () => dispatch(updateModal({ type: MODAL_TRANSACTIONS })),
   approval: () => dispatch(updateModal({ type: MODAL_ACCOUNT_APPROVAL })),
   legacyRepFaucet: () => getLegacyRep(),
+  fundGsnWallet: () => dispatch(updateModal({ type: MODAL_GSN_FAUCET })),
 });
 
 const TransactionsContainer = connect(

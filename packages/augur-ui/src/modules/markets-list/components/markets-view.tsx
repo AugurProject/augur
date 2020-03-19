@@ -12,6 +12,7 @@ import {
   TYPE_TRADE,
   MAX_FEE_100_PERCENT,
   MAX_SPREAD_ALL_SPREADS,
+  HELP_CENTER_INVALID_MARKETS,
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
@@ -57,6 +58,7 @@ interface MarketsViewProps {
   templateFilter: string;
   setMarketsListSearchInPlace: Function;
   marketListViewed: Function;
+  marketsInReportingState: MarketData[];
 }
 
 interface MarketsViewState {
@@ -113,6 +115,7 @@ export default class MarketsView extends Component<
       isLogged,
       templateFilter,
       marketListViewed,
+      marketsInReportingState
     } = this.props;
     const { marketCount, offset } = this.state;
 
@@ -145,6 +148,7 @@ export default class MarketsView extends Component<
     if (
       isConnected !== prevProps.isConnected ||
       isLogged !== prevProps.isLogged ||
+      marketsInReportingState.length !== prevProps.marketsInReportingState.length ||
       (search !== prevProps.search ||
         selectedCategories !== prevProps.selectedCategories ||
         maxLiquiditySpread !== prevProps.maxLiquiditySpread ||
@@ -196,7 +200,6 @@ export default class MarketsView extends Component<
     } = this.props;
 
     const { limit, offset } = this.state;
-    this.componentWrapper.scrollIntoView();
     window.scrollTo(0, 1);
 
     this.props.setLoadMarketsPending(true);
@@ -342,7 +345,7 @@ export default class MarketsView extends Component<
             <span>
               Invalid markets are no longer hidden. This puts you at risk of
               trading on invalid markets.{' '}
-              <a href="https://augur.net" target="_blank">
+              <a href={HELP_CENTER_INVALID_MARKETS} target="_blank" rel="noopener noreferrer">
                 Learn more
               </a>
             </span>
@@ -360,7 +363,7 @@ export default class MarketsView extends Component<
           content={
             <span>
               {feesLiquidityMessage}{' '}
-              <a href="https://augur.net" target="_blank">
+              <a href={HELP_CENTER_INVALID_MARKETS} target="_blank" rel="noopener noreferrer">
                 Learn more
               </a>
             </span>

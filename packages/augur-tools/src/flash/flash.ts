@@ -1,11 +1,9 @@
-import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
-import { NetworkConfiguration } from '@augurproject/core';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
   Connectors,
   createClient,
   Events,
-  SDKConfiguration,
   SubscriptionEventName,
 } from '@augurproject/sdk';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
@@ -13,7 +11,7 @@ import { API } from '@augurproject/sdk/build/state/getter/API';
 import { LogFilterAggregatorInterface } from '@augurproject/sdk/build/state/logs/LogFilterAggregator';
 import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
 import { BigNumber } from 'bignumber.js';
-import { providers } from 'ethers';
+import { ethers, providers } from 'ethers';
 import { Account } from '../constants';
 import { makeSigner } from '../libs/blockchain';
 import { ContractAPI } from '../libs/contract-api';
@@ -53,7 +51,6 @@ export class FlashSession {
 
   // Node miscellanea
   provider?: EthersProvider;
-  contractAddresses?: ContractAddresses;
   account?: string;
 
   // Other values to store. This exists because e.g. Ganache can't exist in all environments.
@@ -61,7 +58,8 @@ export class FlashSession {
 
   constructor(
     public accounts: Account[],
-    public network?: NetworkConfiguration
+    public network?: string,
+    public config?: SDKConfiguration,
   ) {}
 
   addScript(script: FlashScript) {
@@ -109,7 +107,7 @@ export class FlashSession {
   }
 
   noAddresses() {
-    if (typeof this.contractAddresses === 'undefined') {
+    if (typeof this.config?.addresses === 'undefined') {
       this.log('ERROR: Must first load contract addresses.');
       return true;
     }
@@ -119,14 +117,14 @@ export class FlashSession {
 
   sdkReady = false;
   async ensureUser(
-    network?: NetworkConfiguration,
+    network?: string,
     wireUpSdk: boolean|null = null,
     approveCentralAuthority = true,
     accountAddress: string|null = null,
-    useZerox = false,
-    useGnosis = false
+    useZerox: boolean = null,
+    useGSN: boolean = null,
   ): Promise<ContractAPI> {
-    if (typeof this.contractAddresses === 'undefined') {
+    if (typeof this.config?.addresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
     }
 
@@ -134,41 +132,23 @@ export class FlashSession {
       throw new Error('ERROR: No provider');
     }
 
-    const config: SDKConfiguration = {
-      networkId: (await this.provider.getNetworkId()) as NetworkId,
-      ethereum: {
-        http: network ? network.http : undefined, // NB(pg): Currently some tests don't pass in this config
-        rpcRetryCount: 5,
-        rpcRetryInterval: 0,
-        rpcConcurrency: 40
-      },
-      gnosis: {
-        enabled: useGnosis,
-        http: useGnosis ? network.gnosisRelayerUrl : undefined
-      },
-      zeroX: {
-        rpc: {
-          enabled: useZerox,
-          ws: useZerox ? network.zeroxEndpoint : undefined
-        },
-        mesh: {
-          enabled: false
-        }
-      },
-      syncing: {
-        enabled: wireUpSdk
-      },
-      addresses: this.contractAddresses,
-    };
+    // TODO respond if a sub-object does not exist -- config would be invalid
+    if (useZerox !== null) {
+      this.config.zeroX.rpc.enabled = useZerox;
+    }
+    if (useGSN !== null) {
+      this.config.gsn.enabled = useGSN;
+    }
+
     // Initialize the user if this is the first time we are being called. This will create the provider and all of that jazz.
     if (!this.user) {
-      console.log('--------- Connecting ---------')
-      console.log('Network Id: ', config.networkId);
-      if (config?.zeroX?.rpc?.enabled) {
-        console.log('ZeroX Enabled:', config.zeroX.rpc.ws);
+      console.log('--------- Connecting ---------');
+      console.log('Network Id: ', this.config.networkId);
+      if (this.config?.zeroX?.rpc?.enabled) {
+        console.log('ZeroX Enabled:', this.config.zeroX.rpc.ws);
       }
-      if (config?.gnosis?.enabled) {
-        console.log('Gnosis Enabled:', config.gnosis.http);
+      if (this.config?.gsn?.enabled) {
+        console.log('GSN Enabled');
       }
 
       try {
@@ -183,24 +163,18 @@ export class FlashSession {
 
         // Run everything in one context, both syncing and this client code
         const connector = new Connectors.SingleThreadConnector();
-        const client = await createClient(config, connector, account.publicKey, signer, this.provider);
+        const client = await createClient(this.config, connector, account.publicKey, signer, this.provider);
 
         // Create a ContractAPI for this user with this particular augur client. This provides
         // a variety of nice wrapper functions which we should think about exporting
         this.user = new ContractAPI(client, this.provider, client.dependencies, account);
-        this.user.augur.setGasPrice(new BigNumber(this.network.gasPrice.toString()));
 
-        // IF we want this flash client to use a safe associated with the past in
+        // IF we want this flash client to use a wallet associated with the past in
         // account, configure it at this point.
-        if (config.gnosis.enabled) {
-          const safe = await this.user.getOrCreateSafe();
-          await this.user.faucetOnce(new BigNumber(1e21), safe);
-          const safeStatus = await this.user.getSafeStatus(safe);
-          console.log(`Safe ${safe}: ${safeStatus}`);
-          this.user.augur.setGasPrice(new BigNumber(90000));
-          this.user.setGnosisSafeAddress(safe);
-          this.user.setUseGnosisSafe(true);
-          this.user.setUseGnosisRelay(true);
+        if (this.config.gsn.enabled) {
+          await this.user.getOrCreateWallet();
+          this.user.setUseWallet(true);
+          this.user.setUseRelay(true);
         } else if (approveCentralAuthority) {
           await this.user.approveCentralAuthority();
         }
@@ -211,13 +185,13 @@ export class FlashSession {
       }
     }
 
-    if (config.syncing.enabled && !this.api) {
-      console.log('------ Starting Server -------')
-      console.log('Syncing Enabled: Starting API Server')
+    if (this.config?.syncing?.enabled && !this.api) {
+      console.log('------ Starting Server -------');
+      console.log('Syncing Enabled: Starting API Server');
       try {
-        await this.user.augur.connector.connect(config);
+        await this.user.augur.connector.connect(this.config);
         this.api = (this.user.augur.connector as Connectors.SingleThreadConnector).api;
-        console.log('Syncing Started')
+        console.log('Syncing Started');
 
         // NB(pg): Augur#on should *not* be asynchronous and needs to be refactored
         // at another time.
@@ -269,22 +243,22 @@ export class FlashSession {
   }
 
   async contractOwner(): Promise<ContractAPI> {
-    if (typeof this.contractAddresses === 'undefined') {
+    if (typeof this.config?.addresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
     }
 
     return ContractAPI.userWrapper(
       this.accounts[0],
       this.provider,
-      this.contractAddresses
+      this.config,
     );
   }
 
-  makeProvider(config: NetworkConfiguration): EthersProvider {
-    const provider = new providers.JsonRpcProvider(config.http);
+  makeProvider(config: SDKConfiguration): EthersProvider {
+    const provider = new providers.JsonRpcProvider(config.ethereum.http);
     const ethersProvider = new EthersProvider(provider, 5, 0, 40);
-    ethersProvider.overrideGasPrice = config.gasPrice;
-    ethersProvider.gasLimit = config.gasLimit;
+    ethersProvider.overrideGasPrice = new ethers.utils.BigNumber(config.gas.price);
+    ethersProvider.gasLimit = new ethers.utils.BigNumber(config.gas.limit);
     return ethersProvider;
   }
 
@@ -300,7 +274,7 @@ export class FlashSession {
     } as unknown) as LogFilterAggregatorInterface;
 
     return DB.createAndInitializeDB(
-      Number(this.user.augur.networkId),
+      Number(this.user.augur.config.networkId),
       logFilterAggregator,
       this.user.augur,
       true

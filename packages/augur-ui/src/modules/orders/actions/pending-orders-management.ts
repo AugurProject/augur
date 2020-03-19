@@ -2,6 +2,13 @@ import { UIOrder } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { isTransactionConfirmed } from 'modules/contracts/actions/contractCalls';
+import {
+  convertDisplayAmountToOnChainAmount,
+  convertDisplayPriceToOnChainPrice,
+} from '@augurproject/sdk';
+import { createBigNumber } from 'utils/create-big-number';
+import { TransactionMetadataParams } from 'contract-dependencies-ethers/src';
+import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 
 export const ADD_PENDING_ORDER = 'ADD_PENDING_ORDER';
 export const REMOVE_PENDING_ORDER = 'REMOVE_PENDING_ORDER';
@@ -45,4 +52,53 @@ export const loadPendingOrdersTransactions = (pendingOrders: UIOrder[]) => (
         : dispatch(addPendingOrder(o, marketId));
     });
   });
+};
+
+export const constructPendingOrderid = (
+  onChainAmount: string,
+  onChainPrice: string,
+  onchainOutcome: string,
+  market: string
+) => {
+  const params: TransactionMetadataParams = {
+    amount: createBigNumber(onChainAmount).toString(),
+    price: createBigNumber(onChainPrice).toString(16),
+    outcome: onchainOutcome,
+    market,
+  };
+
+  return generateTxParameterId(params);
+};
+
+export const generatePendingOrderId = (
+  amount: string,
+  price: string,
+  outcome: string,
+  marketId: string,
+  tickSize: string,
+  minPrice: string
+) => {
+  const bnTickSize = createBigNumber(tickSize);
+  const bnMinPrice = createBigNumber(minPrice);
+  const bnAmount = createBigNumber(amount);
+  const bnPrice = createBigNumber(price);
+  const onChainAmount = convertDisplayAmountToOnChainAmount(
+    bnAmount,
+    bnTickSize
+  );
+  const onChainPrice = convertDisplayPriceToOnChainPrice(
+    bnPrice,
+    bnMinPrice,
+    bnTickSize
+  );
+  const hexOutcome = `0x0${outcome}`;
+
+  const params: TransactionMetadataParams = {
+    amount: onChainAmount.toString(),
+    price: onChainPrice.toString(16),
+    outcome: hexOutcome,
+    market: marketId,
+  };
+
+  return generateTxParameterId(params);
 };

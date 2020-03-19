@@ -1,7 +1,6 @@
-import { Log } from '@augurproject/types';
+import { Log, ParsedLog } from '@augurproject/types';
 import { WarpController } from '../../warp/WarpController';
 import _ from 'lodash';
-import { Address } from '../logs/types';
 
 export class WarpSyncStrategy {
   constructor(
@@ -13,34 +12,40 @@ export class WarpSyncStrategy {
     return this.warpSyncController.pinHashByGatewayUrl(url);
   }
 
-  async start(ipfsRootHash?: string): Promise<number | undefined> {
-    // No hash, nothing to do!
-    if (!ipfsRootHash) return undefined;
-
+  async start(ipfsRootHash?: string, highestSyncedBlock = 0): Promise<number | undefined> {
     await this.warpSyncController.createInitialCheckpoint();
-    return this.loadCheckpoints(ipfsRootHash);
+
+    // This is the warp hash for the value '0' which means there isn't yet a finalized hash.
+    if (ipfsRootHash && ipfsRootHash !== 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51') {
+      return this.loadCheckpoints(ipfsRootHash, highestSyncedBlock);
+    } else { // No hash, nothing more to do!
+      return undefined;
+    }
   }
 
-  async loadCheckpoints(ipfsRootHash: string): Promise<number | undefined> {
+  async loadCheckpoints(ipfsRootHash: string, highestSyncedBlock:number): Promise<number | undefined> {
     const availableCheckpoints = await this.warpSyncController.getAvailableCheckpointsByHash(ipfsRootHash);
     const { begin } = await this.warpSyncController.getMostRecentCheckpoint();
 
-    const checkpointsToSync = availableCheckpoints.filter((item) => item >= begin.number);
+    const checkpointsToSync = availableCheckpoints.filter((item) => Number(item.Name) >= begin.number);
     let maxBlockNumber;
+
     for (let i = 0; i < checkpointsToSync.length; i++) {
-      const logs = await this.warpSyncController.getCheckpointFile(ipfsRootHash, checkpointsToSync[i]);
-      maxBlockNumber = await this.processFile(logs);
+      const {
+        endBlockNumber, logs
+      } = await this.warpSyncController.getCheckpointFile(ipfsRootHash, checkpointsToSync[i].Name);
+      await this.processFile(logs, highestSyncedBlock);
+      await this.warpSyncController.updateCheckpointDbByNumber(endBlockNumber, checkpointsToSync[i]);
+      maxBlockNumber= endBlockNumber;
     }
 
     return maxBlockNumber;
   }
-
-  async processFile(buffer: string): Promise<number | undefined> {
-    const splitLogs = JSON.parse(buffer);
-
-    const maxBlockNumber = _.maxBy<number>(_.map(splitLogs, 'blockNumber'), item =>
+  async processFile(logs: Log[], highestSyncedBlock:number): Promise<number | undefined> {
+    const filteredLogs = logs.filter(log => log.blockNumber > highestSyncedBlock);
+    const maxBlockNumber = _.maxBy<number>(_.map(filteredLogs, 'blockNumber'), item =>
       Number(item));
-    const sortedLogs = _.orderBy(splitLogs, ['blockNumber', 'logIndex'], ['asc', 'asc']);
+    const sortedLogs = _.orderBy(filteredLogs, ['blockNumber', 'logIndex'], ['asc', 'asc']);
 
     await this.onLogsAdded(maxBlockNumber, sortedLogs);
 

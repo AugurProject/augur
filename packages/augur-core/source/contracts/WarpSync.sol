@@ -33,7 +33,7 @@ contract WarpSync is IWarpSync, Initializable {
     int256 private INT256_MIN = int256(2**255);
     int256 private INT256_MAX = int256(2**255 - 1);
     int256[] private PRICES = [INT256_MIN, INT256_MAX];
-    string private constant EXTRA_INFO = '{"description":"What will the next Augur Warp Sync hash be?","longDescription":"What will the Augur SDK warp sync hash be for the last block with a timestamp less than the reporting start timestamp for this market?"}';
+    string private constant EXTRA_INFO = '{"description":"What will the next Augur Warp Sync hash be?","longDescription":"What will the Augur SDK warp sync hash be for the last block with a timestamp less than the reporting start timestamp for this market? At least 30 blocks should be mined after this block before attempting to generate a hash in order to account for possible rollbacks."}';
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
@@ -47,12 +47,11 @@ contract WarpSync is IWarpSync, Initializable {
      * @param _universe The universe whose warp sync market to report on
      * @param _payoutNumerators An array indicating the payout for each market outcome
      * @param _description Any additional information or justification for this report
-     * @param _additionalStake Additional optional REP to stake in anticipation of a dispute. This REP will be held in a bond that only activates if the report is disputed
      * @return Bool True
      */
-    function doInitialReport(IUniverse _universe, uint256[] memory _payoutNumerators, string memory _description, uint256 _additionalStake) public returns (bool) {
+    function doInitialReport(IUniverse _universe, uint256[] memory _payoutNumerators, string memory _description) public returns (bool) {
         IMarket _market = IMarket(markets[address(_universe)]);
-        _market.doInitialReport(_payoutNumerators, _description, _additionalStake);
+        _market.doInitialReport(_payoutNumerators, _description, 0);
         _market.getInitialReporter().transferOwnership(msg.sender);
         return true;
     }

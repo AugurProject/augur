@@ -38,12 +38,12 @@ export function loadGasPriceInfo(
 async function getGasPriceRanges(networkId: string, callback: DataCallback) {
   const defaultGasPrice = setDefaultGasInfo();
   try {
-    const relayerGasStation = await augurSdk.sdk.gnosis.gasStation();
-    // Take the Gnosis relayer gas estimates for safeLow, standard, and fast
+    const relayerGasStation = await augurSdk.sdk.getGasStation();
+    // Take the eth gas station gas estimates for safeLow, standard, and fast
     // Add 1 GWEI to all of them (b/c we use a lot of gas).
     const relayerGasStationResults = {
       safeLow: ++formatGasCostGwei(relayerGasStation.safeLow, {}).value,
-      average: ++formatGasCostGwei(relayerGasStation.standard, {}).value,
+      average: ++formatGasCostGwei(relayerGasStation.standard || relayerGasStation.average, {}).value,
       fast: ++formatGasCostGwei(relayerGasStation.fast, {}).value,
     };
     callback(relayerGasStationResults);
@@ -85,7 +85,7 @@ function getGasPriceValues(
 }
 
 function setDefaultGasInfo(): Partial<GasPriceInfo> {
-  // If both gasStations (relayer/etherscan) are unavailble we use the fallback defaults
+  // If both gasStations (relayer/etherscan) are unavailable we use the fallback defaults
   return {
     safeLow: formatGasCostGwei(DEFAULT_FALLBACK_GAS_SAFELOW, {}).value,
     average: formatGasCostGwei(DEFAULT_FALLBACK_GAS_AVERAGE, {}).value,

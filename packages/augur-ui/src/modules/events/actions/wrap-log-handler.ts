@@ -9,19 +9,14 @@ export const wrapLogHandler = (logHandler: Function) => (
   getState: () => AppState
 ) => {
   if (log) {
-    const universeId: string = getState().universe.id;
-    // console.log("event name", Array.isArray(log) ? log.length : log.eventName);
-    const isInCurrentUniverse = true;
-    // TODO: process universe when Events have universe propety, for now assume all events are good
-    // const isInCurrentUniverse = Object.values(log).find(
-    //   value => universeId === value
-    // );
-    if (Array.isArray(log) && isInCurrentUniverse) {
-      log.forEach(log => {
-        if (logHandler) dispatch(logHandler(log));
-      });
+    if (Array.isArray(log)) {
+      console.log('events', log.map(l => l.name));
+    } else {
+      console.log('event', log.eventName);
     }
-    // TODO: will need to filter out some redundent events like token transfers in some instances
+    const universeId: string = getState().universe.id;
+    const isInCurrentUniverse = true;
+    // TODO: need to filter based on current selected universe
     if (isInCurrentUniverse) return dispatch(logHandler(log));
   }
 };

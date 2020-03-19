@@ -3,9 +3,6 @@ import * as t from 'io-ts';
 import { DB } from '../db/DB';
 import { Getter } from './Router';
 import {
-  Address,
-  DisputeWindowCreatedLog,
-  MarketCreatedLog,
   TokenType,
   UniverseCreatedLog,
   UniverseForkedLog,
@@ -20,6 +17,7 @@ import {
 } from '../../index';
 import { NULL_ADDRESS } from './types';
 import { ContractInterfaces } from '@augurproject/core';
+import { WarpSyncGetter } from './WarpSyncGetter';
 
 
 export interface NonForkingMigrationTotals {}
@@ -47,6 +45,7 @@ export interface UniverseDetails {
   totalOpenInterest: string;
   numberOfMarkets: number;
   children: UniverseDetails[];
+  warpSyncHash: string;
 }
 
 export class Universe {
@@ -122,7 +121,8 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
   const totalRepSupply = (await getRepSupply(augur, universe)).toString();
   const totalOpenInterest = (await universe.getOpenInterestInAttoCash_()).toString();
   const numberOfMarkets = (await getMarketsForUniverse(db, address)).length;
-
+  const warpSyncObject = await WarpSyncGetter.getMostRecentWarpSync(augur, db, undefined);
+  const warpSyncHash = warpSyncObject ? warpSyncObject.hash : undefined;
   const children = []; // don't recurse
 
   return {
@@ -134,6 +134,7 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
     totalRepSupply,
     totalOpenInterest,
     numberOfMarkets,
+    warpSyncHash,
     children,
   };
 }
@@ -202,20 +203,20 @@ async function getUserRep(db: DB, universe: ContractInterfaces.Universe, account
 
 async function getRepSupply(augur: Augur, universe: ContractInterfaces.Universe): Promise<BigNumber> {
   const repTokenAddress = await universe.getReputationToken_();
-  const repToken = augur.contracts.reputationTokenFromAddress(repTokenAddress, augur.networkId);
+  const repToken = augur.contracts.reputationTokenFromAddress(repTokenAddress, augur.config.networkId);
   return repToken.totalSupply_();
 }
 
 async function getMarket(db: DB, address: string): Promise<MarketData|null> {
-  return await db.Markets.get(address);
+  return db.Markets.get(address);
 }
 
 async function getMarketsForUniverse(db: DB, address: string): Promise<MarketData[]> {
-  return db.Markets.where("universe").equals(address).toArray();
+  return db.Markets.where('universe').equals(address).toArray();
 }
 
 async function getUniverseCreationLog(db: DB, address: string): Promise<UniverseCreatedLog|null> {
-  const universeCreatedLogs = await db.UniverseCreated.where("childUniverse").equals(address).toArray();
+  const universeCreatedLogs = await db.UniverseCreated.where('childUniverse').equals(address).toArray();
 
   if (universeCreatedLogs.length === 0) {
     return null; // no such universe
@@ -225,7 +226,7 @@ async function getUniverseCreationLog(db: DB, address: string): Promise<Universe
 }
 
 async function getUniverseForkedLog(db: DB, address: string): Promise<UniverseForkedLog|null> {
-  const universeForkedLogs = await db.UniverseForked.where("universe").equals(address).toArray();
+  const universeForkedLogs = await db.UniverseForked.where('universe').equals(address).toArray();
 
   if (universeForkedLogs.length === 0) {
     return null; // universe doesn't exist or hasn't forked
@@ -235,5 +236,5 @@ async function getUniverseForkedLog(db: DB, address: string): Promise<UniverseFo
 }
 
 async function getUniverseChildrenCreationLogs(db: DB, address: string): Promise<UniverseCreatedLog[]> {
-  return db.UniverseCreated.where("parentUniverse").equals(address).toArray();
+  return db.UniverseCreated.where('parentUniverse').equals(address).toArray();
 }

@@ -22,15 +22,16 @@ import {
   calculatePayoutNumeratorsArray,
   convertDisplayValuetoAttoValue,
 } from '@augurproject/sdk';
-
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import {
   NULL_ADDRESS,
+  FAKE_HASH,
   SCALAR,
   CATEGORICAL,
   TEN_TO_THE_EIGHTEENTH_POWER,
   BUY,
+  ZERO,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { CreateMarketData, LiquidityOrder } from 'modules/types';
@@ -138,18 +139,6 @@ export async function convertV1ToV2_estimate() {
   return approvalGas.plus(migrationGas);
 }
 
-export async function getCurrentBlock() {
-  const Augur = augurSdk.get();
-  const blockNumber = await Augur.provider.getBlockNumber();
-  return blockNumber;
-}
-
-export async function getTimestamp(): Promise<number> {
-  const Augur = augurSdk.get();
-  const timestamp = await Augur.getTimestamp();
-  return timestamp.toNumber();
-}
-
 export async function getRepBalance(
   universe: string,
   address: string
@@ -168,17 +157,19 @@ export async function getRepBalance(
 export async function getLegacyRepBalance(
   address: string
 ): Promise<BigNumber> {
+  if (!address) return ZERO;
   const { contracts } = augurSdk.get();
   const lagacyRep = contracts.legacyReputationToken.address;
   const networkId = getNetworkId();
-  const balance = await contracts
+  const balance = !!address ? await contracts
     .reputationTokenFromAddress(lagacyRep, networkId)
-    .balanceOf_(address);
+    .balanceOf_(address) : createBigNumber(0);
   return balance;
 }
 
 
 export async function getEthBalance(address: string): Promise<number> {
+  if (!address) return 0;
   const Augur = augurSdk.get();
   const balance = await Augur.getEthBalance(address);
   const balances = formatAttoEth(balance, { decimals: 4 });
@@ -186,6 +177,7 @@ export async function getEthBalance(address: string): Promise<number> {
 }
 
 export async function getDaiBalance(address: string): Promise<number> {
+  if (!address) return 0;
   const { contracts } = augurSdk.get();
   const balance = await contracts.cash.balanceOf_(address);
   return formatAttoDai(balance).value;
@@ -314,6 +306,17 @@ export function getDai() {
   return contracts.cashFaucet.faucet(new BigNumber('1000000000000000000000'));
 }
 
+export function fundGsnWallet(gsnWalletAddress: string) {
+  const amount = new BigNumber('1000000000000000000000');
+  const { contracts } = augurSdk.get();
+
+  augurSdk.client.setUseRelay(false);
+  contracts.cashFaucet.faucet(amount).then(() => {
+    contracts.cash.transfer(gsnWalletAddress, amount);
+    augurSdk.client.setUseRelay(true);
+  })
+}
+
 export async function uniswapEthForRepRate(wei: BigNumber): Promise<BigNumber> {
   return new BigNumber(102);
 }
@@ -322,8 +325,10 @@ export async function uniswapRepForEthRate(rep: BigNumber): Promise<BigNumber> {
   return new BigNumber(100);
 }
 
-export async function uniswapEthForDaiRate(wei: BigNumber): Promise<BigNumber> {
-  return new BigNumber(148);
+export function getEthForDaiRate(): BigNumber {
+  const { dependencies } = augurSdk.get();
+  const ethToDaiRate = dependencies.ethToDaiRate
+  return ethToDaiRate;
 }
 
 export async function uniswapDaiForEthRate(dai: BigNumber): Promise<BigNumber> {
@@ -469,12 +474,15 @@ export interface doReportDisputeAddStake {
   description: string;
   attoRepAmount: string;
   isInvalid: boolean;
+  isWarpSync?: boolean;
+  warpSyncHash?: string;
 }
 
 export async function doInitialReport_estimaetGas(report: doReportDisputeAddStake) {
+  if(report.isWarpSync) return doInitialReportWarpSync_estimaetGas(report);
   const market = getMarket(report.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(report);
+  const payoutNumerators = await getPayoutNumerators(report);
   return market.doInitialReport_estimateGas(
     payoutNumerators,
     report.description,
@@ -483,13 +491,36 @@ export async function doInitialReport_estimaetGas(report: doReportDisputeAddStak
 }
 
 export async function doInitialReport(report: doReportDisputeAddStake) {
+  if(report.isWarpSync) return doInitialReportWarpSync(report);
   const market = getMarket(report.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(report);
+  const payoutNumerators = await getPayoutNumerators(report);
   return market.doInitialReport(
     payoutNumerators,
     report.description,
     createBigNumber(report.attoRepAmount || '0')
+  );
+}
+
+export async function doInitialReportWarpSync_estimaetGas(report: doReportDisputeAddStake) {
+  const Augur = augurSdk.get();
+  const universe = Augur.contracts.universe.address;
+  const payoutNumerators = await getPayoutNumerators(report);
+  return Augur.contracts.warpSync.doInitialReport_estimateGas(
+    universe,
+    payoutNumerators,
+    report.description
+  );
+}
+
+export async function doInitialReportWarpSync(report: doReportDisputeAddStake) {
+  const Augur = augurSdk.get();
+  const universe = Augur.contracts.universe.address;
+  const payoutNumerators = await getPayoutNumerators(report);
+  return Augur.contracts.warpSync.doInitialReport(
+    universe,
+    payoutNumerators,
+    report.description
   );
 }
 
@@ -498,7 +529,7 @@ export async function addRepToTentativeWinningOutcome_estimateGas(
 ) {
   const market = getMarket(addStake.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(addStake);
+  const payoutNumerators = await getPayoutNumerators(addStake);
   return market.contributeToTentative_estimateGas(
     payoutNumerators,
     createBigNumber(addStake.attoRepAmount),
@@ -511,7 +542,7 @@ export async function addRepToTentativeWinningOutcome(
 ) {
   const market = getMarket(addStake.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(addStake);
+  const payoutNumerators = await getPayoutNumerators(addStake);
   return market.contributeToTentative(
     payoutNumerators,
     createBigNumber(addStake.attoRepAmount),
@@ -522,7 +553,7 @@ export async function addRepToTentativeWinningOutcome(
 export async function contribute_estimateGas(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(dispute);
+  const payoutNumerators = await getPayoutNumerators(dispute);
   return market.contribute_estimateGas(
     payoutNumerators,
     createBigNumber(dispute.attoRepAmount),
@@ -533,7 +564,7 @@ export async function contribute_estimateGas(dispute: doReportDisputeAddStake) {
 export async function contribute(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
-  const payoutNumerators = getPayoutNumerators(dispute);
+  const payoutNumerators = await getPayoutNumerators(dispute);
   return market.contribute(
     payoutNumerators,
     createBigNumber(dispute.attoRepAmount),
@@ -551,16 +582,19 @@ function getMarket(marketId) {
   return market;
 }
 
-function getPayoutNumerators(inputs: doReportDisputeAddStake) {
-  return calculatePayoutNumeratorsArray(
-    inputs.maxPrice,
-    inputs.minPrice,
-    inputs.numTicks,
-    inputs.numOutcomes,
-    inputs.marketType,
-    inputs.outcomeId,
-    inputs.isInvalid
-  );
+async function getPayoutNumerators(inputs: doReportDisputeAddStake) {
+  const augur = augurSdk.get();
+  return inputs.isWarpSync
+    ? await augur.getPayoutFromWarpSyncHash(inputs.warpSyncHash || FAKE_HASH)
+    : calculatePayoutNumeratorsArray(
+        inputs.maxPrice,
+        inputs.minPrice,
+        inputs.numTicks,
+        inputs.numOutcomes,
+        inputs.marketType,
+        inputs.outcomeId,
+        inputs.isInvalid
+      );
 }
 
 export interface CreateNewMarketParams {
@@ -806,7 +840,6 @@ export async function placeTrade(
   marketId: string,
   numOutcomes: number,
   outcomeId: number,
-  fingerprint: string = getFingerprint(),
   doNotCreateOrders: boolean,
   numTicks: BigNumber | string,
   minPrice: BigNumber | string,
@@ -816,6 +849,7 @@ export async function placeTrade(
   displayShares: BigNumber | string,
   expirationTime?: BigNumber,
   tradeGroupId?: string,
+  fingerprint: string = getFingerprint(),
 ): Promise<void> {
   const Augur = augurSdk.get();
   const params: PlaceTradeDisplayParams = {
@@ -913,20 +947,11 @@ export async function claimMarketsProceedsEstimateGas(
   fingerprint: string = getFingerprint(),
 ) {
   const augur = augurSdk.get();
-
-  if (markets.length > 1) {
-    return augur.contracts.augurTrading.claimMarketsProceeds_estimateGas(
-      markets,
-      shareHolder,
-      fingerprint
-    );
-  } else {
-    return augur.contracts.augurTrading.claimTradingProceeds_estimateGas(
-      markets[0],
-      shareHolder,
-      fingerprint
-    );
-  }
+  return augur.contracts.augurTrading.claimMarketsProceeds_estimateGas(
+    markets,
+    shareHolder,
+    fingerprint
+  );
 }
 
 export async function claimMarketsProceeds(
@@ -935,20 +960,11 @@ export async function claimMarketsProceeds(
   fingerprint: string = formatBytes32String('11'),
 ) {
   const augur = augurSdk.get();
-
-  if (markets.length > 1) {
-    augur.contracts.augurTrading.claimMarketsProceeds(
-      markets,
-      shareHolder,
-      fingerprint
-    );
-  } else {
-    augur.contracts.augurTrading.claimTradingProceeds(
-      markets[0],
-      shareHolder,
-      fingerprint
-    );
-  }
+  augur.contracts.augurTrading.claimMarketsProceeds(
+    markets,
+    shareHolder,
+    fingerprint
+  );
 }
 
 export async function migrateThroughOneForkEstimateGas(
@@ -983,7 +999,7 @@ export async function reportAndMigrateMarket_estimateGas(
 ) {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(migration.marketId);
-  const payoutNumerators = getPayoutNumerators(migration);
+  const payoutNumerators = await getPayoutNumerators(migration);
   try {
     market.migrateThroughOneFork_estimateGas(payoutNumerators, migration.description);
   } catch (e) {
@@ -996,7 +1012,7 @@ export async function reportAndMigrateMarket(
 ) {
   const Augur = augurSdk.get();
   const market = Augur.getMarket(migration.marketId);
-  const payoutNumerators = getPayoutNumerators(migration);
+  const payoutNumerators = await getPayoutNumerators(migration);
   try {
     market.migrateThroughOneFork(payoutNumerators, migration.description);
   } catch (e) {
@@ -1008,7 +1024,7 @@ export async function migrateRepToUniverseEstimateGas(
   migration: doReportDisputeAddStake
 ): Promise<BigNumber> {
   const { contracts } = augurSdk.get();
-  const payoutNumerators = getPayoutNumerators(migration);
+  const payoutNumerators = await getPayoutNumerators(migration);
   const gas = await contracts.reputationToken.migrateOutByPayout_estimateGas(
     payoutNumerators,
     createBigNumber(migration.attoRepAmount)
@@ -1018,7 +1034,8 @@ export async function migrateRepToUniverseEstimateGas(
 
 export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
   const { contracts } = augurSdk.get();
-  const payoutNumerators = getPayoutNumerators(migration);
+  const payoutNumerators = await getPayoutNumerators(migration);
+
   try {
     contracts.reputationToken.migrateOutByPayout(
       payoutNumerators,

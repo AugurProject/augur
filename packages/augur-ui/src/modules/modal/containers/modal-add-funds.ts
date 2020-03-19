@@ -5,14 +5,15 @@ import { AppState } from 'appStore';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import getValue from 'utils/get-value';
 import { ADD_FUNDS, track } from 'services/analytics/helpers';
-import { GnosisSafeState } from '@augurproject/gnosis-relay-api';
 import { createBigNumber } from 'utils/create-big-number';
+import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
+import { formatAttoDai } from 'utils/format-number';
 
 const mapStateToProps = (state: AppState) => {
+  const ethToDaiRate = getEthForDaiRate();
+  const ETH_RATE = createBigNumber(formatAttoDai(ethToDaiRate).roundedValue);
   // TODO placeholder rates until price feed is hooked up
-  const ETH_RATE = createBigNumber(212.63);
   const REP_RATE = createBigNumber(15.87);
 
   return {
@@ -20,7 +21,7 @@ const mapStateToProps = (state: AppState) => {
     loginAccount: state.loginAccount,
     ETH_RATE,
     REP_RATE,
-    isRelayDown: state.appStatus.gnosisStatus === GnosisSafeState.ERROR,
+    isRelayDown: false, // TODO XXX Need to have some suitable status update for when relayer is down. No longer related to wallets
   }
 };
 
@@ -30,16 +31,17 @@ const addFundsPortis = async (amount) => {
 
 const addFundsFortmatic = async (amount, crypto, address) => {
   await fm.user.deposit({
-    amount,
+    amount: amount.toNumber(),
     crypto,
     address,
   });
 }
 
-const addFundsTorus = async (amount) => {
+const addFundsTorus = async (amount, address) => {
   await window.torus.initiateTopup('wyre', {
     selectedCurrency: 'USD',
-    fiatValue: amount,
+    selectedAddress: address,
+    fiatValue: amount.toNumber(),
     selectedCryptoCurrency: 'DAI'
   });
 }
@@ -47,7 +49,7 @@ const addFundsTorus = async (amount) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
-  addFundsTorus: (amount) => addFundsTorus(amount),
+  addFundsTorus: (amount, address) => addFundsTorus(amount, address),
   addFundsFortmatic: (amount, crypto, address) => addFundsFortmatic(amount, crypto, address),
 });
 

@@ -1,21 +1,9 @@
-import { ContractAddresses } from '@augurproject/artifacts';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { Augur, Connectors } from '@augurproject/sdk';
-import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import { Connectors } from '@augurproject/sdk';
 import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
-import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import {
-  makeDbMock,
-  makeProvider,
-  makeTestAugur,
-  MockGnosisRelayAPI,
-} from '../../libs';
-import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
+import { makeProvider } from '../../libs';
 
-const mock = makeDbMock();
-let augur: Augur;
 
 /**
  * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.
@@ -26,12 +14,12 @@ let augur: Augur;
 test('sync databases', async () => {
   const seed = await loadSeedFile(defaultSeedPath);
   const baseProvider = await makeProvider(seed, ACCOUNTS);
-  const addresses = baseProvider.getContractAddresses();
+  const config = baseProvider.getConfig();
 
   const john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     baseProvider,
-    addresses
+    config
   );
 
   await john.sync();
@@ -109,27 +97,19 @@ test('sync databases', async () => {
 });
 
 test('rollback derived database', async () => {
-  let john: TestContractAPI;
-
-  let provider: EthersProvider;
-  let addresses: ContractAddresses;
-
   const seed = await loadSeedFile(defaultSeedPath);
-  addresses = seed.addresses;
-  provider = await makeProvider(seed, ACCOUNTS);
+  const provider = await makeProvider(seed, ACCOUNTS);
+  const config = provider.getConfig();
 
   const johnConnector = new Connectors.DirectConnector();
-  const johnGnosis = new MockGnosisRelayAPI();
-  john = await TestContractAPI.userWrapper(
+  const john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
-    addresses,
+    config,
     johnConnector,
-    johnGnosis
   );
   expect(john).toBeDefined();
 
-  johnGnosis.initialize(john);
   johnConnector.initialize(john.augur, john.db);
 
   Object.defineProperty(john.db.marketDatabase, 'syncing', {

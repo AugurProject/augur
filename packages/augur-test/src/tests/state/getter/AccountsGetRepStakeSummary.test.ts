@@ -11,16 +11,17 @@ describe('State API :: Accounts :: ', () => {
   beforeAll(async () => {
     const seed = await loadSeedFile(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
+    const config = provider.getConfig();
 
     john = await TestContractAPI.userWrapper(
       ACCOUNTS[0],
       provider,
-      seed.addresses
+      config
     );
     mary = await TestContractAPI.userWrapper(
       ACCOUNTS[1],
       provider,
-      seed.addresses
+      config
     );
 
     await john.approveCentralAuthority();
@@ -94,16 +95,18 @@ describe('State API :: Accounts :: ', () => {
           yesNoMarket1,
           yesPayoutSet
         );
-        if (remainingToFill.gte(0))
+        if (remainingToFill.gte(0)) {
           await mary.contribute(market, yesPayoutSet, remainingToFill);
+        }
       } else {
         await john.contribute(yesNoMarket1, noPayoutSet, new BigNumber(25000));
         const remainingToFill = await john.getRemainingToFill(
           yesNoMarket1,
           noPayoutSet
         );
-        if (remainingToFill.gte(0))
+        if (remainingToFill.gte(0)) {
           await john.contribute(yesNoMarket1, noPayoutSet, remainingToFill);
+        }
       }
     }
 

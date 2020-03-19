@@ -51,12 +51,4 @@ contract IExchange {
     /// @param signature Proof that order has been created by maker.
     /// @return Amounts filled and fees paid by maker and taker.
     function fillOrder(Order memory order, uint256 takerAssetFillAmount, bytes memory signature) public payable returns (FillResults memory fillResults);
-
-    /// @dev Fills an order with specified parameters and ECDSA signature.
-    ///      Returns false if the transaction would otherwise revert.
-    /// @param order Order struct containing order specifications.
-    /// @param takerAssetFillAmount Desired amount of takerAsset to sell.
-    /// @param signature Proof that order has been created by maker.
-    /// @return Amounts filled and fees paid by maker and taker.
-    function fillOrderNoThrow(Order memory order, uint256 takerAssetFillAmount, bytes memory signature) public payable returns (FillResults memory fillResults);
 }

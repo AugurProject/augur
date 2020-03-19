@@ -23,7 +23,9 @@ export const positionSummary = memoize(
       realized,
       realizedPercent,
       unrealized,
+      unrealized24,
       unrealizedPercent,
+      unrealized24HrPercent,
       averagePrice,
       marketId,
       outcome: outcomeId,
@@ -51,11 +53,16 @@ export const positionSummary = memoize(
       purchasePrice: formatDai(averagePrice),
       realizedNet: formatDai(realized),
       unrealizedNet: formatDai(unrealized),
+      unrealized24Hr: formatDai(unrealized24),
       realizedPercent: formatPercent(timesHundred(realizedPercent || ZERO), {
         decimalsRounded: 2,
       }),
       unrealizedPercent: formatPercent(
         timesHundred(unrealizedPercent || ZERO),
+        { decimalsRounded: 2 }
+      ),
+      unrealized24HrPercent: formatPercent(
+        timesHundred(unrealized24HrPercent || ZERO),
         { decimalsRounded: 2 }
       ),
       totalCost: formatDai(unrealizedCost),

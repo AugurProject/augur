@@ -1,5 +1,20 @@
 import readline from 'readline';
 
+export function waitForSigint(): Promise<void> {
+  process.stdin.resume();
+  return new Promise((resolve, reject) => {
+    process.prependListener('SIGINT', () => {
+      resolve();
+    });
+    process.prependListener('SIGTERM', () => {
+      resolve();
+    });
+    process.prependListener('SIGHUP', () => {
+      resolve();
+    });
+  });
+}
+
 export function awaitUserInput(question: string): Promise<void> {
   const talker = readline.createInterface({
     input: process.stdin,

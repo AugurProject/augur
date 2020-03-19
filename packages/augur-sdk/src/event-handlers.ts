@@ -1,5 +1,6 @@
 import { TransactionMetadata } from "contract-dependencies-ethers/build";
 import { TXEventName } from "./constants";
+import { ParsedLog } from "@augurproject/types/types";
 
 type Address = string;
 type Bytes32 = string;
@@ -118,7 +119,7 @@ export interface InitialReporterTransferred extends FormattedEventLog {
 
 export interface MarketCreated extends FormattedEventLog {
   universe: Address;
-  endTime: Address;
+  endTime: number;
   topic: Address;
   extraInfo: string;
   market: Address;
@@ -176,6 +177,7 @@ export interface NewBlock extends FormattedEventLog {
   lastSyncedBlockNumber: number;
   percentSynced: string;
   timestamp: number;
+  logs: ParsedLog[];
 }
 
 // @TODO:: TODO - verify eventType and orderType somehow
@@ -292,6 +294,7 @@ export interface TXStatus {
   transaction: TransactionMetadata;
   eventName: TXEventName;
   hash?: string;
+  reason?: string;
 }
 
 export type SubscriptionType = MarketCreated | InitialReportSubmitted | DisputeCrowdsourcerCreated | DisputeCrowdsourcerContribution | DisputeCrowdsourcerCompleted | InitialReporterRedeemed | DisputeCrowdsourcerRedeemed | ReportingParticipantDisavowed | MarketParticipantsDisavowed | MarketFinalized | MarketMigrated | UniverseForked | UniverseCreated | OrderEvent | CompleteSetsPurchased | CompleteSetsSold | TradingProceedsClaimed | TokensTransferred | TokensMinted | TokensBurned | TokenBalanceChanged | DisputeWindowCreated | InitialReporterTransferred | MarketTransferred | MarketVolumeChanged | MarketOIChanged | ProfitLossChanged | ParticipationTokensRedeemed | TimestampSet | NewBlock | TXStatus;

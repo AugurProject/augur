@@ -1,15 +1,13 @@
-import { ContractAddresses, NetworkId } from '@augurproject/artifacts';
+import { SDKConfiguration, NetworkId } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
-import { GnosisSafeState, GnosisSafeStateReponse } from '@augurproject/gnosis-relay-api';
 import { BigNumber } from 'bignumber.js';
 import { EthersSigner, TransactionStatus, TransactionStatusCallback } from 'contract-dependencies-ethers';
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
+import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
 import { ContractEvents } from './api/ContractEvents';
 import { Contracts } from './api/Contracts';
-import { Gnosis, GnosisSafeStatusPayload } from './api/Gnosis';
 import { HotLoading, DisputeWindow, GetDisputeWindowParams } from './api/HotLoading';
 import { Liquidity } from './api/Liquidity';
 import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from './api/Market';
@@ -30,10 +28,13 @@ import { Platform } from './state/getter/Platform';
 import { Status } from './state/getter/status';
 import { Universe } from './state/getter/Universe';
 import { Users } from './state/getter/Users';
+import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
 import { WarpSync } from './api/WarpSync';
-import { Address } from './state/logs/types';
 import { Subscriptions } from './subscriptions';
+import axios from 'axios';
+import { GSN } from './api/GSN';
+
 
 export class Augur<TProvider extends Provider = Provider> {
   syncableFlexSearch: SyncableFlexSearch;
@@ -43,13 +44,15 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly onChainTrade: OnChainTrade;
   readonly trade: Trade;
   readonly market: Market;
-  readonly gnosis: Gnosis;
   readonly warpSync: WarpSync;
+  readonly gsn: GSN;
 
   readonly universe: Universe;
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
   readonly events: Subscriptions;
+
+  private _sdkReady = false;
 
   private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
@@ -70,41 +73,44 @@ export class Augur<TProvider extends Provider = Provider> {
     this._zeroX = zeroX;
   }
 
+  get sdkReady(): boolean {
+    return this._sdkReady;
+  }
+
   constructor(
     readonly provider: TProvider,
-    readonly dependencies: ContractDependenciesGnosis,
-    readonly networkId: NetworkId,
-    readonly addresses: ContractAddresses,
+    readonly dependencies: ContractDependenciesGSN,
+    public config: SDKConfiguration,
     public connector: BaseConnector = new EmptyConnector(),
     private _zeroX = null,
     enableFlexSearch = false
   ) {
     this.provider = provider;
     this.dependencies = dependencies;
-    this.networkId = networkId;
     if (!this.connector || connector.constructor.name !== 'EmptyConnector') {
       this.connector = connector;
     }
+    if (!config.addresses) throw Error(`Augur config must include addresses. Config=${JSON.stringify(config)}`)
 
     this.events = new Subscriptions(augurEmitter);
-    this.events.on(SubscriptionEventName.GnosisSafeStatus, this.updateGnosisSafe.bind(this));
+    this.events.on(SubscriptionEventName.SDKReady, () => {
+      this._sdkReady = true;
+      console.log('SDK is ready')
+    });
 
     this.connector.client = this;
     if(this.zeroX) this.zeroX.client = this;
 
     // API
-    this.addresses = addresses;
-    this.contracts = new Contracts(this.addresses, this.dependencies);
+    this.contracts = new Contracts(this.config.addresses, this.dependencies);
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.contractEvents = new ContractEvents(
       this.provider,
-      this.addresses.Augur,
-      this.addresses.AugurTrading,
-      this.addresses.ShareToken,
-      this.addresses.Exchange,
+      this.config.addresses.Augur,
+      this.config.addresses.AugurTrading,
+      this.config.addresses.ShareToken,
       );
-    this.gnosis = new Gnosis(this.provider, this, this.dependencies);
     this.warpSync = new WarpSync(this);
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
@@ -112,29 +118,32 @@ export class Augur<TProvider extends Provider = Provider> {
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
     }
+    this.gsn = new GSN(this.provider, this);
     this.registerTransactionStatusEvents();
   }
 
   static async create<TProvider extends Provider = Provider>(
     provider: TProvider,
-    dependencies: ContractDependenciesGnosis,
-    addresses: ContractAddresses,
+    dependencies: ContractDependenciesGSN,
+    config: SDKConfiguration,
     connector: BaseConnector = new SingleThreadConnector(),
     zeroX: ZeroX = null,
     enableFlexSearch = false
   ): Promise<Augur<Provider>> {
-    const networkId = await provider.getNetworkId();
     const client = new Augur<TProvider>(
       provider,
       dependencies,
-      networkId,
-      addresses,
+      config,
       connector,
       zeroX,
       enableFlexSearch
     );
-    await client.contracts.setReputationToken(networkId)
+    await client.contracts.setReputationToken(config.networkId)
     return client;
+  }
+
+  get networkId(): NetworkId {
+    return this.config.networkId;
   }
 
   async getTransaction(hash: string): Promise<TransactionResponse> {
@@ -166,10 +175,11 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async getAccount(): Promise<string | null> {
     let account = this.dependencies.address;
-    if (this.dependencies.useSafe && this.dependencies.safeAddress) {
-      account = this.dependencies.safeAddress;
+    const signer = await this.dependencies.signer.getAddress();
+    if (this.dependencies.useWallet) {
+      account = await this.gsn.calculateWalletAddress(signer);
     } else if (!account) {
-      account = await this.dependencies.signer.getAddress();
+      account = signer;
     }
     if (!account) return null;
     return getAddress(account);
@@ -187,58 +197,34 @@ export class Augur<TProvider extends Provider = Provider> {
     await this.dependencies.signer.sendTransaction(ethersTransaction);
   }
 
-  async updateGnosisSafe(payload: GnosisSafeStatusPayload): Promise<void> {}
-
-  setGasPrice(gasPrice: BigNumber): void {
-    this.dependencies.setGasPrice(gasPrice);
+  setUseWallet(useSafe: boolean): void {
+    this.dependencies.setUseWallet(useSafe);
   }
 
-  setGnosisSafeAddress(safeAddress: string): void {
-    this.dependencies.setSafeAddress(safeAddress);
-  }
-
-  setGnosisStatus(status: GnosisSafeState): void {
-    this.dependencies.setStatus(status);
-  }
-
-  getGnosisStatus(): GnosisSafeState {
-    return this.dependencies.getStatus();
-  }
-
-  setUseGnosisSafe(useSafe: boolean): void {
-    this.dependencies.setUseSafe(useSafe);
-  }
-
-  setUseGnosisRelay(useRelay: boolean): void {
+  setUseRelay(useRelay: boolean): void {
     this.dependencies.setUseRelay(useRelay);
   }
 
-  getUseGnosisSafe(): boolean {
-    return this.dependencies.useSafe;
-  }
-
-  checkSafe(owner:Address, safe: Address): Promise<GnosisSafeStateReponse> {
-    return this.gnosis.getGnosisSafeDeploymentStatusViaRelay({
-      owner,
-      safe,
-    });
+  getUseWallet(): boolean {
+    return this.dependencies.useWallet;
   }
 
   async getGasStation() {
-    return await this.gnosis.gasStation();
+    try {
+      const result = await axios.get("https://safe-relay.gnosis.io/api/v1/gas-station/");
+      return result.data
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getGasConfirmEstimate() {
-    if(!this.getUseGnosisSafe()) {
-      console.log("When not using gnosis safe, Augur doesn't properly estimate the amount of time a transaction should take.")
-      return 180;
-    }
-
     var gasLevels = await this.getGasStation();
     var recommended = (parseInt(gasLevels["standard"]) + 1000000000);
     var fast = (parseInt(gasLevels["fast"]) + 1000000000);
-    var gasPrice = await this.getGasPrice();
+    var gasPrice = this.dependencies.useWallet ? this.dependencies.gasPrice : await this.getGasPrice();
     var gasPriceNum = gasPrice.toNumber();
+
     if (gasPriceNum >= fast) {
       return 60;
     }
@@ -261,8 +247,12 @@ export class Augur<TProvider extends Provider = Provider> {
   getOrders(): ContractInterfaces.Orders {
     return new ContractInterfaces.Orders(
       this.dependencies,
-      this.addresses.Orders
+      this.config.addresses.Orders
     );
+  }
+
+  convertGasEstimateToDaiCost(gasEstimate: BigNumber): BigNumber {
+    return this.dependencies.convertGasEstimateToDaiCost(gasEstimate);
   }
 
   registerTransactionStatusCallback(
@@ -289,7 +279,7 @@ export class Augur<TProvider extends Provider = Provider> {
   bindTo<R, P>(
     f: (db: any, augur: any, params: P) => Promise<R>
   ): (params: P) => Promise<R> {
-    return this.connector && this.connector.bindTo(f);
+    return this.connector?.bindTo(f);
   }
 
   async on(
@@ -403,6 +393,19 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(Users.getUserOpenOrders)(params);
   };
 
+  getMostRecentWarpSync = (
+  ): ReturnType<typeof WarpSyncGetter.getMostRecentWarpSync> => {
+    return this.bindTo(WarpSyncGetter.getMostRecentWarpSync)(undefined);
+  };
+
+  getPayoutFromWarpSyncHash = (hash: string): Promise<BigNumber[]> => {
+      return this.warpSync.getPayoutFromWarpSyncHash(hash);
+  };
+
+  getWarpSyncHashFromPayout = (payout: BigNumber[]): string => {
+    return this.warpSync.getWarpSyncHashFromPayout(payout[2]);
+  };
+
   getProfitLoss = (
     params: Parameters<typeof Users.getProfitLoss>[2]
   ): ReturnType<typeof Users.getProfitLoss> => {
@@ -491,16 +494,18 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async cancelOrder(orderHash: string): Promise<void> {
       const order = await this.getOrder({ orderHash });
-      await this.zeroX.cancelOrder(order);
+      await this.zeroX.cancelOrder(order, order.signature);
   }
 
   async batchCancelOrders(orderHashes: string[]): Promise<void> {
     const orders = [];
+    const signatures = [];
     for (let index = 0; index < orderHashes.length; index++) {
       const order = await this.getOrder({ orderHash: orderHashes[index] });
       orders.push(order);
+      signatures.push(order.signature)
     }
-    await this.zeroX.batchCancelOrders(orders);
+    await this.zeroX.batchCancelOrders(orders, signatures);
   }
 
   async createYesNoMarket(
@@ -536,7 +541,7 @@ export class Augur<TProvider extends Provider = Provider> {
   private registerTransactionStatusEvents() {
     this.registerTransactionStatusCallback(
       'Transaction Status Handler',
-      (transaction, status, hash) => {
+      (transaction, status, hash, reason) => {
         if (status === TransactionStatus.SUCCESS && this.txSuccessCallback) {
           const txn: TXStatus = {
             transaction,
@@ -572,6 +577,7 @@ export class Augur<TProvider extends Provider = Provider> {
             transaction,
             eventName: TXEventName.Failure,
             hash,
+            reason
           } as TXStatus;
           this.txFailureCallback(txn);
         } else if (

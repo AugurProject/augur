@@ -6,11 +6,11 @@ import {
   selectMarketInfosState,
   selectPendingLiquidityOrders,
   selectReadNotificationState,
+  selectUserMarketOpenOrders
 } from 'appStore/select-state';
 import { MarketReportingState } from '@augurproject/sdk';
 import {
   CLAIM_REPORTING_FEES_TITLE,
-  FINALIZE_MARKET_TITLE,
   MARKET_IS_MOST_LIKELY_INVALID_TITLE,
   NOTIFICATION_TYPES,
   PROCEEDS_TO_CLAIM_TITLE,
@@ -23,6 +23,14 @@ import {
   TYPE_VIEW_ORDERS,
   SIGN_SEND_ORDERS,
   ZERO,
+  REDEEMSTAKE,
+  BATCHCANCELORDERS,
+  SUBMIT_DISPUTE,
+  TRANSACTIONS,
+  SUBMIT_REPORT,
+  CLAIMMARKETSPROCEEDS,
+  MARKET_LIQUIDITY_DEPLETED_TITLE,
+  TYPE_ADD_LIQUIDITY,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'appStore';
@@ -34,32 +42,43 @@ import { isSameAddress } from 'utils/isSameAddress';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
-  selectMarkets,
-  markets => {
-    if (markets.length > 0) {
-      return markets
-        .filter(
-          market =>
-            market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION ||
-            market.reportingState === REPORTING_STATE.FINALIZED
-        )
-        .filter(market => userOpenOrders(market.id).length > 0)
-        .map(getRequiredMarketData);
-    }
-    return [];
+  selectUserMarketOpenOrders,
+  openOrders => {
+    return Object.keys(openOrders)
+      .map(id => selectMarket(id))
+      .filter(
+        market =>
+          market.reportingState == REPORTING_STATE.AWAITING_FINALIZATION ||
+          market.reportingState === REPORTING_STATE.FINALIZED
+      )
+      .filter(market => userOpenOrders(market.id).length > 0)
+      .map(getRequiredMarketData);
   }
 );
 
 export const selectMostLikelyInvalidMarkets = createSelector(
+  selectUserMarketOpenOrders,
+  openOrders => {
+    return Object.keys(openOrders)
+      .map(id => selectMarket(id))
+      .filter(
+        market =>
+          market.mostLikelyInvalid
+      )
+      .filter(market => userOpenOrders(market.id).length > 0)
+      .map(getRequiredMarketData);
+  }
+);
+export const selectLiquidityDepletedMarkets = createSelector(
   selectMarkets,
-  markets => {
-    if (markets.length > 0) {
-      return markets
-        .filter(market => market.mostLikelyInvalid)
-        .filter(market => userOpenOrders(market.id).length > 0)
-        .map(getRequiredMarketData);
-    }
-    return [];
+  selectLoginAccountAddress,
+  (markets, address) => {
+    return markets
+      .filter(
+        market => market.author === address &&
+          !market.passDefaultLiquiditySpread
+      )
+      .map(getRequiredMarketData);
   }
 );
 
@@ -180,20 +199,20 @@ export const selectUnsignedOrders = createSelector(
 export const selectNotifications = createSelector(
   selectReportOnMarkets,
   selectResolvedMarketsOpenOrders,
-  selectFinalizeMarkets,
   selectMarketsInDispute,
   selectReportingWinningsByMarket,
   selectUnsignedOrders,
   selectMostLikelyInvalidMarkets,
+  selectLiquidityDepletedMarkets,
   selectReadNotificationState,
   (
     reportOnMarkets,
     resolvedMarketsOpenOrder,
-    finalizeMarkets,
     marketsInDispute,
     claimReportingFees,
     unsignedOrders,
     mostLikelyInvalidMarkets,
+    liquidityDepleted,
     readNotifications
   ): Notification[] => {
     // Generate non-unquie notifications
@@ -204,10 +223,6 @@ export const selectNotifications = createSelector(
     const resolvedMarketsOpenOrderNotifications = generateCards(
       resolvedMarketsOpenOrder,
       NOTIFICATION_TYPES.resolvedMarketsOpenOrders
-    );
-    const finalizeMarketsNotifications = generateCards(
-      finalizeMarkets,
-      NOTIFICATION_TYPES.finalizeMarkets
     );
     const marketsInDisputeNotifications = generateCards(
       marketsInDispute,
@@ -221,15 +236,18 @@ export const selectNotifications = createSelector(
       mostLikelyInvalidMarkets,
       NOTIFICATION_TYPES.marketIsMostLikelyInvalid
     );
-
+    const liquidityDepletedNotifications = generateCards(
+      liquidityDepleted,
+      NOTIFICATION_TYPES.liquidityDepleted
+    );
     // Add non unquie notifications
     let notifications = [
       ...reportOnMarketsNotifications,
       ...resolvedMarketsOpenOrderNotifications,
-      ...finalizeMarketsNotifications,
       ...marketsInDisputeNotifications,
       ...unsignedOrdersNotifications,
       ...mostLikelyInvalidMarketsNotifications,
+      ...liquidityDepletedNotifications,
     ];
 
     // Add unquie notifications
@@ -247,6 +265,8 @@ export const selectNotifications = createSelector(
         buttonLabel: TYPE_VIEW_DETAILS,
         market: null,
         claimReportingFees,
+        queueName: TRANSACTIONS,
+        queueId: REDEEMSTAKE,
         id: NOTIFICATION_TYPES.claimReportingFees,
       });
     }
@@ -265,6 +285,8 @@ export const selectNotifications = createSelector(
         markets: accountMarketClaimablePositions.markets,
         totalProceeds: accountMarketClaimablePositions.totals.totalUnclaimedProceeds.toString(),
         id: NOTIFICATION_TYPES.proceedsToClaim,
+        queueName: TRANSACTIONS,
+        queueId: CLAIMMARKETSPROCEEDS,
       });
     }
 
@@ -309,6 +331,8 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
       buttonLabel: TYPE_VIEW_ORDERS,
+      queueName: TRANSACTIONS,
+      queueId: BATCHCANCELORDERS,
     };
   } else if (type === NOTIFICATION_TYPES.reportOnMarkets) {
     defaults = {
@@ -318,14 +342,7 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: REPORTING_ENDS_SOON_TITLE,
       buttonLabel: TYPE_REPORT,
-    };
-  } else if (type === NOTIFICATION_TYPES.finalizeMarkets) {
-    defaults = {
-      type,
-      isImportant: false,
-      isNew: true,
-      title: FINALIZE_MARKET_TITLE,
-      buttonLabel: TYPE_VIEW_DETAILS,
+      queueName: SUBMIT_REPORT
     };
   } else if (type === NOTIFICATION_TYPES.marketsInDispute) {
     defaults = {
@@ -334,6 +351,7 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: TYPE_DISPUTE,
       buttonLabel: TYPE_DISPUTE,
+      queueName: SUBMIT_DISPUTE,
     };
   } else if (type === NOTIFICATION_TYPES.unsignedOrders) {
     defaults = {
@@ -350,6 +368,8 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: PROCEEDS_TO_CLAIM_TITLE,
       buttonLabel: TYPE_VIEW_DETAILS,
+      queueName: TRANSACTIONS,
+      queueId: CLAIMMARKETSPROCEEDS,
     };
   } else if (type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid) {
     defaults = {
@@ -358,6 +378,14 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: MARKET_IS_MOST_LIKELY_INVALID_TITLE,
       buttonLabel: TYPE_VIEW_DETAILS,
+    };
+  } else if (type === NOTIFICATION_TYPES.liquidityDepleted) {
+    defaults = {
+      type,
+      isImportant: false,
+      isNew: true,
+      title: MARKET_LIQUIDITY_DEPLETED_TITLE,
+      buttonLabel: TYPE_ADD_LIQUIDITY,
     };
   }
 

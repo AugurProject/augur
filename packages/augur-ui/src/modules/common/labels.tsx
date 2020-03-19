@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
 import Styles from 'modules/common/labels.styles.less';
@@ -45,13 +45,18 @@ import { EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import { getDurationBetween } from 'utils/format-date';
+import { useTimer } from 'modules/common/progress';
 
 export interface MarketTypeProps {
   marketType: string;
 }
 
 export interface MarketStatusProps {
+  marketStatus: string;
   reportingState: string;
+  endTimeFormatted: DateFormattedObject;
+  currentAugurTimestamp: number;
+  isWarpSync?: boolean;
 }
 
 export interface InReportingLabelProps extends MarketStatusProps {
@@ -142,6 +147,7 @@ export interface ValueLabelProps {
   keyId?: string;
   showEmptyDash?: boolean;
   useFull?: boolean;
+  usePercent?: boolean;
   alert?: boolean;
 }
 
@@ -223,17 +229,23 @@ interface TimeLabelProps {
 
 interface CountdownLabelProps {
   expiry: DateFormattedObject;
-  currentTimestamp: Number;
 }
 
-export const CountdownLabel = ({ expiry, currentTimestamp }: CountdownLabelProps) => {
+export const CountdownLabel = ({ expiry }: CountdownLabelProps) => {
   if (!expiry) return null;
-  const duration = getDurationBetween(expiry.timestamp, currentTimestamp);
-  const hours = duration.asHours();
-  if (hours > 1) return null;
+  const currentTime = useTimer();
+  const duration = getDurationBetween(expiry.timestamp, currentTime);
+  let durationValue = duration.asSeconds();
+  let unit = 'm';
+  if (durationValue > constants.SECONDS_IN_HOUR) return null;
+  if (durationValue > constants.SECONDS_IN_MINUTE) {
+    durationValue = Math.round(duration.asMinutes());
+  } else {
+    unit = 's';
+  }
   return (
     <div className={Styles.CountdownLabel}>
-      {Math.round(duration.asMinutes())}m
+      {durationValue}{unit}
     </div>
   );
 };
@@ -440,7 +452,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
         data-for={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
         data-iscapture="true"
       >
-        {props.useFull && props.value.full}
+        {props.usePercent ? props.value.percent : props.useFull && props.value.full}
         {!props.useFull && `${frontFacingLabel}${postfix}`}
         {!props.useFull && <span>{denominationLabel}</span>}
       </label>
@@ -737,7 +749,7 @@ export const LinearPropertyLabel = ({
   </div>
 );
 
-export const MarketTypeLabel = ({ marketType }: MarketTypeProps) => {
+export const MarketTypeLabel = ({ marketType, isWarpSync }: MarketTypeProps) => {
   if (!marketType) {
     return null;
   }
@@ -746,13 +758,14 @@ export const MarketTypeLabel = ({ marketType }: MarketTypeProps) => {
     [CATEGORICAL]: 'Categorical',
     [SCALAR]: 'Scalar Market',
   };
-  const text = labelTexts[marketType];
-  const isScalar = marketType === SCALAR;
+  const text = isWarpSync ? 'Warp Sync Market' : labelTexts[marketType];
+  const isScalar = !isWarpSync && marketType === SCALAR;
 
   return (
     <span
       className={classNames(Styles.MarketTypeLabel, {
         [Styles.MarketScalarLabel]: isScalar,
+        [Styles.MarketStatus_warpSync]: isWarpSync
       })}
     >
       {text} {isScalar && ScalarIcon}
@@ -761,10 +774,11 @@ export const MarketTypeLabel = ({ marketType }: MarketTypeProps) => {
 };
 
 export const MarketStatusLabel = (props: MarketStatusProps) => {
-  const { reportingState, mini } = props;
+  const { reportingState, mini, isWarpSync } = props;
   let open = false;
   let resolved = false;
   let reporting = false;
+  let warpSync = false;
   let text: string;
   switch (reportingState) {
     case REPORTING_STATE.PRE_REPORTING:
@@ -782,6 +796,10 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
       break;
   }
 
+  if (isWarpSync) {
+    warpSync = true;
+    text = 'Warp Sync Market';
+  }
   return (
     <span
       className={classNames(Styles.MarketStatus, {
@@ -789,6 +807,7 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
         [Styles.MarketStatus_open]: open,
         [Styles.MarketStatus_resolved]: resolved,
         [Styles.MarketStatus_reporting]: reporting,
+        [Styles.MarketStatus_warpSync]: warpSync,
       })}
     >
       {text}
@@ -797,7 +816,7 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
 };
 
 export const InReportingLabel = (props: InReportingLabelProps) => {
-  const { reportingState, disputeInfo } = props;
+  const { reportingState, disputeInfo, isWarpSync } = props;
 
   const reportingStates = [
     REPORTING_STATE.DESIGNATED_REPORTING,
@@ -813,25 +832,26 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   let reportingExtraText: string | null;
   // const text: string = constants.IN_REPORTING;
   const text = '';
-  let customLabel: string | null = null;
 
   if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING) {
     reportingExtraText = constants.WAITING_ON_REPORTER;
-    customLabel = constants.REPORTING_ENDS;
   } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
     reportingExtraText = constants.OPEN_REPORTING;
   } else if (disputeInfo && disputeInfo.disputePacingOn) {
     reportingExtraText = constants.SLOW_DISPUTE;
   } else if (disputeInfo && !disputeInfo.disputePacingOn) {
     reportingExtraText = constants.FAST_DISPUTE;
-    customLabel = constants.DISPUTE_ENDS;
   } else {
     reportingExtraText = null;
   }
 
+  if (isWarpSync) {
+    reportingExtraText = 'Warp Sync Market';
+  }
+
   return (
     <span
-      className={classNames(Styles.MarketStatus, Styles.MarketStatus_reporting)}
+      className={classNames(Styles.MarketStatus, Styles.MarketStatus_reporting, {[Styles.MarketStatus_warpSync]: isWarpSync})}
     >
       {text}
       {reportingExtraText && (
@@ -1255,7 +1275,7 @@ interface DiscordLinkProps {
 export const DiscordLink = (props: DiscordLinkProps) => (
   <div className={Styles.discordLink}>
     {props.label}
-    <a href={DISCORD_LINK} target="_blank">
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">
       Discord
     </a>
   </div>

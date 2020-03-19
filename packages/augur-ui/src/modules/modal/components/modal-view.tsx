@@ -6,6 +6,7 @@ import ModalReporting from 'modules/modal/containers/modal-reporting';
 import ModalConfirm from 'modules/modal/components/modal-confirm';
 import ModalReview from 'modules/modal/components/modal-review';
 import ModalRepFaucet from 'modules/modal/containers/modal-rep-faucet';
+import ModalGsnFaucet from 'modules/modal/containers/modal-gsn-faucet';
 import ModalCreateMarket from 'modules/modal/containers/modal-create-market';
 import ModalDaiFaucet from 'modules/modal/containers/modal-dai-faucet';
 import ModalCreationHelp from 'modules/modal/containers/modal-creation-help';
@@ -37,10 +38,11 @@ import ModalDrQuickGuide from 'modules/modal/containers/modal-dr-quick-guide';
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market';
 import ModalAddFunds from 'modules/modal/containers/modal-add-funds';
 import ModalSignin from 'modules/modal/containers/modal-signin';
-import ModalConnect from 'modules/modal/containers/modal-connect';
+import ModalHardwareWallet from 'modules/modal/containers/modal-hardware-wallet';
 import ModalLoading from 'modules/modal/containers/modal-loading';
 import ModalUniverseSelector from 'modules/modal/containers/modal-universe-selector';
 import ModalTestBet from 'modules/modal/containers/modal-test-bet';
+import ModalAugurP2P from 'modules/modal/containers/modal-p2p-trading';
 import ModalGlobalChat from 'modules/modal/containers/modal-global-chat';
 import ModalAccountCreated from 'modules/modal/containers/modal-account-created';
 import ModalWalletError from 'modules/modal/containers/modal-wallet-error';
@@ -49,6 +51,8 @@ import ModalTutorialOutro from 'modules/modal/containers/modal-tutorial-outro';
 import ModalTutorialIntro from 'modules/modal/containers/modal-tutorial-intro';
 import ModalScalar from 'modules/modal/containers/modal-scalar';
 import ModalInvalidMarketRules from 'modules/modal/containers/modal-invalid-market-rules';
+import ModalInitializeAccounts from 'modules/modal/containers/modal-initialize-account';
+
 
 import * as TYPES from 'modules/common/constants';
 
@@ -76,6 +80,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTransactions />;
     case TYPES.MODAL_REP_FAUCET:
       return <ModalRepFaucet />;
+    case TYPES.MODAL_GSN_FAUCET:
+      return <ModalGsnFaucet />;
     case TYPES.MODAL_CREATE_MARKET:
       return <ModalCreateMarket />;
     case TYPES.MODAL_ADD_FUNDS:
@@ -143,14 +149,16 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalSignin {...props} isLogin />;
     case TYPES.MODAL_SIGNUP:
       return <ModalSignin {...props} isLogin={false} />;
-    case TYPES.MODAL_CONNECT:
-      return <ModalConnect />;
+    case TYPES.MODAL_HARDWARE_WALLET:
+      return <ModalHardwareWallet {...props} />;
     case TYPES.MODAL_LOADING:
       return <ModalLoading />;
     case TYPES.MODAL_UNIVERSE_SELECTOR:
       return <ModalUniverseSelector />;
     case TYPES.MODAL_TEST_BET:
       return <ModalTestBet />;
+    case TYPES.MODAL_AUGUR_P2P:
+      return <ModalAugurP2P />;
     case TYPES.MODAL_TUTORIAL_OUTRO:
       return <ModalTutorialOutro {...modal} />;
     case TYPES.MODAL_TUTORIAL_INTRO:
@@ -167,6 +175,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalScalar {...modal} />
     case TYPES.MODAL_INVALID_MARKET_RULES:
       return <ModalInvalidMarketRules />;
+    case TYPES.MODAL_INITIALIZE_ACCOUNT:
+       return <ModalInitializeAccounts />;
     default:
       return <div />;
   }

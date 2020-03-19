@@ -44,6 +44,7 @@ import {
   hasNoTemplateCategoryTertiaryChildren,
 } from 'modules/create-market/get-template';
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
+import { TemplateInputType } from '@augurproject/artifacts/src';
 
 interface FormDetailsProps {
   newMarket: NewMarket;
@@ -101,6 +102,13 @@ export default class FormDetails extends React.Component<
     const tickSize =
       isTemplate && template.tickSize ? template.tickSize : newMarket.tickSize;
 
+    let resolutionTimeSubheader = null
+    if (isTemplate) {
+      const estInput = template.inputs.find(i => i.type === TemplateInputType.ESTDATETIME);
+      if (estInput) {
+        resolutionTimeSubheader = `This templated market has a predefined event expiration date time, which is ${estInput.hoursAfterEst} hours after estimated schedule start time.`
+      }
+    }
     return (
       <div
         className={classNames(Styles.FormDetails, {
@@ -245,7 +253,7 @@ export default class FormDetails extends React.Component<
               <section>
                 <TextInput
                   type="number"
-                  placeholder="0"
+                  placeholder="Enter Min Range value"
                   onChange={(value: string) => {
                     onChange('minPrice', value);
                     if (!checkValidNumber(value))
@@ -258,7 +266,7 @@ export default class FormDetails extends React.Component<
                 <span>to</span>
                 <TextInput
                   type="number"
-                  placeholder="100"
+                  placeholder="Enter Max Range value"
                   onChange={(value: string) => {
                     onChange('maxPrice', value);
                     if (!checkValidNumber(value))
@@ -338,6 +346,8 @@ export default class FormDetails extends React.Component<
               endTimeFormatted={endTimeFormatted}
               uniqueKey={'templateRes'}
               isAfter={this.props.universe.maxMarketEndTime}
+              subheader={resolutionTimeSubheader}
+              disabled={!!resolutionTimeSubheader}
             />
           )}
 

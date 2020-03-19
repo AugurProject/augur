@@ -10,7 +10,6 @@ import isMetaMaskPresent from 'modules/auth/helpers/is-meta-mask';
 import {
   MODAL_LOGIN,
   MODAL_SIGNUP,
-  MODAL_CONNECT,
   MODAL_LOADING,
   ACCOUNT_TYPES,
   SIGNIN_LOADING_TEXT_PORTIS,
@@ -20,6 +19,8 @@ import {
   SIGNIN_SIGN_WALLET,
   MODAL_ACCOUNT_CREATED,
   MODAL_ERROR,
+  MODAL_HARDWARE_WALLET,
+  HELP_CENTER_THIRD_PARTY_COOKIES,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -40,9 +41,8 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   loginModal: () => dispatch(updateModal({ type: MODAL_LOGIN })),
+  hardwareWalletModal: (isLogin) => dispatch(updateModal({ type: MODAL_HARDWARE_WALLET, isLogin })),
   signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
-  connectModal: loginOrSignup =>
-    dispatch(updateModal({ type: MODAL_CONNECT, loginOrSignup })),
   accountCreatedModal: () =>
     dispatch(updateModal({ type: MODAL_ACCOUNT_CREATED })),
   loadingModal: (message, callback, showMetaMaskHelper = false) =>
@@ -62,10 +62,13 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     dispatch(loginWithTorus()),
   connectFortmatic: () =>
     dispatch(loginWithFortmatic()),
-  errorModal: (error) => dispatch(
+  errorModal: (error, title = null, link = null, linkLabel = null) => dispatch(
     updateModal({
       type: MODAL_ERROR,
-      error: error ? JSON.stringify(error) : 'Sorry, please try again.',
+      title,
+      error: error ? error : 'Sorry, please try again.',
+      link,
+      linkLabel
     })
   ),
 });
@@ -75,7 +78,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
-    dP.errorModal(error.message ? error.message : error ? error : '');
+    if (error.message && error.message.toLowerCase().indexOf('cookies') !== -1) {
+      dP.errorModal(`Please enable cookies in your browser to proceed with ${accountType}.`, 'Cookies are disabled', HELP_CENTER_THIRD_PARTY_COOKIES, 'Learn more.');
+    } else {
+      dP.errorModal(error.message ? error.message : error ? JSON.stringify(error) : '');
+    }
   };
 
   const login = () => {
@@ -162,8 +169,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   return {
     loginModal: dP.loginModal,
     signupModal: dP.signupModal,
-    connectModal: dP.connectModal,
     closeModal: dP.closeModal,
+    hardwareWalletModal: dP.hardwareWalletModal,
     isLogin: oP.isLogin,
     connectMethods,
   };

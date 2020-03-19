@@ -90,6 +90,22 @@
       padding-bottom: 2px;
     }
   }
+
+  @media @breakpoint-mobile-tablet {
+    > div > span:nth-of-type(2) {
+      .text-12-medium;
+
+      display: flex;
+      flex-direction: column;
+
+      > button {
+        .text-12-medium;
+
+        text-align: left;
+        margin-left: 0;
+      }
+    }
+  }
 }
 
 .Arrow {

@@ -6,15 +6,11 @@ import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { MarketData, MarketType } from '../logs/types';
 import { OrderEventType, SubscriptionEventName } from '../../constants';
-import { getTradeInterval } from '../../utils';
+import { getTradeInterval, convertDisplayAmountToOnChainAmount } from '../../utils';
 import { OrderInfo, OrderEvent, BigNumber } from '@0x/mesh-rpc-client';
 import { getAddress } from 'ethers/utils/address';
 import { defaultAbiCoder, ParamType } from 'ethers/utils';
-import { SignedOrder } from '@0x/types';
 import { BigNumber as BN} from 'ethers/utils';
-import moment, { Moment } from 'moment';
-import { sleep } from '../utils/utils';
-import { syncBuiltinESMExports } from 'module';
 
 // This database clears its contents on every sync.
 // The primary purposes for even storing this data are:
@@ -54,11 +50,17 @@ const erc1155AssetDataAbi: ParamType[] = [
   { name: 'callbackData', type: 'bytes' },
 ];
 
+export interface ParsedAssetDataResults {
+  orderData: OrderData;
+  multiAssetData: any;
+}
+
 export interface OrderData {
   market: string;
   price: string;
   outcome: string;
   orderType: string;
+  invalidOrder?: boolean;
 }
 
 export interface Document extends BaseDocument {
@@ -117,9 +119,9 @@ export class ZeroXOrders extends AbstractTable {
     this.syncStatus = db.syncStatus;
     this.stateDB = db;
     this.augur = augur;
-    this.tradeTokenAddress = this.augur.addresses.ZeroXTrade.substr(2).toLowerCase(); // normalize and remove the 0x
-    const cashTokenAddress = this.augur.addresses.Cash.substr(2).toLowerCase(); // normalize and remove the 0x
-    const shareTokenAddress = this.augur.addresses.ShareToken.substr(2).toLowerCase(); // normalize and remove the 0x
+    this.tradeTokenAddress = this.augur.config.addresses.ZeroXTrade.substr(2).toLowerCase(); // normalize and remove the 0x
+    const cashTokenAddress = this.augur.config.addresses.Cash.substr(2).toLowerCase(); // normalize and remove the 0x
+    const shareTokenAddress = this.augur.config.addresses.ShareToken.substr(2).toLowerCase(); // normalize and remove the 0x
     this.cashAssetData = `0xf47261b0000000000000000000000000${cashTokenAddress}`;
     this.shareAssetData = `0xa7cb5fb7000000000000000000000000${shareTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
     this.takerAssetData = `0xa7cb5fb7000000000000000000000000${this.tradeTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
@@ -135,11 +137,8 @@ export class ZeroXOrders extends AbstractTable {
     })
   }
 
-  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
-    for (const document of documents) {
-      delete document.constructor;
-    }
-    await this.table.bulkPut(documents);
+  protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
+    return super.bulkPutDocuments(documents);
   }
 
   static create(db: DB, networkId: number, augur: Augur): ZeroXOrders {
@@ -149,7 +148,7 @@ export class ZeroXOrders extends AbstractTable {
 
   async clearDBAndCacheOrders(): Promise<void> {
     // Note: This does mean if a user reloads before syncing the old orders could be lost if they previous to that had not broadcast their orders completely somehow
-    this.pastOrders = _.keyBy(await this.allDocs(), "orderHash");
+    this.pastOrders = _.keyBy(await this.allDocs(), 'orderHash');
     await this.clearDB();
   }
 
@@ -169,7 +168,7 @@ export class ZeroXOrders extends AbstractTable {
     // Remove Canceled, Expired, and Invalid Orders and emit event
     const canceledOrders = _.keyBy(
       _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'CANCELLED' || orderEvent.endState === 'EXPIRED' || orderEvent.endState === 'INVALID' || orderEvent.endState === 'UNFUNDED')),
-      "orderHash"
+      'orderHash'
     );
 
     for (const d of documents) {
@@ -184,11 +183,11 @@ export class ZeroXOrders extends AbstractTable {
     // Deal with partial fills and emit event
     const filledOrders = _.keyBy(
       _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'FILLED' || orderEvent.endState === 'FULLY_FILLED')),
-      "orderHash"
+      'orderHash'
     );
 
     documents = _.filter(documents, this.validateStoredOrder.bind(this));
-    await this.bulkUpsertDocuments(documents);
+    await this.saveDocuments(documents);
     for (const d of documents) {
       const eventType = filledOrders[d.orderHash] ? OrderEventType.Fill : OrderEventType.Create;
       this.augur.events.emit('OrderEvent', {eventType, orderId: d.orderHash,...d});
@@ -197,7 +196,7 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   async sync(): Promise<void> {
-    console.log("Syncing ZeroX Orders");
+    console.log('Syncing ZeroX Orders');
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
     let documents;
     if (orders && orders.length > 0) {
@@ -209,18 +208,18 @@ export class ZeroXOrders extends AbstractTable {
         return this.validateStoredOrder(document, markets);
       });
       _.each(documents, (doc) => { delete this.pastOrders[doc.orderHash] });
-      await this.bulkUpsertDocuments(documents);
+      await this.saveDocuments(documents);
       for (const d of documents) {
         this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
       }
     }
-    const chainId = Number(this.augur.networkId);
+    const chainId = Number(this.augur.config.networkId);
     const ordersToAdd = _.map(_.values(this.pastOrders), (order) => {
       const signedOrder = order.signedOrder;
       return Object.assign({
         chainId,
-        makerFeeAssetData: "0x",
-        takerFeeAssetData: "0x",
+        makerFeeAssetData: '0x',
+        takerFeeAssetData: '0x',
       }, signedOrder);
     });
 
@@ -232,13 +231,6 @@ export class ZeroXOrders extends AbstractTable {
     if (!order.signedOrder.makerAssetAmount.eq(order.signedOrder.takerAssetAmount)) return false;
     if (order.signedOrder.makerAssetData.length !== EXPECTED_ASSET_DATA_LENGTH) return false;
     if (order.signedOrder.takerAssetData !== this.takerAssetData) return false;
-    const assetData = order.signedOrder.makerAssetData;
-    const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${assetData.slice(10)}`);
-    const nestedAssetData = multiAssetData[1] as string[];
-    const decoded = defaultAbiCoder.decode(erc1155AssetDataAbi, `0x${nestedAssetData[0].slice(10)}`);
-    const values = decoded[2] as BigNumber[];
-    if (values[0]["_hex"] != "0x01") return false;
-    if (values.length > 1) return false;
     return true;
   }
 
@@ -246,8 +238,8 @@ export class ZeroXOrders extends AbstractTable {
     // Validate the order is a multiple of the recommended trade interval
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     const marketData = markets[storedOrder.market];
+    if (storedOrder.invalidOrder) return false;
     if (marketData && marketData.marketType == MarketType.Scalar) {
-      // NOTE: If this ends up causing order validation to be too slow we could calc and store this on market creation
       tradeInterval = getTradeInterval(new BigNumber(marketData.prices[0]), new BigNumber(marketData.prices[1]), new BigNumber(marketData.numTicks));
     }
     if (!storedOrder['numberAmount'].mod(tradeInterval).isEqualTo(0)) return false;
@@ -259,26 +251,11 @@ export class ZeroXOrders extends AbstractTable {
       this.augur.events.emit('DB:updated:ZeroXOrders', {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder});
       return false;
     }
-
-    const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${storedOrder.signedOrder.makerAssetData.slice(10)}`);
-    const amounts = multiAssetData[0] as BigNumber[];
-    if (amounts.length != 3) return false;
-    if (!amounts[0].eq(1)) return false;
-    if (!amounts[1].eq(0)) return false;
-    if (!amounts[2].eq(0)) return false;
-    const nestedAssetData = multiAssetData[1] as string[];
-    const tradeTokenAssetData = nestedAssetData[0];
-    const cashAssetData = nestedAssetData[1];
-    const shareAssetData = nestedAssetData[2];
-    if (tradeTokenAssetData.substr(34, 40) !== this.tradeTokenAddress) return false;
-    if (cashAssetData != this.cashAssetData) return false;
-    if (shareAssetData != this.shareAssetData) return false;
     return true;
   }
 
   processOrder(order: OrderInfo): StoredOrder {
-    const augurOrderData = ZeroXOrders.parseAssetData(order.signedOrder.makerAssetData);
-    // Currently the API for mesh browser and the client API diverge here but we dont want to do string parsing per order to be compliant for the browser case
+    const augurOrderData = this.parseAssetDataAndValidate(order.signedOrder.makerAssetData);
     const signedOrder = order.signedOrder;
     return {
       orderId: order.orderHash,
@@ -309,24 +286,51 @@ export class ZeroXOrders extends AbstractTable {
     }
   }
 
-  static parseAssetData(assetData: string): OrderData {
+  parseAssetDataAndValidate(assetData: string): OrderData {
+    try {
+      const { orderData, multiAssetData } = ZeroXOrders.parseAssetData(assetData);
+      orderData.invalidOrder = !this.isValidMultiAssetFormat(multiAssetData);
+      return orderData;
+    } catch(e) {
+      throw new Error(`Validation raised error. Error: ${e}`);
+    }
+  }
+
+  static parseAssetData(assetData: string): ParsedAssetDataResults {
     try {
       const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${assetData.slice(10)}`);
       const nestedAssetData = multiAssetData[1] as string[];
-      return ZeroXOrders.parseTradeAssetData(nestedAssetData[0]);
+      const orderData = ZeroXOrders.parseTradeAssetData(nestedAssetData[0]);
+      return {
+        orderData,
+        multiAssetData
+      };
     } catch(e) {
-      throw new Error("Cancel for order not in multi-asset format")
+      throw new Error(`Order not in multi-asset format. Error: ${e}`);
     }
+  }
+
+  isValidMultiAssetFormat(multiAssetData: any): boolean {
+    const amounts = multiAssetData[0] as BigNumber[];
+    if (amounts.length !== 3) return false;
+    if (!amounts[0].eq(1)) return false;
+    if (!amounts[1].eq(0)) return false;
+    if (!amounts[2].eq(0)) return false;
+    const nestedAssetData = multiAssetData[1] as string[];
+    const tradeTokenAssetData = nestedAssetData[0];
+    const cashAssetData = nestedAssetData[1];
+    const shareAssetData = nestedAssetData[2];
+    if (tradeTokenAssetData.substr(34, 40) !== this.tradeTokenAddress) return false;
+    if (cashAssetData !== this.cashAssetData) return false;
+    if (shareAssetData !== this.shareAssetData) return false;
+    return true;
   }
 
   static parseTradeAssetData(assetData: string): OrderData {
     // Remove the first 10 characters because assetData is prefixed in 0x, and then contains a selector.
     // Drop the selector and add back to 0x prefix so the AbiDecoder will treat it properly as hex.
     const decoded = defaultAbiCoder.decode(erc1155AssetDataAbi, `0x${assetData.slice(10)}`);
-    const address = decoded[0] as string;
     const ids = decoded[1] as BigNumber[];
-    const values = decoded[2] as BigNumber[];
-    const callbackData = decoded[3] as string;
 
     if (ids.length !== 1) {
       throw new Error('More than one ID passed into 0x order');
@@ -336,7 +340,7 @@ export class ZeroXOrders extends AbstractTable {
     // Since `ids[n]` is a BigNumber, it is possible for the higher order bits
     // to all be 0. This will result in the tokenid serialization here to be
     // less than the expected full 32 bytes (64 characters in hex).
-    let tokenid = new BN(`${ids[0].toString()}`).toHexString().substr(2).padStart(64, '0');
+    const tokenid = new BN(`${ids[0].toString()}`).toHexString().substr(2).padStart(64, '0');
 
     // From ZeroXTrade.sol
     //  assembly {

@@ -31,7 +31,6 @@ import {
   formatGasCostToEther,
   formatDai,
   formatEther,
-  formatDaiEstimate,
 } from 'utils/format-number';
 import { NewMarket, FormattedNumber } from 'modules/types';
 
@@ -47,8 +46,7 @@ interface ReviewProps {
   availableEthFormatted: FormattedNumber;
   availableDaiFormatted: FormattedNumber;
   estimateSubmitNewMarket: Function;
-  Gnosis_ENABLED: boolean;
-  ethToDaiRate: BigNumber;
+  GsnEnabled: boolean;
   setDisableCreate: Function;
   showAddFundsModal: Function;
 }
@@ -142,7 +140,7 @@ export default class Review extends React.Component<
 
 
   getInsufficientFundsAmounts(): InsufficientFunds {
-    const { availableEthFormatted, availableRepFormatted, availableDaiFormatted, Gnosis_ENABLED } = this.props;
+    const { availableEthFormatted, availableRepFormatted, availableDaiFormatted, GsnEnabled } = this.props;
     const s = this.state;
     let insufficientFunds: InsufficientFunds = null;
 
@@ -170,7 +168,7 @@ export default class Review extends React.Component<
         createBigNumber(availableDaiFormatted.value || '0'),
         formattedInitialLiquidityGas || '0',
         formattedInitialLiquidityDai || '0',
-        Gnosis_ENABLED
+        GsnEnabled
       );
     }
 
@@ -182,7 +180,7 @@ export default class Review extends React.Component<
   }
 
   async calculateMarketCreationCosts() {
-    const { newMarket, gasPrice, Gnosis_ENABLED } = this.props;
+    const { newMarket, gasPrice, GsnEnabled } = this.props;
 
     const marketCreationCostBreakdown = await getCreateMarketBreakdown();
     this.setState(
@@ -203,13 +201,8 @@ export default class Review extends React.Component<
           newMarket,
           (err, gasEstimateValue) => {
             if (err) console.error(err);
-            const gasCost = Gnosis_ENABLED
-            ? formatDaiEstimate(formatGasCostToEther(
-                gasEstimateValue,
-                { decimalsRounded: 4 },
-                gasPrice,
-              )
-            )
+            const gasCost = GsnEnabled
+            ? gasEstimateValue
             : formatEtherEstimate(formatGasCostToEther(
                 gasEstimateValue,
                 { decimalsRounded: 4 },
@@ -238,8 +231,7 @@ export default class Review extends React.Component<
       availableEthFormatted,
       availableDaiFormatted,
       availableRepFormatted,
-      Gnosis_ENABLED,
-      ethToDaiRate,
+      GsnEnabled,
       showAddFundsModal,
     } = this.props;
     const s = this.state;
@@ -261,19 +253,20 @@ export default class Review extends React.Component<
       endTimeFormatted,
       timezone,
       template,
+      initialLiquidityGas,
     } = newMarket;
 
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
     const initialLiquidity = s.formattedInitialLiquidityGas ? s.formattedInitialLiquidityGas.value : 0;
 
     // Initial liquidity Gas in DAI
-    const initialLiquidityGasInDai = displayGasInDai(createBigNumber(initialLiquidity), ethToDaiRate);
+    const initialLiquidityGasInDai = displayGasInDai(initialLiquidityGas);
 
     // Total Gas in ETH
     const totalEth = formatEther(createBigNumber(initialLiquidity).plus(createBigNumber(s.gasCost ? s.gasCost.value : 0)));
 
     // Total Gas in DAI
-    const totalGasInDai = displayGasInDai(totalEth.value, ethToDaiRate);
+    const totalGasInDai = displayGasInDai(initialLiquidityGas.plus(createBigNumber(s.gasCost ? s.gasCost : 0)));
 
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];
@@ -325,7 +318,7 @@ export default class Review extends React.Component<
           <Subheaders copyType={MARKET_COPY_LIST.VALIDITY_BOND} header="Validity bond" subheader={"The bond is paid in DAI and is refunded to the Market Creator if the Final Outcome of the Market is not Invalid. The Validity Bond is a dynamic amount based on the percentage of Markets in Augur that are being Finalized as Invalid."} link />
           <span>
             <LinearPropertyLabel
-              label={"Valididty Bond"}
+              label={"Validity Bond"}
               value={s.validityBond && s.validityBond.formattedValue + " DAI"}
             />
           </span>
@@ -346,28 +339,28 @@ export default class Review extends React.Component<
                 label={"Initial Liquidity"}
                 value={s.formattedInitialLiquidityDai.formattedValue + " DAI"}
               />
-              {Gnosis_ENABLED && ethToDaiRate && <LinearPropertyLabelTooltip
+              {GsnEnabled && <LinearPropertyLabelTooltip
                 label={'Transaction Fee'}
                 value={initialLiquidityGasInDai + ' DAI'}
               />}
-              {!Gnosis_ENABLED && <LinearPropertyLabelTooltip
+              {!GsnEnabled && <LinearPropertyLabelTooltip
                 label={'Gas Cost'}
                 value={s.formattedInitialLiquidityGas.formattedValue + ' ETH'}
               />}
             </span>
           </>}
 
-          <Subheaders header="Totals" subheader={Gnosis_ENABLED ? "Sum total of DAI and REP required to create this market" : "Sum total of DAI, ETH and REP required to create this market"} />
+          <Subheaders header="Totals" subheader={GsnEnabled ? "Sum total of DAI and REP required to create this market" : "Sum total of DAI, ETH and REP required to create this market"} />
           <span>
             <LinearPropertyLabel
               label={"Total DAI"}
               value={totalDai.formattedValue + " DAI"}
             />
-            {Gnosis_ENABLED && <LinearPropertyLabel
+            {GsnEnabled && <LinearPropertyLabel
               label={"Transaction Fee"}
               value={totalGasInDai + " DAI"}
             />}
-            {!Gnosis_ENABLED && <LinearPropertyLabel
+            {!GsnEnabled && <LinearPropertyLabel
               label={"Transaction Fee"}
               value={totalEth.formattedValue + " ETH"}
             />}
@@ -388,7 +381,7 @@ export default class Review extends React.Component<
             totalDai={totalDai}
             totalEth={totalEth}
             totalRep={s.designatedReportNoShowReputationBond}
-            Gnosis_ENABLED={Gnosis_ENABLED}
+            GsnEnabled={GsnEnabled}
           />
         </div>
       </div>

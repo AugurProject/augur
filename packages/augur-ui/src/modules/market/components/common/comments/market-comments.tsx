@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Box from '3box';
 import Comments from '3box-comments-react';
-import Web3 from 'web3';
 
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { ACCOUNT_TYPES } from 'modules/common/constants';
@@ -172,3 +171,33 @@ export class MarketComments extends Component {
     );
   }
 }
+
+// import React from 'react';
+// import { FacebookComments } from 'modules/market/components/common/comments/facebook-comments';
+//
+// interface MarketCommentsProps {
+//   marketId: string;
+//   colorScheme: string;
+//   numPosts: number;
+//   networkId: string;
+//   whichCommentPlugin?: string;
+// }
+//
+// export const MarketComments = ({
+//   marketId,
+//   colorScheme,
+//   numPosts,
+//   networkId,
+//   whichCommentPlugin,
+// }: MarketCommentsProps) => {
+//   return (
+//     whichCommentPlugin === 'facebook' && (
+//       <FacebookComments
+//         marketId={marketId}
+//         colorScheme={colorScheme}
+//         numPosts={numPosts}
+//         networkId={networkId}
+//       />
+//     )
+//   );
+// };

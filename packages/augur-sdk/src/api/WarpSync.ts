@@ -32,13 +32,12 @@ export class WarpSync {
     const winningBondAddress = await market.getWinningReportingParticipant_();
     const winningParticipant = this.augur.contracts.getReportingParticipant(winningBondAddress);
     const payout = await winningParticipant.getPayoutNumerators_();
-    return this.getWarpSyncHashFromPayout(payout);
+    return this.getWarpSyncHashFromPayout(payout[2]);
   }
 
-  getWarpSyncHashFromPayout(payout: BigNumber[]): string {
-    const hashPayout = payout[2];
+  getWarpSyncHashFromPayout(payout: BigNumber): string {
     // 0x12 == hashing function of sha2-256 0x20 is the size value. Both are constant and appended at the start of the ipfs hash
-    const hexHash = `1220${hashPayout.toString(16).padStart(64, "0")}`;
+    const hexHash = `1220${payout.toString(16).padStart(64, "0")}`;
     const bytes = Buffer.from(hexHash, 'hex');
     return bs58.encode(bytes);
   }
@@ -47,16 +46,17 @@ export class WarpSync {
     const bytes = bs58.decode(warpSyncHash)
     const encodedWarpSyncHash = bytes.toString('hex');
     // first 6 characters of the hex ipfs hash are always 0x1220
-    const payout = new BigNumber(`0x${encodedWarpSyncHash.slice(6)}`, 16);
+    const payout = new BigNumber(`0x${encodedWarpSyncHash.slice(4)}`, 16);
     return [new BigNumber(0), MAX_PAYOUT.minus(payout), payout];
   }
 
   async getLastWarpSyncData(universe: string): Promise<WarpSyncData> {
     const warpSync = this.augur.contracts.warpSync;
-    const warpSyncData = await warpSync.data_(universe);
+    const [warpSyncHash, timestamp] = await warpSync.data_(universe) as unknown as [BigNumber, BigNumber];
+
     return {
-        warpSyncHash: warpSyncData[0].toString(10),
-        timestamp: warpSyncData[1].toNumber()
+        warpSyncHash: this.getWarpSyncHashFromPayout(warpSyncHash),
+        timestamp: timestamp.toNumber()
     }
   }
 }

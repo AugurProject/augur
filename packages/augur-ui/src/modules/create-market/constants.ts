@@ -81,7 +81,6 @@ export const EMPTY_STATE: NewMarket = {
   marketType: YES_NO,
   outcomes: ['', ''],
   outcomesFormatted: YES_NO_OUTCOMES,
-  scalarSmallNum: '',
   scalarBigNum: '',
   scalarDenomination: '',
   description: '',
@@ -109,6 +108,9 @@ export const EMPTY_STATE: NewMarket = {
   initialLiquidityDai: ZERO,
   initialLiquidityGas: ZERO,
 };
+
+export const WarpSyncErrorHeader = 'Universe Warp Sync Hash is undefined';
+export const WarpSyncErrorSubheader = 'Wait until warp sunc hash is defined to report or dispute';
 
 export const EventDetailsContentTemplate = `template`;
 export const EventDetailsContent = (type = `custom`) => ({

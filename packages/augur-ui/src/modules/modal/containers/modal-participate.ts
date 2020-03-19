@@ -19,8 +19,7 @@ const mapStateToProps = (state: AppState) => ({
     },
   ],
   title: 'Buy Participation Tokens',
-  Gnosis_ENABLED: state.appStatus.gnosisEnabled,
-  ethToDaiRate: state.appStatus.ethToDaiRate,
+  GsnEnabled: state.appStatus.gsnEnabled,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

@@ -71,6 +71,7 @@ const MarketRow = ({
               reportingState={market.reportingState}
               alternate
               mini
+              isWarpSync={market.isWarpSync}
             />
             {market.marketType === SCALAR && <MarketTypeLabel marketType={market.marketType} />}
           </div>

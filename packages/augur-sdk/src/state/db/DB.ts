@@ -5,8 +5,7 @@ import {
   LogFilterAggregatorInterface,
 } from '../logs/LogFilterAggregator';
 import {
-  CancelledOrderLog,
-  CancelLog,
+  CancelZeroXOrderLog,
   CompleteSetsPurchasedLog,
   CompleteSetsSoldLog,
   CurrentOrder,
@@ -46,7 +45,6 @@ import {
   ReportingFeeChangedLog,
 } from '../logs/types';
 import { BaseSyncableDB } from './BaseSyncableDB';
-import { CancelledOrdersDB } from './CancelledOrdersDB';
 import { CurrentOrdersDatabase } from './CurrentOrdersDB';
 import { DelayedSyncableDB } from './DelayedSyncableDB';
 import { DisputeDatabase } from './DisputeDB';
@@ -54,7 +52,8 @@ import { MarketDB } from './MarketDB';
 import { ParsedOrderEventDB } from './ParsedOrderEventDB';
 import { SyncableDB } from './SyncableDB';
 import { SyncStatus } from './SyncStatus';
-import { WarpCheckpoints } from './WarpCheckpoints';
+import { WarpSyncCheckpointsDB } from './WarpSyncCheckpointsDB';
+import { WarpSyncDB } from './WarpSyncDB';
 import { StoredOrder, ZeroXOrders } from './ZeroXOrders';
 
 interface Schemas {
@@ -72,12 +71,12 @@ export class DB {
   private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
   private disputeDatabase: DisputeDatabase;
   private currentOrdersDatabase: CurrentOrdersDatabase;
-  public marketDatabase: MarketDB;
-  private cancelledOrdersDatabase: CancelledOrdersDB;
+  marketDatabase: MarketDB;
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
   syncStatus: SyncStatus;
-  warpCheckpoints: WarpCheckpoints;
+  warpCheckpoints: WarpSyncCheckpointsDB;
+  warpSync: WarpSyncDB;
 
   readonly genericEventDBDescriptions: GenericEventDBDescription[] = [
     { EventName: 'CompleteSetsPurchased', indexes: ['timestamp'] },
@@ -98,7 +97,7 @@ export class DB {
     { EventName: 'MarketVolumeChanged', indexes: [], primaryKey: 'market' },
     { EventName: 'MarketOIChanged', indexes: [], primaryKey: 'market' },
     { EventName: 'OrderEvent', indexes: ['market', 'timestamp', 'orderId', '[universe+eventType+timestamp]', '[market+eventType]', 'eventType', 'orderCreator', 'orderFiller'] },
-    { EventName: 'Cancel', indexes: [], primaryKey: 'orderHash' },
+    { EventName: 'CancelZeroXOrder', indexes: ['[account+market]'] },
     { EventName: 'ParticipationTokensRedeemed', indexes: ['timestamp'] },
     { EventName: 'ProfitLossChanged', indexes: ['[universe+account+timestamp]', 'account'] },
     { EventName: 'ReportingParticipantDisavowed', indexes: [] },
@@ -106,7 +105,7 @@ export class DB {
     { EventName: 'TokenBalanceChanged', indexes: ['[universe+owner+tokenType]'], primaryKey: '[owner+token]' },
     { EventName: 'TokensMinted', indexes: [] },
     { EventName: 'TokensTransferred', indexes: [] },
-    { EventName: 'ReportingFeeChanged', indexes: ['universe'] },
+    { EventName: 'ReportingFeeChanged', indexes: ['universe'] }, // TODO: add Rollup
     { EventName: 'TradingProceedsClaimed', indexes: ['timestamp'] },
     { EventName: 'UniverseCreated', indexes: ['childUniverse', 'parentUniverse'] },
     { EventName: 'UniverseForked', indexes: ['universe'] },
@@ -125,7 +124,7 @@ export class DB {
    * @param {number} networkId Network on which to sync events
    * @param logFilterAggregator object responsible for routing logs to individual db tables.
    * @param augur
-   * @param uploadBlockNumber
+   * @param enableZeroX
    * @returns {Promise<DB>} Promise to a DB controller object
    */
   static createAndInitializeDB(networkId: number, logFilterAggregator:LogFilterAggregatorInterface, augur: Augur, enableZeroX= false): Promise<DB> {
@@ -152,7 +151,8 @@ export class DB {
     await this.dexieDB.open();
 
     this.syncStatus = new SyncStatus(networkId, uploadBlockNumber, this);
-    this.warpCheckpoints = new WarpCheckpoints(networkId, this);
+    this.warpCheckpoints = new WarpSyncCheckpointsDB(networkId, this);
+    this.warpSync = new WarpSyncDB(networkId, this);
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
@@ -167,7 +167,6 @@ export class DB {
     this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], this.augur);
     this.marketDatabase = new MarketDB(this, networkId, this.augur);
     this.parsedOrderEventDatabase = new ParsedOrderEventDB(this, networkId, this.augur);
-    this.cancelledOrdersDatabase = new CancelledOrdersDB(this, networkId, this.augur);
 
     if (enableZeroX) {
       this.zeroXOrders = ZeroXOrders.create(this, networkId, this.augur);
@@ -177,8 +176,8 @@ export class DB {
     // last-synced block (in case of restarting after a crash)
     const startSyncBlockNumber = await this.getSyncStartingBlock();
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
-      console.log('Performing rollback of block ' + startSyncBlockNumber + ' onward');
-      await this.rollback(startSyncBlockNumber);
+      console.log('Performing rollback of block ' + (startSyncBlockNumber - 1) + ' onward');
+      await this.rollback(startSyncBlockNumber - 1);
     }
 
     return this;
@@ -199,10 +198,10 @@ export class DB {
     schemas['Dispute'] = '[market+payoutNumerators],market,blockNumber';
     schemas['ParsedOrderEvents'] = '[blockNumber+logIndex],blockNumber,market,timestamp,orderId,[universe+eventType+timestamp],[market+eventType],eventType,orderCreator,orderFiller';
     schemas['ZeroXOrders'] = 'orderHash,[market+outcome+orderType],orderCreator,blockNumber';
-    schemas['CancelledOrders'] = 'orderHash,[makerAddress+market]';
     schemas['SyncStatus'] = 'eventName,blockNumber,syncing';
     schemas['Rollback'] = ',[tableName+rollbackBlockNumber]';
-    schemas['WarpCheckpoints'] = '++_id,begin.number,end.number';
+    schemas['WarpSync'] = '[begin.number+end.number],end.number';
+    schemas['WarpSyncCheckpoints'] = '++_id,begin.number,end.number';
     return schemas;
   }
 
@@ -232,7 +231,7 @@ export class DB {
         genericEventDBDescription.EventName));
     }
 
-    return Math.min(...highestSyncBlocks);
+    return Math.min(...highestSyncBlocks) + 1;
   }
 
   /**
@@ -261,7 +260,6 @@ export class DB {
 
     await this.disputeDatabase.sync(highestAvailableBlockNumber);
     await this.currentOrdersDatabase.sync(highestAvailableBlockNumber);
-    await this.cancelledOrdersDatabase.sync(highestAvailableBlockNumber);
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
     await this.marketDatabase.sync(highestAvailableBlockNumber);
@@ -362,9 +360,7 @@ export class DB {
   get MarketOIChanged() { return this.dexieDB.table<MarketOIChangedLog>('MarketOIChanged'); }
   get MarketOIChangedRollup() { return this.dexieDB.table<MarketOIChangedLog>('MarketOIChangedRollup'); }
   get OrderEvent() { return this.dexieDB.table<OrderEventLog>('OrderEvent'); }
-  get Cancel() { return this.dexieDB['Cancel'] as Dexie.Table<CancelLog, any>; }
-  get CancelRollup() { return this.dexieDB['CancelRollup'] as Dexie.Table<CancelLog, any>; }
-  get CancelledOrders() { return this.dexieDB['CancelledOrders'] as Dexie.Table<CancelledOrderLog, any>; }
+  get CancelZeroXOrder() { return this.dexieDB['CancelZeroXOrder'] as Dexie.Table<CancelZeroXOrderLog, any>; }
   get ParticipationTokensRedeemed() { return this.dexieDB.table<ParticipationTokensRedeemedLog>('ParticipationTokensRedeemed'); }
   get ProfitLossChanged() { return this.dexieDB.table<ProfitLossChangedLog>('ProfitLossChanged'); }
   get ReportingParticipantDisavowed() { return this.dexieDB.table<ReportingParticipantDisavowedLog>('ReportingParticipantDisavowed'); }

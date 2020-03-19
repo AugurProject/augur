@@ -1,7 +1,7 @@
 import { WSClient } from '@0x/mesh-rpc-client';
-import { ContractAddresses } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/artifacts';
+import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { IGnosisRelayAPI } from '@augurproject/gnosis-relay-api';
 import {
   Augur,
   BrowserMesh,
@@ -14,12 +14,12 @@ import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { BlockAndLogStreamerSyncStrategy } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import { BigNumber } from 'bignumber.js';
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis/build';
 import { Account } from '../constants';
-import { makeGnosisDependencies, makeSigner } from './blockchain';
+import { makeGSNDependencies, makeSigner } from './blockchain';
 import { ContractAPI } from './contract-api';
 import { makeDbMock } from './MakeDbMock';
 import { API } from '@augurproject/sdk/build/state/getter/API';
+import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 
 export class TestContractAPI extends ContractAPI {
   protected bulkSyncStrategy: BulkSyncStrategy;
@@ -30,20 +30,17 @@ export class TestContractAPI extends ContractAPI {
   static async userWrapper(
     account: Account,
     provider: EthersProvider,
-    addresses: ContractAddresses,
+    config: SDKConfiguration,
     connector: Connectors.BaseConnector = new EmptyConnector(),
-    gnosisRelay: IGnosisRelayAPI = undefined,
     meshClient: WSClient = undefined,
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = makeGnosisDependencies(
+    const dependencies = await makeGSNDependencies(
       provider,
-      gnosisRelay,
       signer,
-      addresses.Cash,
-      new BigNumber(0),
-      null,
+      config.addresses.AugurWalletRegistry,
+      config.addresses.EthExchange,
       account.publicKey,
     );
 
@@ -55,7 +52,7 @@ export class TestContractAPI extends ContractAPI {
     const augur = await Augur.create(
       provider,
       dependencies,
-      addresses,
+      config,
       connector,
       zeroX,
       true,
@@ -66,15 +63,16 @@ export class TestContractAPI extends ContractAPI {
 
     const db = await makeDbMock().makeDB(augur);
 
-    return new TestContractAPI(augur, provider, dependencies, account, db);
+    return new TestContractAPI(augur, provider, dependencies, account, db, config);
   }
 
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
-    readonly dependencies: ContractDependenciesGnosis,
+    readonly dependencies: ContractDependenciesGSN,
     public account: Account,
     public db: DB,
+    public config: SDKConfiguration,
   ) {
     super(augur, provider, dependencies, account);
 
@@ -95,13 +93,13 @@ export class TestContractAPI extends ContractAPI {
   sync = async (highestBlockNumberToSync?: number) => {
     const { number: blockNumber } = await this.provider.getBlock(highestBlockNumberToSync || 'latest');
     if(this.needsToBulkSync) {
-      console.log('highestSyncedBlock', blockNumber);
+      const syncStartingBlock = await this.db.getSyncStartingBlock();
       await this.bulkSyncStrategy.start(
-        0,
+        syncStartingBlock,
         blockNumber
       );
 
-      await this.db.sync(0);
+      await this.db.sync(blockNumber);
 
       this.augur.events.emit(SubscriptionEventName.BulkSyncComplete, {
         eventName: SubscriptionEventName.BulkSyncComplete,
@@ -110,7 +108,6 @@ export class TestContractAPI extends ContractAPI {
       this.needsToBulkSync = false;
     } else {
       let highestSyncedBlock = (await this.db.getSyncStartingBlock());
-      highestSyncedBlock++;
       while(highestSyncedBlock <= blockNumber) {
         const block = await this.provider.getBlock(highestSyncedBlock);
         await this.blockAndLogStreamerSyncStrategy.onBlockAdded({
@@ -121,4 +118,38 @@ export class TestContractAPI extends ContractAPI {
       }
     }
   };
+
+  async reportAndFinalizeWarpSyncMarket(hash:string) {
+    const warpSyncMarket = await this.reportWarpSyncMarket(hash);
+    return this.finalizeWarpSyncMarket(warpSyncMarket);
+  }
+
+  async finalizeWarpSyncMarket(warpSyncMarket: ContractInterfaces.Market) {
+    const timestamp = (await this.getTimestamp()).plus(1000000);;
+    await this.setTimestamp(timestamp);
+
+    await this.finalizeMarket(warpSyncMarket);
+
+    return warpSyncMarket;
+  }
+
+  async reportWarpSyncMarket(hash?:string) {
+    if(!hash) {
+      const mostRecentWarpSync = await this.db.warpSync.getMostRecentWarpSync();
+      hash = mostRecentWarpSync.hash;
+    }
+
+    const payoutNumerators = await this.getPayoutFromWarpSyncHash(hash);
+    const warpSyncMarket = await this.getWarpSyncMarket();
+
+    const timestamp = (await this.getTimestamp()).plus(1000000);
+    await this.setTimestamp(timestamp);
+    await this.doInitialReport(warpSyncMarket, payoutNumerators);
+
+    return warpSyncMarket;
+  }
+
+  async initializeUniverse() {
+    return this.augur.warpSync.initializeUniverse(this.augur.contracts.universe.address);
+  }
 }

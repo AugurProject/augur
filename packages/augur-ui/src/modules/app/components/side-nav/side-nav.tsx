@@ -7,13 +7,13 @@ import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
 import ConnectAccount from 'modules/auth/containers/connect-account';
 import { LogoutIcon, PlusCircleIcon } from 'modules/common/icons';
-import { NavMenuItem } from 'modules/types';
+import { NavMenuItem, AccountBalances } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
-import { SecondaryButton } from 'modules/common/buttons';
+import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { helpIcon, Chevron, Dot } from 'modules/common/icons';
-import { MODAL_ADD_FUNDS } from 'modules/common/constants';
+import { MODAL_ADD_FUNDS, MIGRATE_FROM_LEG_REP_TOKEN, TRANSACTIONS, CREATEAUGURWALLET } from 'modules/common/constants';
 
 interface SideNavProps {
   defaultMobileClick: Function;
@@ -26,10 +26,13 @@ interface SideNavProps {
   showGlobalChat: Function;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
+  walletBalances: AccountBalances;
   isHelpMenuOpen: boolean;
   updateHelpMenuState: Function;
   updateConnectionTray: Function;
   updateModal: Function;
+  showCreateAccountButton: boolean;
+  createFundedGsnWallet: Function;
 }
 
 const SideNav = ({
@@ -43,10 +46,13 @@ const SideNav = ({
   showGlobalChat,
   migrateV1Rep,
   showMigrateRepButton,
+  walletBalances,
   isHelpMenuOpen,
   updateHelpMenuState,
   updateConnectionTray,
   updateModal,
+  showCreateAccountButton,
+  createFundedGsnWallet
 }: SideNavProps) => {
   useEffect(() => {
     if (isHelpMenuOpen) {
@@ -113,9 +119,12 @@ const SideNav = ({
             <div>
               {showMigrateRepButton && (
                 <span className={Styles.SideNavMigrateRep}>
-                  <SecondaryButton
-                    text="Migrate V1 to V2 REP"
+                  <ProcessingButton
+                    text={'Migrate V1 to V2 REP'}
                     action={() => migrateV1Rep()}
+                    queueName={TRANSACTIONS}
+                    queueId={MIGRATE_FROM_LEG_REP_TOKEN}
+                    secondaryButton
                   />
                   <label
                     className={classNames(Styles.SideNavMigrateTooltipHint)}
@@ -127,9 +136,9 @@ const SideNav = ({
                   <ReactTooltip
                     id={'migrateRep'}
                     className={TooltipStyles.Tooltip}
-                    effect="solid"
-                    place="top"
-                    type="light"
+                    effect='solid'
+                    place='top'
+                    type='light'
                   >
                     <p>
                       {
@@ -146,7 +155,7 @@ const SideNav = ({
             <div className={Styles.GlobalChat}>
               <SecondaryButton
                 action={showGlobalChat}
-                text="Global Chat"
+                text='Global Chat'
                 icon={Chevron}
               />
             </div>

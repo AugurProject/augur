@@ -32,6 +32,7 @@ import {
   convertUnixToFormattedDate,
   minMarketEndTimeDay,
   startOfTomorrow,
+  timestampComponents,
 } from 'utils/format-date';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import {
@@ -354,6 +355,8 @@ interface DateTimeSelectorProps {
   uniqueKey?: string;
   condensedStyle?: boolean;
   isAfter: number;
+  openTop?: boolean;
+  disabled?: boolean;
 }
 
 interface TimeSelectorParams {
@@ -435,6 +438,8 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
     uniqueKey,
     condensedStyle,
     isAfter,
+    openTop,
+    disabled
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
@@ -465,6 +470,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           placeholder="Date"
           displayFormat="MMM D, YYYY"
           id="input-date"
+          readOnly={disabled !== undefined && disabled}
           onDateChange={(date: Moment) => {
             if (!date) return onChange('setEndTime', '');
             onChange('setEndTime', date.startOf('day').unix());
@@ -483,14 +489,17 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           focused={dateFocused}
           errorMessage={validations && validations.setEndTime}
           condensedStyle={condensedStyle}
+          openTop={openTop}
         />
         <TimeSelector
           hour={hour}
           minute={minute}
           meridiem={meridiem}
+          disabled={disabled}
           onChange={(label: string, value: number) => {
             onChange(label, value);
           }}
+          openTop={openTop}
           onFocusChange={(focused: Boolean) => {
             const timeSelector: TimeSelectorParams = {};
             if (!hour) {
@@ -512,6 +521,8 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           condensedStyle={condensedStyle}
         />
         <TimezoneDropdown
+          openTop={openTop}
+          disabled={disabled}
           onChange={(offsetName: string, offset: number, timezone: string) => {
             const timezoneParams = { offset, timezone, offsetName };
             onChange('timezoneDropdown', timezoneParams);
@@ -522,10 +533,10 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
         />
       </span>
       {!condensedStyle &&
-        endTimeFormatted &&
-        hour &&
+        !!endTimeFormatted &&
+        !!hour &&
         hour !== '' &&
-        setEndTime && (
+        !!setEndTime && (
           <span>
             <div>
               <span>Converted to UTC-0:</span>
@@ -718,7 +729,7 @@ export interface NoFundsErrorsProps {
   availableEthFormatted: FormattedNumber;
   availableRepFormatted: FormattedNumber;
   availableDaiFormatted: FormattedNumber;
-  Gnosis_ENABLED: boolean;
+  GsnEnabled: boolean;
   showAddFundsModal: Function;
 }
 export const NoFundsErrors = (props: NoFundsErrorsProps) => {
@@ -732,12 +743,12 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
     availableEthFormatted,
     availableRepFormatted,
     availableDaiFormatted,
-    Gnosis_ENABLED,
+    GsnEnabled,
   } = props;
 
   return (
     <div className={classNames({ [Styles.HasError]: noEth || noDai || noRep })}>
-      {noEth && !Gnosis_ENABLED && (
+      {noEth && !GsnEnabled && (
         <DismissableNotice
           title="Not enough ETH in your wallet"
           description={`You have ${availableEthFormatted.formatted} ETH of ${totalEth.formatted} required to create this market`}
@@ -936,7 +947,7 @@ export const InputFactory = (props: InputFactoryProps) => {
 };
 
 export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
-  const { currentTime, onChange } = props;
+  const { currentTime, onChange, openTop } = props;
 
   const [endTime, setEndTime] = useState(null);
   const [hour, setHour] = useState(null);
@@ -963,6 +974,7 @@ export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
     <DateTimeSelector
       setEndTime={endTime}
       condensedStyle
+      openTop={openTop}
       onChange={(label, value) => {
         switch (label) {
           case 'timezoneDropdown':
@@ -1012,6 +1024,7 @@ interface EstimatedStartSelectorProps {
   onChange: Function;
   inputIndex: number;
   isAfter: number;
+  openTop?: boolean;
 }
 
 export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
@@ -1069,9 +1082,24 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     );
     setEndTimeFormatted(endTimeFormatted);
     if (hour !== null && minute !== null) {
-      if (input.type === TemplateInputType.DATETIME)
+      if (input.type === TemplateInputType.DATETIME) {
         userInput = endTimeFormatted.formattedUtc;
-      else userInput = String(endTimeFormatted.timestamp);
+      }
+      else {
+        const addHours = input.hoursAfterEst;
+        userInput = String(endTimeFormatted.timestamp);
+        const newEndTime = (addHours * 60 * 60) + endTimeFormatted.timestamp
+        const comps = timestampComponents(newEndTime, offset);
+        onChange('updateEventExpiration', {
+          setEndTime: newEndTime,
+          hour: comps.hour,
+          minute: comps.minute,
+          meridiem: comps.meridiem,
+          offset,
+          offsetName,
+          timezone: offsetName,
+        });
+      }
     }
     template.inputs[props.input.id].userInputObject = {
       endTime,
@@ -1306,6 +1334,7 @@ export interface CategoricalTemplateTextInputsProps {
 
 const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
   const [marketOutcomes, setMarketOutcomes] = useState(null);
+  const [noAdditionOutcomes] = useState(!!props.newMarket.template.noAdditionalUserOutcomes);
   const [required] = useState(
     props.newMarket.template.inputs
       .filter(i => i.type === TemplateInputType.ADDED_OUTCOME)
@@ -1336,20 +1365,24 @@ const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
 
   return (
     <>
-      <Subheaders
-        header="Outcomes"
-        subheader="List the outcomes people can choose from."
-      />
-      <NumberedList
-        initialList={showOutcomes}
-        minShown={2}
-        maxList={7 - required.length}
-        placeholder={'Enter outcome'}
-        updateList={(value: string[]) => {
-          onChange('outcomes', [...value, ...required.map(i => i.value)]);
-        }}
-        errorMessage={validations && validations.outcomes}
-      />
+      {!noAdditionOutcomes && (
+        <>
+          <Subheaders
+            header="Outcomes"
+            subheader="List the outcomes people can choose from."
+          />
+          <NumberedList
+            initialList={showOutcomes}
+            minShown={2}
+            maxList={7 - required.length}
+            placeholder={'Enter outcome'}
+            updateList={(value: string[]) => {
+              onChange('outcomes', [...value, ...required.map(i => i.value)]);
+            }}
+            errorMessage={validations && validations.outcomes}
+          />
+        </>
+      )}
       <Subheaders
         header="Required Outcomes"
         subheader="Required unchangeable additional outcomes"
@@ -1577,12 +1610,14 @@ export const CategoricalTemplateDropdowns = (
           data,
         });
       });
-      setSourceUserInput(source && source.userInput);
-      setdropdownList(
-        isDepDropdown
-          ? createTemplateValueList(depDropdownInput.values[source.userInput])
-          : createTemplateValueList(depDropdownInput.values)
-      );
+      if (source && source.userInput !== undefined) {
+        setSourceUserInput(source.userInput);
+        setdropdownList(
+          isDepDropdown
+            ? createTemplateValueList(depDropdownInput.values[source.userInput])
+            : createTemplateValueList(depDropdownInput.values)
+        );
+      }
     } else {
       if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
         defaultOutcomeItems.map((i: CategoricalDropDownItem) =>
@@ -1591,6 +1626,7 @@ export const CategoricalTemplateDropdowns = (
       }
 
       if (isDepDropdown && sourceUserInput !== source.userInput) {
+        setSourceUserInput(source.userInput);
         dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
         setdropdownList(
           isDepDropdown

@@ -41,9 +41,9 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
         "account": contractsFixture.accounts[2],
         "outcome": YES,
         "netPosition": -fix(2),
-        "avgPrice": 60,
+        "avgPrice": fix(60),
         "realizedProfit": 0,
-        "frozenFunds": fillerCost,
+        "frozenFunds": fix(fillerCost),
     }
 
     with BuyWithCash(cash, fillerCost, contractsFixture.accounts[2], "filling order"):

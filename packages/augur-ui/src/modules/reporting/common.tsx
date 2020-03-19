@@ -11,6 +11,11 @@ import {
   INITAL_REPORT_GAS_COST,
   HEADER_TYPE,
   INVALID_OUTCOME_ID,
+  SUBMIT_REPORT,
+  BUYPARTICIPATIONTOKENS,
+  TRANSACTIONS,
+  REDEEMSTAKE,
+  HELP_CENTER_PARTICIPATION_TOKENS,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -24,6 +29,7 @@ import {
   CancelTextButton,
   PrimaryButton,
   ProcessingButton,
+  ExternalLinkButton,
 } from 'modules/common/buttons';
 import { Checkbox, TextInput } from 'modules/common/form';
 import {
@@ -251,10 +257,10 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
       <div className={Styles.PreFilledStake}>
         <span>Add Pre-Filled Stake?</span>
         <span>
-          `Pre-fund future dispute rounds to accelerate market resolution. Any
+          Pre-fund future dispute rounds to accelerate market resolution. Any
           contributed REP will automatically go toward disputing in favor of
           this outcome, if it is no longer the tentative winning outcome in
-          future rounds`
+          future rounds
         </span>
         {!this.props.showInput && (
           <SecondaryButton
@@ -376,9 +382,10 @@ export interface DisputingBondsViewProps {
   stakeRemaining?: string;
   tentativeWinning?: boolean;
   reportAction: Function;
-  Gnosis_ENABLED: boolean;
+  GsnEnabled: boolean;
   gasPrice: number;
-  ethToDaiRate: BigNumber;
+  warpSyncHash: string;
+  isWarpSync: boolean;
 }
 
 interface DisputingBondsViewState {
@@ -416,11 +423,15 @@ export class DisputingBondsView extends Component<
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
-    } else if (isNaN(Number(range)) || range === '') {
+    } else if (!market.isWarpSync && (isNaN(Number(range)) || range === '')) {
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
-      if (this.state.stakeError === '' && stakeValue !== '') {
+      if (
+        this.state.stakeError === '' &&
+        stakeValue !== '' &&
+        stakeValue !== '0'
+      ) {
         this.setState({ disabled: false });
       }
     }
@@ -436,6 +447,7 @@ export class DisputingBondsView extends Component<
       stakeRemaining,
       tentativeWinning,
       isInvalid,
+      warpSyncHash,
     } = this.props;
     let inputToAttoRep = null;
     const { isScalar } = this.state;
@@ -447,11 +459,12 @@ export class DisputingBondsView extends Component<
       );
     }
     if (
-      isNaN(Number(inputStakeValue)) ||
-      inputStakeValue === '' ||
-      inputStakeValue === '0' ||
-      inputStakeValue === '.' ||
-      inputStakeValue === '0.'
+      !!!warpSyncHash &&
+      (isNaN(Number(inputStakeValue)) ||
+        inputStakeValue === '' ||
+        inputStakeValue === '0' ||
+        inputStakeValue === '.' ||
+        inputStakeValue === '0.')
     ) {
       this.setState({ stakeError: 'Enter a valid number', disabled: true });
       return updateInputtedStake({ inputStakeValue, ZERO });
@@ -485,8 +498,9 @@ export class DisputingBondsView extends Component<
     } else {
       this.setState({ stakeError: '' });
       if (
-        (this.state.scalarError === '' &&
-          ((isScalar && inputScalarOutcome !== '') || isInvalid)) ||
+        (isScalar && inputScalarOutcome !== '') ||
+        isInvalid ||
+        !!warpSyncHash ||
         !isScalar
       ) {
         this.setState({ disabled: false });
@@ -496,15 +510,15 @@ export class DisputingBondsView extends Component<
   };
 
   async componentDidMount() {
-    if (this.props.Gnosis_ENABLED) {
+    if (this.props.GsnEnabled) {
       const gasLimit = await this.props.reportAction(true);
       this.setState({
-        gasEstimate: formatGasCostToEther(
-          gasLimit,
-          { decimalsRounded: 4 },
-          this.props.gasPrice
-        ),
+        gasEstimate: displayGasInDai(gasLimit) as string
       });
+    }
+    if (this.props.isWarpSync) {
+      this.updateScalarOutcome(this.props.warpSyncHash);
+      this.updateInputtedStake('0');
     }
   }
 
@@ -517,8 +531,8 @@ export class DisputingBondsView extends Component<
       tentativeWinning,
       reportAction,
       id,
-      Gnosis_ENABLED,
-      ethToDaiRate,
+      GsnEnabled,
+      warpSyncHash,
     } = this.props;
 
     const {
@@ -539,7 +553,11 @@ export class DisputingBondsView extends Component<
       <div className={classNames(Styles.DisputingBondsView)}>
         {isScalar && id === 'null' && (
           <ScalarOutcomeView
-            inputScalarOutcome={inputScalarOutcome}
+            inputScalarOutcome={
+              !inputScalarOutcome && market.isWarpSync
+                ? warpSyncHash
+                : inputScalarOutcome
+            }
             updateScalarOutcome={this.updateScalarOutcome}
             scalarDenomination={market.scalarDenomination}
             scalarError={scalarError}
@@ -579,12 +597,8 @@ export class DisputingBondsView extends Component<
         />
         <LinearPropertyLabel
           key="estimatedGasFee"
-          label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Fee'}
-          value={
-            Gnosis_ENABLED
-              ? displayGasInDai(gasEstimate, ethToDaiRate)
-              : gasEstimate
-          }
+          label={GsnEnabled ? 'Transaction Fee' : 'Gas Fee'}
+          value={gasEstimate}
         />
         <PrimaryButton
           text="Confirm"
@@ -601,9 +615,8 @@ export interface ReportingBondsViewProps {
   id: string;
   updateScalarOutcome: Function;
   reportAction: Function;
-  Gnosis_ENABLED: boolean;
+  GsnEnabled: boolean;
   gasPrice: number;
-  ethToDaiRate: BigNumber;
   inputtedReportingStake: DisputeInputtedValues;
   updateInputtedStake?: Function;
   inputScalarOutcome?: string;
@@ -655,16 +668,12 @@ export class ReportingBondsView extends Component<
       this.setState({
         threshold: String(convertAttoValueToDisplayValue(threshold)),
       });
-      if (this.props.Gnosis_ENABLED) {
+      if (this.props.GsnEnabled) {
         const gasLimit = await this.props
           .reportAction(true)
           .catch(e => console.error(e));
         this.setState({
-          gasEstimate: formatGasCostToEther(
-            gasLimit || INITAL_REPORT_GAS_COST,
-            { decimalsRounded: 4 },
-            this.props.gasPrice
-          ),
+          gasEstimate: displayGasInDai(gasLimit || INITAL_REPORT_GAS_COST) as string
         });
       }
     }
@@ -685,7 +694,7 @@ export class ReportingBondsView extends Component<
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
-    } else if (isNaN(Number(range)) || range === '') {
+    } else if (!market.isWarpSync && (isNaN(Number(range)) || range === '')) {
       this.setState({ scalarError: 'Enter a valid number', disabled: true });
     } else {
       this.setState({ scalarError: '' });
@@ -745,8 +754,7 @@ export class ReportingBondsView extends Component<
       migrateRep,
       initialReport,
       owesRep,
-      Gnosis_ENABLED,
-      ethToDaiRate,
+      GsnEnabled,
       openReporting,
       enoughRepBalance,
     } = this.props;
@@ -827,7 +835,7 @@ export class ReportingBondsView extends Component<
           label={repLabel}
           value={`${repAmount} REP`}
         />
-        {initialReport && (
+        {initialReport && !market.isWarpSync && (
           <PreFilledStake
             showInput={showInput}
             toggleInput={this.toggleInput}
@@ -837,25 +845,29 @@ export class ReportingBondsView extends Component<
             threshold={threshold}
           />
         )}
-        <div className={Styles.ShowTotals}>
-          <span>Totals</span>
-          <span>Sum total of Initial Reporter Stake and Pre-Filled Stake</span>
-          <LinearPropertyLabel
-            key="totalRep"
-            label="Total REP Needed"
-            value={totalRep}
-          />
-          {insufficientRep && (
-            <span className={FormStyles.ErrorText}>{insufficientRep}</span>
-          )}
-        </div>
+        {!market.isWarpSync && (
+          <div className={Styles.ShowTotals}>
+            <span>Totals</span>
+            <span>
+              Sum total of Initial Reporter Stake and Pre-Filled Stake
+            </span>
+            <LinearPropertyLabel
+              key="totalRep"
+              label="Total REP Needed"
+              value={totalRep}
+            />
+            {insufficientRep && (
+              <span className={FormStyles.ErrorText}>{insufficientRep}</span>
+            )}
+          </div>
+        )}
 
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
-          label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Fee'}
+          label={GsnEnabled ? 'Transaction Fee' : 'Gas Fee'}
           value={
-            Gnosis_ENABLED
-              ? displayGasInDai(gasEstimate, ethToDaiRate)
+            GsnEnabled
+              ? gasEstimate
               : `${gasEstimate} ETH`
           }
         />
@@ -918,17 +930,10 @@ export interface ReportingCardProps {
   showReportingModal: Function;
   callback: Function;
   isLogged: boolean;
-  reportingStatus?: string;
 }
 
 export const ReportingCard = (props: ReportingCardProps) => {
-  const {
-    market,
-    currentAugurTimestamp,
-    showReportingModal,
-    isLogged,
-    reportingStatus,
-  } = props;
+  const { market, currentAugurTimestamp, showReportingModal, isLogged } = props;
 
   if (!market) return null;
 
@@ -945,6 +950,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
         disputeInfo={disputeInfo}
         endTimeFormatted={endTimeFormatted}
         currentAugurTimestamp={currentAugurTimestamp}
+        isWarpSync={market.isWarpSync}
       />
       <MarketTitle id={id} headerType={headerType} />
       {reportingState !== REPORTING_STATE.OPEN_REPORTING && (
@@ -957,9 +963,11 @@ export const ReportingCard = (props: ReportingCardProps) => {
       )}
       <div data-tip data-for={'tooltip--preReporting' + id}>
         <ProcessingButton
+          text="Report"
           action={showReportingModal}
-          reportingStatus={reportingStatus}
           disabled={preReporting || !isLogged}
+          queueName={SUBMIT_REPORT}
+          queueId={id}
         />
         {(preReporting || !isLogged) && (
           <ReactTooltip
@@ -1162,7 +1170,15 @@ export const ParticipationTokensView = (
         <span>Don’t see any reports that need disputing? </span>
         You can earn a proportional share of the profits from this dispute
         window.
-        <span>Learn more</span>
+        <span>
+          <a
+            href={HELP_CENTER_PARTICIPATION_TOKENS}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn more
+          </a>
+        </span>
       </span>
 
       <Subheaders
@@ -1190,10 +1206,12 @@ export const ParticipationTokensView = (
         tooltipText="The % of participation tokens you own among all participation tokens purchased in the current window"
       />
 
-      <PrimaryButton
+      <ProcessingButton
         disabled={disablePurchaseButton}
         text="Get Participation Tokens"
         action={openModal}
+        queueName={TRANSACTIONS}
+        queueId={BUYPARTICIPATIONTOKENS}
       />
 
       <section />
@@ -1221,11 +1239,12 @@ export const ParticipationTokensView = (
           "The total amount of unclaimed Dai you've earned through reporting"
         }
       />
-
-      <PrimaryButton
+      <ProcessingButton
         disabled={!hasRedeemable}
         text="Redeem Past Participation Tokens"
         action={openClaimParticipationTokensModal}
+        queueName={TRANSACTIONS}
+        queueId={REDEEMSTAKE}
       />
     </div>
   );

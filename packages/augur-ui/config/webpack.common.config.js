@@ -117,6 +117,10 @@ module.exports = {
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       {
+        from: path.resolve(PATHS.APP, "StableIPFSLoader.html"),
+        to: path.resolve(PATHS.BUILD, "StableIPFSLoader.html")
+      },
+      {
         from: path.resolve(PATHS.APP, "config/manifest.json"),
         to: path.resolve(PATHS.BUILD, "config")
       },
@@ -162,7 +166,7 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env": {
         GETH_PASSWORD: JSON.stringify(process.env.GETH_PASSWORD),
-        ETHEREUM_NETWORK: JSON.stringify(process.env.ETHEREUM_NETWORK || "dev"),
+        ETHEREUM_NETWORK: JSON.stringify(process.env.ETHEREUM_NETWORK || "local"),
         AUTO_LOGIN: process.env.AUTO_LOGIN || false,
 
         // Set this var to remove code that is problematic for us to host.
