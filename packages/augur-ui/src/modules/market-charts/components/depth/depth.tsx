@@ -3,11 +3,12 @@ import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
 import memoize from 'memoizee';
 import { createBigNumber } from 'utils/create-big-number';
-import { ASKS, BIDS, BUY, SELL, ZERO } from 'modules/common/constants';
+import { ASKS, BIDS, BUY, SELL, ZERO, THEMES } from 'modules/common/constants';
 
 import Styles from 'modules/market-charts/components/depth/depth.styles.less';
 import { MarketDepth } from 'modules/markets/helpers/order-for-market-depth';
 import { ZoomOutIcon, ZoomInIcon } from 'modules/common/icons';
+import { getTheme } from 'modules/app/actions/update-app-status';
 
 interface DepthChartProps {
   marketDepth: MarketDepth;
@@ -603,7 +604,7 @@ function drawTicks(options) {
   // Draw LeftSide yAxis
   if (hasOrders) {
     const yTicks = depthChart.append('g').attr('id', 'depth_y_ticks');
-
+    let translateY = getTheme() === THEMES.TRADING ? 6 : -6;
     yTicks
       .call(
         d3
@@ -612,7 +613,7 @@ function drawTicks(options) {
           .tickSize(9)
           .tickPadding(4)
       )
-      .attr('transform', `translate(-${CHART_DIM.left}, 6)`)
+      .attr('transform', `translate(-${CHART_DIM.left}, ${translateY})`)
       .selectAll('text')
       .text(d => d)
       .select('path')
@@ -681,19 +682,25 @@ function drawTicks(options) {
     if (tick === drawParams.yScale.ticks(tickCount)[0]) {
       return;
     }
+
+    let x2 = drawParams.containerWidth;
+    if (getTheme() === THEMES.TRADING) {
+      x2 -= CHART_DIM.right;
+    }
+     
     depthChart
       .append('line')
       .attr('class', 'horizontal-lines')
       .attr('x1', CHART_DIM.tickOffset)
       .attr('y1', drawParams.yScale(tick))
-      .attr('x2', drawParams.containerWidth - CHART_DIM.right)
+      .attr('x2', x2)
       .attr('y2', drawParams.yScale(tick));
   });
 
   // Draw RightSide yAxis
   if (hasOrders) {
     const yTicks2 = depthChart.append('g').attr('id', 'depth_y_ticks');
-
+    let translateY = getTheme() === THEMES.TRADING ? 6 : -6;
     yTicks2
       .call(
         d3
@@ -704,7 +711,7 @@ function drawTicks(options) {
       )
       .attr(
         'transform',
-        `translate(${drawParams.containerWidth + CHART_DIM.right}, 6)`
+        `translate(${drawParams.containerWidth + CHART_DIM.right}, ${translateY})`
       )
       .selectAll('text')
       .text(d => d)
