@@ -58,13 +58,13 @@ export const SportsBet = ({ bet }) => {
         <span>{odds}</span>
         <button onClick={() => cancelOrder()}>{Trash}</button>
       </header>
-      <SportsInput
+      <BetslipInput
         label="Wager"
         value={wager}
         valueKey="wager"
         modifyOrder={modifyOrder}
       />
-      <SportsInput
+      <BetslipInput
         label="To Win"
         value={toWin}
         valueKey="toWin"
@@ -75,7 +75,7 @@ export const SportsBet = ({ bet }) => {
   );
 };
 // this is actually a common component, doing this for ease
-export const SportsInput = ({
+export const BetslipInput = ({
   label,
   value,
   valueKey,
@@ -83,13 +83,17 @@ export const SportsInput = ({
   disabled = false,
 }) => {
   const [curVal, setCurVal] = useState(formatDai(value).full);
+  const [invalid, setInvalid] = useState(false);
   return (
-    <div>
+    <div className={classNames(Styles.BetslipInput, {
+      [Styles.error]: invalid
+    })}>
       <span>{label}</span>
       <input
         onChange={e => {
           const newVal = e.target.value.replace('$', '');
           setCurVal(newVal);
+          setInvalid(isNaN(Number(newVal)))
         }}
         value={curVal}
         onBlur={() => {
@@ -98,6 +102,7 @@ export const SportsInput = ({
           modifyOrder({ [valueKey]: updatedValue });
           // make sure to add the $ to the updated view
           setCurVal(formatDai(updatedValue).full);
+          setInvalid(false);
         }}
         disabled={disabled}
       />
