@@ -46,6 +46,7 @@ import { getNetwork } from 'utils/get-network-name';
 import { buildConfig } from '@augurproject/artifacts';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { isGoogleBot } from 'utils/is-google-bot';
+import { serializeConfig } from "@augurproject/artifacts/build";
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -307,7 +308,7 @@ export function initAugur(
 
     console.log(
       '******** CONFIGURATION ***********\n' +
-      JSON.stringify(config, null, 2) +
+      serializeConfig(config) +
       '\n**********************************'
     );
     // cache fingerprint
