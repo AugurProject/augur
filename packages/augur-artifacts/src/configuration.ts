@@ -102,10 +102,10 @@ export interface ContractAddresses {
   Affiliates?: string;
   AffiliateValidator?: string;
   ProfitLoss?: string;
-  EthExchange?: string;
   WarpSync?: string;
   AugurWalletRegistry?: string;
   OICash?: string;
+  UniswapV2Factory?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.
@@ -129,11 +129,9 @@ export interface ExternalAddresses {
   MCDCol?: string,
   MCDColJoin?: string,
   MCDFaucet?: string,
-  GnosisSafe?: string;
-  ProxyFactory?: string;
+  WETH9?: string;
   Exchange?: string;
   UniswapV2Factory?: string;
-  ENSRegistry?: string;
 }
 
 // TS doesn't allow mapping of any type but string or number so we list it out manually

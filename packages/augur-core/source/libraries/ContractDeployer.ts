@@ -21,13 +21,17 @@ import {
   SimulateTrade,
   ZeroXTrade,
   WarpSync,
-  EthExchange,
   AugurWalletRegistry,
+  RepOracle,
   // 0x
   Exchange,
   ERC1155Proxy,
   ERC20Proxy,
   MultiAssetProxy,
+  // Uniswap
+  UniswapV2Factory,
+  UniswapV2Exchange,
+  WETH9
 } from './ContractInterfaces';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from './GenericContractInterfaces';
@@ -95,8 +99,9 @@ Deploying to: ${env}
             || externalAddresses.Cash
             || externalAddresses.DaiVat
             || externalAddresses.DaiPot
-            || externalAddresses.DaiJoin) {
-            if (!(externalAddresses.Cash && externalAddresses.DaiVat && externalAddresses.DaiPot && externalAddresses.DaiJoin)) {
+            || externalAddresses.DaiJoin
+            || externalAddresses.WETH9) {
+            if (!(externalAddresses.Cash && externalAddresses.DaiVat && externalAddresses.DaiPot && externalAddresses.DaiJoin && externalAddresses.WETH9)) {
                 throw new Error('Must provide ALL Maker contracts if any are provided');
             }
 
@@ -114,6 +119,10 @@ Deploying to: ${env}
             // Dai Join
             console.log(`Registering Join Contract at ${externalAddresses.DaiJoin}`);
             await this.augur!.registerContract(stringTo32ByteHex('DaiJoin'), externalAddresses.DaiJoin);
+
+            // WETH 9
+            console.log(`Registering WETH9 Contract at ${externalAddresses.WETH9}`);
+            await this.augur!.registerContract(stringTo32ByteHex('WETH9'), externalAddresses.WETH9);
 
             if (!this.configuration.deploy.isProduction) {
                 if (!(externalAddresses.MCDCol && externalAddresses.MCDColJoin && externalAddresses.MCDFaucet)) {
@@ -146,6 +155,15 @@ Deploying to: ${env}
             await this.augurTrading!.registerContract(stringTo32ByteHex('ZeroXExchange'), externalAddresses.Exchange);
         } else {
             await this.upload0xContracts();
+        }
+
+        // Uniswap
+        if (this.configuration.deploy.isProduction || externalAddresses.UniswapV2Factory) {
+            if (!externalAddresses.Exchange) throw new Error('Must provide UniswapV2Factory');
+            console.log(`Registering UniswapV2Factory Contract at ${externalAddresses.UniswapV2Factory}`);
+            await this.augurTrading!.registerContract(stringTo32ByteHex('UniswapV2Factory'), externalAddresses.UniswapV2Factory);
+        } else {
+            await this.uploadUniswapContracts();
         }
 
         // GSN. The GSN RelayHub is deployed with a static address via create2 so we only need to do anything if we're in a dev environment where it hasnt been deployed
@@ -198,15 +216,22 @@ Deploying to: ${env}
             await cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
 
             console.log('Add ETH exchange liquidity');
-            const ethExchange = new EthExchange(this.dependencies, this.getContractAddress('EthExchange'));
+            const weth = new WETH9(this.dependencies, this.getContractAddress('WETH9'));
+            const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
+            const ethExchangeAddress = await uniswapV2Factory.getExchange_(weth.address, cash.address);
+            const ethExchange = new UniswapV2Exchange(this.dependencies, ethExchangeAddress);
             const cashAmount = new BigNumber(2000 * 1e18) // 2000 Dai
             const ethAmount = new BigNumber(10 * 1e18) // 10 ETH
+            await weth.deposit({attachedEth: ethAmount.multipliedBy(2)});
             console.log('Cash faucet');
             await cash.faucet(cashAmount.multipliedBy(2));
-            console.log('eth exchange publicMintAuto');
+            console.log('eth exchange mint');
             // We do this twice to get a store in place for the oracle storage to make future calls less expensive.
-            await ethExchange.publicMintAuto(await this.dependencies.getDefaultAddress(), cashAmount, {attachedEth: ethAmount});
-            await ethExchange.publicMintAuto(await this.dependencies.getDefaultAddress(), cashAmount, {attachedEth: ethAmount});
+            for (let i = 0; i < 2; i++) {
+                await cash.transfer(ethExchange.address, cashAmount);
+                await weth.transfer(ethExchange.address, ethAmount);
+                await ethExchange.mint(await this.dependencies.getDefaultAddress());
+            }
         }
 
         if (this.configuration.deploy.writeArtifacts) {
@@ -233,7 +258,7 @@ Deploying to: ${env}
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['AugurTrading'] = this.contracts.get('AugurTrading').address!;
         mapping['Exchange'] = this.contracts.get('Exchange').address!;
-        mapping['EthExchange'] = this.contracts.get('EthExchange').address!;
+        mapping['UniswapV2Factory'] = this.contracts.get('UniswapV2Factory').address!;
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
         for (let contract of this.contracts) {
@@ -253,6 +278,7 @@ Deploying to: ${env}
             }
             if (contract.relativeFilePath.startsWith('legacy_reputation/')) continue;
             if (contract.relativeFilePath.startsWith('external/')) continue;
+            if (contract.relativeFilePath.startsWith('uniswap/')) continue;
 
             // 0x
             if (this.configuration.deploy.externalAddresses.Exchange && [
@@ -400,6 +426,12 @@ Deploying to: ${env}
       return zeroXExchangeContract.address;
     }
 
+    private async uploadUniswapContracts() : Promise<string> {
+      const uniswapV2FactoryContract = await this.contracts.get('UniswapV2Factory');
+      uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', ["0x0000000000000000000000000000000000000000"]);
+      return uniswapV2FactoryContract.address;
+    }
+
     private async uploadAllContracts(serial=true): Promise<void> {
         console.log('Uploading contracts...');
 
@@ -426,10 +458,10 @@ Deploying to: ${env}
         if (contractName === 'Universe') return;
         if (contractName === 'ReputationToken') return;
         if (contractName === 'TestNetReputationToken') return;
-        if (contractName === 'ProxyFactory') return;
         if (contractName === 'Time') contract = this.configuration.deploy.normalTime ? contract : this.contracts.get('TimeControlled');
         if (contractName === 'ReputationTokenFactory') contract = this.configuration.deploy.isProduction ? contract : this.contracts.get('TestNetReputationTokenFactory');
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
+        if (contract.relativeFilePath.startsWith('uniswap/')) return;
         if (contractName === 'LegacyReputationToken') return;
         if (contractName === 'Cash') return;
         if (contractName === 'CashFaucet') return;
@@ -488,7 +520,7 @@ Deploying to: ${env}
             async () => new SimulateTrade(this.dependencies, await this.getContractAddress('SimulateTrade')).initialize(this.augur!.address, this.augurTrading!.address),
             async () => new ZeroXTrade(this.dependencies, await this.getContractAddress('ZeroXTrade')).initialize(this.augur!.address, this.augurTrading!.address),
             async () => new WarpSync(this.dependencies, await this.getContractAddress('WarpSync')).initialize(this.augur!.address),
-            async () => new EthExchange(this.dependencies, await this.getContractAddress('EthExchange')).initialize(this.augur!.address),
+            async () => new RepOracle(this.dependencies, await this.getContractAddress('RepOracle')).initialize(this.augur!.address),
             async () => new AugurWalletRegistry(this.dependencies, await this.getContractAddress('AugurWalletRegistry')).initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) }),
         ];
 
@@ -582,11 +614,11 @@ Deploying to: ${env}
         mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
         mapping['ShareToken'] = this.contracts.get('ShareToken').address!;
         mapping['HotLoading'] = this.contracts.get('HotLoading').address!;
-        mapping['EthExchange'] = this.contracts.get('EthExchange').address!;
         mapping['Affiliates'] = this.contracts.get('Affiliates').address!;
         mapping['AffiliateValidator'] = this.contracts.get('AffiliateValidator').address!;
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
+        mapping['UniswapV2Factory'] = this.contracts.get('UniswapV2Factory').address!;
 
         // 0x
         mapping['ERC20Proxy'] = this.contracts.get('ERC20Proxy').address!;

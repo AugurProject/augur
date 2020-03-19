@@ -93,7 +93,7 @@ contract RepOracle is Initializable {
         return IUniswapV2Exchange(_exchangeAddress);
     }
 
-    function getInitialPrice(address _reputationToken) private returns (uint256) {
+    function getInitialPrice(address _reputationToken) private view returns (uint256) {
         IUniverse _parentUniverse = IUniverse(IReputationToken(_reputationToken).getUniverse().getParentUniverse());
         if (_parentUniverse == IUniverse(0)) {
             return genesisInitialRepPriceinAttoCash;
@@ -102,15 +102,15 @@ contract RepOracle is Initializable {
         }
     }
 
-    function getLastUpdateTimestamp(address _reputationToken) external returns (uint256) {
+    function getLastUpdateTimestamp(address _reputationToken) external view returns (uint256) {
         return repData[_reputationToken].lastUpdateTimestamp;
     }
 
-    function getPriceCumulativeLast(address _reputationToken) external returns (uint256) {
+    function getPriceCumulativeLast(address _reputationToken) external view returns (uint256) {
         return repData[_reputationToken].priceCumulativeLast;
     }
 
-    function getPrice(address _reputationToken) external returns (uint256) {
+    function getPrice(address _reputationToken) external view returns (uint256) {
         return repData[_reputationToken].price;
     }
 }
