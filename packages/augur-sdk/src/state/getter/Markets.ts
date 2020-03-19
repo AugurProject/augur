@@ -1155,7 +1155,7 @@ async function getMarketsInfo(
       bondSizeOfNewStake: totalRepStakedInMarket.multipliedBy(2).toFixed(),
       stakes: formatStakeDetails(augur, db, marketData, disputeDocsByMarket[marketData.market] || []),
     };
-    const passDefaultLiquiditySpread = marketData.liquidity['10'] !== '000000000000000000000000000000'
+    const passDefaultLiquiditySpread = marketData.liquidity['10'] !== '000000000000000000000000000000';
     return {
       id: marketData.market,
       universe: marketData.universe,
