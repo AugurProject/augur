@@ -930,10 +930,11 @@ export interface ReportingCardProps {
   showReportingModal: Function;
   callback: Function;
   isLogged: boolean;
+  isForking: boolean;
 }
 
 export const ReportingCard = (props: ReportingCardProps) => {
-  const { market, currentAugurTimestamp, showReportingModal, isLogged } = props;
+  const { market, currentAugurTimestamp, showReportingModal, isLogged, isForking } = props;
 
   if (!market) return null;
 
@@ -942,6 +943,14 @@ export const ReportingCard = (props: ReportingCardProps) => {
   const preReporting = reportingState === REPORTING_STATE.PRE_REPORTING;
   const headerType =
     reportingState === REPORTING_STATE.OPEN_REPORTING && HEADER_TYPE.H2;
+
+  let disabledTooltipText = preReporting
+  ? 'Please wait until the Market is ready to Report on'
+  : 'Please connect a wallet to Report on this Market';
+
+  if (isForking) {
+    disabledTooltipText = 'Market cannot be reported on while universe is forking';
+  }
 
   return (
     <div className={Styles.ReportingCard}>
@@ -978,9 +987,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
             type="light"
           >
             <p>
-              {preReporting
-                ? 'Please wait until the Maket is ready to Report on'
-                : 'Please connect a wallet to Report on this Market'}{' '}
+              {disabledTooltipText}{' '}
             </p>
           </ReactTooltip>
         )}
