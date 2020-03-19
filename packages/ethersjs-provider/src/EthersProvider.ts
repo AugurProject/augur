@@ -49,7 +49,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     }
   }
 
-  private;
+  private _mostRecentLatestBlockHeaders: Promise<any> | null;
 
   constructor(
     provider: ethers.providers.JsonRpcProvider,
@@ -58,6 +58,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     concurrency: number
   ) {
     super(provider.getNetwork());
+    this.on('block', (blockNumber) => this._mostRecentLatestBlockHeaders = null);
     this.provider = provider;
     this.performQueue = queue(
       (item: PerformQueueTask, callback: (err: Error, results: any) => void) => {
@@ -65,10 +66,35 @@ export class EthersProvider extends ethers.providers.BaseProvider
         retry(
           { times, interval },
           async () => {
-            if (item.message === "send") {
-              return await _this.providerSend(item.params.method, item.params.params);
+            if (item.message === 'send') {
+              const {method, params: [blocktag, includeHeaders]} = item.params;
+              if (method === 'eth_getBlockByNumber'
+                && blocktag === 'latest'
+                && !!includeHeaders === false
+                && _this.polling
+                && process.env.NODE_ENV !== 'test'
+              ) {
+                if (!_this._mostRecentLatestBlockHeaders) {
+                  _this._mostRecentLatestBlockHeaders = _this.providerSend(item.params.method, item.params.params);
+                }
+                return _this._mostRecentLatestBlockHeaders;
+              }
+
+              return _this.providerSend(item.params.method, item.params.params);
             } else {
-              return await _this.providerPerform(item.message, item.params);
+              const { blockTag, includeTransactions } = item.params;
+              if(item.message === 'getBlock'
+                && blockTag === 'latest'
+                && !!includeTransactions === false
+                && _this.polling
+                && process.env.NODE_ENV !== 'test'
+              ) {
+                if (!_this._mostRecentLatestBlockHeaders) {
+                  _this._mostRecentLatestBlockHeaders = _this.providerPerform(item.message, item.params);
+                }
+                return _this._mostRecentLatestBlockHeaders;
+              }
+              return _this.providerPerform(item.message, item.params);
             }
           },
           callback
