@@ -38,7 +38,6 @@ export class Controller {
       marketIds
     });
 
-    console.log('updateMarketsData from controller', marketIds);
     if (marketsInfo.length > 0) {
       this.augur.events.emit(SubscriptionEventName.MarketsUpdated,  {
         marketsInfo
