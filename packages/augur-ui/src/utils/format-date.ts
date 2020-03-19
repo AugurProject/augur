@@ -203,7 +203,7 @@ export function timestampComponents(timestamp: number, offset: number = 0): Part
   }
 
   return {
-    setEndTime: timestamp,
+    setEndTime: date.startOf('day').unix(),
     hour: String(hour),
     minute: `0${date.minutes()}`.slice(-2),
     meridiem,
