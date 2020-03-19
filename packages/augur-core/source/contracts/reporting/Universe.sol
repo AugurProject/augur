@@ -20,8 +20,7 @@ import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/utility/IFormulas.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/CashSender.sol';
-import 'ROOT/IRepExchange.sol';
-import 'ROOT/factories/IRepExchangeFactory.sol';
+import 'ROOT/reporting/IRepOracle.sol';
 
 
 /**
@@ -77,7 +76,7 @@ contract Universe is IUniverse, CashSender {
     IDaiPot public daiPot;
     IDaiJoin public daiJoin;
 
-    IRepExchange public repExchange;
+    IRepOracle public repOracle;
 
     uint256 constant public RAY = 10 ** 27;
 
@@ -92,7 +91,7 @@ contract Universe is IUniverse, CashSender {
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         openInterestCash = IOICashFactory(augur.lookup("OICashFactory")).createOICash(augur);
         shareToken = IShareToken(augur.lookup("ShareToken"));
-        repExchange = IRepExchange(address(IRepExchangeFactory(augur.lookup("RepExchangeFactory")).createRepExchange(augur, address(reputationToken))));
+        repOracle = IRepOracle(augur.lookup("RepOracle"));
         updateForkValues();
         formulas = IFormulas(augur.lookup("Formulas"));
         cash = ICash(augur.lookup("Cash"));
@@ -462,11 +461,11 @@ contract Universe is IUniverse, CashSender {
      * @return The Market Cap of this Universe's REP
      */
     function pokeRepMarketCapInAttoCash() public returns (uint256) {
-        uint256 _attoCashPerRep = repExchange.pokePrice();
+        uint256 _attoCashPerRep = repOracle.poke(address(reputationToken));
         return getRepMarketCapInAttoCashInternal(_attoCashPerRep);
     }
 
-    function getRepMarketCapInAttoCashInternal(uint256 _attoCashPerRep ) private view returns (uint256) {
+    function getRepMarketCapInAttoCashInternal(uint256 _attoCashPerRep) private view returns (uint256) {
         return reputationToken.getTotalTheoreticalSupply().mul(_attoCashPerRep).div(10 ** 18);
     }
 

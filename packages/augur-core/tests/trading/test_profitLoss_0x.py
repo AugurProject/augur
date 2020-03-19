@@ -39,7 +39,7 @@ def test_binary_and_claim(taker, contractsFixture, cash, market, universe):
             "price": .58,
             "position": -7,
             "avgPrice": .65,
-            "realizedPL": .1752, # .21 - .03 from fees
+            "realizedPL": .192426, # .21 - fees
             "frozenFunds": 2.45
         }, {
             "direction": SHORT,
@@ -48,7 +48,7 @@ def test_binary_and_claim(taker, contractsFixture, cash, market, universe):
             "price": .62,
             "position": -20,
             "avgPrice": .6305,
-            "realizedPL": .1752,
+            "realizedPL": .192426,
             "frozenFunds": 7.39
         }, {
             "direction": LONG,
@@ -57,7 +57,7 @@ def test_binary_and_claim(taker, contractsFixture, cash, market, universe):
             "price": .5,
             "position": -10,
             "avgPrice": .6305,
-            "realizedPL": 1.3802, # 1.51 - .13 from fees
+            "realizedPL": 1.446926, # 1.51 - fees
             "frozenFunds": 3.695
         }, {
             "direction": LONG,
@@ -66,7 +66,7 @@ def test_binary_and_claim(taker, contractsFixture, cash, market, universe):
             "price": .15,
             "position": -3,
             "avgPrice": .6305,
-            "realizedPL": 4.7227,
+            "realizedPL": 4.799821,
             "frozenFunds": 1.1085
         }
     ]
@@ -88,12 +88,12 @@ def test_binary_and_claim(taker, contractsFixture, cash, market, universe):
 
     assert profitLoss.getNetPosition(market.address, account1, YES) == 0
     assert profitLoss.getAvgPrice(market.address, account1, YES) == 0
-    assert roughlyEqual(profitLoss.getRealizedProfit(market.address, account1, YES), -401.42 * 10**36)
+    assert roughlyEqual(profitLoss.getRealizedProfit(market.address, account1, YES), -389.3321 * 10**36)
     assert profitLoss.getFrozenFunds(market.address, account1, YES) == 0
 
     assert profitLoss.getNetPosition(market.address, account2, YES) == 0
     assert profitLoss.getAvgPrice(market.address, account2, YES) == 0
-    assert roughlyEqual(profitLoss.getRealizedProfit(market.address, account2, YES), 361.42 * 10**36)
+    assert roughlyEqual(profitLoss.getRealizedProfit(market.address, account2, YES), 369.1321 * 10**36)
     assert profitLoss.getFrozenFunds(market.address, account2, YES) == 0
 
 @mark.parametrize('taker', [
@@ -187,7 +187,7 @@ def test_cat3_2(taker, contractsFixture, cash, categoricalMarket, universe):
             "price": .1,
             "position": -2,
             "avgPrice": .3,
-            "realizedPL": 1.59,
+            "realizedPL": 1.59495,
             "frozenFunds": -0.6
         }
     ]
@@ -237,7 +237,7 @@ def test_cat3_3(taker, contractsFixture, cash, categoricalMarket, universe):
             "price": .6,
             "position": 5,
             "avgPrice": .6,
-            "realizedPL": -.06, # Loss on fees
+            "realizedPL": -.0303, # Loss on fees
             "frozenFunds": -2
         }, {
             "direction": SHORT,
@@ -246,7 +246,7 @@ def test_cat3_3(taker, contractsFixture, cash, categoricalMarket, universe):
             "price": .2,
             "position": 12,
             "avgPrice": .1,
-            "realizedPL": 1.092,
+            "realizedPL": 1.19496,
             "frozenFunds": 1.2
         }, {
             "direction": SHORT,
@@ -255,7 +255,7 @@ def test_cat3_3(taker, contractsFixture, cash, categoricalMarket, universe):
             "price": .8,
             "position": 2,
             "avgPrice": .6,
-            "realizedPL": .54,
+            "realizedPL": .5697,
             "frozenFunds": -0.8
         }, {
             "direction": SHORT,
@@ -305,7 +305,7 @@ def test_scalar(taker, contractsFixture, cash, universe):
             "price": 202,
             "position": 1,
             "avgPrice": 188,
-            "realizedPL": 52.16,
+            "realizedPL": 54.0608,
             "frozenFunds": 138
         }, {
             "direction": SHORT,
@@ -314,7 +314,7 @@ def test_scalar(taker, contractsFixture, cash, universe):
             "price": 205,
             "position": -10,
             "avgPrice": 205,
-            "realizedPL": 68.26,
+            "realizedPL": 70.6063,
             "frozenFunds": 450
         }, {
             "direction": LONG,
@@ -323,14 +323,14 @@ def test_scalar(taker, contractsFixture, cash, universe):
             "price": 150,
             "position": -3,
             "avgPrice": 205,
-            "realizedPL": 439.26,
+            "realizedPL": 448.5363,
             "frozenFunds": 135
         }
     ]
 
-    process_trades(contractsFixture, test_data, cash, scalarMarket, zeroXTrade, profitLoss, taker, 50, 200)
+    process_trades(contractsFixture, test_data, cash, scalarMarket, zeroXTrade, profitLoss, taker, 50, 200, 10**27)
 
-def process_trades(contractsFixture, trade_data, cash, market, zeroXTrade, profitLoss, taker, minPrice = 0, displayRange = 1):
+def process_trades(contractsFixture, trade_data, cash, market, zeroXTrade, profitLoss, taker, minPrice = 0, displayRange = 1, PLTolerance = 10**24):
     for trade in trade_data:
         quantity = trade['quantity'] * 10**18
         onChainLongPrice = int(round((trade['price'] - minPrice) * market.getNumTicks() / displayRange))
@@ -374,7 +374,7 @@ def process_trades(contractsFixture, trade_data, cash, market, zeroXTrade, profi
         account = contractsFixture.accounts[2] if taker else contractsFixture.accounts[1]
         assert profitLoss.getNetPosition(market.address, account, trade['outcome']) == trade['position'] * 10**18
         assert roughlyEqual(profitLoss.getAvgPrice(market.address, account, trade['outcome']), avgPrice, 10**6)
-        assert roughlyEqual(profitLoss.getRealizedProfit(market.address, account, trade['outcome']), realizedProfit)
+        assert roughlyEqual(profitLoss.getRealizedProfit(market.address, account, trade['outcome']), realizedProfit, PLTolerance)
         assert roughlyEqual(profitLoss.getFrozenFunds(market.address, account, trade['outcome']), frozenFunds)
 
 def signOrder(orderHash, private_key, signaturePostFix="03"):

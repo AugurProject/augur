@@ -166,7 +166,6 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
         IUniverse _newUniverse = _universeFactory.createUniverse(_parentUniverse, _parentPayoutDistributionHash, _parentPayoutNumerators);
         universes[address(_newUniverse)] = true;
         trustedSender[address(_newUniverse)] = true;
-        trustedSender[address(_newUniverse.repExchange())] = true;
         emit UniverseCreated(address(_parentUniverse), address(_newUniverse), _parentPayoutNumerators, getTimestamp());
         return _newUniverse;
     }

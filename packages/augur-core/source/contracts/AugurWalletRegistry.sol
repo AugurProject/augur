@@ -12,6 +12,9 @@ import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/LibBytes.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
+import 'ROOT/uniswap/interfaces/IWETH.sol';
 
 
 contract AugurWalletRegistry is Initializable, GSNRecipient {
@@ -39,7 +42,9 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     address public fillOrder;
     address public zeroXTrade;
 
-    ISimpleDex public ethExchange;
+    IUniswapV2Exchange public ethExchange;
+    IWETH public WETH;
+    bool public token0IsCash;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
@@ -57,8 +62,14 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         createOrder = _augurTrading.lookup("CreateOrder");
         fillOrder = _augurTrading.lookup("FillOrder");
         zeroXTrade = _augurTrading.lookup("ZeroXTrade");
-        ethExchange = ISimpleDex(_augur.lookup("EthExchange"));
-        require(ethExchange != ISimpleDex(0));
+        WETH = IWETH(_augurTrading.lookup("WETH9"));
+        IUniswapV2Factory _uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
+        address _ethExchangeAddress = _uniswapFactory.getExchange(address(WETH), address(cash));
+        if (_ethExchangeAddress == address(0)) {
+            _ethExchangeAddress = _uniswapFactory.createExchange(address(WETH), address(cash));
+        }
+        ethExchange = IUniswapV2Exchange(_ethExchangeAddress);
+        token0IsCash = ethExchange.token0() == address(cash);
 
         IRelayHub(getHubAddr()).depositFor.value(address(this).balance)(address(this));
         return true;
@@ -96,7 +107,8 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     }
 
     function getAcceptRelayCallStatus(address _from, uint256 _payment, uint256 _maxPossibleCharge) private view returns (GSNRecipientERC20FeeErrorCodes _code) {
-        uint256 _maxDaiNeeded = ethExchange.getTokenPurchaseCost(_maxPossibleCharge);
+        (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = ethExchange.getReserves();
+        uint256 _maxDaiNeeded = getAmountIn(_maxPossibleCharge, token0IsCash ? _reserve0 : _reserve1, token0IsCash ? _reserve1 : _reserve0);
         if (_maxDaiNeeded > _payment) {
             return GSNRecipientERC20FeeErrorCodes.TX_COST_TOO_HIGH;
         }
@@ -104,6 +116,14 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
             return GSNRecipientERC20FeeErrorCodes.INSUFFICIENT_BALANCE;
         }
         return GSNRecipientERC20FeeErrorCodes.OK;
+    }
+
+    function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) public pure returns (uint amountIn) {
+        require(amountOut > 0);
+        require(reserveIn > 0 && reserveOut > 0);
+        uint numerator = reserveIn.mul(amountOut).mul(1000);
+        uint denominator = reserveOut.sub(amountOut).mul(997);
+        amountIn = (numerator / denominator).add(1);
     }
 
     function _preRelayedCall(bytes memory _context) internal returns (bytes32) { }
@@ -124,14 +144,25 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     }
 
     function getEthFromWallet(IAugurWallet _wallet, uint256 _cashAmount) private {
-        uint256 _ethAmount = ethExchange.getCashSaleProceeds(_cashAmount);
+        (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = ethExchange.getReserves();
+        uint256 _ethAmount = getAmountOut(_cashAmount, token0IsCash ? _reserve0 : _reserve1, token0IsCash ? _reserve1 : _reserve0);
         // If the wallet has sufficient ETH just make it send it to us, otherwise do a swap using its Cash
         if (address(_wallet).balance >= _ethAmount) {
             _wallet.giveRegistryEth(_ethAmount);
             return;
         }
         _wallet.transferCash(address(ethExchange), _cashAmount);
-        ethExchange.buyToken(address(this));
+        ethExchange.swap(token0IsCash ? 0 : _ethAmount, token0IsCash ? _ethAmount : 0, address(this), "");
+        WETH.withdraw(_ethAmount);
+    }
+
+    function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) public pure returns (uint amountOut) {
+        require(amountIn > 0);
+        require(reserveIn > 0 && reserveOut > 0);
+        uint amountInWithFee = amountIn.mul(997);
+        uint numerator = amountInWithFee.mul(reserveOut);
+        uint denominator = reserveIn.mul(1000).add(amountInWithFee);
+        amountOut = numerator / denominator;
     }
 
     function createAugurWallet(address _referralAddress, bytes32 _fingerprint) private returns (IAugurWallet) {
