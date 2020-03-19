@@ -14,6 +14,7 @@ import {
   ZERO,
   WALLET_STATUS_VALUES,
   INVALID_OUTCOME_ID,
+  HELP_CENTER,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -167,7 +168,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         header: null,
         type: WARNING,
         message: `Percentages are determind by denomination range, rounding may occur. `,
-        link: 'https://docs.augur.net',
+        link: HELP_CENTER,
       };
     }
 
