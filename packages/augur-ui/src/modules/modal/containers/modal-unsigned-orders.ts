@@ -40,7 +40,6 @@ const mapStateToProps = (state: AppState) => {
     loginAccount: state.loginAccount,
     chunkOrders: !state.appStatus.zeroXEnabled,
     GsnEnabled: state.appStatus.gsnEnabled,
-    ethToDaiRate: state.appStatus.ethToDaiRate,
     availableDai
   };
 };
@@ -68,11 +67,15 @@ const mergeProps = (sP, dP, oP) => {
         numberOfTransactions += 1;
       });
   });
-  const gasCost = formatGasCostToEther(
+
+  const gasCost = sP.GsnEnabled
+  ? NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions)
+  : formatGasCostToEther(
     NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).toFixed(),
     { decimalsRounded: 4 },
     sP.gasPrice
   );
+
   const bnAllowance = createBigNumber(sP.loginAccount.allowance, 10);
   const needsApproval = bnAllowance.lte(ZERO);
   const submitAllTxCount = chunkOrders ? Math.ceil(
@@ -115,7 +118,7 @@ const mergeProps = (sP, dP, oP) => {
     breakdown: [
       {
         label: 'Transaction Fee',
-        value: sP.GsnEnabled ? displayGasInDai(gasCost, sP.ethToDaiRate) : formatEther(gasCost).full,
+        value: sP.GsnEnabled ? displayGasInDai(gasCost) : gasCost,
       },
       {
         label: 'Total Cost (DAI)',

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
-import { ACCOUNT_TYPES } from 'modules/common/constants';
+import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE } from 'modules/common/constants';
 import {
   DaiLogoIcon,
   EthIcon,
@@ -15,14 +15,13 @@ import {
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatDai, formatEther, formatRep } from 'utils/format-number';
-import { AccountBalances } from 'modules/types';
+import { AccountBalances, FormattedNumber } from 'modules/types';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import { getGasCostInDai } from 'modules/modal/gas';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
-import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -45,7 +44,7 @@ interface ConnectDropdownProps {
   parentUniverseId: string;
   universeHasChildren: boolean;
   GsnEnabled: boolean;
-  ethToDaiRate: BigNumber;
+  ethToDaiRate: FormattedNumber;
   loginAccountAddress: string;
 }
 
@@ -68,6 +67,12 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     ethToDaiRate,
     loginAccountAddress,
   } = props;
+
+  let gasCostTrade;
+
+  if (GsnEnabled && ethToDaiRate) {
+    gasCostTrade = displayGasInDai(NEW_ORDER_GAS_ESTIMATE);
+  }
 
   if (!isLogged && !restoredAccount) return null;
 
@@ -244,7 +249,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             );
           })}
 
-        <div className={Styles.GasEdit}>
+        {gasCostTrade && <div className={Styles.GasEdit}>
           <div>
             <div>
               <div>
@@ -255,21 +260,16 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
                 )}
               </div>
               <div>
-                $
-                {getGasCostInDai(
-                  ethToDaiRate,
-                  createBigNumber(userDefinedGasPrice).toNumber()
-                )}{' '}
-                / Trade ({gasPriceSpeed} {gasPriceTime})
+                {gasCostTrade} / Trade ({gasPriceSpeed} {gasPriceTime})
               </div>
             </div>
           </div>
-          <SecondaryButton
+          {/* <SecondaryButton
             action={() => gasModal()}
             text='EDIT'
             icon={Pencil}
-          />
-        </div>
+          /> */}
+        </div>}
 
         <div className={Styles.GasEdit}>
           <div>

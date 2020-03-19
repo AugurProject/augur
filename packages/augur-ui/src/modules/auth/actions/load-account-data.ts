@@ -4,13 +4,12 @@ import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { windowRef } from 'utils/window-ref';
 import logError from 'utils/log-error';
-import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'store';
-import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
+import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 
 export const loadAccountData = (
   callback: NodeStyleCallback = logError
@@ -37,8 +36,7 @@ export const loadAccountData = (
     dispatch(loadAccountHistory());
     dispatch(checkAccountAllowance());
     dispatch(loadUniverseDetails(universe.id, address));
-    dispatch(loadGasPriceInfo());
     dispatch(getEthToDaiRate());
-    registerUserDefinedGasPriceFunction(gasPriceInfo.userDefinedGasPrice, gasPriceInfo.average);
+    dispatch(registerUserDefinedGasPriceFunction());
   }
 };

@@ -579,7 +579,7 @@ export interface AppStatus {
   isMobile?: boolean;
   isMobileSmall?: boolean;
   isHelpMenuOpen: boolean;
-  ethToDaiRate: BigNumber;
+  ethToDaiRate: FormattedNumber;
   gsnEnabled: boolean;
   zeroXEnabled: boolean;
   walletStatus: string;
