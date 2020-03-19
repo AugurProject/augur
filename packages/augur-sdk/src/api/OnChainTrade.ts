@@ -19,7 +19,7 @@ export interface NativePlaceTradeParams {
   tradeGroupId: string;
   fingerprint: string;
   doNotCreateOrders: boolean;
-  takerAddress: string;
+  takerAddress?: string;
 }
 
 export interface NativePlaceTradeDisplayParams extends NativePlaceTradeParams {
