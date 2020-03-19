@@ -5,7 +5,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { MODAL_TEST_BET } from 'modules/common/constants';
+import { MODAL_TEST_BET, HELP_CENTER_LEARN_ABOUT_ADDRESS } from 'modules/common/constants';
 import { P2pNetwork } from 'modules/common/icons';
 import { AUGUR_IS_P2P, track } from 'services/analytics/helpers';
 
@@ -28,7 +28,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     },
     {
       content: 'LEARN MORE',
-      link: 'https://docs.augur.net',
+      link: HELP_CENTER_LEARN_ABOUT_ADDRESS,
     },
   ],
   buttons: [
