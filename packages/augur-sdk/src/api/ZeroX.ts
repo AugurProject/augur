@@ -90,6 +90,7 @@ export interface ZeroXSimulateTradeData {
   sharesDepleted: BigNumber;
   tokensDepleted: BigNumber;
   numFills: BigNumber;
+  selfTrade: boolean;
 }
 
 export interface ZeroXTradeOrder {
@@ -471,6 +472,14 @@ export class ZeroX {
       []
     );
     let simulationData: BigNumber[];
+    const selfTrade =
+      params.takerAddress && orders.length > 0
+        ? !!orders.find(
+            order =>
+              order.makerAddress.toLowerCase() ===
+              params.takerAddress.toLowerCase()
+          )
+        : false;
     if (orders.length < 1 && !params.doNotCreateOrders) {
       simulationData = await this.simulateMakeOrder(onChainTradeParams);
     } else if (orders.length < 1) {
@@ -480,6 +489,7 @@ export class ZeroX {
         sharesDepleted: new BigNumber(0),
         settlementFees: new BigNumber(0),
         numFills: new BigNumber(0),
+        selfTrade,
       };
     } else {
       simulationData = ((await this.client.contracts.simulateTrade.simulateZeroXTrade_(
@@ -510,6 +520,7 @@ export class ZeroX {
       sharesDepleted: displaySharesDepleted,
       settlementFees: displaySettlementFees,
       numFills,
+      selfTrade,
     };
   }
 

@@ -32,7 +32,7 @@ export function updateTradeCost({
       return callback('side or numShare or limitPrice is not provided');
     }
 
-    const { marketInfos, accountPositions } = getState();
+    const { marketInfos, accountPositions, loginAccount } = getState();
 
     dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
@@ -51,6 +51,7 @@ export function updateTradeCost({
       marketId,
       outcomeId,
       accountPositions,
+      loginAccount.address,
       callback
     );
   };
@@ -72,7 +73,7 @@ export function updateTradeShares({
       return callback('side or numShare or limitPrice is not provided');
     }
 
-    const { marketInfos, accountPositions } = getState();
+    const { marketInfos, accountPositions, loginAccount } = getState();
 
     dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
@@ -121,6 +122,7 @@ export function updateTradeShares({
       marketId,
       outcomeId,
       accountPositions,
+      loginAccount.address,
       callback
     );
   };
@@ -132,6 +134,7 @@ async function runSimulateTrade(
   marketId: string,
   outcomeId: number,
   accountPositions: AccountPosition,
+  takerAddress: string,
   callback: NodeStyleCallback
 ) {
   let sharesFilledAvgPrice = '';
@@ -191,7 +194,8 @@ async function runSimulateTrade(
     market.maxPrice,
     newTradeDetails.numShares,
     newTradeDetails.limitPrice,
-    userShares
+    userShares,
+    takerAddress,
   );
 
   let gasLimit: BigNumber = createBigNumber(0);
@@ -223,7 +227,8 @@ async function runSimulateTrade(
       market.maxPrice,
       newTradeDetails.numShares,
       newTradeDetails.limitPrice,
-      userShares
+      userShares,
+      takerAddress,
     );
 
     // Plus ZeroX Fee (150k Gas)
