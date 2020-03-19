@@ -513,7 +513,7 @@ export class DisputingBondsView extends Component<
     if (this.props.GsnEnabled) {
       const gasLimit = await this.props.reportAction(true);
       this.setState({
-        gasEstimate: displayGasInDai(gasLimit) as string
+        gasEstimate: displayGasInDai(gasLimit) as string,
       });
     }
     if (this.props.isWarpSync) {
@@ -673,7 +673,9 @@ export class ReportingBondsView extends Component<
           .reportAction(true)
           .catch(e => console.error(e));
         this.setState({
-          gasEstimate: displayGasInDai(gasLimit || INITAL_REPORT_GAS_COST) as string
+          gasEstimate: displayGasInDai(
+            gasLimit || INITAL_REPORT_GAS_COST
+          ) as string,
         });
       }
     }
@@ -794,9 +796,11 @@ export class ReportingBondsView extends Component<
 
     let buttonDisabled = disabled;
     if (
-      isScalar &&
-      inputScalarOutcome === '' &&
-      id !== String(INVALID_OUTCOME_ID)
+      (isScalar &&
+        inputScalarOutcome === '' &&
+        id !== String(INVALID_OUTCOME_ID)) ||
+      (migrateRep &&
+        createBigNumber(inputtedReportingStake.inputStakeValue).lte(ZERO))
     ) {
       buttonDisabled = true;
     }
@@ -865,11 +869,7 @@ export class ReportingBondsView extends Component<
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
           label={GsnEnabled ? 'Transaction Fee' : 'Gas Fee'}
-          value={
-            GsnEnabled
-              ? gasEstimate
-              : `${gasEstimate} ETH`
-          }
+          value={GsnEnabled ? gasEstimate : `${gasEstimate} ETH`}
         />
         {migrateRep &&
           createBigNumber(inputtedReportingStake.inputStakeValue).lt(
@@ -930,10 +930,11 @@ export interface ReportingCardProps {
   showReportingModal: Function;
   callback: Function;
   isLogged: boolean;
+  isForking: boolean;
 }
 
 export const ReportingCard = (props: ReportingCardProps) => {
-  const { market, currentAugurTimestamp, showReportingModal, isLogged } = props;
+  const { market, currentAugurTimestamp, showReportingModal, isLogged, isForking } = props;
 
   if (!market) return null;
 
@@ -942,6 +943,14 @@ export const ReportingCard = (props: ReportingCardProps) => {
   const preReporting = reportingState === REPORTING_STATE.PRE_REPORTING;
   const headerType =
     reportingState === REPORTING_STATE.OPEN_REPORTING && HEADER_TYPE.H2;
+
+  let disabledTooltipText = preReporting
+  ? 'Please wait until the Market is ready to Report on'
+  : 'Please connect a wallet to Report on this Market';
+
+  if (isForking) {
+    disabledTooltipText = 'Market cannot be reported on while universe is forking';
+  }
 
   return (
     <div className={Styles.ReportingCard}>
@@ -978,9 +987,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
             type="light"
           >
             <p>
-              {preReporting
-                ? 'Please wait until the Maket is ready to Report on'
-                : 'Please connect a wallet to Report on this Market'}{' '}
+              {disabledTooltipText}{' '}
             </p>
           </ReactTooltip>
         )}

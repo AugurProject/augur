@@ -163,6 +163,38 @@
     color: @color-table-header;
     grid-column: 2;
     grid-row: 2;
+
+    > button {
+      background: unset;
+      border: unset;
+      color: @color-primary-action;
+
+      > svg {
+        > path:first-of-type {
+          fill: @color-primary-action;
+        }
+
+        > path:last-of-type {
+          stroke: @color-primary-action;
+        }
+      }
+
+      &:hover {
+        > a {
+          color: @color-primary-action;
+        }
+
+        > svg {
+          > path:first-of-type {
+            fill: @color-primary-action;
+          }
+
+          > path:last-of-type {
+            stroke: @color-primary-action;
+          }
+        }
+      }
+    }
   }
 
   > button {

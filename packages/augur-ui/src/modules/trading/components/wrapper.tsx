@@ -596,6 +596,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               trade={trade}
               gasPrice={gasPrice}
               gasLimit={trade.gasLimit}
+              selectedOutcomeId={selectedOutcome.id}
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
               tradingTutorial={tradingTutorial}
