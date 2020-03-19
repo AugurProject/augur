@@ -123,7 +123,7 @@ export class MarketDB extends DerivedDB {
     return result;
   }
 
-  syncOrderBooks = async (marketIds: string[], isFirstSync = false): Promise<void> => {;
+  syncOrderBooks = async (marketIds: string[], isFirstSync = false): Promise<void> => {
     let ids = marketIds;
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const documents = [];
@@ -152,7 +152,11 @@ export class MarketDB extends DerivedDB {
     }
 
     await this.saveDocuments(documents);
-  }
+
+    this.augur.events.emit(SubscriptionEventName.OrderBooksSynced, {
+      marketIds
+    });
+  };
 
   markMarketLiquidityAsDirty(marketId: string) {
     liquidityDirty.add(marketId);
