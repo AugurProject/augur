@@ -35,8 +35,8 @@
 
   > div[class*="LinearPropertyLabel"] {
     align-items: baseline;
-    min-width: 269px;
-    max-width: 80%;
+    min-width: @size-269;
+    width: 80%;
     margin-left: auto;
     margin-right: auto;
 
@@ -50,10 +50,50 @@
       color: var(--color-secondary-text);
     }
 
+    > svg > line {
+      stroke: var(--color-dark-text);
+    }
+
     > span {
       .mono-12-medium;
 
       color: var(--color-primary-text);
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Funds {
+    background: transparent;
+    padding: @size-24 @size-16 @size-8;
+
+    > h4 {
+      .mono-12-semi-bold;
+
+      margin-bottom: @size-11;
+    }
+
+    > div:first-of-type {
+      padding-bottom: @size-6;
+
+      > div {
+        .mono-12-semi-bold;
+      }
+    }
+
+    > div:nth-of-type(2) {
+      .mono-24-bold;
+    }
+
+    > div[class*="LinearPropertyLabel"] {
+      > span:first-of-type {
+        .mono-10-semi-bold;
+      }
+
+      > span {
+        .mono-12;  
+      }
     }
   }
 }
