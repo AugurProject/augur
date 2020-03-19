@@ -12,6 +12,7 @@ import {
   useSelected,
   useBetslip,
   SelectedContext,
+  BetslipStepContext,
 } from 'modules/trading/hooks/betslip';
 
 import Styles from 'modules/trading/betslip.styles';
@@ -20,6 +21,7 @@ export interface BetslipProps {}
 
 export const Betslip = ({  }: BetslipProps) => {
   const [minimized, setMinimized] = useState(true);
+  const [step, setStep] = useState(0);
   const {
     selected,
     toggleHeaderSelected,
@@ -59,10 +61,10 @@ export const Betslip = ({  }: BetslipProps) => {
             {isSelectedEmpty ? (
               <EmptyState emptyHeader={emptyHeader} />
             ) : (
-              <>
+              <BetslipStepContext.Provider value={step}>
                 <BetslipList ordersInfo={betslipInfo.ordersInfo} actions={betslipInfo.ordersActions} />
-                <BetslipFooter betslipInfo={betslipInfo} />
-              </>
+                <BetslipFooter betslipInfo={betslipInfo} setStep={setStep} />
+              </BetslipStepContext.Provider>
             )}
           </section>
         </SelectedContext.Provider>

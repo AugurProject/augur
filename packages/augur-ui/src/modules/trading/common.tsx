@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { SecondaryButton, PrimaryButton } from 'modules/common/buttons';
 import { Ticket, Trash } from 'modules/common/icons';
 import { LinearPropertyLabel } from 'modules/common/labels';
-import { SelectedContext } from 'modules/trading/hooks/betslip';
+import { SelectedContext, BetslipStepContext } from 'modules/trading/hooks/betslip';
 import { formatDai } from 'utils/format-number';
 
 import Styles from 'modules/trading/common.styles';
@@ -50,27 +50,50 @@ export const SportsMarketBets = ({ market, removeOrder, modifyOrder }) => {
 };
 
 export const SportsBet = ({ bet }) => {
+  const step = useContext(BetslipStepContext);
+  const isReview = step === 1;
   const { outcome, odds, wager, toWin, modifyOrder, cancelOrder } = bet;
   return (
-    <div className={Styles.SportsBet}>
+    <div className={classNames(Styles.SportsBet, { [Styles.Review]: isReview})}>
       <header>
         <span>{outcome}</span>
         <span>{odds}</span>
-        <button onClick={() => cancelOrder()}>{Trash}</button>
+        <button onClick={() => cancelOrder()}>{Trash} {isReview && 'Cancel'}</button>
       </header>
-      <BetslipInput
-        label="Wager"
-        value={wager}
-        valueKey="wager"
-        modifyOrder={modifyOrder}
-      />
-      <BetslipInput
-        label="To Win"
-        value={toWin}
-        valueKey="toWin"
-        modifyOrder={modifyOrder}
-        disabled
-      />
+      {isReview ? (
+        <>
+          <LinearPropertyLabel
+              label="wager"
+              value={formatDai(wager)}
+              useFull
+            />
+          <LinearPropertyLabel
+            label="odds"
+            value={odds}
+          />
+          <LinearPropertyLabel
+            label="to win"
+            value={formatDai(toWin)}
+            useFull
+          />
+        </>
+      ) : (
+        <>
+          <BetslipInput
+            label="Wager"
+            value={wager}
+            valueKey="wager"
+            modifyOrder={modifyOrder}
+          />
+          <BetslipInput
+            label="To Win"
+            value={toWin}
+            valueKey="toWin"
+            modifyOrder={modifyOrder}
+            noEdit
+          />
+        </>
+      )}
     </div>
   );
 };
@@ -81,12 +104,14 @@ export const BetslipInput = ({
   valueKey,
   modifyOrder,
   disabled = false,
+  noEdit = false,
 }) => {
   const [curVal, setCurVal] = useState(formatDai(value).full);
   const [invalid, setInvalid] = useState(false);
   return (
     <div className={classNames(Styles.BetslipInput, {
-      [Styles.Error]: invalid
+      [Styles.Error]: invalid,
+      [Styles.NoEdit]: disabled || noEdit,
     })}>
       <span>{label}</span>
       <input
@@ -104,7 +129,7 @@ export const BetslipInput = ({
           setCurVal(formatDai(updatedValue).full);
           setInvalid(false);
         }}
-        disabled={disabled}
+        disabled={disabled || noEdit}
       />
     </div>
   );
@@ -173,8 +198,8 @@ export const MyBetsSubheader = ({ toggleSelected }) => {
   );
 };
 
-export const BetslipFooter = ({ betslipInfo }) => {
-  const [step, setStep] = useState(0);
+export const BetslipFooter = ({ betslipInfo, setStep }) => {
+  const step = useContext(BetslipStepContext);
   const { ordersInfo, ordersActions } = betslipInfo;
   const { bettingTextValues, confirmationDetails } = ordersInfo;
   const { betting, potential } = bettingTextValues;
@@ -190,11 +215,13 @@ export const BetslipFooter = ({ betslipInfo }) => {
             label="Total Wager"
             value={formatDai(wager)}
             useFull
+            highlight
           />
           <LinearPropertyLabel
             label="Estimated Total Fees"
             value={formatDai(fees)}
             useFull
+            highlight
           />
         </div>
       )}
@@ -208,7 +235,6 @@ export const BetslipFooter = ({ betslipInfo }) => {
       <SecondaryButton
         text="Cancel Bets"
         action={() => {
-          console.log('Bets Canceled, this should open a modal to confirm.');
           ordersActions.cancelAllOrders();
           setStep(0);
         }}

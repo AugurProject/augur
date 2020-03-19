@@ -129,6 +129,37 @@
       border-bottom-right-radius: @border-radius-rounded;
     }
 
+    &.Review {
+      > header {
+        grid-template-columns: 1fr 0fr;
+
+        > span:last-of-type {
+          display: none;
+        }
+
+        > button > svg {
+          margin-right: @size-6;
+
+          > path {
+            stroke: var(--color-primary-text);
+          }
+        }
+      }
+
+      > div {
+        grid-column: span 2;
+        margin: 0 @size-4;
+
+        > span {
+          .text-12;
+
+          &:first-of-type {
+            .text-10-semi-bold;
+          }
+        }
+      }
+    };
+
     > header {
       display: grid;
       grid-column: span 2;
@@ -149,12 +180,22 @@
         }
       }
 
-      > button > svg {
-        width: @size-12;
-        height: @size-14;
+      > button {
+        .text-10-semi-bold;
 
-        > path {
-          stroke: var(--color-dark-text);
+        align-items: center;
+        color: var(--color-primary-text);
+        display: flex;
+        justify-content: center;
+        text-transform: uppercase;
+
+        > svg {
+          width: @size-12;
+          height: @size-14;
+
+          > path {
+            stroke: var(--color-dark-text);
+          }
         }
       }
     }
@@ -168,18 +209,14 @@
     position: relative;
     justify-content: center;
 
-    &:disabled {
-      opacity: 0.5;
-    }
-
-    &:focus:not(:disabled),
-    &:hover:not(:disabled) {
+    &:focus:not(.NoEdit),
+    &:hover:not(.NoEdit) {
       border: @size-1 solid var(--color-dark-text);
     }
 
     &.Error,
-    &.Error:focus:not(:disabled),
-    &.Error:hover:not(:disabled) {
+    &.Error:focus:not(.NoEdit),
+    &.Error:hover:not(.NoEdit) {
       border: @size-1 solid var(--color-error);
 
       > span {
@@ -236,20 +273,24 @@
       grid-column: span 2;
     }
 
-    > button:first-of-type {
-      > svg {
-        width: @size-15;
-        height: @size-17;
-        margin-right: @size-8;
+    > button {
+      .text-14-bold;
 
-        > path {
-          stroke: var(--color-primary-text);
+      &:first-of-type {
+        > svg {
+          width: @size-15;
+          height: @size-17;
+          margin-right: @size-8;
+  
+          > path {
+            stroke: var(--color-primary-text);
+          }
         }
-      }
-
-      &:hover {
-        > svg > path {
-          stroke: var(--color-module-background);
+  
+        &:hover {
+          > svg > path {
+            stroke: var(--color-module-background);
+          }
         }
       }
     }

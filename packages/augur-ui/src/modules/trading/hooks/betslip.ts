@@ -1,5 +1,4 @@
 import { useState, useReducer, createContext } from 'react';
-import { orders } from 'modules/modal/modal.styles.less';
 
 export const BETSLIP_OPTIONS = {
   0: { label: 'Betslip', emptyHeader: `Betslip is empty` },
@@ -139,6 +138,7 @@ function betslipOrdersReducer(state, action) {
 }
 
 export const SelectedContext = createContext({ header: 0, subHeader: 0 });
+export const BetslipStepContext = createContext(0);
 
 export const useSelected = (defaultSelected = { header: 0, subHeader: 0 }) => {
   const [selected, setSelected] = useState(defaultSelected);
