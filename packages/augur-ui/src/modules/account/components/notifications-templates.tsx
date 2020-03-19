@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   CountdownProgress,
   formatTime,
@@ -105,6 +105,7 @@ const Template = ({
   updateCheckboxOnNotification
 }: TemplateProps) => {
   const showCounter = market && notificationsWithCountdown.includes(type);
+  const [localIsChecked, setIsChecked] = useState(isChecked);
   return (
     <>
       <TemplateBody market={market} message={message} />
@@ -117,9 +118,12 @@ const Template = ({
        {hideCheckbox &&
         <>
           <Checkbox 
-            isChecked={isChecked} 
+            isChecked={localIsChecked} 
             id={market.id}
-            onClick={() => updateCheckboxOnNotification(market && market.id, type, !isChecked)}
+            onClick={() => {
+              setIsChecked(!localIsChecked)
+              updateCheckboxOnNotification(market && market.id, type, !localIsChecked)
+            }}
           />
           Don’t show me this again
         </>
