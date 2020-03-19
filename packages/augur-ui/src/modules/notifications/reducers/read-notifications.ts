@@ -48,7 +48,7 @@ export default (
         }
         return notification;
       });
-      return updateNotifications;
+      return [...updateNotifications];
     }
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:

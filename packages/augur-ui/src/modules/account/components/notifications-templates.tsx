@@ -118,6 +118,7 @@ const Template = ({
         <>
           <Checkbox 
             isChecked={isChecked} 
+            id={market.id}
             onClick={() => updateCheckboxOnNotification(market && market.id, type, !isChecked)}
           />
           Don’t show me this again
