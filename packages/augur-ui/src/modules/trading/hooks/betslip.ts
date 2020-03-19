@@ -1,4 +1,5 @@
 import { useState, useReducer, createContext } from 'react';
+import { orders } from 'modules/modal/modal.styles.less';
 
 export const BETSLIP_OPTIONS = {
   0: { label: 'Betslip', emptyHeader: `Betslip is empty` },
@@ -47,6 +48,10 @@ const MOCK_TEST_BETSLIP_ORDER_STATE = {
     betting: '20',
     potential: '18.18',
   },
+  confirmationDetails: {
+    wager: '20',
+    fees: '1',
+  },
   orderCount: 2,
   orders: {
     '0x01': {
@@ -92,9 +97,12 @@ function betslipOrdersReducer(state, action) {
     case REMOVE:
       console.log(REMOVE, action.marketId, action.orderId);
       return state;
-    case MODIFY:
-      console.log(MODIFY, action.marketId, action.order);
-      return state;
+    case MODIFY: {
+      const { marketId, orderId, order } = action;
+      const updatedState = { ...state };
+      updatedState.orders[marketId].orders[orderId] = order;
+      return updatedState;
+    }
     case SEND:
       console.log(SEND, action.marketId, action.orderId);
       return state;
@@ -191,7 +199,7 @@ export const useBetslip = (
       sendAllOrders: () => {
         dispatch({ type: SEND_ALL });
       },
-      clearAllOrders: () => {
+      cancelAllOrders: () => {
         dispatch({ type: CLEAR_ALL });
       },
     },
