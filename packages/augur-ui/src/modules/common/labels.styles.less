@@ -572,6 +572,28 @@ div.LinearPropertyViewTransaction {
   color: var(--color-primary-action);
 }
 
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .MarketStatus {
+    .mono-10-semi-bold;
+
+    border: none;
+    line-height: @size-12;
+    padding: @size-4 @size-5;
+  }
+
+  .MarketStatus_open {
+    color: var(--color-secondary-text)
+  }
+
+  .MarketStatus_resolved {
+    background: var(--color-dark-text);
+    color: var(--color-module-background);
+  }
+}
+
+
 .InReporting_reportingDetails {
   > svg {
     width: @size-10;
