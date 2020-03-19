@@ -513,7 +513,7 @@ export class DisputingBondsView extends Component<
     if (this.props.GsnEnabled) {
       const gasLimit = await this.props.reportAction(true);
       this.setState({
-        gasEstimate: displayGasInDai(gasLimit) as string
+        gasEstimate: displayGasInDai(gasLimit) as string,
       });
     }
     if (this.props.isWarpSync) {
@@ -673,7 +673,9 @@ export class ReportingBondsView extends Component<
           .reportAction(true)
           .catch(e => console.error(e));
         this.setState({
-          gasEstimate: displayGasInDai(gasLimit || INITAL_REPORT_GAS_COST) as string
+          gasEstimate: displayGasInDai(
+            gasLimit || INITAL_REPORT_GAS_COST
+          ) as string,
         });
       }
     }
@@ -794,9 +796,11 @@ export class ReportingBondsView extends Component<
 
     let buttonDisabled = disabled;
     if (
-      isScalar &&
-      inputScalarOutcome === '' &&
-      id !== String(INVALID_OUTCOME_ID)
+      (isScalar &&
+        inputScalarOutcome === '' &&
+        id !== String(INVALID_OUTCOME_ID)) ||
+      (migrateRep &&
+        createBigNumber(inputtedReportingStake.inputStakeValue).lte(ZERO))
     ) {
       buttonDisabled = true;
     }
@@ -865,11 +869,7 @@ export class ReportingBondsView extends Component<
         <LinearPropertyLabel
           key="totalEstimatedGasFee"
           label={GsnEnabled ? 'Transaction Fee' : 'Gas Fee'}
-          value={
-            GsnEnabled
-              ? gasEstimate
-              : `${gasEstimate} ETH`
-          }
+          value={GsnEnabled ? gasEstimate : `${gasEstimate} ETH`}
         />
         {migrateRep &&
           createBigNumber(inputtedReportingStake.inputStakeValue).lt(
