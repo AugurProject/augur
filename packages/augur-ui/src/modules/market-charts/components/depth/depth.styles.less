@@ -245,7 +245,7 @@
 
     .tick-line {
       color: var(--color-secondary-action-outline);
-      stroke-width: 1px;
+      stroke-width: @size-1;
     }
 
     .tick-value {
@@ -359,6 +359,18 @@
 
       text {
         .mono-10-bold;
+      }
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .MarketOutcomeDepth__container {
+    :global {
+      .tick-line--midpoint {
+        stroke: var(--color-secondary-text);
+        stroke-dasharray: none;
       }
     }
   }
