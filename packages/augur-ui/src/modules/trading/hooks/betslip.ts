@@ -11,6 +11,7 @@ const BETSLIP_AMOUNT_ACTIONS = {
   DEC_BETSLIP_AMOUNT: 'DEC_BETSLIP_AMOUNT',
   INC_MYBETS_AMOUNT: 'INC_MYBETS_AMOUNT',
   DEC_MYBETS_AMOUNT: 'DEC_MYBETS_AMOUNT',
+  CLEAR_BETSLIP_AMOUNT: 'CLEAR_BETSLIP_AMOUNT',
 };
 
 function betslipAmountReducer(state, action) {
@@ -19,6 +20,7 @@ function betslipAmountReducer(state, action) {
     INC_MYBETS_AMOUNT,
     DEC_BETSLIP_AMOUNT,
     DEC_MYBETS_AMOUNT,
+    CLEAR_BETSLIP_AMOUNT,
   } = BETSLIP_AMOUNT_ACTIONS;
   switch (action.type) {
     case INC_BETSLIP_AMOUNT:
@@ -29,6 +31,8 @@ function betslipAmountReducer(state, action) {
       return { ...state, myBetsAmount: state.myBetsAmount + 1 };
     case DEC_MYBETS_AMOUNT:
       return { ...state, myBetsAmount: state.myBetsAmount - 1 };
+    case CLEAR_BETSLIP_AMOUNT:
+      return { ...state, betslipAmount: 0 };
     default:
       throw new Error('invalid dispatch to betslipAmountReducer');
   }
@@ -43,16 +47,23 @@ const BETSLIP_ORDERS_ACTIONS = {
   CLEAR_ALL: 'CLEAR_ALL',
 };
 
+const BETSLIP_ORDER_DEFAULT_STATE = {
+  bettingTextValues: {},
+  confirmationDetails: {},
+  orderCount: 0,
+  orders: {},
+};
+
 const MOCK_TEST_BETSLIP_ORDER_STATE = {
   bettingTextValues: {
-    betting: '20',
-    potential: '18.18',
+    betting: '30',
+    potential: '28.18',
   },
   confirmationDetails: {
-    wager: '20',
-    fees: '1',
+    wager: '30',
+    fees: '1.50',
   },
-  orderCount: 2,
+  orderCount: 3,
   orders: {
     '0x01': {
       description: 'CHICAGO BULLS vs BROOKLYN NETS, SPREAD',
@@ -62,6 +73,13 @@ const MOCK_TEST_BETSLIP_ORDER_STATE = {
           odds: '-105',
           wager: '10.00',
           toWin: '9.52',
+          marketId: '0x01',
+        },
+        {
+          outcome: 'Brooklyn Nets, -5',
+          odds: '+115',
+          wager: '10.00',
+          toWin: '19.52',
           marketId: '0x01',
         },
       ],
@@ -92,11 +110,15 @@ function betslipOrdersReducer(state, action) {
   } = BETSLIP_ORDERS_ACTIONS;
   switch (action.type) {
     case ADD:
-      console.log(ADD, action.marketId, action.order);
+      console.log(ADD, action.marketId, action.description, action.order);
       return state;
-    case REMOVE:
-      console.log(REMOVE, action.marketId, action.orderId);
-      return state;
+    case REMOVE: {
+      const { marketId, orderId } = action;
+      const updatedState = { ...state };
+      updatedState.orders[marketId].orders.splice(orderId, 1);
+      updatedState.orderCount--;
+      return updatedState;
+    }
     case MODIFY: {
       const { marketId, orderId, order } = action;
       const updatedState = { ...state };
@@ -110,8 +132,7 @@ function betslipOrdersReducer(state, action) {
       console.log(SEND_ALL);
       return state;
     case CLEAR_ALL:
-      console.log(CLEAR_ALL);
-      return state;
+      return BETSLIP_ORDER_DEFAULT_STATE;
     default:
       throw new Error('invalid dispatch to betslipOrdersReducer');
   }
@@ -150,6 +171,7 @@ export const useBetslipAmounts = (
     INC_MYBETS_AMOUNT,
     DEC_BETSLIP_AMOUNT,
     DEC_MYBETS_AMOUNT,
+    CLEAR_BETSLIP_AMOUNT,
   } = BETSLIP_AMOUNT_ACTIONS;
 
   return {
@@ -160,6 +182,7 @@ export const useBetslipAmounts = (
     incMyBetslipAmount: () => dispatch({ type: INC_MYBETS_AMOUNT }),
     decBetslipAmount: () => dispatch({ type: DEC_BETSLIP_AMOUNT }),
     decMyBetslipAmount: () => dispatch({ type: DEC_MYBETS_AMOUNT }),
+    clearBetslipAmount: () => dispatch({ type: CLEAR_BETSLIP_AMOUNT }),
   };
 };
 
@@ -168,7 +191,7 @@ export const useBetslip = (
   defaultState = MOCK_TEST_BETSLIP_ORDER_STATE
 ) => {
   const [state, dispatch] = useReducer(betslipOrdersReducer, defaultState);
-  const betSlipAmounts = useBetslipAmounts(selected, {
+  const betslipAmounts = useBetslipAmounts(selected, {
     betslipAmount: state.orderCount,
     myBetsAmount: 0,
   });
@@ -184,11 +207,13 @@ export const useBetslip = (
   return {
     ordersInfo: state,
     ordersActions: {
-      addOrder: (marketId, order) => {
-        dispatch({ type: ADD, marketId, order });
+      addOrder: (marketId, description, order) => {
+        dispatch({ type: ADD, marketId, description, order });
+        betslipAmounts.incBetslipAmount();
       },
       removeOrder: (marketId, orderId) => {
         dispatch({ type: REMOVE, marketId, orderId });
+        betslipAmounts.decBetslipAmount();
       },
       modifyOrder: (marketId, order) => {
         dispatch({ type: MODIFY, marketId, order });
@@ -201,8 +226,9 @@ export const useBetslip = (
       },
       cancelAllOrders: () => {
         dispatch({ type: CLEAR_ALL });
+        betslipAmounts.clearBetslipAmount();
       },
     },
-    ...betSlipAmounts,
+    ...betslipAmounts,
   };
 };

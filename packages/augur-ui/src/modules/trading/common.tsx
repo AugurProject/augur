@@ -86,7 +86,7 @@ export const BetslipInput = ({
   const [invalid, setInvalid] = useState(false);
   return (
     <div className={classNames(Styles.BetslipInput, {
-      [Styles.error]: invalid
+      [Styles.Error]: invalid
     })}>
       <span>{label}</span>
       <input
