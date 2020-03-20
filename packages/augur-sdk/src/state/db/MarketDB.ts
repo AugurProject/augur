@@ -77,15 +77,15 @@ export class MarketDB extends DerivedDB {
     // Don't call this interval during tests
     if (process.env.NODE_ENV !== 'test') {
       if (!liquidityCheckInterval) {
-        // call recalc liquidity every 3mins
-        const THREE_MINS_IN_MS = 180000;
+        // call recalc liquidity every min.
+        const ONE_MIN_IN_MS = 60000;
         liquidityCheckInterval = setInterval(async () => {
           if (liquidityDirty.size > 0) {
             const marketIdsToCheck = Array.from(liquidityDirty) as string[];
             await this.syncOrderBooks(marketIdsToCheck);
             liquidityDirty.clear();
           }
-        },THREE_MINS_IN_MS);
+        },ONE_MIN_IN_MS);
       }
     }
   }
@@ -123,7 +123,7 @@ export class MarketDB extends DerivedDB {
     return result;
   }
 
-  syncOrderBooks = async (marketIds: string[], isFirstSync = false): Promise<void> => {;
+  syncOrderBooks = async (marketIds: string[], isFirstSync = false): Promise<void> => {
     let ids = marketIds;
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
     const documents = [];
@@ -152,7 +152,11 @@ export class MarketDB extends DerivedDB {
     }
 
     await this.saveDocuments(documents);
-  }
+
+    if (marketIds.length > 0) this.augur.events.emit(SubscriptionEventName.OrderBooksSynced, {
+      marketIds
+    });
+  };
 
   markMarketLiquidityAsDirty(marketId: string) {
     liquidityDirty.add(marketId);
