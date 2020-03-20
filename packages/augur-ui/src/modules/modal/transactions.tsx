@@ -316,7 +316,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
     });
     return [
       <span>{timestamp}</span>,
-      <TextLabel text={tx.marketDescription} />,
+      <TextLabel keyId={tx.transactionHash} text={tx.marketDescription} />,
       <TextLabel text={tx.outcomeDescription || ''} />,
       <TextLabel
         text={
