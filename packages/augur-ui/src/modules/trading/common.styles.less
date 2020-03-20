@@ -257,7 +257,7 @@
     border-top: @size-1 solid var(--color-secondary-action-outline);
     display: grid;
     grid-gap: @size-8 @size-16;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 50% 50%;
     border-bottom-left-radius: @border-radius-rounded;
     border-bottom-right-radius: @border-radius-rounded;
     padding: @size-12;
@@ -275,6 +275,10 @@
 
     > button {
       .text-14-bold;
+
+      max-width: @size-147;
+      min-width: 100%;
+      padding: 0;
 
       &:first-of-type {
         > svg {
