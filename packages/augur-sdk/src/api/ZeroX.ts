@@ -492,10 +492,12 @@ export class ZeroX {
         selfTrade,
       };
     } else {
+      const options = {sender: await this.client.getAccount()};
       simulationData = ((await this.client.contracts.simulateTrade.simulateZeroXTrade_(
         orders,
         onChainTradeParams.amount,
-        params.doNotCreateOrders
+        params.doNotCreateOrders,
+        options
       )) as unknown) as BigNumber[];
     }
     const tickSize = numTicksToTickSizeWithDisplayPrices(

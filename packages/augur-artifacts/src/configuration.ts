@@ -106,6 +106,7 @@ export interface ContractAddresses {
   AugurWalletRegistry?: string;
   OICash?: string;
   UniswapV2Factory?: string;
+  EthExchange?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.

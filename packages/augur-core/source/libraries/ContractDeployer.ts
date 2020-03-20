@@ -241,10 +241,10 @@ Deploying to: ${env}
         await this.augur.finishDeployment();
         await this.augurTrading.finishDeployment();
 
-        return this.generateCompleteAddressMapping();
+        return await this.generateCompleteAddressMapping();
     }
 
-    private generateCompleteAddressMapping(): ContractAddresses {
+    private async generateCompleteAddressMapping(): Promise<ContractAddresses> {
         // This type assertion means that `mapping` can possibly NOT adhere to the ContractAddresses interface.
         const mapping = {} as ContractAddresses;
 
@@ -258,7 +258,11 @@ Deploying to: ${env}
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['AugurTrading'] = this.contracts.get('AugurTrading').address!;
         mapping['Exchange'] = this.contracts.get('Exchange').address!;
+
         mapping['UniswapV2Factory'] = this.contracts.get('UniswapV2Factory').address!;
+        const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
+        mapping['EthExchange'] = await uniswapV2Factory.getExchange_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
+
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
         for (let contract of this.contracts) {

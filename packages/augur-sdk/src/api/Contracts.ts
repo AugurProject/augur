@@ -29,10 +29,12 @@ export class Contracts {
   affiliates: ContractInterfaces.Affiliates;
   affiliateValidator: ContractInterfaces.AffiliateValidator;
   profitLoss: ContractInterfaces.ProfitLoss;
-  ethExchange: ContractInterfaces.EthExchange;
+  uniswapV2Factory: ContractInterfaces.UniswapV2Factory;
+  ethExchange: ContractInterfaces.UniswapV2Exchange;
   warpSync: ContractInterfaces.WarpSync;
   augurWalletRegistry: ContractInterfaces.AugurWalletRegistry;
   relayHub: ContractInterfaces.RelayHub;
+  weth: ContractInterfaces.WETH9;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -61,10 +63,12 @@ export class Contracts {
     this.affiliates = new ContractInterfaces.Affiliates(dependencies, addresses.Affiliates);
     this.affiliateValidator = new ContractInterfaces.AffiliateValidator(dependencies, addresses.AffiliateValidator);
     this.profitLoss= new ContractInterfaces.ProfitLoss(dependencies, addresses.ProfitLoss);
-    this.ethExchange = new ContractInterfaces.EthExchange(dependencies, addresses.EthExchange);
+    this.uniswapV2Factory = new ContractInterfaces.UniswapV2Factory(dependencies, addresses.UniswapV2Factory);
+    this.ethExchange = new ContractInterfaces.UniswapV2Exchange(dependencies, addresses.EthExchange);
     this.warpSync = new ContractInterfaces.WarpSync(dependencies, addresses.WarpSync);
     this.augurWalletRegistry = new ContractInterfaces.AugurWalletRegistry(dependencies, addresses.AugurWalletRegistry);
-    this.relayHub = new ContractInterfaces.RelayHub(dependencies, RELAY_HUB_ADDRESS)
+    this.relayHub = new ContractInterfaces.RelayHub(dependencies, RELAY_HUB_ADDRESS);
+    this.weth = new ContractInterfaces.WETH9(dependencies, addresses.WETH9);
 
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);
