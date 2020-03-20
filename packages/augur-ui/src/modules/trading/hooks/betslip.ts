@@ -1,4 +1,7 @@
 import { useState, useReducer, createContext } from 'react';
+import { getTheme } from 'modules/app/actions/update-app-status';
+import { THEMES } from 'modules/common/constants';
+import { StaticLabelDropdown } from 'modules/common/selection';
 
 export const BETSLIP_OPTIONS = {
   0: { label: 'Betslip', emptyHeader: `Betslip is empty` },
@@ -108,9 +111,10 @@ function betslipOrdersReducer(state, action) {
     CLEAR_ALL,
   } = BETSLIP_ORDERS_ACTIONS;
   switch (action.type) {
-    case ADD:
+    case ADD: {
       console.log(ADD, action.marketId, action.description, action.order);
       return state;
+    }
     case REMOVE: {
       const { marketId, orderId } = action;
       const updatedState = { ...state };
@@ -124,12 +128,14 @@ function betslipOrdersReducer(state, action) {
       updatedState.orders[marketId].orders[orderId] = order;
       return updatedState;
     }
-    case SEND:
+    case SEND: {
       console.log(SEND, action.marketId, action.orderId);
       return state;
-    case SEND_ALL:
+    }
+    case SEND_ALL: {
       console.log(SEND_ALL);
       return state;
+    }
     case CLEAR_ALL:
       return BETSLIP_ORDER_DEFAULT_STATE;
     default:
@@ -149,12 +155,14 @@ export const useSelected = (defaultSelected = { header: 0, subHeader: 0 }) => {
     selected,
     ...BETSLIP_OPTIONS[selected.header],
     toggleHeaderSelected: selectedClicked => {
+      const isSports = getTheme() === THEMES.SPORTS;
       if (selectedClicked === nextSelection)
-        setSelected({ ...selected, header: nextSelection });
+        setSelected({ subHeader: isSports ? 1 : selected.subHeader, header: nextSelection });
     },
     toggleSubHeaderSelected: selectedClicked => {
+      const isSports = getTheme() === THEMES.SPORTS;
       if (selectedClicked === nextSubSelection)
-        setSelected({ ...selected, subHeader: nextSubSelection });
+        setSelected({ ...selected, subHeader: isSports ? 1 : nextSubSelection });
     },
   };
 };
