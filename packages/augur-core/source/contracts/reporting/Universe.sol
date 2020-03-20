@@ -75,6 +75,7 @@ contract Universe is IUniverse, CashSender {
     IDaiVat public daiVat;
     IDaiPot public daiPot;
     IDaiJoin public daiJoin;
+    uint256 public lastSweep;
 
     IRepOracle public repOracle;
 
@@ -708,14 +709,34 @@ contract Universe is IUniverse, CashSender {
     }
 
     function sweepInterest() public returns (bool) {
+        lastSweep = block.timestamp;
+        uint256 _dsrBalance = daiPot.pie(address(this));
+        // Do nothing if we have no DSR savings
+        if (_dsrBalance == 0) {
+            return true;
+        }
         uint256 _extraCash = 0;
         uint256 _chi = daiPot.drip();
-        withdrawSDaiFromDSR(daiPot.pie(address(this))); // Pull out all funds
+        withdrawSDaiFromDSR(_dsrBalance); // Pull out all funds
         saveDaiInDSR(totalBalance); // Put the required funds back in savings
         _extraCash = cashBalance(address(this));
         // The amount in the DSR pot and VAT must cover our totalBalance of Dai
         assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(RAY));
         cashTransfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
+        return true;
+    }
+
+    function runPeriodicals() external returns (bool) {
+        uint256 _blockTimestamp = block.timestamp;
+        uint256 _timeSinceLastSweep = _blockTimestamp - lastSweep;
+        if (_timeSinceLastSweep > 1 days) {
+            sweepInterest();
+            return true;
+        }
+        uint256 _timeSinceLastRepOracleUpdate = _blockTimestamp - repOracle.getLastUpdateTimestamp(address(reputationToken));
+        if (_timeSinceLastRepOracleUpdate > 1 days) {
+            repOracle.poke(address(reputationToken));
+        }
         return true;
     }
 }
