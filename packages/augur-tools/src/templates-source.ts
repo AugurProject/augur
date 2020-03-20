@@ -1909,23 +1909,23 @@ export const TEMPLATES = {
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Over [3].5`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                     placeholder: `Under [3].5`,
                   },
                   {
-                    id: 6,
+                    id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Unofficial game/Cancelled`,
                   },
