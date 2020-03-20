@@ -681,7 +681,6 @@ function drawTicks(options) {
     if (tick === drawParams.yScale.ticks(tickCount)[0]) {
       return;
     }
-     
     depthChart
       .append('line')
       .attr('class', 'horizontal-lines')
