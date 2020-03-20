@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import Styles from 'modules/reporting/forking.styles.less';
 import { ExclamationCircle } from 'modules/common/icons';
 import { CountdownProgress, formatTime } from 'modules/common/progress';
-import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
+import { PrimaryButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 import { DateFormattedObject } from 'modules/types';
 import { SIXTY_DAYS, MIGRATEOUTBYPAYOUT, TRANSACTIONS } from 'modules/common/constants';
 

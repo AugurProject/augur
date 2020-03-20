@@ -69,14 +69,17 @@ export const selectMostLikelyInvalidMarkets = createSelector(
       .map(getRequiredMarketData);
   }
 );
+
 export const selectLiquidityDepletedMarkets = createSelector(
   selectMarkets,
   selectLoginAccountAddress,
   (markets, address) => {
     return markets
       .filter(
-        market => market.author === address &&
-          !market.passDefaultLiquiditySpread
+        market =>
+          market.author === address &&
+          !market.passDefaultLiquiditySpread &&
+          market.reportingState === REPORTING_STATE.PRE_REPORTING
       )
       .map(getRequiredMarketData);
   }
@@ -299,6 +302,8 @@ export const selectNotifications = createSelector(
         );
         if (storedNotification) {
           notification.isNew = storedNotification.isNew;
+          notification.isChecked = storedNotification.isChecked;
+          notification.hideNotification = storedNotification.hideNotification;
         }
         return notification;
       });
@@ -386,6 +391,7 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: MARKET_LIQUIDITY_DEPLETED_TITLE,
       buttonLabel: TYPE_ADD_LIQUIDITY,
+      hideCheckbox: true,
     };
   }
 

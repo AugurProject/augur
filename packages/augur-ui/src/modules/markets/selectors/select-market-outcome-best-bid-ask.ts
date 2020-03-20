@@ -11,7 +11,6 @@ export const selectMarketOutcomeBestBidAsk = memoize(
       return {
         price: formatBestPrice(item.price, tickSize),
         shares: formatShares(item.shares, { decimals: 2, decimalsRounded: 2 }),
-        selfTrade: item.mySize !== '0',
       };
     };
 
