@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .AccountView {
-  margin: @size-8 @size-12;
+  margin: @size-8 auto;
   min-height: calc(~'100vh - @{multi-top-bar-height}');
   display: grid;
   grid-gap: @size-8 @size-12;
@@ -9,6 +9,7 @@
   grid-template-rows: @size-40 44vh 44vh @size-40 @size-40;
 
   @media @breakpoint-mobile {
+    margin: @size-8 @size-12;
     min-height: unset;
     display: flex;
     flex-direction: column;

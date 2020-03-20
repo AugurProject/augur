@@ -4,7 +4,10 @@ import classNames from 'classnames';
 import { SecondaryButton, PrimaryButton } from 'modules/common/buttons';
 import { Ticket, Trash } from 'modules/common/icons';
 import { LinearPropertyLabel } from 'modules/common/labels';
-import { SelectedContext, BetslipStepContext } from 'modules/trading/hooks/betslip';
+import {
+  SelectedContext,
+  BetslipStepContext,
+} from 'modules/trading/hooks/betslip';
 import { formatDai } from 'utils/format-number';
 
 import Styles from 'modules/trading/common.styles';
@@ -54,23 +57,20 @@ export const SportsBet = ({ bet }) => {
   const isReview = step === 1;
   const { outcome, odds, wager, toWin, modifyOrder, cancelOrder } = bet;
   return (
-    <div className={classNames(Styles.SportsBet, { [Styles.Review]: isReview})}>
+    <div
+      className={classNames(Styles.SportsBet, { [Styles.Review]: isReview })}
+    >
       <header>
         <span>{outcome}</span>
         <span>{odds}</span>
-        <button onClick={() => cancelOrder()}>{Trash} {isReview && 'Cancel'}</button>
+        <button onClick={() => cancelOrder()}>
+          {Trash} {isReview && 'Cancel'}
+        </button>
       </header>
       {isReview ? (
         <>
-          <LinearPropertyLabel
-              label="wager"
-              value={formatDai(wager)}
-              useFull
-            />
-          <LinearPropertyLabel
-            label="odds"
-            value={odds}
-          />
+          <LinearPropertyLabel label="wager" value={formatDai(wager)} useFull />
+          <LinearPropertyLabel label="odds" value={odds} />
           <LinearPropertyLabel
             label="to win"
             value={formatDai(toWin)}
@@ -109,16 +109,18 @@ export const BetslipInput = ({
   const [curVal, setCurVal] = useState(formatDai(value).full);
   const [invalid, setInvalid] = useState(false);
   return (
-    <div className={classNames(Styles.BetslipInput, {
-      [Styles.Error]: invalid,
-      [Styles.NoEdit]: disabled || noEdit,
-    })}>
+    <div
+      className={classNames(Styles.BetslipInput, {
+        [Styles.Error]: invalid,
+        [Styles.NoEdit]: disabled || noEdit,
+      })}
+    >
       <span>{label}</span>
       <input
         onChange={e => {
           const newVal = e.target.value.replace('$', '');
           setCurVal(newVal);
-          setInvalid(isNaN(Number(newVal)))
+          setInvalid(isNaN(Number(newVal)));
         }}
         value={curVal}
         onBlur={() => {
@@ -225,13 +227,15 @@ export const BetslipFooter = ({ betslipInfo, setStep }) => {
           />
         </div>
       )}
-      <span>
-        {`You're Betting `}
-        <b>{bet}</b>
-        {` and will win `}
-        <b>{win}</b>
-        {` if you win`}
-      </span>
+      {step !== 1 && (
+        <span>
+          {`You're Betting `}
+          <b>{bet}</b>
+          {` and will win `}
+          <b>{win}</b>
+          {` if you win`}
+        </span>
+      )}
       <SecondaryButton
         text="Cancel Bets"
         action={() => {
