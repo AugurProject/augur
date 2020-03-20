@@ -28,10 +28,6 @@ output "zerox_rpc_tg_arn" {
   value = module.ingress-0x-mesh-rpc.target_group_arn
 }
 
-output "gnosis_web_tg_arn" {
-  value = module.ingress-gnosis-web.target_group_arn
-}
-
 output "alb_url" {
   value = module.alb.this_lb_dns_name
 }
