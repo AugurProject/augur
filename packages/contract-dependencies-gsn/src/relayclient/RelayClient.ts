@@ -330,7 +330,7 @@ export class RelayClient {
       await this.provider.provider.sendTransaction(raw_tx);
     } catch (err) {
       // This is what we want to be the case
-      if (err.responseText.includes("known transaction")) {
+      if (err.responseText?.includes("known transaction")) {
         return;
       }
       throw err;
