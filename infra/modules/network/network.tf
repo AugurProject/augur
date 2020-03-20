@@ -115,23 +115,6 @@ module "alb" {
         interval            = 30
         matcher             = "200,400"
       }
-    },
-    {
-      name             = "${var.environment}-gnosis-web"
-      backend_protocol = "HTTP"
-      backend_port     = 8888
-      target_type      = "ip"
-      health_check = {
-        enabled             = true
-        protocol            = "HTTP"
-        path                = "/check/"
-        port                = "traffic-port"
-        healthy_threshold   = 2
-        unhealthy_threshold = 2
-        timeout             = 5
-        interval            = 30
-        matcher             = "200-399"
-      }
     }
   ]
 
@@ -160,19 +143,6 @@ module "alb" {
 
 /* Ingress Rules for subdomains*/
 // Corroborate with DNS settings
-module "ingress-gnosis-web" {
-  source                              = "git::https://github.com/cloudposse/terraform-aws-alb-ingress.git?ref=0.9.0"
-  namespace                           = var.namespace
-  stage                               = var.environment
-  name                                = var.name
-  vpc_id                              = module.vpc.vpc_id
-  default_target_group_enabled        = false
-  target_group_arn                    = module.alb.target_group_arns[3]
-  unauthenticated_listener_arns       = [module.alb.http_tcp_listener_arns[0], module.alb.https_listener_arns[0]]
-  unauthenticated_listener_arns_count = 2
-  unauthenticated_hosts               = ["${var.environment}-gnosis.${var.domain}"]
-}
-
 module "ingress-0x-mesh-bootstrap" {
   source                       = "git::https://github.com/cloudposse/terraform-aws-alb-ingress.git?ref=0.9.0"
   namespace                    = var.namespace
