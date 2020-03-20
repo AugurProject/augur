@@ -189,12 +189,18 @@
         justify-content: center;
         text-transform: uppercase;
 
+        &:hover {
+          > svg > path {
+            stroke: var(--color-primary-text);
+          }
+        }
+
         > svg {
           width: @size-12;
           height: @size-14;
 
           > path {
-            stroke: var(--color-dark-text);
+            stroke: var(--color-dark-text)
           }
         }
       }
@@ -257,7 +263,7 @@
     border-top: @size-1 solid var(--color-secondary-action-outline);
     display: grid;
     grid-gap: @size-8 @size-16;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 1fr 1fr;
     border-bottom-left-radius: @border-radius-rounded;
     border-bottom-right-radius: @border-radius-rounded;
     padding: @size-12;
@@ -281,6 +287,24 @@
       padding: 0;
 
       &:first-of-type {
+        border: @size-1 solid var(--color-dark-text);
+
+        &:hover,
+        &:active {
+          border: @size-1 solid var(--color-primary-text);
+
+          > svg > path {
+            stroke: var(--color-module-background);
+          }
+        }
+
+        &:active:hover:focus,
+        &:focus:hover {
+           > svg > path {
+             stroke: var(--color-primary-text);
+          }
+        }
+
         > svg {
           width: @size-15;
           height: @size-17;
@@ -288,12 +312,6 @@
   
           > path {
             stroke: var(--color-primary-text);
-          }
-        }
-  
-        &:hover {
-          > svg > path {
-            stroke: var(--color-module-background);
           }
         }
       }
