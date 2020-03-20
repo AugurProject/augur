@@ -284,6 +284,7 @@ export class Markets {
       outcomeId: t.union([outcomeIdType, t.array(outcomeIdType)]),
       account: t.string,
       onChain: t.boolean, // if false or not present, use 0x orderbook
+      expirationCutoffSeconds: t.number,
     }),
   ]);
 
@@ -652,11 +653,13 @@ export class Markets {
       orders = await OnChainTrading.getOpenOnChainOrders(augur, db, {
         marketId: params.marketId,
         orderState: OrderState.OPEN,
+        expirationCutoffSeconds: params.expirationCutoffSeconds,
       });
     } else {
       orders = await OnChainTrading.getOpenOrders(augur, db, {
         marketId: params.marketId,
         orderState: OrderState.OPEN,
+        expirationCutoffSeconds: params.expirationCutoffSeconds,
       });
     }
 
