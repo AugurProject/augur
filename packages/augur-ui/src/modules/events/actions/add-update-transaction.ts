@@ -14,6 +14,7 @@ import {
   SCALAR,
   YES_NO,
   PUBLICFILLORDER,
+  CREATEAUGURWALLET,
   BUYPARTICIPATIONTOKENS,
   MODAL_ERROR,
   MIGRATE_FROM_LEG_REP_TOKEN,
@@ -23,6 +24,7 @@ import {
   TRADINGPROCEEDSCLAIMED,
   CLAIMMARKETSPROCEEDS,
   FORKANDREDEEM,
+  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -38,6 +40,7 @@ import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { updateModal } from 'modules/modal/actions/update-modal';
+import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 
 const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
@@ -69,6 +72,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     if (ADD_PENDING_QUEUE_METHOD_CALLS.includes(methodCall)) {
       dispatch(addUpdatePendingTransaction(methodCall, eventName, blockchain.currentBlockNumber, hash, { ...transaction }));
     }
+
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 
@@ -103,6 +107,9 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       methodCall !== CANCELORDER &&
       methodCall !== PUBLICFILLORDER
     ) {
+      if (methodCall === CREATEAUGURWALLET) {
+        dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE_SUCCESS));
+      }
       if (
         methodCall === CREATEMARKET ||
         methodCall === CREATECATEGORICALMARKET ||
@@ -133,10 +140,10 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     switch (methodCall) {
       case REDEEMSTAKE: {
         const params = transaction.params;
-        params._reportingParticipants.map(participant => 
+        params._reportingParticipants.map(participant =>
           dispatch(addPendingData(participant, REDEEMSTAKE, eventName, hash, {...transaction}))
         );
-        params._disputeWindows.map(window => 
+        params._disputeWindows.map(window =>
           dispatch(addPendingData(window, REDEEMSTAKE, eventName, hash, {...transaction}))
         );
         break;

@@ -5,7 +5,10 @@ import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import { AppState } from 'store';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_INITIALIZE_ACCOUNT } from 'modules/common/constants';
+import { MODAL_INITIALIZE_ACCOUNT, WALLET_STATUS_VALUES, CREATEAUGURWALLET } from 'modules/common/constants';
+import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
+import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
+import { TXEventName } from '@augurproject/sdk/src';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { authStatus, loginAccount, appStatus, newMarket } = state;
@@ -35,7 +38,11 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  initializeGsnWallet: () => dispatch(updateModal({ type: MODAL_INITIALIZE_ACCOUNT }))
+  initializeGsnWallet: () => dispatch(updateModal({ type: MODAL_INITIALIZE_ACCOUNT })),
+  updateWalletStatus: () => {
+    dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
+    dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Success));
+  }
 });
 
 const mergeProps = (sP, dP, oP) => {

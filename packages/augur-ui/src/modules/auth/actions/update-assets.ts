@@ -1,6 +1,5 @@
 import { NodeStyleCallback } from 'modules/types';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
-import logError from 'utils/log-error';
 import {
   getEthBalance,
   getDaiBalance,
@@ -34,11 +33,9 @@ export const updateAssets = (
     (err, balances) => {
       let status = appStatus[WALLET_STATUS];
       // TODO: set min amount of DAI, for testing need a real values
-      if (createBigNumber(balances.dai).gt(TWO) && status !== WALLET_STATUS_VALUES.CREATED) {
+      if (createBigNumber(balances.dai).gt(TWO) && (status !== WALLET_STATUS_VALUES.CREATED && status !== WALLET_STATUS_VALUES.FUNDED_NEED_CREATE_SUCCESS)) {
         dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE));
       }
-      if (!status) dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.WAITING_FOR_FUNDING));
-
       if (callback) callback(balances);
     });
 };
