@@ -118,7 +118,11 @@ function betslipOrdersReducer(state, action) {
     case REMOVE: {
       const { marketId, orderId } = action;
       const updatedState = { ...state };
-      updatedState.orders[marketId].orders.splice(orderId, 1);
+      const market = updatedState.orders[marketId];
+      market.orders.splice(orderId, 1);
+      if (market.orders.length === 0) {
+        delete updatedState.orders[marketId];
+      }
       updatedState.orderCount--;
       return updatedState;
     }
