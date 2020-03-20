@@ -120,7 +120,7 @@ export interface Categories {
 
 export interface DropdownDependencies {
   inputSourceId: number;
-  inputDestId?: number;
+  inputDestIds?: number[];
   values: {
     [key: string]: string[];
   };
@@ -197,7 +197,7 @@ export interface TemplateInput {
   dateAfterId?: number;
   inputSourceId?: number; // input id as source of text to get list values
   defaultLabel?: string; // dropdown default label shown
-  inputDestId?: number; // target input to set list values
+  inputDestIds?: number[]; // target inputs to set list values
   inputDestValues: {
     // dropdown source data structure to use to set target input list values
     [key: string]: string[];
@@ -381,9 +381,12 @@ function hasMarketQuestionDependencies(
   const input = inputs.find(i => i.id === validationDep.inputSourceId);
   if (!input) return false;
   const correctValues = validationDep.values[input.value] || [];
-  const testValue = inputs.find(i => i.id === validationDep.inputDestId);
-  if (!testValue) return false;
-  return correctValues.includes(testValue.value);
+  const testValues = inputs.filter(i => validationDep.inputDestIds.includes(i.id));
+  if (!testValues) return false;
+  return (
+    testValues.length ===
+    testValues.filter(value => correctValues.includes(value.value)).length
+  );
 }
 
 function isDependencyOutcomesCorrect(
