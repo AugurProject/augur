@@ -1,160 +1,103 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '3box';
-import Comments from '3box-comments-react';
+import ThreeBoxComments from '3box-comments-react';
+import { FacebookComments } from 'modules/market/components/common/comments/facebook-comments';
 
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
-import { ACCOUNT_TYPES } from 'modules/common/constants';
 
-export class MarketComments extends Component {
-  state = {
-    box: {},
-    myProfile: {},
-    address: '',
-    isReady: false,
-    provider: null,
-  };
+interface MarketCommentsProps {
+  accountType: string;
+  adminEthAddr: string;
+  colorScheme: string;
+  marketId: string;
+  networkId: string;
+  numPosts: number;
+  provider: any;
+  whichCommentPlugin: string;
+}
 
-  componentDidMount() {
-    this.handleLogin();
-  };
+export const MarketComments = ({
+  accountType,
+  adminEthAddr,
+  colorScheme,
+  marketId,
+  networkId,
+  numPosts,
+  provider,
+  whichCommentPlugin,
+}: MarketCommentsProps) => {
+  const [address, setAddress] = useState();
+  const [box, setBox] = useState({});
+  const [isReady, setIsReady] = useState(false);
+  const [profile, setProfile] = useState();
 
-  componentDidUpdate(prevProps, prevState): void {
-    if (prevProps.provider !== this.props.provider
-      || prevProps.address !== this.props.address
-      || prevProps.accountType !== this.props.accountType) {
-      console.log('componentDidUpdate');
-      this.handleLogin();
-    }
-  }
+  useEffect(() => {
+    handleLogin();
+  }, []);
 
-  getProvider = (accountType) => {
-    const provider = {
-      [ACCOUNT_TYPES.PORTIS]: window.portis.provider,
-      default: null
-    };
+  useEffect(() => {
+    handleLogin();
+  }, [accountType, provider]);
 
-    return (provider[accountType] || provider['default'])();
-  };
-
-  getWalletInfo = async () => {
-    const {address, accountType, provider} = this.props;
-
-    if (accountType && provider) {
-      return {
-        address,
-        accountType,
-        provider: provider,
-      }
-    } else if (window.ethereum) {
-      const addresses = await window.ethereum.enable();
-      const address = addresses[0];
-
-      return {
-        address,
-        accountType: ACCOUNT_TYPES.METAMASK,
-        provider: window.ethereum,
-      }
-    } else {
-      return {}
-    }
-  };
-
-  handleLogin = async () => {
-    const { provider } = await this.getWalletInfo();
+  const handleLogin = async () => {
+    setIsReady(false);
 
     if (!provider) {
-      this.setState({isReady: false});
       return;
     }
 
-    let box;
-    let address = (await provider.enable())[0];
+    let threeBoxInstance;
+    let addressFromProvider = (await provider.enable())[0];
+    let publicProfile;
 
     try {
-      box = await Box.create(provider);
-      console.log('box ###', box);
+      threeBoxInstance = await Box.create(provider);
 
-      await box.auth(['augurtesteightportis'], {address});
-      await box.syncDone;
-      console.log('auth done ###');
+      await threeBoxInstance.auth([], { address: addressFromProvider });
+      await threeBoxInstance.syncDone;
 
-      const space = await box.openSpace('augurtesteightportis', {});
+      const space = await threeBoxInstance.openSpace('augur', {});
       await space.syncDone;
+
+      publicProfile = await Box.getProfile(addressFromProvider);
     } catch (error) {
       console.error(error);
-      // return
+      return;
     }
 
-    this.setState({box, address, isReady: true, provider});
+    setBox(threeBoxInstance);
+    setAddress(addressFromProvider);
+    setProfile(publicProfile);
+    setIsReady(true);
   };
 
-  render () {
-    const {
-      box,
-      address,
-      isReady,
-      provider
-    } = this.state;
+  return (
+    <section className={Styles.Comments}>
+      {whichCommentPlugin === '3box' && isReady && (
+        <ThreeBoxComments
+          // required
+          spaceName="augur"
+          threadName={marketId}
+          adminEthAddr={adminEthAddr}
 
-    return (
-      <section className={Styles.Comments}>
-        {isReady && (
-          <Comments
-            // required
-            spaceName="augurtesteightportis"
-            threadName={this.props.marketId}
-            adminEthAddr={address}
+          // Required props for context A) & B)
+          box={box}
+          currentUserAddr={address}
 
-            // Required props for context A) & B)
-            box={box}
-            currentUserAddr={address}
-
-            // Required prop for context B
-            // loginFunction={this.handleLogin}
-
-            // Required prop for context C)
-            // ethereum={provider._web3Provider}
-
-            // optional
-            // members={false}
-            // showCommentCount={10}
-            // threadOpts={{}}
-            // useHovers={false}
-            // currentUser3BoxProfile={currentUser3BoxProfile}
-            // userProfileURL={address => `https://mywebsite.com/user/${address}`}
-          />
-        )}
-      </section>
-    );
-  }
-}
-
-// import React from 'react';
-// import { FacebookComments } from 'modules/market/components/common/comments/facebook-comments';
-//
-// interface MarketCommentsProps {
-//   marketId: string;
-//   colorScheme: string;
-//   numPosts: number;
-//   networkId: string;
-//   whichCommentPlugin?: string;
-// }
-//
-// export const MarketComments = ({
-//   marketId,
-//   colorScheme,
-//   numPosts,
-//   networkId,
-//   whichCommentPlugin,
-// }: MarketCommentsProps) => {
-//   return (
-//     whichCommentPlugin === 'facebook' && (
-//       <FacebookComments
-//         marketId={marketId}
-//         colorScheme={colorScheme}
-//         numPosts={numPosts}
-//         networkId={networkId}
-//       />
-//     )
-//   );
-// };
+          // optional
+          showCommentCount={numPosts}
+          currentUser3BoxProfile={profile}
+          // useHovers={true}
+        />
+      )}
+      {whichCommentPlugin === 'facebook' && (
+        <FacebookComments
+          marketId={marketId}
+          colorScheme={colorScheme}
+          numPosts={numPosts}
+          networkId={networkId}
+        />
+      )}
+    </section>
+  );
+};

@@ -80,6 +80,7 @@
     "startWSS": true
   },
   "plugins": {
-    "chat": "orbit"
+    "chat": "orbit",
+    "comments": "3box"
   }
 }
