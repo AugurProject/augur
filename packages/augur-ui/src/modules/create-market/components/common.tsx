@@ -921,10 +921,12 @@ export const InputFactory = (props: InputFactoryProps) => {
           } else if (input.type === TemplateInputType.DROPDOWN_QUESTION_DEP) {
             if (value) {
               const list = input.inputDestValues[value];
-              const target = props.inputs.find(i => i.id === input.inputDestId);
-              if (target && list && list.length > 0) {
-                target.userInput = '';
-                target.values = list;
+              let targets = props.inputs.filter(i => input.inputDestIds.includes(i.id));
+              if (targets && list && list.length > 0) {
+                targets.forEach(target => {
+                  target.userInput = '';
+                  target.values = list;
+                })
               }
             }
           } else if (TemplateInputType.DROPDOWN) {
