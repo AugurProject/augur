@@ -15,9 +15,10 @@ import { helpIcon, Dot } from 'modules/common/icons';
 import {
   TRANSACTIONS,
   MIGRATE_FROM_LEG_REP_TOKEN,
-  CREATEAUGURWALLET
 } from 'modules/common/constants';
-
+import {
+  CREATE_MARKET
+} from 'modules/routes/constants/views';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 
 interface TopNavProps {
@@ -60,12 +61,12 @@ const TopNav = ({
       <ul>
         {accessFilteredMenu.map((item, index) => {
           const selected = isCurrentItem(item);
-          if (item.title === 'Create') {
+          if (item.route === CREATE_MARKET) {
             return (
               <li className={Styles.CreateButton} key={item.title}>
-                <Link to={item.route ? makePath(item.route) : null}>
+                <Link to={item.route || !item.disabled ? makePath(item.route) : null}>
                   <SecondaryButton
-                    disabled={isDisabled}
+                    disabled={item.disabled}
                     text={'Create Market'}
                     action={() => null}
                   />
