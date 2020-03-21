@@ -1093,7 +1093,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
         const newEndTime = (addHours * 60 * 60) + endTimeFormatted.timestamp
         const comps = timestampComponents(newEndTime, offset);
         onChange('updateEventExpiration', {
-          setEndTime: newEndTime,
+          setEndTime: comps.setEndTime,
           hour: comps.hour,
           minute: comps.minute,
           meridiem: comps.meridiem,

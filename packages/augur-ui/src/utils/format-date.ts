@@ -201,9 +201,8 @@ export function timestampComponents(timestamp: number, offset: number = 0): Part
     hour = hour > 12 ? hour - 12 : hour;
     meridiem = 'PM'
   }
-
   return {
-    setEndTime: date.startOf('day').unix(),
+    setEndTime: timestamp,
     hour: String(hour),
     minute: `0${date.minutes()}`.slice(-2),
     meridiem,
