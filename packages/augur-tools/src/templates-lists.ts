@@ -5,7 +5,6 @@ export const LIST_VALUES = {
   WINTER_OLYMPIC_YEARS: ['2022', '2026', '2030'],
   YEAR_RANGE: ['2019-20', '2020-21', '2021-22', '2022-23'],
   FOOTBALL_AWARDS: [
-    'MVP',
     'Offensive Player of the year',
     'Defensive player of the year',
     'Offensive Rookie of the year',
