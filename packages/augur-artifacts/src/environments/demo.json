@@ -78,7 +78,6 @@
   },
   "useWarpSync": true,
   "plugins": {
-    "chat": "orbit",
     "comments": "3box"
   }
 }
