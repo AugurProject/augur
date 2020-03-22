@@ -140,8 +140,9 @@ class Notifications extends React.Component<
 
       case NOTIFICATION_TYPES.liquidityDepleted:
       case NOTIFICATION_TYPES.marketIsMostLikelyInvalid:
-        buttonAction = () => {
+        buttonAction = (redirect: boolean = true) => {
           this.markAsRead(notification);
+          if (!redirect) return;
           const queryLink: QueryEndpoints = {
             [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
           };
