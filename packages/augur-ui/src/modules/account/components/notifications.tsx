@@ -48,7 +48,6 @@ export interface NotificationsProps extends RouteComponentProps {
   unsignedOrdersModal: Function;
   openOrdersModal: Function;
   toggle: Function;
-  updateCheckboxOnNotification: Function;
 }
 
 export interface NotificationsState {
@@ -188,7 +187,7 @@ class Notifications extends React.Component<
   }
 
   render() {
-    const { currentAugurTimestamp, disputingWindowEndTime, toggle, updateCheckboxOnNotification } = this.props;
+    const { currentAugurTimestamp, disputingWindowEndTime, toggle } = this.props;
     const notifications = this.props.notifications.map((notification) =>
       this.getButtonAction(notification)
     );

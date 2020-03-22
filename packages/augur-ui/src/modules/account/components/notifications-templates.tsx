@@ -21,7 +21,6 @@ import {
 } from 'modules/common/constants';
 import MarketTitle from 'modules/market/containers/market-title';
 import { MarketReportingState } from '@augurproject/sdk/build';
-import { Checkbox } from 'modules/common/form';
 import classNames from 'classnames';
 
 interface BaseProps {
@@ -36,7 +35,6 @@ interface BaseProps {
   queueId?: string;
   hideCheckbox?: boolean;
   checkCheckbox?: Function;
-  updateCheckboxOnNotification?: Function;
 }
 
 interface OpenOrdersResolvedMarketsTemplateProps extends BaseProps {
