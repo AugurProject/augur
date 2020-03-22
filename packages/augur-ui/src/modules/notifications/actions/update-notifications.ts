@@ -15,17 +15,3 @@ export const updateReadNotifications = (
   type: UPDATE_READ_NOTIFICATIONS,
   data: { notifications },
 });
-
-export interface UpdateCheckboxOnNotificationAction {
-  type: typeof UPDATE_CHECKBOX_ON_NOTIFICATION;
-  data: { marketId: string; type: string; isChecked: boolean };
-}
-
-export const updateCheckboxOnNotification = (
-  marketId: string,
-  type: string,
-  isChecked: boolean
-) => ({
-  type: UPDATE_CHECKBOX_ON_NOTIFICATION,
-  data: { marketId, type, isChecked },
-});
