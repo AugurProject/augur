@@ -48,7 +48,6 @@ export interface NotificationsProps extends RouteComponentProps {
   unsignedOrdersModal: Function;
   openOrdersModal: Function;
   toggle: Function;
-  updateCheckboxOnNotification: Function;
 }
 
 export interface NotificationsState {
@@ -138,11 +137,9 @@ class Notifications extends React.Component<
         };
         break;
 
-      case NOTIFICATION_TYPES.liquidityDepleted:
       case NOTIFICATION_TYPES.marketIsMostLikelyInvalid:
-        buttonAction = (redirect: boolean = true) => {
+        buttonAction = () => {
           this.markAsRead(notification);
-          if (!redirect) return;
           const queryLink: QueryEndpoints = {
             [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
           };
@@ -190,7 +187,7 @@ class Notifications extends React.Component<
   }
 
   render() {
-    const { currentAugurTimestamp, disputingWindowEndTime, toggle, updateCheckboxOnNotification } = this.props;
+    const { currentAugurTimestamp, disputingWindowEndTime, toggle } = this.props;
     const notifications = this.props.notifications.map((notification) =>
       this.getButtonAction(notification)
     );
@@ -215,7 +212,6 @@ class Notifications extends React.Component<
         queueName,
         queueId,
         hideCheckbox,
-        isChecked
       } = notification;
 
       const templateProps = {
@@ -230,7 +226,6 @@ class Notifications extends React.Component<
         type,
         queueName,
         queueId,
-        isChecked
       };
 
       const notificationCardProps = {
@@ -291,13 +286,6 @@ class Notifications extends React.Component<
           {type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid ? (
             <MostLikelyInvalidMarketsTemplate
               isDisabled={isDisabled}
-              {...templateProps}
-            />
-          ) as any : null}
-          {type === NOTIFICATION_TYPES.liquidityDepleted ? (
-            <LiquidityDepletionTemplate
-              isDisabled={isDisabled}
-              updateCheckboxOnNotification={updateCheckboxOnNotification}
               {...templateProps}
             />
           ) as any : null}

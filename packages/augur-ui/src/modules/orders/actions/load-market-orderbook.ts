@@ -34,10 +34,9 @@ export const loadMarketOrderBook = (
   if (marketId == null) {
     return callback('must specify market ID');
   }
-  const { loginAccount, blockchain } = getState();
+  const { loginAccount } = getState();
   const augur = augurSdk.get();
-  const estimatedTime = await augur.getGasConfirmEstimate();
-  const expirationCutoffSeconds = estimatedTime - blockchain.currentAugurTimestamp;
+  const expirationCutoffSeconds = await augur.getGasConfirmEstimate();
   console.log('expirationCutoffSeconds', expirationCutoffSeconds)
   let params = loginAccount.address
     ? { marketId, account: loginAccount.address, expirationCutoffSeconds }
