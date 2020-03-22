@@ -31,7 +31,6 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   updateReadNotifications: (notifications: Notification[]) =>
     dispatch(updateReadNotifications(notifications)),
-  updateCheckboxOnNotification: (marketId: string, type: string, isChecked: boolean) => dispatch(updateCheckboxOnNotification(marketId, type, isChecked)),
   claimMarketsProceeds: (marketIds: string[], cb: NodeStyleCallback) =>
     dispatch(
       updateModal({ type: MODAL_CLAIM_MARKETS_PROCEEDS, marketIds, cb })
