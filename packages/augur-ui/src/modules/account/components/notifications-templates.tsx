@@ -106,6 +106,13 @@ const Template = ({
 }: TemplateProps) => {
   const showCounter = market && notificationsWithCountdown.includes(type);
   const [localIsChecked, setIsChecked] = useState(isChecked);
+  const hide = () => {
+    setIsChecked(!localIsChecked);
+    buttonAction(false);
+    setTimeout(() =>
+      updateCheckboxOnNotification(market && market.id, type, !localIsChecked)
+    , 1000);
+  }
   return (
     <>
       <TemplateBody market={market} message={message} />
@@ -117,13 +124,10 @@ const Template = ({
         )}
        {hideCheckbox &&
         <>
-          <Checkbox 
-            isChecked={localIsChecked} 
+          <Checkbox
+            isChecked={localIsChecked}
             id={market.id}
-            onClick={() => {
-              setIsChecked(!localIsChecked)
-              updateCheckboxOnNotification(market && market.id, type, !localIsChecked)
-            }}
+            onClick={() => hide()}
           />
           Don’t show me this again
         </>

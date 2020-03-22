@@ -44,6 +44,7 @@ export default (
           notification.market.id === marketId
         ) {
           notification.isChecked = isChecked;
+          notification.hideNotification = true;
           return notification;
         }
         return notification;
