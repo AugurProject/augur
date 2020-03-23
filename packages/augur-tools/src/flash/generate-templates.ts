@@ -26,43 +26,46 @@ const templateTemplateFile = './src/templates-template.ts';
 
 export const generateTemplateValidations = async () => {
   const templateItems = [TEMPLATES, TEMPLATES2];
+  try {
+    const templateValidations = templateItems.map(t => generateValidations(t));
 
-  const templateValidations = templateItems.map(t => generateValidations(t));
+    const newValidationObj = merge.all(
+      templateValidations.map(tv => tv.validations)
+    );
+    const newTemplateValueObj = merge.all(
+      templateValidations.map(tv => tv.template)
+    );
+    if (!fs.existsSync(templateTemplateFile)) {
+      return console.error(templateTemplateFile, 'does not exist');
+    }
 
-  const newValidationObj = merge.all(
-    templateValidations.map(tv => tv.validations)
-  );
-  const newTemplateValueObj = merge.all(
-    templateValidations.map(tv => tv.template)
-  );
-  if (!fs.existsSync(templateTemplateFile)) {
-    return console.error(templateTemplateFile, 'does not exist');
+    const contents = fs.readFileSync(templateTemplateFile, 'utf8');
+    const newTemplateValue = `export const TEMPLATES = ${JSON.stringify(
+      newTemplateValueObj
+    )};`;
+    const newValidation = `TEMPLATE_VALIDATIONS = ${JSON.stringify(
+      newValidationObj
+    )};`;
+    const setNewTemplatesValues = contents.replace(
+      templateString,
+      newTemplateValue
+    );
+    const setNewTemplateValidations = setNewTemplatesValues.replace(
+      templateValidationString,
+      newValidation
+    );
+    const newRetiredTemplates = `RETIRED_TEMPLATES = ${JSON.stringify(
+      retiredTemplates
+    )}`;
+    const setRetiredTemplates = setNewTemplateValidations.replace(
+      templateRetiredTemplatesString,
+      newRetiredTemplates
+    );
+
+    fs.writeFileSync(templateArtifactsFile, setRetiredTemplates, 'utf8');
+  } catch (e) {
+    console.log(e);
   }
-
-  const contents = fs.readFileSync(templateTemplateFile, 'utf8');
-  const newTemplateValue = `export const TEMPLATES = ${JSON.stringify(
-    newTemplateValueObj
-  )};`;
-  const newValidation = `TEMPLATE_VALIDATIONS = ${JSON.stringify(
-    newValidationObj
-  )};`;
-  const setNewTemplatesValues = contents.replace(
-    templateString,
-    newTemplateValue
-  );
-  const setNewTemplateValidations = setNewTemplatesValues.replace(
-    templateValidationString,
-    newValidation
-  );
-  const newRetiredTemplates = `RETIRED_TEMPLATES = ${JSON.stringify(
-    retiredTemplates
-  )}`;
-  const setRetiredTemplates = setNewTemplateValidations.replace(
-    templateRetiredTemplatesString,
-    newRetiredTemplates
-  );
-
-  fs.writeFileSync(templateArtifactsFile, setRetiredTemplates, 'utf8');
 };
 
 const generateValidations = (
@@ -80,6 +83,7 @@ const generateValidations = (
     placeholderValues: null,
     afterTuesdayDateNoFriday: null,
     noAdditionalOutcomes: false,
+    hoursAfterEstimatedStartTime: null,
   };
   const newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -121,6 +125,7 @@ const addTemplates = (
         closingDateDependencies: getClosingDateDependencies(t.inputs),
         placeholderValues: getPlaceholderValues(t.inputs),
         afterTuesdayDatenoFriday: getInputsAfterTuesdayDateNoFriday(t.inputs),
+        hoursAfterEstimatedStartTime: getHoursAfterEstimatedStartTime(t.inputs),
         noAdditionalOutcomes: t.noAdditionalUserOutcomes,
       };
     });
@@ -140,6 +145,11 @@ function getRequiredOutcomes(inputs: TemplateInput[]) {
   return inputs
     .filter(i => i.type === TemplateInputType.ADDED_OUTCOME)
     .map(i => i.placeholder);
+}
+
+function getHoursAfterEstimatedStartTime(inputs: TemplateInput[]): number {
+  return (inputs
+    .find(i => i.type === TemplateInputType.ESTDATETIME) || {}).hoursAfterEst;
 }
 
 function listToRegEx(values: string[]) {
@@ -213,7 +223,7 @@ function getDependencies(
 ): DropdownDependencies {
   return {
     inputSourceId: input.inputSourceId || input.id,
-    inputDestId: input.inputDestId,
+    inputDestIds: input.inputDestIds,
     values: Object.keys(sourceValues).reduce((p, key) => {
       p[key] = sourceValues[key];
       return p;

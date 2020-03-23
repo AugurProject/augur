@@ -9,12 +9,16 @@ interface MarketsListFiltersProps {
   marketSort: string;
   isSearching: boolean;
   updateMarketsSortBy: Function;
+  setSortOptions: Function;
+  isMobile: boolean;
 }
 
 const MarketsListFilters = ({
-  isSearching,
   marketSort,
+  isSearching,
   updateMarketsSortBy,
+  setSortOptions,
+  isMobile,
 }: MarketsListFiltersProps) => (
   <div className={Styles.Filters}>
     <div
@@ -29,9 +33,7 @@ const MarketsListFilters = ({
       <RadioBarGroup
         radioButtons={SORT_OPTIONS}
         defaultSelected={marketSort}
-        onChange={(value: string) => {
-          updateMarketsSortBy(value);
-        }}
+        onChange={(value: string) => isMobile ? setSortOptions(value) : updateMarketsSortBy(value)}
       />
     </div>
   </div>

@@ -31,7 +31,6 @@ import {
   formatGasCostToEther,
   formatDai,
   formatEther,
-  formatDaiEstimate,
 } from 'utils/format-number';
 import { NewMarket, FormattedNumber } from 'modules/types';
 
@@ -48,7 +47,6 @@ interface ReviewProps {
   availableDaiFormatted: FormattedNumber;
   estimateSubmitNewMarket: Function;
   GsnEnabled: boolean;
-  ethToDaiRate: BigNumber;
   setDisableCreate: Function;
   showAddFundsModal: Function;
 }
@@ -204,12 +202,7 @@ export default class Review extends React.Component<
           (err, gasEstimateValue) => {
             if (err) console.error(err);
             const gasCost = GsnEnabled
-            ? formatDaiEstimate(formatGasCostToEther(
-                gasEstimateValue,
-                { decimalsRounded: 4 },
-                gasPrice,
-              )
-            )
+            ? gasEstimateValue
             : formatEtherEstimate(formatGasCostToEther(
                 gasEstimateValue,
                 { decimalsRounded: 4 },
@@ -239,15 +232,14 @@ export default class Review extends React.Component<
       availableDaiFormatted,
       availableRepFormatted,
       GsnEnabled,
-      ethToDaiRate,
       showAddFundsModal,
+      setDisableCreate,
     } = this.props;
     const s = this.state;
 
     const {
       categories,
       marketType,
-      description,
       detailsText,
       designatedReporterType,
       designatedReporterAddress,
@@ -261,24 +253,24 @@ export default class Review extends React.Component<
       endTimeFormatted,
       timezone,
       template,
+      initialLiquidityGas,
     } = newMarket;
-
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
     const initialLiquidity = s.formattedInitialLiquidityGas ? s.formattedInitialLiquidityGas.value : 0;
 
     // Initial liquidity Gas in DAI
-    const initialLiquidityGasInDai = displayGasInDai(createBigNumber(initialLiquidity), ethToDaiRate);
+    const initialLiquidityGasInDai = displayGasInDai(initialLiquidityGas);
 
     // Total Gas in ETH
     const totalEth = formatEther(createBigNumber(initialLiquidity).plus(createBigNumber(s.gasCost ? s.gasCost.value : 0)));
 
     // Total Gas in DAI
-    const totalGasInDai = displayGasInDai(totalEth.value, ethToDaiRate);
+    const totalGasInDai = displayGasInDai(createBigNumber(initialLiquidityGas).plus(createBigNumber(s.gasCost ? s.gasCost : 0)));
 
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];
     const noDai = s.insufficientFunds[DAI];
-    this.props.setDisableCreate(noEth || noRep || noDai);
+    setDisableCreate(noEth || noRep || noDai);
     const resolutionDetails = template ? buildResolutionDetails(detailsText, template.resolutionRules) : detailsText;
     return (
       <div className={classNames(Styles.Review, {[Styles.Scalar]: marketType === SCALAR, [Styles.Categorical]: marketType === CATEGORICAL})}>
@@ -346,7 +338,7 @@ export default class Review extends React.Component<
                 label={"Initial Liquidity"}
                 value={s.formattedInitialLiquidityDai.formattedValue + " DAI"}
               />
-              {GsnEnabled && ethToDaiRate && <LinearPropertyLabelTooltip
+              {GsnEnabled && <LinearPropertyLabelTooltip
                 label={'Transaction Fee'}
                 value={initialLiquidityGasInDai + ' DAI'}
               />}

@@ -63,8 +63,8 @@ function updateBalances(
     const eth = amounts[2];
     const legacyAttoRep = amounts[3].toString();
     const legacyAttoRepNonSafe = amounts[4].toString();
+    const rep = formatAttoRep(attoRep).roundedValue?.toNumber();
     const ethNonSafe = amounts[5];
-    const rep = formatAttoRep(attoRep).value;
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const legacyRepNonSafe = formatAttoRep(legacyAttoRepNonSafe).value;
     dispatch(addedDaiEvent(dai));

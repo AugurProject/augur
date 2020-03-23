@@ -32,7 +32,7 @@ export enum TransactionStatus {
   FEE_TOO_LOW,
 }
 
-export type TransactionStatusCallback = (transaction: TransactionMetadata, status: TransactionStatus, hash?: string) => void;
+export type TransactionStatusCallback = (transaction: TransactionMetadata, status: TransactionStatus, hash?: string, reason?: string) => void;
 
 export interface TransactionMetadataParams {
   [paramName: string]: any;
@@ -153,9 +153,9 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     Object.keys(this.transactionStatusCallbacks).map((key) => this.deRegisterTransactionStatusCallback(key));
   }
 
-  onTransactionStatusChanged(txMetadata: TransactionMetadata, status: TransactionStatus, hash?: string): void {
+  onTransactionStatusChanged(txMetadata: TransactionMetadata, status: TransactionStatus, hash?: string, reason?: string): void {
     for (const callback of Object.values(this.transactionStatusCallbacks)) {
-      callback(txMetadata, status, hash);
+      callback(txMetadata, status, hash, reason);
     }
   }
 

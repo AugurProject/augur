@@ -15,7 +15,8 @@ import CoreProperties from 'modules/market/components/core-properties/core-prope
 import {
   WordTrail,
   MarketTypeLabel,
-  TemplateShield, RedFlag,
+  TemplateShield,
+  RedFlag,
 } from 'modules/common/labels';
 import makeQuery from 'modules/routes/helpers/make-query';
 import {
@@ -24,6 +25,7 @@ import {
   SCALAR,
   PROBABLE_INVALID_MARKET,
   HEADER_TYPE,
+  REPORTING_STATE,
 } from 'modules/common/constants';
 import MarketHeaderReporting from 'modules/market/containers/market-header-reporting';
 import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
@@ -125,8 +127,7 @@ export default class MarketHeader extends Component<
             className.includes('market-header-styles_ExpandedContent')
         );
       if (!ClickedOnExpandedContent) this.toggleReadMore(true);
-
-    }
+    };
     window.addEventListener('click', clickHandler);
     this.setState({ clickHandler });
   }
@@ -324,7 +325,11 @@ export default class MarketHeader extends Component<
                 {preview ? (
                   <PreviewMarketTitle market={market} />
                 ) : (
-                  <MarketTitle id={market.marketId} noLink headerType={HEADER_TYPE.H1} />
+                  <MarketTitle
+                    id={market.marketId}
+                    noLink
+                    headerType={HEADER_TYPE.H1}
+                  />
                 )}
                 {market.mostLikelyInvalid ? (
                   <div className={Styles.ResolvingInvalid}>
@@ -394,16 +399,18 @@ export default class MarketHeader extends Component<
                     showExtraDetailsChevron={showProperties}
                   />
                 )}
-                <button
-                  onClick={e => {
-                    e.stopPropagation();
-                    this.toggleShowProperties();
-                  }}
-                >
-                  {!showProperties
-                    ? ChevronDown
-                    : ChevronUp}
-                </button>
+                {market.reportingState === REPORTING_STATE.PRE_REPORTING && (
+                  <button
+                    onClick={e => {
+                      e.stopPropagation();
+                      this.toggleShowProperties();
+                    }}
+                  >
+                    {!showProperties
+                      ? ChevronDown
+                      : ChevronUp}
+                  </button>
+                )}
               </div>
               {showTutorialData && (
                 <TutorialPopUp

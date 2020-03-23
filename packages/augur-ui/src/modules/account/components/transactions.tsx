@@ -25,7 +25,7 @@ interface TransactionsProps {
   addFunds: Function;
   legacyRepFaucet: Function;
   fundGsnWallet: Function;
-  signingWallet: string;
+  targetAddress: string;
   signingEth: number;
   gsnCreated: boolean;
   localLabel: string;
@@ -40,7 +40,7 @@ export const Transactions = ({
   daiFaucet,
   legacyRepFaucet,
   fundGsnWallet,
-  signingWallet,
+  targetAddress,
   signingEth,
   gsnCreated,
   localLabel
@@ -73,7 +73,7 @@ export const Transactions = ({
             />
             <AccountAddressDisplay
               copyable
-              address={signingWallet ? toChecksumAddress(signingWallet) : 'loading...'}
+              address={targetAddress ? toChecksumAddress(targetAddress) : 'loading...'}
             />
           </div>
         )}

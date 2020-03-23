@@ -7,7 +7,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'store';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { MODAL_ADD_FUNDS, MODAL_TEST_BET, HELP_CENTER_ADD_FUNDS} from 'modules/common/constants';
+import { MODAL_ADD_FUNDS, MODAL_AUGUR_P2P, HELP_CENTER_ADD_FUNDS } from 'modules/common/constants';
 import { OnboardingPaymentIcon } from 'modules/common/icons';
 import { BUY_DAI, track } from 'services/analytics/helpers';
 
@@ -17,7 +17,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   addFunds: callback =>
     dispatch(updateModal({ type: MODAL_ADD_FUNDS, cb: callback })),
-  testBet: () => dispatch(updateModal({ type: MODAL_TEST_BET })),
+  showAugurP2PModal: () =>
+    dispatch(updateModal({ type: MODAL_AUGUR_P2P })),
   track: (eventName, payload) => dispatch(track(eventName, payload))
 });
 
@@ -40,13 +41,13 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     {
       text: 'Add Dai',
       action: () => {
-        dP.addFunds(() => setTimeout(() => dP.testBet()));
+        dP.addFunds(() => setTimeout(() => dP.showAugurP2PModal()));
       },
     },
     {
       text: 'Do it later',
       action: () => {
-        dP.testBet();
+        dP.showAugurP2PModal();
       },
     },
   ],

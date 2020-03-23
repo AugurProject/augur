@@ -309,7 +309,7 @@
         stroke: var(--color-secondary-action-outline);
         fill: none;
       }
-  
+
       > circle {
         fill: var(--color-primary-text);
       }
@@ -1392,6 +1392,7 @@ button.MaxDark {
       border: 0;
     }
 
+
     .CalendarMonth_1,
     .CalendarMonthGrid_1,
     .CalendarMonthGrid_1 {
@@ -1920,6 +1921,13 @@ button.MaxDark {
 
     > svg {
       display: none;
+    }
+  }
+
+  &.Disabled {
+    > button {
+      border: @size-1 solid var(--color-inactive-text);
+      color: var(--color-inactive-text);
     }
   }
 }

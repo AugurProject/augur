@@ -32,6 +32,7 @@ import {
   convertUnixToFormattedDate,
   minMarketEndTimeDay,
   startOfTomorrow,
+  timestampComponents,
 } from 'utils/format-date';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import {
@@ -355,6 +356,7 @@ interface DateTimeSelectorProps {
   condensedStyle?: boolean;
   isAfter: number;
   openTop?: boolean;
+  disabled?: boolean;
 }
 
 interface TimeSelectorParams {
@@ -436,7 +438,8 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
     uniqueKey,
     condensedStyle,
     isAfter,
-    openTop
+    openTop,
+    disabled
   } = props;
 
   const [dateFocused, setDateFocused] = useState(false);
@@ -467,6 +470,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           placeholder="Date"
           displayFormat="MMM D, YYYY"
           id="input-date"
+          readOnly={disabled !== undefined && disabled}
           onDateChange={(date: Moment) => {
             if (!date) return onChange('setEndTime', '');
             onChange('setEndTime', date.startOf('day').unix());
@@ -491,6 +495,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           hour={hour}
           minute={minute}
           meridiem={meridiem}
+          disabled={disabled}
           onChange={(label: string, value: number) => {
             onChange(label, value);
           }}
@@ -517,6 +522,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
         />
         <TimezoneDropdown
           openTop={openTop}
+          disabled={disabled}
           onChange={(offsetName: string, offset: number, timezone: string) => {
             const timezoneParams = { offset, timezone, offsetName };
             onChange('timezoneDropdown', timezoneParams);
@@ -527,10 +533,10 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
         />
       </span>
       {!condensedStyle &&
-        endTimeFormatted &&
-        hour &&
+        !!endTimeFormatted &&
+        !!hour &&
         hour !== '' &&
-        setEndTime && (
+        !!setEndTime && (
           <span>
             <div>
               <span>Converted to UTC-0:</span>
@@ -915,10 +921,12 @@ export const InputFactory = (props: InputFactoryProps) => {
           } else if (input.type === TemplateInputType.DROPDOWN_QUESTION_DEP) {
             if (value) {
               const list = input.inputDestValues[value];
-              const target = props.inputs.find(i => i.id === input.inputDestId);
-              if (target && list && list.length > 0) {
-                target.userInput = '';
-                target.values = list;
+              let targets = props.inputs.filter(i => input.inputDestIds.includes(i.id));
+              if (targets && list && list.length > 0) {
+                targets.forEach(target => {
+                  target.userInput = '';
+                  target.values = list;
+                })
               }
             }
           } else if (TemplateInputType.DROPDOWN) {
@@ -1076,9 +1084,24 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
     );
     setEndTimeFormatted(endTimeFormatted);
     if (hour !== null && minute !== null) {
-      if (input.type === TemplateInputType.DATETIME)
+      if (input.type === TemplateInputType.DATETIME) {
         userInput = endTimeFormatted.formattedUtc;
-      else userInput = String(endTimeFormatted.timestamp);
+      }
+      else {
+        const addHours = input.hoursAfterEst;
+        userInput = String(endTimeFormatted.timestamp);
+        const newEndTime = (addHours * 60 * 60) + endTimeFormatted.timestamp
+        const comps = timestampComponents(newEndTime, offset);
+        onChange('updateEventExpiration', {
+          setEndTime: comps.setEndTime,
+          hour: comps.hour,
+          minute: comps.minute,
+          meridiem: comps.meridiem,
+          offset,
+          offsetName,
+          timezone: offsetName,
+        });
+      }
     }
     template.inputs[props.input.id].userInputObject = {
       endTime,

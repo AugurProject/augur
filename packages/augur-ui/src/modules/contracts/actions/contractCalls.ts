@@ -325,8 +325,10 @@ export async function uniswapRepForEthRate(rep: BigNumber): Promise<BigNumber> {
   return new BigNumber(100);
 }
 
-export async function uniswapEthForDaiRate(wei: BigNumber): Promise<BigNumber> {
-  return new BigNumber(148);
+export function getEthForDaiRate(): BigNumber {
+  const { dependencies } = augurSdk.get();
+  const ethToDaiRate = dependencies.ethToDaiRate
+  return ethToDaiRate;
 }
 
 export async function uniswapDaiForEthRate(dai: BigNumber): Promise<BigNumber> {
@@ -507,8 +509,7 @@ export async function doInitialReportWarpSync_estimaetGas(report: doReportDisput
   return Augur.contracts.warpSync.doInitialReport_estimateGas(
     universe,
     payoutNumerators,
-    report.description,
-    createBigNumber(report.attoRepAmount || '0')
+    report.description
   );
 }
 
@@ -519,8 +520,7 @@ export async function doInitialReportWarpSync(report: doReportDisputeAddStake) {
   return Augur.contracts.warpSync.doInitialReport(
     universe,
     payoutNumerators,
-    report.description,
-    createBigNumber(report.attoRepAmount || '0')
+    report.description
   );
 }
 
@@ -883,7 +883,8 @@ export async function simulateTrade(
   maxPrice: BigNumber | string,
   displayAmount: BigNumber | string,
   displayPrice: BigNumber | string,
-  displayShares: BigNumber | string
+  displayShares: BigNumber | string,
+  address: string,
 ): Promise<SimulateTradeData> {
   const Augur = augurSdk.get();
   const tradeGroupId = generateTradeGroupId();
@@ -901,6 +902,7 @@ export async function simulateTrade(
     displayAmount: createBigNumber(displayAmount),
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
+    takerAddress: address,
   };
 
   return Augur.simulateTrade(params);
@@ -918,7 +920,8 @@ export async function simulateTradeGasLimit(
   maxPrice: BigNumber | string,
   displayAmount: BigNumber | string,
   displayPrice: BigNumber | string,
-  displayShares: BigNumber | string
+  displayShares: BigNumber | string,
+  address: string,
 ): Promise<BigNumber> {
   const Augur = augurSdk.get();
   const tradeGroupId = generateTradeGroupId();
@@ -936,6 +939,7 @@ export async function simulateTradeGasLimit(
     displayAmount: createBigNumber(displayAmount),
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
+    takerAddress: address,
   };
 
   return Augur.simulateTradeGasLimit(params);

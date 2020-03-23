@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 import { ButtonsRow, Title, AccountAddressDisplay } from 'modules/modal/common';
 import { formatRep, formatGasCostToEther } from 'utils/format-number';
-import { BigNumber } from 'utils/create-big-number';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { LoginAccount } from 'modules/types';
 import { ExternalLinkButton } from 'modules/common/buttons';
@@ -20,7 +19,6 @@ interface MigrateRepForm {
   loginAccount: LoginAccount;
   convertV1ToV2: Function;
   GsnEnabled: boolean;
-  ethToDaiRate: BigNumber;
   convertV1ToV2Estimate: Function;
   gasPrice: number;
   addPendingData: Function;
@@ -34,7 +32,6 @@ export const MigrateRep = (props: MigrateRepForm) => {
     loginAccount,
     GsnEnabled,
     convertV1ToV2Estimate,
-    ethToDaiRate,
     gasPrice,
     showForSafeWallet,
   } = props;
@@ -67,7 +64,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
           label={GsnEnabled ? 'Transaction Fee' : 'Gas Cost'}
           value={
             GsnEnabled
-              ? displayGasInDai(gasEstimate, ethToDaiRate)
+              ? displayGasInDai(gasLimit)
               : gasEstimate
           }
         />

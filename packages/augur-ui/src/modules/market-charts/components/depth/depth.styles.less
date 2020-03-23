@@ -49,7 +49,7 @@
     width: @size-24;
     height: @size-24;
     background: var(--color-secondary-action);
-    border: 1px solid var(--color-secondary-action-outline);
+    border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @border-radius-default;
     grid-row: span 2;
 
@@ -111,22 +111,22 @@
   :global {
     .hovered_tooltip_div {
       background-color: var(--color-module-background);
-      border: 1px solid var(--color-primary-text);
+      border: @size-1 solid var(--color-primary-text);
       border-radius: @border-radius-default 0 0 @border-radius-default;
-      border-right-width: 2px;
+      border-right-width: @size-2;
       color: var(--color-primary-text);
       display: flex;
-      flex: 1 113px;
+      flex: 1 @size-113;
       flex-flow: row nowrap;
-      height: 3.5rem;
+      height: @size-56;
       padding: 0 @size-4;
       justify-content: space-between;
     }
 
     .hovered_tooltip_div.flip {
-      border-left-width: 2px;
+      border-left-width: @size-2;
       border-radius: 0 @border-radius-default @border-radius-default 0;
-      border-right-width: 1px;
+      border-right-width: @size-1;
     }
 
     .hovered_tooltip_div.bids {
@@ -159,7 +159,7 @@
 
         flex: 1;
         line-height: @size-12;
-        margin-bottom: 0.125rem;
+        margin-bottom: @size-2;
         text-align: left;
         text-transform: uppercase;
       }
@@ -169,7 +169,7 @@
       }
 
       > div#cost_label {
-        margin-bottom: 0.25rem;
+        margin-bottom: @size-4;
       }
     }
 
@@ -177,7 +177,7 @@
       display: flex;
       flex: 0 0 auto;
       flex-flow: column nowrap;
-      margin-left: 0.5rem;
+      margin-left: @size-8;
 
       > div {
         .mono-9;
@@ -191,11 +191,11 @@
 
       > div#price_value {
         line-height: @size-18;
-        margin-top: 0.25rem;
+        margin-top: @size-4;
       }
 
       > div#cost_value {
-        margin-bottom: 0.25rem;
+        margin-bottom: @size-4;
       }
     }
 
@@ -245,7 +245,7 @@
 
     .tick-line {
       color: var(--color-secondary-action-outline);
-      stroke-width: 1px;
+      stroke-width: @size-1;
     }
 
     .tick-value {
@@ -359,6 +359,117 @@
 
       text {
         .mono-10-bold;
+      }
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .MarketOutcomeDepth__container {
+    > button {
+      display: none;
+    }
+
+    > span:first-of-type {
+      display: none;
+    }
+
+    > span:last-of-type {
+      display: none;
+    }
+
+    :global {
+      .hovered_tooltip_div.bids {
+        border-color: var(--color-negative-30);
+        border-right-color: var(--color-negative);
+      }
+
+      .hovered_tooltip_div.bids.flip {
+        border-left-color: var(--color-negative);
+        border-right-color:var(--color-negative-30);
+      }
+
+      .hovered_tooltip_div.asks {
+        border-color: var(--color-positive-30);
+        border-right-color: var(--color-positive);
+      }
+
+      .hovered_tooltip_div.asks.flip {
+        border-left-color: var(--color-positive);
+        border-right-color: var(--color-positive-30);
+      }
+
+      .asks {
+        color: var(--color-positive);
+        stroke: var(--color-positive);
+      }
+  
+      .bids {
+        color: var(--color-negative);
+        stroke: var(--color-negative);
+      }
+
+      .tick-line--midpoint {
+        stroke: var(--color-secondary-text);
+        stroke-dasharray: none;
+      }
+
+      .vertical-lines {
+        display: none;
+      }
+
+      .horizontal-lines {
+        stroke-dasharray: none;
+  
+        fill: none;
+        stroke: var(--color-secondary-action-outline);
+      }
+
+      .depth-line-bids {
+        fill: none;
+        stroke: var(--color-negative);
+        stroke-width: @size-2;
+      }
+  
+      .depth-line-asks {
+        fill: none;
+        stroke: var(--color-positive);
+        stroke-width: @size-2;
+      }
+
+      .filled-subtle-asks {
+        fill: var(--color-positive-15);
+        opacity: 1;
+      }
+  
+      .filled-subtle-bids {
+        fill: var(--color-negative-15);
+        opacity: 1;
+      }
+
+      .line .crosshair {
+        stroke-dasharray: none;
+      }
+    
+      .line .crosshair-bids {
+        stroke: var(--color-negative);
+      }
+  
+      .line .crosshair-asks {  
+        stroke: var(--color-positive);
+      }
+
+      #depth_y_ticks,
+      #depth-x-axis {
+        line {
+          display: none;
+        }
+  
+        text {
+          .mono-10-semi-bold;
+          fill: var(--color-secondary-text);
+        }
       }
     }
   }
