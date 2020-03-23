@@ -21,6 +21,7 @@ import {
   ZERO,
   CLAIM_ALL_TITLE,
   REDEEMSTAKE,
+  FORKANDREDEEM,
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -28,6 +29,7 @@ import { MarketReportClaimableContracts } from 'modules/types';
 import { disavowMarket } from 'modules/contracts/actions/contractCalls';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { TRANSACTIONS } from 'modules/routes/constants/views';
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -91,8 +93,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         let notice = undefined;
         let action = () => dP.redeemStake(redeemStakeOptions);
         let buttonText = 'Claim';
+        let queueName = REDEEMSTAKE;
+        let queueId = marketObj.contracts[0];
 
         if (isForking) {
+          queueName = null;
+          queueId = null;
           if (!market.disavowed) {
             buttonText = 'Disavow Market REP';
             notice =
@@ -106,6 +112,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           if (isForkingMarket) {
             buttonText = 'Release and Migrate REP';
             action = () => dP.redeemStake(redeemStakeOptions);
+            queueName = TRANSACTIONS;
+            queueId = FORKANDREDEEM;
             notice =
               marketTxCount > 1
                 ? `Forking market, releasing REP will take ${marketTxCount} Transactions and be sent to corresponding child universe`
@@ -120,8 +128,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           status: pending && pending.status,
           notice,
           marketTxCount,
-          queueName: REDEEMSTAKE,
-          queueId: marketObj.contracts[0],
+          queueName,
+          queueId,
           properties: [
             {
               label: 'Reporting stake',

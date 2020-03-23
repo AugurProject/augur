@@ -2224,6 +2224,15 @@ div.ButtonsRow:last-of-type {
   text-align: center;
 }
 
+@supports (-moz-appearance:none) {    
+  .Transactions {   
+    > div:first-of-type {
+      // firefox doesn't support overlay. need auto     
+      overflow-y: auto; 
+    }    
+  } 
+}
+
 .Transactions {
   .Container;
 

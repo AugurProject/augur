@@ -13,17 +13,30 @@ import {
   UPPER_FIXED_PRECISION_BOUND,
   ZERO,
   WALLET_STATUS_VALUES,
+  INVALID_OUTCOME_ID,
+  HELP_CENTER,
+  CREATEAUGURWALLET,
+  TRANSACTIONS,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/trading/components/confirm.styles.less';
-import { XIcon, ExclamationCircle, InformationIcon, QuestionIcon } from 'modules/common/icons';
-import { formatGasCostToEther, formatShares, formatDai } from 'utils/format-number';
+import {
+  XIcon,
+  ExclamationCircle,
+  InformationIcon,
+  QuestionIcon,
+} from 'modules/common/icons';
+import {
+  formatGasCostToEther,
+  formatShares,
+} from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { Trade } from 'modules/types';
-import { PrimaryButton } from 'modules/common/buttons';
+import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
 import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { TXEventName } from '@augurproject/sdk/src';
 
 interface MessageButton {
   action: Function;
@@ -35,6 +48,8 @@ interface Message {
   type: string;
   message: string;
   button?: MessageButton;
+  link?: string;
+  callback?: Function;
 }
 
 interface ConfirmProps {
@@ -56,6 +71,9 @@ interface ConfirmProps {
   initialLiquidity: boolean;
   initializeGsnWallet: Function;
   walletStatus: string;
+  selectedOutcomeId: number;
+  updateWalletStatus: Function;
+  sweepStatus: string;
 }
 
 interface ConfirmState {
@@ -84,10 +102,24 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableEth,
       availableDai,
       gsnUnavailable,
+      walletStatus,
+      sweepStatus,
     } = this.props;
     if (
-      JSON.stringify({side: trade.side, numShares: trade.numShares, limitPrice: trade.limitPrice}) !==
-      JSON.stringify({side: prevProps.trade.side, numShares: prevProps.trade.numShares, limitPrice: prevProps.trade.limitPrice}) ||
+      JSON.stringify({
+        side: trade.side,
+        numShares: trade.numShares,
+        limitPrice: trade.limitPrice,
+        numFills: trade.numFills,
+      }) !==
+        JSON.stringify({
+          side: prevProps.trade.side,
+          numShares: prevProps.trade.numShares,
+          limitPrice: prevProps.trade.limitPrice,
+          numFills: prevProps.trade.numFills,
+        }) ||
+      walletStatus !== prevProps.walletStatus ||
+      sweepStatus !== prevProps.sweepStatus ||
       gasPrice !== prevProps.gasPrice ||
       !createBigNumber(prevProps.availableEth).eq(
         createBigNumber(availableEth)
@@ -116,6 +148,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gsnUnavailable,
       initializeGsnWallet,
       walletStatus,
+      marketType,
+      selectedOutcomeId,
+      sweepStatus,
     } = props || this.props;
 
     const {
@@ -140,7 +175,17 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasCostDai = getGasInDai(gasLimit);
     }
 
+    if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
+      messages = {
+        header: null,
+        type: WARNING,
+        message: `Percentages are determind by denomination range, rounding may occur. `,
+        link: HELP_CENTER,
+      };
+    }
+
     if (
+      !isNaN(numTrades) && numTrades > 1 &&
       allowanceBigNumber &&
       createBigNumber(potentialDaiLoss.value).gt(allowanceBigNumber) &&
       !tradingTutorial
@@ -214,8 +259,20 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
+    // Show when GSN wallet initialization is successful
+    if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && sweepStatus === TXEventName.Success && !tradingTutorial && numFills === 0) {
+      messages = {
+        header: 'Confirmed',
+        type: WARNING,
+        message: 'You can now place your trade',
+        callback: () => {
+          this.props.updateWalletStatus();
+          this.clearErrorMessage();
+        }
+      };
+    }
     // Show if OpenOrder and GSN wallet still needs to be initialized
-    if (gsnUnavailable && walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && !tradingTutorial && numFills === 0) {
+    else if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && !tradingTutorial && numFills === 0) {
       messages = {
         header: '',
         type: WARNING,
@@ -223,7 +280,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         button: {
           text: 'Initialize Account',
           action: () => initializeGsnWallet(),
-        }
+        },
       };
     }
 
@@ -398,13 +455,15 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               value={potentialDaiLoss}
               showDenomination={true}
             />
-            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && numFills > 0 &&  (
-              <LinearPropertyLabel
-                label="Est. TX Fee"
-                value={gasCostDai}
-                showDenomination={true}
-              />
-            )}
+            {gasCostDai &&
+              gasCostDai.roundedValue.gt(0) > 0 &&
+              numFills > 0 && (
+                <LinearPropertyLabel
+                  label="Est. TX Fee"
+                  value={gasCostDai}
+                  showDenomination={true}
+                />
+              )}
           </div>
         )}
         {messages && (
@@ -415,12 +474,25 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
           >
             {messages.type === ERROR ? ExclamationCircle : InformationIcon}
             <span>{messages.header}</span>
-            <div>{messages.message}</div>
+            <div>
+              {messages.message}
+              {messages.link && (
+                <ExternalLinkButton
+                  URL={messages.link}
+                  label={'LEARN MORE'}
+                />
+              )}
+            </div>
             {messages.button && (
-              <PrimaryButton text={messages.button.text} action={messages.button.action} />
+              <ProcessingButton
+                text={messages.button.text}
+                action={messages.button.action}
+                queueName={TRANSACTIONS}
+                queueId={CREATEAUGURWALLET}
+              />
             )}
             {messages.type !== ERROR && !messages.button && (
-              <button onClick={this.clearErrorMessage}>{XIcon}</button>
+              <button onClick={messages.callback ? () => messages.callback() : this.clearErrorMessage}>{XIcon}</button>
             )}
           </div>
         )}

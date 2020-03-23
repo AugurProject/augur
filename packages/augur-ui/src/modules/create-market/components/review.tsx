@@ -255,7 +255,6 @@ export default class Review extends React.Component<
       template,
       initialLiquidityGas,
     } = newMarket;
-
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
     const initialLiquidity = s.formattedInitialLiquidityGas ? s.formattedInitialLiquidityGas.value : 0;
 
@@ -266,7 +265,7 @@ export default class Review extends React.Component<
     const totalEth = formatEther(createBigNumber(initialLiquidity).plus(createBigNumber(s.gasCost ? s.gasCost.value : 0)));
 
     // Total Gas in DAI
-    const totalGasInDai = displayGasInDai(initialLiquidityGas.plus(createBigNumber(s.gasCost ? s.gasCost : 0)));
+    const totalGasInDai = displayGasInDai(createBigNumber(initialLiquidityGas).plus(createBigNumber(s.gasCost ? s.gasCost : 0)));
 
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];

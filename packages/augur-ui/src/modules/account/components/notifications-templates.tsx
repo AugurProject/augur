@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   CountdownProgress,
   formatTime,
@@ -21,6 +21,7 @@ import {
 } from 'modules/common/constants';
 import MarketTitle from 'modules/market/containers/market-title';
 import { MarketReportingState } from '@augurproject/sdk/build';
+import classNames from 'classnames';
 
 interface BaseProps {
   market: MarketData;
@@ -32,6 +33,8 @@ interface BaseProps {
   buttonLabel: string;
   queueName?: string;
   queueId?: string;
+  hideCheckbox?: boolean;
+  checkCheckbox?: Function;
 }
 
 interface OpenOrdersResolvedMarketsTemplateProps extends BaseProps {
@@ -69,10 +72,6 @@ interface MostLikelyInvalidMarketsTemplateProps extends BaseProps {
   market: MarketData;
 }
 
-interface LiquidityDepletionTemplateProps extends BaseProps {
-  market: MarketData;
-}
-
 interface TemplateProps extends BaseProps {
   message: string;
 }
@@ -92,13 +91,14 @@ const Template = ({
   buttonLabel,
   queueName,
   queueId,
+  hideCheckbox,
 }: TemplateProps) => {
   const showCounter = market && notificationsWithCountdown.includes(type);
   return (
     <>
       <TemplateBody market={market} message={message} />
       <div
-        className={Styles.BottomRow}
+        className={classNames(Styles.BottomRow, {[Styles.HasCheckbox]: hideCheckbox})}
       >
         {showCounter && (
           <Counter type={type} market={market} />
@@ -289,17 +289,3 @@ export const MostLikelyInvalidMarketsTemplate = (
     />
   );
 };
-
-export const LiquidityDepletionTemplate = (
-  props: LiquidityDepletionTemplateProps
-) => {
-  const { description } = props.market;
-
-  return (
-    <Template
-      message={`The liquidity provided has been depleted for the market "${description}" no longer is passing the liquidity spread filter. Add more liquidity to have your market seen.`}
-      {...props}
-    />
-  );
-};
-

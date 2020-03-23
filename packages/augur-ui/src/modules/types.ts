@@ -271,6 +271,8 @@ export interface Notification {
   totalProceeds?: number;
   queueName?: string;
   queueId?: string;
+  hideCheckbox?: boolean;
+  hideNotification?: boolean;
 }
 
 export interface OrderStatus {

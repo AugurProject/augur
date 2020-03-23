@@ -512,10 +512,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       orderPrice === '' && orderQuantity === '' && orderDaiEstimate === '';
     const showTip = !hasHistory && orderEmpty;
     const showConfirm =
-      (!!trade &&
-        (trade.potentialDaiLoss && trade.potentialDaiLoss.value !== 0)) ||
-      (trade.orderShareProfit && trade.orderShareProfit.value !== 0) ||
-      (trade.sharesFilled && trade.sharesFilled.value !== 0);
+      !!trade &&
+      ((trade.potentialDaiLoss && trade.potentialDaiLoss.value !== 0) ||
+        (trade.orderShareProfit && trade.orderShareProfit.value !== 0) ||
+        (trade.sharesFilled && trade.sharesFilled.value !== 0));
     return (
       <section className={Styles.Wrapper}>
         <div>
@@ -596,6 +596,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               trade={trade}
               gasPrice={gasPrice}
               gasLimit={trade.gasLimit}
+              selectedOutcomeId={selectedOutcome.id}
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
               tradingTutorial={tradingTutorial}

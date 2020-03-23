@@ -667,7 +667,7 @@ export const SENDREPUTATION = 'SENDREPUTATION';
 export const CUSTOM = 'Custom';
 export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
-export const CREATEAUGURWALLET = 'FAUCET'; // actual transaction method call used when wallet is created
+export const CREATEAUGURWALLET = 'SWEEPINTEREST';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
@@ -851,8 +851,6 @@ export const CLAIM_REPORTING_FEES = 'claimReportingFees';
 export const UNSIGNED_ORDERS = 'unsignedOrders';
 export const PROCEEDS_TO_CLAIM = 'proceedsToClaim';
 export const MARKET_IS_MOST_LIKELY_INVALID = 'marketIsMostLikelyInvalid';
-export const MARKET_LIQUIDITY_DEPLETED = 'liquidityDepleted';
-export const MARKET_LIQUIDITY_DEPLETED_TITLE = 'liquidity spread filter - fail';
 
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
@@ -862,7 +860,6 @@ export const NOTIFICATION_TYPES = {
   [UNSIGNED_ORDERS]: UNSIGNED_ORDERS,
   [PROCEEDS_TO_CLAIM]: PROCEEDS_TO_CLAIM,
   [MARKET_IS_MOST_LIKELY_INVALID]: MARKET_IS_MOST_LIKELY_INVALID,
-  [MARKET_LIQUIDITY_DEPLETED]: MARKET_LIQUIDITY_DEPLETED,
 };
 
 // Account View - Timeframe selection options
@@ -1341,8 +1338,7 @@ export const HELP_CENTER = 'https://augur.gitbook.io/help-center/';
 export const HELP_CENTER_ADD_FUNDS = 'https://augur.gitbook.io/help-center/trading-ui-1/adding-funds';
 export const HELP_CENTER_HOW_TO_TRADE = 'https://augur.gitbook.io/help-center/market-creation-1/how-to-make-a-trade';
 export const HELP_CENTER_HOW_TO_DISPUTE = 'https://augur.gitbook.io/help-center/disputing-explained';
-// TODO update with GSN
-export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://augur.gitbook.io/help-center/trading-ui-1/logging-in#what-is-gnosis-safe';
+export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://augur.gitbook.io/help-center/trading-ui-1/signing-up#gas-station-network';
 export const HELP_CENTER_MIGRATE_REP = 'https://augur.gitbook.io/help-center/migrating-rep-v1-greater-than-v2';
 export const HELP_CENTER_PARTICIPATION_TOKENS = 'https://augur.gitbook.io/help-center/reporting-or-disputing-faq#what-are-participation-tokens';
 export const HELP_CENTER_INVALID_MARKETS = 'https://augur.gitbook.io/help-center/market-creation-1/trading-faq#what-does-invalid-mean';

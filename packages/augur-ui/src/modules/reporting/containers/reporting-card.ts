@@ -7,6 +7,7 @@ import { AppState } from 'appStore';
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe } = state;
   return {
+    isForking: universe.forkingInfo,
     isLogged: state.authStatus.isLogged && !universe.forkingInfo,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     disputingWindowEndTime:

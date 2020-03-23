@@ -1,4 +1,4 @@
-import { Notification } from "modules/types";
+import { Notification } from 'modules/types';
 
 export const UPDATE_READ_NOTIFICATIONS = 'UPDATE_READ_NOTIFICATIONS';
 

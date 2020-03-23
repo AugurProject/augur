@@ -201,7 +201,6 @@ export function timestampComponents(timestamp: number, offset: number = 0): Part
     hour = hour > 12 ? hour - 12 : hour;
     meridiem = 'PM'
   }
-
   return {
     setEndTime: timestamp,
     hour: String(hour),
