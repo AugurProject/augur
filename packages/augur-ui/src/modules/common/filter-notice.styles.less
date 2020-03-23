@@ -11,8 +11,8 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    border: 1px solid var(--color-secondary-action-outline);
-    border-radius: @size-6;
+    border: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: @border-radius-rounded;
     padding: @size-8 @size-16;
     width: 100%;
 
@@ -71,5 +71,62 @@
 
   rect, path {
     fill: var(--color-secondary-action);
+  }
+}
+
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .filterNotice {
+    > div {
+      border: @size-1 solid var(--color-error);
+      border-radius: @border-radius-default;
+      padding: @size-12 @size-16 @size-12 @size-6;
+      background: var(--color-module-background);
+
+      > span:first-of-type {
+        margin: 0 @size-6 0 0;
+      }
+
+      > span:last-of-type {
+        .text-12;
+
+        color: var(--color-primary-text);
+
+        > a {
+          .text-12-semi-bold;
+
+          color: var(--color-primary-text);
+
+          text-decoration-line: underline;
+          text-decoration-style: dotted;
+          text-decoration-color: var(--color-primary-text);
+        }
+      }
+    }
+  }
+
+  .invalid {
+    svg {
+      height: @size-20;
+      width: @size-20;
+      fill: var(--color-outcome-invalid);
+    }
+  
+    rect, path {
+      fill: var(--color-secondary-action);
+    }
+  }
+
+  .primary {
+    svg {
+      height: @size-20;
+      width: @size-20;
+      fill: var(--color-error);
+    }
+  
+    rect, path {
+      fill: var(--color-secondary-action);
+    }
   }
 }
