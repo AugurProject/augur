@@ -1,7 +1,6 @@
 import { useState, useReducer, createContext } from 'react';
 import { getTheme } from 'modules/app/actions/update-app-status';
 import { THEMES } from 'modules/common/constants';
-import { StaticLabelDropdown } from 'modules/common/selection';
 
 export const BETSLIP_OPTIONS = {
   0: { label: 'Betslip', emptyHeader: `Betslip is empty` },
@@ -49,10 +48,14 @@ const BETSLIP_ORDERS_ACTIONS = {
   CLEAR_ALL: 'CLEAR_ALL',
 };
 
+const MY_BETS_ACTIONS = {
+  ADD: 'ADD',
+  CASH_OUT: 'CASH_OUT',
+};
+
 const BETSLIP_ORDER_DEFAULT_STATE = {
   bettingTextValues: {},
   confirmationDetails: {},
-  orderCount: 0,
   orders: {},
 };
 
@@ -65,7 +68,6 @@ const MOCK_TEST_BETSLIP_ORDER_STATE = {
     wager: '30',
     fees: '1.50',
   },
-  orderCount: 3,
   orders: {
     '0x01': {
       description: 'CHICAGO BULLS vs BROOKLYN NETS, SPREAD',
@@ -101,6 +103,46 @@ const MOCK_TEST_BETSLIP_ORDER_STATE = {
   },
 };
 
+const MOCK_TEST_MY_BETS_STATE = {
+  '0x01': {
+    description: 'CHICAGO BULLS vs BROOKLYN NETS, SPREAD',
+    orders: [
+      {
+        outcome: 'Chicogo Bulls, +5',
+        odds: '-105',
+        wager: '10.00',
+        toWin: '9.52',
+        marketId: '0x01',
+        isOpen: true,
+        amountFilled: '10.00',
+      },
+      {
+        outcome: 'Brooklyn Nets, -5',
+        odds: '+115',
+        wager: '10.00',
+        toWin: '19.52',
+        marketId: '0x01',
+        isOpen: true,
+        amountFilled: '10.00',
+      },
+    ],
+  },
+  '0x02': {
+    description: 'DALLAS MAVERICKS vs HOUSTON ROCKETS, SPREAD',
+    orders: [
+      {
+        outcome: 'Houston Rockets, -8.5',
+        odds: '-110',
+        wager: '10.00',
+        toWin: '9.09',
+        marketId: '0x02',
+        isOpen: true,
+        amountFilled: '10.00',
+      },
+    ],
+  },
+};
+
 function betslipOrdersReducer(state, action) {
   const {
     ADD,
@@ -123,7 +165,6 @@ function betslipOrdersReducer(state, action) {
       if (market.orders.length === 0) {
         delete updatedState.orders[marketId];
       }
-      updatedState.orderCount--;
       return updatedState;
     }
     case MODIFY: {
@@ -143,7 +184,25 @@ function betslipOrdersReducer(state, action) {
     case CLEAR_ALL:
       return BETSLIP_ORDER_DEFAULT_STATE;
     default:
-      throw new Error('invalid dispatch to betslipOrdersReducer');
+      throw new Error(
+        `invalid dispatch to betslipOrdersReducer, ${action.type}`
+      );
+  }
+}
+
+function myBetsReducer(state, action) {
+  const { ADD, CASH_OUT } = MYBETS_ACTIONS;
+  switch (action.type) {
+    case ADD: {
+      console.log(ADD, action.marketId, action.description, action.order);
+      return state;
+    }
+    case CASH_OUT: {
+      console.log(CASH_OUT, action.marketId, action.orderId);
+      return state;
+    }
+    default:
+      throw new Error(`invalid dispatch to myBetsReducer, ${action.type}`);
   }
 }
 
@@ -161,12 +220,18 @@ export const useSelected = (defaultSelected = { header: 0, subHeader: 0 }) => {
     toggleHeaderSelected: selectedClicked => {
       const isSports = getTheme() === THEMES.SPORTS;
       if (selectedClicked === nextSelection)
-        setSelected({ subHeader: isSports ? 1 : selected.subHeader, header: nextSelection });
+        setSelected({
+          subHeader: isSports ? 1 : selected.subHeader,
+          header: nextSelection,
+        });
     },
     toggleSubHeaderSelected: selectedClicked => {
       const isSports = getTheme() === THEMES.SPORTS;
       if (selectedClicked === nextSubSelection)
-        setSelected({ ...selected, subHeader: isSports ? 1 : nextSubSelection });
+        setSelected({
+          ...selected,
+          subHeader: isSports ? 1 : nextSubSelection,
+        });
     },
   };
 };
@@ -200,12 +265,25 @@ export const useBetslipAmounts = (
 
 export const useBetslip = (
   selected,
-  defaultState = MOCK_TEST_BETSLIP_ORDER_STATE
+  ordersState = MOCK_TEST_BETSLIP_ORDER_STATE,
+  myBetsState = MOCK_TEST_MY_BETS_STATE,
 ) => {
-  const [state, dispatch] = useReducer(betslipOrdersReducer, defaultState);
+  const [ordersInfo, ordersDispatch] = useReducer(
+    betslipOrdersReducer,
+    ordersState
+  );
+  const [myBets, myBetsDispatch] = useReducer(myBetsReducer, myBetsState);
+  let initialBetslipAmount = 0;
+  let initialMyBetsAmount = 0;
+  for (const market in ordersInfo.orders) {
+    initialBetslipAmount += ordersInfo.orders[market].orders.length;
+  }
+  for (const market in myBets) {
+    initialMyBetsAmount += myBets[market].orders.length;
+  }
   const betslipAmounts = useBetslipAmounts(selected, {
-    betslipAmount: state.orderCount,
-    myBetsAmount: 0,
+    betslipAmount: initialBetslipAmount,
+    myBetsAmount: initialMyBetsAmount,
   });
   const {
     ADD,
@@ -217,29 +295,41 @@ export const useBetslip = (
   } = BETSLIP_ORDERS_ACTIONS;
 
   return {
-    ordersInfo: state,
+    ordersInfo,
     ordersActions: {
       addOrder: (marketId, description, order) => {
-        dispatch({ type: ADD, marketId, description, order });
+        ordersDispatch({ type: ADD, marketId, description, order });
         betslipAmounts.incBetslipAmount();
       },
       removeOrder: (marketId, orderId) => {
-        dispatch({ type: REMOVE, marketId, orderId });
+        ordersDispatch({ type: REMOVE, marketId, orderId });
         betslipAmounts.decBetslipAmount();
       },
       modifyOrder: (marketId, order) => {
-        dispatch({ type: MODIFY, marketId, order });
+        ordersDispatch({ type: MODIFY, marketId, order });
       },
       sendOrder: (marketId, orderId) => {
-        dispatch({ type: SEND, marketId, orderId });
+        ordersDispatch({ type: SEND, marketId, orderId });
       },
       sendAllOrders: () => {
-        dispatch({ type: SEND_ALL });
+        ordersDispatch({ type: SEND_ALL });
       },
       cancelAllOrders: () => {
-        dispatch({ type: CLEAR_ALL });
+        ordersDispatch({ type: CLEAR_ALL });
         betslipAmounts.clearBetslipAmount();
       },
+    },
+    myBets,
+    myBetsActions: {
+      addBet: (marketId, description, order) => {
+        myBetsDispatch({ type: MY_BETS_ACTIONS.ADD, marketId, description, order });
+        betslipAmounts.incMyBetslipAmount();
+      },
+      cashOutBet: (marketId, orderId) => {
+        myBetsDispatch({ type: MY_BETS_ACTIONS.CASH_OUT, marketId, orderId });
+        betslipAmounts.decMyBetslipAmount();
+        // TODO: this will need to be updated to wait on transaction/update status
+      }
     },
     ...betslipAmounts,
   };

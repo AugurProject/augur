@@ -268,6 +268,33 @@
     border-bottom-right-radius: @border-radius-rounded;
     padding: @size-12;
 
+    > a {
+      .text-10-semi-bold;
+
+      border: 0;
+      color: var(--color-primary-text);
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      padding-left: @size-8;
+      grid-column: span 2;
+
+      > svg {
+        width: @size-8;
+        height: @size-10;
+        transform: rotate(-.25turn);
+
+        > path {
+          fill: var(--color-primary-text);
+        }
+      }
+
+      > span {
+        margin-left: @size-6;
+        text-transform: uppercase;
+      }
+    }
+
     > div {
       grid-column: span 2;
     }

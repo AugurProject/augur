@@ -1,8 +1,11 @@
 import React, { useContext, useState } from 'react';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
+import makePath from 'modules/routes/helpers/make-path';
 
 import { SecondaryButton, PrimaryButton } from 'modules/common/buttons';
-import { Ticket, Trash } from 'modules/common/icons';
+import { Ticket, Trash, ThickChevron } from 'modules/common/icons';
+import { MY_POSITIONS } from 'modules/routes/constants/views';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import {
   SelectedContext,
@@ -201,6 +204,7 @@ export const MyBetsSubheader = ({ toggleSelected }) => {
 };
 
 export const BetslipFooter = ({ betslipInfo, setStep }) => {
+  const { header } = useContext(SelectedContext);
   const step = useContext(BetslipStepContext);
   const { ordersInfo, ordersActions } = betslipInfo;
   const { bettingTextValues, confirmationDetails } = ordersInfo;
@@ -210,51 +214,62 @@ export const BetslipFooter = ({ betslipInfo, setStep }) => {
   const win = formatDai(potential).full;
 
   return (
-    <footer className={Styles.BetslipFooter}>
-      {step !== 0 && (
-        <div>
-          <LinearPropertyLabel
-            label="Total Wager"
-            value={formatDai(wager)}
-            useFull
-            highlight
+    <footer
+      className={Styles.BetslipFooter}
+    >
+      {header === 0 ? (
+        <>
+          {step !== 0 && (
+            <div>
+              <LinearPropertyLabel
+                label="Total Wager"
+                value={formatDai(wager)}
+                useFull
+                highlight
+              />
+              <LinearPropertyLabel
+                label="Estimated Total Fees"
+                value={formatDai(fees)}
+                useFull
+                highlight
+              />
+            </div>
+          )}
+          {step !== 1 && (
+            <span>
+              {`You're Betting `}
+              <b>{bet}</b>
+              {` and will win `}
+              <b>{win}</b>
+              {` if you win`}
+            </span>
+          )}
+          <SecondaryButton
+            text="Cancel Bets"
+            action={() => {
+              ordersActions.cancelAllOrders();
+              setStep(0);
+            }}
+            icon={Trash}
           />
-          <LinearPropertyLabel
-            label="Estimated Total Fees"
-            value={formatDai(fees)}
-            useFull
-            highlight
+          <PrimaryButton
+            text={step === 0 ? 'Place Bets' : 'Confirm Bets'}
+            action={() => {
+              if (step === 0) {
+                setStep(1);
+              } else {
+                ordersActions.sendAllOrders();
+                setStep(0);
+              }
+            }}
           />
-        </div>
+        </>
+      ) : (
+        <Link to={makePath(MY_POSITIONS)}>
+          {ThickChevron}
+          <span>View All Bets</span>
+        </Link>
       )}
-      {step !== 1 && (
-        <span>
-          {`You're Betting `}
-          <b>{bet}</b>
-          {` and will win `}
-          <b>{win}</b>
-          {` if you win`}
-        </span>
-      )}
-      <SecondaryButton
-        text="Cancel Bets"
-        action={() => {
-          ordersActions.cancelAllOrders();
-          setStep(0);
-        }}
-        icon={Trash}
-      />
-      <PrimaryButton
-        text={step === 0 ? 'Place Bets' : 'Confirm Bets'}
-        action={() => {
-          if (step === 0) {
-            setStep(1);
-          } else {
-            ordersActions.sendAllOrders();
-            setStep(0);
-          }
-        }}
-      />
     </footer>
   );
 };
