@@ -804,10 +804,10 @@ export class ReportingBondsView extends Component<
     ) {
       buttonDisabled = true;
     }
-    let insufficientDai = false;
+    let insufficientFunds = false;
     if (userFunds.lt(createBigNumber(gasEstimate))) {
       buttonDisabled = true;
-      insufficientDai = true;
+      insufficientFunds = true;
     }
 
     let insufficientRep = '';
@@ -881,8 +881,8 @@ export class ReportingBondsView extends Component<
                 : `${displayGasInDai(gasEstimate)} ETH`
             }
           />
-          {insufficientDai && (
-            <span className={FormStyles.ErrorText}>Insufficient DAI</span>
+          {insufficientFunds && (
+            <span className={FormStyles.ErrorText}>Insufficient Funds to complete transaction</span>
           )}
         </div>
 
