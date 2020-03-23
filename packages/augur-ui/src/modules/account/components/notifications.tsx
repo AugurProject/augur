@@ -20,7 +20,7 @@ import {
   DisputeTemplate,
   ClaimReportingFeesTemplate,
   UnsignedOrdersTemplate,
-  ProceedsToClaimTemplate, MostLikelyInvalidMarketsTemplate, LiquidityDepletionTemplate,
+  ProceedsToClaimTemplate, MostLikelyInvalidMarketsTemplate,
 } from "modules/account/components/notifications-templates";
 
 import { Notification, DateFormattedObject, QueryEndpoints } from "modules/types";

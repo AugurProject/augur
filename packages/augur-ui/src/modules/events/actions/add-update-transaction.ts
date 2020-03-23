@@ -47,7 +47,6 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   TRADINGPROCEEDSCLAIMED,
   MIGRATEOUTBYPAYOUT,
   FORKANDREDEEM,
-  CLAIMMARKETSPROCEEDS
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
@@ -134,10 +133,10 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     switch (methodCall) {
       case REDEEMSTAKE: {
         const params = transaction.params;
-        params._reportingParticipants.map(participant => 
+        params._reportingParticipants.map(participant =>
           dispatch(addPendingData(participant, REDEEMSTAKE, eventName, hash, {...transaction}))
         );
-        params._disputeWindows.map(window => 
+        params._disputeWindows.map(window =>
           dispatch(addPendingData(window, REDEEMSTAKE, eventName, hash, {...transaction}))
         );
         break;
