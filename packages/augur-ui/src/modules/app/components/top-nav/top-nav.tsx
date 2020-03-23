@@ -15,16 +15,11 @@ import { helpIcon, Dot } from 'modules/common/icons';
 import {
   TRANSACTIONS,
   MIGRATE_FROM_LEG_REP_TOKEN,
-<<<<<<< HEAD
   CREATEAUGURWALLET
-} from 'modules/common/constants';
-
-=======
 } from 'modules/common/constants';
 import {
   CREATE_MARKET
 } from 'modules/routes/constants/views';
->>>>>>> master
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 
 interface TopNavProps {
@@ -81,11 +76,7 @@ const TopNav = ({
             );
           }
           return (
-<<<<<<< HEAD
             <Fragment key={item.title}>
-=======
-            <Fragment key={index}>
->>>>>>> master
               {index === SPREAD_INDEX && (
                 <li key='fill-space' className={Styles.FillSpace} />
               )}

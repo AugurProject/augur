@@ -250,12 +250,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
               )}
             </div>
             <div>
-              $
-              {getGasCostInDai(
-                ethToDaiRate,
-                createBigNumber(userDefinedGasPrice).toNumber()
-              )}{' '}
-              / Trade ({gasPriceSpeed} {gasPriceTime})
+              {gasCostTrade} / Trade ({gasPriceSpeed} {gasPriceTime})
             </div>
           </div>
           {/* <SecondaryButton

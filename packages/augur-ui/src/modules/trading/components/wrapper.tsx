@@ -455,11 +455,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       trade.costInDai &&
       createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
 
-<<<<<<< HEAD
-=======
     const isOpenOrder = trade && trade.numFills === 0;
 
->>>>>>> master
     let actionButton: any = (
       <OrderButton
         type={selectedNav}
@@ -484,11 +481,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           }
         }}
         disabled={
-<<<<<<< HEAD
-          !trade || !trade.limitPrice || gsnUnavailable || insufficientFunds
-=======
           !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds
->>>>>>> master
         }
       />
     );
