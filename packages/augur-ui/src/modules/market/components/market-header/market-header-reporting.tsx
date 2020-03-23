@@ -56,8 +56,8 @@ export const MarketHeaderReporting = ({
             text={PROCEEDS_TO_CLAIM_TITLE}
             action={() => claimMarketsProceeds([id])}
             disabled={!isLogged || !canClaimProceeds}
-            queueName={TRANSACTIONS}
-            queueId={CLAIMMARKETSPROCEEDS}
+            queueName={CLAIMMARKETSPROCEEDS}
+            queueId={id}
           />
         )}
       </div>
