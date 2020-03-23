@@ -29,8 +29,6 @@ import {
   TRANSACTIONS,
   SUBMIT_REPORT,
   CLAIMMARKETSPROCEEDS,
-  MARKET_LIQUIDITY_DEPLETED_TITLE,
-  TYPE_ADD_LIQUIDITY,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'store';
@@ -66,21 +64,6 @@ export const selectMostLikelyInvalidMarkets = createSelector(
           market.mostLikelyInvalid
       )
       .filter(market => userOpenOrders(market.id).length > 0)
-      .map(getRequiredMarketData);
-  }
-);
-
-export const selectLiquidityDepletedMarkets = createSelector(
-  selectMarkets,
-  selectLoginAccountAddress,
-  (markets, address) => {
-    return markets
-      .filter(
-        market =>
-          market.author === address &&
-          !market.passDefaultLiquiditySpread &&
-          market.reportingState === REPORTING_STATE.PRE_REPORTING
-      )
       .map(getRequiredMarketData);
   }
 );
@@ -206,7 +189,6 @@ export const selectNotifications = createSelector(
   selectReportingWinningsByMarket,
   selectUnsignedOrders,
   selectMostLikelyInvalidMarkets,
-  selectLiquidityDepletedMarkets,
   selectReadNotificationState,
   (
     reportOnMarkets,
@@ -215,7 +197,6 @@ export const selectNotifications = createSelector(
     claimReportingFees,
     unsignedOrders,
     mostLikelyInvalidMarkets,
-    liquidityDepleted,
     readNotifications
   ): Notification[] => {
     // Generate non-unquie notifications
@@ -239,10 +220,6 @@ export const selectNotifications = createSelector(
       mostLikelyInvalidMarkets,
       NOTIFICATION_TYPES.marketIsMostLikelyInvalid
     );
-    const liquidityDepletedNotifications = generateCards(
-      liquidityDepleted,
-      NOTIFICATION_TYPES.liquidityDepleted
-    );
     // Add non unquie notifications
     let notifications = [
       ...reportOnMarketsNotifications,
@@ -250,7 +227,6 @@ export const selectNotifications = createSelector(
       ...marketsInDisputeNotifications,
       ...unsignedOrdersNotifications,
       ...mostLikelyInvalidMarketsNotifications,
-      ...liquidityDepletedNotifications,
     ];
 
     // Add unquie notifications
@@ -302,7 +278,6 @@ export const selectNotifications = createSelector(
         );
         if (storedNotification) {
           notification.isNew = storedNotification.isNew;
-          notification.isChecked = storedNotification.isChecked;
           notification.hideNotification = storedNotification.hideNotification;
         }
         return notification;
@@ -383,15 +358,6 @@ const generateCards = (markets, type) => {
       isNew: true,
       title: MARKET_IS_MOST_LIKELY_INVALID_TITLE,
       buttonLabel: TYPE_VIEW_DETAILS,
-    };
-  } else if (type === NOTIFICATION_TYPES.liquidityDepleted) {
-    defaults = {
-      type,
-      isImportant: false,
-      isNew: true,
-      title: MARKET_LIQUIDITY_DEPLETED_TITLE,
-      buttonLabel: TYPE_ADD_LIQUIDITY,
-      hideCheckbox: true,
     };
   }
 

@@ -272,7 +272,6 @@ export interface Notification {
   queueName?: string;
   queueId?: string;
   hideCheckbox?: boolean;
-  isChecked?: boolean;
   hideNotification?: boolean;
 }
 

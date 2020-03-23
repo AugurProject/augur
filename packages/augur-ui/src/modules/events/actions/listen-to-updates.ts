@@ -39,9 +39,6 @@ const EVENTS = {
   [SubscriptionEventName.UniverseForked]: wrapLogHandler(
     handleUniverseForkedLog
   ),
-  [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
-    handleMarketsUpdatedLog
-  ),
   [SubscriptionEventName.ReportingStateChanged]: wrapLogHandler(
     handleReportingStateChanged
   ),
