@@ -65,7 +65,7 @@
     tweetnacl "^1.0.1"
     tweetnacl-util "^0.15.0"
 
-"3id-blockchain-utils@^0.3.3":
+"3id-blockchain-utils@^0.3.2", "3id-blockchain-utils@^0.3.3":
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/3id-blockchain-utils/-/3id-blockchain-utils-0.3.3.tgz#4716830ae38978dde6117cff94c6607872d59a67"
   integrity sha512-BSufokzlyxM/35lNtSKupZid/v9YodIEYCk2W1TJwQ6SbqiOzZk+05Q0Jh2VKVYDhns/5S+oIcud6G2cEOGxlw==
