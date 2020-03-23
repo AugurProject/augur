@@ -15,6 +15,8 @@ import {
   WALLET_STATUS_VALUES,
   INVALID_OUTCOME_ID,
   HELP_CENTER,
+  CREATEAUGURWALLET,
+  TRANSACTIONS,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -28,13 +30,13 @@ import {
 import {
   formatGasCostToEther,
   formatShares,
-  formatDai,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { Trade } from 'modules/types';
-import { PrimaryButton, ExternalLinkButton } from 'modules/common/buttons';
+import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
 import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { TXEventName } from '@augurproject/sdk/src';
 
 interface MessageButton {
   action: Function;
@@ -47,6 +49,7 @@ interface Message {
   message: string;
   button?: MessageButton;
   link?: string;
+  callback?: Function;
 }
 
 interface ConfirmProps {
@@ -69,6 +72,8 @@ interface ConfirmProps {
   initializeGsnWallet: Function;
   walletStatus: string;
   selectedOutcomeId: number;
+  updateWalletStatus: Function;
+  sweepStatus: string;
 }
 
 interface ConfirmState {
@@ -97,18 +102,24 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableEth,
       availableDai,
       gsnUnavailable,
+      walletStatus,
+      sweepStatus,
     } = this.props;
     if (
       JSON.stringify({
         side: trade.side,
         numShares: trade.numShares,
         limitPrice: trade.limitPrice,
+        numFills: trade.numFills,
       }) !==
         JSON.stringify({
           side: prevProps.trade.side,
           numShares: prevProps.trade.numShares,
           limitPrice: prevProps.trade.limitPrice,
+          numFills: prevProps.trade.numFills,
         }) ||
+      walletStatus !== prevProps.walletStatus ||
+      sweepStatus !== prevProps.sweepStatus ||
       gasPrice !== prevProps.gasPrice ||
       !createBigNumber(prevProps.availableEth).eq(
         createBigNumber(availableEth)
@@ -139,6 +150,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       walletStatus,
       marketType,
       selectedOutcomeId,
+      sweepStatus,
     } = props || this.props;
 
     const {
@@ -173,6 +185,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     }
 
     if (
+      !isNaN(numTrades) && numTrades > 1 &&
       allowanceBigNumber &&
       createBigNumber(potentialDaiLoss.value).gt(allowanceBigNumber) &&
       !tradingTutorial
@@ -246,13 +259,20 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
+    // Show when GSN wallet initialization is successful
+    if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && sweepStatus === TXEventName.Success && !tradingTutorial && numFills === 0) {
+      messages = {
+        header: 'Confirmed',
+        type: WARNING,
+        message: 'You can now place your trade',
+        callback: () => {
+          this.props.updateWalletStatus();
+          this.clearErrorMessage();
+        }
+      };
+    }
     // Show if OpenOrder and GSN wallet still needs to be initialized
-    if (
-      gsnUnavailable &&
-      walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
-      !tradingTutorial &&
-      numFills === 0
-    ) {
+    else if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && !tradingTutorial && numFills === 0) {
       messages = {
         header: '',
         type: WARNING,
@@ -464,13 +484,15 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               )}
             </div>
             {messages.button && (
-              <PrimaryButton
+              <ProcessingButton
                 text={messages.button.text}
                 action={messages.button.action}
+                queueName={TRANSACTIONS}
+                queueId={CREATEAUGURWALLET}
               />
             )}
             {messages.type !== ERROR && !messages.button && (
-              <button onClick={this.clearErrorMessage}>{XIcon}</button>
+              <button onClick={messages.callback ? () => messages.callback() : this.clearErrorMessage}>{XIcon}</button>
             )}
           </div>
         )}
