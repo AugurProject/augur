@@ -14,6 +14,7 @@ import {
   SCALAR,
   YES_NO,
   PUBLICFILLORDER,
+  CREATEAUGURWALLET,
   BUYPARTICIPATIONTOKENS,
   MODAL_ERROR,
   MIGRATE_FROM_LEG_REP_TOKEN,
@@ -23,6 +24,7 @@ import {
   TRADINGPROCEEDSCLAIMED,
   CLAIMMARKETSPROCEEDS,
   FORKANDREDEEM,
+  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -38,6 +40,7 @@ import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { updateModal } from 'modules/modal/actions/update-modal';
+import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 
 const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
@@ -47,6 +50,7 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   TRADINGPROCEEDSCLAIMED,
   MIGRATEOUTBYPAYOUT,
   FORKANDREDEEM,
+  CREATEAUGURWALLET,
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
@@ -69,6 +73,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     if (ADD_PENDING_QUEUE_METHOD_CALLS.includes(methodCall)) {
       dispatch(addUpdatePendingTransaction(methodCall, eventName, blockchain.currentBlockNumber, hash, { ...transaction }));
     }
+
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 
@@ -103,6 +108,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       methodCall !== CANCELORDER &&
       methodCall !== PUBLICFILLORDER
     ) {
+
       if (
         methodCall === CREATEMARKET ||
         methodCall === CREATECATEGORICALMARKET ||

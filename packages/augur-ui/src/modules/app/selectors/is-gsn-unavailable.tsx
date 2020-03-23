@@ -15,7 +15,7 @@ export const isGSNUnavailable = createSelector(
     const gsnUnavailable =
       gsnEnabled &&
       isLogged &&
-      appStatus[WALLET_STATUS] !== WALLET_STATUS_VALUES.CREATED;
+      (appStatus[WALLET_STATUS] !== WALLET_STATUS_VALUES.CREATED);
 
     return gsnUnavailable;
   }
