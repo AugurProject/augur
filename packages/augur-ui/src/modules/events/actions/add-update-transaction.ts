@@ -49,7 +49,8 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BATCHCANCELORDERS,
   TRADINGPROCEEDSCLAIMED,
   MIGRATEOUTBYPAYOUT,
-  FORKANDREDEEM
+  FORKANDREDEEM,
+  CREATEAUGURWALLET,
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
@@ -107,9 +108,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       methodCall !== CANCELORDER &&
       methodCall !== PUBLICFILLORDER
     ) {
-      if (methodCall === CREATEAUGURWALLET) {
-        dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE_SUCCESS));
-      }
+
       if (
         methodCall === CREATEMARKET ||
         methodCall === CREATECATEGORICALMARKET ||

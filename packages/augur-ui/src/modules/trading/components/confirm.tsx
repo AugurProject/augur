@@ -16,7 +16,6 @@ import {
   INVALID_OUTCOME_ID,
   HELP_CENTER,
   CREATEAUGURWALLET,
-  CREATE_WALLET,
   TRANSACTIONS,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
@@ -31,13 +30,13 @@ import {
 import {
   formatGasCostToEther,
   formatShares,
-  formatDai,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { Trade } from 'modules/types';
-import { PrimaryButton, ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
+import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
 import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { TXEventName } from '@augurproject/sdk/src';
 
 interface MessageButton {
   action: Function;
@@ -74,6 +73,7 @@ interface ConfirmProps {
   walletStatus: string;
   selectedOutcomeId: number;
   updateWalletStatus: Function;
+  sweepStatus: string;
 }
 
 interface ConfirmState {
@@ -103,6 +103,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableDai,
       gsnUnavailable,
       walletStatus,
+      sweepStatus,
     } = this.props;
     if (
       JSON.stringify({
@@ -118,6 +119,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
           numFills: prevProps.trade.numFills,
         }) ||
       walletStatus !== prevProps.walletStatus ||
+      sweepStatus !== prevProps.sweepStatus ||
       gasPrice !== prevProps.gasPrice ||
       !createBigNumber(prevProps.availableEth).eq(
         createBigNumber(availableEth)
@@ -148,6 +150,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       walletStatus,
       marketType,
       selectedOutcomeId,
+      sweepStatus,
     } = props || this.props;
 
     const {
@@ -256,21 +259,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    // Show if OpenOrder and GSN wallet still needs to be initialized
-    if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && !tradingTutorial && numFills === 0) {
-      messages = {
-        header: '',
-        type: WARNING,
-        message: 'Initialization of your account is needed',
-        button: {
-          text: 'Initialize Account',
-          action: () => initializeGsnWallet(),
-        },
-      };
-    }
-
     // Show when GSN wallet initialization is successful
-    if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE_SUCCESS && !tradingTutorial && numFills === 0) {
+    if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && sweepStatus === TXEventName.Success && !tradingTutorial && numFills === 0) {
       messages = {
         header: 'Confirmed',
         type: WARNING,
@@ -279,6 +269,18 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
           this.props.updateWalletStatus();
           this.clearErrorMessage();
         }
+      };
+    }
+    // Show if OpenOrder and GSN wallet still needs to be initialized
+    else if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && !tradingTutorial && numFills === 0) {
+      messages = {
+        header: '',
+        type: WARNING,
+        message: 'Initialization of your account is needed',
+        button: {
+          text: 'Initialize Account',
+          action: () => initializeGsnWallet(),
+        },
       };
     }
 
