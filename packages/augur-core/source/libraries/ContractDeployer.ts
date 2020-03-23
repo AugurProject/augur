@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { BigNumber } from 'bignumber.js';
 import { readFile } from 'async-file';
-import { stringTo32ByteHex, resolveAll } from './HelperFunctions';
+import { stringTo32ByteHex, resolveAll, sleep } from './HelperFunctions';
 import { CompilerOutput } from 'solc';
 import {
   Augur,
@@ -227,10 +227,14 @@ Deploying to: ${env}
             await cash.faucet(cashAmount.multipliedBy(2));
             console.log('eth exchange mint');
             // We do this twice to get a store in place for the oracle storage to make future calls less expensive.
+            const address = await this.dependencies.getDefaultAddress();
             for (let i = 0; i < 2; i++) {
                 await cash.transfer(ethExchange.address, cashAmount);
+                await sleep(100);
                 await weth.transfer(ethExchange.address, ethAmount);
-                await ethExchange.mint(await this.dependencies.getDefaultAddress());
+                await sleep(100);
+                await ethExchange.mint(address);
+                await sleep(100);
             }
         }
 
