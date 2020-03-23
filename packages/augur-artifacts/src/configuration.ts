@@ -28,6 +28,7 @@ export interface SDKConfiguration {
     writeArtifacts?: boolean,
     externalAddresses?: ExternalAddresses,
   },
+  useWarpSync?: boolean,
   gsn?: {
     enabled: boolean,
   },
@@ -181,6 +182,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     contractInputPath: path.join(__dirname, 'contracts.json'),
     writeArtifacts: true,
   },
+  useWarpSync: false,
   gsn: {
     enabled: true
   },
@@ -256,21 +258,32 @@ export async function updateConfig(env: string, config: RecursivePartial<SDKConf
   return valid;
 }
 
-export async function writeConfig(env: string, config: SDKConfiguration): Promise<void> {
+export function serializeConfig(config: RecursivePartial<SDKConfiguration>): string {
   // Prefer not to save private key.
-  let configToSave = config;
+  let finalConfig = config;
   if (config.deploy?.privateKey && !config.deploy?.savePrivateKey) {
-    configToSave = deepCopy(config);
-    delete configToSave.deploy.privateKey;
+    finalConfig = deepCopy(config);
+    delete finalConfig.deploy.privateKey;
   }
+  // contractInputPath is ephemeral
+  if (config.deploy?.contractInputPath) {
+    delete finalConfig.deploy.contractInputPath;
+  }
+  return JSON.stringify(finalConfig, null, 2);
+}
 
+export async function writeConfig(env: string, config: SDKConfiguration): Promise<void> {
   await Promise.all(['src', 'build'].map(async (dir: string) => {
     const filepath = path.join(__dirname, '..', dir, 'environments', `${env}.json`);
-    await writeFile(filepath, JSON.stringify(configToSave, null, 2), 'utf8');
+    await writeFile(filepath, serializeConfig(config), 'utf8');
   }));
 
   // Now that config is changed on filesystem, reflect it in the runtime.
   environments[env] = config;
+}
+
+export function printConfig(config: RecursivePartial<SDKConfiguration>): void {
+  console.log(serializeConfig(config));
 }
 
 export function isValidConfig(suspect: RecursivePartial<SDKConfiguration>): suspect is SDKConfiguration {

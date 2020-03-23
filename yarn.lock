@@ -122,10 +122,10 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser-lite@^9.1.0":
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser-lite/-/mesh-browser-lite-9.1.0.tgz#15397d9eb19e7be05c47749cb3705e6e31787944"
-  integrity sha512-SpGolAuQZuytf6RWcGuYfmhN+rDhepMml3zeImnkHbYVSC5E0NBf6017m36If4nvqFbXS62Mrpv3elDjECvY9w==
+"@0x/mesh-browser-lite@^9.2.1":
+  version "9.2.1"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser-lite/-/mesh-browser-lite-9.2.1.tgz#24e7cd93528ed4371ca25200f09ba8f5ef233185"
+  integrity sha512-cky7DpmoxM3MYAIg/LWgVfofHh1O4y2WrxetTyJ6+E4meB7sS2BynX2qNeLYXG32clylfjwn9y4LKdAtD/MohA==
   dependencies:
     "@0x/order-utils" "^10.2.0"
     "@0x/utils" "^5.4.0"
@@ -133,20 +133,20 @@
     browserfs "^1.4.3"
     ethereum-types "^3.0.0"
 
-"@0x/mesh-browser@9.1.0":
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.1.0.tgz#9fd3bdec2b7cceebec0eb3504624bf5e94d48e66"
-  integrity sha512-bbGUVkoTMDy0aFmr8nM/gwSFeVZftUvIugQAJ3ef8KWwG9NqY1BIK3lcLfM53SFPlpr5hRvvnGFx1WlT3hreRg==
+"@0x/mesh-browser@9.2.1":
+  version "9.2.1"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.2.1.tgz#fba40d7ea66b4998bea3300aae385f08cf8203ef"
+  integrity sha512-fvGYnAOqgTdaeYZW0iIQqPb5nqH4PMzVLDsd7I4tI6hvzbRffHtLj841Fy+6Z/oxVo0tyg5b7W+nmoQ7OzTGkw==
   dependencies:
-    "@0x/mesh-browser-lite" "^9.1.0"
+    "@0x/mesh-browser-lite" "^9.2.1"
     base64-arraybuffer "^0.2.0"
     browserfs "^1.4.3"
     ethereum-types "^3.0.0"
 
-"@0x/mesh-rpc-client@9.1.0":
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-9.1.0.tgz#5e5a87d438596fcdbf1b858f85ab3a74a95b10f7"
-  integrity sha512-ABYIBOVPYIBdtXjHnjmB5TJMdBh7lhNgXEAF/LZAqtnlwLG3AZ1tDpq2C8BJiIBo+Fbfe1IW8ihwc1QLxIBLNA==
+"@0x/mesh-rpc-client@9.2.1":
+  version "9.2.1"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-9.2.1.tgz#52540e2492e8c3a5c54127532e80f7ffb622fbea"
+  integrity sha512-VuAt8J1RpY4s2nCyfLIpPLTTLiYX0Wg0R7b+OT0B1p4JahrEcbfklHAyJM8YOT78wIllWeeTWDZ7/PL9EYPpTA==
   dependencies:
     "@0x/assert" "^3.0.6"
     "@0x/types" "^3.1.2"
@@ -4830,6 +4830,14 @@ axios-retry@^3.0.2:
   integrity sha512-+X0mtJ3S0mmia1kTVi1eA3DAC+oWnT2A29g3CpkzcBPMT6vJm+hn/WiV9wPt/KXLHVmg5zev9mWqkPx7bHMovg==
   dependencies:
     is-retry-allowed "^1.1.0"
+
+axios@0.19.0:
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.0.tgz#8e09bff3d9122e133f7b8101c8fbdd00ed3d2ab8"
+  integrity sha512-1uvKqKQta3KBxIz14F2v06AEHZ/dIoeKfbTRkK1E5oqjDnuEerLmYTgJB5AiQZHJcljpg1TuRzdjDR06qNk0DQ==
+  dependencies:
+    follow-redirects "1.5.10"
+    is-buffer "^2.0.2"
 
 axios@0.19.2, axios@^0.19.0:
   version "0.19.2"

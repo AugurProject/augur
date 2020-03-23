@@ -193,6 +193,7 @@ div.Onboarding {
 
       > svg {
         height: @size-64;
+        fill: var(--color-primary-text);
       }
     }
 
@@ -204,6 +205,13 @@ div.Onboarding {
     > div:nth-of-type(3) {
       text-align: center;
       margin-top: @size-12;
+
+      button {
+        .text-10-semi-bold;
+
+        background: none;
+        border: none;
+      }
     }
 
     @media @breakpoint-mobile {

@@ -668,10 +668,11 @@ export default class Form extends React.Component<FormProps, FormState> {
       name === 'minute' ||
       name === 'meridiem' ||
       name === 'timezoneDropdown' ||
-      name === 'timeSelector'
+      name === 'timeSelector' ||
+      name === 'updateEventExpiration'
     ) {
       // timezone needs to be set on NewMarket object, this value is used to set timezone picker default value
-      const setEndTime = name === 'setEndTime' ? value : newMarket.setEndTime;
+      let setEndTime = name === 'setEndTime' ? value : newMarket.setEndTime;
       let hour = name === 'hour' ? value : newMarket.hour;
       let minute = name === 'minute' ? value : newMarket.minute;
       let meridiem = name === 'meridiem' ? value : newMarket.meridiem;
@@ -679,26 +680,33 @@ export default class Form extends React.Component<FormProps, FormState> {
       let offsetName = newMarket.offsetName;
       let timezone = newMarket.timezone;
 
-      if (name === 'timeSelector') {
+      if (name === 'timeSelector' || name === 'updateEventExpiration') {
         hour = value.hour || hour;
         minute = value.minute || minute;
         meridiem = value.meridiem || meridiem;
         this.onError('hour', '');
       }
-      if (name === 'timezoneDropdown') {
+      if (name === 'timezoneDropdown' || name === 'updateEventExpiration') {
         offset = value.offset;
         offsetName = value.offsetName;
         timezone = value.timezone;
       }
-      const endTimeFormatted = buildformattedDate(
-        setEndTime,
-        hour,
-        minute,
-        meridiem,
-        offsetName,
-        offset
-      );
-
+      let endTimeFormatted = null;
+      if (name === 'updateEventExpiration') {
+        setEndTime = value.setEndTime || newMarket.setEndTime;
+        console.log('update event expiration', JSON.stringify(value));
+        endTimeFormatted = convertUnixToFormattedDate(setEndTime);
+        console.log(JSON.stringify(endTimeFormatted));
+      } else {
+        endTimeFormatted = buildformattedDate(
+          setEndTime,
+          hour,
+          minute,
+          meridiem,
+          offsetName,
+          offset
+        );
+      }
       updateNewMarket({
         endTimeFormatted,
         setEndTime,

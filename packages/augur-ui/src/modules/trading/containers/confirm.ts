@@ -4,12 +4,13 @@ import { createBigNumber } from 'utils/create-big-number';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import { AppState } from 'store';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import { updateModal } from 'modules/modal/actions/update-modal';
+import { MODAL_INITIALIZE_ACCOUNT } from 'modules/common/constants';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { authStatus, loginAccount, appStatus, newMarket } = state;
   const {
     gsnEnabled: GsnEnabled,
-    ethToDaiRate,
     walletStatus: walletStatus,
   } = appStatus;
 
@@ -29,20 +30,25 @@ const mapStateToProps = (state: AppState, ownProps) => {
     isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,
     GsnEnabled,
-    ethToDaiRate,
     walletStatus,
   };
 };
+
+const mapDispatchToProps = (dispatch) => ({
+  initializeGsnWallet: () => dispatch(updateModal({ type: MODAL_INITIALIZE_ACCOUNT }))
+});
 
 const mergeProps = (sP, dP, oP) => {
   return {
     ...oP,
     ...sP,
+    ...dP,
   };
 };
 
 const ConfirmContainer = connect(
   mapStateToProps,
+  mapDispatchToProps,
   mergeProps
 )(Confirm);
 

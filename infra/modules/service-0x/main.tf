@@ -40,7 +40,11 @@ data aws_secretsmanager_secret_version "zero-x-privatekey" {
 module "task-0x-mesh-bootstrap" {
   source            = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
   container_name    = local.bootstrap_name
+<<<<<<< HEAD:infra/modules/service-0x/main.tf
   container_image   = "0xorg/mesh-bootstrap:9.0.1"
+=======
+  container_image   = "0xorg/mesh-bootstrap:9.2.1"
+>>>>>>> master:infra/modules/service-0x/main.tf
   container_memory  = 512
   container_cpu     = 256
   entrypoint        = [
@@ -96,7 +100,11 @@ module "task-0x-mesh-bootstrap" {
 module "task-0x-mesh-rpc" {
   source            = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
   container_name    = local.rpc_name
+<<<<<<< HEAD:infra/modules/service-0x/main.tf
   container_image   = "0xorg/mesh:9.0.1"
+=======
+  container_image   = "0xorg/mesh:9.2.1"
+>>>>>>> master:infra/modules/service-0x/main.tf
   container_memory  = 512
   container_cpu     = 256
   port_mappings     = [

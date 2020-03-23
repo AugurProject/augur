@@ -220,7 +220,6 @@ export const selectNotifications = createSelector(
       mostLikelyInvalidMarkets,
       NOTIFICATION_TYPES.marketIsMostLikelyInvalid
     );
-
     // Add non unquie notifications
     let notifications = [
       ...reportOnMarketsNotifications,
@@ -279,6 +278,7 @@ export const selectNotifications = createSelector(
         );
         if (storedNotification) {
           notification.isNew = storedNotification.isNew;
+          notification.hideNotification = storedNotification.hideNotification;
         }
         return notification;
       });

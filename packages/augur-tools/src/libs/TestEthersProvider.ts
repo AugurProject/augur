@@ -26,8 +26,7 @@ export class TestEthersProvider extends EthersProvider {
   };
 
   getConfig(): SDKConfiguration {
-    return buildConfig('local', {
-      networkId: NetworkId.PrivateGanache,
+    return buildConfig('test', {
       addresses: this.contractAddresses
     });
   }

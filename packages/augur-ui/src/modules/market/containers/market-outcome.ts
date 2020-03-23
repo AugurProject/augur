@@ -112,7 +112,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           selectedOutcomeId: outcome.id,
           orderPrice: topBidPrice && topBidPrice.value.toString(),
           orderQuantity: topBidShares && topBidShares.value.toString(),
-          selectedNav: SELL
+          selectedNav: SELL,
         });
         e.stopPropagation();
       }
@@ -130,7 +130,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           selectedOutcomeId: outcome.id,
           orderPrice: topAskPrice && topAskPrice.value.toString(),
           orderQuantity: topAskShares && topAskShares.value.toString(),
-          selectedNav: BUY
+          selectedNav: BUY,
         });
         e.stopPropagation();
       }

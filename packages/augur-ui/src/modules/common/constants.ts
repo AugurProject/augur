@@ -369,6 +369,7 @@ export const TYPE_VIEW = 'view';
 export const TYPE_VIEW_ORDERS = 'view orders';
 export const TYPE_VIEW_SETS = 'view sets';
 export const TYPE_VIEW_DETAILS = 'view';
+export const TYPE_ADD_LIQUIDITY = 'add liquidity';
 export const TYPE_MIGRATE_REP = 'migrate-rep';
 export const TYPE_FINALIZE_MARKET = 'finalize market';
 
@@ -559,7 +560,7 @@ export const MODAL_TUTORIAL_OUTRO = 'MODAL_TUTORIAL_OUTRO';
 export const MODAL_TUTORIAL_INTRO = 'MODAL_TUTORIAL_INTRO';
 export const MODAL_SCALAR_MARKET = 'MODAL_SCALAR_MARKET';
 export const MODAL_INVALID_MARKET_RULES = 'MODAL_INVALID_MARKET_RULES';
-
+export const MODAL_INITIALIZE_ACCOUNT = 'MODAL_INITIALIZE_ACCOUNT';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
 export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
 export const MODAL_DISCARD = 'MODAL_DISCARD';
@@ -1345,8 +1346,7 @@ export const HELP_CENTER = 'https://augur.gitbook.io/help-center/';
 export const HELP_CENTER_ADD_FUNDS = 'https://augur.gitbook.io/help-center/trading-ui-1/adding-funds';
 export const HELP_CENTER_HOW_TO_TRADE = 'https://augur.gitbook.io/help-center/market-creation-1/how-to-make-a-trade';
 export const HELP_CENTER_HOW_TO_DISPUTE = 'https://augur.gitbook.io/help-center/disputing-explained';
-// TODO update with GSN
-export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://augur.gitbook.io/help-center/trading-ui-1/logging-in#what-is-gnosis-safe';
+export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://augur.gitbook.io/help-center/trading-ui-1/signing-up#gas-station-network';
 export const HELP_CENTER_MIGRATE_REP = 'https://augur.gitbook.io/help-center/migrating-rep-v1-greater-than-v2';
 export const HELP_CENTER_PARTICIPATION_TOKENS = 'https://augur.gitbook.io/help-center/reporting-or-disputing-faq#what-are-participation-tokens';
 export const HELP_CENTER_INVALID_MARKETS = 'https://augur.gitbook.io/help-center/market-creation-1/trading-faq#what-does-invalid-mean';

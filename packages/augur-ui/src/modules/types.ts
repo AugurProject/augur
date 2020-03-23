@@ -154,7 +154,7 @@ export interface UserReports {
 }
 export interface FormattedNumber {
   fullPrecision: number | string;
-  roundedValue: number | BigNumber;
+  roundedValue: BigNumber;
   roundedFormatted: string;
   formatted: string;
   formattedValue: number | string;
@@ -271,6 +271,8 @@ export interface Notification {
   totalProceeds?: number;
   queueName?: string;
   queueId?: string;
+  hideCheckbox?: boolean;
+  hideNotification?: boolean;
 }
 
 export interface OrderStatus {
@@ -352,6 +354,18 @@ export interface NewMarketPropertyValidations {
   affiliateFee?: string;
   inputs?: NewMarketPropertiesValidations[];
   outcomes?: string | string[];
+}
+
+export interface DateTimeComponents {
+  endTime: number;
+  endTimeFormatted: DateFormattedObject;
+  setEndTime: number;
+  hour: string;
+  minute: string;
+  meridiem: string;
+  offsetName: string;
+  offset: number;
+  timezone: string;
 }
 export interface NewMarket {
   uniqueId: string;
@@ -564,9 +578,10 @@ export interface AppStatus {
   isMobile?: boolean;
   isMobileSmall?: boolean;
   isHelpMenuOpen: boolean;
-  ethToDaiRate: BigNumber;
+  ethToDaiRate: FormattedNumber;
   gsnEnabled: boolean;
   zeroXEnabled: boolean;
+  walletStatus: string;
 }
 
 export interface AuthStatus {

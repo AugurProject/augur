@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   CountdownProgress,
   formatTime,
@@ -21,6 +21,7 @@ import {
 } from 'modules/common/constants';
 import MarketTitle from 'modules/market/containers/market-title';
 import { MarketReportingState } from '@augurproject/sdk/build';
+import classNames from 'classnames';
 
 interface BaseProps {
   market: MarketData;
@@ -32,6 +33,8 @@ interface BaseProps {
   buttonLabel: string;
   queueName?: string;
   queueId?: string;
+  hideCheckbox?: boolean;
+  checkCheckbox?: Function;
 }
 
 interface OpenOrdersResolvedMarketsTemplateProps extends BaseProps {
@@ -88,13 +91,14 @@ const Template = ({
   buttonLabel,
   queueName,
   queueId,
+  hideCheckbox,
 }: TemplateProps) => {
   const showCounter = market && notificationsWithCountdown.includes(type);
   return (
     <>
       <TemplateBody market={market} message={message} />
       <div
-        className={Styles.BottomRow}
+        className={classNames(Styles.BottomRow, {[Styles.HasCheckbox]: hideCheckbox})}
       >
         {showCounter && (
           <Counter type={type} market={market} />

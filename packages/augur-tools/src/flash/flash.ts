@@ -168,13 +168,11 @@ export class FlashSession {
         // Create a ContractAPI for this user with this particular augur client. This provides
         // a variety of nice wrapper functions which we should think about exporting
         this.user = new ContractAPI(client, this.provider, client.dependencies, account);
-        this.user.augur.setGasPrice(new BigNumber(this.config.gas.price.toString()));
 
         // IF we want this flash client to use a wallet associated with the past in
         // account, configure it at this point.
         if (this.config.gsn.enabled) {
           await this.user.getOrCreateWallet();
-          this.user.augur.setGasPrice(new BigNumber(20*10e9));
           this.user.setUseWallet(true);
           this.user.setUseRelay(true);
         } else if (approveCentralAuthority) {

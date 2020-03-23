@@ -66,6 +66,7 @@ module zeroX {
   zerox_rpc_tg_arn       = module.network.zerox_rpc_tg_arn
 }
 
+<<<<<<< HEAD
 module gnosis {
   source = "./../../modules/service-gnosis"
 
@@ -87,6 +88,8 @@ module gnosis {
   proxy_factory_address = module.app-config.proxy_factory_address
 }
 
+=======
+>>>>>>> master
 module ipfs {
   source = "./../../modules/service-ipfs"
 

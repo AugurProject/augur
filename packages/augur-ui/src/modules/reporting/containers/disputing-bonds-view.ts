@@ -8,7 +8,6 @@ const mapStateToProps = (state: AppState) => {
     warpSyncHash: state.universe.warpSyncHash,
     userAvailableRep: state.loginAccount.balances && state.loginAccount.balances.rep,
     GsnEnabled: state.appStatus.gsnEnabled,
-    ethToDaiRate: state.appStatus.ethToDaiRate,
     gasPrice: getGasPrice(state),
   };
 };
