@@ -104,12 +104,6 @@ export const generateTrade = memoize(
       potentialDaiLoss: preOrderProfitLoss
         ? formatDaiValue(preOrderProfitLoss.potentialDaiLoss)
         : null,
-      potentialLossPercent: preOrderProfitLoss
-        ? formatDaiValue(preOrderProfitLoss.potentialLossPercent)
-        : null,
-      potentialProfitPercent: preOrderProfitLoss
-        ? formatDaiValue(preOrderProfitLoss.potentialProfitPercent)
-        : null,
       tradingFees: preOrderProfitLoss
         ? formatDaiValue(preOrderProfitLoss.tradingFees)
         : null,

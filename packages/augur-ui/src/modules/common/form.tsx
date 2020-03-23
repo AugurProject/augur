@@ -74,6 +74,7 @@ interface DatePickerProps {
   errorMessage?: string;
   condensedStyle?: boolean;
   openTop?: boolean;
+  readOnly?: boolean;
 }
 
 interface TextInputProps {
@@ -180,6 +181,7 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
       <TextInput
         value={value === UTC_Default ? '' : value}
         placeholder={UTC_Default}
+        disabled={props.disabled}
         autoCompleteList={timezones.timezones}
         onChange={() => {}}
         openTop={props.openTop}
@@ -494,6 +496,7 @@ export const DropdownInputGroup = ({
         autoCompleteList={autoCompleteList}
         onChange={onChangeInput}
         errorMessage={!showDropdown ? errorMessage : ''}
+        onAutoCompleteListSelected={null}
       />
     )}
     {removable && !disabled && value !== '' && !showText && (
@@ -1339,7 +1342,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
         value,
         showList,
       },
-      () => showList && this.props.onAutoCompleteListSelected(value)
+      () => showList && this.props.onAutoCompleteListSelected && this.props.onAutoCompleteListSelected(value)
     );
   };
 
@@ -1452,6 +1455,7 @@ interface TimeSelectorProps {
   uniqueKey?: string;
   condensedStyle?: boolean;
   openTop?: boolean;
+  disabled?: boolean;
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
@@ -1500,6 +1504,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       uniqueKey,
       condensedStyle,
       openTop,
+      disabled
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
@@ -1511,6 +1516,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
           [Styles.Condensed]: condensedStyle,
           [Styles.Default]: !hour || !minute || !meridiem,
           [Styles.OpenTop]: openTop,
+          [Styles.Disabled]: disabled,
         })}
         ref={timeSelector => {
           this.timeSelector = timeSelector;
@@ -1518,6 +1524,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       >
         <button
           onClick={this.toggleSelector}
+          disabled={disabled}
           className={classNames({ [Styles.error]: error })}
         >
           <span>
@@ -1545,7 +1552,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
                 min={0}
                 max={59}
                 onChange={this.onChangeMinutes}
-                value={minute !== null ? minute : '12'}
+                value={minute !== null ? minute : '00'}
               />
               <IndividualTimeSelector
                 label="AM/PM"
@@ -1727,6 +1734,7 @@ export const DatePicker = (props: DatePickerProps) => (
       id={props.id}
       openDirection={props.openTop ? 'up' : 'down'}
       date={props.date}
+      disabled={props.readOnly}
       placeholder={props.placeholder || 'Date (D MMM YYYY)'}
       onDateChange={props.onDateChange}
       isOutsideRange={props.isOutsideRange || (() => false)}
@@ -1738,7 +1746,7 @@ export const DatePicker = (props: DatePickerProps) => (
       navNext={props.navNext || OutlineChevron}
       weekDayFormat="ddd"
       customInputIcon={Calendar}
-      readOnly={true}
+      readOnly={props.readOnly}
     />
     {props.errorMessage &&
       props.errorMessage !== '' &&

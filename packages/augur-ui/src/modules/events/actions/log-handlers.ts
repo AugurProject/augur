@@ -72,6 +72,8 @@ import { removePendingOrder, constructPendingOrderid } from 'modules/orders/acti
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
+import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
+import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 
 const handleAlert = (
   log: any,
@@ -195,6 +197,10 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
       loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
     );
   }
+  // update ethToDaiRate/gasPrice each block
+  dispatch(getEthToDaiRate());
+  dispatch(registerUserDefinedGasPriceFunction());
+
   if (log.logs && log.logs.length > 0){
     console.log(log.logs);
     const eventLogs = log.logs.reduce(
@@ -232,7 +238,6 @@ export const handleMarketsUpdatedLog = ({
     marketsDataById[market.id] = market;
   }
   const marketIds = Object.keys(marketsDataById);
-  console.log('handleMarketsUpdatedChangedLog', marketIds);
   dispatch(updateMarketsData(marketsDataById));
   if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
   if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
@@ -327,16 +332,17 @@ export const handleTokenBalanceChangedLog = (
   })
 };
 
-export const handleOrderLog = (log: any) => {
+export const handleOrderLog = (log: any) =>
+(dispatch: ThunkDispatch<void, any, Action>) => {
   const type = log.eventType;
   switch (type) {
     case OrderEventType.Create:
-      return handleOrderCreatedLog(log);
+      return dispatch(handleOrderCreatedLog(log));
     case OrderEventType.Expire:
     case OrderEventType.Cancel:
-      return handleOrderCanceledLog(log);
+      return dispatch(handleOrderCanceledLog(log));
     case OrderEventType.Fill:
-      return handleOrderFilledLog(log);
+      return dispatch(handleOrderFilledLog(log));
     default:
       console.log(`Unknown order event type "${log.eventType}" for log`, log);
   }
@@ -359,6 +365,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(removePendingOrder(pendingOrderId, log.market));
   }
   dispatch(updateMarketOrderBook(log.market));
+  if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -387,7 +394,7 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
       dispatch(throttleLoadUserOpenOrders());
     }
   }
-  dispatch(updateMarketOrderBook(log.market));
+  if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -409,9 +416,9 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     if (log.orderFiller) handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
-  if (isOnTradePage()) {
+  if (isCurrentMarket(marketId)) {
     dispatch(loadMarketTradingHistory(marketId));
-    dispatch(updateMarketOrderBook(log.market));
+    dispatch(updateMarketOrderBook(marketId));
   }
 };
 

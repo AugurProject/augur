@@ -12,20 +12,41 @@ import {
   ERROR,
   UPPER_FIXED_PRECISION_BOUND,
   ZERO,
+  WALLET_STATUS_VALUES,
+  INVALID_OUTCOME_ID,
+  HELP_CENTER,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/trading/components/confirm.styles.less';
-import { XIcon, ExclamationCircle, InfoIcon, InformationIcon, QuestionIcon } from 'modules/common/icons';
-import { formatGasCostToEther, formatShares, formatDai } from 'utils/format-number';
+import {
+  XIcon,
+  ExclamationCircle,
+  InformationIcon,
+  QuestionIcon,
+} from 'modules/common/icons';
+import {
+  formatGasCostToEther,
+  formatShares,
+  formatDai,
+} from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { Trade } from 'modules/types';
+import { PrimaryButton, ExternalLinkButton } from 'modules/common/buttons';
+import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+
+interface MessageButton {
+  action: Function;
+  text: string;
+}
 
 interface Message {
   header: string;
   type: string;
   message: string;
+  button?: MessageButton;
+  link?: string;
 }
 
 interface ConfirmProps {
@@ -42,10 +63,12 @@ interface ConfirmProps {
   scalarDenomination: string | null;
   numOutcomes: number;
   tradingTutorial?: boolean;
-  ethToDaiRate: BigNumber;
   GsnEnabled: boolean;
   gsnUnavailable: boolean;
   initialLiquidity: boolean;
+  initializeGsnWallet: Function;
+  walletStatus: string;
+  selectedOutcomeId: number;
 }
 
 interface ConfirmState {
@@ -76,8 +99,16 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gsnUnavailable,
     } = this.props;
     if (
-      JSON.stringify({side: trade.side, numShares: trade.numShares, limitPrice: trade.limitPrice}) !==
-      JSON.stringify({side: prevProps.trade.side, numShares: prevProps.trade.numShares, limitPrice: prevProps.trade.limitPrice}) ||
+      JSON.stringify({
+        side: trade.side,
+        numShares: trade.numShares,
+        limitPrice: trade.limitPrice,
+      }) !==
+        JSON.stringify({
+          side: prevProps.trade.side,
+          numShares: prevProps.trade.numShares,
+          limitPrice: prevProps.trade.limitPrice,
+        }) ||
       gasPrice !== prevProps.gasPrice ||
       !createBigNumber(prevProps.availableEth).eq(
         createBigNumber(availableEth)
@@ -102,9 +133,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableEth,
       availableDai,
       tradingTutorial,
-      ethToDaiRate,
       GsnEnabled,
       gsnUnavailable,
+      initializeGsnWallet,
+      walletStatus,
+      marketType,
+      selectedOutcomeId,
     } = props || this.props;
 
     const {
@@ -114,6 +148,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       numFills,
       loopLimit,
     } = trade;
+
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
     let needsApproval = false;
     let messages: Message | null = null;
@@ -124,10 +159,17 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = null;
 
-    if (GsnEnabled && ethToDaiRate) {
-      gasCostDai = formatDai(
-        ethToDaiRate.multipliedBy(createBigNumber(gasCost))
-      ).formattedValue;
+    if (GsnEnabled) {
+      gasCostDai = getGasInDai(gasLimit);
+    }
+
+    if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
+      messages = {
+        header: null,
+        type: WARNING,
+        message: `Percentages are determind by denomination range, rounding may occur. `,
+        link: HELP_CENTER,
+      };
     }
 
     if (
@@ -204,11 +246,21 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (gsnUnavailable && !tradingTutorial) {
+    // Show if OpenOrder and GSN wallet still needs to be initialized
+    if (
+      gsnUnavailable &&
+      walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
+      !tradingTutorial &&
+      numFills === 0
+    ) {
       messages = {
-        header: 'Create GSN Wallet',
+        header: '',
         type: WARNING,
-        message: 'Please create GSN wallet to start trading',
+        message: 'Initialization of your account is needed',
+        button: {
+          text: 'Initialize Account',
+          action: () => initializeGsnWallet(),
+        },
       };
     }
 
@@ -227,7 +279,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       maxPrice,
       minPrice,
       scalarDenomination,
-      ethToDaiRate,
       gasLimit,
       gasPrice,
       GsnEnabled,
@@ -245,6 +296,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       orderShareProfit,
       orderShareTradingFee,
       numFills,
+      sharesFilled,
     } = trade;
 
     const { messages } = this.state;
@@ -258,16 +310,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = null;
 
-    const gasCost = formatGasCostToEther(
-      gasLimit,
-      { decimalsRounded: 4 },
-      gasPrice
-    );
-
-    if (GsnEnabled && ethToDaiRate) {
-      gasCostDai = formatDai(
-        ethToDaiRate.multipliedBy(createBigNumber(gasCost))
-      );
+    if (GsnEnabled) {
+      gasCostDai = getGasInDai(gasLimit);
     }
 
     const limitPricePercentage = (side === BUY
@@ -298,6 +342,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
           : formatShares(
               createBigNumber(numShares).minus(shareCost.fullPrecision)
             ).rounded;
+    } else if (sharesFilled && sharesFilled.fullPrecision) {
+      newOrderAmount = sharesFilled.rounded;
     }
 
     const notProfitable =
@@ -389,13 +435,15 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               value={potentialDaiLoss}
               showDenomination={true}
             />
-            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && numFills > 0 &&  (
-              <LinearPropertyLabel
-                label="Est. TX Fee"
-                value={gasCostDai}
-                showDenomination={true}
-              />
-            )}
+            {gasCostDai &&
+              gasCostDai.roundedValue.gt(0) > 0 &&
+              numFills > 0 && (
+                <LinearPropertyLabel
+                  label="Est. TX Fee"
+                  value={gasCostDai}
+                  showDenomination={true}
+                />
+              )}
           </div>
         )}
         {messages && (
@@ -406,8 +454,22 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
           >
             {messages.type === ERROR ? ExclamationCircle : InformationIcon}
             <span>{messages.header}</span>
-            <div>{messages.message}</div>
-            {messages.type !== ERROR && (
+            <div>
+              {messages.message}
+              {messages.link && (
+                <ExternalLinkButton
+                  URL={messages.link}
+                  label={'LEARN MORE'}
+                />
+              )}
+            </div>
+            {messages.button && (
+              <PrimaryButton
+                text={messages.button.text}
+                action={messages.button.action}
+              />
+            )}
+            {messages.type !== ERROR && !messages.button && (
               <button onClick={this.clearErrorMessage}>{XIcon}</button>
             )}
           </div>

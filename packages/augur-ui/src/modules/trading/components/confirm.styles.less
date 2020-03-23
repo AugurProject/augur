@@ -163,6 +163,38 @@
     color: var(--color-table-header);
     grid-column: 2;
     grid-row: 2;
+
+    > button {
+      background: unset;
+      border: unset;
+      color: var(--color-primary-action);
+
+      > svg {
+        > path:first-of-type {
+          fill: var(--color-primary-action);
+        }
+
+        > path:last-of-type {
+          stroke: var(--color-primary-action);
+        }
+      }
+
+      &:hover {
+        > a {
+          color: var(--color-primary-action);
+        }
+
+        > svg {
+          > path:first-of-type {
+            fill: var(--color-primary-action);
+          }
+
+          > path:last-of-type {
+            stroke: var(--color-primary-action);
+          }
+        }
+      }
+    }
   }
 
   > button {

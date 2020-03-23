@@ -455,6 +455,11 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       trade.costInDai &&
       createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
 
+<<<<<<< HEAD
+=======
+    const isOpenOrder = trade && trade.numFills === 0;
+
+>>>>>>> master
     let actionButton: any = (
       <OrderButton
         type={selectedNav}
@@ -479,7 +484,11 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           }
         }}
         disabled={
+<<<<<<< HEAD
           !trade || !trade.limitPrice || gsnUnavailable || insufficientFunds
+=======
+          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds
+>>>>>>> master
         }
       />
     );
@@ -493,7 +502,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           />
         );
         break;
-      case !restoredAccount && isLogged && !hasFunds && !tradingTutorial:
+      case isLogged && !hasFunds && !tradingTutorial:
         actionButton = (
           <PrimaryButton
             id="add-funds"
@@ -509,6 +518,11 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     const orderEmpty =
       orderPrice === '' && orderQuantity === '' && orderDaiEstimate === '';
     const showTip = !hasHistory && orderEmpty;
+    const showConfirm =
+      !!trade &&
+      ((trade.potentialDaiLoss && trade.potentialDaiLoss.value !== 0) ||
+        (trade.orderShareProfit && trade.orderShareProfit.value !== 0) ||
+        (trade.sharesFilled && trade.sharesFilled.value !== 0));
     return (
       <section className={Styles.Wrapper}>
         <div>
@@ -579,9 +593,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             />
           )}
         </div>
-        {trade &&
-          ((trade.shareCost && trade.shareCost.value !== 0) ||
-            (trade.totalCost && trade.totalCost.value !== 0)) && (
+        { showConfirm && (
             <Confirm
               initialLiquidity={initialLiquidity}
               numOutcomes={market.numOutcomes}
@@ -591,6 +603,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               trade={trade}
               gasPrice={gasPrice}
               gasLimit={trade.gasLimit}
+              selectedOutcomeId={selectedOutcome.id}
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
               tradingTutorial={tradingTutorial}

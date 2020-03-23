@@ -90,7 +90,7 @@ export class RelayClient {
    *        }
    *       These values can be be retrieved from the `/getaddr` endpoint of a relayer. e.g `curl http://localhost:8090/getaddr`
    *    force_gasLimit - force gaslimit, instead of transaction paramter
-   *    force_gasPrice - force gasPrice, instread of transaction parameter.
+   *    force_gasPrice - force gasPrice, instead of transaction parameter.
    */
   constructor(provider: EthersProvider, config: RelayClientConfig) {
     //fill in defaults:
@@ -254,15 +254,20 @@ export class RelayClient {
         if (this.config.verbose) {
           console.log('sendViaRelay to URL: ' + relayUrl + ' ' + JSON.stringify(jsonRequestData));
         }
+
         const response = await this.httpSend.send(relayUrl + '/relay', { ...jsonRequestData, userAgent: this.config.userAgent });
+
         if (this.config.verbose) {
             console.log('sendViaRelay resp=', response);
         }
-        if (response && response.error) {
-            throw new Error(response.error);
-        }
+
         if (!response || !response.nonce) {
-            throw new Error("Empty body received from server, or neither 'error' nor 'nonce' fields present.");
+          throw new Error("Empty body received from server, or neither 'error' nor 'nonce' fields present.");
+        }
+
+        if (response && response.error) {
+          // TODO If nonce gap error emit Relay Nonce Gap Error
+          throw new Error(response.error);
         }
 
         let validTransaction;
@@ -291,8 +296,6 @@ export class RelayClient {
         }
         const receivedNonce = validTransaction.nonce.readUIntBE(0, validTransaction.nonce.byteLength);
         if (receivedNonce > relayMaxNonce) {
-            // TODO: need to validate that client retries the same request and doesn't double-spend.
-            // Note that this transaction is totally valid from the EVM's point of view
             throw new Error('Relay used a tx nonce higher than requested. Requested ' + relayMaxNonce + ' got ' + receivedNonce);
         }
 
@@ -327,7 +330,7 @@ export class RelayClient {
       await this.provider.provider.sendTransaction(raw_tx);
     } catch (err) {
       // This is what we want to be the case
-      if (err.responseText.includes("known transaction")) {
+      if (err.responseText?.includes("known transaction")) {
         return;
       }
       throw err;

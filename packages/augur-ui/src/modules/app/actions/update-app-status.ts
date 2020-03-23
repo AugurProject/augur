@@ -1,4 +1,4 @@
-import { BigNumber } from 'utils/create-big-number';
+import { FormattedNumber } from 'modules/types';
 
 export const IS_MOBILE = 'isMobile';
 export const IS_MOBILE_SMALL = 'isMobileSmall';
@@ -11,7 +11,7 @@ export const GNOSIS_STATUS = 'gnosisStatus';
 export const THEME = 'theme';
 export const WALLET_STATUS = 'walletStatus';
 
-export function updateAppStatus(statusKey: string, value: boolean | BigNumber | string) {
+export function updateAppStatus(statusKey: string, value: boolean | FormattedNumber | string) {
   return {
     type: UPDATE_APP_STATUS,
     data: {

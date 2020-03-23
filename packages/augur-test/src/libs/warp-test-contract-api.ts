@@ -64,7 +64,6 @@ export class WarpTestContractApi extends TestContractAPI {
       signer,
       config.addresses.AugurWalletRegistry,
       config.addresses.EthExchange,
-      new BigNumber(0),
       account.publicKey,
     );
 

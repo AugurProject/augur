@@ -41,7 +41,6 @@ export class TestContractAPI extends ContractAPI {
       signer,
       config.addresses.AugurWalletRegistry,
       config.addresses.EthExchange,
-      null,
       account.publicKey,
     );
 

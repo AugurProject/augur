@@ -15,10 +15,13 @@ output "zerox_trade_address" {
   value = jsondecode(data.local_file.contract-addresses.content)["addresses"]["ZeroXTrade"]
 }
 
+<<<<<<< HEAD
 output "gnosis_safe_address" {
   value = jsondecode(data.local_file.contract-addresses.content)["addresses"]["GnosisSafe"]
 }
 
+=======
+>>>>>>> master
 output "proxy_factory_address" {
   value = jsondecode(data.local_file.contract-addresses.content)["addresses"]["ProxyFactory"]
 }

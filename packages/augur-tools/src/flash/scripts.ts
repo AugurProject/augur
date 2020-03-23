@@ -1,4 +1,3 @@
-import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH } from '../constants';
@@ -8,6 +7,7 @@ import {
   abiV1,
   environments,
   buildConfig,
+  printConfig,
 } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import moment from 'moment';
@@ -15,7 +15,6 @@ import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ethers } from 'ethers';
 import {
-  calculatePayoutNumeratorsArray,
   QUINTILLION,
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
@@ -32,7 +31,7 @@ import { generateTemplateValidations } from './generate-templates';
 import { spawn, spawnSync, execSync } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
-import { ContractAPI } from '../libs/contract-api';
+import { ContractAPI, deployContracts } from '..';
 import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
@@ -85,7 +84,7 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: 'show-config',
     async call(this: FlashSession) {
-      this.log(JSON.stringify(this.config, null, 2));
+      printConfig(this.config);
     }
   });
 
@@ -1699,13 +1698,6 @@ export function addScripts(flash: FlashSession) {
         required: true,
       },
       {
-        name: 'outcome',
-        abbr: 'o',
-        description:
-          'outcome of the market, non scalar markets 0,1,3,... for scalar markets use price',
-        required: true,
-      },
-      {
         name: 'extraStake',
         abbr: 's',
         description:
@@ -1720,53 +1712,36 @@ export function addScripts(flash: FlashSession) {
         required: false,
       },
       {
-        name: 'isInvalid',
-        abbr: 'i',
-        description:
-          'isInvalid flag is used only for scalar markets (optional)',
-        required: false,
+        name: 'payoutNumerators',
+        abbr: 'p',
+        description: 'payout numerators of child unverse.',
+        required: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
       const marketId = args.marketId as string;
-      const outcome = Number(args.outcome);
       const extraStake = args.extraStake as string;
       const desc = args.description as string;
-      const isInvalid = args.isInvalid as boolean;
       let preEmptiveStake = '0';
       if (extraStake) {
         preEmptiveStake = new BigNumber(extraStake)
           .multipliedBy(QUINTILLION)
           .toFixed();
       }
-      if (!this.usingSdk) {
-        this.log('This script needs sdk, make sure to connect with -u flag');
-      }
-      if (!this.sdkReady) this.log("SDK hasn't fully syncd, need to wait");
 
       const market: ContractInterfaces.Market = await user.getMarketContract(
         marketId
       );
-      const marketInfos = await user.getMarketInfo(marketId);
-      if (!marketInfos || marketInfos.length === 0) {
-        return this.log(`Error: marketId: ${marketId} not found`);
-      }
-      const marketInfo = marketInfos[0];
-      const payoutNumerators = calculatePayoutNumeratorsArray(
-        marketInfo.maxPrice,
-        marketInfo.minPrice,
-        marketInfo.numTicks,
-        marketInfo.numOutcomes,
-        marketInfo.marketType,
-        outcome,
-        isInvalid
-      );
+
+      const payout = String(args.payoutNumerators)
+      .split(',')
+      .map(i => new BigNumber(i));
 
       await user.doInitialReport(
         market,
-        payoutNumerators,
+        payout,
         desc,
         preEmptiveStake
       );
@@ -1783,13 +1758,6 @@ export function addScripts(flash: FlashSession) {
         required: true,
       },
       {
-        name: 'outcome',
-        abbr: 'o',
-        description:
-          'outcome of the market, non scalar markets 0,1,3,... for scalar markets use price',
-        required: true,
-      },
-      {
         name: 'amount',
         abbr: 'a',
         description: 'amount of REP to dispute with, use display value',
@@ -1803,52 +1771,31 @@ export function addScripts(flash: FlashSession) {
         required: false,
       },
       {
-        name: 'isInvalid',
-        abbr: 'i',
-        description:
-          'isInvalid flag is used only for scalar markets (optional)',
-        required: false,
+        name: 'payoutNumerators',
+        abbr: 'p',
+        description: 'payout numerators of child unverse.',
+        required: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const user = await this.ensureUser();
+      this.config.gsn.enabled = false;
+      const user: ContractAPI = await this.ensureUser();
+      const payout = String(args.payoutNumerators)
+        .split(',')
+        .map(i => new BigNumber(i));
+
       const marketId = args.marketId as string;
-      const outcome = Number(args.outcome);
       const amount = args.amount as string;
       const desc = args.description as string;
-      const isInvalid = args.isInvalid as boolean;
       if (amount === '0') return this.log('amount of REP is required');
       const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
-
-      if (!this.usingSdk) {
-        return this.log(
-          'This script needs sdk, make sure to connect with -u flag'
-        );
-      }
-      if (!this.sdkReady) {
-        return this.log("SDK hasn't fully syncd, need to wait");
-      }
 
       const market: ContractInterfaces.Market = await user.getMarketContract(
         marketId
       );
-      const marketInfos = await user.getMarketInfo(marketId);
-      if (!marketInfos || marketInfos.length === 0) {
-        return this.log(`Error: marketId: ${marketId} not found`);
-      }
-      const marketInfo = marketInfos[0];
-      const payoutNumerators = calculatePayoutNumeratorsArray(
-        marketInfo.maxPrice,
-        marketInfo.minPrice,
-        marketInfo.numTicks,
-        marketInfo.numOutcomes,
-        marketInfo.marketType,
-        outcome,
-        isInvalid
-      );
 
-      await user.contribute(market, payoutNumerators, stake, desc);
+      await user.contribute(market, payout, stake, desc);
     },
   });
 
@@ -1860,13 +1807,6 @@ export function addScripts(flash: FlashSession) {
         abbr: 'm',
         description:
           'market to contribute REP to its tentative winning outcome',
-        required: true,
-      },
-      {
-        name: 'outcome',
-        abbr: 'o',
-        description:
-          'outcome of the market, non scalar markets 0,1,3,... for scalar markets use price',
         required: true,
       },
       {
@@ -1883,29 +1823,23 @@ export function addScripts(flash: FlashSession) {
         required: false,
       },
       {
-        name: 'isInvalid',
-        abbr: 'i',
-        description:
-          'isInvalid flag is used only for scalar markets (optional)',
-        required: false,
+        name: 'payoutNumerators',
+        abbr: 'p',
+        description: 'payout numerators of child unverse.',
+        required: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
+      this.config.gsn.enabled = false;
       const user = await this.ensureUser();
       const marketId = args.marketId as string;
-      const outcome = Number(args.outcome);
       const amount = args.amount as string;
       const desc = args.description as string;
-      const isInvalid = args.isInvalid as boolean;
+
       if (amount === '0') return this.log('amount of REP is required');
       const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
 
-      if (!this.usingSdk) {
-        return this.log(
-          'This script needs sdk, make sure to connect with -u flag'
-        );
-      }
       if (!this.sdkReady) {
         return this.log("SDK hasn't fully syncd, need to wait");
       }
@@ -1913,22 +1847,12 @@ export function addScripts(flash: FlashSession) {
       const market: ContractInterfaces.Market = await user.getMarketContract(
         marketId
       );
-      const marketInfos = await user.getMarketInfo(marketId);
-      if (!marketInfos || marketInfos.length === 0) {
-        return this.log(`Error: marketId: ${marketId} not found`);
-      }
-      const marketInfo = marketInfos[0];
-      const payoutNumerators = calculatePayoutNumeratorsArray(
-        marketInfo.maxPrice,
-        marketInfo.minPrice,
-        marketInfo.numTicks,
-        marketInfo.numOutcomes,
-        marketInfo.marketType,
-        outcome,
-        isInvalid
-      );
 
-      await user.contributeToTentative(market, payoutNumerators, stake, desc);
+      const payout = String(args.payoutNumerators)
+        .split(',')
+        .map(i => new BigNumber(i));
+
+      await user.contributeToTentative(market, payout, stake, desc);
     },
   });
 
@@ -1944,6 +1868,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
+      this.config.gsn.enabled = false;
       const user = await this.ensureUser();
       const marketId = args.marketId as string;
 
@@ -1975,10 +1900,11 @@ export function addScripts(flash: FlashSession) {
       }
 
       await sleep(2000);
-      const marketInfo = (await this.api.route('getMarketsInfo', {
-        marketIds: [marketId],
-      }))[0];
-
+      const marketInfos = (await user.getMarketInfo(marketId));
+      if (!marketInfos || marketInfos.length === 0) {
+        return this.log(`Error: marketId: ${marketId} not found`);
+      }
+      const marketInfo = marketInfos[0];
       if (await fork(user, marketInfo)) {
         this.log('Fork successful!');
       } else {
@@ -1988,7 +1914,7 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'dispute',
+    name: 'dispute-rounds',
     options: [
       {
         name: 'marketId',
@@ -2021,10 +1947,11 @@ export function addScripts(flash: FlashSession) {
       }
 
       await sleep(2000);
-      const marketInfo = (await this.api.route('getMarketsInfo', {
-        marketIds: [marketId],
-      }))[0];
-
+      const marketInfos = (await user.getMarketInfo(marketId));
+      if (!marketInfos || marketInfos.length === 0) {
+        return this.log(`Error: marketId: ${marketId} not found`);
+      }
+      const marketInfo = marketInfos[0];
       await dispute(user, marketInfo, slow, rounds);
     },
   });
@@ -2035,9 +1962,7 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return null;
       const user = await this.ensureUser(this.network, true);
 
-      const markets: MarketList = await this.api.route('getMarkets', {
-        universe: user.augur.contracts.universe.address,
-      });
+      const markets: MarketList = await user.getMarkets();
       console.log(JSON.stringify(markets, null, 2));
       return markets;
     },
@@ -2102,23 +2027,23 @@ export function addScripts(flash: FlashSession) {
           await refreshSDKConfig(); // add pop-geth addresses to global
         }
 
-        this.log(`Waiting for Geth to start up`);
+        this.log('Waiting for Geth to start up');
         await sleep(10000); // give geth some time to start
         refreshSDKConfig();
         this.config = buildConfig('local');
         this.provider = flash.makeProvider(this.config);
 
         if (dev) {
-          this.log(`Deploying contracts`);
+          this.log('Deploying contracts');
           const deployMethod = fake ? 'fake-all' : 'normal-all';
           await this.call(deployMethod, { createMarkets: true, parallel: true });
         }
 
-        this.log(`Building`);
+        this.log('Building');
         await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
         // Run the GSN relay
-        this.log(`Running GSN relayer`);
+        this.log('Running GSN relayer');
         spawn('yarn', ['run:gsn'], {stdio: 'inherit'});
 
         env = {
@@ -2169,49 +2094,6 @@ export function addScripts(flash: FlashSession) {
       wsServer.close();
       wssServer.close();
     }
-  });
-
-  flash.addScript({
-    name: '0x-docker',
-    async call(this: FlashSession) {
-      if (this.noProvider()) return null;
-
-      // const ethNode = this.network.http;
-      const ethNode = 'http://geth:8545';
-      console.log(`Starting 0x mesh. chainId=${this.config.networkId} ethnode=${ethNode}`);
-
-      const zeroXTradeAddress = formatAddress(this.config.addresses.ZeroXTrade, { prefix: false, lower: true });
-      const mesh = spawn('docker', [
-        'run',
-        '--rm',
-        '--network', 'augur',
-        '--name', '0x',
-        '-p', '60557:60557', // rpc_port_number
-        '-p', '60558:60558', // P2PTCPPort
-        '-p', '60559:60559', // P2PWebSocketsPort
-        '-e', `ETHEREUM_CHAIN_ID=${this.config.networkId}`,
-        '-e', `ETHEREUM_RPC_URL=${ethNode}`,
-        '-e', 'USE_BOOTSTRAP_LIST=false',
-        '-e', 'BLOCK_POLLING_INTERVAL=1s',
-        '-e', 'ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120', // needed when polling interval is 1s
-        '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(this.config.addresses)}`,
-        '-e', `CUSTOM_ORDER_FILTER={"properties":{"makerAssetData":{"pattern":".*${zeroXTradeAddress}.*"}}}`,
-        '-e', 'VERBOSITY=4', // 5=debug 6=trace
-        '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
-        '0xorg/mesh:9.0.0',
-      ]);
-
-      mesh.on('error', console.error);
-      mesh.on('exit', (code, signal) => {
-        console.log(`Exiting 0x mesh with code=${code} and signal=${signal}`)
-      });
-      mesh.stdout.on('data', (data) => {
-        console.log(data.toString());
-      });
-      mesh.stderr.on('data', (data) => {
-        console.error(data.toString());
-      });
-    },
   });
 
   flash.addScript({
