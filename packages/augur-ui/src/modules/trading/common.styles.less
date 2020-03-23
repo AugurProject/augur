@@ -158,7 +158,7 @@
           }
         }
       }
-    };
+    }
 
     > header {
       display: grid;
@@ -202,6 +202,22 @@
           > path {
             stroke: var(--color-dark-text)
           }
+        }
+      }
+    }
+  }
+
+  .SportsMyBet {
+    .SportsBet;
+
+    > header > button {
+      > svg {
+        margin: 0;
+      }
+
+      &.Closed {
+        > svg > path {
+          stroke: var(--color-open);
         }
       }
     }
@@ -267,6 +283,7 @@
     border-bottom-left-radius: @border-radius-rounded;
     border-bottom-right-radius: @border-radius-rounded;
     padding: @size-12;
+    width: 100%;
 
     > a {
       .text-10-semi-bold;

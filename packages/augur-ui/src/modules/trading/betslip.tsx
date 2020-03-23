@@ -30,8 +30,7 @@ export const Betslip = ({  }: BetslipProps) => {
   } = useSelected();
   const betslipInfo = useBetslip(selected.header);
   const { betslipAmount, isSelectedEmpty } = betslipInfo;
-  const { header } = selected;
-
+  const isMyBets = selected.header === 1;
   return (
     <aside
       className={classNames(Styles.Betslip, {
@@ -49,20 +48,24 @@ export const Betslip = ({  }: BetslipProps) => {
             toggleSelected={toggleHeaderSelected}
             betslipInfo={betslipInfo}
           />
-          {header === 1 && (
+          {isMyBets && (
             <MyBetsSubheader toggleSelected={toggleSubHeaderSelected} />
           )}
           <section
             className={classNames(Styles.MainSection, {
               [Styles.BetslipEmpty]: isSelectedEmpty,
-              [Styles.BetslipList]: (!isSelectedEmpty && header === 0),
+              [Styles.BetslipList]: !isSelectedEmpty,
             })}
           >
             {isSelectedEmpty ? (
               <EmptyState emptyHeader={emptyHeader} />
             ) : (
               <BetslipStepContext.Provider value={step}>
-                <BetslipList ordersInfo={betslipInfo.ordersInfo} actions={betslipInfo.ordersActions} />
+                {isMyBets ? (
+                  <BetslipList marketItems={Object.entries(betslipInfo.myBets)} actions={betslipInfo.myBetsActions} />
+                ): (
+                  <BetslipList marketItems={Object.entries(betslipInfo.ordersInfo.orders)} actions={betslipInfo.ordersActions} />
+                )}
                 <BetslipFooter betslipInfo={betslipInfo} setStep={setStep} />
               </BetslipStepContext.Provider>
             )}

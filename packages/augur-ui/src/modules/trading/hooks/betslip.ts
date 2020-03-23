@@ -115,6 +115,7 @@ const MOCK_TEST_MY_BETS_STATE = {
         marketId: '0x01',
         isOpen: true,
         amountFilled: '10.00',
+        amountWon: '9.52'
       },
       {
         outcome: 'Brooklyn Nets, -5',
@@ -124,6 +125,7 @@ const MOCK_TEST_MY_BETS_STATE = {
         marketId: '0x01',
         isOpen: true,
         amountFilled: '10.00',
+        amountWon: '19.52'
       },
     ],
   },
@@ -138,6 +140,7 @@ const MOCK_TEST_MY_BETS_STATE = {
         marketId: '0x02',
         isOpen: true,
         amountFilled: '10.00',
+        amountWon: '9.09'
       },
     ],
   },
@@ -191,15 +194,17 @@ function betslipOrdersReducer(state, action) {
 }
 
 function myBetsReducer(state, action) {
-  const { ADD, CASH_OUT } = MYBETS_ACTIONS;
+  const { ADD, CASH_OUT } = MY_BETS_ACTIONS;
   switch (action.type) {
     case ADD: {
       console.log(ADD, action.marketId, action.description, action.order);
       return state;
     }
     case CASH_OUT: {
-      console.log(CASH_OUT, action.marketId, action.orderId);
-      return state;
+      const { marketId, orderId } = action;
+      const updatedState = { ...state };
+      updatedState[marketId].orders[orderId].isOpen = false;
+      return updatedState;
     }
     default:
       throw new Error(`invalid dispatch to myBetsReducer, ${action.type}`);
@@ -327,8 +332,6 @@ export const useBetslip = (
       },
       cashOutBet: (marketId, orderId) => {
         myBetsDispatch({ type: MY_BETS_ACTIONS.CASH_OUT, marketId, orderId });
-        betslipAmounts.decMyBetslipAmount();
-        // TODO: this will need to be updated to wait on transaction/update status
       }
     },
     ...betslipAmounts,

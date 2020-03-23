@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 
 import { SecondaryButton, PrimaryButton } from 'modules/common/buttons';
-import { Ticket, Trash, ThickChevron } from 'modules/common/icons';
+import { Ticket, Trash, ThickChevron, CheckMark } from 'modules/common/icons';
 import { MY_POSITIONS } from 'modules/routes/constants/views';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import {
@@ -33,8 +33,9 @@ export const EmptyState = ({ emptyHeader }) => {
   );
 };
 
-export const SportsMarketBets = ({ market, removeOrder, modifyOrder }) => {
+export const SportsMarketBets = ({ market, actions }) => {
   const marketId = market[0];
+  const { modifyOrder, removeOrder } = actions;
   const { description, orders } = market[1];
   const bets = orders.map((order, orderId) => ({
     ...order,
@@ -49,6 +50,27 @@ export const SportsMarketBets = ({ market, removeOrder, modifyOrder }) => {
       <>
         {bets.map(bet => (
           <SportsBet key={bet.orderId} bet={bet} />
+        ))}
+      </>
+    </div>
+  );
+};
+
+export const SportsMarketMyBets = ({ market, actions }) => {
+  const marketId = market[0];
+  const { cashOutBet } = actions;
+  const { description, orders } = market[1];
+  const bets = orders.map((order, orderId) => ({
+    ...order,
+    orderId,
+    cashOutBet: () => cashOutBet(marketId, orderId),
+  }));
+  return (
+    <div className={Styles.SportsMarketBets}>
+      <h4>{description}</h4>
+      <>
+        {bets.map(bet => (
+          <SportsMyBet key={bet.orderId} bet={bet} />
         ))}
       </>
     </div>
@@ -100,6 +122,27 @@ export const SportsBet = ({ bet }) => {
     </div>
   );
 };
+
+export const SportsMyBet = ({ bet }) => {
+  const { outcome, odds, wager, cashOutBet, isOpen } = bet;
+  console.log(bet);
+  return (
+    <div className={classNames(Styles.SportsMyBet, Styles.Review)}>
+      <header>
+        <span>{outcome}</span>
+        <span>{odds}</span>
+        <button
+          className={classNames({ [Styles.Closed]: !isOpen })}
+          onClick={() => cashOutBet()}
+        >
+          {!isOpen && CheckMark} {isOpen && Trash}
+        </button>
+      </header>
+      <LinearPropertyLabel label="wager" value={formatDai(wager)} useFull />
+      <LinearPropertyLabel label="odds" value={odds} />
+    </div>
+  );
+};
 // this is actually a common component, doing this for ease
 export const BetslipInput = ({
   label,
@@ -140,20 +183,23 @@ export const BetslipInput = ({
   );
 };
 
-export const BetslipList = ({ ordersInfo, actions }) => {
-  const { removeOrder, modifyOrder } = actions;
-  const marketOrders = Object.entries(ordersInfo.orders);
-
+export const BetslipList = ({ marketItems, actions }) => {
+  const { header } = useContext(SelectedContext);
   return (
     <>
       <section className={Styles.BetslipList}>
-        {marketOrders.map(market => {
-          return (
+        {marketItems.map(market => {
+          return header === 0 ? (
             <SportsMarketBets
               key={`${market[1]}`}
               market={market}
-              removeOrder={removeOrder}
-              modifyOrder={modifyOrder}
+              actions={actions}
+            />
+          ) : (
+            <SportsMarketMyBets
+              key={`${market[1]}`}
+              market={market}
+              actions={actions}
             />
           );
         })}
@@ -214,9 +260,7 @@ export const BetslipFooter = ({ betslipInfo, setStep }) => {
   const win = formatDai(potential).full;
 
   return (
-    <footer
-      className={Styles.BetslipFooter}
-    >
+    <footer className={Styles.BetslipFooter}>
       {header === 0 ? (
         <>
           {step !== 0 && (
