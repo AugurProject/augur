@@ -14,9 +14,18 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    overflow: auto;
+    overflow: overlay;
     max-height: 50vh;
   }
+}
+
+@supports (-moz-appearance:none) {    
+  .Container {   
+    > main {
+      // firefox doesn't support overlay. need auto     
+      overflow-y: auto; 
+    }    
+  } 
 }
 
 .TradeHistoryTable {

@@ -2224,6 +2224,15 @@ div.ButtonsRow:last-of-type {
   text-align: center;
 }
 
+@supports (-moz-appearance:none) {    
+  .Transactions {   
+    > div:first-of-type {
+      // firefox doesn't support overlay. need auto     
+      overflow-y: auto; 
+    }    
+  } 
+}
+
 .Transactions {
   .Container;
 
@@ -2438,7 +2447,7 @@ div.ButtonsRow:last-of-type {
 
   > div:first-of-type {
     max-height: 650px;
-    overflow: auto;
+    overflow: overlay;
   }
 
   > div:first-of-type > div:first-of-type {
