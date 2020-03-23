@@ -18,7 +18,9 @@ import { updateAssets } from 'modules/auth/actions/update-assets';
 import { NetworkId } from '@augurproject/artifacts';
 import { AppState } from 'store';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_ERROR, WALLET_STATUS_VALUES } from 'modules/common/constants';
+import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET } from 'modules/common/constants';
+import { TXEventName } from '@augurproject/sdk';
+import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
@@ -39,6 +41,8 @@ export const updateSdk = (
       const hasWallet = await augurSdk.client.gsn.userHasInitializedWallet(newAccount.address);
       if (hasWallet) {
         dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
+      } else {
+        dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.WAITING_FOR_FUNDING));
       }
       const walletAddress = await augurSdk.client.gsn.calculateWalletAddress(
         newAccount.address
@@ -81,10 +85,10 @@ export const createFundedGsnWallet = () => async (
   getState: () => AppState
 ) => {
   try {
+    dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending));
     await augurSdk.client.gsn.initializeWallet();
-    dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
   } catch (e) {
+    dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Failure));
     dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE));
   }
-
 };
