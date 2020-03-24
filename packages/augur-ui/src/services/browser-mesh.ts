@@ -1,4 +1,4 @@
-import { Config, ContractAddresses as ZeroXContractAddresses, Mesh } from '@0x/mesh-browser';
+import { Config, ContractAddresses as ZeroXContractAddresses, Mesh, loadMeshStreamingWithURLAsync } from '@0x/mesh-browser-lite';
 import { NetworkId, SDKConfiguration, ContractAddresses } from '@augurproject/artifacts';
 import { ZeroX } from '@augurproject/sdk';
 
@@ -93,6 +93,8 @@ export async function createBrowserMesh(
   if (!config.zeroX?.mesh?.enabled) {
     throw new Error(`Attempting to create browser mesh without it being enabled in config ${JSON.stringify(config)}`);
   }
+
+  await loadMeshStreamingWithURLAsync("zerox.wasm");
 
   const meshConfig = createBrowserMeshConfig(
     config.ethereum.http,

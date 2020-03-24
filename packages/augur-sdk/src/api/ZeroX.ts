@@ -1,4 +1,4 @@
-import { ExchangeFillEvent, ValidationResults, GetOrdersResponse } from '@0x/mesh-browser';
+import { ExchangeFillEvent, ValidationResults, GetOrdersResponse } from '@0x/mesh-browser-lite';
 import { OrderEvent, OrderInfo, WSClient } from '@0x/mesh-rpc-client';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { BigNumber } from 'bignumber.js';
