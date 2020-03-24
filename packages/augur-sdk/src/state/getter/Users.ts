@@ -753,7 +753,8 @@ export class Users {
               outcomeValue,
               outcomeValue24Hr,
               new BigNumber(profitLossResult.timestamp).toNumber(),
-              shareTokenBalancesByMarketandOutcome
+              shareTokenBalancesByMarketandOutcome,
+              !!marketFinalizedByMarket[profitLossResult.market],
             );
 
             return tradingPosition;
@@ -1087,7 +1088,8 @@ export class Users {
                 outcomeValue,
                 undefined,
                 bucketTimestamp.toNumber(),
-                null
+                null,
+                !!marketFinalizedByMarket[marketId],
               );
             }
           );
@@ -1428,7 +1430,8 @@ function getTradingPositionFromProfitLossFrame(
   onChainOutcomeValue: BigNumber,
   onChain24HrOutcomeValue: BigNumber | undefined,
   timestamp: number,
-  shareTokenBalancesByMarketandOutcome
+  shareTokenBalancesByMarketandOutcome,
+  finalized: boolean,
 ): TradingPosition {
   const minPrice = new BigNumber(marketDoc.prices[0]);
   const maxPrice = new BigNumber(marketDoc.prices[1]);
@@ -1470,14 +1473,14 @@ function getTradingPositionFromProfitLossFrame(
     onChainRawPosition,
     tickSize
   );
-  const realizedProfit = onChainRealizedProfit.dividedBy(10 ** 18);
+  let realizedProfit = onChainRealizedProfit.dividedBy(10 ** 18);
   const avgPrice: BigNumber = convertOnChainPriceToDisplayPrice(
     onChainAvgPrice,
     minPrice,
     tickSize
   );
-  const realizedCost = onChainRealizedCost.dividedBy(10 ** 18);
-  const unrealizedCost = onChainUnrealizedCost.dividedBy(10 ** 18);
+  let realizedCost = onChainRealizedCost.dividedBy(10 ** 18);
+  let unrealizedCost = onChainUnrealizedCost.dividedBy(10 ** 18);
 
   const lastTradePrice: BigNumber = convertOnChainPriceToDisplayPrice(
     onChainOutcomeValue,
@@ -1493,7 +1496,7 @@ function getTradingPositionFromProfitLossFrame(
       )
     : undefined;
 
-  const unrealized = netPosition
+  let unrealized = netPosition
     .abs()
     .multipliedBy(
       onChainNetPosition.isNegative()
@@ -1501,7 +1504,7 @@ function getTradingPositionFromProfitLossFrame(
         : lastTradePrice.minus(avgPrice)
     );
 
-  const unrealized24Hr = onChain24HrOutcomeValue ? netPosition
+  let unrealized24Hr = onChain24HrOutcomeValue ? netPosition
     .abs()
     .multipliedBy(
       onChainNetPosition.isNegative()
@@ -1516,14 +1519,24 @@ function getTradingPositionFromProfitLossFrame(
       onChainNetPosition.isNegative() ? shortPrice : lastTradePrice
     );
 
-  const realizedPercent = realizedCost.isZero()
-    ? new BigNumber(0)
-    : realizedProfit.dividedBy(realizedCost);
+  if (finalized) {
+    realizedCost = unrealizedCost.plus(realizedCost);
+    realizedProfit = realizedProfit.plus(unrealized);
+    unrealized = new BigNumber(0);
+    unrealized24Hr = new BigNumber(0);
+    unrealizedCost = new BigNumber(0);
+  }
+
   const unrealized24HrPercent = unrealizedCost.isZero() ? new BigNumber(0) : unrealized24Hr.dividedBy(unrealizedCost);
   const unrealizedPercent = unrealizedCost.isZero() ? new BigNumber(0) : unrealized.dividedBy(unrealizedCost);
+
   const totalPercent = realizedProfit
     .plus(unrealized)
     .dividedBy(realizedCost.plus(unrealizedCost));
+
+  const realizedPercent = realizedCost.isZero()
+    ? new BigNumber(0)
+    : realizedProfit.dividedBy(realizedCost);
 
   return {
     timestamp,
