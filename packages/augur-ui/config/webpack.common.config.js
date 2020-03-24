@@ -43,6 +43,12 @@ module.exports = {
     modules: ["node_modules", PATHS.APP],
     extensions: [".html", ".less", ".json", ".js", ".jsx", ".ts", ".tsx"],
     alias: {
+      assets: path.resolve(PATHS.APP, "assets"),
+      config: path.resolve(PATHS.APP, "config"),
+      modules: path.resolve(PATHS.APP, "modules"),
+      reducers: path.resolve(PATHS.APP, "reducers"),
+      services: path.resolve(PATHS.APP, "services"),
+      utils: path.resolve(PATHS.APP, "utils"),
       test: PATHS.TEST,
       assertions: path.resolve(PATHS.TEST, "assertions")
     },
