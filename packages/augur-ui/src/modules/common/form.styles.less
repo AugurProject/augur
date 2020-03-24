@@ -609,9 +609,14 @@
 
 .Additional {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  justify-content: left;
+  text-align: left;
+
+  > p {
+    > span {
+      padding-right: 0.25rem;
+    }
+  }
 
   @media @breakpoint-mobile {
     justify-content: center;

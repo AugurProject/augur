@@ -10,6 +10,7 @@ export const POLITICS = 'Politics';
 export const FINANCE = 'Finance';
 export const ENTERTAINMENT = 'Entertainment';
 export const CRYPTO = 'Crypto';
+export const MEDICAL = 'Medical';
 export const USD = 'USD';
 export const USDT = 'USDT';
 export const EUR = 'EUR';
@@ -52,7 +53,7 @@ export const DOUBLES = 'Doubles';
 const FRIDAY_DAY_OF_WEEK = 5;
 const SATURDAY_DAY_OF_WEEK = 6;
 const SUNDAY_DAY_OF_WEEK = 0;
-
+const SECONDS_IN_A_DAY = 86400;
 interface TimezoneDateObject {
   formattedUtc: string;
   formattedTimezone: string;
@@ -163,6 +164,7 @@ export interface TemplateValidation {
   afterTuesdayDateNoFriday: number[];
   noAdditionalOutcomes: boolean;
   hoursAfterEstimatedStartTime: number;
+  daysAfterStartDate: number;
 }
 
 export interface TemplateValidationHash {
@@ -217,6 +219,7 @@ export interface TemplateInput {
     };
   };
   noSort: boolean;
+  daysAfterDateStart: number;
 }
 
 export interface RetiredTemplate {
@@ -419,6 +422,17 @@ function estimatedDateTimeAfterMarketEndTime(
   // add number of hours to estimated start timestamp then compare to market event expiration
   const secondsAfterEst = hoursAfterEstimatedStartTime * 60 * 60;
   return (Number(input.timestamp) + secondsAfterEst) > Number(endTime);
+}
+function daysRequiredAfterStartDate(
+  inputs: ExtraInfoTemplateInput[],
+  daysAfterStartDate: number,
+  endTime: number
+) {
+  const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
+  if (!input) return false;
+  // add number of hours to estimated start timestamp then compare to market event expiration
+  const secondsAfterStartDate = SECONDS_IN_A_DAY * daysAfterStartDate;
+  return (Number(input.timestamp) + secondsAfterStartDate) >= Number(endTime);
 }
 
 function dateStartAfterMarketEndTime(
@@ -659,6 +673,18 @@ export const isTemplateMarket = (
     ) {
       errors.push(
         'estimated schedule date time is after market event expiration endTime'
+      );
+      return false;
+    }
+    if (
+      !daysRequiredAfterStartDate(
+        template.inputs,
+        validation.daysAfterStartDate,
+        new BigNumber(endTime).toNumber()
+      )
+    ) {
+      errors.push(
+        'start date in question is not the required number of days before market event expiration endTime'
       );
       return false;
     }

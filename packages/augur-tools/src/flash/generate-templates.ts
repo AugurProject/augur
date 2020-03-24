@@ -84,6 +84,7 @@ const generateValidations = (
     afterTuesdayDateNoFriday: null,
     noAdditionalOutcomes: false,
     hoursAfterEstimatedStartTime: null,
+    daysAfterStartDate: null,
   };
   const newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -126,6 +127,7 @@ const addTemplates = (
         placeholderValues: getPlaceholderValues(t.inputs),
         afterTuesdayDatenoFriday: getInputsAfterTuesdayDateNoFriday(t.inputs),
         hoursAfterEstimatedStartTime: getHoursAfterEstimatedStartTime(t.inputs),
+        daysAfterStartDate: getHoursAfterStartdate(t.inputs),
         noAdditionalOutcomes: t.noAdditionalUserOutcomes,
       };
     });
@@ -150,6 +152,11 @@ function getRequiredOutcomes(inputs: TemplateInput[]) {
 function getHoursAfterEstimatedStartTime(inputs: TemplateInput[]): number {
   return (inputs
     .find(i => i.type === TemplateInputType.ESTDATETIME) || {}).hoursAfterEst;
+}
+
+function getHoursAfterStartdate(inputs: TemplateInput[]): number {
+  return (inputs
+    .find(i => i.type === TemplateInputType.DATESTART) || {}).daysAfterDateStart;
 }
 
 function listToRegEx(values: string[]) {

@@ -1545,5 +1545,27 @@ export const setCategories: SortedGroup[] = [
       { value: CUSTOM, label: CUSTOM },
     ],
   },
+  {
+    value: 'Medical',
+    label: 'Medical',
+    subGroup: [
+      {
+        value: 'Virus',
+        label: 'Virus',
+      },
+      {
+        value: 'Bacteria',
+        label: 'Bacteria',
+      },
+      {
+        value: 'Covid-19',
+        label: 'Covid-19',
+      },
+      {
+        value: 'Pandemic',
+        label: 'Pandemic'
+      }
+    ]
+  },
   { value: CUSTOM, label: CUSTOM },
 ];
