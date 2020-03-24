@@ -259,9 +259,7 @@ export default class Review extends React.Component<
     const totalEth = formatEther(createBigNumber(s.gasCost ? s.gasCost.value : 0));
 
     // Total Gas in DAI
-    console.log('s.gasCost', s.gasCost && s.gasCost.toString());
     const totalGasInDai = displayGasInDai(createBigNumber(s.gasCost ? s.gasCost : 0));
-    console.log('totalGasInDai', totalGasInDai && totalGasInDai.toString());
 
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];
