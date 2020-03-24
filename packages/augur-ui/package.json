@@ -179,7 +179,7 @@
     "typescript": "3.7.5",
     "typings-for-css-modules-loader": "1.7.0",
     "watchify": "3.11.1",
-    "webpack": "4.40.2",
+    "webpack": "4.42.1",
     "webpack-bundle-analyzer": "^3.5.1",
     "webpack-cli": "3.3.9",
     "webpack-deadcode-plugin": "0.1.12",

@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const DeadCodePlugin = require("webpack-deadcode-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WorkerPlugin = require('worker-plugin');
 
@@ -9,9 +10,10 @@ const GitRevisionPlugin = require("git-revision-webpack-plugin");
 const gitRevisionPlugin = new GitRevisionPlugin();
 
 const PATHS = {
-  BUILD: path.resolve(__dirname, "../build"),
   APP: path.resolve(__dirname, "../src"),
+  BUILD: path.resolve(__dirname, "../build"),
   TEST: path.resolve(__dirname, "../test"),
+  WASM: path.resolve(__dirname, "../../../node_modules/@0x/mesh-browser/wasm"),
   ORBIT: path.resolve(__dirname, "../../orbit-web"),
 };
 
@@ -31,6 +33,7 @@ module.exports = {
     ],
   },
   output: {
+    pathinfo: false,
     filename: "[name].[chunkhash].js",
     chunkFilename: "[name].[chunkhash].js",
     path: PATHS.BUILD,
@@ -58,17 +61,18 @@ module.exports = {
         test: /\.tsx?$/,
         loader: "ts-loader",
         options: {
+          experimentalWatchApi: true,
           projectReferences: true,
-          transpileOnly: (process.env.TYPE_CHECKING !== "true")
+          transpileOnly: (process.env.TYPE_CHECKING !== "true"),
         }
       },
-      {
-        test: /\.js$/,
-        use: ["source-map-loader"],
-        enforce: "pre",
-        include: /@augurproject\/.*/,
-        exclude: /node_modules\/.*/,
-      },
+      //{
+      //  test: /\.js$/,
+      //  use: ["source-map-loader"],
+      //  enforce: "pre",
+      //  include: /@augurproject\/.*/,
+      //  exclude: /node_modules\/.*/,
+      //},
       {
         test: /npm-cli|node-hid/,
         loader: "null-loader"
@@ -111,6 +115,20 @@ module.exports = {
       }
     ]
   },
+  optimization: {
+    // https://webpack.js.org/configuration/optimization/#optimization-usedexports
+    // `unusedExports: true` is required by DeadCodePlugin
+    usedExports: true,
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /node_modules\/(?!@augurproject)/,
+          name: 'vendor',
+          chunks: 'all',
+        }
+      }
+    }
+  },
   plugins: [
     new WorkerPlugin({
       globalObject: 'self'
@@ -120,6 +138,10 @@ module.exports = {
       {
         from: path.resolve(PATHS.APP, "StableIPFSLoader.html"),
         to: path.resolve(PATHS.BUILD, "StableIPFSLoader.html")
+      },
+      {
+        from: path.resolve(PATHS.WASM, "main.wasm"),
+        to: path.resolve(PATHS.BUILD, "zerox.wasm")
       },
       {
         from: path.resolve(PATHS.APP, "config/manifest.json"),
@@ -170,7 +192,6 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       "process.env": {
-        GETH_PASSWORD: JSON.stringify(process.env.GETH_PASSWORD),
         ETHEREUM_NETWORK: JSON.stringify(process.env.ETHEREUM_NETWORK || "local"),
         AUTO_LOGIN: process.env.AUTO_LOGIN || false,
 
@@ -180,13 +201,12 @@ module.exports = {
         ENABLE_MAINNET: process.env.ENABLE_MAINNET || false,
         CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
       }
-    })
+    }),
   ],
   node: {
     fs: "empty",
     net: "empty",
     tls: "empty",
     child_process: "empty"
-  },
-  devtool: "eval"
+  }
 };
