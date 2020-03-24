@@ -1508,6 +1508,111 @@ export const Entertainment = (
   </svg>
 );
 
+export const Medical = (
+  <svg
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g clipPath="url(#clip0)">
+      <path
+        d="M8.33813 30V34.7362"
+        stroke="#D7DDE0"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6.01978 32.3682H10.6567"
+        stroke="#D7DDE0"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3.70142 19.3333H12.9752"
+        stroke="#D7DDE0"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6.01981 22.5208V27.257L1.38293 31.9932V37.9135H15.2936V31.9932L10.6567 27.257V22.5208"
+        stroke="#D7DDE0"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M19.5875 12.4657L14.6859 3.97591"
+        stroke="#D7DDE0"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M30.2283 22.4934L27.8026 23.8939"
+        stroke="#D7DDE0"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M28.1276 18.855L24.8616 20.7406"
+        stroke="#D7DDE0"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M26.027 15.2163L23.6013 16.6168"
+        stroke="#D7DDE0"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M27.5715 30.4958L31.0726 36.56"
+        stroke="#D7DDE0"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+      />
+      <path
+        d="M34.711 34.4592L31.2099 28.395"
+        stroke="#D7DDE0"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+      />
+      <path
+        d="M37.8805 24.5437L20.9008 34.3469"
+        stroke="#D7DDE0"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M36.5304 33.4089L29.2534 37.6103"
+        stroke="#D7DDE0"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M20.2416 9.9436L16.6331 12.0269"
+        stroke="#D7DDE0"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M25.7522 31.5462L16.449 15.4325C16.1729 14.9543 16.3368 14.3427 16.815 14.0665L22.36 10.8651C22.8383 10.589 23.4499 10.7529 23.726 11.2312L33.0292 27.3448"
+        stroke="#D7DDE0"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="square"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0">
+        <path d="M0 0H40V40H0V0Z" fill="white" />
+      </clipPath>
+    </defs>
+  </svg>
+);
 export const World = (
   <svg viewBox="0 0 48 48" fill="none">
     <path

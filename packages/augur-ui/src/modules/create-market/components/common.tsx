@@ -61,6 +61,7 @@ import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
 } from 'modules/reporting/common';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 
 export interface HeaderProps {
   text: string;
@@ -867,10 +868,26 @@ export const InputFactory = (props: InputFactoryProps) => {
     return (
       <DatePickerSelector
         onChange={value => {
-          input.setEndTime = value;
-          const stringValue = convertUnixToFormattedDate(Number(value))
+          const startOfDay = moment
+          .unix(value)
+          .startOf('day')
+          .unix();
+          input.setEndTime = startOfDay;
+          const stringValue = convertUnixToFormattedDate(Number(startOfDay))
             .formattedSimpleData;
           updateData(stringValue);
+          if (input.daysAfterDateStart) {
+            const newEndTime = SECONDS_IN_A_DAY.times(input.daysAfterDateStart).plus(startOfDay).toNumber()
+            onChange('updateEventExpiration', {
+              setEndTime: newEndTime,
+              hour: '12',
+              minute: '00',
+              meridiem: 'AM',
+              offset: 0,
+              offsetName: '',
+              timezone: '',
+            });
+          }
         }}
         currentTimestamp={currentTimestamp}
         placeholder={input.placeholder}
@@ -1612,13 +1629,10 @@ export const CategoricalTemplateDropdowns = (
           data,
         });
       });
-      if (source && source.userInput !== undefined) {
+      !isDepDropdown && setdropdownList(createTemplateValueList(depDropdownInput.values));
+      if (isDepDropdown && source && source.userInput !== undefined) {
         setSourceUserInput(source.userInput);
-        setdropdownList(
-          isDepDropdown
-            ? createTemplateValueList(depDropdownInput.values[source.userInput])
-            : createTemplateValueList(depDropdownInput.values)
-        );
+        setdropdownList(createTemplateValueList(depDropdownInput.values[source.userInput]));
       }
     } else {
       if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
@@ -1626,15 +1640,10 @@ export const CategoricalTemplateDropdowns = (
           dispatch({ type: ACTIONS.ADD, data: i })
         );
       }
-
       if (isDepDropdown && sourceUserInput !== source.userInput) {
         setSourceUserInput(source.userInput);
         dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
-        setdropdownList(
-          isDepDropdown
-            ? createTemplateValueList(depDropdownInput.values[source.userInput])
-            : createTemplateValueList(depDropdownInput.values)
-        );
+        setdropdownList(createTemplateValueList(depDropdownInput.values[source.userInput]));
         setSourceUserInput(source && source.userInput);
       }
     }
