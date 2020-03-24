@@ -4,12 +4,13 @@ import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 
 import { SecondaryButton, PrimaryButton } from 'modules/common/buttons';
-import { Ticket, Trash, ThickChevron, CheckMark } from 'modules/common/icons';
+import { Ticket, Trash, ThickChevron, CheckMark, LoadingEllipse } from 'modules/common/icons';
 import { MY_POSITIONS } from 'modules/routes/constants/views';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import {
   SelectedContext,
   BetslipStepContext,
+  BET_STATUS,
 } from 'modules/trading/hooks/betslip';
 import { formatDai } from 'utils/format-number';
 
@@ -19,11 +20,12 @@ export interface EmptyStateProps {
   selectedTab: number;
 }
 
-export const EmptyState = ({ emptyHeader }) => {
+export const EmptyState = () => {
+  const { header } = useContext(SelectedContext);
   return (
     <>
       <div>{Ticket}</div>
-      <h3>{emptyHeader}</h3>
+      <h3>{header === 0 ? `Betslip is empty` : `You don't have any bets`}</h3>
       <h4>Need help placing a bet?</h4>
       <SecondaryButton
         text="View tutorial"
@@ -124,22 +126,61 @@ export const SportsBet = ({ bet }) => {
 };
 
 export const SportsMyBet = ({ bet }) => {
-  const { outcome, odds, wager, cashOutBet, isOpen } = bet;
-  console.log(bet);
+  const { outcome, odds, wager, cashOutBet, status, amountFilled, toWin } = bet;
+  const {
+    PENDING,
+    FILLED,
+    PARTIALLY_FILLED,
+    CLOSED,
+    FAILED,
+  } = BET_STATUS;
+  let icon = Trash;
+  let classToApply = Styles.FILLED;
+  let message = null;
+  let messageAction = null;
+  let wagerToShow = wager;
+  let cashoutDisabled = true;
+  let cashoutText = 'cashout not available';
+  switch (status) {
+    case FILLED:
+      icon = CheckMark;
+      break;
+    case PARTIALLY_FILLED:
+      icon = ThickChevron;
+      classToApply = Styles.TOGGLABLE;
+      message = `This bet was partially filled. Original wager: ${formatDai(wager).full}`;
+      wagerToShow = amountFilled;
+      cashoutDisabled = true;
+      cashoutText = `Cashout ${formatDai(amountFilled).full}`;
+      break;
+    case PENDING: 
+      icon = LoadingEllipse;
+      classToApply = Styles.PENDING;
+      break;
+    case FAILED:
+      classToApply = Styles.FAILED;
+      message = `Order failed when processing. `
+      messageAction = (<button onClick={() => console.log('resend transaction')}>Retry</button>);
+    default:
+      break;
+  }
   return (
-    <div className={classNames(Styles.SportsMyBet, Styles.Review)}>
+    <div className={classNames(Styles.SportsMyBet, Styles.Review, classToApply)}>
       <header>
         <span>{outcome}</span>
         <span>{odds}</span>
         <button
-          className={classNames({ [Styles.Closed]: !isOpen })}
-          onClick={() => cashOutBet()}
+          className={classNames(classToApply)}
+          onClick={() => console.log('setup actions')}
         >
-          {!isOpen && CheckMark} {isOpen && Trash}
+          {icon}
         </button>
       </header>
-      <LinearPropertyLabel label="wager" value={formatDai(wager)} useFull />
+      <LinearPropertyLabel label="wager" value={formatDai(wagerToShow)} useFull />
       <LinearPropertyLabel label="odds" value={odds} />
+      <LinearPropertyLabel label="to win" value={formatDai(toWin)} useFull />
+      {!!message && <span>{message}{!!messageAction && messageAction}</span>}
+      <button onClick={() => cashOutBet()} disabled={cashoutDisabled}>{cashoutText}</button>
     </div>
   );
 };

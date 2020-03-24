@@ -1159,8 +1159,8 @@ export const LoadingEllipse = (
         y2="9.59998"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stopColor="white" stopOpacity="0" />
-        <stop offset="1" stopColor="white" />
+        <stop stopOpacity="0" />
+        <stop offset="1" />
       </linearGradient>
     </defs>
   </svg>

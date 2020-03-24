@@ -26,7 +26,6 @@ export const Betslip = ({  }: BetslipProps) => {
     selected,
     toggleHeaderSelected,
     toggleSubHeaderSelected,
-    emptyHeader,
   } = useSelected();
   const betslipInfo = useBetslip(selected.header);
   const { betslipAmount, isSelectedEmpty } = betslipInfo;
@@ -58,7 +57,7 @@ export const Betslip = ({  }: BetslipProps) => {
             })}
           >
             {isSelectedEmpty ? (
-              <EmptyState emptyHeader={emptyHeader} />
+              <EmptyState />
             ) : (
               <BetslipStepContext.Provider value={step}>
                 {isMyBets ? (

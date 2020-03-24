@@ -2,11 +2,6 @@ import { useState, useReducer, createContext } from 'react';
 import { getTheme } from 'modules/app/actions/update-app-status';
 import { THEMES } from 'modules/common/constants';
 
-export const BETSLIP_OPTIONS = {
-  0: { label: 'Betslip', emptyHeader: `Betslip is empty` },
-  1: { label: 'My Bets', emptyHeader: `You don't have any bets` },
-};
-
 const BETSLIP_AMOUNT_ACTIONS = {
   INC_BETSLIP_AMOUNT: 'INC_BETSLIP_AMOUNT',
   DEC_BETSLIP_AMOUNT: 'DEC_BETSLIP_AMOUNT',
@@ -103,6 +98,14 @@ const MOCK_TEST_BETSLIP_ORDER_STATE = {
   },
 };
 
+export const BET_STATUS = {
+  PENDING: 'PENDING',
+  FILLED: 'FILLED',
+  PARTIALLY_FILLED: 'PARTIALLY_FILLED',
+  CLOSED: 'CLOSED',
+  FAILED: 'FAILED',
+};
+
 const MOCK_TEST_MY_BETS_STATE = {
   '0x01': {
     description: 'CHICAGO BULLS vs BROOKLYN NETS, SPREAD',
@@ -113,19 +116,19 @@ const MOCK_TEST_MY_BETS_STATE = {
         wager: '10.00',
         toWin: '9.52',
         marketId: '0x01',
-        isOpen: true,
         amountFilled: '10.00',
-        amountWon: '9.52'
+        amountWon: '0',
+        status: BET_STATUS.FILLED
       },
       {
         outcome: 'Brooklyn Nets, -5',
         odds: '+115',
-        wager: '10.00',
+        wager: '100.00',
         toWin: '19.52',
         marketId: '0x01',
-        isOpen: true,
         amountFilled: '10.00',
-        amountWon: '19.52'
+        amountWon: '0',
+        status: BET_STATUS.PARTIALLY_FILLED,
       },
     ],
   },
@@ -138,9 +141,24 @@ const MOCK_TEST_MY_BETS_STATE = {
         wager: '10.00',
         toWin: '9.09',
         marketId: '0x02',
-        isOpen: true,
         amountFilled: '10.00',
-        amountWon: '9.09'
+        amountWon: '9.09',
+        status: BET_STATUS.PENDING
+      },
+    ],
+  },
+  '0x03': {
+    description: 'NEW YORK KNICKS vs UTAH JAZZ, SPREAD',
+    orders: [
+      {
+        outcome: 'Utah Jazz, +10.5',
+        odds: '-110',
+        wager: '10.00',
+        toWin: '9.09',
+        marketId: '0x03',
+        amountFilled: '0',
+        amountWon: '0',
+        status: BET_STATUS.FAILED
       },
     ],
   },
@@ -221,7 +239,6 @@ export const useSelected = (defaultSelected = { header: 0, subHeader: 0 }) => {
 
   return {
     selected,
-    ...BETSLIP_OPTIONS[selected.header],
     toggleHeaderSelected: selectedClicked => {
       const isSports = getTheme() === THEMES.SPORTS;
       if (selectedClicked === nextSelection)

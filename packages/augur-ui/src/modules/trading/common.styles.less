@@ -1,5 +1,11 @@
 @import (reference) '~assets/styles/shared';
 
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .HeaderTabs {
@@ -93,6 +99,10 @@
     width: 100%;
     max-height: 65vh;
     overflow: auto;
+
+    > div:last-of-type {
+      margin-bottom: @size-8;
+    }
   }
 
   .SportsMarketBets {
@@ -210,14 +220,112 @@
   .SportsMyBet {
     .SportsBet;
 
-    > header > button {
-      > svg {
-        margin: 0;
+    > div:last-of-type {
+      display: none;
+    }
+
+    > button {
+      .text-10-semi-bold;
+
+      display: none;
+      color: var(--color-primary-text);
+      text-transform: uppercase;
+      border-radius: @border-radius-default;
+      border: @size-1 solid var(--color-inactive-text);
+      padding: @size-3 @size-6;
+    }
+
+    > span {
+      .text-12;
+
+      display: flex;
+      flex-flow: row;
+      grid-column: span 2;
+      color: var(--color-primary-text);
+    }
+
+    &.FAILED {
+      background: var(--color-error-10);
+
+      > div:last-of-type {
+        display: flex;
       }
 
-      &.Closed {
-        > svg > path {
-          stroke: var(--color-open);
+      > span {
+        color: var(--color-error);
+
+        > button {
+          .text-12-bold;
+
+          cursor: pointer;
+        }
+      }
+    }
+
+    &.TOGGLABLE {
+      > button {
+        display: flex;
+        grid-column: span 2;
+        justify-self: flex-end;
+      }
+    }
+
+    > header > button {
+      &.FILLED {
+        > svg {
+          margin: 0;
+  
+          > path {
+            stroke: var(--color-open);
+          }
+        }
+      }
+
+      &.FAILED {
+        > svg {
+          margin: 0;
+  
+          > path {
+            stroke: var(--color-error);
+          }
+        }
+      }
+
+      &.PENDING {
+        > svg {
+          animation: spin 2s linear infinite;
+          height: @size-20;
+          width: @size-20;
+          margin: 0;
+
+          > path {
+            stroke: var(--color-reporting);
+          }
+
+          LinearGradient > stop {
+            stop-color: var(--color-reporting);
+          }
+        }
+      }
+
+      &.TOGGLABLE {
+        align-items: center;
+        justify-content: center;
+        border: @size-1 solid var(--color-inactive-text);
+        border-radius: @border-radius-soft;
+        display: flex;
+        height: @size-20;
+        width: @size-20;
+
+        > svg {
+          width: @size-10;
+          height: @size-12;
+          margin: 0;
+
+          > path {
+            stroke: none;
+            fill: var(--color-primary-text);
+          }
         }
       }
     }
