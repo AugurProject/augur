@@ -67,7 +67,6 @@ interface ConfirmProps {
   numOutcomes: number;
   tradingTutorial?: boolean;
   GsnEnabled: boolean;
-  gsnUnavailable: boolean;
   initialLiquidity: boolean;
   initializeGsnWallet: Function;
   walletStatus: string;
@@ -101,7 +100,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasPrice,
       availableEth,
       availableDai,
-      gsnUnavailable,
       walletStatus,
       sweepStatus,
     } = this.props;
@@ -126,8 +124,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ) ||
       !createBigNumber(prevProps.availableDai).eq(
         createBigNumber(availableDai)
-      ) ||
-      prevProps.gsnUnavailable !== gsnUnavailable
+      )
     ) {
       this.setState({
         messages: this.constructMessages(this.props),
@@ -145,7 +142,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableDai,
       tradingTutorial,
       GsnEnabled,
-      gsnUnavailable,
       initializeGsnWallet,
       walletStatus,
       marketType,
@@ -260,7 +256,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     }
 
     // Show when GSN wallet initialization is successful
-    if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && sweepStatus === TXEventName.Success && !tradingTutorial && numFills === 0) {
+    if (walletStatus === WALLET_STATUS_VALUES.CREATED && sweepStatus === TXEventName.Success && !tradingTutorial && numFills === 0) {
       messages = {
         header: 'Confirmed',
         type: WARNING,
