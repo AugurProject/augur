@@ -233,6 +233,10 @@
       border-radius: @border-radius-default;
       border: @size-1 solid var(--color-inactive-text);
       padding: @size-3 @size-6;
+
+      &:disabled {
+        opacity: .5;
+      }
     }
 
     > span {
@@ -267,6 +271,37 @@
         display: flex;
         grid-column: span 2;
         justify-self: flex-end;
+
+        &:first-of-type {
+          display: none;
+        }
+      }
+    }
+
+    &.Expanded {
+      background: var(--color-page-background);
+
+      > header > button > svg {
+        transform: rotate(180deg);
+      }
+
+      > div {
+        display: flex;
+      }
+
+      > button {
+        display: flex;
+        grid-column: auto;
+
+        &:first-of-type {
+          border: none;
+          justify-self: flex-start;
+          background: transparent;
+        }
+
+        &:last-of-type {
+          justify-content: center;
+        }
       }
     }
 

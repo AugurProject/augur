@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 
-import { SecondaryButton, PrimaryButton } from 'modules/common/buttons';
+import { SecondaryButton, PrimaryButton, ExternalLinkButton } from 'modules/common/buttons';
 import { Ticket, Trash, ThickChevron, CheckMark, LoadingEllipse } from 'modules/common/icons';
 import { MY_POSITIONS } from 'modules/routes/constants/views';
 import { LinearPropertyLabel } from 'modules/common/labels';
@@ -126,7 +126,9 @@ export const SportsBet = ({ bet }) => {
 };
 
 export const SportsMyBet = ({ bet }) => {
-  const { outcome, odds, wager, cashOutBet, status, amountFilled, toWin } = bet;
+  const [expanded, setExpanded] = useState(false);
+
+  const { outcome, odds, wager, cashOutBet, status, amountFilled, toWin, dateUpdated } = bet;
   const {
     PENDING,
     FILLED,
@@ -141,17 +143,19 @@ export const SportsMyBet = ({ bet }) => {
   let wagerToShow = wager;
   let cashoutDisabled = true;
   let cashoutText = 'cashout not available';
+  let iconAction = () => console.log('setup actions');
   switch (status) {
     case FILLED:
       icon = CheckMark;
+      iconAction = () => setExpanded(!expanded);
+      cashoutText = `Cashout ${formatDai(amountFilled).full}`;
+      cashoutDisabled = false;
       break;
     case PARTIALLY_FILLED:
       icon = ThickChevron;
       classToApply = Styles.TOGGLABLE;
       message = `This bet was partially filled. Original wager: ${formatDai(wager).full}`;
       wagerToShow = amountFilled;
-      cashoutDisabled = true;
-      cashoutText = `Cashout ${formatDai(amountFilled).full}`;
       break;
     case PENDING: 
       icon = LoadingEllipse;
@@ -165,13 +169,13 @@ export const SportsMyBet = ({ bet }) => {
       break;
   }
   return (
-    <div className={classNames(Styles.SportsMyBet, Styles.Review, classToApply)}>
+    <div className={classNames(Styles.SportsMyBet, Styles.Review, classToApply, { [Styles.Expanded]: expanded })}>
       <header>
         <span>{outcome}</span>
         <span>{odds}</span>
         <button
           className={classNames(classToApply)}
-          onClick={() => console.log('setup actions')}
+          onClick={() => iconAction()}
         >
           {icon}
         </button>
@@ -179,7 +183,12 @@ export const SportsMyBet = ({ bet }) => {
       <LinearPropertyLabel label="wager" value={formatDai(wagerToShow)} useFull />
       <LinearPropertyLabel label="odds" value={odds} />
       <LinearPropertyLabel label="to win" value={formatDai(toWin)} useFull />
+      <LinearPropertyLabel label="Date" value={dateUpdated.formattedLocalShortWithUtcOffset} />
       {!!message && <span>{message}{!!messageAction && messageAction}</span>}
+      <ExternalLinkButton
+        URL={null}
+        label="view tx"
+      />
       <button onClick={() => cashOutBet()} disabled={cashoutDisabled}>{cashoutText}</button>
     </div>
   );

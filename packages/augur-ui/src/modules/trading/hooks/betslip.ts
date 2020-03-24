@@ -1,6 +1,7 @@
 import { useState, useReducer, createContext } from 'react';
 import { getTheme } from 'modules/app/actions/update-app-status';
 import { THEMES } from 'modules/common/constants';
+import { formatDate } from 'utils/format-date';
 
 const BETSLIP_AMOUNT_ACTIONS = {
   INC_BETSLIP_AMOUNT: 'INC_BETSLIP_AMOUNT',
@@ -106,6 +107,8 @@ export const BET_STATUS = {
   FAILED: 'FAILED',
 };
 
+const now = new Date();
+
 const MOCK_TEST_MY_BETS_STATE = {
   '0x01': {
     description: 'CHICAGO BULLS vs BROOKLYN NETS, SPREAD',
@@ -118,7 +121,8 @@ const MOCK_TEST_MY_BETS_STATE = {
         marketId: '0x01',
         amountFilled: '10.00',
         amountWon: '0',
-        status: BET_STATUS.FILLED
+        status: BET_STATUS.FILLED,
+        dateUpdated: formatDate(now),
       },
       {
         outcome: 'Brooklyn Nets, -5',
@@ -129,6 +133,7 @@ const MOCK_TEST_MY_BETS_STATE = {
         amountFilled: '10.00',
         amountWon: '0',
         status: BET_STATUS.PARTIALLY_FILLED,
+        dateUpdated: formatDate(now),
       },
     ],
   },
@@ -143,7 +148,8 @@ const MOCK_TEST_MY_BETS_STATE = {
         marketId: '0x02',
         amountFilled: '10.00',
         amountWon: '9.09',
-        status: BET_STATUS.PENDING
+        status: BET_STATUS.PENDING,
+        dateUpdated: formatDate(now),
       },
     ],
   },
@@ -158,7 +164,8 @@ const MOCK_TEST_MY_BETS_STATE = {
         marketId: '0x03',
         amountFilled: '0',
         amountWon: '0',
-        status: BET_STATUS.FAILED
+        status: BET_STATUS.FAILED,
+        dateUpdated: formatDate(now),
       },
     ],
   },
