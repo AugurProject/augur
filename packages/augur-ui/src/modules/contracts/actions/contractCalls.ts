@@ -306,13 +306,12 @@ export function getDai() {
   return contracts.cashFaucet.faucet(new BigNumber('1000000000000000000000'));
 }
 
-export function fundGsnWallet(gsnWalletAddress: string) {
+export function fundGsnWallet() {
   const amount = new BigNumber('1000000000000000000000');
   const { contracts } = augurSdk.get();
 
   augurSdk.client.setUseRelay(false);
   contracts.cashFaucet.faucet(amount).then(() => {
-    contracts.cash.transfer(gsnWalletAddress, amount);
     augurSdk.client.setUseRelay(true);
   })
 }
