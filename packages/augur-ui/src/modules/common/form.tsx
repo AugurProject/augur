@@ -496,6 +496,7 @@ export const DropdownInputGroup = ({
         autoCompleteList={autoCompleteList}
         onChange={onChangeInput}
         errorMessage={!showDropdown ? errorMessage : ''}
+        onAutoCompleteListSelected={null}
       />
     )}
     {removable && !disabled && value !== '' && !showText && (
@@ -1341,7 +1342,11 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
         value,
         showList,
       },
-      () => showList && this.props.onAutoCompleteListSelected(value)
+      () => {
+        if (showList)  {
+          !!this.props.onAutoCompleteListSelected ? this.props.onAutoCompleteListSelected(value) : this.props.onChange(value);
+        }
+      }
     );
   };
 

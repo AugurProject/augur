@@ -64,27 +64,6 @@ module zeroX {
   zerox_rpc_tg_arn       = module.network.zerox_rpc_tg_arn
 }
 
-module gnosis {
-  source = "./../../modules/service-gnosis"
-
-  alb_sg                         = module.network.alb_sg
-  domain                         = var.domain
-  ecs_cluster_arn                = module.ecs-cluster.ecs_cluster_arn
-  ecs_log_group                  = module.ecs-cluster.ecs_log_group
-  environment                    = var.environment
-  private_subnets                = module.network.private_subnets
-  public_subnets                 = module.network.public_subnets
-  region                         = var.region
-  service_discovery_namespace_id = module.ecs-cluster.service_discover_namespace_id
-  vpc_id                         = module.network.vpc_id
-  vpc_sg                         = module.network.vpc_default_sg
-
-  ethereum_node_url     = var.ethereum_node_url
-  gnosis_safe_address   = module.app-config.gnosis_safe_address
-  gnosis_web_tg_arn     = module.network.gnosis_web_tg_arn
-  proxy_factory_address = module.app-config.proxy_factory_address
-}
-
 module ipfs {
   source = "./../../modules/service-ipfs"
 

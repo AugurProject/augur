@@ -11,6 +11,7 @@ export const setCategories: SortedGroup[] = [
         value: 'Football (Soccer)',
         label: 'Football (Soccer)',
         subGroup: [
+          { value: 'Mens Leagues', label: 'Mens Leagues'},
           { value: 'Copa America', label: 'Copa America' },
           { value: 'Africa Cup of Nations', label: 'Africa Cup of Nations' },
           { value: 'UEFA Nations League', label: 'UEFA Nations League' },

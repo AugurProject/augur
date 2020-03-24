@@ -1,4 +1,3 @@
-import { deployContracts } from '../libs/blockchain';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH } from '../constants';
@@ -8,6 +7,7 @@ import {
   abiV1,
   environments,
   buildConfig,
+  printConfig,
 } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import moment from 'moment';
@@ -15,7 +15,6 @@ import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ethers } from 'ethers';
 import {
-  calculatePayoutNumeratorsArray,
   QUINTILLION,
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
@@ -29,14 +28,14 @@ import { fork } from './fork';
 import { dispute } from './dispute';
 import { MarketList, MarketOrderBook } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
-import { spawn, spawnSync, execSync } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
-import { ContractAPI } from '../libs/contract-api';
+import { ContractAPI, deployContracts } from '..';
 import { OrderBookShaper, OrderBookConfig } from './orderbook-shaper';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { formatAddress, sleep, waitForSigint } from "./util";
+import { formatAddress, sleep, waitForSigint } from './util';
 import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
 import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
 
@@ -85,7 +84,7 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: 'show-config',
     async call(this: FlashSession) {
-      this.log(JSON.stringify(this.config, null, 2));
+      printConfig(this.config);
     }
   });
 
@@ -2028,23 +2027,23 @@ export function addScripts(flash: FlashSession) {
           await refreshSDKConfig(); // add pop-geth addresses to global
         }
 
-        this.log(`Waiting for Geth to start up`);
+        this.log('Waiting for Geth to start up');
         await sleep(10000); // give geth some time to start
         refreshSDKConfig();
         this.config = buildConfig('local');
         this.provider = flash.makeProvider(this.config);
 
         if (dev) {
-          this.log(`Deploying contracts`);
+          this.log('Deploying contracts');
           const deployMethod = fake ? 'fake-all' : 'normal-all';
           await this.call(deployMethod, { createMarkets: true, parallel: true });
         }
 
-        this.log(`Building`);
+        this.log('Building');
         await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
         // Run the GSN relay
-        this.log(`Running GSN relayer`);
+        this.log('Running GSN relayer');
         spawn('yarn', ['run:gsn'], {stdio: 'inherit'});
 
         env = {
@@ -2095,49 +2094,6 @@ export function addScripts(flash: FlashSession) {
       wsServer.close();
       wssServer.close();
     }
-  });
-
-  flash.addScript({
-    name: '0x-docker',
-    async call(this: FlashSession) {
-      if (this.noProvider()) return null;
-
-      // const ethNode = this.network.http;
-      const ethNode = 'http://geth:8545';
-      console.log(`Starting 0x mesh. chainId=${this.config.networkId} ethnode=${ethNode}`);
-
-      const zeroXTradeAddress = formatAddress(this.config.addresses.ZeroXTrade, { prefix: false, lower: true });
-      const mesh = spawn('docker', [
-        'run',
-        '--rm',
-        '--network', 'augur',
-        '--name', '0x',
-        '-p', '60557:60557', // rpc_port_number
-        '-p', '60558:60558', // P2PTCPPort
-        '-p', '60559:60559', // P2PWebSocketsPort
-        '-e', `ETHEREUM_CHAIN_ID=${this.config.networkId}`,
-        '-e', `ETHEREUM_RPC_URL=${ethNode}`,
-        '-e', 'USE_BOOTSTRAP_LIST=false',
-        '-e', 'BLOCK_POLLING_INTERVAL=1s',
-        '-e', 'ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120', // needed when polling interval is 1s
-        '-e', `CUSTOM_CONTRACT_ADDRESSES=${JSON.stringify(this.config.addresses)}`,
-        '-e', `CUSTOM_ORDER_FILTER={"properties":{"makerAssetData":{"pattern":".*${zeroXTradeAddress}.*"}}}`,
-        '-e', 'VERBOSITY=4', // 5=debug 6=trace
-        '-e', 'RPC_ADDR=0x:60557', // need to use "0x" network
-        '0xorg/mesh:9.0.0',
-      ]);
-
-      mesh.on('error', console.error);
-      mesh.on('exit', (code, signal) => {
-        console.log(`Exiting 0x mesh with code=${code} and signal=${signal}`)
-      });
-      mesh.stdout.on('data', (data) => {
-        console.log(data.toString());
-      });
-      mesh.stderr.on('data', (data) => {
-        console.error(data.toString());
-      });
-    },
   });
 
   flash.addScript({

@@ -35,8 +35,11 @@ export const loadMarketOrderBook = (
     return callback('must specify market ID');
   }
   const { loginAccount } = getState();
+  const augur = augurSdk.get();
+  const expirationCutoffSeconds = await augur.getGasConfirmEstimate();
+  console.log('expirationCutoffSeconds', expirationCutoffSeconds)
   let params = loginAccount.address
-    ? { marketId, account: loginAccount.address }
+    ? { marketId, account: loginAccount.address, expirationCutoffSeconds }
     : { marketId };
   const Augur = augurSdk.get();
   const marketOrderBook = await Augur.getMarketOrderBook(params);

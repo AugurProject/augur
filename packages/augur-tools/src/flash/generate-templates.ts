@@ -223,7 +223,7 @@ function getDependencies(
 ): DropdownDependencies {
   return {
     inputSourceId: input.inputSourceId || input.id,
-    inputDestId: input.inputDestId,
+    inputDestIds: input.inputDestIds,
     values: Object.keys(sourceValues).reduce((p, key) => {
       p[key] = sourceValues[key];
       return p;

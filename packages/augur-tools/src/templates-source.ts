@@ -8,6 +8,8 @@ import {
   HORSE_RACING,
   TENNIS,
   SOCCER,
+  MENS_LEAGUES,
+  CUSTOMIZED,
   BASKETBALL,
   NBA,
   NCAA,
@@ -57,6 +59,7 @@ import {
   FIN_INDEXES_CLOSING_OFFSETS,
   FIN_INDEXES_HOLIDAY_CLOSURES,
   FIN_EXCHANGES_HOLIDAY_CLOSURES,
+  SOCCER_LEAGUE_DEP_TEAMS,
 } from './templates-lists';
 
 const YES_NO = 'YesNo';
@@ -983,7 +986,7 @@ export const TEMPLATES = {
                   text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
+                  text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                 },
                 {
                   text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
@@ -1089,7 +1092,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's`,
-                    inputDestId: 3,
+                    inputDestIds: [3],
                     values: LIST_VALUES.MENS_WOMENS,
                     inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
@@ -1135,7 +1138,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's`,
-                    inputDestId: 2,
+                    inputDestIds: [2],
                     values: LIST_VALUES.MENS_WOMENS,
                     inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
@@ -1181,7 +1184,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's`,
-                    inputDestId: 2,
+                    inputDestIds: [2],
                     values: LIST_VALUES.MENS_WOMENS,
                     inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
@@ -1252,7 +1255,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's`,
-                    inputDestId: 2,
+                    inputDestIds: [2],
                     values: LIST_VALUES.MENS_WOMENS,
                     inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
@@ -1338,7 +1341,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's`,
-                    inputDestId: 2,
+                    inputDestIds: [2],
                     values: LIST_VALUES.MENS_WOMENS,
                     inputDestValues: TENNIS_SINGLES_EVENTS,
                   },
@@ -1407,7 +1410,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's/Mixed`,
-                    inputDestId: 3,
+                    inputDestIds: [3],
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
                     inputDestValues: TENNIS_DOUBLES_EVENTS,
                   },
@@ -1453,7 +1456,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's/Mixed`,
-                    inputDestId: 2,
+                    inputDestIds: [2],
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
                     inputDestValues: TENNIS_DOUBLES_EVENTS,
                   },
@@ -1502,7 +1505,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's/Mixed`,
-                    inputDestId: 2,
+                    inputDestIds: [2],
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
                     inputDestValues: TENNIS_DOUBLES_EVENTS,
                   },
@@ -1573,7 +1576,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's`,
-                    inputDestId: 2,
+                    inputDestIds: [2],
                     values: LIST_VALUES.MENS_WOMENS,
                     inputDestValues: TENNIS_DOUBLES_EVENTS,
                   },
@@ -1662,7 +1665,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Men's/Women's/Mixed`,
-                    inputDestId: 2,
+                    inputDestIds: [2],
                     values: LIST_VALUES.TENNIS_MENS_WOMENS,
                     inputDestValues: TENNIS_DOUBLES_EVENTS,
                   },
@@ -1721,38 +1724,62 @@ export const TEMPLATES = {
       },
       [SOCCER]: {
         children: {
-          [MENS]: {
+          [MENS_LEAGUES]: {
             templates: [
               {
                 marketType: CATEGORICAL,
-                question: `Men's Football (Soccer): Which team will win: [0] vs. [1]?`,
-                example: `Men's Football (Soccer): Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `Men's [0]: Which team will win: [1] vs. [2]?`,
+                example: `Men's English Premier League: Which team will win: Manchester City vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    placeholder: `Team A`,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `League`,
+                    inputDestIds: [1, 2],
+                    values: LIST_VALUES.SOCCER_LEAGUES,
+                    inputDestValues: SOCCER_LEAGUE_DEP_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    placeholder: `Team B`,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team A`,
+                    defaultLabel: `Select League First`,
+                    inputSourceId: 0,
+                    values: [],
                   },
                   {
                     id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team B`,
+                    defaultLabel: `Select League First`,
+                    inputSourceId: 0,
+                    values: [],
+                  },
+                  {
+                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Draw`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Unofficial game/Cancelled`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[1]`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[2]`,
                   },
                 ],
                 resolutionRules: {
@@ -1761,10 +1788,10 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
                     },
                     {
-                      text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as "Draw".`,
+                      text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as 'Draw'.`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'.`,
                     },
                     {
                       text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
@@ -1774,43 +1801,57 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Men's Football (Soccer) (Point Spread): [0] to win by more than [1].5 goals over [2]?`,
-                example: `Men's Football (Soccer) (Point Spread): Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Men's [0] (Point Spread): [1] to win by more than [2].5 goals over [3]?`,
+                example: `Men's Ligue 1 (France): Marseille to win by more than 1.5 goals over Lyon?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team A`,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `League`,
+                    inputDestIds: [1, 3],
+                    values: LIST_VALUES.SOCCER_LEAGUES,
+                    inputDestValues: SOCCER_LEAGUE_DEP_TEAMS,
                   },
                   {
                     id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team A`,
+                    defaultLabel: `Select League First`,
+                    inputSourceId: 0,
+                    values: [],
+                  },
+                  {
+                    id: 2,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 2,
-                    type: TemplateInputType.TEXT,
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    defaultLabel: `Select League First`,
+                    inputSourceId: 0,
+                    values: [],
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 4,
-                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] -[1].5`,
-                  },
-                  {
                     id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] +[1].5`,
+                    placeholder: `[1] -[2].5`,
                   },
                   {
                     id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[3] +[2].5`,
+                  },
+                  {
+                    id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Unofficial game/Cancelled`,
                   },
@@ -1821,7 +1862,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'.`,
                     },
                     {
                       text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
@@ -1834,203 +1875,41 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `Men's Football (Soccer) (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
-                example: `Men's Football (Soccer) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `Men's [0] (O/U): [1] vs. [2]: Total goals scored; Over/Under [3].5?`,
+                example: `Men's MLS (USA) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team A`,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `League`,
+                    inputDestIds: [1, 2],
+                    values: LIST_VALUES.SOCCER_LEAGUES,
+                    inputDestValues: SOCCER_LEAGUE_DEP_TEAMS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team B`,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team A`,
+                    defaultLabel: `Select League First`,
+                    inputSourceId: 0,
+                    values: [],
                   },
                   {
                     id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team B`,
+                    defaultLabel: `Select League First`,
+                    inputSourceId: 0,
+                    values: [],
+                  },
+                  {
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
-                    type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 6,
-                    placeholder: `Date time`,
-                  },
-                  {
                     id: 4,
-                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `Over [2].5`,
-                  },
-                  {
-                    id: 5,
-                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `Under [2].5`,
-                  },
-                  {
-                    id: 6,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
-                    },
-                    {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`,
-                    },
-                    {
-                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
-                    },
-                    {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-          [WOMENS]: {
-            templates: [
-              {
-                marketType: CATEGORICAL,
-                question: `Women's Football (Soccer): Which team will win: [0] vs. [1]?`,
-                example: `Women's Football (Soccer): Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    placeholder: `Team A`,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    placeholder: `Team B`,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 6,
-                    placeholder: `Date time`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Draw`,
-                  },
-                  {
-                    id: 4,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
-                    },
-                    {
-                      text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as "Draw".`,
-                    },
-                    {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
-                    },
-                    {
-                      text: `This market is intended to be about two sports teams, if this is not the case, this market should settle as 'Invalid'.`,
-                    },
-                    {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
-                    },
-                  ],
-                },
-              },
-              {
-                marketType: CATEGORICAL,
-                question: `Women's Football (Soccer) (Point Spread): [0] to win by more than [1].5 goals over [2]?`,
-                example: `Women's Football (Soccer) (Point Spread): Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team A`,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.TEXT,
-                    validationType: ValidationType.WHOLE_NUMBER,
-                    placeholder: `Whole #`,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team B`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 6,
-                    placeholder: `Date time`,
-                  },
-                  {
-                    id: 4,
-                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[0] -[1].5`,
-                  },
-                  {
-                    id: 5,
-                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[2] +[1].5`,
-                  },
-                  {
-                    id: 6,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
-                    },
-                    {
-                      text: `'If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled".`,
-                    },
-                    {
-                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
-                    },
-                    {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
-                    },
-                  ],
-                },
-              },
-              {
-                marketType: CATEGORICAL,
-                question: `Women's Football (Soccer) (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
-                example: `Women's Football (Soccer) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team A`,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team B`,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.TEXT,
-                    validationType: ValidationType.WHOLE_NUMBER,
-                    placeholder: `Whole #`,
-                  },
-                  {
-                    id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
                     placeholder: `Date time`,
@@ -2038,12 +1917,12 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `Over [2].5`,
+                    placeholder: `Over [3].5`,
                   },
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `Under [2].5`,
+                    placeholder: `Under [3].5`,
                   },
                   {
                     id: 7,
@@ -2057,7 +1936,201 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as "Unofficial game/Cancelled"`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'`,
+                    },
+                    {
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
+                    {
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+          [CUSTOMIZED]: {
+            templates: [
+              {
+                marketType: CATEGORICAL,
+                question: `[0] Football (Soccer): Which team will win: [1] vs. [2]?`,
+                example: `Men's Football (Soccer): Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Draw`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
+                    },
+                    {
+                      text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as 'Draw'.`,
+                    },
+                    {
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'.`,
+                    },
+                    {
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] Football (Soccer) (Point Spread): [1] to win by more than [2].5 goals over [3]?`,
+                example: `Men's Football (Soccer) (Point Spread): Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[1] -[2].5`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[3] +[2].5`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
+                    },
+                    {
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'.`,
+                    },
+                    {
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
+                    {
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] Football (Soccer) (O/U): [1] vs. [2]: Total goals scored; Over/Under [3].5?`,
+                example: `Men's Football (Soccer) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Men's / Women's`,
+                    values: LIST_VALUES.MENS_WOMENS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [3].5`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [3].5`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unofficial game/Cancelled`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
+                    },
+                    {
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'`,
+                    },
+                    {
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
                       text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
@@ -2549,7 +2622,7 @@ export const TEMPLATES = {
                       text: `If the league suspends play and starts up again at a later date, statistic at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league suspends play and play not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
+                      text: `If the league suspends play and play is not concluded before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
                     }
                   ],
                 },
@@ -2588,7 +2661,7 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
+                      text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
                       text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
@@ -3066,7 +3139,7 @@ export const TEMPLATES = {
                       text: `If the league suspends play and starts up again at a later date, statistic at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league suspends play and play not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
+                      text: `If the league suspends play and play is not concluded before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
                     }
                   ],
                 },
@@ -3105,7 +3178,7 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
+                      text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
                       text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
@@ -3650,7 +3723,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Event`,
-                inputDestId: 0,
+                inputDestIds: [0],
                 values: LIST_VALUES.BASEBALL_EVENT,
                 inputDestValues: BASEBALL_EVENT_DEP_TEAMS,
               },
@@ -3954,7 +4027,7 @@ export const TEMPLATES = {
                   text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
+                  text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                 },
                 {
                   text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
@@ -3977,7 +4050,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Sport`,
-                    inputDestId: 2,
+                    inputDestIds: [2],
                     values: LIST_VALUES.OLYMPIC_SUMMER_SPORTS,
                     inputDestValues: OLYMPIC_SUMMER_SPORT_EVENTS,
                   },
@@ -4062,7 +4135,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Sport`,
-                    inputDestId: 3,
+                    inputDestIds: [3],
                     values: LIST_VALUES.OLYMPIC_SUMMER_SPORTS,
                     inputDestValues: OLYMPIC_SUMMER_SPORT_EVENTS,
                   },
@@ -4117,7 +4190,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Sport`,
-                    inputDestId: 3,
+                    inputDestIds: [3],
                     values: LIST_VALUES.OLYMPIC_SUMMER_SPORTS,
                     inputDestValues: OLYMPIC_SUMMER_SPORT_EVENTS,
                   },
@@ -4212,7 +4285,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Sport`,
-                    inputDestId: 1,
+                    inputDestIds: [1],
                     values: LIST_VALUES.OLYMPIC_SUMMER_SPORTS,
                     inputDestValues: OLYMPIC_SUMMER_SPORT_EVENTS,
                   },
@@ -4307,7 +4380,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Sport`,
-                    inputDestId: 2,
+                    inputDestIds: [2],
                     values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
                     inputDestValues: OLYMPIC_WINTER_SPORT_EVENTS,
                   },
@@ -4392,7 +4465,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Sport`,
-                    inputDestId: 3,
+                    inputDestIds: [3],
                     values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
                     inputDestValues: OLYMPIC_WINTER_SPORT_EVENTS,
                   },
@@ -4447,7 +4520,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Sport`,
-                    inputDestId: 3,
+                    inputDestIds: [3],
                     values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
                     inputDestValues: OLYMPIC_WINTER_SPORT_EVENTS,
                   },
@@ -4542,7 +4615,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `Sport`,
-                    inputDestId: 1,
+                    inputDestIds: [1],
                     values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
                     inputDestValues: OLYMPIC_WINTER_SPORT_EVENTS,
                   },
@@ -4809,7 +4882,7 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
+                      text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
                       text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
@@ -5175,7 +5248,7 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
+                      text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
                       text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
@@ -5673,7 +5746,7 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, the total amount of games at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
+                      text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
                       text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
@@ -6638,7 +6711,7 @@ export const TEMPLATES = {
             id: 3,
             type: TemplateInputType.DROPDOWN_QUESTION_DEP,
             placeholder: `Event`,
-            inputDestId: 1,
+            inputDestIds: [1],
             values: LIST_VALUES.ENTERTAINMENT_EVENT,
             inputDestValues: ENTERTAINMENT_EVENT_DEP_TEAMS,
           },
@@ -6835,7 +6908,7 @@ export const TEMPLATES = {
             id: 2,
             type: TemplateInputType.DROPDOWN_QUESTION_DEP,
             placeholder: `Event`,
-            inputDestId: 0,
+            inputDestIds: [0],
             values: LIST_VALUES.ENTERTAINMENT_EVENT,
             inputDestValues: ENTERTAINMENT_EVENT_DEP_TEAMS,
           },
@@ -6868,7 +6941,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
-                inputDestId: 3,
+                inputDestIds: [3],
                 values: LIST_VALUES.BTC_CURRENCY_PAIRS,
                 inputDestValues: CRYPTO_BTC_CURRENCY_MARKETS,
               },
@@ -6914,7 +6987,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
-                inputDestId: 4,
+                inputDestIds: [4],
                 values: LIST_VALUES.BTC_CURRENCY_PAIRS,
                 inputDestValues: CRYPTO_BTC_CURRENCY_MARKETS,
               },
@@ -6967,7 +7040,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
-                inputDestId: 2,
+                inputDestIds: [2],
                 values: LIST_VALUES.BTC_CURRENCY_PAIRS,
                 inputDestValues: CRYPTO_BTC_CURRENCY_MARKETS,
               },
@@ -7011,7 +7084,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
-                inputDestId: 3,
+                inputDestIds: [3],
                 values: LIST_VALUES.ETH_CURRENCY_PAIRS,
                 inputDestValues: CRYPTO_ETH_CURRENCY_MARKETS,
               },
@@ -7057,7 +7130,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
-                inputDestId: 4,
+                inputDestIds: [4],
                 values: LIST_VALUES.ETH_CURRENCY_PAIRS,
                 inputDestValues: CRYPTO_ETH_CURRENCY_MARKETS,
               },
@@ -7110,7 +7183,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
-                inputDestId: 2,
+                inputDestIds: [2],
                 values: LIST_VALUES.ETH_CURRENCY_PAIRS,
                 inputDestValues: CRYPTO_ETH_CURRENCY_MARKETS,
               },
@@ -7154,7 +7227,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
-                inputDestId: 3,
+                inputDestIds: [3],
                 values: LIST_VALUES.LTC_CURRENCY_PAIRS,
                 inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
               },
@@ -7200,7 +7273,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
-                inputDestId: 4,
+                inputDestIds: [4],
                 values: LIST_VALUES.LTC_CURRENCY_PAIRS,
                 inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
               },
@@ -7253,7 +7326,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
-                inputDestId: 2,
+                inputDestIds: [2],
                 values: LIST_VALUES.LTC_CURRENCY_PAIRS,
                 inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
               },
