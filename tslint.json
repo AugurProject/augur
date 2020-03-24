@@ -9,6 +9,7 @@
   "rules": {
     "import-blacklist": [true, ["@augurproject\/.*\/build.*"]],
     "quotemark": [true, "single", "jsx-single", "avoid-template", "avoid-escape"],
+    "no-return-await": false,
     "ban": [true,
       {"name": ["it", "only"]},
       {"name": ["it", "async", "only"]},

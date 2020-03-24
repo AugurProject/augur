@@ -117,7 +117,7 @@ def execute_bidOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amoun
     longCost = amount * fxpPrice
     shortCost = amount * (numTicks - fxpPrice)
     totalProceeds = amount * numTicks
-    completeSetFees = totalProceeds / 100 + totalProceeds / 100
+    completeSetFees = totalProceeds / 100 + totalProceeds / 10000
     shortFee = (completeSetFees * shortCost) / (longCost + shortCost)
     longFee = completeSetFees - shortFee
 
@@ -221,7 +221,7 @@ def execute_askOrder_tests(fixture, kitchenSinkSnapshot, universe, market, amoun
     longCost = amount * fxpPrice
     shortCost = amount * (numTicks - fxpPrice)
     totalProceeds = amount * numTicks
-    completeSetFees = totalProceeds / 100 + totalProceeds / 100
+    completeSetFees = totalProceeds / 100 + totalProceeds / 10000
     longFee = (completeSetFees * longCost) / (longCost + shortCost)
     shortFee = completeSetFees - longFee
 

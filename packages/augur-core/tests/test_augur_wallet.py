@@ -9,8 +9,9 @@ RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494"
 
 def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputationToken):
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
-    ethExchange = contractsFixture.contracts["EthExchange"]
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
+    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    weth = contractsFixture.contracts["WETH9"]
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]
     relayer = contractsFixture.accounts[1]
@@ -32,16 +33,19 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     # We'll provide some liquidity to the eth exchange
     cashAmount = 1000 * 10**18
     ethAmount = 10 * 10**18
+    weth.deposit(ethAmount, value=ethAmount)
     cash.faucet(cashAmount)
     cash.transfer(ethExchange.address, cashAmount)
-    contractsFixture.sendEth(account, ethExchange.address, ethAmount)
-    ethExchange.publicMint(account)
+    weth.transfer(ethExchange.address, ethAmount)
+    ethExchange.mint(account)
+
 
     # We do this again in order to trigger a storage update that will make using the exchange cheaper
+    weth.deposit(ethAmount, value=ethAmount)
     cash.faucet(cashAmount)
     cash.transfer(ethExchange.address, cashAmount)
-    contractsFixture.sendEth(account, ethExchange.address, ethAmount)
-    ethExchange.publicMint(account)
+    weth.transfer(ethExchange.address, ethAmount)
+    ethExchange.mint(account)
 
     assert augurWalletRegistry.getWallet(account) == nullAddress
 
@@ -170,8 +174,9 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
 
 def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, cash, reputationToken):
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
-    ethExchange = contractsFixture.contracts["EthExchange"]
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
+    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    weth = contractsFixture.contracts["WETH9"]
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]
     relayer = contractsFixture.accounts[1]
@@ -191,16 +196,19 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
     # We'll provide some liquidity to the eth exchange
     cashAmount = 1000 * 10**18
     ethAmount = 10 * 10**18
+    weth.deposit(ethAmount, value=ethAmount)
     cash.faucet(cashAmount)
     cash.transfer(ethExchange.address, cashAmount)
-    contractsFixture.sendEth(account, ethExchange.address, ethAmount)
-    ethExchange.publicMint(account)
+    weth.transfer(ethExchange.address, ethAmount)
+    ethExchange.mint(account)
+
 
     # We do this again in order to trigger a storage update that will make using the exchange cheaper
+    weth.deposit(ethAmount, value=ethAmount)
     cash.faucet(cashAmount)
     cash.transfer(ethExchange.address, cashAmount)
-    contractsFixture.sendEth(account, ethExchange.address, ethAmount)
-    ethExchange.publicMint(account)
+    weth.transfer(ethExchange.address, ethAmount)
+    ethExchange.mint(account)
 
     assert augurWalletRegistry.getWallet(account) == nullAddress
 
