@@ -220,28 +220,27 @@ Deploying to: ${env}
             const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
             const ethExchangeAddress = await uniswapV2Factory.getExchange_(weth.address, cash.address);
             const ethExchange = new UniswapV2Exchange(this.dependencies, ethExchangeAddress);
-            const cashAmount = new BigNumber(2000 * 1e18) // 2000 Dai
-            const ethAmount = new BigNumber(10 * 1e18) // 10 ETH
-            await weth.deposit({attachedEth: ethAmount.multipliedBy(2)});
+            const cashAmount = new BigNumber(4000 * 1e18) // 4000 Dai
+            const ethAmount = new BigNumber(20 * 1e18) // 20 ETH
+            await weth.deposit({attachedEth: ethAmount});
             console.log('Cash faucet');
-            await cash.faucet(cashAmount.multipliedBy(2));
+            await cash.faucet(cashAmount);
             console.log('eth exchange mint');
-            // We do this twice to get a store in place for the oracle storage to make future calls less expensive.
             const address = await this.dependencies.getDefaultAddress();
-            for (let i = 0; i < 2; i++) {
-                await cash.transfer(ethExchange.address, cashAmount);
-                await sleep(100);
-                await weth.transfer(ethExchange.address, ethAmount);
-                await sleep(100);
-                await ethExchange.mint(address);
-                await sleep(100);
-            }
+            console.log('Cash xfer to exchange');
+            await cash.transfer(ethExchange.address, cashAmount);
+            console.log('Weth xfer to exchange');
+            await weth.transfer(ethExchange.address, ethAmount);
+            console.log('Exchange mint');
+            await ethExchange.mint(address);
         }
 
+        console.log('Writing artifacts');
         if (this.configuration.deploy.writeArtifacts) {
           await this.generateLocalEnvFile(env, blockNumber, this.configuration);
         }
 
+        console.log('Finalizing deployment');
         await this.augur.finishDeployment();
         await this.augurTrading.finishDeployment();
 
