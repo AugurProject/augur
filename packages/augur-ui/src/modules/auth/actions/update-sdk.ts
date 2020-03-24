@@ -87,6 +87,7 @@ export const createFundedGsnWallet = () => async (
   try {
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending));
     await augurSdk.client.gsn.initializeWallet();
+    dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
   } catch (e) {
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Failure));
     dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE));
