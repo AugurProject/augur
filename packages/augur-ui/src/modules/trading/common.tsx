@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
@@ -127,17 +127,29 @@ export const SportsBet = ({ bet }) => {
 
 export const SportsMyBet = ({ bet }) => {
   const [expanded, setExpanded] = useState(false);
+  const [isRecentUpdate, setIsRecentUpdate] = useState(true);
+  useEffect(() => {
+    const currentTime = new Date().getTime() / 1000;
+    const seconds = Math.round(currentTime - bet.dateUpdated.timestamp);
+    const milliSeconds = seconds * 1000;
+    if (seconds < 20) {
+      setTimeout(() => {
+        setIsRecentUpdate(false);
+      }, 20000 - milliSeconds);
+    } else {
+      setIsRecentUpdate(false);
+    }
+  }, [isRecentUpdate]);
 
   const { outcome, odds, wager, cashOutBet, status, amountFilled, toWin, dateUpdated } = bet;
   const {
     PENDING,
     FILLED,
     PARTIALLY_FILLED,
-    CLOSED,
     FAILED,
   } = BET_STATUS;
   let icon = Trash;
-  let classToApply = Styles.FILLED;
+  let classToApply = Styles.NEWFILL;
   let message = null;
   let messageAction = null;
   let wagerToShow = wager;
@@ -146,15 +158,25 @@ export const SportsMyBet = ({ bet }) => {
   let iconAction = () => console.log('setup actions');
   switch (status) {
     case FILLED:
-      icon = CheckMark;
-      iconAction = () => setExpanded(!expanded);
+      icon = isRecentUpdate ? CheckMark : ThickChevron;
+      classToApply = isRecentUpdate ? Styles.NEWFILL : Styles.FILLED;
+      iconAction = () => {
+        setExpanded(!expanded);
+        // also remove recent if they click the checkmark.
+        if (!expanded && isRecentUpdate) {
+          setIsRecentUpdate(false);
+        }
+      };
       cashoutText = `Cashout ${formatDai(amountFilled).full}`;
       cashoutDisabled = false;
       break;
     case PARTIALLY_FILLED:
       icon = ThickChevron;
-      classToApply = Styles.TOGGLABLE;
+      classToApply = Styles.PARTIALLY_FILLED;
       message = `This bet was partially filled. Original wager: ${formatDai(wager).full}`;
+      iconAction = () => {
+        setExpanded(!expanded);
+      };
       wagerToShow = amountFilled;
       break;
     case PENDING: 

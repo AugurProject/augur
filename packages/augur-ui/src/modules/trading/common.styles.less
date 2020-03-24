@@ -220,7 +220,8 @@
   .SportsMyBet {
     .SportsBet;
 
-    > div:last-of-type {
+    > div:nth-of-type(3),
+    > div:nth-of-type(4) {
       display: none;
     }
 
@@ -251,7 +252,7 @@
     &.FAILED {
       background: var(--color-error-10);
 
-      > div:last-of-type {
+      > div:nth-of-type(3) {
         display: flex;
       }
 
@@ -262,11 +263,13 @@
           .text-12-bold;
 
           cursor: pointer;
+          margin-left: @size-4;
         }
       }
     }
 
-    &.TOGGLABLE {
+    &.PARTIALLY_FILLED,
+    &.PARTIALLY_FILLED.Expanded {
       > button {
         display: flex;
         grid-column: span 2;
@@ -285,13 +288,15 @@
         transform: rotate(180deg);
       }
 
-      > div {
+      > div:nth-of-type(3),
+      > div:nth-of-type(4) {
         display: flex;
       }
 
       > button {
         display: flex;
         grid-column: auto;
+        border-color: var(--color-inactive-text);
 
         &:first-of-type {
           border: none;
@@ -306,7 +311,7 @@
     }
 
     > header > button {
-      &.FILLED {
+      &.NEWFILL {
         > svg {
           margin: 0;
   
@@ -343,10 +348,11 @@
         }
       }
 
-      &.TOGGLABLE {
+      &.PARTIALLY_FILLED,
+      &.FILLED {
         align-items: center;
         justify-content: center;
-        border: @size-1 solid var(--color-inactive-text);
+        border: @size-1 solid var(--color-dark-text);
         border-radius: @border-radius-soft;
         display: flex;
         height: @size-20;
