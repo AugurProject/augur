@@ -214,6 +214,8 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   ): Promise<ethers.providers.TransactionReceipt> {
     if (this.useWallet) {
       const payment = await this.getRelayPaymentForEthersTransaction(tx);
+      const QUINTILLION = new BigNumber(10).pow(18);
+      console.log('Transaction Payment:', payment.dividedBy(QUINTILLION).toFixed()); // output this for testing and debuging.
       tx = this.convertToWalletTx(tx, new ethers.utils.BigNumber(payment.toFixed()));
     }
 

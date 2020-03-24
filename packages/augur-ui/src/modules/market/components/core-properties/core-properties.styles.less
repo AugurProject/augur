@@ -51,6 +51,12 @@
         box-shadow: 0 @size-8 @size-8 @color-dark-grey;
         position: absolute;
         z-index: @mask-above;
+
+        @media @breakpoint-mobile {
+          position: static;
+          border: unset;
+          box-shadow: unset;
+        }
       }
 
       > div:first-of-type {

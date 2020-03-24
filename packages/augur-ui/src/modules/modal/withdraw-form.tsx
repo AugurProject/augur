@@ -102,7 +102,7 @@ export class WithdrawForm extends Component<
     const fullAmount = createBigNumber(
       balances[currency.toLowerCase()]
     );
-    const valueMinusGas = fullAmount.minus(createBigNumber(gasEstimate.value));
+    const valueMinusGas = !GsnEnabled ? fullAmount.minus(createBigNumber(gasEstimate.value)) : fullAmount;
     const resolvedValue = valueMinusGas.lt(ZERO) ? ZERO : valueMinusGas;
     this.amountChange(resolvedValue.toFixed(), true);
   };
