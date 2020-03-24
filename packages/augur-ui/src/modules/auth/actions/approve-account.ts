@@ -1,7 +1,7 @@
 import logError from 'utils/log-error';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { getAllowance } from 'modules/contracts/actions/contractCalls';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { NodeStyleCallback } from 'modules/types';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';

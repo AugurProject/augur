@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
   formatGasCostToEther,

@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { MARKET_REVIEW_SEEN } from 'modules/common/constants';
 import { Message } from 'modules/modal/message';
 import { closeModal } from 'modules/modal/actions/close-modal';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,

@@ -2,7 +2,7 @@ import { createBigNumber } from "utils/create-big-number";
 import {
   BUY, INVALID_OUTCOME_ID, MODAL_ERROR,
 } from "modules/common/constants";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { placeTrade, approveToTrade } from "modules/contracts/actions/contractCalls";

@@ -18,7 +18,7 @@ import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-
 import { MarketInfos } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
 import { Events, Logs, TXEventName, OrderEventType } from '@augurproject/sdk';

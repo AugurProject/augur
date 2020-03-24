@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import OpenMarkets from "modules/account/components/open-markets";
 import { CLOSED, MARKET_CLOSED } from "modules/common/constants";
 import getLoginAccountPositions from "modules/positions/selectors/login-account-positions";

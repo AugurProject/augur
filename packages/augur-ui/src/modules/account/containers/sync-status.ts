@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { selectBlockInfoData } from "modules/block-info/selectors/block-info-data";
 import { ZERO } from 'modules/common/constants';
 import SyncStatus from "modules/account/components/sync-status";
-import { AppState } from "store";
+import { AppState } from "appStore";
 
 const mapStateToProps = (state: AppState) => {
   const {
@@ -17,7 +17,7 @@ const mapStateToProps = (state: AppState) => {
     blocksBehind,
     highestBlockBn,
     lastProcessedBlockBn,
-  };  
+  };
 };
 
 export default connect(mapStateToProps)(SyncStatus);

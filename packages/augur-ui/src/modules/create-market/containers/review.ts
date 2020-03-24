@@ -6,7 +6,7 @@ import Review from 'modules/create-market/components/review';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import { estimateSubmitNewMarket } from 'modules/markets/actions/estimate-submit-new-market';
 import { formatDai, formatRep, formatEther } from 'utils/format-number';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_ADD_FUNDS, DAI } from 'modules/common/constants';
