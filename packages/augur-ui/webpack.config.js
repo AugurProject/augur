@@ -53,6 +53,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === "development") {
         new TerserPlugin({
           terserOptions: {
             mangle: false,
+            parallel: true,
           }
         }),
       ],
