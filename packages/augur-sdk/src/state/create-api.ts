@@ -24,7 +24,9 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const currentBlockNumber = await provider.getBlockNumber();
     const contractAddresses = client.contractEvents.getAugurContractAddresses();
 
-    const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs, contractAddresses, logFilterAggregator.onLogsAdded, client.contractEvents.parseLogs);
+    const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs,
+      contractAddresses, logFilterAggregator.onLogsAdded,
+      client.contractEvents.parseLogs);
     const blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(
       provider,
       contractAddresses,
@@ -32,12 +34,27 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
       client.contractEvents.parseLogs,
     );
 
-    const warpController = new WarpController((await db), client, provider, uploadBlockNumber);
-    const warpSyncStrategy = new WarpSyncStrategy(warpController, logFilterAggregator.onLogsAdded);
+    let endWarpSyncBlockNumber;
+    if (config.useWarpSync) {
+      const warpController = new WarpController((await db), client, provider,
+        uploadBlockNumber);
+      const warpSyncStrategy = new WarpSyncStrategy(warpController,
+        logFilterAggregator.onLogsAdded);
 
-    const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(client.contracts.universe.address);
+      const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
+        client.contracts.universe.address);
 
-    const endWarpSyncBlockNumber = await warpSyncStrategy.start(warpSyncHash);
+      endWarpSyncBlockNumber = await warpSyncStrategy.start(warpSyncHash);
+
+      client.events.once(SubscriptionEventName.SDKReady, () => {
+        // Check on each new block to see if we need to generate a checkpoint.
+        client.events.on(SubscriptionEventName.NewBlock, async (newBlock) => {
+          const block = await provider.getBlock(newBlock.lastSyncedBlockNumber);
+          await warpController.onNewBlock(block);
+        });
+      });
+    }
+
     const staringSyncBlock = Math.max(await (await db).getSyncStartingBlock(), endWarpSyncBlockNumber || uploadBlockNumber);
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
@@ -56,12 +73,6 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     console.log('Syncing Complete - SDK Ready');
 
     blockAndLogStreamerSyncStrategy.listenForBlockRemoved(logFilterAggregator.onBlockRemoved);
-
-    // Check on each new block to see if we need to generate a checkpoint.
-    client.events.on(SubscriptionEventName.NewBlock, async (newBlock) => {
-      const block = await provider.getBlock(newBlock.lastSyncedBlockNumber);
-      await warpController.onNewBlock(block);
-    });
 
     await blockAndLogStreamerSyncStrategy.start(endBulkSyncBlockNumber);
   };
@@ -93,7 +104,9 @@ export async function createClient(
     ethersProvider,
     signer,
     config.addresses.AugurWalletRegistry,
-    config.addresses.EthExchange
+    config.addresses.EthExchange,
+    config.addresses.WETH9,
+    config.addresses.Cash,
   );
 
   let zeroX: ZeroX = null;
@@ -109,7 +122,7 @@ export async function createClient(
     connector,
     zeroX,
     enableFlexSearch
-  );
+  );{}
 
   // Delay loading of the browser mesh until we're finished syncing
   client.events.once(SubscriptionEventName.BulkSyncComplete, () => {

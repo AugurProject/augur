@@ -10,12 +10,15 @@ export const POLITICS = 'Politics';
 export const FINANCE = 'Finance';
 export const ENTERTAINMENT = 'Entertainment';
 export const CRYPTO = 'Crypto';
+export const MEDICAL = 'Medical';
 export const USD = 'USD';
 export const USDT = 'USDT';
 export const EUR = 'EUR';
 
 // Market Subtemplates
 export const SOCCER = 'Football (Soccer)';
+export const MENS_LEAGUES = 'Mens Leagues';
+export const CUSTOMIZED = 'Customized';
 export const SUMMER = 'SUMMER';
 export const WINTER = 'WINTER';
 export const AMERICAN_FOOTBALL = 'American Football';
@@ -50,7 +53,7 @@ export const DOUBLES = 'Doubles';
 const FRIDAY_DAY_OF_WEEK = 5;
 const SATURDAY_DAY_OF_WEEK = 6;
 const SUNDAY_DAY_OF_WEEK = 0;
-
+const SECONDS_IN_A_DAY = 86400;
 interface TimezoneDateObject {
   formattedUtc: string;
   formattedTimezone: string;
@@ -118,7 +121,7 @@ export interface Categories {
 
 export interface DropdownDependencies {
   inputSourceId: number;
-  inputDestId?: number;
+  inputDestIds?: number[];
   values: {
     [key: string]: string[];
   };
@@ -160,6 +163,8 @@ export interface TemplateValidation {
   placeholderValues: PlaceholderValues;
   afterTuesdayDateNoFriday: number[];
   noAdditionalOutcomes: boolean;
+  hoursAfterEstimatedStartTime: number;
+  daysAfterStartDate: number;
 }
 
 export interface TemplateValidationHash {
@@ -194,7 +199,7 @@ export interface TemplateInput {
   dateAfterId?: number;
   inputSourceId?: number; // input id as source of text to get list values
   defaultLabel?: string; // dropdown default label shown
-  inputDestId?: number; // target input to set list values
+  inputDestIds?: number[]; // target inputs to set list values
   inputDestValues: {
     // dropdown source data structure to use to set target input list values
     [key: string]: string[];
@@ -204,6 +209,7 @@ export interface TemplateInput {
   };
   setEndTime?: number;
   inputDateYearId?: number;
+  hoursAfterEst: number;
   holidayClosures?: {
     [key: string]: {
       [year: number]: {
@@ -213,6 +219,7 @@ export interface TemplateInput {
     };
   };
   noSort: boolean;
+  daysAfterDateStart: number;
 }
 
 export interface RetiredTemplate {
@@ -377,9 +384,12 @@ function hasMarketQuestionDependencies(
   const input = inputs.find(i => i.id === validationDep.inputSourceId);
   if (!input) return false;
   const correctValues = validationDep.values[input.value] || [];
-  const testValue = inputs.find(i => i.id === validationDep.inputDestId);
-  if (!testValue) return false;
-  return correctValues.includes(testValue.value);
+  const testValues = inputs.filter(i => validationDep.inputDestIds.includes(i.id));
+  if (!testValues) return false;
+  return (
+    testValues.length ===
+    testValues.filter(value => correctValues.includes(value.value)).length
+  );
 }
 
 function isDependencyOutcomesCorrect(
@@ -404,11 +414,25 @@ function isDependencyOutcomesCorrect(
 
 function estimatedDateTimeAfterMarketEndTime(
   inputs: ExtraInfoTemplateInput[],
+  hoursAfterEstimatedStartTime: number,
   endTime: number
 ) {
   const input = inputs.find(i => i.type === TemplateInputType.ESTDATETIME);
   if (!input) return false;
-  return Number(input.timestamp) >= Number(endTime);
+  // add number of hours to estimated start timestamp then compare to market event expiration
+  const secondsAfterEst = hoursAfterEstimatedStartTime * 60 * 60;
+  return (Number(input.timestamp) + secondsAfterEst) > Number(endTime);
+}
+function daysRequiredAfterStartDate(
+  inputs: ExtraInfoTemplateInput[],
+  daysAfterStartDate: number,
+  endTime: number
+) {
+  const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
+  if (!input) return false;
+  // add number of hours to estimated start timestamp then compare to market event expiration
+  const secondsAfterStartDate = SECONDS_IN_A_DAY * daysAfterStartDate;
+  return (Number(input.timestamp) + secondsAfterStartDate) >= Number(endTime);
 }
 
 function dateStartAfterMarketEndTime(
@@ -639,15 +663,28 @@ export const isTemplateMarket = (
       return false;
     }
 
-    // check ESTDATETIME isn't after market event expiration
+    // check ESTDATETIME isn't after market event expiration or is within required hour buffer
     if (
       estimatedDateTimeAfterMarketEndTime(
         template.inputs,
+        validation.hoursAfterEstimatedStartTime,
         new BigNumber(endTime).toNumber()
       )
     ) {
       errors.push(
         'estimated schedule date time is after market event expiration endTime'
+      );
+      return false;
+    }
+    if (
+      !daysRequiredAfterStartDate(
+        template.inputs,
+        validation.daysAfterStartDate,
+        new BigNumber(endTime).toNumber()
+      )
+    ) {
+      errors.push(
+        'start date in question is not the required number of days before market event expiration endTime'
       );
       return false;
     }

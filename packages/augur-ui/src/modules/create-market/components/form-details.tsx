@@ -44,6 +44,7 @@ import {
   hasNoTemplateCategoryTertiaryChildren,
 } from 'modules/create-market/get-template';
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
+import { TemplateInputType } from '@augurproject/artifacts/src';
 
 interface FormDetailsProps {
   newMarket: NewMarket;
@@ -101,6 +102,17 @@ export default class FormDetails extends React.Component<
     const tickSize =
       isTemplate && template.tickSize ? template.tickSize : newMarket.tickSize;
 
+    let resolutionTimeSubheader = null
+    if (isTemplate) {
+      const estInput = template.inputs.find(i => i.type === TemplateInputType.ESTDATETIME);
+      if (estInput) {
+        resolutionTimeSubheader = `This templated market has a predefined event expiration date time, which is ${estInput.hoursAfterEst} hours after estimated schedule start time.`
+      }
+      const dateStart = template.inputs.find(i => i.type === TemplateInputType.DATESTART);
+      if (dateStart && dateStart.daysAfterDateStart) {
+        resolutionTimeSubheader = `This templated market has a predefined event expiration date, which is ${dateStart.daysAfterDateStart} days after start date in market question.`
+      }
+    }
     return (
       <div
         className={classNames(Styles.FormDetails, {
@@ -338,6 +350,8 @@ export default class FormDetails extends React.Component<
               endTimeFormatted={endTimeFormatted}
               uniqueKey={'templateRes'}
               isAfter={this.props.universe.maxMarketEndTime}
+              subheader={resolutionTimeSubheader}
+              disabled={!!resolutionTimeSubheader}
             />
           )}
 

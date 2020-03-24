@@ -241,13 +241,14 @@ export function formatNone(): FormattedNumber {
     value: 0,
     formattedValue: 0,
     formatted: '-',
-    roundedValue: 0,
+    roundedValue: createBigNumber(0),
     rounded: '-',
     roundedFormatted: '-',
     minimized: '-',
     denomination: '',
     full: '-',
     fullPrecision: '0',
+    percent: 0,
   };
 }
 
@@ -256,13 +257,14 @@ export function formatBlank(): FormattedNumber {
     value: 0,
     formattedValue: 0,
     formatted: '',
-    roundedValue: 0,
+    roundedValue: createBigNumber(0),
     rounded: '',
     roundedFormatted: '',
     minimized: '',
     denomination: '',
     full: '',
     fullPrecision: '0',
+    percent: 0,
   };
 }
 
@@ -312,13 +314,13 @@ export function formatAttoRep(
   if (!num) return formatBlank();
   return formatNumber(
     createBigNumber(num.toString())
-      .dividedBy(ETHER)
-      .toNumber(),
+      .dividedBy(ETHER),
     {
       ...opts,
       decimals: 4,
-      decimalsRounded: 4,
+      decimalsRounded: 14,
       blankZero: false,
+      roundDown: true,
       denomination: v => `${v} REP`,
     }
   );

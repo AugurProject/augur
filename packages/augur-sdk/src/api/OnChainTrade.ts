@@ -19,6 +19,7 @@ export interface NativePlaceTradeParams {
   tradeGroupId: string;
   fingerprint: string;
   doNotCreateOrders: boolean;
+  takerAddress?: string;
 }
 
 export interface NativePlaceTradeDisplayParams extends NativePlaceTradeParams {
@@ -67,6 +68,7 @@ export interface NativeSimulateTradeData {
   tokensDepleted: BigNumber;
   numFills: BigNumber;
   loopLimit: BigNumber;
+  selfTrade: boolean;
 }
 
 export class OnChainTrade {
@@ -139,7 +141,8 @@ export class OnChainTrade {
       sharesDepleted: displaySharesDepleted,
       settlementFees: displaySettlementFees,
       numFills,
-      loopLimit
+      loopLimit,
+      selfTrade: false,
     };
   }
 

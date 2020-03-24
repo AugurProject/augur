@@ -195,7 +195,7 @@ class Notifications extends React.Component<
     const newNotificationCount = notifications.filter((item) => item.isNew)
       .length;
 
-    const rows = orderBy(notifications, 'isNew', ['desc']).map((notification) => {
+    const rows = orderBy(notifications, 'isNew', ['desc']).filter(notification => !notification.hideNotification).map((notification) => {
       const {
         id,
         isImportant,
@@ -211,6 +211,7 @@ class Notifications extends React.Component<
         type,
         queueName,
         queueId,
+        hideCheckbox,
       } = notification;
 
       const templateProps = {
@@ -236,6 +237,7 @@ class Notifications extends React.Component<
         title,
         buttonLabel,
         buttonAction,
+        hideCheckbox
       };
 
       const isDisabled: boolean =

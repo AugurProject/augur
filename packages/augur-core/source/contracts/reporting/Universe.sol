@@ -20,8 +20,7 @@ import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/utility/IFormulas.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/CashSender.sol';
-import 'ROOT/IRepExchange.sol';
-import 'ROOT/factories/IRepExchangeFactory.sol';
+import 'ROOT/reporting/IRepOracle.sol';
 
 
 /**
@@ -76,8 +75,9 @@ contract Universe is IUniverse, CashSender {
     IDaiVat public daiVat;
     IDaiPot public daiPot;
     IDaiJoin public daiJoin;
+    uint256 public lastSweep;
 
-    IRepExchange public repExchange;
+    IRepOracle public repOracle;
 
     uint256 constant public RAY = 10 ** 27;
 
@@ -92,7 +92,7 @@ contract Universe is IUniverse, CashSender {
         disputeWindowFactory = IDisputeWindowFactory(augur.lookup("DisputeWindowFactory"));
         openInterestCash = IOICashFactory(augur.lookup("OICashFactory")).createOICash(augur);
         shareToken = IShareToken(augur.lookup("ShareToken"));
-        repExchange = IRepExchange(address(IRepExchangeFactory(augur.lookup("RepExchangeFactory")).createRepExchange(augur, address(reputationToken))));
+        repOracle = IRepOracle(augur.lookup("RepOracle"));
         updateForkValues();
         formulas = IFormulas(augur.lookup("Formulas"));
         cash = ICash(augur.lookup("Cash"));
@@ -462,12 +462,12 @@ contract Universe is IUniverse, CashSender {
      * @return The Market Cap of this Universe's REP
      */
     function pokeRepMarketCapInAttoCash() public returns (uint256) {
-        uint256 _attoCashPerRep = repExchange.pokePrice();
+        uint256 _attoCashPerRep = repOracle.poke(address(reputationToken));
         return getRepMarketCapInAttoCashInternal(_attoCashPerRep);
     }
 
-    function getRepMarketCapInAttoCashInternal(uint256 _attoCashPerRep ) private view returns (uint256) {
-        return reputationToken.totalSupply().mul(_attoCashPerRep).div(10 ** 18);
+    function getRepMarketCapInAttoCashInternal(uint256 _attoCashPerRep) private view returns (uint256) {
+        return reputationToken.getTotalTheoreticalSupply().mul(_attoCashPerRep).div(10 ** 18);
     }
 
     /**
@@ -709,14 +709,34 @@ contract Universe is IUniverse, CashSender {
     }
 
     function sweepInterest() public returns (bool) {
+        lastSweep = block.timestamp;
+        uint256 _dsrBalance = daiPot.pie(address(this));
+        // Do nothing if we have no DSR savings
+        if (_dsrBalance == 0) {
+            return true;
+        }
         uint256 _extraCash = 0;
         uint256 _chi = daiPot.drip();
-        withdrawSDaiFromDSR(daiPot.pie(address(this))); // Pull out all funds
+        withdrawSDaiFromDSR(_dsrBalance); // Pull out all funds
         saveDaiInDSR(totalBalance); // Put the required funds back in savings
         _extraCash = cashBalance(address(this));
         // The amount in the DSR pot and VAT must cover our totalBalance of Dai
         assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(RAY));
         cashTransfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
+        return true;
+    }
+
+    function runPeriodicals() external returns (bool) {
+        uint256 _blockTimestamp = block.timestamp;
+        uint256 _timeSinceLastSweep = _blockTimestamp - lastSweep;
+        if (_timeSinceLastSweep > 1 days) {
+            sweepInterest();
+            return true;
+        }
+        uint256 _timeSinceLastRepOracleUpdate = _blockTimestamp - repOracle.getLastUpdateTimestamp(address(reputationToken));
+        if (_timeSinceLastRepOracleUpdate > 1 days) {
+            repOracle.poke(address(reputationToken));
+        }
         return true;
     }
 }

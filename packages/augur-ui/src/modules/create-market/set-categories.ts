@@ -11,6 +11,7 @@ export const setCategories: SortedGroup[] = [
         value: 'Football (Soccer)',
         label: 'Football (Soccer)',
         subGroup: [
+          { value: 'Mens Leagues', label: 'Mens Leagues'},
           { value: 'Copa America', label: 'Copa America' },
           { value: 'Africa Cup of Nations', label: 'Africa Cup of Nations' },
           { value: 'UEFA Nations League', label: 'UEFA Nations League' },
@@ -1543,6 +1544,28 @@ export const setCategories: SortedGroup[] = [
       },
       { value: CUSTOM, label: CUSTOM },
     ],
+  },
+  {
+    value: 'Medical',
+    label: 'Medical',
+    subGroup: [
+      {
+        value: 'Virus',
+        label: 'Virus',
+      },
+      {
+        value: 'Bacteria',
+        label: 'Bacteria',
+      },
+      {
+        value: 'Covid-19',
+        label: 'Covid-19',
+      },
+      {
+        value: 'Pandemic',
+        label: 'Pandemic'
+      }
+    ]
   },
   { value: CUSTOM, label: CUSTOM },
 ];

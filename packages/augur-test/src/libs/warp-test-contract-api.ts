@@ -22,9 +22,7 @@ import * as IPFS from 'ipfs';
 
 const filterRetrievelFn = (ipfs: Promise<IPFS>) => async (ipfsPath: string) =>
   (await ipfs)
-  .cat(ipfsPath)
-  .then(item => item.toString())
-  .then(item => JSON.parse(item));
+  .cat(ipfsPath);
 
 export class WarpTestContractApi extends TestContractAPI {
   warpController: WarpController;
@@ -64,7 +62,8 @@ export class WarpTestContractApi extends TestContractAPI {
       signer,
       config.addresses.AugurWalletRegistry,
       config.addresses.EthExchange,
-      new BigNumber(0),
+      config.addresses.WETH9,
+      config.addresses.Cash,
       account.publicKey,
     );
 

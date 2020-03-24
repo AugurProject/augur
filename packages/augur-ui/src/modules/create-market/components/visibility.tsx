@@ -109,11 +109,11 @@ export default class Visibility extends Component<
             );
             validations.validSpread = createBigNumber(spread)
               .dividedBy(range)
-              .isLessThanOrEqualTo(bnSpreadFilter);
+              .isLessThan(bnSpreadFilter);
           } else {
             validations.validSpread = createBigNumber(
               spread
-            ).isLessThanOrEqualTo(bnSpreadFilter);
+            ).isLessThan(bnSpreadFilter);
           }
         }
         if (validations.validSpread) return { validations, validationMessage };

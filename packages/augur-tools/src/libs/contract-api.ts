@@ -39,7 +39,7 @@ export class ContractAPI {
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = await makeGSNDependencies(provider, signer, config.addresses.AugurWalletRegistry, config.addresses.EthExchange, new BigNumber(0), account.publicKey);
+    const dependencies = await makeGSNDependencies(provider, signer, config.addresses.AugurWalletRegistry, config.addresses.EthExchange, config.addresses.WETH9, config.addresses.Cash, account.publicKey);
 
     let zeroX = null;
     if (meshClient || meshBrowser) {
@@ -591,8 +591,11 @@ export class ContractAPI {
 
   async addEthExchangeLiquidity(attoCash: BigNumber, attoEth: BigNumber): Promise<void> {
     await this.faucet(attoCash);
+    await this.augur.contracts.cash.transfer(this.augur.contracts.ethExchange.address, attoCash);
+    await this.augur.contracts.weth.deposit({attachedEth: attoEth});
+    await this.augur.contracts.weth.transfer(this.augur.contracts.ethExchange.address, attoEth);
     const owner = await this.augur.getAccount();
-    await this.augur.contracts.ethExchange.publicMintAuto(owner, attoCash, {attachedEth: attoEth});
+    await this.augur.contracts.ethExchange.mint(owner);
   }
 
   async depositRelay(address: string, attoEth: BigNumber): Promise<void> {
@@ -654,10 +657,6 @@ export class ContractAPI {
 
   getRepAllowance(owner: string, spender: string): Promise<BigNumber> {
     return this.augur.contracts.getReputationToken().allowance_(owner, spender);
-  }
-
-  setGasPrice(gasPrice: BigNumber): void {
-    this.augur.setGasPrice(gasPrice);
   }
 
   getGasPrice(): Promise<BigNumber> {

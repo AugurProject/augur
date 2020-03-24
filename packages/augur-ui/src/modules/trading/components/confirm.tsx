@@ -12,20 +12,44 @@ import {
   ERROR,
   UPPER_FIXED_PRECISION_BOUND,
   ZERO,
+  WALLET_STATUS_VALUES,
+  INVALID_OUTCOME_ID,
+  HELP_CENTER,
+  CREATEAUGURWALLET,
+  TRANSACTIONS,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/trading/components/confirm.styles.less';
-import { XIcon, ExclamationCircle, InfoIcon, InformationIcon, QuestionIcon } from 'modules/common/icons';
-import { formatGasCostToEther, formatShares, formatDai } from 'utils/format-number';
+import {
+  XIcon,
+  ExclamationCircle,
+  InformationIcon,
+  QuestionIcon,
+} from 'modules/common/icons';
+import {
+  formatGasCostToEther,
+  formatShares,
+} from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import { Trade } from 'modules/types';
+import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
+import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { TXEventName } from '@augurproject/sdk/src';
+
+interface MessageButton {
+  action: Function;
+  text: string;
+}
 
 interface Message {
   header: string;
   type: string;
   message: string;
+  button?: MessageButton;
+  link?: string;
+  callback?: Function;
 }
 
 interface ConfirmProps {
@@ -42,10 +66,13 @@ interface ConfirmProps {
   scalarDenomination: string | null;
   numOutcomes: number;
   tradingTutorial?: boolean;
-  ethToDaiRate: BigNumber;
   GsnEnabled: boolean;
-  gsnUnavailable: boolean;
   initialLiquidity: boolean;
+  initializeGsnWallet: Function;
+  walletStatus: string;
+  selectedOutcomeId: number;
+  updateWalletStatus: Function;
+  sweepStatus: string;
 }
 
 interface ConfirmState {
@@ -73,19 +100,31 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasPrice,
       availableEth,
       availableDai,
-      gsnUnavailable,
+      walletStatus,
+      sweepStatus,
     } = this.props;
     if (
-      JSON.stringify({side: trade.side, numShares: trade.numShares, limitPrice: trade.limitPrice}) !==
-      JSON.stringify({side: prevProps.trade.side, numShares: prevProps.trade.numShares, limitPrice: prevProps.trade.limitPrice}) ||
+      JSON.stringify({
+        side: trade.side,
+        numShares: trade.numShares,
+        limitPrice: trade.limitPrice,
+        numFills: trade.numFills,
+      }) !==
+        JSON.stringify({
+          side: prevProps.trade.side,
+          numShares: prevProps.trade.numShares,
+          limitPrice: prevProps.trade.limitPrice,
+          numFills: prevProps.trade.numFills,
+        }) ||
+      walletStatus !== prevProps.walletStatus ||
+      sweepStatus !== prevProps.sweepStatus ||
       gasPrice !== prevProps.gasPrice ||
       !createBigNumber(prevProps.availableEth).eq(
         createBigNumber(availableEth)
       ) ||
       !createBigNumber(prevProps.availableDai).eq(
         createBigNumber(availableDai)
-      ) ||
-      prevProps.gsnUnavailable !== gsnUnavailable
+      )
     ) {
       this.setState({
         messages: this.constructMessages(this.props),
@@ -102,9 +141,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableEth,
       availableDai,
       tradingTutorial,
-      ethToDaiRate,
       GsnEnabled,
-      gsnUnavailable,
+      initializeGsnWallet,
+      walletStatus,
+      marketType,
+      selectedOutcomeId,
+      sweepStatus,
     } = props || this.props;
 
     const {
@@ -114,6 +156,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       numFills,
       loopLimit,
     } = trade;
+
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
     let needsApproval = false;
     let messages: Message | null = null;
@@ -124,13 +167,21 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = null;
 
-    if (GsnEnabled && ethToDaiRate) {
-      gasCostDai = formatDai(
-        ethToDaiRate.multipliedBy(createBigNumber(gasCost))
-      ).formattedValue;
+    if (GsnEnabled) {
+      gasCostDai = getGasInDai(gasLimit);
+    }
+
+    if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
+      messages = {
+        header: null,
+        type: WARNING,
+        message: `Percentages are determind by denomination range, rounding may occur. `,
+        link: HELP_CENTER,
+      };
     }
 
     if (
+      !isNaN(numTrades) && numTrades > 1 &&
       allowanceBigNumber &&
       createBigNumber(potentialDaiLoss.value).gt(allowanceBigNumber) &&
       !tradingTutorial
@@ -204,11 +255,28 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (gsnUnavailable && !tradingTutorial) {
+    // Show when GSN wallet initialization is successful
+    if (walletStatus === WALLET_STATUS_VALUES.CREATED && sweepStatus === TXEventName.Success && !tradingTutorial && numFills === 0) {
       messages = {
-        header: 'Create GSN Wallet',
+        header: 'Confirmed',
         type: WARNING,
-        message: 'Please create GSN wallet to start trading',
+        message: 'You can now place your trade',
+        callback: () => {
+          this.props.updateWalletStatus();
+          this.clearErrorMessage();
+        }
+      };
+    }
+    // Show if OpenOrder and GSN wallet still needs to be initialized
+    else if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && !tradingTutorial && numFills === 0) {
+      messages = {
+        header: '',
+        type: WARNING,
+        message: 'Initialization of your account is needed',
+        button: {
+          text: 'Initialize Account',
+          action: () => initializeGsnWallet(),
+        },
       };
     }
 
@@ -227,7 +295,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       maxPrice,
       minPrice,
       scalarDenomination,
-      ethToDaiRate,
       gasLimit,
       gasPrice,
       GsnEnabled,
@@ -245,6 +312,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       orderShareProfit,
       orderShareTradingFee,
       numFills,
+      sharesFilled,
     } = trade;
 
     const { messages } = this.state;
@@ -258,16 +326,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = null;
 
-    const gasCost = formatGasCostToEther(
-      gasLimit,
-      { decimalsRounded: 4 },
-      gasPrice
-    );
-
-    if (GsnEnabled && ethToDaiRate) {
-      gasCostDai = formatDai(
-        ethToDaiRate.multipliedBy(createBigNumber(gasCost))
-      );
+    if (GsnEnabled) {
+      gasCostDai = getGasInDai(gasLimit);
     }
 
     const limitPricePercentage = (side === BUY
@@ -298,6 +358,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
           : formatShares(
               createBigNumber(numShares).minus(shareCost.fullPrecision)
             ).rounded;
+    } else if (sharesFilled && sharesFilled.fullPrecision) {
+      newOrderAmount = sharesFilled.rounded;
     }
 
     const notProfitable =
@@ -389,13 +451,15 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               value={potentialDaiLoss}
               showDenomination={true}
             />
-            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && numFills > 0 &&  (
-              <LinearPropertyLabel
-                label="Est. TX Fee"
-                value={gasCostDai}
-                showDenomination={true}
-              />
-            )}
+            {gasCostDai &&
+              gasCostDai.roundedValue.gt(0) > 0 &&
+              numFills > 0 && (
+                <LinearPropertyLabel
+                  label="Est. TX Fee"
+                  value={gasCostDai}
+                  showDenomination={true}
+                />
+              )}
           </div>
         )}
         {messages && (
@@ -406,9 +470,25 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
           >
             {messages.type === ERROR ? ExclamationCircle : InformationIcon}
             <span>{messages.header}</span>
-            <div>{messages.message}</div>
-            {messages.type !== ERROR && (
-              <button onClick={this.clearErrorMessage}>{XIcon}</button>
+            <div>
+              {messages.message}
+              {messages.link && (
+                <ExternalLinkButton
+                  URL={messages.link}
+                  label={'LEARN MORE'}
+                />
+              )}
+            </div>
+            {messages.button && (
+              <ProcessingButton
+                text={messages.button.text}
+                action={messages.button.action}
+                queueName={TRANSACTIONS}
+                queueId={CREATEAUGURWALLET}
+              />
+            )}
+            {messages.type !== ERROR && !messages.button && (
+              <button onClick={messages.callback ? () => messages.callback() : this.clearErrorMessage}>{XIcon}</button>
             )}
           </div>
         )}

@@ -309,7 +309,7 @@
         stroke: @color-secondary-action-outline;
         fill: none;
       }
-  
+
       > circle {
         fill: @color-primary-text;
       }
@@ -609,9 +609,14 @@
 
 .Additional {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  justify-content: left;
+  text-align: left;
+
+  > p {
+    > span {
+      padding-right: 0.25rem;
+    }
+  }
 
   @media @breakpoint-mobile {
     justify-content: center;
@@ -984,13 +989,6 @@
   }
 }
 
-.ErrorText {
-  .text-12;
-
-  color: @color-error;
-  margin-top: @size-4;
-}
-
 .FormDropdown {
   display: flex;
   flex-direction: column;
@@ -1334,6 +1332,10 @@ button.MaxDark {
       background-color: @color-dark-grey;
       color: @color-primary-text;
       border: @size-1 solid @color-secondary-action;
+
+      &.DateInput_input__disabled {
+        color: @color-inactive-text;
+      }
     }
 
     .DateInput_1 {
@@ -1360,6 +1362,7 @@ button.MaxDark {
     .DateInput_input__focused {
       border: 0;
     }
+
 
     .CalendarMonth_1,
     .CalendarMonthGrid_1,
@@ -1749,6 +1752,13 @@ button.MaxDark {
       display: none;
     }
   }
+
+  &.Disabled {
+    > button {
+      border: @size-1 solid @color-inactive-text;
+      color: @color-inactive-text;
+    }
+  }
 }
 
 .IndividualTimeSelector {
@@ -2018,7 +2028,7 @@ div.error > div > div > div > div > input {
   &.active {
     > span:first-of-type {
       .text-12-bold;
-  
+
       color: @color-primary-text;
 
       @media @breakpoint-mobile {
@@ -2068,4 +2078,11 @@ div.error > div > div > div > div > input {
     color: @color-primary-text;
     margin: 0 @size-8;
   }
+}
+
+.ErrorText {
+  .text-12;
+
+  color: @color-error;
+  margin-top: @size-4;
 }

@@ -51,7 +51,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import FormStyles from 'modules/common/form.styles.less';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ButtonStyles from 'modules/common/buttons.styles.less';
-import Styles from 'modules/reporting/common.styles.less';
+import Styles, { userRepDisplay } from 'modules/reporting/common.styles.less';
 import {
   convertDisplayValuetoAttoValue,
   convertAttoValueToDisplayValue,
@@ -59,7 +59,7 @@ import {
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
 import MarketTitle from 'modules/market/containers/market-title';
-import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -384,7 +384,6 @@ export interface DisputingBondsViewProps {
   reportAction: Function;
   GsnEnabled: boolean;
   gasPrice: number;
-  ethToDaiRate: BigNumber;
   warpSyncHash: string;
   isWarpSync: boolean;
 }
@@ -514,11 +513,7 @@ export class DisputingBondsView extends Component<
     if (this.props.GsnEnabled) {
       const gasLimit = await this.props.reportAction(true);
       this.setState({
-        gasEstimate: formatGasCostToEther(
-          gasLimit,
-          { decimalsRounded: 4 },
-          this.props.gasPrice
-        ),
+        gasEstimate: gasLimit,
       });
     }
     if (this.props.isWarpSync) {
@@ -537,7 +532,6 @@ export class DisputingBondsView extends Component<
       reportAction,
       id,
       GsnEnabled,
-      ethToDaiRate,
       warpSyncHash,
     } = this.props;
 
@@ -604,11 +598,7 @@ export class DisputingBondsView extends Component<
         <LinearPropertyLabel
           key="estimatedGasFee"
           label={GsnEnabled ? 'Transaction Fee' : 'Gas Fee'}
-          value={
-            GsnEnabled
-              ? displayGasInDai(gasEstimate, ethToDaiRate)
-              : gasEstimate
-          }
+          value={displayGasInDai(gasEstimate)}
         />
         <PrimaryButton
           text="Confirm"
@@ -627,7 +617,6 @@ export interface ReportingBondsViewProps {
   reportAction: Function;
   GsnEnabled: boolean;
   gasPrice: number;
-  ethToDaiRate: BigNumber;
   inputtedReportingStake: DisputeInputtedValues;
   updateInputtedStake?: Function;
   inputScalarOutcome?: string;
@@ -638,6 +627,7 @@ export interface ReportingBondsViewProps {
   owesRep: boolean;
   openReporting: boolean;
   enoughRepBalance: boolean;
+  userFunds: BigNumber;
 }
 
 interface ReportingBondsViewState {
@@ -684,11 +674,7 @@ export class ReportingBondsView extends Component<
           .reportAction(true)
           .catch(e => console.error(e));
         this.setState({
-          gasEstimate: formatGasCostToEther(
-            gasLimit || INITAL_REPORT_GAS_COST,
-            { decimalsRounded: 4 },
-            this.props.gasPrice
-          ),
+          gasEstimate: gasLimit || INITAL_REPORT_GAS_COST,
         });
       }
     }
@@ -770,9 +756,9 @@ export class ReportingBondsView extends Component<
       initialReport,
       owesRep,
       GsnEnabled,
-      ethToDaiRate,
       openReporting,
       enoughRepBalance,
+      userFunds,
     } = this.props;
 
     const {
@@ -810,12 +796,20 @@ export class ReportingBondsView extends Component<
 
     let buttonDisabled = disabled;
     if (
-      isScalar &&
-      inputScalarOutcome === '' &&
-      id !== String(INVALID_OUTCOME_ID)
+      (isScalar &&
+        inputScalarOutcome === '' &&
+        id !== String(INVALID_OUTCOME_ID)) ||
+      (migrateRep &&
+        createBigNumber(inputtedReportingStake.inputStakeValue).lte(ZERO))
     ) {
       buttonDisabled = true;
     }
+    let insufficientFunds = false;
+    if (userFunds.lt(createBigNumber(getGasInDai(gasEstimate)))) {
+      buttonDisabled = true;
+      insufficientFunds = true;
+    }
+
     let insufficientRep = '';
     if (!enoughRepBalance) {
       (insufficientRep = 'Not enough REP to report'), (buttonDisabled = true);
@@ -877,16 +871,21 @@ export class ReportingBondsView extends Component<
             )}
           </div>
         )}
+        <div>
+          <LinearPropertyLabel
+            key="totalEstimatedGasFee"
+            label={GsnEnabled ? 'Transaction Fee' : 'Gas Fee'}
+            value={
+              GsnEnabled
+                ? displayGasInDai(gasEstimate)
+                : `${displayGasInDai(gasEstimate)} ETH`
+            }
+          />
+          {insufficientFunds && (
+            <span className={FormStyles.ErrorText}>Insufficient Funds to complete transaction</span>
+          )}
+        </div>
 
-        <LinearPropertyLabel
-          key="totalEstimatedGasFee"
-          label={GsnEnabled ? 'Transaction Fee' : 'Gas Fee'}
-          value={
-            GsnEnabled
-              ? displayGasInDai(gasEstimate, ethToDaiRate)
-              : `${gasEstimate} ETH`
-          }
-        />
         {migrateRep &&
           createBigNumber(inputtedReportingStake.inputStakeValue).lt(
             userAttoRep
@@ -946,10 +945,17 @@ export interface ReportingCardProps {
   showReportingModal: Function;
   callback: Function;
   isLogged: boolean;
+  isForking: boolean;
 }
 
 export const ReportingCard = (props: ReportingCardProps) => {
-  const { market, currentAugurTimestamp, showReportingModal, isLogged } = props;
+  const {
+    market,
+    currentAugurTimestamp,
+    showReportingModal,
+    isLogged,
+    isForking,
+  } = props;
 
   if (!market) return null;
 
@@ -958,6 +964,15 @@ export const ReportingCard = (props: ReportingCardProps) => {
   const preReporting = reportingState === REPORTING_STATE.PRE_REPORTING;
   const headerType =
     reportingState === REPORTING_STATE.OPEN_REPORTING && HEADER_TYPE.H2;
+
+  let disabledTooltipText = preReporting
+    ? 'Please wait until the Market is ready to Report on'
+    : 'Please connect a wallet to Report on this Market';
+
+  if (isForking) {
+    disabledTooltipText =
+      'Market cannot be reported on while universe is forking';
+  }
 
   return (
     <div className={Styles.ReportingCard}>
@@ -993,11 +1008,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
             place="top"
             type="light"
           >
-            <p>
-              {preReporting
-                ? 'Please wait until the Maket is ready to Report on'
-                : 'Please connect a wallet to Report on this Market'}{' '}
-            </p>
+            <p>{disabledTooltipText} </p>
           </ReactTooltip>
         )}
       </div>

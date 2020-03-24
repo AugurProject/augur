@@ -648,8 +648,8 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     if finalized:
         if invalid:
             nextDisputeWindowAddress = universe.getOrCreateNextDisputeWindow(False)
-            totalFees = fix(100) / 50 # Market fees + reporting fees
-            totalFees -= sourceKickback
+            totalFees = fix(1) - sourceKickback # market fees
+            totalFees += fix(.01) # reporting fee
             with TokenDelta(cash, totalFees, nextDisputeWindowAddress, "Dispute Window did not recieve the correct fees"):
                 assert ZeroXTrade.trade(fix(1), fingerprint, tradeGroupID, 0, 10, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
         else:
@@ -780,9 +780,10 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe, rep
     createOrder = contractsFixture.contracts["CreateOrder"]
     fillOrder = contractsFixture.contracts["FillOrder"]
     affiliates = contractsFixture.contracts["Affiliates"]
+    weth = contractsFixture.contracts["WETH9"]
 
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
-    ethExchange = contractsFixture.contracts["EthExchange"]
+    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", ZeroXTrade.ethExchange())
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]
@@ -803,16 +804,18 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe, rep
     # We'll provide some liquidity to the eth exchange
     cashAmount = 1000 * 10**18
     ethAmount = 10 * 10**18
+    weth.deposit(ethAmount, value=ethAmount)
     cash.faucet(cashAmount)
     cash.transfer(ethExchange.address, cashAmount)
-    contractsFixture.sendEth(account, ethExchange.address, ethAmount)
-    ethExchange.publicMint(account)
+    weth.transfer(ethExchange.address, ethAmount)
+    ethExchange.mint(account)
 
     # We do this again in order to trigger a storage update that will make using the exchange cheaper
+    weth.deposit(ethAmount, value=ethAmount)
     cash.faucet(cashAmount)
     cash.transfer(ethExchange.address, cashAmount)
-    contractsFixture.sendEth(account, ethExchange.address, ethAmount)
-    ethExchange.publicMint(account)
+    weth.transfer(ethExchange.address, ethAmount)
+    ethExchange.mint(account)
 
     assert augurWalletRegistry.getWallet(account) == nullAddress
 
@@ -979,7 +982,8 @@ def test_protocol_fee_coverage(contractsFixture, cash, market):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
     shareToken = contractsFixture.contracts["ShareToken"]
-    ethExchange = contractsFixture.contracts["EthExchange"]
+    weth = contractsFixture.contracts["WETH9"]
+    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", ZeroXTrade.ethExchange())
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
     tradeGroupID = longTo32Bytes(42)
@@ -1010,10 +1014,11 @@ def test_protocol_fee_coverage(contractsFixture, cash, market):
     # We'll provide some liquidity to the exchange
     cashAmount = 1000 * 10**18
     ethAmount = 10 * 10**18
+    weth.deposit(ethAmount, value=ethAmount)
     cash.faucet(cashAmount)
     cash.transfer(ethExchange.address, cashAmount)
-    contractsFixture.sendEth(account, ethExchange.address, ethAmount)
-    ethExchange.publicMint(account)
+    weth.transfer(ethExchange.address, ethAmount)
+    ethExchange.mint(account)
 
     # We still fail since we have not approved any purchase of ETH using our DAI
     with raises(TransactionFailed):

@@ -14,13 +14,15 @@ import {
   SCALAR,
   YES_NO,
   PUBLICFILLORDER,
+  CREATEAUGURWALLET,
   BUYPARTICIPATIONTOKENS,
   MODAL_ERROR,
   MIGRATE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
-  APPROVE,
+  MIGRATEOUTBYPAYOUT,
   TRADINGPROCEEDSCLAIMED,
   CLAIMMARKETSPROCEEDS,
+  FORKANDREDEEM,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -42,7 +44,10 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   REDEEMSTAKE,
   MIGRATE_FROM_LEG_REP_TOKEN,
   BATCHCANCELORDERS,
-  TRADINGPROCEEDSCLAIMED
+  TRADINGPROCEEDSCLAIMED,
+  MIGRATEOUTBYPAYOUT,
+  FORKANDREDEEM,
+  CREATEAUGURWALLET,
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
@@ -65,6 +70,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     if (ADD_PENDING_QUEUE_METHOD_CALLS.includes(methodCall)) {
       dispatch(addUpdatePendingTransaction(methodCall, eventName, blockchain.currentBlockNumber, hash, { ...transaction }));
     }
+
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 
@@ -99,6 +105,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       methodCall !== CANCELORDER &&
       methodCall !== PUBLICFILLORDER
     ) {
+
       if (
         methodCall === CREATEMARKET ||
         methodCall === CREATECATEGORICALMARKET ||
@@ -129,10 +136,10 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     switch (methodCall) {
       case REDEEMSTAKE: {
         const params = transaction.params;
-        params._reportingParticipants.map(participant => 
+        params._reportingParticipants.map(participant =>
           dispatch(addPendingData(participant, REDEEMSTAKE, eventName, hash, {...transaction}))
         );
-        params._disputeWindows.map(window => 
+        params._disputeWindows.map(window =>
           dispatch(addPendingData(window, REDEEMSTAKE, eventName, hash, {...transaction}))
         );
         break;
@@ -210,8 +217,8 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         break;
       }
       case CANCELORDERS: {
-        const orderIds = transaction.params && transaction.params.order[TX_ORDER_IDS];
-        orderIds.map(orderId => dispatch(addCanceledOrder(orderId, eventName, hash)));
+        const orders = transaction.params && transaction.params._orders || [];
+        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
         break;
       }
 

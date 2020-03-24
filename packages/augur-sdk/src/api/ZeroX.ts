@@ -90,6 +90,7 @@ export interface ZeroXSimulateTradeData {
   sharesDepleted: BigNumber;
   tokensDepleted: BigNumber;
   numFills: BigNumber;
+  selfTrade: boolean;
 }
 
 export interface ZeroXTradeOrder {
@@ -445,7 +446,8 @@ export class ZeroX {
       }
     } catch (error) {
       console.error(error);
-      return setTimeout(this.addOrders(orders), 5000);
+      if (this._mesh || this._rpc)
+        return setTimeout(this.addOrders(orders), 5000);
     }
   }
 
@@ -470,6 +472,14 @@ export class ZeroX {
       []
     );
     let simulationData: BigNumber[];
+    const selfTrade =
+      params.takerAddress && orders.length > 0
+        ? !!orders.find(
+            order =>
+              order.makerAddress.toLowerCase() ===
+              params.takerAddress.toLowerCase()
+          )
+        : false;
     if (orders.length < 1 && !params.doNotCreateOrders) {
       simulationData = await this.simulateMakeOrder(onChainTradeParams);
     } else if (orders.length < 1) {
@@ -479,12 +489,15 @@ export class ZeroX {
         sharesDepleted: new BigNumber(0),
         settlementFees: new BigNumber(0),
         numFills: new BigNumber(0),
+        selfTrade,
       };
     } else {
+      const options = {sender: await this.client.getAccount()};
       simulationData = ((await this.client.contracts.simulateTrade.simulateZeroXTrade_(
         orders,
         onChainTradeParams.amount,
-        params.doNotCreateOrders
+        params.doNotCreateOrders,
+        options
       )) as unknown) as BigNumber[];
     }
     const tickSize = numTicksToTickSizeWithDisplayPrices(
@@ -509,6 +522,7 @@ export class ZeroX {
       sharesDepleted: displaySharesDepleted,
       settlementFees: displaySettlementFees,
       numFills,
+      selfTrade,
     };
   }
 

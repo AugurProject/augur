@@ -160,6 +160,7 @@ class MyMarkets extends Component<MyMarketsProps> {
         toggle={toggle}
         hide={hide}
         extend={extend}
+        showLiquidityDepleted
         pickVariables={[
           'id',
           'description',

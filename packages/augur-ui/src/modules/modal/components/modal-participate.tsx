@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { createBigNumber } from 'utils/create-big-number';
 import { TextInput } from 'modules/common/form';
 import Styles from 'modules/modal/components/common/common.styles.less';
 import { formatRep, formatGasCostToEther } from 'utils/format-number';
@@ -24,7 +24,6 @@ interface ModalParticipateProps {
   messages: AlertMessageProps[];
   title: string;
   GsnEnabled: boolean;
-  ethToDaiRate: BigNumber;
 }
 
 export const ModalParticipate = (props: ModalParticipateProps) => {
@@ -34,7 +33,6 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     messages,
     title,
     GsnEnabled,
-    ethToDaiRate,
   } = props;
 
   const [isValid, setIsValid] = useState(false);
@@ -86,7 +84,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     }
 
     if (bnQuantity.gt(bnRep)) {
-      errors.push('Insufficient Funds.');
+      errors.push(`Value is bigger than REP balance: ${rep} REP`);
       isValid = false;
     }
 
@@ -120,7 +118,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     {
       label: 'gas',
       value: GsnEnabled
-        ? displayGasInDai(gasEstimate, ethToDaiRate)
+        ? displayGasInDai(gasLimit)
         : gasEstimate,
       denomination: GsnEnabled ? 'DAI' : 'ETH',
       showDenomination: true,

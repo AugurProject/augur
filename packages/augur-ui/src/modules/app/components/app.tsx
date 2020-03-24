@@ -168,10 +168,11 @@ export default class AppView extends Component<AppProps> {
         useWeb3Transport,
       },
       (err: any, res: any) => {
-        if (err || (res && !res.ethereumNode) || res) {
+        if (err) {
           updateModal({
             type: MODAL_NETWORK_CONNECT,
             isInitialConnection: true,
+            config: res.config,
           });
         }
       }
@@ -216,7 +217,7 @@ export default class AppView extends Component<AppProps> {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
     if (universe.forkingInfo !== prevProps.universe.forkingInfo) {
-      this.sideNavMenuData[5].disabled = !!prevProps.universe.forkingInfo;
+      this.sideNavMenuData[5].disabled = !!universe.forkingInfo;
     }
 
     if (location !== prevProps.location) {

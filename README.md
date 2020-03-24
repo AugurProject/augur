@@ -62,6 +62,11 @@ yarn workspace @augurproject/ui dev
 ```
 
 Connect MetaMask to localhost:8545 and go to http://localhost:8080 in your browser.  Click on "login", select MetaMask/web3, and check the Gnosis Safe checkbox.  This will create a contract wallet for you which will automatically receive testnet DAI.
+#### Getting Cash (fake DAI) for Testnet
+1. copy signing wallet address from Account Summary bottom right.
+2. paste in kovan ETH faucet, link is in Account Summary bottom right
+3. after ETH lands, mash magic button in Account Summary bottom right
+4. mash initialize GSN Wallet button on top bar.
 
 #### [Startup steps for Ubuntu 18.04](https://github.com/AugurProject/augur/blob/master/docs/v2/docs/getting-started.md)
 

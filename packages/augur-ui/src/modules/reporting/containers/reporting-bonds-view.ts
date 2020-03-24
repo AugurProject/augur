@@ -11,6 +11,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const { universe, loginAccount } = state;
   const { market } = ownProps;
   const userAttoRep = createBigNumber(loginAccount.balances && loginAccount.balances.attoRep || ZERO);
+  const userFunds = state.appStatus.gsnEnabled ? createBigNumber(loginAccount.balances && loginAccount.balances.dai || ZERO) : createBigNumber(loginAccount.balances && loginAccount.balances.eth || ZERO);
   const hasForked = !!state.universe.forkingInfo;
   const migrateRep =
     hasForked && universe.forkingInfo.forkingMarket === market.id;
@@ -22,13 +23,13 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const enoughRepBalance = owesRep ? userAttoRep.gte(createBigNumber(market.noShowBondAmount)) : true;
 
   return {
+    userFunds,
     owesRep,
     initialReport,
     migrateMarket,
     migrateRep,
     userAttoRep: convertAttoValueToDisplayValue(userAttoRep),
     GsnEnabled: state.appStatus.gsnEnabled,
-    ethToDaiRate: state.appStatus.ethToDaiRate,
     gasPrice: getGasPrice(state),
     openReporting,
     enoughRepBalance

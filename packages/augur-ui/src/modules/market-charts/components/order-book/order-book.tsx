@@ -111,7 +111,6 @@ const OrderBookSide = ({
                     orderPrice: '0',
                     orderQuantity: '0',
                     selectedNav: SELL,
-                    selfTrade: false,
                   })
                 }
               />
@@ -124,7 +123,6 @@ const OrderBookSide = ({
                     orderPrice: '0',
                     orderQuantity: '0',
                     selectedNav: BUY,
-                    selfTrade: false,
                   })
                 }
               />
@@ -159,7 +157,6 @@ const OrderBookSide = ({
                 orderPrice: order.price,
                 orderQuantity: order.cumulativeShares,
                 selectedNav: isAsks ? BUY : SELL,
-                selfTrade: hasSize,
               })
             }
           >

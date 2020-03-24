@@ -104,23 +104,22 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     {
       key: 'cancel',
       columnType: COLUMN_TYPES.CANCEL_TEXT_BUTTON,
-      disabled: isCanceling,
+      disabled: !!isCanceling,
       text: null,
       showCountdown: true,
       expiry: openOrder.expiry,
       currentTimestamp: sP.currentTimestamp,
-      pending: isCanceling || (openOrder.status && openOrder.status !== OPEN),
-      status: isCanceling ? TXEventName.Pending : openOrder.status,
+      pending: !!isCanceling || (openOrder.status && openOrder.status !== OPEN),
+      status: !!isCanceling ? isCanceling.status : openOrder.status,
       action: async (e: Event) => {
         e.stopPropagation();
-        try {
-          if (openOrder.status === TXEventName.Failure || openOrder.status === TXEventName.Success) {
-            dP.removePendingOrder(openOrder.id, marketId);
-          } else {
-            await openOrder.cancelOrder(openOrder);
-          }
-        } catch (error) {
-          dP.removeCanceledOrder(openOrder.id);
+        if (!!isCanceling) {
+          dP.removeCanceledOrder(openOrder.id)
+        }
+        else if ((openOrder.status === TXEventName.Failure || openOrder.status === TXEventName.Success)) {
+          dP.removePendingOrder(openOrder.id, marketId);
+        } else {
+          await openOrder.cancelOrder(openOrder);
         }
       },
     },
