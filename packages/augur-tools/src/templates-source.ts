@@ -7419,7 +7419,7 @@ export const TEMPLATES = {
       },
       {
         marketType: CATEGORICAL,
-        question: `Which of these countries will have the highest amount of total confirmed [0] of Coronavirus (Covid-19) by [1] according to https://www.worldometers.info/coronavirus/#countries?`,
+        question: `Which of these countries will have the highest amount of total confirmed [0] Coronavirus (Covid-19) by [1] according to https://www.worldometers.info/coronavirus/#countries?`,
         example: `Which of these countries will have the highest amount of total confirmed cases of Coronavirus (Covid-19) by July 20, 2020 according to https://www.worldometers.info/coronavirus/#countries?`,
         inputs: [
           {
