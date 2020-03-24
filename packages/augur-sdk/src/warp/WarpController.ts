@@ -133,9 +133,10 @@ export class WarpController {
       0. Base case: need to have created initial warp checkpoint.
       1. Check if we need to create warp sync
         1. This will happen if the active market endTime has elapsed
-      2. Check if we have a market finalization
+      2. Check if we have a market awaiting finalization
         1. If so, do we dispute?
-        2. If no dispute we make note of new market end time
+      3. If market is finalized
+        1. If no dispute we make note of new market end time
     */
 
     const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
@@ -156,6 +157,10 @@ export class WarpController {
           // Emit event to notify UI to report.
 
           break;
+
+        case MarketReportingState.AwaitingFinalization:
+          // confirm hash matches and emit dispute event if needed.
+
         case MarketReportingState.Finalized:
           const [begin, end] = await this.checkpoints.calculateBoundary(
             mostRecentCheckpoint.endTimestamp,
@@ -179,11 +184,11 @@ export class WarpController {
     // WarpSync Market has ended. Need to create checkpoint.
     if (mostRecentCheckpoint.endTimestamp < newBlock.timestamp) {
       const [
-        newBeginBlock,
         newEndBlock,
+        newBeginBlock,
       ] = await this.checkpoints.calculateBoundary(
         mostRecentCheckpoint.endTimestamp,
-        mostRecentCheckpoint.begin,
+        await this.provider.getBlock(this.uploadBlockNumber),
         newBlock
       );
 
@@ -193,7 +198,7 @@ export class WarpController {
       /*
        * To create the checkpoint properly we need to discover the boundary blocks around the end time.
        **/
-      const hash = await this.createAllCheckpoints(newBlock);
+      const hash = (await this.createCheckpoint(newEndBlock)).toString();
 
       this.augur.events.emit(SubscriptionEventName.WarpSyncHashUpdated, {
         hash,
@@ -226,22 +231,40 @@ export class WarpController {
     }
   }
 
-  async createAllCheckpoints(highestBlock: Block) {
-    // Skip this warpSyncFile run. Will get em' next time.
-    if (this.checkpointCreationInProgress) return;
-    this.checkpointCreationInProgress = true;
-    await this.createInitialCheckpoint();
-    await this.createCheckpoints(highestBlock);
-    this.checkpointCreationInProgress = false;
+  async destroyAndRecreateDB() {
+    await this.db.delete();
+    await this.db.initializeDB();
+  }
 
-    // For reproducibility we need hash consistent block number ranges for each warp sync.
-    const [
-      beginBlock,
-      endBlock,
-    ] = await this.db.warpCheckpoints.getCheckpointBlockRange();
+  async createCheckpoint(
+    endBlock: Block
+  ): Promise<IpfsInfo> {
+    const logs = [];
+    for (const { databaseName } of databasesToSync) {
+      // Awaiting here to reduce load on db.
+      logs.push(
+        await this.db[databaseName]
+          .where('blockNumber')
+          .between(this.uploadBlockNumber, endBlock.number, true, true)
+          .toArray()
+      );
+    }
 
-    // We are in the 30 block grace period of the first checkpoint.
-    if(!endBlock) return;
+    const sortedLogs = _.orderBy(
+      _.flatten(logs),
+      ['blockNumber', 'logIndex'],
+      ['asc', 'asc']
+    );
+
+    const body = JSON.stringify({
+      startBlockNumber: this.uploadBlockNumber,
+      endBlockNumber: endBlock.number,
+      logs: sortedLogs,
+    } as CheckpointInterface);
+    const content = LZString.compressToUint8Array(body);
+    const [result] = await (await this.ipfs).add({
+      content,
+    });
 
     const topLevelDirectory = new DAGNode(
       Unixfs.default('directory').marshal()
@@ -255,172 +278,21 @@ export class WarpController {
       Size: 1,
     });
 
-    topLevelDirectory.addLink(
-      await this.buildDirectory(
-        'checkpoints',
-        await this.db.warpCheckpoints.getAllIPFSObjects()
-      )
-    );
-
-    const d = await (await this.ipfs).dag.put(
-      topLevelDirectory,
-      WarpController.DEFAULT_NODE_TYPE
-    );
-
-    console.log('checkpoint', d.toString());
-
-    // Add checkpoint to db.
-    await this.db.warpSync.createCheckpoint(beginBlock, endBlock, d.toString());
-
-    return d.toString();
-  }
-
-  private async buildDirectory(name: string, items: IPFSObject[] = []) {
-    const file = Unixfs.default('file');
-    const directory = Unixfs.default('directory');
-    for (let i = 0; i < items.length; i++) {
-      directory.addBlockSize(items[i].Size);
-    }
-
-    directory.addBlockSize(file.fileSize());
-    const directoryNode = new DAGNode(directory.marshal());
-
-    for (let i = 0; i < items.length; i++) {
-      await directoryNode.addLink(items[i]);
-    }
-
-    const q = await (await this.ipfs).dag.put(
-      directoryNode,
-      WarpController.DEFAULT_NODE_TYPE
-    );
-
-    return {
-      Name: name,
-      Hash: q.toString(),
-      Size: 0,
-    };
-  }
-
-  private async ipfsAddRows(rows: any[]): Promise<IPFSObject[]> {
-    if (_.isEmpty(rows)) {
-      return [];
-    }
-
-    const requests = rows.map((row, i) => ({
-      content: Buffer.from(JSON.stringify(row) + '\n'),
-    }));
-
-    const data = await (await this.ipfs).add(requests);
-    return data.map(item => ({
-      Hash: item.hash,
-      Size: item.size,
-    }));
-  }
-
-  async createCheckpoint(
-    startBlockNumber: number,
-    endBlockNumber: number
-  ): Promise<IpfsInfo> {
-    const logs = [];
-    for (const { databaseName } of databasesToSync) {
-      // Awaiting here to reduce load on db.
-      logs.push(
-        await this.db[databaseName]
-          .where('blockNumber')
-          .between(startBlockNumber, endBlockNumber, true, true)
-          .toArray()
-      );
-    }
-
-    const sortedLogs = _.orderBy(
-      _.flatten(logs),
-      ['blockNumber', 'logIndex'],
-      ['asc', 'asc']
-    );
-
-    const body = JSON.stringify({
-      startBlockNumber,
-      endBlockNumber,
-      logs: sortedLogs,
-    } as CheckpointInterface);
-    const content = LZString.compressToUint8Array(body);
-    const [result] = await (await this.ipfs).add({
-      content,
-    });
-
-    return {
-      Name: `${startBlockNumber}`,
+    topLevelDirectory.addLink({
+      Name: 'index',
       Hash: result.hash,
       Size: 0,
-    };
+    });
+
+    const hash = (await (await this.ipfs).dag.put(
+      topLevelDirectory,
+      WarpController.DEFAULT_NODE_TYPE
+    )).toString();
+
+    await this.db.warpCheckpoints.createCheckpoint(endBlock, hash);
+
+    return hash;
   }
-
-  async updateCheckpointDbByNumber(
-    begin: number,
-    checkPointIPFSObject: IpfsInfo
-  ) {
-    return this.db.warpCheckpoints.createCheckpoint(
-      await this.provider.getBlock(begin),
-      checkPointIPFSObject
-    );
-  }
-
-  async createCheckpoints(end: Block) {
-    const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
-
-    // Ain't quite time yet.
-    if (end.timestamp < mostRecentCheckpoint.endTimestamp) return;
-
-    const [
-      newBeginBlock,
-      newEndBlock,
-    ] = await this.checkpoints.calculateBoundary(
-      mostRecentCheckpoint.endTimestamp,
-      mostRecentCheckpoint.begin,
-      end
-    );
-
-    // This is where we actually create the checkpoint.
-    const checkPointIPFSObject = await this.createCheckpoint(
-      mostRecentCheckpoint.begin.number,
-      newBeginBlock.number
-    );
-    await this.db.warpCheckpoints.createCheckpoint(
-      newBeginBlock,
-      checkPointIPFSObject
-    );
-
-    // We need to be sure we have a checkpoint record for each warp sync market regardless of market status.
-    const allWarpSyncMarkets = await this.db.marketDatabase.getAllWarpSyncMarkets();
-    const nextMarketToCheckpoint = allWarpSyncMarkets.find(
-      market => market.endTime < mostRecentCheckpoint.endTimestamp
-    );
-
-    if (!nextMarketToCheckpoint) return;
-
-    await this.db.warpCheckpoints.createInitialCheckpoint(
-      newEndBlock,
-      await this.augur.getMarket(nextMarketToCheckpoint.market)
-    );
-
-    return this.createCheckpoints(end);
-  }
-
-  queryDB = <P extends AllDBNames>(
-    dbName: P,
-    properties: Readonly<string[]> = [],
-    criteria: Address,
-    startBlockNumber = 0,
-    endBlockNumber?: number
-  ): Dexie.Promise<Array<AllDbs[P]>> => {
-    // I really hate that I have to do this.
-    // @ts-ignore
-    return this.db[dbName]
-      .where('blockNumber')
-      .between(startBlockNumber, endBlockNumber, true, true)
-      .and(item => properties.some(property => item[property] === criteria))
-      .toArray();
-  };
 
   getFile(ipfsPath: string) {
     return this._fileRetrievalFn(ipfsPath)
@@ -428,22 +300,10 @@ export class WarpController {
       .then(JSON.parse);
   }
 
-  async getAvailableCheckpointsByHash(
-    ipfsRootHash: string
-  ): Promise<IpfsInfo[]> {
-    const files = await (await this.ipfs).ls(`${ipfsRootHash}/checkpoints/`);
-    return files.map(({ name, hash }) => ({
-      Name: name,
-      Hash: hash,
-      Size: 0,
-    }));
-  }
-
   async getCheckpointFile(
     ipfsRootHash: string,
-    checkpointBlockNumber: string | number
   ): Promise<CheckpointInterface> {
-    return this.getFile(`${ipfsRootHash}/checkpoints/${checkpointBlockNumber}`);
+    return this.getFile(`${ipfsRootHash}/index`);
   }
 
   async pinHashByGatewayUrl(urlString: string) {
@@ -458,7 +318,7 @@ export class WarpController {
   }
 
   async getMostRecentWarpSync() {
-    return this.db.warpSync.getMostRecentWarpSync();
+    return this.db.warpCheckpoints.getMostRecentWarpSync();
   }
 
   async getMostRecentCheckpoint() {

@@ -10,6 +10,7 @@ import {
   ZeroX,
 } from '@augurproject/sdk';
 import { SubscriptionEventName } from '@augurproject/sdk/build';
+import { Controller } from '@augurproject/sdk/build/state/Controller';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { BlockAndLogStreamerSyncStrategy } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
@@ -82,6 +83,8 @@ export class TestContractAPI extends ContractAPI {
 
     const contractAddresses = augur.contractEvents.getAugurContractAddresses();
 
+    new Controller(augur, Promise.resolve(db), db.logFilters);
+
     this.bulkSyncStrategy = new BulkSyncStrategy(
       provider.getLogs,
       contractAddresses,
@@ -137,7 +140,7 @@ export class TestContractAPI extends ContractAPI {
 
   async reportWarpSyncMarket(hash?:string) {
     if(!hash) {
-      const mostRecentWarpSync = await this.db.warpSync.getMostRecentWarpSync();
+      const mostRecentWarpSync = await this.db.warpCheckpoints.getMostRecentWarpSync();
       hash = mostRecentWarpSync.hash;
     }
 

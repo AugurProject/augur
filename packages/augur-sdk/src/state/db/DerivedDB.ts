@@ -41,10 +41,17 @@ export class DerivedDB extends RollbackTable {
     this.name = name;
 
     augur.events.once(SubscriptionEventName.BulkSyncComplete, this.onBulkSyncComplete.bind(this));
+
+    // Binding here because we need to use call the parent method.
+    this.handleMergeEvent = this.handleMergeEvent.bind(this);
+  }
+
+  async delete() {
+    this.stateDB.unregisterEventListener(this.mergeEventNames, this.handleMergeEvent);
   }
 
   async onBulkSyncComplete() {
-    this.stateDB.registerEventListener(this.mergeEventNames, this.handleMergeEvent.bind(this));
+    this.stateDB.registerEventListener(this.mergeEventNames, this.handleMergeEvent);
   }
 
   async sync(highestAvailableBlockNumber: number): Promise<void> {
