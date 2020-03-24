@@ -33,8 +33,7 @@ import {
   PGA,
   EURO_TOUR,
   LPGA,
-  MENS,
-  WOMENS,
+  MEDICAL,
   SINGLES,
   DOUBLES,
   WNBA,
@@ -7360,5 +7359,96 @@ export const TEMPLATES = {
         ],
       },
     },
+  },
+  [MEDICAL]: {
+    templates: [
+      {
+        marketType: YES_NO,
+        question: `Will there be [0] or more total confirmed [1] Coronavirus (Covid-19) in [2] by [3] according to https://www.worldometers.info/coronavirus/country?`,
+        example: `Will there be 3000000 or more total confirmed cases of Coronavirus (Covid-19) in the world by July 15, 2020 according to https://www.worldometers.info/coronavirus/country?`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            validationType: ValidationType.WHOLE_NUMBER,
+            placeholder: 'Whole #',
+          },
+          {
+            id: 1,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Case/Death`,
+            values: LIST_VALUES.MEDICAL_CASE_DEATH,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Countries`,
+            values: LIST_VALUES.MEDICAL_COUNTRIES,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.DATESTART,
+            daysAfterDateStart: 2,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: {
+          [REQUIRED]: [
+            {
+              text: `World Cases: Settlement is based off of the https://www.worldometers.info/coronavirus/ website.  To find the Total number of confirmed World cases, go to the Total Case (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.  To find the Total number of  World deaths, go to the Total deaths (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.`,
+            },
+            {
+              text: `Country Cases: To find the Total cases or deaths for a specific country named in the market question go to https://www.worldometers.info/coronavirus/ website and scroll down the page until you find the list of countries.  Select the country you want.  On that country’s information page, scroll down until you find the corresponding chart needed for the market question. For example, to find the total amount of confirmed cases in the United States, go to the Total Case (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.  To find the Total number of deaths for that country, go to the Total deaths (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.`
+            }
+          ],
+        },
+      },
+      {
+        marketType: YES_NO,
+        question: `Will the FDA approve a vaccine for Coronavirus (Covid-19) by [0]?`,
+        example: `Will the FDA approve a vaccine for Coronavirus (Covid-19) by November 15, 2020?`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.DATESTART,
+            daysAfterDateStart: 2,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: {},
+      },
+      {
+        marketType: CATEGORICAL,
+        question: `Which of these countries will have the highest amount of total confirmed [0] Coronavirus (Covid-19) by [1] according to https://www.worldometers.info/coronavirus/#countries?`,
+        example: `Which of these countries will have the highest amount of total confirmed cases of Coronavirus (Covid-19) by July 20, 2020 according to https://www.worldometers.info/coronavirus/#countries?`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Case/Death`,
+            values: LIST_VALUES.MEDICAL_CASE_DEATH,
+          },
+          {
+            id: 1,
+            type: TemplateInputType.DATESTART,
+            daysAfterDateStart: 2,
+            placeholder: `Day of Year`,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+            placeholder: `Select Country`,
+            values: LIST_VALUES.MEDICAL_COUNTRIES_ONLY,
+          },
+        ],
+        resolutionRules: {
+          [REQUIRED]: [
+            {
+              text: `Country Cases: To find the Total cases or deaths for a specific country named in the market question go to https://www.worldometers.info/coronavirus/ website and scroll down the page until you find the list of countries.  Select the country you want.  On that country’s information page, scroll down until you find the corresponding chart needed for the market question. For example, to find the total amount of confirmed cases in the United States, go to the Total Case (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.  To find the Total number of deaths for that country, go to the Total deaths (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.`,
+            },
+          ],
+        },
+      },
+    ]
   },
 };

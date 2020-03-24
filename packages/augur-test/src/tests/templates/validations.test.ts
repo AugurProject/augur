@@ -46,6 +46,17 @@ const templateValidations = [
     result:
       'error: estimated schedule date time is after market event expiration endTime',
   },
+  {
+    skip: false,
+    title:
+      'Will there be 1000 or more total confirmed deaths from Coronavirus (Covid-19) in Canada by April 1, 2020 according to https://www.worldometers.info/coronavirus/country?',
+    templateInfo:
+    '{"hash":"0xf72300773efecec0a82a30d8a9d316c815bea46c9c14fd95c079a11366c1721f","question":"Will there be [0] or more total confirmed [1] Coronavirus (Covid-19) in [2] by [3] according to https://www.worldometers.info/coronavirus/country?","inputs":[{"id":0,"value":"1000","type":"TEXT","timestamp":null},{"id":1,"value":"deaths from","type":"DROPDOWN","timestamp":null},{"id":2,"value":"Canada","type":"DROPDOWN","timestamp":null},{"id":3,"value":"April 1, 2020","type":"DATESTART","timestamp":1585717200}]}',
+    endTime: '1585918800',
+    resolutionRules: null,
+    result:
+    'start date in question is not the required number of days before market event expiration endTime',
+  },
 ];
 
 test('flash :: tempalte validation tests', async () => {
