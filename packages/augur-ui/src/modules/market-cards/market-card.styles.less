@@ -499,6 +499,14 @@
       &.template {
         > div[class*="CategoryTagTrail"] {
           margin-left: 0;
+          grid-column: 1;
+          grid-row: 2;
+        }
+      }
+
+      &.nonOpenTemplate {
+        > div[class*="CategoryTagTrail"] {
+          grid-row: 3;
         }
       }
 
