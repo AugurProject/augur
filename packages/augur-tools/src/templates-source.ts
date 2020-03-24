@@ -7395,8 +7395,11 @@ export const TEMPLATES = {
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: ``,
+              text: `World Cases: Settlement is based off of the https://www.worldometers.info/coronavirus/ website.  To find the Total number of confirmed World cases, go to the Total Case (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.  To find the Total number of  World deaths, go to the Total deaths (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.`,
             },
+            {
+              text: `Country Cases: To find the Total cases or deaths for a specific country named in the market question go to https://www.worldometers.info/coronavirus/ website and scroll down the page until you find the list of countries.  Select the country you want.  On that country’s information page, scroll down until you find the corresponding chart needed for the market question. For example, to find the total amount of confirmed cases in the United States, go to the Total Case (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.  To find the Total number of deaths for that country, go to the Total deaths (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.`
+            }
           ],
         },
       },
@@ -7412,13 +7415,7 @@ export const TEMPLATES = {
             placeholder: `Day of Year`,
           },
         ],
-        resolutionRules: {
-          [REQUIRED]: [
-            {
-              text: ``,
-            },
-          ],
-        },
+        resolutionRules: {},
       },
       {
         marketType: CATEGORICAL,
@@ -7447,7 +7444,7 @@ export const TEMPLATES = {
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: ``,
+              text: `Country Cases: To find the Total cases or deaths for a specific country named in the market question go to https://www.worldometers.info/coronavirus/ website and scroll down the page until you find the list of countries.  Select the country you want.  On that country’s information page, scroll down until you find the corresponding chart needed for the market question. For example, to find the total amount of confirmed cases in the United States, go to the Total Case (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.  To find the Total number of deaths for that country, go to the Total deaths (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.`,
             },
           ],
         },
