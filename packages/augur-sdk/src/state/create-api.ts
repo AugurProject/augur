@@ -120,7 +120,7 @@ export async function createClient(
     connector,
     zeroX,
     enableFlexSearch
-  );
+  );{}
 
   // Delay loading of the browser mesh until we're finished syncing
   client.events.once(SubscriptionEventName.BulkSyncComplete, () => {
@@ -162,7 +162,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
 
   const ethersProvider: EthersProvider = client.provider as EthersProvider;
   const contractEvents = new ContractEvents(
-    ethersProvider, 
+    ethersProvider,
     client.config.addresses.Augur,
     client.config.addresses.AugurTrading,
     client.config.addresses.ShareToken,
