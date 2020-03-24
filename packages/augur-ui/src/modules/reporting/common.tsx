@@ -59,7 +59,7 @@ import {
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
 import MarketTitle from 'modules/market/containers/market-title';
-import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -805,7 +805,7 @@ export class ReportingBondsView extends Component<
       buttonDisabled = true;
     }
     let insufficientFunds = false;
-    if (userFunds.lt(createBigNumber(gasEstimate))) {
+    if (userFunds.lt(createBigNumber(getGasInDai(gasEstimate)))) {
       buttonDisabled = true;
       insufficientFunds = true;
     }
