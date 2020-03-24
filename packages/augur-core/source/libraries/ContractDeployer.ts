@@ -159,7 +159,7 @@ Deploying to: ${env}
 
         // Uniswap
         if (this.configuration.deploy.isProduction || externalAddresses.UniswapV2Factory) {
-            if (!externalAddresses.Exchange) throw new Error('Must provide UniswapV2Factory');
+            if (!externalAddresses.UniswapV2Factory) throw new Error('Must provide UniswapV2Factory');
             console.log(`Registering UniswapV2Factory Contract at ${externalAddresses.UniswapV2Factory}`);
             await this.augurTrading!.registerContract(stringTo32ByteHex('UniswapV2Factory'), externalAddresses.UniswapV2Factory);
         } else {
@@ -626,6 +626,8 @@ Deploying to: ${env}
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
         mapping['UniswapV2Factory'] = this.contracts.get('UniswapV2Factory').address!;
+        const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
+        mapping['EthExchange'] = await uniswapV2Factory.getExchange_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
 
         // 0x
         mapping['ERC20Proxy'] = this.contracts.get('ERC20Proxy').address!;
