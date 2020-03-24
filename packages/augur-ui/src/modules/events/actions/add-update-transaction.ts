@@ -19,12 +19,10 @@ import {
   MODAL_ERROR,
   MIGRATE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
-  APPROVE,
   MIGRATEOUTBYPAYOUT,
   TRADINGPROCEEDSCLAIMED,
   CLAIMMARKETSPROCEEDS,
   FORKANDREDEEM,
-  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -40,7 +38,6 @@ import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 
 const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,

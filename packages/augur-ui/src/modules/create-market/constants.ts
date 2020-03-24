@@ -18,6 +18,7 @@ import {
   FINANCE,
   ENTERTAINMENT,
   CRYPTO,
+  MEDICAL,
   SOCCER,
   AMERICAN_FOOTBALL,
   OLYMPICS,
@@ -234,6 +235,12 @@ export const MARKET_TEMPLATES = [
     header: CRYPTO,
     description: defaultDescription,
     icon: icons.Crypto,
+  },
+  {
+    value: MEDICAL,
+    header: MEDICAL,
+    description: defaultDescription,
+    icon: icons.Medical,
   },
 ];
 
