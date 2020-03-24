@@ -1519,7 +1519,7 @@ function getTradingPositionFromProfitLossFrame(
       onChainNetPosition.isNegative() ? shortPrice : lastTradePrice
     );
 
-  if (finalized) {
+  if (finalized && onChainOutcomeValue.eq(minPrice)) {
     realizedCost = unrealizedCost.plus(realizedCost);
     realizedProfit = realizedProfit.plus(unrealized);
     unrealized = new BigNumber(0);
