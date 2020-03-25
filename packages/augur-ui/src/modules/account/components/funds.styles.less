@@ -68,6 +68,11 @@
     background: transparent;
     padding: @size-24 @size-16 @size-8;
 
+    @media @breakpoint-mobile-mid {
+      background: var(--color-module-background);
+      padding: @size-24 0 @size-8;
+    }
+
     > h4 {
       .mono-12-semi-bold;
 
@@ -84,12 +89,22 @@
 
     > div:nth-of-type(2) {
       .mono-24-bold;
+
+      @media @breakpoint-mobile-mid {
+        margin-bottom: @size-18;
+      }
     }
 
     > div[class*="LinearPropertyLabel"] {
       > span:first-of-type {
         .mono-10-semi-bold;
       }
+
+      @media @breakpoint-mobile-mid {
+        width: unset;
+        margin-left: @size-12;
+        margin-right: @size-12;
+      }  
 
       > span {
         .mono-12;  

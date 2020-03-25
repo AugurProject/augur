@@ -42,6 +42,26 @@
 :root[theme="SPORTS"] {
   .OverviewChart {
     background: var(--color-page-background);
+
+    > h3 {
+      padding-bottom: @size-11;
+    }
+
+    > div {
+      .mono-12-semi-bold;
+    }
+
+    > h4 {
+      .mono-20-bold;
+
+      margin: @size-6 0;
+    }
+
+    @media @breakpoint-mobile-mid {
+      > h4 {
+        .mono-24-bold;
+      }
+    }
   }
 }
 

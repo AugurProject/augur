@@ -88,5 +88,13 @@
     background: var(--color-page-background);
     border-bottom-left-radius: @border-radius-rounded;
     border-bottom-right-radius: @border-radius-rounded;
+
+    @media @breakpoint-mobile {
+      background: var(--color-module-background);
+
+      > div:last-of-type {
+        padding: 0 0 @size-4;
+      }
+    }
   }
 }
