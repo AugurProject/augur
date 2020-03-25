@@ -697,9 +697,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       let endTimeFormatted = null;
       if (name === 'updateEventExpiration') {
         setEndTime = value.setEndTime || newMarket.setEndTime;
-        console.log('update event expiration', JSON.stringify(value));
         endTimeFormatted = convertUnixToFormattedDate(setEndTime);
-        console.log(JSON.stringify(endTimeFormatted));
       } else {
         endTimeFormatted = buildformattedDate(
           setEndTime,

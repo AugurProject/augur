@@ -930,7 +930,6 @@ export const InputFactory = (props: InputFactoryProps) => {
           if (input.categoryDestId !== undefined) {
             let updatedCategories = categories;
             updatedCategories[input.categoryDestId] = value;
-            console.log(updatedCategories);
             onChange('categories', updatedCategories);
           }
 
