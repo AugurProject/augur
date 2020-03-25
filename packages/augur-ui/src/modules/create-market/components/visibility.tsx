@@ -228,9 +228,9 @@ export default class Visibility extends Component<
   componentDidUpdate(prevProps) {
     const { newMarket } = this.props;
     if (
-      createBigNumber(prevProps.newMarket.initialLiquidityDai).comparedTo(
-        createBigNumber(newMarket.initialLiquidityDai)
-      ) !== 0
+      String(prevProps.newMarket.initialLiquidityDai) !== (
+        String(newMarket.initialLiquidityDai)
+      ) || prevProps.newMarket.settlementFee !== newMarket.settlementFee
     ) {
       this.getRanking();
     }
