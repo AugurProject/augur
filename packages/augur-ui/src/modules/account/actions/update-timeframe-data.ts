@@ -1,7 +1,7 @@
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import logError from 'utils/log-error';
 import { NodeStyleCallback } from 'modules/types';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';

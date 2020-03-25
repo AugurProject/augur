@@ -1,5 +1,5 @@
 import {updateLoginAccount} from 'modules/account/actions/login-account';
-import {AppState} from 'store';
+import {AppState} from 'appStore';
 import {ThunkDispatch} from 'redux-thunk';
 import {Action} from 'redux';
 import {LoginAccountSettings} from "modules/types";

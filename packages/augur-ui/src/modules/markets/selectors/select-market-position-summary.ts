@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import {
   selectAccountPositionsState,
-} from 'store/select-state';
+} from 'appStore/select-state';
 import { MyPositionsSummary } from 'modules/types';
 import { formatDai, formatPercent } from 'utils/format-number';
 import { ZERO } from 'modules/common/constants';

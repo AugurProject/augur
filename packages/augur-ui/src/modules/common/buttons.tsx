@@ -20,7 +20,7 @@ import {
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
 import { Getters, TXEventName } from '@augurproject/sdk/src';
 import { addCategoryStats } from 'modules/create-market/get-template';

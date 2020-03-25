@@ -181,7 +181,7 @@ section[class*="OutcomesList"] {
     display: flex;
     flex-flow: column nowrap;
     flex: 1;
-    
+
     &:not(.Hide) {
       max-height: 50%;
 
@@ -374,21 +374,200 @@ section[class*="OutcomesList"] {
 }
 
 .Comments {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  align-self: center;
-  justify-content: center;
-  width: calc(100% - 40.625rem);
+  display: grid;
+  margin: @size-4 @size-6;
+  grid-gap: @size-2 @size-4;
+  grid-template-columns: minmax(250px, 325px) minmax(0%, 1fr) minmax(250px, 325px);
 
-  > span {
-    display: none;
-  }
+  > div {
+    grid-column: 2;
+    margin: @size-32 0 @size-24;
+    max-width: 100%;
+    width: 100%;
 
-  > div:first-of-type,
-  > div:first-of-type > span,
-  > div:first-of-type > span > iframe {
-    width: 100% !important;
+    button {
+      padding: @size-1 @size-7 @size-2;
+    }
+
+    textarea {
+      margin-left: 0;
+      min-width: 100%;
+    }
+
+    img[class="input_user"] {
+      left: @size-8;
+    }
+
+    div[class="inputPicker"] {
+      right: @size-8;
+    }
+
+    div[class="context"] {
+      justify-content: flex-end;
+
+      > div {
+        .text-14-bold;
+      }
+    }
+
+    div[class="comment_content_context"] {
+      margin-bottom: @size-8;
+    }
+
+    div[class="comment_content_context_main_user_info_username"] {
+      .text-16-bold;
+
+      color: @color-primary-text;
+    }
+
+    div[class="comment_content_context_main_user_info_address"] {
+      .text-14;
+
+      color: @color-secondary-text;
+      padding-bottom: 0;
+    }
+
+    div[class="comment_content_context_main"] {
+
+    }
+
+    div[class="comment_content_context_time"] {
+      .text-10;
+
+      color: @color-secondary-text;
+    }
+
+    div[class="comment_content_text"] {
+      .text-14;
+
+      color: @color-primary-text;
+    }
+
+    div[class*="sc-user-input--picker-wrapper"] {
+      // component is using "!important", leaving me no choice but to use it as well
+      padding: 0 !important;
+      width: auto;
+    }
+
+    svg,
+    svg[class="comment_content_context_main_user_delete_button_icon"] path {
+      fill: @color-primary-text;
+      opacity: 1;
+
+      @media all and (max-width: 600px) {
+        fill: @color-dark-text;
+        opacity: 1;
+      }
+    }
+
+    svg[class="comment_control_mobile_icon"] circle {
+      fill: @color-secondary-text;
+      opacity: 1;
+    }
+
+    button[class*="vote_btn"]:hover {
+      svg[class*="upvote"] {
+        fill: @color-upvote;
+        opacity: 1;
+      }
+
+      svg[class*="downvote"] {
+        fill: @color-downvote;
+        opacity: 1;
+      }
+    }
+
+    button[class="comment_content_context_main_user_reply_button"]:hover {
+      svg {
+        fill: @color-dark-text;
+      }
+    }
+
+    div[class*="sc-user-input--picker-wrapper"]:hover {
+      svg {
+        fill: @color-dark-text;
+      }
+    }
+
+    input[class="sc-popup-window--search"] {
+      color: @color-primary-text;
+      background-color: #fff;
+
+      &:focus {
+        border: none;
+      }
+    }
+
+    div[class="reactions"] div[class="emoji-bar"] div[class*="emoji-item"] {
+      background-color: transparent;
+      color: @color-upvote;
+    }
+
+    div[class="comment_vote"] {
+      div[class*="positive"] {
+        color: @color-upvote;
+      }
+
+      div[class*="negative"] {
+        color: @color-downvote;
+      }
+
+      button[class*="vote_btn"] {
+        svg[class*="vote_icon"] {
+          opacity: 1;
+        }
+
+        svg[class*="vote_icon upvote voted"] {
+          fill: @color-upvote;
+        }
+
+        svg[class*="vote_icon downvote voted"] {
+          fill: @color-downvote;
+        }
+      }
+    }
+
+    div[class*="isDeletedComment"] {
+      background-color: @color-module-background;
+      border-color: @color-module-background;
+
+      p {
+        .text-14;
+
+        color: @color-primary-text;
+      }
+    }
+
+    div[class="comments_footer"] {
+      margin: @size-40 auto;
+
+      > span {
+        color: @color-secondary-text;
+
+        svg {
+          width: auto;
+
+          path {
+            fill: @color-secondary-text;
+          }
+        }
+      }
+    }
+
+    div[class="dialogue_button_container"] {
+      height: auto;
+
+      button {
+        .text-14-bold;
+
+        background-color: transparent;
+        border: @size-1 solid @color-secondary-text;
+        border-radius: @size-3;
+        color: @color-primary-text;
+        padding: @size-12 auto;
+        width: 100%;
+      }
+    }
   }
 }
 
@@ -446,7 +625,7 @@ div.OutcomeNameDisplay {
     display: grid;
     grid-gap: @size-8 0;
     grid-template-rows: min-content;
- 
+
     > h1 {
       .text-14-bold;
 
@@ -501,14 +680,11 @@ div.OutcomeNameDisplay {
   }
 
   .Comments {
-    padding-top: @size-48;
-    width: 100%;
+    padding: @size-40 @size-12 @size-12;
+    grid-template-columns: 1fr;
 
-    > span {
-      background: @color-dark-grey;
-      display: block;
-      height: @size-2;
-      margin: 0 @size-12 @size-8;
+    > div {
+      grid-column: 1;
     }
   }
 }

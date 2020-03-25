@@ -11,7 +11,7 @@ import {
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
 
  export const loginWithPortis = (forceRegisterPage = false) => async (

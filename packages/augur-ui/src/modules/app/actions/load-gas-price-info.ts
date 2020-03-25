@@ -2,7 +2,7 @@ import logError from 'utils/log-error';
 import { formatGasCostGwei } from 'utils/format-number';
 import { updateGasPriceInfo } from 'modules/app/actions/update-gas-price-info';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { DataCallback, NodeStyleCallback, GasPriceInfo } from 'modules/types';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';

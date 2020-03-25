@@ -9,7 +9,7 @@ import {
 } from 'modules/common/constants';
 import * as _ from 'lodash';
 import { ThunkAction } from 'redux-thunk';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { Getters, MarketReportingState } from '@augurproject/sdk';
 import { addUpdateMarketInfos, UpdateMarketsAction, } from 'modules/markets/actions/update-markets-data';
 import { getOneWeekInFutureTimestamp } from 'utils/format-date';

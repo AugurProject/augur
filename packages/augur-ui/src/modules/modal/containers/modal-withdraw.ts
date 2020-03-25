@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { WithdrawForm } from 'modules/modal/withdraw-form';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { formatGasCostToEther, formatEtherEstimate } from 'utils/format-number';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';

@@ -2,7 +2,7 @@ import { ZERO } from 'modules/common/constants';
 import noop from 'utils/noop';
 import { sortOrders } from 'modules/orders/helpers/liquidity';
 import { addMarketLiquidityOrders } from 'modules/orders/actions/liquidity-management';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { NodeStyleCallback, NewMarket, CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';

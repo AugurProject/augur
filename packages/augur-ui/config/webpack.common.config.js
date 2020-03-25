@@ -14,7 +14,7 @@ const PATHS = {
   BUILD: path.resolve(__dirname, "../build"),
   TEST: path.resolve(__dirname, "../test"),
   WASM: path.resolve(__dirname, "../../../node_modules/@0x/mesh-browser/wasm"),
-  ORBIT: path.resolve(__dirname, "../../orbit-web"),
+  ROOT_UI: path.resolve(__dirname, "../"),
 };
 
 module.exports = {
@@ -48,7 +48,6 @@ module.exports = {
       modules: path.resolve(PATHS.APP, "modules"),
       reducers: path.resolve(PATHS.APP, "reducers"),
       services: path.resolve(PATHS.APP, "services"),
-      store: path.resolve(PATHS.APP, "store"),
       utils: path.resolve(PATHS.APP, "utils"),
       test: PATHS.TEST,
       assertions: path.resolve(PATHS.TEST, "assertions")
@@ -108,10 +107,16 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          "style-loader",
-          "postcss-loader"
-        ]
+        use: [{
+          loader: "style-loader",
+        }, {
+          loader: "postcss-loader",
+          options: {
+            config: {
+              path: PATHS.ROOT_UI
+            }
+          },
+        }]
       }
     ]
   },
@@ -166,10 +171,6 @@ module.exports = {
       {
         from: path.resolve(PATHS.APP, "robots.txt"),
         to: PATHS.BUILD
-      },
-      {
-        from: path.resolve(PATHS.ORBIT, "dist"),
-        to: path.resolve(PATHS.BUILD, "chat")
       },
     ]),
     new HtmlWebpackPlugin({

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import TermsAndConditions from "modules/app/components/terms-and-conditions";
-import { AppState } from "store";
+import { AppState } from "appStore";
 
 const mapStateToProps = (state: AppState) => ({});
 
