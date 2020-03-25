@@ -96,13 +96,14 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       const foundOption = this.props.options.find(
         o => o.value === this.props.defaultValue
       );
+      const defaultValue = this.props.defaultValue ? {
+        label: this.props.defaultValue.toString(),
+        value: this.props.defaultValue,
+      } : null;
       this.setState({
         selected: foundOption
           ? foundOption
-          : {
-              label: this.props.defaultValue.toString(),
-              value: this.props.defaultValue,
-            },
+          : defaultValue,
       });
     }
     if (
