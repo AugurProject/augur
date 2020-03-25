@@ -188,13 +188,11 @@ export class Augur<TProvider extends Provider = Provider> {
   async sendETH(address: string, value: BigNumber): Promise<void> {
     const transaction = {
       to: address,
-      data: '0x00',
+      data: '0x',
       value,
+      from: await this.dependencies.getDefaultAddress()
     };
-    const ethersTransaction = this.dependencies.transactionToEthersTransaction(
-      transaction
-    );
-    await this.dependencies.signer.sendTransaction(ethersTransaction);
+    await this.dependencies.submitTransaction(transaction, {name: "Send Ether", params: {}});
   }
 
   setUseWallet(useSafe: boolean): void {
@@ -207,6 +205,10 @@ export class Augur<TProvider extends Provider = Provider> {
 
   getUseWallet(): boolean {
     return this.dependencies.useWallet;
+  }
+
+  getUseRelay(): boolean {
+    return this.dependencies.useRelay;
   }
 
   async getGasStation() {

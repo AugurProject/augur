@@ -156,11 +156,11 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     this.fingerprint = fingerprint;
   }
 
-  async submitTransaction(transaction: Transaction<BigNumber>): Promise<TransactionReceipt> {
+  async submitTransaction(transaction: Transaction<BigNumber>, txMetadata?: TransactionMetadata): Promise<TransactionReceipt> {
     if (!this.signer) throw new Error('Attempting to sign a transaction while not providing a signer');
     const tx = this.transactionToEthersTransaction(transaction);
     const txMetadataKey = `0x${transaction.data.substring(10)}`;
-    const txMetadata = this.transactionDataMetaData[txMetadataKey];
+    txMetadata = txMetadata || this.transactionDataMetaData[txMetadataKey] || {name: "Unknown Transaction", params: {}};
     this.onTransactionStatusChanged(txMetadata, TransactionStatus.AWAITING_SIGNING);
     let hash = undefined;
     try {

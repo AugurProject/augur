@@ -61,10 +61,7 @@ export class ContractAPI {
   ) {}
 
   async sendEther(to: string, amount: BigNumber): Promise<void> {
-    await this.dependencies.signer.sendTransaction({
-      to,
-      value: `0x${amount.toString(16)}`,
-    })
+    return await this.augur.sendETH(to, amount);
   }
 
   async approveCentralAuthority(): Promise<void> {
@@ -641,7 +638,7 @@ export class ContractAPI {
 
   // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
   async getEthBalance(owner?: string): Promise<BigNumber> {
-    const balance = await this.provider.getBalance(owner || this.account.publicKey);
+    const balance = await this.provider.getBalance(owner);
     return new BigNumber(balance.toString());
   }
 
