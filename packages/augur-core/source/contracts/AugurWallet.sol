@@ -7,7 +7,6 @@ import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/IAugurWalletRegistry.sol';
-import 'ROOT/ISimpleDex.sol';
 
 
 contract AugurWallet is Initializable, Ownable, IAugurWallet {

@@ -397,6 +397,7 @@ class ContractsFixture:
             if 'legacy_reputation' in directory: continue
             if 'external' in directory: continue
             if '0x' in directory: continue # uploaded separately
+            if 'uniswap' in directory: continue # uploaded separately
             for filename in filenames:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]
@@ -468,10 +469,15 @@ class ContractsFixture:
         self.contracts["ERC20Proxy"].addAuthorizedAddress(zeroXContracts["MultiAssetProxy"])
         self.contracts["MultiAssetProxy"].addAuthorizedAddress(zeroXContracts["ZeroXExchange"])
         self.contracts['AugurTrading'].registerContract("ZeroXExchange".ljust(32, '\x00').encode('utf-8'), zeroXContracts["ZeroXExchange"])
+        self.contracts['AugurTrading'].registerContract("WETH9".ljust(32, '\x00').encode('utf-8'), zeroXContracts["WETH9"])
         return zeroXContracts
 
+    def uploadUniswapContracts(self):
+        factory = self.uploadAndAddToAugur("../source/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=[nullAddress])
+        self.generateAndStoreSignature("../source/contracts/uniswap/UniswapV2Exchange.sol")
+
     def initializeAllContracts(self):
-        coreContractsToInitialize = ['Time','ShareToken','WarpSync','EthExchange']
+        coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepOracle']
         for contractName in coreContractsToInitialize:
             if getattr(self.contracts[contractName], "initialize", None):
                 print("Initializing %s" % contractName)
@@ -479,6 +485,7 @@ class ContractsFixture:
             else:
                 raise "contract has no 'initialize' method on it."
         for contractName in TRADING_CONTRACTS:
+            print("Initializing %s" % contractName)
             value = 0
             if contractName == "AugurWalletRegistry":
                 value = 2.5 * 10**17
@@ -648,6 +655,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.uploadAllContracts()
     fixture.uploadTestDaiContracts()
     fixture.upload0xContracts()
+    fixture.uploadUniswapContracts()
     fixture.initializeAllContracts()
     fixture.doAugurTradingApprovals()
     fixture.approveCentralAuthority()

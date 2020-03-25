@@ -85,6 +85,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     signer: EthersSigner,
     augurWalletRegistryAddress: string,
     ethExchangeAddress: string,
+    public token0IsCash: boolean,
     address?: string
   ) {
     super(provider, signer, address);
@@ -104,7 +105,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     );
     this.ethExchange = new ethers.Contract(
       ethExchangeAddress,
-      abi['EthExchange'],
+      abi['UniswapV2Exchange'],
       provider
     );
   }
@@ -114,8 +115,11 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     signer: EthersSigner,
     augurWalletRegistryAddress: string,
     ethExchangeAddress: string,
+    wethAddress: string,
+    cashAddress: string,
     address?: string): Promise<ContractDependenciesGSN> {
-      const deps = new ContractDependenciesGSN(provider, signer, augurWalletRegistryAddress, ethExchangeAddress, address);
+      const token0IsCash = cashAddress < wethAddress;
+      const deps = new ContractDependenciesGSN(provider, signer, augurWalletRegistryAddress, ethExchangeAddress, token0IsCash, address);
       await deps.refreshGasPriceAndExchangeRate();
       return deps;
   }
@@ -128,9 +132,10 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     console.log(`Set gas price to: ${this.gasPrice.toFixed()}`);
 
     // Refresh Exchange Rate
-    // TODO when we switch to uniswap this should be more robust than getting a specific purchase amount
-    const oneEth = new ethers.utils.BigNumber("0xDE0B6B3A7640000");
-    this.ethToDaiRate = new BigNumber((await this.ethExchange.getTokenPurchaseCost(oneEth)).toString());
+    const reservesData = await this.ethExchange.getReserves();
+    const cashReserves:BigNumber = new BigNumber((this.token0IsCash ? reservesData[0] : reservesData[1]).toString());
+    const ethReserves: BigNumber = new BigNumber((this.token0IsCash ? reservesData[1] : reservesData[0]).toString());
+    this.ethToDaiRate = cashReserves.div(ethReserves).multipliedBy(10**18).decimalPlaces(0);
     console.log(`Set ETH to DAI rate to: ${this.ethToDaiRate.toFixed()}`);
     setTimeout(this.refreshGasPriceAndExchangeRate.bind(this), REFRESH_INTERVAL_MS);
   }
@@ -214,6 +219,8 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   ): Promise<ethers.providers.TransactionReceipt> {
     if (this.useWallet) {
       const payment = await this.getRelayPaymentForEthersTransaction(tx);
+      const QUINTILLION = new BigNumber(10).pow(18);
+      console.log('Transaction Payment:', payment.dividedBy(QUINTILLION).toFixed()); // output this for testing and debuging.
       tx = this.convertToWalletTx(tx, new ethers.utils.BigNumber(payment.toFixed()));
     }
 
