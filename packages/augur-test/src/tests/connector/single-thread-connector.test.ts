@@ -3,7 +3,7 @@ import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { SubscriptionEventName } from '@augurproject/sdk/build/constants';
 import { Markets } from '@augurproject/sdk/build/state/getter/Markets';
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../libs';
@@ -24,13 +24,13 @@ jest.mock('@augurproject/sdk/build/state/create-api', () => {
 });
 
 beforeAll(async () => {
-  const seed = await loadSeedFile(defaultSeedPath);
+  const seed = await loadSeed(defaultSeedPath);
   provider = await makeProvider(seed, ACCOUNTS);
 
 
   john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, provider.getConfig());
 
-  await john.approveCentralAuthority();
+  await john.approve();
 
   connector = new SingleThreadConnector();
   console.log('Connector connecting');
@@ -55,7 +55,7 @@ test('SingleThreadConnector :: Should route correctly and handle events, extraIn
     endTime: (await john.getTimestamp()).plus(SECONDS_IN_A_DAY),
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
     affiliateFeeDivisor: new BigNumber(0),
-    designatedReporter: john.account.publicKey,
+    designatedReporter: john.account.address,
     extraInfo:
       '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
   });

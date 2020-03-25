@@ -4,7 +4,7 @@ import {
   ACCOUNTS,
   ContractAPI,
   defaultSeedPath,
-  loadSeedFile,
+  loadSeed,
 } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
@@ -30,7 +30,7 @@ describe('State API :: Markets :: ', () => {
   const markets = {};
 
   beforeAll(async () => {
-    const seed = await loadSeedFile(defaultSeedPath);
+    const seed = await loadSeed(defaultSeedPath);
     baseProvider = await makeProvider(seed, ACCOUNTS);
     const config = baseProvider.getConfig();
 
@@ -50,14 +50,14 @@ describe('State API :: Markets :: ', () => {
       config
     );
 
-    await john.approveCentralAuthority();
-    await mary.approveCentralAuthority();
-    await bob.approveCentralAuthority();
+    await john.approve();
+    await mary.approve();
+    await bob.approve();
 
     const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
     const feePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
     const affiliateFeeDivisor = new BigNumber(0);
-    const designatedReporter = john.account.publicKey;
+    const designatedReporter = john.account.address;
     markets['yesNoMarket1'] = await john.createYesNoMarket({
       endTime,
       feePerCashInAttoCash,
@@ -102,7 +102,7 @@ describe('State API :: Markets :: ', () => {
 
     // Submit intial report with additional stake
     const additionalRep = new BigNumber(100).multipliedBy(10 ** 18).toFixed();
-    await john.repFaucet(new BigNumber(1e27));
+    await john.faucetRep(new BigNumber(1e27));
     await john.doInitialReport(yesNoMarket, noPayoutSet, '', additionalRep);
 
     await john.sync();

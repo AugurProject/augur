@@ -1,4 +1,4 @@
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { formatBytes32String } from 'ethers/utils';
 import { makeProvider } from '../../libs';
@@ -7,7 +7,7 @@ let john: TestContractAPI;
 let mary: TestContractAPI;
 
 beforeAll(async () => {
-  const seed = await loadSeedFile(defaultSeedPath);
+  const seed = await loadSeed(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
   const config = provider.getConfig();
 
@@ -21,8 +21,8 @@ beforeAll(async () => {
     provider,
     config
   );
-  await john.approveCentralAuthority();
-  await mary.approveCentralAuthority();
+  await john.approve();
+  await mary.approve();
 });
 
 test('market :: createYesNoMarket', async () => {

@@ -1,4 +1,4 @@
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../libs';
@@ -8,7 +8,7 @@ let john: TestContractAPI;
 const biggestNumber = new BigNumber(2).pow(256).minus(2);
 describe('WarpSync', () => {
   beforeAll(async () => {
-    const seed = await loadSeedFile(defaultSeedPath);
+    const seed = await loadSeed(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
 
     john = await TestContractAPI.userWrapper(
@@ -16,7 +16,7 @@ describe('WarpSync', () => {
       provider,
       provider.getConfig()
     );
-    await john.approveCentralAuthority();
+    await john.approve();
     await john.initializeUniverseForWarpSync();
   });
 

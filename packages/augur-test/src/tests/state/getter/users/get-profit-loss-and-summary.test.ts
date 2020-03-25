@@ -89,7 +89,7 @@ describe('State API :: Users :: ', () => {
 
     const profitLoss = await john.api.route('getProfitLoss', {
       universe: john.augur.contracts.universe.address,
-      account: mary.account.publicKey,
+      account: mary.account.address,
       startTime: startTime.toNumber(),
     });
 
@@ -108,7 +108,7 @@ describe('State API :: Users :: ', () => {
 
     const profitLossSummary = await john.api.route('getProfitLossSummary', {
       universe: john.augur.contracts.universe.address,
-      account: mary.account.publicKey,
+      account: mary.account.address,
     });
 
     const oneDayPLSummary = profitLossSummary['1'];

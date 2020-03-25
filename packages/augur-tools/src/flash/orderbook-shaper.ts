@@ -5,7 +5,9 @@ import {
 } from "@augurproject/sdk/src/state/getter/Markets";
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
-import { ZeroXPlaceTradeDisplayParams } from '@augurproject/sdk/src';
+import { ZeroXPlaceTradeDisplayParams } from '@augurproject/sdk';
+import { ContractAPI } from '..';
+import { sleep } from './util';
 
 const looseOrderBookConfig: OrderBookConfig = {
   bids: {
@@ -146,3 +148,29 @@ export class OrderBookShaper {
   }
 }
 
+export async function simpleOrderbookShaper(
+  user: ContractAPI,
+  marketIds: string[],
+  intervalMS: number,
+  orderSize: number,
+  expiration: BigNumber
+) {
+  const orderBooks = marketIds.map(m => new OrderBookShaper(m, orderSize, expiration));
+  while (true) {
+    const timestamp = await user.getTimestamp();
+    for (let i = 0; i < orderBooks.length; i++) {
+      const orderBook: OrderBookShaper = orderBooks[i];
+      const marketId = orderBook.marketId;
+      const marketBook: MarketOrderBook = await user.augur.getMarketOrderBook(
+        { marketId }
+      );
+      const orders = orderBook.nextRun(marketBook.orderBook, new BigNumber(timestamp));
+      if (orders.length > 0) {
+        console.log(`creating ${orders.length} orders for ${marketId}`);
+        orders.map(order => console.log(`Creating ${order.displayAmount} at ${order.displayPrice} on outcome ${order.outcome}`));
+        await user.placeZeroXOrders(orders).catch(console.log);
+      }
+    }
+    await sleep(intervalMS);
+  }
+}
