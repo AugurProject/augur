@@ -32,7 +32,7 @@ import { updateAuthStatus, IS_CONNECTION_TRAY_OPEN } from "modules/auth/actions/
 import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, WALLET_STATUS_VALUES, TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
 import { saveAffiliateAddress } from "modules/account/actions/login-account";
 import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
-import { AppState } from "store";
+import { AppState } from "appStore";
 
 const mapStateToProps = (state: AppState) => {
   const { appStatus, loginAccount, pendingQueue } = state;

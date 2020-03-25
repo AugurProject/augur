@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 
 import MarketRow from "modules/portfolio/components/common/market-row";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import { MODAL_UNSIGNED_ORDERS } from "modules/common/constants";
 
 const mapStateToProps = (state) => ({});

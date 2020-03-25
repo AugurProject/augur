@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
-import store from 'store';
+import store from 'appStore';
 import * as constants from 'modules/common/constants';
 import {
   selectLoginAccountAddress,
   selectFilledOrders,
-} from 'store/select-state';
+} from 'appStore/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
 import getUserFilledOrders from 'modules/orders/selectors/filled-orders';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';

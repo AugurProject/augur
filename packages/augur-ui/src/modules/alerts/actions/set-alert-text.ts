@@ -49,7 +49,7 @@ import {
   ONE,
   MIGRATE_FROM_LEG_REP_TOKEN,
 } from 'modules/common/constants';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { MarketData } from 'modules/types';
@@ -214,7 +214,7 @@ export default function setAlertText(alert: any, callback: Function) {
             alert.description = `${
               REPVal.formatted
             } REP stake redeemed`;
-          } 
+          }
         }
         break;
 

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import getValue from 'utils/get-value';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import * as constants from 'modules/common/constants';
 
 import Row from 'modules/common/row';
@@ -9,7 +9,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { TXEventName } from '@augurproject/sdk/src/constants';
 import { OPEN } from 'modules/common/constants';
-import { selectCancelingOrdersState } from 'store/select-state';
+import { selectCancelingOrdersState } from 'appStore/select-state';
 import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { calcPercentageFromPrice } from 'utils/format-number';

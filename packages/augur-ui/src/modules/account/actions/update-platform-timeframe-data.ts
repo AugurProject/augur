@@ -1,6 +1,6 @@
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import logError from 'utils/log-error';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { augurSdk } from 'services/augursdk';

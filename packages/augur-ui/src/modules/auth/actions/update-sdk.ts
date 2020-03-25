@@ -16,7 +16,7 @@ import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { NetworkId } from '@augurproject/artifacts';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';

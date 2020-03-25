@@ -3,7 +3,7 @@ import { updateUserFilledOrders, bulkMarketTradingHistory, refreshUserOpenOrders
 import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';

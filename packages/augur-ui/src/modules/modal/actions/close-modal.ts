@@ -1,5 +1,5 @@
 import { track, MODAL_CLOSED } from 'services/analytics/helpers';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { Action } from 'redux';
 import { NodeStyleCallback } from "modules/types";
 import logError from "utils/log-error";

@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { formatDai, formatNone } from 'utils/format-number';
 import { selectAccountFunds } from 'modules/auth/selectors/login-account';
 import { AuthStatus } from 'modules/types';
-import { selectAuthStatus } from 'store/select-state';
+import { selectAuthStatus } from 'appStore/select-state';
 
 export const selectOutcomeLastPrice = (
   marketOutcomeData: any,

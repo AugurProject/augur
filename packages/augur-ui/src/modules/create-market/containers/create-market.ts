@@ -7,7 +7,7 @@ import {
   updateNewMarket
 } from "modules/markets/actions/update-new-market";
 import CreateMarketView from "modules/create-market/components/create-market-view/create-market-view";
-import { selectCurrentTimestamp } from "store/select-state";
+import { selectCurrentTimestamp } from "appStore/select-state";
 import { estimateSubmitNewMarket } from "modules/markets/actions/estimate-submit-new-market";
 import getValue from "utils/get-value";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";

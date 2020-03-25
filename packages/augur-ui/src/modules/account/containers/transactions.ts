@@ -11,7 +11,7 @@ import {
   MODAL_ACCOUNT_APPROVAL,
   MODAL_GSN_FAUCET,
 } from 'modules/common/constants';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls'

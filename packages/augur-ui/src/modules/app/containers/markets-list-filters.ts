@@ -9,7 +9,7 @@ import {
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import MarketsListFilters from '../components/inner-nav/markets-list-filters';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 
 const mapStateToProps = (state: AppState) => {
