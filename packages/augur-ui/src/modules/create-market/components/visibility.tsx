@@ -8,7 +8,7 @@ import {
   SmallSubheaders,
   SmallSubheadersTooltip,
 } from 'modules/create-market/components/common';
-import { MAX_SPREAD_10_PERCENT, BUY, TEN_TO_THE_EIGHTEENTH_POWER, SCALAR, ONE } from 'modules/common/constants';
+import { MAX_SPREAD_10_PERCENT, BUY, SCALAR } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import {
@@ -163,7 +163,6 @@ export default class Visibility extends Component<
       formattedOrderBook[outcome] = { bids: [], asks: [] };
       orders.forEach(order => {
         const formattedOrder = {
-          orderCreator: 'creator',
           price: convertDisplayPriceToOnChainPrice(
             createBigNumber(order.price),
             minPriceBigNumber,
