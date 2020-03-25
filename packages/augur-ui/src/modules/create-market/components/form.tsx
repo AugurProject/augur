@@ -129,6 +129,7 @@ interface FormProps {
   marketCreationStarted: Function;
   marketCreationSaved: Function;
   maxMarketEndTime: number;
+  GsnEnabled: boolean;
 }
 
 interface FormState {
@@ -750,6 +751,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       needsApproval,
       isTemplate,
       currentTimestamp,
+      GsnEnabled,
     } = this.props;
     const { contentPages, categoryStats } = this.state;
 
@@ -899,7 +901,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                   subheader="You must complete all required fields highlighted above before you can continue"
                 />
               )}
-              {secondButton === CREATE && (
+              {secondButton === CREATE && !GsnEnabled && (
                 <BulkTxLabel
                   className={Styles.MultipleTransactions}
                   buttonName={'Create'}
