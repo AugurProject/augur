@@ -1886,16 +1886,24 @@ export function addScripts(flash: FlashSession) {
         name: 'marketId',
         abbr: 'm',
         description: 'yes/no market to fork. defaults to making one',
-        required: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
+      this.config.gsn.enabled = false;
       const user = await this.ensureUser();
-      const marketId = String(args.marketId);
-      const market: ContractInterfaces.Market = await user.getMarketContract(
-        marketId
-      );
+      let marketId = args.marketId ? String(args.marketId) : null;
+      let market: ContractInterfaces.Market = null;
+
+      if (!marketId) {
+        market = await this.call('create-reasonable-yes-no-market', {title: 'forking market'});
+        console.log('created market', market.address);
+      } else {
+        market = await user.getMarketContract(
+          marketId
+        );
+      }
+
       if (await fork(user, market)) {
         this.log('Fork successful!');
       } else {

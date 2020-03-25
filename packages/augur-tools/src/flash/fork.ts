@@ -11,26 +11,19 @@ export async function fork(user: ContractAPI, market: ContractInterfaces.Market)
   const numOutcomes = await market.getNumberOfOutcomes_();
   const numTicks = await market.getNumTicks_();
 
-  const payoutNumerators = new Array(numOutcomes).fill(new BigNumber(0));
-  payoutNumerators[0] = new BigNumber(numTicks);
-
-  const conflictNumerators = new Array(numOutcomes).fill(new BigNumber(0));
-  conflictNumerators[1] = new BigNumber(numTicks);
+  const payoutNumerators = [numTicks, ...(new Array(numOutcomes.minus(1).toNumber()).fill(new BigNumber(0)))];
+  const conflictNumerators = payoutNumerators.reverse();
 
   await user.repFaucet(SOME_REP);
-
   // Get past the market time, into when we can accept the initial report.
   const endTime = await market.getEndTime_();
   await user.setTimestamp(endTime.plus(1));
-
   // Do the initial report, creating the first dispute window.
   await user.doInitialReport(market, payoutNumerators, '', SOME_REP.toString());
-
   // Contribution (dispute) fulfills the first dispute bond,
   // pushing into next dispute round that takes additional stake into account.
   await user.repFaucet(SOME_REP);
   await user.contribute(market, conflictNumerators, SOME_REP);
-
   for (let i = 0; i < MAX_DISPUTES; i++) {
     if ((await market.getForkingMarket_()) !== NULL_ADDRESS) {
       return true; // forked successfully!
