@@ -70,13 +70,14 @@ export const SportsMarketBets = ({ market, actions }) => {
 
 export const SportsMarketMyBets = ({ market, actions }) => {
   const marketId = market[0];
-  const { cashOutBet, updateBet, retryBet } = actions;
+  const { cashOutBet, updateBet, retryBet, trashBet } = actions;
   const { description, orders } = market[1];
   const bets = orders.map((order, orderId) => ({
     ...order,
     orderId,
-    retryBet: () => retryBet(marketId, orderId),
     cashOutBet: () => cashOutBet(marketId, orderId),
+    retryBet: () => retryBet(marketId, orderId),
+    trashBet: () => trashBet(marketId, orderId),
     updateBet: updates => updateBet(marketId, orderId, updates),
   }));
   return (
@@ -144,6 +145,7 @@ export const SportsMyBet = ({
     wager,
     cashOutBet,
     retryBet,
+    trashBet,
     updateBet,
     status,
     amountFilled,
@@ -161,7 +163,7 @@ export const SportsMyBet = ({
     const currentTime = new Date().getTime() / 1000;
     const seconds = Math.round(currentTime - dateUpdated.timestamp);
     const milliSeconds = seconds * 1000;
-    if (seconds < 20) {
+    if (isRecentUpdate && status === BET_STATUS.FILLED && seconds < 20) {
       setTimeout(() => {
         setIsRecentUpdate(false);
       }, 20000 - milliSeconds);
@@ -217,6 +219,7 @@ export const SportsMyBet = ({
       break;
     case FAILED:
       classToApply = Styles.FAILED;
+      iconAction = () => trashBet();
       message = `Order failed when processing. `;
       messageAction = (
         <button onClick={() => retryBet()}>Retry</button>

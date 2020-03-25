@@ -9,6 +9,8 @@ const BETSLIP_AMOUNT_ACTIONS = {
   INC_MYBETS_AMOUNT: 'INC_MYBETS_AMOUNT',
   DEC_MYBETS_AMOUNT: 'DEC_MYBETS_AMOUNT',
   CLEAR_BETSLIP_AMOUNT: 'CLEAR_BETSLIP_AMOUNT',
+  MODIFY_BETSLIP_AMOUNT: 'MODIFY_BETSLIP_AMOUNT',
+  MODIFY_MYBETS_AMOUNT: 'MODIFY_MYBETS_AMOUNT',
 };
 
 function betslipAmountReducer(state, action) {
@@ -18,6 +20,8 @@ function betslipAmountReducer(state, action) {
     DEC_BETSLIP_AMOUNT,
     DEC_MYBETS_AMOUNT,
     CLEAR_BETSLIP_AMOUNT,
+    MODIFY_BETSLIP_AMOUNT,
+    MODIFY_MYBETS_AMOUNT,
   } = BETSLIP_AMOUNT_ACTIONS;
   switch (action.type) {
     case INC_BETSLIP_AMOUNT:
@@ -30,6 +34,16 @@ function betslipAmountReducer(state, action) {
       return { ...state, myBetsAmount: state.myBetsAmount - 1 };
     case CLEAR_BETSLIP_AMOUNT:
       return { ...state, betslipAmount: 0 };
+    case MODIFY_BETSLIP_AMOUNT:
+      return {
+        ...state,
+        betslipAmount: state.betslipAmount + action.amountChange,
+      };
+    case MODIFY_MYBETS_AMOUNT:
+      return {
+        ...state,
+        myBetsAmount: state.myBetsAmount + action.amountChange,
+      };
     default:
       throw new Error('invalid dispatch to betslipAmountReducer');
   }
@@ -38,6 +52,7 @@ function betslipAmountReducer(state, action) {
 const BETSLIP_ORDERS_ACTIONS = {
   ADD: 'ADD',
   REMOVE: 'REMOVE',
+  REMOVE_MARKET: 'REMOVE_MARKET',
   MODIFY: 'MODIFY',
   SEND: 'SEND',
   SEND_ALL: 'SEND_ALL',
@@ -46,9 +61,11 @@ const BETSLIP_ORDERS_ACTIONS = {
 
 const MY_BETS_ACTIONS = {
   ADD: 'ADD',
+  ADD_MULTIPLE: 'ADD_MULTIPLE',
   CASH_OUT: 'CASH_OUT',
   UPDATE: 'UPDATE',
   RETRY: 'RETRY',
+  TRASH: 'TRASH',
 };
 
 const BETSLIP_ORDER_DEFAULT_STATE = {
@@ -118,10 +135,10 @@ const MOCK_TEST_MY_BETS_STATE = {
       {
         outcome: 'Chicogo Bulls, +5',
         odds: '-105',
-        wager: '10.00',
-        toWin: '9.52',
+        wager: '20.00',
+        toWin: '19.04',
         marketId: '0x01',
-        amountFilled: '10.00',
+        amountFilled: '20.00',
         amountWon: '0',
         status: BET_STATUS.FILLED,
         dateUpdated: formatDate(now),
@@ -130,9 +147,9 @@ const MOCK_TEST_MY_BETS_STATE = {
         outcome: 'Brooklyn Nets, -5',
         odds: '+115',
         wager: '100.00',
-        toWin: '19.52',
+        toWin: '95.20',
         marketId: '0x01',
-        amountFilled: '10.00',
+        amountFilled: '25.00',
         amountWon: '0',
         status: BET_STATUS.PARTIALLY_FILLED,
         dateUpdated: formatDate(now),
@@ -145,11 +162,11 @@ const MOCK_TEST_MY_BETS_STATE = {
       {
         outcome: 'Houston Rockets, -8.5',
         odds: '-110',
-        wager: '10.00',
-        toWin: '9.09',
+        wager: '30.00',
+        toWin: '27.27',
         marketId: '0x02',
-        amountFilled: '10.00',
-        amountWon: '9.09',
+        amountFilled: '30.00',
+        amountWon: '0',
         status: BET_STATUS.PENDING,
         dateUpdated: formatDate(now),
       },
@@ -161,8 +178,8 @@ const MOCK_TEST_MY_BETS_STATE = {
       {
         outcome: 'Utah Jazz, +10.5',
         odds: '-110',
-        wager: '10.00',
-        toWin: '9.09',
+        wager: '50.00',
+        toWin: '45.45',
         marketId: '0x03',
         amountFilled: '0',
         amountWon: '0',
@@ -181,6 +198,7 @@ function betslipOrdersReducer(state, action) {
     SEND,
     SEND_ALL,
     CLEAR_ALL,
+    REMOVE_MARKET,
   } = BETSLIP_ORDERS_ACTIONS;
   switch (action.type) {
     case ADD: {
@@ -195,6 +213,12 @@ function betslipOrdersReducer(state, action) {
       if (market.orders.length === 0) {
         delete updatedState.orders[marketId];
       }
+      return updatedState;
+    }
+    case REMOVE_MARKET: {
+      const { marketId } = action;
+      const updatedState = { ...state };
+      delete updatedState.orders[marketId];
       return updatedState;
     }
     case MODIFY: {
@@ -221,17 +245,53 @@ function betslipOrdersReducer(state, action) {
 }
 
 function myBetsReducer(state, action) {
-  const { ADD, CASH_OUT, UPDATE, RETRY } = MY_BETS_ACTIONS;
+  const { ADD, ADD_MULTIPLE, CASH_OUT, UPDATE, RETRY, TRASH } = MY_BETS_ACTIONS;
   switch (action.type) {
     case ADD: {
-      console.log(ADD, action.marketId, action.description, action.order);
-      return state;
+      const { marketId, description, order } = action;
+      const updatedState = { ...state };
+      if (!updatedState[marketId]) {
+        updatedState[marketId] = {
+          description,
+          orders: [],
+        };
+      }
+      updatedState[marketId].orders.push({
+        ...order,
+        amountFilled: order.wager,
+        amountWon: '0',
+        dateUpdated: formatDate(new Date()),
+        status: BET_STATUS.PENDING,
+      });
+      return updatedState;
+    }
+    case ADD_MULTIPLE: {
+      const { marketId, description, orders } = action;
+      const updatedState = { ...state };
+      if (!updatedState[marketId]) {
+        updatedState[marketId] = {
+          description,
+          orders: [],
+        };
+      }
+      orders.forEach(order => {
+        updatedState[marketId].orders.push({
+          ...order,
+          amountFilled: order.wager,
+          amountWon: '0',
+          dateUpdated: formatDate(new Date()),
+          status: BET_STATUS.PENDING,
+        });
+      });
+      return updatedState;
     }
     case RETRY: {
       const { marketId, orderId } = action;
       // TODO: send bet again but for now...
       const updatedState = { ...state };
-      updatedState[marketId].orders[orderId].status = BET_STATUS.PENDING;
+      const order = updatedState[marketId].orders[orderId];
+      order.status = BET_STATUS.PENDING;
+      order.amountFilled = order.wager;
       return updatedState;
     }
     case CASH_OUT: {
@@ -242,12 +302,21 @@ function myBetsReducer(state, action) {
     }
     case UPDATE: {
       const { marketId, orderId, updates } = action;
-      const updatedState = { ...state};
+      const updatedState = { ...state };
       updatedState[marketId].orders[orderId] = {
         ...updatedState[marketId].orders[orderId],
         ...updates,
-        dateUpdated: formatDate(new Date())
+        dateUpdated: formatDate(new Date()),
       };
+      return updatedState;
+    }
+    case TRASH: {
+      const { marketId, orderId } = action;
+      const updatedState = { ...state };
+      updatedState[marketId].orders.splice(orderId, 1);
+      if (updatedState[marketId].orders.length === 0) {
+        delete updatedState[marketId];
+      }
       return updatedState;
     }
     default:
@@ -297,6 +366,8 @@ export const useBetslipAmounts = (
     DEC_BETSLIP_AMOUNT,
     DEC_MYBETS_AMOUNT,
     CLEAR_BETSLIP_AMOUNT,
+    MODIFY_BETSLIP_AMOUNT,
+    MODIFY_MYBETS_AMOUNT,
   } = BETSLIP_AMOUNT_ACTIONS;
 
   return {
@@ -308,13 +379,15 @@ export const useBetslipAmounts = (
     decBetslipAmount: () => dispatch({ type: DEC_BETSLIP_AMOUNT }),
     decMyBetslipAmount: () => dispatch({ type: DEC_MYBETS_AMOUNT }),
     clearBetslipAmount: () => dispatch({ type: CLEAR_BETSLIP_AMOUNT }),
+    modifyBetslipAmount: (amountChange) => dispatch({ type: MODIFY_BETSLIP_AMOUNT, amountChange}),
+    modifyMyBetsAmount: (amountChange) => dispatch({ type: MODIFY_MYBETS_AMOUNT, amountChange}),
   };
 };
 
 export const useBetslip = (
   selected,
   ordersState = MOCK_TEST_BETSLIP_ORDER_STATE,
-  myBetsState = MOCK_TEST_MY_BETS_STATE,
+  myBetsState = MOCK_TEST_MY_BETS_STATE
 ) => {
   const [ordersInfo, ordersDispatch] = useReducer(
     betslipOrdersReducer,
@@ -337,8 +410,6 @@ export const useBetslip = (
     ADD,
     REMOVE,
     MODIFY,
-    SEND,
-    SEND_ALL,
     CLEAR_ALL,
   } = BETSLIP_ORDERS_ACTIONS;
 
@@ -356,11 +427,31 @@ export const useBetslip = (
       modifyOrder: (marketId, order) => {
         ordersDispatch({ type: MODIFY, marketId, order });
       },
-      sendOrder: (marketId, orderId) => {
-        ordersDispatch({ type: SEND, marketId, orderId });
+      sendOrder: (marketId, orderId, description, order) => {
+        ordersDispatch({ type: REMOVE, marketId, orderId });
+        myBetsDispatch({
+          type: MY_BETS_ACTIONS.ADD,
+          marketId,
+          description,
+          order,
+        });
+        betslipAmounts.incMyBetslipAmount();
+        betslipAmounts.decBetslipAmount();
       },
       sendAllOrders: () => {
-        ordersDispatch({ type: SEND_ALL });
+        const betslip = ordersInfo.orders;
+        for (let [marketId, { description, orders }] of Object.entries(betslip)) {
+          const ordersAmount = orders.length;
+          myBetsDispatch({
+            type: MY_BETS_ACTIONS.ADD_MULTIPLE,
+            marketId,
+            description,
+            orders
+          });
+          betslipAmounts.clearBetslipAmount();
+          ordersDispatch({ type: CLEAR_ALL });
+          betslipAmounts.modifyMyBetsAmount(ordersAmount);
+        }
       },
       cancelAllOrders: () => {
         ordersDispatch({ type: CLEAR_ALL });
@@ -369,18 +460,23 @@ export const useBetslip = (
     },
     myBets,
     myBetsActions: {
-      addBet: (marketId, description, order) => {
-        myBetsDispatch({ type: MY_BETS_ACTIONS.ADD, marketId, description, order });
-        betslipAmounts.incMyBetslipAmount();
-      },
       cashOutBet: (marketId, orderId) => {
         myBetsDispatch({ type: MY_BETS_ACTIONS.CASH_OUT, marketId, orderId });
       },
       updateBet: (marketId, orderId, updates) => {
-        myBetsDispatch({ type: MY_BETS_ACTIONS.UPDATE, marketId, orderId, updates });
+        myBetsDispatch({
+          type: MY_BETS_ACTIONS.UPDATE,
+          marketId,
+          orderId,
+          updates,
+        });
       },
       retryBet: (marketId, orderId) => {
         myBetsDispatch({ type: MY_BETS_ACTIONS.RETRY, marketId, orderId });
+      },
+      trashBet: (marketId, orderId) => {
+        myBetsDispatch({ type: MY_BETS_ACTIONS.TRASH, marketId, orderId });
+        betslipAmounts.decMyBetslipAmount();
       },
     },
     ...betslipAmounts,
