@@ -98,6 +98,7 @@ export const EMPTY_STATE: NewMarket = {
   timezone: null,
   detailsText: '',
   categories: ['', '', ''],
+  navCategories: ['', '', ''],
   settlementFee: SETTLEMENT_FEE_DEFAULT,
   affiliateFee: AFFILIATE_FEE_DEFAULT,
   orderBook: {}, // for submit orders

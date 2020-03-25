@@ -1094,6 +1094,7 @@ export const TEMPLATES = {
                     inputDestIds: [3],
                     values: LIST_VALUES.MENS_WOMENS,
                     inputDestValues: TENNIS_SINGLES_EVENTS,
+                    categoryDestId: 2,
                   },
                   {
                     id: 1,

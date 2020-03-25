@@ -179,7 +179,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       ? 3
       : 4,
     contentPages: this.props.isTemplate
-      ? hasNoTemplateCategoryChildren(this.props.newMarket.categories[0])
+      ? hasNoTemplateCategoryChildren(this.props.newMarket.navCategories[0])
         ? NO_CAT_TEMPLATE_CONTENT_PAGES
         : TEMPLATE_CONTENT_PAGES
       : CUSTOM_CONTENT_PAGES,
@@ -223,6 +223,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       let templateDefaultState = defaultState;
       templateMarket = {
         ...templateMarket,
+        navCategories: [],
         categories: [],
         marketType: '',
         currentStep: 0,
@@ -231,6 +232,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       templateDefaultState = {
         ...templateDefaultState,
         categories: [],
+        navCategories: [],
         marketType: '',
         template: null,
       };
@@ -294,6 +296,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                 ...deepClone<NewMarket>(EMPTY_STATE),
                 marketType: newMarket.marketType,
                 categories,
+                navCategories: categories,
                 currentStep: this.state.templateFormStarts - 1,
                 template: null,
               });
@@ -882,7 +885,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                 <MarketType
                   updateNewMarket={updateNewMarket}
                   marketType={marketType}
-                  categories={newMarket.categories}
+                  categories={newMarket.navCategories}
                   nextPage={this.nextPage}
                 />
               )}

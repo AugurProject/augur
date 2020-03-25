@@ -394,6 +394,7 @@ export interface NewMarket {
   meridiem: string;
   marketType: string;
   detailsText: string;
+  navCategories: string[];
   categories: string[];
   settlementFee: number;
   affiliateFee: number;

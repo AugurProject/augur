@@ -46,8 +46,8 @@ export const NFL = 'NFL';
 export const PGA = 'PGA';
 export const LPGA = 'LPGA';
 export const EURO_TOUR = 'Euro Tour';
-export const MENS = 'Mens';
-export const WOMENS = 'Womens';
+export const MENS = 'Men\'s';
+export const WOMENS = 'Women\'s';
 export const SINGLES = 'Singles';
 export const DOUBLES = 'Doubles';
 const FRIDAY_DAY_OF_WEEK = 5;
@@ -200,6 +200,7 @@ export interface TemplateInput {
   inputSourceId?: number; // input id as source of text to get list values
   defaultLabel?: string; // dropdown default label shown
   inputDestIds?: number[]; // target inputs to set list values
+  categoryDestId?: number;
   inputDestValues: {
     // dropdown source data structure to use to set target input list values
     [key: string]: string[];
