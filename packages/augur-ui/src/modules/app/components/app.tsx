@@ -411,7 +411,7 @@ export default class AppView extends Component<AppProps> {
     const currentPath = parsePath(location.pathname)[0];
 
     const { currentBasePath, mobileMenuState, isAlertsVisible } = sidebarStatus;
-    const hideBetslip = !currentBasePath.includes(MARKET);
+    const hideBetslip = !currentBasePath?.includes(MARKET);
     const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
     const ModalShowing = Object.keys(modal).length !== 0;
 

@@ -17,9 +17,7 @@ import {
 
 import Styles from 'modules/trading/betslip.styles';
 
-export interface BetslipProps {}
-
-export const Betslip = ({  }: BetslipProps) => {
+export const Betslip = () => {
   const [minimized, setMinimized] = useState(true);
   const [step, setStep] = useState(0);
   const {

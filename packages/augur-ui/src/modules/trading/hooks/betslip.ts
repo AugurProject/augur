@@ -47,6 +47,8 @@ const BETSLIP_ORDERS_ACTIONS = {
 const MY_BETS_ACTIONS = {
   ADD: 'ADD',
   CASH_OUT: 'CASH_OUT',
+  UPDATE: 'UPDATE',
+  RETRY: 'RETRY',
 };
 
 const BETSLIP_ORDER_DEFAULT_STATE = {
@@ -219,16 +221,33 @@ function betslipOrdersReducer(state, action) {
 }
 
 function myBetsReducer(state, action) {
-  const { ADD, CASH_OUT } = MY_BETS_ACTIONS;
+  const { ADD, CASH_OUT, UPDATE, RETRY } = MY_BETS_ACTIONS;
   switch (action.type) {
     case ADD: {
       console.log(ADD, action.marketId, action.description, action.order);
       return state;
     }
+    case RETRY: {
+      const { marketId, orderId } = action;
+      // TODO: send bet again but for now...
+      const updatedState = { ...state };
+      updatedState[marketId].orders[orderId].status = BET_STATUS.PENDING;
+      return updatedState;
+    }
     case CASH_OUT: {
       const { marketId, orderId } = action;
       const updatedState = { ...state };
       updatedState[marketId].orders[orderId].isOpen = false;
+      return updatedState;
+    }
+    case UPDATE: {
+      const { marketId, orderId, updates } = action;
+      const updatedState = { ...state};
+      updatedState[marketId].orders[orderId] = {
+        ...updatedState[marketId].orders[orderId],
+        ...updates,
+        dateUpdated: formatDate(new Date())
+      };
       return updatedState;
     }
     default:
@@ -356,7 +375,13 @@ export const useBetslip = (
       },
       cashOutBet: (marketId, orderId) => {
         myBetsDispatch({ type: MY_BETS_ACTIONS.CASH_OUT, marketId, orderId });
-      }
+      },
+      updateBet: (marketId, orderId, updates) => {
+        myBetsDispatch({ type: MY_BETS_ACTIONS.UPDATE, marketId, orderId, updates });
+      },
+      retryBet: (marketId, orderId) => {
+        myBetsDispatch({ type: MY_BETS_ACTIONS.RETRY, marketId, orderId });
+      },
     },
     ...betslipAmounts,
   };

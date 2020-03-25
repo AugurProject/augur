@@ -3,8 +3,18 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 
-import { SecondaryButton, PrimaryButton, ExternalLinkButton } from 'modules/common/buttons';
-import { Ticket, Trash, ThickChevron, CheckMark, LoadingEllipse } from 'modules/common/icons';
+import {
+  SecondaryButton,
+  PrimaryButton,
+  ExternalLinkButton,
+} from 'modules/common/buttons';
+import {
+  Ticket,
+  Trash,
+  ThickChevron,
+  CheckMark,
+  LoadingEllipse,
+} from 'modules/common/icons';
 import { MY_POSITIONS } from 'modules/routes/constants/views';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import {
@@ -60,12 +70,14 @@ export const SportsMarketBets = ({ market, actions }) => {
 
 export const SportsMarketMyBets = ({ market, actions }) => {
   const marketId = market[0];
-  const { cashOutBet } = actions;
+  const { cashOutBet, updateBet, retryBet } = actions;
   const { description, orders } = market[1];
   const bets = orders.map((order, orderId) => ({
     ...order,
     orderId,
+    retryBet: () => retryBet(marketId, orderId),
     cashOutBet: () => cashOutBet(marketId, orderId),
+    updateBet: updates => updateBet(marketId, orderId, updates),
   }));
   return (
     <div className={Styles.SportsMarketBets}>
@@ -125,12 +137,29 @@ export const SportsBet = ({ bet }) => {
   );
 };
 
-export const SportsMyBet = ({ bet }) => {
+export const SportsMyBet = ({
+  bet: {
+    outcome,
+    odds,
+    wager,
+    cashOutBet,
+    retryBet,
+    updateBet,
+    status,
+    amountFilled,
+    toWin,
+    dateUpdated,
+  },
+}) => {
   const [expanded, setExpanded] = useState(false);
   const [isRecentUpdate, setIsRecentUpdate] = useState(true);
   useEffect(() => {
+    setIsRecentUpdate(true);
+  }, [dateUpdated]);
+
+  useEffect(() => {
     const currentTime = new Date().getTime() / 1000;
-    const seconds = Math.round(currentTime - bet.dateUpdated.timestamp);
+    const seconds = Math.round(currentTime - dateUpdated.timestamp);
     const milliSeconds = seconds * 1000;
     if (seconds < 20) {
       setTimeout(() => {
@@ -141,13 +170,14 @@ export const SportsMyBet = ({ bet }) => {
     }
   }, [isRecentUpdate]);
 
-  const { outcome, odds, wager, cashOutBet, status, amountFilled, toWin, dateUpdated } = bet;
-  const {
-    PENDING,
-    FILLED,
-    PARTIALLY_FILLED,
-    FAILED,
-  } = BET_STATUS;
+  useEffect(() => {
+    if (status === BET_STATUS.PENDING) {
+      setTimeout(() => {
+        updateBet({ status: BET_STATUS.FILLED });
+      }, 20000);
+    }
+  });
+  const { PENDING, FILLED, PARTIALLY_FILLED, FAILED } = BET_STATUS;
   let icon = Trash;
   let classToApply = Styles.NEWFILL;
   let message = null;
@@ -173,25 +203,33 @@ export const SportsMyBet = ({ bet }) => {
     case PARTIALLY_FILLED:
       icon = ThickChevron;
       classToApply = Styles.PARTIALLY_FILLED;
-      message = `This bet was partially filled. Original wager: ${formatDai(wager).full}`;
+      message = `This bet was partially filled. Original wager: ${
+        formatDai(wager).full
+      }`;
       iconAction = () => {
         setExpanded(!expanded);
       };
       wagerToShow = amountFilled;
       break;
-    case PENDING: 
+    case PENDING:
       icon = LoadingEllipse;
       classToApply = Styles.PENDING;
       break;
     case FAILED:
       classToApply = Styles.FAILED;
-      message = `Order failed when processing. `
-      messageAction = (<button onClick={() => console.log('resend transaction')}>Retry</button>);
+      message = `Order failed when processing. `;
+      messageAction = (
+        <button onClick={() => retryBet()}>Retry</button>
+      );
     default:
       break;
   }
   return (
-    <div className={classNames(Styles.SportsMyBet, Styles.Review, classToApply, { [Styles.Expanded]: expanded })}>
+    <div
+      className={classNames(Styles.SportsMyBet, Styles.Review, classToApply, {
+        [Styles.Expanded]: expanded,
+      })}
+    >
       <header>
         <span>{outcome}</span>
         <span>{odds}</span>
@@ -202,16 +240,27 @@ export const SportsMyBet = ({ bet }) => {
           {icon}
         </button>
       </header>
-      <LinearPropertyLabel label="wager" value={formatDai(wagerToShow)} useFull />
+      <LinearPropertyLabel
+        label="wager"
+        value={formatDai(wagerToShow)}
+        useFull
+      />
       <LinearPropertyLabel label="odds" value={odds} />
       <LinearPropertyLabel label="to win" value={formatDai(toWin)} useFull />
-      <LinearPropertyLabel label="Date" value={dateUpdated.formattedLocalShortWithUtcOffset} />
-      {!!message && <span>{message}{!!messageAction && messageAction}</span>}
-      <ExternalLinkButton
-        URL={null}
-        label="view tx"
+      <LinearPropertyLabel
+        label="Date"
+        value={dateUpdated.formattedLocalShortWithUtcOffset}
       />
-      <button onClick={() => cashOutBet()} disabled={cashoutDisabled}>{cashoutText}</button>
+      {!!message && (
+        <span>
+          {message}
+          {!!messageAction && messageAction}
+        </span>
+      )}
+      <ExternalLinkButton URL={null} label="view tx" />
+      <button onClick={() => cashOutBet()} disabled={cashoutDisabled}>
+        {cashoutText}
+      </button>
     </div>
   );
 };
