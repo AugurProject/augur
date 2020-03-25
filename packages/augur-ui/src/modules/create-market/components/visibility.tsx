@@ -8,7 +8,7 @@ import {
   SmallSubheaders,
   SmallSubheadersTooltip,
 } from 'modules/create-market/components/common';
-import { MAX_SPREAD_10_PERCENT, BUY, TEN_TO_THE_EIGHTEENTH_POWER, SCALAR } from 'modules/common/constants';
+import { MAX_SPREAD_10_PERCENT, BUY, TEN_TO_THE_EIGHTEENTH_POWER, SCALAR, ONE } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import {
@@ -21,6 +21,7 @@ import { formatOrderBook } from 'modules/create-market/helpers/format-order-book
 import logError from 'utils/log-error';
 import { NodeStyleCallback } from 'modules/types';
 import { MARKET_COPY_LIST } from 'modules/create-market/constants';
+import { getReportingDivisor } from 'modules/contracts/actions/contractCalls';
 
 export interface VisibilityProps {
   newMarket: NewMarket;
@@ -39,6 +40,7 @@ export interface VisibilityState {
   hasLiquidity: boolean;
   validations: Validations;
   validationMessage: string;
+  reportingFeeDivisor: string;
 }
 
 // 1. spread to wide
@@ -78,6 +80,7 @@ export default class Visibility extends Component<
       hasLiquidity: false,
       validations: DEFAULT_VALIDATIONS,
       validationMessage: VALIDATION_TIPS.liquidity(),
+      reportingFeeDivisor: '10000',
     };
   }
 
@@ -160,6 +163,7 @@ export default class Visibility extends Component<
       formattedOrderBook[outcome] = { bids: [], asks: [] };
       orders.forEach(order => {
         const formattedOrder = {
+          orderCreator: 'creator',
           price: convertDisplayPriceToOnChainPrice(
             createBigNumber(order.price),
             minPriceBigNumber,
@@ -182,10 +186,8 @@ export default class Visibility extends Component<
       numTicks: numTicks.toFixed(),
       numOutcomes: outcomesFormatted.length,
       marketType: marketTypeNumber,
-      feePerCashInAttoCash: `${createBigNumber(settlementFee)
-        .multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER)
-        .toString()}`,
-      reportingFeeDivisor: '0',
+      feePerCashInAttoCash: String(settlementFee),
+      reportingFeeDivisor: String(this.state.reportingFeeDivisor),
       spread: parseInt(MAX_SPREAD_10_PERCENT),
     };
   }
@@ -205,11 +207,10 @@ export default class Visibility extends Component<
   getRanking() {
     const { newMarket } = this.props;
     const { validations, validationMessage } = this.validate(newMarket);
-    const { hasLiquidity, hasSells, hasBuys, validSpread } = validations;
+    const { hasLiquidity } = validations;
     if ((hasLiquidity)) {
       const params = this.calculateParams(newMarket);
       this.getMarketLiquidityRanking(params, (err, updates) => {
-        console.log('liquidity ranking', JSON.stringify(updates));
         this.setState({
           ...updates,
           marketRank:
@@ -225,6 +226,12 @@ export default class Visibility extends Component<
     }
   }
 
+  getReportingFeeDivisor = () => {
+    getReportingDivisor().then(divisor =>
+      this.setState({reportingFeeDivisor: String(divisor)})
+    )
+  }
+
   componentDidUpdate(prevProps) {
     const { newMarket } = this.props;
     if (
@@ -237,6 +244,7 @@ export default class Visibility extends Component<
   }
 
   componentDidMount() {
+    this.getReportingFeeDivisor();
     this.getRanking();
   }
 
