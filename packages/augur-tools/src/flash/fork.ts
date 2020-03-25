@@ -1,39 +1,40 @@
 import { NULL_ADDRESS } from '../constants';
 import { BigNumber } from 'bignumber.js';
 import { ContractAPI } from '..';
-import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
-import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
-import { MarketTypeName } from '@augurproject/sdk/build/state/logs/types';
+import { ContractInterfaces } from '@augurproject/core/source';
 
-export async function fork(user: ContractAPI, market: MarketInfo): Promise<boolean> {
+export async function fork(user: ContractAPI, market: ContractInterfaces.Market): Promise<boolean> {
   const MAX_DISPUTES = 20;
   let SOME_REP = new BigNumber(1e18).times(10e2);
+  const numOutcomes = await market.getNumberOfOutcomes_();
+  const numTicks = await market.getNumTicks_();
 
-  const payoutNumerators = getPayoutNumerators(market, 'invalid');
-  const conflictOutcome = market.marketType === MarketTypeName.Scalar ? makeValidScalarOutcome(market) : 1;
-  const conflictNumerators = getPayoutNumerators(market, conflictOutcome);
+  const payoutNumerators = new Array(numOutcomes).fill(new BigNumber(0));
+  payoutNumerators[0] = new BigNumber(numTicks);
 
-  const marketContract = user.augur.contracts.marketFromAddress(market.id);
+  const conflictNumerators = new Array(numOutcomes).fill(new BigNumber(0));
+  conflictNumerators[1] = new BigNumber(numTicks);
 
   await user.repFaucet(SOME_REP);
 
   // Get past the market time, into when we can accept the initial report.
-  await user.setTimestamp(new BigNumber(market.endTime + 1));
+  const endTime = await market.getEndTime_();
+  await user.setTimestamp(endTime.plus(1));
 
   // Do the initial report, creating the first dispute window.
-  await user.doInitialReport(marketContract, payoutNumerators, '', SOME_REP.toString());
+  await user.doInitialReport(market, payoutNumerators, '', SOME_REP.toString());
 
   // Contribution (dispute) fulfills the first dispute bond,
   // pushing into next dispute round that takes additional stake into account.
   await user.repFaucet(SOME_REP);
-  await user.contribute(marketContract, conflictNumerators, SOME_REP);
+  await user.contribute(market, conflictNumerators, SOME_REP);
 
   for (let i = 0; i < MAX_DISPUTES; i++) {
-    if ((await marketContract.getForkingMarket_()) !== NULL_ADDRESS) {
+    if ((await market.getForkingMarket_()) !== NULL_ADDRESS) {
       return true; // forked successfully!
     }
 
-    const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await marketContract.getDisputeWindow_());
+    const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
     // Enter the dispute window.
     const disputeWindowStartTime = await disputeWindow.getStartTime_();
     await user.setTimestamp(disputeWindowStartTime.plus(1));
@@ -41,35 +42,14 @@ export async function fork(user: ContractAPI, market: MarketInfo): Promise<boole
     // Contribute aka dispute. Opposing sides to keep raising the stakes.
     const numerators = i % 2 === 0 ? conflictNumerators : payoutNumerators;
     await user.repFaucet(SOME_REP);
-    await user.contribute(marketContract, numerators, SOME_REP);
+    await user.contribute(market, numerators, SOME_REP);
     const remainingToFill = await user.getRemainingToFill(
-      marketContract,
+      market,
       numerators
     );
     await user.repFaucet(remainingToFill);
-    if (remainingToFill.gt(0)) await user.contribute(marketContract, numerators, remainingToFill);
+    if (remainingToFill.gt(0)) await user.contribute(market, numerators, remainingToFill);
   }
 
   return false; // failed to fork
-}
-
-export function getPayoutNumerators(market: MarketInfo, outcome: number|'invalid'): BigNumber[] {
-  const isInvalid = outcome === 'invalid';
-
-  return calculatePayoutNumeratorsArray(
-    market.maxPrice,
-    market.minPrice,
-    market.numTicks,
-    market.numOutcomes,
-    market.marketType,
-    isInvalid ? -1 : outcome as number,
-    isInvalid
-  );
-}
-
-export function makeValidScalarOutcome(market: MarketInfo): number {
-  return Math.floor(new BigNumber(market.maxPrice)
-    .minus(market.minPrice)
-    .dividedBy(3)
-    .plus(market.minPrice).toNumber());
 }

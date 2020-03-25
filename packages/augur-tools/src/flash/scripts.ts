@@ -1886,26 +1886,15 @@ export function addScripts(flash: FlashSession) {
         name: 'marketId',
         abbr: 'm',
         description: 'yes/no market to fork. defaults to making one',
+        required: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const user = await this.ensureUser(this.network, true);
-      let marketId = (args.marketId as string) || null;
-
-      if (marketId === null) {
-        const market = await user.createReasonableYesNoMarket();
-        marketId = market.address;
-        this.log(`Created market ${marketId}`);
-      }
-
-      await sleep(2000);
-      const marketInfos = (await user.getMarketInfo(marketId));
-      if (!marketInfos || marketInfos.length === 0) {
-        return this.log(`Error: marketId: ${marketId} not found`);
-      }
-      const marketInfo = marketInfos[0];
-      if (await fork(user, marketInfo)) {
+      const user = await this.ensureUser();
+      const marketId = String(args.marketId);
+      const marketContract = user.augur.contracts.marketFromAddress(marketId);
+      if (await fork(user, marketContract)) {
         this.log('Fork successful!');
       } else {
         this.log('ERROR: forking failed.');
