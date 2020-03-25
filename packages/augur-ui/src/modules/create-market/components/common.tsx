@@ -920,7 +920,7 @@ export const InputFactory = (props: InputFactoryProps) => {
       <FormDropdown
         options={createTemplateValueList(input.values)}
         sort={!input.noSort}
-        defaultValue={input.userInput}
+        defaultValue={input.userInput === '' ? null : input.userInput}
         disabled={input.values.length === 0}
         staticLabel={
           input.values.length === 0 ? input.defaultLabel : input.placeholder

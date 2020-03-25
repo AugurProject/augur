@@ -64,11 +64,23 @@ interface DotSelectionState {
   toggleMenu: boolean;
 }
 
+
+function findSelected(options, defaultVal) {
+  const foundOption = options.find(
+    o => o.value === defaultVal
+  );
+  const defaultValue = defaultVal ? {
+    label: defaultVal.toString(),
+    value: defaultVal,
+  } : null;
+
+  return foundOption ? foundOption : defaultValue;
+}
+
 class Dropdown extends Component<DropdownProps, DropdownState> {
   state: DropdownState = {
-    selected:
-      this.props.defaultValue !== null
-        ? this.props.options.find(o => o.value === this.props.defaultValue)
+    selected: this.props.defaultValue !== null
+        ? findSelected(this.props.options, this.props.defaultValue)
         : null,
     showList: false,
     scrollWidth: null,
@@ -93,15 +105,8 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
   componentDidUpdate(prevProps: DropdownProps, prevState: DropdownState) {
     this.measure();
     if (prevProps.defaultValue !== this.props.defaultValue) {
-      const foundOption = this.props.options.find(
-        o => o.value === this.props.defaultValue
-      );
-      const defaultValue = this.props.defaultValue ? {
-        label: this.props.defaultValue.toString(),
-        value: this.props.defaultValue,
-      } : null;
       this.setState({
-        selected: foundOption
+        selected: findSelected(this.props.options, this.props.defaultValue)
       })
     }
     if (

@@ -17,7 +17,7 @@ export const EUR = 'EUR';
 
 // Market Subtemplates
 export const SOCCER = 'Football (Soccer)';
-export const MENS_LEAGUES = 'Mens Leagues';
+export const MENS_LEAGUES = 'Men\'s Leagues';
 export const CUSTOMIZED = 'Customized';
 export const SUMMER = 'SUMMER';
 export const WINTER = 'WINTER';

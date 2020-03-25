@@ -395,7 +395,7 @@ export const determineVisible = (
     (!showSecondaryDropdown && customPrimary && values[0] !== '');
   const customTertiary =
     selected[2] === CUSTOM ||
-    (selected[2] &&
+    (selected[2] && !disabledTertiary &&
       !tertiaryOptions.map(option => option.value).includes(selected[2])) ||
     (!showTertiaryDropdown && values[1] !== '');
   return {
