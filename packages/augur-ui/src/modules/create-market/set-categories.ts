@@ -11,7 +11,7 @@ export const setCategories: SortedGroup[] = [
         value: 'Football (Soccer)',
         label: 'Football (Soccer)',
         subGroup: [
-          { value: 'Mens Leagues', label: 'Mens Leagues'},
+          { value: 'Men\'s Leagues', label: 'Men\'s Leagues'},
           { value: 'Copa America', label: 'Copa America' },
           { value: 'Africa Cup of Nations', label: 'Africa Cup of Nations' },
           { value: 'UEFA Nations League', label: 'UEFA Nations League' },
@@ -32,18 +32,18 @@ export const setCategories: SortedGroup[] = [
             label: 'English League Championship',
           },
           { value: 'Major League Soccer', label: 'Major League Soccer' },
-          { value: "Mens", label: "Mens" },
-          { value: "Womens", label: "Womens" },
+          { value: "Men's", label: "Men's" },
+          { value: "Women's", label: "Women's" },
           { value: CUSTOM, label: CUSTOM },
         ],
         autoCompleteList: [
-          { value: "Mens", label: "Mens" },
-          { value: "Womens", label: "Womens" },
+          { value: "Men's", label: "Men's" },
+          { value: "Women's", label: "Women's" },
           {
             value: 'Spanish Primera Division',
             label: 'Spanish Primera Division',
           },
-          { value: 'Italian Serie A', label: 'Italian Serie A' },
+          { value: 'Italian Series A', label: 'Italian Series A' },
           {
             value: 'FIFA Under-20 World Cup',
             label: 'FIFA Under-20 World Cup',
@@ -195,7 +195,7 @@ export const setCategories: SortedGroup[] = [
             label: 'AFC Asian Cup Qualifiers',
           },
           { value: 'SAFF Championship', label: 'SAFF Championship' },
-          { value: 'Mens Olympics', label: 'Mens Olympics' },
+          { value: 'Men\'s Olympics', label: 'Men\'s Olympics' },
           {
             value: "Women's International Friendly",
             label: "Women's International Friendly",
@@ -970,8 +970,8 @@ export const setCategories: SortedGroup[] = [
           { value: 'French Open', label: 'French Open' },
           { value: 'Wimbledon', label: 'Wimbledon' },
           { value: 'US Open', label: 'US Open' },
-          { value: 'Mens', label: 'Mens' },
-          { value: 'Womens', label: 'Womens' },
+          { value: 'Men\'s', label: 'Men\'s' },
+          { value: 'Women\'s', label: 'Women\'s' },
           { value: 'Doubles', label: 'Doubles' },
           { value: 'Singles', label: 'Singles' },
           { value: CUSTOM, label: CUSTOM },
@@ -1007,8 +1007,8 @@ export const setCategories: SortedGroup[] = [
           { value: 'Miami Open', label: 'Miami Open' },
           { value: 'Grand Prix Hassan II', label: 'Grand Prix Hassan II' },
           {
-            value: 'US Mens Clay Court Championship',
-            label: 'US Mens Clay Court Championship',
+            value: 'US Men\'s Clay Court Championship',
+            label: 'US Men\'s Clay Court Championship',
           },
           {
             value: 'Rolex Monte-Carlo Masters',

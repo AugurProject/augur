@@ -322,13 +322,13 @@ export default class FormDetails extends React.Component<
             disableCategory={isTemplate}
             disableSubCategory={
               isTemplate &&
-              !hasNoTemplateCategoryChildren(newMarket.categories[0])
+              !hasNoTemplateCategoryChildren(newMarket.navCategories[0])
             }
             disableTertiaryCategory={
               isTemplate &&
               !hasNoTemplateCategoryTertiaryChildren(
-                newMarket.categories[0],
-                newMarket.categories[1]
+                newMarket.navCategories[0],
+                newMarket.navCategories[1]
               )
             }
           />

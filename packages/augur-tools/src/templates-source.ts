@@ -1111,6 +1111,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
+                    categoryDestId: 2,
                     values: [],
                   },
                 ],

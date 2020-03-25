@@ -48,7 +48,7 @@ import {
   UserInputDateTime,
   CHOICE,
   REQUIRED,
-  ValidationType
+  ValidationType,
 } from '@augurproject/artifacts';
 import {
   TemplateBannerText,
@@ -804,8 +804,8 @@ export const InputFactory = (props: InputFactoryProps) => {
     currentTimestamp,
     isAfter,
   } = props;
-  const { template, outcomes, marketType, validations } = newMarket;
-  const { inputs } = template;
+  const { template, outcomes, marketType, validations, categories } = newMarket;
+  const { inputs, question } = template;
 
   const updateData = value => {
     let inputValidations = newMarket.validations.inputs;
@@ -920,13 +920,19 @@ export const InputFactory = (props: InputFactoryProps) => {
       <FormDropdown
         options={createTemplateValueList(input.values)}
         sort={!input.noSort}
-        defaultValue={input.userInput}
+        defaultValue={input.userInput === '' ? null : input.userInput}
         disabled={input.values.length === 0}
         staticLabel={
           input.values.length === 0 ? input.defaultLabel : input.placeholder
         }
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
         onChange={value => {
+          if (input.categoryDestId !== undefined) {
+            let updatedCategories = categories;
+            updatedCategories[input.categoryDestId] = value;
+            onChange('categories', updatedCategories);
+          }
+
           if (input.type === TemplateInputType.DENOMINATION_DROPDOWN) {
             onChange('scalarDenomination', value);
           } else if (
