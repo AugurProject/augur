@@ -5,7 +5,7 @@ import { HashRouter } from 'react-router-dom';
 
 import MainErrorBoundary from 'modules/app/components/main-error-boundary';
 
-import store from 'store';
+import store from 'appStore';
 import { WindowApp } from 'modules/types';
 
 console.log(`

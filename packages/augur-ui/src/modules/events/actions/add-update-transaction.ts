@@ -1,4 +1,4 @@
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import {
   CANCELORDER,
   CANCELORDERS,

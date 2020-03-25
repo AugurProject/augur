@@ -430,7 +430,7 @@ describe('State API :: General', () => {
       });
 
       expect(marketList.markets.length).toEqual(4);
-      expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
+      expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
 
       marketList = await john.api.route('getMarkets', {
         universe: config.addresses.Universe,
@@ -454,7 +454,7 @@ describe('State API :: General', () => {
       });
 
       expect(marketList.markets.length).toEqual(4);
-      expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
+      expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
 
       marketList = await john.api.route('getMarkets', {
         universe: config.addresses.Universe,
@@ -462,7 +462,7 @@ describe('State API :: General', () => {
       });
 
       expect(marketList.markets.length).toEqual(4);
-      expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
+      expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
 
       // Test Recently Depleted Liquidity + Invalid
       marketList = await john.api.route('getMarkets', {

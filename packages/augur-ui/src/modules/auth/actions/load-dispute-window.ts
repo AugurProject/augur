@@ -1,7 +1,7 @@
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 
 export const loadDisputeWindow = () => async (

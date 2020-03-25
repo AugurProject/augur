@@ -49,7 +49,7 @@ describe('State API :: Users :: ', () => {
         price: 0.58,
         position: -7,
         avgPrice: 0.65,
-        realizedPL: 0.1752,
+        realizedPL: 0.192426,
         frozenFunds: 2.45,
       },
       {
@@ -59,7 +59,7 @@ describe('State API :: Users :: ', () => {
         price: 0.62,
         position: -20,
         avgPrice: 0.6305,
-        realizedPL: 0.1752,
+        realizedPL: 0.192426,
         frozenFunds: 7.39,
       },
       {
@@ -69,7 +69,7 @@ describe('State API :: Users :: ', () => {
         price: 0.5,
         position: -10,
         avgPrice: 0.6305,
-        realizedPL: 1.3802,
+        realizedPL: 1.446926,
         frozenFunds: 3.695,
       },
       {
@@ -79,7 +79,7 @@ describe('State API :: Users :: ', () => {
         price: 0.15,
         position: -3,
         avgPrice: 0.6305,
-        realizedPL: 4.7227,
+        realizedPL: 4.799821,
         frozenFunds: 1.1085,
       },
     ];

@@ -2148,100 +2148,6 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-### `ISimpleDex`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ISimpleDex.token()"><code class="function-signature">token()</code></a></li><li><a href="#ISimpleDex.cash()"><code class="function-signature">cash()</code></a></li><li><a href="#ISimpleDex.tokenReserve()"><code class="function-signature">tokenReserve()</code></a></li><li><a href="#ISimpleDex.cashReserve()"><code class="function-signature">cashReserve()</code></a></li><li><a href="#ISimpleDex.blockNumberLast()"><code class="function-signature">blockNumberLast()</code></a></li><li><a href="#ISimpleDex.tokenPriceCumulativeLast()"><code class="function-signature">tokenPriceCumulativeLast()</code></a></li><li><a href="#ISimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li><a href="#ISimpleDex.autoBuyTokenAmount(address,uint256)"><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#ISimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li><a href="#ISimpleDex.getCashSaleProceeds(uint256)"><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount)</code></a></li><li><a href="#ISimpleDex.publicMint(address)"><code class="function-signature">publicMint(address to)</code></a></li><li><a href="#ISimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address to)</code></a></li><li><a href="#ISimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li><a href="#ISimpleDex.sync()"><code class="function-signature">sync()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.token()"></a><code class="function-signature">token() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.cash()"></a><code class="function-signature">cash() <span class="return-arrow">→</span> <span class="return-type">contract IERC20</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.tokenReserve()"></a><code class="function-signature">tokenReserve() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.cashReserve()"></a><code class="function-signature">cashReserve() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.blockNumberLast()"></a><code class="function-signature">blockNumberLast() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.tokenPriceCumulativeLast()"></a><code class="function-signature">tokenPriceCumulativeLast() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.buyToken(address)"></a><code class="function-signature">buyToken(address _recipient) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.autoBuyTokenAmount(address,uint256)"></a><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.getTokenPurchaseCost(uint256)"></a><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.getCashSaleProceeds(uint256)"></a><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.publicMint(address)"></a><code class="function-signature">publicMint(address to) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.publicBurn(address)"></a><code class="function-signature">publicBurn(address to) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.skim(address)"></a><code class="function-signature">skim(address to)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ISimpleDex.sync()"></a><code class="function-signature">sync()</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
 ### `ITime`
 
 
@@ -2274,11 +2180,219 @@ MUST emit when the URI is updated for a token ID.
 
 
 
+### `IUniswapV2Exchange`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniswapV2Exchange.name()"><code class="function-signature">name()</code></a></li><li><a href="#IUniswapV2Exchange.symbol()"><code class="function-signature">symbol()</code></a></li><li><a href="#IUniswapV2Exchange.decimals()"><code class="function-signature">decimals()</code></a></li><li><a href="#IUniswapV2Exchange.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li><a href="#IUniswapV2Exchange.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li><a href="#IUniswapV2Exchange.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li><li><a href="#IUniswapV2Exchange.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 value)</code></a></li><li><a href="#IUniswapV2Exchange.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 value)</code></a></li><li><a href="#IUniswapV2Exchange.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 value)</code></a></li><li><a href="#IUniswapV2Exchange.DOMAIN_SEPARATOR()"><code class="function-signature">DOMAIN_SEPARATOR()</code></a></li><li><a href="#IUniswapV2Exchange.PERMIT_TYPEHASH()"><code class="function-signature">PERMIT_TYPEHASH()</code></a></li><li><a href="#IUniswapV2Exchange.nonces(address)"><code class="function-signature">nonces(address owner)</code></a></li><li><a href="#IUniswapV2Exchange.permit(address,address,uint256,uint256,uint8,bytes32,bytes32)"><code class="function-signature">permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)</code></a></li><li><a href="#IUniswapV2Exchange.MINIMUM_LIQUIDITY()"><code class="function-signature">MINIMUM_LIQUIDITY()</code></a></li><li><a href="#IUniswapV2Exchange.factory()"><code class="function-signature">factory()</code></a></li><li><a href="#IUniswapV2Exchange.token0()"><code class="function-signature">token0()</code></a></li><li><a href="#IUniswapV2Exchange.token1()"><code class="function-signature">token1()</code></a></li><li><a href="#IUniswapV2Exchange.getReserves()"><code class="function-signature">getReserves()</code></a></li><li><a href="#IUniswapV2Exchange.price0CumulativeLast()"><code class="function-signature">price0CumulativeLast()</code></a></li><li><a href="#IUniswapV2Exchange.price1CumulativeLast()"><code class="function-signature">price1CumulativeLast()</code></a></li><li><a href="#IUniswapV2Exchange.kLast()"><code class="function-signature">kLast()</code></a></li><li><a href="#IUniswapV2Exchange.mint(address)"><code class="function-signature">mint(address to)</code></a></li><li><a href="#IUniswapV2Exchange.burn(address)"><code class="function-signature">burn(address to)</code></a></li><li><a href="#IUniswapV2Exchange.swap(uint256,uint256,address,bytes)"><code class="function-signature">swap(uint256 amount0Out, uint256 amount1Out, address to, bytes data)</code></a></li><li><a href="#IUniswapV2Exchange.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li><a href="#IUniswapV2Exchange.sync()"><code class="function-signature">sync()</code></a></li><li><a href="#IUniswapV2Exchange.initialize(address,address)"><code class="function-signature">initialize(address, address)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#IUniswapV2Exchange.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li><li><a href="#IUniswapV2Exchange.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li><a href="#IUniswapV2Exchange.Mint(address,uint256,uint256)"><code class="function-signature">Mint(address sender, uint256 amount0, uint256 amount1)</code></a></li><li><a href="#IUniswapV2Exchange.Burn(address,uint256,uint256,address)"><code class="function-signature">Burn(address sender, uint256 amount0, uint256 amount1, address to)</code></a></li><li><a href="#IUniswapV2Exchange.Swap(address,uint256,uint256,uint256,uint256,address)"><code class="function-signature">Swap(address sender, uint256 amount0In, uint256 amount1In, uint256 amount0Out, uint256 amount1Out, address to)</code></a></li><li><a href="#IUniswapV2Exchange.Sync(uint112,uint112)"><code class="function-signature">Sync(uint112 reserve0, uint112 reserve1)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.name()"></a><code class="function-signature">name() <span class="return-arrow">→</span> <span class="return-type">string</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.symbol()"></a><code class="function-signature">symbol() <span class="return-arrow">→</span> <span class="return-type">string</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.decimals()"></a><code class="function-signature">decimals() <span class="return-arrow">→</span> <span class="return-type">uint8</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.totalSupply()"></a><code class="function-signature">totalSupply() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.balanceOf(address)"></a><code class="function-signature">balanceOf(address owner) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.allowance(address,address)"></a><code class="function-signature">allowance(address owner, address spender) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.approve(address,uint256)"></a><code class="function-signature">approve(address spender, uint256 value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.transfer(address,uint256)"></a><code class="function-signature">transfer(address to, uint256 value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.transferFrom(address,address,uint256)"></a><code class="function-signature">transferFrom(address from, address to, uint256 value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.DOMAIN_SEPARATOR()"></a><code class="function-signature">DOMAIN_SEPARATOR() <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.PERMIT_TYPEHASH()"></a><code class="function-signature">PERMIT_TYPEHASH() <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.nonces(address)"></a><code class="function-signature">nonces(address owner) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.permit(address,address,uint256,uint256,uint8,bytes32,bytes32)"></a><code class="function-signature">permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.MINIMUM_LIQUIDITY()"></a><code class="function-signature">MINIMUM_LIQUIDITY() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.factory()"></a><code class="function-signature">factory() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.token0()"></a><code class="function-signature">token0() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.token1()"></a><code class="function-signature">token1() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.getReserves()"></a><code class="function-signature">getReserves() <span class="return-arrow">→</span> <span class="return-type">uint112,uint112,uint32</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.price0CumulativeLast()"></a><code class="function-signature">price0CumulativeLast() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.price1CumulativeLast()"></a><code class="function-signature">price1CumulativeLast() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.kLast()"></a><code class="function-signature">kLast() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.mint(address)"></a><code class="function-signature">mint(address to) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.burn(address)"></a><code class="function-signature">burn(address to) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.swap(uint256,uint256,address,bytes)"></a><code class="function-signature">swap(uint256 amount0Out, uint256 amount1Out, address to, bytes data)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.skim(address)"></a><code class="function-signature">skim(address to)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.sync()"></a><code class="function-signature">sync()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.initialize(address,address)"></a><code class="function-signature">initialize(address, address)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.Approval(address,address,uint256)"></a><code class="function-signature">Approval(address owner, address spender, uint256 value)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.Transfer(address,address,uint256)"></a><code class="function-signature">Transfer(address from, address to, uint256 value)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.Mint(address,uint256,uint256)"></a><code class="function-signature">Mint(address sender, uint256 amount0, uint256 amount1)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.Burn(address,uint256,uint256,address)"></a><code class="function-signature">Burn(address sender, uint256 amount0, uint256 amount1, address to)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.Swap(address,uint256,uint256,uint256,uint256,address)"></a><code class="function-signature">Swap(address sender, uint256 amount0In, uint256 amount1In, uint256 amount0Out, uint256 amount1Out, address to)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Exchange.Sync(uint112,uint112)"></a><code class="function-signature">Sync(uint112 reserve0, uint112 reserve1)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
 ### `IUniverse`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniverse.creationTime()"><code class="function-signature">creationTime()</code></a></li><li><a href="#IUniverse.marketBalance(address)"><code class="function-signature">marketBalance(address)</code></a></li><li><a href="#IUniverse.repExchange()"><code class="function-signature">repExchange()</code></a></li><li><a href="#IUniverse.fork()"><code class="function-signature">fork()</code></a></li><li><a href="#IUniverse.updateForkValues()"><code class="function-signature">updateForkValues()</code></a></li><li><a href="#IUniverse.getParentUniverse()"><code class="function-signature">getParentUniverse()</code></a></li><li><a href="#IUniverse.createChildUniverse(uint256[])"><code class="function-signature">createChildUniverse(uint256[] _parentPayoutNumerators)</code></a></li><li><a href="#IUniverse.getChildUniverse(bytes32)"><code class="function-signature">getChildUniverse(bytes32 _parentPayoutDistributionHash)</code></a></li><li><a href="#IUniverse.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IUniverse.getForkingMarket()"><code class="function-signature">getForkingMarket()</code></a></li><li><a href="#IUniverse.getForkEndTime()"><code class="function-signature">getForkEndTime()</code></a></li><li><a href="#IUniverse.getForkReputationGoal()"><code class="function-signature">getForkReputationGoal()</code></a></li><li><a href="#IUniverse.getParentPayoutDistributionHash()"><code class="function-signature">getParentPayoutDistributionHash()</code></a></li><li><a href="#IUniverse.getDisputeRoundDurationInSeconds(bool)"><code class="function-signature">getDisputeRoundDurationInSeconds(bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreateDisputeWindowByTimestamp(uint256,bool)"><code class="function-signature">getOrCreateDisputeWindowByTimestamp(uint256 _timestamp, bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreateCurrentDisputeWindow(bool)"><code class="function-signature">getOrCreateCurrentDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreateNextDisputeWindow(bool)"><code class="function-signature">getOrCreateNextDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreatePreviousDisputeWindow(bool)"><code class="function-signature">getOrCreatePreviousDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getOpenInterestInAttoCash()"><code class="function-signature">getOpenInterestInAttoCash()</code></a></li><li><a href="#IUniverse.getTargetRepMarketCapInAttoCash()"><code class="function-signature">getTargetRepMarketCapInAttoCash()</code></a></li><li><a href="#IUniverse.getOrCacheValidityBond()"><code class="function-signature">getOrCacheValidityBond()</code></a></li><li><a href="#IUniverse.getOrCacheDesignatedReportStake()"><code class="function-signature">getOrCacheDesignatedReportStake()</code></a></li><li><a href="#IUniverse.getOrCacheDesignatedReportNoShowBond()"><code class="function-signature">getOrCacheDesignatedReportNoShowBond()</code></a></li><li><a href="#IUniverse.getOrCacheMarketRepBond()"><code class="function-signature">getOrCacheMarketRepBond()</code></a></li><li><a href="#IUniverse.getOrCacheReportingFeeDivisor()"><code class="function-signature">getOrCacheReportingFeeDivisor()</code></a></li><li><a href="#IUniverse.getDisputeThresholdForFork()"><code class="function-signature">getDisputeThresholdForFork()</code></a></li><li><a href="#IUniverse.getDisputeThresholdForDisputePacing()"><code class="function-signature">getDisputeThresholdForDisputePacing()</code></a></li><li><a href="#IUniverse.getInitialReportMinValue()"><code class="function-signature">getInitialReportMinValue()</code></a></li><li><a href="#IUniverse.getPayoutNumerators()"><code class="function-signature">getPayoutNumerators()</code></a></li><li><a href="#IUniverse.getReportingFeeDivisor()"><code class="function-signature">getReportingFeeDivisor()</code></a></li><li><a href="#IUniverse.getPayoutNumerator(uint256)"><code class="function-signature">getPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#IUniverse.getWinningChildPayoutNumerator(uint256)"><code class="function-signature">getWinningChildPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#IUniverse.isOpenInterestCash(address)"><code class="function-signature">isOpenInterestCash(address)</code></a></li><li><a href="#IUniverse.isForkingMarket()"><code class="function-signature">isForkingMarket()</code></a></li><li><a href="#IUniverse.getCurrentDisputeWindow(bool)"><code class="function-signature">getCurrentDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getDisputeWindowStartTimeAndDuration(uint256,bool)"><code class="function-signature">getDisputeWindowStartTimeAndDuration(uint256 _timestamp, bool _initial)</code></a></li><li><a href="#IUniverse.isParentOf(contract IUniverse)"><code class="function-signature">isParentOf(contract IUniverse _shadyChild)</code></a></li><li><a href="#IUniverse.updateTentativeWinningChildUniverse(bytes32)"><code class="function-signature">updateTentativeWinningChildUniverse(bytes32 _parentPayoutDistributionHash)</code></a></li><li><a href="#IUniverse.isContainerForDisputeWindow(contract IDisputeWindow)"><code class="function-signature">isContainerForDisputeWindow(contract IDisputeWindow _shadyTarget)</code></a></li><li><a href="#IUniverse.isContainerForMarket(contract IMarket)"><code class="function-signature">isContainerForMarket(contract IMarket _shadyTarget)</code></a></li><li><a href="#IUniverse.isContainerForReportingParticipant(contract IReportingParticipant)"><code class="function-signature">isContainerForReportingParticipant(contract IReportingParticipant _reportingParticipant)</code></a></li><li><a href="#IUniverse.migrateMarketOut(contract IUniverse)"><code class="function-signature">migrateMarketOut(contract IUniverse _destinationUniverse)</code></a></li><li><a href="#IUniverse.migrateMarketIn(contract IMarket,uint256,uint256)"><code class="function-signature">migrateMarketIn(contract IMarket _market, uint256 _cashBalance, uint256 _marketOI)</code></a></li><li><a href="#IUniverse.decrementOpenInterest(uint256)"><code class="function-signature">decrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#IUniverse.decrementOpenInterestFromMarket(contract IMarket)"><code class="function-signature">decrementOpenInterestFromMarket(contract IMarket _market)</code></a></li><li><a href="#IUniverse.incrementOpenInterest(uint256)"><code class="function-signature">incrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#IUniverse.getWinningChildUniverse()"><code class="function-signature">getWinningChildUniverse()</code></a></li><li><a href="#IUniverse.isForking()"><code class="function-signature">isForking()</code></a></li><li><a href="#IUniverse.deposit(address,uint256,address)"><code class="function-signature">deposit(address _sender, uint256 _amount, address _market)</code></a></li><li><a href="#IUniverse.withdraw(address,uint256,address)"><code class="function-signature">withdraw(address _recipient, uint256 _amount, address _market)</code></a></li><li><a href="#IUniverse.createScalarMarket(uint256,uint256,contract IAffiliateValidator,uint256,address,int256[],uint256,string)"><code class="function-signature">createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, contract IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] _prices, uint256 _numTicks, string _extraInfo)</code></a></li><li><a href="#IUniverse.sweepInterest()"><code class="function-signature">sweepInterest()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniverse.creationTime()"><code class="function-signature">creationTime()</code></a></li><li><a href="#IUniverse.marketBalance(address)"><code class="function-signature">marketBalance(address)</code></a></li><li><a href="#IUniverse.fork()"><code class="function-signature">fork()</code></a></li><li><a href="#IUniverse.updateForkValues()"><code class="function-signature">updateForkValues()</code></a></li><li><a href="#IUniverse.getParentUniverse()"><code class="function-signature">getParentUniverse()</code></a></li><li><a href="#IUniverse.createChildUniverse(uint256[])"><code class="function-signature">createChildUniverse(uint256[] _parentPayoutNumerators)</code></a></li><li><a href="#IUniverse.getChildUniverse(bytes32)"><code class="function-signature">getChildUniverse(bytes32 _parentPayoutDistributionHash)</code></a></li><li><a href="#IUniverse.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IUniverse.getForkingMarket()"><code class="function-signature">getForkingMarket()</code></a></li><li><a href="#IUniverse.getForkEndTime()"><code class="function-signature">getForkEndTime()</code></a></li><li><a href="#IUniverse.getForkReputationGoal()"><code class="function-signature">getForkReputationGoal()</code></a></li><li><a href="#IUniverse.getParentPayoutDistributionHash()"><code class="function-signature">getParentPayoutDistributionHash()</code></a></li><li><a href="#IUniverse.getDisputeRoundDurationInSeconds(bool)"><code class="function-signature">getDisputeRoundDurationInSeconds(bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreateDisputeWindowByTimestamp(uint256,bool)"><code class="function-signature">getOrCreateDisputeWindowByTimestamp(uint256 _timestamp, bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreateCurrentDisputeWindow(bool)"><code class="function-signature">getOrCreateCurrentDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreateNextDisputeWindow(bool)"><code class="function-signature">getOrCreateNextDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getOrCreatePreviousDisputeWindow(bool)"><code class="function-signature">getOrCreatePreviousDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getOpenInterestInAttoCash()"><code class="function-signature">getOpenInterestInAttoCash()</code></a></li><li><a href="#IUniverse.getTargetRepMarketCapInAttoCash()"><code class="function-signature">getTargetRepMarketCapInAttoCash()</code></a></li><li><a href="#IUniverse.getOrCacheValidityBond()"><code class="function-signature">getOrCacheValidityBond()</code></a></li><li><a href="#IUniverse.getOrCacheDesignatedReportStake()"><code class="function-signature">getOrCacheDesignatedReportStake()</code></a></li><li><a href="#IUniverse.getOrCacheDesignatedReportNoShowBond()"><code class="function-signature">getOrCacheDesignatedReportNoShowBond()</code></a></li><li><a href="#IUniverse.getOrCacheMarketRepBond()"><code class="function-signature">getOrCacheMarketRepBond()</code></a></li><li><a href="#IUniverse.getOrCacheReportingFeeDivisor()"><code class="function-signature">getOrCacheReportingFeeDivisor()</code></a></li><li><a href="#IUniverse.getDisputeThresholdForFork()"><code class="function-signature">getDisputeThresholdForFork()</code></a></li><li><a href="#IUniverse.getDisputeThresholdForDisputePacing()"><code class="function-signature">getDisputeThresholdForDisputePacing()</code></a></li><li><a href="#IUniverse.getInitialReportMinValue()"><code class="function-signature">getInitialReportMinValue()</code></a></li><li><a href="#IUniverse.getPayoutNumerators()"><code class="function-signature">getPayoutNumerators()</code></a></li><li><a href="#IUniverse.getReportingFeeDivisor()"><code class="function-signature">getReportingFeeDivisor()</code></a></li><li><a href="#IUniverse.getPayoutNumerator(uint256)"><code class="function-signature">getPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#IUniverse.getWinningChildPayoutNumerator(uint256)"><code class="function-signature">getWinningChildPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#IUniverse.isOpenInterestCash(address)"><code class="function-signature">isOpenInterestCash(address)</code></a></li><li><a href="#IUniverse.isForkingMarket()"><code class="function-signature">isForkingMarket()</code></a></li><li><a href="#IUniverse.getCurrentDisputeWindow(bool)"><code class="function-signature">getCurrentDisputeWindow(bool _initial)</code></a></li><li><a href="#IUniverse.getDisputeWindowStartTimeAndDuration(uint256,bool)"><code class="function-signature">getDisputeWindowStartTimeAndDuration(uint256 _timestamp, bool _initial)</code></a></li><li><a href="#IUniverse.isParentOf(contract IUniverse)"><code class="function-signature">isParentOf(contract IUniverse _shadyChild)</code></a></li><li><a href="#IUniverse.updateTentativeWinningChildUniverse(bytes32)"><code class="function-signature">updateTentativeWinningChildUniverse(bytes32 _parentPayoutDistributionHash)</code></a></li><li><a href="#IUniverse.isContainerForDisputeWindow(contract IDisputeWindow)"><code class="function-signature">isContainerForDisputeWindow(contract IDisputeWindow _shadyTarget)</code></a></li><li><a href="#IUniverse.isContainerForMarket(contract IMarket)"><code class="function-signature">isContainerForMarket(contract IMarket _shadyTarget)</code></a></li><li><a href="#IUniverse.isContainerForReportingParticipant(contract IReportingParticipant)"><code class="function-signature">isContainerForReportingParticipant(contract IReportingParticipant _reportingParticipant)</code></a></li><li><a href="#IUniverse.migrateMarketOut(contract IUniverse)"><code class="function-signature">migrateMarketOut(contract IUniverse _destinationUniverse)</code></a></li><li><a href="#IUniverse.migrateMarketIn(contract IMarket,uint256,uint256)"><code class="function-signature">migrateMarketIn(contract IMarket _market, uint256 _cashBalance, uint256 _marketOI)</code></a></li><li><a href="#IUniverse.decrementOpenInterest(uint256)"><code class="function-signature">decrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#IUniverse.decrementOpenInterestFromMarket(contract IMarket)"><code class="function-signature">decrementOpenInterestFromMarket(contract IMarket _market)</code></a></li><li><a href="#IUniverse.incrementOpenInterest(uint256)"><code class="function-signature">incrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#IUniverse.getWinningChildUniverse()"><code class="function-signature">getWinningChildUniverse()</code></a></li><li><a href="#IUniverse.isForking()"><code class="function-signature">isForking()</code></a></li><li><a href="#IUniverse.deposit(address,uint256,address)"><code class="function-signature">deposit(address _sender, uint256 _amount, address _market)</code></a></li><li><a href="#IUniverse.withdraw(address,uint256,address)"><code class="function-signature">withdraw(address _recipient, uint256 _amount, address _market)</code></a></li><li><a href="#IUniverse.createScalarMarket(uint256,uint256,contract IAffiliateValidator,uint256,address,int256[],uint256,string)"><code class="function-signature">createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, contract IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] _prices, uint256 _numTicks, string _extraInfo)</code></a></li><li><a href="#IUniverse.sweepInterest()"><code class="function-signature">sweepInterest()</code></a></li></ul></div>
 
 
 
@@ -2289,12 +2403,6 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="IUniverse.marketBalance(address)"></a><code class="function-signature">marketBalance(address) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniverse.repExchange()"></a><code class="function-signature">repExchange() <span class="return-arrow">→</span> <span class="return-type">contract ISimpleDex</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2616,7 +2724,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IV2ReputationToken.parentUniverse()"><code class="function-signature">parentUniverse()</code></a></li><li><a href="#IV2ReputationToken.burnForMarket(uint256)"><code class="function-signature">burnForMarket(uint256 _amountToBurn)</code></a></li><li><a href="#IV2ReputationToken.mintForWarpSync(uint256,address)"><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target)</code></a></li><li><a href="#IV2ReputationToken.trustedREPExchangeTransfer(address,address,uint256)"><code class="function-signature">trustedREPExchangeTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li class="inherited"><a href="#IReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li class="inherited"><a href="#IReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li class="inherited"><a href="#IReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IV2ReputationToken.parentUniverse()"><code class="function-signature">parentUniverse()</code></a></li><li><a href="#IV2ReputationToken.burnForMarket(uint256)"><code class="function-signature">burnForMarket(uint256 _amountToBurn)</code></a></li><li><a href="#IV2ReputationToken.mintForWarpSync(uint256,address)"><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target)</code></a></li><li class="inherited"><a href="#IReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#IReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li class="inherited"><a href="#IReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li class="inherited"><a href="#IReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li class="inherited"><a href="#IReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
@@ -2633,12 +2741,6 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="IV2ReputationToken.mintForWarpSync(uint256,address)"></a><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IV2ReputationToken.trustedREPExchangeTransfer(address,address,uint256)"></a><code class="function-signature">trustedREPExchangeTransfer(address _source, address _destination, uint256 _attotokens) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3088,7 +3190,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWalletRegistry.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AugurWalletRegistry.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address, address _from, bytes _encodedFunction, uint256, uint256, uint256, uint256, bytes, uint256 _maxPossibleCharge)</code></a></li><li><a href="#AugurWalletRegistry._preRelayedCall(bytes)"><code class="function-signature">_preRelayedCall(bytes _context)</code></a></li><li><a href="#AugurWalletRegistry._postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">_postRelayedCall(bytes _context, bool, uint256 _actualCharge, bytes32)</code></a></li><li><a href="#AugurWalletRegistry.getCreate2WalletAddress(address)"><code class="function-signature">getCreate2WalletAddress(address _owner)</code></a></li><li><a href="#AugurWalletRegistry.getWallet(address)"><code class="function-signature">getWallet(address _account)</code></a></li><li><a href="#AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32)"><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint)</code></a></li><li><a href="#AugurWalletRegistry.walletTransferedOwnership(address,address)"><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#AugurWalletRegistry.getRelayMessageHash(address,address,address,bytes,uint256,uint256,uint256,uint256)"><code class="function-signature">getRelayMessageHash(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce)</code></a></li><li><a href="#AugurWalletRegistry.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#GSNRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li class="inherited"><a href="#GSNRecipient._upgradeRelayHub(address)"><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code></a></li><li class="inherited"><a href="#GSNRecipient.relayHubVersion()"><code class="function-signature">relayHubVersion()</code></a></li><li class="inherited"><a href="#GSNRecipient._withdrawDeposits(uint256,address payable)"><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code></a></li><li class="inherited"><a href="#GSNRecipient._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li class="inherited"><a href="#GSNRecipient._msgData()"><code class="function-signature">_msgData()</code></a></li><li class="inherited"><a href="#GSNRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall()"><code class="function-signature">_approveRelayedCall()</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall(bytes)"><code class="function-signature">_approveRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient._rejectRelayedCall(uint256)"><code class="function-signature">_rejectRelayedCall(uint256 errorCode)</code></a></li><li class="inherited"><a href="#GSNRecipient._computeCharge(uint256,uint256,uint256)"><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee)</code></a></li><li class="inherited"><a href="#Context.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#AugurWalletRegistry.ExecuteTransactionStatus(bool)"><code class="function-signature">ExecuteTransactionStatus(bool success)</code></a></li><li class="inherited"><a href="#GSNRecipient.RelayHubChanged(address,address)"><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWalletRegistry.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AugurWalletRegistry.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address, address _from, bytes _encodedFunction, uint256, uint256, uint256, uint256, bytes, uint256 _maxPossibleCharge)</code></a></li><li><a href="#AugurWalletRegistry.getAmountIn(uint256,uint256,uint256)"><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWalletRegistry._preRelayedCall(bytes)"><code class="function-signature">_preRelayedCall(bytes _context)</code></a></li><li><a href="#AugurWalletRegistry._postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">_postRelayedCall(bytes _context, bool, uint256 _actualCharge, bytes32)</code></a></li><li><a href="#AugurWalletRegistry.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWalletRegistry.getCreate2WalletAddress(address)"><code class="function-signature">getCreate2WalletAddress(address _owner)</code></a></li><li><a href="#AugurWalletRegistry.getWallet(address)"><code class="function-signature">getWallet(address _account)</code></a></li><li><a href="#AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32)"><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint)</code></a></li><li><a href="#AugurWalletRegistry.walletTransferedOwnership(address,address)"><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#AugurWalletRegistry.getRelayMessageHash(address,address,address,bytes,uint256,uint256,uint256,uint256)"><code class="function-signature">getRelayMessageHash(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce)</code></a></li><li><a href="#AugurWalletRegistry.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#GSNRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li class="inherited"><a href="#GSNRecipient._upgradeRelayHub(address)"><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code></a></li><li class="inherited"><a href="#GSNRecipient.relayHubVersion()"><code class="function-signature">relayHubVersion()</code></a></li><li class="inherited"><a href="#GSNRecipient._withdrawDeposits(uint256,address payable)"><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code></a></li><li class="inherited"><a href="#GSNRecipient._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li class="inherited"><a href="#GSNRecipient._msgData()"><code class="function-signature">_msgData()</code></a></li><li class="inherited"><a href="#GSNRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall()"><code class="function-signature">_approveRelayedCall()</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall(bytes)"><code class="function-signature">_approveRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient._rejectRelayedCall(uint256)"><code class="function-signature">_rejectRelayedCall(uint256 errorCode)</code></a></li><li class="inherited"><a href="#GSNRecipient._computeCharge(uint256,uint256,uint256)"><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee)</code></a></li><li class="inherited"><a href="#Context.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#AugurWalletRegistry.ExecuteTransactionStatus(bool)"><code class="function-signature">ExecuteTransactionStatus(bool success)</code></a></li><li class="inherited"><a href="#GSNRecipient.RelayHubChanged(address,address)"><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code></a></li></ul></div>
 
 
 
@@ -3104,6 +3206,12 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.getAmountIn(uint256,uint256,uint256)"></a><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
 <h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry._preRelayedCall(bytes)"></a><code class="function-signature">_preRelayedCall(bytes _context) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
 
 
@@ -3111,6 +3219,12 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 <h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry._postRelayedCall(bytes,bool,uint256,bytes32)"></a><code class="function-signature">_postRelayedCall(bytes _context, bool, uint256 _actualCharge, bytes32)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.getAmountOut(uint256,uint256,uint256)"></a><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3616,6 +3730,98 @@ transaction&#x27;s cost.
 
 
 
+### `IUniswapV2Factory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniswapV2Factory.feeTo()"><code class="function-signature">feeTo()</code></a></li><li><a href="#IUniswapV2Factory.feeToSetter()"><code class="function-signature">feeToSetter()</code></a></li><li><a href="#IUniswapV2Factory.getExchange(address,address)"><code class="function-signature">getExchange(address tokenA, address tokenB)</code></a></li><li><a href="#IUniswapV2Factory.allExchanges(uint256)"><code class="function-signature">allExchanges(uint256)</code></a></li><li><a href="#IUniswapV2Factory.allExchangesLength()"><code class="function-signature">allExchangesLength()</code></a></li><li><a href="#IUniswapV2Factory.createExchange(address,address)"><code class="function-signature">createExchange(address tokenA, address tokenB)</code></a></li><li><a href="#IUniswapV2Factory.setFeeTo(address)"><code class="function-signature">setFeeTo(address)</code></a></li><li><a href="#IUniswapV2Factory.setFeeToSetter(address)"><code class="function-signature">setFeeToSetter(address)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#IUniswapV2Factory.ExchangeCreated(address,address,address,uint256)"><code class="function-signature">ExchangeCreated(address token0, address token1, address exchange, uint256)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.feeTo()"></a><code class="function-signature">feeTo() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.feeToSetter()"></a><code class="function-signature">feeToSetter() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.getExchange(address,address)"></a><code class="function-signature">getExchange(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.allExchanges(uint256)"></a><code class="function-signature">allExchanges(uint256) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.allExchangesLength()"></a><code class="function-signature">allExchangesLength() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.createExchange(address,address)"></a><code class="function-signature">createExchange(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.setFeeTo(address)"></a><code class="function-signature">setFeeTo(address)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.setFeeToSetter(address)"></a><code class="function-signature">setFeeToSetter(address)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.ExchangeCreated(address,address,address,uint256)"></a><code class="function-signature">ExchangeCreated(address token0, address token1, address exchange, uint256)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `IWETH`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IWETH.deposit()"><code class="function-signature">deposit()</code></a></li><li><a href="#IWETH.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 value)</code></a></li><li><a href="#IWETH.withdraw(uint256)"><code class="function-signature">withdraw(uint256)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IWETH.deposit()"></a><code class="function-signature">deposit()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IWETH.transfer(address,uint256)"></a><code class="function-signature">transfer(address to, uint256 value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IWETH.withdraw(uint256)"></a><code class="function-signature">withdraw(uint256)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
 ### `LibBytes`
 
 
@@ -3985,179 +4191,11 @@ Pops the last byte off of a byte array by modifying its length.
 
 
 
-### `BaseSimpleDex`
+### `DelegationTarget`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#BaseSimpleDex.initializeInternal(address,address)"><code class="function-signature">initializeInternal(address _augurAddress, address _token)</code></a></li><li><a href="#BaseSimpleDex.getTokenBalance()"><code class="function-signature">getTokenBalance()</code></a></li><li><a href="#BaseSimpleDex.getCashBalance()"><code class="function-signature">getCashBalance()</code></a></li><li><a href="#BaseSimpleDex.update(uint256,uint256)"><code class="function-signature">update(uint256 _tokenBalance, uint256 _cashBalance)</code></a></li><li><a href="#BaseSimpleDex.onUpdate(uint256,uint256)"><code class="function-signature">onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease)</code></a></li><li><a href="#BaseSimpleDex.publicMint(address)"><code class="function-signature">publicMint(address _to)</code></a></li><li><a href="#BaseSimpleDex.publicBurnAuto(address,uint256)"><code class="function-signature">publicBurnAuto(address _to, uint256 _amount)</code></a></li><li><a href="#BaseSimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address _to)</code></a></li><li><a href="#BaseSimpleDex.getTokenSaleProceeds(uint256)"><code class="function-signature">getTokenSaleProceeds(uint256 _tokenAmount)</code></a></li><li><a href="#BaseSimpleDex.getCashSaleProceeds(uint256)"><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount)</code></a></li><li><a href="#BaseSimpleDex.getSaleProceeds(uint256,uint256,uint256)"><code class="function-signature">getSaleProceeds(uint256 _inputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li><a href="#BaseSimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li><a href="#BaseSimpleDex.getCashPurchaseCost(uint256)"><code class="function-signature">getCashPurchaseCost(uint256 _cashAmount)</code></a></li><li><a href="#BaseSimpleDex.getPurchaseCost(uint256,uint256,uint256)"><code class="function-signature">getPurchaseCost(uint256 _outputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li><a href="#BaseSimpleDex.autoSellToken(address,uint256)"><code class="function-signature">autoSellToken(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#BaseSimpleDex.sellToken(address)"><code class="function-signature">sellToken(address _recipient)</code></a></li><li><a href="#BaseSimpleDex.autoBuyToken(address,uint256)"><code class="function-signature">autoBuyToken(address _recipient, uint256 _cashAmount)</code></a></li><li><a href="#BaseSimpleDex.autoBuyTokenAmount(address,uint256)"><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#BaseSimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li><a href="#BaseSimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li><a href="#BaseSimpleDex.sync()"><code class="function-signature">sync()</code></a></li><li><a href="#BaseSimpleDex.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li><a href="#BaseSimpleDex.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li><a href="#BaseSimpleDex.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li class="inherited"><a href="#CashSender.cashBalance(address)"><code class="function-signature">cashBalance(address _account)</code></a></li><li class="inherited"><a href="#CashSender.cashAvailableForTransferFrom(address,address)"><code class="function-signature">cashAvailableForTransferFrom(address _owner, address _sender)</code></a></li><li class="inherited"><a href="#CashSender.cashApprove(address,uint256)"><code class="function-signature">cashApprove(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li class="inherited"><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#BaseSimpleDex.Mint(address,uint256,uint256)"><code class="function-signature">Mint(address sender, uint256 tokenAmount, uint256 cashAmount)</code></a></li><li><a href="#BaseSimpleDex.Burn(address,uint256,uint256,address)"><code class="function-signature">Burn(address sender, uint256 tokenAmount, uint256 cashAmount, address to)</code></a></li><li><a href="#BaseSimpleDex.Swap(address,address,uint256,uint256,address)"><code class="function-signature">Swap(address sender, address tokenIn, uint256 amountIn, uint256 amountOut, address to)</code></a></li><li><a href="#BaseSimpleDex.Sync(uint256,uint256)"><code class="function-signature">Sync(uint256 tokenReserve, uint256 cashReserve)</code></a></li><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.initializeInternal(address,address)"></a><code class="function-signature">initializeInternal(address _augurAddress, address _token)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.getTokenBalance()"></a><code class="function-signature">getTokenBalance() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.getCashBalance()"></a><code class="function-signature">getCashBalance() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.update(uint256,uint256)"></a><code class="function-signature">update(uint256 _tokenBalance, uint256 _cashBalance)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.onUpdate(uint256,uint256)"></a><code class="function-signature">onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.publicMint(address)"></a><code class="function-signature">publicMint(address _to) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.publicBurnAuto(address,uint256)"></a><code class="function-signature">publicBurnAuto(address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.publicBurn(address)"></a><code class="function-signature">publicBurn(address _to) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.getTokenSaleProceeds(uint256)"></a><code class="function-signature">getTokenSaleProceeds(uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.getCashSaleProceeds(uint256)"></a><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.getSaleProceeds(uint256,uint256,uint256)"></a><code class="function-signature">getSaleProceeds(uint256 _inputAmount, uint256 _inputReserve, uint256 _outputReserve) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.getTokenPurchaseCost(uint256)"></a><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.getCashPurchaseCost(uint256)"></a><code class="function-signature">getCashPurchaseCost(uint256 _cashAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.getPurchaseCost(uint256,uint256,uint256)"></a><code class="function-signature">getPurchaseCost(uint256 _outputAmount, uint256 _inputReserve, uint256 _outputReserve) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.autoSellToken(address,uint256)"></a><code class="function-signature">autoSellToken(address _recipient, uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.sellToken(address)"></a><code class="function-signature">sellToken(address _recipient) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.autoBuyToken(address,uint256)"></a><code class="function-signature">autoBuyToken(address _recipient, uint256 _cashAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.autoBuyTokenAmount(address,uint256)"></a><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.buyToken(address)"></a><code class="function-signature">buyToken(address _recipient) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.skim(address)"></a><code class="function-signature">skim(address to)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.sync()"></a><code class="function-signature">sync()</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.onMint(address,uint256)"></a><code class="function-signature">onMint(address _target, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address _target, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.Mint(address,uint256,uint256)"></a><code class="function-signature">Mint(address sender, uint256 tokenAmount, uint256 cashAmount)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.Burn(address,uint256,uint256,address)"></a><code class="function-signature">Burn(address sender, uint256 tokenAmount, uint256 cashAmount, address to)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.Swap(address,address,uint256,uint256,address)"></a><code class="function-signature">Swap(address sender, address tokenIn, uint256 amountIn, uint256 amountOut, address to)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="BaseSimpleDex.Sync(uint256,uint256)"></a><code class="function-signature">Sync(uint256 tokenReserve, uint256 cashReserve)</code><span class="function-visibility"></span></h4>
+<div class="contract-index"></div>
 
 
 
@@ -4323,106 +4361,6 @@ See {_burn} and {_approve}.
 <h4><a class="anchor" aria-hidden="true" id="ERC20.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code><span class="function-visibility">internal</span></h4>
 
 
-
-
-
-
-
-### `EthExchange`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#EthExchange.initialize(address)"><code class="function-signature">initialize(address _augurAddress)</code></a></li><li><a href="#EthExchange.getTokenBalance()"><code class="function-signature">getTokenBalance()</code></a></li><li><a href="#EthExchange.autoSellToken(address,uint256)"><code class="function-signature">autoSellToken(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#EthExchange.publicMintAuto(address,uint256)"><code class="function-signature">publicMintAuto(address _to, uint256 _cashAmount)</code></a></li><li><a href="#EthExchange.onUpdate(uint256,uint256)"><code class="function-signature">onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease)</code></a></li><li><a href="#EthExchange.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.initializeInternal(address,address)"><code class="function-signature">initializeInternal(address _augurAddress, address _token)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashBalance()"><code class="function-signature">getCashBalance()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.update(uint256,uint256)"><code class="function-signature">update(uint256 _tokenBalance, uint256 _cashBalance)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicMint(address)"><code class="function-signature">publicMint(address _to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicBurnAuto(address,uint256)"><code class="function-signature">publicBurnAuto(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address _to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getTokenSaleProceeds(uint256)"><code class="function-signature">getTokenSaleProceeds(uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashSaleProceeds(uint256)"><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getSaleProceeds(uint256,uint256,uint256)"><code class="function-signature">getSaleProceeds(uint256 _inputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashPurchaseCost(uint256)"><code class="function-signature">getCashPurchaseCost(uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getPurchaseCost(uint256,uint256,uint256)"><code class="function-signature">getPurchaseCost(uint256 _outputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.sellToken(address)"><code class="function-signature">sellToken(address _recipient)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.autoBuyToken(address,uint256)"><code class="function-signature">autoBuyToken(address _recipient, uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.autoBuyTokenAmount(address,uint256)"><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.sync()"><code class="function-signature">sync()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li class="inherited"><a href="#CashSender.cashBalance(address)"><code class="function-signature">cashBalance(address _account)</code></a></li><li class="inherited"><a href="#CashSender.cashAvailableForTransferFrom(address,address)"><code class="function-signature">cashAvailableForTransferFrom(address _owner, address _sender)</code></a></li><li class="inherited"><a href="#CashSender.cashApprove(address,uint256)"><code class="function-signature">cashApprove(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li class="inherited"><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#BaseSimpleDex.Mint(address,uint256,uint256)"><code class="function-signature">Mint(address sender, uint256 tokenAmount, uint256 cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Burn(address,uint256,uint256,address)"><code class="function-signature">Burn(address sender, uint256 tokenAmount, uint256 cashAmount, address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Swap(address,address,uint256,uint256,address)"><code class="function-signature">Swap(address sender, address tokenIn, uint256 amountIn, uint256 amountOut, address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Sync(uint256,uint256)"><code class="function-signature">Sync(uint256 tokenReserve, uint256 cashReserve)</code></a></li><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="EthExchange.initialize(address)"></a><code class="function-signature">initialize(address _augurAddress)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="EthExchange.getTokenBalance()"></a><code class="function-signature">getTokenBalance() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="EthExchange.autoSellToken(address,uint256)"></a><code class="function-signature">autoSellToken(address _recipient, uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="EthExchange.publicMintAuto(address,uint256)"></a><code class="function-signature">publicMintAuto(address _to, uint256 _cashAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="EthExchange.onUpdate(uint256,uint256)"></a><code class="function-signature">onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="EthExchange.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
-### `ReentrancyGuard`
-
-
-
-<div class="contract-index"></div>
-
-
-
-
-
-### `VariableSupplyToken`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li><a href="#VariableSupplyToken.onMint(address,uint256)"><code class="function-signature">onMint(address, uint256)</code></a></li><li><a href="#VariableSupplyToken.onBurn(address,uint256)"><code class="function-signature">onBurn(address, uint256)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.mint(address,uint256)"></a><code class="function-signature">mint(address _target, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.burn(address,uint256)"></a><code class="function-signature">burn(address _target, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onMint(address,uint256)"></a><code class="function-signature">onMint(address, uint256)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address, uint256)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-
-
-### `DelegationTarget`
-
-
-
-<div class="contract-index"></div>
 
 
 
@@ -4618,51 +4556,33 @@ Copies the allowances of a batch of addresses from the legacy contract. This is 
 
 
 
-### `RepExchange`
+### `VariableSupplyToken`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#RepExchange.initialize(address,address)"><code class="function-signature">initialize(address _augurAddress, address _token)</code></a></li><li><a href="#RepExchange.getTokenBalance()"><code class="function-signature">getTokenBalance()</code></a></li><li><a href="#RepExchange.autoSellToken(address,uint256)"><code class="function-signature">autoSellToken(address _recipient, uint256 _tokenAmount)</code></a></li><li><a href="#RepExchange.publicMintAuto(address,uint256,uint256)"><code class="function-signature">publicMintAuto(address _to, uint256 _tokenAmount, uint256 _cashAmount)</code></a></li><li><a href="#RepExchange.publicBurnAuto(address,uint256,uint256)"><code class="function-signature">publicBurnAuto(address _to, uint256 _tokenAmount, uint256 _cashAmount)</code></a></li><li><a href="#RepExchange.pokePrice()"><code class="function-signature">pokePrice()</code></a></li><li><a href="#RepExchange.onUpdate(uint256,uint256)"><code class="function-signature">onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.initializeInternal(address,address)"><code class="function-signature">initializeInternal(address _augurAddress, address _token)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashBalance()"><code class="function-signature">getCashBalance()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.update(uint256,uint256)"><code class="function-signature">update(uint256 _tokenBalance, uint256 _cashBalance)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicMint(address)"><code class="function-signature">publicMint(address _to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicBurnAuto(address,uint256)"><code class="function-signature">publicBurnAuto(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.publicBurn(address)"><code class="function-signature">publicBurn(address _to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getTokenSaleProceeds(uint256)"><code class="function-signature">getTokenSaleProceeds(uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashSaleProceeds(uint256)"><code class="function-signature">getCashSaleProceeds(uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getSaleProceeds(uint256,uint256,uint256)"><code class="function-signature">getSaleProceeds(uint256 _inputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getTokenPurchaseCost(uint256)"><code class="function-signature">getTokenPurchaseCost(uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getCashPurchaseCost(uint256)"><code class="function-signature">getCashPurchaseCost(uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.getPurchaseCost(uint256,uint256,uint256)"><code class="function-signature">getPurchaseCost(uint256 _outputAmount, uint256 _inputReserve, uint256 _outputReserve)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.sellToken(address)"><code class="function-signature">sellToken(address _recipient)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.autoBuyToken(address,uint256)"><code class="function-signature">autoBuyToken(address _recipient, uint256 _cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.autoBuyTokenAmount(address,uint256)"><code class="function-signature">autoBuyTokenAmount(address _recipient, uint256 _tokenAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.buyToken(address)"><code class="function-signature">buyToken(address _recipient)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.skim(address)"><code class="function-signature">skim(address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.sync()"><code class="function-signature">sync()</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.initializeCashSender(address,address)"><code class="function-signature">initializeCashSender(address _vat, address _cash)</code></a></li><li class="inherited"><a href="#CashSender.cashBalance(address)"><code class="function-signature">cashBalance(address _account)</code></a></li><li class="inherited"><a href="#CashSender.cashAvailableForTransferFrom(address,address)"><code class="function-signature">cashAvailableForTransferFrom(address _owner, address _sender)</code></a></li><li class="inherited"><a href="#CashSender.cashApprove(address,uint256)"><code class="function-signature">cashApprove(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransfer(address,uint256)"><code class="function-signature">cashTransfer(address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.cashTransferFrom(address,address,uint256)"><code class="function-signature">cashTransferFrom(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.shutdownTransfer(address,address,uint256)"><code class="function-signature">shutdownTransfer(address _from, address _to, uint256 _amount)</code></a></li><li class="inherited"><a href="#CashSender.vatDaiToDai(uint256)"><code class="function-signature">vatDaiToDai(uint256 _vDaiAmount)</code></a></li><li class="inherited"><a href="#CashSender.daiToVatDai(uint256)"><code class="function-signature">daiToVatDai(uint256 _daiAmount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#BaseSimpleDex.Mint(address,uint256,uint256)"><code class="function-signature">Mint(address sender, uint256 tokenAmount, uint256 cashAmount)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Burn(address,uint256,uint256,address)"><code class="function-signature">Burn(address sender, uint256 tokenAmount, uint256 cashAmount, address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Swap(address,address,uint256,uint256,address)"><code class="function-signature">Swap(address sender, address tokenIn, uint256 amountIn, uint256 amountOut, address to)</code></a></li><li class="inherited"><a href="#BaseSimpleDex.Sync(uint256,uint256)"><code class="function-signature">Sync(uint256 tokenReserve, uint256 cashReserve)</code></a></li><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li><a href="#VariableSupplyToken.onMint(address,uint256)"><code class="function-signature">onMint(address, uint256)</code></a></li><li><a href="#VariableSupplyToken.onBurn(address,uint256)"><code class="function-signature">onBurn(address, uint256)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="RepExchange.initialize(address,address)"></a><code class="function-signature">initialize(address _augurAddress, address _token)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="RepExchange.getTokenBalance()"></a><code class="function-signature">getTokenBalance() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.mint(address,uint256)"></a><code class="function-signature">mint(address _target, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="RepExchange.autoSellToken(address,uint256)"></a><code class="function-signature">autoSellToken(address _recipient, uint256 _tokenAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.burn(address,uint256)"></a><code class="function-signature">burn(address _target, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="RepExchange.publicMintAuto(address,uint256,uint256)"></a><code class="function-signature">publicMintAuto(address _to, uint256 _tokenAmount, uint256 _cashAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onMint(address,uint256)"></a><code class="function-signature">onMint(address, uint256)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="RepExchange.publicBurnAuto(address,uint256,uint256)"></a><code class="function-signature">publicBurnAuto(address _to, uint256 _tokenAmount, uint256 _cashAmount) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="RepExchange.pokePrice()"></a><code class="function-signature">pokePrice() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="RepExchange.onUpdate(uint256,uint256)"></a><code class="function-signature">onUpdate(uint256 _blocksElapsed, uint256 _priceCumulativeIncrease)</code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="VariableSupplyToken.onBurn(address,uint256)"></a><code class="function-signature">onBurn(address, uint256)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -4898,7 +4818,7 @@ Copies the allowances of a batch of addresses from the legacy contract. This is 
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ReputationToken.constructor(contract IAugur,contract IUniverse,contract IUniverse)"><code class="function-signature">constructor(contract IAugur _augur, contract IUniverse _universe, contract IUniverse _parentUniverse)</code></a></li><li><a href="#ReputationToken.symbol()"><code class="function-signature">symbol()</code></a></li><li><a href="#ReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li><a href="#ReputationToken.mintForWarpSync(uint256,address)"><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target)</code></a></li><li><a href="#ReputationToken.burnForMarket(uint256)"><code class="function-signature">burnForMarket(uint256 _amountToBurn)</code></a></li><li><a href="#ReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedREPExchangeTransfer(address,address,uint256)"><code class="function-signature">trustedREPExchangeTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#ReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li><a href="#ReputationToken.getLegacyRepToken()"><code class="function-signature">getLegacyRepToken()</code></a></li><li><a href="#ReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li><a href="#ReputationToken.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li><a href="#ReputationToken.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li><a href="#ReputationToken.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li><a href="#ReputationToken.migrateFromLegacyReputationToken()"><code class="function-signature">migrateFromLegacyReputationToken()</code></a></li><li class="inherited"><a href="#IV2ReputationToken.parentUniverse()"><code class="function-signature">parentUniverse()</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ReputationToken.constructor(contract IAugur,contract IUniverse,contract IUniverse)"><code class="function-signature">constructor(contract IAugur _augur, contract IUniverse _universe, contract IUniverse _parentUniverse)</code></a></li><li><a href="#ReputationToken.symbol()"><code class="function-signature">symbol()</code></a></li><li><a href="#ReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li><a href="#ReputationToken.mintForWarpSync(uint256,address)"><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target)</code></a></li><li><a href="#ReputationToken.burnForMarket(uint256)"><code class="function-signature">burnForMarket(uint256 _amountToBurn)</code></a></li><li><a href="#ReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#ReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#ReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li><a href="#ReputationToken.getLegacyRepToken()"><code class="function-signature">getLegacyRepToken()</code></a></li><li><a href="#ReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li><a href="#ReputationToken.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li><a href="#ReputationToken.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li><a href="#ReputationToken.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li><a href="#ReputationToken.migrateFromLegacyReputationToken()"><code class="function-signature">migrateFromLegacyReputationToken()</code></a></li><li class="inherited"><a href="#IV2ReputationToken.parentUniverse()"><code class="function-signature">parentUniverse()</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
@@ -4968,12 +4888,6 @@ Copies the allowances of a batch of addresses from the legacy contract. This is 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ReputationToken.trustedREPExchangeTransfer(address,address,uint256)"></a><code class="function-signature">trustedREPExchangeTransfer(address _source, address _destination, uint256 _attotokens) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
 <h4><a class="anchor" aria-hidden="true" id="ReputationToken.getUniverse()"></a><code class="function-signature">getUniverse() <span class="return-arrow">→</span> <span class="return-type">contract IUniverse</span></code><span class="function-visibility">public</span></h4>
 
 
@@ -5029,7 +4943,7 @@ This can only be done for the Genesis Universe in V2. If a fork occurs and the w
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#TestNetReputationToken.constructor(contract IAugur,contract IUniverse,contract IUniverse)"><code class="function-signature">constructor(contract IAugur _augur, contract IUniverse _universe, contract IUniverse _parentUniverse)</code></a></li><li><a href="#TestNetReputationToken.faucet(uint256)"><code class="function-signature">faucet(uint256 _amount)</code></a></li><li class="inherited"><a href="#ReputationToken.symbol()"><code class="function-signature">symbol()</code></a></li><li class="inherited"><a href="#ReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li class="inherited"><a href="#ReputationToken.mintForWarpSync(uint256,address)"><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target)</code></a></li><li class="inherited"><a href="#ReputationToken.burnForMarket(uint256)"><code class="function-signature">burnForMarket(uint256 _amountToBurn)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedREPExchangeTransfer(address,address,uint256)"><code class="function-signature">trustedREPExchangeTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li class="inherited"><a href="#ReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li class="inherited"><a href="#ReputationToken.getLegacyRepToken()"><code class="function-signature">getLegacyRepToken()</code></a></li><li class="inherited"><a href="#ReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li class="inherited"><a href="#ReputationToken.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#ReputationToken.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ReputationToken.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ReputationToken.migrateFromLegacyReputationToken()"><code class="function-signature">migrateFromLegacyReputationToken()</code></a></li><li class="inherited"><a href="#IV2ReputationToken.parentUniverse()"><code class="function-signature">parentUniverse()</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#TestNetReputationToken.constructor(contract IAugur,contract IUniverse,contract IUniverse)"><code class="function-signature">constructor(contract IAugur _augur, contract IUniverse _universe, contract IUniverse _parentUniverse)</code></a></li><li><a href="#TestNetReputationToken.faucet(uint256)"><code class="function-signature">faucet(uint256 _amount)</code></a></li><li class="inherited"><a href="#ReputationToken.symbol()"><code class="function-signature">symbol()</code></a></li><li class="inherited"><a href="#ReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li class="inherited"><a href="#ReputationToken.mintForWarpSync(uint256,address)"><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target)</code></a></li><li class="inherited"><a href="#ReputationToken.burnForMarket(uint256)"><code class="function-signature">burnForMarket(uint256 _amountToBurn)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="#ReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li class="inherited"><a href="#ReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li class="inherited"><a href="#ReputationToken.getLegacyRepToken()"><code class="function-signature">getLegacyRepToken()</code></a></li><li class="inherited"><a href="#ReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li class="inherited"><a href="#ReputationToken.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#ReputationToken.onMint(address,uint256)"><code class="function-signature">onMint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ReputationToken.onBurn(address,uint256)"><code class="function-signature">onBurn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ReputationToken.migrateFromLegacyReputationToken()"><code class="function-signature">migrateFromLegacyReputationToken()</code></a></li><li class="inherited"><a href="#IV2ReputationToken.parentUniverse()"><code class="function-signature">parentUniverse()</code></a></li><li class="inherited"><a href="#VariableSupplyToken.mint(address,uint256)"><code class="function-signature">mint(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#VariableSupplyToken.burn(address,uint256)"><code class="function-signature">burn(address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 

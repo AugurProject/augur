@@ -239,7 +239,6 @@ export default class Review extends React.Component<
     const {
       categories,
       marketType,
-      description,
       detailsText,
       designatedReporterType,
       designatedReporterAddress,
@@ -253,19 +252,14 @@ export default class Review extends React.Component<
       endTimeFormatted,
       timezone,
       template,
-      initialLiquidityGas,
     } = newMarket;
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
-    const initialLiquidity = s.formattedInitialLiquidityGas ? s.formattedInitialLiquidityGas.value : 0;
-
-    // Initial liquidity Gas in DAI
-    const initialLiquidityGasInDai = displayGasInDai(initialLiquidityGas);
 
     // Total Gas in ETH
-    const totalEth = formatEther(createBigNumber(initialLiquidity).plus(createBigNumber(s.gasCost ? s.gasCost.value : 0)));
+    const totalEth = formatEther(createBigNumber(s.gasCost ? s.gasCost.value : 0));
 
     // Total Gas in DAI
-    const totalGasInDai = displayGasInDai(createBigNumber(initialLiquidityGas).plus(createBigNumber(s.gasCost ? s.gasCost : 0)));
+    const totalGasInDai = displayGasInDai(createBigNumber(s.gasCost ? s.gasCost : 0));
 
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];
@@ -332,20 +326,12 @@ export default class Review extends React.Component<
 
           { s.formattedInitialLiquidityDai.value > 0 &&
           <>
-            <Subheaders header="Initial liquidity" subheader={"The total of the initial batch of orders you added on the previous step."} />
+            <Subheaders header="Initial liquidity" subheader={"The total of the initial liquidity of orders you added on the previous step. These orders can be approved and sent after the market is created"} />
             <span>
               <LinearPropertyLabel
                 label={"Initial Liquidity"}
                 value={s.formattedInitialLiquidityDai.formattedValue + " DAI"}
               />
-              {GsnEnabled && <LinearPropertyLabelTooltip
-                label={'Transaction Fee'}
-                value={initialLiquidityGasInDai + ' DAI'}
-              />}
-              {!GsnEnabled && <LinearPropertyLabelTooltip
-                label={'Gas Cost'}
-                value={s.formattedInitialLiquidityGas.formattedValue + ' ETH'}
-              />}
             </span>
           </>}
 

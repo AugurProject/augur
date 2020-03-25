@@ -2,7 +2,7 @@ import { windowRef } from "utils/window-ref";
 import { getNetworkId } from "modules/contracts/actions/contractCalls";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import { WindowApp } from "modules/types";
 import { augurSdk } from "services/augursdk";
 

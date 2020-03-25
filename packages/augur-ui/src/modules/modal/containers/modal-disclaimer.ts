@@ -5,7 +5,7 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { DISCLAIMER_SEEN } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState) => ({
   onApprove: state.modal.onApprove,

@@ -17,7 +17,7 @@ Solution: Clear application state OR delete `0x-mesh-db` indexeddb!
 ### I am getting an error (422) back from the Safe Relayer API when trying to make a trade, WHAT IS HAPPENING?!?! [Kovan Edition]
 
 - Step 1 -- Does the relayer still have eth?
-  - Find the ProxyFactory for Kovan in https://github.com/AugurProject/augur/blob/master/packages/augur-artifacts/src/addresses.json#L88
+  - Find the ProxyFactory for Kovan in https://github.com/AugurProject/augur/blob/master/packages/augur-artifacts/src/environments/YOUR_ENV.json
     - As of writing this value is: "0xA3F0206F2249Bd547c6bD22f9F8349D5C0cde5a3"
   - Click on a transaction, and check out the "From" address -- this is the kovan relayer address that forwarded eth to create your safe!
     - At the time of writing, the default Gnosis Safe Relayer configured in Augur is: 0x01D640Bff4B3a5e5cC720F0be37847F88EDf626e\

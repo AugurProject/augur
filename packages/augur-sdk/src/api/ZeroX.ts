@@ -1,4 +1,4 @@
-import { ExchangeFillEvent, ValidationResults, GetOrdersResponse } from '@0x/mesh-browser';
+import { ExchangeFillEvent, ValidationResults, GetOrdersResponse } from '@0x/mesh-browser-lite';
 import { OrderEvent, OrderInfo, WSClient } from '@0x/mesh-rpc-client';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { BigNumber } from 'bignumber.js';
@@ -492,10 +492,12 @@ export class ZeroX {
         selfTrade,
       };
     } else {
+      const options = {sender: await this.client.getAccount()};
       simulationData = ((await this.client.contracts.simulateTrade.simulateZeroXTrade_(
         orders,
         onChainTradeParams.amount,
-        params.doNotCreateOrders
+        params.doNotCreateOrders,
+        options
       )) as unknown) as BigNumber[];
     }
     const tickSize = numTicksToTickSizeWithDisplayPrices(

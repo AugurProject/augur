@@ -47,11 +47,6 @@ export class GSN {
    */
   async initializeWallet(
   ): Promise<void> {
-    // TODO: Replace with init wallet contract wrapper method
-    try {
-      await this.augur.contracts.universe.sweepInterest();
-    } catch(e) {
-      throw e;
-    }
+    this.augur.contracts.universe.runPeriodicals();
   }
 }

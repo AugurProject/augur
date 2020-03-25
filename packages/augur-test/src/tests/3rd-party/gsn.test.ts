@@ -95,4 +95,33 @@ describe('3rd Party :: GSN :: ', () => {
     expect(order.price).toBe('0.22');
     expect(order.owner.toLowerCase()).toBe(walletAddress.toLowerCase());
   }, 120000);
+
+  test('State API :: GSN :: sendEth', async () => {
+    john.setUseWallet(false);
+    john.setUseRelay(false);
+
+    // Give the wallet some eth
+    const walletAddress = await john.getWalletAddress(john.account.publicKey);
+    const initialWalletBalance = await john.getEthBalance(walletAddress);
+    const ethAmount = new BigNumber(100);
+    await john.sendEther(walletAddress, ethAmount);
+
+    const walletBalance = await john.getEthBalance(walletAddress);
+    const expectedWalletBalance = initialWalletBalance.plus(ethAmount);
+    await expect(walletBalance.toString()).toEqual(expectedWalletBalance.toString());
+
+    // Have the wallet send its ETH to another account
+    john.setUseWallet(true);
+    john.setUseRelay(true);
+
+    const recipient = ACCOUNTS[3].publicKey;
+    const initialBalance = await john.getEthBalance(recipient);
+
+    await john.sendEther(recipient, ethAmount);
+
+    const newBalance = await john.getEthBalance(recipient);
+    const expectedBalance = initialBalance.plus(ethAmount);
+
+    await expect(newBalance.toString()).toEqual(expectedBalance.toString());
+  }, 120000);
 });

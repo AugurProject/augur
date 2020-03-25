@@ -39,7 +39,7 @@ export class ContractAPI {
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = await makeGSNDependencies(provider, signer, config.addresses.AugurWalletRegistry, config.addresses.EthExchange, account.publicKey);
+    const dependencies = await makeGSNDependencies(provider, signer, config.addresses.AugurWalletRegistry, config.addresses.EthExchange, config.addresses.WETH9, config.addresses.Cash, account.publicKey);
 
     let zeroX = null;
     if (meshClient || meshBrowser) {
@@ -61,10 +61,7 @@ export class ContractAPI {
   ) {}
 
   async sendEther(to: string, amount: BigNumber): Promise<void> {
-    await this.dependencies.signer.sendTransaction({
-      to,
-      value: `0x${amount.toString(16)}`,
-    })
+    return await this.augur.sendETH(to, amount);
   }
 
   async approveCentralAuthority(): Promise<void> {
@@ -591,8 +588,11 @@ export class ContractAPI {
 
   async addEthExchangeLiquidity(attoCash: BigNumber, attoEth: BigNumber): Promise<void> {
     await this.faucet(attoCash);
+    await this.augur.contracts.cash.transfer(this.augur.contracts.ethExchange.address, attoCash);
+    await this.augur.contracts.weth.deposit({attachedEth: attoEth});
+    await this.augur.contracts.weth.transfer(this.augur.contracts.ethExchange.address, attoEth);
     const owner = await this.augur.getAccount();
-    await this.augur.contracts.ethExchange.publicMintAuto(owner, attoCash, {attachedEth: attoEth});
+    await this.augur.contracts.ethExchange.mint(owner);
   }
 
   async depositRelay(address: string, attoEth: BigNumber): Promise<void> {
@@ -638,7 +638,7 @@ export class ContractAPI {
 
   // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
   async getEthBalance(owner?: string): Promise<BigNumber> {
-    const balance = await this.provider.getBalance(owner || this.account.publicKey);
+    const balance = await this.provider.getBalance(owner);
     return new BigNumber(balance.toString());
   }
 

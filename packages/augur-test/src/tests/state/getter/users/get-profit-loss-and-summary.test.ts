@@ -73,7 +73,7 @@ describe('State API :: Users :: ', () => {
         outcome: YES,
         quantity: 5,
         price: 0.4,
-        realizedPL: 0.44,
+        realizedPL: 0.4697,
         market: market2,
         timestamp: startTime.plus(32 * day).toNumber(),
         unrealizedPL: -1.5,

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
-import { selectCurrentTimestampInSeconds } from 'store/select-state';
+import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import { createBigNumber } from 'utils/create-big-number';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
@@ -19,7 +19,7 @@ import {
   CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import { CLAIM_MARKETS_PROCEEDS } from 'modules/common/constants';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import {

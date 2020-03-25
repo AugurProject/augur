@@ -26,7 +26,7 @@ import {
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { getAddress } from 'ethers/utils/address';
-import { selectCurrentTimestampInSeconds } from 'store/select-state';
+import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
@@ -39,7 +39,7 @@ import {
   getMarketAgeInDays,
   convertUnixToFormattedDate,
 } from 'utils/format-date';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { loadMarketOrderBook, clearOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
 

@@ -6,7 +6,7 @@ import {
   selectLoginAccount,
   selectAccountFunds,
 } from "modules/auth/selectors/login-account";
-import { AppState } from "store";
+import { AppState } from "appStore";
 
 const mapStateToProps = (state: AppState) => {
   const loginAccount = selectLoginAccount(state);

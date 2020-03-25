@@ -1,6 +1,6 @@
 import logError from 'utils/log-error';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { updateAccountPositionsData } from 'modules/positions/actions/account-positions';
 import {
   AccountPositionAction,
