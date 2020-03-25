@@ -54,6 +54,11 @@
       height: @size-27;
       margin-bottom: @size-16;
 
+      @media @breakpoint-mobile-mid {
+        grid-column: 1 / span 2;
+        margin: @size-12 auto;
+      }
+
       > li {
         background: var(--color-module-background);
 
@@ -74,6 +79,7 @@
         .mono-10-semi-bold;
   
         color: var(--color-secondary-text);
+        text-transform: capitalize;
       }
   
       > span {
@@ -81,6 +87,12 @@
   
         color: var(--color-primary-text);
       }
+    }
+
+    @media @breakpoint-mobile-mid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: @size-10;
+      padding: @size-12 @size-11;
     }
   }
 }
