@@ -39,7 +39,6 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     weth.transfer(ethExchange.address, ethAmount)
     ethExchange.mint(account)
 
-
     # We do this again in order to trigger a storage update that will make using the exchange cheaper
     weth.deposit(ethAmount, value=ethAmount)
     cash.faucet(cashAmount)
@@ -170,6 +169,59 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
                 approvalData,
                 sender=relayer
             )
+
+    # Lets try sending some eth with the wallet
+    ethAmount = 100
+    contractsFixture.sendEth(account, walletAddress, ethAmount)
+
+    ethRecipient = contractsFixture.accounts[3]
+    oldBalance = contractsFixture.ethBalance(ethRecipient)
+
+    augurWalletSendEthData = augurWalletRegistry.executeWalletTransaction_encode(ethRecipient, "0x", ethAmount, cashPayment, nullAddress, fingerprint)
+
+    nonce += 1
+
+    messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
+        account,
+        augurWalletRegistry.address,
+        augurWalletSendEthData,
+        additionalFee,
+        gasPrice,
+        gasLimit,
+        nonce)
+
+    signature = signMessage(messageHash, accountKey)
+
+    assert relayHub.canRelay(
+        relayer,
+        account,
+        augurWalletRegistry.address,
+        augurWalletSendEthData,
+        additionalFee,
+        gasPrice,
+        gasLimit,
+        nonce,
+        signature,
+        approvalData)[0] == 0
+
+    TransactionRelayedLog = {
+        "status": 0,
+    }
+
+    relayHub.relayCall(
+        account,
+        augurWalletRegistry.address,
+        augurWalletSendEthData,
+        additionalFee,
+        gasPrice,
+        gasLimit,
+        nonce,
+        signature,
+        approvalData,
+        sender=relayer
+    )
+
+    assert contractsFixture.ethBalance(ethRecipient) == oldBalance + ethAmount
     
 
 def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, cash, reputationToken):
