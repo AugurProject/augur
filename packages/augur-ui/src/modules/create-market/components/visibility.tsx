@@ -198,6 +198,7 @@ export default class Visibility extends Component<
     const MarketLiquidityRanking = await Augur.getMarketLiquidityRanking(
       params
     );
+    console.log('MarketLiquidityRanking', JSON.stringify(MarketLiquidityRanking));
     callback(null, MarketLiquidityRanking);
   };
 
@@ -205,9 +206,10 @@ export default class Visibility extends Component<
     const { newMarket } = this.props;
     const { validations, validationMessage } = this.validate(newMarket);
     const { hasLiquidity, hasSells, hasBuys, validSpread } = validations;
-    if ((hasLiquidity && hasSells && hasBuys && validSpread)) {
+    if ((hasLiquidity)) {
       const params = this.calculateParams(newMarket);
       this.getMarketLiquidityRanking(params, (err, updates) => {
+        console.log('liquidity ranking', JSON.stringify(updates));
         this.setState({
           ...updates,
           marketRank:
@@ -239,8 +241,7 @@ export default class Visibility extends Component<
   }
 
   render() {
-    const { marketRank, totalMarkets, validationMessage } = this.state;
-    const isValid = validationMessage.length === 0;
+    const { marketRank, totalMarkets, validationMessage, hasLiquidity } = this.state;
     const rankUpdate = totalMarkets - marketRank;
     const rankingString = `+${rankUpdate} ranking`;
 
@@ -248,7 +249,7 @@ export default class Visibility extends Component<
       <ContentBlock dark>
         <div
           className={classNames(Styles.Visibility, {
-            [Styles.Passing]: isValid,
+            [Styles.Passing]: hasLiquidity,
           })}
         >
           <LargeSubheaders
@@ -259,11 +260,11 @@ export default class Visibility extends Component<
           />
           <SmallSubheadersTooltip
             header="default Spread filter check"
-            subheader={isValid ? 'Pass' : 'Fail'}
+            subheader={hasLiquidity ? 'Pass' : 'Fail'}
             text="Displays markets based on how much liquidity there is available under a 15% spread"
           />
 
-          {!isValid && (
+          {!hasLiquidity && (
             <SmallSubheaders
               header="How to pass spread filter check"
               subheader={validationMessage}
