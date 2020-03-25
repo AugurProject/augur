@@ -122,7 +122,7 @@ Deploying to: ${env}
 
             // WETH 9
             console.log(`Registering WETH9 Contract at ${externalAddresses.WETH9}`);
-            await this.augur!.registerContract(stringTo32ByteHex('WETH9'), externalAddresses.WETH9);
+            await this.augurTrading!.registerContract(stringTo32ByteHex('WETH9'), externalAddresses.WETH9);
 
             if (!this.configuration.deploy.isProduction) {
                 if (!(externalAddresses.MCDCol && externalAddresses.MCDColJoin && externalAddresses.MCDFaucet)) {
