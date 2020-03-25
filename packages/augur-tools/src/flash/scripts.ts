@@ -1890,22 +1890,21 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const user = await this.ensureUser(this.network, true);
-      let marketId = (args.marketId as string) || null;
+      this.config.gsn.enabled = false;
+      const user = await this.ensureUser();
+      let marketId = args.marketId ? String(args.marketId) : null;
+      let market: ContractInterfaces.Market = null;
 
-      if (marketId === null) {
-        const market = await user.createReasonableYesNoMarket();
-        marketId = market.address;
-        this.log(`Created market ${marketId}`);
+      if (!marketId) {
+        market = await this.call('create-reasonable-yes-no-market', {title: 'forking market'});
+        console.log('created market', market.address);
+      } else {
+        market = await user.getMarketContract(
+          marketId
+        );
       }
 
-      await sleep(2000);
-      const marketInfos = (await user.getMarketInfo(marketId));
-      if (!marketInfos || marketInfos.length === 0) {
-        return this.log(`Error: marketId: ${marketId} not found`);
-      }
-      const marketInfo = marketInfos[0];
-      if (await fork(user, marketInfo)) {
+      if (await fork(user, market)) {
         this.log('Fork successful!');
       } else {
         this.log('ERROR: forking failed.');
