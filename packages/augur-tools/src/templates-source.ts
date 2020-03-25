@@ -1094,7 +1094,6 @@ export const TEMPLATES = {
                     inputDestIds: [3],
                     values: LIST_VALUES.MENS_WOMENS,
                     inputDestValues: TENNIS_SINGLES_EVENTS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -1112,6 +1111,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
+                    categoryDestId: 2,
                     values: [],
                   },
                 ],
