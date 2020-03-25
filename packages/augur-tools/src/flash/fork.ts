@@ -1,6 +1,8 @@
 import { NULL_ADDRESS } from '../constants';
 import { BigNumber } from 'bignumber.js';
 import { ContractAPI } from '..';
+import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
+import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
 import { ContractInterfaces } from '@augurproject/core/source';
 
 export async function fork(user: ContractAPI, market: ContractInterfaces.Market): Promise<boolean> {
@@ -52,4 +54,25 @@ export async function fork(user: ContractAPI, market: ContractInterfaces.Market)
   }
 
   return false; // failed to fork
+}
+
+export function getPayoutNumerators(market: MarketInfo, outcome: number|'invalid'): BigNumber[] {
+  const isInvalid = outcome === 'invalid';
+
+  return calculatePayoutNumeratorsArray(
+    market.maxPrice,
+    market.minPrice,
+    market.numTicks,
+    market.numOutcomes,
+    market.marketType,
+    isInvalid ? -1 : outcome as number,
+    isInvalid
+  );
+}
+
+export function makeValidScalarOutcome(market: MarketInfo): number {
+  return Math.floor(new BigNumber(market.maxPrice)
+    .minus(market.minPrice)
+    .dividedBy(3)
+    .plus(market.minPrice).toNumber());
 }
