@@ -110,9 +110,21 @@ describe('Warp Sync markets', () => {
       await john.transferCash(mary.account.publicKey, amountToTransfer);
       await john.transferCash(mary.account.publicKey, amountToTransfer);
 
-      const { timestamp: newestBlockTimestamp } = await provider.getBlock('latest');
+      await expect(john.db.warpCheckpoints.table.toArray()).resolves.toEqual([
+        {
+          _id: expect.any(Number),
+          begin: expect.objectContaining({
+            number: john.config.uploadBlockNumber,
+          }),
+          endTimestamp,
+          market: market.address
+        }
+      ]);
 
-      await john.sync();
+      for (let i = 0; i < 30; i++) {
+        await provider.providerSend('evm_mine', []);
+        await john.sync();
+      }
 
       await expect(john.db.warpCheckpoints.table.toArray()).resolves.toEqual([
         expect.objectContaining({
