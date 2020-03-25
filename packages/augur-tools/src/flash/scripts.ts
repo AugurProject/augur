@@ -1893,8 +1893,10 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       const user = await this.ensureUser();
       const marketId = String(args.marketId);
-      const marketContract = user.augur.contracts.marketFromAddress(marketId);
-      if (await fork(user, marketContract)) {
+      const market: ContractInterfaces.Market = await user.getMarketContract(
+        marketId
+      );
+      if (await fork(user, market)) {
         this.log('Fork successful!');
       } else {
         this.log('ERROR: forking failed.');
