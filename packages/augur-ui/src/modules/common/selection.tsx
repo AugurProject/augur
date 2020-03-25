@@ -102,9 +102,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       } : null;
       this.setState({
         selected: foundOption
-          ? foundOption
-          : defaultValue,
-      });
+      })
     }
     if (
       JSON.stringify(this.props.options) !==
