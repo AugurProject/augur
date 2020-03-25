@@ -47,6 +47,6 @@ export class GSN {
    */
   async initializeWallet(
   ): Promise<void> {
-    this.augur.contracts.universe.runPeriodicals();
+    await this.augur.contracts.universe.runPeriodicals();
   }
 }
