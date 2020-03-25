@@ -2,11 +2,11 @@ import { connect } from "react-redux";
 import { isEmpty } from "utils/is-empty";
 import OrderBook from "modules/market-charts/components/order-book/order-book";
 import { selectMarket } from "modules/markets/selectors/market";
-import { selectCurrentTimestampInSeconds } from "store/select-state";
+import { selectCurrentTimestampInSeconds } from "appStore/select-state";
 import { ASKS, BIDS, SCALAR, INVALID_OUTCOME_ID } from "modules/common/constants";
 import { orderAndAssignCumulativeShares, calcOrderbookPercentages } from "modules/markets/helpers/order-and-assign-cumulative-shares";
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
-import { AppState } from "store";
+import { AppState } from "appStore";
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { orderBooks } = state;

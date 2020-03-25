@@ -4,7 +4,7 @@ import {
   selectMarketTradingHistoryState,
   selectPendingQueue,
   selectPendingLiquidityOrders
-} from "store/select-state";
+} from "appStore/select-state";
 import { CREATE_MARKET } from 'modules/common/constants';
 import selectAllMarkets from "modules/markets/selectors/markets-all";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";

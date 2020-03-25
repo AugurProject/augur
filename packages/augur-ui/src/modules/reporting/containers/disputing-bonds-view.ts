@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { DisputingBondsView } from 'modules/reporting/common';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState) => {
   return {

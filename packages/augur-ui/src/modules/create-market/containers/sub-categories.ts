@@ -5,7 +5,7 @@ import {
   clearNewMarket
 } from "modules/markets/actions/update-new-market";
 import { SubCategories } from "modules/create-market/components/sub-categories";
-import { AppState } from "store";
+import { AppState } from "appStore";
 
 const mapStateToProps = (state: AppState) => ({
   categoryStats: state.categoryStats,

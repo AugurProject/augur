@@ -21,7 +21,7 @@ import {
   formatEther,
   formatGasCostToEther,
 } from 'utils/format-number';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { CreateLiquidityOrders } from 'modules/types';
@@ -116,10 +116,6 @@ const mergeProps = (sP, dP, oP) => {
     insufficientFunds,
     submitAllTxCount,
     breakdown: [
-      {
-        label: 'Transaction Fee',
-        value: sP.GsnEnabled ? displayGasInDai(gasCost) : gasCost,
-      },
       {
         label: 'Total Cost (DAI)',
         value: formatDai(totalCost.toFixed()).full,

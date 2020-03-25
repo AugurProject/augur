@@ -3,7 +3,7 @@ import { ReportingBondsView } from 'modules/reporting/common';
 import { convertAttoValueToDisplayValue } from '@augurproject/sdk/src';
 import { ZERO, REPORTING_STATE } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { isSameAddress } from 'utils/isSameAddress';
 import getGasPrice from 'modules/auth/selectors/get-gas-price';
 

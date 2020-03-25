@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { selectBlockchainState } from 'store/select-state';
+import { selectBlockchainState } from 'appStore/select-state';
 import { formatNumber, formatPercent } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { Blockchain } from 'modules/types';

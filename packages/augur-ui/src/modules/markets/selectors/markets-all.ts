@@ -1,4 +1,4 @@
-import store from "store";
+import store from "appStore";
 import { selectMarket } from "modules/markets/selectors/market";
 import {
   selectMarketInfosState,
@@ -7,7 +7,7 @@ import {
   selectPendingOrdersState,
   selectLoginAccountAddress,
   selectAccountPositionsState
-} from "store/select-state";
+} from "appStore/select-state";
 import { createSelector } from "reselect";
 import { MarketData } from "modules/types";
 

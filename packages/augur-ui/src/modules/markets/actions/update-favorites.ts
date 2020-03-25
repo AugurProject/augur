@@ -2,7 +2,7 @@
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { Favorite } from 'modules/types';
 import { ThunkAction } from 'redux-thunk';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 export const UPDATE_FAVORITES = 'UPDATE_FAVORITES';
 export const TOGGLE_FAVORITE = 'TOGGLE_FAVORITE';

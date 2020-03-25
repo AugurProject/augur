@@ -104,7 +104,9 @@ export async function createClient(
     ethersProvider,
     signer,
     config.addresses.AugurWalletRegistry,
-    config.addresses.EthExchange
+    config.addresses.EthExchange,
+    config.addresses.WETH9,
+    config.addresses.Cash,
   );
 
   let zeroX: ZeroX = null;

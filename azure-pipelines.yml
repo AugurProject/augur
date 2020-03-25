@@ -139,7 +139,6 @@ jobs:
       - bash: |
           set -euo pipefail
           export ETHEREUM_NETWORK=kovan
-          ( cd packages/orbit-web && ./node_modules/.bin/webpack)
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
           #yarn workspace @augurproject/ui build:kovan
         displayName: ui build
@@ -550,7 +549,6 @@ jobs:
       - bash: |
           set -euo pipefail
           export ETHEREUM_NETWORK=kovan
-          ( cd packages/orbit-web && ./node_modules/.bin/webpack)
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
           #yarn workspace @augurproject/ui build:kovan
         displayName: ui build
@@ -635,7 +633,6 @@ jobs:
       - bash: |
           set -euo pipefail
           export ETHEREUM_NETWORK=demo
-          ( cd packages/orbit-web && ./node_modules/.bin/webpack)
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
           #yarn workspace @augurproject/ui build:kovan
         displayName: ui build
@@ -686,7 +683,6 @@ jobs:
       - bash: |
           set -euo pipefail
           export ETHEREUM_NETWORK=kovan
-          ( cd packages/orbit-web && ./node_modules/.bin/webpack)
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
           #yarn workspace @augurproject/ui build:kovan
         displayName: ui build
@@ -740,7 +736,6 @@ jobs:
       - bash: |
           set -euo pipefail
           export ETHEREUM_NETWORK=kovan
-          ( cd packages/orbit-web && ./node_modules/.bin/webpack)
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
           #yarn workspace @augurproject/ui build
           ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)

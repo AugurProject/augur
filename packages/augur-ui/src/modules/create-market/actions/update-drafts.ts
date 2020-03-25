@@ -1,7 +1,7 @@
 import { Draft } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { AppState } from "store";
+import { AppState } from "appStore";
 
 export const UPDATE_DRAFT = "UPDATE_DRAFT";
 export const ADD_DRAFT = "ADD_DRAFT";

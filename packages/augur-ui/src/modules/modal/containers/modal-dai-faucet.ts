@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Message } from "modules/modal/message";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import { closeModal } from "modules/modal/actions/close-modal";
 import getDai from "modules/account/actions/get-dai";
 import { ThunkDispatch } from "redux-thunk";

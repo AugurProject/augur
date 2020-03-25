@@ -3,7 +3,7 @@ import Form from 'modules/trading/components/form';
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import { orderPriceEntered, orderAmountEntered } from 'services/analytics/helpers';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { formatGasCost } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';

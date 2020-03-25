@@ -8,7 +8,7 @@ import {
   ZERO,
   MODAL_CLAIM_FEES,
 } from 'modules/common/constants';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { createBigNumber } from 'utils/create-big-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { selectMarket } from 'modules/markets/selectors/market';

@@ -1,7 +1,7 @@
 import { Analytics, Analytic } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import store, { AppState } from 'store';
+import store, { AppState } from 'appStore';
 import { sendAnalytic } from 'services/analytics/helpers';
 
 export const ADD_ANALYTIC = 'ADD_ANALYTIC';
@@ -25,7 +25,7 @@ export const loadAnalytics = (analytics: Analytics, prevCurrentAugurTimestamp) =
         }
     });
   }
-  
+
 };
 
 export const addAnalytic = (analytic: Analytic, id: string) => ({
