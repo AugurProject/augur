@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { ContractAPI } from '..';
 import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
-import { ContractInterfaces } from '@augurproject/core/source';
+import { ContractInterfaces } from '@augurproject/core';
 
 export async function fork(user: ContractAPI, market: ContractInterfaces.Market): Promise<boolean> {
   const MAX_DISPUTES = 20;
