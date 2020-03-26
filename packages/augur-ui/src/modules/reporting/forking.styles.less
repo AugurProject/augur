@@ -55,9 +55,13 @@
 
     > div:first-of-type {
       margin-top: @size-12;
+      display: flex;
 
       > button:not(:last-of-type) {
+        .text-12-medium;
+        
         margin-right: @size-16;
+        color: @color-primary-text;
       }
     }
   }
