@@ -472,7 +472,7 @@
       grid-column: span 2;
     }
 
-    > button {
+    > button[class*="Button"] {
       .text-14-bold;
 
       max-width: @size-147;
@@ -509,7 +509,42 @@
         }
       }
     }
-  }
+
+    > button:not([class*="Button"]) {
+      display: none;
+    }
+
+    &.Unmatched {
+      grid-template-columns: 1fr 0fr;
+
+      > a {
+        grid-column: span 1;
+      }
+
+      > button:not([class*="Button"]) {
+        .text-10-semi-bold;
+  
+        color: var(--color-primary-text);
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        text-transform: uppercase;
+        white-space: nowrap;
+  
+        > svg {
+          width: @size-12;
+          height: @size-14;
+          margin-right: @size-6;
+  
+          > path {
+            stroke: var(--color-primary-text)
+          }
+        }
+      }
+    }
+    }
+
+    
 }
 
 :root[theme="SPORTS"] {

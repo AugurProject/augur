@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { ThickChevron } from 'modules/common/icons';
 import {
@@ -8,26 +8,43 @@ import {
   BetslipList,
   MyBetsSubheader,
 } from 'modules/trading/common';
+import { getTheme } from 'modules/app/actions/update-app-status';
+import { THEMES } from 'modules/common/constants';
 import {
-  useSelected,
   useBetslip,
   SelectedContext,
   BetslipStepContext,
+  BETSLIP_SELECTED,
 } from 'modules/trading/hooks/betslip';
 
 import Styles from 'modules/trading/betslip.styles';
 
-export const Betslip = () => {
+export const Betslip = ({ theme = getTheme() }) => {
   const [minimized, setMinimized] = useState(true);
-  const [step, setStep] = useState(0);
+  const state = useBetslip();
   const {
+    step,
     selected,
-    toggleHeaderSelected,
-    toggleSubHeaderSelected,
-  } = useSelected();
-  const betslipInfo = useBetslip(selected);
-  const { betslipAmount, isSelectedEmpty } = betslipInfo;
-  const isMyBets = selected.header === 1;
+    betslip,
+    unmatched,
+    matched,
+    actions,
+  } = state;
+  useEffect(() => {
+    // this has to be done as useAnything must go above any other declarations.
+    const isSportsBook = theme === THEMES.SPORTS;
+    if (isSportsBook && selected.subHeader === BETSLIP_SELECTED.UNMATCHED) {
+      actions.toggleSubHeader();
+    }
+  }, [theme]);
+
+  const isSportsBook = theme === THEMES.SPORTS;
+  const myBetsCount = isSportsBook
+    ? matched.count
+    : unmatched.count + matched.count;
+  const isMyBets = selected.header === BETSLIP_SELECTED.MY_BETS;
+  const isSelectedEmpty = isMyBets ? myBetsCount === 0 : betslip.count === 0;
+  const marketItems = isMyBets ? Object.entries(state[selected.subHeader].items) : Object.entries(betslip.items);
   return (
     <aside
       className={classNames(Styles.Betslip, {
@@ -36,17 +53,22 @@ export const Betslip = () => {
     >
       <div>
         <button onClick={() => setMinimized(!minimized)}>
-          Betslip ({betslipAmount}) {ThickChevron}
+          Betslip ({betslip.count}) {ThickChevron}
         </button>
       </div>
       <section className={Styles.Container}>
         <SelectedContext.Provider value={selected}>
           <BetslipHeader
-            toggleSelected={toggleHeaderSelected}
-            betslipInfo={betslipInfo}
+            toggleSelected={actions.toggleHeader}
+            myBetsCount={myBetsCount}
+            betslipCount={betslip.count}
           />
           {isMyBets && (
-            <MyBetsSubheader toggleSelected={toggleSubHeaderSelected} />
+            <MyBetsSubheader
+              toggleSelected={actions.toggleSubHeader}
+              unmatchedCount={unmatched.count}
+              matchedCount={matched.count}
+            />
           )}
           <section
             className={classNames(Styles.MainSection, {
@@ -58,12 +80,11 @@ export const Betslip = () => {
               <EmptyState />
             ) : (
               <BetslipStepContext.Provider value={step}>
-                {isMyBets ? (
-                  <BetslipList marketItems={Object.entries(betslipInfo.myBets[selected.subHeader])} actions={betslipInfo.myBetsActions} />
-                ): (
-                  <BetslipList marketItems={Object.entries(betslipInfo.ordersInfo.orders)} actions={betslipInfo.ordersActions} />
-                )}
-                <BetslipFooter betslipInfo={betslipInfo} setStep={setStep} />
+                <BetslipList
+                  marketItems={marketItems}
+                  actions={actions}
+                />
+                <BetslipFooter betslip={betslip} actions={actions} />
               </BetslipStepContext.Provider>
             )}
           </section>
