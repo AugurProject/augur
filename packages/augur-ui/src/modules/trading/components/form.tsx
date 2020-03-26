@@ -641,7 +641,7 @@ class Form extends Component<FromProps, FormState> {
     errors = { ...errors, ...comboErrors };
     errorCount += comboErrorCount;
 
-    isOrderValid = priceValid && quantityValid && totalValid && comboValid;
+    isOrderValid = ((quantityValid && priceValid) || (priceValid && totalValid)) && comboValid;
     return { isOrderValid, errors, errorCount };
   }
 
@@ -737,7 +737,8 @@ class Form extends Component<FromProps, FormState> {
             order[this.INPUT_TYPES.EST_DAI] &&
             order[this.INPUT_TYPES.PRICE] &&
             order[this.INPUT_TYPES.EST_DAI] !== '0' &&
-            ((this.state.lastInputModified === this.INPUT_TYPES.EST_DAI &&
+            (((this.state.lastInputModified === this.INPUT_TYPES.EST_DAI ||
+              order[this.INPUT_TYPES.QUANTITY] === '') &&
               property === this.INPUT_TYPES.PRICE) ||
               property === this.INPUT_TYPES.EST_DAI)
           ) {
