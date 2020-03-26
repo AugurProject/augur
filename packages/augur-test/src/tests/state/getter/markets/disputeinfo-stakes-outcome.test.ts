@@ -35,22 +35,21 @@ describe('State API :: Markets :: GetMarketsInfo', () => {
       marketIds: [market.address],
     });
     expect(infos.length).toEqual(1);
-    let info = infos[0];
 
-    await fork(john, info);
+    await fork(john, market);
 
     await john.sync();
     infos = await john.api.route('getMarketsInfo', {
       marketIds: [market.address],
     });
     expect(infos.length).toEqual(1);
-    info = infos[0];
+    const info = infos[0];
 
     expect(info).toHaveProperty('disputeInfo');
     expect(info.disputeInfo).toHaveProperty('stakes');
     expect(info.disputeInfo.stakes).toMatchObject([
       {
-        outcome: '1',
+        outcome: '2',
         isInvalidOutcome: false,
         isMalformedOutcome: false,
       },
