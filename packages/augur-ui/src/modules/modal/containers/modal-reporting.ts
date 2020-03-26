@@ -12,7 +12,8 @@ import { addPendingData, removePendingData } from 'modules/pending-queue/actions
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe, modal, loginAccount } = state;
-  const { market } = ownProps;
+  let { market } = ownProps;
+  market.isForking = state.universe.forkingInfo && state.universe.forkingInfo.forkingMarket === market.id;
   const hasForked = !!state.universe.forkingInfo;
   const migrateRep =
     hasForked && universe.forkingInfo.forkingMarket === market.id;

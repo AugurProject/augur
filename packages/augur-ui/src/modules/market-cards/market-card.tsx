@@ -66,6 +66,7 @@ interface MarketCardProps {
   dispute: Function;
   migrateMarketModal: Function;
   marketLinkCopied: Function;
+  forkingMarket: string | null;
 }
 
 interface MarketCardState {
@@ -107,6 +108,7 @@ export default class MarketCard extends React.Component<
       hasStaked,
       dispute,
       marketLinkCopied,
+      forkingMarket
     } = this.props;
 
     const s = this.state;
@@ -220,10 +222,15 @@ export default class MarketCard extends React.Component<
     if (isScalar && inDispute) {
       showOutcomeNumber = MARKET_CARD_FOLD_OUTCOME_COUNT - 1;
     }
-    const canDispute =
+    let canDispute =
       inDispute &&
       reportingState !== REPORTING_STATE.AWAITING_NEXT_WINDOW &&
       isLogged;
+
+    if (forkingMarket && canDispute) {
+      canDispute = forkingMarket === id;
+    } 
+    
     const canSupport = !disputeInfo.disputePacingOn;
 
     const headerType =

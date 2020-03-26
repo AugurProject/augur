@@ -21,7 +21,6 @@ interface MigrateRepForm {
   GsnEnabled: boolean;
   convertV1ToV2Estimate: Function;
   gasPrice: number;
-  addPendingData: Function;
   showForSafeWallet: boolean;
 }
 

@@ -22,6 +22,7 @@ import {
   CLAIM_ALL_TITLE,
   REDEEMSTAKE,
   FORKANDREDEEM,
+  DISAVOWCROWDSOURCERS,
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -30,6 +31,8 @@ import { disavowMarket } from 'modules/contracts/actions/contractCalls';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { TRANSACTIONS } from 'modules/routes/constants/views';
+import { TXEventName } from '@augurproject/sdk/src';
+import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -50,6 +53,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   redeemStake: (options, callback) => redeemStake(options, callback),
   disavowMarket: marketId => disavowMarket(marketId),
+  addPendingData: (pendingId, queueName, status, hash, info) =>
+    dispatch(addPendingData(pendingId, queueName, status, hash, info)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
@@ -97,13 +102,18 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         let queueId = marketObj.contracts[0];
 
         if (isForking) {
-          queueName = null;
-          queueId = null;
           if (!market.disavowed) {
             buttonText = 'Disavow Market REP';
             notice =
               'Disavow Market disputing REP in order to release REP, releasing REP will be in a separate transaction';
-            action = () => dP.disavowMarket(market.id);
+            queueName = DISAVOWCROWDSOURCERS;
+            queueId = market.id;
+            action = () => {
+              dP.addPendingData(market.id, DISAVOWCROWDSOURCERS, TXEventName.Pending, '0', undefined);
+              dP.disavowMarket(market.id).catch(err => {
+                dP.addPendingData(market.id, DISAVOWCROWDSOURCERS, TXEventName.Failure, 0, undefined)
+              });
+            };
           } else if (market.disavowed && marketTxCount > 1) {
             notice = `Releasing REP will take ${marketTxCount} Transactions`;
             buttonText = 'Release REP';
