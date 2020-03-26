@@ -57,7 +57,6 @@ interface ModalReportingProps {
   isDisputing: boolean;
   getRepModal: Function;
   addPendingData: Function;
-  removePendingData: Function;
   warpSyncHash?: string;
 }
 

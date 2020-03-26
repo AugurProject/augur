@@ -1584,6 +1584,10 @@ div.ButtonsRow:last-of-type {
   .Message;
   max-width: 614px;
 
+  > span {
+    margin: 0;
+  }
+
   > main {
     margin: @size-22 0;
     display: flex;
@@ -2821,6 +2825,11 @@ div.ButtonsRow:last-of-type {
       margin-right: 0.75rem;
     }
   }
+
+  > div[class*="DismissableNotice"] {
+    justify-content: flex-start;
+    margin-top: @size-16;
+  }
 }
 
 .SelectableTable {
@@ -3136,6 +3145,12 @@ div.ButtonsRow:last-of-type {
 
     > div:last-of-type {
       padding: @size-32 @size-40;
+    }
+
+    > div[class*="DismissableNotice"] {
+      margin: @size-10 @size-32 0;
+      width: unset;
+      padding-left: @size-16;
     }
   }
 

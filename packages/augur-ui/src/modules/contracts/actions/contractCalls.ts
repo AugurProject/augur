@@ -456,11 +456,7 @@ export async function redeemUserStakes(
 
 export async function disavowMarket(marketId: string) {
   const { contracts } = augurSdk.get();
-  try {
-    contracts.marketFromAddress(marketId).disavowCrowdsourcers();
-  } catch (e) {
-    console.error('Could not disavow market', marketId, e);
-  }
+  return contracts.marketFromAddress(marketId).disavowCrowdsourcers();
 }
 
 export interface doReportDisputeAddStake {
