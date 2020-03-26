@@ -680,18 +680,46 @@ class Form extends Component<FromProps, FormState> {
       clearOrderForm(false);
     }
 
+    let orderProcessingMethod = updateTradeTotalCost;
+
     let orderQuantity = updatedState[this.INPUT_TYPES.QUANTITY];
     const orderPrice = updatedState[this.INPUT_TYPES.PRICE];
     let orderDaiEstimate = updatedState[this.INPUT_TYPES.EST_DAI];
     let expiration = updatedState[this.INPUT_TYPES.EXPIRATION_DATE];
 
-    if (property === this.INPUT_TYPES.QUANTITY) {
+    // have price and quantity was modified clear total cost
+    if (
+      orderPrice &&
+      property === this.INPUT_TYPES.QUANTITY &&
+      orderQuantity !== ''
+    ) {
       orderDaiEstimate = '';
-    } else if (
-      property === this.INPUT_TYPES.EST_DAI ||
-      (property === this.INPUT_TYPES.EST_DAI && value === '')
+    } else if ( // have price and total cost was modified clear quantity
+      orderPrice &&
+      property === this.INPUT_TYPES.EST_DAI &&
+      orderDaiEstimate !== ''
     ) {
       orderQuantity = '';
+    }
+
+    // have price and quantity and total order value.
+    // last modified between quantity and total cost determines which order processing method
+    // last was quantity then regular updateTradeTotalCost
+    // last was total order cost then updateTradeNumShares
+    if (
+      (property == this.INPUT_TYPES.PRICE &&
+      orderQuantity &&
+      orderDaiEstimate &&
+      this.state.lastInputModified &&
+        this.state.lastInputModified === this.INPUT_TYPES.EST_DAI) || (
+          orderDaiEstimate && orderPrice && orderQuantity === ''
+        )
+    ) {
+      orderProcessingMethod = updateTradeNumShares;
+    }
+
+    if (orderPrice === '' && (orderQuantity === '' || orderDaiEstimate === '')) {
+      orderProcessingMethod = null;
     }
 
     const order = {
@@ -723,36 +751,8 @@ class Form extends Component<FromProps, FormState> {
           validationResults.errorCount === 0 &&
           validationResults.isOrderValid
         ) {
-          if (
-            order[this.INPUT_TYPES.QUANTITY] &&
-            order[this.INPUT_TYPES.PRICE] &&
-            order[this.INPUT_TYPES.QUANTITY] !== '0' &&
-            (((!this.state.lastInputModified ||
-              this.state.lastInputModified === this.INPUT_TYPES.QUANTITY) &&
-              property === this.INPUT_TYPES.PRICE) ||
-              property === this.INPUT_TYPES.QUANTITY)
-          ) {
-            updateTradeTotalCost(order);
-          } else if (
-            order[this.INPUT_TYPES.EST_DAI] &&
-            order[this.INPUT_TYPES.PRICE] &&
-            order[this.INPUT_TYPES.EST_DAI] !== '0' &&
-            (((this.state.lastInputModified === this.INPUT_TYPES.EST_DAI ||
-              order[this.INPUT_TYPES.QUANTITY] === '') &&
-              property === this.INPUT_TYPES.PRICE) ||
-              property === this.INPUT_TYPES.EST_DAI)
-          ) {
-            updateTradeNumShares(order);
-          }
-          if (
-            order[this.INPUT_TYPES.QUANTITY] &&
-            order[this.INPUT_TYPES.PRICE] &&
-            order[this.INPUT_TYPES.EST_DAI] &&
-            order[this.INPUT_TYPES.EST_DAI] != 0 &&
-            order[this.INPUT_TYPES.QUANTITY] != 0 &&
-            property === this.INPUT_TYPES.EXPIRATION_DATE
-          ) {
-            updateTradeTotalCost(order);
+          if (orderProcessingMethod) {
+            orderProcessingMethod(order);
           }
         }
         if (property !== this.INPUT_TYPES.PRICE) {
