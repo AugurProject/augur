@@ -46,7 +46,7 @@ export const SwapRow = ({
         <input
           placeholder='0'
           type='number'
-          value={amount.formattedValue}
+          value={Number(amount.formattedValue).toString()}
           onChange={e =>
             setAmount(
               createBigNumber(e.target.value),
