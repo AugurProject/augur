@@ -12,7 +12,7 @@ export async function fork(user: ContractAPI, market: ContractInterfaces.Market)
   const numTicks = await market.getNumTicks_();
 
   const payoutNumerators = [numTicks, ...(new Array(numOutcomes.minus(1).toNumber()).fill(new BigNumber(0)))];
-  const conflictNumerators = payoutNumerators.reverse();
+  const conflictNumerators = [...payoutNumerators].reverse();
 
   await user.repFaucet(SOME_REP);
   // Get past the market time, into when we can accept the initial report.

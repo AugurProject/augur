@@ -76,10 +76,10 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     await john.sellCompleteSets(yesNoMarket, numberOfCompleteSets);
 
     await john.sync();
-    const markets = await john.api.route('getMarketsInfo', {
-      marketIds: [yesNoMarket.address],
-    });
-    await fork(john, markets[0]);
+    const market = john.augur.contracts.marketFromAddress(
+      yesNoMarket.address
+    );
+    await fork(john, market);
     await john.sync();
 
     const stats = await john.api.route('getPlatformActivityStats', {

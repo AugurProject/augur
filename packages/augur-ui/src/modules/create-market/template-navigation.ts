@@ -21,7 +21,7 @@ export const TEMPLATE_CONTENT_PAGES = [
     mainContent: SUB_CATEGORIES,
     firstButton: BACK,
     secondButton: NEXT,
-    disabledFunction: newMarket => checkValid(newMarket.categories[1]),
+    disabledFunction: newMarket => checkValid(newMarket.navCategories[1]),
   },
   {
     title: 'Market Type',

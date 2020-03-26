@@ -21,12 +21,12 @@ import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
 
 export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
-  const { categories, marketType } = newMarket;
-  const tertiaryOptions = newMarket.categories[1]
+  const { navCategories, marketType } = newMarket;
+  const tertiaryOptions = newMarket.navCategories[1]
     ? getTemplateCategoriesList(
         {
-          primary: newMarket.categories[0],
-          secondary: newMarket.categories[1],
+          primary: newMarket.navCategories[0],
+          secondary: newMarket.navCategories[1],
           tertiary: '',
         },
         marketType
@@ -37,8 +37,8 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
   );
   const [defaultValue, setDefaultValue] = useState(null);
   const categoriesFormatted = {
-    primary: categories[0],
-    secondary: categories[1],
+    primary: navCategories[0],
+    secondary: navCategories[1],
     tertiary: tertiary.value,
   };
   const templates = getTemplates(categoriesFormatted, marketType);
@@ -128,8 +128,13 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
                     : null,
               marketType: newMarket.marketType,
               categories: [
-                newMarket.categories[0],
-                newMarket.categories[1],
+                newMarket.navCategories[0],
+                newMarket.navCategories[1],
+                tertiary.label,
+              ],
+              navCategories: [
+                newMarket.navCategories[0],
+                newMarket.navCategories[1],
                 tertiary.label,
               ],
               template,

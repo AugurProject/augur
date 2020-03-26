@@ -379,6 +379,7 @@ export const determineVisible = (
   primaryOptions: NameValuePair[],
   secondaryOptions: NameValuePair[],
   tertiaryOptions: NameValuePair[],
+  disabledTertiary: boolean,
   selected: string[]
 ) => {
   const showSecondaryDropdown = values[0] !== '' && secondaryOptions.length > 0;
@@ -394,7 +395,7 @@ export const determineVisible = (
     (!showSecondaryDropdown && customPrimary && values[0] !== '');
   const customTertiary =
     selected[2] === CUSTOM ||
-    (selected[2] &&
+    (selected[2] && !disabledTertiary &&
       !tertiaryOptions.map(option => option.value).includes(selected[2])) ||
     (!showTertiaryDropdown && values[1] !== '');
   return {
@@ -665,6 +666,7 @@ export class CategoryMultiSelect extends Component<
       primaryOptions,
       secondaryOptions,
       tertiaryOptions,
+      disableTertiaryCategory,
       selected
     );
 
