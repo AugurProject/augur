@@ -25,10 +25,10 @@ export const SubCategories = ({
   nextPage,
   categoryStats,
 }: SubCategoriesProps) => {
-  const { categories } = newMarket;
+  const { navCategories } = newMarket;
   const cats = getTemplateRadioCards(
     {
-      primary: newMarket.categories[0],
+      primary: newMarket.navCategories[0],
       secondary: '',
       tertiary: '',
     },
@@ -43,11 +43,11 @@ export const SubCategories = ({
       />
       <section>
         <RadioCardGroup
-          defaultSelected={categories[1] ? categories[1] : null}
+          defaultSelected={navCategories[1] ? navCategories[1] : null}
           onChange={(value: string) => {
             const updatedNewMarket = { ...newMarket };
-            updatedNewMarket.categories[1] = value;
-            updatedNewMarket.categories[2] = '';
+            updatedNewMarket.navCategories[1] = value;
+            updatedNewMarket.navCategories[2] = '';
             updateNewMarket(updatedNewMarket);
           }}
           radioButtons={cats}

@@ -67,9 +67,9 @@ export default class Landing extends React.Component<LandingProps> {
               <RadioCardGroup
                 onChange={(value: string) => {
                   const updatedNewMarket = { ...newMarket };
-                  updatedNewMarket.categories[0] = value;
-                  updatedNewMarket.categories[1] = '';
-                  updatedNewMarket.categories[2] = '';
+                  updatedNewMarket.navCategories[0] = value;
+                  updatedNewMarket.navCategories[1] = '';
+                  updatedNewMarket.navCategories[2] = '';
                   updatedNewMarket.currentStep = 1;
                   updatedNewMarket.marketType = '';
                   updateNewMarket(updatedNewMarket);

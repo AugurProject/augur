@@ -23,6 +23,7 @@ const mapStateToProps = state => ({
   currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
   drafts: state.drafts,
   needsApproval: state.loginAccount.allowance.lte(ZERO),
+  GsnEnabled: state.appStatus.gsnEnabled,
 });
 
 const mapDispatchToProps = dispatch => ({

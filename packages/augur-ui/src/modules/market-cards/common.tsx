@@ -441,6 +441,7 @@ export interface ResolvedOutcomesProps {
 }
 
 export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
+  if (!props.consensusFormatted) return null;
   const outcomes = props.outcomes.filter(
     outcome => String(outcome.id) !== props.consensusFormatted.outcome
   );

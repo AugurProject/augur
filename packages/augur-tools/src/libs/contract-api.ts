@@ -600,7 +600,10 @@ export class ContractAPI {
   }
 
   async initWarpSync(universe: string): Promise<void> {
-    await this.augur.contracts.warpSync.initializeUniverse(universe);
+    const warpSyncMarket = await this.augur.contracts.warpSync.markets_(universe);
+    if (warpSyncMarket === NULL_ADDRESS) {
+      await this.augur.contracts.warpSync.initializeUniverse(universe);
+    }
   }
 
   async approve(wei: BigNumber): Promise<void> {
