@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import { AsyncQueue, queue, retry } from 'async';
 import { isInstanceOfBigNumber, isInstanceOfArray } from './utils';
 import { JSONRPCRequestPayload, JSONRPCErrorCallback, JSONRPCResponsePayload } from 'ethereum-types';
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from 'bignumber.js';
 import { FasterAbiInterface } from './FasterAbiInterface';
 
 interface MultiAddressFilter {
@@ -30,7 +30,7 @@ interface PerformQueueTask {
 
 export class EthersProvider extends ethers.providers.BaseProvider
   implements EProvider {
-  gasLimit: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(7500000);
+  gasLimit: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(10000000);
   gasEstimateIncreasePercentage: BigNumber | null = new BigNumber(34);
   private contractMapping: ContractMapping = {};
   private performQueue: AsyncQueue<PerformQueueTask>;
@@ -243,7 +243,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   }
 
   // We're primarily hacking this and bypassing ethers to support multiple addresses in the filter but this also allows us to cut out some expensive behavior we don't care about for the address
-  async getMultiAddressLogs(filter: MultiAddressFilter): Promise<Array<Log>> {
+  async getMultiAddressLogs(filter: MultiAddressFilter): Promise<Log[]> {
     await this.ready;
     if (filter.address && Array.isArray(filter.address)) {
       filter.address['toLowerCase'] = () => {
@@ -260,7 +260,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
       log.blockHash = formatLogHash(log.blockHash);
       log.transactionHash = formatLogHash(log.transactionHash);
       log.topics = _.map(log.topics, formatLogHash);
-      log.data = log.data ? ethers.utils.hexlify(log.data) : "0x";
+      log.data = log.data ? ethers.utils.hexlify(log.data) : '0x';
     }
     return logs;
   }
@@ -312,12 +312,14 @@ export class EthersProvider extends ethers.providers.BaseProvider
 
   // This is to support the Web3 Spec
   sendAsync(payload: JSONRPCRequestPayload, callback?: JSONRPCErrorCallback): void {
-    this.performQueue.push({ message: "send", params: payload }, (error, result) => {
-      if (callback) callback(error, {
-        result,
-        id: payload.id,
-        jsonrpc: payload.jsonrpc,
-      });
+    this.performQueue.push({ message: 'send', params: payload }, (error, result) => {
+      if (callback) {
+        callback(error, {
+          result,
+          id: payload.id,
+          jsonrpc: payload.jsonrpc
+        });
+      }
     });
   }
 

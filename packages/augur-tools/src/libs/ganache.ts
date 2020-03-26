@@ -90,11 +90,11 @@ async function makeGanacheOpts(accounts: Account[], db: MemDown) {
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
     allowUnlimitedContractSize: true,
     db,
-    gasLimit: 75000000000,
+    gasLimit: 10000000,
     debug: false,
     network_id: 123456,
     _chainId: 123456,
-    hardfork: "istanbul",
+    hardfork: 'istanbul',
     time: maxBlockTimeStamp
     // vmErrorsOnRPCResponse: false,
   };
