@@ -904,7 +904,7 @@ export const ReportingRadioBarGroup = ({
               isDisputing={isDisputing}
               isWarpSync={market.isWarpSync}
             />
-          ))
+          )
       )}
     </div>
   );
