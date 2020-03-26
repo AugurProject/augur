@@ -17,7 +17,7 @@ export const EUR = 'EUR';
 
 // Market Subtemplates
 export const SOCCER = 'Football (Soccer)';
-export const MENS_LEAGUES = 'Mens Leagues';
+export const MENS_LEAGUES = 'Men\'s Leagues';
 export const CUSTOMIZED = 'Customized';
 export const SUMMER = 'SUMMER';
 export const WINTER = 'WINTER';
@@ -46,8 +46,8 @@ export const NFL = 'NFL';
 export const PGA = 'PGA';
 export const LPGA = 'LPGA';
 export const EURO_TOUR = 'Euro Tour';
-export const MENS = 'Mens';
-export const WOMENS = 'Womens';
+export const MENS = 'Men\'s';
+export const WOMENS = 'Women\'s';
 export const SINGLES = 'Singles';
 export const DOUBLES = 'Doubles';
 const FRIDAY_DAY_OF_WEEK = 5;
@@ -200,6 +200,7 @@ export interface TemplateInput {
   inputSourceId?: number; // input id as source of text to get list values
   defaultLabel?: string; // dropdown default label shown
   inputDestIds?: number[]; // target inputs to set list values
+  categoryDestId?: number;
   inputDestValues: {
     // dropdown source data structure to use to set target input list values
     [key: string]: string[];
@@ -429,7 +430,7 @@ function daysRequiredAfterStartDate(
   endTime: number
 ) {
   const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
-  if (!input) return false;
+  if (!input || !daysAfterStartDate) return true;
   // add number of hours to estimated start timestamp then compare to market event expiration
   const secondsAfterStartDate = SECONDS_IN_A_DAY * daysAfterStartDate;
   return (Number(input.timestamp) + secondsAfterStartDate) >= Number(endTime);
