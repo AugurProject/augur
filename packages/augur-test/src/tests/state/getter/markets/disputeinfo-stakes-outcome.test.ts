@@ -49,7 +49,7 @@ describe('State API :: Markets :: GetMarketsInfo', () => {
     expect(info.disputeInfo).toHaveProperty('stakes');
     expect(info.disputeInfo.stakes).toMatchObject([
       {
-        outcome: '1',
+        outcome: '2',
         isInvalidOutcome: false,
         isMalformedOutcome: false,
       },
