@@ -430,7 +430,7 @@ function daysRequiredAfterStartDate(
   endTime: number
 ) {
   const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
-  if (!input) return false;
+  if (!input) return true;
   // add number of hours to estimated start timestamp then compare to market event expiration
   const secondsAfterStartDate = SECONDS_IN_A_DAY * daysAfterStartDate;
   return (Number(input.timestamp) + secondsAfterStartDate) >= Number(endTime);

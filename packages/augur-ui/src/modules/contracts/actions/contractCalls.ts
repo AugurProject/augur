@@ -738,6 +738,11 @@ export async function cancelOpenOrder(orderId: string) {
   return contracts.cancelOrder.cancelOrder(orderId);
 }
 
+export async function getReportingDivisor(): Promise<BigNumber> {
+  const { contracts } = augurSdk.get();
+  return await contracts.universe.getReportingFeeDivisor_();
+}
+
 export async function cancelZeroXOpenOrder(orderId: string) {
   const Augur = augurSdk.get();
   return Augur.cancelOrder(orderId);
