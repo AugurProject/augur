@@ -23,11 +23,7 @@ import {
   LoadingEllipse,
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
-import {
-  CUSTOM,
-  SCALAR,
-  ZERO,
-} from 'modules/common/constants';
+import { CUSTOM, SCALAR, ZERO } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
 import { formatAttoRep, formatNumber } from 'utils/format-number';
@@ -395,7 +391,8 @@ export const determineVisible = (
     (!showSecondaryDropdown && customPrimary && values[0] !== '');
   const customTertiary =
     selected[2] === CUSTOM ||
-    (selected[2] && !disabledTertiary &&
+    (selected[2] &&
+      !disabledTertiary &&
       !tertiaryOptions.map(option => option.value).includes(selected[2])) ||
     (!showTertiaryDropdown && values[1] !== '');
   return {
@@ -886,8 +883,8 @@ export const ReportingRadioBarGroup = ({
       )}
       {radioButtons.map(
         (radio, index) =>
-          !radio.stake.tentativeWinning &&
-          radio.isInvalid && (
+          ((!market.isForking && !radio.stake.tentativeWinning && radio.isInvalid) ||
+          (market.isForking && radio.isInvalid)) && (
             <ReportingRadioBar
               market={market}
               key={`${index}${radio.value}`}
@@ -907,7 +904,7 @@ export const ReportingRadioBarGroup = ({
               isDisputing={isDisputing}
               isWarpSync={market.isWarpSync}
             />
-          )
+          ))
       )}
     </div>
   );
@@ -1049,7 +1046,12 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   {userOutcomeCurrentRoundDispute && (
                     <Subheaders
                       header="My contribution:"
-                      subheader={formatAttoRep(userOutcomeCurrentRoundDispute.userStakeCurrent || ZERO).full}
+                      subheader={
+                        formatAttoRep(
+                          userOutcomeCurrentRoundDispute.userStakeCurrent ||
+                            ZERO
+                        ).full
+                      }
                     />
                   )}
                 </div>
@@ -1342,8 +1344,10 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
         showList,
       },
       () => {
-        if (showList)  {
-          !!this.props.onAutoCompleteListSelected ? this.props.onAutoCompleteListSelected(value) : this.props.onChange(value);
+        if (showList) {
+          !!this.props.onAutoCompleteListSelected
+            ? this.props.onAutoCompleteListSelected(value)
+            : this.props.onChange(value);
         }
       }
     );
@@ -1507,7 +1511,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       uniqueKey,
       condensedStyle,
       openTop,
-      disabled
+      disabled,
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
@@ -2291,7 +2295,7 @@ export const CategoryRow = ({
 );
 
 export const MigrateRepInfo = () => (
-  <section className={Styles.MigrateRepInfo}>
+  <div className={Styles.MigrateRepInfo}>
     <span>A note on Forking</span>
     <p>
       Augur is now in a state of Forking. The fork state is a special state that
@@ -2314,9 +2318,5 @@ export const MigrateRepInfo = () => (
       child universe for each possible outcome of the forking market (including
       Invalid).
     </p>
-    <p>
-      NEED TO ADD MORE INFO HERE. POSSIBLY MAKE THIS A SCROLLABLE BOX. CHECKBOX
-      TO CONFIRM THEY HAVE READ IT?
-    </p>
-  </section>
+  </div>
 );
