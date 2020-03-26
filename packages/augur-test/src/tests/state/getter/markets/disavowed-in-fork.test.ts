@@ -33,23 +33,15 @@ describe('State API :: Markets :: GetMarketsInfo', () => {
     );
 
     await john.sync();
-
-    let infos = await john.api.route('getMarketsInfo', {
-      marketIds: [market.address],
-    });
-    let info = infos[0];
-
-    await fork(john, info);
-
+    await fork(john, market);
     await otherMarket.disavowCrowdsourcers();
-
     await john.sync();
 
-    infos = await john.api.route('getMarketsInfo', {
+    const infos = await john.api.route('getMarketsInfo', {
       marketIds: [otherMarket.address],
     });
     expect(infos.length).toEqual(1);
-    info = infos[0];
+    const info = infos[0];
 
     expect(info).toHaveProperty('disavowed');
     expect(info['disavowed']).toEqual(1);

@@ -16,6 +16,7 @@ import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { makeProvider } from '../../../libs';
 import { SDKConfiguration } from '@augurproject/artifacts';
+import { MarketInfo } from "@augurproject/sdk/build/state/getter/Markets";
 
 describe('State API :: Universe :: ', () => {
   let john: TestContractAPI;
@@ -70,11 +71,11 @@ describe('State API :: Universe :: ', () => {
 
     const market = await john.createReasonableYesNoMarket();
     await john.sync();
-    const marketInfo = (await john.api.route('getMarketsInfo', {
+    const marketInfo: MarketInfo = (await john.api.route('getMarketsInfo', {
       marketIds: [market.address],
     }))[0];
 
-    await fork(john, marketInfo);
+    await fork(john, market);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
@@ -135,7 +136,7 @@ describe('State API :: Universe :: ', () => {
       marketIds: [market.address],
     }))[0];
 
-    await fork(john, marketInfo);
+    await fork(john, market);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
@@ -199,7 +200,7 @@ describe('State API :: Universe :: ', () => {
     const fooOutcome = makeValidScalarOutcome(marketInfo);
     const fooNumerators = getPayoutNumerators(marketInfo, fooOutcome);
 
-    await fork(john, marketInfo);
+    await fork(john, market);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
@@ -332,7 +333,7 @@ describe('State API :: Universe :: ', () => {
     const marketInfo = (await john.api.route('getMarketsInfo', {
       marketIds: [market.address],
     }))[0];
-    await fork(john, marketInfo);
+    await fork(john, market);
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
       repTokenAddress,
