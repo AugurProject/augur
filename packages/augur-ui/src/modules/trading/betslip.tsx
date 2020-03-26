@@ -25,7 +25,7 @@ export const Betslip = () => {
     toggleHeaderSelected,
     toggleSubHeaderSelected,
   } = useSelected();
-  const betslipInfo = useBetslip(selected.header);
+  const betslipInfo = useBetslip(selected);
   const { betslipAmount, isSelectedEmpty } = betslipInfo;
   const isMyBets = selected.header === 1;
   return (
@@ -59,7 +59,7 @@ export const Betslip = () => {
             ) : (
               <BetslipStepContext.Provider value={step}>
                 {isMyBets ? (
-                  <BetslipList marketItems={Object.entries(betslipInfo.myBets)} actions={betslipInfo.myBetsActions} />
+                  <BetslipList marketItems={Object.entries(betslipInfo.myBets[selected.subHeader])} actions={betslipInfo.myBetsActions} />
                 ): (
                   <BetslipList marketItems={Object.entries(betslipInfo.ordersInfo.orders)} actions={betslipInfo.ordersActions} />
                 )}
