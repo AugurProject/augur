@@ -35,7 +35,7 @@ const mapStateToProps = (state: AppState) => {
     show,
     buttonType: DISMISSABLE_NOTICE_BUTTON_TYPES.NONE,
     title: 'You Still have REP locked up in dispute Bonds and Participation Tokens.',
-    description: 'please follow the instructions given in the banner at the top of this site or the notification in your account summary.',
+    description: 'Please follow the instructions given in the banner at the top of this site or the notification in your account summary.',
   };
 };
 
