@@ -7,12 +7,10 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { ADD_FUNDS, track } from 'services/analytics/helpers';
 import { createBigNumber } from 'utils/create-big-number';
-import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
-import { formatAttoDai } from 'utils/format-number';
 
 const mapStateToProps = (state: AppState) => {
-  const ethToDaiRate = getEthForDaiRate();
-  const ETH_RATE = createBigNumber(formatAttoDai(ethToDaiRate).roundedValue);
+  const ethToDaiRate = state.appStatus.ethToDaiRate;
+  const ETH_RATE = createBigNumber(1).dividedBy(ethToDaiRate.value);
   // TODO placeholder rates until price feed is hooked up
   const REP_RATE = createBigNumber(15.87);
 

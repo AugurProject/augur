@@ -45,7 +45,7 @@ export const Swap = ({
   };
 
   const setTokenAmount = (amount: BigNumber, displayBalance: BigNumber) => {
-    if (amount.lte(0)) {
+    if (amount.lte(0) || isNaN(amount.toNumber())) {
       setSelectedFromTokenAmount(createBigNumber(0));
     } else if (amount.gt(displayBalance)) {
       setSelectedFromTokenAmount(displayBalance);
