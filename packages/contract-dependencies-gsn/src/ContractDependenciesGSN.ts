@@ -118,7 +118,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     wethAddress: string,
     cashAddress: string,
     address?: string): Promise<ContractDependenciesGSN> {
-      const token0IsCash = cashAddress < wethAddress;
+      const token0IsCash = new BigNumber(cashAddress).lt(wethAddress);
       const deps = new ContractDependenciesGSN(provider, signer, augurWalletRegistryAddress, ethExchangeAddress, token0IsCash, address);
       await deps.refreshGasPriceAndExchangeRate();
       return deps;
