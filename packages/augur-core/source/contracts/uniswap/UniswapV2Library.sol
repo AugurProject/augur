@@ -4,6 +4,8 @@ import 'ROOT/uniswap/interfaces/IUniswapV2Library.sol';
 import 'ROOT/uniswap/libraries/SafeMath.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
+import 'ROOT/uniswap/UniswapV2Exchange.sol';
+
 
 contract UniswapV2Library is IUniswapV2Library {
     using SafeMath for uint;
@@ -19,13 +21,14 @@ contract UniswapV2Library is IUniswapV2Library {
     }
 
     // calculates the CREATE2 address for an exchange without making any external calls
-    function exchangeFor(address tokenA, address tokenB) internal view returns (address exchange) {
+    function exchangeFor(address tokenA, address tokenB) public view returns (address exchange) {
         (address token0, address token1) = sortTokens(tokenA, tokenB);
+        bytes1 _const = 0xff;
         exchange = address(uint(keccak256(abi.encodePacked(
-            hex'ff',
+            _const,
             factory,
             keccak256(abi.encodePacked(token0, token1)),
-            hex'8548287401d15401e1162bb5bc290f6fba82afcb66944df43c3017817522771b' // init code hash for exchanges
+            keccak256(abi.encodePacked(type(UniswapV2Exchange).creationCode))
         ))));
     }
 

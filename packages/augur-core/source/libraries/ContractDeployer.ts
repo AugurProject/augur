@@ -31,6 +31,7 @@ import {
   // Uniswap
   UniswapV2Factory,
   UniswapV2Exchange,
+  UniswapV2Router01,
   WETH9
 } from './ContractInterfaces';
 import { Contracts, ContractData } from './Contracts';
@@ -263,6 +264,7 @@ Deploying to: ${env}
         mapping['Exchange'] = this.contracts.get('Exchange').address!;
 
         mapping['UniswapV2Factory'] = this.contracts.get('UniswapV2Factory').address!;
+        mapping['UniswapV2Router01'] = this.contracts.get('UniswapV2Router01').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
         mapping['EthExchange'] = await uniswapV2Factory.getExchange_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
 
@@ -436,6 +438,8 @@ Deploying to: ${env}
     private async uploadUniswapContracts() : Promise<string> {
       const uniswapV2FactoryContract = await this.contracts.get('UniswapV2Factory');
       uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', ["0x0000000000000000000000000000000000000000"]);
+      const uniswapRouterContract = await this.contracts.get('UniswapV2Router01');
+      uniswapRouterContract.address = await this.uploadAndAddToAugur(uniswapRouterContract, 'UniswapV2Router01', [this.getContractAddress("WETH9"), uniswapV2FactoryContract.address]);
       return uniswapV2FactoryContract.address;
     }
 
@@ -626,6 +630,7 @@ Deploying to: ${env}
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
         mapping['UniswapV2Factory'] = this.contracts.get('UniswapV2Factory').address!;
+        mapping['UniswapV2Router01'] = this.contracts.get('UniswapV2Router01').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
         mapping['EthExchange'] = await uniswapV2Factory.getExchange_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
 

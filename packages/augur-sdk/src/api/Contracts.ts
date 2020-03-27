@@ -35,6 +35,7 @@ export class Contracts {
   augurWalletRegistry: ContractInterfaces.AugurWalletRegistry;
   relayHub: ContractInterfaces.RelayHub;
   weth: ContractInterfaces.WETH9;
+  uniswap: ContractInterfaces.UniswapV2Router01;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -69,6 +70,7 @@ export class Contracts {
     this.augurWalletRegistry = new ContractInterfaces.AugurWalletRegistry(dependencies, addresses.AugurWalletRegistry);
     this.relayHub = new ContractInterfaces.RelayHub(dependencies, RELAY_HUB_ADDRESS);
     this.weth = new ContractInterfaces.WETH9(dependencies, addresses.WETH9);
+    this.uniswap = new ContractInterfaces.UniswapV2Router01(dependencies, addresses.UniswapV2Router01);
 
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);

@@ -475,6 +475,8 @@ class ContractsFixture:
     def uploadUniswapContracts(self):
         factory = self.uploadAndAddToAugur("../source/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=[nullAddress])
         self.generateAndStoreSignature("../source/contracts/uniswap/UniswapV2Exchange.sol")
+        wethAddress = self.contracts["WETH9"].address
+        self.upload("../source/contracts/uniswap/UniswapV2Router01.sol", constructorArgs=[wethAddress, factory.address])
 
     def initializeAllContracts(self):
         coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepOracle']

@@ -89,6 +89,7 @@ export const EXTERNAL_CONTRACTS = [
     // Uniswap
     'UniswapV2Factory',
     'UniswapV2Exchange',
+    'UniswapV2Router01',
     // GSN
     'RelayHub'
 ];
