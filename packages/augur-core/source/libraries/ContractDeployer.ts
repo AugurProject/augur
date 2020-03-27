@@ -364,6 +364,9 @@ Deploying to: ${env}
         const joinContract = await this.contracts.get('TestNetDaiJoin');
         joinContract.address = await this.uploadAndAddToAugur(joinContract, 'DaiJoin', [vatContract.address, cashContract.address]);
 
+        const weth9Contract = this.contracts.get('WETH9');
+        weth9Contract.address = await this.uploadAndAddToAugur(weth9Contract, 'WETH9');
+
         await this.augur!.registerContract(stringTo32ByteHex('CashFaucet'), cashContract.address);
 
         const cash = new Cash(this.dependencies, cashContract.address);
@@ -405,9 +408,6 @@ Deploying to: ${env}
 
       const devUtilsContract = this.contracts.get('DevUtils');
       devUtilsContract.address = await this.uploadAndAddToAugur(devUtilsContract, 'DevUtils', [zeroXExchangeContract.address, chaiBridgeContract.address]);
-
-      const weth9Contract = this.contracts.get('WETH9');
-      weth9Contract.address = await this.uploadAndAddToAugur(weth9Contract, 'WETH9');
 
       const zrxTokenContract = this.contracts.get('ZRXToken');
       zrxTokenContract.address = await this.uploadAndAddToAugur(zrxTokenContract, 'ZRXToken');
