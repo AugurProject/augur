@@ -258,7 +258,6 @@ export default class Form extends React.Component<FormProps, FormState> {
         }
       });
     } else {
-      clearNewMarket();
       cb && cb(true);
     }
   };
