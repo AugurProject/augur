@@ -2295,7 +2295,7 @@ export const CategoryRow = ({
 );
 
 export const MigrateRepInfo = () => (
-  <div className={Styles.MigrateRepInfo}>
+  <section className={Styles.MigrateRepInfo}>
     <span>A note on Forking</span>
     <p>
       Augur is now in a state of Forking. The fork state is a special state that
