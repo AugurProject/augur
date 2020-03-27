@@ -2,8 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/reporting/forking.styles.less';
 import { ExclamationCircle } from 'modules/common/icons';
-import { CountdownProgress, formatTime } from 'modules/common/progress';
-import { PrimaryButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
+import { CountdownProgress } from 'modules/common/progress';
+import { ProcessingButton, SubmitTextButton } from 'modules/common/buttons';
 import { DateFormattedObject } from 'modules/types';
 import { SIXTY_DAYS, MIGRATEOUTBYPAYOUT, TRANSACTIONS } from 'modules/common/constants';
 
@@ -39,7 +39,7 @@ export const Forking = (props: ForkingProps) => (
       </span>
       <div>
         {props.hasStakedRep && (
-          <SecondaryButton
+          <SubmitTextButton
             action={props.hasStakedRepAction}
             text={'Release my REP'}
           />
