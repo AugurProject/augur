@@ -114,7 +114,7 @@ export function updateTradeShares({
       newShares = createBigNumber(maxCost).dividedBy(scaledPrice);
     }
 
-    newTradeDetails.numShares = newShares;
+    newTradeDetails.numShares = createBigNumber(newShares.toFixed(4));
 
     return runSimulateTrade(
       newTradeDetails,

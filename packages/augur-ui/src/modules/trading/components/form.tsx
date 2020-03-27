@@ -655,6 +655,7 @@ class Form extends Component<FromProps, FormState> {
 
   validateForm(property: string, rawValue) {
     const {
+      updateOrderProperty,
       updateTradeTotalCost,
       updateTradeNumShares,
       selectedNav,
@@ -688,15 +689,17 @@ class Form extends Component<FromProps, FormState> {
     let expiration = updatedState[this.INPUT_TYPES.EXPIRATION_DATE];
 
     // have price and quantity was modified clear total cost
-    if (
-      orderPrice &&
-      property === this.INPUT_TYPES.QUANTITY
-    ) {
+    if (orderPrice && property === this.INPUT_TYPES.QUANTITY) {
+      updatedState[this.INPUT_TYPES.EST_DAI] = '';
+      updateOrderProperty({ [this.INPUT_TYPES.EST_DAI]: '' })
       orderDaiEstimate = '';
-    } else if ( // have price and total cost was modified clear quantity
+    } else if (
+      // have price and total cost was modified clear quantity
       orderPrice &&
       property === this.INPUT_TYPES.EST_DAI
     ) {
+      updatedState[this.INPUT_TYPES.QUANTITY] = '';
+      updateOrderProperty({ [this.INPUT_TYPES.QUANTITY]: '' });
       orderQuantity = '';
     }
 
