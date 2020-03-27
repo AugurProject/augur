@@ -172,7 +172,7 @@ export class MarketDB extends DerivedDB {
     const feeDivisor = new BigNumber(marketData.feeDivisor);
     const numTicks = new BigNumber(marketData.numTicks);
     const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(feeDivisor));
-    const orderBook = await this.getOrderBook(marketData, numOutcomes, estimatedTradeGasCostInAttoDai);
+    const orderBook = await this.getOrderBook(marketData, numOutcomes);
 
     // since zeroX orders will not be hydrated on first sync, we will need to pre-populate
     // liquidty filter data based off the last stored state of the MaraketDB (if avaiable)
@@ -205,6 +205,7 @@ export class MarketDB extends DerivedDB {
         feePerCashInAttoCash,
         numOutcomes,
         spread,
+        estimatedTradeGasCostInAttoDai,
       });
       marketOrderBookData.liquidity[spread] = liquidity.toFixed().padStart(30, '0');
     }
@@ -251,7 +252,7 @@ export class MarketDB extends DerivedDB {
       .sortBy('endTime');
   }
 
-  async getOrderBook(marketData: MarketData, numOutcomes: number, estimatedTradeGasCostInAttoDai: BigNumber): Promise<OrderBook> {
+  async getOrderBook(marketData: MarketData, numOutcomes: number): Promise<OrderBook> {
     let outcomes = ['0x00', '0x01', '0x02'];
 
     if (marketData.outcomes && marketData.outcomes.length > 0) {
@@ -286,14 +287,7 @@ export class MarketDB extends DerivedDB {
     }
 
     const outcomeBidAskOrders = Object.keys(currentOrdersByOutcome).map((outcomeOrders) => {
-      // Cut out orders where gas costs > 2% of the trade
-      const sufficientlyLargeOrders = _.filter(currentOrdersByOutcome[outcomeOrders], (order) => {
-        const gasCost = new BigNumber(order.amount).multipliedBy(marketData.numTicks).div(MAX_TRADE_GAS_PERCENTAGE_DIVISOR);
-        const maxGasCost = gasCost.multipliedBy(2); // 2%
-        return maxGasCost.gte(estimatedTradeGasCostInAttoDai);
-      });
-
-      const groupedByOrderType = _.groupBy(sufficientlyLargeOrders, 'orderType');
+      const groupedByOrderType = _.groupBy(currentOrdersByOutcome[outcomeOrders], 'orderType');
       const bids = groupedByOrderType ? _.reverse(_.sortBy(groupedByOrderType[OrderTypeHex.Bid], 'price')) : [];
       const asks = groupedByOrderType ? _.sortBy(groupedByOrderType[OrderTypeHex.Ask], 'price') : [];
       return {
