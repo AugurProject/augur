@@ -456,11 +456,7 @@ export async function redeemUserStakes(
 
 export async function disavowMarket(marketId: string) {
   const { contracts } = augurSdk.get();
-  try {
-    contracts.marketFromAddress(marketId).disavowCrowdsourcers();
-  } catch (e) {
-    console.error('Could not disavow market', marketId, e);
-  }
+  return contracts.marketFromAddress(marketId).disavowCrowdsourcers();
 }
 
 export interface doReportDisputeAddStake {
@@ -736,6 +732,11 @@ export async function cancelOpenOrders(orderIds: string[]) {
 export async function cancelOpenOrder(orderId: string) {
   const { contracts } = augurSdk.get();
   return contracts.cancelOrder.cancelOrder(orderId);
+}
+
+export async function getReportingDivisor(): Promise<BigNumber> {
+  const { contracts } = augurSdk.get();
+  return await contracts.universe.getReportingFeeDivisor_();
 }
 
 export async function cancelZeroXOpenOrder(orderId: string) {

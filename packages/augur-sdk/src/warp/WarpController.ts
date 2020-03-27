@@ -178,6 +178,18 @@ export class WarpController {
 
     // WarpSync Market has ended. Need to create checkpoint.
     if (mostRecentCheckpoint.endTimestamp < newBlock.timestamp) {
+      const [
+        newBeginBlock,
+        newEndBlock,
+      ] = await this.checkpoints.calculateBoundary(
+        mostRecentCheckpoint.endTimestamp,
+        mostRecentCheckpoint.begin,
+        newBlock
+      );
+
+      // Market has finished and now we need to wait 30 blocks.
+      if((newBlock.number - newEndBlock.number) < 30) return;
+
       /*
        * To create the checkpoint properly we need to discover the boundary blocks around the end time.
        **/
@@ -227,6 +239,9 @@ export class WarpController {
       beginBlock,
       endBlock,
     ] = await this.db.warpCheckpoints.getCheckpointBlockRange();
+
+    // We are in the 30 block grace period of the first checkpoint.
+    if(!endBlock) return;
 
     const topLevelDirectory = new DAGNode(
       Unixfs.default('directory').marshal()

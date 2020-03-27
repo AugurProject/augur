@@ -539,34 +539,34 @@ div.ReportingSubheaders {
     display: flex;
   }
 
+  .ShowTotals {
+    .text-10-medium;
+
+    color: @color-primary-text;
+    display: flex;
+    flex-direction: column;
+
+    > span:first-of-type {
+      .text-14-medium;
+
+      color: @color-primary-text;
+      margin-top: @size-16;
+      margin-bottom: @size-16;
+    }
+
+    > span:nth-of-type(2) {
+      .text-12;
+
+      color: @color-secondary-text;
+      margin-bottom: @size-12;
+    }
+  }
+
   &.InitialReport {
     > div:last-of-type {
       display: flex;
       flex-direction: column;
       margin: @size-10 0;
-    }
-
-    .ShowTotals {
-      .text-10-medium;
-
-      color: @color-primary-text;
-      display: flex;
-      flex-direction: column;
-
-      > span:first-of-type {
-        .text-14-medium;
-
-        color: @color-primary-text;
-        margin-top: @size-16;
-        margin-bottom: @size-16;
-      }
-
-      > span:nth-of-type(2) {
-        .text-12;
-
-        color: @color-secondary-text;
-        margin-bottom: @size-12;
-      }
     }
   }
 
@@ -596,6 +596,10 @@ div.ReportingSubheaders {
     > div:nth-of-type(4) {
       margin-top: @size-16;
     }
+
+    > div[class*="DismissableNotice"] {
+      margin-top: @size-16
+    }
   }
 }
 
@@ -603,7 +607,7 @@ div.ReportingSubheaders {
   background-color: @color-table-header;
   border: 1px solid @color-secondary-action-outline;
   padding: @size-16;
-  margin-top: @size-16;
+  margin: @size-16 0;
 
   > label {
     .text-12;

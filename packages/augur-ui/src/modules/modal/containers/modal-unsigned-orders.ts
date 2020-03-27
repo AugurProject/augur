@@ -117,10 +117,6 @@ const mergeProps = (sP, dP, oP) => {
     submitAllTxCount,
     breakdown: [
       {
-        label: 'Transaction Fee',
-        value: sP.GsnEnabled ? displayGasInDai(gasCost) : gasCost,
-      },
-      {
         label: 'Total Cost (DAI)',
         value: formatDai(totalCost.toFixed()).full,
         highlight: true,

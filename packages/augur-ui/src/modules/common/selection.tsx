@@ -1,11 +1,7 @@
 import React, { Component, useState } from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/common/selection.styles';
-import {
-  ThickChevron,
-  Chevron,
-  ShareIcon,
-} from 'modules/common/icons';
+import { ThickChevron, Chevron, ShareIcon } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
@@ -68,11 +64,24 @@ interface DotSelectionState {
   toggleMenu: boolean;
 }
 
+
+function findSelected(options, defaultVal) {
+  const foundOption = options.find(
+    o => o.value === defaultVal
+  );
+  const defaultValue = defaultVal ? {
+    label: defaultVal.toString(),
+    value: defaultVal,
+  } : null;
+
+  return foundOption ? foundOption : defaultValue;
+}
+
 class Dropdown extends Component<DropdownProps, DropdownState> {
   state: DropdownState = {
     selected: this.props.defaultValue !== null
-      ? this.props.options.find(o => o.value === this.props.defaultValue)
-      : null,
+        ? findSelected(this.props.options, this.props.defaultValue)
+        : null,
     showList: false,
     scrollWidth: null,
     clientWidth: null,
@@ -97,13 +106,12 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
     this.measure();
     if (prevProps.defaultValue !== this.props.defaultValue) {
       this.setState({
-        selected: this.props.options.find(
-          o => o.value === this.props.defaultValue
-        ),
-      });
+        selected: findSelected(this.props.options, this.props.defaultValue)
+      })
     }
     if (
-      JSON.stringify(this.props.options) !== JSON.stringify(prevProps.options) ||
+      JSON.stringify(this.props.options) !==
+        JSON.stringify(prevProps.options) ||
       this.props.sort !== prevProps.sort
     ) {
       const sortedList =
@@ -383,12 +391,11 @@ export const PillSelection = ({
   return (
     <ul className={Styles.PillSelection}>
       {options.map(
-        (option: SelectionOption): React.ReactNode =>
-          renderButton(option)
+        (option: SelectionOption): React.ReactNode => renderButton(option)
       )}
     </ul>
   );
-}
+};
 
 export class DotSelection extends Component<
   DotSelectionProps,

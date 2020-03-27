@@ -46,6 +46,7 @@ import {
   BUYPARTICIPATIONTOKENS,
   SUBMIT_DISPUTE,
   CLAIMMARKETSPROCEEDS,
+  DISAVOWCROWDSOURCERS,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -528,6 +529,9 @@ export const handleMarketParticipantsDisavowedLog = (logs: any) => (
   getState: () => AppState
 ) => {
   const marketIds = logs.map(log => log.market);
+  marketIds.map(marketId => {
+    dispatch(addPendingData(marketId, DISAVOWCROWDSOURCERS, TXEventName.Success, 0, {}));
+  })
   dispatch(loadMarketsInfo(marketIds));
 };
 

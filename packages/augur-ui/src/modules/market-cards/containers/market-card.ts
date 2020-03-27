@@ -25,6 +25,7 @@ const mapStateToProps = (state, ownProps) => {
     address: state.loginAccount.address,
     isFavorite: !!state.favorites[ownProps.market.marketId],
     hasStaked,
+    forkingMarket: state.universe.forkingInfo && state.universe.forkingInfo.forkingMarket,
   };
 };
 
