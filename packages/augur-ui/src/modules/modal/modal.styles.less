@@ -3072,11 +3072,17 @@ div.ButtonsRow:last-of-type {
       margin: 0 @size-16;
     }
 
-    > div:first-of-type {
+    > div:first-of-type,
+    > div[class*="ExplainerBlock"],
+    > section[class*="MigrateRepInfo"] {
       margin: @size-8 @size-16 @size-24;
       padding: @size-24;
       border: none;
       background-color: @color-table-header;
+    }
+
+    > section[class*="MigrateRepInfo"] {
+      margin-bottom: @size-8;
     }
 
     > div:nth-of-type(2) {

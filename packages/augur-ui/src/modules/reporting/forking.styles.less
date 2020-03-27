@@ -90,12 +90,9 @@
     }
   }
 
-  @media @breakpoint-mobile {
-    margin: calc(@size-24 + @top-bar-height-mobile) @size-24 @size-24 @size-24;
-  }
-
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile-tablet {
     grid-template-columns: @size-28 auto @size-28;
+    margin: @size-16;
 
     > svg {
       grid-column: 1;
