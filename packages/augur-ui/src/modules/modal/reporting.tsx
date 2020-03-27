@@ -375,6 +375,7 @@ export default class ModalReporting extends Component<
           {market.isWarpSync && !warpSyncHash &&
             <Error header={WarpSyncErrorHeader} subheader={WarpSyncErrorSubheader} />
           }
+          {migrateRep && <MigrateRepInfo />}
           {explainerBlockTitle && explainerBlockSubtexts && (
             <ExplainerBlock
               title={explainerBlockTitle}
@@ -383,7 +384,6 @@ export default class ModalReporting extends Component<
             />
           )}
           <div>
-            {migrateRep && <MigrateRepInfo />}
             <section>
               <MarketTypeLabel
                 marketType={marketType}
