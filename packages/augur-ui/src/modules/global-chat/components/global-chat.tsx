@@ -24,7 +24,7 @@ export const GlobalChat = ({ provider, whichChatPlugin }: GlobalChatProps) => {
           box={box}
           currentUserAddr={address}
           // optional
-          mute={false}
+          mute
           popupChat
           showEmoji
           colorTheme="#0E0E0F"
