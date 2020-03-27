@@ -2318,5 +2318,5 @@ export const MigrateRepInfo = () => (
       child universe for each possible outcome of the forking market (including
       Invalid).
     </p>
-  </div>
+  </section>
 );
