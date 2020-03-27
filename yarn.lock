@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"3box-comments-react@1.0.3-beta.8":
-  version "1.0.3-beta.8"
-  resolved "https://registry.yarnpkg.com/3box-comments-react/-/3box-comments-react-1.0.3-beta.8.tgz#5e29849b0898c47e8866c5800d10cfd76e25a415"
-  integrity sha512-ynHVuqH5Q+a2Qf6CbVnW0a3dNv6kTVzy4j54YuTzeXTqI2O+g35dvaYArV3El6YQvpAgFXueKD40Zx3NthqKfg==
+"3box-comments-react@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/3box-comments-react/-/3box-comments-react-2.0.0.tgz#9ad8ff45a53e82936fd82094418d2a88a1ae874c"
+  integrity sha512-eE5x9GTM4xVYulj+4KriL5DLr1y2Jt1ltPdahrlDZ12yGNHOjbtZn+UmlFL6HXm+md29vF1hLm607y1ixazt+w==
   dependencies:
-    "3box" "^1.17.0"
+    "3box" "^1.17.1"
     "3id-resolver" "0.0.6"
     "@babel/runtime" "^7.6.0"
     babel-core "^7.0.0-bridge.0"
@@ -31,7 +31,7 @@
     orbit-db "^0.23.1"
     orbit-db-access-controllers "~0.2.4"
 
-"3box@^1.17.0", "3box@^1.17.1":
+"3box@1.17.1", "3box@^1.17.1":
   version "1.17.1"
   resolved "https://registry.yarnpkg.com/3box/-/3box-1.17.1.tgz#7060f4b81eeccb7c7308125af343f25a55df79ee"
   integrity sha512-QDhW0V14P7auvCx+2WlPPJ6B/qji4PiVxVyVtr9sT4aRMx1AYVnCqik3u3uiVPFTTWj09eBXsE8NK+M4pCGfsQ==
@@ -7064,17 +7064,7 @@ concat-stream@1.6.2, concat-stream@^1.4.7, concat-stream@^1.5.0, concat-stream@^
     readable-stream "^2.2.2"
     typedarray "^0.0.6"
 
-concat-stream@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-2.0.0.tgz#414cf5af790a48c60ab9be4527d56d5e41133cb1"
-  integrity sha512-MWufYdFw53ccGjCA+Ol7XJYpAlW6/prSMzuPOTRnJGcGzuhLn4Scrz7qf6o8bROZ514ltazcIFJZevcfbo0x7A==
-  dependencies:
-    buffer-from "^1.0.0"
-    inherits "^2.0.3"
-    readable-stream "^3.0.2"
-    typedarray "^0.0.6"
-
-"concat-stream@github:hugomrdias/concat-stream#feat/smaller":
+concat-stream@^2.0.0, "concat-stream@github:hugomrdias/concat-stream#feat/smaller":
   version "2.0.0"
   resolved "https://codeload.github.com/hugomrdias/concat-stream/tar.gz/057bc7b5d6d8df26c8cf00a3f151b6721a0a8034"
   dependencies:
