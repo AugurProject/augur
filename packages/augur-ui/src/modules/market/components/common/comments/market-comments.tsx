@@ -29,18 +29,18 @@ export const MarketComments = ({
 
   return (
     <section className={Styles.Comments}>
-      {whichCommentPlugin === '3box' && threeBox.isReady && (
+      {whichCommentPlugin === '3box' && isReady && (
         <ThreeBoxComments
           // required
           spaceName="augur"
           threadName={marketId}
           adminEthAddr={adminEthAddr}
           // Required props for context A) & B)
-          box={threeBox.box}
-          currentUserAddr={threeBox.address}
+          box={box}
+          currentUserAddr={address}
           // optional
           showCommentCount={numPosts}
-          currentUser3BoxProfile={threeBox.profile}
+          currentUser3BoxProfile={profile}
           // useHovers={true}
         />
       )}
