@@ -39,7 +39,7 @@ h6 {
   height: 100%;
 }
 
-.App--blur {
+.AppBlur {
   filter: blur(@size-2);
 }
 
@@ -94,7 +94,7 @@ h6 {
   }
 }
 
-.Main__wrap {
+.Wrap {
   display: grid;
   overflow: hidden;
 
@@ -108,7 +108,7 @@ h6 {
   }
 }
 
-.Main__wrapMarkets {
+.WrapMarkets {
   grid-template-columns: minmax(auto, @size-250) auto;
 
   @media @breakpoint-mobile {
@@ -122,7 +122,7 @@ h6 {
   }
 }
 
-.Main__content {
+.Content {
   height: calc(~"100vh - @{multi-top-bar-height}");
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
@@ -176,6 +176,18 @@ h6 {
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Content {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .HideBetslip > aside {
+    display: none;
+  }
+}
+
 .SideBar {
   background: var(--color-module-background);
 
@@ -193,7 +205,7 @@ h6 {
 }
 
 
-.SideBar__mobile-bars {
+.MobileBars {
   top: 0;
   left: 0;
   border-bottom: @size-1 solid var(--color-module-background);
@@ -227,12 +239,6 @@ h6 {
   }
 }
 
-svg.SideBar__mobile-bars-unseen {
-  bottom: 1.4rem;
-  position: relative;
-  right: 0.35rem;
-}
-
 .TopBar {
   z-index: @mask-above;
 
@@ -241,7 +247,7 @@ svg.SideBar__mobile-bars-unseen {
   }
 }
 
-.TopBar__floatAbove {
+.FloatAbove {
   z-index: @mask-above;
 
   @media @breakpoint-mobile {

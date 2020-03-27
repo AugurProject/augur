@@ -1,0 +1,554 @@
+@import (reference) '~assets/styles/shared';
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .HeaderTabs {
+    align-items: center;
+    background: var(--color-primary-text);
+    border-top-left-radius: @border-radius-rounded;
+    border-top-right-radius: @border-radius-rounded;
+    display: flex;
+    flex-flow: row nowrap;
+    height: @size-48;
+    justify-content: space-around;
+  
+    @media @breakpoint-mobile-tablet {
+      display: none;
+    }
+  
+    > li {
+      .text-14-bold;
+  
+      align-items: center;
+      color: var(--color-dark-text);
+      cursor: pointer;
+      display: flex;
+      flex: 1;
+      flex-flow: row nowrap;
+      height: 100%;
+      justify-content: center;
+      text-transform: uppercase;
+  
+      > span {
+        .text-10;
+  
+        align-items: center;
+        align-content: center;
+        border: @size-1 solid var(--color-outline);
+        border-radius: @border-radius-default;
+        display: flex;
+        justify-content: center;
+        height: @size-20;
+        width: @size-20;
+        margin-left: @size-10;
+        color: var(--color-module-background);
+      }
+  
+      &.Selected {
+        color: var(--color-module-background);
+  
+        > span {
+          background: var(--color-module-background);
+          border: @size-1 solid var(--color-module-background);
+          color: var(--color-primary-text);
+        }
+      }
+    }
+  }
+
+  .MyBetsSubheader {
+    align-items: center;
+    background: var(--color-page-background);
+    height: @size-36;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    width: 100%;
+
+    > li {
+      .text-12-bold;
+
+      align-items: center;
+      border-bottom: @size-1 solid var(--color-dark-grey);
+      color: var(--color-inactive-text);
+      cursor: pointer;
+      display: flex;
+      flex: 0.5;
+      height: 100%;
+      justify-content: center;
+      text-transform: uppercase;
+
+      &.Selected {
+        color: var(--color-primary-text);
+        border-bottom: @size-2 solid var(--color-primary-text);
+      }
+    }
+  }
+
+  .BetslipList {
+    display: grid;
+    grid-gap: @size-8 0;
+    flex: 1;
+    padding: @size-12;
+    width: 100%;
+    max-height: 65vh;
+    overflow: auto;
+
+    > div:last-of-type {
+      margin-bottom: @size-8;
+    }
+  }
+
+  .SportsMarketBets {
+    border: @size-1 solid var(--color-dark-grey);
+    border-radius: @border-radius-rounded;
+    display: flex;
+    flex-flow: column nowrap;
+
+    > h4 {
+      .text-10-bold;
+
+      background: var(--color-page-background);
+      border-top-left-radius: @border-radius-rounded;
+      border-top-right-radius: @border-radius-rounded;
+      color: var(--color-primary-text);
+      padding: @size-8 @size-7;
+      height: @size-30;
+      white-space: nowrap;
+      word-break: break-all;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  .SportsBet {
+    border-top: @size-1 solid var(--color-dark-grey);
+    display: grid;
+    grid-gap: @size-8;
+    grid-template-columns: 1fr 1fr;
+    padding: @size-12;
+
+    &:last-of-type {
+      border-bottom-left-radius: @border-radius-rounded;
+      border-bottom-right-radius: @border-radius-rounded;
+    }
+
+    &.Review {
+      > header {
+        grid-template-columns: 1fr 0fr;
+
+        > span:last-of-type {
+          display: none;
+        }
+
+        > button > svg {
+          margin-right: @size-6;
+
+          > path {
+            stroke: var(--color-primary-text);
+          }
+        }
+      }
+
+      > div {
+        grid-column: span 2;
+        margin: 0 @size-4;
+
+        > span {
+          .text-12;
+
+          &:first-of-type {
+            .text-10-semi-bold;
+          }
+        }
+      }
+    }
+
+    > header {
+      display: grid;
+      grid-column: span 2;
+      grid-template-columns: 1fr 0fr 0fr;
+      grid-gap: 0 @size-10;
+      margin: 0 @size-4;
+
+      > span {
+        .text-12-bold;
+
+        color: var(--color-primary-text);
+        
+        &:first-of-type {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-break: break-all;
+          white-space: nowrap;
+        }
+      }
+
+      > button {
+        .text-10-semi-bold;
+
+        align-items: center;
+        color: var(--color-primary-text);
+        display: flex;
+        justify-content: center;
+        text-transform: uppercase;
+
+        &:hover {
+          > svg > path {
+            stroke: var(--color-primary-text);
+          }
+        }
+
+        > svg {
+          width: @size-12;
+          height: @size-14;
+
+          > path {
+            stroke: var(--color-dark-text)
+          }
+        }
+      }
+    }
+  }
+
+  .SportsMyBet {
+    .SportsBet;
+
+    > div:nth-of-type(3),
+    > div:nth-of-type(4) {
+      display: none;
+    }
+
+    > button {
+      .text-10-semi-bold;
+
+      display: none;
+      color: var(--color-primary-text);
+      text-transform: uppercase;
+      border-radius: @border-radius-default;
+      border: @size-1 solid var(--color-inactive-text);
+      padding: @size-3 @size-6;
+
+      &:disabled {
+        opacity: .5;
+      }
+    }
+
+    > span {
+      .text-12;
+
+      display: flex;
+      flex-flow: row;
+      grid-column: span 2;
+      color: var(--color-primary-text);
+    }
+
+    &.FAILED {
+      background: var(--color-error-10);
+
+      > div:nth-of-type(3) {
+        display: flex;
+      }
+
+      > span {
+        color: var(--color-error);
+
+        > button {
+          .text-12-bold;
+
+          cursor: pointer;
+          margin-left: @size-4;
+        }
+      }
+    }
+
+    &.PARTIALLY_FILLED,
+    &.PARTIALLY_FILLED.Expanded {
+      > button {
+        display: flex;
+        grid-column: span 2;
+        justify-self: flex-end;
+
+        &:first-of-type {
+          display: none;
+        }
+      }
+    }
+
+    &.Expanded {
+      background: var(--color-page-background);
+
+      > header > button > svg {
+        transform: rotate(180deg);
+      }
+
+      > div:nth-of-type(3),
+      > div:nth-of-type(4) {
+        display: flex;
+      }
+
+      > button {
+        display: flex;
+        grid-column: auto;
+        border-color: var(--color-inactive-text);
+
+        &:first-of-type {
+          border: none;
+          justify-self: flex-start;
+          background: transparent;
+        }
+
+        &:last-of-type {
+          justify-content: center;
+        }
+      }
+    }
+
+    > header > button {
+      &.NEWFILL {
+        > svg {
+          margin: 0;
+  
+          > path {
+            stroke: var(--color-open);
+          }
+        }
+      }
+
+      &.FAILED {
+        > svg {
+          margin: 0;
+  
+          > path {
+            stroke: var(--color-error);
+          }
+        }
+      }
+
+      &.PENDING {
+        > svg {
+          animation: spin 2s linear infinite;
+          height: @size-20;
+          width: @size-20;
+          margin: 0;
+
+          > path {
+            stroke: var(--color-reporting);
+          }
+
+          LinearGradient > stop {
+            stop-color: var(--color-reporting);
+          }
+        }
+      }
+
+      &.PARTIALLY_FILLED,
+      &.FILLED {
+        align-items: center;
+        justify-content: center;
+        border: @size-1 solid var(--color-dark-text);
+        border-radius: @border-radius-soft;
+        display: flex;
+        height: @size-20;
+        width: @size-20;
+
+        > svg {
+          width: @size-10;
+          height: @size-12;
+          margin: 0;
+
+          > path {
+            stroke: none;
+            fill: var(--color-primary-text);
+          }
+        }
+      }
+    }
+  }
+
+  .BetslipInput {
+    border: @size-1 solid var(--color-dark-grey);
+    border-radius: @border-radius-default;
+    display: flex;
+    height: @size-36;
+    position: relative;
+    justify-content: center;
+
+    &:focus:not(.NoEdit),
+    &:hover:not(.NoEdit) {
+      border: @size-1 solid var(--color-dark-text);
+    }
+
+    &.Error,
+    &.Error:focus:not(.NoEdit),
+    &.Error:hover:not(.NoEdit) {
+      border: @size-1 solid var(--color-error);
+
+      > span {
+        color: var(--color-error);
+      }
+    }
+
+    > span {
+      .text-10-semi-bold;
+
+      background: var(--color-module-background);
+      color: var(--color-inactive-text);
+      text-transform: uppercase;
+      padding: 0 @size-3;
+      position: absolute;
+      top: -@size-6;
+    }
+
+    > input {
+      .text-14;
+
+      background: var(--color-module-background);
+      border-radius: @border-radius-default;
+      color: var(--color-primary-text);
+      padding: 0;
+      text-align: center;
+
+      &:focus,
+      &:active,
+      &:disabled {
+        border: none;
+      }
+    }
+  }
+
+  .BetslipFooter {
+    background: var(--color-table-header);
+    border-top: @size-1 solid var(--color-secondary-action-outline);
+    display: grid;
+    grid-gap: @size-8 @size-16;
+    grid-template-columns: 1fr 1fr;
+    border-bottom-left-radius: @border-radius-rounded;
+    border-bottom-right-radius: @border-radius-rounded;
+    padding: @size-12;
+    width: 100%;
+
+    > a {
+      .text-10-semi-bold;
+
+      border: 0;
+      color: var(--color-primary-text);
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      padding-left: @size-8;
+      grid-column: span 2;
+
+      > svg {
+        width: @size-8;
+        height: @size-10;
+        transform: rotate(-.25turn);
+
+        > path {
+          fill: var(--color-primary-text);
+        }
+      }
+
+      > span {
+        margin-left: @size-6;
+        text-transform: uppercase;
+      }
+    }
+
+    > div {
+      grid-column: span 2;
+    }
+
+    > span {
+      .text-12;
+
+      color: var(--color-primary-text);
+      grid-column: span 2;
+    }
+
+    > button[class*="Button"] {
+      .text-14-bold;
+
+      max-width: @size-147;
+      min-width: 100%;
+      padding: 0;
+
+      &:first-of-type {
+        border: @size-1 solid var(--color-dark-text);
+
+        &:hover,
+        &:active {
+          border: @size-1 solid var(--color-primary-text);
+
+          > svg > path {
+            stroke: var(--color-module-background);
+          }
+        }
+
+        &:active:hover:focus,
+        &:focus:hover {
+           > svg > path {
+             stroke: var(--color-primary-text);
+          }
+        }
+
+        > svg {
+          width: @size-15;
+          height: @size-17;
+          margin-right: @size-8;
+  
+          > path {
+            stroke: var(--color-primary-text);
+          }
+        }
+      }
+    }
+
+    > button:not([class*="Button"]) {
+      display: none;
+    }
+
+    &.Unmatched {
+      grid-template-columns: 1fr 0fr;
+
+      > a {
+        grid-column: span 1;
+      }
+
+      > button:not([class*="Button"]) {
+        .text-10-semi-bold;
+  
+        color: var(--color-primary-text);
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        text-transform: uppercase;
+        white-space: nowrap;
+  
+        > svg {
+          width: @size-12;
+          height: @size-14;
+          margin-right: @size-6;
+  
+          > path {
+            stroke: var(--color-primary-text)
+          }
+        }
+      }
+    }
+    }
+
+    
+}
+
+:root[theme="SPORTS"] {
+  .MyBetsSubheader {
+    display: none;
+  }
+}

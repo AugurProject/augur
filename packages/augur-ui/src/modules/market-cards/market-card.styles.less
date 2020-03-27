@@ -373,7 +373,7 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .MarketCard {
-    grid-template-columns: 1fr 0fr;
+    grid-template-columns: 1fr 0.15fr;
     grid-template-rows: @size-20 1fr 0fr 0fr;
     grid-gap: @size-8;
     padding: @size-12;
@@ -493,6 +493,10 @@
 
     @media @breakpoint-mobile-tablet {
       grid-template-rows: 0fr 0fr 0fr 0fr;
+    }
+
+    &.Scalar {
+      grid-template-rows: @size-20 0fr 0fr 0fr;
     }
 
     > div.InfoIcons {
