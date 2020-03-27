@@ -20,16 +20,9 @@ contract UniswapV2Library is IUniswapV2Library {
         require(token0 != address(0), 'UniswapV2Helper: ZERO_ADDRESS');
     }
 
-    // calculates the CREATE2 address for an exchange without making any external calls
+    // calculates the CREATE2 address for an exchange
     function exchangeFor(address tokenA, address tokenB) public view returns (address exchange) {
-        (address token0, address token1) = sortTokens(tokenA, tokenB);
-        bytes1 _const = 0xff;
-        exchange = address(uint(keccak256(abi.encodePacked(
-            _const,
-            factory,
-            keccak256(abi.encodePacked(token0, token1)),
-            keccak256(abi.encodePacked(type(UniswapV2Exchange).creationCode))
-        ))));
+        return factory.getExchange(tokenA, tokenB);
     }
 
     // fetches and sorts the reserves for an exchange
@@ -45,7 +38,7 @@ contract UniswapV2Library is IUniswapV2Library {
         require(reserveA > 0 && reserveB > 0, 'UniswapV2Helper: INSUFFICIENT_LIQUIDITY');
         amountB = amountA.mul(reserveB) / reserveA;
     }
-    
+
     // given an input amount of an asset and exchange reserves, returns the maximum output amount of the other asset
     function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) public pure returns (uint amountOut) {
         require(amountIn > 0, 'UniswapV2Helper: INSUFFICIENT_INPUT_AMOUNT');
@@ -64,7 +57,7 @@ contract UniswapV2Library is IUniswapV2Library {
         uint denominator = reserveOut.sub(amountOut).mul(997);
         amountIn = (numerator / denominator).add(1);
     }
- 
+
     // performs chained getAmountOut calculations on any number of exchanges
     function getAmountsOut(uint amountIn, address[] memory path) public view returns (uint[] memory amounts) {
         require(path.length >= 2, 'UniswapV2Helper: INVALID_PATH');

@@ -43,16 +43,9 @@ contract UniswapV2Router01 is IUniswapV2Router01, UniswapV2Library {
         assert(msg.sender == address(WETH)); // only accept ETH via fallback from the WETH contract
     }
 
-    // calculates the CREATE2 address for a pair without making any external calls
+    // calculates the CREATE2 address for a pair
     function pairFor(address tokenA, address tokenB) public view returns (address pair) {
-        (address token0, address token1) = sortTokens(tokenA, tokenB);
-        bytes1 _const = 0xff;
-        pair = address(uint(keccak256(abi.encodePacked(
-            _const,
-            factory,
-            keccak256(abi.encodePacked(token0, token1)),
-            keccak256(abi.encodePacked(type(UniswapV2Exchange).creationCode))
-        ))));
+        return factory.getExchange(tokenA, tokenB);
     }
 
     // **** ADD LIQUIDITY ****

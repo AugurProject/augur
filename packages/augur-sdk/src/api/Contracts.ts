@@ -137,4 +137,8 @@ export class Contracts {
   augurWalletFromAddress(address: string): ContractInterfaces.AugurWallet {
     return new ContractInterfaces.AugurWallet(this.dependencies, address);
   }
+
+  uniswapExchangeFromAddress(address: string): ContractInterfaces.UniswapV2Exchange {
+    return new ContractInterfaces.UniswapV2Exchange(this.dependencies, address);
+  }
 }
