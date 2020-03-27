@@ -7,106 +7,98 @@
   right: 0;
   z-index: @mask-modal;
 
-  div[class*="sc-launcher"],
-  div[class*="sc-chat-window"],
-  div[class*="sc-header"],
-  form[class*="sc-user-input"] > textarea,
-  div[class*="sc-popup-window--cointainer"],
-  input[class*="sc-popup-window--search"] {
+  div[class*='sc-launcher'],
+  div[class*='sc-chat-window'],
+  div[class*='sc-header'],
+  form[class*='sc-user-input'] > textarea,
+  div[class*='sc-popup-window--cointainer'],
+  input[class*='sc-popup-window--search'],
+  form[class*='sc-user-input active'] {
     background-color: @color-dark-grey;
   }
 
-  div[class*="sc-launcher"] {
+  div[class*='sc-message-list'],
+  div[class*='onlineList'],
+  div[class*='closeOnlineList'] {
+    background-color: @color-active-background;
+  }
+
+  div[class*='onlineList'],
+  input[class*='sc-popup-window--search'],
+  form[class*='sc-user-input active'],
+  input[class*='sc-popup-window--search'] {
+    color: @color-primary-text;
+  }
+
+  button[class*='sc-user-input--emoji-icon-wrapper'] path,
+  button[class*='sc-user-input--emoji-icon-wrapper'] circle {
+    fill: @color-primary-text;
+  }
+
+  div[class*='sc-launcher'] {
     bottom: @size-10;
   }
 
-  div[class*="popupChat"] > div {
+  div[class*='popupChat'] > div {
     bottom: @size-10;
   }
 
-  div[class*="sc-chat-window"] {
+  div[class*='sc-chat-window'] {
     border: @size-1 solid @color-secondary-action-outline;
     border-radius: @size-3;
     height: 300px;
     overflow: hidden;
   }
 
-  div[class*="sc-header"] {
-
-  }
-
-  div[class*="sc-message-list"],
-  div[class*="onlineList"],
-  div[class*="closeOnlineList"] {
-    background-color: @color-active-background;
-  }
-
-  div[class*="onlineList"] {
-    color: @color-primary-text;
-  }
-
-  form[class*="sc-user-input active"] {
-    background-color: @color-dark-grey;
-
-    > textarea {
-      color: @color-primary-text;
-
-      &:focus {
-        border: none;
-      }
-    }
-  }
-
-  div[class*="sc-user-input--button"] {
-    justify-content: center;
-  }
-
-  button[class*="sc-user-input--emoji-icon-wrapper"] path,
-  button[class*="sc-user-input--emoji-icon-wrapper"] circle {
-    fill: @color-primary-text;
-  }
-
-  div[class*="sc-header--close-button"] svg {
-    padding: @size-4;
-  }
-
-  div[class*="sc-header--close-button"] path {
-    stroke: @color-primary-text;
-  }
-
-  input[class*="sc-popup-window--search"] {
-    color: @color-primary-text;
-
+  form[class*='sc-user-input active'] > textarea {
     &:focus {
       border: none;
     }
   }
 
-  img[class*="input_user"] {
+  div[class*='sc-user-input--button'] {
+    justify-content: center;
+  }
+
+  div[class*='sc-header--close-button'] svg {
+    padding: @size-4;
+  }
+
+  div[class*='sc-header--close-button'] path {
+    stroke: @color-primary-text;
+  }
+
+  input[class*='sc-popup-window--search'] {
+    &:focus {
+      border: none;
+    }
+  }
+
+  img[class*='input_user'] {
     padding: @size-7;
   }
 
-  div[class*="sc-message--text"] {
+  div[class*='sc-message--text'] {
     .text-12;
 
     background-color: @color-dark-grey !important;
     color: @color-primary-text !important;
   }
 
-  div[class*="sc-header--team-name"] {
+  div[class*='sc-header--team-name'] {
     padding: 0 @size-8;
   }
 
-  div[class*="onlineList_members"] {
+  div[class*='onlineList_members'] {
     overflow: auto;
   }
 
-  div[class*="sc-header"] {
+  div[class*='sc-header'] {
     padding: 0 @size-10;
     min-height: unset;
   }
 
-  h3[class*="sc-header--team-name_text"] {
+  h3[class*='sc-header--team-name_text'] {
     .text-16-bold;
   }
 }
