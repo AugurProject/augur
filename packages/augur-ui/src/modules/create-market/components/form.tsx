@@ -101,7 +101,10 @@ import {
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
 import makeQuery from 'modules/routes/helpers/make-query';
-import { CREATE_MARKET_FORM_PARAM_NAME, CREATE_MARKET_PORTFOLIO } from 'modules/routes/constants/param-names';
+import {
+  CREATE_MARKET_FORM_PARAM_NAME,
+  CREATE_MARKET_PORTFOLIO,
+} from 'modules/routes/constants/param-names';
 import {
   TemplateInputType,
   TimeOffset,
@@ -198,7 +201,13 @@ export default class Form extends React.Component<FormProps, FormState> {
   }
 
   unblock = (cb?: Function) => {
-    const { drafts, newMarket, discardModal, isTemplate, clearNewMarket } = this.props;
+    const {
+      drafts,
+      newMarket,
+      discardModal,
+      isTemplate,
+      clearNewMarket,
+    } = this.props;
 
     const savedDraft = drafts[newMarket.uniqueId];
 
@@ -212,8 +221,10 @@ export default class Form extends React.Component<FormProps, FormState> {
     const disabledSave =
       savedDraft && JSON.stringify(market) === JSON.stringify(savedDraft);
     let unsaved =
-      !newMarket.uniqueId &&
-      JSON.stringify(market) !== JSON.stringify(defaultState);
+      (!newMarket.uniqueId &&
+        JSON.stringify(market) !== JSON.stringify(defaultState)) ||
+      (newMarket.uniqueId &&
+        JSON.stringify(market) !== JSON.stringify(savedDraft));
 
     if (
       !cb &&
@@ -552,7 +563,8 @@ export default class Form extends React.Component<FormProps, FormState> {
         const afterTuesday: TemplateInput = inputs.find(
           i =>
             i.type === TemplateInputType.DATEYEAR &&
-            i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY
+            i.validationType ===
+              ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY
         );
         if (closing) {
           const dateYearSource = inputs.find(
@@ -938,7 +950,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                           this.setState({ blockShown: true }, () => {
                             history.push({
                               pathname: makePath(MY_POSITIONS, null),
-                              search:  makeQuery({
+                              search: makeQuery({
                                 [CREATE_MARKET_PORTFOLIO]: 3,
                               }),
                             });
