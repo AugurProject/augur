@@ -60,7 +60,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
       i.type === TemplateInputType.ESTDATETIME ||
       i.type === TemplateInputType.DATETIME
         ? convertUnixToFormattedDate(Number(i.timestamp))
-            .formattedLocalShortDateTimeNoTimezone
+            .formattedLocalShortDateTimeWithTimezone
         : i.value,
     id: i.id,
     type: i.type as TemplateInputType,
