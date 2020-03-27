@@ -333,6 +333,38 @@
     }
   }
 
+  &.Forking {
+    > div:last-of-type {
+      grid-row: 5 / span 1;
+      align-items: flex-end;
+    }
+
+    > div[class*="OutcomeGroup"] {
+      grid-column: 2;
+    }
+
+    > button {
+      border-left: 1px solid @color-dark-grey;
+    }
+
+    &.Nonexpanding {
+      > div:last-of-type {
+        grid-row: 4 / span 1;
+      }
+
+      > div[class*="MigrateMarketNotice"] {
+        grid-row: 4;
+      }
+    }
+
+    &.Condensed {
+      > div[class*="MigrateMarketNotice"] {
+        grid-column: 2;
+        grid-row: 4;
+      }
+    }
+  }
+
   @media @breakpoint-mobile {
     margin: @size-4 0;
 
@@ -579,4 +611,9 @@
 
     }
   }
+}
+
+.MigrateMarketNotice {
+  grid-row: 5 / span 1;
+  padding: @size-10 @size-16;
 }
