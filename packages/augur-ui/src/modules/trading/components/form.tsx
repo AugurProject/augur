@@ -690,14 +690,12 @@ class Form extends Component<FromProps, FormState> {
     // have price and quantity was modified clear total cost
     if (
       orderPrice &&
-      property === this.INPUT_TYPES.QUANTITY &&
-      orderQuantity !== ''
+      property === this.INPUT_TYPES.QUANTITY
     ) {
       orderDaiEstimate = '';
     } else if ( // have price and total cost was modified clear quantity
       orderPrice &&
-      property === this.INPUT_TYPES.EST_DAI &&
-      orderDaiEstimate !== ''
+      property === this.INPUT_TYPES.EST_DAI
     ) {
       orderQuantity = '';
     }
@@ -716,6 +714,10 @@ class Form extends Component<FromProps, FormState> {
         )
     ) {
       orderProcessingMethod = updateTradeNumShares;
+    }
+
+    if (orderPrice && orderQuantity === '' && orderDaiEstimate === '') {
+      clearOrderForm(false);
     }
 
     if (orderPrice === '' && (orderQuantity === '' || orderDaiEstimate === '')) {
