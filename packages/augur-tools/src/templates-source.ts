@@ -5112,12 +5112,12 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `Over [2].5`,
+                    placeholder: `Over [3].5`,
                   },
                   {
                     id: 7,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `Under [2].5`,
+                    placeholder: `Under [3].5`,
                   },
                 ],
                 resolutionRules: {
