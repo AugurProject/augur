@@ -67,6 +67,7 @@ interface MarketCardProps {
   migrateMarketModal: Function;
   marketLinkCopied: Function;
   forkingMarket: string | null;
+  isForking?: boolean;
 }
 
 interface MarketCardState {
@@ -108,7 +109,8 @@ export default class MarketCard extends React.Component<
       hasStaked,
       dispute,
       marketLinkCopied,
-      forkingMarket
+      forkingMarket,
+      isForking
     } = this.props;
 
     const s = this.state;
@@ -253,6 +255,7 @@ export default class MarketCard extends React.Component<
           [Styles.Loading]: loading,
           [Styles.Nonexpanding]: !expandedOptionShowing || condensed,
           [Styles.Condensed]: condensed,
+          [Styles.Forking]: isForking,
         })}
       >
         <>
@@ -383,7 +386,9 @@ export default class MarketCard extends React.Component<
           ) : (
             <div style={{ display: 'none' }}></div>
           )}
-          <MigrateMarketNotice marketId={id} />
+          <div className={Styles.MigrateMarketNotice}>
+            <MigrateMarketNotice marketId={id} />
+          </div>
           {marketResolved && (
             <ResolvedOutcomes
               consensusFormatted={consensusFormatted}

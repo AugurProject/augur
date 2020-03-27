@@ -14,10 +14,12 @@ import { marketLinkCopied } from 'services/analytics/helpers';
 const mapStateToProps = (state, ownProps) => {
   const positions = state.accountPositions;
   const hasStaked = hasStakeInMarket(state, ownProps.market.marketId);
+  const { forkingInfo } = state.universe;
 
   return {
     hasPosition: !!positions[ownProps.market.marketId],
     isLogged: state.authStatus.isLogged,
+    isForking: !!forkingInfo,
     isMobile: state.appStatus.isMobile,
     pendingLiquidityOrders: state.pendingLiquidityOrders,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,

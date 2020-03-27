@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"3box-chatbox-react@^0.1.6":
+"3box-chatbox-react@0.1.6":
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/3box-chatbox-react/-/3box-chatbox-react-0.1.6.tgz#45c6a6c2ff834ad7f3e287755236c17016fc4634"
   integrity sha512-1D9T5QADAYuUqRbAw37Z9mSmMUKPqT5LcRSpilABnyDXZLuE1lgMz48F6Ik52u/mw6MVa8ruJwWykUqUX0ErBw==
@@ -21,12 +21,12 @@
     source-map-explorer "^2.1.2"
     svg-inline-loader "^0.8.0"
 
-"3box-comments-react@1.0.3-beta.8":
-  version "1.0.3-beta.8"
-  resolved "https://registry.yarnpkg.com/3box-comments-react/-/3box-comments-react-1.0.3-beta.8.tgz#5e29849b0898c47e8866c5800d10cfd76e25a415"
-  integrity sha512-ynHVuqH5Q+a2Qf6CbVnW0a3dNv6kTVzy4j54YuTzeXTqI2O+g35dvaYArV3El6YQvpAgFXueKD40Zx3NthqKfg==
+"3box-comments-react@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/3box-comments-react/-/3box-comments-react-2.0.0.tgz#9ad8ff45a53e82936fd82094418d2a88a1ae874c"
+  integrity sha512-eE5x9GTM4xVYulj+4KriL5DLr1y2Jt1ltPdahrlDZ12yGNHOjbtZn+UmlFL6HXm+md29vF1hLm607y1ixazt+w==
   dependencies:
-    "3box" "^1.17.0"
+    "3box" "^1.17.1"
     "3id-resolver" "0.0.6"
     "@babel/runtime" "^7.6.0"
     babel-core "^7.0.0-bridge.0"
@@ -50,7 +50,7 @@
     orbit-db "^0.23.1"
     orbit-db-access-controllers "~0.2.4"
 
-"3box@^1.17.0", "3box@^1.17.1":
+"3box@1.17.1", "3box@^1.17.0", "3box@^1.17.1":
   version "1.17.1"
   resolved "https://registry.yarnpkg.com/3box/-/3box-1.17.1.tgz#7060f4b81eeccb7c7308125af343f25a55df79ee"
   integrity sha512-QDhW0V14P7auvCx+2WlPPJ6B/qji4PiVxVyVtr9sT4aRMx1AYVnCqik3u3uiVPFTTWj09eBXsE8NK+M4pCGfsQ==
@@ -3149,10 +3149,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@>= 8", "@types/node@^12.6.1":
-  version "12.12.31"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.31.tgz#d6b4f9645fee17f11319b508fb1001797425da51"
-  integrity sha512-T+wnJno8uh27G9c+1T+a1/WYCHzLeDqtsGJkoEdSp2X8RTh3oOCZQcUnjAx90CS8cmmADX51O0FI/tu9s0yssg==
+"@types/node@*", "@types/node@>= 8":
+  version "13.9.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.9.5.tgz#59738bf30b31aea1faa2df7f4a5f55613750cf00"
+  integrity sha512-hkzMMD3xu6BrJpGVLeQ3htQQNAcOrJjX7WFmtK8zWQpz2UJf13LCFF2ALA7c9OVdvc2vQJeDdjfR35M0sBCxvw==
 
 "@types/node@10.12.18":
   version "10.12.18"
@@ -3168,6 +3168,11 @@
   version "10.17.17"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.17.tgz#7a183163a9e6ff720d86502db23ba4aade5999b8"
   integrity sha512-gpNnRnZP3VWzzj5k3qrpRC6Rk3H/uclhAVo1aIvwzK5p5cOrs9yEyQ8H/HBsBY0u5rrWxXEiVPQ0dEB6pkjE8Q==
+
+"@types/node@^12.6.1":
+  version "12.12.32"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.32.tgz#0ccc836d273e8a3cddf568daf22729cfa57c1925"
+  integrity sha512-44/reuCrwiQEsXud3I5X3sqI5jIXAmHB5xoiyKUw965olNHF3IWKjBLKK3F9LOSUZmK+oDt8jmyO637iX+hMgA==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -8974,9 +8979,9 @@ ejs@^3.0.1:
   integrity sha512-cuIMtJwxvzumSAkqaaoGY/L6Fc/t6YvoP9/VIaK0V/CyqKLEQ8sqODmYfy/cjXEdZ9+OOL8TecbJu+1RsofGDw==
 
 electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.30, electron-to-chromium@^1.3.380, electron-to-chromium@^1.3.47:
-  version "1.3.387"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.387.tgz#420677629c9791b5d36fc8847c8cc11c0934a6cb"
-  integrity sha512-jjQ6WkxrOu0rtGqY9/74Z+UEVQ7YmJU2rCX6kH4eidKP0ZK0VKB3/i1avXQ+EDwJAABKGaOAbJrcyz18P8E3aA==
+  version "1.3.388"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.388.tgz#d3be2b7afc42c64c81f204755975b78547775301"
+  integrity sha512-/FNHDmNmI4IR/qY+uuAVq8OET5S9J7d5QfQUnAz0edkhl02BjtOflF2H0RXKapVtJfMgaFthKBzeYJAzOaW8PA==
 
 elegant-spinner@^1.0.1:
   version "1.0.1"
