@@ -1,6 +1,7 @@
 import { useReducer, createContext } from 'react';
 import { formatDate } from 'utils/format-date';
 import { createBigNumber } from 'utils/create-big-number';
+import noop from 'utils/noop';
 
 const now = new Date();
 
@@ -23,7 +24,7 @@ export const BETSLIP_SELECTED = {
 
 const EMPTY_BETSLIST = {
   count: 0,
-  items: {}
+  items: {},
 };
 
 const DEFAULT_BETSLIP_STATE = {
@@ -35,7 +36,7 @@ const DEFAULT_BETSLIP_STATE = {
   betslip: EMPTY_BETSLIST,
   unmatched: EMPTY_BETSLIST,
   matched: EMPTY_BETSLIST,
-}
+};
 
 const MOCK_BETSLIP_STATE = {
   selected: {
@@ -393,6 +394,22 @@ export const SelectedContext = createContext({
   subHeader: BETSLIP_SELECTED.UNMATCHED,
 });
 export const BetslipStepContext = createContext(0);
+export const BetslipActionsContext = createContext({
+  toggleHeader: noop,
+  toggleSubHeader: noop,
+  toggleStep: noop,
+  sendBet: noop,
+  modifyBet: noop,
+  cancelBet: noop,
+  sendAllBets: noop,
+  cancelAllBets: noop,
+  retry: noop,
+  cashOut: noop,
+  updateMatched: noop,
+  trash: noop,
+  cancelAllUnmatched: noop,
+  updateUnmatched: noop,
+});
 
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const [state, dispatch] = useReducer(BetslipReducer, defaultState);

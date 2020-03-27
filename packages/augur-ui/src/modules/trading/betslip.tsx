@@ -14,6 +14,7 @@ import {
   useBetslip,
   SelectedContext,
   BetslipStepContext,
+  BetslipActionsContext,
   BETSLIP_SELECTED,
 } from 'modules/trading/hooks/betslip';
 
@@ -22,14 +23,7 @@ import Styles from 'modules/trading/betslip.styles';
 export const Betslip = ({ theme = getTheme() }) => {
   const [minimized, setMinimized] = useState(true);
   const state = useBetslip();
-  const {
-    step,
-    selected,
-    betslip,
-    unmatched,
-    matched,
-    actions,
-  } = state;
+  const { step, selected, betslip, unmatched, matched, actions } = state;
   useEffect(() => {
     // this has to be done as useAnything must go above any other declarations.
     const isSportsBook = theme === THEMES.SPORTS;
@@ -44,7 +38,9 @@ export const Betslip = ({ theme = getTheme() }) => {
     : unmatched.count + matched.count;
   const isMyBets = selected.header === BETSLIP_SELECTED.MY_BETS;
   const isSelectedEmpty = isMyBets ? myBetsCount === 0 : betslip.count === 0;
-  const marketItems = isMyBets ? Object.entries(state[selected.subHeader].items) : Object.entries(betslip.items);
+  const marketItems = isMyBets
+    ? Object.entries(state[selected.subHeader].items)
+    : Object.entries(betslip.items);
   return (
     <aside
       className={classNames(Styles.Betslip, {
@@ -57,38 +53,35 @@ export const Betslip = ({ theme = getTheme() }) => {
         </button>
       </div>
       <section className={Styles.Container}>
-        <SelectedContext.Provider value={selected}>
-          <BetslipHeader
-            toggleSelected={actions.toggleHeader}
-            myBetsCount={myBetsCount}
-            betslipCount={betslip.count}
-          />
-          {isMyBets && (
-            <MyBetsSubheader
-              toggleSelected={actions.toggleSubHeader}
-              unmatchedCount={unmatched.count}
-              matchedCount={matched.count}
+        <BetslipActionsContext.Provider value={actions}>
+          <SelectedContext.Provider value={selected}>
+            <BetslipHeader
+              myBetsCount={myBetsCount}
+              betslipCount={betslip.count}
             />
-          )}
-          <section
-            className={classNames(Styles.MainSection, {
-              [Styles.BetslipEmpty]: isSelectedEmpty,
-              [Styles.BetslipList]: !isSelectedEmpty,
-            })}
-          >
-            {isSelectedEmpty ? (
-              <EmptyState />
-            ) : (
-              <BetslipStepContext.Provider value={step}>
-                <BetslipList
-                  marketItems={marketItems}
-                  actions={actions}
-                />
-                <BetslipFooter betslip={betslip} actions={actions} />
-              </BetslipStepContext.Provider>
+            {isMyBets && (
+              <MyBetsSubheader
+                unmatchedCount={unmatched.count}
+                matchedCount={matched.count}
+              />
             )}
-          </section>
-        </SelectedContext.Provider>
+            <section
+              className={classNames(Styles.MainSection, {
+                [Styles.BetslipEmpty]: isSelectedEmpty,
+                [Styles.BetslipList]: !isSelectedEmpty,
+              })}
+            >
+              {isSelectedEmpty ? (
+                <EmptyState />
+              ) : (
+                <BetslipStepContext.Provider value={step}>
+                  <BetslipList marketItems={marketItems} />
+                  <BetslipFooter betslip={betslip} />
+                </BetslipStepContext.Provider>
+              )}
+            </section>
+          </SelectedContext.Provider>
+        </BetslipActionsContext.Provider>
       </section>
     </aside>
   );
