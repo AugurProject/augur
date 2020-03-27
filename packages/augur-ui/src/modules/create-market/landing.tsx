@@ -8,7 +8,7 @@ import {
   SmallHeaderLink,
 } from 'modules/create-market/components/common';
 import { SecondaryButton } from 'modules/common/buttons';
-import { SCRATCH, TEMPLATE, MARKET_COPY_LIST } from 'modules/create-market/constants';
+import { SCRATCH, TEMPLATE, MARKET_COPY_LIST, EMPTY_STATE } from 'modules/create-market/constants';
 import SavedDrafts from 'modules/create-market/containers/saved-drafts';
 
 import Styles from 'modules/create-market/landing.styles.less';
@@ -72,6 +72,7 @@ export default class Landing extends React.Component<LandingProps> {
                   updatedNewMarket.navCategories[2] = '';
                   updatedNewMarket.currentStep = 1;
                   updatedNewMarket.marketType = '';
+                  updatedNewMarket.validations = EMPTY_STATE.validations;
                   updateNewMarket(updatedNewMarket);
                   updatePage(TEMPLATE);
                 }}
