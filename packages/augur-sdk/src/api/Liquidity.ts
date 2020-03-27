@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { Augur } from '../Augur';
 import { MarketType } from '../state/logs/types';
 import { QUINTILLION } from '../utils';
+import { MAX_TRADE_GAS_PERCENTAGE_DIVISOR } from '../constants';
 
 export interface Order {
   price: string;
@@ -45,6 +46,7 @@ export interface GetLiquidityParams {
   feePerCashInAttoCash: BigNumber;
   numOutcomes: number;
   spread?: number;
+  estimatedTradeGasCostInAttoDai: BigNumber;
 }
 
 // Helpers
@@ -77,6 +79,17 @@ export class Liquidity {
   async getLiquidityForSpread(params: GetLiquidityParams): Promise<BigNumber> {
     const marketFee = new BigNumber(params.feePerCashInAttoCash).dividedBy(QUINTILLION);
     const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(params.reportingFeeDivisor)).minus(marketFee);
+    // filter out orders based on current gas trade cost
+    Object.keys(params.orderBook).map((outcomeId) => {
+      Object.keys(params.orderBook[outcomeId]).forEach(orderType => {
+          // Cut out orders where gas costs > 2% of the trade
+          params.orderBook[outcomeId][orderType] = _.filter(params.orderBook[outcomeId][orderType], (order) => {
+            const gasCost = new BigNumber(order.amount).multipliedBy(params.numTicks).div(MAX_TRADE_GAS_PERCENTAGE_DIVISOR);
+            const maxGasCost = gasCost.multipliedBy(2); // 2%
+            return maxGasCost.gte(params.estimatedTradeGasCostInAttoDai);
+          });
+      })
+    });
     const horizontalLiquidity = this.getHorizontalLiquidity(params.orderBook, params.numTicks, feeMultiplier, params.numOutcomes, params.spread);
     const verticalLiquidity = this.getVerticalLiquidity(params.orderBook, params.numTicks, params.marketType, feeMultiplier, params.numOutcomes, params.spread);
 
