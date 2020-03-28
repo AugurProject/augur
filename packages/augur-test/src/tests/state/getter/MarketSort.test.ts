@@ -224,7 +224,7 @@ describe('State API :: Market Sorts', () => {
         market3.address,
         outcomeInvalid,
         new BigNumber(20),
-        new BigNumber(0.79),
+        new BigNumber(0.09),
         new BigNumber(0),
         expirationTimeInSeconds
       );

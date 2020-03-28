@@ -110,7 +110,7 @@ export default class MarketCard extends React.Component<
       dispute,
       marketLinkCopied,
       forkingMarket,
-      isForking
+      isForking,
     } = this.props;
 
     const s = this.state;
@@ -213,7 +213,9 @@ export default class MarketCard extends React.Component<
         ),
       }));
 
-    const marketResolved = reportingState === REPORTING_STATE.FINALIZED || reportingState === REPORTING_STATE.AWAITING_FINALIZATION;
+    const marketResolved =
+      reportingState === REPORTING_STATE.FINALIZED ||
+      reportingState === REPORTING_STATE.AWAITING_FINALIZATION;
     const isScalar = marketType === SCALAR;
     const inDispute =
       reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
@@ -231,8 +233,8 @@ export default class MarketCard extends React.Component<
 
     if (forkingMarket && canDispute) {
       canDispute = forkingMarket === id;
-    } 
-    
+    }
+
     const canSupport = !disputeInfo.disputePacingOn;
 
     const headerType =
@@ -298,7 +300,8 @@ export default class MarketCard extends React.Component<
               [Styles.scalar]: isScalar,
               [Styles.template]: isTemplate,
               [Styles.invalid]: mostLikelyInvalid,
-              [Styles.nonOpenTemplate]: marketType !== REPORTING_STATE.PRE_REPORTING && isTemplate
+              [Styles.nonOpenTemplate]:
+                marketType !== REPORTING_STATE.PRE_REPORTING && isTemplate,
             })}
           >
             {marketStatus === MARKET_REPORTING && (
@@ -386,9 +389,11 @@ export default class MarketCard extends React.Component<
           ) : (
             <div style={{ display: 'none' }}></div>
           )}
-          <div className={Styles.MigrateMarketNotice}>
-            <MigrateMarketNotice marketId={id} />
-          </div>
+          {isForking && (
+            <div className={Styles.MigrateMarketNotice}>
+              <MigrateMarketNotice marketId={id} />
+            </div>
+          )}
           {marketResolved && (
             <ResolvedOutcomes
               consensusFormatted={consensusFormatted}

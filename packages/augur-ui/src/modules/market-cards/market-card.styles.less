@@ -363,6 +363,34 @@
         grid-row: 4;
       }
     }
+
+    @media @breakpoint-mobile-tablet {
+      > div[class*="MigrateMarketNotice"] {
+        margin-top: @size-10;
+        grid-column: 1 / span 2;
+        padding: 0;
+      }
+
+      > div[class*="OutcomeGroup"] {
+        grid-column: 1 / span 2;
+      }
+
+      &.Condensed {
+        > div[class*="MigrateMarketNotice"] {
+          grid-row: 3;
+          margin-top: 0;
+          grid-column: 1 / span 2;
+        }
+      }
+
+      &.Nonexpanding {
+        > div[class*="MigrateMarketNotice"] {
+          grid-column: 1 / span 2;
+          padding: 0;
+          margin-bottom: @size-10;
+        }
+      }
+    }
   }
 
   @media @breakpoint-mobile {
