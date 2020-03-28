@@ -42,6 +42,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import {
   hasNoTemplateCategoryChildren,
   hasNoTemplateCategoryTertiaryChildren,
+  hasAutoFillCategory,
 } from 'modules/create-market/get-template';
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
 import { TemplateInputType } from '@augurproject/artifacts/src';
@@ -321,15 +322,15 @@ export default class FormDetails extends React.Component<
             errorMessage={validations.categories}
             disableCategory={isTemplate}
             disableSubCategory={
-              isTemplate &&
-              !hasNoTemplateCategoryChildren(newMarket.navCategories[0])
+              isTemplate && (hasAutoFillCategory(template.inputs, 1) ||
+              !hasNoTemplateCategoryChildren(newMarket.navCategories[0]))
             }
             disableTertiaryCategory={
-              isTemplate &&
+              isTemplate && (hasAutoFillCategory(template.inputs, 2) ||
               !hasNoTemplateCategoryTertiaryChildren(
                 newMarket.navCategories[0],
                 newMarket.navCategories[1]
-              )
+              ))
             }
           />
         </div>
