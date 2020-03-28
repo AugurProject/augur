@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { DefaultButtonProps } from 'modules/common/buttons';
 import {
@@ -17,6 +17,7 @@ import {
 
 import Styles from 'modules/modal/modal.styles.less';
 import { CLAIM_ALL_TITLE } from 'modules/common/constants';
+import { useEffect } from 'react';
 
 interface ProceedsProps {
   closeAction: Function;
@@ -26,6 +27,7 @@ interface ProceedsProps {
   submitAllTxCount: number;
   breakdown?: LinearPropertyLabelProps[];
   descriptionMessage?: DescriptionMessageProps;
+  estimateGas: Function;
 }
 
 export const Proceeds = ({
@@ -36,7 +38,20 @@ export const Proceeds = ({
   submitAllTxCount,
   breakdown,
   descriptionMessage,
-}: ProceedsProps) => (
+  estimateGas
+}: ProceedsProps) => {
+  const [fullBreakdown, setBreakdown] = useState(breakdown);
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      const transactionFee = await estimateGas();
+      if (transactionFee) {
+        setBreakdown([...fullBreakdown, transactionFee]);
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  },[]);
+
+  return (
   <div className={Styles.Proceeds}>
     <Title title={title} closeAction={closeAction} />
     <main>
@@ -47,7 +62,7 @@ export const Proceeds = ({
       {/*
         // @ts-ignore */}
       {rows && <ActionRows rows={rows} />}
-      {breakdown && <Breakdown short rows={breakdown} />}
+      {breakdown && <Breakdown short rows={fullBreakdown} />}
     </main>
     <BulkTxLabel
       buttonName={CLAIM_ALL_TITLE}
@@ -56,4 +71,4 @@ export const Proceeds = ({
     />
     {buttons && <ButtonsRow buttons={buttons} />}
   </div>
-);
+)};

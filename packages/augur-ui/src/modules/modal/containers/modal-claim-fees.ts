@@ -6,6 +6,8 @@ import {
   formatGasCostToEther,
   formatAttoRep,
   formatAttoDai,
+  formatEther,
+  formatBlank,
 } from 'utils/format-number';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { Proceeds } from 'modules/modal/proceeds';
@@ -13,6 +15,7 @@ import { ActionRowsProps } from 'modules/modal/common';
 import {
   redeemStake,
   redeemStakeBatches,
+  redeemStakeGas,
 } from 'modules/reporting/actions/claim-reporting-fees';
 import {
   CLAIM_FEE_WINDOWS,
@@ -37,11 +40,7 @@ import { addPendingData } from 'modules/pending-queue/actions/pending-queue-mana
 const mapStateToProps = (state: AppState) => {
   return {
     modal: state.modal,
-    gasCost: formatGasCostToEther(
-      CLAIM_FEES_GAS_COST,
-      { decimalsRounded: 4 },
-      getGasPrice(state)
-    ),
+    gasCost: CLAIM_FEES_GAS_COST,
     GsnEnabled: state.appStatus.gsnEnabled,
     pendingQueue: state.pendingQueue || [],
     claimReportingFees: selectReportingWinningsByMarket(state),
@@ -52,6 +51,7 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   redeemStake: (options, callback) => redeemStake(options, callback),
+  redeemStakeGas: options => redeemStakeGas(options),
   disavowMarket: marketId => disavowMarket(marketId),
   addPendingData: (pendingId, queueName, status, hash, info) =>
     dispatch(addPendingData(pendingId, queueName, status, hash, info)),
@@ -77,6 +77,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   };
   const submitAllTxCount = redeemStakeBatches(allRedeemStakeOptions);
   const claimableMarkets = claimReportingFees.claimableMarkets;
+  const showBreakdown = claimableMarkets.marketContracts.length > 1;
+  const totalRep = `${formatAttoRep(claimReportingFees.totalUnclaimedRep).formatted} REP`;
 
   if (!participationTokensOnly) {
     claimableMarkets.marketContracts.map(marketObj => {
@@ -159,6 +161,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     });
   }
 
+  let daiFormatted = formatBlank();
+
   if (claimReportingFees.participationContracts.unclaimedRep.gt(ZERO)) {
     const disputeWindowsPending =
       pendingQueue[CLAIM_STAKE_FEES] &&
@@ -167,7 +171,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     const repFormatted = formatAttoRep(
       claimReportingFees.participationContracts.unclaimedRep
     );
-    const daiFormatted = formatAttoDai(
+    daiFormatted = formatAttoDai(
       claimReportingFees.participationContracts.unclaimedDai
     );
     modalRows.push({
@@ -213,6 +217,17 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     return {};
   }
 
+  const breakdown = showBreakdown ? [
+    {
+      label: 'Total REP',
+      value: totalRep,
+    },
+    {
+      label: 'Total DAI',
+      value: daiFormatted,
+    },
+  ] : null;
+
   return {
     title: isForking ? 'Release REP' : 'Claim Stake & Fees',
     submitAllTxCount: isForking ? 0 : submitAllTxCount,
@@ -254,6 +269,18 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       }
       dP.closeModal();
     },
+    estimateGas: async () => {
+      if (breakdown) {
+        const gas = await dP.redeemStakeGas(allRedeemStakeOptions);
+        const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
+        return {
+          label: 'Transaction Fee',
+          value: String(displayfee),
+        };
+      }
+      return null;
+    },
+    breakdown,
     buttons:
       isForking || participationTokensOnly
         ? null
