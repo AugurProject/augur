@@ -665,7 +665,7 @@ export class CategoryMultiSelect extends Component<
       primaryOptions,
       secondaryOptions,
       tertiaryOptions,
-      disableSubCategory
+      disableSubCategory,
       disableTertiaryCategory,
       selected
     );
