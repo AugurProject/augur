@@ -4981,6 +4981,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Select Award`,
                     values: LIST_VALUES.FOOTBALL_AWARDS,
+                    categoryDestId: 2,
                   },
                 ],
                 resolutionRules: {
