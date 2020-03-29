@@ -8,17 +8,15 @@ import {
   claimMarketsProceeds,
   claimMarketsProceedsEstimateGas,
 } from 'modules/contracts/actions/contractCalls';
-import { AppState } from 'appStore';
 import { NodeStyleCallback } from 'modules/types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
+import { BigNumber } from 'utils/create-big-number';
 
 export const startClaimingMarketsProceeds = (
   marketIds: string[],
+  account: string,
   callback: NodeStyleCallback = logError
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount } = getState();
-  if (!loginAccount.address || !marketIds || !marketIds.length)
+) => {
+  if (!account || !marketIds || !marketIds.length)
     return callback(null);
 
   let i = 0;
@@ -29,7 +27,7 @@ export const startClaimingMarketsProceeds = (
 
   try {
     // TODO: Pass affiliate address to claimMarketsProceeds
-    groups.map(group => claimMarketsProceeds(group, loginAccount.address));
+    groups.map(group => claimMarketsProceeds(group, account));
   } catch (e) {
     console.error(e);
   }
@@ -37,12 +35,14 @@ export const startClaimingMarketsProceeds = (
 
 export default claimMarketsProceeds;
 
-export const claimMarketsProceedsGas = (
+export const claimMarketsProceedsGas = async (
   marketIds: string[],
   loginAccount: string
-) => {
+): Promise<BigNumber> => {
   try {
-    return claimMarketsProceedsEstimateGas(marketIds, loginAccount);
+    const value = await claimMarketsProceedsEstimateGas(marketIds, loginAccount);
+    console.log('gas estimate', value.toString());
+    return value;
   } catch (error) {
     console.error('error could estimate gas', error);
     return CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE;
