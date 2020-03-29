@@ -83,14 +83,14 @@ export default class Reporting extends React.Component<ReportingProps> {
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
                       emptyHeader='There are no markets available for you to Report on.'
-                      emptySubheader=' Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
+                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
                     />
                     <ReportingList
                       reportingType={REPORTING_STATE.PRE_REPORTING}
                       title={'Upcoming Designated Reporting'}
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
-                      emptyHeader='There are no markets coming up in the next week for you to Report on. '
+                      emptyHeader='There are no markets coming up in the next week for you to Report on.'
                       emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
                     />
                   </div>
@@ -104,8 +104,8 @@ export default class Reporting extends React.Component<ReportingProps> {
                     <ReportingList
                       reportingType={REPORTING_STATE.OPEN_REPORTING}
                       title={'Open Reporting'}
-                      emptyHeader='There are currently no markets in Open Reporting. '
-                      emptySubheader=' Markets appear here once if a Designated Reporter fails to show up.'
+                      emptyHeader='There are currently no markets in Open Reporting.'
+                      emptySubheader='Markets appear here once if a Designated Reporter fails to show up.'
                     />
                   </div>
                 </>
@@ -119,21 +119,21 @@ export default class Reporting extends React.Component<ReportingProps> {
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
                       emptyHeader='There are no markets available for you to Report on.'
-                      emptySubheader=' Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
+                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
                     />
                     <ReportingList
                       reportingType={REPORTING_STATE.PRE_REPORTING}
                       title={'Upcoming Designated Reporting'}
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
-                      emptyHeader='There are no markets coming up in the next week for you to Report on. '
+                      emptyHeader='There are no markets coming up in the next week for you to Report on.'
                       emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
                     />
                     <ReportingList
                       reportingType={REPORTING_STATE.OPEN_REPORTING}
                       title={'Open Reporting'}
-                      emptyHeader='There are currently no markets in Open Reporting. '
-                      emptySubheader=' Markets appear here once if a Designated Reporter fails to show up.'
+                      emptyHeader='There are currently no markets in Open Reporting.'
+                      emptySubheader='Markets appear here once if a Designated Reporter fails to show up.'
                     />
                   </div>
                   <div>
