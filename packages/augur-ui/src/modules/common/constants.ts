@@ -711,7 +711,7 @@ export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
 export const MIGRATE_MARKET_GAS_ESTIMATE = createBigNumber(3000000); // TODO: Get actual gas estimate for migrating a market
 export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(1121349); // Gas cost for claiming proceeds from a categorical market with 8 outcomes (worst-case gas cost)
 export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = createBigNumber(3000000);
-export const CLAIM_FEES_GAS_COST = createBigNumber(250000);
+export const CLAIM_FEES_GAS_COST = createBigNumber(500000);
 export const BUY_PARTICIPATION_TOKENS_GAS_LIMIT = createBigNumber(290000);
 export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = Math.floor(
   createBigNumber(CLAIM_MARKETS_PROCEEDS_GAS_LIMIT)
