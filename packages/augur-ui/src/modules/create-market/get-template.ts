@@ -360,7 +360,7 @@ export const hasNoTemplateCategoryTertiaryChildren = (category, subcategory) => 
 export const hasAutoFillCategory = (inputs: TemplateInput[], categoryIndex: number) => {
   if (inputs.length === 0) return false;
   const autoFillCategoryInput = inputs.find(i => i.categoryDestId);
-  return autoFillCategoryInput.categoryDestId === categoryIndex;
+  return autoFillCategoryInput && autoFillCategoryInput.categoryDestId === categoryIndex;
 };
 
 
