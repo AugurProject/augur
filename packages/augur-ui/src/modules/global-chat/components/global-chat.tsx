@@ -3,6 +3,7 @@ import React from 'react';
 import Styles from 'modules/global-chat/components/global-chat.styles.less';
 import ChatBox from '3box-chatbox-react';
 import { use3box } from 'utils/use-3box';
+import { SecondaryButton } from 'modules/common/buttons';
 
 export interface GlobalChatProps {
   provider: any;
@@ -10,7 +11,7 @@ export interface GlobalChatProps {
 }
 
 export const GlobalChat = ({ provider, whichChatPlugin }: GlobalChatProps) => {
-  const { address, box, isReady, profile } =
+  const { activate, setActivate, address, box, isReady, profile } =
     whichChatPlugin === '3box' && use3box(provider);
 
   return (
@@ -32,6 +33,13 @@ export const GlobalChat = ({ provider, whichChatPlugin }: GlobalChatProps) => {
           agentProfile={{
             chatName: 'Global Chat',
           }}
+        />
+      )}
+      {whichChatPlugin === '3box' && !isReady && (
+        <SecondaryButton
+          action={() => setActivate(true)}
+          text={activate ? "Loading Global Chat..." : "Global Chat"}
+          disabled={activate}
         />
       )}
     </div>
