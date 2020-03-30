@@ -9,7 +9,7 @@ import {
   SCALAR,
   BINARY_CATEGORICAL_FORMAT_OPTIONS,
 } from 'modules/common/constants';
-import { HoverValueLabel } from 'modules/common/labels';
+import { HoverValueLabel, DataArchivedLabel } from 'modules/common/labels';
 import OrderHeader from 'modules/market-charts/components/order-header/order-header';
 
 import Styles from 'modules/market/components/market-trade-history/market-trade-history.styles';
@@ -20,6 +20,7 @@ interface MarketTradeHistoryProps {
   toggle: Function;
   hide: boolean;
   marketType: string;
+  isArchived?: boolean;
 }
 
 export default class MarketTradeHistory extends Component<
@@ -32,13 +33,13 @@ export default class MarketTradeHistory extends Component<
       toggle,
       hide,
       marketType,
+      isArchived,
     } = this.props;
     const isScalar = marketType === SCALAR;
 
-    const opts =
-        isScalar
-        ? { removeComma: true }
-        : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS, removeComma: true };
+    const opts = isScalar
+      ? { removeComma: true }
+      : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS, removeComma: true };
 
     return (
       <section className={Styles.TradeHistory}>
@@ -49,7 +50,9 @@ export default class MarketTradeHistory extends Component<
           hide={hide}
         />
         <div>
-          {groupedTradeHistory &&
+          {isArchived && <DataArchivedLabel label="tradeHistory" />}
+          {!isArchived &&
+            groupedTradeHistory &&
             Object.keys(groupedTradeHistory).map((date, index) => (
               <div className={Styles.TradeHistoryTable} key={index}>
                 <span>
