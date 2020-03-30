@@ -6,10 +6,19 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 
-const mapStateToProps = (state) => ({
-  modal: state.modal,
-  whichChatPlugin: state.env.plugins?.chat,
-});
+const mapStateToProps = ({loginAccount, env, modal}) => {
+  const signer = loginAccount.meta?.signer;
+
+  const defaultChatProps = {
+    whichChatPlugin: env.plugins?.chat,
+    modal,
+  };
+
+  return signer ? {
+    ...defaultChatProps,
+    provider: signer.provider?._web3Provider,
+  } : defaultChatProps
+};
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
