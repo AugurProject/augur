@@ -190,7 +190,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         },
         {
           label: 'Reporting Fees',
-          value: `$${daiFormatted.formatted}`,
+          value: `$${daiFormatted.formattedValue}`,
         },
         {
           label: 'Transaction Fee',
@@ -224,7 +224,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     },
     {
       label: 'Total DAI',
-      value: daiFormatted,
+      value: `$${daiFormatted.formattedValue}`,
     },
   ] : null;
 
@@ -270,7 +270,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       dP.closeModal();
     },
     estimateGas: async () => {
-      if (breakdown) {
+      if (!!breakdown) {
         const gas = await dP.redeemStakeGas(allRedeemStakeOptions);
         const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
         return {

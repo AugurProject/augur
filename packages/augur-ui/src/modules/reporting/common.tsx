@@ -808,11 +808,11 @@ export class ReportingBondsView extends Component<
       buttonDisabled = true;
     }
     let insufficientFunds = false;
-    if (userFunds.lt(createBigNumber(getGasInDai(gasEstimate)))) {
+    if (userFunds.lt(createBigNumber(getGasInDai(gasEstimate).value))) {
       buttonDisabled = true;
       insufficientFunds = true;
     }
-
+    
     let insufficientRep = '';
     if (!enoughRepBalance) {
       (insufficientRep = 'Not enough REP to report'), (buttonDisabled = true);

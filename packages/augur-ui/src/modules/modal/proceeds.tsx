@@ -44,7 +44,7 @@ export const Proceeds = ({
   useEffect(() => {
     const timer = setTimeout(async () => {
       const transactionFee = await estimateGas();
-      if (transactionFee) {
+      if (transactionFee && !!breakdown) {
         setBreakdown([...fullBreakdown, transactionFee]);
       }
     }, 100);

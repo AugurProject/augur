@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Box from '3box';
 
 export const use3box = (provider) => {
+  const [activate, setActivate] = useState(false);
   const [address, setAddress] = useState();
   const [box, setBox] = useState({});
   const [isReady, setIsReady] = useState(false);
@@ -13,14 +14,17 @@ export const use3box = (provider) => {
 
   useEffect(() => {
     handleLogin();
-  }, [provider]);
+  }, [activate, provider]);
 
   // @ts-ignore
   const handleLogin = async () => {
     setIsReady(false);
 
-    if (!provider) {
-      return {};
+    if (!activate || !provider) {
+      return {
+        activate,
+        setActivate,
+      };
     }
 
     let threeBoxInstance;
@@ -39,7 +43,12 @@ export const use3box = (provider) => {
       publicProfile = await Box.getProfile(addressFromProvider);
     } catch (error) {
       console.error(error);
-      return {};
+      setActivate(false);
+
+      return {
+        activate,
+        setActivate
+      };
     }
 
     setBox(threeBoxInstance);
@@ -49,6 +58,8 @@ export const use3box = (provider) => {
   };
 
   return {
+    activate,
+    setActivate,
     address,
     box,
     profile,
