@@ -9,7 +9,7 @@ import {
   SCALAR,
   SCALAR_DOWN_ID,
   INVALID_OUTCOME_ID,
-  ARCHIVED_MARKET_LENGTH
+  ARCHIVED_MARKET_LENGTH,
   SCALAR_UP_ID,
 } from 'modules/common/constants';
 import { convertUnixToFormattedDate, getDurationBetween } from './format-date';
@@ -44,7 +44,7 @@ export function convertMarketInfoToMarketData(
     endTimeFormatted: convertUnixToFormattedDate(marketInfo.endTime),
     creationTimeFormatted: convertUnixToFormattedDate(marketInfo.creationTime),
     categories: marketInfo.categories,
-    isArchived: archivedDuration && (archivedDuration.asDays() > ARCHIVED_MARKET_LENGTH),
+    isArchived: archivedDuration && (Math.abs(archivedDuration.asDays()) > ARCHIVED_MARKET_LENGTH),
     finalizationTimeFormatted: marketInfo.finalizationTime
       ? convertUnixToFormattedDate(marketInfo.finalizationTime)
       : null,

@@ -13,6 +13,7 @@ import {
   ScalarIcon,
   TemplateIcon,
   YellowTemplateIcon,
+  ArchivedIcon
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -34,7 +35,7 @@ import {
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
-import { DateFormattedObject, FormattedNumber, SizeTypes } from 'modules/types';
+import { DateFormattedObject, FormattedNumber, SizeTypes, MarketData } from 'modules/types';
 import { Getters, TXEventName } from '@augurproject/sdk';
 import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
@@ -304,6 +305,34 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
         {yellowShield
           ? "Templated market question, contains market creator text. This text should match to highlighted section's tooltip"
           : 'Template markets have predefined terms and have a smaller chance of resolving as invalid'}
+      </ReactTooltip>
+    </>
+  );
+};
+
+interface ArchivedProps {
+  market: MarketData;
+}
+
+export const Archived = ({ market }: ArchivedProps) => {
+  if (!market.isArchived) return null;
+  return (
+    <>
+      <label
+        className={Styles.Archived}
+        data-tip
+        data-for={`tooltip-${market.id}-archived`}
+      >
+        {ArchivedIcon}
+      </label>
+      <ReactTooltip
+        id={`tooltip-${market.id}-archived`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+      >
+        Data only saved for 30 days
       </ReactTooltip>
     </>
   );
