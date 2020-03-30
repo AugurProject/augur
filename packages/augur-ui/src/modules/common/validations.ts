@@ -195,7 +195,8 @@ function checkValidNumbers(values) {
 
 export function checkForUserInputFilled(
   inputs: TemplateInput[],
-  endTimeFormatted
+  endTimeFormatted,
+  currentTimestamp: number,
 ) {
   const errors = inputs.map(input => {
     if (
@@ -323,6 +324,13 @@ export function checkForUserInputFilled(
           dateTimeInput.endTimeFormatted.timestamp >= endTimeFormatted.timestamp
         ) {
           validations.setEndTime = 'Date must be before event expiration time';
+        } else if (
+          endTimeFormatted &&
+          endTimeFormatted.timestamp &&
+          dateTimeInput.endTimeFormatted &&
+          dateTimeInput.endTimeFormatted.timestamp <= currentTimestamp
+        ) {
+          validations.setEndTime = 'Date and time must be in the future';
         }
 
         return validations;
