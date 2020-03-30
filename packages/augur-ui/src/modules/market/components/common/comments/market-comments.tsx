@@ -4,6 +4,7 @@ import { FacebookComments } from 'modules/market/components/common/comments/face
 
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { use3box } from 'utils/use-3box';
+import { SecondaryButton } from 'modules/common/buttons';
 
 interface MarketCommentsProps {
   adminEthAddr: string;
@@ -24,7 +25,7 @@ export const MarketComments = ({
   provider,
   whichCommentPlugin,
 }: MarketCommentsProps) => {
-  const { address, box, isReady, profile } =
+  const { activate, setActivate, address, box, isReady, profile } =
     whichCommentPlugin === '3box' && use3box(provider);
 
   return (
@@ -42,6 +43,13 @@ export const MarketComments = ({
           showCommentCount={numPosts}
           currentUser3BoxProfile={profile}
           // useHovers={true}
+        />
+      )}
+      {whichCommentPlugin === '3box' && !isReady && (
+        <SecondaryButton
+          action={() => setActivate(true)}
+          text={activate ? "Loading comments..." : "Click here to activate comments"}
+          disabled={activate}
         />
       )}
       {whichCommentPlugin === 'facebook' && (
