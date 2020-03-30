@@ -3,9 +3,9 @@ export const _1_HUNDRED_ETH = _1_ETH * 100;
 export const _1_BILLION_ETH = _1_ETH * 1e9;
 
 export interface Account {
-  secretKey: string;
+  secretKey: string; // TODO this should be called privateKey
   publicKey: string; // NB: This should be called address not publicKey
-  balance: number;
+  balance: number; // TODO rename to initialBalance
 }
 
 export const ACCOUNTS: Account[] = [
@@ -55,6 +55,8 @@ export const ACCOUNTS: Account[] = [
     balance: 0, // NOTE: This isn't funded in the geth-poa genesis
   },
 ];
+
+export const BASE_MNEMONIC = 'globe draft monster quiz slogan renew smile nature hip donor leisure number';
 
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const DEADBEEF_ADDRESS = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';

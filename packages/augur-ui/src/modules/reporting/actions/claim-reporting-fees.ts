@@ -5,7 +5,8 @@ import {
   redeemUserStakesEstimateGas,
   forkAndRedeem,
 } from 'modules/contracts/actions/contractCalls';
-
+import { BigNumber } from 'utils/create-big-number';
+import { CLAIM_MARKETS_PROCEEDS_GAS_LIMIT } from 'modules/common/constants';
 export const CROWDSOURCER_BATCH_SIZE = 4;
 export const CROWDSOURCER_DISAVOWED_BATCH_SIZE = 1;
 export const DISPUTE_WINDOW_BATCH_SIZE = 10;
@@ -113,3 +114,30 @@ async function runPayload(
     ? forkAndRedeem(reportingParticipants[0]) // should be batches of one
     : redeemUserStakes(reportingParticipants, disputeWindows);
 }
+
+
+export const redeemStakeGas = async (
+  options: ClaimReportingOptions,
+): Promise<BigNumber> => {
+  try {
+    const {
+      reportingParticipants,
+      disputeWindows,
+      disavowed,
+      isForkingMarket,
+    } = options;
+
+    return await Promise.all(batchContractIds(disputeWindows, reportingParticipants, disavowed, isForkingMarket)
+    .map(batch =>
+      redeemUserStakesEstimateGas(
+        batch.disputeWindows,
+        batch.reportingParticipants,
+      ))).then((gas: BigNumber[]) => {
+        console.log('gas estimate', JSON.stringify(gas));
+        return gas.reduce((p, g) => p.plus(g));
+      })
+  } catch (error) {
+    console.error('error could estimate gas', error);
+    return CLAIM_MARKETS_PROCEEDS_GAS_LIMIT;
+  }
+};

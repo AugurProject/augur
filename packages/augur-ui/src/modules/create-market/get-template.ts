@@ -357,6 +357,13 @@ export const hasNoTemplateCategoryTertiaryChildren = (category, subcategory) => 
   return true;
 };
 
+export const hasAutoFillCategory = (inputs: TemplateInput[], categoryIndex: number) => {
+  if (inputs.length === 0) return false;
+  const autoFillCategoryInput = inputs.find(i => i.categoryDestId);
+  return autoFillCategoryInput && autoFillCategoryInput.categoryDestId === categoryIndex;
+};
+
+
 export const isValidTemplateMarket = (hash: string, marketTitle: string) => {
   const validation = TEMPLATE_VALIDATIONS[hash];
   if (!validation || !validation.templateValidation) return false;

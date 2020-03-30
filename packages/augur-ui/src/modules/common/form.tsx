@@ -375,6 +375,7 @@ export const determineVisible = (
   primaryOptions: NameValuePair[],
   secondaryOptions: NameValuePair[],
   tertiaryOptions: NameValuePair[],
+  disableSubCategory: boolean,
   disabledTertiary: boolean,
   selected: string[]
 ) => {
@@ -387,6 +388,7 @@ export const determineVisible = (
   const customSecondary =
     selected[1] === CUSTOM ||
     (selected[1] &&
+      !disableSubCategory &&
       !secondaryOptions.map(option => option.value).includes(selected[1])) ||
     (!showSecondaryDropdown && customPrimary && values[0] !== '');
   const customTertiary =
@@ -663,6 +665,7 @@ export class CategoryMultiSelect extends Component<
       primaryOptions,
       secondaryOptions,
       tertiaryOptions,
+      disableSubCategory,
       disableTertiaryCategory,
       selected
     );
@@ -2295,7 +2298,7 @@ export const CategoryRow = ({
 );
 
 export const MigrateRepInfo = () => (
-  <div className={Styles.MigrateRepInfo}>
+  <section className={Styles.MigrateRepInfo}>
     <span>A note on Forking</span>
     <p>
       Augur is now in a state of Forking. The fork state is a special state that
@@ -2318,5 +2321,5 @@ export const MigrateRepInfo = () => (
       child universe for each possible outcome of the forking market (including
       Invalid).
     </p>
-  </div>
+  </section>
 );

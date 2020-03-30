@@ -8,7 +8,6 @@ const THREE_BOX_ADMIN_ACCOUNT = '0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb';
 
 const mapStateToProps = ({loginAccount, env}, {numPosts, colorScheme}) => {
   const signer = loginAccount.meta?.signer;
-  const accountType = loginAccount.meta?.accountType;
 
   const defaultCommentProps = {
     adminEthAddr: THREE_BOX_ADMIN_ACCOUNT,
@@ -20,7 +19,6 @@ const mapStateToProps = ({loginAccount, env}, {numPosts, colorScheme}) => {
 
   return signer ? {
     ...defaultCommentProps,
-    accountType,
     provider: signer.provider?._web3Provider,
   } : defaultCommentProps;
 };

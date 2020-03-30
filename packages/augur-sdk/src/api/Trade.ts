@@ -14,7 +14,7 @@ export interface TradeAPI {
   useZeroX(): boolean
   simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData>
   simulateTradeGasLimit(params: NativePlaceTradeDisplayParams): Promise<BigNumber>
-  placeTrade(params: PlaceTradeDisplayParams): Promise<void>
+  placeTrade(params: PlaceTradeDisplayParams): Promise<boolean> // true if trade was placed
 }
 
 export interface SimulateTradeData extends ZeroXSimulateTradeData {
@@ -53,7 +53,7 @@ export class Trade implements TradeAPI {
     return new BigNumber(moment().unix() + 31557600);
   }
 
-  async placeTrade(params: PlaceTradeDisplayParams): Promise<void> {
+  async placeTrade(params: PlaceTradeDisplayParams): Promise<boolean> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
     return this.placeOnChainTrade(onChainTradeParams);
   }
@@ -70,14 +70,14 @@ export class Trade implements TradeAPI {
     });
   }
 
-  private async placeOnChainTrade(params: PlaceTradeParams): Promise<void> {
+  private async placeOnChainTrade(params: PlaceTradeParams): Promise<boolean> {
     if (this.useZeroX()) {
       return this.zeroX.placeOnChainTrade({
         ...params,
         expirationTime: params.expirationTime || this.maxExpirationTime(),
       })
     } else {
-      console.log("Not using 0x");
+      console.log('Not using 0x');
       return this.onChain.placeOnChainTrade(params);
     }
   }

@@ -10,6 +10,7 @@ import {
   SCALAR_DOWN_ID,
   INVALID_OUTCOME_ID,
   ARCHIVED_MARKET_LENGTH
+  SCALAR_UP_ID,
 } from 'modules/common/constants';
 import { convertUnixToFormattedDate, getDurationBetween } from './format-date';
 import {
@@ -23,6 +24,7 @@ import { createBigNumber } from './create-big-number';
 import { keyBy } from './key-by';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import moment = require('moment');
+import deepClone from './deep-clone';
 
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo,
@@ -108,7 +110,23 @@ function getMarketStatus(reportingState: string) {
 function processOutcomes(
   market: Getters.Markets.MarketInfo
 ): OutcomeFormatted[] {
-  return market.outcomes.map(outcome => ({
+  const outcomes = deepClone<Getters.Markets.MarketInfoOutcome[]>(market.outcomes);
+  if (market.reportingState === REPORTING_STATE.FINALIZED) {
+    outcomes.forEach(o => o.price = market.minPrice);
+    if (market.consensus.invalid) {
+      outcomes.find(o => o.id === INVALID_OUTCOME_ID).price = market.maxPrice;
+    } else {
+      const winner = outcomes.find(o => o.id === Number(market.consensus.outcome));
+      if (winner) {
+        winner.price = market.maxPrice;
+      }
+      if (market.marketType === SCALAR) {
+        outcomes.find(o => o.id === SCALAR_UP_ID).price = String(market.consensus.outcome);
+      }
+    }
+  }
+
+  return outcomes.map(outcome => ({
     ...outcome,
     marketId: market.id,
     lastPricePercent: outcome.price

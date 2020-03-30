@@ -41,12 +41,17 @@ import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { tryToPersistStorage } from 'utils/storage-manager';
-import { isDevNetworkId, SDKConfiguration } from '@augurproject/artifacts';
+import {
+  isDevNetworkId,
+  SDKConfiguration,
+  serializeConfig,
+  mergeConfig,
+  validConfigOrDie,
+} from '@augurproject/artifacts';
 import { getNetwork } from 'utils/get-network-name';
 import { buildConfig } from '@augurproject/artifacts';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { isGoogleBot } from 'utils/is-google-bot';
-import { serializeConfig } from "@augurproject/artifacts/build";
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -209,9 +214,11 @@ export function connectAugur(
 
     // Disable mesh/gsn for googleBot
     if (isGoogleBot()) {
-      config.zeroX.mesh.enabled = false;
-      config.gsn.enabled = false;
-      config.useWarpSync = false;
+      config = validConfigOrDie(mergeConfig(config, {
+        zeroX: { mesh: { enabled: false }},
+        gsn: { enabled: false },
+        useWarpSync: false,
+      }));
     }
 
     let sdk: Augur<Provider> = null;

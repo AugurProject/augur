@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import Box from '3box';
+import React from 'react';
 import ThreeBoxComments from '3box-comments-react';
 import { FacebookComments } from 'modules/market/components/common/comments/facebook-comments';
 
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
+import { use3box } from 'utils/use-3box';
+import { SecondaryButton } from 'modules/common/buttons';
 
 interface MarketCommentsProps {
-  accountType: string;
   adminEthAddr: string;
   colorScheme: string;
   marketId: string;
@@ -17,7 +17,6 @@ interface MarketCommentsProps {
 }
 
 export const MarketComments = ({
-  accountType,
   adminEthAddr,
   colorScheme,
   marketId,
@@ -26,50 +25,8 @@ export const MarketComments = ({
   provider,
   whichCommentPlugin,
 }: MarketCommentsProps) => {
-  const [address, setAddress] = useState();
-  const [box, setBox] = useState({});
-  const [isReady, setIsReady] = useState(false);
-  const [profile, setProfile] = useState();
-
-  useEffect(() => {
-    whichCommentPlugin === '3box' && handleLogin();
-  }, []);
-
-  useEffect(() => {
-    whichCommentPlugin === '3box' && handleLogin();
-  }, [accountType, provider]);
-
-  const handleLogin = async () => {
-    setIsReady(false);
-
-    if (!provider) {
-      return;
-    }
-
-    let threeBoxInstance;
-    let addressFromProvider = (await provider.enable())[0];
-    let publicProfile;
-
-    try {
-      threeBoxInstance = await Box.create(provider);
-
-      await threeBoxInstance.auth([], { address: addressFromProvider });
-      await threeBoxInstance.syncDone;
-
-      const space = await threeBoxInstance.openSpace('augur', {});
-      await space.syncDone;
-
-      publicProfile = await Box.getProfile(addressFromProvider);
-    } catch (error) {
-      console.error(error);
-      return;
-    }
-
-    setBox(threeBoxInstance);
-    setAddress(addressFromProvider);
-    setProfile(publicProfile);
-    setIsReady(true);
-  };
+  const { activate, setActivate, address, box, isReady, profile } =
+    whichCommentPlugin === '3box' && use3box(provider);
 
   return (
     <section className={Styles.Comments}>
@@ -86,6 +43,13 @@ export const MarketComments = ({
           showCommentCount={numPosts}
           currentUser3BoxProfile={profile}
           // useHovers={true}
+        />
+      )}
+      {whichCommentPlugin === '3box' && !isReady && (
+        <SecondaryButton
+          action={() => setActivate(true)}
+          text={activate ? "Loading comments..." : "Click here to activate comments"}
+          disabled={activate}
         />
       )}
       {whichCommentPlugin === 'facebook' && (
