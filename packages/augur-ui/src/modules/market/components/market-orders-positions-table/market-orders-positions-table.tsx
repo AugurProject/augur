@@ -59,6 +59,7 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
       <ModulePane label="My Fills">
         <FilledOrdersTable
           filledOrders={filledOrders}
+          isArchived={market.isArchived}
           scalarDenomination={market.scalarDenomination}
         />
       </ModulePane>

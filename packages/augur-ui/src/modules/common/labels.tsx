@@ -338,6 +338,32 @@ export const Archived = ({ market }: ArchivedProps) => {
   );
 };
 
+interface DataArchivedProps {
+  label: string;
+}
+
+export const DataArchivedLabel = ({ label }: DataArchivedProps) => {
+  return (
+    <div className={Styles.DataArchivedLabel}>
+      <label
+        data-tip
+        data-for={`tooltip-${label}-archived-data`}
+      >
+        Data Archived {QuestionIcon}
+      </label>
+      <ReactTooltip
+        id={`tooltip-${label}-archived-data`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+      >
+        Data only saved for 30 days
+      </ReactTooltip>
+    </div>
+  );
+};
+
 export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => (
   <div className={Styles.TimeLabel}>
     <span>

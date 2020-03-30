@@ -829,6 +829,35 @@ span.PendingLabel {
   }
 }
 
+.DataArchivedLabel {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+
+  > label {
+    .text-12;
+
+    color: @color-secondary-text;
+    display: flex;
+    align-items: center;
+
+    > svg {
+      height: @size-12;
+      margin-left: @size-2;
+      width: @size-12;
+  
+      > circle {
+        stroke: @color-secondary-text;
+      }
+  
+      > path {
+        fill: @color-secondary-text;
+      }
+    }
+  }
+}
+
 .CategoryTagTrail {
   display: flex;
   // Required to make ellipsis work.
