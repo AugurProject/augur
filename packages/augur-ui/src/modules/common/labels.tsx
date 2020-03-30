@@ -791,7 +791,7 @@ interface LiquidityDepletedLabelProps {
 export const LiquidityDepletedLabel = ({
   market,
 }: LiquidityDepletedLabelProps) => {
-  if (market.passDefaultLiquiditySpread || market.hasPendingLiquidityOrders)
+  if ((market.passDefaultLiquiditySpread || market.hasPendingLiquidityOrders) && (market.marketStatus !== constants.MARKET_CLOSED))
     return null;
   return (
     <span
