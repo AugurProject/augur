@@ -9,9 +9,10 @@ import {
   SCALAR,
   SCALAR_DOWN_ID,
   INVALID_OUTCOME_ID,
+  ARCHIVED_MARKET_LENGTH,
   SCALAR_UP_ID,
 } from 'modules/common/constants';
-import { convertUnixToFormattedDate } from './format-date';
+import { convertUnixToFormattedDate, getDurationBetween } from './format-date';
 import {
   formatPercent,
   formatDai,
@@ -22,14 +23,17 @@ import {
 import { createBigNumber } from './create-big-number';
 import { keyBy } from './key-by';
 import { getOutcomeNameWithOutcome } from './get-outcome';
+import moment = require('moment');
 import deepClone from './deep-clone';
 
 export function convertMarketInfoToMarketData(
-  marketInfo: Getters.Markets.MarketInfo
+  marketInfo: Getters.Markets.MarketInfo,
+  currentTimestamp: number
 ) {
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
   const creatorFee = parseInt(marketInfo.marketCreatorFeeRate || '0', 10);
   const allFee = createBigNumber(marketInfo.settlementFee || '0');
+  const archivedDuration = marketInfo.finalizationTime && getDurationBetween(marketInfo.finalizationTime, currentTimestamp / 1000);
   const marketData: MarketData = {
     ...marketInfo,
     marketId: marketInfo.id,
@@ -40,6 +44,7 @@ export function convertMarketInfoToMarketData(
     endTimeFormatted: convertUnixToFormattedDate(marketInfo.endTime),
     creationTimeFormatted: convertUnixToFormattedDate(marketInfo.creationTime),
     categories: marketInfo.categories,
+    isArchived: archivedDuration && (Math.abs(archivedDuration.asDays()) >= ARCHIVED_MARKET_LENGTH),
     finalizationTimeFormatted: marketInfo.finalizationTime
       ? convertUnixToFormattedDate(marketInfo.finalizationTime)
       : null,
