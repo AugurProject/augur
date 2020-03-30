@@ -715,6 +715,7 @@ export default class MarketView extends Component<
                           <div className={Styles.History}>
                             {(marketId || preview) && (
                               <MarketTradeHistory
+                                isArchived={market.isArchived}
                                 marketId={marketId}
                                 outcome={outcomeId}
                                 toggle={this.toggleTradeHistory}
@@ -742,6 +743,7 @@ export default class MarketView extends Component<
                       <MarketChartsPane
                         marketId={!tradingTutorial && marketId}
                         market={preview && market}
+                        isArchived={market.isArchived}
                         selectedOutcomeId={outcomeId}
                         currentTimestamp={currentTimestamp}
                         updateSelectedOrderProperties={
@@ -911,6 +913,7 @@ export default class MarketView extends Component<
                   >
                     <MarketChartsPane
                       marketId={!tradingTutorial && marketId}
+                      isArchived={market.isArchived}
                       selectedOutcomeId={outcomeId}
                       updateSelectedOrderProperties={
                         this.updateSelectedOrderProperties
@@ -1017,6 +1020,7 @@ export default class MarketView extends Component<
                         <MarketTradeHistory
                           marketId={marketId}
                           outcome={outcomeId}
+                          isArchived={market.isArchived}
                           toggle={this.toggleTradeHistory}
                           extend={extendTradeHistory}
                           marketType={market.marketType}
