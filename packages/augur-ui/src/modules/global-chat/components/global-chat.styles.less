@@ -33,13 +33,19 @@
   div[class*='onlineList'],
   input[class*='sc-popup-window--search'],
   form[class*='sc-user-input active'],
-  input[class*='sc-popup-window--search'] {
+  input[class*='sc-popup-window--search'],
+  form[class*='sc-user-input'] > textarea{
     color: @color-primary-text;
   }
 
   button[class*='sc-user-input--emoji-icon-wrapper'] path,
-  button[class*='sc-user-input--emoji-icon-wrapper'] circle {
+  button[class*='sc-user-input--emoji-icon-wrapper'] circle,
+  svg[class*='sc-user-input--send-icon'] path {
     fill: @color-primary-text;
+  }
+
+  button[class*='sc-user-input--send-icon-wrapper'] {
+    margin: 0;
   }
 
   div[class*='sc-launcher'] {
