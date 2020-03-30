@@ -16,7 +16,7 @@ interface ActivityState {
 }
 
 const Activity = ({ openInterest }: ActivityProps) => {
-  const [selected, setSelected] = useState(TIMEFRAME_OPTIONS[3].id);
+  const [selected, setSelected] = useState(TIMEFRAME_OPTIONS[2].id);
   return (
     <div className={Styles.Activity}>
       <h4>Activity</h4>
