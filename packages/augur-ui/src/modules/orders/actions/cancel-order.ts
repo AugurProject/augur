@@ -7,7 +7,7 @@ import { CANCELORDER } from 'modules/common/constants';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import { Action } from 'redux';
 import { TXEventName } from '@augurproject/sdk';
-import { removeCanceledOrder, addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
+import { addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 
 const BATCH_CANCEL_MAX = 4;
 
@@ -35,9 +35,6 @@ export const cancelAllOpenOrders = orders => async (
     }
 
   } catch (error) {
-    orders.forEach(order => {
-      dispatch(removeCanceledOrder(order.id));
-    });
     console.error('Error canceling batch orders', error);
     throw error;
   }

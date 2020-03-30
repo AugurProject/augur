@@ -18,6 +18,7 @@ import {
   FINANCE,
   ENTERTAINMENT,
   CRYPTO,
+  MEDICAL,
   SOCCER,
   AMERICAN_FOOTBALL,
   OLYMPICS,
@@ -97,6 +98,7 @@ export const EMPTY_STATE: NewMarket = {
   timezone: null,
   detailsText: '',
   categories: ['', '', ''],
+  navCategories: ['', '', ''],
   settlementFee: SETTLEMENT_FEE_DEFAULT,
   affiliateFee: AFFILIATE_FEE_DEFAULT,
   orderBook: {}, // for submit orders
@@ -108,6 +110,9 @@ export const EMPTY_STATE: NewMarket = {
   initialLiquidityDai: ZERO,
   initialLiquidityGas: ZERO,
 };
+
+export const WarpSyncErrorHeader = 'Universe Warp Sync Hash is undefined';
+export const WarpSyncErrorSubheader = 'Wait until warp sunc hash is defined to report or dispute';
 
 export const EventDetailsContentTemplate = `template`;
 export const EventDetailsContent = (type = `custom`) => ({
@@ -231,6 +236,12 @@ export const MARKET_TEMPLATES = [
     header: CRYPTO,
     description: defaultDescription,
     icon: icons.Crypto,
+  },
+  {
+    value: MEDICAL,
+    header: MEDICAL,
+    description: defaultDescription,
+    icon: icons.Medical,
   },
 ];
 

@@ -6,7 +6,7 @@ import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
-import { makeProvider, MockGnosisRelayAPI } from '../../../libs';
+import { makeProvider } from '../../../libs';
 import { MockBrowserMesh } from '../../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../../libs/MockMeshServer';
 import { SDKConfiguration } from '@augurproject/artifacts';
@@ -35,22 +35,19 @@ describe('State API :: Liquidity', () => {
     meshClient.destroy();
     stopServer();
   });
-  describe('with gnosis', () => {
+  describe('tests', () => {
     beforeAll(async () => {
       const johnConnector = new Connectors.DirectConnector();
-      const johnGnosis = new MockGnosisRelayAPI();
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         provider,
         config,
         johnConnector,
-        johnGnosis,
         meshClient,
         meshBrowser
       );
       expect(john).toBeDefined();
 
-      johnGnosis.initialize(john);
       johnConnector.initialize(john.augur, john.db);
 
       await john.approveCentralAuthority();
@@ -91,6 +88,7 @@ describe('State API :: Liquidity', () => {
       let marketData = await john.db.Markets.get(market.address);
 
       await expect(marketData.liquidity).toEqual({
+        '0': '000000000000000000000000000000',
         '10': '000000000000000000000000000000',
         '100': '000000000000000000000000000000',
         '15': '000000000000000000000000000000',

@@ -23,9 +23,8 @@ console.log('Starting web worker');
         rpcRetryInterval: 0,
         rpcConcurrency: 40
       },
-      gnosis: {
+      gsn: {
         enabled: true,
-        http: 'http://localhost:8000'
       },
       syncing: {
         enabled: false

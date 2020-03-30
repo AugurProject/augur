@@ -18,7 +18,7 @@ library Reporting {
 
     uint256 private constant DEFAULT_VALIDITY_BOND = 10 ether; // 10 Cash (Dai)
     uint256 private constant VALIDITY_BOND_FLOOR = 10 ether; // 10 Cash (Dai)
-    uint256 private constant DEFAULT_REPORTING_FEE_DIVISOR = 100; // 1% fees
+    uint256 private constant DEFAULT_REPORTING_FEE_DIVISOR = 10000; // .01% fees
     uint256 private constant MAXIMUM_REPORTING_FEE_DIVISOR = 10000; // Minimum .01% fees
     uint256 private constant MINIMUM_REPORTING_FEE_DIVISOR = 3; // Maximum 33.3~% fees. Note than anything less than a value of 2 here will likely result in bugs such as divide by 0 cases.
 

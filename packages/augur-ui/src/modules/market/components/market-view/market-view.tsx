@@ -412,13 +412,6 @@ export default class MarketView extends Component<
       selectedOrderProperties,
       selectedOutcomeId,
     } = this.state;
-    if (tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK) {
-      // Scroll to bottom since next tutorial card will be below the fold.
-      document
-        .querySelector('#mainContent')
-        .scrollTo(0, document.body.scrollHeight);
-    }
-
     if (!this.checkTutorialErrors(selectedOrderProperties)) {
       this.setState({ tutorialStep: tutorialStep + 1 });
     }
@@ -517,7 +510,7 @@ export default class MarketView extends Component<
       outcomeOrderBook = formatOrderBook(orderBook[outcomeId]);
     }
 
-    const networkId = getNetworkId();
+    const networkId = tradingTutorial ? null : getNetworkId();
     const cat5 = this.findType();
     let orders = null;
     if (tradingTutorial) {

@@ -33,7 +33,7 @@ jsonschema==3.2.0         # via web3
 lru-dict==1.1.6           # via py-evm, web3
 more-itertools==7.2.0     # via pytest, zipp
 multiaddr==0.0.8          # via ipfshttpclient
-mypy-extensions==0.4.1    # via py-ecc, py-evm, web3
+mypy-extensions==0.4.1    # via py-ecc, py-evm
 netaddr==0.7.19           # via multiaddr
 numpy==1.13.0
 packaging==19.2           # via pytest
@@ -41,7 +41,7 @@ parsimonious==0.8.1       # via eth-abi
 pluggy==0.13.0            # via pytest
 protobuf==3.11.2          # via web3
 py-ecc==1.7.1             # via py-evm
-py-evm==0.3.0a12
+py-evm==0.3.0a14
 py-geth==2.2.0
 py-solc==1.4.0
 py==1.8.0                 # via pytest
@@ -63,7 +63,7 @@ urllib3==1.25.5           # via requests
 varint==1.0.2             # via multiaddr
 virtualenv==15.2.0
 wcwidth==0.1.7            # via pytest
-web3==5.4.0
+web3==5.6.0
 websockets==8.1           # via web3
 zipp==0.6.0               # via importlib-metadata
 

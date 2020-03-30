@@ -1,7 +1,7 @@
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { NodeStyleCallback } from 'modules/types';
 import { NOTIFICATION_TYPES } from 'modules/common/constants';

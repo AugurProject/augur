@@ -1,5 +1,5 @@
 import logError from 'utils/log-error';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { NodeStyleCallback } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';

@@ -101,7 +101,10 @@ import {
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
 import makeQuery from 'modules/routes/helpers/make-query';
-import { CREATE_MARKET_FORM_PARAM_NAME, CREATE_MARKET_PORTFOLIO } from 'modules/routes/constants/param-names';
+import {
+  CREATE_MARKET_FORM_PARAM_NAME,
+  CREATE_MARKET_PORTFOLIO,
+} from 'modules/routes/constants/param-names';
 import {
   TemplateInputType,
   TimeOffset,
@@ -129,6 +132,7 @@ interface FormProps {
   marketCreationStarted: Function;
   marketCreationSaved: Function;
   maxMarketEndTime: number;
+  GsnEnabled: boolean;
 }
 
 interface FormState {
@@ -179,7 +183,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       ? 3
       : 4,
     contentPages: this.props.isTemplate
-      ? hasNoTemplateCategoryChildren(this.props.newMarket.categories[0])
+      ? hasNoTemplateCategoryChildren(this.props.newMarket.navCategories[0])
         ? NO_CAT_TEMPLATE_CONTENT_PAGES
         : TEMPLATE_CONTENT_PAGES
       : CUSTOM_CONTENT_PAGES,
@@ -197,7 +201,13 @@ export default class Form extends React.Component<FormProps, FormState> {
   }
 
   unblock = (cb?: Function) => {
-    const { drafts, newMarket, discardModal, isTemplate, clearNewMarket } = this.props;
+    const {
+      drafts,
+      newMarket,
+      discardModal,
+      isTemplate,
+      clearNewMarket,
+    } = this.props;
 
     const savedDraft = drafts[newMarket.uniqueId];
 
@@ -211,8 +221,10 @@ export default class Form extends React.Component<FormProps, FormState> {
     const disabledSave =
       savedDraft && JSON.stringify(market) === JSON.stringify(savedDraft);
     let unsaved =
-      !newMarket.uniqueId &&
-      JSON.stringify(market) !== JSON.stringify(defaultState);
+      (!newMarket.uniqueId &&
+        JSON.stringify(market) !== JSON.stringify(defaultState)) ||
+      (newMarket.uniqueId &&
+        JSON.stringify(market) !== JSON.stringify(savedDraft));
 
     if (
       !cb &&
@@ -223,6 +235,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       let templateDefaultState = defaultState;
       templateMarket = {
         ...templateMarket,
+        navCategories: [],
         categories: [],
         marketType: '',
         currentStep: 0,
@@ -231,6 +244,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       templateDefaultState = {
         ...templateDefaultState,
         categories: [],
+        navCategories: [],
         marketType: '',
         template: null,
       };
@@ -255,7 +269,6 @@ export default class Form extends React.Component<FormProps, FormState> {
         }
       });
     } else {
-      clearNewMarket();
       cb && cb(true);
     }
   };
@@ -294,6 +307,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                 ...deepClone<NewMarket>(EMPTY_STATE),
                 marketType: newMarket.marketType,
                 categories,
+                navCategories: categories,
                 currentStep: this.state.templateFormStarts - 1,
                 template: null,
               });
@@ -549,7 +563,8 @@ export default class Form extends React.Component<FormProps, FormState> {
         const afterTuesday: TemplateInput = inputs.find(
           i =>
             i.type === TemplateInputType.DATEYEAR &&
-            i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY
+            i.validationType ===
+              ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY
         );
         if (closing) {
           const dateYearSource = inputs.find(
@@ -668,10 +683,11 @@ export default class Form extends React.Component<FormProps, FormState> {
       name === 'minute' ||
       name === 'meridiem' ||
       name === 'timezoneDropdown' ||
-      name === 'timeSelector'
+      name === 'timeSelector' ||
+      name === 'updateEventExpiration'
     ) {
       // timezone needs to be set on NewMarket object, this value is used to set timezone picker default value
-      const setEndTime = name === 'setEndTime' ? value : newMarket.setEndTime;
+      let setEndTime = name === 'setEndTime' ? value : newMarket.setEndTime;
       let hour = name === 'hour' ? value : newMarket.hour;
       let minute = name === 'minute' ? value : newMarket.minute;
       let meridiem = name === 'meridiem' ? value : newMarket.meridiem;
@@ -679,26 +695,31 @@ export default class Form extends React.Component<FormProps, FormState> {
       let offsetName = newMarket.offsetName;
       let timezone = newMarket.timezone;
 
-      if (name === 'timeSelector') {
+      if (name === 'timeSelector' || name === 'updateEventExpiration') {
         hour = value.hour || hour;
         minute = value.minute || minute;
         meridiem = value.meridiem || meridiem;
         this.onError('hour', '');
       }
-      if (name === 'timezoneDropdown') {
+      if (name === 'timezoneDropdown' || name === 'updateEventExpiration') {
         offset = value.offset;
         offsetName = value.offsetName;
         timezone = value.timezone;
       }
-      const endTimeFormatted = buildformattedDate(
-        setEndTime,
-        hour,
-        minute,
-        meridiem,
-        offsetName,
-        offset
-      );
-
+      let endTimeFormatted = null;
+      if (name === 'updateEventExpiration') {
+        setEndTime = value.setEndTime || newMarket.setEndTime;
+        endTimeFormatted = convertUnixToFormattedDate(setEndTime);
+      } else {
+        endTimeFormatted = buildformattedDate(
+          setEndTime,
+          hour,
+          minute,
+          meridiem,
+          offsetName,
+          offset
+        );
+      }
       updateNewMarket({
         endTimeFormatted,
         setEndTime,
@@ -741,6 +762,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       needsApproval,
       isTemplate,
       currentTimestamp,
+      GsnEnabled,
     } = this.props;
     const { contentPages, categoryStats } = this.state;
 
@@ -874,7 +896,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                 <MarketType
                   updateNewMarket={updateNewMarket}
                   marketType={marketType}
-                  categories={newMarket.categories}
+                  categories={newMarket.navCategories}
                   nextPage={this.nextPage}
                 />
               )}
@@ -890,7 +912,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                   subheader="You must complete all required fields highlighted above before you can continue"
                 />
               )}
-              {secondButton === CREATE && (
+              {secondButton === CREATE && !GsnEnabled && (
                 <BulkTxLabel
                   className={Styles.MultipleTransactions}
                   buttonName={'Create'}
@@ -928,7 +950,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                           this.setState({ blockShown: true }, () => {
                             history.push({
                               pathname: makePath(MY_POSITIONS, null),
-                              search:  makeQuery({
+                              search: makeQuery({
                                 [CREATE_MARKET_PORTFOLIO]: 3,
                               }),
                             });

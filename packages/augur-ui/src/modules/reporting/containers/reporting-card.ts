@@ -2,11 +2,12 @@ import { connect } from 'react-redux';
 import { ReportingCard } from 'modules/reporting/common';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_REPORTING } from 'modules/common/constants';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe } = state;
   return {
+    isForking: universe.forkingInfo,
     isLogged: state.authStatus.isLogged && !universe.forkingInfo,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     disputingWindowEndTime:

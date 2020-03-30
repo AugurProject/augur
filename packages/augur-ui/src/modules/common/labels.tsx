@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
 import Styles from 'modules/common/labels.styles.less';
@@ -47,6 +47,8 @@ import { EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import { getDurationBetween } from 'utils/format-date';
+import { useTimer } from 'modules/common/progress';
+import { Market } from 'modules/portfolio/components/common/market-row';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -148,6 +150,7 @@ export interface ValueLabelProps {
   keyId?: string;
   showEmptyDash?: boolean;
   useFull?: boolean;
+  usePercent?: boolean;
   alert?: boolean;
 }
 
@@ -229,17 +232,24 @@ interface TimeLabelProps {
 
 interface CountdownLabelProps {
   expiry: DateFormattedObject;
-  currentTimestamp: Number;
 }
 
-export const CountdownLabel = ({ expiry, currentTimestamp }: CountdownLabelProps) => {
+export const CountdownLabel = ({ expiry }: CountdownLabelProps) => {
   if (!expiry) return null;
-  const duration = getDurationBetween(expiry.timestamp, currentTimestamp);
-  const hours = duration.asHours();
-  if (hours > 1) return null;
+  const currentTime = useTimer();
+  const duration = getDurationBetween(expiry.timestamp, currentTime);
+  let durationValue = duration.asSeconds();
+  let unit = 'm';
+  if (durationValue > constants.SECONDS_IN_HOUR) return null;
+  if (durationValue > constants.SECONDS_IN_MINUTE) {
+    durationValue = Math.round(duration.asMinutes());
+  } else {
+    unit = 's';
+  }
   return (
     <div className={Styles.CountdownLabel}>
-      {Math.round(duration.asMinutes())}m
+      {durationValue}
+      {unit}
     </div>
   );
 };
@@ -447,7 +457,9 @@ export const ValueLabel = (props: ValueLabelProps) => {
         data-for={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
         data-iscapture="true"
       >
-        {props.useFull && props.value.full}
+        {props.usePercent
+          ? props.value.percent
+          : props.useFull && props.value.full}
         {!props.useFull && `${frontFacingLabel}${postfix}`}
         {!props.useFull && <span>{denominationLabel}</span>}
       </label>
@@ -720,7 +732,9 @@ export const LinearPropertyLabel = ({
         })}
       >
         {value && value.formatted
-          ? `${showDenomination || useFull ? value.full : value.roundedFormatted}`
+          ? `${
+              showDenomination || useFull ? value.full : value.roundedFormatted
+            }`
           : value}
       </span>
     )}
@@ -737,14 +751,19 @@ export const LinearPropertyLabel = ({
         })}
       >
         {value && value.formatted
-          ? `${showDenomination || useFull ? value.full : value.roundedFormatted}`
+          ? `${
+              showDenomination || useFull ? value.full : value.roundedFormatted
+            }`
           : value}
       </span>
     )}
   </div>
 );
 
-export const MarketTypeLabel = ({ marketType, isWarpSync }: MarketTypeProps) => {
+export const MarketTypeLabel = ({
+  marketType,
+  isWarpSync,
+}: MarketTypeProps) => {
   if (!marketType) {
     return null;
   }
@@ -760,10 +779,42 @@ export const MarketTypeLabel = ({ marketType, isWarpSync }: MarketTypeProps) => 
     <span
       className={classNames(Styles.MarketTypeLabel, {
         [Styles.MarketScalarLabel]: isScalar,
-        [Styles.MarketStatus_warpSync]: isWarpSync
+        [Styles.MarketStatus_warpSync]: isWarpSync,
       })}
     >
       {text} {isScalar && ScalarIcon}
+    </span>
+  );
+};
+
+interface LiquidityDepletedLabelProps {
+  market: Market;
+}
+
+export const LiquidityDepletedLabel = ({
+  market,
+}: LiquidityDepletedLabelProps) => {
+  if (market.passDefaultLiquiditySpread || market.hasPendingLiquidityOrders)
+    return null;
+  return (
+    <span
+      data-tip
+      data-for={'liquidityDepleted' + market.id}
+      className={classNames(Styles.LiquidityDepletedLabel)}
+    >
+      LIQUIDITY DEPLETED
+      <ReactTooltip
+        id={'liquidityDepleted' + market.id}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+        data-event="mouseover"
+        data-event-off="blur scroll"
+      >
+        No longer passing the Liquidity spread filter, add more liquidity to
+        have your market seen.
+      </ReactTooltip>
     </span>
   );
 };
@@ -846,7 +897,11 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
 
   return (
     <span
-      className={classNames(Styles.MarketStatus, Styles.MarketStatus_reporting, {[Styles.MarketStatus_warpSync]: isWarpSync})}
+      className={classNames(
+        Styles.MarketStatus,
+        Styles.MarketStatus_reporting,
+        { [Styles.MarketStatus_warpSync]: isWarpSync }
+      )}
     >
       {text}
       {reportingExtraText && (
@@ -1276,9 +1331,22 @@ export const DiscordLink = (props: DiscordLinkProps) => (
   </div>
 );
 
-export const AddFundsHelp = (props) => (
+export const AddFundsHelp = props => (
   <ol>
-    <li>Add ETH to your {props.walletType} account address. {props.walletType === ACCOUNT_TYPES.WEB3WALLET ? '' : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring Dai.`} {props.walletType === ACCOUNT_TYPES.WEB3WALLET ? null : <span onClick={() => props.showAddFundsModal()}>Add ETH to your {props.walletType} account address</span>}</li>
-    <li>After you have sent the ETH to your {props.walletType} account address you can then return and make the transaction.</li>
+    <li>
+      Add ETH to your {props.walletType} account address.{' '}
+      {props.walletType === ACCOUNT_TYPES.WEB3WALLET
+        ? ''
+        : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring Dai.`}{' '}
+      {props.walletType === ACCOUNT_TYPES.WEB3WALLET ? null : (
+        <span onClick={() => props.showAddFundsModal()}>
+          Add ETH to your {props.walletType} account address
+        </span>
+      )}
+    </li>
+    <li>
+      After you have sent the ETH to your {props.walletType} account address you
+      can then return and make the transaction.
+    </li>
   </ol>
 );

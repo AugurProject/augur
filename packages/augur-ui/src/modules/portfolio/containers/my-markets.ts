@@ -7,7 +7,7 @@ import { removePendingData } from 'modules/pending-queue/actions/pending-queue-m
 import { CREATE_MARKET } from 'modules/common/constants';
 import { collectMarketCreatorFees } from 'modules/markets/actions/market-creator-fees-management';
 import { retrySubmitMarket } from 'modules/markets/actions/submit-new-market';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState) => {
   const createdMarkets = selectAuthorOwnedMarkets(state);

@@ -192,10 +192,11 @@ export const AddFunds = ({
           <CloseButton action={() => closeAction()} />
         </div>
         <div
-          className={selectedOption === ADD_FUNDS_TRANSFER
-              ? Styles.AddFundsTransfer
-              : Styles.AddFundsCreditDebitCoinbase
-          }
+          className={classNames({
+            [Styles.AddFundsTransfer]: selectedOption === ADD_FUNDS_TRANSFER,
+            [Styles.AddFundsCreditDebit]: selectedOption === ADD_FUNDS_CREDIT_CARD,
+            [Styles.AddFundsCoinbase]: selectedOption === ADD_FUNDS_COINBASE,
+          })}
         >
           {selectedOption === ADD_FUNDS_SWAP && (
             <>
@@ -262,7 +263,7 @@ export const AddFunds = ({
             />
           )}
         </div>
-        {fundTypeToUse !== ETH && <FundsHelp fundType={fundTypeToUse} />}
+        {fundTypeToUse !== ETH && selectedOption !== ADD_FUNDS_SWAP && <FundsHelp fundType={fundTypeToUse} />}
         <div>
           <button onClick={() => closeAction()}>Done</button>
         </div>

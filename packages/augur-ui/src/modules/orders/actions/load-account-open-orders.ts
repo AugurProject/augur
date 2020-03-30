@@ -1,7 +1,7 @@
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { refreshUserOpenOrders } from 'modules/markets/actions/market-trading-history-management';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 

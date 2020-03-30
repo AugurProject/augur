@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { CreateMarket } from "modules/modal/create-market";
 import { closeModal } from "modules/modal/actions/close-modal";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
@@ -14,7 +14,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal())
 });
 
-// updateModal should pass: 
+// updateModal should pass:
 // { type: MODAL_CATEGORIES, categoriesList?, category?, save }
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const save = (cat) => sP.modal.save(cat);

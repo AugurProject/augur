@@ -6,13 +6,12 @@ import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IShareToken.sol';
-import 'ROOT/ISimpleDex.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
 
 
 contract IUniverse {
     function creationTime() external view returns (uint256);
     function marketBalance(address) external view returns (uint256);
-    function repExchange() external view returns (ISimpleDex);
 
     function fork() public returns (bool);
     function updateForkValues() public returns (bool);

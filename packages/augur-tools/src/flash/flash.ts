@@ -1,4 +1,4 @@
-import { NetworkId, SDKConfiguration, buildConfig } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
   Connectors,
@@ -10,12 +10,11 @@ import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { LogFilterAggregatorInterface } from '@augurproject/sdk/build/state/logs/LogFilterAggregator';
 import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
-import { BigNumber } from 'bignumber.js';
 import { ethers, providers } from 'ethers';
 import { Account } from '../constants';
 import { makeSigner } from '../libs/blockchain';
 import { ContractAPI } from '../libs/contract-api';
-import deepmerge from 'deepmerge';
+import { mergeConfig, validConfigOrDie } from "@augurproject/artifacts/build";
 
 configureDexieForNode(true);
 
@@ -108,7 +107,7 @@ export class FlashSession {
   }
 
   noAddresses() {
-    if (typeof this.contractAddresses === 'undefined') {
+    if (typeof this.config?.addresses === 'undefined') {
       this.log('ERROR: Must first load contract addresses.');
       return true;
     }
@@ -116,14 +115,22 @@ export class FlashSession {
     return false;
   }
 
+  async ensureSimpleUser(
+    network?: string,
+    approveCentralAuthority = false,
+    accountAddress: string = null,
+  ): Promise<ContractAPI> {
+    return this.ensureUser(network, null, approveCentralAuthority, accountAddress, false, false);
+  }
+
   sdkReady = false;
   async ensureUser(
     network?: string,
-    wireUpSdk: boolean|null = null,
+    deprecated: boolean|null = null,
     approveCentralAuthority = true,
     accountAddress: string|null = null,
     useZerox: boolean = null,
-    useGnosis: boolean = null,
+    useGSN: boolean = null,
   ): Promise<ContractAPI> {
     if (typeof this.config?.addresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
@@ -133,12 +140,11 @@ export class FlashSession {
       throw new Error('ERROR: No provider');
     }
 
-    // TODO respond if a sub-object does not exist -- config would be invalid
     if (useZerox !== null) {
-      this.config.zeroX.rpc.enabled = useZerox;
+      this.config = validConfigOrDie(mergeConfig(this.config, { zeroX: { rpc: { enabled: useZerox }}}));
     }
-    if (useGnosis !== null) {
-      this.config.gnosis.enabled = useGnosis;
+    if (useGSN !== null) {
+      this.config = validConfigOrDie(mergeConfig(this.config, { gsn: { enabled: useGSN }}));
     }
 
     // Initialize the user if this is the first time we are being called. This will create the provider and all of that jazz.
@@ -148,8 +154,8 @@ export class FlashSession {
       if (this.config?.zeroX?.rpc?.enabled) {
         console.log('ZeroX Enabled:', this.config.zeroX.rpc.ws);
       }
-      if (this.config?.gnosis?.enabled) {
-        console.log('Gnosis Enabled:', this.config.gnosis.http);
+      if (this.config?.gsn?.enabled) {
+        console.log('GSN Enabled');
       }
 
       try {
@@ -169,19 +175,13 @@ export class FlashSession {
         // Create a ContractAPI for this user with this particular augur client. This provides
         // a variety of nice wrapper functions which we should think about exporting
         this.user = new ContractAPI(client, this.provider, client.dependencies, account);
-        this.user.augur.setGasPrice(new BigNumber(this.config.gas.price.toString()));
 
-        // IF we want this flash client to use a safe associated with the past in
+        // IF we want this flash client to use a wallet associated with the past in
         // account, configure it at this point.
-        if (this.config.gnosis.enabled) {
-          const safe = await this.user.getOrCreateSafe();
-          await this.user.faucetOnce(new BigNumber(1e21), safe);
-          const safeStatus = await this.user.getSafeStatus(safe);
-          console.log(`Safe ${safe}: ${safeStatus}`);
-          this.user.augur.setGasPrice(new BigNumber(90000));
-          this.user.setGnosisSafeAddress(safe);
-          this.user.setUseGnosisSafe(true);
-          this.user.setUseGnosisRelay(true);
+        if (this.config.gsn.enabled) {
+          await this.user.getOrCreateWallet();
+          this.user.setUseWallet(true);
+          this.user.setUseRelay(true);
         } else if (approveCentralAuthority) {
           await this.user.approveCentralAuthority();
         }
@@ -250,14 +250,14 @@ export class FlashSession {
   }
 
   async contractOwner(): Promise<ContractAPI> {
-    if (typeof this.contractAddresses === 'undefined') {
+    if (typeof this.config?.addresses === 'undefined') {
       throw Error('ERROR: Must load contract addresses first.');
     }
 
     return ContractAPI.userWrapper(
       this.accounts[0],
       this.provider,
-      this.contractAddresses
+      this.config,
     );
   }
 

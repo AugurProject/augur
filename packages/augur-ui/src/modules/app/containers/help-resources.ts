@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { HelpResources } from 'modules/app/components/help-resources';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { updateAppStatus, IS_HELP_MENU_OPEN } from 'modules/app/actions/update-app-status';

@@ -1,0 +1,52 @@
+{
+  "networkId": "12346",
+  "ethereum": {
+    "http": "http://localhost:8545",
+    "ws": "ws://localhost:8546",
+    "rpcRetryCount": 5,
+    "rpcRetryInterval": 0,
+    "rpcConcurrency": 40
+  },
+  "gas": {
+    "price": 20000000000,
+    "limit": 7500000
+  },
+  "deploy": {
+    "isProduction": false,
+    "enableFaucets": true,
+    "normalTime": false,
+    "writeArtifacts": false
+  },
+  "gsn": {
+    "enabled": false
+  },
+  "zeroX": {
+    "rpc": {
+      "enabled": false,
+      "ws": "ws://localhost:60557"
+    },
+    "mesh": {
+      "enabled": false,
+      "useBootstrapList": true,
+      "bootstrapList": [
+        "/dns4/localhost/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y",
+        "/dns4/localhost/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
+      ]
+    }
+  },
+  "sdk": {
+    "enabled": false,
+    "ws": "ws://localhost:60557"
+  },
+  "server": {
+    "httpPort": 9003,
+    "startHTTP": true,
+    "httpsPort": 9004,
+    "startHTTPS": true,
+    "wsPort": 9001,
+    "startWS": true,
+    "wssPort": 9002,
+    "startWSS": true
+  },
+  "uploadBlockNumber": 0
+}

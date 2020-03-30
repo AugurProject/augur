@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import AlertsView from "modules/alerts/components/alerts-view";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import {

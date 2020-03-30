@@ -243,25 +243,15 @@ export interface CurrentOrder extends ParsedOrderEventLog {
   open: number; // 0 == false, 1 == true. Can't index booleans
 }
 
-// from IExchangeCore.sol
-export interface CancelLog extends Log {
-  makerAddress: Address;
-  feeRecipientAddress: Address;
-  makerAssetData: Bytes32;
-  takerAssetData: Bytes32;
-  senderAddress: Address;
-  orderHash: Bytes32;
-}
-
-export interface CancelledOrderLog {
-  orderHash: Bytes32;
-  senderAddress: Address;
-  makerAddress: Address;
-  feeRecipientAddress: Address;
+export interface CancelZeroXOrderLog extends Log {
+  universe: Address,
+  account: Address;
   market: Address;
   price: string;
+  amount: string;
   outcome: string;
   orderType: string;
+  orderHash: Bytes32;
   blockNumber: number;
 }
 

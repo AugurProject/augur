@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import store, { AppState } from 'store';
+import store, { AppState } from 'appStore';
 import * as alertLevels from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import getValue from 'utils/get-value';

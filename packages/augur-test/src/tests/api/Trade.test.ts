@@ -117,7 +117,7 @@ test('Trade :: simulateTrade', async () => {
     new BigNumber(0)
   );
 
-  const expectedFees = orderAmount.multipliedBy(fillPrice).dividedBy(50); // 2% combined market & reporter fees
+  const expectedFees = orderAmount.multipliedBy(fillPrice).multipliedBy(0.0101); // 2% combined market & reporter fees
   await expect(simulationData.sharesDepleted).toEqual(orderAmount);
   await expect(simulationData.sharesFilled).toEqual(orderAmount);
   await expect(simulationData.settlementFees).toEqual(expectedFees);

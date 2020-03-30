@@ -17,7 +17,9 @@ import "ROOT/IAugur.sol";
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/libraries/LibBytes.sol';
 import 'ROOT/CashSender.sol';
-import 'ROOT/ISimpleDex.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
+import 'ROOT/uniswap/interfaces/IWETH.sol';
 
 
 contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
@@ -87,7 +89,9 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
     ICash public cash;
     IShareToken public shareToken;
     IExchange public exchange;
-    ISimpleDex public ethExchange;
+    IUniswapV2Exchange public ethExchange;
+    IWETH public WETH;
+    bool public token0IsCash;
 
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
         endInitialization();
@@ -101,8 +105,14 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         require(exchange != IExchange(0));
         fillOrder = IFillOrder(_augurTrading.lookup("FillOrder"));
         require(fillOrder != IFillOrder(0));
-        ethExchange = ISimpleDex(_augur.lookup("EthExchange"));
-        require(ethExchange != ISimpleDex(0));
+        WETH = IWETH(_augurTrading.lookup("WETH9"));
+        IUniswapV2Factory _uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
+        address _ethExchangeAddress = _uniswapFactory.getExchange(address(WETH), address(cash));
+        if (_ethExchangeAddress == address(0)) {
+            _ethExchangeAddress = _uniswapFactory.createExchange(address(WETH), address(cash));
+        }
+        ethExchange = IUniswapV2Exchange(_ethExchangeAddress);
+        token0IsCash = ethExchange.token0() == address(cash);
 
         initializeCashSender(_augur.lookup("DaiVat"), address(cash));
 
@@ -298,17 +308,31 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
     function coverProtocolFee(uint256 _amountEthRequired, uint256 _maxProtocolFeeDai) internal {
         if (address(this).balance < _amountEthRequired) {
             uint256 _ethDeficit = _amountEthRequired - address(this).balance;
-            uint256 _cost = ethExchange.getTokenPurchaseCost(_ethDeficit);
+            uint256 _cost = getTokenPurchaseCost(_ethDeficit);
             require(_cost <= _maxProtocolFeeDai, "Cost of purchasing ETH to cover protocol Fee on the exchange was too high");
             cashTransferFrom(msg.sender, address(ethExchange), _cost);
-            ethExchange.buyToken(address(this));
+            ethExchange.swap(token0IsCash ? 0 : _ethDeficit, token0IsCash ? _ethDeficit : 0, address(this), "");
+            WETH.withdraw(_ethDeficit);
         }
     }
 
     function estimateProtocolFeeCostInCash(uint256 _numOrders, uint256 _gasPrice) public view returns (uint256) {
         uint256 _protocolFee = exchange.protocolFeeMultiplier().mul(_gasPrice);
         uint256 _amountEthRequired = _protocolFee.mul(_numOrders);
-        return ethExchange.getTokenPurchaseCost(_amountEthRequired);
+        return getTokenPurchaseCost(_amountEthRequired);
+    }
+
+    function getTokenPurchaseCost(uint256 _ethAmount) private view returns (uint256) {
+        (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = ethExchange.getReserves();
+        return getAmountIn(_ethAmount, token0IsCash ? _reserve0 : _reserve1, token0IsCash ? _reserve1 : _reserve0);
+    }
+
+    function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) public pure returns (uint amountIn) {
+        require(amountOut > 0);
+        require(reserveIn > 0 && reserveOut > 0);
+        uint numerator = reserveIn.mul(amountOut).mul(1000);
+        uint denominator = reserveOut.sub(amountOut).mul(997);
+        amountIn = (numerator / denominator).add(1);
     }
 
     function validateOrder(IExchange.Order memory _order, uint256 _fillAmountRemaining) internal view {
@@ -324,6 +348,30 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
     function isOrderAmountValid(IMarket _market, uint256 _orderAmount) public view returns (bool) {
         uint256 _tradeInterval = IAugurMarketDataGetter(address(augur)).getMarketRecommendedTradeInterval(_market);
         return _orderAmount.isMultipleOf(_tradeInterval);
+    }
+
+    function cancelOrders(IExchange.Order[] memory _orders, bytes[] memory _signatures, uint256 _maxProtocolFeeDai) public returns (bool) {
+        require(_orders.length == _signatures.length);
+        uint256 _protocolFee = exchange.protocolFeeMultiplier().mul(tx.gasprice);
+        coverProtocolFee(_protocolFee.mul(_orders.length), _maxProtocolFeeDai);
+        transferFromAllowed = true;
+        for (uint256 i = 0; i < _orders.length; i++) {
+            IExchange.Order memory _order = _orders[i];
+            bytes memory _signature = _signatures[i];
+            require(msg.sender == _order.makerAddress);
+            IExchange.OrderInfo memory _orderInfo = exchange.getOrderInfo(_order);
+            uint256 _amountRemaining = _order.takerAssetAmount.sub(_orderInfo.orderTakerAssetFilledAmount);
+            exchange.fillOrder.value(_protocolFee)(_order, _amountRemaining, _signature);
+            AugurOrderData memory _orderData = parseOrderData(_order);
+            IUniverse _universe = IMarket(_orderData.marketAddress).getUniverse();
+            augurTrading.logZeroXOrderCanceled(address(_universe), _orderData.marketAddress, _order.makerAddress, _orderData.outcome, _orderData.price, _amountRemaining, uint8(_orderData.orderType), _orderInfo.orderHash);
+        }
+        transferFromAllowed = false;
+        if (address(this).balance > 0) {
+            (bool _success,) = msg.sender.call.value(address(this).balance)("");
+            require(_success);
+        }
+        return true;
     }
 
     function doTrade(IExchange.Order memory _order, uint256 _amount, bytes32 _fingerprint, bytes32 _tradeGroupId, address _taker) private returns (uint256 _amountFilled) {

@@ -12,6 +12,7 @@ const mapStateToProps = (state) => {
     selectedCategories: state.marketsList.selectedCategories,
     popularCategories: selectPopularCategories(state),
     allOtherCategories: selectAllOtherCategories(state),
+    isMobile: state.appStatus.isMobile,
   };
 };
 

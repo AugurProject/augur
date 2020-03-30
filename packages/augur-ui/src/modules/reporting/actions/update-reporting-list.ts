@@ -1,5 +1,5 @@
 import { LoadReportingMarketsOptions } from 'modules/types';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { MarketReportingState } from '@augurproject/sdk';
 import {
   loadCurrentlyDisputingMarkets,

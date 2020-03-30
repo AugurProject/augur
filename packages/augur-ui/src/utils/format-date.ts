@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { DateFormattedObject, TimezoneDateObject } from 'modules/types';
+import { DateFormattedObject, TimezoneDateObject, DateTimeComponents } from 'modules/types';
 import { createBigNumber } from './create-big-number';
 import { ZERO } from 'modules/common/constants';
 import { getMaxMarketEndTime } from 'modules/contracts/actions/contractCalls';
@@ -188,6 +188,25 @@ export function buildformattedDate(
     formattedLocalShortDateTimeWithTimezone: formattedLocalShortDateTimeWithTimezone,
     timestamp: endTime.unix(),
   };
+}
+
+export function timestampComponents(timestamp: number, offset: number = 0): Partial<DateTimeComponents> {
+  const date = moment.unix(timestamp).utcOffset(offset);
+  let meridiem = 'AM';
+  let hour = date.hours()
+  if (hour == 0) {
+    hour = 12; // moment uses 0 for 24 (12 am)
+    meridiem = 'AM';
+  } else if (hour >= 12) {
+    hour = hour > 12 ? hour - 12 : hour;
+    meridiem = 'PM'
+  }
+  return {
+    setEndTime: timestamp,
+    hour: String(hour),
+    minute: `0${date.minutes()}`.slice(-2),
+    meridiem,
+  }
 }
 
 export function convertUnixToFormattedDate(integer: number = 0) {

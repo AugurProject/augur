@@ -218,9 +218,9 @@
     }
 
     > div:last-of-type {
-      grid-row: 2 / span 1;
-      padding-bottom: @size-12;
-      padding-top: @size-8;
+      grid-row: 3;
+      padding-bottom: @size-8;
+      padding-top: 0;
 
       > div {
         display: flex;
@@ -230,6 +230,66 @@
     > div:nth-of-type(1) {
       grid-row: 1 / span 1;
       margin-top: @size-10;
+    }
+  }
+
+  &.Forking {
+    > div:last-of-type {
+      grid-row: 5 / span 1;
+      align-items: flex-end;
+    }
+
+    > div[class*="OutcomeGroup"] {
+      grid-column: 2;
+    }
+
+    > button {
+      border-left: @size-1 solid var(--color-dark-grey);
+    }
+
+    &.Nonexpanding {
+      > div:last-of-type {
+        grid-row: 4 / span 1;
+      }
+
+      > div[class*="MigrateMarketNotice"] {
+        grid-row: 4;
+      }
+    }
+
+    &.Condensed {
+      > div[class*="MigrateMarketNotice"] {
+        grid-column: 2;
+        grid-row: 4;
+      }
+    }
+
+    @media @breakpoint-mobile-tablet {
+      > div[class*="MigrateMarketNotice"] {
+        margin-top: @size-10;
+        grid-column: 1 / span 2;
+        padding: 0;
+      }
+
+      > div[class*="OutcomeGroup"] {
+        grid-column: 1 / span 2;
+      }
+
+      &.Condensed {
+        > div[class*="MigrateMarketNotice"] {
+          grid-row: 3;
+          margin-top: 0;
+          grid-column: 1 / span 2;
+        }
+      }
+
+      &.Nonexpanding {
+        > div[class*="MigrateMarketNotice"] {
+          grid-column: 1 / span 2;
+          padding: 0;
+          margin-bottom: @size-10;
+        }
+      }
     }
   }
 
@@ -426,6 +486,21 @@
       padding: 0;
       grid-column: 1;
       grid-row: 3;
+    }
+    
+      &.template {
+        > div[class*="CategoryTagTrail"] {
+          margin-left: 0;
+          grid-column: 1;
+          grid-row: 2;
+        }
+      }
+
+      &.nonOpenTemplate {
+        > div[class*="CategoryTagTrail"] {
+          grid-row: 3;
+        }
+      }
 
       > div > svg {
         > circle {
@@ -512,4 +587,9 @@
       grid-row: 3;
     }
   }
+}
+
+.MigrateMarketNotice {
+  grid-row: 5 / span 1;
+  padding: @size-10 @size-16;
 }

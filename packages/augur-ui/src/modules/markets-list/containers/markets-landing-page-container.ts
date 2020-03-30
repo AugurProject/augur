@@ -9,7 +9,7 @@ import {
   loadMarketsByFilter,
   LoadMarketsFilterOptions,
 } from 'modules/markets/actions/load-markets';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback } from 'modules/types';

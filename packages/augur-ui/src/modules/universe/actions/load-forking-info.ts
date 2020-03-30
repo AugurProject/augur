@@ -7,7 +7,7 @@ import {
   getDisputeThresholdForFork,
 } from 'modules/contracts/actions/contractCalls';
 import { ThunkDispatch } from 'redux-thunk';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { Action } from 'redux';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { ForkingInfo } from 'modules/types';

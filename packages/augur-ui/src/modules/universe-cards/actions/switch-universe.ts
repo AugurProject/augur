@@ -4,7 +4,7 @@ import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-i
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import { switchUniverseState } from 'modules/app/actions/reset-state';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { loadMarketsByFilter } from 'modules/markets/actions/load-markets';

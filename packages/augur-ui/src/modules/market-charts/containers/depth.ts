@@ -7,7 +7,7 @@ import orderForMarketDepth from 'modules/markets/helpers/order-for-market-depth'
 import getOrderBookKeys from 'modules/markets/helpers/get-orderbook-keys';
 import getPrecision from 'utils/get-number-precision';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { selectCurrentTimestampInSeconds } from 'store/select-state';
+import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import { ASKS, BIDS, ZERO } from "modules/common/constants";
 
 const mapStateToProps = (state, ownProps) => {

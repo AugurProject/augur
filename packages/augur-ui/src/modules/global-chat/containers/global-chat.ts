@@ -1,24 +1,20 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import GlobalChat from 'modules/common/global-chat';
-import { closeModal } from 'modules/modal/actions/close-modal';
-import { AppState } from 'store';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
+import { GlobalChat } from 'modules/global-chat/components/global-chat.tsx';
 
-const mapStateToProps = (state: AppState) => ({
-});
+const mapStateToProps = ({loginAccount, env}) => {
+  const signer = loginAccount.meta?.signer;
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-});
-
-const mergeProps = (sP: any, dP: any, oP: any) => {
-}
+  return signer ? {
+    provider: signer.provider?._web3Provider,
+    whichChatPlugin: env.plugins?.chat,
+  } : {
+    whichChatPlugin: env.plugins?.chat,
+  }
+};
 
 export default withRouter(
   connect(
     mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
   )(GlobalChat)
 );

@@ -16,7 +16,6 @@ import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDepende
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
 import { BigNumber } from 'utils/create-big-number';
-import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 import { Template } from '@augurproject/artifacts';
 
 export enum SizeTypes {
@@ -155,7 +154,7 @@ export interface UserReports {
 }
 export interface FormattedNumber {
   fullPrecision: number | string;
-  roundedValue: number | BigNumber;
+  roundedValue: BigNumber;
   roundedFormatted: string;
   formatted: string;
   formattedValue: number | string;
@@ -164,6 +163,7 @@ export interface FormattedNumber {
   value: number;
   rounded: number | string;
   full: number | string;
+  percent: number | string;
 }
 
 export interface FormattedNumberOptions {
@@ -211,6 +211,7 @@ export interface PendingOrders {
 
 export interface QuantityOrderBookOrder extends Getters.Markets.MarketOrderBookOrder {
   quantityScale: number;
+  percent: number;
 }
 export interface QuantityOutcomeOrderBook {
   spread: string | BigNumber | null;
@@ -239,7 +240,7 @@ export interface TestTradingOrder {
   unmatchedShares: FormattedNumber;
 }
 export interface OrderBooks {
-  [marketId: string]: Getters.Markets.OutcomeOrderBook;
+  [marketId: string]: Getters.Markets.MarketOrderBook;
 }
 export interface IndividualOutcomeOrderBook {
   spread: string | BigNumber | null;
@@ -270,6 +271,8 @@ export interface Notification {
   totalProceeds?: number;
   queueName?: string;
   queueId?: string;
+  hideCheckbox?: boolean;
+  hideNotification?: boolean;
 }
 
 export interface OrderStatus {
@@ -352,6 +355,18 @@ export interface NewMarketPropertyValidations {
   inputs?: NewMarketPropertiesValidations[];
   outcomes?: string | string[];
 }
+
+export interface DateTimeComponents {
+  endTime: number;
+  endTimeFormatted: DateFormattedObject;
+  setEndTime: number;
+  hour: string;
+  minute: string;
+  meridiem: string;
+  offsetName: string;
+  offset: number;
+  timezone: string;
+}
 export interface NewMarket {
   uniqueId: string;
   isValid: boolean;
@@ -379,6 +394,7 @@ export interface NewMarket {
   meridiem: string;
   marketType: string;
   detailsText: string;
+  navCategories: string[];
   categories: string[];
   settlementFee: number;
   affiliateFee: number;
@@ -563,10 +579,10 @@ export interface AppStatus {
   isMobile?: boolean;
   isMobileSmall?: boolean;
   isHelpMenuOpen: boolean;
-  ethToDaiRate: BigNumber;
-  gnosisEnabled: boolean;
+  ethToDaiRate: FormattedNumber;
+  gsnEnabled: boolean;
   zeroXEnabled: boolean;
-  gnosisStatus: GnosisSafeState;
+  walletStatus: string;
 }
 
 export interface AuthStatus {
@@ -612,6 +628,7 @@ export interface AccountBalances {
   legacyRepNonSafe: number;
   attoRep: string;
   legacyAttoRep: string;
+  ethNonSafe: number;
 }
 
 export interface LoginAccountMeta {
@@ -660,12 +677,17 @@ export interface WindowApp extends Window {
   ethereum: {
     selectedAddress;
     networkVersion: string;
+    isMetaMask?: boolean;
+    on?: Function;
+    enable?: Function;
+    send?: Function;
   };
   localStorage: Storage;
   integrationHelpers: any;
   fm?: any;
   torus?: any;
   portis?: any;
+  showIndexedDbSize?: Function;
 }
 
 export type ButtonActionType = (
@@ -720,6 +742,7 @@ export interface Trade {
   side: typeof BUY | typeof SELL;
   orderShareProfit: FormattedNumber;
   orderShareTradingFee: FormattedNumber;
+  numFills: number;
 }
 
 export interface PriceTimeSeriesData {

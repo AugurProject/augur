@@ -694,6 +694,7 @@ export const ResolvedOutcomes = ({
   consensusFormatted,
   expanded,
 }: ResolvedOutcomesProps) => {
+  if (!consensusFormatted) return null;
   const outcomesFiltered = outcomes.filter(
     outcome => String(outcome.id) !== consensusFormatted.outcome
   );

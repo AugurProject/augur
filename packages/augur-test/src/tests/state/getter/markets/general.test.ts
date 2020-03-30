@@ -19,7 +19,7 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
-import { makeProvider, MockGnosisRelayAPI } from '../../../../libs';
+import { makeProvider } from '../../../../libs';
 import { MockBrowserMesh } from '../../../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../../../libs/MockMeshServer';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
@@ -49,39 +49,33 @@ describe('State API :: General', () => {
     stopServer();
   });
 
-  describe('with gnosis', () => {
+  describe('tests', () => {
     beforeAll(async () => {
       const johnConnector = new Connectors.DirectConnector();
-      const johnGnosis = new MockGnosisRelayAPI();
       const johnBrowserMesh = new MockBrowserMesh(meshClient);
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         provider,
         config,
         johnConnector,
-        johnGnosis,
         meshClient,
         johnBrowserMesh
       );
       expect(john).toBeDefined();
 
-      johnGnosis.initialize(john);
       johnConnector.initialize(john.augur, john.db);
       await john.approveCentralAuthority();
 
       const maryConnector = new Connectors.DirectConnector();
-      const maryGnosis = new MockGnosisRelayAPI();
       const maryBrowserMesh = new MockBrowserMesh(meshClient);
       mary = await TestContractAPI.userWrapper(
         ACCOUNTS[1],
         provider,
         config,
         maryConnector,
-        maryGnosis,
         meshClient,
         maryBrowserMesh
       );
-      maryGnosis.initialize(mary);
       maryConnector.initialize(mary.augur, mary.db);
       await mary.approveCentralAuthority();
 
@@ -436,7 +430,7 @@ describe('State API :: General', () => {
       });
 
       expect(marketList.markets.length).toEqual(4);
-      expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
+      expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
 
       marketList = await john.api.route('getMarkets', {
         universe: config.addresses.Universe,
@@ -460,7 +454,7 @@ describe('State API :: General', () => {
       });
 
       expect(marketList.markets.length).toEqual(4);
-      expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
+      expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
 
       marketList = await john.api.route('getMarkets', {
         universe: config.addresses.Universe,
@@ -468,7 +462,7 @@ describe('State API :: General', () => {
       });
 
       expect(marketList.markets.length).toEqual(4);
-      expect(marketList.markets[0].id).toEqual(yesNoMarket2.address);
+      expect(marketList.markets[0].id).toEqual(yesNoMarket3.address);
 
       // Test Recently Depleted Liquidity + Invalid
       marketList = await john.api.route('getMarkets', {

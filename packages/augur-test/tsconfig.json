@@ -27,6 +27,9 @@
     },
     {
       "path": "../augur-tools"
-    }
+    },
+    {
+      "path": "../contract-dependencies-gsn"
+    },
   ]
 }

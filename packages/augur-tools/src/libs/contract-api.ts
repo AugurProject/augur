@@ -1,13 +1,6 @@
 import { WSClient } from '@0x/mesh-rpc-client';
 import { ContractInterfaces } from '@augurproject/core';
-import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import {
-  GnosisSafeState,
-  GnosisSafeStateReponse,
-  IGnosisRelayAPI,
-  SafeResponse,
-} from '@augurproject/gnosis-relay-api';
 import {
   Augur,
   BrowserMesh,
@@ -27,10 +20,10 @@ import {
   ZeroXSimulateTradeData,
 } from '@augurproject/sdk';
 import { BigNumber } from 'bignumber.js';
-import { ContractDependenciesGnosis } from 'contract-dependencies-gnosis';
 import { formatBytes32String } from 'ethers/utils';
 import { Account } from '../constants';
-import { makeGnosisDependencies, makeSigner } from './blockchain';
+import { makeGSNDependencies, makeSigner } from './blockchain';
+import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { SDKConfiguration } from '@augurproject/artifacts';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -42,12 +35,11 @@ export class ContractAPI {
     provider: EthersProvider,
     config: SDKConfiguration,
     connector: Connectors.BaseConnector = new EmptyConnector(),
-    gnosisRelay: IGnosisRelayAPI = undefined,
     meshClient: WSClient = undefined,
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = makeGnosisDependencies(provider, gnosisRelay, signer, config.addresses.Cash, new BigNumber(0), null, account.publicKey);
+    const dependencies = await makeGSNDependencies(provider, signer, config.addresses.AugurWalletRegistry, config.addresses.EthExchange, config.addresses.WETH9, config.addresses.Cash, account.publicKey);
 
     let zeroX = null;
     if (meshClient || meshBrowser) {
@@ -61,18 +53,28 @@ export class ContractAPI {
     return new ContractAPI(augur, provider, dependencies, account);
   }
 
+  static async wrapUsers(
+    accounts: Account[],
+    provider: EthersProvider,
+    config: SDKConfiguration,
+    connector: Connectors.BaseConnector = new EmptyConnector(),
+    meshClient: WSClient = undefined,
+    meshBrowser: BrowserMesh = undefined,
+  ): Promise<ContractAPI[]> {
+    return Promise.all(accounts.map((account) => ContractAPI.userWrapper(
+      account, provider, config, connector, meshClient, meshBrowser
+    )));
+  }
+
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
-    readonly dependencies: ContractDependenciesGnosis,
+    readonly dependencies: ContractDependenciesGSN,
     public account: Account
   ) {}
 
   async sendEther(to: string, amount: BigNumber): Promise<void> {
-    await this.dependencies.signer.sendTransaction({
-      to,
-      value: `0x${amount.toString(16)}`,
-    })
+    return await this.augur.sendETH(to, amount);
   }
 
   async approveCentralAuthority(): Promise<void> {
@@ -90,18 +92,18 @@ export class ContractAPI {
     await this.augur.contracts.cash.approve(this.augur.config.addresses.ZeroXTrade, new BigNumber(2).pow(256).minus(new BigNumber(1)));
   }
 
-  async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
-    await this.marketFauceting();
+  async createYesNoMarket(params: CreateYesNoMarketParams, faucet = true): Promise<ContractInterfaces.Market> {
+    if (faucet) await this.marketFauceting();
     return this.augur.createYesNoMarket(params);
   }
 
-  async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
-    await this.marketFauceting();
+  async createCategoricalMarket(params: CreateCategoricalMarketParams, faucet = true): Promise<ContractInterfaces.Market> {
+    if (faucet) await this.marketFauceting();
     return this.augur.createCategoricalMarket(params);
   }
 
-  async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
-    await this.marketFauceting();
+  async createScalarMarket(params: CreateScalarMarketParams, faucet = true): Promise<ContractInterfaces.Market> {
+    if (faucet) await this.marketFauceting();
     return this.augur.createScalarMarket(params);
   }
 
@@ -112,11 +114,13 @@ export class ContractAPI {
   async marketFauceting() {
     const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     const repBond = await this.getRepBond();
+    console.log('Cash Faucet for market creation');
     await this.faucet(marketCreationFee);
+    console.log('REP Faucet for market creation');
     await this.repFaucet(repBond.plus(10**18));
   }
 
-  async createReasonableYesNoMarket(description = 'YesNo market description'): Promise<ContractInterfaces.Market> {
+  async createReasonableYesNoMarket(description = 'YesNo market description', faucet=true): Promise<ContractInterfaces.Market> {
     const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createYesNoMarket({
@@ -128,10 +132,10 @@ export class ContractAPI {
         categories: ['flash', 'Reasonable', 'YesNo'],
         description,
       }),
-    });
+    }, faucet);
   }
 
-  async createReasonableMarket(outcomes: string[], description = 'Categorical market description'): Promise<ContractInterfaces.Market> {
+  async createReasonableMarket(outcomes: string[], description = 'Categorical market description', faucet=true): Promise<ContractInterfaces.Market> {
     const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createCategoricalMarket({
@@ -144,10 +148,10 @@ export class ContractAPI {
         description,
       }),
       outcomes,
-    });
+    }, faucet);
   }
 
-  async createReasonableScalarMarket(description = 'Scalar market description'): Promise<ContractInterfaces.Market> {
+  async createReasonableScalarMarket(description = 'Scalar market description', faucet=true): Promise<ContractInterfaces.Market> {
     const currentTimestamp = (await this.getTimestamp()).toNumber();
     const minPrice = new BigNumber(50).multipliedBy(new BigNumber(10).pow(18));
     const maxPrice = new BigNumber(250).multipliedBy(new BigNumber(10).pow(18));
@@ -164,7 +168,7 @@ export class ContractAPI {
       }),
       numTicks: new BigNumber(20000),
       prices: [minPrice, maxPrice],
-    });
+    }, faucet);
   }
 
   async placeOrder(
@@ -235,6 +239,7 @@ export class ContractAPI {
   }
 
   async placeZeroXOrders(params: ZeroXPlaceTradeDisplayParams[]): Promise<void> {
+    console.log(`${this.account.publicKey} is creating orders: ${JSON.stringify(params, null, 2)}`)
     await this.augur.zeroX.placeOrders(params);
   }
 
@@ -563,9 +568,7 @@ export class ContractAPI {
     const realAccount = await this.augur.getAccount();
     account = account || realAccount;
     let balance = await this.getCashBalance(realAccount);
-    const desired = attoCash;
     while (balance.lt(attoCash)) {
-      console.log(`CASH FAUCETING FOR ${realAccount}. BALANCE: ${balance}. DESIRED: ${desired}`);
       await this.augur.contracts.cashFaucet.faucet(attoCash);
       balance = await this.getCashBalance(realAccount);
     }
@@ -598,12 +601,22 @@ export class ContractAPI {
 
   async addEthExchangeLiquidity(attoCash: BigNumber, attoEth: BigNumber): Promise<void> {
     await this.faucet(attoCash);
+    await this.augur.contracts.cash.transfer(this.augur.contracts.ethExchange.address, attoCash);
+    await this.augur.contracts.weth.deposit({attachedEth: attoEth});
+    await this.augur.contracts.weth.transfer(this.augur.contracts.ethExchange.address, attoEth);
     const owner = await this.augur.getAccount();
-    await this.augur.contracts.ethExchange.publicMintAuto(owner, attoCash, {attachedEth: attoEth});
+    await this.augur.contracts.ethExchange.mint(owner);
+  }
+
+  async depositRelay(address: string, attoEth: BigNumber): Promise<void> {
+    await this.augur.contracts.relayHub.depositFor(address, {attachedEth: attoEth});
   }
 
   async initWarpSync(universe: string): Promise<void> {
-    await this.augur.contracts.warpSync.initializeUniverse(universe);
+    const warpSyncMarket = await this.augur.contracts.warpSync.markets_(universe);
+    if (warpSyncMarket === NULL_ADDRESS) {
+      await this.augur.contracts.warpSync.initializeUniverse(universe);
+    }
   }
 
   async approve(wei: BigNumber): Promise<void> {
@@ -641,7 +654,7 @@ export class ContractAPI {
 
   // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
   async getEthBalance(owner?: string): Promise<BigNumber> {
-    const balance = await this.provider.getBalance(owner || this.account.publicKey);
+    const balance = await this.provider.getBalance(owner);
     return new BigNumber(balance.toString());
   }
 
@@ -659,24 +672,16 @@ export class ContractAPI {
     return this.augur.contracts.getReputationToken().allowance_(owner, spender);
   }
 
-  setGnosisSafeAddress(safeAddress: string): void {
-    this.augur.setGnosisSafeAddress(safeAddress);
-  }
-
-  setGasPrice(gasPrice: BigNumber): void {
-    this.augur.setGasPrice(gasPrice);
-  }
-
   getGasPrice(): Promise<BigNumber> {
     return this.augur.getGasPrice()
   }
 
-  setUseGnosisSafe(useSafe: boolean): void {
-    this.augur.setUseGnosisSafe(useSafe);
+  setUseWallet(useSafe: boolean): void {
+    this.augur.setUseWallet(useSafe);
   }
 
-  setUseGnosisRelay(useRelay: boolean): void {
-    this.augur.setUseGnosisRelay(useRelay);
+  setUseRelay(useRelay: boolean): void {
+    this.augur.setUseRelay(useRelay);
   }
 
   async approveAugurEternalApprovalValue(owner: string) {
@@ -695,30 +700,8 @@ export class ContractAPI {
     }
   }
 
-  async createGnosisSafeDirectlyWithETH(): Promise<ContractInterfaces.GnosisSafe> {
-    const address = await this.augur.gnosis.createGnosisSafeDirectlyWithETH(this.account.publicKey);
-    return this.augur.contracts.gnosisSafeFromAddress(address);
-  }
-
-  async getGnosisSafeAddress(account: string): Promise<string> {
-    return this.augur.gnosis.getGnosisSafeAddress(account);
-  }
-
-  async createGnosisSafeViaRelay(paymentToken: string): Promise<SafeResponse> {
-    const params = {
-      paymentToken,
-      owner: this.account.publicKey,
-      affiliate: NULL_ADDRESS,
-      fingerprint: formatBytes32String('')
-    };
-    return this.augur.gnosis.createGnosisSafeViaRelay(params);
-  }
-
-  async getGnosisSafeDeploymentStatusViaRelay(owner: string, safe: string): Promise<GnosisSafeStateReponse> {
-    return this.augur.gnosis.getGnosisSafeDeploymentStatusViaRelay({
-      owner,
-      safe,
-    });
+  async getWalletAddress(account: string): Promise<string> {
+    return this.augur.gsn.calculateWalletAddress(account);
   }
 
   async getHotLoadingMarketData(market: string): Promise<HotLoadMarketInfo> {
@@ -759,52 +742,25 @@ export class ContractAPI {
     });
   }
 
-  async fundSafe(safe?: string, minimum=new BigNumber(1e21)) {
-    safe = safe || await this.getOrCreateSafe();
-
+  async fundSafe(safe: string, minimum=new BigNumber(1e21)) {
     if ((await this.getCashBalance(safe)).lt(minimum)) {
       await this.faucet(minimum, safe);
-      await this.waitForSafeFunding(safe);
     }
 
     return safe;
   }
 
-  async waitForSafeFunding(safe: string): Promise<void> {
-    let status: string;
-    for (let i = 0; i < 10; i++) {
-      status = await this.getSafeStatus(safe);
-      if (status !== GnosisSafeState.WAITING_FOR_FUNDS) {
-        break;
-      }
-      await sleep(2000);
+  async getOrCreateWallet(): Promise<string> {
+    const walletFromRegistry = await this.augur.contracts.augurWalletRegistry.getWallet_(this.account.publicKey);
+    if (walletFromRegistry !== NULL_ADDRESS) {
+      console.log(`Found wallet: ${walletFromRegistry}`);
+      return walletFromRegistry;
     }
 
-    // TODO this sleep call can be reduced or eliminated
-    await sleep(10000);
-  }
-
-  async getOrCreateSafe(): Promise<string> {
-    const safeFromRegistry = await this.augur.contracts.gnosisSafeRegistry.getSafe_(this.account.publicKey);
-    if(safeFromRegistry !== NULL_ADDRESS) {
-      console.log(`Found safe: ${safeFromRegistry}`);
-      return safeFromRegistry;
-    }
-
-    console.log('Attempting to create safe via relay');
-    const safeResponse = await this.createGnosisSafeViaRelay(this.augur.config.addresses.Cash);
-    return safeResponse.safe
-  }
-
-  async getSafeStatus(safe: string) {
-    const status = await this.augur.checkSafe(this.account.publicKey, safe);
-    if (typeof status === 'string') {
-      return status;
-    } else if (typeof status === 'object' && typeof status.status === 'string') {
-      return status.status
-    } else {
-      throw Error(`Received erroneous response when deploying safe via relay: "${status}"`);
-    }
+    const walletAddress = await this.augur.gsn.calculateWalletAddress(this.account.publicKey);
+    console.log('Funding Wallet Address');
+    await this.fundSafe(walletAddress);
+    return walletAddress;
   }
 
   async initializeUniverseForWarpSync(): Promise<void> {
@@ -820,7 +776,7 @@ export class ContractAPI {
   }
 
   async getWarpSyncHashFromPayout(payout: BigNumber[]): Promise<string> {
-    return this.augur.warpSync.getWarpSyncHashFromPayout(payout);
+    return this.augur.warpSync.getWarpSyncHashFromPayout(payout[2]);
   }
 
   async getPayoutFromWarpSyncHash(hash: string): Promise<BigNumber[]> {

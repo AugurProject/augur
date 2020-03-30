@@ -1,75 +1,75 @@
 import { Block } from 'ethers/providers';
 import { Provider } from '..';
+import { MarketCreated } from '../event-handlers';
+import { DB } from '../state/db/DB';
 
-const SECONDS_IN_A_DAY = 86400;
-const GUESS_ON_NUMBER_OF_BLOCKS_PER_DAY = 5760 * 5;
+/*
+* What needs to happen:
+* On bulks sync:
+* 1. On empty db we need to identify WarpSync markets and populate checkpoints
+* 2.
+* 2. On full db.
+* On warp sync:
+* 1.
+* */
+
+type MarketWithEndTime = Pick<MarketCreated, 'blockNumber' | 'endTime' >;
 
 export class Checkpoints {
   constructor(private provider: Provider) {}
 
-  async calculateBoundaryByNumber(begin: number, end: number) {
-    return this.calculateBoundary(
-      await this.provider.getBlock(begin),
-      await this.provider.getBlock(end)
-    );
+  async calculateBoundaryByMarkets(firstMarket: MarketWithEndTime, secondMarket: MarketWithEndTime) {
+    return
   }
 
+  /**
+   * @description Given a timestamp
+   * @param {number} timestamp
+   * @param {Block} beginBlock
+   * @param {Block} endBlock
+   * @returns {Promise<[Block, Block]>}
+   */
   async calculateBoundary(
-    beginBlock: Block,
-    endBlock: Block
+    timestamp: number,
+    beginBlock?: Block,
+    endBlock?: Block
   ): Promise<[Block, Block]> {
-    if (this.isSameDay(beginBlock, endBlock)) {
-      endBlock = await this.provider.getBlock(
-        endBlock.number + GUESS_ON_NUMBER_OF_BLOCKS_PER_DAY
-      );
-    }
+    if(!beginBlock) beginBlock = await this.provider.getBlock(0);
+    if(!endBlock) endBlock = await this.provider.getBlock('latest');
 
-    // Handle the case where we grabbed a block that doesn't exist yet.
-    if(!endBlock) {
-      endBlock = await this.provider.getBlock('latest');
-    }
+    if(timestamp >= endBlock.timestamp || timestamp < beginBlock.timestamp) throw new Error('timestamp outside of provided block range');
 
     const middleBlockNumber =
       Math.floor((endBlock.number - beginBlock.number) / 2) + beginBlock.number;
 
     const middleBlock = await this.provider.getBlock(middleBlockNumber);
 
-    const [newBeginBlock, newEndBlock] = this.compareTimestampDay(
+    const [newBeginBlock, newEndBlock] = this.compareTimestamp(
+      timestamp,
       beginBlock,
       middleBlock,
       endBlock
     );
 
     if (newEndBlock.number - newBeginBlock.number > 1) {
-      return this.calculateBoundary(newBeginBlock, newEndBlock);
+      return this.calculateBoundary(timestamp, newBeginBlock, newEndBlock);
     }
 
     return [newBeginBlock, newEndBlock];
   }
 
-  compareTimestampDay(begin: Block, middle: Block, end: Block): [Block, Block] {
-    const beginDayNumber = Math.floor(begin.timestamp / SECONDS_IN_A_DAY);
-    const middleDayNumber = Math.floor(middle.timestamp / SECONDS_IN_A_DAY);
-    const endDayNumber = Math.floor(end.timestamp / SECONDS_IN_A_DAY);
-
-    if (beginDayNumber === middleDayNumber) return [middle, end];
-    if (middleDayNumber <= endDayNumber) return [begin, middle];
+  compareTimestamp(timestamp: number, begin: Block, middle: Block, end: Block): [Block, Block] {
+    if (middle.timestamp <= timestamp) return [middle, end];
+    if (timestamp < middle.timestamp) return [begin, middle];
 
     // This should only happen if we are passed a middle block that isn't really in the middle.
     return [begin, end];
   }
 
-  async isSameDayByNumber(begin: number, end: number): Promise<boolean> {
-    return this.isSameDay(
-      await this.provider.getBlock(begin),
-      await this.provider.getBlock(end)
-    );
-  }
-
-  isSameDay(begin: Block, end: Block) {
+  isValidBlockRangeForTimeStamp(timestamp: number, begin: Block, end: Block) {
     return (
-      Math.floor(begin.timestamp / SECONDS_IN_A_DAY) ===
-      Math.floor(end.timestamp / SECONDS_IN_A_DAY)
+      begin.timestamp <= timestamp &&
+      end.timestamp > timestamp
     );
   }
 }

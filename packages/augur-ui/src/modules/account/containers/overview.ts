@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Overview from 'modules/account/components/overview';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { selectReportingBalances } from '../selectors/select-reporting-balances';
 import { formatRep } from 'utils/format-number';
 

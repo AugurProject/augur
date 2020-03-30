@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
 
-import store from 'store';
+import store from 'appStore';
 import {
   selectAccountPositionsState,
   selectMarketInfosState,
-} from 'store/select-state';
+} from 'appStore/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from 'modules/common/constants';

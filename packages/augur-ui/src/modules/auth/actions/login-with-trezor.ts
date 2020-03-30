@@ -1,5 +1,5 @@
 import TrezorSigner from "modules/auth/helpers/trezor-signer";
-import { getAddress } from "ethers/utils/address";"
+import { getAddress } from "ethers/utils/address";
 import { ACCOUNT_TYPES } from "modules/common/constants";
 import { updateSdk } from "modules/auth/actions/update-sdk";
 

@@ -28,7 +28,7 @@ def test_warp_sync(contractsFixture, augur, universe, reputationToken, warpSync,
     # Finalize the warp sync market with some value
     proceedToDesignatedReporting(contractsFixture, market)
     numTicks = market.getNumTicks()
-    assert warpSync.doInitialReport(universe.address, [0,0,numTicks], "", 0)
+    assert warpSync.doInitialReport(universe.address, [0,0,numTicks], "")
     disputeWindow = contractsFixture.applySignature("DisputeWindow", market.getDisputeWindow())
 
     time.setTimestamp(disputeWindow.getEndTime())

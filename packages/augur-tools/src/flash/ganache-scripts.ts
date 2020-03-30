@@ -80,7 +80,6 @@ export function addGanacheScripts(flash: FlashSession) {
 
       delete this.ganacheProvider;
       delete this.provider;
-      delete this.contractAddresses;
     },
   });
 
@@ -309,8 +308,8 @@ export function addGanacheScripts(flash: FlashSession) {
 
       // Replay the logs.
       const replayer = v1
-        ? new LogReplayerV1(this.accounts, this.provider, this.contractAddresses)
-        : new LogReplayer(this.accounts, this.provider, this.contractAddresses);
+        ? new LogReplayerV1(this.accounts, this.provider, this.config)
+        : new LogReplayer(this.accounts, this.provider, this.config);
       await replayer.Replay(logs);
 
       // Save the replayed state to a seed for later use.
@@ -343,8 +342,8 @@ export function addGanacheScripts(flash: FlashSession) {
 
       // Replay the logs.
       const replayer = v1
-        ? new LogReplayerV1(this.accounts, this.provider, this.contractAddresses)
-        : new LogReplayer(this.accounts, this.provider, this.contractAddresses);
+        ? new LogReplayerV1(this.accounts, this.provider, this.config)
+        : new LogReplayer(this.accounts, this.provider, this.config);
       await replayer.Replay(logs);
     },
   });

@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { MOBILE_MENU_STATES, SHOW_INVALID_MARKETS_PARAM_NAME, MAXFEE_PARAM_NAME, SPREAD_PARAM_NAME, TEMPLATE_FILTER } from 'modules/common/constants';
+import {
+  MOBILE_MENU_STATES,
+  SHOW_INVALID_MARKETS_PARAM_NAME,
+  MAXFEE_PARAM_NAME,
+  SPREAD_PARAM_NAME,
+  TEMPLATE_FILTER,
+} from 'modules/common/constants';
 import { XIcon } from 'modules/common/icons';
 import MarketsListFilters from 'modules/app/containers/markets-list-filters';
 import MarketsListSortBy from 'modules/app/containers/markets-list-sortBy';
@@ -10,6 +16,7 @@ import { PrimaryButton } from 'modules/common/buttons';
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles.less';
 import { FilterSortOptions } from 'modules/types';
 import updateQuery from 'modules/routes/helpers/update-query';
+import updateMultipleQueries from 'modules/routes/helpers/update-multiple-queries';
 
 interface BaseInnerNavPureProps {
   mobileMenuState: number;
@@ -40,7 +47,7 @@ const BaseInnerNavPure = ({
   updateTemplateFilter,
   updateSelectedCategories,
   location,
-  history
+  history,
 }: BaseInnerNavPureProps) => {
   const showMainMenu = mobileMenuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN;
 
@@ -51,6 +58,82 @@ const BaseInnerNavPure = ({
     filterSortOptions
   );
   const [showApply, setShowApply] = useState(false);
+  const [maxFeeFilter, setMaxFeeFilter] = useState();
+  const [maxSpreadFilter, setMaxSpreadFilter] = useState();
+  const [showInvalidFilter, setShowInvalidFilter] = useState();
+  const [templateOrCustomFilter, setTemplateOrCustomFilter] = useState();
+  const [sortOptions, setSortOptions] = useState();
+
+  const filterProps = {
+    setMaxFeeFilter,
+    setMaxSpreadFilter,
+    setShowInvalidFilter,
+    setTemplateOrCustomFilter,
+  };
+
+  const sortProps = {
+    setSortOptions,
+  };
+
+  const getFilters = (originalFilters = false) => {
+    const filters = [
+      {
+        filterType: TEMPLATE_FILTER,
+        value: originalFilters
+          ? originalFilterSortOptions.templateFilter
+          : templateOrCustomFilter,
+      },
+      {
+        filterType: MAXFEE_PARAM_NAME,
+        value: originalFilters
+          ? originalFilterSortOptions.maxFee
+          : maxFeeFilter,
+      },
+      {
+        filterType: SPREAD_PARAM_NAME,
+        value: originalFilters
+          ? originalFilterSortOptions.maxLiquiditySpread
+          : maxSpreadFilter,
+      },
+      {
+        filterType: SHOW_INVALID_MARKETS_PARAM_NAME,
+        value: originalFilters
+          ? originalFilterSortOptions.includeInvalidMarkets
+          : showInvalidFilter,
+      },
+    ];
+
+    return filters.filter(({ value }) => !!value);
+  };
+
+  const applyFilters = () => {
+    const changedFilters = getFilters();
+
+    updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+
+    if (changedFilters.length > 0) {
+      updateMultipleQueries(changedFilters, location, history);
+
+      changedFilters.forEach(({ value, filterType }) => {
+        switch (filterType) {
+          case TEMPLATE_FILTER:
+            updateTemplateFilter(value);
+            break;
+          case MAXFEE_PARAM_NAME:
+            updateMaxFee(value);
+            break;
+          case SPREAD_PARAM_NAME:
+            updateMaxSpread(value);
+            break;
+          case SHOW_INVALID_MARKETS_PARAM_NAME:
+            updateShowInvalid(value);
+            break;
+        }
+      });
+    }
+
+    sortOptions && updateMarketsSortBy(sortOptions);
+  };
 
   useEffect(() => {
     setShowApply(
@@ -59,6 +142,16 @@ const BaseInnerNavPure = ({
           JSON.stringify(originalFilterSortOptions)
     );
   }, [selectedCategories, filterSortOptions]);
+
+  useEffect(() => {
+    setShowApply(true);
+  }, [
+    templateOrCustomFilter,
+    maxFeeFilter,
+    maxSpreadFilter,
+    showInvalidFilter,
+    sortOptions,
+  ]);
 
   useEffect(() => {
     if (showMainMenu) {
@@ -82,43 +175,16 @@ const BaseInnerNavPure = ({
               if (showMainMenu) {
                 updateSelectedCategories(originalSelectedCategories);
                 updateMarketsSortBy(originalFilterSortOptions.marketSort);
- 
-
                 updateMaxFee(originalFilterSortOptions.maxFee);
-                updateQuery(
-                  MAXFEE_PARAM_NAME,
-                  originalFilterSortOptions.templateFilter,
-                  location,
-                  history
-                );
-
                 updateMaxSpread(originalFilterSortOptions.maxLiquiditySpread);
-                updateQuery(
-                  SPREAD_PARAM_NAME,
-                  originalFilterSortOptions.templateFilter,
-                  location,
-                  history
-                );
-  
                 updateShowInvalid(
                   originalFilterSortOptions.includeInvalidMarkets
                 );
-                updateQuery(
-                  SHOW_INVALID_MARKETS_PARAM_NAME,
-                  originalFilterSortOptions.includeInvalidMarkets,
-                  location,
-                  history
-                );
-                
                 updateTemplateFilter(originalFilterSortOptions.templateFilter);
-                updateQuery(
-                  TEMPLATE_FILTER,
-                  originalFilterSortOptions.templateFilter,
-                  location,
-                  history
-                );
+
+                updateMultipleQueries(getFilters(true), location, history);
               }
-              
+
               updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
             }}
           >
@@ -133,17 +199,12 @@ const BaseInnerNavPure = ({
         )}
       >
         <CategoryFilters />
-        <MarketsListSortBy /> {/* MOBILE ONLY */}
-        <MarketsListFilters />
+        <MarketsListSortBy {...sortProps} /> {/* MOBILE ONLY */}
+        <MarketsListFilters {...filterProps} />
       </ul>
       {showMainMenu && showApply && (
         <div>
-          <PrimaryButton
-            text="Apply"
-            action={() => {
-              updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
-            }}
-          />
+          <PrimaryButton text="Apply" action={() => applyFilters()} />
         </div>
       )}
     </aside>

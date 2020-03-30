@@ -12,6 +12,7 @@ import { SDKConfiguration } from '@augurproject/artifacts';
 interface StateProps {
   modal: {
     type: string;
+    config: SDKConfiguration;
   };
   env: SDKConfiguration;
   connection: string;

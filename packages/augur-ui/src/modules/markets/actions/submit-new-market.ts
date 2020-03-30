@@ -2,7 +2,7 @@ import { ZERO } from 'modules/common/constants';
 import noop from 'utils/noop';
 import { sortOrders } from 'modules/orders/helpers/liquidity';
 import { addMarketLiquidityOrders } from 'modules/orders/actions/liquidity-management';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { NodeStyleCallback, NewMarket, CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -30,7 +30,7 @@ export function submitNewMarket(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { loginAccount } = getState();
+    const { loginAccount, appStatus } = getState();
 
     market.orderBook = sortOrders(market.orderBook);
     market.endTime = market.endTimeFormatted.timestamp;
@@ -43,7 +43,9 @@ export function submitNewMarket(
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
     const hashId = getConstructedMarketId(market);
 
-    if (loginAccount.allowance.lte(ZERO)) {
+
+    // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
+    if (!appStatus.gsnEnabled && loginAccount.allowance.lte(ZERO)) {
       await approveToTrade();
     }
 

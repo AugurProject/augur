@@ -14,17 +14,21 @@ import { marketLinkCopied } from 'services/analytics/helpers';
 const mapStateToProps = (state, ownProps) => {
   const positions = state.accountPositions;
   const hasStaked = hasStakeInMarket(state, ownProps.market.marketId);
+  const { forkingInfo } = state.universe;
 
   return {
     theme: state.appStatus.theme,
     hasPosition: !!positions[ownProps.market.marketId],
     isLogged: state.authStatus.isLogged,
+    isForking: !!forkingInfo,
+    isMobile: state.appStatus.isMobile,
     pendingLiquidityOrders: state.pendingLiquidityOrders,
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     disputingWindowEndTime: state.universe.disputeWindow && state.universe.disputeWindow.endTime || 0,
     address: state.loginAccount.address,
     isFavorite: !!state.favorites[ownProps.market.marketId],
     hasStaked,
+    forkingMarket: state.universe.forkingInfo && state.universe.forkingInfo.forkingMarket,
   };
 };
 

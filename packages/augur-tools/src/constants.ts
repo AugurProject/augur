@@ -3,9 +3,9 @@ export const _1_HUNDRED_ETH = _1_ETH * 100;
 export const _1_BILLION_ETH = _1_ETH * 1e9;
 
 export interface Account {
-  secretKey: string;
+  secretKey: string; // TODO this should be called privateKey
   publicKey: string; // NB: This should be called address not publicKey
-  balance: number;
+  balance: number; // TODO rename to initialBalance
 }
 
 export const ACCOUNTS: Account[] = [
@@ -44,7 +44,7 @@ export const ACCOUNTS: Account[] = [
     publicKey: '0x53c3d9be61c8375b34970801c5bd4d1a87860343',
     balance: _1_BILLION_ETH,
   },
-  { // NOTE: This is used by the Gnosis Relayer so don't use it anywhere else.
+  {
     secretKey: '0xcfa5622e09afac03fb5dfa5cb54e52c9d37e06a5b07d5598850b62304639b815',
     publicKey: '0x9d4c6d4b84cd046381923c9bc136d6ff1fe292d9',
     balance: _1_BILLION_ETH,
@@ -55,6 +55,8 @@ export const ACCOUNTS: Account[] = [
     balance: 0, // NOTE: This isn't funded in the geth-poa genesis
   },
 ];
+
+export const BASE_MNEMONIC = 'globe draft monster quiz slogan renew smile nature hip donor leisure number';
 
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const DEADBEEF_ADDRESS = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';

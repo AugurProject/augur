@@ -1,6 +1,6 @@
 import { createBigNumber } from 'utils/create-big-number';
 import createCachedSelector from 're-reselect';
-import store from 'store';
+import store from 'appStore';
 import { ZERO } from 'modules/common/constants';
 import {
   convertUnixToFormattedDate,
@@ -10,7 +10,7 @@ import {
   selectMarketInfosState,
   selectCurrentTimestamp,
   selectMarketTradingHistoryState,
-} from 'store/select-state';
+} from 'appStore/select-state';
 import { selectPriceTimeSeries } from 'modules/markets/selectors/price-time-series';
 
 function selectMarketsDataStateMarket(state, marketId) {

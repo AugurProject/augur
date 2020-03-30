@@ -810,8 +810,8 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     if finalized:
         if invalid:
             nextDisputeWindowAddress = universe.getOrCreateNextDisputeWindow(False)
-            totalFees = fix(100) / 50 # Market fees + reporting fees
-            totalFees -= sourceKickback
+            totalFees = fix(1) - sourceKickback # market fees
+            totalFees += fix(.01) # reporting fee
             with TokenDelta(cash, totalFees, nextDisputeWindowAddress, "Dispute Window did not recieve the correct fees"):
                 assert trade.publicFillBestOrder(BID, market.address, 0, fix(1), 60, "43", 6, fingerprint, sender=contractsFixture.accounts[2]) == 0
         else:

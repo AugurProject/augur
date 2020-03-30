@@ -1,4 +1,6 @@
+import { Market } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { Block } from 'ethers/providers';
+import { Address } from '../logs/types';
 import { AbstractTable } from './AbstractTable';
 import { DB } from './DB';
 
@@ -13,6 +15,8 @@ export interface WarpCheckpointDocument {
   _rev?: string;
   begin: Block;
   ipfsInfo?: IpfsInfo;
+  market: Address;
+  endTimestamp: number;
   end?: Block
 }
 
@@ -40,20 +44,24 @@ export class WarpSyncCheckpointsDB extends AbstractTable {
     ];
   }
 
-  async createInitialCheckpoint(initialBlock: Block) {
-    return this.table.add({
-      begin: initialBlock
+  async getAllCheckpoints(): Promise<WarpCheckpointDocument[]> {
+    return this.table.toArray() as unknown as Promise<WarpCheckpointDocument[]>;
+  }
+
+  async createInitialCheckpoint(initialBlock: Block, market: Market) {
+    return this.upsertDocument(initialBlock.number, {
+      begin: initialBlock,
+      endTimestamp: (await market.getEndTime_()).toNumber(),
+      market: market.address,
     });
   }
 
-  async createCheckpoint(end: Block, begin: Block,  ipfsInfo: IpfsInfo) {
+  async createCheckpoint(end: Block, ipfsInfo: IpfsInfo) {
     const mostRecentCheckpoint  = await this.getMostRecentCheckpoint();
     // These might be served by a dexie transaction.
     await this.upsertDocument(mostRecentCheckpoint._id, {
       end,
       ipfsInfo
     });
-
-    await this.createInitialCheckpoint(begin);
   }
 }

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 import { ButtonsRow, Title, AccountAddressDisplay } from 'modules/modal/common';
 import { formatRep, formatGasCostToEther } from 'utils/format-number';
-import { BigNumber } from 'utils/create-big-number';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { LoginAccount } from 'modules/types';
 import { ExternalLinkButton } from 'modules/common/buttons';
@@ -10,7 +9,7 @@ import { LinearPropertyLabel } from 'modules/common/labels';
 import { InfoIcon } from 'modules/common/icons';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
-  V1_REP_MIGRATE_ESTIMATE,
+  V1_REP_MIGRATE_ESTIMATE, HELP_CENTER_LEARN_ABOUT_ADDRESS, HELP_CENTER_MIGRATE_REP,
 } from 'modules/common/constants';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -19,11 +18,9 @@ interface MigrateRepForm {
   closeAction: Function;
   loginAccount: LoginAccount;
   convertV1ToV2: Function;
-  Gnosis_ENABLED: boolean;
-  ethToDaiRate: BigNumber;
+  GsnEnabled: boolean;
   convertV1ToV2Estimate: Function;
   gasPrice: number;
-  addPendingData: Function;
   showForSafeWallet: boolean;
 }
 
@@ -32,9 +29,8 @@ export const MigrateRep = (props: MigrateRepForm) => {
     closeAction,
     convertV1ToV2,
     loginAccount,
-    Gnosis_ENABLED,
+    GsnEnabled,
     convertV1ToV2Estimate,
-    ethToDaiRate,
     gasPrice,
     showForSafeWallet,
   } = props;
@@ -42,7 +38,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
   const [gasLimit, setGasLimit] = useState(V1_REP_MIGRATE_ESTIMATE);
 
   useEffect(() => {
-    if (Gnosis_ENABLED) {
+    if (GsnEnabled) {
       convertV1ToV2Estimate().then(gasLimit => {
         setGasLimit(gasLimit);
       });
@@ -64,10 +60,10 @@ export const MigrateRep = (props: MigrateRepForm) => {
       <div>
         <LinearPropertyLabel
           key="cost"
-          label={Gnosis_ENABLED ? 'Transaction Fee' : 'Gas Cost'}
+          label={GsnEnabled ? 'Transaction Fee' : 'Gas Cost'}
           value={
-            Gnosis_ENABLED
-              ? displayGasInDai(gasEstimate, ethToDaiRate)
+            GsnEnabled
+              ? displayGasInDai(gasLimit)
               : gasEstimate
           }
         />
@@ -86,7 +82,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
         address={toChecksumAddress(loginAccount.address)}
       />
       <ExternalLinkButton
-        URL="https://docs.augur.net/"
+        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
         label={'Learn about your address'}
       />
     </>
@@ -114,7 +110,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
             example 100 V1 REP will migrate to 100 V2 REP.
             <ExternalLinkButton
               label="Learn more"
-              URL="http://docs.augur.net/"
+              URL={HELP_CENTER_MIGRATE_REP}
             />
           </h2>
         )}
@@ -129,7 +125,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
             From here you can migrate all V1 REP in your account to V2 REP.
             <ExternalLinkButton
               label="Learn more"
-              URL="http://docs.augur.net/"
+              URL={HELP_CENTER_MIGRATE_REP}
             />
           </h2>
         )}

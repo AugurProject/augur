@@ -14,7 +14,7 @@ import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { helpIcon, Chevron, Dot } from 'modules/common/icons';
-import { MODAL_ADD_FUNDS, MIGRATE_FROM_LEG_REP_TOKEN, TRANSACTIONS } from 'modules/common/constants';
+import { MODAL_ADD_FUNDS, MIGRATE_FROM_LEG_REP_TOKEN, TRANSACTIONS, CREATEAUGURWALLET } from 'modules/common/constants';
 
 interface SideNavProps {
   defaultMobileClick: Function;
@@ -32,6 +32,8 @@ interface SideNavProps {
   updateHelpMenuState: Function;
   updateConnectionTray: Function;
   updateModal: Function;
+  showCreateAccountButton: boolean;
+  createFundedGsnWallet: Function;
 }
 
 const SideNav = ({
@@ -50,6 +52,8 @@ const SideNav = ({
   updateHelpMenuState,
   updateConnectionTray,
   updateModal,
+  showCreateAccountButton,
+  createFundedGsnWallet
 }: SideNavProps) => {
   useEffect(() => {
     if (isHelpMenuOpen) {

@@ -50,7 +50,7 @@ export class TestFixture {
         const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);
 
         const contractDeployer = new ContractDeployer(config, dependencies, provider, signer, compiledContracts);
-        await contractDeployer.deploy('test');
+        await contractDeployer.deploy('test', false);
 
         return new TestFixture(dependencies, provider, contractDeployer, signer.address);
     };

@@ -21,7 +21,7 @@ import {
   formatEther,
   formatGasCostToEther,
 } from 'utils/format-number';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { CreateLiquidityOrders } from 'modules/types';
@@ -39,8 +39,7 @@ const mapStateToProps = (state: AppState) => {
     gasPrice: getGasPrice(state),
     loginAccount: state.loginAccount,
     chunkOrders: !state.appStatus.zeroXEnabled,
-    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
-    ethToDaiRate: state.appStatus.ethToDaiRate,
+    GsnEnabled: state.appStatus.gsnEnabled,
     availableDai
   };
 };
@@ -68,11 +67,15 @@ const mergeProps = (sP, dP, oP) => {
         numberOfTransactions += 1;
       });
   });
-  const gasCost = formatGasCostToEther(
+
+  const gasCost = sP.GsnEnabled
+  ? NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions)
+  : formatGasCostToEther(
     NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).toFixed(),
     { decimalsRounded: 4 },
     sP.gasPrice
   );
+
   const bnAllowance = createBigNumber(sP.loginAccount.allowance, 10);
   const needsApproval = bnAllowance.lte(ZERO);
   const submitAllTxCount = chunkOrders ? Math.ceil(
@@ -113,10 +116,6 @@ const mergeProps = (sP, dP, oP) => {
     insufficientFunds,
     submitAllTxCount,
     breakdown: [
-      {
-        label: 'Transaction Fee',
-        value: sP.Gnosis_ENABLED ? displayGasInDai(gasCost, sP.ethToDaiRate) : formatEther(gasCost).full,
-      },
       {
         label: 'Total Cost (DAI)',
         value: formatDai(totalCost.toFixed()).full,

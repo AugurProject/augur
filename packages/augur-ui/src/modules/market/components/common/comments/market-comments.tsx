@@ -1,49 +1,65 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import ThreeBoxComments from '3box-comments-react';
+import { FacebookComments } from 'modules/market/components/common/comments/facebook-comments';
 
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
+import { use3box } from 'utils/use-3box';
+import { SecondaryButton } from 'modules/common/buttons';
 
 interface MarketCommentsProps {
-  marketId: string;
+  adminEthAddr: string;
   colorScheme: string;
-  numPosts: number;
+  marketId: string;
   networkId: string;
+  numPosts: number;
+  provider: any;
+  whichCommentPlugin: string;
 }
 
-export const MarketComments = ({ marketId, colorScheme, numPosts, networkId }: MarketCommentsProps) => {
-  const [didError, setDidError] = useState(false);
-  const { FB } = window;
-
-  useEffect(() => {
-    try {
-      // XFBML enables you to incorporate FBML into your websites and IFrame applications.
-      // https://developers.facebook.com/docs/reference/javascript/FB.XFBML.parse/
-      if (FB) {
-        FB.XFBML.parse();
-      }
-    } catch (error) {
-      console.error(error);
-      setDidError(true);
-    }
-  }, []);
-
-  if (didError) {
-    return null
-  };
-
-  const fbCommentsUrl = `http://www.augur.net/comments/${networkId}/${marketId}`;
+export const MarketComments = ({
+  adminEthAddr,
+  colorScheme,
+  marketId,
+  networkId,
+  numPosts,
+  provider,
+  whichCommentPlugin,
+}: MarketCommentsProps) => {
+  const { activate, setActivate, address, box, isReady, profile } =
+    whichCommentPlugin === '3box' && use3box(provider);
 
   return (
     <section className={Styles.Comments}>
-      <span />
-      <div
-        id='fb-comments'
-        className='fb-comments'
-        data-colorscheme={colorScheme}
-        data-href={fbCommentsUrl}
-        data-width='100%'
-        data-numposts={numPosts.toString()}
-        data-order-by='social' // social is seen as "Top" in the select input
-      />
+      {whichCommentPlugin === '3box' && isReady && (
+        <ThreeBoxComments
+          // required
+          spaceName="augur"
+          threadName={marketId}
+          adminEthAddr={adminEthAddr}
+          // Required props for context A) & B)
+          box={box}
+          currentUserAddr={address}
+          // optional
+          showCommentCount={numPosts}
+          currentUser3BoxProfile={profile}
+          // useHovers={true}
+        />
+      )}
+      {whichCommentPlugin === '3box' && !isReady && (
+        <SecondaryButton
+          action={() => setActivate(true)}
+          text={activate ? "Loading comments..." : "Click here to activate comments"}
+          disabled={activate}
+        />
+      )}
+      {whichCommentPlugin === 'facebook' && (
+        <FacebookComments
+          marketId={marketId}
+          colorScheme={colorScheme}
+          numPosts={numPosts}
+          networkId={networkId}
+        />
+      )}
     </section>
   );
 };

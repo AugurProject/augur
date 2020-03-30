@@ -6,7 +6,7 @@ import {
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { AppState } from "store";
+import { AppState } from "appStore";
 
 const GET_UNIVERSE_INFO_EVERY_X_BLOCKS = 100;
 // Synchronize front-end universe state with blockchain universe state.

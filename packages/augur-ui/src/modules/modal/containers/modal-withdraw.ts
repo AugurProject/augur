@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { WithdrawForm } from 'modules/modal/withdraw-form';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { formatGasCostToEther, formatEtherEstimate } from 'utils/format-number';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
@@ -25,7 +25,7 @@ const mapStateToProps = (state: AppState) => {
   account: loginAccount.address,
   modal,
   balances,
-  Gnosis_ENABLED: appStatus.gnosisEnabled,
+  GsnEnabled: appStatus.gsnEnabled,
   ethToDaiRate: appStatus.ethToDaiRate,
   gasPrice: getGasPrice(state),
   fallBackGasCosts: {
@@ -66,7 +66,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   fallBackGasCosts: sP.fallBackGasCosts,
-  Gnosis_ENABLED: sP.Gnosis_ENABLED,
+  GsnEnabled: sP.GsnEnabled,
   ethToDaiRate: sP.ethToDaiRate,
   balances: sP.balances,
   account: sP.account,

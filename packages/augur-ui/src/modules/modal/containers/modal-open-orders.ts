@@ -5,7 +5,7 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 

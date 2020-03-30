@@ -73,7 +73,7 @@ describe('State API :: Users :: ', () => {
         outcome: YES,
         quantity: 5,
         price: 0.4,
-        realizedPL: 0.44,
+        realizedPL: 0.4697,
         market: market2,
         timestamp: startTime.plus(32 * day).toNumber(),
         unrealizedPL: -1.5,
@@ -114,18 +114,12 @@ describe('State API :: Users :: ', () => {
     const oneDayPLSummary = profitLossSummary['1'];
     const thirtyDayPLSummary = profitLossSummary['30'];
 
-    await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(
-      trades[3].realizedPL
-    );
+    await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(trades[3].realizedPL);
     await expect(Number.parseFloat(oneDayPLSummary.unrealized)).toEqual(0.5);
     await expect(Number.parseFloat(oneDayPLSummary.frozenFunds)).toEqual(1.5);
 
-    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(
-      trades[3].realizedPL
-    );
+    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(trades[3].realizedPL);
     await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(0.5);
-    await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(
-      9.5
-    );
+    await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(9.5);
   });
 });

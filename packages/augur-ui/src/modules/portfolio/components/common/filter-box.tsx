@@ -33,6 +33,7 @@ export interface FilterBoxProps {
   hide: boolean;
   extend: boolean;
   customClass?: string;
+  showLiquidityDepleted?: boolean;
 }
 
 interface FilterBoxState {
@@ -62,6 +63,7 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
     extend,
     data,
     customClass,
+    showLiquidityDepleted
   } = props;
 
   // states
@@ -190,6 +192,7 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
                     key={`position_${market.id}_${index}`}
                     market={dataObj[market.id]}
                     showState
+                    showLiquidityDepleted={showLiquidityDepleted}
                     noToggle={noToggle}
                     showPending={showPending}
                     toggleContent={

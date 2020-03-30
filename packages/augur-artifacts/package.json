@@ -5,9 +5,13 @@
   "author": "Augur Team <team@augur.net>",
   "license": "MIT",
   "main": "build",
+  "browser": "./build/browser.js",
   "scripts": {
     "build": "tsc -b"
   },
+  "files": [
+    "build/**"
+  ],
   "dependencies": {
     "deepmerge": "4.2.2",
     "require-all": "3.0.0"

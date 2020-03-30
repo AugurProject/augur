@@ -5,7 +5,7 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { approveToTrade } from "modules/contracts/actions/contractCalls";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import { MARKET_CREATION_COPY } from "modules/create-market/constants";
 
 const mapStateToProps = (state: AppState) => ({

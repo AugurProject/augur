@@ -15,7 +15,6 @@ import { SCALAR, BUY } from "modules/common/constants";
  *    potentialDaiLoss:       number, maximum number of ether that can be lost according to the current numShares and limit price
  *    potentialProfitPercent: number, the maximum percentage profit that can be earned with current numShares and limit price,
  *                                    excluding first 100% (so a 2x is a 100% return and not a 200% return). For BUYs, loss is always 100% (exc. fees)
- *    potentialLossPercent:   number, the max percentage loss that can be lost with current numShares and limit price; for SELLs loss is always 100%
  */
 
 export const calcOrderProfitLossPercents = (
@@ -83,19 +82,11 @@ export const calcOrderProfitLossPercents = (
   const potentialDaiLoss =
     side === BUY ? longETHpotentialProfit : shortETHpotentialProfit;
 
-  const potentialProfitPercent =
-    side === BUY ? shortETHPercentProfit : longETHPercentProfit;
-
-  const potentialLossPercent =
-    side === BUY ? shortETHPercentNoFee : longETHPercentNoFee;
-
   const tradingFees = winningSettlementCost;
 
   return {
     potentialDaiProfit,
     potentialDaiLoss,
-    potentialProfitPercent,
-    potentialLossPercent,
     tradingFees,
   };
 };

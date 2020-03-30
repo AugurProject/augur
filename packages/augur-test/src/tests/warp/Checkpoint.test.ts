@@ -1,129 +1,99 @@
+import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
 import { Checkpoints } from '@augurproject/sdk/build/warp/Checkpoints';
-import { Block, JsonRpcProvider } from 'ethers/providers';
+import { TestContractAPI } from '@augurproject/tools';
+import { BigNumber } from 'bignumber.js';
+import { Block } from 'ethers/providers';
+import { makeProvider } from '../../libs';
 
 describe('Checkpoint', () => {
-  // These blocks span approx 5.066759259259259 days apart.
-  // Jan-09-2020 07:02:56 AM +UTC
-  const uploadBlock = 16000000;
-
-  // Jan-09-2020 04:33:04 PM +UTC
-  const earlyMiddleBlock = 16008500;
-
-  // Jan-10-2020 12:54:16 AM +UTC
-  const laterMiddleBlock = 16016000;
-
-  // Jan-10-2020 02:01:00 AM +UTC
-  const blockNumberApproxOneDayLater = 16017000;
-
-  // Jan-14-2020 07:32:16 AM +UTC
-  const currentBlockNumber = 16109000;
-
-  let provider;
-  let checkpoints;
-  let uploadBlockHeaders: Block;
-  let earlyMiddleBlockHeaders: Block;
-  let laterMiddleBlockHeaders: Block;
-  let blockNumberApproxOneDayLaterHeaders: Block;
-  let currentBlockNumberHeaders: Block;
+  let john: TestContractAPI;
+  let checkpoints: Checkpoints;
+  let blocks: Block[];
 
   beforeAll(async () => {
-    // Sadly getting enough history in ganache is a pain so I'm going to use an actual chain.
-    // If you are working on a plane right now, my apologies.
-    provider = new JsonRpcProvider(
-      'https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA'
+    blocks = [];
+    const seed = await loadSeedFile(defaultSeedPath);
+    const provider = await makeProvider(seed, ACCOUNTS);
+    const config = provider.getConfig();
+
+    john = await TestContractAPI.userWrapper(
+      ACCOUNTS[0],
+      provider,
+      config,
     );
 
     checkpoints = new Checkpoints(provider);
-
-    uploadBlockHeaders = await provider.getBlock(uploadBlock);
-    earlyMiddleBlockHeaders = await provider.getBlock(earlyMiddleBlock);
-    laterMiddleBlockHeaders = await provider.getBlock(laterMiddleBlock);
-    blockNumberApproxOneDayLaterHeaders = await provider.getBlock(
-      blockNumberApproxOneDayLater
+    const mary = await TestContractAPI.userWrapper(
+      ACCOUNTS[1],
+      provider,
+      config,
     );
-    currentBlockNumberHeaders = await provider.getBlock(currentBlockNumber);
+
+    await john.faucet(new BigNumber(1000000000));
+    await john.approveCentralAuthority();
+
+    const amountToTransfer = new BigNumber(1000);
+
+    // The actual value of the checkpoint isn't super important here.
+    for (let i = 0; i < 5; i++) {
+      // Advance time 15 seconds between blocks.
+      await provider.provider.send('evm_increaseTime', [15]);
+      await john.transferCash(mary.account.publicKey, amountToTransfer.plus(i));
+      blocks.push(await provider.getBlock('latest'));
+    }
+
+    console.log('blocks', JSON.stringify(blocks));
   });
 
-  describe('compareTimestampDay method', () => {
-    test('middle block is on earlier day', async () => {
-      const result = checkpoints.compareTimestampDay(
-        uploadBlockHeaders,
-        earlyMiddleBlockHeaders,
-        blockNumberApproxOneDayLaterHeaders
-      );
-      expect(result).toEqual([
-        earlyMiddleBlockHeaders,
-        blockNumberApproxOneDayLaterHeaders,
-      ]);
-    });
-
-    test('middle block is on later day', async () => {
-      const result = checkpoints.compareTimestampDay(
-        uploadBlockHeaders,
-        laterMiddleBlockHeaders,
-        blockNumberApproxOneDayLaterHeaders
-      );
-      expect(result).toEqual([uploadBlockHeaders, laterMiddleBlockHeaders]);
-    });
-
-    // This shouldn't happen but when in rome.
-    test('middle block is outside of range', async () => {
-      const result = checkpoints.compareTimestampDay(
-        uploadBlockHeaders,
-        laterMiddleBlockHeaders,
-        earlyMiddleBlockHeaders
-      );
-      expect(result).toEqual([uploadBlockHeaders, earlyMiddleBlockHeaders]);
+  describe('timestamp between blocks', () => {
+    test('should return blocks directly above and below', async () => {
+      const targetTimestamp = Math.floor(
+        (blocks[2].timestamp + blocks[3].timestamp) / 2);
+      await expect(
+        checkpoints.calculateBoundary(targetTimestamp, blocks[0], blocks[4])).
+        resolves.
+        toEqual([
+          blocks[2],
+          blocks[3],
+        ]);
     });
   });
 
-  describe('calculateBoundary', () => {
-    test('block on next day', async () => {
-      await expect(
-        checkpoints.calculateBoundary(
-          uploadBlockHeaders,
-          blockNumberApproxOneDayLaterHeaders
-        )
-      ).resolves.toEqual([
-        expect.objectContaining({
-          number: 16015186,
-        }),
-        expect.objectContaining({
-          number: 16015187,
-        }),
+  describe('timestamp exactly as lower block in range', () => {
+    test('should return the matching block and the one after', async () => {
+      await expect(checkpoints.calculateBoundary(blocks[2].timestamp, blocks[0],
+        blocks[4])).resolves.toEqual([
+        blocks[2],
+        blocks[3],
       ]);
     });
+  });
 
-    test('blocks on same day', async () => {
-      await expect(
-        checkpoints.calculateBoundary(
-          uploadBlockHeaders,
-          earlyMiddleBlockHeaders
-        )
-      ).resolves.toEqual([
-        expect.objectContaining({
-          number: 16015186,
-        }),
-        expect.objectContaining({
-          number: 16015187,
-        }),
-      ]);
+  // The next three cases shouldn't happen but better to handle them than continue to fill the world with sad panda memes.
+  describe('timestamp exactly the same as upper block in range', () => {
+    test('should throw an exception', async () => {
+      await expect(checkpoints.calculateBoundary(blocks[3].timestamp, blocks[2],
+        blocks[3])).
+        rejects.
+        toEqual(new Error('timestamp outside of provided block range'));
     });
+  });
 
-    test('blocks multiple day in future', async () => {
-      await expect(
-        checkpoints.calculateBoundary(
-          uploadBlockHeaders,
-          currentBlockNumberHeaders
-        )
-      ).resolves.toEqual([
-        expect.objectContaining({
-          number: 16015186,
-        }),
-        expect.objectContaining({
-          number: 16015187,
-        }),
-      ]);
+  describe('timestamp above blocks provided', () => {
+    test('should throw an exception', async () => {
+      await expect(checkpoints.calculateBoundary(blocks[4].timestamp, blocks[2],
+        blocks[3])).
+        rejects.
+        toEqual(new Error('timestamp outside of provided block range'));
+    });
+  });
+
+  describe('timestamp below blocks provided', () => {
+    test('should throw an exception', async () => {
+      await expect(checkpoints.calculateBoundary(blocks[0].timestamp, blocks[2],
+        blocks[3])).
+        rejects.
+        toEqual(new Error('timestamp outside of provided block range'));
     });
   });
 });

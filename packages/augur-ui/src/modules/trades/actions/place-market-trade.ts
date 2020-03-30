@@ -2,14 +2,13 @@ import { createBigNumber } from "utils/create-big-number";
 import {
   BUY, INVALID_OUTCOME_ID, MODAL_ERROR,
 } from "modules/common/constants";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { placeTrade, approveToTrade } from "modules/contracts/actions/contractCalls";
 import { Getters, TXEventName } from "@augurproject/sdk";
-import { addPendingOrder, removePendingOrder, updatePendingOrderStatus, generatePendingOrderId } from "modules/orders/actions/pending-orders-management";
+import { addPendingOrder, updatePendingOrderStatus, generatePendingOrderId } from "modules/orders/actions/pending-orders-management";
 import { convertUnixToFormattedDate } from "utils/format-date";
-import { generateTradeGroupId } from "utils/generate-trade-group-id";
 import { getOutcomeNameWithOutcome } from "utils/get-outcome";
 import { updateModal } from "modules/modal/actions/update-modal";
 
@@ -20,7 +19,7 @@ export const placeMarketTrade = ({
   doNotCreateOrders,
 }: any) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
-  const { marketInfos, loginAccount, blockchain } = getState();
+  const { marketInfos, loginAccount, blockchain, appStatus } = getState();
   const market: Getters.Markets.MarketInfo = marketInfos[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
@@ -28,7 +27,13 @@ export const placeMarketTrade = ({
     );
   }
 
-  const needsApproval = createBigNumber(loginAccount.allowance).lt(tradeInProgress.totalCost.value);
+  // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
+  let needsApproval = false;
+
+  if (!appStatus.gsnEnabled) {
+    needsApproval = createBigNumber(loginAccount.allowance).lt(tradeInProgress.totalCost.value);
+  }
+
   if (needsApproval) await approveToTrade();
   // we need to make sure approvals went through before doing trade / the rest of this function
   const userShares = createBigNumber(tradeInProgress.shareCost || 0, 10);

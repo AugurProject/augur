@@ -116,12 +116,6 @@ contract ReputationToken is VariableSupplyToken, IV2ReputationToken {
         return true;
     }
 
-    function trustedREPExchangeTransfer(address _source, address _destination, uint256 _attotokens) public returns (bool) {
-        require(address(universe.repExchange()) == msg.sender);
-        _transfer(_source, _destination, _attotokens);
-        return true;
-    }
-
     function assertReputationTokenIsLegitChild(IReputationToken _shadyReputationToken) private view {
         IUniverse _universe = _shadyReputationToken.getUniverse();
         require(universe.isParentOf(_universe));

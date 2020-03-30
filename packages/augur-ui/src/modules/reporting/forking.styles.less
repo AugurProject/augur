@@ -55,9 +55,13 @@
 
     > div:first-of-type {
       margin-top: @size-12;
+      display: flex;
 
       > button:not(:last-of-type) {
+        .text-12-medium;
+        
         margin-right: @size-16;
+        color: var(--color-primary-text);
       }
     }
   }
@@ -86,12 +90,9 @@
     }
   }
 
-  @media @breakpoint-mobile {
-    margin: calc(@size-24 + @top-bar-height-mobile) @size-24 @size-24 @size-24;
-  }
-
-  @media @breakpoint-mobile-mid {
+  @media @breakpoint-mobile-tablet {
     grid-template-columns: @size-28 auto @size-28;
+    margin: @size-16;
 
     > svg {
       grid-column: 1;

@@ -102,7 +102,7 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
     <div key={`${outcomeName}-${price}-${index}`}>
       <span>{outcomeName}</span>
       <span className={type === BUY ? Styles.bid : Styles.ask}>{type}</span>
-      <span>{formatShares(quantity).formatted}</span>
+      <span>{formatShares(quantity, { decimals: 2, decimalsRounded: 2 }).formatted}</span>
       <span>{formatDai(Number(price)).formatted}</span>
       <span>{formatDai(Number(orderEstimate)).formatted}</span>
       <span>{status && <PendingLabel status={status} />}</span>
@@ -143,7 +143,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
       )}
       {props.openOrders && (
         // @ts-ignore
-        <OpenOrdersTable openOrders={props.orders} />
+        <OpenOrdersTable relative openOrders={props.orders} marketId={props.marketId} />
       )}
       {props.breakdown && <Breakdown rows={props.breakdown} short />}
     </main>

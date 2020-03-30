@@ -2,9 +2,7 @@
 Sample architecture for running Augur 3rd party
 dependencies on AWS ECS
 ## Getting Started
-###Install Terraform
-This project uses Terraform >=0.12 which contains some semi-breaking changes. Update your CLI if needed.
-
+### Install Terraform
 MacOS:
 ```
 brew install terraform
@@ -17,7 +15,7 @@ sudo unzip ./terraform_0.12.21_linux_amd64.zip -d /usr/local/bin/
 ```
 
 ### Config
-1.  Terraform cli config with your org's tf cloud credentials
+1.  Terraform cli config with your org's Terraform cloud credentials
     ```
     # ~/.terraformrc
 
@@ -25,7 +23,7 @@ sudo unzip ./terraform_0.12.21_linux_amd64.zip -d /usr/local/bin/
         token = "<TF_CLOUD_TOKEN>"
     }
     ```
-2. [aws-vault](https://github.com/99designs/aws-vault) installed (For Makefile targets, they're your credentials to manage)
+2. [aws-vault](https://github.com/99designs/aws-vault) installed (for Makefile targets)
 3. MFA enabled on your AWS IAM profile + CLI config
     ```ini
    # ~/.aws/config
@@ -37,9 +35,30 @@ sudo unzip ./terraform_0.12.21_linux_amd64.zip -d /usr/local/bin/
 ### Workflow
 
 Terraform uses a declarative DSL called HCL. The general workflow is:
-1. Make changes in HCL
-2. `terraform init` (download 3rd party modules, validate code)
-3. `terraform plan` (generate diff)
-4. `terraform apply` (apply diff)
+1. `cd` to the environment you'd like to modify, example:
 
-This folder contains make targets to make this simpler namely `make lint`, `make plan`, and `make apply`. It's recommended to execute commands in that order.
+        $ cd envs/v2
+2. Make changes in HCL files
+3. `terraform init` (download 3rd party resources, link modules)
+4. `terraform plan` (generate diff)
+5. `terraform apply` (apply diff)
+
+This folder contains make targets to make these steps more robust
+
+1. `make lint`
+2. `make plan`
+3. `make apply`
+
+### FAQs
+####How to clear orphaned resource
+```
+Error: orphan resource <RESOURCE_ADDR> still has a non-empty state after apply; this is a bug in Terraform
+```
+Clear resource state and apply again:
+```
+terrafrom state rm <RESOURCE_ADDRR
+make apply
+```
+
+#### Help! Terraform claims the state is locked!
+Locking is a mechanism to keep competing changes from landing at the same time and fudging your infrastructure. In general the lock will clear as soon as there are no more

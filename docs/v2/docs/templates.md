@@ -247,13 +247,13 @@ result might look like `Arizona Cardinals -4.5` and `Atlanta Falcons +4.5`, wher
     }
   }
 ```
-  * DROPDOWN_QUESTION_DEP, Market question dropdown determines other market question dropdown values. Example; the values [...] is short for array of values. This input values are "National League Championship Series", "American League Championship Series" and "World Series", based on the selection `inputDestId` dropdown values will get set.
+  * DROPDOWN_QUESTION_DEP, Market question dropdown determines other market question dropdown values. Example; the values [...] is short for array of values. This input values are "National League Championship Series", "American League Championship Series" and "World Series", based on the selection `inputDestIds` dropdown values will get set.
   ```json
   {
     "id": 2,
     "type": "DROPDOWN_QUESTION_DEP",
     "placeholder": "Event",
-    "inputDestId": 0,
+    "inputDestIds": [0],
     "values": {
       "National League Championship Series": [...],
       "American League Championship Series": [...],

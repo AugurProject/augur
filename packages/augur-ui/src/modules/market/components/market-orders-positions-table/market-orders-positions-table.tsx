@@ -45,7 +45,7 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
       toggle={toggle}
     >
       <ModulePane label="Open Orders">
-        <OpenOrdersTable openOrders={openOrders} market={market} />
+        <OpenOrdersTable openOrders={openOrders} marketId={market.marketId} />
         {openOrders.length > 0 && (
           <div className={Styles.Footer}>
             <CancelTextButton

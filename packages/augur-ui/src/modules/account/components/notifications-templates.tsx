@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   CountdownProgress,
   formatTime,
@@ -21,6 +21,7 @@ import {
 } from 'modules/common/constants';
 import MarketTitle from 'modules/market/containers/market-title';
 import { MarketReportingState } from '@augurproject/sdk/build';
+import classNames from 'classnames';
 
 interface BaseProps {
   market: MarketData;
@@ -32,6 +33,8 @@ interface BaseProps {
   buttonLabel: string;
   queueName?: string;
   queueId?: string;
+  hideCheckbox?: boolean;
+  checkCheckbox?: Function;
 }
 
 interface OpenOrdersResolvedMarketsTemplateProps extends BaseProps {
@@ -84,21 +87,21 @@ const Template = ({
   type,
   message,
   buttonAction,
-  currentTime,
   isDisabled,
   buttonLabel,
   queueName,
   queueId,
+  hideCheckbox,
 }: TemplateProps) => {
   const showCounter = market && notificationsWithCountdown.includes(type);
   return (
     <>
       <TemplateBody market={market} message={message} />
       <div
-        className={Styles.BottomRow}
+        className={classNames(Styles.BottomRow, {[Styles.HasCheckbox]: hideCheckbox})}
       >
         {showCounter && (
-          <Counter type={type} market={market} currentTime={currentTime} />
+          <Counter type={type} market={market} />
         )}
         {queueName && (queueId || (market && market.id)) ?
           <ProcessingButton
@@ -151,31 +154,27 @@ const TemplateBody = (props: TemplateBodyProps) => {
 interface CounterProps {
   type: string;
   market: MarketData;
-  currentTime?: DateFormattedObject;
   disputingWindowEndTime?: DateFormattedObject;
 }
 
-const Counter = ({ market, type, currentTime }: CounterProps) => {
+const Counter = ({ market, type }: CounterProps) => {
   let counter: any = null;
   const { endTime, reportingState, finalizationTime, disputeInfo } = market;
   const endTimeFormatted = formatTime(endTime);
   const finalizationTimeFormatted = formatTime(finalizationTime);
   if (
     type === NOTIFICATION_TYPES.proceedsToClaim &&
-    finalizationTimeFormatted &&
-    currentTime
+    finalizationTimeFormatted
   ) {
     counter = (
       <div className={Styles.Countdown}>
         <CountdownProgress
           label={MARKET_STATUS_MESSAGES.WAITING_PERIOD_ENDS}
           time={finalizationTimeFormatted}
-          currentTime={formatTime(currentTime)}
         />
       </div>
     );
   } else {
-    // if (currentTime && disputeInfo.disputeWindow.endTime) {
       const label =
         type === NOTIFICATION_TYPES[MARKET_IN_DISPUTE]
           ? DISPUTE_ENDS
@@ -184,14 +183,12 @@ const Counter = ({ market, type, currentTime }: CounterProps) => {
         <div className={Styles.Countdown}>
           <MarketProgress
             reportingState={reportingState}
-            currentTime={currentTime}
             endTimeFormatted={endTimeFormatted}
             reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
             customLabel={label}
           />
         </div>
       );
-    // }
   }
   return counter;
 };

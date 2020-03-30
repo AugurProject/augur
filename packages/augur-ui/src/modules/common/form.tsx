@@ -21,15 +21,9 @@ import {
   Clock,
   Arrow,
   LoadingEllipse,
-  CategorySports,
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
-import {
-  CUSTOM,
-  SCALAR,
-  ZERO,
-  REPORTING_STATE,
-} from 'modules/common/constants';
+import { CUSTOM, SCALAR, ZERO } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
 import { formatAttoRep, formatNumber } from 'utils/format-number';
@@ -46,7 +40,6 @@ import noop from 'utils/noop';
 import { Getters } from '@augurproject/sdk';
 import { MarketData, DisputeInputtedValues, SortedGroup } from 'modules/types';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
-import { openTop } from './selection.styles.less';
 
 interface CheckboxProps {
   id: string;
@@ -74,6 +67,7 @@ interface DatePickerProps {
   errorMessage?: string;
   condensedStyle?: boolean;
   openTop?: boolean;
+  readOnly?: boolean;
 }
 
 interface TextInputProps {
@@ -180,6 +174,7 @@ export const TimezoneDropdown = (props: TimezoneDropdownProps) => {
       <TextInput
         value={value === UTC_Default ? '' : value}
         placeholder={UTC_Default}
+        disabled={props.disabled}
         autoCompleteList={timezones.timezones}
         onChange={() => {}}
         openTop={props.openTop}
@@ -380,6 +375,8 @@ export const determineVisible = (
   primaryOptions: NameValuePair[],
   secondaryOptions: NameValuePair[],
   tertiaryOptions: NameValuePair[],
+  disableSubCategory: boolean,
+  disabledTertiary: boolean,
   selected: string[]
 ) => {
   const showSecondaryDropdown = values[0] !== '' && secondaryOptions.length > 0;
@@ -391,11 +388,13 @@ export const determineVisible = (
   const customSecondary =
     selected[1] === CUSTOM ||
     (selected[1] &&
+      !disableSubCategory &&
       !secondaryOptions.map(option => option.value).includes(selected[1])) ||
     (!showSecondaryDropdown && customPrimary && values[0] !== '');
   const customTertiary =
     selected[2] === CUSTOM ||
     (selected[2] &&
+      !disabledTertiary &&
       !tertiaryOptions.map(option => option.value).includes(selected[2])) ||
     (!showTertiaryDropdown && values[1] !== '');
   return {
@@ -494,6 +493,7 @@ export const DropdownInputGroup = ({
         autoCompleteList={autoCompleteList}
         onChange={onChangeInput}
         errorMessage={!showDropdown ? errorMessage : ''}
+        onAutoCompleteListSelected={null}
       />
     )}
     {removable && !disabled && value !== '' && !showText && (
@@ -665,6 +665,8 @@ export class CategoryMultiSelect extends Component<
       primaryOptions,
       secondaryOptions,
       tertiaryOptions,
+      disableSubCategory,
+      disableTertiaryCategory,
       selected
     );
 
@@ -884,8 +886,8 @@ export const ReportingRadioBarGroup = ({
       )}
       {radioButtons.map(
         (radio, index) =>
-          !radio.stake.tentativeWinning &&
-          radio.isInvalid && (
+          ((!market.isForking && !radio.stake.tentativeWinning && radio.isInvalid) ||
+          (market.isForking && radio.isInvalid)) && (
             <ReportingRadioBar
               market={market}
               key={`${index}${radio.value}`}
@@ -966,7 +968,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       userOutcomeCurrentRoundDispute,
       hideButton,
       isDisputing,
-      isWarpSync
+      isWarpSync,
     } = this.props;
 
     let { stake } = this.props;
@@ -983,7 +985,6 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         stake = disputeInfo.stakes.find(s => s.outcome === null);
       }
     }
-
     if (stake && stake.stakeCurrent === '-') stake.stakeCurrent = '0';
     const fullBond =
       stake && inputtedReportingStake
@@ -1040,10 +1041,23 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                 />
               )}
               {stake && stake.tentativeWinning && (
-                <Subheaders
-                  header="pre-filled stake"
-                  subheader={formatAttoRep(stake.stakeCurrent || ZERO).full}
-                />
+                <div className={Styles.PreFilled}>
+                  <Subheaders
+                    header="pre-filled stake"
+                    subheader={formatAttoRep(stake.stakeCurrent || ZERO).full}
+                  />
+                  {userOutcomeCurrentRoundDispute && (
+                    <Subheaders
+                      header="My contribution:"
+                      subheader={
+                        formatAttoRep(
+                          userOutcomeCurrentRoundDispute.userStakeCurrent ||
+                            ZERO
+                        ).full
+                      }
+                    />
+                  )}
+                </div>
               )}
               {checked && (
                 <DisputingBondsView
@@ -1332,7 +1346,13 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
         value,
         showList,
       },
-      () => showList && this.props.onAutoCompleteListSelected(value)
+      () => {
+        if (showList) {
+          !!this.props.onAutoCompleteListSelected
+            ? this.props.onAutoCompleteListSelected(value)
+            : this.props.onChange(value);
+        }
+      }
     );
   };
 
@@ -1360,7 +1380,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
       innerLabel,
       maxLength,
       hideTrailingOnMobile,
-      openTop
+      openTop,
     } = this.props;
     const { autoCompleteList = [] } = this.props;
     const { showList } = this.state;
@@ -1395,7 +1415,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
               <div
                 className={classNames(Styles.AutoCompleteList, {
                   [Styles.active]: showList,
-                  [Styles.OpenTop]: openTop
+                  [Styles.OpenTop]: openTop,
                 })}
               >
                 {filteredList.map(item => (
@@ -1445,6 +1465,7 @@ interface TimeSelectorProps {
   uniqueKey?: string;
   condensedStyle?: boolean;
   openTop?: boolean;
+  disabled?: boolean;
 }
 
 export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
@@ -1492,7 +1513,8 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       errorMessage,
       uniqueKey,
       condensedStyle,
-      openTop
+      openTop,
+      disabled,
     } = this.props;
     const error =
       errorMessage && errorMessage !== '' && errorMessage.length > 0;
@@ -1504,6 +1526,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
           [Styles.Condensed]: condensedStyle,
           [Styles.Default]: !hour || !minute || !meridiem,
           [Styles.OpenTop]: openTop,
+          [Styles.Disabled]: disabled,
         })}
         ref={timeSelector => {
           this.timeSelector = timeSelector;
@@ -1511,6 +1534,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
       >
         <button
           onClick={this.toggleSelector}
+          disabled={disabled}
           className={classNames({ [Styles.error]: error })}
         >
           <span>
@@ -1538,7 +1562,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
                 min={0}
                 max={59}
                 onChange={this.onChangeMinutes}
-                value={minute !== null ? minute : '12'}
+                value={minute !== null ? minute : '00'}
               />
               <IndividualTimeSelector
                 label="AM/PM"
@@ -1718,8 +1742,9 @@ export const DatePicker = (props: DatePickerProps) => (
   >
     <SingleDatePicker
       id={props.id}
-      openDirection={props.openTop ? "up" : "down"}
+      openDirection={props.openTop ? 'up' : 'down'}
       date={props.date}
+      disabled={props.readOnly}
       placeholder={props.placeholder || 'Date (D MMM YYYY)'}
       onDateChange={props.onDateChange}
       isOutsideRange={props.isOutsideRange || (() => false)}
@@ -1731,7 +1756,7 @@ export const DatePicker = (props: DatePickerProps) => (
       navNext={props.navNext || OutlineChevron}
       weekDayFormat="ddd"
       customInputIcon={Calendar}
-      readOnly={true}
+      readOnly={props.readOnly}
     />
     {props.errorMessage &&
       props.errorMessage !== '' &&
@@ -2295,10 +2320,6 @@ export const MigrateRepInfo = () => (
       When a market forks, new universes are created. Forking creates a new
       child universe for each possible outcome of the forking market (including
       Invalid).
-    </p>
-    <p>
-      NEED TO ADD MORE INFO HERE. POSSIBLY MAKE THIS A SCROLLABLE BOX. CHECKBOX
-      TO CONFIRM THEY HAVE READ IT?
     </p>
   </section>
 );

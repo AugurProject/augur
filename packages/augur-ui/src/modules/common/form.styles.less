@@ -309,7 +309,7 @@
         stroke: var(--color-secondary-action-outline);
         fill: none;
       }
-  
+
       > circle {
         fill: var(--color-primary-text);
       }
@@ -609,9 +609,14 @@
 
 .Additional {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  justify-content: left;
+  text-align: left;
+
+  > p {
+    > span {
+      padding-right: 0.25rem;
+    }
+  }
 
   @media @breakpoint-mobile {
     justify-content: center;
@@ -1365,6 +1370,10 @@ button.MaxDark {
       background-color: var(--color-dark-grey);
       color: var(--color-primary-text);
       border: @size-1 solid var(--color-secondary-action);
+
+      &.DateInput_input__disabled {
+        color: var(--color-inactive-text);
+      }
     }
 
     .DateInput_1 {
@@ -1391,6 +1400,7 @@ button.MaxDark {
     .DateInput_input__focused {
       border: 0;
     }
+
 
     .CalendarMonth_1,
     .CalendarMonthGrid_1,
@@ -1922,6 +1932,13 @@ button.MaxDark {
       display: none;
     }
   }
+
+  &.Disabled {
+    > button {
+      border: @size-1 solid var(--color-inactive-text);
+      color: var(--color-inactive-text);
+    }
+  }
 }
 
 .IndividualTimeSelector {
@@ -2149,6 +2166,23 @@ div.error > div > div > div > div > input {
   }
 }
 
+.PreFilled {
+  display: flex;
+  justify-content: space-between;
+
+  > div:nth-of-type(2) {
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    > span {
+      margin-bottom: 0;
+      margin-right: @size-4;
+    }
+  }
+}
+
 // Used in category-filters.styles.less
 .CategoryRow {
   display: flex;
@@ -2308,4 +2342,11 @@ div.error > div > div > div > div > input {
     color: var(--color-primary-text);
     margin: 0 @size-8;
   }
+}
+
+.ErrorText {
+  .text-12;
+
+  color: var(--color-error);
+  margin-top: @size-4;
 }

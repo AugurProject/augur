@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { MarketHeaderReporting } from 'modules/market/components/market-header/market-header-reporting';
 import { sendFinalizeMarket } from 'modules/markets/actions/finalize-market';
-import { selectCurrentTimestampInSeconds } from 'store/select-state';
+import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import {
   MODAL_CLAIM_MARKETS_PROCEEDS,
@@ -22,7 +22,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     currentTimestamp: selectCurrentTimestampInSeconds(state) || 0,
     market,
-    isLogged: state.authStatus.isLogged,
+    isForking: !!state.universe.forkingInfo,
+    isLogged: state.authStatus.isLogged && !state.universe.forkingInfo,
     isDesignatedReporter: ownProps.preview
       ? market.designatedReporterType === DESIGNATED_REPORTER_SELF
       : isSameAddress(market.designatedReporter, state.loginAccount.address),

@@ -2,7 +2,7 @@ import logError from 'utils/log-error';
 import { formatGasCostGwei } from 'utils/format-number';
 import { updateGasPriceInfo } from 'modules/app/actions/update-gas-price-info';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { DataCallback, NodeStyleCallback, GasPriceInfo } from 'modules/types';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -38,12 +38,12 @@ export function loadGasPriceInfo(
 async function getGasPriceRanges(networkId: string, callback: DataCallback) {
   const defaultGasPrice = setDefaultGasInfo();
   try {
-    const relayerGasStation = await augurSdk.sdk.gnosis.gasStation();
-    // Take the Gnosis relayer gas estimates for safeLow, standard, and fast
+    const relayerGasStation = await augurSdk.sdk.getGasStation();
+    // Take the eth gas station gas estimates for safeLow, standard, and fast
     // Add 1 GWEI to all of them (b/c we use a lot of gas).
     const relayerGasStationResults = {
       safeLow: ++formatGasCostGwei(relayerGasStation.safeLow, {}).value,
-      average: ++formatGasCostGwei(relayerGasStation.standard, {}).value,
+      average: ++formatGasCostGwei(relayerGasStation.standard || relayerGasStation.average, {}).value,
       fast: ++formatGasCostGwei(relayerGasStation.fast, {}).value,
     };
     callback(relayerGasStationResults);

@@ -60,6 +60,7 @@ export const NETWORK_IDS = {
   Private4: '104',
 };
 
+export const MIN_ORDER_LIFESPAN = 70;
 export const GAS_PRICE_BACKUP_API_ENDPOINT = {
   [NETWORK_IDS.Mainnet]:
     'https://api.etherscan.io/api?module=gastracker&action=gasoracle',
@@ -81,6 +82,12 @@ export const GAS_TIME_LEFT_LABELS = {
   FAST: '< 2 min',
   SAFELOW: '< 30 min',
   SLOW: '30 min or more',
+};
+
+export const WALLET_STATUS_VALUES = {
+  WAITING_FOR_FUNDING: 'WAITING_FOR_FUNDING',
+  FUNDED_NEED_CREATE: 'FUNDED_NEED_CREATE',
+  CREATED: 'CREATED',
 };
 
 
@@ -107,7 +114,8 @@ export const AUTH_TYPES = {
 export const DEFAULT_AUTH_TYPE = REGISTER;
 const SECONDS_PER_DAY = 3600 * 24;
 export const SIXTY_DAYS = 60 * SECONDS_PER_DAY;
-
+export const SECONDS_IN_HOUR = 60 * 60;
+export const SECONDS_IN_MINUTE = 60;
 export const EDGE_WALLET_TYPE = 'wallet:ethereum';
 
 // Add Funds types
@@ -371,6 +379,7 @@ export const TYPE_VIEW = 'view';
 export const TYPE_VIEW_ORDERS = 'view orders';
 export const TYPE_VIEW_SETS = 'view sets';
 export const TYPE_VIEW_DETAILS = 'view';
+export const TYPE_ADD_LIQUIDITY = 'add liquidity';
 export const TYPE_MIGRATE_REP = 'migrate-rep';
 export const TYPE_FINALIZE_MARKET = 'finalize market';
 
@@ -518,6 +527,8 @@ export const LOWER_FIXED_PRECISION_BOUND = 0;
 
 export const SCALAR_MODAL_SEEN = 'scalarModalSeen';
 
+export const ONBOARDING_MAX_STEPS = 5;
+
 // # Modal Constants
 export const MODAL_LEDGER = 'MODAL_LEDGER';
 export const MODAL_TREZOR = 'MODAL_TREZOR';
@@ -539,6 +550,7 @@ export const MODAL_CONFIRM = 'MODAL_CONFIRM';
 export const MODAL_REVIEW = 'MODAL_REVIEW';
 export const MODAL_GAS_PRICE = 'MODAL_GAS_PRICE';
 export const MODAL_REP_FAUCET = 'MODAL_REP_FAUCET';
+export const MODAL_GSN_FAUCET = 'MODAL_GSN_FAUCET';
 export const MODAL_CREATE_MARKET = 'MODAL_CREATE_MARKET';
 export const MODAL_DAI_FAUCET = 'MODAL_DAI_FAUCET';
 export const MODAL_CREATION_HELP = 'MODAL_CREATION_HELP';
@@ -551,13 +563,14 @@ export const MODAL_ADD_FUNDS = 'MODAL_ADD_FUNDS';
 export const MODAL_UNIVERSE_SELECTOR = 'MODAL_UNIVERSE_SELECTOR';
 export const MODAL_BUY_DAI = 'MODAL_BUY_DAI';
 export const MODAL_TEST_BET = 'MODAL_TEST_BET';
+export const MODAL_AUGUR_P2P = 'MODAL_AUGUR_P2P';
 export const MODAL_GLOBAL_CHAT = 'MODAL_GLOBAL_CHAT';
 export const MODAL_AUGUR_USES_DAI = 'MODAL_AUGUR_USES_DAI';
 export const MODAL_TUTORIAL_OUTRO = 'MODAL_TUTORIAL_OUTRO';
 export const MODAL_TUTORIAL_INTRO = 'MODAL_TUTORIAL_INTRO';
 export const MODAL_SCALAR_MARKET = 'MODAL_SCALAR_MARKET';
 export const MODAL_INVALID_MARKET_RULES = 'MODAL_INVALID_MARKET_RULES';
-
+export const MODAL_INITIALIZE_ACCOUNT = 'MODAL_INITIALIZE_ACCOUNT';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
 export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
 export const MODAL_DISCARD = 'MODAL_DISCARD';
@@ -670,6 +683,7 @@ export const SENDREPUTATION = 'SENDREPUTATION';
 export const CUSTOM = 'Custom';
 export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
+export const CREATEAUGURWALLET = 'RUNPERIODICALS';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
@@ -715,7 +729,7 @@ export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
 export const MIGRATE_MARKET_GAS_ESTIMATE = createBigNumber(3000000); // TODO: Get actual gas estimate for migrating a market
 export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(1121349); // Gas cost for claiming proceeds from a categorical market with 8 outcomes (worst-case gas cost)
 export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = createBigNumber(3000000);
-export const CLAIM_FEES_GAS_COST = createBigNumber(250000);
+export const CLAIM_FEES_GAS_COST = createBigNumber(500000);
 export const BUY_PARTICIPATION_TOKENS_GAS_LIMIT = createBigNumber(290000);
 export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = Math.floor(
   createBigNumber(CLAIM_MARKETS_PROCEEDS_GAS_LIMIT)
@@ -1354,3 +1368,14 @@ export enum HEADER_TYPE {
 }
 
 export const LOGGED_IN_USER_LOCAL_STORAGE_KEY = 'loggedInUser';
+
+// Help Center links
+export const HELP_CENTER = 'https://augur.gitbook.io/help-center/';
+export const HELP_CENTER_ADD_FUNDS = 'https://augur.gitbook.io/help-center/trading-ui-1/adding-funds';
+export const HELP_CENTER_HOW_TO_TRADE = 'https://augur.gitbook.io/help-center/market-creation-1/how-to-make-a-trade';
+export const HELP_CENTER_HOW_TO_DISPUTE = 'https://augur.gitbook.io/help-center/disputing-explained';
+export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://augur.gitbook.io/help-center/trading-ui-1/signing-up#gas-station-network';
+export const HELP_CENTER_MIGRATE_REP = 'https://augur.gitbook.io/help-center/migrating-rep-v1-greater-than-v2';
+export const HELP_CENTER_PARTICIPATION_TOKENS = 'https://augur.gitbook.io/help-center/reporting-or-disputing-faq#what-are-participation-tokens';
+export const HELP_CENTER_INVALID_MARKETS = 'https://augur.gitbook.io/help-center/market-creation-1/trading-faq#what-does-invalid-mean';
+export const HELP_CENTER_THIRD_PARTY_COOKIES = 'https://www.whatismybrowser.com/guides/how-to-enable-cookies';

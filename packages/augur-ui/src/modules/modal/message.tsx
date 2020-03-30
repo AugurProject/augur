@@ -22,6 +22,8 @@ import {
   ReadableAddressProps,
   Subheader,
   Title,
+  DescriptionWithLink,
+  DescriptionWithLinkProps,
 } from 'modules/modal/common';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { EventDetailsContent } from 'modules/create-market/constants';
@@ -42,6 +44,7 @@ interface MessageProps {
   marketTitle?: string;
   callToAction?: string;
   description?: DescriptionProps;
+  descriptionWithLink?: DescriptionWithLinkProps;
   breakdown?: LinearPropertyLabelProps[];
   readableAddress?: ReadableAddressProps;
   depositInfo?: DepositInfoProps;
@@ -63,6 +66,7 @@ export const Message = ({
   marketTitle,
   callToAction,
   description,
+  descriptionWithLink,
   breakdown,
   readableAddress,
   depositInfo,
@@ -86,6 +90,7 @@ export const Message = ({
       {callToAction && <CallToAction callToAction={callToAction} />}
       {content && <Content content={content} />}
       {description && <Description description={description} />}
+      {descriptionWithLink && <DescriptionWithLink {...descriptionWithLink} />}
       {showAddFundsHelp && <AddFundsHelp showAddFundsModal={showAddFundsModal} walletType={walletType} />}
       {showDiscordLink && <DiscordLink label='Please try again. If the issue persists please report it on ' /> }
       {subheader && <Subheader subheaderContent={subheader} />}

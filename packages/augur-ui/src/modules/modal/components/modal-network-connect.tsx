@@ -16,6 +16,7 @@ interface ModalNetworkConnectProps {
   modal: {
     type: string;
     isInitialConnection?: boolean;
+    config: SDKConfiguration;
   };
   env: SDKConfiguration;
   submitForm: Function;

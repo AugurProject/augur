@@ -1,10 +1,10 @@
 import { createSelector } from "reselect";
-import store, { AppState } from "store";
+import store, { AppState } from "appStore";
 import { selectMarkets } from "modules/markets/selectors/markets-all";
 import getUserFilledOrders from "modules/orders/selectors/filled-orders";
 import getUserOpenOrders from "modules/orders/selectors/user-open-orders";
 import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
-import { selectUserMarketOpenOrders } from "store/select-state";
+import { selectUserMarketOpenOrders } from "appStore/select-state";
 
 export default function() {
   return marketsOpenOrders(store.getState() as AppState);

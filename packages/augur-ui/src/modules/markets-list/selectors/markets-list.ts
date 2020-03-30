@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { selectMarketsListsState } from 'store/select-state';
+import { selectMarketsListsState } from 'appStore/select-state';
 import {
   POPULAR_CATEGORIES,
   POPULAR_CATEGORIES_ICONS,

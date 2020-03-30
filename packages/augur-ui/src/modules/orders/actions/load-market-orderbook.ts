@@ -3,7 +3,7 @@ import { NodeStyleCallback } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { Getters } from '@augurproject/sdk';
 
 export const UPDATE_ORDER_BOOK = 'UPDATE_ORDER_BOOK';
@@ -11,7 +11,7 @@ export const CLEAR_ORDER_BOOK = 'CLEAR_ORDER_BOOK';
 
 export const updateOrderBook = (
   marketId: string,
-  orderBook: Getters.Markets.OutcomeOrderBook
+  orderBook: Getters.Markets.MarketOrderBook
 ) => ({
   type: UPDATE_ORDER_BOOK,
   data: {
@@ -35,11 +35,14 @@ export const loadMarketOrderBook = (
     return callback('must specify market ID');
   }
   const { loginAccount } = getState();
+  const augur = augurSdk.get();
+  const expirationCutoffSeconds = await augur.getGasConfirmEstimate();
+  console.log('expirationCutoffSeconds', expirationCutoffSeconds)
   let params = loginAccount.address
-    ? { marketId, account: loginAccount.address }
+    ? { marketId, account: loginAccount.address, expirationCutoffSeconds }
     : { marketId };
   const Augur = augurSdk.get();
   const marketOrderBook = await Augur.getMarketOrderBook(params);
-  dispatch(updateOrderBook(marketId, marketOrderBook.orderBook));
+  dispatch(updateOrderBook(marketId, marketOrderBook));
   callback(null, marketOrderBook);
 };

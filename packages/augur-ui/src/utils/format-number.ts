@@ -7,6 +7,8 @@ import {
 import { ZERO, TEN, ETHER, GWEI_CONVERSION } from 'modules/common/constants';
 import addCommas from 'utils/add-commas-to-number';
 import { FormattedNumber, FormattedNumberOptions } from 'modules/types';
+import { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
+import getPrecision from 'utils/get-number-precision';
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   Produces a formatted number object used for display and calculations
@@ -239,13 +241,14 @@ export function formatNone(): FormattedNumber {
     value: 0,
     formattedValue: 0,
     formatted: '-',
-    roundedValue: 0,
+    roundedValue: createBigNumber(0),
     rounded: '-',
     roundedFormatted: '-',
     minimized: '-',
     denomination: '',
     full: '-',
     fullPrecision: '0',
+    percent: 0,
   };
 }
 
@@ -254,13 +257,14 @@ export function formatBlank(): FormattedNumber {
     value: 0,
     formattedValue: 0,
     formatted: '',
-    roundedValue: 0,
+    roundedValue: createBigNumber(0),
     rounded: '',
     roundedFormatted: '',
     minimized: '',
     denomination: '',
     full: '',
     fullPrecision: '0',
+    percent: 0,
   };
 }
 
@@ -310,13 +314,13 @@ export function formatAttoRep(
   if (!num) return formatBlank();
   return formatNumber(
     createBigNumber(num.toString())
-      .dividedBy(ETHER)
-      .toNumber(),
+      .dividedBy(ETHER),
     {
       ...opts,
       decimals: 4,
-      decimalsRounded: 4,
+      decimalsRounded: 14,
       blankZero: false,
+      roundDown: true,
       denomination: v => `${v} REP`,
     }
   );
@@ -464,7 +468,7 @@ export function formatNumber(
       o.formattedValue = '0';
     } else if (value.abs().lt(useSignificantFiguresThreshold)) {
       if (!decimals) {
-        o.formattedValue = '0';
+        o.formattedValue = String(value);
       } else {
         formatSigFig = true;
         o.formattedValue = value.toPrecision(decimals, roundingMode);
@@ -568,3 +572,51 @@ export function cutOffDecimal(value, numDigits) {
   }
   return value;
 }
+
+export function calcPriceFromPercentage(
+  percentage: string,
+  minPrice: string,
+  maxPrice: string,
+  tickSize: number
+): number {
+  if (percentage === undefined || percentage === null) return Number(0);
+  const numTicks = tickSizeToNumTickWithDisplayPrices(
+    createBigNumber(tickSize),
+    createBigNumber(minPrice),
+    createBigNumber(maxPrice)
+  );
+  const bnMinPrice = createBigNumber(minPrice);
+  const bnMaxPrice = createBigNumber(maxPrice);
+  const percentNumTicks = createBigNumber(numTicks).times(
+    createBigNumber(percentage).dividedBy(100)
+  );
+  if (percentNumTicks.lt(tickSize)) {
+    return bnMinPrice.plus(tickSize).toNumber();
+  }
+  const calcPrice = percentNumTicks.times(tickSize).plus(bnMinPrice);
+  if (calcPrice.eq(maxPrice)) {
+    return bnMaxPrice.minus(tickSize).toNumber();
+  }
+  const correctDec = formatBestPrice(calcPrice, tickSize);
+  const precision = getPrecision(tickSize, 0);
+  const value = createBigNumber(correctDec.fullPrecision).toFixed(precision);
+  return Number(value);
+}
+
+export function calcPercentageFromPrice(
+  price: string,
+  minPrice: string,
+  maxPrice: string,
+): number {
+  if (price === undefined || price === null) return Number(minPrice);
+  const bnMinPrice = createBigNumber(minPrice);
+  const bnMaxPrice = createBigNumber(maxPrice);
+  const bnPrice = createBigNumber(price);
+  if (bnPrice.lt(bnMinPrice)) return 0;
+  if (bnPrice.gt(bnMaxPrice)) return 100;
+  const bnPriceRange = bnMaxPrice.minus(bnMinPrice);
+  const bnNormalizedPrice = bnPrice.minus(bnMinPrice);
+  const percentage = bnNormalizedPrice.dividedBy(bnPriceRange).times(100);
+  return Number(percentage.toFixed(2));
+}
+

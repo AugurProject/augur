@@ -1,8 +1,8 @@
 import { createBigNumber } from 'utils/create-big-number';
-import { BUY, ZERO, ZEROX_GAS_FEE } from 'modules/common/constants';
+import { BUY, ZERO, ZEROX_GAS_FEE, BUY_INDEX } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { BigNumber } from "bignumber.js";
@@ -32,7 +32,7 @@ export function updateTradeCost({
       return callback('side or numShare or limitPrice is not provided');
     }
 
-    const { marketInfos, accountPositions } = getState();
+    const { marketInfos, accountPositions, loginAccount } = getState();
 
     dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
@@ -51,6 +51,7 @@ export function updateTradeCost({
       marketId,
       outcomeId,
       accountPositions,
+      loginAccount.address,
       callback
     );
   };
@@ -72,7 +73,7 @@ export function updateTradeShares({
       return callback('side or numShare or limitPrice is not provided');
     }
 
-    const { marketInfos, accountPositions } = getState();
+    const { marketInfos, accountPositions, loginAccount } = getState();
 
     dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
@@ -113,7 +114,7 @@ export function updateTradeShares({
       newShares = createBigNumber(maxCost).dividedBy(scaledPrice);
     }
 
-    newTradeDetails.numShares = newShares;
+    newTradeDetails.numShares = createBigNumber(newShares.toFixed(4));
 
     return runSimulateTrade(
       newTradeDetails,
@@ -121,6 +122,7 @@ export function updateTradeShares({
       marketId,
       outcomeId,
       accountPositions,
+      loginAccount.address,
       callback
     );
   };
@@ -132,6 +134,7 @@ async function runSimulateTrade(
   marketId: string,
   outcomeId: number,
   accountPositions: AccountPosition,
+  takerAddress: string,
   callback: NodeStyleCallback
 ) {
   let sharesFilledAvgPrice = '';
@@ -164,9 +167,8 @@ async function runSimulateTrade(
   const fingerprint = undefined; // TODO: get this from state
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
 
-  let userShares = createBigNumber(marketOutcomeShares[outcomeId] || 0);
-
-  if (orderType === 0) {
+  let userShares = (orderType !== BUY_INDEX) ? createBigNumber(marketOutcomeShares[outcomeId] || 0) : ZERO;
+  if (!!reversal) {
     // ignore trading outcome shares and find min across all other outcome shares.
     const userSharesBalancesRemoveOutcome = Object.keys(
       marketOutcomeShares
@@ -192,7 +194,8 @@ async function runSimulateTrade(
     market.maxPrice,
     newTradeDetails.numShares,
     newTradeDetails.limitPrice,
-    userShares
+    userShares,
+    takerAddress,
   );
 
   let gasLimit: BigNumber = createBigNumber(0);
@@ -211,9 +214,7 @@ async function runSimulateTrade(
     .toFixed();
   if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0';
 
-  if (newTradeDetails.sharesFilled.toNumber() === 0) {
-    gasLimit = createBigNumber(0);
-  } else {
+  if (newTradeDetails.sharesFilled.toNumber() > 0) {
     gasLimit = await simulateTradeGasLimit(
       orderType,
       marketId,
@@ -226,13 +227,14 @@ async function runSimulateTrade(
       market.maxPrice,
       newTradeDetails.numShares,
       newTradeDetails.limitPrice,
-      userShares
+      userShares,
+      takerAddress,
     );
 
     // Plus ZeroX Fee (150k Gas)
     gasLimit = gasLimit.plus(ZEROX_GAS_FEE);
   }
-  // ignore share cost when user is shorting another outcome or longing another outcome
+  // ignore share cost when user is shorting or longing another outcome
   // and the user doesn't have shares on the traded outcome
   if (
     reversal === null &&

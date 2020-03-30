@@ -6,7 +6,7 @@ import { BigNumber } from 'ethers/utils';
 import { NETWORK_IDS } from 'modules/common/constants';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';

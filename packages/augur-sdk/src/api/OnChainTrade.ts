@@ -19,6 +19,7 @@ export interface NativePlaceTradeParams {
   tradeGroupId: string;
   fingerprint: string;
   doNotCreateOrders: boolean;
+  takerAddress?: string;
 }
 
 export interface NativePlaceTradeDisplayParams extends NativePlaceTradeParams {
@@ -67,6 +68,7 @@ export interface NativeSimulateTradeData {
   tokensDepleted: BigNumber;
   numFills: BigNumber;
   loopLimit: BigNumber;
+  selfTrade: boolean;
 }
 
 export class OnChainTrade {
@@ -76,7 +78,7 @@ export class OnChainTrade {
     this.augur = augur;
   }
 
-  async placeTrade(params: NativePlaceTradeDisplayParams): Promise<void> {
+  async placeTrade(params: NativePlaceTradeDisplayParams): Promise<boolean> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
     return this.placeOnChainTrade(onChainTradeParams);
   }
@@ -99,7 +101,7 @@ export class OnChainTrade {
     });
   }
 
-  async placeOnChainTrade(params: NativePlaceTradeChainParams): Promise<void> {
+  async placeOnChainTrade(params: NativePlaceTradeChainParams): Promise<boolean> {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
@@ -120,6 +122,8 @@ export class OnChainTrade {
     if (amountRemaining.gt(0)) {
       params.amount = amountRemaining;
       return this.placeOnChainTrade(params);
+    } else {
+      return true;
     }
   }
 
@@ -139,7 +143,8 @@ export class OnChainTrade {
       sharesDepleted: displaySharesDepleted,
       settlementFees: displaySettlementFees,
       numFills,
-      loopLimit
+      loopLimit,
+      selfTrade: false,
     };
   }
 

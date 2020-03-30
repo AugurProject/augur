@@ -33,7 +33,7 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
             "price": .58,
             "position": -7,
             "avgPrice": .65,
-            "realizedPL": .18, # .21 - .03 from fees
+            "realizedPL": .20, # .21 - .01 from fees
             "frozenFunds": 2.45
         }, {
             "direction": SHORT,
@@ -41,8 +41,8 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
             "quantity": 13,
             "price": .62,
             "position": -20,
-            "avgPrice": .63,
-            "realizedPL": .18,
+            "avgPrice": .6305,
+            "realizedPL": .20,
             "frozenFunds": 7.39
         }, {
             "direction": LONG,
@@ -50,18 +50,18 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
             "quantity": 10,
             "price": .5,
             "position": -10,
-            "avgPrice": .63,
-            "realizedPL": 1.38, # 1.51 - .13 from fees
-            "frozenFunds": 3.69
+            "avgPrice": .6305,
+            "realizedPL": 1.455, # 1.51 - fees
+            "frozenFunds": 3.695
         }, {
             "direction": LONG,
             "outcome": YES,
             "quantity": 7,
             "price": .15,
             "position": -3,
-            "avgPrice": .63,
-            "realizedPL": 4.72,
-            "frozenFunds": 1.10
+            "avgPrice": .6305,
+            "realizedPL": 4.8085,
+            "frozenFunds": 1.1085
         }
     ]
 
@@ -79,13 +79,43 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
 
     assert profitLoss.getNetPosition(market.address, contractsFixture.accounts[1], YES) == 0
     assert profitLoss.getAvgPrice(market.address, contractsFixture.accounts[1], YES) == 0
-    assert profitLoss.getRealizedProfit(market.address, contractsFixture.accounts[1], YES) == -407
+    assert roughlyEqual(profitLoss.getRealizedProfit(market.address, contractsFixture.accounts[1], YES), -390 * 10**18)
     assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[1], YES) == 0
 
     assert profitLoss.getNetPosition(market.address, contractsFixture.accounts[2], YES) == 0
     assert profitLoss.getAvgPrice(market.address, contractsFixture.accounts[2], YES) == 0
-    assert profitLoss.getRealizedProfit(market.address, contractsFixture.accounts[2], YES) == 361
+    assert roughlyEqual(profitLoss.getRealizedProfit(market.address, contractsFixture.accounts[2], YES), 370 * 10**18)
     assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[2], YES) == 0
+
+def test_simple(contractsFixture, cash, market, universe):
+    createOrder = contractsFixture.contracts["CreateOrder"]
+    fillOrder = contractsFixture.contracts["FillOrder"]
+    profitLoss = contractsFixture.contracts["ProfitLoss"]
+    shareToken = contractsFixture.contracts['ShareToken']
+    augurTrading = contractsFixture.contracts['AugurTrading']
+    test_data = [
+        {
+            "direction": LONG,
+            "outcome": YES,
+            "quantity": 10,
+            "price": .15,
+            "position": 10,
+            "avgPrice": .15,
+            "realizedPL": 0,
+            "frozenFunds": 1.5
+        }, {
+            "direction": LONG,
+            "outcome": YES,
+            "quantity": 10,
+            "price": .18,
+            "position": 20,
+            "avgPrice": .165,
+            "realizedPL": 0,
+            "frozenFunds": 3.3
+        }
+    ]
+
+    process_trades(contractsFixture, test_data, cash, market, createOrder, fillOrder, profitLoss)
 
 def test_cat3_1(contractsFixture, cash, categoricalMarket, universe):
     createOrder = contractsFixture.contracts["CreateOrder"]
@@ -172,7 +202,7 @@ def test_cat3_2(contractsFixture, cash, categoricalMarket, universe):
             "price": .1,
             "position": -2,
             "avgPrice": .3,
-            "realizedPL": 1.59,
+            "realizedPL": 1.6,
             "frozenFunds": -0.6
         }
     ]
@@ -219,7 +249,7 @@ def test_cat3_3(contractsFixture, cash, categoricalMarket, universe):
             "price": .6,
             "position": 5,
             "avgPrice": .6,
-            "realizedPL": -.06,
+            "realizedPL": -.03,
             "frozenFunds": -2
         }, {
             "direction": SHORT,
@@ -228,7 +258,7 @@ def test_cat3_3(contractsFixture, cash, categoricalMarket, universe):
             "price": .2,
             "position": 12,
             "avgPrice": .1,
-            "realizedPL": 1.09,
+            "realizedPL": 1.19,
             "frozenFunds": 1.2
         }, {
             "direction": SHORT,
@@ -237,7 +267,7 @@ def test_cat3_3(contractsFixture, cash, categoricalMarket, universe):
             "price": .8,
             "position": 2,
             "avgPrice": .6,
-            "realizedPL": .54,
+            "realizedPL": .57,
             "frozenFunds": -0.8
         }, {
             "direction": SHORT,
@@ -284,7 +314,7 @@ def test_scalar(contractsFixture, cash, universe):
             "price": 202,
             "position": 1,
             "avgPrice": 188,
-            "realizedPL": 52.16,
+            "realizedPL": 54.0608,
             "frozenFunds": 138
         }, {
             "direction": SHORT,
@@ -293,7 +323,7 @@ def test_scalar(contractsFixture, cash, universe):
             "price": 205,
             "position": -10,
             "avgPrice": 205,
-            "realizedPL": 68.26,
+            "realizedPL": 70.6063,
             "frozenFunds": 450
         }, {
             "direction": LONG,
@@ -302,7 +332,7 @@ def test_scalar(contractsFixture, cash, universe):
             "price": 150,
             "position": -3,
             "avgPrice": 205,
-            "realizedPL": 439.26,
+            "realizedPL": 448.5363,
             "frozenFunds": 135
         }
     ]
@@ -327,7 +357,7 @@ def test_frozen_funds(contractsFixture, cash, market, universe):
         "netPosition": 0,
         "avgPrice": 0,
         "realizedProfit": 0,
-        "frozenFunds": cost,
+        "frozenFunds": cost * 10**18,
     }
 
     assert cash.faucet(cost)
@@ -335,7 +365,7 @@ def test_frozen_funds(contractsFixture, cash, market, universe):
     with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog):
         orderID = createOrder.publicCreateOrder(BID, amount, price, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress)
 
-    assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[0], outcome) == cost
+    assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[0], outcome) == cost * 10**18
 
     # Cancel Order
     profitLossChangedLog = {
@@ -358,9 +388,9 @@ def test_frozen_funds(contractsFixture, cash, market, universe):
     profitLossChangedLog = {
         "outcome": outcome,
         "netPosition": amount,
-        "avgPrice": 10,
+        "avgPrice": 10**19,
         "realizedProfit": 0,
-        "frozenFunds": cost,
+        "frozenFunds": cost * 10**18,
     }
 
     fillerCost = (market.getNumTicks() - price) * amount
@@ -369,7 +399,7 @@ def test_frozen_funds(contractsFixture, cash, market, universe):
     with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip=1):
         fillOrder.publicFillOrder(orderID, amount, longTo32Bytes(42), longTo32Bytes(11), sender = contractsFixture.accounts[2])
 
-    assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[0], outcome) == cost
+    assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[0], outcome) == cost * 10**18
 
     # Create new Order
     newOutcome = 2
@@ -406,18 +436,10 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
         assert cash.faucet(creatorCost, sender = contractsFixture.accounts[1])
         orderID = createOrder.publicCreateOrder(direction, trade['quantity'], onChainLongPrice, market.address, trade['outcome'], longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender = contractsFixture.accounts[1])
 
-        avgPrice = int(round((trade['avgPrice'] - minPrice) * market.getNumTicks() / displayRange))
-        realizedProfit = int(round(trade['realizedPL'] * market.getNumTicks() / displayRange))
-        frozenFunds = int(round(trade['frozenFunds'] * market.getNumTicks() / displayRange))
-
         timestamp = contractsFixture.contracts["Augur"].getTimestamp()
 
         profitLossChangedLog = {
             "outcome": trade['outcome'],
-            "netPosition": trade['position'],
-            "avgPrice": avgPrice,
-            "realizedProfit": realizedProfit,
-            "frozenFunds": frozenFunds,
             "timestamp": timestamp,
         }
 
@@ -425,7 +447,14 @@ def process_trades(contractsFixture, trade_data, cash, market, createOrder, fill
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog, skip = 0 if direction == BID else 1):
             fillOrder.publicFillOrder(orderID, trade['quantity'], longTo32Bytes(42), longTo32Bytes(11), sender = contractsFixture.accounts[2])
 
+        avgPrice = (trade['avgPrice'] - minPrice) * market.getNumTicks() / displayRange * 10**18
+        realizedProfit = trade['realizedPL'] * market.getNumTicks() / displayRange * 10**18
+        frozenFunds = trade['frozenFunds'] * market.getNumTicks() / displayRange * 10**18
+
         assert profitLoss.getNetPosition(market.address, contractsFixture.accounts[2], trade['outcome']) == trade['position']
-        assert profitLoss.getAvgPrice(market.address, contractsFixture.accounts[2], trade['outcome']) == avgPrice
-        assert profitLoss.getRealizedProfit(market.address, contractsFixture.accounts[2], trade['outcome']) == realizedProfit
-        assert profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[2], trade['outcome']) == frozenFunds
+        assert roughlyEqual(profitLoss.getAvgPrice(market.address, contractsFixture.accounts[2], trade['outcome']), avgPrice)
+        assert roughlyEqual(profitLoss.getRealizedProfit(market.address, contractsFixture.accounts[2], trade['outcome']), realizedProfit)
+        assert roughlyEqual(profitLoss.getFrozenFunds(market.address, contractsFixture.accounts[2], trade['outcome']), frozenFunds)
+
+def roughlyEqual(amount1, amount2, tolerance=10**6):
+    return abs(amount1 - amount2) < tolerance

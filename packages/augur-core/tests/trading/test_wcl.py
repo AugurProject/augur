@@ -12,7 +12,7 @@ def test_create_ask_with_shares_fill_with_shares(contractsFixture, cash, market)
     fillOrder = contractsFixture.contracts['FillOrder']
     shareToken = contractsFixture.contracts["ShareToken"]
 
-    completeSetFees = fix('12', '0.02') * market.getNumTicks()
+    completeSetFees = fix('12', '0.0101') * market.getNumTicks()
 
     # 1. both accounts buy a complete set
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):
@@ -269,104 +269,3 @@ def test_create_bid_with_cash_fill_with_cash(contractsFixture, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[1]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(12)
 
-import contextlib
-@contextlib.contextmanager
-def placeholder_context():
-    yield None
-
-@mark.parametrize('type,outcome,displayPrice,orderSize,creatorYesShares,creatorNoShares,creatorCost,fillSize,fillerYesShares,fillerNoShares,fillerCost,expectMakeRaise,expectedMakerYesShares,expectedMakerNoShares,expectedMakerPayout,expectTakeRaise,expectedFillerYesShares,expectedFillerNoShares,expectedFillerPayout', [
-    # | ------ ORDER ------ |   | ------ CREATOR START ------ |   | ------ FILLER START ------ |  | ------- CREATOR FINISH -------  |    | ------- FILLER FINISH -------  |
-    #   type,outcome,  price,   size,    yes,     no,   cost,   size,    yes,     no,   cost,  raise,    yes,     no,      pay,    raise,    yes,     no,      pay,
-    (    BID,    YES,  '0.6',  '12',    '0',    '0',  '7.2',  '12',   '12',    '0',    '0',  False,   '12',    '0',       '0',    False,    '0',    '0',     '7.2'),
-    (    BID,    YES,  '0.6',  '12',    '0',   '12',    '0',  '12',   '12',    '0',    '0',  False,    '0',    '0',   '4.704',    False,    '0',    '0',   '7.056'),
-    (    BID,    YES,  '0.6',  '12',    '0',    '0',  '7.2',  '12',    '0',    '0',  '4.8',  False,   '12',    '0',       '0',    False,    '0',   '12',       '0'),
-    (    BID,    YES,  '0.6',  '12',    '0',   '12',    '0',  '12',    '0',    '0',  '4.8',  False,    '0',    '0',     '4.8',    False,    '0',   '12',       '0'),
-
-    (    BID,    YES,  '0.6',  '24',    '0',   '12',  '7.2',  '24',   '24',    '0',    '0',  False,   '12',    '0',   '4.704',    False,    '0',    '0',  '14.256'),
-    (    BID,    YES,  '0.6',  '24',    '0',   '12',  '7.2',  '24',    '0',    '0',  '9.6',  False,   '12',    '0',     '4.8',    False,    '0',   '24',       '0'),
-    (    BID,    YES,  '0.6',  '24',    '0',    '0', '14.4',  '24',   '12',    '0',  '4.8',  False,   '24',    '0',       '0',    False,    '0',   '12',     '7.2'),
-    (    BID,    YES,  '0.6',  '24',    '0',   '24',    '0',  '24',   '12',    '0',  '4.8',  False,    '0',    '0',   '9.504',    False,    '0',   '12',   '7.056'),
-
-    (    BID,    YES,  '0.6',  '24',    '0',   '12',  '7.2',  '24',   '12',    '0',  '4.8',  False,   '12',    '0',   '4.704',    False,    '0',   '12',   '7.056'),
-
-    (    BID,     NO,  '0.6',  '12',    '0',    '0',  '7.2',  '12',    '0',   '12',    '0',  False,    '0',   '12',       '0',    False,    '0',    '0',     '7.2'),
-    (    BID,     NO,  '0.6',  '12',   '12',    '0',    '0',  '12',    '0',   '12',    '0',  False,    '0',    '0',   '4.704',    False,    '0',    '0',   '7.056'),
-    (    BID,     NO,  '0.6',  '12',    '0',    '0',  '7.2',  '12',    '0',    '0',  '4.8',  False,    '0',   '12',       '0',    False,   '12',    '0',       '0'),
-    (    BID,     NO,  '0.6',  '12',   '12',    '0',    '0',  '12',    '0',    '0',  '4.8',  False,    '0',    '0',     '4.8',    False,   '12',    '0',       '0'),
-
-    (    BID,     NO,  '0.6',  '24',   '12',    '0',  '7.2',  '24',    '0',   '24',    '0',  False,    '0',   '12',   '4.704',    False,    '0',    '0',  '14.256'),
-    (    BID,     NO,  '0.6',  '24',   '12',    '0',  '7.2',  '24',    '0',    '0',  '9.6',  False,    '0',   '12',     '4.8',    False,   '24',    '0',       '0'),
-    (    BID,     NO,  '0.6',  '24',    '0',    '0', '14.4',  '24',    '0',   '12',  '4.8',  False,    '0',   '24',       '0',    False,   '12',    '0',     '7.2'),
-    (    BID,     NO,  '0.6',  '24',   '24',    '0',    '0',  '24',    '0',   '12',  '4.8',  False,    '0',    '0',   '9.504',    False,   '12',    '0',   '7.056'),
-
-    (    BID,     NO,  '0.6',  '24',   '12',    '0',  '7.2',  '24',    '0',   '12',  '4.8',  False,    '0',   '12',   '4.704',    False,   '12',    '0',   '7.056'),
-
-    (    ASK,    YES,  '0.6',  '12',   '12',    '0',    '0',  '12',    '0',    '0',  '7.2',  False,    '0',    '0',     '7.2',    False,   '12',    '0',       '0'),
-    (    ASK,    YES,  '0.6',  '12',    '0',    '0',  '4.8',  '12',    '0',    '0',  '7.2',  False,    '0',   '12',       '0',    False,   '12',    '0',       '0'),
-    (    ASK,    YES,  '0.6',  '12',   '12',    '0',    '0',  '12',    '0',   '12',    '0',  False,    '0',    '0',   '7.056',    False,    '0',    '0',   '4.704'),
-    (    ASK,    YES,  '0.6',  '12',    '0',    '0',  '4.8',  '12',    '0',   '12',    '0',  False,    '0',   '12',       '0',    False,    '0',    '0',     '4.8'),
-])
-def test_parametrized(type, outcome, displayPrice, orderSize, creatorYesShares, creatorNoShares, creatorCost, fillSize, fillerYesShares, fillerNoShares, fillerCost, expectMakeRaise, expectedMakerYesShares, expectedMakerNoShares, expectedMakerPayout, expectTakeRaise, expectedFillerYesShares, expectedFillerNoShares, expectedFillerPayout, contractsFixture, cash, market):
-    fixture = contractsFixture
-    displayPrice = int(float(displayPrice) * market.getNumTicks())
-    assert displayPrice < market.getNumTicks()
-    assert displayPrice > 0
-
-    orderSize = fix(orderSize)
-    creatorYesShares = fix(creatorYesShares)
-    creatorNoShares = fix(creatorNoShares)
-    creatorCost = fix(creatorCost, market.getNumTicks())
-
-    fillSize = fix(fillSize)
-    fillerYesShares = fix(fillerYesShares)
-    fillerNoShares = fix(fillerNoShares)
-    fillerCost = fix(fillerCost, market.getNumTicks())
-
-    expectedMakerYesShares = fix(expectedMakerYesShares)
-    expectedMakerNoShares = fix(expectedMakerNoShares)
-    expectedMakerPayout = fix(expectedMakerPayout, market.getNumTicks())
-
-    expectedFillerYesShares = fix(expectedFillerYesShares)
-    expectedFillerNoShares = fix(expectedFillerNoShares)
-    expectedFillerPayout = fix(expectedFillerPayout, market.getNumTicks())
-
-    creatorAddress = contractsFixture.accounts[1]
-    creatorKey = contractsFixture.accounts[1]
-    fillerAddress = contractsFixture.accounts[2]
-    fillerKey = contractsFixture.accounts[2]
-
-    shareToken = fixture.contracts['ShareToken']
-    createOrder = fixture.contracts['CreateOrder']
-    fillOrder = fixture.contracts['FillOrder']
-    shareToken = contractsFixture.contracts["ShareToken"]
-
-    def acquireShares(outcome, amount, sender):
-        if amount == 0: return
-        with BuyWithCash(cash, amount * market.getNumTicks(), sender, "The sender didn't get cost deducted for complete set sale"):
-            assert shareToken.publicBuyCompleteSets(market.address, amount, sender = sender)
-        if outcome == YES:
-            shareToken.safeTransferFrom(sender, contractsFixture.accounts[8], shareToken.getTokenId(market.address, NO), amount, "", sender = sender)
-        if outcome == NO:
-            shareToken.safeTransferFrom(sender, contractsFixture.accounts[8], shareToken.getTokenId(market.address, YES), amount, "", sender = sender)
-
-    # create order
-    acquireShares(YES, creatorYesShares, sender = creatorKey)
-    acquireShares(NO, creatorNoShares, sender = creatorKey)
-    with BuyWithCash(cash, creatorCost, creatorKey, "create order"):
-        with raises(TransactionFailed) if expectMakeRaise else placeholder_context():
-            orderID = createOrder.publicCreateOrder(type, orderSize, displayPrice, market.address, outcome, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender = creatorKey)
-    # fill order
-    acquireShares(YES, fillerYesShares, sender = fillerKey)
-    acquireShares(NO, fillerNoShares, sender = fillerKey)
-    with raises(TransactionFailed) if expectTakeRaise else placeholder_context():
-        # Cannot use BuyWithCash here, the test might deposit 0 CASH, but acquire large amounts CASH via selling existing shares
-        cash.faucet(fillerCost, sender=fillerKey)
-        fillOrder.publicFillOrder(orderID, fillSize, longTo32Bytes(42), longTo32Bytes(11), sender=fillerKey)
-
-    # assert final state
-    assert cash.balanceOf(creatorAddress) == expectedMakerPayout
-    assert cash.balanceOf(fillerAddress) == expectedFillerPayout
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, creatorAddress) == expectedMakerYesShares
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, fillerAddress) == expectedFillerYesShares
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, creatorAddress) == expectedMakerNoShares
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, fillerAddress) == expectedFillerNoShares

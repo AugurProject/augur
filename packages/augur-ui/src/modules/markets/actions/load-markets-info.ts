@@ -3,7 +3,7 @@ import {
   updateMarketsData
 } from "modules/markets/actions/update-markets-data";
 import logError from "utils/log-error";
-import { AppState } from "store";
+import { AppState } from "appStore";
 import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";

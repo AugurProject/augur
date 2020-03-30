@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { ZERO } from "modules/common/constants";
-import store from "store";
-import { selectLoginAccountTotalsState } from "store/select-state";
+import store from "appStore";
+import { selectLoginAccountTotalsState } from "appStore/select-state";
 import { formatPercent } from "utils/format-number";
 import { createBigNumber } from "utils/create-big-number";
 

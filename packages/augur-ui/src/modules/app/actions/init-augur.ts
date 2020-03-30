@@ -19,7 +19,7 @@ import {
   SIGNIN_SIGN_WALLET,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback, WindowApp } from 'modules/types';
@@ -41,10 +41,17 @@ import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { tryToPersistStorage } from 'utils/storage-manager';
-import Torus from '@toruslabs/torus-embed';
-import { isDevNetworkId, SDKConfiguration } from '@augurproject/artifacts';
+import {
+  isDevNetworkId,
+  SDKConfiguration,
+  serializeConfig,
+  mergeConfig,
+  validConfigOrDie,
+} from '@augurproject/artifacts';
 import { getNetwork } from 'utils/get-network-name';
 import { buildConfig } from '@augurproject/artifacts';
+import { showIndexedDbSize } from 'utils/show-indexed-db-size';
+import { isGoogleBot } from 'utils/is-google-bot';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -64,7 +71,6 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   try {
     if (loggedInAccount) {
       if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
-        console.log('showMetaMaskHelper::', !windowRef.ethereum.selectedAddress);
         if (!windowRef.ethereum.selectedAddress) {
           // show metamask signer
           dispatch(
@@ -174,28 +180,20 @@ export function connectAugur(
     let provider = null;
     const networkId = config.networkId;
 
-    if (config.ethereum?.http) {
-      // Use node provided in the ethereum_node_http param
-      try {
-        provider = new JsonRpcProvider(config.ethereum.http);
-      } catch(error) {
-        dispatch(
-          updateModal({
-            type: MODAL_NETWORK_DISABLED,
-          })
-        );
-      }
-    }
-    else if (networkId && !isDevNetworkId(networkId)) {
+    if (networkId && !isDevNetworkId(networkId)) {
       // Unless DEV, use the provider on window if it exists, otherwise use torus provider
       if (windowRef.web3) {
         // Use window provider
         provider = new Web3Provider(windowRef.web3.currentProvider);
       } else {
         // Use torus provider
-        const host = getNetwork(networkId);
-        const torus: any = new Torus({});
 
+        // Use require instead of import for wallet SDK packages
+        // to conditionally load web3 into the DOM
+        const Torus = require('@toruslabs/torus-embed').default;
+        const torus = new Torus({});
+
+        const host = getNetwork(networkId);
         await torus.init({
           network: { host },
           showTorusButton: false,
@@ -214,12 +212,21 @@ export function connectAugur(
       provider = new JsonRpcProvider(config.ethereum.http);
     }
 
+    // Disable mesh/gsn for googleBot
+    if (isGoogleBot()) {
+      config = validConfigOrDie(mergeConfig(config, {
+        zeroX: { mesh: { enabled: false }},
+        gsn: { enabled: false },
+        useWarpSync: false,
+      }));
+    }
+
     let sdk: Augur<Provider> = null;
     try {
       sdk = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
-      return callback('SDK could not be created', null);
+      return callback('SDK could not be created', { config });
     }
 
     let universeId = config.addresses?.Universe || sdk.contracts.universe.address;
@@ -296,7 +303,7 @@ export function initAugur(
 
     console.log(
       '******** CONFIGURATION ***********\n' +
-      JSON.stringify(config, null, 2) +
+      serializeConfig(config) +
       '\n**********************************'
     );
     // cache fingerprint
@@ -304,5 +311,7 @@ export function initAugur(
     dispatch(updateEnv(config));
     tryToPersistStorage();
     connectAugur(history, config, true, callback)(dispatch, getState);
+
+    windowRef.showIndexedDbSize = showIndexedDbSize;
   };
 }

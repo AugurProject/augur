@@ -45,16 +45,16 @@ def test_floating_amount_calculation(numWithCondition, targetWithConditionPerHun
     assert newAmount == expectedValue
 
 def test_reporter_fees(contractsFixture, universe, market, cash):
-    defaultValue = 100
+    defaultValue = 10000
     shareToken = contractsFixture.contracts['ShareToken']
 
     assert universe.getOrCacheReportingFeeDivisor() == defaultValue
 
-    # Generate OI
+    # Generate an enormous amount of OI
     assert universe.getOpenInterestInAttoCash() == 0
-    cost = 10 * market.getNumTicks()
+    cost = market.getNumTicks() * 10**30
     with BuyWithCash(cash, cost, contractsFixture.accounts[1], "buy complete set"):
-        shareToken.publicBuyCompleteSets(market.address, 10, sender = contractsFixture.accounts[1])
+        shareToken.publicBuyCompleteSets(market.address, 10**30, sender = contractsFixture.accounts[1])
     assert universe.getOpenInterestInAttoCash() > 0
 
     # Move dispute window forward
@@ -65,7 +65,7 @@ def test_reporter_fees(contractsFixture, universe, market, cash):
         "universe": universe.address,
     }
     with AssertLog(contractsFixture, "ReportingFeeChanged", reportingFeeChangedLog):
-        assert universe.getOrCacheReportingFeeDivisor() != defaultValue
+        assert universe.getOrCacheReportingFeeDivisor() < defaultValue
 
 def test_validity_bond_up(contractsFixture, universe, market):
     initialValidityBond = universe.getOrCacheValidityBond()

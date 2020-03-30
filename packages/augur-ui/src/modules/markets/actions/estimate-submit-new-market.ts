@@ -13,6 +13,6 @@ export const estimateSubmitNewMarket = async (
   }
   catch (error) {
     console.error('error could estimate gas', error);
-    return NEW_MARKET_GAS_ESTIMATE;
+    callback(null, NEW_MARKET_GAS_ESTIMATE);
   }
 };

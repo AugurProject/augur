@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { Link } from 'react-router-dom';
@@ -9,11 +9,16 @@ import {
   ExternalLinkText,
   ProcessingButton,
 } from 'modules/common/buttons';
-import { GlobalChat } from 'modules/global-chat/components/global-chat';
+import GlobalChat from 'modules/global-chat/containers/global-chat';
 import { NavMenuItem, AccountBalances } from 'modules/types';
 import { helpIcon, Dot } from 'modules/common/icons';
-import { TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
-
+import {
+  TRANSACTIONS,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+} from 'modules/common/constants';
+import {
+  CREATE_MARKET
+} from 'modules/routes/constants/views';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 
 interface TopNavProps {
@@ -25,6 +30,8 @@ interface TopNavProps {
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
   updateModal: Function;
+  showCreateAccountButton: boolean;
+  createFundedGsnWallet: Function;
 }
 
 const SPREAD_INDEX = 3;
@@ -35,7 +42,9 @@ const TopNav = ({
   menuData,
   currentBasePath,
   migrateV1Rep,
+  createFundedGsnWallet,
   showMigrateRepButton = false,
+  showCreateAccountButton = false,
   walletBalances,
 }: TopNavProps) => {
   const isCurrentItem = item => {
@@ -52,12 +61,12 @@ const TopNav = ({
       <ul>
         {accessFilteredMenu.map((item, index) => {
           const selected = isCurrentItem(item);
-          if (item.title === 'Create') {
+          if (item.route === CREATE_MARKET) {
             return (
               <li className={Styles.CreateButton} key={item.title}>
-                <Link to={item.route ? makePath(item.route) : null}>
+                <Link to={item.route || !item.disabled ? makePath(item.route) : null}>
                   <SecondaryButton
-                    disabled={isDisabled}
+                    disabled={item.disabled}
                     text={'Create Market'}
                     action={() => null}
                   />
@@ -66,12 +75,20 @@ const TopNav = ({
             );
           }
           return (
+<<<<<<< HEAD
             <React.Fragment key={item.title}>
+=======
+            <Fragment key={index}>
+>>>>>>> master
               {index === SPREAD_INDEX && (
-                <li key={index} className={Styles.FillSpace} />
+                <li key='fill-space' className={Styles.FillSpace} />
               )}
               {index === SPREAD_INDEX && showMigrateRepButton && (
+<<<<<<< HEAD
                 <li className={Styles.MigrateRepItem} key='migrate-rep-button'>
+=======
+                <li key='migrate-rep-button'>
+>>>>>>> master
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
                         text={'Migrate V1 to V2 REP'}
@@ -154,7 +171,11 @@ const TopNav = ({
                   {item.showAlert && Dot}
                 </Link>
               </li>
+<<<<<<< HEAD
             </ React.Fragment>
+=======
+            </Fragment>
+>>>>>>> master
           );
         })}
         {!isLogged && (
@@ -167,7 +188,7 @@ const TopNav = ({
           </div>
         )}
       </ul>
-      <GlobalChat show={false} numberOfPeers={15} />
+      <GlobalChat />
     </aside>
   );
 };

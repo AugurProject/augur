@@ -10,10 +10,10 @@
   padding: @size-12 @size-16;
 
   > div {
-    display: flex;
-    justify-content: space-between;
     user-select: none;
     cursor: pointer;
+    display: grid;
+    grid-template-columns: 1fr auto;
   }
 
   > div:first-of-type {

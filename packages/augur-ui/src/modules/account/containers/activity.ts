@@ -2,8 +2,8 @@ import { connect } from "react-redux";
 import { formatDai } from "utils/format-number";
 import Activity from "modules/account/components/activity";
 import { updatePlatformTimeframeData } from "modules/account/actions/update-platform-timeframe-data";
-import { selectCurrentTimestampInSeconds } from "store/select-state";
-import { AppState } from "store";
+import { selectCurrentTimestampInSeconds } from "appStore/select-state";
+import { AppState } from "appStore";
 
 const mapStateToProps = (state: AppState) => {
   const value =

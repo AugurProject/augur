@@ -159,6 +159,9 @@
 		> span:first-of-type {
 			grid-column: 1;
 			grid-row: 1;
+			max-width: 100%;
+			text-overflow: ellipsis;
+			overflow: hidden;
 		}
 
 		> span:nth-of-type(2) {
@@ -451,7 +454,7 @@
 	> span:last-of-type {
 		.text-12-bold;
 		
-		color: var(--color-secondary-text);
+		color: var(--color-primary-text);
 	}
 
 	> button {

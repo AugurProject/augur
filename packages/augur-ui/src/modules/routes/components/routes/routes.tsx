@@ -11,7 +11,7 @@ import { withPageAnalytic } from 'services/analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { connect } from 'react-redux';
 import { page } from 'services/analytics/helpers';
 

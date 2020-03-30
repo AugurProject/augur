@@ -11,6 +11,7 @@ import {
   INVALID_OUTCOME_ID,
   ONE,
   SMALL_MOBILE,
+  MIN_ORDER_LIFESPAN,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
@@ -35,7 +36,7 @@ import {
 import moment, { Moment } from 'moment';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
-import { formatBestPrice } from 'utils/format-number';
+import { calcPercentageFromPrice, calcPriceFromPercentage } from 'utils/format-number';
 import Media from 'react-media';
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10 ** 17);
@@ -189,7 +190,6 @@ class Form extends Component<FromProps, FormState> {
     this.updateTestProperty = this.updateTestProperty.bind(this);
     this.clearOrderFormProperties = this.clearOrderFormProperties.bind(this);
     this.updateAndValidate = this.updateAndValidate.bind(this);
-    this.calcPercentagePrice = this.calcPercentagePrice.bind(this);
   }
 
   componentDidMount() {
@@ -212,11 +212,26 @@ class Form extends Component<FromProps, FormState> {
         ],
       });
     }
+    const { maxPrice, minPrice, market, selectedOutcome } = this.props;
     if (
       !!prevProps[this.INPUT_TYPES.PRICE] &&
       !!!this.props[this.INPUT_TYPES.PRICE]
     ) {
       this.setState({ percentage: '' });
+    } else if (
+      market.marketType === SCALAR &&
+      selectedOutcome.id === INVALID_OUTCOME_ID &&
+      !prevProps[this.INPUT_TYPES.PRICE] && !this.state.percentage && this.props[this.INPUT_TYPES.PRICE]
+    ) {
+      const price = this.props[this.INPUT_TYPES.PRICE];
+      const percentage = calcPercentageFromPrice(
+        price,
+        String(minPrice),
+        String(maxPrice),
+      );
+      this.setState({ percentage: String(percentage) }, () =>
+        this.updateAndValidate(this.INPUT_TYPES.PRICE, price)
+      );
     }
 
     if (prevProps.gasPrice !== this.props.gasPrice) {
@@ -329,7 +344,7 @@ class Form extends Component<FromProps, FormState> {
     expiration?
   ): TestResults {
     const props = nextProps || this.props;
-    const { market } = props;
+    const { market, currentTimestamp } = props;
     const isScalar: boolean = market.marketType === SCALAR;
     let errorCount = 0;
     let passedTest = !!isOrderValid;
@@ -405,16 +420,16 @@ class Form extends Component<FromProps, FormState> {
 
     // Check to ensure orders don't expiry within 70s
     // Also consider getGasConfirmEstimate * 1.5 seconds
-    const minOrderLifespan = 70;
     const gasConfirmEstimate = this.state
       ? this.state.confirmationTimeEstimation * 1.5
       : 0; // In Seconds
-    const expiryTime = expiration - gasConfirmEstimate - moment().unix();
-    if (expiration && expiryTime < minOrderLifespan) {
+    const earliestExp = Math.ceil((MIN_ORDER_LIFESPAN + gasConfirmEstimate) / 60);
+    const expiryTime = expiration - gasConfirmEstimate - currentTimestamp;
+    if (expiration && expiryTime < MIN_ORDER_LIFESPAN) {
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.EXPIRATION_DATE].push(
-        'Order expires less than 70 seconds into the future (after est confirmation time)'
+        `Order expires to soon! Earilest expiration is ${earliestExp} minutes`
       );
     }
     return { isOrderValid: passedTest, errors, errorCount };
@@ -437,7 +452,7 @@ class Form extends Component<FromProps, FormState> {
       selectedOutcome,
     } = props;
     const isScalar: boolean = market.marketType === SCALAR;
-    const isScalarInvalidOutcome =
+    const usePercent =
       isScalar && selectedOutcome.id === INVALID_OUTCOME_ID;
     const tickSize = createBigNumber(market.tickSize);
     let errorCount = 0;
@@ -450,7 +465,7 @@ class Form extends Component<FromProps, FormState> {
     if (value && (value.lte(minPrice) || value.gte(maxPrice))) {
       errorCount += 1;
       passedTest = false;
-      if (isScalarInvalidOutcome) {
+      if (usePercent) {
         errors[this.INPUT_TYPES.PRICE].push(`Enter a valid percentage`);
       } else {
         errors[this.INPUT_TYPES.PRICE].push(
@@ -478,10 +493,13 @@ class Form extends Component<FromProps, FormState> {
       orderBook.asks.length &&
       value.gte(orderBook.asks[0].price)
     ) {
+      const message = usePercent
+        ? `Percent must be less than best ask of ${calcPercentageFromPrice(orderBook.asks[0].price, minPrice, maxPrice)}`
+        : `Price must be less than best ask of ${orderBook.asks[0].price}`;
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.PRICE].push(
-        `Price must be less than best ask of ${orderBook.asks[0].price}`
+        message
       );
     } else if (
       initialLiquidity &&
@@ -490,10 +508,13 @@ class Form extends Component<FromProps, FormState> {
       orderBook.bids.length &&
       value.lte(orderBook.bids[0].price)
     ) {
+      const message = usePercent
+        ? `Percent must be more than best bid of ${calcPercentageFromPrice(orderBook.bids[0].price, minPrice, maxPrice)}`
+        : `Price must be more than best bid of ${orderBook.bids[0].price}`;
       errorCount += 1;
       passedTest = false;
       errors[this.INPUT_TYPES.PRICE].push(
-        `Price must be more than best bid of ${orderBook.bids[0].price}`
+        message
       );
     }
     return { isOrderValid: passedTest, errors, errorCount };
@@ -620,7 +641,7 @@ class Form extends Component<FromProps, FormState> {
     errors = { ...errors, ...comboErrors };
     errorCount += comboErrorCount;
 
-    isOrderValid = priceValid && quantityValid && totalValid && comboValid;
+    isOrderValid = ((quantityValid && priceValid) || (priceValid && totalValid)) && comboValid;
     return { isOrderValid, errors, errorCount };
   }
 
@@ -634,6 +655,7 @@ class Form extends Component<FromProps, FormState> {
 
   validateForm(property: string, rawValue) {
     const {
+      updateOrderProperty,
       updateTradeTotalCost,
       updateTradeNumShares,
       selectedNav,
@@ -659,18 +681,50 @@ class Form extends Component<FromProps, FormState> {
       clearOrderForm(false);
     }
 
+    let orderProcessingMethod = updateTradeTotalCost;
+
     let orderQuantity = updatedState[this.INPUT_TYPES.QUANTITY];
     const orderPrice = updatedState[this.INPUT_TYPES.PRICE];
     let orderDaiEstimate = updatedState[this.INPUT_TYPES.EST_DAI];
     let expiration = updatedState[this.INPUT_TYPES.EXPIRATION_DATE];
 
-    if (property === this.INPUT_TYPES.QUANTITY) {
+    // have price and quantity was modified clear total cost
+    if (orderPrice && property === this.INPUT_TYPES.QUANTITY) {
+      updatedState[this.INPUT_TYPES.EST_DAI] = '';
+      updateOrderProperty({ [this.INPUT_TYPES.EST_DAI]: '' })
       orderDaiEstimate = '';
     } else if (
-      property === this.INPUT_TYPES.EST_DAI ||
-      (property === this.INPUT_TYPES.EST_DAI && value === '')
+      // have price and total cost was modified clear quantity
+      orderPrice &&
+      property === this.INPUT_TYPES.EST_DAI
     ) {
+      updatedState[this.INPUT_TYPES.QUANTITY] = '';
+      updateOrderProperty({ [this.INPUT_TYPES.QUANTITY]: '' });
       orderQuantity = '';
+    }
+
+    // have price and quantity and total order value.
+    // last modified between quantity and total cost determines which order processing method
+    // last was quantity then regular updateTradeTotalCost
+    // last was total order cost then updateTradeNumShares
+    if (
+      (property == this.INPUT_TYPES.PRICE &&
+      orderQuantity &&
+      orderDaiEstimate &&
+      this.state.lastInputModified &&
+        this.state.lastInputModified === this.INPUT_TYPES.EST_DAI) || (
+          orderDaiEstimate && orderPrice && orderQuantity === ''
+        )
+    ) {
+      orderProcessingMethod = updateTradeNumShares;
+    }
+
+    if (orderPrice && orderQuantity === '' && orderDaiEstimate === '') {
+      clearOrderForm(false);
+    }
+
+    if (orderPrice === '' && (orderQuantity === '' || orderDaiEstimate === '')) {
+      orderProcessingMethod = null;
     }
 
     const order = {
@@ -702,35 +756,8 @@ class Form extends Component<FromProps, FormState> {
           validationResults.errorCount === 0 &&
           validationResults.isOrderValid
         ) {
-          if (
-            order[this.INPUT_TYPES.QUANTITY] &&
-            order[this.INPUT_TYPES.PRICE] &&
-            order[this.INPUT_TYPES.QUANTITY] !== '0' &&
-            (((!this.state.lastInputModified ||
-              this.state.lastInputModified === this.INPUT_TYPES.QUANTITY) &&
-              property === this.INPUT_TYPES.PRICE) ||
-              property === this.INPUT_TYPES.QUANTITY)
-          ) {
-            updateTradeTotalCost(order);
-          } else if (
-            order[this.INPUT_TYPES.EST_DAI] &&
-            order[this.INPUT_TYPES.PRICE] &&
-            order[this.INPUT_TYPES.EST_DAI] !== '0' &&
-            ((this.state.lastInputModified === this.INPUT_TYPES.EST_DAI &&
-              property === this.INPUT_TYPES.PRICE) ||
-              property === this.INPUT_TYPES.EST_DAI)
-          ) {
-            updateTradeNumShares(order);
-          }
-          if (
-            order[this.INPUT_TYPES.QUANTITY] &&
-            order[this.INPUT_TYPES.PRICE] &&
-            order[this.INPUT_TYPES.EST_DAI] &&
-            order[this.INPUT_TYPES.EST_DAI] != 0 &&
-            order[this.INPUT_TYPES.QUANTITY] != 0 &&
-            property === this.INPUT_TYPES.EXPIRATION_DATE
-          ) {
-            updateTradeTotalCost(order);
+          if (orderProcessingMethod) {
+            orderProcessingMethod(order);
           }
         }
         if (property !== this.INPUT_TYPES.PRICE) {
@@ -787,36 +814,6 @@ class Form extends Component<FromProps, FormState> {
     this.setState({ [this.INPUT_TYPES.EST_DAI]: value.toString() }, () =>
       this.validateForm(this.INPUT_TYPES.EST_DAI, value.toString())
     );
-  }
-
-  calcPercentagePrice(
-    percentage: string,
-    minPrice: string,
-    maxPrice: string,
-    tickSize: number
-  ) {
-    if (percentage === undefined || percentage === null) return Number(0);
-    const numTicks = tickSizeToNumTickWithDisplayPrices(
-      createBigNumber(tickSize),
-      createBigNumber(minPrice),
-      createBigNumber(maxPrice)
-    );
-    const bnMinPrice = createBigNumber(minPrice);
-    const bnMaxPrice = createBigNumber(maxPrice);
-    const percentNumTicks = createBigNumber(numTicks).times(
-      createBigNumber(percentage).dividedBy(100)
-    );
-    if (percentNumTicks.lt(tickSize)) {
-      return bnMinPrice.plus(tickSize);
-    }
-    const calcPrice = percentNumTicks.times(tickSize).plus(bnMinPrice);
-    if (calcPrice.eq(maxPrice)) {
-      return bnMaxPrice.minus(tickSize);
-    }
-    const correctDec = formatBestPrice(calcPrice, tickSize);
-    const precision = getPrecision(tickSize, 0);
-    const value = createBigNumber(correctDec.fullPrecision).toFixed(precision);
-    return value;
   }
 
   render() {
@@ -1021,7 +1018,7 @@ class Form extends Component<FromProps, FormState> {
                   onChange={e => {
                     const percentage = e.target.value;
                     this.setState({ percentage }, () => {
-                      const value = this.calcPercentagePrice(
+                      const value = calcPriceFromPercentage(
                         percentage,
                         min,
                         max,

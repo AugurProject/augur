@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import {
   selectMarketInfosState,
   selectReportingListState,
-} from 'store/select-state';
+} from 'appStore/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { REPORTING_STATE } from 'modules/common/constants';
 

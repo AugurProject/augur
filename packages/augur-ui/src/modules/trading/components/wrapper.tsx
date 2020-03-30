@@ -10,6 +10,7 @@ import {
   BUY,
   SELL,
   UPPER_FIXED_PRECISION_BOUND,
+  INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import Styles from 'modules/trading/components/wrapper.styles.less';
 import { OrderButton, PrimaryButton } from 'modules/common/buttons';
@@ -36,7 +37,6 @@ interface WrapperProps {
   selectedOutcome: OutcomeFormatted;
   selectedOrderProperties: SelectedOrderProperties;
   addFundsModal: Function;
-  addPendingOrder: Function;
   disclaimerModal: Function;
   handleFilledOnly: Function;
   loginModal: Function;
@@ -50,7 +50,7 @@ interface WrapperProps {
   updateTradeShares: Function;
   disclaimerSeen: boolean;
   gasPrice: number;
-  Gnosis_ENABLED: boolean;
+  GsnEnabled: boolean;
   hasFunds: boolean;
   hasHistory: boolean;
   isLogged: boolean;
@@ -59,7 +59,7 @@ interface WrapperProps {
   tradingTutorial?: boolean;
   currentTimestamp: number;
   availableDai: number;
-  GnosisUnavailable: boolean;
+  gsnUnavailable: boolean;
 }
 
 interface WrapperState {
@@ -72,6 +72,7 @@ interface WrapperState {
   doNotCreateOrders: boolean;
   expirationDate: Moment;
   trade: any;
+  simulateQueue: any[];
 }
 
 class Wrapper extends Component<WrapperProps, WrapperState> {
@@ -120,6 +121,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         props.selectedOrderProperties.doNotCreateOrders || false,
       expirationDate: props.selectedOrderProperties.expirationDate || null,
       trade: Wrapper.getDefaultTrade(props),
+      simulateQueue: []
     };
 
     this.updateState = this.updateState.bind(this);
@@ -129,6 +131,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     this.updateOrderProperty = this.updateOrderProperty.bind(this);
     this.updateNewOrderProperties = this.updateNewOrderProperties.bind(this);
     this.clearOrderConfirmation = this.clearOrderConfirmation.bind(this);
+    this.queueStimulateTrade = this.queueStimulateTrade.bind(this);
   }
 
   componentDidMount() {
@@ -163,16 +166,36 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         ) {
           return this.clearOrderForm();
         }
-
-        this.updateTradeTotalCost(
-          {
-            ...selectedOrderProperties,
-            orderQuantity: convertExponentialToDecimal(
-              selectedOrderProperties.orderQuantity
-            ),
-          },
-          true
-        );
+        // because of invalid outcome on scalars displaying percentage need to clear price before setting it.
+        if (
+          this.props.market.marketType === SCALAR
+        ) {
+          this.setState(
+            {
+              orderPrice: '',
+            },
+            () =>
+              this.updateTradeTotalCost(
+                {
+                  ...selectedOrderProperties,
+                  orderQuantity: convertExponentialToDecimal(
+                    selectedOrderProperties.orderQuantity
+                  ),
+                },
+                true
+              )
+          );
+        } else {
+          this.updateTradeTotalCost(
+            {
+              ...selectedOrderProperties,
+              orderQuantity: convertExponentialToDecimal(
+                selectedOrderProperties.orderQuantity
+              ),
+            },
+            true
+          );
+        }
       }
     }
   }
@@ -226,12 +249,65 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     });
   }
 
-  updateTradeTotalCost(order, fromOrderBook = false) {
+  async queueStimulateTrade(order, useValues, selectedNav) {
     const {
       updateTradeCost,
       selectedOutcome,
       market,
       gasPrice,
+    } = this.props;
+    this.state.simulateQueue.push(
+    new Promise((resolve) => updateTradeCost(
+      market.id,
+      order.selectedOutcomeId ? order.selectedOutcomeId : selectedOutcome.id,
+      {
+        limitPrice: order.orderPrice,
+        side: order.selectedNav,
+        numShares: order.orderQuantity,
+        selfTrade: order.selfTrade,
+      },
+      (err, newOrder) => {
+        if (err) {
+          // just update properties for form
+          return resolve({
+            ...useValues,
+            orderDaiEstimate: '',
+            orderEscrowdDai: '',
+            gasCostEst: '',
+            selectedNav,
+          });
+        }
+        const newOrderDaiEstimate = formatShares(
+          createBigNumber(newOrder.totalOrderValue.fullPrecision),
+          {
+            decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
+            roundDown: false,
+          }
+        ).roundedValue;
+
+        const formattedGasCost = formatGasCostToEther(
+          newOrder.gasLimit,
+          { decimalsRounded: 4 },
+          String(gasPrice)
+        ).toString();
+        resolve({
+          ...useValues,
+          orderDaiEstimate: String(newOrderDaiEstimate),
+          orderEscrowdDai: newOrder.costInDai.formatted,
+          trade: newOrder,
+          gasCostEst: formattedGasCost,
+          selectedNav,
+        });
+      }
+    )));
+    await Promise.all(this.state.simulateQueue).then(results =>
+      this.setState(results[results.length - 1])
+    );
+  }
+  async updateTradeTotalCost(order, fromOrderBook = false) {
+    const {
+      selectedOutcome,
+      market,
       initialLiquidity,
       tradingTutorial,
     } = this.props;
@@ -281,50 +357,12 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         selectedNav,
       });
     } else {
-      updateTradeCost(
-        market.id,
-        selectedOutcome.id,
-        {
-          limitPrice: order.orderPrice,
-          side: order.selectedNav,
-          numShares: order.orderQuantity,
-          selfTrade: order.selfTrade,
-        },
-        (err, newOrder) => {
-          if (err) {
-            // just update properties for form
-            return this.setState({
-              ...useValues,
-              orderDaiEstimate: '',
-              orderEscrowdDai: '',
-              gasCostEst: '',
-              selectedNav,
-            });
-          }
-
-          const newOrderDaiEstimate = formatShares(
-            createBigNumber(newOrder.totalOrderValue.fullPrecision),
-            {
-              decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
-              roundDown: false,
-            }
-          ).roundedValue;
-
-          const formattedGasCost = formatGasCostToEther(
-            newOrder.gasLimit,
-            { decimalsRounded: 4 },
-            String(gasPrice)
-          ).toString();
-          this.setState({
-            ...useValues,
-            orderDaiEstimate: String(newOrderDaiEstimate),
-            orderEscrowdDai: newOrder.costInDai.formatted,
-            trade: newOrder,
-            gasCostEst: formattedGasCost,
-            selectedNav,
-          });
-        }
-      );
+      this.setState({
+        selectedNav,
+      });
+      if (order.orderPrice) {
+        await this.queueStimulateTrade(order, useValues, selectedNav);
+      }
     }
   }
 
@@ -334,14 +372,15 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     if (this.state.expirationDate) {
       trade = {
         ...trade,
-        expirationTime: (this.state.expirationDate)
-      }
+        expirationTime: this.state.expirationDate,
+      };
     }
     this.props.onSubmitPlaceTrade(
       market.id,
       selectedOutcome.id,
       trade,
-      s.doNotCreateOrders)
+      s.doNotCreateOrders
+    );
     this.clearOrderForm();
   }
 
@@ -356,7 +395,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         maxCost: order.orderDaiEstimate,
       },
       (err, newOrder) => {
-        if (err) return console.log(err); // what to do with error here
+        if (err) return console.error(err); // what to do with error here
 
         const numShares = formatShares(createBigNumber(newOrder.numShares), {
           decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
@@ -395,7 +434,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       initialLiquidity,
       tradingTutorial,
       tutorialNext,
-      Gnosis_ENABLED,
+      GsnEnabled,
       hasFunds,
       isLogged,
       restoredAccount,
@@ -403,7 +442,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       addFundsModal,
       hasHistory,
       availableDai,
-      GnosisUnavailable,
+      gsnUnavailable,
     } = this.props;
     let {
       marketType,
@@ -433,6 +472,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       trade &&
       trade.costInDai &&
       createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
+
+    const isOpenOrder = trade && trade.numFills === 0;
+
     let actionButton: any = (
       <OrderButton
         type={selectedNav}
@@ -456,7 +498,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             }
           }
         }}
-        disabled={!trade || !trade.limitPrice || GnosisUnavailable || insufficientFunds}
+        disabled={
+          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds
+        }
       />
     );
     switch (true) {
@@ -469,7 +513,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           />
         );
         break;
-      case !restoredAccount && isLogged && !hasFunds && !tradingTutorial:
+      case isLogged && !hasFunds && !tradingTutorial:
         actionButton = (
           <PrimaryButton
             id="add-funds"
@@ -485,6 +529,11 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     const orderEmpty =
       orderPrice === '' && orderQuantity === '' && orderDaiEstimate === '';
     const showTip = !hasHistory && orderEmpty;
+    const showConfirm =
+      !!trade &&
+      ((trade.potentialDaiLoss && trade.potentialDaiLoss.value !== 0) ||
+        (trade.orderShareProfit && trade.orderShareProfit.value !== 0) ||
+        (trade.sharesFilled && trade.sharesFilled.value !== 0));
     return (
       <section className={Styles.Wrapper}>
         <div>
@@ -555,9 +604,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             />
           )}
         </div>
-        {trade &&
-          ((trade.shareCost && trade.shareCost.value !== 0) ||
-            (trade.totalCost && trade.totalCost.value !== 0)) && (
+        { showConfirm && (
             <Confirm
               initialLiquidity={initialLiquidity}
               numOutcomes={market.numOutcomes}
@@ -567,11 +614,12 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               trade={trade}
               gasPrice={gasPrice}
               gasLimit={trade.gasLimit}
+              selectedOutcomeId={selectedOutcome.id}
               outcomeName={selectedOutcome.description}
               scalarDenomination={market.scalarDenomination}
               tradingTutorial={tradingTutorial}
-              Gnosis_ENABLED={Gnosis_ENABLED}
-              GnosisUnavailable={GnosisUnavailable}
+              GsnEnabled={GsnEnabled}
+              gsnUnavailable={gsnUnavailable}
             />
           )}
         <div>{actionButton}</div>

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { UniverseCard } from 'modules/universe-cards/components/universe-card';
 import { switchUniverse } from 'modules/universe-cards/actions/switch-universe';
 import { formatDai, formatAttoRep } from 'utils/format-number';

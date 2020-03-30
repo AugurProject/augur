@@ -34,8 +34,6 @@ export class SingleThreadConnector extends BaseConnector {
     const wrappedCallack = this.callbackWrapper(eventName, callback);
     const id: string = this.events.subscribe(eventName, wrappedCallack);
     this.subscriptions[eventName] = { id, callback: wrappedCallack };
-
-
   }
 
   async off(eventName: SubscriptionEventName | string): Promise<void> {

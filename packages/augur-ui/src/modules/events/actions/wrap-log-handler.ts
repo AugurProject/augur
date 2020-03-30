@@ -1,6 +1,6 @@
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 export const wrapLogHandler = (logHandler: Function) => (
   log: any

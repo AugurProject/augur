@@ -4,14 +4,13 @@ import { Gas } from 'modules/modal/gas';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { updateGasPriceInfo } from 'modules/app/actions/update-gas-price-info';
 import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   ...state.gasPriceInfo,
-  ethToDaiRate: state.appStatus.ethToDaiRate,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

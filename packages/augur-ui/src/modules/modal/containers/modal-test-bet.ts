@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Onboarding } from 'modules/modal/onboarding';
 import { closeModal } from 'modules/modal/actions/close-modal';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import {
@@ -29,7 +29,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: TestBet,
   analyticsEvent: () => dP.track(DO_A_TEST_BET, {}),
   largeHeader: sP.isTablet ? 'Learn how to bet on Augur' : 'Lastly, run a test bet!',
-  currentStep: 4,
+  currentStep: 5,
   linkContent: [
     {
       content:

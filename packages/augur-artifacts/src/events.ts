@@ -39,4 +39,5 @@ export enum ContractEvents {
   Transfer = "Transfer",
   UniverseCreated = "UniverseCreated",
   UniverseForked = "UniverseForked",
+  CancelZeroXOrder = "CancelZeroXOrder",
 }

@@ -19,6 +19,15 @@
   }
 }
 
+@supports (-moz-appearance:none) {    
+  .Container {   
+    > main {
+      // firefox doesn't support overlay. need auto     
+      overflow-y: auto; 
+    }    
+  } 
+}
+
 .TradeHistoryTable {
   display: flex;
   flex-flow: column nowrap;

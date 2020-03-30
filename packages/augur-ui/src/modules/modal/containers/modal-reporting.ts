@@ -6,13 +6,14 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { REPORTING_STATE, MODAL_ADD_FUNDS, REP } from 'modules/common/constants';
 import { formatRep } from 'utils/format-number';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { updateModal } from '../actions/update-modal';
 import { addPendingData, removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe, modal, loginAccount } = state;
-  const { market } = ownProps;
+  let { market } = ownProps;
+  market.isForking = state.universe.forkingInfo && state.universe.forkingInfo.forkingMarket === market.id;
   const hasForked = !!state.universe.forkingInfo;
   const migrateRep =
     hasForked && universe.forkingInfo.forkingMarket === market.id;

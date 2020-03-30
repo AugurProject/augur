@@ -59,6 +59,8 @@ interface MarketCardProps {
   dispute: Function;
   migrateMarketModal: Function;
   marketLinkCopied: Function;
+  forkingMarket: string | null;
+  isForking?: boolean;
 }
 
 const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;
@@ -81,6 +83,8 @@ export const MarketCard = ({
   marketLinkCopied,
   toggleFavorite,
   theme,
+  isForking,
+  forkingMarket,
 }: MarketCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const {
@@ -91,10 +95,17 @@ export const MarketCard = ({
     maxPriceBigNumber,
     categories,
     id,
+    marketStatus,
+    author,
     reportingState,
+    openInterestFormatted,
+    volumeFormatted,
     disputeInfo,
     endTimeFormatted,
+    isTemplate,
     consensusFormatted,
+    mostLikelyInvalid,
+    isWarpSync,
   } = market;
 
   if (loading) {

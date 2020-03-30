@@ -116,20 +116,19 @@ const getLimitOptions = (itemCount: number, maxLimit: number) => {
   return paginationOptions;
 };
 
-export const Pagination = (props: PaginationProps) => {
-  const {
-    page,
-    action,
-    itemCount,
-    itemsPerPage,
-    updateLimit,
-    showLimitChanger,
-    maxLimit,
-    showPagination = true,
-  } = props;
+export const Pagination = ({
+  page,
+  action,
+  itemCount,
+  itemsPerPage,
+  updateLimit,
+  showLimitChanger,
+  maxLimit,
+  showPagination = true,
+}: PaginationProps) => {
   const totalPages =
     itemsPerPage === 1 ? 1 : Math.ceil(itemCount / (itemsPerPage || 10)) || 1;
-  
+
   return (
     <div className={Styles.Pagination}>
       {showPagination && (

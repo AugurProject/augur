@@ -18,7 +18,7 @@ import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-
 import { MarketInfos } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
 import { Events, Logs, TXEventName, OrderEventType } from '@augurproject/sdk';
@@ -46,6 +46,7 @@ import {
   BUYPARTICIPATIONTOKENS,
   SUBMIT_DISPUTE,
   CLAIMMARKETSPROCEEDS,
+  DISAVOWCROWDSOURCERS,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -61,11 +62,6 @@ import {
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
-import {
-  GNOSIS_STATUS,
-  updateAppStatus,
-} from 'modules/app/actions/update-app-status';
-import { GnosisSafeState } from '@augurproject/gnosis-relay-api/build/GnosisRelayAPI';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -77,6 +73,8 @@ import { removePendingOrder, constructPendingOrderid } from 'modules/orders/acti
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
+import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
+import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 
 const handleAlert = (
   log: any,
@@ -137,7 +135,6 @@ export const handleTxSuccess = (txStatus: Events.TXStatus) => (
 ) => {
   console.log('TxSuccess Transaction', txStatus.transaction.name);
   dispatch(addUpdateTransaction(txStatus));
-  dispatch(updateAssets());
 };
 
 export const handleTxFailure = (txStatus: Events.TXStatus) => (
@@ -163,31 +160,6 @@ export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
   console.log('TxFeeTooLow Transaction', txStatus.transaction.name);
   dispatch(addUpdateTransaction(txStatus));
   dispatch(updateModal({ type: MODAL_GAS_PRICE, feeTooLow: true }));
-};
-
-export const handleGnosisStateUpdate = (response) => async(
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  console.log('handleGnosisStateUpdate', response);
-  const status = response.status;
-  if (response && status) {
-    dispatch(updateAppStatus(GNOSIS_STATUS, status));
-
-    if (status === GnosisSafeState.ERROR) {
-      const loginAccount = getState().loginAccount;
-      const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
-
-      dispatch(updateModal({
-        type: MODAL_ERROR,
-        error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
-        showDiscordLink: false,
-        showAddFundsHelp: !hasEth,
-        walletType: loginAccount.meta.accountType,
-        title: 'We\'re having trouble processing transactions',
-      }));
-    }
-  }
 };
 
 export const handleSDKReadyEvent = () => (
@@ -226,6 +198,10 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
       loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
     );
   }
+  // update ethToDaiRate/gasPrice each block
+  dispatch(getEthToDaiRate());
+  dispatch(registerUserDefinedGasPriceFunction());
+
   if (log.logs && log.logs.length > 0){
     console.log(log.logs);
     const eventLogs = log.logs.reduce(
@@ -263,7 +239,6 @@ export const handleMarketsUpdatedLog = ({
     marketsDataById[market.id] = market;
   }
   const marketIds = Object.keys(marketsDataById);
-  console.log('handleMarketsUpdatedChangedLog', marketIds);
   dispatch(updateMarketsData(marketsDataById));
   if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
   if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
@@ -307,6 +282,8 @@ export const handleReportingStateChanged = (event: any) => (
   if (event.data) {
     const marketIds = _.map(event.data, 'market');
     dispatch(loadMarketsInfo(marketIds));
+    if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
+    if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
   }
 };
 
@@ -356,16 +333,17 @@ export const handleTokenBalanceChangedLog = (
   })
 };
 
-export const handleOrderLog = (log: any) => {
+export const handleOrderLog = (log: any) =>
+(dispatch: ThunkDispatch<void, any, Action>) => {
   const type = log.eventType;
   switch (type) {
     case OrderEventType.Create:
-      return handleOrderCreatedLog(log);
+      return dispatch(handleOrderCreatedLog(log));
     case OrderEventType.Expire:
     case OrderEventType.Cancel:
-      return handleOrderCanceledLog(log);
+      return dispatch(handleOrderCanceledLog(log));
     case OrderEventType.Fill:
-      return handleOrderFilledLog(log);
+      return dispatch(handleOrderFilledLog(log));
     default:
       console.log(`Unknown order event type "${log.eventType}" for log`, log);
   }
@@ -388,6 +366,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(removePendingOrder(pendingOrderId, log.market));
   }
   dispatch(updateMarketOrderBook(log.market));
+  if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -416,7 +395,7 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
       dispatch(throttleLoadUserOpenOrders());
     }
   }
-  dispatch(updateMarketOrderBook(log.market));
+  if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -435,12 +414,12 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
       orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
     );
     dispatch(throttleLoadUserOpenOrders());
-    handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
+    if (log.orderFiller) handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
-  if (isOnTradePage()) {
+  if (isCurrentMarket(marketId)) {
     dispatch(loadMarketTradingHistory(marketId));
-    dispatch(updateMarketOrderBook(log.market));
+    dispatch(updateMarketOrderBook(marketId));
   }
 };
 
@@ -550,6 +529,9 @@ export const handleMarketParticipantsDisavowedLog = (logs: any) => (
   getState: () => AppState
 ) => {
   const marketIds = logs.map(log => log.market);
+  marketIds.map(marketId => {
+    dispatch(addPendingData(marketId, DISAVOWCROWDSOURCERS, TXEventName.Success, 0, {}));
+  })
   dispatch(loadMarketsInfo(marketIds));
 };
 

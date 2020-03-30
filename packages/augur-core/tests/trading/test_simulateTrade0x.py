@@ -42,7 +42,72 @@ def test_simple_simulate(contractsFixture, cash, market, universe):
     assert settlementFees == 0
     assert numFills == 1
 
-def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
+@mark.parametrize('long', [
+    True,
+    False
+])
+def test_simple_trades_and_fees(long, contractsFixture, cash, market, universe):
+    ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
+    zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
+    simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    account0 = contractsFixture.accounts[0]
+    senderPrivateKey0 = contractsFixture.privateKeys[0]
+    account1 = contractsFixture.accounts[1]
+    senderPrivateKey1 = contractsFixture.privateKeys[1]
+    expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
+    salt = 5
+    tradeGroupID = longTo32Bytes(42)
+    fingerprint = longTo32Bytes(11)
+
+    direction = LONG if long else SHORT
+    outcome = YES
+    amount = fix(1)
+    price = 40
+    fillOnly = False
+    numTicks = market.getNumTicks()
+    longPrice = price
+    shortPrice = numTicks - longPrice
+    cost = amount * (longPrice if long else shortPrice)
+
+    cash.faucet(cost)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, expirationTime, salt, sender=account0)
+    signature = signOrder(orderHash, senderPrivateKey0)
+    orders = [rawZeroXOrderData]
+    signatures = [signature]
+
+    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateZeroXTrade(orders, amount, fillOnly, sender=account1)
+
+    fillPrice = (shortPrice if long else longPrice)
+    cost = amount * fillPrice
+    assert sharesFilled == amount
+    assert tokensDepleted == cost
+    assert sharesDepleted == 0
+    assert settlementFees == 0
+    assert numFills == 1
+
+    cash.faucet(cost, sender=account1)
+    assert ZeroXTrade.trade(amount, fingerprint, tradeGroupID, 0, 10, orders, signatures, sender=account1, value=150000) == 0
+
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(SHORT if long else LONG, amount, price, market.address, outcome, expirationTime, salt, sender=account0)
+    signature = signOrder(orderHash, senderPrivateKey0)
+    orders = [rawZeroXOrderData]
+    signatures = [signature]
+
+    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateZeroXTrade(orders, amount, fillOnly, sender=account1)
+    assert simulateTrade.getNumberOfAvaialableShares(LONG if long else SHORT, market.address, outcome, account1) == fix(1)
+
+    expectedValue = fix(1) * (shortPrice if long else longPrice)
+    expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
+    expectedMarketCreatorFees = expectedValue / market.getMarketCreatorSettlementFeeDivisor()
+    expectedSettlementFees = expectedReporterFees + expectedMarketCreatorFees
+
+    assert sharesFilled == fix(1)
+    assert tokensDepleted == 0
+    assert sharesDepleted == fix(1)
+    assert settlementFees == expectedSettlementFees
+    assert numFills == 1
+
+def test_repro_shares_depleted_case(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
     simulateTrade = contractsFixture.contracts["SimulateTrade"]
@@ -58,10 +123,12 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     direction = LONG
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 10
     fillOnly = False
     numTicks = market.getNumTicks()
-    cost = amount * price
+    longPrice = price
+    shortPrice = numTicks - longPrice
+    cost = amount * longPrice
 
     cash.faucet(cost)
     rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, outcome, expirationTime, salt, sender=account0)
@@ -69,36 +136,21 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     orders = [rawZeroXOrderData]
     signatures = [signature]
 
-    (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateZeroXTrade(orders, amount, fillOnly, sender=account1)
-
-    fillPrice = numTicks - price
-    cost = amount * fillPrice
-    assert sharesFilled == amount
-    assert tokensDepleted == cost
-    assert sharesDepleted == 0
-    assert settlementFees == 0
-    assert numFills == 1
-
+    cost = amount * shortPrice
     cash.faucet(cost, sender=account1)
     assert ZeroXTrade.trade(amount, fingerprint, tradeGroupID, 0, 10, orders, signatures, sender=account1, value=150000) == 0
 
-    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(SHORT, amount, price, market.address, outcome, expirationTime, salt, sender=account0)
+    rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(direction, amount, price, market.address, NO, expirationTime, salt, sender=account0)
     signature = signOrder(orderHash, senderPrivateKey0)
     orders = [rawZeroXOrderData]
     signatures = [signature]
 
     (sharesFilled, tokensDepleted, sharesDepleted, settlementFees, numFills) = simulateTrade.simulateZeroXTrade(orders, amount, fillOnly, sender=account1)
-    assert simulateTrade.getNumberOfAvaialableShares(LONG, market.address, outcome, account1) == fix(1)
-
-    expectedValue = fix(1) * (numTicks - price)
-    expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
-    expectedMarketCreatorFees = expectedValue / market.getMarketCreatorSettlementFeeDivisor()
-    expectedSettlementFees = expectedReporterFees + expectedMarketCreatorFees
+    assert simulateTrade.getNumberOfAvaialableShares(SHORT, market.address, NO, account1) == fix(1)
 
     assert sharesFilled == fix(1)
     assert tokensDepleted == 0
     assert sharesDepleted == fix(1)
-    assert settlementFees == expectedSettlementFees
     assert numFills == 1
 
 def test_partial_fill(contractsFixture, cash, market, universe):

@@ -16,6 +16,7 @@ const DEFAULT_STATE: LoginAccount = {
     legacyRepNonSafe: 0,
     attoRep: '0',
     legacyAttoRep: '0',
+    ethNonSafe: 0,
   },
   reporting: {
     profitLoss: ZERO,

@@ -15,6 +15,8 @@ import { ProcessingButton } from 'modules/common/buttons';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
+import ReactTooltip from 'react-tooltip';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
 
 interface MarketHeaderReportingProps {
   market: MarketData;
@@ -24,6 +26,7 @@ interface MarketHeaderReportingProps {
   isDesignatedReporter?: boolean;
   claimMarketsProceeds: Function;
   showReportingModal: Function;
+  isForking?: boolean;
 }
 
 export const MarketHeaderReporting = ({
@@ -34,6 +37,7 @@ export const MarketHeaderReporting = ({
   isLogged,
   canClaimProceeds,
   showReportingModal,
+  isForking
 }: MarketHeaderReportingProps) => {
   const { reportingState, id, consensusFormatted } = market;
   let content = null;
@@ -56,8 +60,8 @@ export const MarketHeaderReporting = ({
             text={PROCEEDS_TO_CLAIM_TITLE}
             action={() => claimMarketsProceeds([id])}
             disabled={!isLogged || !canClaimProceeds}
-            queueName={TRANSACTIONS}
-            queueId={CLAIMMARKETSPROCEEDS}
+            queueName={CLAIMMARKETSPROCEEDS}
+            queueId={id}
           />
         )}
       </div>
@@ -107,7 +111,7 @@ export const MarketHeaderReporting = ({
     reportingState === REPORTING_STATE.OPEN_REPORTING
   ) {
     content = (
-      <div className={classNames(Styles.Content, Styles.Report)}>
+      <div data-tip data-for={'tooltip--reporting' + id} className={classNames(Styles.Content, Styles.Report)}>
         <ProcessingButton
           text='Report'
           action={() => showReportingModal()}
@@ -115,6 +119,17 @@ export const MarketHeaderReporting = ({
           queueName={SUBMIT_REPORT}
           queueId={id}
         />
+         {(isForking) && (
+          <ReactTooltip
+            id={'tooltip--reporting' + id}
+            className={TooltipStyles.Tooltip}
+            effect="solid"
+            place="top"
+            type="light"
+          >
+            <p>{'Market cannot be reported on while universe is forking'} </p>
+          </ReactTooltip>
+        )}
       </div>
     );
   }

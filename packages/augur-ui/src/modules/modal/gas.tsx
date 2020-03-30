@@ -7,7 +7,6 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import {
   formatGasCostToEther,
   formatEtherEstimate,
-  formatDai,
 } from 'utils/format-number';
 import {
   GWEI_CONVERSION,
@@ -15,6 +14,8 @@ import {
 } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import classNames = require('classnames');
+import { FormattedNumber } from 'modules/types';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface GasProps {
   saveAction: Function;
@@ -23,7 +24,6 @@ interface GasProps {
   average: number;
   fast: number;
   userDefinedGasPrice?: number;
-  ethToDaiRate: BigNumber;
   feeTooLow: boolean;
 }
 
@@ -43,14 +43,6 @@ export const getEthTradeCost = (amount: number) => {
   );
 };
 
-export const getGasCostInDai = (ethToDaiRate: BigNumber, amount: number) => {
-  const EXCHANGE_RATE = ethToDaiRate;
-  const ETH_TRADE_COST = getEthTradeCost(amount);
-
-  return formatDai(createBigNumber(ETH_TRADE_COST.value).times(EXCHANGE_RATE))
-    .formattedValue;
-};
-
 export const Gas = (props: GasProps) => {
   const {
     closeAction,
@@ -58,7 +50,6 @@ export const Gas = (props: GasProps) => {
     safeLow,
     average,
     fast,
-    ethToDaiRate,
     feeTooLow,
   } = props;
 
@@ -157,7 +148,7 @@ export const Gas = (props: GasProps) => {
                 <span>{data.avgTime}</span>
               </div>
               <div>
-                <span>${getGasCostInDai(ethToDaiRate, data.gwei)}</span>
+                <span>${displayGasInDai(data.gwei)}</span>
                 <span> / Trade</span>
               </div>
             </div>
@@ -189,7 +180,7 @@ export const Gas = (props: GasProps) => {
             </div>
             <div>
               <div>
-                <span>&lt; ${getGasCostInDai(ethToDaiRate, amount)}</span>
+                <span>&lt; ${displayGasInDai(amount)}</span>
                 <span> / Trade</span>
               </div>
               <span>{getEthTradeCost(amount).formatted} ETH</span>

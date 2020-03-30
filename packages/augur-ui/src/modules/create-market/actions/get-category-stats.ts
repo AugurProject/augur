@@ -1,4 +1,4 @@
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkAction } from 'redux-thunk';
 import { augurSdk } from 'services/augursdk';
 import { POPULAR_CATEGORIES } from 'modules/common/constants';

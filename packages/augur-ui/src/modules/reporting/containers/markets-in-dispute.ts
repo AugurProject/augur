@@ -7,7 +7,7 @@ import {
   loadNextWindowDisputingMarkets,
 } from 'modules/markets/actions/load-markets';
 import { disputingMarkets } from 'modules/markets/selectors/select-reporting-markets';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState) => ({
   disputingMarketsMeta: state.reportingListState,

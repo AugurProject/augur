@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { ModalMigrateMarket } from 'modules/modal/components/modal-migrate-market';
 import { migrateMarketThroughOneFork } from 'modules/forking/actions/migrate-through-one-fork';
 import { closeModal } from 'modules/modal/actions/close-modal';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { formatGasCostToEther, formatEther } from 'utils/format-number';

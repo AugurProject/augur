@@ -29,6 +29,7 @@ class Contract():
             contractFunction = originalFunction(*self.processArgs(*args, abiFunc=abiFunc))
             retVal = True
             outputs = abiFunc['outputs']
+            value = int(value)
             # In coverage mode all functions change state through logs so we can't do this optimization
             if not self.coverageMode and len(outputs) == 1 and outputs[0]['type'] == 'bool':
                 getReturnData = False

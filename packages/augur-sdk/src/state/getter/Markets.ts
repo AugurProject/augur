@@ -39,6 +39,7 @@ import {
 } from './OnChainTrading';
 import { Getter } from './Router';
 import { sortOptions } from './types';
+import { flattenZeroXOrders } from './ZeroXOrdersGetters';
 
 export enum GetMarketsSortBy {
   marketOI = 'marketOI',
@@ -170,6 +171,7 @@ export interface MarketInfo {
   isTemplate: boolean;
   mostLikelyInvalid: boolean;
   isWarpSync: boolean;
+  passDefaultLiquiditySpread: boolean;
 }
 
 export interface DisputeInfo {
@@ -239,6 +241,7 @@ export interface OutcomeOrderBook {
 export interface MarketOrderBook {
   marketId: string;
   orderBook: OutcomeOrderBook;
+  expirationTime?: number; // expirationTimeSeconds of soonest order to expire in whole orderbook
 }
 
 export interface LiquidityOrderBookInfo {
@@ -281,6 +284,7 @@ export class Markets {
       outcomeId: t.union([outcomeIdType, t.array(outcomeIdType)]),
       account: t.string,
       onChain: t.boolean, // if false or not present, use 0x orderbook
+      expirationCutoffSeconds: t.number,
     }),
   ]);
 
@@ -649,11 +653,13 @@ export class Markets {
       orders = await OnChainTrading.getOpenOnChainOrders(augur, db, {
         marketId: params.marketId,
         orderState: OrderState.OPEN,
+        expirationCutoffSeconds: params.expirationCutoffSeconds,
       });
     } else {
       orders = await OnChainTrading.getOpenOrders(augur, db, {
         marketId: params.marketId,
         orderState: OrderState.OPEN,
+        expirationCutoffSeconds: params.expirationCutoffSeconds,
       });
     }
 
@@ -761,9 +767,16 @@ export class Markets {
       );
     };
 
+    const expirationTime = flattenZeroXOrders(orders).reduce(
+      (p, o) => o.expirationTimeSeconds &&
+        (o.expirationTimeSeconds.lt(p) || p.eq(0)) ? o.expirationTimeSeconds : p,
+      new BigNumber(0)
+    ).toNumber();
+
     return {
       marketId: params.marketId,
       orderBook: processMarket(orders),
+      expirationTime,
     };
   }
 
@@ -1145,7 +1158,7 @@ async function getMarketsInfo(
       bondSizeOfNewStake: totalRepStakedInMarket.multipliedBy(2).toFixed(),
       stakes: formatStakeDetails(augur, db, marketData, disputeDocsByMarket[marketData.market] || []),
     };
-
+    const passDefaultLiquiditySpread = marketData.liquidity['10'] !== '000000000000000000000000000000';
     return {
       id: marketData.market,
       universe: marketData.universe,
@@ -1187,6 +1200,7 @@ async function getMarketsInfo(
       isTemplate: marketData.isTemplate,
       mostLikelyInvalid: marketData.invalidFilter,
       isWarpSync: marketData.isWarpSync,
+      passDefaultLiquiditySpread,
     };
   });
 }

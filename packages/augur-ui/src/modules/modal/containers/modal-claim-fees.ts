@@ -1,11 +1,13 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { AppState } from 'store';
+import { AppState } from 'appStore';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
   formatGasCostToEther,
   formatAttoRep,
   formatAttoDai,
+  formatEther,
+  formatBlank,
 } from 'utils/format-number';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { Proceeds } from 'modules/modal/proceeds';
@@ -13,6 +15,7 @@ import { ActionRowsProps } from 'modules/modal/common';
 import {
   redeemStake,
   redeemStakeBatches,
+  redeemStakeGas,
 } from 'modules/reporting/actions/claim-reporting-fees';
 import {
   CLAIM_FEE_WINDOWS,
@@ -20,6 +23,9 @@ import {
   CLAIM_FEES_GAS_COST,
   ZERO,
   CLAIM_ALL_TITLE,
+  REDEEMSTAKE,
+  FORKANDREDEEM,
+  DISAVOWCROWDSOURCERS,
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -27,17 +33,15 @@ import { MarketReportClaimableContracts } from 'modules/types';
 import { disavowMarket } from 'modules/contracts/actions/contractCalls';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { TRANSACTIONS } from 'modules/routes/constants/views';
+import { TXEventName } from '@augurproject/sdk/src';
+import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 const mapStateToProps = (state: AppState) => {
   return {
     modal: state.modal,
-    gasCost: formatGasCostToEther(
-      CLAIM_FEES_GAS_COST,
-      { decimalsRounded: 4 },
-      getGasPrice(state)
-    ),
-    Gnosis_ENABLED: state.appStatus.gnosisEnabled,
-    ethToDaiRate: state.appStatus.ethToDaiRate,
+    gasCost: CLAIM_FEES_GAS_COST,
+    GsnEnabled: state.appStatus.gsnEnabled,
     pendingQueue: state.pendingQueue || [],
     claimReportingFees: selectReportingWinningsByMarket(state),
     forkingInfo: state.universe.forkingInfo,
@@ -47,7 +51,10 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   redeemStake: (options, callback) => redeemStake(options, callback),
+  redeemStakeGas: options => redeemStakeGas(options),
   disavowMarket: marketId => disavowMarket(marketId),
+  addPendingData: (pendingId, queueName, status, hash, info) =>
+    dispatch(addPendingData(pendingId, queueName, status, hash, info)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
@@ -70,6 +77,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   };
   const submitAllTxCount = redeemStakeBatches(allRedeemStakeOptions);
   const claimableMarkets = claimReportingFees.claimableMarkets;
+  const showBreakdown = claimableMarkets.marketContracts.length > 1;
+  const totalRep = `${formatAttoRep(claimReportingFees.totalUnclaimedRep).formatted} REP`;
 
   if (!participationTokensOnly) {
     claimableMarkets.marketContracts.map(marketObj => {
@@ -91,13 +100,22 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         let notice = undefined;
         let action = () => dP.redeemStake(redeemStakeOptions);
         let buttonText = 'Claim';
+        let queueName = REDEEMSTAKE;
+        let queueId = marketObj.contracts[0];
 
         if (isForking) {
           if (!market.disavowed) {
             buttonText = 'Disavow Market REP';
             notice =
               'Disavow Market disputing REP in order to release REP, releasing REP will be in a separate transaction';
-            action = () => dP.disavowMarket(market.id);
+            queueName = DISAVOWCROWDSOURCERS;
+            queueId = market.id;
+            action = () => {
+              dP.addPendingData(market.id, DISAVOWCROWDSOURCERS, TXEventName.Pending, '0', undefined);
+              dP.disavowMarket(market.id).catch(err => {
+                dP.addPendingData(market.id, DISAVOWCROWDSOURCERS, TXEventName.Failure, 0, undefined)
+              });
+            };
           } else if (market.disavowed && marketTxCount > 1) {
             notice = `Releasing REP will take ${marketTxCount} Transactions`;
             buttonText = 'Release REP';
@@ -106,6 +124,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           if (isForkingMarket) {
             buttonText = 'Release and Migrate REP';
             action = () => dP.redeemStake(redeemStakeOptions);
+            queueName = TRANSACTIONS;
+            queueId = FORKANDREDEEM;
             notice =
               marketTxCount > 1
                 ? `Forking market, releasing REP will take ${marketTxCount} Transactions and be sent to corresponding child universe`
@@ -120,6 +140,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           status: pending && pending.status,
           notice,
           marketTxCount,
+          queueName,
+          queueId,
           properties: [
             {
               label: 'Reporting stake',
@@ -128,8 +150,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
             },
             {
               label: 'Transaction Fee',
-              value: sP.Gnosis_ENABLED
-                ? displayGasInDai(gasCost, sP.ethToDaiRate)
+              value: sP.GsnEnabled
+                ? displayGasInDai(gasCost)
                 : gasCost + ' ETH',
             },
           ],
@@ -139,6 +161,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     });
   }
 
+  let daiFormatted = formatBlank();
+
   if (claimReportingFees.participationContracts.unclaimedRep.gt(ZERO)) {
     const disputeWindowsPending =
       pendingQueue[CLAIM_STAKE_FEES] &&
@@ -147,13 +171,15 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     const repFormatted = formatAttoRep(
       claimReportingFees.participationContracts.unclaimedRep
     );
-    const daiFormatted = formatAttoDai(
+    daiFormatted = formatAttoDai(
       claimReportingFees.participationContracts.unclaimedDai
     );
     modalRows.push({
       title: isForking
         ? 'Release Participation REP'
         : 'Reedeem all participation tokens',
+      queueName: REDEEMSTAKE,
+      queueId: claimReportingFees.participationContracts.contracts[0],
       text: 'Claim',
       status: disputeWindowsPending,
       properties: [
@@ -164,12 +190,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         },
         {
           label: 'Reporting Fees',
-          value: `$${daiFormatted.formatted}`,
+          value: `$${daiFormatted.formattedValue}`,
         },
         {
           label: 'Transaction Fee',
-          value: sP.Gnosis_ENABLED
-            ? displayGasInDai(gasCost, sP.ethToDaiRate)
+          value: sP.GsnEnabled
+            ? displayGasInDai(gasCost)
             : gasCost + ' ETH',
         },
       ],
@@ -190,6 +216,17 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     dP.closeModal();
     return {};
   }
+
+  const breakdown = showBreakdown ? [
+    {
+      label: 'Total REP',
+      value: totalRep,
+    },
+    {
+      label: 'Total DAI',
+      value: `$${daiFormatted.formattedValue}`,
+    },
+  ] : null;
 
   return {
     title: isForking ? 'Release REP' : 'Claim Stake & Fees',
@@ -232,6 +269,18 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       }
       dP.closeModal();
     },
+    estimateGas: async () => {
+      if (!!breakdown) {
+        const gas = await dP.redeemStakeGas(allRedeemStakeOptions);
+        const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
+        return {
+          label: 'Transaction Fee',
+          value: String(displayfee),
+        };
+      }
+      return null;
+    },
+    breakdown,
     buttons:
       isForking || participationTokensOnly
         ? null

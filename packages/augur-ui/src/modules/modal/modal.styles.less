@@ -193,6 +193,7 @@ div.Onboarding {
 
       > svg {
         height: @size-64;
+        fill: var(--color-primary-text);
       }
     }
 
@@ -204,6 +205,13 @@ div.Onboarding {
     > div:nth-of-type(3) {
       text-align: center;
       margin-top: @size-12;
+
+      button {
+        .text-10-semi-bold;
+
+        background: none;
+        border: none;
+      }
     }
 
     @media @breakpoint-mobile {
@@ -280,7 +288,7 @@ div.Onboarding {
 
 .TitleHeader {
   align-items: center;
-  border-bottom: 1px solid var(--color-secondary-action-outline);
+  border-bottom: @size-1 solid var(--color-secondary-action-outline);
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -418,6 +426,10 @@ div.ButtonsRow:last-of-type {
       display: flex;
       margin: @size-48 0;
     }
+
+    @media all and (max-width: 320px) { // iPhone 5
+      margin: @size-2;
+    }
   }
 
   .Container;
@@ -488,11 +500,15 @@ div.ButtonsRow:last-of-type {
         .text-12-bold;
 
         align-items: center;
-        border: 1px solid var(--color-secondary-action-outline);
+        border: @size-1 solid var(--color-secondary-action-outline);
         border-radius: @border-radius-default;
         color: var(--color-secondary-text);
         display: flex;
         padding: @size-9 @size-12;
+
+        @media all and (max-width: 320px) { // iPhone 5
+          display: none;
+        }
       }
     }
 
@@ -572,6 +588,10 @@ div.ButtonsRow:last-of-type {
         > span:first-of-type {
           margin: @size-24 0 @size-8;
         }
+      }
+
+      @media all and (max-width: 320px) { // iPhone 5
+        visibility: hidden;
       }
     }
   }
@@ -659,7 +679,10 @@ div.ButtonsRow:last-of-type {
   }
 }
 
-.AddFundsCreditDebitCoinbase {
+
+
+.AddFundsCoinbase,
+.AddFundsCreditDebit {
   > h2 {
     margin: @size-4 0 @size-24 0;
 
@@ -669,12 +692,16 @@ div.ButtonsRow:last-of-type {
       width: @size-12;
     }
   }
+}
 
-  > a > button {
+.AddFundsCreditDebit {
+  > button {
     margin-top: @size-8;
   }
+}
 
-  > button:last-of-type {
+.AddFundsCoinbase {
+  > button {
     .text-10-bold;
 
     background: none;
@@ -1345,6 +1372,8 @@ div.ButtonsRow:last-of-type {
         height: @size-32;
         margin: 0 -@size-16 @size-4;
         padding: @size-10 @size-16;
+        grid-template-columns: repeat(4, 1fr);
+        display: grid;
 
         > span {
           .mono-9;
@@ -1360,7 +1389,7 @@ div.ButtonsRow:last-of-type {
     }
 
     > section {
-      border-bottom: 1px solid var(--color-dark-grey);
+      border-bottom: @size-1 solid var(--color-dark-grey);
       color: var(--color-primary-text);
       margin-bottom: @size-24;
       max-height: 450px;
@@ -1369,7 +1398,7 @@ div.ButtonsRow:last-of-type {
       > div {
         align-items: center;
         background: var(--color-module-background);
-        border-top: 1px solid var(--color-dark-grey);
+        border-top: @size-1 solid var(--color-dark-grey);
         color: var(--color-primary-text);
         display: flex;
         flex-flow: row nowrap;
@@ -1421,12 +1450,15 @@ div.ButtonsRow:last-of-type {
           flex-flow: row wrap;
           height: @size-116;
           padding: @size-12 @size-16;
+          grid-template-columns: repeat(4, 1fr);
+          display: grid;
 
           > span:first-of-type {
             .mono-11;
 
             flex: 1 100%;
             margin-bottom: @size-8;
+            grid-column: 1 / span 5;
           }
 
           > span {
@@ -1442,6 +1474,7 @@ div.ButtonsRow:last-of-type {
           > div {
             flex: 1 100%;
             margin: @size-24 0;
+            grid-column: 3 / span 3;
           }
         }
       }
@@ -1652,13 +1685,17 @@ div.ButtonsRow:last-of-type {
   }
 
   > div {
-    border-top: 1px solid var(--color-secondary-action-outline);
+    border-top: @size-1 solid var(--color-secondary-action-outline);
   }
 }
 
 .MigrateRepInfo {
   .Message;
   max-width: 614px;
+
+  > span {
+    margin: 0;
+  }
 
   > main {
     margin: @size-22 0;
@@ -1714,7 +1751,7 @@ div.ButtonsRow:last-of-type {
   }
 
   > div {
-    border-top: 1px solid var(--color-secondary-action-outline);
+    border-top: @size-1 solid var(--color-secondary-action-outline);
   }
 }
 
@@ -2279,7 +2316,7 @@ div.ButtonsRow:last-of-type {
 
 .TransactionsTable {
   align-items: center;
-  border: 1px solid var(--color-dark-grey);
+  border: @size-1 solid var(--color-dark-grey);
   display: grid;
   grid-template-columns:
     200px minmax(320px, 2fr) minmax(125px, 1fr) minmax(125px, 150px)
@@ -2292,6 +2329,15 @@ div.ButtonsRow:last-of-type {
   text-align: center;
 }
 
+@supports (-moz-appearance:none) {    
+  .Transactions {   
+    > div:first-of-type {
+      // firefox doesn't support overlay. need auto     
+      overflow-y: auto; 
+    }    
+  } 
+}
+
 .Transactions {
   .Container;
 
@@ -2301,7 +2347,7 @@ div.ButtonsRow:last-of-type {
   padding: 0 @size-20 @size-20;
 
   > header {
-    border-bottom: 1px solid var(--color-secondary-action-outline);
+    border-bottom: @size-1 solid var(--color-secondary-action-outline);
     margin: 0 -@size-24 @size-24;
 
     @media @breakpoint-mobile {
@@ -2418,7 +2464,7 @@ div.ButtonsRow:last-of-type {
 
     > div[class*='FormDropdown'] {
       > div {
-        border: 1px solid var(--color-secondary-action-outline);
+        border: @size-1 solid var(--color-secondary-action-outline);
         max-height: @size-32;
         min-height: @size-32;
         min-width: 0;
@@ -2567,7 +2613,7 @@ div.ButtonsRow:last-of-type {
     > span {
       .mono-11;
 
-      border-top: 1px solid var(--color-dark-grey);
+      border-top: @size-1 solid var(--color-dark-grey);
       height: @size-32;
       line-height: @size-13;
       overflow: hidden;
@@ -2605,7 +2651,7 @@ div.ButtonsRow:last-of-type {
       background: none;
       border: 0;
       border-radius: 0;
-      border-top: 1px solid var(--color-dark-grey);
+      border-top: @size-1 solid var(--color-dark-grey);
       display: flex;
       height: @size-32;
       justify-content: flex-end;
@@ -2648,7 +2694,7 @@ div.ButtonsRow:last-of-type {
       }
 
       > div {
-        border: 1px solid var(--color-secondary-action-outline);
+        border: @size-1 solid var(--color-secondary-action-outline);
         min-height: @size-24;
         max-height: @size-24;
         min-width: 0;
@@ -2857,6 +2903,7 @@ div.ButtonsRow:last-of-type {
 
       > h2 {
         margin-bottom: @size-16;
+        word-break: break-word;
       }
 
       > div:first-of-type {
@@ -2878,6 +2925,55 @@ div.ButtonsRow:last-of-type {
 
     > span {
       margin-right: @size-12;
+    }
+
+    > div[class*="DismissableNotice"] {
+      justify-content: flex-start;
+      margin-top: @size-16;
+    }
+  }
+
+.SelectableTable {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: stretch;
+
+  > button {
+    border: @size-1 solid var(--color-dark-grey);
+    border-top: 0;
+    color: var(--color-primary-text);
+    display: flex;
+    flex: 1;
+    flex-flow: row nowrap;
+    width: 100%;
+
+    > span {
+      .mono-10;
+
+      border-right: @size-1 solid var(--color-dark-grey);
+      flex: 1;
+      padding: @size-4 @size-8;
+      text-align: left;
+      white-space: nowrap;
+
+      &:last-of-type {
+        border-right: 0;
+      }
+    }
+
+    &:hover {
+      color: var(--color-inactive-text);
+      cursor: pointer;
+    }
+
+    &:first-of-type {
+      border-top: @size-1 solid var(--color-dark-grey);
+
+      &:hover {
+        color: var(--color-primary-text);
+        cursor: auto;
+      }
     }
   }
 }
@@ -3072,16 +3168,26 @@ div.ButtonsRow:last-of-type {
     flex-direction: column;
     padding: @size-16 0 0;
 
-    > div:first-of-type {
+    > section {
+      margin: 0 @size-16;
+    }
+
+    > div:first-of-type,
+    > div[class*="ExplainerBlock"],
+    > section[class*="MigrateRepInfo"] {
       margin: @size-8 @size-16 @size-24;
       padding: @size-24;
       border: none;
       background-color: var(--color-table-header);
     }
 
+    > section[class*="MigrateRepInfo"] {
+      margin-bottom: @size-8;
+    }
+
     > div:nth-of-type(2) {
-      border-bottom: 1px solid var(--color-dark-grey);
-      border-top: 1px solid var(--color-dark-grey);
+      border-bottom: @size-1 solid var(--color-dark-grey);
+      border-top: @size-1 solid var(--color-dark-grey);
       display: flex;
       flex-direction: column;
       padding: @size-24 @size-40 0;
@@ -3146,6 +3252,12 @@ div.ButtonsRow:last-of-type {
     > div:last-of-type {
       padding: @size-32 @size-40;
     }
+
+    > div[class*="DismissableNotice"] {
+      margin: @size-10 @size-32 0;
+      width: unset;
+      padding-left: @size-16;
+    }
   }
 
   @media @breakpoint-mobile {
@@ -3204,7 +3316,7 @@ div.ButtonsRow:last-of-type {
   // Open global chat window
   > div {
     background-color: var(--color-module-background);
-    border: 1px solid var(--color-dark-grey);
+    border: @size-1 solid var(--color-dark-grey);
     height: 100%;
     left: 0;
     position: fixed;
@@ -3215,7 +3327,7 @@ div.ButtonsRow:last-of-type {
     > div:first-of-type {
       align-items: center;
       background-color: var(--color-dark-grey);
-      border-bottom: 1px solid var(--color-dark-grey);
+      border-bottom: @size-1 solid var(--color-dark-grey);
       display: flex;
       flex-direction: row;
       padding: @size-14 @size-16;
@@ -3235,7 +3347,7 @@ div.ButtonsRow:last-of-type {
         background: var(--color-open-15);
         border-radius: @size-3;
         color: var(--color-open);
-        padding: 0 1px;
+        padding: 0 @size-1;
       }
 
       > button {
@@ -3267,8 +3379,8 @@ div.ButtonsRow:last-of-type {
 
   > main {
     .text-14;
-    border-top: 1px solid var(--color-secondary-action-outline);
-    border-bottom: 1px solid var(--color-secondary-action-outline);
+    border-top: @size-1 solid var(--color-secondary-action-outline);
+    border-bottom: @size-1 solid var(--color-secondary-action-outline);
     color: var(--color-primary-text);
     display: grid;
     grid-template-columns: 1fr;

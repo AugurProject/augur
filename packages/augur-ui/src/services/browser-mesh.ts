@@ -1,5 +1,5 @@
-import { Config, ContractAddresses as ZeroXContractAddresses, Mesh } from '@0x/mesh-browser';
-import { getAddressesForNetwork, NetworkId, SDKConfiguration } from '@augurproject/artifacts';
+import { Config, ContractAddresses as ZeroXContractAddresses, Mesh, loadMeshStreamingWithURLAsync } from '@0x/mesh-browser-lite';
+import { NetworkId, SDKConfiguration, ContractAddresses } from '@augurproject/artifacts';
 import { ZeroX } from '@augurproject/sdk';
 
 type BrowserMeshErrorFunction = (err: Error, mesh: Mesh) => void;
@@ -12,6 +12,7 @@ function createBrowserMeshConfig(
   ethereumRPCURL: string,
   web3Provider: SupportedProvider,
   ethereumChainID: number,
+  contractAddresses: ContractAddresses,
   verbosity = 5,
   useBootstrapList: boolean,
   bootstrapList: string[],
@@ -32,10 +33,6 @@ function createBrowserMeshConfig(
     throw new Error('No Web3 provider or RPC URL provided to Browser Mesh');
   }
 
-  const contractAddresses = getAddressesForNetwork(
-    ethereumChainID.toString() as NetworkId
-  );
-
   if (
     ![NetworkId.Kovan, NetworkId.Mainnet].includes(
       ethereumChainID.toString() as NetworkId
@@ -53,7 +50,7 @@ function createBrowserMeshConfig(
           pattern: `.*${contractAddresses.ZeroXTrade.slice(2).toLowerCase()}.*`
       }
     }
-  }
+  };
 
   return meshConfig;
 }
@@ -61,7 +58,8 @@ function createBrowserMeshConfig(
 function createBrowserMeshRestartFunction(
   meshConfig: Config,
   web3Provider: SupportedProvider,
-  zeroX: ZeroX
+  zeroX: ZeroX,
+  sdkConfig: SDKConfiguration
 ) {
   return err => {
     console.error('Browser mesh error: ', err.message, err.stack);
@@ -73,13 +71,14 @@ function createBrowserMeshRestartFunction(
           meshConfig.ethereumRPCURL,
           web3Provider,
           meshConfig.ethereumChainID,
+          sdkConfig.addresses,
           meshConfig.verbosity,
           meshConfig.useBootstrapList,
           meshConfig.bootstrapList,
           true
         )
       );
-      mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX));
+      mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, sdkConfig));
       mesh.startAsync().then(() => {
         zeroX.mesh = mesh;
       })
@@ -95,17 +94,29 @@ export async function createBrowserMesh(
     throw new Error(`Attempting to create browser mesh without it being enabled in config ${JSON.stringify(config)}`);
   }
 
+  // NB: Polyfill to support Safari, this can go away with the next browser-mesh release
+  if (!WebAssembly.instantiateStreaming) {
+    WebAssembly.instantiateStreaming = async (resp, importObject) => {
+      const source = await (await resp).arrayBuffer();
+      return await WebAssembly.instantiate(source, importObject);
+    };
+  }
+  // NB: Remove this when we move to the version of 0x after 9.2.1
+
+  await loadMeshStreamingWithURLAsync("zerox.wasm");
+
   const meshConfig = createBrowserMeshConfig(
     config.ethereum.http,
     web3Provider,
     Number(config.networkId),
+    config.addresses,
     config.zeroX.mesh.verbosity || 5,
     config.zeroX.mesh.useBootstrapList,
-    config.zeroX.mesh.bootstrapList
+    config.zeroX.mesh.bootstrapList,
   );
 
   const mesh = new Mesh(meshConfig);
-  mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX));
+  mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
   await mesh.startAsync();
   zeroX.mesh = mesh;
 }

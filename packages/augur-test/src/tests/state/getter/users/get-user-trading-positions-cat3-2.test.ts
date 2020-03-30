@@ -75,7 +75,7 @@ describe('State API :: Users :: ', () => {
         price: 0.1,
         position: -2,
         avgPrice: 0.3,
-        realizedPL: 1.59,
+        realizedPL: 1.59495,
         frozenFunds: -0.6,
       },
     ];

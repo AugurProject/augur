@@ -1,5 +1,5 @@
 import { IPFSWorkerProxy } from 'services/ipfs';
-import store from 'store';
+import store from 'appStore';
 import {
   addAnalytic,
   removeAnalytic,

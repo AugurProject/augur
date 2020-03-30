@@ -1,9 +1,13 @@
-import { MarketOrderBook, MarketOrderBookOrder } from "@augurproject/sdk/src/state/getter/Markets";
+import {
+  MarketOrderBook,
+  MarketOrderBookOrder,
+  OutcomeOrderBook
+} from "@augurproject/sdk/src/state/getter/Markets";
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from "ethers/utils";
-import { ZeroXPlaceTradeDisplayParams } from "@augurproject/sdk/src";
+import { formatBytes32String } from 'ethers/utils';
+import { ZeroXPlaceTradeDisplayParams } from '@augurproject/sdk/src';
 
-const config: OrderBookConfig = {
+const looseOrderBookConfig: OrderBookConfig = {
   bids: {
     0.45: 100,
     0.4: 200,
@@ -25,11 +29,12 @@ const config: OrderBookConfig = {
     0.9: 800,
   },
 };
+
 interface MarketOutcomesBook {
   [outcome: number] : OrderBookConfig;
 }
-interface OrderPriceVol {
-  [price: number]: number;
+export interface OrderPriceVol {
+  [price: number]: number; // price -> volume
 }
 export interface OrderBookConfig {
   bids: OrderPriceVol;
@@ -48,7 +53,7 @@ interface SimpleOrder {
   direction: number;
 }
 
-const orderType = {
+const ORDER_TYPE = {
   'bids': 0,
   'asks': 1
 }
@@ -59,23 +64,17 @@ export class OrderBookShaper {
   readonly numTicks: BigNumber = new BigNumber(100);
   readonly minAllowedSize: BigNumber = new BigNumber(100);
   readonly numOutcomes: 3;
-  expiration = new BigNumber(300);
-  outcomes: number[] = [];
-  marketId: string = "";
-  orderSize: number = null;
-  orderBookConfig: OrderBookConfig = config;
 
-  constructor (marketId: string, orderSize: number = null, expiration: BigNumber = new BigNumber(300), outcomes: number[] = [2, 1], orderBookConfig: OrderBookConfig = config) {
-    this.marketId = marketId;
-    this.outcomes = outcomes;
-    this.orderSize = orderSize;
-    this.expiration = expiration;
-    this.orderBookConfig = orderBookConfig;
-  }
+  constructor (
+    public marketId: string,
+    public orderSize: number = null,
+    public expiration: BigNumber = new BigNumber(300),
+    public outcomes: number[] = [2, 1],
+    public orderBookConfig: OrderBookConfig = looseOrderBookConfig
+  ) {}
 
-  nextRun = (marketBook: MarketOrderBook, timestamp: BigNumber): ZeroXPlaceTradeDisplayParams[] => {
+  nextRun = (orderBook: OutcomeOrderBook, timestamp: BigNumber): ZeroXPlaceTradeDisplayParams[] => {
     const marketOutcomesBook: MarketOutcomesBook = this.outcomes.reduce((p, o) => ({...p, [o]: this.orderBookConfig}), {})
-    const orderBook = marketBook.orderBook;
     let orders: SimpleOrder[] = [];
     this.outcomes.forEach((o: number) => {
       orders = [...orders, ...this.createMissingOrders(o, marketOutcomesBook[o], orderBook[o])];
@@ -83,24 +82,38 @@ export class OrderBookShaper {
     return this.createOrders(orders, timestamp);
   }
 
+  createMissingOrders2 = (outcome: number, orderBookConfig: OrderBookConfig): SimpleOrder[] => {
+    const orders: SimpleOrder[] = []
+    console.log(`no bids asks for ${this.marketId}`);
+    Object.keys(orderBookConfig).forEach((type: string) => {
+      const priceVol: OrderPriceVol = orderBookConfig[type];
+      const direction = ORDER_TYPE[type];
+      Object.keys(priceVol).forEach((price: string) => {
+        const quantity = priceVol[price]; // aka volume
+        orders.push({ outcome, direction, price, quantity });
+      });
+    })
+    return orders;
+  }
+
   createMissingOrders = (outcome: number, orderBookConfig: OrderBookConfig, bidsAsks: BidsAsks): SimpleOrder[] => {
-    let orders: SimpleOrder[] = []
+    const orders: SimpleOrder[] = []
     if (!bidsAsks) console.log(`no bids asks for ${this.marketId}`);
-    Object.keys(orderBookConfig).map((type: string) => {
-      const direction = orderType[type];
+    Object.keys(orderBookConfig).forEach((type: string) => {
+      const direction = ORDER_TYPE[type];
       const priceVol: OrderPriceVol = orderBookConfig[type];
       const bookPriceVol: MarketOrderBookOrder[] = bidsAsks ? bidsAsks[type] : [];
-      Object.keys(priceVol).map((price: string) => {
+      Object.keys(priceVol).forEach((price: string) => {
         const value = bookPriceVol.find(b => String(b.price) === String(price));
         const minVolume = priceVol[price];
         const createMoreOrders = !value || new BigNumber(value.shares).lt(new BigNumber(this.minAllowedSize));
         const quantity = !value ? new BigNumber(minVolume) : new BigNumber(minVolume).minus(new BigNumber(value.shares))
         if (createMoreOrders) {
           const numCreateOrders = this.orderSize ? quantity.dividedBy(this.orderSize).toNumber() : 1;
-          for(let i = 0; i < numCreateOrders; i++) {
+          for (let i = 0; i < numCreateOrders; i++) {
             orders.push({
               outcome,
-              quantity: this.orderSize ? this.orderSize : quantity.toNumber(),
+              quantity: this.orderSize || quantity.toNumber(),
               price,
               direction,
             });
@@ -112,17 +125,13 @@ export class OrderBookShaper {
   }
 
   createOrders = (orders: SimpleOrder[], timestamp: BigNumber): ZeroXPlaceTradeDisplayParams[] => {
-    const zOrders = orders.map(order => {
-      const tradeGroupId = String(Date.now());
-
-      const expirationTime = timestamp.plus(this.expiration);
+    return orders.map(order => {
       return {
         direction: order.direction as 0 | 1,
         market: this.marketId,
         numTicks: this.numTicks,
         numOutcomes: this.numOutcomes,
         outcome: order.outcome as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
-        tradeGroupId,
         fingerprint: formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: this.minPrice,
@@ -130,10 +139,10 @@ export class OrderBookShaper {
         displayAmount: new BigNumber(order.quantity),
         displayPrice: new BigNumber(order.price),
         displayShares: new BigNumber(0),
-        expirationTime,
+        tradeGroupId: String(Date.now()),
+        expirationTime: timestamp.plus(this.expiration),
       };
-    })
-    return zOrders;
+    });
   }
 }
 

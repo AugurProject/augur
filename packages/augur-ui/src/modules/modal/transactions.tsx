@@ -306,7 +306,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
   };
 
   const addTransactionRow = (tx: TransactionInfo) => {
-    const timestamp = moment(tx.timestamp * 1000).format('D MMM YYYY HH:mm:ss');
+    const timestamp = tx.timestamp ? moment(tx.timestamp * 1000).format('D MMM YYYY HH:mm:ss') : null;
     const key = `${tx.transactionHash}-${tx.timestamp}-${tx.action}-${tx.outcomeDescription}`;
     // we never show the coin type outside of tx.coin so we can just format by shares always here.
     const quantity = formatShares(createBigNumber(tx.quantity));
@@ -316,7 +316,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
     });
     return [
       <span>{timestamp}</span>,
-      <TextLabel text={tx.marketDescription} />,
+      <TextLabel keyId={tx.transactionHash} text={tx.marketDescription} />,
       <TextLabel text={tx.outcomeDescription || ''} />,
       <TextLabel
         text={
@@ -490,7 +490,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
           </>
         </section>
       </div>
-      
+
       <div>
         <Pagination {...pageInfo} updateLimit={() => {}} />
         <FormDropdown

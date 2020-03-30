@@ -1,13 +1,13 @@
 import { constructBasicTransaction } from "modules/transactions/actions/construct-transaction";
 import unpackTransactionParameters from "modules/transactions/helpers/unpack-transaction-parameters";
-import { selectCurrentTimestampInSeconds } from "store/select-state";
+import { selectCurrentTimestampInSeconds } from "appStore/select-state";
 
 import makePath from "modules/routes/helpers/make-path";
 
 import { TRANSACTIONS } from "modules/routes/constants/views";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { AppState } from "store";
+import { AppState } from "appStore";
 
 export const constructRelayTransaction = (tx: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
