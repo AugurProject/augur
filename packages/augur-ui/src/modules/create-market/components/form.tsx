@@ -530,7 +530,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
       checkUserInputFilled
-        ? checkForUserInputFilled(value, newMarket.endTimeFormatted)
+        ? checkForUserInputFilled(value, newMarket.endTimeFormatted, currentTimestamp)
         : '',
     ];
 
