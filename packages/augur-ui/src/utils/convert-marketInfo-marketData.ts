@@ -44,7 +44,7 @@ export function convertMarketInfoToMarketData(
     endTimeFormatted: convertUnixToFormattedDate(marketInfo.endTime),
     creationTimeFormatted: convertUnixToFormattedDate(marketInfo.creationTime),
     categories: marketInfo.categories,
-    isArchived: archivedDuration && (Math.abs(archivedDuration.asDays()) > ARCHIVED_MARKET_LENGTH),
+    isArchived: archivedDuration && (Math.abs(archivedDuration.asDays()) >= ARCHIVED_MARKET_LENGTH),
     finalizationTimeFormatted: marketInfo.finalizationTime
       ? convertUnixToFormattedDate(marketInfo.finalizationTime)
       : null,
