@@ -11170,6 +11170,12 @@
 					"internalType": "bool",
 					"name": "success",
 					"type": "bool"
+				},
+				{
+					"indexed": false,
+					"internalType": "bool",
+					"name": "fundingSuccess",
+					"type": "bool"
 				}
 			],
 			"name": "ExecuteTransactionStatus",
@@ -11402,6 +11408,16 @@
 					"internalType": "bytes32",
 					"name": "_fingerprint",
 					"type": "bytes32"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_desiredSignerBalance",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_maxExchangeRateInDai",
+					"type": "uint256"
 				}
 			],
 			"name": "executeWalletTransaction",

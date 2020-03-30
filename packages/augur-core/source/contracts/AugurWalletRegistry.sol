@@ -28,7 +28,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         INSUFFICIENT_BALANCE
     }
 
-    event ExecuteTransactionStatus(bool success);
+    event ExecuteTransactionStatus(bool success, bool fundingSuccess);
 
     mapping (address => IAugurWallet) public wallets;
 
@@ -118,14 +118,6 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         return GSNRecipientERC20FeeErrorCodes.OK;
     }
 
-    function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) public pure returns (uint amountIn) {
-        require(amountOut > 0);
-        require(reserveIn > 0 && reserveOut > 0);
-        uint numerator = reserveIn.mul(amountOut).mul(1000);
-        uint denominator = reserveOut.sub(amountOut).mul(997);
-        amountIn = (numerator / denominator).add(1);
-    }
-
     function _preRelayedCall(bytes memory _context) internal returns (bytes32) { }
 
     function _postRelayedCall(bytes memory _context, bool, uint256 _actualCharge, bytes32) internal {
@@ -156,6 +148,28 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         WETH.withdraw(_ethAmount);
     }
 
+    // Returns whether the signer eth balance was funded as desired
+    function fundMsgSender(uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai) private returns (bool) {
+        address _msgSender = address(_msgSender());
+        IAugurWallet _wallet = getWallet(_msgSender);
+        uint256 _msgSenderBalance = _msgSender.balance;
+        if (_msgSenderBalance >= _desiredSignerBalance) {
+            return true;
+        }
+        uint256 _ethDelta = _desiredSignerBalance - _msgSenderBalance;
+        (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = ethExchange.getReserves();
+        uint256 _cashAmount = getAmountIn(_ethDelta, token0IsCash ? _reserve0 : _reserve1, token0IsCash ? _reserve1 : _reserve0);
+        uint256 _exchangeRate = _cashAmount.mul(10**18).div(_ethDelta);
+        if (_maxExchangeRateInDai < _exchangeRate) {
+            return false;
+        }
+        _wallet.transferCash(address(ethExchange), _cashAmount);
+        ethExchange.swap(token0IsCash ? 0 : _ethDelta, token0IsCash ? _ethDelta : 0, address(this), "");
+        WETH.withdraw(_ethDelta);
+        (bool _success,) = _msgSender.call.value(_ethDelta)("");
+        return _success;
+    }
+
     function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) public pure returns (uint amountOut) {
         require(amountIn > 0);
         require(reserveIn > 0 && reserveOut > 0);
@@ -163,6 +177,14 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         uint numerator = amountInWithFee.mul(reserveOut);
         uint denominator = reserveIn.mul(1000).add(amountInWithFee);
         amountOut = numerator / denominator;
+    }
+
+    function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) public pure returns (uint amountIn) {
+        require(amountOut > 0);
+        require(reserveIn > 0 && reserveOut > 0);
+        uint numerator = reserveIn.mul(amountOut).mul(1000);
+        uint denominator = reserveOut.sub(amountOut).mul(997);
+        amountIn = (numerator / denominator).add(1);
     }
 
     function createAugurWallet(address _referralAddress, bytes32 _fingerprint) private returns (IAugurWallet) {
@@ -208,7 +230,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         return wallets[_account];
     }
 
-    function executeWalletTransaction(address _to, bytes memory _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint) public {
+    function executeWalletTransaction(address _to, bytes memory _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint, uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai) public {
         address _user = _msgSender();
         IAugurWallet _wallet = getWallet(_user);
         if (_wallet == IAugurWallet(0)) {
@@ -219,11 +241,9 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
             getEthFromWallet(_wallet, _payment);
         }
         bool _success = _wallet.executeTransaction(_to, _data, _value);
-        // If the transaction is being executed directly we fail if the execution failed. If its being done via relay we do not fail so that payment still occurs.
-        if (_user == msg.sender) {
-            require(_success);
-        }
-        emit ExecuteTransactionStatus(_success);
+        // We keep the signing account's ETH balance funded up to an offchain provided value so it can send txs itself without the use of a relay
+        bool _fundingSuccess = fundMsgSender(_desiredSignerBalance, _maxExchangeRateInDai);
+        emit ExecuteTransactionStatus(_success, _fundingSuccess);
     }
 
     function walletTransferedOwnership(address _oldOwner, address _newOwner) external {
