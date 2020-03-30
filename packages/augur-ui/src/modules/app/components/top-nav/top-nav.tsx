@@ -15,6 +15,7 @@ import { helpIcon, Dot } from 'modules/common/icons';
 import {
   TRANSACTIONS,
   MIGRATE_FROM_LEG_REP_TOKEN,
+  CREATEAUGURWALLET
 } from 'modules/common/constants';
 import {
   CREATE_MARKET
@@ -75,20 +76,12 @@ const TopNav = ({
             );
           }
           return (
-<<<<<<< HEAD
             <React.Fragment key={item.title}>
-=======
-            <Fragment key={index}>
->>>>>>> master
               {index === SPREAD_INDEX && (
                 <li key='fill-space' className={Styles.FillSpace} />
               )}
               {index === SPREAD_INDEX && showMigrateRepButton && (
-<<<<<<< HEAD
                 <li className={Styles.MigrateRepItem} key='migrate-rep-button'>
-=======
-                <li key='migrate-rep-button'>
->>>>>>> master
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
                         text={'Migrate V1 to V2 REP'}
@@ -171,11 +164,7 @@ const TopNav = ({
                   {item.showAlert && Dot}
                 </Link>
               </li>
-<<<<<<< HEAD
             </ React.Fragment>
-=======
-            </Fragment>
->>>>>>> master
           );
         })}
         {!isLogged && (
