@@ -78,7 +78,7 @@ export default class MarketChartsPane extends Component<
       market,
       toggle,
       orderBook,
-      isArchived
+      isArchived,
       extendOutcomesList,
     } = this.props;
     const { hoveredPrice, hoveredDepth } = this.state;
