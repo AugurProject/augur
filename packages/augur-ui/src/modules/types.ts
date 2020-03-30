@@ -124,6 +124,7 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   unclaimedCreatorFeesFormatted: FormattedNumber;
   marketCreatorFeesCollectedFormatted: FormattedNumber;
   finalizationTimeFormatted: DateFormattedObject | null;
+  isArchived: boolean;
   // TODO: add this to getter Getters.Markets.MarketInfo
   // disputeInfo: object; this needs to get filled in on getter
   consensusFormatted: ConsensusFormatted | null;

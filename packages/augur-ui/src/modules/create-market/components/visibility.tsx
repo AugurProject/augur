@@ -13,9 +13,9 @@ import { NewMarket } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import {
   tickSizeToNumTickWithDisplayPrices,
-  convertDisplayValuetoAttoValue,
   convertDisplayPriceToOnChainPrice,
   marketNameToType,
+  convertDisplayAmountToOnChainAmount,
 } from '@augurproject/sdk';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import logError from 'utils/log-error';
@@ -168,8 +168,9 @@ export default class Visibility extends Component<
             minPriceBigNumber,
             tickSizeBigNumber
           ).toFixed(),
-          amount: convertDisplayValuetoAttoValue(
-            createBigNumber(order.quantity)
+          amount: convertDisplayAmountToOnChainAmount(
+            createBigNumber(order.quantity),
+            createBigNumber(tickSize)
           ).toFixed(),
         };
         if (order.type === BUY) {

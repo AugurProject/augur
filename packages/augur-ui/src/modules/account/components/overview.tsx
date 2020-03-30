@@ -22,7 +22,7 @@ const Overview = ({
   repTotalAmountStakedFormatted,
   repBalanceFormatted,
 }: OverviewProps) => {
-  const [selected, setSelected] = useState(TIMEFRAME_OPTIONS[3].id);
+  const [selected, setSelected] = useState(TIMEFRAME_OPTIONS[2].id);
 
   return (
     <QuadBox

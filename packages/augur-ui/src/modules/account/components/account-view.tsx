@@ -89,7 +89,7 @@ export default class AccountView extends React.Component<
               >
                 <Notifications
                   toggle={() =>
-                    this.toggle('extendNotifications', 'extendActiveMarkets')
+                    this.toggle('extendActiveMarkets', 'extendNotifications')
                   }
                 />
                 <ModuleTabs selected={0}>
@@ -107,7 +107,7 @@ export default class AccountView extends React.Component<
                 />
                 <OpenMarkets
                   toggle={() =>
-                    this.toggle('extendActiveMarkets', 'extendNotifications')
+                    this.toggle('extendNotifications', 'extendActiveMarkets')
                   }
                 />
                 <Transactions />
