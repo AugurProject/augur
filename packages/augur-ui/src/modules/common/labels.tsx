@@ -13,6 +13,7 @@ import {
   ScalarIcon,
   TemplateIcon,
   YellowTemplateIcon,
+  ArchivedIcon
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -34,7 +35,7 @@ import {
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
-import { DateFormattedObject, FormattedNumber, SizeTypes } from 'modules/types';
+import { DateFormattedObject, FormattedNumber, SizeTypes, MarketData } from 'modules/types';
 import { Getters, TXEventName } from '@augurproject/sdk';
 import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
@@ -306,6 +307,60 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
           : 'Template markets have predefined terms and have a smaller chance of resolving as invalid'}
       </ReactTooltip>
     </>
+  );
+};
+
+interface ArchivedProps {
+  market: MarketData;
+}
+
+export const Archived = ({ market }: ArchivedProps) => {
+  if (!market.isArchived) return null;
+  return (
+    <>
+      <label
+        className={Styles.Archived}
+        data-tip
+        data-for={`tooltip-${market.id}-archived`}
+      >
+        {ArchivedIcon}
+      </label>
+      <ReactTooltip
+        id={`tooltip-${market.id}-archived`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+      >
+        Data only saved for 30 days
+      </ReactTooltip>
+    </>
+  );
+};
+
+interface DataArchivedProps {
+  label: string;
+}
+
+export const DataArchivedLabel = ({ label }: DataArchivedProps) => {
+  return (
+    <div className={Styles.DataArchivedLabel}>
+      <label
+        data-tip
+        data-for={`tooltip-${label}-archived-data`}
+      >
+        Data Archived {QuestionIcon}
+      </label>
+      <ReactTooltip
+        id={`tooltip-${label}-archived-data`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+      >
+        Data only saved for 30 days
+      </ReactTooltip>
+    </div>
   );
 };
 
@@ -791,7 +846,7 @@ interface LiquidityDepletedLabelProps {
 export const LiquidityDepletedLabel = ({
   market,
 }: LiquidityDepletedLabelProps) => {
-  if (market.passDefaultLiquiditySpread || market.hasPendingLiquidityOrders)
+  if (market.passDefaultLiquiditySpread || market.hasPendingLiquidityOrders || market.marketStatus === constants.MARKET_CLOSED)
     return null;
   return (
     <span

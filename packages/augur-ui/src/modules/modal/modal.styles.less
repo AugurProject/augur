@@ -2449,6 +2449,15 @@ div.ButtonsRow:last-of-type {
     }
   }
 
+  > section:nth-of-type(2) {
+    width: fit-content;
+    margin-top: @size-12;
+
+    @media @breakpoint-mobile {
+      margin-bottom: @size-12;
+    }
+  }
+
   > div:first-of-type {
     max-height: 650px;
     overflow: overlay;

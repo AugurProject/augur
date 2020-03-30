@@ -16,6 +16,7 @@ interface CandlestickProps {
   minPrice: BigNumber;
   selectedOutcomeId: number;
   daysPassed: number;
+  isArchived?: boolean;
 }
 
 export const Candlestick = ({
@@ -25,6 +26,7 @@ export const Candlestick = ({
   minPrice,
   selectedOutcomeId,
   daysPassed,
+  isArchived
 }: CandlestickProps) => {
   const [priceTimeSeries, setPriceTimeSeries] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState(
@@ -50,13 +52,14 @@ export const Candlestick = ({
 
   return (
     <OutcomeCandlestick
-      priceTimeSeries={priceTimeSeries}
+      priceTimeSeries={isArchived ? [] : priceTimeSeries}
       fixedPrecision={2}
       pricePrecision={2}
       selectedPeriod={selectedPeriod}
       updateSelectedPeriod={v => setSelectedPeriod(v)}
       marketMax={maxPrice}
       marketMin={minPrice}
+      isArchived={isArchived}
     />
   );
 };

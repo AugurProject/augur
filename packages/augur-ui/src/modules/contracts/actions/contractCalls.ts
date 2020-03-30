@@ -851,7 +851,7 @@ export async function placeTrade(
   expirationTime?: BigNumber,
   tradeGroupId?: string,
   fingerprint: string = getFingerprint(),
-): Promise<void> {
+): Promise<boolean> {
   const Augur = augurSdk.get();
   const params: PlaceTradeDisplayParams = {
     direction: direction as 0 | 1,

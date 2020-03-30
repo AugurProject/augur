@@ -1053,6 +1053,7 @@ export class Users {
                   marketId: '',
                   realized: '0',
                   unrealized: '0',
+                  unrealized24Hr: '0',
                   total: '0',
                   unrealizedCost: '0',
                   realizedCost: '0',
@@ -1069,9 +1070,16 @@ export class Users {
                 outcomeValues,
                 bucketTimestamp);
               // if market not traded in timeframe use last pl avg price
-              let outcomeValue = new BigNumber(
-                last ? last.price : new BigNumber(latestOutcomePLValue.avgPrice).div(10**18)
-              );
+              // if market is finalized set last price to minPrice
+              let outcomeValue = marketFinalizedByMarket[marketId]
+                ? new BigNumber(marketDoc.prices[0])
+                : new BigNumber(
+                    last
+                      ? last.price
+                      : new BigNumber(latestOutcomePLValue.avgPrice).div(
+                          10 ** 18
+                        )
+                  );
               if (
                 marketFinalizedByMarket[marketId] &&
                 bucketTimestamp.lte(marketFinalizedByMarket[marketId].timestamp)

@@ -1,9 +1,9 @@
 import React from 'react';
 import Styles from 'modules/market/components/market-header/market-header-bar.styles.less';
-import { InReportingLabel } from 'modules/common/labels';
+import { InReportingLabel, Archived } from 'modules/common/labels';
 import { MarketProgress } from 'modules/common/progress';
 import { REPORTING_STATE } from 'modules/common/constants';
-import { DateFormattedObject } from 'modules/types';
+import { DateFormattedObject, MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 
 export interface MarketHeaderBarProps {
@@ -11,6 +11,7 @@ export interface MarketHeaderBarProps {
   disputeInfo: Getters.Markets.DisputeInfo;
   endTimeFormatted: DateFormattedObject;
   currentAugurTimestamp: number;
+  market: MarketData;
 }
 
 const {
@@ -36,8 +37,10 @@ export const MarketHeaderBar = ({
   disputeInfo,
   endTimeFormatted,
   currentAugurTimestamp,
+  market
 }: MarketHeaderBarProps) => (
   <section className={Styles.HeaderBar}>
+    <Archived market={market} />
     <InReportingLabel
       reportingState={reportingState || PRE_REPORTING}
       disputeInfo={disputeInfo}

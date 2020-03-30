@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import classNames from 'classnames';
 
 import ToggleRow from 'modules/common/toggle-row';
-import { MarketStatusLabel, TemplateShield, MarketTypeLabel, LiquidityDepletedLabel } from 'modules/common/labels';
+import { MarketStatusLabel, TemplateShield, MarketTypeLabel, LiquidityDepletedLabel, Archived } from 'modules/common/labels';
 import { SCALAR, SIGN_SEND_ORDERS } from 'modules/common/constants';
 import MarketTitle from 'modules/market/containers/market-title';
 import { TXEventName } from '@augurproject/sdk';
@@ -29,6 +29,7 @@ export interface Market {
   unsignedOrdersModal: Function;
   passDefaultLiquiditySpread?: boolean;
   hasPendingLiquidityOrders?: boolean;
+  isArchived?: boolean;
 }
 
 export interface MarketRowProps {
@@ -71,6 +72,7 @@ const MarketRow = ({
         {showState && !market.pending && (
           <div>
             {market.isTemplate && <TemplateShield market={market} />}
+            <Archived market={market} />
             <MarketStatusLabel
               reportingState={market.reportingState}
               alternate
