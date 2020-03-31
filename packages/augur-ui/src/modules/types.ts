@@ -761,12 +761,14 @@ export interface MarketClaimablePositions {
   markets: MarketData[];
   totals: {
     totalUnclaimedProfit: BigNumber,
-    totalUnclaimedProceeds: BigNumber
+    totalUnclaimedProceeds: BigNumber,
+    totalFees: BigNumber,
   }
   positions: {
     [marketId: string]: {
       unclaimedProfit: string;
       unclaimedProceeds: string;
+      fee: string;
     };
   };
 }

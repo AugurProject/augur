@@ -117,6 +117,7 @@ export interface MarketTradingPosition {
   currentValue: string; // current value of netPosition, always equal to unrealized minus frozenFunds
   unclaimedProceeds?: string; // Unclaimed trading proceeds after market creator fee & reporting fee have been subtracted
   unclaimedProfit?: string; // unclaimedProceeds - unrealizedCost
+  fee?: string;
   userSharesBalances: {
     // outcomes that have a share balance
     [outcome: string]: string;
@@ -804,6 +805,7 @@ export class Users {
     for (const marketData of marketsData) {
       marketTradingPositions[marketData.market].unclaimedProceeds = '0';
       marketTradingPositions[marketData.market].unclaimedProfit = '0';
+      marketTradingPositions[marketData.market].fee = '0';
       if (
         marketData.reportingState === MarketReportingState.Finalized ||
         marketData.reportingState === MarketReportingState.AwaitingFinalization
@@ -843,6 +845,7 @@ export class Users {
               )
                 .plus(unclaimedProceeds)
                 .toFixed(2);
+
               marketTradingPositions[
                 marketData.market
               ].unclaimedProfit = new BigNumber(unclaimedProceeds)
@@ -851,6 +854,14 @@ export class Users {
                     marketTradingPositions[marketData.market].unrealizedCost
                   )
                 )
+                .toFixed(2);
+
+              marketTradingPositions[
+                marketData.market
+              ].fee = new BigNumber(
+                marketTradingPositions[marketData.market].fee
+              )
+                .plus(feeAmount)
                 .toFixed(2);
             }
           }
@@ -1527,12 +1538,12 @@ function getTradingPositionFromProfitLossFrame(
       onChainNetPosition.isNegative() ? shortPrice : lastTradePrice
     );
 
-  if (finalized && onChainOutcomeValue.eq(minPrice)) {
+  const totalCost = unrealizedCost.plus(realizedCost);
+  if (finalized) {
     realizedCost = unrealizedCost.plus(realizedCost);
     realizedProfit = realizedProfit.plus(unrealized);
     unrealized = new BigNumber(0);
     unrealized24Hr = new BigNumber(0);
-    unrealizedCost = new BigNumber(0);
   }
 
   const unrealized24HrPercent = unrealizedCost.isZero() ? new BigNumber(0) : unrealized24Hr.dividedBy(unrealizedCost);
@@ -1560,7 +1571,7 @@ function getTradingPositionFromProfitLossFrame(
     total: realizedProfit.plus(unrealized).toFixed(),
     unrealizedCost: unrealizedCost.toFixed(),
     realizedCost: realizedCost.toFixed(),
-    totalCost: unrealizedCost.plus(realizedCost).toFixed(),
+    totalCost: totalCost.toFixed(),
     realizedPercent: realizedPercent.toFixed(4),
     unrealizedPercent: unrealizedPercent.toFixed(4),
     unrealized24HrPercent: unrealized24HrPercent.toFixed(4),
