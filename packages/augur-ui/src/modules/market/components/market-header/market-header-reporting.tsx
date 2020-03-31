@@ -126,6 +126,8 @@ export const MarketHeaderReporting = ({
             effect="solid"
             place="top"
             type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
           >
             <p>{'Market cannot be reported on while universe is forking'} </p>
           </ReactTooltip>
