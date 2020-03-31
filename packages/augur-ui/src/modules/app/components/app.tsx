@@ -549,7 +549,7 @@ export default class AppView extends Component<AppProps> {
                 )}
                 <ForkingBanner />
                 <Routes isLogged={isLogged || restoredAccount} />
-                <Betslip />
+                {isLogged && <Betslip theme={theme} />}
               </section>
             </section>
           </section>
