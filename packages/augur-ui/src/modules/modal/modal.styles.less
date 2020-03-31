@@ -2228,13 +2228,13 @@ div.ButtonsRow:last-of-type {
   text-align: center;
 }
 
-@supports (-moz-appearance:none) {    
-  .Transactions {   
+@supports (-moz-appearance:none) {
+  .Transactions {
     > div:first-of-type {
-      // firefox doesn't support overlay. need auto     
-      overflow-y: auto; 
-    }    
-  } 
+      // firefox doesn't support overlay. need auto
+      overflow-y: auto;
+    }
+  }
 }
 
 .Transactions {
@@ -3197,40 +3197,19 @@ div.ButtonsRow:last-of-type {
 
 .ModalGlobalChat {
   background: @color-dark-grey;
-  bottom: @size-4;
   position: fixed;
-  right: @size-22;
+  bottom: 0;
+  right: 0;
   z-index: @mask-modal;
 
-  // Closed global chat window
-  > button {
-    .mono-9-bold;
-
-    align-items: center;
-    background: @color-module-background;
-    color: @color-primary-text;
-    display: flex;
-    flex-direction: row-reverse;
-    text-transform: uppercase;
-
-    > svg {
-      fill: @color-primary-text;
-      height: @size-12;
-      margin-left: @size-8;
-      transform: rotate(180deg);
-      width: @size-12;
-    }
-  }
-
-  // Open global chat window
   > div {
     background-color: @color-module-background;
-    border: 1px solid @color-dark-grey;
-    height: 100%;
-    left: 0;
+    border-top: 1px solid @color-dark-grey;
     position: fixed;
+    left: 0;
     top: 0;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
 
     // Header section
     > div:first-of-type {
@@ -3271,11 +3250,119 @@ div.ButtonsRow:last-of-type {
       }
     }
 
-    iframe {
-      border: 0;
-      height: calc(100% - 48px);
+    > span {
+      display: flex;
+      height: calc(100% - 49px);
       width: 100%;
+      justify-content: center;
+      align-items: center;
     }
+  }
+
+  div[class*='sc-launcher'],
+  div[class*='sc-chat-window'],
+  div[class*='sc-header'],
+  form[class*='sc-user-input'] > textarea,
+  div[class*='sc-popup-window--cointainer'],
+  input[class*='sc-popup-window--search'],
+  form[class*='sc-user-input active'] {
+    background-color: @color-dark-grey;
+  }
+
+  div[class*='sc-message-list'],
+  div[class*='onlineList'],
+  div[class*='closeOnlineList'] {
+    background-color: @color-active-background;
+  }
+
+  div[class*='onlineList'],
+  input[class*='sc-popup-window--search'],
+  form[class*='sc-user-input active'],
+  input[class*='sc-popup-window--search'],
+  form[class*='sc-user-input'] > textarea {
+    color: @color-primary-text;
+  }
+
+  button[class*='sc-user-input--emoji-icon-wrapper'] path,
+  button[class*='sc-user-input--emoji-icon-wrapper'] circle {
+    fill: @color-primary-text;
+  }
+
+  button[class*='sc-user-input--send-icon-wrapper'] {
+    margin: 0;
+  }
+
+  div[class*='chat'] {
+    height: 100%;
+    min-height: unset;
+  }
+
+  div[class*='sc-launcher'] {
+    bottom: @size-10;
+  }
+
+  div[class*='popupChat'] > div {
+    bottom: @size-10;
+  }
+
+  div[class*='sc-chat-window'] {
+    border-top: @size-1 solid @color-secondary-action-outline;
+    border-radius: @size-3;
+    height: calc(100% - 49px);
+    overflow: hidden;
+    width: 100%;
+  }
+
+  form[class*='sc-user-input active'] > textarea {
+    &:focus {
+      border: none;
+    }
+  }
+
+  div[class*='sc-user-input--button'] {
+    justify-content: center;
+  }
+
+  div[class*='sc-header--close-button'] svg {
+    padding: @size-4;
+  }
+
+  div[class*='sc-header--close-button'] path {
+    stroke: @color-primary-text;
+  }
+
+  input[class*='sc-popup-window--search'] {
+    &:focus {
+      border: none;
+    }
+  }
+
+  img[class*='input_user'] {
+    padding: @size-7;
+  }
+
+  div[class*='sc-message--text'] {
+    .text-12;
+
+    background-color: @color-dark-grey !important;
+    color: @color-primary-text !important;
+  }
+
+  div[class*='sc-header--team-name'] {
+    padding: 0 @size-8;
+  }
+
+  div[class*='onlineList_members'] {
+    overflow: auto;
+  }
+
+  div[class*='sc-header'] {
+    padding: 0 @size-10;
+    min-height: unset;
+  }
+
+  h3[class*='sc-header--team-name_text'] {
+    .text-16-bold;
   }
 }
 
