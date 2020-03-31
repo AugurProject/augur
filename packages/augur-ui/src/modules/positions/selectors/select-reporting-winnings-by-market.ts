@@ -93,7 +93,7 @@ export const selectReportingWinningsByMarket = createSelector(
       totalUnclaimedDai,
       totalUnclaimedRep,
       totalUnclaimedDaiFormatted: formatAttoDai(totalUnclaimedDai),
-      totalUnclaimedRepFormatted: formatAttoRep(totalUnclaimedRep, { decimalsRounded: 4 }),
+      totalUnclaimedRepFormatted: formatAttoRep(totalUnclaimedRep),
     };
   }
 );

@@ -309,7 +309,7 @@ export function formatGasCostToEther(
 
 export function formatAttoRep(
   num: NumStrBigNumber,
-  opts: FormattedNumberOptions = optionsBlank()
+  opts: FormattedNumberOptions = {}
 ): FormattedNumber {
   if (!num) return formatBlank();
   return formatNumber(
