@@ -82,13 +82,14 @@ const TopBar: React.FC<TopBarProps> = ({
           <button
             className={classNames(Styles.alerts, {
               [Styles.alertsDark]: alertsVisible,
+              [Styles.Empty]: unseenCount < 1,
             })}
             onClick={() => {
               updateIsAlertVisible(!alertsVisible);
             }}
             tabIndex={-1}
           >
-            {unseenCount > 99 ? Alerts('99+') : Alerts(unseenCount)}
+            {Alerts(unseenCount)}
           </button>
         )}
       </div>
