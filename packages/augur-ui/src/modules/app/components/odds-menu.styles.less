@@ -13,31 +13,95 @@
     flex-flow: column nowrap;
     height: @size-56;
     width: @size-56;
-    border-top: @size-3 solid transparent;
-    border-right: @size-1 solid var(--color-secondary-text-50);
     order: 2;
 
-    > svg {
-      height: @size-20;
-      width: @size-20;
+    > button {
+      background: var(--color-primary-text);
+      flex: 1;
+      width: 100%;
+      border-top: @size-3 solid transparent;
+      border-right: @size-1 solid var(--color-secondary-text-50);
+      z-index: 11;
 
-      > path {
-        fill: var(--color-module-background);
+      &:hover {
+        background: var(--color-secondary-text-25);
+        border-top: @size-3 solid var(--color-primary-action);
+      }
+
+      > svg {
+        height: @size-20;
+        width: @size-20;
+  
+        > path {
+          fill: var(--color-module-background);
+        }
       }
     }
 
-    &:hover {
-      background: var(--color-secondary-text-25);
-      border-top: @size-3 solid var(--color-primary-action);
+    > ul {
+      display: none;
     }
 
     &.Open {
-      background: var(--color-page-background);
-      border-top: @size-3 solid var(--color-primary-action);
-      border-right: @size-1 solid var(--color-page-background);
+      > button {
+        background: var(--color-table-header);
+        border-top: @size-3 solid var(--color-primary-action);
+        border-right: none;
 
-      > svg > path {
-        fill: var(--color-primary-text);
+        > svg > path {
+          fill: var(--color-primary-text);
+        }
+      }
+
+      > ul {
+        background: var(--color-module-background);
+        display: flex;
+        flex-flow: column nowrap;
+        position: absolute;
+        top: @size-56;
+        align-self: flex-end;
+        box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
+        width: @size-240;
+        border-radius: 0 0 @border-radius-default @border-radius-default;
+
+        > li {
+          .text-14;
+
+          height: @size-44;
+          color: var(--color-secondary-text);
+          display: flex;
+          align-items: center;
+          padding: 0 @size-16;
+
+          > button {
+            display: flex;
+            flex-flow: row nowrap;
+            flex: 1;
+            height: 100%;
+            border-bottom: @size-1 solid var(--color-dark-grey);
+          }
+
+          &:first-of-type {
+            background: var(--color-table-header);
+            border-bottom: @size-1 solid var(--color-dark-grey);
+            padding: 0 @size-12;
+
+            > h4 {
+              .text-12-semi-bold;
+
+              color: var(--color-primary-text);
+              text-transform: uppercase;
+            }
+          }
+
+          &:last-of-type {
+            border-radius: 0 0 @border-radius-default @border-radius-default;
+
+            > button {
+              border-bottom: @size-1 solid transparent;
+            }
+          }
+        }
       }
     }
   }
