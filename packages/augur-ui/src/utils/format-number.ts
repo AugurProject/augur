@@ -316,12 +316,12 @@ export function formatAttoRep(
     createBigNumber(num.toString())
       .dividedBy(ETHER),
     {
-      ...opts,
       decimals: 4,
-      decimalsRounded: 14,
+      decimalsRounded: 4,
       blankZero: false,
       roundDown: true,
       denomination: v => `${v} REP`,
+      ...opts,
     }
   );
 }

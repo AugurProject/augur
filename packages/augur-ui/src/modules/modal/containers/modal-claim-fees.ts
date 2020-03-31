@@ -84,7 +84,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     claimableMarkets.marketContracts.map(marketObj => {
       const market = marketObj.marketObject;
       if (market) {
-        const marketRep = formatAttoRep(marketObj.totalAmount);
+        const marketRep = formatAttoRep(marketObj.totalAmount, { decimalsRounded: 4 });
         const isForkingMarket = market.id === forkingMarket;
 
         const pending =
