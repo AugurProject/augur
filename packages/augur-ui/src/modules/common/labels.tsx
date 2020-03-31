@@ -273,6 +273,8 @@ export const RedFlag = ({ market }: RedFlagProps) => {
         effect="solid"
         place="right"
         type="light"
+        data-event="mouseover"
+            data-event-off="blur scroll"
       >
         {PROBABLE_INVALID_MARKET}
       </ReactTooltip>
@@ -301,6 +303,8 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
         effect="solid"
         place="right"
         type="light"
+        data-event="mouseover"
+            data-event-off="blur scroll"
       >
         {yellowShield
           ? "Templated market question, contains market creator text. This text should match to highlighted section's tooltip"
@@ -331,6 +335,8 @@ export const Archived = ({ market }: ArchivedProps) => {
         effect="solid"
         place="top"
         type="light"
+        data-event="mouseover"
+            data-event-off="blur scroll"
       >
         Data only saved for 30 days
       </ReactTooltip>
@@ -357,6 +363,8 @@ export const DataArchivedLabel = ({ label }: DataArchivedProps) => {
         effect="solid"
         place="top"
         type="light"
+        data-event="mouseover"
+            data-event-off="blur scroll"
       >
         Data only saved for 30 days
       </ReactTooltip>
@@ -383,6 +391,8 @@ export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => (
             effect="solid"
             place="right"
             type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
           >
             {hint}
           </ReactTooltip>
@@ -741,6 +751,8 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
             effect="solid"
             place="right"
             type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
           >
             {props.hint}
           </ReactTooltip>
