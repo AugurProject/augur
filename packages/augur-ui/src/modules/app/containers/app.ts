@@ -13,7 +13,8 @@ import {
   IS_HELP_MENU_OPEN,
   setTheme,
   updateAppStatus,
-  WALLET_STATUS
+  WALLET_STATUS,
+  ODDS
 } from "modules/app/actions/update-app-status";
 import { initAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
@@ -60,6 +61,7 @@ const mapStateToProps = (state: AppState) => {
     restoredAccount: state.authStatus.restoredAccount,
     theme: state.appStatus.theme,
     isMobile: state.appStatus.isMobile,
+    oddsType: state.appStatus.odds,
     isMobileSmall: state.appStatus.isMobileSmall,
     isHelpMenuOpen: state.appStatus.isHelpMenuOpen,
     loginAccount,
@@ -97,6 +99,7 @@ const mapDispatchToProps = dispatch => ({
   setTheme: (theme) => dispatch(setTheme(theme)),
   saveAffilateAddress: address => dispatch(saveAffiliateAddress(address)),
   createFundedGsnWallet: () => dispatch(createFundedGsnWallet()),
+  changeOddsType: odds => dispatch(updateAppStatus(ODDS, odds)),
 });
 
 const AppContainer = compose(

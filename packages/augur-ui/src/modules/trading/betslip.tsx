@@ -20,7 +20,11 @@ import {
 
 import Styles from 'modules/trading/betslip.styles';
 
-export const Betslip = ({ theme = getTheme() }) => {
+interface BetslipProps {
+  theme: string;
+};
+
+export const Betslip = ({ theme = getTheme() }: BetslipProps) => {
   const [minimized, setMinimized] = useState(true);
   const state = useBetslip();
   const { step, selected, betslip, unmatched, matched, actions } = state;

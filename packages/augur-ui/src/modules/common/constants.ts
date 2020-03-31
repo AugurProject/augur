@@ -35,6 +35,13 @@ export const THEMES = {
   SPORTS: 'SPORTS',
 };
 
+export const ODDS_TYPE = {
+  DECIMAL: 'Decimal',
+  FRACTIONAL: 'Fractional',
+  AMERICAN: 'American',
+  PERCENT: '0% - 100%',
+};
+
 export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;

@@ -10,6 +10,7 @@ export const Ox_ENABLED = 'zeroXEnabled';
 export const GNOSIS_STATUS = 'gnosisStatus';
 export const THEME = 'theme';
 export const WALLET_STATUS = 'walletStatus';
+export const ODDS = 'odds';
 
 export function updateAppStatus(statusKey: string, value: boolean | FormattedNumber | string) {
   return {

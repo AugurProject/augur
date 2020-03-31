@@ -8,12 +8,16 @@ import {
   Ox_ENABLED,
   THEME,
   WALLET_STATUS,
+  ODDS,
 } from 'modules/app/actions/update-app-status';
 import { RESET_STATE } from 'modules/app/actions/reset-state';
 import { AppStatus, BaseAction } from 'modules/types';
-import { THEMES } from 'modules/common/constants';
+import { THEMES, ODDS_TYPE } from 'modules/common/constants';
 
 const currentTheme = document.documentElement.getAttribute('theme') || THEMES.TRADING;
+// TODO: save this somewhere, this is a fake default for now.
+const currentOdds = ODDS_TYPE.DECIMAL;
+
 const DEFAULT_STATE = {
   [IS_MOBILE]: false,
   [IS_MOBILE_SMALL]: false,
@@ -23,6 +27,7 @@ const DEFAULT_STATE = {
   [WALLET_STATUS]: null,
   [Ox_ENABLED]: false,
   [THEME]: currentTheme,
+  [ODDS]: currentOdds,
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);
