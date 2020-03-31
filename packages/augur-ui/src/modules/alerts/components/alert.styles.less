@@ -10,8 +10,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-bottom: @size-1;
-  border: 1px solid var(--color-secondary-action-outline);
-  border-radius: @size-3;
+  border: @size-1 solid var(--color-secondary-action-outline);
+  border-radius: @border-radius-default;
 
   &:last-of-type {
     border-bottom: 0;
@@ -99,9 +99,9 @@
 }
 
 .EtherLink {
+  .text-10-medium;
+
   color: var(--color-primary-text);
-  font-size: @size-10;
-  font-weight: 500;
   text-decoration: underline;
 }
 
@@ -157,4 +157,58 @@
   color: var(--color-primary-text);
   font-size: @size-10;
   margin-right: @size-4;
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .Alert {
+    background-color: var(--color-page-background);
+    padding: @size-8;
+    border: @size-1 solid var(--color-dark-text);
+    border-radius: @border-radius-rounded;
+  }
+
+  .Timestamp {
+    .text-10;
+
+    color:var(--color-secondary-text);
+    margin-top: @size-12;
+  }
+
+  .Row {
+    &:not(:first-of-type) {
+      margin-top: 0;
+    }
+  }
+
+  .Title {
+    .text-12;
+
+    color: var(--color-primary-text);
+    margin: @size-5 0 0;
+  }
+
+  .Status {
+    .mono-12-semi-bold;
+  
+    color: var(--color-primary-text);
+  }
+
+  .EtherLink {
+    .text-10-medium;
+  
+    color: var(--color-primary-text);
+    text-decoration: none;
+  }
+
+  .Close {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .Description {
+    .mono-12-semi-bold;
+
+    color: var(--color-primary-text);
+  }
 }
