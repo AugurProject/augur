@@ -15,6 +15,7 @@ import ThemeSwitch from 'modules/app/containers/theme-switch';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
+import { OddsMenu } from 'modules/app/components/odds-menu';
 
 interface TopBarProps {
   alertsVisible: boolean;
@@ -68,6 +69,7 @@ const TopBar: React.FC<TopBarProps> = ({
       )}
       <div>
         {((!isLogged) || !isMobile && (isLogged || restoredAccount)) && <HelpResources />}
+        <OddsMenu />
         {!isLogged && !restoredAccount && (
           <SecondaryButton action={() => loginModal()} text={'Login'} />
         )}

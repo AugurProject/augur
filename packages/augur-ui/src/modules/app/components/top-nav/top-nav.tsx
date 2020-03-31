@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { Link } from 'react-router-dom';
@@ -76,7 +76,7 @@ const TopNav = ({
             );
           }
           return (
-            <React.Fragment key={item.title}>
+            <Fragment key={item.title}>
               {index === SPREAD_INDEX && (
                 <li key='fill-space' className={Styles.FillSpace} />
               )}
@@ -164,7 +164,7 @@ const TopNav = ({
                   {item.showAlert && Dot}
                 </Link>
               </li>
-            </ React.Fragment>
+            </ Fragment>
           );
         })}
         {!isLogged && (

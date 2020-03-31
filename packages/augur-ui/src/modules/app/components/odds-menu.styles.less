@@ -1,0 +1,43 @@
+@import (reference) '~assets/styles/shared';
+
+.OddsMenu {
+  display: none;
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .OddsMenu {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-flow: column nowrap;
+    height: @size-56;
+    width: @size-56;
+    border-top: @size-3 solid transparent;
+    border-right: @size-1 solid var(--color-secondary-text-50);
+
+    > svg {
+      height: @size-20;
+      width: @size-20;
+
+      > path {
+        fill: var(--color-module-background);
+      }
+    }
+
+    &:hover {
+      background: var(--color-secondary-text-25);
+      border-top: @size-3 solid var(--color-primary-action);
+    }
+
+    &.Open {
+      background: var(--color-page-background);
+      border-top: @size-3 solid var(--color-primary-action);
+      border-right: @size-1 solid var(--color-page-background);
+
+      > svg > path {
+        fill: var(--color-primary-text);
+      }
+    }
+  }
+}
