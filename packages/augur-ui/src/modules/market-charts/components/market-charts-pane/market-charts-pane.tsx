@@ -25,6 +25,7 @@ interface MarketChartsPaneProps {
   tradingTutorial?: boolean;
   orderBook: IndividualOutcomeOrderBook;
   extendOutcomesList: boolean;
+  isArchived?: boolean;
 }
 
 interface MarketChartsPaneState {
@@ -77,10 +78,11 @@ export default class MarketChartsPane extends Component<
       market,
       toggle,
       orderBook,
+      isArchived,
       extendOutcomesList,
     } = this.props;
     const { hoveredPrice, hoveredDepth } = this.state;
-    const shared = { marketId, selectedOutcomeId };
+    const shared = { marketId, selectedOutcomeId, isArchived };
 
     return (
       <Media query={SMALL_MOBILE}>

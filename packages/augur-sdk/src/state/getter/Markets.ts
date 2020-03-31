@@ -486,7 +486,13 @@ export class Markets {
     params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
 
     // Get Market docs for all markets with the specified filters
-    const numMarketDocs = await db.Markets.count();
+    const numMarketDocs = params.reportingStates
+    ? await db.Markets.where('reportingState')
+        .anyOf(params.reportingStates)
+        .and(item => !params.includeWarpSyncMarkets && !item.isWarpSync)
+        .count()
+    : await db.Markets.count();
+    
     let marketIds: string[] = [];
     const useMarketIds = params.search || (params.categories && params.categories.length > 0) || params.userPortfolioAddress;
     let useCreator = false;

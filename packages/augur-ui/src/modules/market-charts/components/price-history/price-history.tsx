@@ -38,6 +38,7 @@ interface PriceHistoryProps {
   selectedOutcomeId: number;
   pricePrecision: number;
   isTradingTutorial?: boolean;
+  isArchived?: boolean;
 }
 
 const PriceHistory = ({
@@ -48,14 +49,16 @@ const PriceHistory = ({
   scalarDenomination = '',
   selectedOutcomeId,
   pricePrecision,
+  isArchived
 }: PriceHistoryProps) => {
   const container = useRef(null);
-  const options = getOptions({ maxPrice, minPrice, isScalar, pricePrecision });
+  const options = getOptions({ maxPrice, minPrice, isScalar, pricePrecision, isArchived });
   const { priceTimeSeries } = bucketedPriceTimeSeries;
   const hasPriceTimeSeries = !!priceTimeSeries && !!Object.keys(priceTimeSeries);
   useEffect(() => {
     if (!hasPriceTimeSeries) return NoDataToDisplay(Highcharts);
     const hasData =
+      !isArchived &&
       priceTimeSeries &&
       Object.keys(priceTimeSeries) &&
       Object.keys(priceTimeSeries).filter(
@@ -97,9 +100,9 @@ const PriceHistory = ({
 
 export default PriceHistory;
 // helper functions:
-const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar }) => ({
+const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar, isArchived }) => ({
   lang: {
-    noData: 'No Completed Trades',
+    noData: isArchived ? 'Data Archived' : 'No Completed Trades',
   },
   title: {
     text: '',

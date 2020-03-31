@@ -488,7 +488,7 @@ export const VALIDATION_ATTRIBUTES = {
     readableName: 'date',
     checkFilledNumber: true,
     checkDateGreater: true,
-    checkDateGreaterMessage: 'Reporting start must be in the future',
+    checkDateGreaterMessage: 'Event expiration time must be in the future',
     checkFilledNumberMessage: 'Choose a date',
   },
   [DESIGNATED_REPORTER_ADDRESS]: {
