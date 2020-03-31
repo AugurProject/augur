@@ -15,7 +15,7 @@ export const OddsMenu = () => {
       <button onClick={() => setOpen(!open)}>{Gear}</button>
       <ul>
         <li><h4>Odds Settings</h4></li>
-        <li><button onClick={() => null}>Decimal {CheckMark}</button></li>
+        <li className={Styles.Selected}><button onClick={() => null}>Decimal {CheckMark}</button></li>
         <li><button onClick={() => null}>Fractional {CheckMark}</button></li>
         <li><button onClick={() => null}>American {CheckMark}</button></li>
         <li><button onClick={() => null}>0% - 100% {CheckMark}</button></li>

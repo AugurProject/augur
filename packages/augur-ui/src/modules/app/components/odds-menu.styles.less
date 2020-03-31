@@ -73,12 +73,32 @@
           align-items: center;
           padding: 0 @size-16;
 
+          &.Selected {
+            color: var(--color-primary-text);
+
+            > button > svg {
+              display: block;
+            }
+          }
+
           > button {
+            align-items: center;
             display: flex;
             flex-flow: row nowrap;
             flex: 1;
             height: 100%;
+            justify-content: space-between;
             border-bottom: @size-1 solid var(--color-dark-grey);
+
+            > svg {
+              display: none;
+              height: @size-9;
+              width: @size-11;
+
+              > path {
+                stroke: var(--color-primary-text);
+              }
+            }
           }
 
           &:first-of-type {
