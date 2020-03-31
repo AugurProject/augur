@@ -26,7 +26,7 @@ const FilledOrdersTable: React.FC<FilledOrdersTableProps> = ({ filledOrders, isA
         <DataArchivedLabel label='filledOrders' />
       )}
       <div>
-        {filledOrders.length > 0 && isArchived && filledOrders.map((order, i) => (
+        {filledOrders.length > 0 && !isArchived && filledOrders.map((order, i) => (
           <FilledOrder key={i} filledOrder={order} extendedViewNotOnMobile />
         ))}
         {filledOrders.length === 0 && !isArchived && (

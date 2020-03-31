@@ -127,6 +127,8 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
                   effect="solid"
                   place="top"
                   type="light"
+                  data-event="mouseover"
+                  data-event-off="blur scroll"
                 >
                   {placeholder}
                 </ReactTooltip>

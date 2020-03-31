@@ -178,6 +178,8 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         effect='solid'
         place='top'
         type='light'
+        data-event="mouseover"
+        data-event-off="blur scroll"
       >
         {content}
       </ReactTooltip>
