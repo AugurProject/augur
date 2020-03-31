@@ -161,6 +161,8 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
         effect="solid"
         place="top"
         type="light"
+        data-event="mouseover"
+        data-event-off="blur scroll"
       >
         My Existing Stake
         <p>{props.userValue.formattedValue} REP</p>
@@ -202,6 +204,8 @@ export const Subheaders = (props: SubheadersProps) => (
             effect="solid"
             place="top"
             type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
           >
             <p>{props.tooltipText}</p>
           </ReactTooltip>
@@ -812,7 +816,7 @@ export class ReportingBondsView extends Component<
       buttonDisabled = true;
       insufficientFunds = true;
     }
-    
+
     let insufficientRep = '';
     if (!enoughRepBalance) {
       (insufficientRep = 'Not enough REP to report'), (buttonDisabled = true);
@@ -1014,6 +1018,8 @@ export const ReportingCard = (props: ReportingCardProps) => {
             effect="solid"
             place="top"
             type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
           >
             <p>{disabledTooltipText} </p>
           </ReactTooltip>
