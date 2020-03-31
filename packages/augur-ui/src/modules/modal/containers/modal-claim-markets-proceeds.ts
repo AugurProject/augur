@@ -51,19 +51,25 @@ const mapStateToProps = (state: AppState) => {
           claimablePosition.unclaimedProceeds
         );
         const unclaimedProfit = formatDai(claimablePosition.unclaimedProfit);
-
+        const fees = formatDai(
+          claimablePosition.fee
+        );
         return {
           marketId,
           title: market.description,
           status: pending && pending.status,
           properties: [
             {
-              label: 'Proceeds',
+              label: 'Proceeds after Fees',
               value: unclaimedProceeds.full,
             },
             {
               label: 'Profit',
               value: unclaimedProfit.full,
+            },
+            {
+              label: 'Trading Fee',
+              value: fees.full,
             },
             {
               label: 'Transaction Fee',
@@ -87,6 +93,8 @@ const mapStateToProps = (state: AppState) => {
       accountMarketClaimablePositions.totals.totalUnclaimedProfit,
     totalUnclaimedProceeds:
     accountMarketClaimablePositions.totals.totalUnclaimedProceeds,
+    totalFees:
+    accountMarketClaimablePositions.totals.totalFees,
     GsnEnabled: state.appStatus.gsnEnabled,
     account: state.loginAccount.address,
   };
@@ -128,6 +136,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const multiMarket = claimableMarkets.length > 1 ? 's' : '';
   const totalUnclaimedProceedsFormatted = formatDai(sP.totalUnclaimedProceeds);
   const totalUnclaimedProfitFormatted = formatDai(sP.totalUnclaimedProfit);
+  const totalFeesFormatted = formatDai(sP.totalFees);
   const submitAllTxCount = Math.ceil(
     claimableMarkets.length / MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT
   );
@@ -142,12 +151,16 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   const breakdown = showBreakdown ? [
     {
-      label: 'Total Proceeds',
+      label: 'Total Proceeds after Fees',
       value: totalUnclaimedProceedsFormatted.formatted,
     },
     {
       label: 'Total Profit',
       value: totalUnclaimedProfitFormatted.formatted,
+    },
+    {
+      label: 'Total Fees',
+      value: totalFeesFormatted.formatted,
     },
   ] : null;
 
