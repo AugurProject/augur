@@ -11418,6 +11418,11 @@
 					"internalType": "uint256",
 					"name": "_maxExchangeRateInDai",
 					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "_revertOnFailure",
+					"type": "bool"
 				}
 			],
 			"name": "executeWalletTransaction",

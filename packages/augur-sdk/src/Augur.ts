@@ -224,7 +224,7 @@ export class Augur<TProvider extends Provider = Provider> {
     var gasLevels = await this.getGasStation();
     var recommended = (parseInt(gasLevels["standard"]) + 1000000000);
     var fast = (parseInt(gasLevels["fast"]) + 1000000000);
-    var gasPrice = this.dependencies.useWallet ? this.dependencies.gasPrice : await this.getGasPrice();
+    var gasPrice = await this.getGasPrice();
     var gasPriceNum = gasPrice.toNumber();
 
     if (gasPriceNum >= fast) {

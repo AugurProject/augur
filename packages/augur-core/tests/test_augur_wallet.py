@@ -62,7 +62,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     # Now lets have the relayer send an actual tx for the user to faucet cash into their wallet
     repAmount = 10**18
     repFaucetData = reputationToken.faucet_encode(repAmount)
-    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, cashPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate)
+    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, cashPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate, False)
     nonce = 0
 
     messageHash = augurWalletRegistry.getRelayMessageHash(
@@ -123,7 +123,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     feePerEthInWei = 10**16
     affiliateFeeDivisor = 100
     createMarketData = universe.createYesNoMarket_encode(endTime, feePerEthInWei, nullAddress, affiliateFeeDivisor, account, "")
-    augurWalletCreateMarketData = augurWalletRegistry.executeWalletTransaction_encode(universe.address, createMarketData, 0, cashPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate)
+    augurWalletCreateMarketData = augurWalletRegistry.executeWalletTransaction_encode(universe.address, createMarketData, 0, cashPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate, False)
 
     nonce += 1
 
@@ -179,7 +179,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     ethRecipient = contractsFixture.accounts[3]
     oldBalance = contractsFixture.ethBalance(ethRecipient)
 
-    augurWalletSendEthData = augurWalletRegistry.executeWalletTransaction_encode(ethRecipient, "0x", ethAmount, cashPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate)
+    augurWalletSendEthData = augurWalletRegistry.executeWalletTransaction_encode(ethRecipient, "0x", ethAmount, cashPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate, False)
 
     nonce += 1
 
@@ -271,7 +271,7 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
     desiredSignerBalance = 0
     maxExchangeRate = 200 * 10**36
     repFaucetData = reputationToken.faucet_encode(repAmount)
-    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate)
+    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate, False)
     nonce = 0
     maxDaiTxFee = 10**18
     additionalFee = 10 # 10%
@@ -349,7 +349,7 @@ def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, ca
     fingerprint = longTo32Bytes(42)
     ethPayment = 10**16
     repFaucetData = reputationToken.faucet_encode(repAmount)
-    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate)
+    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate, False)
     nonce = 0
     maxDaiTxFee = 10**18
     additionalFee = 10 # 10%

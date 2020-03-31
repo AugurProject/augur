@@ -830,7 +830,7 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe, rep
     approvalData = ""
     repAmount = 10**18
     repFaucetData = reputationToken.faucet_encode(repAmount)
-    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, cashPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate)
+    augurWalletRepFaucetData = augurWalletRegistry.executeWalletTransaction_encode(reputationToken.address, repFaucetData, 0, cashPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate, False)
 
     messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
         account,
@@ -933,7 +933,7 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe, rep
         with PrintGasUsed(contractsFixture, "ZeroXTrade.trade", 0):
             nonce+=1
             tradeData = ZeroXTrade.trade_encode(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures)
-            augurWalletTradeData = augurWalletRegistry.executeWalletTransaction_encode(ZeroXTrade.address, tradeData, 0, ethPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate)
+            augurWalletTradeData = augurWalletRegistry.executeWalletTransaction_encode(ZeroXTrade.address, tradeData, 0, ethPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate, False)
             messageHash = augurWalletRegistry.getRelayMessageHash(relayer,
                 senderAccount,
                 augurWalletRegistry.address,

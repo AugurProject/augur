@@ -230,7 +230,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         return wallets[_account];
     }
 
-    function executeWalletTransaction(address _to, bytes memory _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint, uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai) public {
+    function executeWalletTransaction(address _to, bytes memory _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint, uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai, bool _revertOnFailure) public {
         address _user = _msgSender();
         IAugurWallet _wallet = getWallet(_user);
         if (_wallet == IAugurWallet(0)) {
@@ -241,6 +241,10 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
             getEthFromWallet(_wallet, _payment);
         }
         bool _success = _wallet.executeTransaction(_to, _data, _value);
+        // We need to be able to fail in order to get accurate gas estimates. We only allow this however when not using the relayhub since otherwise funds could be drained this way
+        if (_user == msg.sender && _revertOnFailure) {
+            require(_success, "Transaction Execution Failed");
+        }
         // We keep the signing account's ETH balance funded up to an offchain provided value so it can send txs itself without the use of a relay
         bool _fundingSuccess = fundMsgSender(_desiredSignerBalance, _maxExchangeRateInDai);
         emit ExecuteTransactionStatus(_success, _fundingSuccess);
