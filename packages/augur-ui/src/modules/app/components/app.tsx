@@ -1,7 +1,7 @@
 // TODO -- this component needs to be broken up
 //         all logic related to sidebar(s) need to be housed w/in a separate component
 
-import React, { Component } from 'react';
+import React, { Component, createContext } from 'react';
 import classNames from 'classnames';
 import isWindows from 'utils/is-windows';
 import Modal from 'modules/modal/containers/modal-view';
@@ -103,7 +103,11 @@ interface AppProps {
   showMigrateRepButton: boolean;
   theme: string;
   setTheme: Function;
+  changeOddsType: Function;
+  oddsType: string;
 }
+
+export const OddsContext = createContext({ oddsType: null, changeOddsType: (odds: string) => {} });
 
 export default class AppView extends Component<AppProps> {
   static defaultProps = {
@@ -398,6 +402,8 @@ export default class AppView extends Component<AppProps> {
       showMigrateRepButton,
       logout,
       showGlobalChat,
+      oddsType,
+      changeOddsType,
     } = this.props;
     const sideNavMenuData = this.sideNavMenuData;
     const { forkEndTime } = universe;
@@ -420,6 +426,7 @@ export default class AppView extends Component<AppProps> {
 
     return (
       <main>
+        <OddsContext.Provider value={{ oddsType, changeOddsType }} >
         <HelmetTag {...APP_HEAD_TAGS} />
         {ModalShowing && <Modal />}
         {toasts.length > 0 && (
@@ -554,6 +561,7 @@ export default class AppView extends Component<AppProps> {
             </section>
           </section>
         </div>
+        </OddsContext.Provider>
       </main>
     );
   }
