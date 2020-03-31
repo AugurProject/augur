@@ -162,7 +162,7 @@
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .Alert {
-    background-color: var(--color-page-background);
+    background-color: var(--color-module-background);
     padding: @size-8;
     border: @size-1 solid var(--color-dark-text);
     border-radius: @border-radius-rounded;
@@ -173,6 +173,21 @@
 
     color:var(--color-secondary-text);
     margin-top: @size-12;
+  }
+
+  .Seen {
+    border: @size-1 solid var(--color-secondary-action-outline);
+  }
+
+  .Failure {
+    border: @size-1 solid var(--color-alternate-error);
+    > div:first-of-type {
+      > div:first-of-type {
+        > div:first-of-type {
+          color: var(--color-primary-text);
+        }
+      }
+    }
   }
 
   .Row {
@@ -195,10 +210,35 @@
   }
 
   .EtherLink {
-    .text-10-medium;
+    .text-10-semi-bold;
   
     color: var(--color-primary-text);
     text-decoration: none;
+    margin-top: @size-6;
+
+    > div {
+      background: transparent;
+      border: none;
+
+      > span {
+        .text-10-semi-bold;
+
+        > a {
+          flex-direction: row-reverse;
+          color: var(--color-primary-text);
+
+          > svg {
+            margin: 0 @size-6 0 0;
+            height: @size-12;
+            width: @size-12;
+
+            > path {
+              fill: var(--color-primary-text);
+            }
+          }
+        }
+      }
+    }
   }
 
   .Close {
