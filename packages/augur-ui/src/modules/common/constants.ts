@@ -328,6 +328,7 @@ export const MARKET_STATUS_MESSAGES = {
   OPEN: 'Open',
   IN_REPORTING: 'In Reporting',
   RESOLVED: 'Resolved',
+  AWAITING_RESOLVED: 'Awaiting Finalization',
   FORKING: 'Forking',
   AWAITING_NO_REPORT_MIGRATION: 'Awaiting No Report Migrated',
   AWAITING_FORK_MIGRATION: 'Awaiting Fork Migration',

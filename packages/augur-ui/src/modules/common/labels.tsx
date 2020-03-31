@@ -884,6 +884,9 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
       text = constants.MARKET_STATUS_MESSAGES.OPEN;
       break;
     case REPORTING_STATE.AWAITING_FINALIZATION:
+      resolved = true;
+      text = constants.MARKET_STATUS_MESSAGES.AWAITING_RESOLVED;
+      break;
     case REPORTING_STATE.FINALIZED:
       resolved = true;
       text = constants.MARKET_STATUS_MESSAGES.RESOLVED;
