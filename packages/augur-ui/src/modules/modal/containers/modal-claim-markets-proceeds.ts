@@ -60,19 +60,11 @@ const mapStateToProps = (state: AppState) => {
           status: pending && pending.status,
           properties: [
             {
-              label: 'Proceeds after Fees',
+              label: 'Proceeds after market fees',
               value: unclaimedProceeds.full,
             },
             {
-              label: 'Profit',
-              value: unclaimedProfit.full,
-            },
-            {
-              label: 'Trading Fee',
-              value: fees.full,
-            },
-            {
-              label: 'Transaction Fee',
+              label: 'Est. Transaction Fee',
               value: state.appStatus.gsnEnabled
                 ? displayGasInDai(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE)
                 : formatEther(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE).formattedValue,
@@ -151,16 +143,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   const breakdown = showBreakdown ? [
     {
-      label: 'Total Proceeds after Fees',
+      label: 'Total Proceeds',
       value: totalUnclaimedProceedsFormatted.formatted,
-    },
-    {
-      label: 'Total Profit',
-      value: totalUnclaimedProfitFormatted.formatted,
-    },
-    {
-      label: 'Total Fees',
-      value: totalFeesFormatted.formatted,
     },
   ] : null;
 
@@ -179,7 +163,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         const gas = await dP.estimateGas(claimableMarkets.map(m => m.marketId), sP.account);
         const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
         return {
-          label: 'Transaction Fee',
+          label: 'Est. Transaction Fee',
           value: String(displayfee),
         };
       }
