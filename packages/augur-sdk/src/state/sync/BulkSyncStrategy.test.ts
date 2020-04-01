@@ -22,6 +22,6 @@ describe('BulkSyncStrategy', () => {
     );
     await target.start(0, 139);
 
-    expect(onLogsAdded).toHaveBeenCalledTimes(139);
+    expect(onLogsAdded).toHaveBeenCalledTimes(140);
   });
 });
