@@ -7,14 +7,15 @@ import { SecondaryButton } from 'modules/common/buttons';
 
 export interface GlobalChatProps {
   provider: any;
-  whichChatPlugin?: string;
+  whichChatPlugin: string;
+  isLogged: boolean;
 }
 
-export const GlobalChat = ({ provider, whichChatPlugin }: GlobalChatProps) => {
+export const GlobalChat = ({ provider, whichChatPlugin, isLogged }: GlobalChatProps) => {
   const { activate, setActivate, address, box, isReady, profile } =
     whichChatPlugin === '3box' && use3box(provider);
 
-  return (
+  return isLogged ? (
     <div className={Styles.GlobalChat}>
       {whichChatPlugin === '3box' && isReady && (
         <ChatBox
@@ -43,5 +44,5 @@ export const GlobalChat = ({ provider, whichChatPlugin }: GlobalChatProps) => {
         />
       )}
     </div>
-  );
+  ) : null;
 };

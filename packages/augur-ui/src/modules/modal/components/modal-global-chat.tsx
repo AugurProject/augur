@@ -9,18 +9,20 @@ import { SecondaryButton } from 'modules/common/buttons';
 export interface ModalGlobalChatProps {
   closeModal: Function;
   provider: any;
-  whichChatPlugin?: string;
+  whichChatPlugin: string;
+  isLogged: boolean;
 }
 
 export const ModalGlobalChat = ({
   closeModal,
   provider,
   whichChatPlugin,
+  isLogged,
 }: ModalGlobalChatProps) => {
   const { activate, setActivate, address, box, isReady, profile } =
     whichChatPlugin === '3box' && use3box(provider);
 
-  return (
+  return isLogged ? (
     <div className={Styles.ModalGlobalChat}>
       {whichChatPlugin === '3box' && (
         <div>
@@ -59,5 +61,5 @@ export const ModalGlobalChat = ({
         </div>
       )}
     </div>
-  );
+  ) : null;
 };

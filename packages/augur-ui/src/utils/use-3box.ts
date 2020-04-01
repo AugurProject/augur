@@ -21,6 +21,8 @@ export const use3box = (provider) => {
     setIsReady(false);
 
     if (!activate || !provider) {
+      setActivate(false);
+
       return {
         activate,
         setActivate,
