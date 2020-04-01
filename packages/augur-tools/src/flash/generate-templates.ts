@@ -13,7 +13,8 @@ import {
   DateDependencies,
   ValidationType,
   DateInputDependencies,
-  PlaceholderValues
+  PlaceholderValues,
+  CategoricalOutcomes
 } from '../templates-template';
 import { TEMPLATES, TEMPLATES2 } from '../templates-source';
 import { retiredTemplates } from '../templates-retired';
@@ -81,6 +82,7 @@ const generateValidations = (
     dateDependencies: null,
     closingDateDependencies: null,
     placeholderValues: null,
+    categoricalOutcomes: null,
     afterTuesdayDateNoFriday: null,
     noAdditionalOutcomes: false,
     hoursAfterEstimatedStartTime: null,
@@ -125,6 +127,7 @@ const addTemplates = (
         dateDependencies: getDateDependencies(t.inputs),
         closingDateDependencies: getClosingDateDependencies(t.inputs),
         placeholderValues: getPlaceholderValues(t.inputs),
+        categoricalOutcomes: getCategoricalOutcomes(t.inputs),
         afterTuesdayDatenoFriday: getInputsAfterTuesdayDateNoFriday(t.inputs),
         hoursAfterEstimatedStartTime: getHoursAfterEstimatedStartTime(t.inputs),
         daysAfterStartDate: getHoursAfterStartdate(t.inputs),
@@ -243,6 +246,18 @@ function getPlaceholderValues(inputs: TemplateInput[]): PlaceholderValues {
     (p, i) =>
       (i.type === TemplateInputType.TEXT && !i.validationType) ||
       (i.type === TemplateInputType.USER_DESCRIPTION_OUTCOME && !i.validationType)
+        ? { ...p, [i.id]: i.placeholder }
+        : p,
+    {}
+  );
+}
+
+function getCategoricalOutcomes(inputs: TemplateInput[]): CategoricalOutcomes {
+  return inputs.reduce(
+    (p, i) =>
+      (i.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) ||
+      (i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME) ||
+      (i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP)
         ? { ...p, [i.id]: i.placeholder }
         : p,
     {}
