@@ -16,13 +16,12 @@ import 'ROOT/libraries/Initializable.sol';
 import "ROOT/IAugur.sol";
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/libraries/LibBytes.sol';
-import 'ROOT/CashSender.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
 import 'ROOT/uniswap/interfaces/IWETH.sol';
 
 
-contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
+contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     using SafeMathUint256 for uint256;
     using LibBytes for bytes;
 
@@ -114,8 +113,6 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         ethExchange = IUniswapV2Exchange(_ethExchangeAddress);
         token0IsCash = ethExchange.token0() == address(cash);
 
-        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
-
         EIP712_DOMAIN_HASH = keccak256(
             abi.encodePacked(
                 EIP712_DOMAIN_SEPARATOR_SCHEMA_HASH,
@@ -197,6 +194,12 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
         uint256 _attoSharesPurchasable = _availableCash.div(_market.getNumTicks().sub(_price));
 
         return _attoSharesOwned.add(_attoSharesPurchasable);
+    }
+
+    function cashAvailableForTransferFrom(address _owner, address _sender) public view returns (uint256) {
+        uint256 _balance = cash.balanceOf(_owner);
+        uint256 _allowance = cash.allowance(_owner, _sender);
+        return _balance.min(_allowance);
     }
 
     /// @notice Get the balance of multiple account/token pairs
@@ -310,7 +313,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155, CashSender {
             uint256 _ethDeficit = _amountEthRequired - address(this).balance;
             uint256 _cost = getTokenPurchaseCost(_ethDeficit);
             require(_cost <= _maxProtocolFeeDai, "Cost of purchasing ETH to cover protocol Fee on the exchange was too high");
-            cashTransferFrom(msg.sender, address(ethExchange), _cost);
+            require(cash.transferFrom(msg.sender, address(ethExchange), _cost));
             ethExchange.swap(token0IsCash ? 0 : _ethDeficit, token0IsCash ? _ethDeficit : 0, address(this), "");
             WETH.withdraw(_ethDeficit);
         }

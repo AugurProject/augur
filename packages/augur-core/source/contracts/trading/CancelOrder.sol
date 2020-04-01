@@ -15,7 +15,6 @@ import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/trading/IAugurTrading.sol';
-import 'ROOT/CashSender.sol';
 import 'ROOT/libraries/TokenId.sol';
 
 
@@ -23,7 +22,7 @@ import 'ROOT/libraries/TokenId.sol';
  * @title Cancel Order
  * @notice This allows you to cancel orders on the book.
  */
-contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder, CashSender {
+contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder {
 
     IAugur public augur;
     IAugurTrading public augurTrading;
@@ -44,7 +43,6 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder, CashSender
         require(orders != IOrders(0));
         profitLoss = IProfitLoss(_augurTrading.lookup("ProfitLoss"));
 
-        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
         require(profitLoss != IProfitLoss(0));
     }
 
@@ -125,7 +123,7 @@ contract CancelOrder is Initializable, ReentrancyGuard, ICancelOrder, CashSender
 
         // Return to user moneyEscrowed that wasn't filled yet
         if (_moneyEscrowed > 0) {
-            cashTransferFrom(address(augurTrading), _sender, _moneyEscrowed);
+            require(cash.transferFrom(address(augurTrading), _sender, _moneyEscrowed));
         }
 
         return true;

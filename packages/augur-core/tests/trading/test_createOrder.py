@@ -12,16 +12,10 @@ def test_publicCreateOrder_0_shares(contractsFixture, cash, market):
     with raises(TransactionFailed):
         createOrder.publicCreateOrder(BID, 0, 40, market.address, 1, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(7))
 
-@mark.parametrize('afterMkrShutdown', [
-    True,
-    False
-])
-def test_publicCreateOrder_bid(afterMkrShutdown, contractsFixture, cash, market):
+
+def test_publicCreateOrder_bid(contractsFixture, cash, market):
     orders = contractsFixture.contracts['Orders']
     createOrder = contractsFixture.contracts['CreateOrder']
-
-    if (afterMkrShutdown):
-        contractsFixture.MKRShutdown()
 
     with BuyWithCash(cash, fix(1, 40), contractsFixture.accounts[0], "create order"):
         orderID = createOrder.publicCreateOrder(BID, fix(1), 40, market.address, 1, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(7))

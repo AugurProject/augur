@@ -131,6 +131,10 @@ export interface PlaceholderValues {
   [id: number]: string;
 }
 
+export interface CategoricalOutcomes {
+  [id: number]: string;
+}
+
 export interface DateDependencies {
   id: number;
   noWeekendHolidays?: boolean;
@@ -165,6 +169,7 @@ export interface TemplateValidation {
   noAdditionalOutcomes: boolean;
   hoursAfterEstimatedStartTime: number;
   daysAfterStartDate: number;
+  categoricalOutcomes: CategoricalOutcomes;
 }
 
 export interface TemplateValidationHash {
@@ -306,10 +311,15 @@ export const ValidationTemplateInputType = {
 export let TEMPLATE_VALIDATIONS = {};
 export let RETIRED_TEMPLATES = [];
 
-export function hasTemplateTextInputs(hash: string) {
+export function hasTemplateTextInputs(hash: string, isCategorical: boolean) {
   const validation = TEMPLATE_VALIDATIONS[hash] as TemplateValidation;
-  if (!validation || !validation.placeholderValues) return false;
-  return Object.keys(validation.placeholderValues).length > 0;
+  if (isCategorical) {
+    if (!validation || (!validation.placeholderValues && Object.keys(validation.categoricalOutcomes).length > 0)) return false;
+    return Object.keys(validation.placeholderValues).length > 0 || Object.keys(validation.categoricalOutcomes).length === 0;
+  } else {
+    if (!validation || !validation.placeholderValues) return false;
+    return Object.keys(validation.placeholderValues).length > 0;
+  }
 }
 
 export function getTemplatePlaceholderById(hash: string, id: number) {

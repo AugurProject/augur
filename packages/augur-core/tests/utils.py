@@ -75,20 +75,20 @@ class BuyWithCash():
 
 class EtherDelta():
 
-    def __init__(self, delta, account, chain, err=""):
+    def __init__(self, delta, account, fixture, err=""):
         self.account = account
-        self.chain = chain
+        self.fixture = fixture
         self.delta = delta
         self.err = err
 
     def __enter__(self):
-        self.originalBalance = self.chain.head_state.get_balance(self.account)
+        self.originalBalance = self.fixture.eth_tester.get_balance(self.account)
 
     def __exit__(self, *args):
         if args[1]:
             raise args[1]
         originalBalance = self.originalBalance
-        newBalance = self.chain.head_state.get_balance(self.account)
+        newBalance = self.fixture.eth_tester.get_balance(self.account)
         delta = self.delta
         resultDelta = newBalance - originalBalance
         assert resultDelta == delta, self.err + ". Delta EXPECTED: %i ACTUAL: %i DIFF: %i" % (delta, resultDelta, delta - resultDelta)

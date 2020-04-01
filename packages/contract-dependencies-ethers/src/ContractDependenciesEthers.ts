@@ -183,7 +183,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   }
 
   async sendTransaction(tx: Transaction<ethers.utils.BigNumber>, txMetadata: TransactionMetadata): Promise<ethers.providers.TransactionReceipt> {
-    const gasLimit = await this.provider.estimateGas(tx);
+    const gasLimit = tx.gasLimit || await this.provider.estimateGas(tx);
 
     // @BODY https://github.com/ethers-io/ethers.js/issues/321
     // the 'from field is required to estimate gas but will fail if present when the transaction is sent.
