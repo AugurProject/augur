@@ -5,18 +5,11 @@ from pytest import raises, mark
 from utils import fix, AssertLog, nullAddress, TokenDelta
 from constants import YES, NO
 
-@mark.parametrize('afterMkrShutdown', [
-    True,
-    False
-])
-def test_openInterestCash(afterMkrShutdown, contractsFixture, augur, universe, cash, market):
+def test_openInterestCash(contractsFixture, augur, universe, cash, market):
     constants = contractsFixture.contracts["Constants"]
     daiVat = contractsFixture.contracts["DaiVat"]
     openInterestCashAddress = universe.openInterestCash()
     openInterestCash = contractsFixture.applySignature("OICash", openInterestCashAddress)
-
-    if (afterMkrShutdown):
-        contractsFixture.MKRShutdown()
 
     account1 = contractsFixture.accounts[0]
     account2 = contractsFixture.accounts[1]
