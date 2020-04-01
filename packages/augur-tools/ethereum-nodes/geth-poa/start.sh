@@ -24,7 +24,7 @@ node_start() {
     --rpc --rpcapi eth,net,web3,personal,miner,txpool --rpcaddr 0.0.0.0 --rpcport $RPCPORT --rpccorsdomain '*' --rpcvhosts '*' \
     --nodiscover \
     --allow-insecure-unlock \
-    --targetgaslimit 7500000 < /dev/null > $ROOT/geth.log 2>&1 &
+    --targetgaslimit 10000000 < /dev/null > $ROOT/geth.log 2>&1 &
   NODE_PID=$!
 
   stdbuf -o0 tail -F $ROOT/geth.log 2>/dev/null &
