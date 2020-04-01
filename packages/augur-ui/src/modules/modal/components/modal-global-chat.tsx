@@ -10,15 +10,19 @@ export interface ModalGlobalChatProps {
   closeModal: Function;
   provider: any;
   whichChatPlugin?: string;
+  initialize3box: Function;
+  initialized3box: object;
 }
 
 export const ModalGlobalChat = ({
   closeModal,
   provider,
   whichChatPlugin,
+  initialize3box,
+  initialized3box,
 }: ModalGlobalChatProps) => {
   const { activate, setActivate, address, box, isReady, profile } =
-    whichChatPlugin === '3box' && use3box(provider);
+    whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box);
 
   return (
     <div className={Styles.ModalGlobalChat}>

@@ -14,6 +14,8 @@ interface MarketCommentsProps {
   numPosts: number;
   provider: any;
   whichCommentPlugin: string;
+  initialize3box: Function;
+  initialized3box: object;
 }
 
 export const MarketComments = ({
@@ -24,9 +26,11 @@ export const MarketComments = ({
   numPosts,
   provider,
   whichCommentPlugin,
+  initialize3box,
+  initialized3box,
 }: MarketCommentsProps) => {
   const { activate, setActivate, address, box, isReady, profile } =
-    whichCommentPlugin === '3box' && use3box(provider);
+    whichCommentPlugin === '3box' && use3box(provider, initialize3box, initialized3box);
 
   return (
     <section className={Styles.Comments}>
