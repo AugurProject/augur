@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { startClaimingMarketsProceeds, claimMarketsProceedsGas } from 'modules/positions/actions/claim-markets-proceeds';
 import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
-import { createBigNumber } from 'utils/create-big-number';
 import {
   formatDai,
   formatEther,
