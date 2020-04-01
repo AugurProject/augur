@@ -161,7 +161,7 @@ export default function setAlertText(alert: any, callback: Function) {
                 ? 'Market Is Invalid'
                 : getOutcomeNameWithOutcome(
                     marketInfo,
-                    alert.params.outcome,
+                    new BigNumber(alert.params.outcome).toString(),
                     false
                   );
             alert.details = `$${
