@@ -8,7 +8,7 @@
   },
   "gas": {
     "price": 20000000000,
-    "limit": 7500000
+    "limit": 10000000
   },
   "deploy": {
     "isProduction": false,

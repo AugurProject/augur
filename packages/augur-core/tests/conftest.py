@@ -345,7 +345,7 @@ class ContractsFixture:
         signature = ContractsFixture.signatures[signatureKey]
         W3Contract = self.w3.eth.contract(abi=signature, bytecode=compiledCode)
         deploy_address = self.accounts[0]
-        tx_hash = W3Contract.constructor(*constructorArgs).transact({'from': deploy_address, 'gasPrice': 1, 'gas': 750000000})
+        tx_hash = W3Contract.constructor(*constructorArgs).transact({'from': deploy_address, 'gasPrice': 1, 'gas': 1000000000})
         tx_receipt = self.w3.eth.waitForTransactionReceipt(tx_hash, 180)
         if tx_receipt.status == 0:
             raise Exception("Contract upload %s failed" % lookupKey)
