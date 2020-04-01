@@ -1,5 +1,5 @@
 import { Getters } from '@augurproject/sdk';
-import { MarketData, OutcomeFormatted } from 'modules/types';
+import { MarketData, OutcomeFormatted, ConsensusFormatted } from 'modules/types';
 import {
   REPORTING_STATE,
   MARKET_OPEN,
@@ -25,6 +25,7 @@ import { keyBy } from './key-by';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import moment = require('moment');
 import deepClone from './deep-clone';
+import { INVALID_OUTCOME } from 'modules/create-market/constants';
 
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo,
@@ -111,17 +112,27 @@ function processOutcomes(
   market: Getters.Markets.MarketInfo
 ): OutcomeFormatted[] {
   const outcomes = deepClone<Getters.Markets.MarketInfoOutcome[]>(market.outcomes);
-  if (market.reportingState === REPORTING_STATE.FINALIZED) {
+  if (market.reportingState === REPORTING_STATE.FINALIZED || market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION) {
     outcomes.forEach(o => o.price = market.minPrice);
-    if (market.consensus.invalid) {
+    let invalid = false;
+    let outcome = null;
+    if (market.reportingState === REPORTING_STATE.FINALIZED) {
+      invalid = market.consensus.invalid;
+      outcome = market.consensus.outcome;
+    } else {
+      const tentativeWinner = market.disputeInfo.stakes.find(s => s.tentativeWinning);
+      invalid = tentativeWinner.isInvalidOutcome;
+      outcome = tentativeWinner.outcome;
+    }
+    if (invalid) {
       outcomes.find(o => o.id === INVALID_OUTCOME_ID).price = market.maxPrice;
     } else {
-      const winner = outcomes.find(o => o.id === Number(market.consensus.outcome));
+      const winner = outcomes.find(o => o.id === Number(outcome));
       if (winner) {
         winner.price = market.maxPrice;
       }
       if (market.marketType === SCALAR) {
-        outcomes.find(o => o.id === SCALAR_UP_ID).price = String(market.consensus.outcome);
+        outcomes.find(o => o.id === SCALAR_UP_ID).price = String(outcome);
       }
     }
   }
@@ -217,14 +228,14 @@ function processDisputeInfo(
 
 function processConsensus(
   market: Getters.Markets.MarketInfo
-): Consensus | null {
+): ConsensusFormatted | null {
   const isScalar = market.marketType === SCALAR;
   if (market.reportingState === REPORTING_STATE.FINALIZED) {
     return {
       ...market.consensus,
       winningOutcome: market.consensus.outcome,
       outcomeName: isScalar
-        ? market.consensus.outcome
+        ? market.consensus.invalid ? INVALID_OUTCOME : market.consensus.outcome
         : getOutcomeNameWithOutcome(
             market,
             market.consensus.outcome,
@@ -241,7 +252,7 @@ function processConsensus(
       ...winning,
       winningOutcome: winning.outcome,
       outcomeName: isScalar
-        ? winning.outcome
+        ? winning.isInvalidOutcome ? INVALID_OUTCOME : winning.outcome
         : getOutcomeNameWithOutcome(
             market,
             winning.outcome,
