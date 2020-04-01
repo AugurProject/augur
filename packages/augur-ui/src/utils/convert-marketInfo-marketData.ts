@@ -111,16 +111,24 @@ function getMarketStatus(reportingState: string) {
 function processOutcomes(
   market: Getters.Markets.MarketInfo
 ): OutcomeFormatted[] {
+  const isScalar = market.marketType === SCALAR;
   const outcomes = deepClone<Getters.Markets.MarketInfoOutcome[]>(market.outcomes);
-  if (market.reportingState === REPORTING_STATE.FINALIZED || market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION) {
-    outcomes.forEach(o => o.price = market.minPrice);
+  if (
+    market.reportingState === REPORTING_STATE.FINALIZED ||
+    market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION
+  ) {
+    isScalar
+      ? outcomes.forEach(o => (o.price = null))
+      : outcomes.forEach(o => (o.price = market.minPrice));
     let invalid = false;
     let outcome = null;
     if (market.reportingState === REPORTING_STATE.FINALIZED) {
       invalid = market.consensus.invalid;
       outcome = market.consensus.outcome;
     } else {
-      const tentativeWinner = market.disputeInfo.stakes.find(s => s.tentativeWinning);
+      const tentativeWinner = market.disputeInfo.stakes.find(
+        s => s.tentativeWinning
+      );
       invalid = tentativeWinner.isInvalidOutcome;
       outcome = tentativeWinner.outcome;
     }
@@ -131,7 +139,7 @@ function processOutcomes(
       if (winner) {
         winner.price = market.maxPrice;
       }
-      if (market.marketType === SCALAR) {
+      if (isScalar) {
         outcomes.find(o => o.id === SCALAR_UP_ID).price = String(outcome);
       }
     }
@@ -148,7 +156,7 @@ function processOutcomes(
           zeroStyled: true,
         })
       : formatNone(),
-    lastPrice: outcome.price
+    lastPrice: !!outcome.price
       ? formatDai(outcome.price || 0, {
           positiveSign: false,
         })
