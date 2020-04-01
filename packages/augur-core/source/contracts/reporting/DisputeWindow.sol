@@ -14,14 +14,13 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/IAugur.sol';
-import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Dispute Window
  * @notice A contract used to encapsulate a window of time in which markets can be disputed as well as the pot where reporting fees are collected and distributed.
  */
-contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, CashSender {
+contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow {
     using SafeMathUint256 for uint256;
 
     uint256 public invalidMarketsTotal;
@@ -55,8 +54,6 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, Ca
         require(buyParticipationTokens != address(0));
         startTime = _startTime;
         participationTokensEnabled = _participationTokensEnabled;
-
-        initializeCashSender(_augur.lookup("DaiVat"), address(cash));
     }
 
     function onMarketFinalized() public {
@@ -133,7 +130,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, Ca
             return true;
         }
 
-        uint256 _cashBalance = cashBalance(address(this));
+        uint256 _cashBalance = cash.balanceOf(address(this));
 
         // Burn tokens and send back REP
         uint256 _supply = totalSupply;
@@ -144,7 +141,7 @@ contract DisputeWindow is Initializable, VariableSupplyToken, IDisputeWindow, Ca
         if (_cashBalance != 0) {
             // Pay out fees
             _feePayoutShare = _cashBalance.mul(_attoParticipationTokens).div(_supply);
-            cashTransfer(_account, _feePayoutShare);
+            require(cash.transfer(_account, _feePayoutShare));
         }
 
         augur.logParticipationTokensRedeemed(universe, _account, _attoParticipationTokens, _feePayoutShare);

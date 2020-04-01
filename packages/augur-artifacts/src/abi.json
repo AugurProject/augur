@@ -8729,53 +8729,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_owner",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_sender",
-					"type": "address"
-				}
-			],
-			"name": "cashAvailableForTransferFrom",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_available",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_account",
-					"type": "address"
-				}
-			],
-			"name": "cashBalance",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_balance",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -8814,27 +8767,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_daiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "daiToVatDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -10831,27 +10763,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_vDaiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "vatDaiToDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
 			"type": "function"
 		}
 	],
@@ -17485,74 +17396,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_owner",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_sender",
-					"type": "address"
-				}
-			],
-			"name": "cashAvailableForTransferFrom",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_available",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_account",
-					"type": "address"
-				}
-			],
-			"name": "cashBalance",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_balance",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_daiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "daiToVatDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "decimals",
 			"outputs": [
@@ -18059,42 +17902,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "vat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_vDaiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "vatDaiToDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "windowId",
 			"outputs": [
 				{
@@ -18563,53 +18370,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_owner",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_sender",
-					"type": "address"
-				}
-			],
-			"name": "cashAvailableForTransferFrom",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_available",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_account",
-					"type": "address"
-				}
-			],
-			"name": "cashBalance",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_balance",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -18705,27 +18465,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_daiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "daiToVatDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -19584,42 +19323,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "vat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_vDaiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "vatDaiToDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "warpSync",
 			"outputs": [
 				{
@@ -19883,74 +19586,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_owner",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_sender",
-					"type": "address"
-				}
-			],
-			"name": "cashAvailableForTransferFrom",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_available",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_account",
-					"type": "address"
-				}
-			],
-			"name": "cashBalance",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_balance",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_daiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "daiToVatDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "decimals",
 			"outputs": [
@@ -20208,42 +19843,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "vat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_vDaiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "vatDaiToDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -21683,53 +21282,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_owner",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_sender",
-					"type": "address"
-				}
-			],
-			"name": "cashAvailableForTransferFrom",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_available",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_account",
-					"type": "address"
-				}
-			],
-			"name": "cashBalance",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_balance",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -21758,27 +21310,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_daiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "daiToVatDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -22495,42 +22026,6 @@
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "vat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_vDaiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "vatDaiToDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
 		}
 	],
 	"Universe": [
@@ -22645,53 +22140,6 @@
 					"internalType": "contract ICash",
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_owner",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_sender",
-					"type": "address"
-				}
-			],
-			"name": "cashAvailableForTransferFrom",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_available",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_account",
-					"type": "address"
-				}
-			],
-			"name": "cashBalance",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_balance",
-					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -22915,27 +22363,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_daiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "daiToVatDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -24262,42 +23689,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "vat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_vDaiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "vatDaiToDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -25178,74 +24569,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_owner",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_sender",
-					"type": "address"
-				}
-			],
-			"name": "cashAvailableForTransferFrom",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_available",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_account",
-					"type": "address"
-				}
-			],
-			"name": "cashBalance",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_balance",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_daiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "daiToVatDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "getInitialized",
 			"outputs": [
@@ -25323,42 +24646,6 @@
 			"payable": false,
 			"stateMutability": "view",
 			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "vat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_vDaiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "vatDaiToDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
 		}
 	],
 	"CreateOrder": [
@@ -25401,53 +24688,6 @@
 					"internalType": "contract ICash",
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_owner",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_sender",
-					"type": "address"
-				}
-			],
-			"name": "cashAvailableForTransferFrom",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_available",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_account",
-					"type": "address"
-				}
-			],
-			"name": "cashBalance",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_balance",
-					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -25513,27 +24753,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_daiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "daiToVatDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -25716,42 +24935,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "vat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_vDaiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "vatDaiToDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
 			"type": "function"
 		}
 	],
@@ -28574,28 +27757,7 @@
 			"outputs": [
 				{
 					"internalType": "uint256",
-					"name": "_available",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_account",
-					"type": "address"
-				}
-			],
-			"name": "cashBalance",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_balance",
+					"name": "",
 					"type": "uint256"
 				}
 			],
@@ -28960,27 +28122,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_daiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "daiToVatDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -29967,42 +29108,6 @@
 					"internalType": "uint8",
 					"name": "_type",
 					"type": "uint8"
-				}
-			],
-			"payable": false,
-			"stateMutability": "pure",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "vat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_vDaiAmount",
-					"type": "uint256"
-				}
-			],
-			"name": "vatDaiToDai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
 				}
 			],
 			"payable": false,
