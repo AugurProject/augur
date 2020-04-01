@@ -21,7 +21,7 @@ export class BulkSyncStrategy extends AbstractSyncStrategy implements SyncStrate
     endBlockNumber: number,
   ): Promise<number> {
     if(!endBlockNumber) throw new Error('Cannot bulk sync forever. Please pass in an endblock');
-    if(startBlockNumber >= endBlockNumber) throw new Error('Starting point of bulk sync must be less than the endpoint')
+    if(startBlockNumber > endBlockNumber) throw new Error('Starting point of bulk sync must be less than or equal to the endpoint')
 
     console.log(`Syncing from ${startBlockNumber} to ${endBlockNumber}`);
     for(const [fromBlock, toBlock] of chunkRange(startBlockNumber, endBlockNumber, this.chunkSize)) {
