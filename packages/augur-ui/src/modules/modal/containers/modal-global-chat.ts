@@ -4,19 +4,20 @@ import { ModalGlobalChat } from 'modules/modal/components/modal-global-chat';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { initialize3box } from 'modules/global-chat/actions/initialize-3box';
 
-const mapStateToProps = ({loginAccount, env, modal, initialized3box}) => {
+const mapStateToProps = ({authStatus, loginAccount, env, modal, initialized3box}) => {
   const signer = loginAccount.meta?.signer;
 
   const defaultChatProps = {
     whichChatPlugin: env.plugins?.chat,
     modal,
+    isLogged: authStatus.isLogged,
   };
 
   return signer ? {
     ...defaultChatProps,
     provider: signer.provider?._web3Provider,
     initialized3box,
-  } : defaultChatProps
+  } : defaultChatProps;
 };
 
 const mapDispatchToProps = dispatch => ({

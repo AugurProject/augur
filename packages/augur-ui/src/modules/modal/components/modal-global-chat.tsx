@@ -9,9 +9,10 @@ import { SecondaryButton } from 'modules/common/buttons';
 export interface ModalGlobalChatProps {
   closeModal: Function;
   provider: any;
-  whichChatPlugin?: string;
+  whichChatPlugin: string;
   initialize3box: Function;
   initialized3box: object;
+  isLogged: boolean;
 }
 
 export const ModalGlobalChat = ({
@@ -20,11 +21,12 @@ export const ModalGlobalChat = ({
   whichChatPlugin,
   initialize3box,
   initialized3box,
+  isLogged,
 }: ModalGlobalChatProps) => {
   const { activate, setActivate, address, box, isReady, profile } =
     whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box);
 
-  return (
+  return isLogged ? (
     <div className={Styles.ModalGlobalChat}>
       {whichChatPlugin === '3box' && (
         <div>
@@ -63,5 +65,5 @@ export const ModalGlobalChat = ({
         </div>
       )}
     </div>
-  );
+  ) : null;
 };

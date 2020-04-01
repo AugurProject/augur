@@ -107,6 +107,7 @@ export interface ContractAddresses {
   OICash?: string;
   UniswapV2Factory?: string;
   EthExchange?: string;
+  UniswapV2Router01?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.
@@ -133,6 +134,7 @@ export interface ExternalAddresses {
   WETH9?: string;
   Exchange?: string;
   UniswapV2Factory?: string;
+  UniswapV2Router01?: string;
 }
 
 // TS doesn't allow mapping of any type but string or number so we list it out manually

@@ -113,6 +113,8 @@ export class UniswapV2Exchange extends c.UniswapV2Exchange<BigNumber> {
 }
 export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
 }
+export class UniswapV2Router01 extends c.UniswapV2Router01<BigNumber> {
+}
 export class BuyParticipationTokens extends c.BuyParticipationTokens<BigNumber> {
 }
 export class Formulas extends c.Formulas<BigNumber> {

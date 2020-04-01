@@ -18,8 +18,9 @@ import 'ROOT/trading/Order.sol';
 import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/ITime.sol';
-import 'ROOT/CashSender.sol';
 import 'ROOT/reporting/IAffiliates.sol';
+import 'ROOT/ICash.sol';
+import 'ROOT/external/IDaiVat.sol';
 
 
 // Centralized approval authority and event emissions
@@ -28,7 +29,7 @@ import 'ROOT/reporting/IAffiliates.sol';
  * @title Augur
  * @notice The core global contract of the Augur platform. Provides a contract registry and and authority on which contracts should be trusted.
  */
-contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
+contract Augur is IAugur, IAugurCreationDataGetter {
     using SafeMathUint256 for uint256;
     using ContractExists for address;
 
@@ -100,6 +101,9 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
     uint256 constant public MIN_TRADE_INTERVAL = 10**14; // We ignore "dust" portions of the min interval and for huge scalars have a larger min value
     uint256 constant public DEFAULT_RECOMMENDED_TRADE_INTERVAL = 10**17;
     uint256 private constant MAX_NUM_TICKS = 2 ** 256 - 2;
+
+    ICash public cash;
+    IDaiVat public vat;
 
     modifier onlyUploader() {
         require(msg.sender == uploader);
@@ -204,7 +208,7 @@ contract Augur is IAugur, IAugurCreationDataGetter, CashSender {
 
     function trustedCashTransfer(address _from, address _to, uint256 _amount) public returns (bool) {
         require(trustedSender[msg.sender]);
-        cashTransferFrom(_from, _to, _amount);
+        require(cash.transferFrom(_from, _to, _amount));
         return true;
     }
 

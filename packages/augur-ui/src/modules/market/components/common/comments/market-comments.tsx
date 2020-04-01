@@ -16,6 +16,7 @@ interface MarketCommentsProps {
   whichCommentPlugin: string;
   initialize3box: Function;
   initialized3box: object;
+  isLogged: boolean;
 }
 
 export const MarketComments = ({
@@ -28,11 +29,12 @@ export const MarketComments = ({
   whichCommentPlugin,
   initialize3box,
   initialized3box,
+  isLogged,
 }: MarketCommentsProps) => {
   const { activate, setActivate, address, box, isReady, profile } =
     whichCommentPlugin === '3box' && use3box(provider, initialize3box, initialized3box);
 
-  return (
+  return isLogged ? (
     <section className={Styles.Comments}>
       {whichCommentPlugin === '3box' && isReady && (
         <ThreeBoxComments
@@ -52,7 +54,9 @@ export const MarketComments = ({
       {whichCommentPlugin === '3box' && !isReady && (
         <SecondaryButton
           action={() => setActivate(true)}
-          text={activate ? "Loading comments..." : "Click here to activate comments"}
+          text={
+            activate ? 'Loading comments...' : 'Click here to activate comments'
+          }
           disabled={activate}
         />
       )}
@@ -65,5 +69,5 @@ export const MarketComments = ({
         />
       )}
     </section>
-  );
+  ) : null;
 };

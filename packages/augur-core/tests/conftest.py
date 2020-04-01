@@ -475,6 +475,8 @@ class ContractsFixture:
     def uploadUniswapContracts(self):
         factory = self.uploadAndAddToAugur("../source/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=[nullAddress])
         self.generateAndStoreSignature("../source/contracts/uniswap/UniswapV2Exchange.sol")
+        wethAddress = self.contracts["WETH9"].address
+        self.upload("../source/contracts/uniswap/UniswapV2Router01.sol", constructorArgs=[wethAddress, factory.address])
 
     def initializeAllContracts(self):
         coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepOracle']
@@ -623,12 +625,6 @@ class ContractsFixture:
     def getShareToken(self, market, outcome):
         address = market.getShareToken(outcome)
         return self.applySignature("ShareToken", address)
-
-    def MKRShutdown(self):
-        daiVat = self.contracts['DaiVat']
-        daiJoin = self.contracts['DaiJoin']
-        daiVat.cage()
-        daiJoin.cage()
 
     def sendEth(self, sender, receiver, amount):
         tester = self.testerProvider.ethereum_tester
