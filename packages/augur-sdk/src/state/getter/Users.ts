@@ -747,6 +747,16 @@ export class Users {
                   new BigNumber(profitLossResult.outcome).toNumber()
                 ]
               );
+            } else if (
+              marketDoc.tentativeWinningPayoutNumerators &&
+              marketDoc.reportingState ===
+                MarketReportingState.AwaitingFinalization
+            ) {
+              outcomeValue = new BigNumber(
+                marketDoc.tentativeWinningPayoutNumerators[
+                  new BigNumber(profitLossResult.outcome).toNumber()
+                ]
+              );
             }
             const tradingPosition = getTradingPositionFromProfitLossFrame(
               profitLossResult,
