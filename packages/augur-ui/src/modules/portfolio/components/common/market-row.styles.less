@@ -1,7 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
 .MarketRow {
-  border-bottom: 1px solid var(--color-dark-grey);
+  border-bottom: @size-1 solid var(--color-dark-grey);
   border-bottom-left-radius: @size-20;
   border-bottom-right-radius: @size-20;
 }
@@ -87,7 +87,7 @@
     text-align: right;
 
     &.Show {
-      padding-bottom: 2px;
+      padding-bottom: @size-2;
     }
   }
 
@@ -129,6 +129,37 @@
   .MarketRowContent {
     > div {
       padding: @size-8 0 @size-8 @size-12;
+    }
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .MarketRow {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .MarketRowContent {
+    > div {
+      > span {
+        .text-12-semi-bold;
+      }
+    }
+  }
+
+  .Arrow {
+    border: @size-1 solid var(--color-dark-text);
+    border-radius: @border-radius-default;
+    margin-top: auto;
+    margin-bottom: auto;
+
+    > span {
+      padding: @size-7 @size-5;
+
+      > svg > path {
+        stroke: var(--color-primary-text);
+      }
     }
   }
 }
