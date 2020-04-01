@@ -1,8 +1,9 @@
-import { Filter, Log, ParsedLog } from '@augurproject/types/build';
+import { Filter, Log, ParsedLog } from '@augurproject/types';
 import * as _ from 'lodash';
 import { ExtendedFilter, LogCallbackType } from '../logs/LogFilterAggregator';
 import { AbstractSyncStrategy } from './AbstractSyncStrategy';
 import { SyncStrategy } from './index';
+import { chunkRange } from '@augurproject/utils';
 
 export class BulkSyncStrategy extends AbstractSyncStrategy implements SyncStrategy {
   constructor(
@@ -20,30 +21,24 @@ export class BulkSyncStrategy extends AbstractSyncStrategy implements SyncStrate
     endBlockNumber: number,
   ): Promise<number> {
     if(!endBlockNumber) throw new Error('Cannot bulk sync forever. Please pass in an endblock');
+    if(startBlockNumber >= endBlockNumber) throw new Error('Starting point of bulk sync must be less than the endpoint')
 
     console.log(`Syncing from ${startBlockNumber} to ${endBlockNumber}`);
-
-    let highestSyncedBlockNumber = startBlockNumber;
-
-    while(highestSyncedBlockNumber < endBlockNumber) {
-      const fromBlock = highestSyncedBlockNumber;
-      const toBlock = Math.min(endBlockNumber, highestSyncedBlockNumber + this.chunkSize);
+    for(const [fromBlock, toBlock] of chunkRange(startBlockNumber, endBlockNumber, this.chunkSize)) {
       const logs = await this.getLogs({
         address: this.contractAddresses,
         fromBlock,
         toBlock,
       });
 
-      highestSyncedBlockNumber = Math.min(endBlockNumber, highestSyncedBlockNumber + this.chunkSize);
-
       const sortedLogs = _.orderBy(logs, ['blockNumber', 'logIndex'], ['asc', 'asc']);
 
-      const label = `${fromBlock}-${endBlockNumber}`
+      const label = `${fromBlock}-${toBlock}`
       console.time(label);
-      await this.onLogsAdded(highestSyncedBlockNumber, this.parseLogs(sortedLogs));
+      await this.onLogsAdded(toBlock, this.parseLogs(sortedLogs));
       console.timeEnd(label);
     }
 
-    return highestSyncedBlockNumber;
+    return endBlockNumber;
   }
 }
