@@ -10,6 +10,8 @@ import {
   FundGSNWalletButton,
   ExternalLinkButton,
 } from 'modules/common/buttons';
+import { THEMES } from 'modules/common/constants';
+import { getTheme } from 'modules/app/actions/update-app-status';
 import { AccountAddressDisplay } from 'modules/modal/common';
 import { toChecksumAddress } from 'ethereumjs-util';
 import Styles from 'modules/account/components/transactions.styles.less';
@@ -46,7 +48,7 @@ export const Transactions = ({
   localLabel
 }: TransactionsProps) => (
   <QuadBox
-    title="Transactions"
+    title={getTheme() === THEMES.TRADING ? 'Transactions': 'Your funds'}
     content={
       <div className={Styles.Content}>
         <div>

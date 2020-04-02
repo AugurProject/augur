@@ -185,6 +185,14 @@
 
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
+  .BoxHeader {
+    > div:first-of-type {
+      > div:last-of-type {
+        display: none;
+      }
+    }
+  }
+
   .BoxHeader > div:nth-of-type(2),
   .Title {
     background: var(--color-module-background);
