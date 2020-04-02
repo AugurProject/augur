@@ -687,7 +687,7 @@ export class Users {
       .equals([params.universe, params.account])
       .toArray();
     const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, 'market');
-    const shareTokenBalancesByMarketandOutcome = _.mapValues(
+    const shareTokenBalancesByMarketAndOutcome = _.mapValues(
       shareTokenBalancesByMarket,
       marketShares => {
         return _.keyBy(marketShares, 'outcome');
@@ -764,7 +764,7 @@ export class Users {
               outcomeValue,
               outcomeValue24Hr,
               new BigNumber(profitLossResult.timestamp).toNumber(),
-              shareTokenBalancesByMarketandOutcome,
+              shareTokenBalancesByMarketAndOutcome,
               !!marketFinalizedByMarket[profitLossResult.market],
             );
 
@@ -1051,7 +1051,20 @@ export class Users {
       .toArray();
     const markets = _.keyBy(marketsResponse, 'market');
 
-    const buckets = bucketRangeByInterval(startTime, endTime, periodInterval);
+    const shareTokenBalances = await db.ShareTokenBalanceChangedRollup.where(
+      '[universe+account]'
+    )
+      .equals([params.universe, params.account])
+      .toArray();
+    const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, 'market');
+    const shareTokenBalancesByMarketAndOutcome = _.mapValues(
+      shareTokenBalancesByMarket,
+      marketShares => {
+        return _.keyBy(marketShares, 'outcome');
+      }
+    );
+
+    const buckets = bucketRangeByInterval(startTime, endTime, periodInterval).reverse();
     return _.map(buckets, bucketTimestamp => {
       const tradingPositionsByMarketAndOutcome = _.mapValues(
         profitLossByMarketAndOutcome,
@@ -1063,10 +1076,11 @@ export class Users {
               const latestOutcomePLValue = getLastDocBeforeTimestamp<
                 ProfitLossChangedLog
               >(outcomePLValues, bucketTimestamp);
+              const finalized = !!marketFinalizedByMarket[marketId] && bucketTimestamp.lte(marketFinalizedByMarket[marketId].timestamp);
               let hasOutcomeValues = !!(
                 ordersFilledResultsByMarketAndOutcome[marketId] &&
                 ordersFilledResultsByMarketAndOutcome[marketId][outcome]
-              );
+              ) || finalized;
               if (!latestOutcomePLValue || !hasOutcomeValues) {
                 return {
                   timestamp: bucketTimestamp,
@@ -1085,14 +1099,22 @@ export class Users {
                   currentValue: '0',
                 };
               }
-              const outcomeValues =
+              let outcomeValue = new BigNumber(marketDoc.prices[0]);
+              if (finalized) {
+                outcomeValue = new BigNumber(
+                  marketFinalizedByMarket[marketId].winningPayoutNumerators[
+                    new BigNumber(outcome).toNumber()
+                  ]
+                );
+              } else {
+                const outcomeValues =
                 ordersFilledResultsByMarketAndOutcome[marketId][outcome];
               const last = getLastDocBeforeTimestamp<ParsedOrderEventLog>(
                 outcomeValues,
                 bucketTimestamp);
               // if market not traded in timeframe use last pl avg price
               // if market is finalized set last price to minPrice
-              let outcomeValue = marketFinalizedByMarket[marketId]
+              outcomeValue = marketFinalizedByMarket[marketId]
                 ? new BigNumber(marketDoc.prices[0])
                 : new BigNumber(
                     last
@@ -1101,23 +1123,15 @@ export class Users {
                           10 ** 18
                         )
                   );
-              if (
-                marketFinalizedByMarket[marketId] &&
-                bucketTimestamp.lte(marketFinalizedByMarket[marketId].timestamp)
-              ) {
-                outcomeValue = new BigNumber(
-                  marketFinalizedByMarket[marketId].winningPayoutNumerators[
-                    new BigNumber(outcome).toNumber()
-                  ]
-                );
               }
+
               return getTradingPositionFromProfitLossFrame(
                 latestOutcomePLValue,
                 marketDoc,
                 outcomeValue,
                 undefined,
                 bucketTimestamp.toNumber(),
-                null,
+                finalized ? shareTokenBalancesByMarketAndOutcome : null,
                 !!marketFinalizedByMarket[marketId],
               );
             }
@@ -1166,8 +1180,8 @@ export class Users {
       }
       const negativeStartProfit: MarketTradingPosition = {
         timestamp: startProfit.timestamp,
-        realized: new BigNumber(startProfit.realized).negated().toFixed(),
-        unrealized: new BigNumber(startProfit.unrealized).negated().toFixed(),
+        realized: new BigNumber(startProfit.realized).toFixed(),
+        unrealized: new BigNumber(startProfit.unrealized).toFixed(),
         unrealized24Hr: '0',
         frozenFunds: '0',
         marketId: '',
@@ -1265,6 +1279,7 @@ function sumTradingPositions(
 
   const total = realized.plus(unrealized);
   const totalCost = realizedCost.plus(unrealizedCost);
+  summedTrade.realized = realized.toFixed();
   summedTrade.frozenFunds = frozenFunds.toFixed();
   summedTrade.total = total.toFixed();
   summedTrade.totalCost = totalCost.toFixed();
@@ -1459,7 +1474,7 @@ function getTradingPositionFromProfitLossFrame(
   onChainOutcomeValue: BigNumber,
   onChain24HrOutcomeValue: BigNumber | undefined,
   timestamp: number,
-  shareTokenBalancesByMarketandOutcome,
+  shareTokenBalancesByMarketAndOutcome,
   finalized: boolean,
 ): TradingPosition {
   const minPrice = new BigNumber(marketDoc.prices[0]);
@@ -1474,14 +1489,14 @@ function getTradingPositionFromProfitLossFrame(
   const onChainRealizedCost = new BigNumber(profitLossFrame.realizedCost).div(10**18);
   let onChainRawPosition = new BigNumber(0);
   if (
-    shareTokenBalancesByMarketandOutcome &&
-    shareTokenBalancesByMarketandOutcome[marketDoc.market] &&
-    shareTokenBalancesByMarketandOutcome[marketDoc.market][
+    shareTokenBalancesByMarketAndOutcome &&
+    shareTokenBalancesByMarketAndOutcome[marketDoc.market] &&
+    shareTokenBalancesByMarketAndOutcome[marketDoc.market][
       profitLossFrame.outcome
     ]
   ) {
     onChainRawPosition = new BigNumber(
-      shareTokenBalancesByMarketandOutcome[marketDoc.market][
+      shareTokenBalancesByMarketAndOutcome[marketDoc.market][
         profitLossFrame.outcome
       ].balance
     );
