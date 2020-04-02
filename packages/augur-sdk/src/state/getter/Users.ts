@@ -965,9 +965,29 @@ export class Users {
       _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
     );
 
+    const marketFinalizedResults = await db.MarketFinalized.where('market')
+      .anyOf(_.map(allProfitLossResults, 'market'))
+      .toArray();
+    const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
+    const marketsData = await db.Markets.where('market')
+      .anyOf(_.map(allProfitLossResults, 'market'))
+      .toArray();
+    const markets = _.keyBy(marketsData, 'market');
+
     const frozenFunds = _.reduce(
       allProfitLossResults,
       (value, tradingPosition) => {
+        if (marketFinalizedByMarket[tradingPosition.market]) {
+          const marketDoc = markets[tradingPosition.market];
+          const isShort = new BigNumber(tradingPosition.netPosition).isNegative();
+          const positionWinningOutcome = marketFinalizedByMarket[tradingPosition.market].winningPayoutNumerators[
+            new BigNumber(tradingPosition.outcome).toNumber()
+          ]
+          const loser =
+            (isShort && positionWinningOutcome === marketDoc.numTicks) ||
+            (!isShort && positionWinningOutcome === '0x00');
+          if (loser) return value;
+        }
         return value.plus(tradingPosition.frozenFunds);
       },
       new BigNumber(0)

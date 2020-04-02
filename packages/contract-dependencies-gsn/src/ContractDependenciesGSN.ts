@@ -244,6 +244,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     const signerEthBalance = await this.provider.getBalance(await this.signer.getAddress());
     const paymentData = await this.getTransactionPaymentData(tx);
     if (this.useWallet) {
+      console.log('Transaction Payment (DAI)', (paymentData.relayerDaiPayment.dividedBy(10 ** 18)).toFixed());
       tx = this.convertToWalletTx(tx, new ethers.utils.BigNumber(paymentData.relayerDaiPayment.toFixed()));
     }
 
@@ -256,6 +257,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     // Just use normal signing/sending if the signer has sufficient ETH or if we're not using the relay
     const gasPrice = await this.provider.getGasPrice();
     const ethCost = paymentData.gasCost.multipliedBy(gasPrice.toString());
+    console.log('ETH Cost', String(ethCost.dividedBy(10 ** 18)));
     if (!this.useRelay || signerEthBalance.gt(ethCost.toString())) {
       tx.gasPrice = gasPrice;
       tx.gasLimit = new ethers.utils.BigNumber(gasLimit.decimalPlaces(0).toString());
