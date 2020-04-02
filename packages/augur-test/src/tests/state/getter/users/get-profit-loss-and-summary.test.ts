@@ -43,30 +43,30 @@ describe('State API :: Users :: ', () => {
         outcome: YES,
         quantity: 10,
         price: 0.5,
-        realizedPL: 0,
+        realizedPL: 0.4697,
         market: market1,
         timestamp: startTime.toNumber(),
-        unrealizedPL: 0,
+        unrealizedPL: -1.5,
       },
       {
         direction: LONG,
         outcome: YES,
         quantity: 10,
         price: 0.3,
-        realizedPL: 0,
+        realizedPL: 0.4697,
         market: market1,
         timestamp: startTime.plus(day * 2).toNumber(),
-        unrealizedPL: -2,
+        unrealizedPL: -1.5,
       },
       {
         direction: LONG,
         outcome: YES,
         quantity: 10,
         price: 0.3,
-        realizedPL: 0,
+        realizedPL: 0.4697,
         market: market2,
         timestamp: startTime.plus(30 * day).toNumber(),
-        unrealizedPL: -2,
+        unrealizedPL: -1.5,
       },
       {
         direction: SHORT,
@@ -82,6 +82,7 @@ describe('State API :: Users :: ', () => {
 
     for (const trade of trades) {
       await john.setTimestamp(new BigNumber(trade.timestamp));
+      console.log('doing trade', trade.outcome, trade.price, trade.realizedPL);
       await doTrade(john, mary, trade, trade.market);
     }
 
@@ -113,13 +114,17 @@ describe('State API :: Users :: ', () => {
 
     const oneDayPLSummary = profitLossSummary['1'];
     const thirtyDayPLSummary = profitLossSummary['30'];
-
+    console.log('bob 0');
     await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(trades[3].realizedPL);
+    console.log('bob 1');
     await expect(Number.parseFloat(oneDayPLSummary.unrealized)).toEqual(0.5);
-    await expect(Number.parseFloat(oneDayPLSummary.frozenFunds)).toEqual(1.5);
-
+    console.log('bob 2');
+    await expect(Number.parseFloat(oneDayPLSummary.frozenFunds)).toEqual(3);
+    console.log('bob 3');
     await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(trades[3].realizedPL);
-    await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(0.5);
-    await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(9.5);
+    console.log('bob 4');
+    await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(-3.5);
+    console.log('bob 5');
+    await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(8);
   });
 });
