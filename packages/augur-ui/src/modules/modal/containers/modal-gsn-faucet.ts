@@ -21,7 +21,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  fundGsnWallet: (address) => fundGsnWallet(address),
+  fundGsnWallet: () => fundGsnWallet(),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -34,7 +34,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     {
       text: 'Fund GSN Wallet',
       action: () => {
-        dP.fundGsnWallet(sP.signingWallet, sP.gsnWallet);
+        dP.fundGsnWallet();
         dP.closeModal();
       },
     },
