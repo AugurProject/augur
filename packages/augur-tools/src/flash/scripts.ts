@@ -848,15 +848,15 @@ export function addScripts(flash: FlashSession) {
 
       const orderBook = {
         2: {
-          buy: [
-              { shares: '30', price: midPrice.plus(tickSize.times(3)) },
-              { shares: '20', price: midPrice.plus(tickSize.times(2)) },
-              { shares: '10', price: midPrice.plus(tickSize) },
-          ],
           sell: [
-              { shares: '10', price: midPrice.minus(tickSize) },
-              { shares: '20', price: midPrice.minus(tickSize.times(2)) },
-              { shares: '30', price: midPrice.minus(tickSize.times(3)) },
+              { shares: '3', price: midPrice.plus(tickSize.times(3)) },
+              { shares: '2', price: midPrice.plus(tickSize.times(2)) },
+              { shares: '1', price: midPrice.plus(tickSize) },
+          ],
+          buy: [
+              { shares: '1', price: midPrice.minus(tickSize) },
+              { shares: '2', price: midPrice.minus(tickSize.times(2)) },
+              { shares: '3', price: midPrice.minus(tickSize.times(3)) },
           ],
         },
       };
