@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const userFunds = state.appStatus.gsnEnabled ? createBigNumber(loginAccount.balances && loginAccount.balances.dai || ZERO) : createBigNumber(loginAccount.balances && loginAccount.balances.eth || ZERO);
   const hasForked = !!state.universe.forkingInfo;
   const migrateRep =
-    hasForked && universe.forkingInfo && universe.forkingInfo.forkingMarket === market.id;
+    hasForked && universe.forkingInfo?.forkingMarket === market.id;
   const migrateMarket =
     hasForked && !!universe.forkingInfo.winningChildUniverseId;
   const initialReport = !migrateMarket && !migrateRep;
