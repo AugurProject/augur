@@ -19369,11 +19369,6 @@ octokit-pagination-methods@^1.1.0:
   resolved "https://registry.yarnpkg.com/octokit-pagination-methods/-/octokit-pagination-methods-1.1.0.tgz#cf472edc9d551055f9ef73f6e42b4dbb4c80bea4"
   integrity sha512-fZ4qZdQ2nxJvtcasX7Ghl+WlWS/d9IgnBIwFZXVNNZUmzpno91SX5bc5vuxiuKoCtK78XxGGNuSCrDC7xYB3OQ==
 
-oddslib@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/oddslib/-/oddslib-1.0.3.tgz#0bfc9ea230e991ebc9026854dbebe91a14566453"
-  integrity sha1-C/yeojDpkevJAmhU2+vpGhRWZFM=
-
 on-finished@~2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/on-finished/-/on-finished-2.3.0.tgz#20f1336481b083cd75337992a16971aa2d906947"

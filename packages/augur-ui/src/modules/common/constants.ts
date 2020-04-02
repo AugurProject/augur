@@ -39,7 +39,7 @@ export const ODDS_TYPE = {
   DECIMAL: 'Decimal',
   FRACTIONAL: 'Fractional',
   AMERICAN: 'American',
-  PERCENT: '0% - 100%',
+  PERCENT: 'Percent',
 };
 
 export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');
@@ -722,10 +722,13 @@ export const DOWN = 'down';
 export const BETTING_LAY = 'BETTING_LAY';
 export const BETTING_BACK = 'BETTING_BACK';
 export const NONE = 'none';
+export const NEGATIVE_ONE = createBigNumber(-1, 10);
 export const ZERO = createBigNumber(0);
 export const ONE = createBigNumber(1, 10);
 export const TWO = createBigNumber(2, 10);
 export const TEN = createBigNumber(10, 10);
+export const FIFTY = createBigNumber(50, 10);
+export const HUNDRED = createBigNumber(100, 10);
 export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber('0.00000001');
 export const DISPUTE_GAS_COST = createBigNumber(480000);
