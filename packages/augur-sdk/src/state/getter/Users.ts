@@ -1051,7 +1051,20 @@ export class Users {
       .toArray();
     const markets = _.keyBy(marketsResponse, 'market');
 
-    const buckets = bucketRangeByInterval(startTime, endTime, periodInterval);
+    const shareTokenBalances = await db.ShareTokenBalanceChangedRollup.where(
+      '[universe+account]'
+    )
+      .equals([params.universe, params.account])
+      .toArray();
+    const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, 'market');
+    const shareTokenBalancesByMarketandOutcome = _.mapValues(
+      shareTokenBalancesByMarket,
+      marketShares => {
+        return _.keyBy(marketShares, 'outcome');
+      }
+    );
+
+    const buckets = bucketRangeByInterval(startTime, endTime, periodInterval).reverse();
     return _.map(buckets, bucketTimestamp => {
       const tradingPositionsByMarketAndOutcome = _.mapValues(
         profitLossByMarketAndOutcome,
@@ -1063,10 +1076,11 @@ export class Users {
               const latestOutcomePLValue = getLastDocBeforeTimestamp<
                 ProfitLossChangedLog
               >(outcomePLValues, bucketTimestamp);
+              const finalized = !!marketFinalizedByMarket[marketId] && bucketTimestamp.lte(marketFinalizedByMarket[marketId].timestamp);
               let hasOutcomeValues = !!(
                 ordersFilledResultsByMarketAndOutcome[marketId] &&
                 ordersFilledResultsByMarketAndOutcome[marketId][outcome]
-              );
+              ) || finalized;
               if (!latestOutcomePLValue || !hasOutcomeValues) {
                 return {
                   timestamp: bucketTimestamp,
@@ -1085,14 +1099,22 @@ export class Users {
                   currentValue: '0',
                 };
               }
-              const outcomeValues =
+              let outcomeValue = new BigNumber(marketDoc.prices[0]);
+              if (finalized) {
+                outcomeValue = new BigNumber(
+                  marketFinalizedByMarket[marketId].winningPayoutNumerators[
+                    new BigNumber(outcome).toNumber()
+                  ]
+                );
+              } else {
+                const outcomeValues =
                 ordersFilledResultsByMarketAndOutcome[marketId][outcome];
               const last = getLastDocBeforeTimestamp<ParsedOrderEventLog>(
                 outcomeValues,
                 bucketTimestamp);
               // if market not traded in timeframe use last pl avg price
               // if market is finalized set last price to minPrice
-              let outcomeValue = marketFinalizedByMarket[marketId]
+              outcomeValue = marketFinalizedByMarket[marketId]
                 ? new BigNumber(marketDoc.prices[0])
                 : new BigNumber(
                     last
@@ -1101,23 +1123,15 @@ export class Users {
                           10 ** 18
                         )
                   );
-              if (
-                marketFinalizedByMarket[marketId] &&
-                bucketTimestamp.lte(marketFinalizedByMarket[marketId].timestamp)
-              ) {
-                outcomeValue = new BigNumber(
-                  marketFinalizedByMarket[marketId].winningPayoutNumerators[
-                    new BigNumber(outcome).toNumber()
-                  ]
-                );
               }
+
               return getTradingPositionFromProfitLossFrame(
                 latestOutcomePLValue,
                 marketDoc,
                 outcomeValue,
                 undefined,
                 bucketTimestamp.toNumber(),
-                null,
+                finalized ? shareTokenBalancesByMarketandOutcome : null,
                 !!marketFinalizedByMarket[marketId],
               );
             }
@@ -1265,6 +1279,7 @@ function sumTradingPositions(
 
   const total = realized.plus(unrealized);
   const totalCost = realizedCost.plus(unrealizedCost);
+  summedTrade.realized = realized.toFixed();
   summedTrade.frozenFunds = frozenFunds.toFixed();
   summedTrade.total = total.toFixed();
   summedTrade.totalCost = totalCost.toFixed();
