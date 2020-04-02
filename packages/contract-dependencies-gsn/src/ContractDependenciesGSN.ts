@@ -255,8 +255,8 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
     // Just use normal signing/sending if the signer has sufficient ETH or if we're not using the relay
     const gasPrice = await this.provider.getGasPrice();
-    const ethCost = paymentData.gasCost.multipliedBy(gasPrice.toNumber());
-    if (!this.useRelay || signerEthBalance.gt(ethCost.toNumber())) {
+    const ethCost = paymentData.gasCost.multipliedBy(gasPrice.toString());
+    if (!this.useRelay || signerEthBalance.gt(ethCost.toString())) {
       tx.gasPrice = gasPrice;
       tx.gasLimit = new ethers.utils.BigNumber(gasLimit.decimalPlaces(0).toString());
       return super.sendTransaction(tx, txMetadata);
