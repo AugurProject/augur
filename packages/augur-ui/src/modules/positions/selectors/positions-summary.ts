@@ -9,7 +9,7 @@ import {
   BINARY_CATEGORICAL_FORMAT_OPTIONS,
   SCALAR,
 } from 'modules/common/constants';
-import { formatDai, formatPercent, formatShares } from 'utils/format-number';
+import { formatDai, formatPercent, formatShares, formatNone } from 'utils/format-number';
 
 export const positionSummary = memoize(
   (adjustedPosition, outcome, marketType) => {
@@ -67,7 +67,7 @@ export const positionSummary = memoize(
       ),
       totalCost: formatDai(unrealizedCost),
       totalValue: formatDai(currentValue),
-      lastPrice: formatDai(outcome.price),
+      lastPrice: !!outcome.price ? formatDai(outcome.price) : formatNone(),
       totalReturns: formatDai(total || ZERO),
       valueChange: formatPercent(
         timesHundred(unrealizedRevenue24hChangePercent),
