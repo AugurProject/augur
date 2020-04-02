@@ -400,6 +400,7 @@ export function addScripts(flash: FlashSession) {
       }
       if (cat) {
         await this.call('create-reasonable-categorical-market', {outcomes: 'first,second,third,fourth,fifth'});
+        await this.call('create-reasonable-categorical-market', {outcomes: 'first,second,third,fourth,fifth', title});
       }
       if (scalar) {
         await this.call('create-reasonable-scalar-market', {title});
