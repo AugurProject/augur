@@ -4,17 +4,10 @@ from utils import longToHexString, EtherDelta, TokenDelta, PrintGasUsed, BuyWith
 from reporting_utils import generateFees
 
 
-@mark.parametrize('afterMkrShutdown', [
-    True,
-    False
-])
-def test_participation_tokens(afterMkrShutdown, kitchenSinkFixture, universe, market, cash):
+def test_participation_tokens(kitchenSinkFixture, universe, market, cash):
     reputationToken = kitchenSinkFixture.applySignature("ReputationToken", universe.getReputationToken())
 
     disputeWindow = kitchenSinkFixture.applySignature("DisputeWindow", universe.getOrCreateNextDisputeWindow(False))
-
-    if (afterMkrShutdown):
-        kitchenSinkFixture.MKRShutdown()
 
     # Generate Fees
     generateFees(kitchenSinkFixture, universe, market)

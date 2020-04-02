@@ -18,14 +18,13 @@ import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IInitialReporter.sol';
 import 'ROOT/IWarpSync.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
-import 'ROOT/CashSender.sol';
 
 
 /**
  * @title Market
  * @notice The contract which encapsulates event data and payout resolution for the event
  */
-contract Market is Initializable, Ownable, IMarket, CashSender {
+contract Market is Initializable, Ownable, IMarket {
     using SafeMathUint256 for uint256;
 
     // Constants
@@ -40,6 +39,7 @@ contract Market is Initializable, Ownable, IMarket, CashSender {
     IShareToken public shareToken;
     IAffiliateValidator affiliateValidator;
     IAffiliates affiliates;
+    ICash public cash;
 
     // Attributes
     uint256 private numTicks;
@@ -77,10 +77,11 @@ contract Market is Initializable, Ownable, IMarket, CashSender {
         affiliates = IAffiliates(_augur.lookup("Affiliates"));
         require(affiliates != IAffiliates(0));
         require(affiliateValidator == IAffiliateValidator(0) || affiliates.affiliateValidators(address(_affiliateValidator)));
+        cash = ICash(augur.lookup("Cash"));
+        require(cash != ICash(0));
         owner = _creator;
         repBondOwner = owner;
-        initializeCashSender(_augur.lookup("DaiVat"), _augur.lookup("Cash"));
-        cashApprove(address(_augur), MAX_APPROVAL_AMOUNT);
+        cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
         assessFees();
         endTime = _endTime;
         numOutcomes = _numOutcomes;
@@ -97,7 +98,7 @@ contract Market is Initializable, Ownable, IMarket, CashSender {
         repBond = universe.getOrCacheMarketRepBond();
         require(getReputationToken().balanceOf(address(this)) >= repBond);
         if (owner != address(warpSync)) {
-            validityBondAttoCash = cashBalance(address(this));
+            validityBondAttoCash = cash.balanceOf(address(this));
             require(validityBondAttoCash >= universe.getOrCacheValidityBond());
             universe.deposit(address(this), validityBondAttoCash, address(this));
         }
