@@ -970,7 +970,7 @@ export class Users {
       .toArray();
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
     const marketsData = await db.Markets.where('market')
-      .anyOf(_.map(allProfitLossResults, 'market'))
+      .anyOf(_.map(marketFinalizedResults, 'market'))
       .toArray();
     const markets = _.keyBy(marketsData, 'market');
 
