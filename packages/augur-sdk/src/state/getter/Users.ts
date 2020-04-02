@@ -1180,8 +1180,8 @@ export class Users {
       }
       const negativeStartProfit: MarketTradingPosition = {
         timestamp: startProfit.timestamp,
-        realized: new BigNumber(startProfit.realized).negated().toFixed(),
-        unrealized: new BigNumber(startProfit.unrealized).negated().toFixed(),
+        realized: new BigNumber(startProfit.realized).toFixed(),
+        unrealized: new BigNumber(startProfit.unrealized).toFixed(),
         unrealized24Hr: '0',
         frozenFunds: '0',
         marketId: '',
