@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   title: 'Fund GSN Wallet',
   description: [
-    'Get testnet DAI, it will be sent to your connected GSN wallet. Takes 2 transactions',
+    'Get testnet DAI, it will be sent to your connected GSN wallet',
   ],
   closeAction: () => dP.closeModal(),
   buttons: [
