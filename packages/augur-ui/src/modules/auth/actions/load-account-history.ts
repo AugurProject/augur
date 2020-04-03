@@ -9,6 +9,7 @@ import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
+import { loadAccountReportingHistory } from './load-account-reporting';
 
 export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -38,9 +39,10 @@ async function loadTransactions(
 
   dispatch(updateMarketsData(marketsDataById));
   if (userData.userOpenOrders) dispatch(refreshUserOpenOrders(userData.userOpenOrders.orders));
-  dispatch(updateLoginAccount({ reporting: userData.userStakedRep }));
   if (userData.userPositions) dispatch(userPositionProcessing(userData.userPositions));
   if (userData.userPositionTotals) dispatch(updateLoginAccount(userData.userPositionTotals));
+  if (userData.userStakedRep) dispatch(loadAccountReportingHistory());
+
   if (userData.userOpenOrders)
     dispatch(
       updateLoginAccount({
