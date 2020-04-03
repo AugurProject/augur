@@ -1845,10 +1845,6 @@ export function addScripts(flash: FlashSession) {
       if (amount === '0') return this.log('amount of REP is required');
       const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
 
-      if (!this.sdkReady) {
-        return this.log("SDK hasn't fully syncd, need to wait");
-      }
-
       const market: ContractInterfaces.Market = await user.getMarketContract(
         marketId
       );
