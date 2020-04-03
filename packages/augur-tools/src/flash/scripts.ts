@@ -249,6 +249,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
+      this.config.gsn.enabled = false;
       const user = await this.ensureUser();
 
       const target = String(args.target);
