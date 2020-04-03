@@ -969,14 +969,51 @@ export class Users {
       .anyOf(_.map(allProfitLossResults, 'market'))
       .toArray();
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
+    const finalizedMarketIds = _.map(marketFinalizedResults, 'market');
     const marketsData = await db.Markets.where('market')
       .anyOf(_.map(marketFinalizedResults, 'market'))
       .toArray();
     const markets = _.keyBy(marketsData, 'market');
-
+    // if winning position value is less than frozen funds, market position is complete loss
+    // if complete loss then ignore profit loss in frozen funds
+    const ignoreTotalLossMarkets = _.reduce(
+      _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values)),
+      (result, marketPL) => {
+        const market = _.first(marketPL).market;
+        if (!finalizedMarketIds.includes(market)) return result;
+        const marketDoc = markets[market];
+        const payoutNumerators = marketDoc.winningPayoutNumerators;
+        const totalPositionValue = _.reduce(
+          marketPL, (sum, pl) => {
+            const onChainAvgPrice = new BigNumber(pl.avgPrice).div(10**18);
+            const onChainNetPosition = new BigNumber(pl.netPosition);
+            const winningOutcomeValue = new BigNumber(
+              payoutNumerators[
+                new BigNumber(pl.outcome).toNumber()
+              ]
+            );
+            const positionValue = onChainNetPosition
+              .abs()
+              .multipliedBy(
+                onChainNetPosition.isNegative()
+                  ? onChainAvgPrice.minus(winningOutcomeValue)
+                  : winningOutcomeValue.minus(onChainAvgPrice)
+              );
+            return sum.plus(positionValue);
+          }, new BigNumber(0));
+        const totalFrozenFunds = _.reduce(
+          marketPL, (sum, pl) => sum.plus(pl.frozenFunds), new BigNumber(0)
+        );
+        return totalPositionValue.lte(totalFrozenFunds.dividedBy(10 ** 18))
+          ? [...result, market]
+          : result;
+      },
+      []
+    );
     const frozenFunds = _.reduce(
       allProfitLossResults,
       (value, tradingPosition) => {
+        if (ignoreTotalLossMarkets.includes(tradingPosition.market)) return value;
         if (marketFinalizedByMarket[tradingPosition.market]) {
           const marketDoc = markets[tradingPosition.market];
           const isShort = new BigNumber(tradingPosition.netPosition).isNegative();
@@ -1583,7 +1620,7 @@ function getTradingPositionFromProfitLossFrame(
       onChainNetPosition.isNegative() ? shortPrice : lastTradePrice
     );
 
-  const totalCost = unrealizedCost.plus(realizedCost);
+  let totalCost = unrealizedCost.plus(realizedCost);
   if (finalized) {
     realizedCost = unrealizedCost.plus(realizedCost);
     realizedProfit = realizedProfit.plus(unrealized);
