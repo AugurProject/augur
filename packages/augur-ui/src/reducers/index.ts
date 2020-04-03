@@ -27,6 +27,7 @@ import drafts from 'modules/create-market/reducers/drafts';
 import marketsList from 'modules/markets-list/reducers/markets-list';
 import reportingListState from 'modules/reporting/reducers/reporting-list-state';
 import orderBooks from 'modules/orders/reducers/order-books'
+import initialized3box from 'modules/global-chat/reducers/initialized-3box'
 import {
   LoginAccount,
   AccountPosition,
@@ -86,7 +87,8 @@ export function createReducer() {
     marketsList,
     reportingListState,
     analytics,
-    orderBooks
+    orderBooks,
+    initialized3box
   };
 }
 
@@ -122,4 +124,5 @@ export interface AppStateInterface {
   reportingListState: ReportingListState;
   analytics: Analytics;
   orderBooks: OrderBooks;
+  initialized3box: any;
 }

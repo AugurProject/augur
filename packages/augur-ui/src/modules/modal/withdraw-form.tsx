@@ -85,10 +85,11 @@ export class WithdrawForm extends Component<
 
   dropdownChange = (value: string) => {
     const { amount } = this.state;
-    this.setState({ currency: value });
-    if (amount.length) {
-      this.amountChange(amount);
-    }
+    this.setState({ currency: value }, () => {
+      if (amount.length) {
+        this.amountChange(amount);
+      }
+    });
   };
 
   handleMax = () => {
