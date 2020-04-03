@@ -2958,7 +2958,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#AugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#AugurWallet.giveRegistryEth(uint256)"><code class="function-signature">giveRegistryEth(uint256 _amount)</code></a></li><li><a href="#AugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li><li><a href="#AugurWallet.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#AugurWallet.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes _message)</code></a></li><li><a href="#AugurWallet.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#AugurWallet.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#AugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#AugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li><li><a href="#AugurWallet.withdrawAllFundsAsDai(address,uint256)"><code class="function-signature">withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai)</code></a></li><li><a href="#AugurWallet.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWallet.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#AugurWallet.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes _message)</code></a></li><li><a href="#AugurWallet.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#AugurWallet.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
@@ -2974,13 +2974,19 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AugurWallet.giveRegistryEth(uint256)"></a><code class="function-signature">giveRegistryEth(uint256 _amount)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
 <h4><a class="anchor" aria-hidden="true" id="AugurWallet.executeTransaction(address,bytes,uint256)"></a><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.withdrawAllFundsAsDai(address,uint256)"></a><code class="function-signature">withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.getAmountOut(uint256,uint256,uint256)"></a><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3018,7 +3024,7 @@ Returns hash of a message that can be signed by owners.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#IAugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#IAugurWallet.giveRegistryEth(uint256)"><code class="function-signature">giveRegistryEth(uint256 _amount)</code></a></li><li><a href="#IAugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#IAugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#IAugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li></ul></div>
 
 
 
@@ -3029,12 +3035,6 @@ Returns hash of a message that can be signed by owners.
 
 
 <h4><a class="anchor" aria-hidden="true" id="IAugurWallet.transferCash(address,uint256)"></a><code class="function-signature">transferCash(address _to, uint256 _amount)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.giveRegistryEth(uint256)"></a><code class="function-signature">giveRegistryEth(uint256 _amount)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -3052,11 +3052,121 @@ Returns hash of a message that can be signed by owners.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWalletRegistry.walletTransferedOwnership(address,address)"><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWalletRegistry.walletTransferedOwnership(address,address)"><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#IAugurWalletRegistry.ethExchange()"><code class="function-signature">ethExchange()</code></a></li><li><a href="#IAugurWalletRegistry.WETH()"><code class="function-signature">WETH()</code></a></li><li><a href="#IAugurWalletRegistry.token0IsCash()"><code class="function-signature">token0IsCash()</code></a></li></ul></div>
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="IAugurWalletRegistry.walletTransferedOwnership(address,address)"></a><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurWalletRegistry.ethExchange()"></a><code class="function-signature">ethExchange() <span class="return-arrow">→</span> <span class="return-type">contract IUniswapV2Exchange</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurWalletRegistry.WETH()"></a><code class="function-signature">WETH() <span class="return-arrow">→</span> <span class="return-type">contract IWETH</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurWalletRegistry.token0IsCash()"></a><code class="function-signature">token0IsCash() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+### `IUniswapV2Factory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniswapV2Factory.feeTo()"><code class="function-signature">feeTo()</code></a></li><li><a href="#IUniswapV2Factory.feeToSetter()"><code class="function-signature">feeToSetter()</code></a></li><li><a href="#IUniswapV2Factory.getExchange(address,address)"><code class="function-signature">getExchange(address tokenA, address tokenB)</code></a></li><li><a href="#IUniswapV2Factory.allExchanges(uint256)"><code class="function-signature">allExchanges(uint256)</code></a></li><li><a href="#IUniswapV2Factory.allExchangesLength()"><code class="function-signature">allExchangesLength()</code></a></li><li><a href="#IUniswapV2Factory.createExchange(address,address)"><code class="function-signature">createExchange(address tokenA, address tokenB)</code></a></li><li><a href="#IUniswapV2Factory.setFeeTo(address)"><code class="function-signature">setFeeTo(address)</code></a></li><li><a href="#IUniswapV2Factory.setFeeToSetter(address)"><code class="function-signature">setFeeToSetter(address)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#IUniswapV2Factory.ExchangeCreated(address,address,address,uint256)"><code class="function-signature">ExchangeCreated(address token0, address token1, address exchange, uint256)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.feeTo()"></a><code class="function-signature">feeTo() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.feeToSetter()"></a><code class="function-signature">feeToSetter() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.getExchange(address,address)"></a><code class="function-signature">getExchange(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.allExchanges(uint256)"></a><code class="function-signature">allExchanges(uint256) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.allExchangesLength()"></a><code class="function-signature">allExchangesLength() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.createExchange(address,address)"></a><code class="function-signature">createExchange(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.setFeeTo(address)"></a><code class="function-signature">setFeeTo(address)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.setFeeToSetter(address)"></a><code class="function-signature">setFeeToSetter(address)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.ExchangeCreated(address,address,address,uint256)"></a><code class="function-signature">ExchangeCreated(address token0, address token1, address exchange, uint256)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `IWETH`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IWETH.deposit()"><code class="function-signature">deposit()</code></a></li><li><a href="#IWETH.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 value)</code></a></li><li><a href="#IWETH.withdraw(uint256)"><code class="function-signature">withdraw(uint256)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IWETH.deposit()"></a><code class="function-signature">deposit()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IWETH.transfer(address,uint256)"></a><code class="function-signature">transfer(address to, uint256 value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IWETH.withdraw(uint256)"></a><code class="function-signature">withdraw(uint256)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -3178,7 +3288,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32,uint256,uint256,bool)"></a><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint, uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai, bool _revertOnFailure)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32,uint256,uint256,bool)"></a><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint, uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai, bool _revertOnFailure)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -3661,98 +3771,6 @@ not including any gas used by {postRelayedCall} itself. `preRetVal` is {preRelay
 {postRelayedCall} is called with 100k gas: if it runs out during execution or otherwise reverts, the relayed call
 and the call to {preRelayedCall} will be reverted retroactively, but the recipient will still be charged for the
 transaction&#x27;s cost.
-
-
-
-
-
-### `IUniswapV2Factory`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniswapV2Factory.feeTo()"><code class="function-signature">feeTo()</code></a></li><li><a href="#IUniswapV2Factory.feeToSetter()"><code class="function-signature">feeToSetter()</code></a></li><li><a href="#IUniswapV2Factory.getExchange(address,address)"><code class="function-signature">getExchange(address tokenA, address tokenB)</code></a></li><li><a href="#IUniswapV2Factory.allExchanges(uint256)"><code class="function-signature">allExchanges(uint256)</code></a></li><li><a href="#IUniswapV2Factory.allExchangesLength()"><code class="function-signature">allExchangesLength()</code></a></li><li><a href="#IUniswapV2Factory.createExchange(address,address)"><code class="function-signature">createExchange(address tokenA, address tokenB)</code></a></li><li><a href="#IUniswapV2Factory.setFeeTo(address)"><code class="function-signature">setFeeTo(address)</code></a></li><li><a href="#IUniswapV2Factory.setFeeToSetter(address)"><code class="function-signature">setFeeToSetter(address)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#IUniswapV2Factory.ExchangeCreated(address,address,address,uint256)"><code class="function-signature">ExchangeCreated(address token0, address token1, address exchange, uint256)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.feeTo()"></a><code class="function-signature">feeTo() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.feeToSetter()"></a><code class="function-signature">feeToSetter() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.getExchange(address,address)"></a><code class="function-signature">getExchange(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.allExchanges(uint256)"></a><code class="function-signature">allExchanges(uint256) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.allExchangesLength()"></a><code class="function-signature">allExchangesLength() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.createExchange(address,address)"></a><code class="function-signature">createExchange(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.setFeeTo(address)"></a><code class="function-signature">setFeeTo(address)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.setFeeToSetter(address)"></a><code class="function-signature">setFeeToSetter(address)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.ExchangeCreated(address,address,address,uint256)"></a><code class="function-signature">ExchangeCreated(address token0, address token1, address exchange, uint256)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-### `IWETH`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IWETH.deposit()"><code class="function-signature">deposit()</code></a></li><li><a href="#IWETH.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 value)</code></a></li><li><a href="#IWETH.withdraw(uint256)"><code class="function-signature">withdraw(uint256)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IWETH.deposit()"></a><code class="function-signature">deposit()</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IWETH.transfer(address,uint256)"></a><code class="function-signature">transfer(address to, uint256 value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IWETH.withdraw(uint256)"></a><code class="function-signature">withdraw(uint256)</code><span class="function-visibility">external</span></h4>
-
-
 
 
 

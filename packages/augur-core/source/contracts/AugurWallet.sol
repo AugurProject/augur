@@ -7,9 +7,14 @@ import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/IAugurWalletRegistry.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
+import 'ROOT/uniswap/interfaces/IWETH.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
 contract AugurWallet is Initializable, Ownable, IAugurWallet {
+    using SafeMathUint256  for uint256;
 
     IAugurWalletRegistry public registry;
 
@@ -56,16 +61,35 @@ contract AugurWallet is Initializable, Ownable, IAugurWallet {
         cash.transfer(_to, _amount);
     }
 
-    function giveRegistryEth(uint256 _amount) external {
-        require(msg.sender == address(registry));
-        (bool _success,) = msg.sender.call.value(_amount)("");
-        require(_success);
-    }
-
     function executeTransaction(address _to, bytes calldata _data, uint256 _value) external returns (bool) {
         require(msg.sender == address(registry));
         (bool _didSucceed, bytes memory _resultData) = address(_to).call.value(_value)(_data);
         return _didSucceed;
+    }
+
+    function withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai) external payable onlyOwner returns (bool) {
+        IUniswapV2Exchange _ethExchange = registry.ethExchange();
+        IWETH _weth = registry.WETH();
+        bool _token0IsCash = registry.token0IsCash();
+        uint256 _ethAmount = address(this).balance;
+        (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = _ethExchange.getReserves();
+        uint256 _cashAmount = getAmountOut(_ethAmount, _token0IsCash ? _reserve1 : _reserve0, _token0IsCash ? _reserve0 : _reserve1);
+        uint256 _exchangeRate = _cashAmount.mul(10**18).div(_ethAmount);
+        require(_minExchangeRateInDai > _exchangeRate, "Exchange rate too low");
+        _weth.deposit.value(_ethAmount)();
+        _weth.transfer(address(_ethExchange), _ethAmount);
+        _ethExchange.swap(_token0IsCash ? _cashAmount : 0, _token0IsCash ? 0 : _cashAmount, address(this), "");
+        cash.transfer(_destination, cash.balanceOf(address(this)));
+        return true;
+    }
+
+    function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) public pure returns (uint amountOut) {
+        require(amountIn > 0);
+        require(reserveIn > 0 && reserveOut > 0);
+        uint amountInWithFee = amountIn.mul(997);
+        uint numerator = amountInWithFee.mul(reserveOut);
+        uint denominator = reserveIn.mul(1000).add(amountInWithFee);
+        amountOut = numerator / denominator;
     }
 
     function isValidSignature(bytes calldata _data, bytes calldata _signature) external view returns (bytes4) {
