@@ -492,7 +492,7 @@ export class Markets {
         .and(item => !params.includeWarpSyncMarkets && !item.isWarpSync)
         .count()
     : await db.Markets.count();
-    
+
     let marketIds: string[] = [];
     const useMarketIds = params.search || (params.categories && params.categories.length > 0) || params.userPortfolioAddress;
     let useCreator = false;
@@ -562,7 +562,7 @@ export class Markets {
       const warpSyncMarket = await db.Markets.where("market").anyOf(marketId).first();
       if (warpSyncMarket && warpSyncMarket.tentativeWinningPayoutNumerators) {
         const tentativeWinningHash = augur.getWarpSyncHashFromPayout(warpSyncMarket.tentativeWinningPayoutNumerators.map(p => new BigNumber(p)));
-        const currentWarpSyncHash = await db.warpSync.table.orderBy('end.number').last();
+        const currentWarpSyncHash = await db.warpCheckpoints.table.orderBy('end.number').last();
         tentativeWinningHashMatch = tentativeWinningHash && currentWarpSyncHash ? tentativeWinningHash === currentWarpSyncHash.hash : false;
       }
     }

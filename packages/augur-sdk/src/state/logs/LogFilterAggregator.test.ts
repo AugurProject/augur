@@ -131,6 +131,15 @@ describe('LogFilterAggregator', () => {
           }),
         ]));
       });
+
+      describe('unlistenForEvent', () => {
+        test('should remove the listener', async () => {
+          logFilterAggregator.unlistenForEvent('SomeEvent', onNewLogCallback);
+
+          await logFilterAggregator.onLogsAdded(1234, sampleLogs);
+          expect(onNewLogCallback).not.toHaveBeenCalled();
+        });
+      });
     });
 
     describe('multiple topics', () => {
@@ -154,6 +163,18 @@ describe('LogFilterAggregator', () => {
             transactionHash: 'HASHONE',
           }),
         ]));
+      });
+
+      describe('unlistenForEvent', () => {
+        test('should remove the listener', async () => {
+          logFilterAggregator.unlistenForEvent(
+            ['SomeEvent', 'SomeOtherEvent', 'SomeEventWithoutLogs'],
+            onNewLogCallback
+          );
+
+          await logFilterAggregator.onLogsAdded(1234, sampleLogs);
+          expect(onNewLogCallback).not.toHaveBeenCalled();
+        });
       });
     });
 
