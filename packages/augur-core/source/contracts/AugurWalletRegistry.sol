@@ -138,11 +138,6 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     function getEthFromWallet(IAugurWallet _wallet, uint256 _cashAmount) private {
         (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = ethExchange.getReserves();
         uint256 _ethAmount = getAmountOut(_cashAmount, token0IsCash ? _reserve0 : _reserve1, token0IsCash ? _reserve1 : _reserve0);
-        // If the wallet has sufficient ETH just make it send it to us, otherwise do a swap using its Cash
-        if (address(_wallet).balance >= _ethAmount) {
-            _wallet.giveRegistryEth(_ethAmount);
-            return;
-        }
         _wallet.transferCash(address(ethExchange), _cashAmount);
         ethExchange.swap(token0IsCash ? 0 : _ethAmount, token0IsCash ? _ethAmount : 0, address(this), "");
         WETH.withdraw(_ethAmount);
@@ -230,7 +225,11 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         return wallets[_account];
     }
 
-    function executeWalletTransaction(address _to, bytes memory _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint, uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai, bool _revertOnFailure) public {
+    // 1. Create a user's wallet if it does not exist
+    // 2. Get funds from the wallet to compensate this contract for paying the relayer
+    // 3. Execute the transaction and return success status, or revert if appropriate
+    // 4. Fund the signer with ETH as specified
+    function executeWalletTransaction(address _to, bytes calldata _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint, uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai, bool _revertOnFailure) external {
         address _user = _msgSender();
         IAugurWallet _wallet = getWallet(_user);
         if (_wallet == IAugurWallet(0)) {

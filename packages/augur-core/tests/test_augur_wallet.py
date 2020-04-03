@@ -2,7 +2,7 @@
 
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture as pytest_fixture
-from utils import nullAddress, longTo32Bytes, AssertLog
+from utils import nullAddress, longTo32Bytes, AssertLog, PrintGasUsed
 from old_eth_utils import ecsign, sha3, normalize_key, int_to_32bytearray, bytearray_to_bytestr, zpad
 
 RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494"
@@ -386,8 +386,24 @@ def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, ca
 
     assert augurWalletRegistry.getWallet(account) == walletAddress
     assert reputationToken.balanceOf(walletAddress) == initialRep + repAmount
-    assert contractsFixture.ethBalance(account) == desiredSignerBalance
+    signerEthBalance = contractsFixture.ethBalance(account)
+    assert signerEthBalance == desiredSignerBalance
 
+    # Now we'll tests the method to extract all ETH & CASH funds, signer and wallet, out to a specified address
+    walletCashBalance = cash.balanceOf(walletAddress)
+    assert walletCashBalance > 0
+
+    destinationAddress = contractsFixture.accounts[4]
+    minExchangeRate = 10**24
+    wallet = contractsFixture.applySignature("AugurWallet", walletAddress)
+    txCost = 1600000000
+    sendableEth = signerEthBalance - txCost
+    with PrintGasUsed(contractsFixture, "WITHDRAW WALLET FUNDS", 0):
+        assert wallet.withdrawAllFundsAsDai(destinationAddress, minExchangeRate, value=sendableEth)
+    assert cash.balanceOf(walletAddress) == 0
+    assert cash.balanceOf(destinationAddress) > walletCashBalance
+    assert contractsFixture.ethBalance(account) < txCost
+    
 
 def signMessage(messageHash, private_key):
     key = normalize_key(private_key.to_hex())
