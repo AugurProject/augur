@@ -7,7 +7,7 @@ import {
   MarketTypeLabel,
   RedFlag,
   TemplateShield,
-  Archived
+  Archived,
 } from 'modules/common/labels';
 import {
   HoverIcon,
@@ -283,7 +283,11 @@ export default class MarketCard extends React.Component<
               <LabelValue
                 condensed
                 label="Total Dispute Stake"
-                value={formatAttoRep(disputeInfo.stakeCompletedTotal).full}
+                value={
+                  formatAttoRep(disputeInfo.stakeCompletedTotal, {
+                    zeroStyled: false,
+                  }).full
+                }
               />
             )}
             <div className={Styles.hoverIconTray}>
