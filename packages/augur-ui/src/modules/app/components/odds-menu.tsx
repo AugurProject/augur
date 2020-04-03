@@ -47,7 +47,7 @@ export const OddsMenu = () => {
           <button
             onClick={() => Odds[3] !== oddsType && changeOddsType(Odds[3])}
           >
-            {Odds[3]} {CheckMark}
+            0% - 100% {CheckMark}
           </button>
         </li>
       </ul>
