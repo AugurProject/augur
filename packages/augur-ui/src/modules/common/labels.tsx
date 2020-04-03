@@ -483,10 +483,7 @@ export const SizableValueLabel = (props: SizableValueLabelProps) => (
     })}
   >
     <ValueLabel
-      value={props.value}
-      keyId={props.keyId}
-      showDenomination={props.showDenomination}
-      showEmptyDash={props.showEmptyDash}
+      {...props}
     />
   </span>
 );
