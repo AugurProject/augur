@@ -4,15 +4,17 @@ import Styles from 'modules/global-chat/components/global-chat.styles.less';
 import ChatBox from '3box-chatbox-react';
 import { use3box } from 'utils/use-3box';
 import { SecondaryButton } from 'modules/common/buttons';
+import { THEMES } from 'modules/common/constants';
 
 export interface GlobalChatProps {
   provider: any;
-  whichChatPlugin?: string;
+  whichChatPlugin: string;
+  theme: string;
 }
 
-export const GlobalChat = ({ provider, whichChatPlugin }: GlobalChatProps) => {
+export const GlobalChat = ({ provider, whichChatPlugin, theme }: GlobalChatProps) => {
   const { activate, setActivate, address, box, isReady, profile } =
-    whichChatPlugin === '3box' && use3box(provider);
+    whichChatPlugin === '3box' && use3box(provider, theme);
 
   return (
     <div className={Styles.GlobalChat}>
@@ -28,7 +30,7 @@ export const GlobalChat = ({ provider, whichChatPlugin }: GlobalChatProps) => {
           mute
           popupChat
           showEmoji
-          colorTheme="#0E0E0F"
+          colorTheme={theme !== THEMES.TRADING ? '#D1D1D9' : '#0E0E0F'}
           currentUser3BoxProfile={profile}
           agentProfile={{
             chatName: 'Global Chat',
