@@ -4,12 +4,13 @@ import Styles from 'modules/global-chat/components/global-chat.styles.less';
 import ChatBox from '3box-chatbox-react';
 import { use3box } from 'utils/use-3box';
 import { SecondaryButton } from 'modules/common/buttons';
+import { Initialized3box } from 'modules/types';
 
 export interface GlobalChatProps {
   provider: any;
   whichChatPlugin: string;
   initialize3box: Function;
-  initialized3box: object;
+  initialized3box: Initialized3box;
   isLogged: boolean;
 }
 

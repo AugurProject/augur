@@ -839,3 +839,9 @@ export interface CategoryList {
     }
   ];
 }
+
+export interface Initialized3box {
+  address: string;
+  box: any;
+  profile: object;
+}

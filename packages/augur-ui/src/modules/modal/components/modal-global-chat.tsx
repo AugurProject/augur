@@ -5,13 +5,14 @@ import Styles from 'modules/modal/modal.styles.less';
 import { use3box } from 'utils/use-3box';
 import ChatBox from '3box-chatbox-react';
 import { SecondaryButton } from 'modules/common/buttons';
+import { Initialized3box } from 'modules/types';
 
 export interface ModalGlobalChatProps {
   closeModal: Function;
   provider: any;
   whichChatPlugin: string;
   initialize3box: Function;
-  initialized3box: object;
+  initialized3box: Initialized3box;
   isLogged: boolean;
 }
 
