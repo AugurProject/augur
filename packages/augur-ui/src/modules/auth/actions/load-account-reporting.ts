@@ -8,14 +8,14 @@ import { NOTIFICATION_TYPES } from 'modules/common/constants';
 import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 
-export const loadAccountReportingHistory = () => async (
+export const loadAccountReportingHistory = (reportingData) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { universe, loginAccount, readNotifications } = getState();
   if (!loginAccount || !loginAccount.address) return;
   const Augur = augurSdk.get();
-  const reporting = await Augur.getAccountRepStakeSummary({
+  const reporting = reportingData ? reportingData : await Augur.getAccountRepStakeSummary({
     universe: universe.id,
     account: loginAccount.address,
   });
