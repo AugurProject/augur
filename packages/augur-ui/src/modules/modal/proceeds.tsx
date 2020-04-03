@@ -45,11 +45,11 @@ export const Proceeds = ({
     const timer = setTimeout(async () => {
       const transactionFee = await estimateGas();
       if (transactionFee && !!breakdown) {
-        setBreakdown([...fullBreakdown, transactionFee]);
+        setBreakdown([...breakdown, transactionFee]);
       }
-    }, 100);
+    }, 200);
     return () => clearTimeout(timer);
-  },[]);
+  },[breakdown]);
 
   return (
   <div className={Styles.Proceeds}>

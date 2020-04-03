@@ -287,7 +287,7 @@ interface TemplateShieldProps {
 }
 
 export const TemplateShield = ({ market }: TemplateShieldProps) => {
-  const yellowShield = hasTemplateTextInputs(market.template.hash);
+  const yellowShield = hasTemplateTextInputs(market.template.hash, market.marketType === CATEGORICAL);
   return (
     <>
       <label
@@ -483,10 +483,7 @@ export const SizableValueLabel = (props: SizableValueLabelProps) => (
     })}
   >
     <ValueLabel
-      value={props.value}
-      keyId={props.keyId}
-      showDenomination={props.showDenomination}
-      showEmptyDash={props.showEmptyDash}
+      {...props}
     />
   </span>
 );

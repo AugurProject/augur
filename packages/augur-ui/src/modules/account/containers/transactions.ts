@@ -10,34 +10,34 @@ import {
   MODAL_TRANSACTIONS,
   MODAL_ACCOUNT_APPROVAL,
   MODAL_GSN_FAUCET,
+  ZERO,
 } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls'
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
+import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount } = state;
-  const { meta, balances, address } = loginAccount;
+  const { meta, balances } = loginAccount;
   const signingWallet = meta.signer?._address;
   const networkId = getNetworkId();
-  const gsnEnabled = state.appStatus.gsnEnabled;
   const gsnCreated = !isGSNUnavailable(state);
 
-  const showFaucets = gsnEnabled
-    ? networkId !== NETWORK_IDS.Mainnet && gsnCreated
-    : networkId !== NETWORK_IDS.Mainnet;
+  const showFaucets = networkId !== NETWORK_IDS.Mainnet;
 
-  const localLabel = networkId !== NETWORK_IDS.Kovan ? 'Use flash to faucet DAI to address' : null;
-  const targetAddress = networkId !== NETWORK_IDS.Kovan ? address : signingWallet;
+  const localLabel = networkId !== NETWORK_IDS.Kovan ? 'Use flash to transfer ETH to address' : null;
+  const targetAddress = signingWallet;
+  const signingWalletNoEth = createBigNumber(balances.ethNonSafe).lte(ZERO);
 
   return {
     isMainnet: networkId === NETWORK_IDS.Mainnet,
     showFaucets,
     targetAddress,
     signingEth: balances.ethNonSafe,
-    gsnCreated,
+    signingWalletNoEth,
     localLabel
   };
 };

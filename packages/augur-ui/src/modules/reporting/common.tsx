@@ -1139,6 +1139,7 @@ export class UserRepDisplay extends Component<
                   keyId={'rep-staked'}
                   showDenomination
                   showEmptyDash={false}
+                  useFull
                   highlight
                   size={SizeTypes.LARGE}
                 />
@@ -1149,6 +1150,7 @@ export class UserRepDisplay extends Component<
                   label="Disputing"
                   value={disputingAmountFormatted}
                   showDenomination
+                  useFull
                   useValueLabel
                 />
                 <LinearPropertyLabel
@@ -1156,6 +1158,7 @@ export class UserRepDisplay extends Component<
                   label="Reporting"
                   value={reportingAmountFormatted}
                   showDenomination
+                  useFull
                   useValueLabel
                 />
                 <LinearPropertyLabel
@@ -1163,6 +1166,7 @@ export class UserRepDisplay extends Component<
                   label="Participation Tokens"
                   value={participationAmountFormatted}
                   showDenomination
+                  useFull
                   useValueLabel
                 />
               </div>

@@ -36,7 +36,7 @@ class Contract():
             if getReturnData or abiFunc['constant'] or not commitTx:
                 retVal = contractFunction.call({'from': sender, 'value': value}, block_identifier='pending')
             if not abiFunc['constant'] and commitTx:
-                tx_hash = contractFunction.transact({'from': sender, 'value': value, 'gasPrice': 1, 'gas': 750000000})
+                tx_hash = contractFunction.transact({'from': sender, 'value': value, 'gasPrice': 1, 'gas': 1000000000})
                 receipt = self.w3.eth.waitForTransactionReceipt(tx_hash, 1)
                 if receipt.status == 0:
                     raise TransactionFailed

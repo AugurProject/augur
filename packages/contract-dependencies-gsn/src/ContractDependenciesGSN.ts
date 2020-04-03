@@ -24,7 +24,7 @@ const DEFAULT_GAS_PRICE = new BigNumber(4e9); // Default: GasPrice: 4 Gwei
 const DESIRED_SIGNER_ETH_BALANCE = `0x${new BigNumber(.1 * 10**18).toString(16)}`; // .1 ETH
 const EXCHANGE_RATE_BUFFER_MULTIPLIER = 1.1;
 
-const OVEREAD_RELAY_GAS = 400000;
+const OVEREAD_RELAY_GAS = 500000;
 const UNISWAP_MAX_GAS_COST = 150000;
 const REFRESH_INTERVAL_MS = 15000; // 15 seconds
 const GAS_PRICE_MULTIPLIER = 1.2;
@@ -244,6 +244,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     const signerEthBalance = await this.provider.getBalance(await this.signer.getAddress());
     const paymentData = await this.getTransactionPaymentData(tx);
     if (this.useWallet) {
+      console.log('Transaction Payment (DAI)', (paymentData.relayerDaiPayment.dividedBy(10 ** 18)).toFixed());
       tx = this.convertToWalletTx(tx, new ethers.utils.BigNumber(paymentData.relayerDaiPayment.toFixed()));
     }
 
@@ -255,8 +256,9 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
     // Just use normal signing/sending if the signer has sufficient ETH or if we're not using the relay
     const gasPrice = await this.provider.getGasPrice();
-    const ethCost = paymentData.gasCost.multipliedBy(gasPrice.toNumber());
-    if (!this.useRelay || signerEthBalance.gt(ethCost.toNumber())) {
+    const ethCost = paymentData.gasCost.multipliedBy(gasPrice.toString());
+    console.log('ETH Cost', String(ethCost.dividedBy(10 ** 18)));
+    if (!this.useRelay || signerEthBalance.gt(ethCost.toString())) {
       tx.gasPrice = gasPrice;
       tx.gasLimit = new ethers.utils.BigNumber(gasLimit.decimalPlaces(0).toString());
       return super.sendTransaction(tx, txMetadata);
@@ -336,6 +338,8 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   convertGasEstimateToDaiCost(gasEstimate: BigNumber | string): BigNumber {
     gasEstimate = new BigNumber(gasEstimate);
     gasEstimate = gasEstimate.plus(OVEREAD_RELAY_GAS);
+    gasEstimate = gasEstimate.plus(UNISWAP_MAX_GAS_COST);
+    gasEstimate = gasEstimate.multipliedBy(GAS_COST_MULTIPLIER);
     let ethCost = gasEstimate.multipliedBy(this.relayGasPrice);
     ethCost = ethCost.multipliedBy((100 + this.relayClient.config.txFee) / 100);
     let cashCost = ethCost.multipliedBy(this.ethToDaiRate).div(10**18);

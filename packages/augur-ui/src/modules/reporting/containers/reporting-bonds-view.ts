@@ -14,12 +14,12 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const userFunds = state.appStatus.gsnEnabled ? createBigNumber(loginAccount.balances && loginAccount.balances.dai || ZERO) : createBigNumber(loginAccount.balances && loginAccount.balances.eth || ZERO);
   const hasForked = !!state.universe.forkingInfo;
   const migrateRep =
-    hasForked && universe.forkingInfo.forkingMarket === market.id;
+    hasForked && universe.forkingInfo?.forkingMarket === market.id;
   const migrateMarket =
     hasForked && !!universe.forkingInfo.winningChildUniverseId;
   const initialReport = !migrateMarket && !migrateRep;
   const openReporting = market.reportingState === REPORTING_STATE.OPEN_REPORTING;
-  const owesRep = migrateMarket ? migrateMarket : (!openReporting && !isSameAddress(market.author, loginAccount.address));
+  const owesRep = migrateMarket ? migrateMarket : (!openReporting && !universe.forkingInfo?.forkingMarket === market.id && !isSameAddress(market.author, loginAccount.address));
   const enoughRepBalance = owesRep ? userAttoRep.gte(createBigNumber(market.noShowBondAmount)) : true;
 
   return {

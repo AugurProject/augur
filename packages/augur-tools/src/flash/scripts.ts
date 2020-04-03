@@ -249,6 +249,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
+      this.config.gsn.enabled = false;
       const user = await this.ensureUser();
 
       const target = String(args.target);
@@ -400,6 +401,7 @@ export function addScripts(flash: FlashSession) {
       }
       if (cat) {
         await this.call('create-reasonable-categorical-market', {outcomes: 'first,second,third,fourth,fifth'});
+        await this.call('create-reasonable-categorical-market', {outcomes: 'first,second,third,fourth,fifth', title});
       }
       if (scalar) {
         await this.call('create-reasonable-scalar-market', {title});
@@ -847,15 +849,15 @@ export function addScripts(flash: FlashSession) {
 
       const orderBook = {
         2: {
-          buy: [
-              { shares: '30', price: midPrice.plus(tickSize.times(3)) },
-              { shares: '20', price: midPrice.plus(tickSize.times(2)) },
-              { shares: '10', price: midPrice.plus(tickSize) },
-          ],
           sell: [
-              { shares: '10', price: midPrice.minus(tickSize) },
-              { shares: '20', price: midPrice.minus(tickSize.times(2)) },
-              { shares: '30', price: midPrice.minus(tickSize.times(3)) },
+              { shares: '3', price: midPrice.plus(tickSize.times(3)) },
+              { shares: '2', price: midPrice.plus(tickSize.times(2)) },
+              { shares: '1', price: midPrice.plus(tickSize) },
+          ],
+          buy: [
+              { shares: '1', price: midPrice.minus(tickSize) },
+              { shares: '2', price: midPrice.minus(tickSize.times(2)) },
+              { shares: '3', price: midPrice.minus(tickSize.times(3)) },
           ],
         },
       };
@@ -1842,10 +1844,6 @@ export function addScripts(flash: FlashSession) {
 
       if (amount === '0') return this.log('amount of REP is required');
       const stake = new BigNumber(amount).multipliedBy(QUINTILLION);
-
-      if (!this.sdkReady) {
-        return this.log("SDK hasn't fully syncd, need to wait");
-      }
 
       const market: ContractInterfaces.Market = await user.getMarketContract(
         marketId
