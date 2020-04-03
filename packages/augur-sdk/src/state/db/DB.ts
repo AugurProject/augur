@@ -1,5 +1,6 @@
 import Dexie from 'dexie';
 import { Augur } from '../../Augur';
+import { SECONDS_IN_A_DAY } from '../../constants';
 import {
   LogCallbackType,
   LogFilterAggregatorInterface,
@@ -53,21 +54,16 @@ import { ParsedOrderEventDB } from './ParsedOrderEventDB';
 import { SyncableDB } from './SyncableDB';
 import { SyncStatus } from './SyncStatus';
 import { WarpSyncCheckpointsDB } from './WarpSyncCheckpointsDB';
-import { WarpSyncDB } from './WarpSyncDB';
 import { StoredOrder, ZeroXOrders } from './ZeroXOrders';
 
 interface Schemas {
   [table: string]: string;
 }
 
-export interface DerivedDBConfiguration {
-  name: string;
-  eventNames?: string[];
-  idFields?: string[];
-}
+// Prune horizon is 30 days.
+const PRUNE_HORIZON = SECONDS_IN_A_DAY.multipliedBy(30).toNumber();
 
 export class DB {
-  private blockstreamDelay: number;
   private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
   private disputeDatabase: DisputeDatabase;
   private currentOrdersDatabase: CurrentOrdersDatabase;
@@ -76,45 +72,97 @@ export class DB {
   private zeroXOrders: ZeroXOrders;
   syncStatus: SyncStatus;
   warpCheckpoints: WarpSyncCheckpointsDB;
-  warpSync: WarpSyncDB;
 
   readonly genericEventDBDescriptions: GenericEventDBDescription[] = [
-    { EventName: 'CompleteSetsPurchased', indexes: ['timestamp'] },
-    { EventName: 'CompleteSetsSold', indexes: ['timestamp'] },
-    { EventName: 'DisputeCrowdsourcerCompleted', indexes: ['market', 'timestamp', 'disputeCrowdsourcer'] },
-    { EventName: 'DisputeCrowdsourcerContribution', indexes: ['timestamp', 'market', '[universe+reporter]'] },
-    { EventName: 'DisputeCrowdsourcerCreated', indexes: ['disputeCrowdsourcer'] },
-    { EventName: 'DisputeCrowdsourcerRedeemed', indexes: ['timestamp', 'reporter'] },
-    { EventName: 'DisputeWindowCreated', indexes: [] },
-    { EventName: 'InitialReporterRedeemed', indexes: ['timestamp', 'reporter'] },
-    { EventName: 'InitialReportSubmitted', indexes: ['timestamp', 'reporter', '[universe+reporter]'] },
-    { EventName: 'InitialReporterTransferred', indexes: [] },
-    { EventName: 'MarketCreated', indexes: ['market', 'timestamp', '[universe+timestamp]'] },
-    { EventName: 'MarketFinalized', indexes: ['market'] },
+    { EventName: 'CompleteSetsPurchased', indexes: ['timestamp', 'market'] },
+    { EventName: 'CompleteSetsSold', indexes: ['timestamp', 'market'] },
+    {
+      EventName: 'DisputeCrowdsourcerCompleted',
+      indexes: ['market', 'timestamp', 'disputeCrowdsourcer'],
+    },
+    {
+      EventName: 'DisputeCrowdsourcerContribution',
+      indexes: ['timestamp', 'market', '[universe+reporter]'],
+    },
+    {
+      EventName: 'DisputeCrowdsourcerCreated',
+      indexes: ['disputeCrowdsourcer', 'market'],
+    },
+    {
+      EventName: 'DisputeCrowdsourcerRedeemed',
+      indexes: ['timestamp', 'reporter', 'market'],
+    },
+    { EventName: 'DisputeWindowCreated', indexes: ['market'] },
+    {
+      EventName: 'InitialReporterRedeemed',
+      indexes: ['timestamp', 'reporter', 'market'],
+    },
+    {
+      EventName: 'InitialReportSubmitted',
+      indexes: ['timestamp', 'reporter', '[universe+reporter]', 'market'],
+    },
+    { EventName: 'InitialReporterTransferred', indexes: ['market'] },
+    {
+      EventName: 'MarketCreated',
+      indexes: ['market', 'timestamp', '[universe+timestamp]'],
+    },
+    { EventName: 'MarketFinalized', indexes: ['market', 'timestamp'] },
     { EventName: 'MarketMigrated', indexes: ['market'] },
-    { EventName: 'MarketParticipantsDisavowed', indexes: [] },
-    { EventName: 'MarketTransferred', indexes: [] },
-    { EventName: 'MarketVolumeChanged', indexes: [], primaryKey: 'market' },
-    { EventName: 'MarketOIChanged', indexes: [], primaryKey: 'market' },
-    { EventName: 'OrderEvent', indexes: ['market', 'timestamp', 'orderId', '[universe+eventType+timestamp]', '[market+eventType]', 'eventType', 'orderCreator', 'orderFiller'] },
-    { EventName: 'CancelZeroXOrder', indexes: ['[account+market]'] },
+    { EventName: 'MarketParticipantsDisavowed', indexes: ['market'] },
+    { EventName: 'MarketTransferred', indexes: ['market'] },
+    { EventName: 'MarketVolumeChanged', indexes: ['market'], primaryKey: 'market' },
+    { EventName: 'MarketOIChanged', indexes: ['market'], primaryKey: 'market' },
+    {
+      EventName: 'OrderEvent',
+      indexes: [
+        'market',
+        'timestamp',
+        'orderId',
+        '[universe+eventType+timestamp]',
+        '[market+eventType]',
+        'eventType',
+        'orderCreator',
+        'orderFiller',
+      ],
+    },
+    { EventName: 'CancelZeroXOrder', indexes: ['[account+market]', 'market'] },
     { EventName: 'ParticipationTokensRedeemed', indexes: ['timestamp'] },
-    { EventName: 'ProfitLossChanged', indexes: ['[universe+account+timestamp]', 'account'] },
-    { EventName: 'ReportingParticipantDisavowed', indexes: [] },
+    {
+      EventName: 'ProfitLossChanged',
+      indexes: ['[universe+account+timestamp]', 'account', 'market'],
+    },
+    { EventName: 'ReportingParticipantDisavowed', indexes: ['market'] },
     { EventName: 'TimestampSet', indexes: ['newTimestamp'] },
-    { EventName: 'TokenBalanceChanged', indexes: ['[universe+owner+tokenType]'], primaryKey: '[owner+token]' },
+    {
+      EventName: 'TokenBalanceChanged',
+      indexes: ['[universe+owner+tokenType]'],
+      primaryKey: '[owner+token]',
+    },
     { EventName: 'TokensMinted', indexes: [] },
     { EventName: 'TokensTransferred', indexes: [] },
     { EventName: 'ReportingFeeChanged', indexes: ['universe'] }, // TODO: add Rollup
-    { EventName: 'TradingProceedsClaimed', indexes: ['timestamp'] },
-    { EventName: 'UniverseCreated', indexes: ['childUniverse', 'parentUniverse'] },
+    { EventName: 'TradingProceedsClaimed', indexes: ['timestamp', 'market'] },
+    {
+      EventName: 'UniverseCreated',
+      indexes: ['childUniverse', 'parentUniverse'],
+    },
     { EventName: 'UniverseForked', indexes: ['universe'] },
-    { EventName: 'TransferSingle', indexes: []},
-    { EventName: 'TransferBatch', indexes: []},
-    { EventName: 'ShareTokenBalanceChanged', indexes: ['[universe+account]'], primaryKey: '[account+market+outcome]'},
+    { EventName: 'TransferSingle', indexes: [] },
+    { EventName: 'TransferBatch', indexes: [] },
+    {
+      EventName: 'ShareTokenBalanceChanged',
+      indexes: ['[universe+account]', 'market'],
+      primaryKey: '[account+market+outcome]',
+    },
   ];
 
-  constructor(readonly dexieDB: Dexie, readonly logFilters: LogFilterAggregatorInterface, private augur:Augur) {
+  constructor(
+    readonly dexieDB: Dexie,
+    readonly logFilters: LogFilterAggregatorInterface,
+    private augur: Augur,
+    private networkId: number,
+    private enableZeroX: boolean,
+  ) {
     logFilters.listenForBlockRemoved(this.rollback.bind(this));
   }
 
@@ -127,13 +175,16 @@ export class DB {
    * @param enableZeroX
    * @returns {Promise<DB>} Promise to a DB controller object
    */
-  static createAndInitializeDB(networkId: number, logFilterAggregator:LogFilterAggregatorInterface, augur: Augur, enableZeroX= false): Promise<DB> {
+  static createAndInitializeDB(
+    networkId: number,
+    logFilterAggregator: LogFilterAggregatorInterface,
+    augur: Augur,
+    enableZeroX = false
+  ): Promise<DB> {
     const dbName = `augur-${networkId}`;
-    const dbController = new DB(new Dexie(dbName), logFilterAggregator, augur);
+    const dbController = new DB(new Dexie(dbName), logFilterAggregator, augur, networkId, enableZeroX);
 
-    dbController.augur = augur;
-
-    return dbController.initializeDB(networkId, enableZeroX);
+    return dbController.initializeDB();
   }
 
   /**
@@ -143,58 +194,135 @@ export class DB {
    * @param uploadBlockNumber
    * @return {Promise<void>}
    */
-  async initializeDB(networkId: number, enableZeroX: boolean, uploadBlockNumber = 0): Promise<DB> {
+  async initializeDB(
+    uploadBlockNumber = 0
+  ): Promise<DB> {
     const schemas = this.generateSchemas();
 
     this.dexieDB.version(1).stores(schemas);
 
     await this.dexieDB.open();
 
-    this.syncStatus = new SyncStatus(networkId, uploadBlockNumber, this);
-    this.warpCheckpoints = new WarpSyncCheckpointsDB(networkId, this);
-    this.warpSync = new WarpSyncDB(networkId, this);
+    this.syncStatus = new SyncStatus(this.networkId, uploadBlockNumber, this);
+    this.warpCheckpoints = new WarpSyncCheckpointsDB(this.networkId, this);
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
-      new SyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, genericEventDBDescription.EventName, genericEventDBDescription.indexes);
+      this.syncableDatabases[genericEventDBDescription.EventName] = new SyncableDB(
+        this.augur,
+        this,
+        this.networkId,
+        genericEventDBDescription.EventName,
+        genericEventDBDescription.EventName,
+        genericEventDBDescription.indexes
+      );
 
-      if(genericEventDBDescription.primaryKey) {
-        new DelayedSyncableDB(this.augur, this, networkId, genericEventDBDescription.EventName, `${genericEventDBDescription.EventName}Rollup`, genericEventDBDescription.indexes);
+      if (genericEventDBDescription.primaryKey) {
+        const dbName = `${genericEventDBDescription.EventName}Rollup`;
+        this.syncableDatabases[dbName] = new DelayedSyncableDB(
+          this.augur,
+          this,
+          this.networkId,
+          genericEventDBDescription.EventName,
+          dbName,
+          genericEventDBDescription.indexes
+        );
       }
     }
     // Custom Derived DBs here
-    this.disputeDatabase = new DisputeDatabase(this, networkId, 'Dispute', ['InitialReportSubmitted', 'DisputeCrowdsourcerCreated', 'DisputeCrowdsourcerContribution', 'DisputeCrowdsourcerCompleted'], this.augur);
-    this.currentOrdersDatabase = new CurrentOrdersDatabase(this, networkId, 'CurrentOrders', ['OrderEvent'], this.augur);
-    this.marketDatabase = new MarketDB(this, networkId, this.augur);
-    this.parsedOrderEventDatabase = new ParsedOrderEventDB(this, networkId, this.augur);
+    this.disputeDatabase = new DisputeDatabase(
+      this,
+      this.networkId,
+      'Dispute',
+      [
+        'InitialReportSubmitted',
+        'DisputeCrowdsourcerCreated',
+        'DisputeCrowdsourcerContribution',
+        'DisputeCrowdsourcerCompleted',
+      ],
+      this.augur
+    );
+    this.currentOrdersDatabase = new CurrentOrdersDatabase(
+      this,
+      this.networkId,
+      'CurrentOrders',
+      ['OrderEvent'],
+      this.augur
+    );
+    this.marketDatabase = new MarketDB(this, this.networkId, this.augur);
+    this.parsedOrderEventDatabase = new ParsedOrderEventDB(
+      this,
+      this.networkId,
+      this.augur
+    );
 
-    if (enableZeroX) {
-      this.zeroXOrders = ZeroXOrders.create(this, networkId, this.augur);
+    if (this.enableZeroX) {
+      this.zeroXOrders = ZeroXOrders.create(this, this.networkId, this.augur);
     }
 
     // Always start syncing from 10 blocks behind the lowest
     // last-synced block (in case of restarting after a crash)
     const startSyncBlockNumber = await this.getSyncStartingBlock();
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
-      console.log('Performing rollback of block ' + (startSyncBlockNumber - 1) + ' onward');
+      console.log(
+        'Performing rollback of block ' + (startSyncBlockNumber - 1) + ' onward'
+      );
       await this.rollback(startSyncBlockNumber - 1);
     }
 
     return this;
   }
 
-  generateSchemas() : Schemas {
+  // Remove databases and unregister event handlers.
+  async delete() {
+    for(const db of Object.values(this.syncableDatabases)) {
+      await db.delete();
+    }
+
+    this.syncableDatabases = {};
+
+    this.disputeDatabase.delete();
+    delete this.disputeDatabase;
+
+    this.currentOrdersDatabase.delete();
+    delete this.currentOrdersDatabase;
+
+    this.marketDatabase.delete();
+    delete this.marketDatabase;
+
+    this.parsedOrderEventDatabase.delete();
+    delete this.parsedOrderEventDatabase;
+
+    if(this.zeroXOrders) {
+      this.zeroXOrders.delete();
+      delete this.zeroXOrders;
+    }
+
+    // Destroy all the tables.
+    await this.dexieDB.delete();
+  }
+
+  generateSchemas(): Schemas {
     const schemas: Schemas = {};
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
       if (genericEventDBDescription.primaryKey) {
-        const fields = [genericEventDBDescription.primaryKey,'blockNumber'].concat(genericEventDBDescription.indexes);
-        schemas[`${genericEventDBDescription.EventName}Rollup`] = fields.join(',');
+        const fields = [
+          genericEventDBDescription.primaryKey,
+          'blockNumber',
+        ].concat(genericEventDBDescription.indexes);
+        schemas[`${genericEventDBDescription.EventName}Rollup`] = fields.join(
+          ','
+        );
       }
-      const fields = ['[blockNumber+logIndex]','blockNumber'].concat(genericEventDBDescription.indexes);
+      const fields = ['[blockNumber+logIndex]', 'blockNumber'].concat(
+        genericEventDBDescription.indexes
+      );
       schemas[genericEventDBDescription.EventName] = fields.join(',');
     }
-    schemas['Markets'] = 'market,reportingState,universe,marketCreator,timestamp,finalized,blockNumber';
-    schemas['CurrentOrders'] = 'orderId,[market+open],[market+outcome+orderType],orderCreator,orderFiller,blockNumber';
+    schemas['Markets'] =
+      'market,reportingState,universe,marketCreator,timestamp,finalized,blockNumber';
+    schemas['CurrentOrders'] =
+      'orderId,[market+open],[market+outcome+orderType],orderCreator,orderFiller,blockNumber';
     schemas['Dispute'] = '[market+payoutNumerators],market,blockNumber';
     schemas['ParsedOrderEvents'] = '[blockNumber+logIndex],blockNumber,market,timestamp,orderId,[universe+eventType+timestamp],[market+eventType],eventType,orderCreator,orderFiller';
     schemas['ZeroXOrders'] = 'orderHash,[market+outcome+orderType],orderCreator,blockNumber';
@@ -216,6 +344,10 @@ export class DB {
 
   registerEventListener(eventNames: string | string[], callback: LogCallbackType): void {
     this.logFilters.listenForEvent(eventNames, callback);
+  }
+
+  unregisterEventListener(eventNames: string | string[], callback: LogCallbackType): void {
+    this.logFilters.unlistenForEvent(eventNames, callback);
   }
 
   /**
@@ -263,6 +395,55 @@ export class DB {
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
     await this.marketDatabase.sync(highestAvailableBlockNumber);
+  }
+
+  async prune(timestamp: number) {
+    // Discover the markets that whose time has come.
+    const marketsToRemove = await this.MarketFinalized.where('timestamp')
+      .belowOrEqual(`0x${(timestamp - PRUNE_HORIZON).toString(16)}`)
+      .toArray();
+
+    if (marketsToRemove.length === 0) return;
+
+    const marketIdsToRemove = marketsToRemove.map(({ market }) => market);
+
+    // This should probably be calculated in the constructor.
+    const dbsToRemoveMarketsFrom = this.genericEventDBDescriptions
+      .filter(({ indexes, primaryKey }) =>
+        [...indexes, primaryKey].includes('market')
+      )
+      .map(({ EventName }) => EventName)
+      .filter((eventName) => eventName !== 'ShareTokenBalanceChanged');
+
+    await Promise.all(
+      [...dbsToRemoveMarketsFrom, 'Markets', 'MarketVolumeChangedRollup', 'MarketOIChangedRollup'].map(dbName =>
+        this[dbName]
+          .where('market')
+          .anyOf(marketIdsToRemove)
+          .delete()
+      )
+    );
+
+    // Now to deal with 'ShareTokenBalanceChanged' logs.
+    const rollupShareTokenBalanceChangedLogs = await this.ShareTokenBalanceChangedRollup.where(
+      'market'
+    )
+    .anyOf(marketIdsToRemove)
+    .toArray();
+
+    await this.ShareTokenBalanceChanged.where(
+      'market'
+    )
+    .anyOf(marketIdsToRemove)
+    .and((needle) => !rollupShareTokenBalanceChangedLogs.some(
+        (stack) =>
+          // We need to filter out the matches because we are removing the matches.
+          needle.outcome === stack.outcome &&
+          needle.blockNumber === stack.blockNumber &&
+          needle.logIndex === stack.logIndex
+      )
+    )
+    .delete();
   }
 
   /**
@@ -319,25 +500,6 @@ export class DB {
     } catch (err) {
       throw err;
     }
-  }
-
-  /**
-   * Queries a DB to get a row count.
-   *
-   * @param {string} dbName Name of the DB to query
-   * @param request Optional request Query object to narrow results
-   * @returns {Promise<number>} Promise to a number of rows
-   */
-  async getNumRowsFromDB(dbName: string, request?: {}): Promise<number> {
-    const fullDBName = dbName;
-    const table: Dexie.Table<any, any> = this.dexieDB[fullDBName];
-
-    if (request) {
-      const results = await table.where(request);
-      return results.count();
-    }
-
-    return table.count();
   }
 
   get CompleteSetsPurchased() { return this.dexieDB.table<CompleteSetsPurchasedLog>('CompleteSetsPurchased'); }

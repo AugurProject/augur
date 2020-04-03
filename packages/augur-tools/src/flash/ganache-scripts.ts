@@ -8,7 +8,7 @@ import {
   createDb, createDbFromSeed,
   hashContracts
 } from '../libs/ganache';
-import { generateWarpSyncTestData } from '../libs/generate-warp-sync-test-data';
+import { generatePruneTestData } from '../libs/generate-prune-test-data';
 import { FlashArguments, FlashSession } from './flash';
 
 import { ethers } from 'ethers';
@@ -106,7 +106,6 @@ export function addGanacheScripts(flash: FlashSession) {
       if (this.noGanache()) return;
 
       const seed = await this.createSeed() as Seed;
-      const warpSync = await generateWarpSyncTestData(this.config, seed);
 
       if (Boolean(args.save)) {
         const filepath = args.filepath as string || defaultSeedPath;
@@ -118,7 +117,6 @@ export function addGanacheScripts(flash: FlashSession) {
               data: seed.data,
               metadata: {},
             },
-            warpSync
           }
         }, filepath);
       }

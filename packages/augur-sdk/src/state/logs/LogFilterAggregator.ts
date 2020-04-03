@@ -46,7 +46,11 @@ export interface LogFilterAggregatorInterface {
   listenForEvent(
     eventNames: string | string[],
     onLogsAdded: LogCallbackType,
-    onLogsRemoved?: LogCallbackType
+  ): void;
+
+  unlistenForEvent(
+    eventNames: string | string[],
+    onLogsAdded: LogCallbackType,
   ): void;
 
   onBlockRemoved(blockNumber: number): void;
@@ -84,9 +88,10 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
   }
 
   onLogsAdded = async (blockNumber: number, logs: ParsedLog[]) => {
-    const logCallbackPromises = this.logCallbackMetaData.map(cb =>
-      cb.onLogsAdded(blockNumber, logs)
-    );
+    const logCallbackPromises = this.logCallbackMetaData.map(({eventNames, onLogsAdded}) => {
+      const filteredLogs = logs.filter(log => eventNames.includes(log.name));
+      return onLogsAdded(blockNumber, filteredLogs);
+    });
 
     // Assuming all db updates will be complete when these promises resolve.
     await Promise.all(logCallbackPromises);
@@ -112,17 +117,31 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
   listenForEvent(
     eventNames: string | string[],
     onLogsAdded: LogCallbackType,
-    onLogsRemoved?: LogCallbackType
   ): void {
     if (!Array.isArray(eventNames)) eventNames = [eventNames];
 
     // Update the callbacks list with these events and the specified callback
     this.logCallbackMetaData.push({
       eventNames,
-      onLogsAdded: this.filterCallbackByEventNames(
-        eventNames,
-        onLogsAdded
-      ),
+      onLogsAdded,
+    });
+  }
+
+  unlistenForEvent(
+    eventNames: string | string[],
+    onLogsAdded: LogCallbackType,
+  ) {
+    let events = []
+
+    if (!Array.isArray(eventNames)) {
+      events = [eventNames];
+    } else {
+      events = eventNames;
+    }
+
+    this.logCallbackMetaData = this.logCallbackMetaData.filter(({eventNames: metaDataEventNames , onLogsAdded: metaDataOnLogsAdded }) => {
+      if(onLogsAdded !== metaDataOnLogsAdded) return true;
+      return events.length !== metaDataEventNames.length || !events.every((item, index) => item === metaDataEventNames[index])
     });
   }
 
@@ -134,15 +153,5 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
 
   listenForBlockRemoved(onBlockRemoved: (blockNumber: number) => void): void {
     this.blockRemovalCallback.push(onBlockRemoved);
-  }
-
-  private filterCallbackByEventNames(
-    eventNames: string[],
-    callback: LogCallbackType
-  ): LogCallbackType {
-    return async (blockNumber: number, logs: ParsedLog[]) => {
-      const filteredLogs = logs.filter(log => eventNames.includes(log.name));
-      return callback(blockNumber, filteredLogs);
-    };
   }
 }

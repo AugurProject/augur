@@ -1,18 +1,14 @@
-import { ParsedLog } from '@augurproject/types/build';
+import { ParsedLog } from '@augurproject/types';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { SyncableDB } from './SyncableDB';
-import _ from 'lodash';
 
 export class ParsedOrderEventDB extends SyncableDB {
   constructor(db: DB, networkId: number, augur: Augur) {
     super(augur, db, networkId, 'OrderEvent', 'ParsedOrderEvents');
   }
 
-  async addNewBlock(
-    blocknumber: number,
-    logs: ParsedLog[]
-  ): Promise<number> {
+  async addNewBlock(blocknumber: number, logs: ParsedLog[]): Promise<number> {
     return super.addNewBlock(blocknumber, this.processOrderEvent(logs));
   }
 

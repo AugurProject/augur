@@ -23,6 +23,6 @@ export class SyncableDB extends BaseSyncableDB {
     indexes: string[] = []
   ) {
     super(augur, db, networkId, eventName, dbName);
-    db.registerEventListener(this.eventName, this.addNewBlock.bind(this));
+    db.registerEventListener(this.eventName, this.addNewBlock);
   }
 }
