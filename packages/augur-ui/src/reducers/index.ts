@@ -52,7 +52,8 @@ import {
   MarketsList,
   ReportingListState,
   Analytics,
-  OrderBooks
+  OrderBooks,
+  Initialized3box
 } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import { SDKConfiguration } from '@augurproject/artifacts';
@@ -124,5 +125,5 @@ export interface AppStateInterface {
   reportingListState: ReportingListState;
   analytics: Analytics;
   orderBooks: OrderBooks;
-  initialized3box: any;
+  initialized3box: Initialized3box;
 }

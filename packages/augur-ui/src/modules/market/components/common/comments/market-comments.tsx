@@ -5,6 +5,7 @@ import { FacebookComments } from 'modules/market/components/common/comments/face
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { use3box } from 'utils/use-3box';
 import { SecondaryButton } from 'modules/common/buttons';
+import { Initialized3box } from 'modules/types';
 
 interface MarketCommentsProps {
   adminEthAddr: string;
@@ -15,7 +16,7 @@ interface MarketCommentsProps {
   provider: any;
   whichCommentPlugin: string;
   initialize3box: Function;
-  initialized3box: object;
+  initialized3box: Initialized3box;
   isLogged: boolean;
 }
 
