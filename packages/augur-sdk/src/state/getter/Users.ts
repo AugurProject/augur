@@ -275,15 +275,9 @@ export class Users {
 
     let stakedRepMarketIds = [];
     if (userStakedRep.reporting && userStakedRep.reporting.contracts.length > 0)
-      stakedRepMarketIds = userStakedRep.reporting.contracts.map(c => [
-        ...stakedRepMarketIds,
-        c.marketId,
-      ]);
+      stakedRepMarketIds = userStakedRep.reporting.contracts.map(c => c.marketId);
     if (userStakedRep.disputing && userStakedRep.disputing.contracts.length > 0)
-      stakedRepMarketIds = userStakedRep.disputing.contracts.map(c => [
-        ...stakedRepMarketIds,
-        c.marketId,
-      ]);
+      stakedRepMarketIds = stakedRepMarketIds.concat(userStakedRep.disputing.contracts.map(c => c.marketId));
 
     const profitLoss = await Users.getProfitLossSummary(augur, db, {
       account: params.account,
@@ -1623,6 +1617,7 @@ function getTradingPositionFromProfitLossFrame(
     realizedProfit = realizedProfit.plus(unrealized);
     unrealized = new BigNumber(0);
     unrealized24Hr = new BigNumber(0);
+    unrealizedCost = new BigNumber(0);
   }
 
   const unrealized24HrPercent = unrealizedCost.isZero() ? new BigNumber(0) : unrealized24Hr.dividedBy(unrealizedCost);
