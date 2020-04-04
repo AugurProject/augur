@@ -1001,7 +1001,7 @@ export class Users {
             const balance = new BigNumber(outcomeBalance[`0x0${index}`]?.balance || 0);
             return sum.plus(balance.times(outcome));
           }, new BigNumber(0));
-        return totalPositionValue.isPositive()
+        return totalPositionValue.gt(0)
           ? result
           : [...result, marketId];
       },
