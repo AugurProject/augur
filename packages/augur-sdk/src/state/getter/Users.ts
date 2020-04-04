@@ -969,14 +969,48 @@ export class Users {
       .anyOf(_.map(allProfitLossResults, 'market'))
       .toArray();
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
+    const finalizedMarketIds = _.map(marketFinalizedResults, 'market');
     const marketsData = await db.Markets.where('market')
       .anyOf(_.map(marketFinalizedResults, 'market'))
       .toArray();
     const markets = _.keyBy(marketsData, 'market');
 
+    const shareTokenBalances = await db.ShareTokenBalanceChangedRollup.where(
+      '[universe+account]'
+    )
+      .equals([params.universe, params.account])
+      .toArray();
+    const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, 'market');
+    const shareTokenBalancesByMarketAndOutcome = _.mapValues(
+      shareTokenBalancesByMarket,
+      marketShares => {
+        return _.keyBy(marketShares, 'outcome');
+      }
+    );
+
+    // if winning position value is less than frozen funds, market position is complete loss
+    // if complete loss then ignore profit loss in frozen funds
+    const ignoreTotalLossMarkets = _.reduce(
+      finalizedMarketIds,
+      (result, marketId) => {
+        const marketDoc = markets[marketId];
+        const payoutNumerators = marketDoc.winningPayoutNumerators;
+        const outcomeBalance = shareTokenBalancesByMarketAndOutcome[marketId];
+        const totalPositionValue = _.reduce(
+          payoutNumerators, (sum, outcome, index) => {
+            const balance = new BigNumber(outcomeBalance[`0x0${index}`]?.balance || 0);
+            return sum.plus(balance.times(outcome));
+          }, new BigNumber(0));
+        return totalPositionValue.gt(0)
+          ? result
+          : [...result, marketId];
+      },
+      []
+    );
     const frozenFunds = _.reduce(
       allProfitLossResults,
       (value, tradingPosition) => {
+        if (ignoreTotalLossMarkets.includes(tradingPosition.market)) return value;
         if (marketFinalizedByMarket[tradingPosition.market]) {
           const marketDoc = markets[tradingPosition.market];
           const isShort = new BigNumber(tradingPosition.netPosition).isNegative();
@@ -1583,7 +1617,7 @@ function getTradingPositionFromProfitLossFrame(
       onChainNetPosition.isNegative() ? shortPrice : lastTradePrice
     );
 
-  const totalCost = unrealizedCost.plus(realizedCost);
+  let totalCost = unrealizedCost.plus(realizedCost);
   if (finalized) {
     realizedCost = unrealizedCost.plus(realizedCost);
     realizedProfit = realizedProfit.plus(unrealized);
