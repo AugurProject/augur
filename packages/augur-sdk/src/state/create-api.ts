@@ -45,7 +45,7 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
       const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
         client.contracts.universe.address);
 
-      endWarpSyncBlockNumber = await warpSyncStrategy.start(warpSyncHash, currentBlock);
+      endWarpSyncBlockNumber = await warpSyncStrategy.start(warpSyncHash, currentBlock) || endWarpSyncBlockNumber;
 
       client.events.once(SubscriptionEventName.SDKReady, () => {
         // Check on each new block to see if we need to generate a checkpoint.
