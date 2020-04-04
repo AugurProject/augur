@@ -273,14 +273,14 @@ export class Users {
       universe: params.universe,
     });
 
-    const stakedRepMarketIds = [];
+    let stakedRepMarketIds = [];
     if (userStakedRep.reporting && userStakedRep.reporting.contracts.length > 0)
-      userStakedRep.reporting.contracts.map(c => [
+      stakedRepMarketIds = userStakedRep.reporting.contracts.map(c => [
         ...stakedRepMarketIds,
         c.marketId,
       ]);
     if (userStakedRep.disputing && userStakedRep.disputing.contracts.length > 0)
-      userStakedRep.disputing.contracts.map(c => [
+      stakedRepMarketIds = userStakedRep.disputing.contracts.map(c => [
         ...stakedRepMarketIds,
         c.marketId,
       ]);
