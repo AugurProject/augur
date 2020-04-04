@@ -974,39 +974,36 @@ export class Users {
       .anyOf(_.map(marketFinalizedResults, 'market'))
       .toArray();
     const markets = _.keyBy(marketsData, 'market');
+
+    const shareTokenBalances = await db.ShareTokenBalanceChangedRollup.where(
+      '[universe+account]'
+    )
+      .equals([params.universe, params.account])
+      .toArray();
+    const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, 'market');
+    const shareTokenBalancesByMarketAndOutcome = _.mapValues(
+      shareTokenBalancesByMarket,
+      marketShares => {
+        return _.keyBy(marketShares, 'outcome');
+      }
+    );
+
     // if winning position value is less than frozen funds, market position is complete loss
     // if complete loss then ignore profit loss in frozen funds
     const ignoreTotalLossMarkets = _.reduce(
-      _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values)),
-      (result, marketPL) => {
-        const market = _.first(marketPL).market;
-        if (!finalizedMarketIds.includes(market)) return result;
-        const marketDoc = markets[market];
+      finalizedMarketIds,
+      (result, marketId) => {
+        const marketDoc = markets[marketId];
         const payoutNumerators = marketDoc.winningPayoutNumerators;
+        const outcomeBalance = shareTokenBalancesByMarketAndOutcome[marketId];
         const totalPositionValue = _.reduce(
-          marketPL, (sum, pl) => {
-            const onChainAvgPrice = new BigNumber(pl.avgPrice).div(10**18);
-            const onChainNetPosition = new BigNumber(pl.netPosition);
-            const winningOutcomeValue = new BigNumber(
-              payoutNumerators[
-                new BigNumber(pl.outcome).toNumber()
-              ]
-            );
-            const positionValue = onChainNetPosition
-              .abs()
-              .multipliedBy(
-                onChainNetPosition.isNegative()
-                  ? onChainAvgPrice.minus(winningOutcomeValue)
-                  : winningOutcomeValue.minus(onChainAvgPrice)
-              );
-            return sum.plus(positionValue);
+          payoutNumerators, (sum, outcome, index) => {
+            const balance = new BigNumber(outcomeBalance[`0x0${index}`]?.balance || 0);
+            return sum.plus(balance.times(outcome));
           }, new BigNumber(0));
-        const totalFrozenFunds = _.reduce(
-          marketPL, (sum, pl) => sum.plus(pl.frozenFunds), new BigNumber(0)
-        );
-        return totalPositionValue.lte(totalFrozenFunds.dividedBy(10 ** 18))
-          ? [...result, market]
-          : result;
+        return totalPositionValue.isPositive()
+          ? result
+          : [...result, marketId];
       },
       []
     );
