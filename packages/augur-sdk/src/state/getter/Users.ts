@@ -1113,14 +1113,14 @@ export class Users {
               const latestOutcomePLValue = getLastDocBeforeTimestamp<
                 ProfitLossChangedLog
               >(outcomePLValues, bucketTimestamp);
-              const finalized = !!marketFinalizedByMarket[marketId] && bucketTimestamp.lte(marketFinalizedByMarket[marketId].timestamp);
+              const finalized = !!marketFinalizedByMarket[marketId] && new BigNumber(marketFinalizedByMarket[marketId].timestamp).lte(bucketTimestamp);
               let hasOutcomeValues = !!(
                 ordersFilledResultsByMarketAndOutcome[marketId] &&
                 ordersFilledResultsByMarketAndOutcome[marketId][outcome]
               ) || finalized;
               if (!latestOutcomePLValue || !hasOutcomeValues) {
                 return {
-                  timestamp: bucketTimestamp,
+                  timestamp: bucketTimestamp.toNumber(),
                   frozenFunds: '0',
                   marketId: '',
                   realized: '0',
@@ -1161,7 +1161,6 @@ export class Users {
                         )
                   );
               }
-
               return getTradingPositionFromProfitLossFrame(
                 latestOutcomePLValue,
                 marketDoc,
@@ -1169,7 +1168,7 @@ export class Users {
                 undefined,
                 bucketTimestamp.toNumber(),
                 finalized ? shareTokenBalancesByMarketAndOutcome : null,
-                !!marketFinalizedByMarket[marketId],
+                finalized,
               );
             }
           );
@@ -1601,6 +1600,7 @@ function getTradingPositionFromProfitLossFrame(
     );
 
   let totalCost = unrealizedCost.plus(realizedCost);
+
   if (finalized) {
     realizedCost = unrealizedCost.plus(realizedCost);
     realizedProfit = realizedProfit.plus(unrealized);
