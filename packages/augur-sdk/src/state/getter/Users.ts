@@ -1005,17 +1005,6 @@ export class Users {
       allProfitLossResults,
       (value, tradingPosition) => {
         if (ignoreTotalLossMarkets.includes(tradingPosition.market)) return value;
-        if (marketFinalizedByMarket[tradingPosition.market]) {
-          const marketDoc = markets[tradingPosition.market];
-          const isShort = new BigNumber(tradingPosition.netPosition).isNegative();
-          const positionWinningOutcome = marketFinalizedByMarket[tradingPosition.market].winningPayoutNumerators[
-            new BigNumber(tradingPosition.outcome).toNumber()
-          ]
-          const loser =
-            (isShort && positionWinningOutcome === marketDoc.numTicks) ||
-            (!isShort && positionWinningOutcome === '0x00');
-          if (loser) return value;
-        }
         return value.plus(tradingPosition.frozenFunds);
       },
       new BigNumber(0)
@@ -1326,7 +1315,7 @@ function sumTradingPositions(
   const unrealizedCost = new BigNumber(summedTrade.unrealizedCost);
 
   const total = realized.plus(unrealized);
-  const totalCost = realizedCost.plus(unrealizedCost);
+  const totalCost = realizedCost.plus(unrealizedCost).abs();
   summedTrade.realized = realized.toFixed();
   summedTrade.frozenFunds = frozenFunds.toFixed();
   summedTrade.total = total.toFixed();
@@ -1629,7 +1618,7 @@ function getTradingPositionFromProfitLossFrame(
 
   const realizedPercent = realizedCost.isZero()
     ? new BigNumber(0)
-    : realizedProfit.dividedBy(realizedCost);
+    : realizedProfit.dividedBy(realizedCost.abs());
 
   return {
     timestamp,
