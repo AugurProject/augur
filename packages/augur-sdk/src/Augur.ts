@@ -34,6 +34,7 @@ import { WarpSync } from './api/WarpSync';
 import { Subscriptions } from './subscriptions';
 import axios from 'axios';
 import { GSN } from './api/GSN';
+import { Uniswap } from './api/Uniswap';
 
 
 export class Augur<TProvider extends Provider = Provider> {
@@ -46,6 +47,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly market: Market;
   readonly warpSync: WarpSync;
   readonly gsn: GSN;
+  readonly uniswap: Uniswap;
 
   readonly universe: Universe;
   readonly liquidity: Liquidity;
@@ -119,6 +121,7 @@ export class Augur<TProvider extends Provider = Provider> {
       this.syncableFlexSearch = new SyncableFlexSearch();
     }
     this.gsn = new GSN(this.provider, this);
+    this.uniswap = new Uniswap(this);
     this.registerTransactionStatusEvents();
   }
 
@@ -224,7 +227,7 @@ export class Augur<TProvider extends Provider = Provider> {
     var gasLevels = await this.getGasStation();
     var recommended = (parseInt(gasLevels["standard"]) + 1000000000);
     var fast = (parseInt(gasLevels["fast"]) + 1000000000);
-    var gasPrice = this.dependencies.useWallet ? this.dependencies.gasPrice : await this.getGasPrice();
+    var gasPrice = await this.getGasPrice();
     var gasPriceNum = gasPrice.toNumber();
 
     if (gasPriceNum >= fast) {

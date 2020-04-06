@@ -13,8 +13,7 @@ export interface IpfsInfo {
 export interface WarpCheckpointDocument {
   _id: string;
   _rev?: string;
-  begin: Block;
-  ipfsInfo?: IpfsInfo;
+  hash: string;
   market: Address;
   endTimestamp: number;
   end?: Block
@@ -25,27 +24,12 @@ export class WarpSyncCheckpointsDB extends AbstractTable {
     super(networkId, 'WarpSyncCheckpoints', db.dexieDB);
   }
 
-  async getAllIPFSObjects() {
-    const rows = await this.allDocs();
-    return rows.filter((item) => item.ipfsInfo).map((item) => item.ipfsInfo)
-  }
-
   async getMostRecentCheckpoint(): Promise<WarpCheckpointDocument | undefined> {
     return this.table.orderBy('_id').last();
   }
 
-  // This method assumes pre-existing checkpoints.
-  async getCheckpointBlockRange(): Promise<[Block, Block]> {
-    const firstCheckpoint = await this.table.orderBy('_id').first();
-    const lastCheckpoint = await this.table.orderBy('_id').filter((item) => typeof item.end !== 'undefined').last();
-    return [
-        firstCheckpoint.begin,
-        lastCheckpoint?.end,
-    ];
-  }
-
-  async getAllCheckpoints(): Promise<WarpCheckpointDocument[]> {
-    return this.table.toArray() as unknown as Promise<WarpCheckpointDocument[]>;
+  async getMostRecentWarpSync(): Promise<WarpCheckpointDocument | undefined> {
+    return this.table.orderBy('end.number').last();
   }
 
   async createInitialCheckpoint(initialBlock: Block, market: Market) {
@@ -56,12 +40,13 @@ export class WarpSyncCheckpointsDB extends AbstractTable {
     });
   }
 
-  async createCheckpoint(end: Block, ipfsInfo: IpfsInfo) {
+  async createCheckpoint(end: Block, hash: string) {
     const mostRecentCheckpoint  = await this.getMostRecentCheckpoint();
+
     // These might be served by a dexie transaction.
     await this.upsertDocument(mostRecentCheckpoint._id, {
       end,
-      ipfsInfo
+      hash
     });
   }
 }

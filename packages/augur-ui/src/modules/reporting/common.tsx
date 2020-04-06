@@ -161,6 +161,8 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
         effect="solid"
         place="top"
         type="light"
+        data-event="mouseover"
+        data-event-off="blur scroll"
       >
         My Existing Stake
         <p>{props.userValue.formattedValue} REP</p>
@@ -202,6 +204,8 @@ export const Subheaders = (props: SubheadersProps) => (
             effect="solid"
             place="top"
             type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
           >
             <p>{props.tooltipText}</p>
           </ReactTooltip>
@@ -389,6 +393,9 @@ export interface DisputingBondsViewProps {
   gasPrice: number;
   warpSyncHash: string;
   isWarpSync: boolean;
+  gsnUnavailable: boolean;
+  gsnWalletInfoSeen: boolean;
+  initializeGsnWallet: Function;
 }
 
 interface DisputingBondsViewState {
@@ -536,6 +543,9 @@ export class DisputingBondsView extends Component<
       id,
       GsnEnabled,
       warpSyncHash,
+      gsnUnavailable,
+      gsnWalletInfoSeen,
+      initializeGsnWallet,
     } = this.props;
 
     const {
@@ -605,7 +615,15 @@ export class DisputingBondsView extends Component<
         />
         <PrimaryButton
           text="Confirm"
-          action={() => reportAction(false)}
+          action={() => {
+            if (gsnUnavailable && !gsnWalletInfoSeen) {
+              initializeGsnWallet(() => {
+                reportAction(false);
+              });
+            } else {
+              reportAction(false);
+            }
+          }}
           disabled={disabled}
         />
       </div>
@@ -631,6 +649,9 @@ export interface ReportingBondsViewProps {
   openReporting: boolean;
   enoughRepBalance: boolean;
   userFunds: BigNumber;
+  gsnUnavailable: boolean;
+  gsnWalletInfoSeen: boolean;
+  initializeGsnWallet: Function;
 }
 
 interface ReportingBondsViewState {
@@ -762,6 +783,9 @@ export class ReportingBondsView extends Component<
       openReporting,
       enoughRepBalance,
       userFunds,
+      gsnUnavailable,
+      gsnWalletInfoSeen,
+      initializeGsnWallet,
     } = this.props;
 
     const {
@@ -812,7 +836,7 @@ export class ReportingBondsView extends Component<
       buttonDisabled = true;
       insufficientFunds = true;
     }
-    
+
     let insufficientRep = '';
     if (!enoughRepBalance) {
       (insufficientRep = 'Not enough REP to report'), (buttonDisabled = true);
@@ -934,7 +958,16 @@ export class ReportingBondsView extends Component<
               ? buttonDisabled || !readAndAgreedCheckbox
               : buttonDisabled
           }
-          action={() => reportAction()}
+          action={() => {
+            if (gsnUnavailable && !gsnWalletInfoSeen) {
+              initializeGsnWallet(() => {
+                reportAction();
+              });
+            } else {
+              reportAction();
+            }
+          }}
+
         />
       </div>
     );
@@ -1014,6 +1047,8 @@ export const ReportingCard = (props: ReportingCardProps) => {
             effect="solid"
             place="top"
             type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
           >
             <p>{disabledTooltipText} </p>
           </ReactTooltip>
@@ -1133,6 +1168,7 @@ export class UserRepDisplay extends Component<
                   keyId={'rep-staked'}
                   showDenomination
                   showEmptyDash={false}
+                  useFull
                   highlight
                   size={SizeTypes.LARGE}
                 />
@@ -1143,6 +1179,7 @@ export class UserRepDisplay extends Component<
                   label="Disputing"
                   value={disputingAmountFormatted}
                   showDenomination
+                  useFull
                   useValueLabel
                 />
                 <LinearPropertyLabel
@@ -1150,6 +1187,7 @@ export class UserRepDisplay extends Component<
                   label="Reporting"
                   value={reportingAmountFormatted}
                   showDenomination
+                  useFull
                   useValueLabel
                 />
                 <LinearPropertyLabel
@@ -1157,6 +1195,7 @@ export class UserRepDisplay extends Component<
                   label="Participation Tokens"
                   value={participationAmountFormatted}
                   showDenomination
+                  useFull
                   useValueLabel
                 />
               </div>

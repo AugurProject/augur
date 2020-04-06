@@ -33,4 +33,5 @@ export { abiDecodeData } from "./abi-decode-data";
 export { abiDecodeRpcResponse } from "./abi-decode-rpc-response";
 export { formatAbiRawDecodedDataArray } from "./format-abi-raw-decoded-data-array";
 export { formatAbiRawDecodedData } from "./format-abi-raw-decoded-data";
+export { chunkRange } from './generators';
 export {serialize } from "./serialize";

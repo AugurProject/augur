@@ -104,7 +104,7 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0xce5b6de2a0053ebc6c04e68bcbb9f0a1f2deeb7049c72881e198f95b5752db82': {"name":"UniverseForked","signature":"UniverseForked(address,address)","signatureHash":"0xce5b6de2a0053ebc6c04e68bcbb9f0a1f2deeb7049c72881e198f95b5752db82","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":false,"internalType":"contract IMarket","name":"forkingMarket","type":"address"}]},
 	'0x69af68e366a0570364e3a086f3b5ac79f08ecc3f93eaccbfcf3864809b12b5d8': {"name":"ValidityBondChanged","signature":"ValidityBondChanged(address,uint256)","signatureHash":"0x69af68e366a0570364e3a086f3b5ac79f08ecc3f93eaccbfcf3864809b12b5d8","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":false,"internalType":"uint256","name":"validityBond","type":"uint256"}]},
 	'0x7589653fe5a2ab3ccc12538316852339868efdd9d3bd0b84d055cf224cf96873': {"name":"WarpSyncDataUpdated","signature":"WarpSyncDataUpdated(address,uint256,uint256)","signatureHash":"0x7589653fe5a2ab3ccc12538316852339868efdd9d3bd0b84d055cf224cf96873","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":false,"internalType":"uint256","name":"warpSyncHash","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"marketEndTime","type":"uint256"}]},
-	'0x7be8672dbbc9c27e4ba2620d66602d2b37326110ae06698e2498db22d33bbf20': {"name":"ExecuteTransactionStatus","signature":"ExecuteTransactionStatus(bool)","signatureHash":"0x7be8672dbbc9c27e4ba2620d66602d2b37326110ae06698e2498db22d33bbf20","parameters":[{"indexed":false,"internalType":"bool","name":"success","type":"bool"}]},
+	'0xee9c28a7fe7177d351e891cb4ca5b7a4e4aba4974be67fb7665ba1ad0e703439': {"name":"ExecuteTransactionStatus","signature":"ExecuteTransactionStatus(bool,bool)","signatureHash":"0xee9c28a7fe7177d351e891cb4ca5b7a4e4aba4974be67fb7665ba1ad0e703439","parameters":[{"indexed":false,"internalType":"bool","name":"success","type":"bool"},{"indexed":false,"internalType":"bool","name":"fundingSuccess","type":"bool"}]},
 	'0xb9f84b8e65164b14439ae3620df0a4d8786d896996c0282b683f9d8c08f046e8': {"name":"RelayHubChanged","signature":"RelayHubChanged(address,address)","signatureHash":"0xb9f84b8e65164b14439ae3620df0a4d8786d896996c0282b683f9d8c08f046e8","parameters":[{"indexed":true,"internalType":"address","name":"oldRelayHub","type":"address"},{"indexed":true,"internalType":"address","name":"newRelayHub","type":"address"}]},
 	'0xcc16f5dbb4873280815c1ee09dbd06736cffcc184412cf7a71a0fdb75d397ca5': {"name":"Burn","signature":"Burn(address,uint256)","signatureHash":"0xcc16f5dbb4873280815c1ee09dbd06736cffcc184412cf7a71a0fdb75d397ca5","parameters":[{"indexed":true,"internalType":"address","name":"target","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}]},
 	'0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885': {"name":"Mint","signature":"Mint(address,uint256)","signatureHash":"0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885","parameters":[{"indexed":true,"internalType":"address","name":"target","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}]},
@@ -2282,20 +2282,6 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public cashAvailableForTransferFrom_ = async (owner: string, sender: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_sender","type":"address"}],"name":"cashAvailableForTransferFrom","outputs":[{"internalType":"uint256","name":"_available","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [owner, sender], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public cashBalance_ = async (account: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"}],"name":"cashBalance","outputs":[{"internalType":"uint256","name":"_balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public createChildUniverse = async (parentPayoutDistributionHash: string, parentPayoutNumerators: Array<TBigNumber>, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes32","name":"_parentPayoutDistributionHash","type":"bytes32"},{"internalType":"uint256[]","name":"_parentPayoutNumerators","type":"uint256[]"}],"name":"createChildUniverse","outputs":[{"internalType":"contract IUniverse","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -2332,13 +2318,6 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"createGenesisUniverse","outputs":[{"internalType":"contract IUniverse","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
-	}
-
-	public daiToVatDai_ = async (daiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_daiAmount","type":"uint256"}],"name":"daiToVatDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [daiAmount], options.sender)
-		return <TBigNumber>result[0]
 	}
 
 	public derivePayoutDistributionHash_ = async (payoutNumerators: Array<TBigNumber>, numTicks: TBigNumber, numOutcomes: TBigNumber, options?: { sender?: string }): Promise<string> => {
@@ -3309,13 +3288,6 @@ export class Augur<TBigNumber> extends Contract<TBigNumber> {
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
 	}
-
-	public vatDaiToDai_ = async (vDaiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_vDaiAmount","type":"uint256"}],"name":"vatDaiToDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [vDaiAmount], options.sender)
-		return <TBigNumber>result[0]
-	}
 }
 
 
@@ -3371,6 +3343,13 @@ export class AugurWallet<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
+	public getAmountOut_ = async (amountIn: TBigNumber, reserveIn: TBigNumber, reserveOut: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountOut","outputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [amountIn, reserveIn, reserveOut], options.sender)
+		return <TBigNumber>result[0]
+	}
+
 	public getInitialized_ = async (options?: { sender?: string }): Promise<boolean> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getInitialized","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -3390,24 +3369,6 @@ export class AugurWallet<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
-	}
-
-	public giveRegistryEth = async (amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"giveRegistryEth","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [amount], 'giveRegistryEth', options.sender)
-	}
-	
-	public giveRegistryEth_estimateGas = async (amount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"giveRegistryEth","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [amount], 'giveRegistryEth', options.sender)
-	}
-
-	public giveRegistryEth_ = async (amount: TBigNumber, options?: { sender?: string }): Promise<void> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"giveRegistryEth","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [amount], options.sender)
 	}
 
 	public initialize = async (owner: string, referralAddress: string, fingerprint: string, augur: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -3478,6 +3439,25 @@ export class AugurWallet<TBigNumber> extends Contract<TBigNumber> {
 		const result = await this.localCall(abi, [newOwner], options.sender)
 		return <boolean>result[0]
 	}
+
+	public withdrawAllFundsAsDai = async (destination: string, minExchangeRateInDai: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_destination","type":"address"},{"internalType":"uint256","name":"_minExchangeRateInDai","type":"uint256"}],"name":"withdrawAllFundsAsDai","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [destination, minExchangeRateInDai], 'withdrawAllFundsAsDai', options.sender, options.attachedEth)
+	}
+	
+	public withdrawAllFundsAsDai_estimateGas = async (destination: string, minExchangeRateInDai: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_destination","type":"address"},{"internalType":"uint256","name":"_minExchangeRateInDai","type":"uint256"}],"name":"withdrawAllFundsAsDai","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [destination, minExchangeRateInDai], 'withdrawAllFundsAsDai', options.sender, options.attachedEth)
+	}
+
+	public withdrawAllFundsAsDai_ = async (destination: string, minExchangeRateInDai: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_destination","type":"address"},{"internalType":"uint256","name":"_minExchangeRateInDai","type":"uint256"}],"name":"withdrawAllFundsAsDai","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [destination, minExchangeRateInDai], options.sender, options.attachedEth)
+		return <boolean>result[0]
+	}
 }
 
 
@@ -3542,22 +3522,22 @@ export class AugurWalletRegistry<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public executeWalletTransaction = async (to: string, data: string, value: TBigNumber, payment: TBigNumber, referralAddress: string, fingerprint: string, options?: { sender?: string }): Promise<Array<Event>> => {
+	public executeWalletTransaction = async (to: string, data: string, value: TBigNumber, payment: TBigNumber, referralAddress: string, fingerprint: string, desiredSignerBalance: TBigNumber, maxExchangeRateInDai: TBigNumber, revertOnFailure: boolean, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"uint256","name":"_payment","type":"uint256"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [to, data, value, payment, referralAddress, fingerprint], 'executeWalletTransaction', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"uint256","name":"_payment","type":"uint256"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"uint256","name":"_desiredSignerBalance","type":"uint256"},{"internalType":"uint256","name":"_maxExchangeRateInDai","type":"uint256"},{"internalType":"bool","name":"_revertOnFailure","type":"bool"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [to, data, value, payment, referralAddress, fingerprint, desiredSignerBalance, maxExchangeRateInDai, revertOnFailure], 'executeWalletTransaction', options.sender)
 	}
 	
-	public executeWalletTransaction_estimateGas = async (to: string, data: string, value: TBigNumber, payment: TBigNumber, referralAddress: string, fingerprint: string, options?: { sender?: string }): Promise<TBigNumber> => {
+	public executeWalletTransaction_estimateGas = async (to: string, data: string, value: TBigNumber, payment: TBigNumber, referralAddress: string, fingerprint: string, desiredSignerBalance: TBigNumber, maxExchangeRateInDai: TBigNumber, revertOnFailure: boolean, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"uint256","name":"_payment","type":"uint256"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [to, data, value, payment, referralAddress, fingerprint], 'executeWalletTransaction', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"uint256","name":"_payment","type":"uint256"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"uint256","name":"_desiredSignerBalance","type":"uint256"},{"internalType":"uint256","name":"_maxExchangeRateInDai","type":"uint256"},{"internalType":"bool","name":"_revertOnFailure","type":"bool"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [to, data, value, payment, referralAddress, fingerprint, desiredSignerBalance, maxExchangeRateInDai, revertOnFailure], 'executeWalletTransaction', options.sender)
 	}
 
-	public executeWalletTransaction_ = async (to: string, data: string, value: TBigNumber, payment: TBigNumber, referralAddress: string, fingerprint: string, options?: { sender?: string }): Promise<void> => {
+	public executeWalletTransaction_ = async (to: string, data: string, value: TBigNumber, payment: TBigNumber, referralAddress: string, fingerprint: string, desiredSignerBalance: TBigNumber, maxExchangeRateInDai: TBigNumber, revertOnFailure: boolean, options?: { sender?: string }): Promise<void> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"uint256","name":"_payment","type":"uint256"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [to, data, value, payment, referralAddress, fingerprint], options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"uint256","name":"_payment","type":"uint256"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"uint256","name":"_desiredSignerBalance","type":"uint256"},{"internalType":"uint256","name":"_maxExchangeRateInDai","type":"uint256"},{"internalType":"bool","name":"_revertOnFailure","type":"bool"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [to, data, value, payment, referralAddress, fingerprint, desiredSignerBalance, maxExchangeRateInDai, revertOnFailure], options.sender)
 	}
 
 	public fillOrder_ = async (options?: { sender?: string }): Promise<string> => {
@@ -6777,27 +6757,6 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public cashAvailableForTransferFrom_ = async (owner: string, sender: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_sender","type":"address"}],"name":"cashAvailableForTransferFrom","outputs":[{"internalType":"uint256","name":"_available","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [owner, sender], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public cashBalance_ = async (account: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"}],"name":"cashBalance","outputs":[{"internalType":"uint256","name":"_balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public daiToVatDai_ = async (daiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_daiAmount","type":"uint256"}],"name":"daiToVatDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [daiAmount], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public decimals_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -7085,20 +7044,6 @@ export class DisputeWindow<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"validityBondTotal","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public vat_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"vat","outputs":[{"internalType":"contract IDaiVat","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public vatDaiToDai_ = async (vDaiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_vDaiAmount","type":"uint256"}],"name":"vatDaiToDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [vDaiAmount], options.sender)
 		return <TBigNumber>result[0]
 	}
 
@@ -7421,20 +7366,6 @@ export class Market<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public cashAvailableForTransferFrom_ = async (owner: string, sender: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_sender","type":"address"}],"name":"cashAvailableForTransferFrom","outputs":[{"internalType":"uint256","name":"_available","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [owner, sender], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public cashBalance_ = async (account: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"}],"name":"cashBalance","outputs":[{"internalType":"uint256","name":"_balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public contribute = async (payoutNumerators: Array<TBigNumber>, amount: TBigNumber, description: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256[]","name":"_payoutNumerators","type":"uint256[]"},{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"string","name":"_description","type":"string"}],"name":"contribute","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -7485,13 +7416,6 @@ export class Market<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"crowdsourcers","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [arg0], options.sender)
 		return <string>result[0]
-	}
-
-	public daiToVatDai_ = async (daiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_daiAmount","type":"uint256"}],"name":"daiToVatDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [daiAmount], options.sender)
-		return <TBigNumber>result[0]
 	}
 
 	public deriveMarketCreatorFeeAmount_ = async (amount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
@@ -7918,20 +7842,6 @@ export class Market<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public vat_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"vat","outputs":[{"internalType":"contract IDaiVat","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public vatDaiToDai_ = async (vDaiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_vDaiAmount","type":"uint256"}],"name":"vatDaiToDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [vDaiAmount], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public warpSync_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"warpSync","outputs":[{"internalType":"contract IWarpSync","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -8043,27 +7953,6 @@ export class OICash<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"cash","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
-	}
-
-	public cashAvailableForTransferFrom_ = async (owner: string, sender: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_sender","type":"address"}],"name":"cashAvailableForTransferFrom","outputs":[{"internalType":"uint256","name":"_available","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [owner, sender], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public cashBalance_ = async (account: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"}],"name":"cashBalance","outputs":[{"internalType":"uint256","name":"_balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public daiToVatDai_ = async (daiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_daiAmount","type":"uint256"}],"name":"daiToVatDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [daiAmount], options.sender)
-		return <TBigNumber>result[0]
 	}
 
 	public decimals_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
@@ -8238,20 +8127,6 @@ export class OICash<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"universe","outputs":[{"internalType":"contract IUniverse","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
-	}
-
-	public vat_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"vat","outputs":[{"internalType":"contract IDaiVat","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public vatDaiToDai_ = async (vDaiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_vDaiAmount","type":"uint256"}],"name":"vatDaiToDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [vDaiAmount], options.sender)
-		return <TBigNumber>result[0]
 	}
 
 	public withdraw = async (amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -8936,20 +8811,6 @@ export class ShareToken<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public cashAvailableForTransferFrom_ = async (owner: string, sender: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_sender","type":"address"}],"name":"cashAvailableForTransferFrom","outputs":[{"internalType":"uint256","name":"_available","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [owner, sender], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public cashBalance_ = async (account: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"}],"name":"cashBalance","outputs":[{"internalType":"uint256","name":"_balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public claimTradingProceeds = async (market: string, shareHolder: string, fingerprint: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"address","name":"_shareHolder","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"claimTradingProceeds","outputs":[{"internalType":"uint256[]","name":"_outcomeFees","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -8967,13 +8828,6 @@ export class ShareToken<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"address","name":"_shareHolder","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"claimTradingProceeds","outputs":[{"internalType":"uint256[]","name":"_outcomeFees","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [market, shareHolder, fingerprint], options.sender)
 		return <Array<TBigNumber>>result[0]
-	}
-
-	public daiToVatDai_ = async (daiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_daiAmount","type":"uint256"}],"name":"daiToVatDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [daiAmount], options.sender)
-		return <TBigNumber>result[0]
 	}
 
 	public divideUpWinnings = async (market: string, outcome: TBigNumber, numberOfShares: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -9294,20 +9148,6 @@ export class ShareToken<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"unsafeTransferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		await this.localCall(abi, [from, to, id, value], options.sender)
 	}
-
-	public vat_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"vat","outputs":[{"internalType":"contract IDaiVat","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public vatDaiToDai_ = async (vDaiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_vDaiAmount","type":"uint256"}],"name":"vatDaiToDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [vDaiAmount], options.sender)
-		return <TBigNumber>result[0]
-	}
 }
 
 
@@ -9356,20 +9196,6 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"cash","outputs":[{"internalType":"contract ICash","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
-	}
-
-	public cashAvailableForTransferFrom_ = async (owner: string, sender: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_sender","type":"address"}],"name":"cashAvailableForTransferFrom","outputs":[{"internalType":"uint256","name":"_available","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [owner, sender], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public cashBalance_ = async (account: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"}],"name":"cashBalance","outputs":[{"internalType":"uint256","name":"_balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account], options.sender)
-		return <TBigNumber>result[0]
 	}
 
 	public createCategoricalMarket = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, outcomes: Array<string>, extraInfo: string, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -9467,13 +9293,6 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"daiPot","outputs":[{"internalType":"contract IDaiPot","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
-	}
-
-	public daiToVatDai_ = async (daiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_daiAmount","type":"uint256"}],"name":"daiToVatDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [daiAmount], options.sender)
-		return <TBigNumber>result[0]
 	}
 
 	public daiVat_ = async (options?: { sender?: string }): Promise<string> => {
@@ -10244,20 +10063,6 @@ export class Universe<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public vat_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"vat","outputs":[{"internalType":"contract IDaiVat","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public vatDaiToDai_ = async (vDaiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_vDaiAmount","type":"uint256"}],"name":"vatDaiToDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [vDaiAmount], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public withdraw = async (recipient: string, amount: TBigNumber, market: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_recipient","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"address","name":"_market","type":"address"}],"name":"withdraw","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -10612,27 +10417,6 @@ export class CancelOrder<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public cashAvailableForTransferFrom_ = async (owner: string, sender: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_sender","type":"address"}],"name":"cashAvailableForTransferFrom","outputs":[{"internalType":"uint256","name":"_available","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [owner, sender], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public cashBalance_ = async (account: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"}],"name":"cashBalance","outputs":[{"internalType":"uint256","name":"_balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public daiToVatDai_ = async (daiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_daiAmount","type":"uint256"}],"name":"daiToVatDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [daiAmount], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public getInitialized_ = async (options?: { sender?: string }): Promise<boolean> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getInitialized","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -10678,20 +10462,6 @@ export class CancelOrder<TBigNumber> extends Contract<TBigNumber> {
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
 	}
-
-	public vat_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"vat","outputs":[{"internalType":"contract IDaiVat","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public vatDaiToDai_ = async (vDaiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_vDaiAmount","type":"uint256"}],"name":"vatDaiToDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [vDaiAmount], options.sender)
-		return <TBigNumber>result[0]
-	}
 }
 
 
@@ -10721,20 +10491,6 @@ export class CreateOrder<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public cashAvailableForTransferFrom_ = async (owner: string, sender: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_sender","type":"address"}],"name":"cashAvailableForTransferFrom","outputs":[{"internalType":"uint256","name":"_available","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [owner, sender], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public cashBalance_ = async (account: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"}],"name":"cashBalance","outputs":[{"internalType":"uint256","name":"_balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public createOrder = async (creator: string, type: TBigNumber, attoshares: TBigNumber, price: TBigNumber, market: string, outcome: TBigNumber, betterOrderId: string, worseOrderId: string, tradeGroupId: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_creator","type":"address"},{"internalType":"enum Order.Types","name":"_type","type":"uint8"},{"internalType":"uint256","name":"_attoshares","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"},{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"uint256","name":"_outcome","type":"uint256"},{"internalType":"bytes32","name":"_betterOrderId","type":"bytes32"},{"internalType":"bytes32","name":"_worseOrderId","type":"bytes32"},{"internalType":"bytes32","name":"_tradeGroupId","type":"bytes32"}],"name":"createOrder","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -10752,13 +10508,6 @@ export class CreateOrder<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_creator","type":"address"},{"internalType":"enum Order.Types","name":"_type","type":"uint8"},{"internalType":"uint256","name":"_attoshares","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"},{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"uint256","name":"_outcome","type":"uint256"},{"internalType":"bytes32","name":"_betterOrderId","type":"bytes32"},{"internalType":"bytes32","name":"_worseOrderId","type":"bytes32"},{"internalType":"bytes32","name":"_tradeGroupId","type":"bytes32"}],"name":"createOrder","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [creator, type, attoshares, price, market, outcome, betterOrderId, worseOrderId, tradeGroupId], options.sender)
 		return <string>result[0]
-	}
-
-	public daiToVatDai_ = async (daiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_daiAmount","type":"uint256"}],"name":"daiToVatDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [daiAmount], options.sender)
-		return <TBigNumber>result[0]
 	}
 
 	public getInitialized_ = async (options?: { sender?: string }): Promise<boolean> => {
@@ -10843,20 +10592,6 @@ export class CreateOrder<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"trade","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
-	}
-
-	public vat_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"vat","outputs":[{"internalType":"contract IDaiVat","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public vatDaiToDai_ = async (vDaiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_vDaiAmount","type":"uint256"}],"name":"vatDaiToDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [vDaiAmount], options.sender)
-		return <TBigNumber>result[0]
 	}
 }
 
@@ -11843,15 +11578,8 @@ export class ZeroXTrade<TBigNumber> extends Contract<TBigNumber> {
 
 	public cashAvailableForTransferFrom_ = async (owner: string, sender: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_sender","type":"address"}],"name":"cashAvailableForTransferFrom","outputs":[{"internalType":"uint256","name":"_available","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_sender","type":"address"}],"name":"cashAvailableForTransferFrom","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [owner, sender], options.sender)
-		return <TBigNumber>result[0]
-	}
-
-	public cashBalance_ = async (account: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"}],"name":"cashBalance","outputs":[{"internalType":"uint256","name":"_balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account], options.sender)
 		return <TBigNumber>result[0]
 	}
 
@@ -11874,13 +11602,6 @@ export class ZeroXTrade<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"internalType":"address","name":"makerAddress","type":"address"},{"internalType":"address","name":"takerAddress","type":"address"},{"internalType":"address","name":"feeRecipientAddress","type":"address"},{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"makerAssetAmount","type":"uint256"},{"internalType":"uint256","name":"takerAssetAmount","type":"uint256"},{"internalType":"uint256","name":"makerFee","type":"uint256"},{"internalType":"uint256","name":"takerFee","type":"uint256"},{"internalType":"uint256","name":"expirationTimeSeconds","type":"uint256"},{"internalType":"uint256","name":"salt","type":"uint256"},{"internalType":"bytes","name":"makerAssetData","type":"bytes"},{"internalType":"bytes","name":"takerAssetData","type":"bytes"},{"internalType":"bytes","name":"makerFeeAssetData","type":"bytes"},{"internalType":"bytes","name":"takerFeeAssetData","type":"bytes"}],"internalType":"struct IExchange.Order","name":"_order","type":"tuple"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"creatorHasFundsForTrade","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [order, amount], options.sender)
 		return <boolean>result[0]
-	}
-
-	public daiToVatDai_ = async (daiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_daiAmount","type":"uint256"}],"name":"daiToVatDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [daiAmount], options.sender)
-		return <TBigNumber>result[0]
 	}
 
 	public decodeAssetData_ = async (assetData: string, options?: { sender?: string }): Promise<{_assetProxyId: string, _tokenAddress: string, _tokenIds: Array<TBigNumber>, _tokenValues: Array<TBigNumber>, _callbackData: string}> => {
@@ -12119,20 +11840,6 @@ export class ZeroXTrade<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"unpackTokenId","outputs":[{"internalType":"address","name":"_market","type":"address"},{"internalType":"uint256","name":"_price","type":"uint256"},{"internalType":"uint8","name":"_outcome","type":"uint8"},{"internalType":"uint8","name":"_type","type":"uint8"}],"payable":false,"stateMutability":"pure","type":"function"}
 		const result = await this.localCall(abi, [tokenId], options.sender)
 		return <{_market: string, _price: TBigNumber, _outcome: TBigNumber, _type: TBigNumber}>result
-	}
-
-	public vat_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"vat","outputs":[{"internalType":"contract IDaiVat","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public vatDaiToDai_ = async (vDaiAmount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_vDaiAmount","type":"uint256"}],"name":"vatDaiToDai","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
-		const result = await this.localCall(abi, [vDaiAmount], options.sender)
-		return <TBigNumber>result[0]
 	}
 }
 
@@ -12541,6 +12248,304 @@ export class UniswapV2Factory<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_feeToSetter","type":"address"}],"name":"setFeeToSetter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		await this.localCall(abi, [feeToSetter], options.sender)
+	}
+}
+
+
+export class UniswapV2Router01<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public WETH_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"WETH","outputs":[{"internalType":"contract IWETH","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public addLiquidity = async (tokenA: string, tokenB: string, amountADesired: TBigNumber, amountBDesired: TBigNumber, amountAMin: TBigNumber, amountBMin: TBigNumber, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"amountADesired","type":"uint256"},{"internalType":"uint256","name":"amountBDesired","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"addLiquidity","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"},{"internalType":"uint256","name":"liquidity","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline], 'addLiquidity', options.sender)
+	}
+	
+	public addLiquidity_estimateGas = async (tokenA: string, tokenB: string, amountADesired: TBigNumber, amountBDesired: TBigNumber, amountAMin: TBigNumber, amountBMin: TBigNumber, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"amountADesired","type":"uint256"},{"internalType":"uint256","name":"amountBDesired","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"addLiquidity","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"},{"internalType":"uint256","name":"liquidity","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline], 'addLiquidity', options.sender)
+	}
+
+	public addLiquidity_ = async (tokenA: string, tokenB: string, amountADesired: TBigNumber, amountBDesired: TBigNumber, amountAMin: TBigNumber, amountBMin: TBigNumber, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<{amountA: TBigNumber, amountB: TBigNumber, liquidity: TBigNumber}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"amountADesired","type":"uint256"},{"internalType":"uint256","name":"amountBDesired","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"addLiquidity","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"},{"internalType":"uint256","name":"liquidity","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline], options.sender)
+		return <{amountA: TBigNumber, amountB: TBigNumber, liquidity: TBigNumber}>result
+	}
+
+	public addLiquidityETH = async (token: string, amountTokenDesired: TBigNumber, amountTokenMin: TBigNumber, amountETHMin: TBigNumber, to: string, deadline: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amountTokenDesired","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"addLiquidityETH","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"},{"internalType":"uint256","name":"liquidity","type":"uint256"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [token, amountTokenDesired, amountTokenMin, amountETHMin, to, deadline], 'addLiquidityETH', options.sender, options.attachedEth)
+	}
+	
+	public addLiquidityETH_estimateGas = async (token: string, amountTokenDesired: TBigNumber, amountTokenMin: TBigNumber, amountETHMin: TBigNumber, to: string, deadline: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amountTokenDesired","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"addLiquidityETH","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"},{"internalType":"uint256","name":"liquidity","type":"uint256"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [token, amountTokenDesired, amountTokenMin, amountETHMin, to, deadline], 'addLiquidityETH', options.sender, options.attachedEth)
+	}
+
+	public addLiquidityETH_ = async (token: string, amountTokenDesired: TBigNumber, amountTokenMin: TBigNumber, amountETHMin: TBigNumber, to: string, deadline: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{amountToken: TBigNumber, amountETH: TBigNumber, liquidity: TBigNumber}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amountTokenDesired","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"addLiquidityETH","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"},{"internalType":"uint256","name":"liquidity","type":"uint256"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [token, amountTokenDesired, amountTokenMin, amountETHMin, to, deadline], options.sender, options.attachedEth)
+		return <{amountToken: TBigNumber, amountETH: TBigNumber, liquidity: TBigNumber}>result
+	}
+
+	public exchangeFor_ = async (tokenA: string, tokenB: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"}],"name":"exchangeFor","outputs":[{"internalType":"address","name":"exchange","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [tokenA, tokenB], options.sender)
+		return <string>result[0]
+	}
+
+	public factory_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"factory","outputs":[{"internalType":"contract IUniswapV2Factory","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public getAmountIn_ = async (amountOut: TBigNumber, reserveIn: TBigNumber, reserveOut: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountIn","outputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [amountOut, reserveIn, reserveOut], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public getAmountOut_ = async (amountIn: TBigNumber, reserveIn: TBigNumber, reserveOut: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountOut","outputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [amountIn, reserveIn, reserveOut], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public getAmountsIn_ = async (amountOut: TBigNumber, path: Array<string>, options?: { sender?: string }): Promise<Array<TBigNumber>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"}],"name":"getAmountsIn","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [amountOut, path], options.sender)
+		return <Array<TBigNumber>>result[0]
+	}
+
+	public getAmountsOut_ = async (amountIn: TBigNumber, path: Array<string>, options?: { sender?: string }): Promise<Array<TBigNumber>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"}],"name":"getAmountsOut","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [amountIn, path], options.sender)
+		return <Array<TBigNumber>>result[0]
+	}
+
+	public pairFor_ = async (tokenA: string, tokenB: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"}],"name":"pairFor","outputs":[{"internalType":"address","name":"pair","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [tokenA, tokenB], options.sender)
+		return <string>result[0]
+	}
+
+	public quote_ = async (amountA: TBigNumber, reserveA: TBigNumber, reserveB: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"reserveA","type":"uint256"},{"internalType":"uint256","name":"reserveB","type":"uint256"}],"name":"quote","outputs":[{"internalType":"uint256","name":"amountB","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [amountA, reserveA, reserveB], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public removeLiquidity = async (tokenA: string, tokenB: string, liquidity: TBigNumber, amountAMin: TBigNumber, amountBMin: TBigNumber, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline], 'removeLiquidity', options.sender)
+	}
+	
+	public removeLiquidity_estimateGas = async (tokenA: string, tokenB: string, liquidity: TBigNumber, amountAMin: TBigNumber, amountBMin: TBigNumber, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline], 'removeLiquidity', options.sender)
+	}
+
+	public removeLiquidity_ = async (tokenA: string, tokenB: string, liquidity: TBigNumber, amountAMin: TBigNumber, amountBMin: TBigNumber, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<{amountA: TBigNumber, amountB: TBigNumber}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline], options.sender)
+		return <{amountA: TBigNumber, amountB: TBigNumber}>result
+	}
+
+	public removeLiquidityETH = async (token: string, liquidity: TBigNumber, amountTokenMin: TBigNumber, amountETHMin: TBigNumber, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidityETH","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [token, liquidity, amountTokenMin, amountETHMin, to, deadline], 'removeLiquidityETH', options.sender)
+	}
+	
+	public removeLiquidityETH_estimateGas = async (token: string, liquidity: TBigNumber, amountTokenMin: TBigNumber, amountETHMin: TBigNumber, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidityETH","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [token, liquidity, amountTokenMin, amountETHMin, to, deadline], 'removeLiquidityETH', options.sender)
+	}
+
+	public removeLiquidityETH_ = async (token: string, liquidity: TBigNumber, amountTokenMin: TBigNumber, amountETHMin: TBigNumber, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<{amountToken: TBigNumber, amountETH: TBigNumber}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"removeLiquidityETH","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [token, liquidity, amountTokenMin, amountETHMin, to, deadline], options.sender)
+		return <{amountToken: TBigNumber, amountETH: TBigNumber}>result
+	}
+
+	public removeLiquidityETHWithPermit = async (token: string, liquidity: TBigNumber, amountTokenMin: TBigNumber, amountETHMin: TBigNumber, to: string, deadline: TBigNumber, approveMax: boolean, v: TBigNumber, r: string, s: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityETHWithPermit","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [token, liquidity, amountTokenMin, amountETHMin, to, deadline, approveMax, v, r, s], 'removeLiquidityETHWithPermit', options.sender)
+	}
+	
+	public removeLiquidityETHWithPermit_estimateGas = async (token: string, liquidity: TBigNumber, amountTokenMin: TBigNumber, amountETHMin: TBigNumber, to: string, deadline: TBigNumber, approveMax: boolean, v: TBigNumber, r: string, s: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityETHWithPermit","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [token, liquidity, amountTokenMin, amountETHMin, to, deadline, approveMax, v, r, s], 'removeLiquidityETHWithPermit', options.sender)
+	}
+
+	public removeLiquidityETHWithPermit_ = async (token: string, liquidity: TBigNumber, amountTokenMin: TBigNumber, amountETHMin: TBigNumber, to: string, deadline: TBigNumber, approveMax: boolean, v: TBigNumber, r: string, s: string, options?: { sender?: string }): Promise<{amountToken: TBigNumber, amountETH: TBigNumber}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountTokenMin","type":"uint256"},{"internalType":"uint256","name":"amountETHMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityETHWithPermit","outputs":[{"internalType":"uint256","name":"amountToken","type":"uint256"},{"internalType":"uint256","name":"amountETH","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [token, liquidity, amountTokenMin, amountETHMin, to, deadline, approveMax, v, r, s], options.sender)
+		return <{amountToken: TBigNumber, amountETH: TBigNumber}>result
+	}
+
+	public removeLiquidityWithPermit = async (tokenA: string, tokenB: string, liquidity: TBigNumber, amountAMin: TBigNumber, amountBMin: TBigNumber, to: string, deadline: TBigNumber, approveMax: boolean, v: TBigNumber, r: string, s: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityWithPermit","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline, approveMax, v, r, s], 'removeLiquidityWithPermit', options.sender)
+	}
+	
+	public removeLiquidityWithPermit_estimateGas = async (tokenA: string, tokenB: string, liquidity: TBigNumber, amountAMin: TBigNumber, amountBMin: TBigNumber, to: string, deadline: TBigNumber, approveMax: boolean, v: TBigNumber, r: string, s: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityWithPermit","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline, approveMax, v, r, s], 'removeLiquidityWithPermit', options.sender)
+	}
+
+	public removeLiquidityWithPermit_ = async (tokenA: string, tokenB: string, liquidity: TBigNumber, amountAMin: TBigNumber, amountBMin: TBigNumber, to: string, deadline: TBigNumber, approveMax: boolean, v: TBigNumber, r: string, s: string, options?: { sender?: string }): Promise<{amountA: TBigNumber, amountB: TBigNumber}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"},{"internalType":"uint256","name":"liquidity","type":"uint256"},{"internalType":"uint256","name":"amountAMin","type":"uint256"},{"internalType":"uint256","name":"amountBMin","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"bool","name":"approveMax","type":"bool"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"removeLiquidityWithPermit","outputs":[{"internalType":"uint256","name":"amountA","type":"uint256"},{"internalType":"uint256","name":"amountB","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline, approveMax, v, r, s], options.sender)
+		return <{amountA: TBigNumber, amountB: TBigNumber}>result
+	}
+
+	public swapETHForExactTokens = async (amountOut: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapETHForExactTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [amountOut, path, to, deadline], 'swapETHForExactTokens', options.sender, options.attachedEth)
+	}
+	
+	public swapETHForExactTokens_estimateGas = async (amountOut: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapETHForExactTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [amountOut, path, to, deadline], 'swapETHForExactTokens', options.sender, options.attachedEth)
+	}
+
+	public swapETHForExactTokens_ = async (amountOut: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<TBigNumber>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapETHForExactTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [amountOut, path, to, deadline], options.sender, options.attachedEth)
+		return <Array<TBigNumber>>result[0]
+	}
+
+	public swapExactETHForTokens = async (amountOutMin: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactETHForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [amountOutMin, path, to, deadline], 'swapExactETHForTokens', options.sender, options.attachedEth)
+	}
+	
+	public swapExactETHForTokens_estimateGas = async (amountOutMin: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactETHForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [amountOutMin, path, to, deadline], 'swapExactETHForTokens', options.sender, options.attachedEth)
+	}
+
+	public swapExactETHForTokens_ = async (amountOutMin: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<TBigNumber>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactETHForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [amountOutMin, path, to, deadline], options.sender, options.attachedEth)
+		return <Array<TBigNumber>>result[0]
+	}
+
+	public swapExactTokensForETH = async (amountIn: TBigNumber, amountOutMin: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [amountIn, amountOutMin, path, to, deadline], 'swapExactTokensForETH', options.sender)
+	}
+	
+	public swapExactTokensForETH_estimateGas = async (amountIn: TBigNumber, amountOutMin: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [amountIn, amountOutMin, path, to, deadline], 'swapExactTokensForETH', options.sender)
+	}
+
+	public swapExactTokensForETH_ = async (amountIn: TBigNumber, amountOutMin: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<Array<TBigNumber>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [amountIn, amountOutMin, path, to, deadline], options.sender)
+		return <Array<TBigNumber>>result[0]
+	}
+
+	public swapExactTokensForTokens = async (amountIn: TBigNumber, amountOutMin: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [amountIn, amountOutMin, path, to, deadline], 'swapExactTokensForTokens', options.sender)
+	}
+	
+	public swapExactTokensForTokens_estimateGas = async (amountIn: TBigNumber, amountOutMin: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [amountIn, amountOutMin, path, to, deadline], 'swapExactTokensForTokens', options.sender)
+	}
+
+	public swapExactTokensForTokens_ = async (amountIn: TBigNumber, amountOutMin: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<Array<TBigNumber>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [amountIn, amountOutMin, path, to, deadline], options.sender)
+		return <Array<TBigNumber>>result[0]
+	}
+
+	public swapTokensForExactETH = async (amountOut: TBigNumber, amountInMax: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"amountInMax","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapTokensForExactETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [amountOut, amountInMax, path, to, deadline], 'swapTokensForExactETH', options.sender)
+	}
+	
+	public swapTokensForExactETH_estimateGas = async (amountOut: TBigNumber, amountInMax: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"amountInMax","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapTokensForExactETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [amountOut, amountInMax, path, to, deadline], 'swapTokensForExactETH', options.sender)
+	}
+
+	public swapTokensForExactETH_ = async (amountOut: TBigNumber, amountInMax: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<Array<TBigNumber>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"amountInMax","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapTokensForExactETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [amountOut, amountInMax, path, to, deadline], options.sender)
+		return <Array<TBigNumber>>result[0]
+	}
+
+	public swapTokensForExactTokens = async (amountOut: TBigNumber, amountInMax: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"amountInMax","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapTokensForExactTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [amountOut, amountInMax, path, to, deadline], 'swapTokensForExactTokens', options.sender)
+	}
+	
+	public swapTokensForExactTokens_estimateGas = async (amountOut: TBigNumber, amountInMax: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"amountInMax","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapTokensForExactTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [amountOut, amountInMax, path, to, deadline], 'swapTokensForExactTokens', options.sender)
+	}
+
+	public swapTokensForExactTokens_ = async (amountOut: TBigNumber, amountInMax: TBigNumber, path: Array<string>, to: string, deadline: TBigNumber, options?: { sender?: string }): Promise<Array<TBigNumber>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"amountInMax","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapTokensForExactTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [amountOut, amountInMax, path, to, deadline], options.sender)
+		return <Array<TBigNumber>>result[0]
 	}
 }
 

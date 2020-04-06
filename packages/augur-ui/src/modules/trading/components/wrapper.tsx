@@ -49,6 +49,7 @@ interface WrapperProps {
   updateTradeCost: Function;
   updateTradeShares: Function;
   disclaimerSeen: boolean;
+  gsnWalletInfoSeen: boolean;
   gasPrice: number;
   GsnEnabled: boolean;
   hasFunds: boolean;
@@ -60,6 +61,7 @@ interface WrapperProps {
   currentTimestamp: number;
   availableDai: number;
   gsnUnavailable: boolean;
+  initializeGsnWallet: Function;
 }
 
 interface WrapperState {
@@ -443,6 +445,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       hasHistory,
       availableDai,
       gsnUnavailable,
+      initializeGsnWallet,
+      gsnWalletInfoSeen,
     } = this.props;
     let {
       marketType,
@@ -489,11 +493,16 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             this.clearOrderForm();
           } else {
             if (disclaimerSeen) {
-              this.placeMarketTrade(market, selectedOutcome, this.state);
+              gsnUnavailable && !gsnWalletInfoSeen
+                ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
+                : this.placeMarketTrade(market, selectedOutcome, this.state);
+
             } else {
               disclaimerModal({
                 onApprove: () =>
-                  this.placeMarketTrade(market, selectedOutcome, this.state),
+                  gsnUnavailable && !gsnWalletInfoSeen
+                  ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
+                  : this.placeMarketTrade(market, selectedOutcome, this.state)
               });
             }
           }

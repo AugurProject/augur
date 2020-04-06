@@ -4,6 +4,8 @@ import 'ROOT/uniswap/interfaces/IUniswapV2Library.sol';
 import 'ROOT/uniswap/libraries/SafeMath.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
+import 'ROOT/uniswap/UniswapV2Exchange.sol';
+
 
 contract UniswapV2Library is IUniswapV2Library {
     using SafeMath for uint;
@@ -18,15 +20,9 @@ contract UniswapV2Library is IUniswapV2Library {
         require(token0 != address(0), 'UniswapV2Helper: ZERO_ADDRESS');
     }
 
-    // calculates the CREATE2 address for an exchange without making any external calls
-    function exchangeFor(address tokenA, address tokenB) internal view returns (address exchange) {
-        (address token0, address token1) = sortTokens(tokenA, tokenB);
-        exchange = address(uint(keccak256(abi.encodePacked(
-            hex'ff',
-            factory,
-            keccak256(abi.encodePacked(token0, token1)),
-            hex'8548287401d15401e1162bb5bc290f6fba82afcb66944df43c3017817522771b' // init code hash for exchanges
-        ))));
+    // calculates the CREATE2 address for an exchange
+    function exchangeFor(address tokenA, address tokenB) public view returns (address exchange) {
+        return factory.getExchange(tokenA, tokenB);
     }
 
     // fetches and sorts the reserves for an exchange
@@ -42,7 +38,7 @@ contract UniswapV2Library is IUniswapV2Library {
         require(reserveA > 0 && reserveB > 0, 'UniswapV2Helper: INSUFFICIENT_LIQUIDITY');
         amountB = amountA.mul(reserveB) / reserveA;
     }
-    
+
     // given an input amount of an asset and exchange reserves, returns the maximum output amount of the other asset
     function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) public pure returns (uint amountOut) {
         require(amountIn > 0, 'UniswapV2Helper: INSUFFICIENT_INPUT_AMOUNT');
@@ -61,7 +57,7 @@ contract UniswapV2Library is IUniswapV2Library {
         uint denominator = reserveOut.sub(amountOut).mul(997);
         amountIn = (numerator / denominator).add(1);
     }
- 
+
     // performs chained getAmountOut calculations on any number of exchanges
     function getAmountsOut(uint amountIn, address[] memory path) public view returns (uint[] memory amounts) {
         require(path.length >= 2, 'UniswapV2Helper: INVALID_PATH');

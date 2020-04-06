@@ -12,6 +12,7 @@ export interface CountdownProgressProps {
   firstColorBreakpoint?: number;
   finalColorBreakpoint?: number;
   alignRight?: boolean;
+  reportingState?: string;
 }
 
 export interface TimeLabelProps {
@@ -163,6 +164,7 @@ export const MarketProgress = (props: MarketProgressProps) => {
     <CountdownProgress
       label={customLabel || label}
       time={time}
+      reportingState={reportingState}
       alignRight={alignRight}
     />
   );
@@ -173,13 +175,13 @@ export const useTimer = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-        setCurrentTime(seconds => seconds + 1);
-      }, 1000);
+      setCurrentTime(seconds => seconds + 1);
+    }, 1000);
     return () => clearInterval(interval);
   }, [currentTime]);
 
   return currentTime;
-}
+};
 
 export const CountdownProgress = ({
   label,
@@ -188,6 +190,7 @@ export const CountdownProgress = ({
   firstColorBreakpoint,
   finalColorBreakpoint,
   alignRight,
+  reportingState,
 }: CountdownProgressProps) => {
   const currentTime = useTimer();
 
@@ -197,10 +200,7 @@ export const CountdownProgress = ({
   const firstBreakpoint = firstColorBreakpoint || ThreeDays;
   const secondBreakpoint = finalColorBreakpoint || OneDay;
   if (time && time !== null && currentTime) {
-    const daysRemaining = format.getDaysRemaining(
-      time.timestamp,
-      currentTime
-    );
+    const daysRemaining = format.getDaysRemaining(time.timestamp, currentTime);
     const hoursRemaining = format.getHoursMinusDaysRemaining(
       time.timestamp,
       currentTime
@@ -217,13 +217,17 @@ export const CountdownProgress = ({
 
     timeLeft = time.timestamp - currentTime;
     countdown = (countdownBreakpoint || OneWeek) >= timeLeft && timeLeft > 0;
-    valueString = countdown
-      ? `${daysRemaining}:${
-        hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
-      }:${
-        minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
-      }:${secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining}`
-      : time.formattedLocalShortDateSecondary;
+    valueString =
+      countdown && reportingState !== REPORTING_STATE.AWAITING_FINALIZATION &&
+          reportingState !== REPORTING_STATE.FINALIZED
+        ? `${daysRemaining}:${
+            hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
+          }:${
+            minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
+          }:${
+            secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining
+          }`
+        : time.formattedLocalShortDateSecondary;
   }
   const breakpointOne =
     timeLeft <= firstBreakpoint && timeLeft > secondBreakpoint && countdown;
@@ -312,7 +316,7 @@ export const WindowProgress = (props: WindowProgressProps) => {
     currentTime,
     title,
     description,
-    countdownLabel
+    countdownLabel,
   } = props;
   const {
     formattedStartTime,

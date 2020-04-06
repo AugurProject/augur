@@ -382,6 +382,7 @@ export default class MarketHeader extends Component<
               >
                 {(market.id || preview) && (
                   <MarketHeaderBar
+                    market={market}
                     reportingState={market.reportingState}
                     disputeInfo={market.disputeInfo}
                     endTimeFormatted={market.endTimeFormatted}
@@ -444,6 +445,7 @@ export default class MarketHeader extends Component<
               <>
                 <h1>{description}</h1>
                 <MarketHeaderBar
+                  market={market}
                   reportingState={market.reportingState}
                   disputeInfo={market.disputeInfo}
                   endTimeFormatted={market.endTimeFormatted}

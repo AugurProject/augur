@@ -46,16 +46,25 @@ export default class CategoryFilters extends React.Component<
   constructor(props) {
     super(props);
 
+    let newCategory = null;
+    if (props.categoryMetaData && props.categoryMetaData.categories && props.selectedCategories) {
+      newCategory = this.lookupCategoryFromMeta(props.selectedCategories[0], this.props.categoryMetaData.categories);
+    }
+
     this.state = {
       showAllCategories: false,
-      selectedCategories: [],
-      selectedCategory: null,
-      currentCategories: null,
+      selectedCategories: props.selectedCategories,
+      selectedCategory: props.selectedCategories ? props.selectedCategories[0] : null,
+      currentCategories: newCategory ? newCategory.children : null,
     };
   }
 
+  componentDidMount() {
+    this.loadCategories(null);
+  }
+
   componentDidUpdate(prevProps: CategoryFiltersProps) {
-    if (JSON.stringify(prevProps.categoryMetaData) !== JSON.stringify(this.props.categoryMetaData)) {
+    if (JSON.stringify(prevProps && prevProps.categoryMetaData) !== JSON.stringify(this.props.categoryMetaData)) {
       if (this.props.categoryMetaData && this.props.categoryMetaData.categories) {
         const newCategory = this.lookupCategoryFromMeta(this.state.selectedCategory, this.props.categoryMetaData.categories);
         this.setState({
@@ -64,10 +73,14 @@ export default class CategoryFilters extends React.Component<
       }
     }
 
+    this.loadCategories(prevProps);
+  }
+
+  loadCategories = (prevProps: CategoryFiltersProps) => {
     const selectedCategory = parseQuery(this.props.location.search)[
       CATEGORY_PARAM_NAME
     ];
-    const oldSelectedCategory = parseQuery(prevProps.location.search)[
+    const oldSelectedCategory = parseQuery(prevProps && prevProps.location.search)[
       CATEGORY_PARAM_NAME
     ];
 
@@ -81,11 +94,6 @@ export default class CategoryFilters extends React.Component<
        (selectedCategory && selectedCategory !== oldSelectedCategory)) {
       this.getChildrenCategories(toSelect, allOthers, false);
     }
-  }
-
-  componentWillUnmount() {
-    this.props.updateSelectedCategories([]);
-    this.props.updateMarketsListMeta(null);
   }
 
   render() {

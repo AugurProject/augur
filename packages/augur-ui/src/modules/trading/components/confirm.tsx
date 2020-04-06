@@ -426,6 +426,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                   effect="solid"
                   place="top"
                   type="light"
+                  data-event="mouseover"
+                  data-event-off="blur scroll"
                 >
                   <p>{tooltip}</p>
                 </ReactTooltip>

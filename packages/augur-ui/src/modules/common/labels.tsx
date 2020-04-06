@@ -13,6 +13,7 @@ import {
   ScalarIcon,
   TemplateIcon,
   YellowTemplateIcon,
+  ArchivedIcon
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -36,7 +37,7 @@ import {
 import { getTheme } from 'modules/app/actions/update-app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
-import { DateFormattedObject, FormattedNumber, SizeTypes } from 'modules/types';
+import { DateFormattedObject, FormattedNumber, SizeTypes, MarketData } from 'modules/types';
 import { Getters, TXEventName } from '@augurproject/sdk';
 import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
@@ -284,7 +285,7 @@ interface TemplateShieldProps {
 }
 
 export const TemplateShield = ({ market }: TemplateShieldProps) => {
-  const yellowShield = hasTemplateTextInputs(market.template.hash);
+  const yellowShield = hasTemplateTextInputs(market.template.hash, market.marketType === CATEGORICAL);
   return (
     <>
       <label
@@ -303,12 +304,72 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
         effect="solid"
         place="right"
         type={getTheme() === THEMES.TRADING ? "light" : null}
+        data-event="mouseover"
+        data-event-off="blur scroll"
       >
         {yellowShield
           ? "Templated market question, contains market creator text. This text should match to highlighted section's tooltip"
           : 'Template markets have predefined terms and have a smaller chance of resolving as invalid'}
       </ReactTooltip>
     </>
+  );
+};
+
+interface ArchivedProps {
+  market: MarketData;
+}
+
+export const Archived = ({ market }: ArchivedProps) => {
+  if (!market.isArchived) return null;
+  return (
+    <>
+      <label
+        className={Styles.Archived}
+        data-tip
+        data-for={`tooltip-${market.id}-archived`}
+      >
+        {ArchivedIcon}
+      </label>
+      <ReactTooltip
+        id={`tooltip-${market.id}-archived`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+        data-event="mouseover"
+            data-event-off="blur scroll"
+      >
+        Data only saved for 30 days
+      </ReactTooltip>
+    </>
+  );
+};
+
+interface DataArchivedProps {
+  label: string;
+}
+
+export const DataArchivedLabel = ({ label }: DataArchivedProps) => {
+  return (
+    <div className={Styles.DataArchivedLabel}>
+      <label
+        data-tip
+        data-for={`tooltip-${label}-archived-data`}
+      >
+        Data Archived {QuestionIcon}
+      </label>
+      <ReactTooltip
+        id={`tooltip-${label}-archived-data`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+        data-event="mouseover"
+            data-event-off="blur scroll"
+      >
+        Data only saved for 30 days
+      </ReactTooltip>
+    </div>
   );
 };
 
@@ -331,6 +392,8 @@ export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => (
             effect="solid"
             place="right"
             type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
           >
             {hint}
           </ReactTooltip>
@@ -421,10 +484,7 @@ export const SizableValueLabel = (props: SizableValueLabelProps) => (
     })}
   >
     <ValueLabel
-      value={props.value}
-      keyId={props.keyId}
-      showDenomination={props.showDenomination}
-      showEmptyDash={props.showEmptyDash}
+      {...props}
     />
   </span>
 );
@@ -689,6 +749,8 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
             effect="solid"
             place="right"
             type="light"
+            data-event="mouseover"
+            data-event-off="blur scroll"
           >
             {props.hint}
           </ReactTooltip>
@@ -794,7 +856,7 @@ interface LiquidityDepletedLabelProps {
 export const LiquidityDepletedLabel = ({
   market,
 }: LiquidityDepletedLabelProps) => {
-  if (market.passDefaultLiquiditySpread || market.hasPendingLiquidityOrders)
+  if (market.passDefaultLiquiditySpread || market.hasPendingLiquidityOrders || market.marketStatus === constants.MARKET_CLOSED)
     return null;
   return (
     <span
@@ -832,6 +894,9 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
       text = constants.MARKET_STATUS_MESSAGES.OPEN;
       break;
     case REPORTING_STATE.AWAITING_FINALIZATION:
+      resolved = true;
+      text = constants.MARKET_STATUS_MESSAGES.AWAITING_RESOLVED;
+      break;
     case REPORTING_STATE.FINALIZED:
       resolved = true;
       text = constants.MARKET_STATUS_MESSAGES.RESOLVED;

@@ -5,7 +5,7 @@ import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 import * as _ from 'lodash';
 import * as constants from '../constants';
-import { NULL_ADDRESS } from '../constants';
+import { NULL_ADDRESS, } from '../constants';
 import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -20,7 +20,7 @@ import {
   NativePlaceTradeDisplayParams,
   TradeTransactionLimits,
 } from './OnChainTrade';
-import { SubscriptionEventName } from '../constants';
+import { SubscriptionEventName, OrderEventType } from '../constants';
 import { BigNumber as BN} from 'ethers/utils';
 
 
@@ -263,6 +263,8 @@ export class ZeroX {
     const invalidReason = await this.checkIfTradeValid(params);
     if (invalidReason) throw new Error(invalidReason);
 
+    const account = await this.client.getAccount();
+
     const { orders, signatures, orderIds, loopLimit } = await this.getMatchingOrders(
       params,
       ignoreOrders
@@ -274,11 +276,19 @@ export class ZeroX {
 
     // No orders available to take. Maybe make some new ones
     if (numOrders === 0) {
-      if (!params.doNotCreateOrders) await this.placeOnChainOrders([params]);
+      if (!params.doNotCreateOrders) {
+        await this.placeOnChainOrders([params]);
+      } else {
+        // We send this just to remove the pending order display
+        this.client.events.emit(SubscriptionEventName.OrderEvent, {
+          eventType: OrderEventType.Fill,
+          orderCreator: account,
+          ...params
+        });
+      }
       return false;
     }
 
-    const account = await this.client.getAccount();
     const gasPrice = await this.client.getGasPrice();
     const exchangeFeeMultiplier = await this.client.contracts.zeroXExchange.protocolFeeMultiplier_();
     const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(new BigNumber(loopLimit));

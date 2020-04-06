@@ -366,7 +366,7 @@ export class ContractAPI {
     });
   }
 
-  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder: string, fingerprint = formatBytes32String('11')): Promise<void> {
+  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder = this.account.publicKey, fingerprint = formatBytes32String('11')): Promise<void> {
     await this.augur.contracts.shareToken.claimTradingProceeds(market.address, shareholder, fingerprint);
   }
 
@@ -514,6 +514,11 @@ export class ContractAPI {
   async getUniverse(market: ContractInterfaces.Market): Promise<ContractInterfaces.Universe> {
     const universeAddress = await market.getUniverse_();
     return this.augur.contracts.universeFromAddress(universeAddress);
+  }
+
+  async advanceTimestamp(secondsToAdvance: BigNumber): Promise<void> {
+    const currentTimestamp = await this.getTimestamp();
+    return this.setTimestamp(currentTimestamp.plus(secondsToAdvance))
   }
 
   async setTimestamp(timestamp: BigNumber): Promise<void> {

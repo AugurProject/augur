@@ -1,7 +1,7 @@
 import * as t from 'io-ts';
 import { Augur } from '../../Augur';
 import { DB } from '../db/DB';
-import { WarpSyncDocument } from '../db/WarpSyncDB';
+import { WarpCheckpointDocument } from '../db/WarpSyncCheckpointsDB';
 import { Getter } from './Router';
 
 export class WarpSyncGetter {
@@ -12,11 +12,7 @@ export class WarpSyncGetter {
     augur: Augur,
     db: DB,
     params: t.TypeOf<typeof WarpSyncGetter.getMostRecentWarpSyncParams>
-  ): Promise<WarpSyncDocument> {
-    console.log(
-      'await this.db.warpSync.createCheckpoint(beginBlock, endBlock, d.toString())'
-    );
-
-    return db.warpSync.getMostRecentWarpSync();
+  ): Promise<WarpCheckpointDocument> {
+    return db.warpCheckpoints.getMostRecentWarpSync();
   }
 }

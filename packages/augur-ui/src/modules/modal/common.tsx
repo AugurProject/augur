@@ -907,6 +907,8 @@ export const generateDaiTooltip = (
         effect='solid'
         place='top'
         type='light'
+        data-event="mouseover"
+        data-event-off="blur scroll"
       >
         <p>{tipText}</p>
       </ReactTooltip>

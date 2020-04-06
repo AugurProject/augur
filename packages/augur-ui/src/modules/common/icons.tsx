@@ -771,6 +771,39 @@ export const MobileNavBackIcon = () => (
   </svg>
 );
 
+export const ArchivedIcon = (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="8" cy="8" r="7.5" fill="#252429" stroke="#3C3B43" />
+    <g clipPath="url(#clip0)">
+      <path
+        d="M10.6191 6.42858V5.38096H6.95238L6.42857 4.33334H4.33334V10.0952"
+        stroke="#9599A5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M4.85715 11.6667L6.42858 7.4762H12.1905L10.6191 11.6667H4.85715Z"
+        stroke="#9599A5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0">
+        <rect x="4" y="4" width="8.66667" height="8" fill="white" />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
 // ## STATIC ICONS FOR THIRD PARTY
 export const Ledger = (
   <svg
@@ -1414,7 +1447,7 @@ export const Finance = (
 );
 
 export const Olympics = (
-  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 40 40" fill="none">
     <path
       d="M25.02 37.75L25 34.4167L34.3684 33.0833C35.0073 32.9918 35.5916 32.6725 36.0139 32.1844C36.4362 31.6963 36.668 31.0721 36.6667 30.4267V27.75H3.33338V30.4267C3.33207 31.0721 3.56388 31.6963 3.98617 32.1844C4.40845 32.6725 4.9928 32.9918 5.63171 33.0833L15 34.4167V37.75"
       stroke="#D7DDE0"

@@ -124,6 +124,7 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   unclaimedCreatorFeesFormatted: FormattedNumber;
   marketCreatorFeesCollectedFormatted: FormattedNumber;
   finalizationTimeFormatted: DateFormattedObject | null;
+  isArchived: boolean;
   // TODO: add this to getter Getters.Markets.MarketInfo
   // disputeInfo: object; this needs to get filled in on getter
   consensusFormatted: ConsensusFormatted | null;
@@ -760,12 +761,14 @@ export interface MarketClaimablePositions {
   markets: MarketData[];
   totals: {
     totalUnclaimedProfit: BigNumber,
-    totalUnclaimedProceeds: BigNumber
+    totalUnclaimedProceeds: BigNumber,
+    totalFees: BigNumber,
   }
   positions: {
     [marketId: string]: {
       unclaimedProfit: string;
       unclaimedProceeds: string;
+      fee: string;
     };
   };
 }
@@ -835,4 +838,10 @@ export interface CategoryList {
       ];
     }
   ];
+}
+
+export interface Initialized3box {
+  address: string;
+  box: any;
+  profile: object;
 }

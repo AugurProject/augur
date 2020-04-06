@@ -505,7 +505,7 @@ jobs:
       - bash: |
           set -exuo pipefail
           free -m
-          yarn test --config=packages/augur-test/src/tests/3rd-party/jest.config.js --verbose --ci --reporters=default --reporters=jest-junit
+          yarn test --config=packages/augur-test/src/tests/3rd-party/jest.config.js --runInBand --verbose --ci --reporters=default --reporters=jest-junit
         displayName: Test 3rd party integratios
       - bash: |
           set -exuo pipefail
@@ -644,6 +644,7 @@ jobs:
           source venv/bin/activate && \
           python3 -m pip install --no-cache-dir awscli
           aws s3 sync packages/augur-ui/build/ s3://demo.augur.net/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
+          aws s3 cp s3://demo.augur.net/index.html s3://demo.augur.net/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
           aws s3 cp s3://demo.augur.net/zerox.wasm s3://demo.augur.net/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
         displayName: 'push build to S3'
         env:
@@ -695,6 +696,7 @@ jobs:
           source venv/bin/activate && \
           python3 -m pip install --no-cache-dir awscli
           aws s3 sync packages/augur-ui/build/ s3://v2.augur.net/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
+          aws s3 cp s3://v2.augur.net/index.html s3://v2.augur.net/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
           aws s3 cp s3://v2.augur.net/zerox.wasm s3://v2.augur.net/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
         displayName: 'push build to S3'
         env:

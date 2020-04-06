@@ -29,7 +29,7 @@ interface TransactionsProps {
   fundGsnWallet: Function;
   targetAddress: string;
   signingEth: number;
-  gsnCreated: boolean;
+  signingWalletNoEth: boolean;
   localLabel: string;
 }
 
@@ -44,7 +44,7 @@ export const Transactions = ({
   fundGsnWallet,
   targetAddress,
   signingEth,
-  gsnCreated,
+  signingWalletNoEth,
   localLabel
 }: TransactionsProps) => (
   <QuadBox
@@ -60,25 +60,6 @@ export const Transactions = ({
           <DepositButton action={addFunds} />
           <WithdrawButton action={withdraw} />
         </div>
-        {!gsnCreated && (
-          <div>
-            <h4>Fund GSN Wallet</h4>
-            <FundGSNWalletButton
-              action={fundGsnWallet}
-              disabled={signingEth === 0}
-              title={signingEth === 0 ? 'Get ETH to fund GSN Wallet' : 'Click to Fund GSN Wallet'}
-            />
-            <ExternalLinkButton
-              URL={!localLabel ? "https://faucet.kovan.network/" : null}
-              showNonLink={!!localLabel}
-              label={localLabel ? localLabel : "faucet.kovan.network"}
-            />
-            <AccountAddressDisplay
-              copyable
-              address={targetAddress ? toChecksumAddress(targetAddress) : 'loading...'}
-            />
-          </div>
-        )}
         {showFaucets && (
           <div>
             <h4>REP for test net</h4>
@@ -93,6 +74,19 @@ export const Transactions = ({
             <REPFaucetButton
               title="Legacy REP Faucet"
               action={legacyRepFaucet}
+            />
+          </div>
+        )}
+        {signingWalletNoEth && (
+          <div>
+            <ExternalLinkButton
+              URL={!localLabel ? "https://faucet.kovan.network/" : null}
+              showNonLink={!!localLabel}
+              label={localLabel ? localLabel : "faucet.kovan.network"}
+            />
+            <AccountAddressDisplay
+              copyable
+              address={targetAddress ? toChecksumAddress(targetAddress) : 'loading...'}
             />
           </div>
         )}

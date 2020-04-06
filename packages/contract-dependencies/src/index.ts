@@ -26,6 +26,8 @@ export interface Transaction<TBigNumber> {
 	from?: string
 	data: string
 	value?: TBigNumber
+	gasPrice?: TBigNumber
+	gasLimit?: TBigNumber
 }
 
 export interface RawEvent {

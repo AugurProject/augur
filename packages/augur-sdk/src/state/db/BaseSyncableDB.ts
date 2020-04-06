@@ -26,8 +26,12 @@ export class BaseSyncableDB extends RollbackTable {
     super(networkId, augur, dbName, db);
     this.eventName = eventName;
 
-    db.notifySyncableDBAdded(this);
     this.rollingBack = false;
+    this.addNewBlock = this.addNewBlock.bind(this);
+  }
+
+  async delete() {
+    this.db.unregisterEventListener(this.eventName, this.addNewBlock);
   }
 
   protected async saveDocuments(documents: BaseDocument[]): Promise<void> {

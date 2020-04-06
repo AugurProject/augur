@@ -333,6 +333,9 @@ export class RelayClient {
       if (err.responseText?.includes("known transaction")) {
         return;
       }
+      if (err.responseText?.includes("Transaction with the same hash was already imported")) {
+        return;
+      }
       throw err;
     }
   }

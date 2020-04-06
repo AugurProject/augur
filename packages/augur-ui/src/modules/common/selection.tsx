@@ -301,7 +301,19 @@ export class StaticLabelDropdown extends Dropdown {
         selected: options.find(o => o.value === defaultValue),
       });
     }
+    window.addEventListener('click', this.handleWindowOnClick);
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('click', this.handleWindowOnClick);
+  }
+
+
+  handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (this.refDropdown && !this.refDropdown.contains(event.target)) {
+      this.setState({ showList: false });
+    }
+  };
 
   render() {
     const {
