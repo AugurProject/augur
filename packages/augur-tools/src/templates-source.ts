@@ -7493,7 +7493,7 @@ export const TEMPLATES = {
           {
             id: 2,
             type: TemplateInputType.DROPDOWN,
-            placeholder: `Countries`,
+            placeholder: `US States`,
             values: LIST_VALUES.US_STATES,
             categoryDestId: 1,
           },
