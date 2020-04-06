@@ -258,7 +258,7 @@ export const ClaimReportingFeesTemplate = (
 
   return (
     <Template
-      message={`You have ${unclaimedREP} REP available to be claimed from your reporting stake and ${unclaimedDai} DAI of reporting fees to collect.`}
+      message={`You have ${unclaimedREP} REP available to be claimed from your reporting stake and $${unclaimedDai} of reporting fees to collect.`}
       {...props}
     />
   );
