@@ -47,6 +47,7 @@ import {
   SUBMIT_DISPUTE,
   CLAIMMARKETSPROCEEDS,
   DISAVOWCROWDSOURCERS,
+  REDEEMDISPUTINGSTAKE,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -608,7 +609,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = (
   ))
   if (userLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
-    userLogs.map(log => handleAlert(log, REDEEMSTAKE, false, dispatch, getState));
+    userLogs.map(log => handleAlert(log, REDEEMDISPUTINGSTAKE, false, dispatch, getState));
   }
   dispatch(removePendingTransaction(REDEEMSTAKE));
 };
@@ -630,6 +631,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
 ) => {
   const userAddress = getState().loginAccount.address;
   const isForking = !!getState().universe.forkingInfo;
+  const universeId = getState().universe.id;
   logs.filter(log => isSameAddress(log.target, userAddress)).map(log => {
     if (log.tokenType === Logs.TokenType.ParticipationToken) {
       dispatch(removePendingTransaction(BUYPARTICIPATIONTOKENS));
@@ -637,7 +639,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
       dispatch(loadDisputeWindow());
     }
     if (log.tokenType === Logs.TokenType.ReputationToken && isForking) {
-        dispatch(loadUniverseDetails(log.universe, userAddress));
+        dispatch(loadUniverseDetails(universeId, userAddress));
     }
     if (log.tokenType === Logs.TokenType.ReputationToken && !isForking) {
         dispatch(

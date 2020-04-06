@@ -48,6 +48,7 @@ import {
   ZERO,
   ONE,
   MIGRATE_FROM_LEG_REP_TOKEN,
+  REDEEMDISPUTINGSTAKE,
 } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { Action } from 'redux';
@@ -192,6 +193,7 @@ export default function setAlertText(alert: any, callback: Function) {
         break;
 
       case REDEEMSTAKE:
+      case REDEEMDISPUTINGSTAKE:
         let participation = false;
         if (alert.params && alert.params.attoParticipationTokens) {
           participation = true;
@@ -209,7 +211,7 @@ export default function setAlertText(alert: any, callback: Function) {
             }`;
           } else {
             const REPVal = formatRep(
-              convertAttoValueToDisplayValue(createBigNumber(alert.params.amountRedeemed)).toString()
+              convertAttoValueToDisplayValue(createBigNumber(alert.params.repReceived)).toString()
             );
             alert.description = `${
               REPVal.formatted
