@@ -48,6 +48,7 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   MIGRATEOUTBYPAYOUT,
   FORKANDREDEEM,
   CREATEAUGURWALLET,
+  CLAIMMARKETSPROCEEDS,
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
