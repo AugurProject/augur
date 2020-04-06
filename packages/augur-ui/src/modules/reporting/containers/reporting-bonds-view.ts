@@ -1,11 +1,14 @@
 import { connect } from 'react-redux';
 import { ReportingBondsView } from 'modules/reporting/common';
 import { convertAttoValueToDisplayValue } from '@augurproject/sdk/src';
-import { ZERO, REPORTING_STATE } from 'modules/common/constants';
+import { ZERO, REPORTING_STATE, GSN_WALLET_SEEN, MODAL_INITIALIZE_ACCOUNT } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';
 import { isSameAddress } from 'utils/isSameAddress';
 import getGasPrice from 'modules/auth/selectors/get-gas-price';
+import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
+import { updateModal } from 'modules/modal/actions/update-modal';
+import getValueFromlocalStorage from 'utils/get-local-storage-value';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe, loginAccount } = state;
@@ -21,6 +24,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const openReporting = market.reportingState === REPORTING_STATE.OPEN_REPORTING;
   const owesRep = migrateMarket ? migrateMarket : (!openReporting && !universe.forkingInfo?.forkingMarket === market.id && !isSameAddress(market.author, loginAccount.address));
   const enoughRepBalance = owesRep ? userAttoRep.gte(createBigNumber(market.noShowBondAmount)) : true;
+  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
 
   return {
     userFunds,
@@ -32,11 +36,14 @@ const mapStateToProps = (state: AppState, ownProps) => {
     GsnEnabled: state.appStatus.gsnEnabled,
     gasPrice: getGasPrice(state),
     openReporting,
-    enoughRepBalance
+    enoughRepBalance,
+    gsnUnavailable: isGSNUnavailable(state),
+    gsnWalletInfoSeen,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
+  initializeGsnWallet: (customAction = null) => dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
 });
 
 const ReportingBondsViewContainer = connect(
