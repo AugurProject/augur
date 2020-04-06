@@ -38,7 +38,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  initializeGsnWallet: () => dispatch(updateModal({ type: MODAL_INITIALIZE_ACCOUNT })),
+  initializeGsnWallet: (customAction = null) => dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
   updateWalletStatus: () => {
     dispatch(removePendingTransaction(CREATEAUGURWALLET));
   }

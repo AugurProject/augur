@@ -393,6 +393,9 @@ export interface DisputingBondsViewProps {
   gasPrice: number;
   warpSyncHash: string;
   isWarpSync: boolean;
+  gsnUnavailable: boolean;
+  gsnWalletInfoSeen: boolean;
+  initializeGsnWallet: Function;
 }
 
 interface DisputingBondsViewState {
@@ -540,6 +543,9 @@ export class DisputingBondsView extends Component<
       id,
       GsnEnabled,
       warpSyncHash,
+      gsnUnavailable,
+      gsnWalletInfoSeen,
+      initializeGsnWallet,
     } = this.props;
 
     const {
@@ -609,7 +615,15 @@ export class DisputingBondsView extends Component<
         />
         <PrimaryButton
           text="Confirm"
-          action={() => reportAction(false)}
+          action={() => {
+            if (gsnUnavailable && !gsnWalletInfoSeen) {
+              initializeGsnWallet(() => {
+                reportAction(false);
+              });
+            } else {
+              reportAction(false);
+            }
+          }}
           disabled={disabled}
         />
       </div>
@@ -635,6 +649,9 @@ export interface ReportingBondsViewProps {
   openReporting: boolean;
   enoughRepBalance: boolean;
   userFunds: BigNumber;
+  gsnUnavailable: boolean;
+  gsnWalletInfoSeen: boolean;
+  initializeGsnWallet: Function;
 }
 
 interface ReportingBondsViewState {
@@ -766,6 +783,9 @@ export class ReportingBondsView extends Component<
       openReporting,
       enoughRepBalance,
       userFunds,
+      gsnUnavailable,
+      gsnWalletInfoSeen,
+      initializeGsnWallet,
     } = this.props;
 
     const {
@@ -938,7 +958,16 @@ export class ReportingBondsView extends Component<
               ? buttonDisabled || !readAndAgreedCheckbox
               : buttonDisabled
           }
-          action={() => reportAction()}
+          action={() => {
+            if (gsnUnavailable && !gsnWalletInfoSeen) {
+              initializeGsnWallet(() => {
+                reportAction();
+              });
+            } else {
+              reportAction();
+            }
+          }}
+
         />
       </div>
     );

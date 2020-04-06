@@ -561,6 +561,7 @@ export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
 export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
 export const MODAL_DISCARD = 'MODAL_DISCARD';
 export const DISCLAIMER_SEEN = 'disclaimerSeen';
+export const GSN_WALLET_SEEN = 'gsnWalletInfoSeen';
 export const MARKET_REVIEW_SEEN = 'marketReviewSeen';
 export const MODAL_MARKET_REVIEW = 'MODAL_MARKET_REVIEW';
 export const MODAL_OPEN_ORDERS = 'MODAL_OPEN_ORDERS';

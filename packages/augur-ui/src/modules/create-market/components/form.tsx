@@ -133,6 +133,9 @@ interface FormProps {
   marketCreationSaved: Function;
   maxMarketEndTime: number;
   GsnEnabled: boolean;
+  gsnUnavailable: boolean;
+  gsnWalletInfoSeen: boolean;
+  initializeGsnWallet: Function;
 }
 
 interface FormState {
@@ -763,6 +766,9 @@ export default class Form extends React.Component<FormProps, FormState> {
       isTemplate,
       currentTimestamp,
       GsnEnabled,
+      gsnUnavailable,
+      gsnWalletInfoSeen,
+      initializeGsnWallet,
     } = this.props;
     const { contentPages, categoryStats } = this.state;
 
@@ -811,6 +817,17 @@ export default class Form extends React.Component<FormProps, FormState> {
       validations && validations.description === draftError;
 
     const disabledNext = disabledFunction && disabledFunction(newMarket);
+
+    const createModalCallback = () => {
+      this.setState({ blockShown: true }, () => {
+        history.push({
+          pathname: makePath(MY_POSITIONS, null),
+          search: makeQuery({
+            [CREATE_MARKET_PORTFOLIO]: 3,
+          }),
+        });
+      });
+    }
 
     return (
       <div
@@ -946,16 +963,11 @@ export default class Form extends React.Component<FormProps, FormState> {
                       text="Create"
                       disabled={this.state.disableCreate}
                       action={() => {
-                        openCreateMarketModal(() => {
-                          this.setState({ blockShown: true }, () => {
-                            history.push({
-                              pathname: makePath(MY_POSITIONS, null),
-                              search: makeQuery({
-                                [CREATE_MARKET_PORTFOLIO]: 3,
-                              }),
-                            });
-                          });
-                        });
+                        gsnUnavailable && !gsnWalletInfoSeen
+                        ? initializeGsnWallet(() => setTimeout(() => {
+                          openCreateMarketModal(createModalCallback);
+                        }))
+                        : openCreateMarketModal(createModalCallback);
                       }}
                     />
                   )}

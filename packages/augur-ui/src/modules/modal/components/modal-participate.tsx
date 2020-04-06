@@ -24,6 +24,10 @@ interface ModalParticipateProps {
   messages: AlertMessageProps[];
   title: string;
   GsnEnabled: boolean;
+  gsnWalletInfoSeen: boolean;
+  gsnUnavailable: boolean;
+  initializeGsnWallet: Function;
+
 }
 
 export const ModalParticipate = (props: ModalParticipateProps) => {
@@ -56,11 +60,20 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
   }, []);
 
   const submitForm = () => {
-    const { purchaseParticipationTokens } = props;
-    purchaseParticipationTokens(quantity, false, err => {
-      if (err) console.log('ERR for purchaseParticipationTokens', err);
-      props.closeModal();
-    });
+    const { initializeGsnWallet, gsnUnavailable, gsnWalletInfoSeen, purchaseParticipationTokens } = props;
+    if (gsnUnavailable && !gsnWalletInfoSeen) {
+      initializeGsnWallet(() => {
+        purchaseParticipationTokens(quantity, false, err => {
+          if (err) console.log('ERR for purchaseParticipationTokens', err);
+          props.closeModal();
+        });
+      })
+    } else {
+      purchaseParticipationTokens(quantity, false, err => {
+        if (err) console.log('ERR for purchaseParticipationTokens', err);
+        props.closeModal();
+      });
+    }
   };
 
   const validateForm = quantity => {

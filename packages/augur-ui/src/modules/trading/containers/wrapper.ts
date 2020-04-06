@@ -1,12 +1,13 @@
 import { connect } from 'react-redux';
 import Wrapper from 'modules/trading/components/wrapper';
-import { windowRef } from 'utils/window-ref';
 import {
   DISCLAIMER_SEEN,
   MODAL_DISCLAIMER,
   MODAL_ADD_FUNDS,
   MODAL_LOGIN,
   MODAL_SIGNUP,
+  MODAL_INITIALIZE_ACCOUNT,
+  GSN_WALLET_SEEN,
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
@@ -23,6 +24,7 @@ import { orderSubmitted } from 'services/analytics/helpers';
 import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
+import getValueFromlocalStorage from 'utils/get-local-storage-value';
 
 const getMarketPath = id => {
   return {
@@ -63,6 +65,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+  initializeGsnWallet: (customAction = null) => dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
   handleFilledOnly: trade => null,
   updateTradeCost: (marketId, outcomeId, order, callback) =>
     dispatch(updateTradeCost({ marketId, outcomeId, ...order, callback })),
@@ -108,16 +111,15 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 });
 
 const mergeProps = (sP, dP, oP) => {
-  const disclaimerSeen =
-    windowRef &&
-    windowRef.localStorage &&
-    windowRef.localStorage.getItem(DISCLAIMER_SEEN);
+  const disclaimerSeen = getValueFromlocalStorage(DISCLAIMER_SEEN);
+  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
 
   return {
     ...oP,
     ...sP,
     ...dP,
     disclaimerSeen: !!disclaimerSeen,
+    gsnWalletInfoSeen: !!gsnWalletInfoSeen,
   };
 };
 
