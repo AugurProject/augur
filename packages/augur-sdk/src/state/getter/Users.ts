@@ -848,7 +848,7 @@ export class Users {
                 marketTradingPositions[marketData.market].unclaimedProceeds
               )
                 .plus(unclaimedProceeds)
-                .toFixed(2);
+                .toFixed(4);
 
               marketTradingPositions[
                 marketData.market
@@ -858,7 +858,7 @@ export class Users {
                     marketTradingPositions[marketData.market].unrealizedCost
                   )
                 )
-                .toFixed(2);
+                .toFixed(4);
 
               marketTradingPositions[
                 marketData.market
@@ -866,7 +866,7 @@ export class Users {
                 marketTradingPositions[marketData.market].fee
               )
                 .plus(feeAmount)
-                .toFixed(2);
+                .toFixed(4);
             }
           }
         }
