@@ -143,10 +143,14 @@
   .AccountView {
     margin: @size-8 @size-32;
     grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: none;
 
     > div {
       border: @size-1 solid var(--color-outline);
       border-radius: @border-radius-rounded;
+
+      -webkit-column-break-inside: avoid;
+      -moz-column-break-inside: avoid;
 
       div[class*='BoxHeader'] {
         background: var(--color-table-header-50);
@@ -173,6 +177,15 @@
       }
     }
 
+    > div:first-of-type,
+    > div:nth-of-type(3) {
+      grid-row: unset;
+  
+      @media @breakpoint-tablet {
+        grid-row: unset;
+      }
+    }
+
     > div:nth-of-type(2) {
       > div[class*='Headers'] {
         background: var(--color-table-header-50);
@@ -191,5 +204,19 @@
         }
       }
     }
+
+    > div:nth-of-type(4),
+    > div:nth-of-type(5) {
+      grid-row: unset;
+  
+      @media @breakpoint-tablet {
+        grid-row: unset;
+      }
+    }
+
+    > footer {
+      grid-row: 7;
+    }
+
   }
 }
