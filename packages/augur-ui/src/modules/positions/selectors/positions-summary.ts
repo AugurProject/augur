@@ -41,10 +41,7 @@ export const positionSummary = memoize(
 
     const quantity = createBigNumber(netPosition).abs();
     let type = createBigNumber(netPosition).gte('0') ? LONG : SHORT;
-    if (
-      createBigNumber(quantity).isEqualTo(ZERO) &&
-      createBigNumber(averagePrice).isEqualTo(ZERO)
-    ) {
+    if (createBigNumber(quantity).isEqualTo(ZERO)) {
       type = CLOSED;
     }
     const showRealizedCost =
