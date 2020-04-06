@@ -323,6 +323,32 @@ export class ZeroX {
     }
   }
 
+  async safePlaceOrders(params: ZeroXPlaceTradeDisplayParams[]): Promise<void> {
+    if (!this.client) throw new Error('To place ZeroX trade, make sure Augur client instance was initialized with it enabled.');
+    const onChainOrders = params.map((params) => ({...params, ...this.getOnChainTradeParams(params)}));
+    onChainOrders.forEach(async order => {
+      const invalidReason = await this.checkIfTradeValid(order);
+      if (invalidReason) throw new Error(invalidReason);
+    })
+    const marketIds = _.keys(_.keyBy(onChainOrders, 'market'));
+    const markets = await this.client.getMarketsInfo({ marketIds });
+    const keyedMarkets = _.keyBy(markets, 'id');
+    Promise.all(onChainOrders.map(async order => {
+      const { orders } = await this.getMatchingOrders(
+        order,
+        []
+      );
+      if (orders.length > 0) throw new Error("Order would cross Orderbook spread");
+      const market = keyedMarkets[order.market];
+      const maxPrice = new BigNumber(market.maxPrice);
+      const minPrice = new BigNumber(market.minPrice);
+      const price = new BigNumber(order.displayPrice);
+      if (price.gt(maxPrice) || price.lt(minPrice)) throw new Error("Order Price Out of Market Price Range");
+    })).then(async () => {
+      return await this.placeOnChainOrders(onChainOrders);
+    });
+  }
+
   async placeOrder(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
     await this.placeOrders([params]);
   }
