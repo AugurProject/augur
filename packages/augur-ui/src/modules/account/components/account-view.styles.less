@@ -141,6 +141,9 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .AccountView {
+    margin: @size-8 @size-32;
+    grid-template-columns: repeat(3, 1fr);
+
     > div {
       border: @size-1 solid var(--color-outline);
       border-radius: @border-radius-rounded;

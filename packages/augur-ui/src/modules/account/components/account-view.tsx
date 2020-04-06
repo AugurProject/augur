@@ -14,8 +14,9 @@ import {
   SMALL_MOBILE,
   YOUR_OVERVIEW_TITLE,
   AUGUR_STATUS_TITLE,
+  THEMES,
 } from 'modules/common/constants';
-
+import { getTheme } from 'modules/app/actions/update-app-status';
 import Styles from 'modules/account/components/account-view.styles.less';
 import classNames from 'classnames';
 import { ACCOUNT_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
@@ -79,7 +80,8 @@ export default class AccountView extends React.Component<
                   <AugurStatus />
                 </ModulePane>
               </ModuleTabs>
-            ) : (
+            ) : 
+            getTheme() === THEMES.TRADING ? (
               <div
                 className={classNames(Styles.AccountView, {
                   [Styles.HideNotifications]: extendActiveMarkets,
@@ -94,12 +96,43 @@ export default class AccountView extends React.Component<
                 />
                 <ModuleTabs selected={0}>
                   <ModulePane label={YOUR_OVERVIEW_TITLE}>
-                    <Overview />
+                    <Overview hideHeader={true} />
                   </ModulePane>
                   <ModulePane label={AUGUR_STATUS_TITLE}>
-                    <AugurStatus />
+                    <AugurStatus hideHeader={true} />
                   </ModulePane>
                 </ModuleTabs>
+                <Favorites
+                  toggle={() =>
+                    this.toggle('extendWatchlist', 'extendTransactions')
+                  }
+                />
+                <OpenMarkets
+                  toggle={() =>
+                    this.toggle('extendActiveMarkets', 'extendNotifications')
+                  }
+                />
+                <Transactions />
+                <TermsAndConditions />
+              </div>
+            ) : (
+              <div
+                className={classNames(Styles.AccountView, {
+                  [Styles.HideNotifications]: extendActiveMarkets,
+                  [Styles.HideTransactions]: extendWatchlist,
+                  [Styles.HideActiveMarkets]: extendNotifications,
+                })}
+              >
+                <Notifications
+                  toggle={() =>
+                    this.toggle('extendNotifications', 'extendActiveMarkets')
+                  }
+                />
+                <div>
+                  <Overview hideHeader={false} />
+                  <AugurStatus hideHeader={false} />
+                </div>
+                
                 <Favorites
                   toggle={() =>
                     this.toggle('extendWatchlist', 'extendTransactions')
