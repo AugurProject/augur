@@ -7,11 +7,15 @@
   right: 0;
   z-index: @mask-modal;
 
-  > button {
+  > button[class='buttons-styles_SecondaryButton']:first-of-type {
     background-color: var(--color-page-background);
     position: fixed;
     right: @size-25;
     bottom: @size-8;
+
+    &:disabled {
+      opacity: 1;
+    }
   }
 
   div[class*='sc-launcher'],
@@ -33,13 +37,22 @@
   div[class*='onlineList'],
   input[class*='sc-popup-window--search'],
   form[class*='sc-user-input active'],
-  input[class*='sc-popup-window--search'] {
+  input[class*='sc-popup-window--search'],
+  form[class*='sc-user-input'] > textarea,
+  p[class*='sc-header--team-name_membersOnline'],
+  a[class*='sc-header-updateProfile'] {
     color: var(--color-primary-text);
   }
 
   button[class*='sc-user-input--emoji-icon-wrapper'] path,
-  button[class*='sc-user-input--emoji-icon-wrapper'] circle {
+  button[class*='sc-user-input--emoji-icon-wrapper'] circle,
+  svg[class*='sc-user-input--send-icon'] path,
+  svg[class*='sc-header--img default'] g {
     fill: var(--color-primary-text);
+  }
+
+  button[class*='sc-user-input--send-icon-wrapper'] {
+    margin: 0;
   }
 
   div[class*='sc-launcher'] {
@@ -107,5 +120,17 @@
 
   h3[class*='sc-header--team-name_text'] {
     .text-16-bold;
+
+    color: var(--color-primary-text);
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .GlobalChat {
+    div[class*='sc-popup-window--cointainer'],
+    div[class*='sc-popup-window--cointainer'] input {
+      background-color: #fff;
+    }
   }
 }

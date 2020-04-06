@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Box from '3box';
 
-export const use3box = (provider) => {
+export const use3box = (provider, theme) => {
   const [activate, setActivate] = useState(false);
   const [address, setAddress] = useState();
   const [box, setBox] = useState({});
@@ -14,7 +14,7 @@ export const use3box = (provider) => {
 
   useEffect(() => {
     handleLogin();
-  }, [activate, provider]);
+  }, [activate, provider, theme]);
 
   // @ts-ignore
   const handleLogin = async () => {

@@ -6,10 +6,6 @@
 }
 
 .MarketView {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-
   &.Inactive {
     pointer-events: none;
     min-width: 100%;
@@ -695,8 +691,17 @@ div.OutcomeNameDisplay {
       margin: 0 @size-12 @size-8;
     }
 
-    > div {
+    > div, > button {
       grid-column: 1;
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Comments {
+    div[class*="input"] textarea {
+      background-color: #fff;
     }
   }
 }
