@@ -360,7 +360,7 @@ export default class MarketView extends Component<
     if (this.state.pane === 'Trade') {
       document
         .querySelector('.trading-form-styles_TradingForm')
-        .scrollIntoView({ block: 'center', behavior: 'smooth' });
+        .scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
     this.setState({
       selectedOrderProperties,
