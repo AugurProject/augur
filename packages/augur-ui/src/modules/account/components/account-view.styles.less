@@ -165,8 +165,8 @@
       border-radius: @border-radius-rounded;
       margin: 0 @size-24 @size-32 0;
       width: 32%;
-      min-height: 360px;
-      max-height: 600px;
+      min-height: @size-360;
+      max-height: @size-600;
 
       div[class*='BoxHeader'] {
         background: var(--color-table-header-50);
@@ -195,7 +195,6 @@
       order: 1;
     }
 
-    // Overview
     > div:nth-of-type(2) {
       order: 2;
       min-height: @size-744;
