@@ -95,7 +95,7 @@ export default class OverviewChart extends React.Component<
 
       const lastData =
         data.length > 0
-          ? data[data.length - 1]
+          ? data[0]
           : { realized: 0, realizedPercent: 0 };
 
       const chartValues = data.reduce(
