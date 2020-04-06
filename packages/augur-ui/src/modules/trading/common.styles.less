@@ -220,23 +220,47 @@
   .SportsMyBet {
     .SportsBet;
 
-    > div:nth-of-type(3),
-    > div:nth-of-type(4) {
-      display: none;
+    &.Review {
+      > header {
+        grid-template-columns: 1fr 0fr 0fr;
+
+        > span:last-of-type {
+          display: flex;
+          grid-column: 3;
+        }
+
+        > button {
+          grid-column: 2;
+          grid-row: 1;
+        }
+      }
     }
 
     > button {
       .text-10-semi-bold;
 
-      display: none;
+      display: flex;
       color: var(--color-primary-text);
       text-transform: uppercase;
       border-radius: @border-radius-default;
       border: @size-1 solid var(--color-inactive-text);
       padding: @size-3 @size-6;
+      grid-column: auto;
+      border-color: var(--color-inactive-text);
 
       &:disabled {
         opacity: .5;
+      }
+
+      &:first-of-type {
+        border: none;
+        justify-self: flex-start;
+        background: transparent;
+      }
+
+      &:last-of-type {
+        justify-content: center;
+        white-space: nowrap;
       }
     }
 
@@ -268,8 +292,7 @@
       }
     }
 
-    &.PARTIALLY_FILLED,
-    &.PARTIALLY_FILLED.Expanded {
+    &.PARTIALLY_FILLED {
       > button {
         display: flex;
         grid-column: span 2;
@@ -277,35 +300,6 @@
 
         &:first-of-type {
           display: none;
-        }
-      }
-    }
-
-    &.Expanded {
-      background: var(--color-page-background);
-
-      > header > button > svg {
-        transform: rotate(180deg);
-      }
-
-      > div:nth-of-type(3),
-      > div:nth-of-type(4) {
-        display: flex;
-      }
-
-      > button {
-        display: flex;
-        grid-column: auto;
-        border-color: var(--color-inactive-text);
-
-        &:first-of-type {
-          border: none;
-          justify-self: flex-start;
-          background: transparent;
-        }
-
-        &:last-of-type {
-          justify-content: center;
         }
       }
     }
@@ -350,24 +344,7 @@
 
       &.PARTIALLY_FILLED,
       &.FILLED {
-        align-items: center;
-        justify-content: center;
-        border: @size-1 solid var(--color-dark-text);
-        border-radius: @border-radius-soft;
-        display: flex;
-        height: @size-20;
-        width: @size-20;
-
-        > svg {
-          width: @size-10;
-          height: @size-12;
-          margin: 0;
-
-          > path {
-            stroke: none;
-            fill: var(--color-primary-text);
-          }
-        }
+        display: none;
       }
     }
   }

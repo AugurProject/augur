@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { GlobalChat } from 'modules/global-chat/components/global-chat.tsx';
 import { initialize3box } from 'modules/global-chat/actions/initialize-3box';
 
-const mapStateToProps = ({authStatus, loginAccount, env, initialized3box}) => {
+const mapStateToProps = ({authStatus, appStatus, loginAccount, env, initialized3box}) => {
   const signer = loginAccount.meta?.signer;
 
   const defaultGlobalChatProps = {
