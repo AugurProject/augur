@@ -882,7 +882,7 @@ export class ReportingBondsView extends Component<
             threshold={threshold}
           />
         )}
-        {!market.isWarpSync && (
+        {!market.isWarpSync && !migrateRep && (
           <div className={Styles.ShowTotals}>
             <span>Totals</span>
             {!market.isForking && (
@@ -967,7 +967,6 @@ export class ReportingBondsView extends Component<
               reportAction();
             }
           }}
-
         />
       </div>
     );
