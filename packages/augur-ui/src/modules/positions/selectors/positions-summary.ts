@@ -8,14 +8,16 @@ import {
   ZERO,
   BINARY_CATEGORICAL_FORMAT_OPTIONS,
   SCALAR,
+  REPORTING_STATE,
 } from 'modules/common/constants';
 import { formatDai, formatPercent, formatShares, formatNone } from 'utils/format-number';
 
 export const positionSummary = memoize(
-  (adjustedPosition, outcome, marketType) => {
+  (adjustedPosition, outcome, marketType, reportingState) => {
     if (!adjustedPosition) {
       return null;
     }
+
     const opts =
       marketType === SCALAR ? {} : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS };
     const {
@@ -33,6 +35,7 @@ export const positionSummary = memoize(
       totalPercent,
       currentValue,
       unrealizedCost,
+      realizedCost,
       unrealizedRevenue24hChangePercent,
     } = adjustedPosition;
 
@@ -44,7 +47,8 @@ export const positionSummary = memoize(
     ) {
       type = CLOSED;
     }
-
+    const showRealizedCost =
+      reportingState === REPORTING_STATE.FINALIZED && type !== CLOSED;
     return {
       marketId,
       outcomeId,
@@ -65,7 +69,7 @@ export const positionSummary = memoize(
         timesHundred(unrealized24HrPercent || ZERO),
         { decimalsRounded: 2 }
       ),
-      totalCost: formatDai(unrealizedCost),
+      totalCost: formatDai(showRealizedCost ? realizedCost : unrealizedCost),
       totalValue: formatDai(currentValue),
       lastPrice: !!outcome.price ? formatDai(outcome.price) : formatNone(),
       totalReturns: formatDai(total || ZERO),
