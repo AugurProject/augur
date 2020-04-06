@@ -1607,7 +1607,7 @@ function getTradingPositionFromProfitLossFrame(
     unrealized = new BigNumber(0);
     unrealized24Hr = new BigNumber(0);
     unrealizedCost = new BigNumber(0);
-    avgPrice = new BigNumber(0);
+    avgPrice = onChainNetPosition.eq(0) ? new BigNumber(0) : avgPrice;
   }
 
   const unrealized24HrPercent = unrealizedCost.isZero() ? new BigNumber(0) : unrealized24Hr.dividedBy(unrealizedCost);
