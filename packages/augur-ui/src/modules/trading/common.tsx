@@ -164,7 +164,6 @@ export const SportsMyBet = ({
     dateUpdated,
   },
 }) => {
-  const [expanded, setExpanded] = useState(false);
   const [isRecentUpdate, setIsRecentUpdate] = useState(true);
   useEffect(() => {
     setIsRecentUpdate(true);
@@ -201,27 +200,17 @@ export const SportsMyBet = ({
   let iconAction = () => console.log('setup actions');
   switch (status) {
     case FILLED:
-      icon = isRecentUpdate ? CheckMark : ThickChevron;
+      icon = isRecentUpdate ? CheckMark : null;
       classToApply = isRecentUpdate ? Styles.NEWFILL : Styles.FILLED;
-      iconAction = () => {
-        setExpanded(!expanded);
-        // also remove recent if they click the checkmark.
-        if (!expanded && isRecentUpdate) {
-          setIsRecentUpdate(false);
-        }
-      };
       cashoutText = `Cashout ${formatDai(amountFilled).full}`;
       cashoutDisabled = false;
       break;
     case PARTIALLY_FILLED:
-      icon = ThickChevron;
+      icon = null;
       classToApply = Styles.PARTIALLY_FILLED;
       message = `This bet was partially filled. Original wager: ${
         formatDai(wager).full
       }`;
-      iconAction = () => {
-        setExpanded(!expanded);
-      };
       wagerToShow = amountFilled;
       break;
     case PENDING:
@@ -233,14 +222,13 @@ export const SportsMyBet = ({
       iconAction = () => trash();
       message = `Order failed when processing. `;
       messageAction = <button onClick={() => retry()}>Retry</button>;
+      break;
     default:
       break;
   }
   return (
     <div
-      className={classNames(Styles.SportsMyBet, Styles.Review, classToApply, {
-        [Styles.Expanded]: expanded,
-      })}
+      className={classNames(Styles.SportsMyBet, Styles.Review, classToApply)}
     >
       <header>
         <span>{outcome}</span>
@@ -257,7 +245,6 @@ export const SportsMyBet = ({
         value={formatDai(wagerToShow)}
         useFull
       />
-      <LinearPropertyLabel label="odds" value={odds} />
       <LinearPropertyLabel label="to win" value={formatDai(toWin)} useFull />
       <LinearPropertyLabel
         label="Date"
