@@ -4,11 +4,12 @@
   .text-12;
 
   align-items: center;
-  border-top: 1px solid var(--color-dark-grey);
+  border-top: @size-1 solid var(--color-dark-grey);
   color: var(--color-secondary-text);
   display: flex;
   flex-flow: row nowrap;
   height: @size-40;
+  min-height: @size-40;
   justify-content: flex-end;
   // padding-right needs to be more than the size of global chat button
   padding: 0 @size-130 0 @size-40;
@@ -28,7 +29,10 @@
   .TermsAndConditions {
     .text-12-semi-bold;
 
+    background: var(--color-module-background);
     color: var(--color-primary-text);
+    justify-content: initial;
+    padding: 0 0 0 @size-16;
 
     > a {
       text-decoration-style: dashed;

@@ -117,30 +117,37 @@ export default class AccountView extends React.Component<
               </div>
             ) : (
               <div
-                className={classNames(Styles.AccountView, {
-                  [Styles.HideNotifications]: extendActiveMarkets,
-                  [Styles.HideTransactions]: extendWatchlist,
-                  [Styles.HideActiveMarkets]: extendNotifications,
-                })}
+                className={classNames(Styles.AccountViewWrap)}
               >
-                <Notifications
-                  toggle={() =>
-                    this.toggle('extendNotifications', 'extendActiveMarkets')
-                  }
-                />
-                <Overview hideHeader={false} />
-                <AugurStatus hideHeader={false} />
-                <Transactions />
-                <Favorites
-                  toggle={() =>
-                    this.toggle('extendWatchlist', 'extendTransactions')
-                  }
-                />
-                <OpenMarkets
-                  toggle={() =>
-                    this.toggle('extendActiveMarkets', 'extendNotifications')
-                  }
-                />                            
+                <div>
+                  My Account
+                </div>
+                <div
+                  className={classNames(Styles.AccountView, {
+                    [Styles.HideNotifications]: extendActiveMarkets,
+                    [Styles.HideTransactions]: extendWatchlist,
+                    [Styles.HideActiveMarkets]: extendNotifications,
+                  })}
+                >
+                  <Notifications
+                    toggle={() =>
+                      this.toggle('extendNotifications', 'extendActiveMarkets')
+                    }
+                  />
+                  <Overview hideHeader={false} />
+                  <AugurStatus hideHeader={false} />
+                  <Transactions />
+                  <Favorites
+                    toggle={() =>
+                      this.toggle('extendWatchlist', 'extendTransactions')
+                    }
+                  />
+                  <OpenMarkets
+                    toggle={() =>
+                      this.toggle('extendActiveMarkets', 'extendNotifications')
+                    }
+                  />
+                </div>
                 <TermsAndConditions />  
               </div>
             )

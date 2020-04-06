@@ -140,20 +140,31 @@
 
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
+  .AccountViewWrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    > div:first-of-type {
+      .text-24-bold;
+
+      color: var(--color-primary-text);
+      margin: @size-32;
+    }
+  }
+
   .AccountView {
     margin: @size-8 @size-32;
     display: flex;
     flex-flow: column wrap;
     align-content: space-between;
-    width: 100%;
-    min-height: 1450px;
+    min-height: @size-1400;
 
     > div {
       border: @size-1 solid var(--color-outline);
       border-radius: @border-radius-rounded;
       margin: 0 @size-24 @size-32 0;
       width: 32%;
-
       min-height: 360px;
       max-height: 600px;
 
@@ -166,12 +177,10 @@
           max-height: @size-56;
           min-height: @size-56;
 
-
           > div:first-of-type {
             .text-16-bold;
 
             text-transform: capitalize;
-            
           }
         }
       }
@@ -189,40 +198,21 @@
     // Overview
     > div:nth-of-type(2) {
       order: 2;
-      min-height: 744px;
-      max-height: 744px;
-
-      > div[class*='Headers'] {
-        background: var(--color-table-header-50);
-        border-top-left-radius: @border-radius-rounded;
-        border-top-right-radius: @border-radius-rounded;
-
-        > ul > li {
-          border-bottom: none;
-
-          > button {
-            .text-16-bold;
-
-            text-transform: capitalize;
-            height: @size-56;
-          }
-        }
-      }
+      min-height: @size-744;
+      max-height: @size-744;
     }
 
     > div:nth-of-type(3) {
       order: 2;
-      min-height: 550px;
-      max-height: 550px;
+      min-height: @size-550;
+      max-height: @size-550;
     }
 
     > div:nth-of-type(4) {
       order: 3;
+      min-height: @size-160;
+      max-height: @size-160;
       margin-right: 0;
-
-      height: 160px;
-      min-height: 160px;
-      max-height: 160px;
     }
 
     > div:nth-of-type(5) {
@@ -235,9 +225,7 @@
     }
 
     > footer {
-      
-      // order: -1;
-      // flex: 1 0 100%;
+      min-height: @size-40;
     }
   }
 
