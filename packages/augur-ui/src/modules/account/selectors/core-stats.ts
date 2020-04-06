@@ -34,7 +34,7 @@ export const selectCoreStats = createSelector(
       useFull: true,
     };
     const realizedPL = {
-      label: 'Realized P/L',
+      label: '30 Day P/L',
       value: formatDai(accountFunds.totalRealizedPL, { removeComma: true }),
       useFull: true,
     };

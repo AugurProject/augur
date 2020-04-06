@@ -85,6 +85,7 @@ export abstract class AbstractTable {
   protected async upsertDocument(documentID: ID, document: BaseDocument): Promise<void> {
     delete document.constructor;
     const result = await this.table.update(documentID, document);
+
     if (result === 0) {
       await this.table.add(document);
     }

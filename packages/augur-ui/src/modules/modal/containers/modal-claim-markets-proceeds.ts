@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { startClaimingMarketsProceeds, claimMarketsProceedsGas } from 'modules/positions/actions/claim-markets-proceeds';
 import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
-import { createBigNumber } from 'utils/create-big-number';
 import {
   formatDai,
   formatEther,
@@ -51,22 +50,20 @@ const mapStateToProps = (state: AppState) => {
           claimablePosition.unclaimedProceeds
         );
         const unclaimedProfit = formatDai(claimablePosition.unclaimedProfit);
-
+        const fees = formatDai(
+          claimablePosition.fee
+        );
         return {
           marketId,
           title: market.description,
           status: pending && pending.status,
           properties: [
             {
-              label: 'Proceeds',
+              label: 'Proceeds after market fees',
               value: unclaimedProceeds.full,
             },
             {
-              label: 'Profit',
-              value: unclaimedProfit.full,
-            },
-            {
-              label: 'Transaction Fee',
+              label: 'Est. Transaction Fee',
               value: state.appStatus.gsnEnabled
                 ? displayGasInDai(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE)
                 : formatEther(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE).formattedValue,
@@ -87,6 +84,8 @@ const mapStateToProps = (state: AppState) => {
       accountMarketClaimablePositions.totals.totalUnclaimedProfit,
     totalUnclaimedProceeds:
     accountMarketClaimablePositions.totals.totalUnclaimedProceeds,
+    totalFees:
+    accountMarketClaimablePositions.totals.totalFees,
     GsnEnabled: state.appStatus.gsnEnabled,
     account: state.loginAccount.address,
   };
@@ -128,6 +127,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const multiMarket = claimableMarkets.length > 1 ? 's' : '';
   const totalUnclaimedProceedsFormatted = formatDai(sP.totalUnclaimedProceeds);
   const totalUnclaimedProfitFormatted = formatDai(sP.totalUnclaimedProfit);
+  const totalFeesFormatted = formatDai(sP.totalFees);
   const submitAllTxCount = Math.ceil(
     claimableMarkets.length / MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT
   );
@@ -144,10 +144,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     {
       label: 'Total Proceeds',
       value: totalUnclaimedProceedsFormatted.formatted,
-    },
-    {
-      label: 'Total Profit',
-      value: totalUnclaimedProfitFormatted.formatted,
     },
   ] : null;
 
@@ -166,7 +162,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         const gas = await dP.estimateGas(claimableMarkets.map(m => m.marketId), sP.account);
         const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
         return {
-          label: 'Transaction Fee',
+          label: 'Est. Transaction Fee',
           value: String(displayfee),
         };
       }

@@ -20,6 +20,6 @@ ENTRYPOINT [ "/start.sh" ]
 # docker image build --tag augurproject/geth-dev-node .
 # docker push augurproject/geth-dev-node:latest
 # docker container run --rm -it -p 8545:8545 --name geth-dev-node geth-dev-node
-#-p 8545:8545 ethereum/client-go --dev --ws --wsapi eth,net,web3,personal,txpool --wsport 8546 --rpc --rpcapi eth,net,web3,personal,miner,txpool --rpcaddr 0.0.0.0 --targetgaslimit 7500000
+#-p 8545:8545 ethereum/client-go --dev --ws --wsapi eth,net,web3,personal,txpool --wsport 8546 --rpc --rpcapi eth,net,web3,personal,miner,txpool --rpcaddr 0.0.0.0 --targetgaslimit 10000000
 # To connect in a separate terminal: geth attach http://127.0.0.1:8545
 # To persist the chain, volume mount over /geth/chain, such as `-v $HOME/.geth-chain:/geth/chain`

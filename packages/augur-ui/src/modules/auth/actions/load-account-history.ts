@@ -37,10 +37,11 @@ async function loadTransactions(
   }), {});
 
   dispatch(updateMarketsData(marketsDataById));
-  if (userData.userOpenOrders) dispatch(refreshUserOpenOrders(userData.userOpenOrders.orders));
   dispatch(updateLoginAccount({ reporting: userData.userStakedRep }));
+  if (userData.userOpenOrders) dispatch(refreshUserOpenOrders(userData.userOpenOrders.orders));
   if (userData.userPositions) dispatch(userPositionProcessing(userData.userPositions));
   if (userData.userPositionTotals) dispatch(updateLoginAccount(userData.userPositionTotals));
+
   if (userData.userOpenOrders)
     dispatch(
       updateLoginAccount({

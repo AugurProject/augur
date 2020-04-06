@@ -1045,6 +1045,8 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   <Subheaders
                     header="pre-filled stake"
                     subheader={formatAttoRep(stake.stakeCurrent || ZERO).full}
+                    info
+                    tooltipText="Users can add extra support for a Tentative Winning Outcome"
                   />
                   {userOutcomeCurrentRoundDispute && (
                     <Subheaders

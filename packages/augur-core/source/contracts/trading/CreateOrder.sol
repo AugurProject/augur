@@ -12,15 +12,15 @@ import 'ROOT/IAugur.sol';
 import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
-import 'ROOT/CashSender.sol';
 import 'ROOT/libraries/TokenId.sol';
+import 'ROOT/ICash.sol';
 
 
 /**
  * @title Create Order
  * @notice Exposes functions to place an order on the book for other parties to take
  */
-contract CreateOrder is Initializable, ReentrancyGuard, CashSender {
+contract CreateOrder is Initializable, ReentrancyGuard {
     using SafeMathUint256 for uint256;
     using Order for Order.Data;
 
@@ -29,6 +29,7 @@ contract CreateOrder is Initializable, ReentrancyGuard, CashSender {
     address public trade;
     IProfitLoss public profitLoss;
     IOrders public orders;
+    ICash public cash;
 
 
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
@@ -41,8 +42,9 @@ contract CreateOrder is Initializable, ReentrancyGuard, CashSender {
         profitLoss = IProfitLoss(_augurTrading.lookup("ProfitLoss"));
         require(profitLoss != IProfitLoss(0));
         orders = IOrders(_augurTrading.lookup("Orders"));
+        cash = ICash(augur.lookup("Cash"));
+        require(cash != ICash(0));
 
-        initializeCashSender(_augur.lookup("DaiVat"), _augur.lookup("Cash"));
         require(orders != IOrders(0));
     }
 
@@ -157,7 +159,7 @@ contract CreateOrder is Initializable, ReentrancyGuard, CashSender {
         // If not able to cover entire order with shares alone, then cover remaining with tokens
         if (_attosharesToCover > 0) {
             _orderData.moneyEscrowed = _attosharesToCover.mul(_orderData.price);
-            cashTransferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.moneyEscrowed);
+            require(cash.transferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.moneyEscrowed));
         }
 
         return true;
@@ -181,7 +183,7 @@ contract CreateOrder is Initializable, ReentrancyGuard, CashSender {
         // If not able to cover entire order with shares alone, then cover remaining with tokens
         if (_attosharesToCover > 0) {
             _orderData.moneyEscrowed = _orderData.market.getNumTicks().sub(_orderData.price).mul(_attosharesToCover);
-            cashTransferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.moneyEscrowed);
+            require(cash.transferFrom(_orderData.creator, address(_orderData.augurTrading), _orderData.moneyEscrowed));
         }
 
         return true;

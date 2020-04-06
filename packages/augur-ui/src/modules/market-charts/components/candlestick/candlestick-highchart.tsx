@@ -17,6 +17,7 @@ interface HighChartsWrapperProps {
   marketMin: BigNumber;
   volumeType: string;
   currentTimeInSeconds: number;
+  isArchived?: boolean;
 }
 
 const GROUPING_UNITS = [
@@ -96,7 +97,7 @@ export default class CandlestickHighchart extends Component<
     selectedPeriod: number,
     volumeType: string
   ) {
-    const { marketMax, marketMin, pricePrecision, currentTimeInSeconds } = this.props;
+    const { marketMax, marketMin, pricePrecision, currentTimeInSeconds, isArchived } = this.props;
     const candlestick = [];
     const volume = [];
     const priceBuckets = [];
@@ -148,7 +149,7 @@ export default class CandlestickHighchart extends Component<
     this.xMinCurrent = this.xMax - range;
     const options = {
       lang: {
-        noData: 'No Completed Trades',
+        noData: isArchived ? 'Data Archived' : 'No Completed Trades',
       },
       credits: { enabled: false },
       tooltip: { enabled: false },

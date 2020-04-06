@@ -55,20 +55,13 @@ def test_helpers(kitchenSinkFixture, scalarMarket):
     assert creatorShare == 13.0 * market.getNumTicks() * 0.01
     assert shareholderShare == 13.0 * market.getNumTicks() * 0.9899
 
-@mark.parametrize('afterMkrShutdown', [
-    True,
-    False
-])
-def test_redeem_shares_in_yesNo_market(afterMkrShutdown, kitchenSinkFixture, universe, cash, market):
+def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, market):
     shareToken = kitchenSinkFixture.contracts["ShareToken"]
     expectedValue = 100 * market.getNumTicks()
     expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
     expectedMarketCreatorFees = expectedValue / market.getMarketCreatorSettlementFeeDivisor()
     expectedSettlementFees = expectedReporterFees + expectedMarketCreatorFees
     expectedPayout = expectedValue - expectedSettlementFees
-
-    if (afterMkrShutdown):
-        kitchenSinkFixture.MKRShutdown()
 
     assert universe.getOpenInterestInAttoCash() == 0
 
@@ -79,7 +72,6 @@ def test_redeem_shares_in_yesNo_market(afterMkrShutdown, kitchenSinkFixture, uni
     acquireShortShareSet(kitchenSinkFixture, cash, market, YES, 100, shareToken.address, sender = kitchenSinkFixture.accounts[2])
     assert universe.getOpenInterestInAttoCash() == 200 * market.getNumTicks()
     finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**2])
-
 
     tradingProceedsClaimedLog = {
         'market': market.address,
@@ -103,17 +95,11 @@ def test_redeem_shares_in_yesNo_market(afterMkrShutdown, kitchenSinkFixture, uni
     newDisputeWindowBalance = cash.balanceOf(disputeWindow) + daiVat.dai(disputeWindow) / 10**27
     assert newDisputeWindowBalance == expectedReporterFees + originalDisputeWindowBalance
 
-    if afterMkrShutdown:
-        newMarketCreatorBalanceFromFees = (daiVat.dai(market.getOwner()) - 10**46) / 10**27 # - 10**46 is subtracting winnings to get fees
-    else:
-        newMarketCreatorBalanceFromFees = cash.balanceOf(market.getOwner())
+    newMarketCreatorBalanceFromFees = cash.balanceOf(market.getOwner())
     assert newMarketCreatorBalanceFromFees == int(expectedMarketCreatorFees) + originalMarketCreatorBalance
 
     # assert a1 ends up with cash (minus fees) and a2 does not
-    if afterMkrShutdown:
-        assert daiVat.dai(kitchenSinkFixture.accounts[1]) / 10**27 == expectedPayout
-    else:
-        assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout
+    assert cash.balanceOf(kitchenSinkFixture.accounts[1]) == expectedPayout
 
     assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[1]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, kitchenSinkFixture.accounts[2]) == 0

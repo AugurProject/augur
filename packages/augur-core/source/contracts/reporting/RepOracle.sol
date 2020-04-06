@@ -71,8 +71,8 @@ contract RepOracle is Initializable {
             }
         }
 
-        // never overflows (because we know the tokens in question have reasonable decimal values), casting never truncates
-        uint256 _price = _priceCumulative.sub(repData[_reputationToken].priceCumulativeLast) / _timeElapsed;
+        // underflow desired, casting never truncates
+        uint256 _price = (_priceCumulative - repData[_reputationToken].priceCumulativeLast) / _timeElapsed;
         _price = UQ112x112.decode(_price * 10**18);
 
         if (_timeElapsed < PERIOD) {

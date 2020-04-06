@@ -14,6 +14,7 @@ interface OutcomeCandlestickProps {
   selectedPeriod: number;
   updateSelectedPeriod: Function;
   pricePrecision: number;
+  isArchived?: boolean;
 }
 
 interface OutcomeCandlestickState {
@@ -30,6 +31,7 @@ const OutcomeCandlestick = ({
   selectedPeriod,
   updateSelectedPeriod,
   pricePrecision,
+  isArchived
 }: OutcomeCandlestickProps) => {
   const [volumeType, setVolumeType] = useState(DAI);
   const [hoveredPeriod, setHoverPeriod] = useState({
@@ -76,6 +78,7 @@ const OutcomeCandlestick = ({
           marketMin={marketMin}
           marketMax={marketMax}
           volumeType={volumeType}
+          isArchived={isArchived}
         />
       </div>
     </section>

@@ -19,7 +19,6 @@ import 'ROOT/external/IDaiPot.sol';
 import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/utility/IFormulas.sol';
 import 'ROOT/IAugur.sol';
-import 'ROOT/CashSender.sol';
 import 'ROOT/reporting/IRepOracle.sol';
 
 
@@ -27,7 +26,7 @@ import 'ROOT/reporting/IRepOracle.sol';
  * @title Universe
  * @notice A Universe encapsulates a whole instance of Augur. In the event of a fork in a Universe it will split into child Universes which each represent a different version of the truth with respect to how the forking market should resolve.
  */
-contract Universe is IUniverse, CashSender {
+contract Universe is IUniverse {
     using SafeMathUint256 for uint256;
 
     uint256 public creationTime;
@@ -104,8 +103,6 @@ contract Universe is IUniverse, CashSender {
         daiVat.hope(address(daiJoin));
         cash.approve(address(daiJoin), 2 ** 256 - 1);
         daiVat.hope(address(augur));
-
-        initializeCashSender(address(daiVat), address(cash));
     }
 
     function assertContractsNotZero() private view {
@@ -704,7 +701,7 @@ contract Universe is IUniverse, CashSender {
         totalBalance = totalBalance.sub(_amount);
         marketBalance[_market] = marketBalance[_market].sub(_amount);
         withdrawDaiFromDSR(_amount);
-        cashTransfer(_recipient, _amount);
+        require(cash.transfer(_recipient, _amount));
         return true;
     }
 
@@ -719,10 +716,10 @@ contract Universe is IUniverse, CashSender {
         uint256 _chi = daiPot.drip();
         withdrawSDaiFromDSR(_dsrBalance); // Pull out all funds
         saveDaiInDSR(totalBalance); // Put the required funds back in savings
-        _extraCash = cashBalance(address(this));
+        _extraCash = cash.balanceOf(address(this));
         // The amount in the DSR pot and VAT must cover our totalBalance of Dai
         assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(RAY));
-        cashTransfer(address(getOrCreateNextDisputeWindow(false)), _extraCash);
+        require(cash.transfer(address(getOrCreateNextDisputeWindow(false)), _extraCash));
         return true;
     }
 

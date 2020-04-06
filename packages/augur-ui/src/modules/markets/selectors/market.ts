@@ -7,7 +7,7 @@ import {
   ZERO,
 } from 'modules/common/constants';
 import store, { AppState } from 'appStore';
-import { selectMarketInfosState } from 'appStore/select-state';
+import { selectMarketInfosState, selectCurrentTimestamp } from 'appStore/select-state';
 import { MarketData, OutcomeFormatted } from 'modules/types';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 import { createSelector } from 'reselect';
@@ -36,7 +36,8 @@ export const selectMarket = (marketId): MarketData | null => {
 
 const assembleMarket = createSelector(
   selectMarketsDataStateMarket,
-  (marketData): MarketData => convertMarketInfoToMarketData(marketData)
+  selectCurrentTimestamp,
+  (marketData, currentTimestamp): MarketData => convertMarketInfoToMarketData(marketData, currentTimestamp)
 );
 
 export const selectSortedMarketOutcomes = (marketType, outcomes: OutcomeFormatted[]) => {

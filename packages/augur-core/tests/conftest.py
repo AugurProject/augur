@@ -345,7 +345,7 @@ class ContractsFixture:
         signature = ContractsFixture.signatures[signatureKey]
         W3Contract = self.w3.eth.contract(abi=signature, bytecode=compiledCode)
         deploy_address = self.accounts[0]
-        tx_hash = W3Contract.constructor(*constructorArgs).transact({'from': deploy_address, 'gasPrice': 1, 'gas': 750000000})
+        tx_hash = W3Contract.constructor(*constructorArgs).transact({'from': deploy_address, 'gasPrice': 1, 'gas': 1000000000})
         tx_receipt = self.w3.eth.waitForTransactionReceipt(tx_hash, 180)
         if tx_receipt.status == 0:
             raise Exception("Contract upload %s failed" % lookupKey)
@@ -475,6 +475,8 @@ class ContractsFixture:
     def uploadUniswapContracts(self):
         factory = self.uploadAndAddToAugur("../source/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=[nullAddress])
         self.generateAndStoreSignature("../source/contracts/uniswap/UniswapV2Exchange.sol")
+        wethAddress = self.contracts["WETH9"].address
+        self.upload("../source/contracts/uniswap/UniswapV2Router01.sol", constructorArgs=[wethAddress, factory.address])
 
     def initializeAllContracts(self):
         coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepOracle']
@@ -623,12 +625,6 @@ class ContractsFixture:
     def getShareToken(self, market, outcome):
         address = market.getShareToken(outcome)
         return self.applySignature("ShareToken", address)
-
-    def MKRShutdown(self):
-        daiVat = self.contracts['DaiVat']
-        daiJoin = self.contracts['DaiJoin']
-        daiVat.cage()
-        daiJoin.cage()
 
     def sendEth(self, sender, receiver, amount):
         tester = self.testerProvider.ethereum_tester

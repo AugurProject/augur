@@ -18,11 +18,17 @@ import { formatBytes32String } from 'ethers/utils';
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 const RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494";
 
-const OVEREAD_RELAY_GAS = 400000;
+const MIN_GAS_PRICE = new BigNumber(1e9); // Min: 1 Gwei
+const DEFAULT_GAS_PRICE = new BigNumber(4e9); // Default: GasPrice: 4 Gwei
 
+export const DESIRED_SIGNER_ETH_BALANCE = `0x${new BigNumber(.1 * 10**18).toString(16)}`; // .1 ETH
+const EXCHANGE_RATE_BUFFER_MULTIPLIER = 1.1;
+
+const OVEREAD_RELAY_GAS = 500000;
+const UNISWAP_MAX_GAS_COST = 150000;
 const REFRESH_INTERVAL_MS = 15000; // 15 seconds
-
 const GAS_PRICE_MULTIPLIER = 1.2;
+const GAS_COST_MULTIPLIER = 1.1;
 
 const GSN_RELAY_CALL_STATUS = {
   0: "OK",                      // The transaction was successfully relayed and execution successful - never included in the event
@@ -42,6 +48,11 @@ interface RelayerQueueTask {
   txMetadata: TransactionMetadata
 };
 
+interface TransactionPaymentData {
+  gasCost: BigNumber;
+  relayerDaiPayment: BigNumber;
+}
+
 export class ContractDependenciesGSN extends ContractDependenciesEthers {
   useRelay: boolean = false;
   useWallet: boolean = false;
@@ -52,8 +63,9 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   ethExchange: ethers.Contract;
   referralAddress: string = NULL_ADDRESS;
   fingerprint: string = formatBytes32String('');
+  maxExchangeRate: BigNumber;
 
-  public gasPrice: BigNumber;
+  public relayGasPrice: BigNumber;
   public ethToDaiRate: BigNumber;
 
   _currentNonce = -1;
@@ -125,18 +137,20 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   }
 
   async refreshGasPriceAndExchangeRate(): Promise<void> {
-    // Refresh Gas price
+    // Refresh Relay Gas price
     // We bypass the Provider wrapper here and directly get the eth rpc api gas price since we do not want overrides.
     let reccomendedGasPrice = await this.provider.provider.getGasPrice();
-    this.gasPrice = new BigNumber(reccomendedGasPrice.toString()).multipliedBy(GAS_PRICE_MULTIPLIER);
-    console.log(`Set gas price to: ${this.gasPrice.toFixed()}`);
+    this.relayGasPrice = new BigNumber(reccomendedGasPrice.toString()).multipliedBy(GAS_PRICE_MULTIPLIER);
 
     // Refresh Exchange Rate
     const reservesData = await this.ethExchange.getReserves();
     const cashReserves:BigNumber = new BigNumber((this.token0IsCash ? reservesData[0] : reservesData[1]).toString());
     const ethReserves: BigNumber = new BigNumber((this.token0IsCash ? reservesData[1] : reservesData[0]).toString());
     this.ethToDaiRate = cashReserves.div(ethReserves).multipliedBy(10**18).decimalPlaces(0);
-    console.log(`Set ETH to DAI rate to: ${this.ethToDaiRate.toFixed()}`);
+
+    // Set max exchnage rate
+    this.maxExchangeRate = this.ethToDaiRate.multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER).decimalPlaces(0);
+
     setTimeout(this.refreshGasPriceAndExchangeRate.bind(this), REFRESH_INTERVAL_MS);
   }
 
@@ -146,6 +160,11 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
   setUseRelay(useRelay: boolean): void {
     this.useRelay = useRelay;
+  }
+
+  setGasPrice(gasPrice: BigNumber): void {
+    if (gasPrice.lt(MIN_GAS_PRICE)) gasPrice = MIN_GAS_PRICE;
+    this.provider.overrideGasPrice = new ethers.utils.BigNumber(gasPrice.toNumber());
   }
 
   setReferralAddress(referralAddress: string): void {
@@ -185,15 +204,19 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
   parseTransactionLogs(txReceipt: ethers.providers.TransactionReceipt, txName: string, txHash: string): TransactionStatus {
     if (this.useRelay) {
-      const transactionRelayedLog = this.relayHub.interface.parseLog(txReceipt.logs.pop());
-      const callStatus = new BigNumber(transactionRelayedLog.values.status);
-      if (callStatus.gt(0)) {
-        const reason = GSN_RELAY_CALL_STATUS[callStatus.toNumber()];
-        console.error(`TX ${txName} with hash ${txHash} failed in Relay Machinery. Error Reason: ${reason}`)
-        return TransactionStatus.FAILURE;
+      const transactionRelayedLog = this.relayHub.interface.parseLog(txReceipt.logs[txReceipt.logs.length-1]);
+      // Even if the relay option is on we will bypass the relay if ETH is available to the signer
+      if (transactionRelayedLog && transactionRelayedLog.name === "TransactionRelayed") {
+        txReceipt.logs.pop();
+        const callStatus = new BigNumber(transactionRelayedLog.values.status);
+        if (callStatus.gt(0)) {
+          const reason = GSN_RELAY_CALL_STATUS[callStatus.toNumber()];
+          console.error(`TX ${txName} with hash ${txHash} failed in Relay Machinery. Error Reason: ${reason}`)
+          return TransactionStatus.FAILURE;
+        }
+        // Pop the deposit log
+        txReceipt.logs.pop();
       }
-      // Pop the deposit log
-      txReceipt.logs.pop();
     }
     if (this.useWallet) {
       const executeTransactionStatusLog = this.augurWalletRegistry.interface.parseLog(txReceipt.logs.pop());
@@ -207,7 +230,8 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   }
 
   async validateAndSign(tx: Transaction<ethers.utils.BigNumber>, txMetadata: TransactionMetadata): Promise<PreparedTransaction> {
-    const relayOptions = this.relayClient.getTransactionOptions(tx, this.gasPrice.toNumber());
+    const relayOptions = this.relayClient.getTransactionOptions(tx, this.relayGasPrice.toNumber());
+    relayOptions.gas_limit = tx.gasLimit.toNumber();
     const preparedTx = await this.relayClient.selectRelayAndGetTxHash(tx.data, relayOptions, this._currentNonce);
     preparedTx.signature = await this.signer.signMessage(ethers.utils.arrayify(preparedTx.txHash));
     return preparedTx;
@@ -217,21 +241,31 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     tx: Transaction<ethers.utils.BigNumber>,
     txMetadata: TransactionMetadata
   ): Promise<ethers.providers.TransactionReceipt> {
+    const signerEthBalance = await this.provider.getBalance(await this.signer.getAddress());
+    const paymentData = await this.getTransactionPaymentData(tx);
     if (this.useWallet) {
-      const payment = await this.getRelayPaymentForEthersTransaction(tx);
-      const QUINTILLION = new BigNumber(10).pow(18);
-      console.log('Transaction Payment:', payment.dividedBy(QUINTILLION).toFixed()); // output this for testing and debuging.
-      tx = this.convertToWalletTx(tx, new ethers.utils.BigNumber(payment.toFixed()));
+      console.log('Transaction Payment (DAI)', (paymentData.relayerDaiPayment.dividedBy(10 ** 18)).toFixed());
+      tx = this.convertToWalletTx(tx, new ethers.utils.BigNumber(paymentData.relayerDaiPayment.toFixed()));
     }
 
     if (this.useRelay && tx.to !== this.augurWalletRegistry.address) {
       throw new Error("Cannot use GSN relay to process TXs except to create a wallet or send wallet transaction execution requests");
     }
 
-    // Just use normal signing/sending if we're not using the relay
-    if (!this.useRelay) {
+    const gasLimit = paymentData.gasCost.multipliedBy(GAS_COST_MULTIPLIER);
+
+    // Just use normal signing/sending if the signer has sufficient ETH or if we're not using the relay
+    const gasPrice = await this.provider.getGasPrice();
+    const ethCost = paymentData.gasCost.multipliedBy(gasPrice.toString());
+    console.log('ETH Cost', String(ethCost.dividedBy(10 ** 18)));
+    if (!this.useRelay || signerEthBalance.gt(ethCost.toString())) {
+      tx.gasPrice = gasPrice;
+      tx.gasLimit = new ethers.utils.BigNumber(gasLimit.decimalPlaces(0).toString());
       return super.sendTransaction(tx, txMetadata);
     }
+
+    // We take the previous gas estimate which assumes a direct signer to wallet tx and add both the relayhub overhead and the uniswap funding cost
+    tx.gasLimit = new ethers.utils.BigNumber(gasLimit.plus(OVEREAD_RELAY_GAS).plus(UNISWAP_MAX_GAS_COST).decimalPlaces(0).toString());
 
     const relayTransaction = await this.signTransaction(tx, txMetadata);
 
@@ -256,9 +290,10 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     });
   }
 
-  convertToWalletTx(tx: Transaction<ethers.utils.BigNumber>, payment?: ethers.utils.BigNumber): Transaction<ethers.utils.BigNumber> {
+  convertToWalletTx(tx: Transaction<ethers.utils.BigNumber>, payment?: ethers.utils.BigNumber, revertOnFailure: boolean = false): Transaction<ethers.utils.BigNumber> {
     payment = payment || new ethers.utils.BigNumber(0); // For gas estimates we use a payment of 0 dai as no payment is required
-    const data =  this.augurWalletRegistry.interface.functions['executeWalletTransaction'].encode([tx.to, tx.data, tx.value, payment, this.referralAddress, this.fingerprint]);
+    const maxExchangeRate = `0x${this.maxExchangeRate}`;
+    const data =  this.augurWalletRegistry.interface.functions['executeWalletTransaction'].encode([tx.to, tx.data, tx.value, payment, this.referralAddress, this.fingerprint, DESIRED_SIGNER_ETH_BALANCE, maxExchangeRate, revertOnFailure]);
     return {
       data,
       to: this.augurWalletRegistry.address,
@@ -273,7 +308,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
   async estimateGasForEthersTransaction(transaction: Transaction<ethers.utils.BigNumber>): Promise<BigNumber> {
     if (this.useWallet) {
-      transaction = this.convertToWalletTx(transaction);
+      transaction = this.convertToWalletTx(transaction, new ethers.utils.BigNumber(0), true);
     }
     if (this.useRelay) {
       const estimate = await this.relayClient.estimateGas(transaction);
@@ -284,22 +319,31 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
   async getRelayPayment(transaction: Transaction<BigNumber>): Promise<BigNumber> {
     const ethersTransaction = this.transactionToEthersTransaction(transaction);
-    return this.getRelayPaymentForEthersTransaction(ethersTransaction);
+    const txPaymentData = await this.getTransactionPaymentData(ethersTransaction);
+    return txPaymentData.relayerDaiPayment;
   }
 
-  async getRelayPaymentForEthersTransaction(tx: Transaction<ethers.utils.BigNumber>): Promise<BigNumber> {
-    if (!this.useWallet || !this.useRelay) return new BigNumber(0);
-    let gasEstimate = await this.estimateGasForEthersTransaction(tx);
-    return this.convertGasEstimateToDaiCost(gasEstimate);
+  async getTransactionPaymentData(tx: Transaction<ethers.utils.BigNumber>): Promise<TransactionPaymentData> {
+    const gasCost = await this.estimateGasForEthersTransaction(tx);
+    let relayerDaiPayment = new BigNumber(0);
+    if (this.useWallet && this.useRelay) {
+      relayerDaiPayment = this.convertGasEstimateToDaiCost(gasCost);
+    }
+    return {
+      gasCost,
+      relayerDaiPayment
+    }
   }
 
   convertGasEstimateToDaiCost(gasEstimate: BigNumber | string): BigNumber {
     gasEstimate = new BigNumber(gasEstimate);
     gasEstimate = gasEstimate.plus(OVEREAD_RELAY_GAS);
-    let ethCost = gasEstimate.multipliedBy(this.gasPrice);
+    gasEstimate = gasEstimate.plus(UNISWAP_MAX_GAS_COST);
+    gasEstimate = gasEstimate.multipliedBy(GAS_COST_MULTIPLIER);
+    let ethCost = gasEstimate.multipliedBy(this.relayGasPrice);
     ethCost = ethCost.multipliedBy((100 + this.relayClient.config.txFee) / 100);
     let cashCost = ethCost.multipliedBy(this.ethToDaiRate).div(10**18);
-    cashCost = cashCost.multipliedBy(1.1); // account for slippage; CONSIDER: make this configurable?
+    cashCost = cashCost.multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER);
     return cashCost.decimalPlaces(0);
   }
 }

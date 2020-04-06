@@ -598,6 +598,14 @@ div.LinearPropertyViewTransaction {
   }
 }
 
+.Archived {
+  &:hover {
+    > svg > g > path {
+      stroke: var(--color-primary-text);
+    }
+  }
+}
+
 .LiquidityDepletedLabel {
   .text-9-medium;
 
@@ -873,6 +881,35 @@ span.PendingLabel {
   &:hover {
     > span:first-of-type {
       text-decoration: underline;
+    }
+  }
+}
+
+.DataArchivedLabel {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+
+  > label {
+    .text-12;
+
+    color: var(--color-secondary-text);
+    display: flex;
+    align-items: center;
+
+    > svg {
+      height: @size-12;
+      margin-left: @size-2;
+      width: @size-12;
+  
+      > circle {
+        stroke: var(--color-secondary-text);
+      }
+  
+      > path {
+        fill: var(--color-secondary-text);
+      }
     }
   }
 }

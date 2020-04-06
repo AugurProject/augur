@@ -451,6 +451,8 @@ section[class*="OutcomesList"] {
     }
 
     svg,
+    svg[class*="sc-user-input--emoji-icon"] path,
+    svg[class*="sc-user-input--emoji-icon"] circle,
     svg[class="comment_content_context_main_user_delete_button_icon"] path {
       fill: var(--color-primary-text);
       opacity: 1;
@@ -458,6 +460,13 @@ section[class*="OutcomesList"] {
       @media all and (max-width: 600px) {
         fill: var(--color-dark-text);
         opacity: 1;
+      }
+    }
+
+    div[class*="sc-user-input--picker-wrapper inlinePicker"]:hover {
+      path,
+      circle {
+        fill: var(--color-dark-text);
       }
     }
 
@@ -478,10 +487,22 @@ section[class*="OutcomesList"] {
       }
     }
 
-    button[class="comment_content_context_main_user_reply_button"]:hover {
-      svg {
-        fill: var(--color-dark-text);
+    button[class="sc-user-input--emoji-icon-wrapper"] svg {
+      padding: @size-1 0;
+    }
+
+    button[class="comment_content_context_main_user_reply_button"] {
+      .text-12;
+
+      &:hover {
+        svg {
+          fill: var(--color-dark-text);
+        }
       }
+    }
+
+    svg[class="comment_content_context_main_user_reply_button_icon"] {
+      padding: 0 0 @size-2;
     }
 
     div[class*="sc-user-input--picker-wrapper"]:hover {

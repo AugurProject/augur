@@ -5,6 +5,7 @@ import { FacebookComments } from 'modules/market/components/common/comments/face
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { use3box } from 'utils/use-3box';
 import { SecondaryButton } from 'modules/common/buttons';
+import { Initialized3box } from 'modules/types';
 
 interface MarketCommentsProps {
   adminEthAddr: string;
@@ -14,6 +15,9 @@ interface MarketCommentsProps {
   numPosts: number;
   provider: any;
   whichCommentPlugin: string;
+  initialize3box: Function;
+  initialized3box: Initialized3box;
+  isLogged: boolean;
 }
 
 export const MarketComments = ({
@@ -24,11 +28,14 @@ export const MarketComments = ({
   numPosts,
   provider,
   whichCommentPlugin,
+  initialize3box,
+  initialized3box,
+  isLogged,
 }: MarketCommentsProps) => {
   const { activate, setActivate, address, box, isReady, profile } =
-    whichCommentPlugin === '3box' && use3box(provider);
+    whichCommentPlugin === '3box' && use3box(provider, initialize3box, initialized3box);
 
-  return (
+  return isLogged ? (
     <section className={Styles.Comments}>
       {whichCommentPlugin === '3box' && isReady && (
         <ThreeBoxComments
@@ -48,7 +55,9 @@ export const MarketComments = ({
       {whichCommentPlugin === '3box' && !isReady && (
         <SecondaryButton
           action={() => setActivate(true)}
-          text={activate ? "Loading comments..." : "Click here to activate comments"}
+          text={
+            activate ? 'Loading comments...' : 'Click here to activate comments'
+          }
           disabled={activate}
         />
       )}
@@ -61,5 +70,5 @@ export const MarketComments = ({
         />
       )}
     </section>
-  );
+  ) : null;
 };

@@ -116,6 +116,7 @@ export class ZeroXOrders extends AbstractTable {
     augur: Augur
   ) {
     super(networkId, 'ZeroXOrders', db.dexieDB);
+    this.handleOrderEvent = this.handleOrderEvent.bind(this);
     this.syncStatus = db.syncStatus;
     this.stateDB = db;
     this.augur = augur;
@@ -134,7 +135,7 @@ export class ZeroXOrders extends AbstractTable {
       } else {
         this.augur.events.once(SubscriptionEventName.ZeroXReady, this.sync.bind(this));
       }
-    })
+    });
   }
 
   protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
@@ -155,8 +156,13 @@ export class ZeroXOrders extends AbstractTable {
   subscribeToOrderEvents() {
     // This only works if `zeroX` has been set on the augur instance and
     // it doesn't get over-written so... something.
-    this.augur.events.on('ZeroX:Mesh:OrderEvent', (orderEvents) => this.handleOrderEvent(orderEvents));
-    this.augur.events.on('ZeroX:RPC:OrderEvent', (orderEvents) => this.handleOrderEvent(orderEvents));
+    this.augur.events.on('ZeroX:Mesh:OrderEvent', this.handleOrderEvent);
+    this.augur.events.on('ZeroX:RPC:OrderEvent', this.handleOrderEvent);
+  }
+
+  delete() {
+    this.augur.events.off('ZeroX:Mesh:OrderEvent', this.handleOrderEvent);
+    this.augur.events.off('ZeroX:RPC:OrderEvent', this.handleOrderEvent);
   }
 
   async handleOrderEvent(orderEvents: OrderEvent[]): Promise<void> {

@@ -5,18 +5,22 @@ import ChatBox from '3box-chatbox-react';
 import { use3box } from 'utils/use-3box';
 import { SecondaryButton } from 'modules/common/buttons';
 import { THEMES } from 'modules/common/constants';
+import { Initialized3box } from 'modules/types';
 
 export interface GlobalChatProps {
   provider: any;
   whichChatPlugin: string;
   theme: string;
+  initialize3box: Function;
+  initialized3box: Initialized3box;
+  isLogged: boolean;
 }
 
-export const GlobalChat = ({ provider, whichChatPlugin, theme }: GlobalChatProps) => {
+export const GlobalChat = ({ provider, whichChatPlugin, isLogged, initialize3box, initialized3box, theme }: GlobalChatProps) => {
   const { activate, setActivate, address, box, isReady, profile } =
-    whichChatPlugin === '3box' && use3box(provider, theme);
+    whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box, theme);
 
-  return (
+  return isLogged ? (
     <div className={Styles.GlobalChat}>
       {whichChatPlugin === '3box' && isReady && (
         <ChatBox
@@ -45,5 +49,5 @@ export const GlobalChat = ({ provider, whichChatPlugin, theme }: GlobalChatProps
         />
       )}
     </div>
-  );
+  ) : null;
 };
