@@ -1,137 +1,135 @@
 @import (reference) '~assets/styles/shared';
 
-:root {
-  .GlobalChat {
-    background: var(--color-dark-grey);
-    bottom: 0;
+.GlobalChat {
+  background: var(--color-dark-grey);
+  bottom: 0;
+  position: fixed;
+  right: 0;
+  z-index: @mask-modal;
+
+  > button[class='buttons-styles_SecondaryButton']:first-of-type {
+    background-color: var(--color-page-background);
     position: fixed;
-    right: 0;
-    z-index: @mask-modal;
+    right: @size-25;
+    bottom: @size-8;
 
-    > button[class*='buttons-styles_SecondaryButton'] {
-      background-color: var(--color-page-background);
-      position: fixed;
-      right: @size-25;
-      bottom: @size-8;
-
-      &:disabled {
-        opacity: 1;
-      }
+    &:disabled {
+      opacity: 1;
     }
+  }
 
-    div[class*='sc-launcher'],
-    div[class*='sc-chat-window'],
-    div[class*='sc-header'],
-    form[class*='sc-user-input'] > textarea,
-    div[class*='sc-popup-window--cointainer'],
-    input[class*='sc-popup-window--search'],
-    form[class*='sc-user-input active'] {
-      background-color: var(--color-dark-grey);
+  div[class*='sc-launcher'],
+  div[class*='sc-chat-window'],
+  div[class*='sc-header'],
+  form[class*='sc-user-input'] > textarea,
+  div[class*='sc-popup-window--cointainer'],
+  input[class*='sc-popup-window--search'],
+  form[class*='sc-user-input active'] {
+    background-color: var(--color-dark-grey);
+  }
+
+  div[class*='sc-message-list'],
+  div[class*='onlineList'],
+  div[class*='closeOnlineList'] {
+    background-color: var(--color-active-background);
+  }
+
+  div[class*='onlineList'],
+  input[class*='sc-popup-window--search'],
+  form[class*='sc-user-input active'],
+  input[class*='sc-popup-window--search'],
+  form[class*='sc-user-input'] > textarea,
+  p[class*='sc-header--team-name_membersOnline'],
+  a[class*='sc-header-updateProfile'] {
+    color: var(--color-primary-text);
+  }
+
+  button[class*='sc-user-input--emoji-icon-wrapper'] path,
+  button[class*='sc-user-input--emoji-icon-wrapper'] circle,
+  svg[class*='sc-user-input--send-icon'] path,
+  svg[class*='sc-header--img default'] g {
+    fill: var(--color-primary-text);
+  }
+
+  button[class*='sc-user-input--send-icon-wrapper'] {
+    margin: 0;
+  }
+
+  div[class*='sc-launcher'] {
+    bottom: @size-10;
+  }
+
+  div[class*='popupChat'] > div {
+    bottom: @size-10;
+  }
+
+  div[class*='sc-chat-window'] {
+    border: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: @size-3;
+    height: 300px;
+    overflow: hidden;
+  }
+
+  form[class*='sc-user-input active'] > textarea {
+    &:focus {
+      border: none;
     }
+  }
 
-    div[class*='sc-message-list'],
-    div[class*='onlineList'],
-    div[class*='closeOnlineList'] {
-      background-color: var(--color-active-background);
+  div[class*='sc-user-input--button'] {
+    justify-content: center;
+  }
+
+  div[class*='sc-header--close-button'] svg {
+    padding: @size-4;
+  }
+
+  div[class*='sc-header--close-button'] path {
+    stroke: var(--color-primary-text);
+  }
+
+  input[class*='sc-popup-window--search'] {
+    &:focus {
+      border: none;
     }
+  }
 
-    div[class*='onlineList'],
-    input[class*='sc-popup-window--search'],
-    form[class*='sc-user-input active'],
-    input[class*='sc-popup-window--search'],
-    form[class*='sc-user-input'] > textarea,
-    p[class*='sc-header--team-name_membersOnline'],
-    a[class*='sc-header-updateProfile'] {
-      color: var(--color-primary-text);
-    }
+  img[class*='input_user'] {
+    padding: @size-7;
+  }
 
-    button[class*='sc-user-input--emoji-icon-wrapper'] path,
-    button[class*='sc-user-input--emoji-icon-wrapper'] circle,
-    svg[class*='sc-user-input--send-icon'] path,
-    svg[class*='sc-header--img default'] g {
-      fill: var(--color-primary-text);
-    }
+  div[class*='sc-message--text'] {
+    .text-12;
 
-    button[class*='sc-user-input--send-icon-wrapper'] {
-      margin: 0;
-    }
+    background-color: var(--color-dark-grey) !important;
+    color: var(--color-primary-text) !important;
+  }
 
-    div[class*='sc-launcher'] {
-      bottom: @size-10;
-    }
+  div[class*='sc-header--team-name'] {
+    padding: 0 @size-8;
+  }
 
-    div[class*='popupChat'] > div {
-      bottom: @size-10;
-    }
+  div[class*='onlineList_members'] {
+    overflow: auto;
+  }
 
-    div[class*='sc-chat-window'] {
-      border: @size-1 solid var(--color-secondary-action-outline);
-      border-radius: @size-3;
-      height: 300px;
-      overflow: hidden;
-    }
+  div[class*='sc-header'] {
+    padding: 0 @size-10;
+    min-height: unset;
+  }
 
-    form[class*='sc-user-input active'] > textarea {
-      &:focus {
-        border: none;
-      }
-    }
+  h3[class*='sc-header--team-name_text'] {
+    .text-16-bold;
 
-    div[class*='sc-user-input--button'] {
-      justify-content: center;
-    }
-
-    div[class*='sc-header--close-button'] svg {
-      padding: @size-4;
-    }
-
-    div[class*='sc-header--close-button'] path {
-      stroke: var(--color-primary-text);
-    }
-
-    input[class*='sc-popup-window--search'] {
-      &:focus {
-        border: none;
-      }
-    }
-
-    img[class*='input_user'] {
-      padding: @size-7;
-    }
-
-    div[class*='sc-message--text'] {
-      .text-12;
-
-      background-color: var(--color-dark-grey) !important;
-      color: var(--color-primary-text) !important;
-    }
-
-    div[class*='sc-header--team-name'] {
-      padding: 0 @size-8;
-    }
-
-    div[class*='onlineList_members'] {
-      overflow: auto;
-    }
-
-    div[class*='sc-header'] {
-      padding: 0 @size-10;
-      min-height: unset;
-    }
-
-    h3[class*='sc-header--team-name_text'] {
-      .text-16-bold;
-
-      color: var(--color-primary-text);
-    }
+    color: var(--color-primary-text);
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .GlobalChat {
-    div[class*="sc-popup-window--cointainer"],
-    div[class*="sc-popup-window--cointainer"] input {
+    div[class*='sc-popup-window--cointainer'],
+    div[class*='sc-popup-window--cointainer'] input {
       background-color: #fff;
     }
   }
