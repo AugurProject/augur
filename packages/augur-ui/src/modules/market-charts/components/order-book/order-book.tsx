@@ -108,8 +108,8 @@ const OrderBookSide = ({
                 title="Add Offer"
                 action={() =>
                   updateSelectedOrderProperties({
-                    orderPrice: '0',
-                    orderQuantity: '0',
+                    orderPrice: '',
+                    orderQuantity: '',
                     selectedNav: SELL,
                   })
                 }
@@ -120,8 +120,8 @@ const OrderBookSide = ({
                 title="Add Bid"
                 action={() =>
                   updateSelectedOrderProperties({
-                    orderPrice: '0',
-                    orderQuantity: '0',
+                    orderPrice: '',
+                    orderQuantity: '',
                     selectedNav: BUY,
                   })
                 }
