@@ -35,7 +35,7 @@ const getOptions = data => ({
   chart: {
     type: 'areaspline',
     spacing: [10, 14, 0, 14],
-    height: 245,
+    height: 175,
     width: null,
   },
   credits: {
