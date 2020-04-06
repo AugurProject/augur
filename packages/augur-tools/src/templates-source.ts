@@ -7507,10 +7507,10 @@ export const TEMPLATES = {
         resolutionRules: {
           [REQUIRED]: [
             {
-              text: `Cases: Settlement is based of the https://covidtracking.com/data/ website. To find the Total number of positive cases for a state. You must find the state you are searching for and click on that state, to go to that state's details, Scroll down until you see history. Look for the specific date mentioned in the market question and scroll over until you find "Positive" column and use that number.`,
+              text: `Cases: Settlement is based of the https://covidtracking.com/data/ website. To find the Total number of positive cases for a US State. You must find the State you are searching for and click on that State, to go to that State's details, Scroll down until you see history. Look for the specific date mentioned in the market question and scroll over until you find "Positive" column and use that number.`,
             },
             {
-              text: `Deaths: Settlement is based of the https://covidtracking.com/data/ website. To find the Total number of deaths from Covid-19 for a state. You must find the state you are searching for and click on that state, to go to that state's details, Scroll down until you see history. Look for the specific date mentioned in the market question and scroll over until you find "Deaths" column and use that number.`
+              text: `Deaths: Settlement is based of the https://covidtracking.com/data/ website. To find the Total number of deaths from Covid-19 for a US State. You must find the State you are searching for and click on that State, to go to that State's details, Scroll down until you see history. Look for the specific date mentioned in the market question and scroll over until you find "Deaths" column and use that number.`
             }
           ],
         },
