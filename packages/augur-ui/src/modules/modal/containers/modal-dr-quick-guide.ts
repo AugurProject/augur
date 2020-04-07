@@ -28,7 +28,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   buttons: [
     {
       text: sP.guide.learnMoreButtonText,
-      URL: 'https://augur.gitbook.io/help-center/disputing-explained',
+      URL: sP.guide.learnMoreUrl,
       action: () => {
         dP.closeModal();
       },
