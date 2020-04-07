@@ -32,6 +32,8 @@ import {
   REPORTING_STATE,
   DISCORD_LINK,
   ACCOUNT_TYPES,
+  CLOSED_SHORT,
+  CLOSED_LONG,
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
@@ -1164,7 +1166,7 @@ export const PositionTypeLabel = (props: PositionTypeLabelProps) => {
   return (
     <span
       className={classNames(Styles.PositionTypeLabel, {
-        [Styles.Sell]: props.type === SHORT || props.type === SELL,
+        [Styles.Sell]: props.type === SHORT || props.type === SELL || props.type === CLOSED_SHORT,
         [Styles.Closed]: props.type === CLOSED,
       })}
     >
