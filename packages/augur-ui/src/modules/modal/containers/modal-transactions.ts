@@ -29,7 +29,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     endTime: number,
     coin: string,
     action: string,
-    cb: NodeStyleCallback,
+    cb: Function,
   ) => {
     const Augur = augurSdk.get();
     const result = await Augur.getAccountTransactionHistory({
