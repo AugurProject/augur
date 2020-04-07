@@ -4,7 +4,7 @@ import { Title } from 'modules/modal/common';
 import { Checkbox } from 'modules/common/form';
 import { PrimaryButton, ExternalLinkButton } from 'modules/common/buttons';
 import { MarketTypeLabel } from 'modules/common/labels';
-import { SCALAR } from 'modules/common/constants';
+import { HELP_CENTER_SCALAR_MARKETS, SCALAR } from 'modules/common/constants';
 import Styles from 'modules/modal/modal.styles';
 
 interface ScalarProps {
@@ -57,7 +57,7 @@ export const Scalar = ({ closeAction, cb = () => {} }: ScalarProps) => {
             settles below your Sale price you win the difference.{' '}
             <ExternalLinkButton
               label="Learn More"
-              URL="https://augur.gitbook.io/help-center/market-creation-1/trading-faq"
+              URL={HELP_CENTER_SCALAR_MARKETS}
             />
           </li>
         </ul>
