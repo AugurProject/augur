@@ -1031,9 +1031,7 @@ export const TRADING_TUTORIAL_COPY = {
     subheader: [
       {
         text:
-          "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the",
-        linkText: 'community guidelines.',
-        link: HELP_CENTER_RESOLUTION_SOURCE,
+          "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the community guidelines and, if a Resolution Source is used, the source's URL or full name is in the Market Question.",
       },
     ],
   },
