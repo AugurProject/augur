@@ -846,11 +846,11 @@ span.PendingLabel {
       height: @size-12;
       margin-left: @size-2;
       width: @size-12;
-  
+
       > circle {
         stroke: @color-secondary-text;
       }
-  
+
       > path {
         fill: @color-secondary-text;
       }
@@ -972,5 +972,12 @@ span.PendingLabel {
 
   > a {
     color: @color-primary-action;
+  }
+}
+
+.LabelWithTooltip {
+  > span > label[class*="TooltipHint"] {
+    display: inline-block;
+    margin-bottom: 0;
   }
 }
