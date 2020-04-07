@@ -754,13 +754,6 @@ export class Users {
                   new BigNumber(profitLossResult.outcome).toNumber()
                 ]
               );
-              // net position is 0, must have claimed, get prior order for display use
-              if (new BigNumber(profitLossResult.netPosition).eq(0) &&
-              profitLossResultsByMarketAndOutcomePrior[profitLossResult.market] &&
-              profitLossResultsByMarketAndOutcomePrior[profitLossResult.market][profitLossResult.outcome]) {
-                const prior = profitLossResultsByMarketAndOutcomePrior[profitLossResult.market][profitLossResult.outcome];
-                priorPosition = getDisplayValuesForPosition(prior, marketDoc);
-              }
             } else if (
               marketDoc.tentativeWinningPayoutNumerators &&
               marketDoc.reportingState ===
@@ -771,6 +764,13 @@ export class Users {
                   new BigNumber(profitLossResult.outcome).toNumber()
                 ]
               );
+            }
+            // net position is 0, must have claimed, get prior order for display use
+            if (new BigNumber(profitLossResult.netPosition).eq(0) &&
+              profitLossResultsByMarketAndOutcomePrior[profitLossResult.market] &&
+              profitLossResultsByMarketAndOutcomePrior[profitLossResult.market][profitLossResult.outcome]) {
+                const prior = profitLossResultsByMarketAndOutcomePrior[profitLossResult.market][profitLossResult.outcome];
+                priorPosition = getDisplayValuesForPosition(prior, marketDoc);
             }
             const tradingPosition = ({ ...getTradingPositionFromProfitLossFrame(
               profitLossResult,
