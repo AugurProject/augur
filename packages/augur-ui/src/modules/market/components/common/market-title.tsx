@@ -115,7 +115,9 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
               className={classNames({
                 [Styles.TEXT]: placeholder,
               })}
-              data-tip data-for={input.id + input.userInput}
+              data-tip
+              data-for={input.id + input.userInput}
+              data-iscapture={true}
             >
               {uniquePrev && ' '}
               {prePend !== '' && <span>{prePend}</span>}
@@ -127,8 +129,8 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
                   effect="solid"
                   place="top"
                   type="light"
-                  data-event="mouseover"
-                  data-event-off="blur scroll"
+                  event="mouseover mouseenter"
+                  eventOff="mouseleave mouseout scroll mousewheel blur"
                 >
                   {placeholder}
                 </ReactTooltip>

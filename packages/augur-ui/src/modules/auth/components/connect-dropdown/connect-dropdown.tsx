@@ -169,6 +169,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         className={classNames(TooltipStyles.TooltipHint)}
         data-tip
         data-for={id}
+        data-iscapture={true}
       >
         {helpIcon}
       </label>
@@ -178,8 +179,8 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         effect='solid'
         place='top'
         type='light'
-        data-event="mouseover"
-        data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         {content}
       </ReactTooltip>

@@ -266,6 +266,7 @@ export const RedFlag = ({ market }: RedFlagProps) => {
         className={TooltipStyles.TooltipHint}
         data-tip
         data-for={`tooltip-${market.id}-redFlag`}
+        data-iscapture={true}
       >
         {RedFlagIcon}
       </label>
@@ -275,8 +276,8 @@ export const RedFlag = ({ market }: RedFlagProps) => {
         effect="solid"
         place="right"
         type="light"
-        data-event="mouseover"
-            data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         {PROBABLE_INVALID_MARKET}
       </ReactTooltip>
@@ -296,6 +297,7 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
         className={TooltipStyles.TooltipHint}
         data-tip
         data-for={`tooltip-${market.id}-templateShield`}
+        data-iscapture={true}
       >
         {yellowShield ? YellowTemplateIcon : TemplateIcon}
       </label>
@@ -305,8 +307,8 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
         effect="solid"
         place="right"
         type="light"
-        data-event="mouseover"
-            data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         {yellowShield
           ? "Templated market question, contains market creator text. This text should match to highlighted section's tooltip"
@@ -328,6 +330,7 @@ export const Archived = ({ market }: ArchivedProps) => {
         className={Styles.Archived}
         data-tip
         data-for={`tooltip-${market.id}-archived`}
+        data-iscapture={true}
       >
         {ArchivedIcon}
       </label>
@@ -337,8 +340,8 @@ export const Archived = ({ market }: ArchivedProps) => {
         effect="solid"
         place="top"
         type="light"
-        data-event="mouseover"
-            data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         Data only saved for 30 days
       </ReactTooltip>
@@ -356,6 +359,7 @@ export const DataArchivedLabel = ({ label }: DataArchivedProps) => {
       <label
         data-tip
         data-for={`tooltip-${label}-archived-data`}
+        data-iscapture={true}
       >
         Data Archived {QuestionIcon}
       </label>
@@ -365,8 +369,8 @@ export const DataArchivedLabel = ({ label }: DataArchivedProps) => {
         effect="solid"
         place="top"
         type="light"
-        data-event="mouseover"
-            data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         Data only saved for 30 days
       </ReactTooltip>
@@ -384,6 +388,7 @@ export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => (
             className={TooltipStyles.TooltipHint}
             data-tip
             data-for={`tooltip-${label.replace(' ', '-')}`}
+            data-iscapture={true}
           >
             {QuestionIcon}
           </label>
@@ -393,8 +398,8 @@ export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => (
             effect="solid"
             place="right"
             type="light"
-            data-event="mouseover"
-            data-event-off="blur scroll"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
           >
             {hint}
           </ReactTooltip>
@@ -516,7 +521,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
       <label
         data-tip
         data-for={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
-        data-iscapture="true"
+        data-iscapture={true}
       >
         {props.usePercent
           ? props.value.percent
@@ -531,8 +536,8 @@ export const ValueLabel = (props: ValueLabelProps) => {
           effect="solid"
           place="top"
           type="light"
-          data-event="mouseover"
-          data-event-off="blur scroll"
+          event="mouseover mouseenter"
+          eventOff="mouseleave mouseout scroll mousewheel blur"
         >
           {props.useFull && props.value.full}
           {!props.useFull && `${fullPrecision} ${denominationLabel}`}
@@ -585,6 +590,7 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
           ref={ref => (this.labelRef = ref)}
           data-tip
           data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
+          data-iscapture={true}
         >
           {text}
         </label>
@@ -595,8 +601,8 @@ export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
             effect="solid"
             place="top"
             type="light"
-            data-event="mouseover"
-            data-event-off="blur scroll"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
           >
             {text}
           </ReactTooltip>
@@ -705,6 +711,7 @@ export const InvalidLabel = ({
       <label
         data-tip
         data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
+        data-iscapture={true}
         onClick={event => openModal(event)}
       >
         {QuestionIcon}
@@ -718,8 +725,8 @@ export const InvalidLabel = ({
         effect="solid"
         place={tooltipPositioning || 'left'}
         type="dark"
-        data-event="mouseover"
-        data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         <ExplainerBlock
           title={explainerBlockTitle}
@@ -741,6 +748,7 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
             className={TooltipStyles.TooltipHint}
             data-tip
             data-for={`tooltip-${props.label.replace(' ', '-')}`}
+            data-iscapture={true}
           >
             {QuestionIcon}
           </label>
@@ -750,8 +758,8 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
             effect="solid"
             place="right"
             type="light"
-            data-event="mouseover"
-            data-event-off="blur scroll"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
           >
             {props.hint}
           </ReactTooltip>
@@ -861,9 +869,10 @@ export const LiquidityDepletedLabel = ({
     return null;
   return (
     <span
+      className={classNames(Styles.LiquidityDepletedLabel)}
       data-tip
       data-for={'liquidityDepleted' + market.id}
-      className={classNames(Styles.LiquidityDepletedLabel)}
+      data-iscapture={true}
     >
       LIQUIDITY DEPLETED
       <ReactTooltip
@@ -872,8 +881,8 @@ export const LiquidityDepletedLabel = ({
         effect="solid"
         place="top"
         type="light"
-        data-event="mouseover"
-        data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         No longer passing the Liquidity spread filter, add more liquidity to
         have your market seen.
@@ -991,6 +1000,7 @@ export const PendingLabel = (props: PendingLabelProps) => (
     })}
     data-tip
     data-for={'processing'}
+    data-iscapture={true}
   >
     {(!props.status ||
       props.status === TXEventName.Pending ||
@@ -1005,8 +1015,8 @@ export const PendingLabel = (props: PendingLabelProps) => (
           effect="solid"
           place="top"
           type="light"
-          data-event="mouseover"
-          data-event-off="blur scroll"
+          event="mouseover mouseenter"
+          eventOff="mouseleave mouseout scroll mousewheel blur"
         >
           You will receive an alert when the transaction has finalized.
         </ReactTooltip>
@@ -1207,6 +1217,7 @@ export const LinearPropertyLabelTooltip = (
         className={TooltipStyles.TooltipHint}
         data-tip
         data-for={`tooltip-${props.label}`}
+        data-iscapture={true}
       >
         {HintAlternate}
       </label>
@@ -1216,8 +1227,8 @@ export const LinearPropertyLabelTooltip = (
         effect="solid"
         place="top"
         type="light"
-        data-event="mouseover"
-        data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         Information text
       </ReactTooltip>

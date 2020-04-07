@@ -154,6 +154,7 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
         style={{ width: `${secondPercent > 100 ? 100 : secondPercent}%` }}
         data-tip
         data-for={key}
+        data-iscapture={true}
       />
       <ReactTooltip
         id={key}
@@ -161,8 +162,8 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
         effect="solid"
         place="top"
         type="light"
-        data-event="mouseover"
-        data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         My Existing Stake
         <p>{props.userValue.formattedValue} REP</p>
@@ -195,7 +196,11 @@ export const Subheaders = (props: SubheadersProps) => (
       {props.header}
       {props.info && (
         <>
-          <label data-tip data-for={'tooltip--' + props.header}>
+          <label
+            data-tip
+            data-for={'tooltip--' + props.header}
+            data-iscapture={true}
+          >
             {InfoIcon}
           </label>
           <ReactTooltip
@@ -204,8 +209,8 @@ export const Subheaders = (props: SubheadersProps) => (
             effect="solid"
             place="top"
             type="light"
-            data-event="mouseover"
-            data-event-off="blur scroll"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
           >
             <p>{props.tooltipText}</p>
           </ReactTooltip>
@@ -1031,7 +1036,11 @@ export const ReportingCard = (props: ReportingCardProps) => {
           reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
         />
       )}
-      <div data-tip data-for={'tooltip--preReporting' + id}>
+      <div
+        data-tip
+        data-for={'tooltip--preReporting' + id}
+        data-iscapture={true}
+      >
         <ProcessingButton
           text="Report"
           action={showReportingModal}
@@ -1046,8 +1055,8 @@ export const ReportingCard = (props: ReportingCardProps) => {
             effect="solid"
             place="top"
             type="light"
-            data-event="mouseover"
-            data-event-off="blur scroll"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
           >
             <p>{disabledTooltipText} </p>
           </ReactTooltip>

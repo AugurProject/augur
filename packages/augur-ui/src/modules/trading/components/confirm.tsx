@@ -417,6 +417,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                   )}
                   data-tip
                   data-for="tooltip--confirm"
+                  data-iscapture={true}
                 >
                   {QuestionIcon}
                 </label>
@@ -426,8 +427,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                   effect="solid"
                   place="top"
                   type="light"
-                  data-event="mouseover"
-                  data-event-off="blur scroll"
+                  event="mouseover mouseenter"
+                  eventOff="mouseleave mouseout scroll mousewheel blur"
                 >
                   <p>{tooltip}</p>
                 </ReactTooltip>

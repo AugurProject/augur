@@ -418,6 +418,7 @@ export const HoverIcon = (props: HoverIconProps) => (
     className={Styles.HoverIcon}
     data-tip
     data-for={`tooltip-${props.id}${props.label}`}
+    data-iscapture={true}
   >
     {props.icon}
     <ReactTooltip
