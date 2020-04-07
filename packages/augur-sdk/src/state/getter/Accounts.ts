@@ -29,7 +29,7 @@ import {
   PayoutNumeratorValue
 } from '../../index';
 import { MarketReportingState } from '../../constants';
-import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize, convertAttoValueToDisplayValue } from '../../utils';
+import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize, convertAttoValueToDisplayValue, QUINTILLION } from '../../utils';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
 import Dexie from 'dexie';
@@ -210,22 +210,25 @@ export class Accounts<TBigNumber> {
 
     for (const crowdsourcer of disputeCrowdsourcerTokens) {
       const market = marketsById[crowdsourcer.market];
+      if (!market) continue;
       const crowdsourcerCompleted = disputeCrowdsourcerCompletedLogsById[crowdsourcer.token];
       let isClaimable = false;   
       let earnings = '0';   
       if (market.reportingState === MarketReportingState.AwaitingFinalization || market.reportingState === MarketReportingState.Finalized) {
         // If the market is finalized/finalizable and this bond was correct its claimable, otherwise we leave it out entirely
         isClaimable = !crowdsourcerCompleted || crowdsourcerCompleted.payoutNumerators.toString() === market.tentativeWinningPayoutNumerators.toString();
+        let amount = new BigNumber(crowdsourcer.balance);
         if (crowdsourcerCompleted && crowdsourcerCompleted.disputeRound === market.disputeRound) {
           const totalRepStakedInMarket = new BigNumber(crowdsourcerCompleted.totalRepStakedInMarket);
           const totalRepStakedInPayout = new BigNumber(crowdsourcerCompleted.totalRepStakedInPayout);
           const size = new BigNumber(disputeCrowdsourcerCreatedLogsById[crowdsourcer.token].size);
           const report = reporting.contracts.find(reportingContract => reportingContract.marketId === crowdsourcer.market);
-          let amount = new BigNumber(crowdsourcer.balance);
           if (report) {
             amount = amount.plus(report.amount);
           }
           earnings = (new BigNumber(.8).multipliedBy(amount).dividedBy(size).multipliedBy(totalRepStakedInMarket.minus(totalRepStakedInPayout)).multipliedBy(new BigNumber(3)).dividedBy(new BigNumber(4))).toFixed();
+        } else if (crowdsourcerCompleted) {
+          earnings = (new BigNumber(.4).multipliedBy(amount)).toFixed();
         }
         if (!isClaimable) continue;
       } else {
