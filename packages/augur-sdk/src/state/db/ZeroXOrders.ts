@@ -168,52 +168,53 @@ export class ZeroXOrders extends AbstractTable {
   async handleOrderEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
 
-    const filteredOrders = _.filter(orderEvents, this.validateOrder.bind(this));
-    let documents: StoredOrder[] = _.map(filteredOrders, this.processOrder.bind(this));
+    const filteredOrders = orderEvents.filter(this.validateOrder, this);
+    let documents: StoredOrder[] = filteredOrders.map(this.processOrder, this);
 
     // Remove Canceled, Expired, and Invalid Orders and emit event
     const canceledOrders = _.keyBy(
-      _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'CANCELLED' || orderEvent.endState === 'EXPIRED' || orderEvent.endState === 'INVALID' || orderEvent.endState === 'UNFUNDED')),
+      filteredOrders.filter((orderEvent) => ['CANCELLED', 'EXPIRED', 'INVALID', 'UNFUNDED'].includes(orderEvent.endState)),
       'orderHash'
     );
 
-    for (const d of documents) {
-      if (canceledOrders[d.orderHash]) {
-        documents = _.filter(documents, (orderEvent => orderEvent.orderHash !== d.orderHash));
-        this.table.where('orderHash').equals(d.orderHash).delete();
-        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Cancel, orderId: d.orderHash,...d});
-        this.augur.events.emit('DB:updated:ZeroXOrders', {eventType: OrderEventType.Cancel, orderId: d.orderHash,...d});
-      }
+    this.table.where('orderHash').anyOf(Object.keys(canceledOrders)).delete();
+    for (const d of Object.values(canceledOrders)) {
+      // Spread this once to avoid extra copies
+      const event = {eventType: OrderEventType.Cancel, orderId: d.orderHash, ...d};
+      this.augur.events.emit('OrderEvent', event);
+      this.augur.events.emit('DB:updated:ZeroXOrders', event);
     }
+    documents = documents.filter((d: StoredOrder) => !canceledOrders[d.orderHash]);
 
     // Deal with partial fills and emit event
     const filledOrders = _.keyBy(
-      _.filter(filteredOrders, (orderEvent => orderEvent.endState === 'FILLED' || orderEvent.endState === 'FULLY_FILLED')),
+      filteredOrders.filter(orderEvent => ['FILLED', 'FULLY_FILLED'].includes(orderEvent.endState)),
       'orderHash'
     );
 
-    documents = _.filter(documents, this.validateStoredOrder.bind(this));
+    const marketIds: string[] = _.uniq(documents.map(d => d.market));
+    const markets = _.keyBy(await this.stateDB.Markets.where('market').anyOf(marketIds).toArray(), 'market');
+    documents = documents.filter(d => this.validateStoredOrder(d, markets));
     await this.saveDocuments(documents);
+
+    // Emit these events after saving the documents so that they are queryable
     for (const d of documents) {
       const eventType = filledOrders[d.orderHash] ? OrderEventType.Fill : OrderEventType.Create;
-      this.augur.events.emit('OrderEvent', {eventType, orderId: d.orderHash,...d});
-      this.augur.events.emit('DB:updated:ZeroXOrders', {eventType, orderId: d.orderHash,...d});
+      const event = {eventType, orderId: d.orderHash,...d};
+      this.augur.events.emit('OrderEvent', event);
+      this.augur.events.emit('DB:updated:ZeroXOrders', event);
     }
   }
 
   async sync(): Promise<void> {
     console.log('Syncing ZeroX Orders');
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
-    let documents;
-    if (orders && orders.length > 0) {
-      documents = _.filter(orders, this.validateOrder.bind(this));
-      documents = _.map(documents, this.processOrder.bind(this));
-      const marketIds: string[] = _.uniq(_.map(documents, 'market'));
+    if (orders?.length > 0) {
+      let documents = orders.filter(this.validateOrder, this).map(this.processOrder, this);
+      const marketIds: string[] = _.uniq(documents.map((d) => d.market));
       const markets = _.keyBy(await this.stateDB.Markets.where('market').anyOf(marketIds).toArray(), 'market');
-      documents = _.filter(documents, (document) => {
-        return this.validateStoredOrder(document, markets);
-      });
-      _.each(documents, (doc) => { delete this.pastOrders[doc.orderHash] });
+      documents = documents.filter((d) => this.validateStoredOrder(d, markets));
+      documents.forEach((doc) => delete this.pastOrders[doc.orderHash])
       await this.saveDocuments(documents);
       for (const d of documents) {
         this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
