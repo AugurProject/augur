@@ -59,6 +59,7 @@ export interface DisputeCrowdsourcerCompletedLog extends Log {
   payoutNumerators: PayoutNumerators;
   totalRepStakedInPayout: string;
   totalRepStakedInMarket: string;
+  disputeRound: string;
 }
 
 export interface DisputeCrowdsourcerContributionLog

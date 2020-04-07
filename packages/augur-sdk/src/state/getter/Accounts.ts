@@ -216,7 +216,7 @@ export class Accounts<TBigNumber> {
       if (market.reportingState === MarketReportingState.AwaitingFinalization || market.reportingState === MarketReportingState.Finalized) {
         // If the market is finalized/finalizable and this bond was correct its claimable, otherwise we leave it out entirely
         isClaimable = !crowdsourcerCompleted || crowdsourcerCompleted.payoutNumerators.toString() === market.tentativeWinningPayoutNumerators.toString();
-        if (crowdsourcerCompleted) {
+        if (crowdsourcerCompleted && crowdsourcerCompleted.disputeRound === market.disputeRound) {
           const totalRepStakedInMarket = new BigNumber(crowdsourcerCompleted.totalRepStakedInMarket);
           const totalRepStakedInPayout = new BigNumber(crowdsourcerCompleted.totalRepStakedInPayout);
           const size = new BigNumber(disputeCrowdsourcerCreatedLogsById[crowdsourcer.token].size);
