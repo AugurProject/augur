@@ -29,6 +29,7 @@ import {
   TRANSACTIONS,
   SUBMIT_REPORT,
   CLAIMMARKETSPROCEEDS,
+  CANCELORDERS,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'appStore';
@@ -312,7 +313,7 @@ const generateCards = (markets, type) => {
       title: RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
       buttonLabel: TYPE_VIEW_ORDERS,
       queueName: TRANSACTIONS,
-      queueId: BATCHCANCELORDERS,
+      queueId: CANCELORDERS,
     };
   } else if (type === NOTIFICATION_TYPES.reportOnMarkets) {
     defaults = {
