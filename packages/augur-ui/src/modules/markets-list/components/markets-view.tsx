@@ -140,8 +140,8 @@ export default class MarketsView extends Component<
         maxFee,
         templateFilter,
         includeInvalidMarkets,
-        this.state.marketCount,
-        this.state.offset
+        marketCount,
+        offset
       );
     }
 
@@ -197,15 +197,19 @@ export default class MarketsView extends Component<
       marketFilter,
       marketSort,
       templateFilter,
+      setLoadMarketsPending,
+      setMarketsListSearchInPlace,
+      loadMarketsByFilter,
+      updateMarketsListMeta,
     } = this.props;
 
     const { limit, offset } = this.state;
     window.scrollTo(0, 1);
 
-    this.props.setLoadMarketsPending(true);
-    this.props.setMarketsListSearchInPlace(Boolean(search));
+    setLoadMarketsPending(true);
+    setMarketsListSearchInPlace(Boolean(search));
 
-    this.props.loadMarketsByFilter(
+    loadMarketsByFilter(
       {
         categories: selectedCategories ? selectedCategories : [],
         search,
@@ -230,8 +234,8 @@ export default class MarketsView extends Component<
             marketCount,
             showPagination,
           });
-          this.props.updateMarketsListMeta(result.meta);
-          this.props.setLoadMarketsPending(false);
+          updateMarketsListMeta(result.meta);
+          setLoadMarketsPending(false);
         }
       }
     );
@@ -259,6 +263,12 @@ export default class MarketsView extends Component<
       showInvalidMarketsBannerHideOrShow,
       isLogged,
       restoredAccount,
+      maxFee,
+      maxLiquiditySpread,
+      removeFeeFilter,
+      removeLiquiditySpreadFilter,
+      includeInvalidMarkets,
+      filteredOutCount,
     } = this.props;
     const {
       filterSortedMarkets,
@@ -268,9 +278,9 @@ export default class MarketsView extends Component<
       showPagination,
     } = this.state;
 
-    const displayFee = this.props.maxFee !== MAX_FEE_100_PERCENT;
+    const displayFee = maxFee !== MAX_FEE_100_PERCENT;
     const displayLiquiditySpread =
-      this.props.maxLiquiditySpread !== MAX_SPREAD_ALL_SPREADS;
+      maxLiquiditySpread !== MAX_SPREAD_ALL_SPREADS;
     let feesLiquidityMessage = '';
 
     if (!displayFee && !displayLiquiditySpread) {
@@ -311,7 +321,7 @@ export default class MarketsView extends Component<
         >
           <MarketTypeFilter
             isSearchingMarkets={isSearching}
-            marketCount={this.state.marketCount}
+            marketCount={marketCount}
             updateMarketsFilter={updateMarketsFilter}
             marketFilter={marketFilter}
           />
@@ -325,16 +335,16 @@ export default class MarketsView extends Component<
         </div>
 
         <FilterTags
-          maxLiquiditySpread={this.props.maxLiquiditySpread}
-          maxFee={this.props.maxFee}
-          removeFeeFilter={this.props.removeFeeFilter}
-          removeLiquiditySpreadFilter={this.props.removeLiquiditySpreadFilter}
+          maxLiquiditySpread={maxLiquiditySpread}
+          maxFee={maxFee}
+          removeFeeFilter={removeFeeFilter}
+          removeLiquiditySpreadFilter={removeLiquiditySpreadFilter}
           updateQuery={(param, value) =>
-            updateQuery(param, value, this.props.location, this.props.history)
+            updateQuery(param, value, location, history)
           }
         />
         <FilterNotice
-          show={this.props.includeInvalidMarkets === 'show'}
+          show={includeInvalidMarkets === 'show'}
           showDismissButton={true}
           updateLoginAccountSettings={updateLoginAccountSettings}
           settings={{
@@ -392,13 +402,13 @@ export default class MarketsView extends Component<
 
         <FilterNotice
           show={
-            !this.props.isSearching &&
-            this.props.filteredOutCount &&
-            this.props.filteredOutCount > 0
+            !isSearching &&
+            filteredOutCount &&
+            filteredOutCount > 0
           }
           content={
             <span>
-              There are {this.props.filteredOutCount} additional markets outside
+              There are {filteredOutCount} additional markets outside
               of the current filters applied. Edit filters to view all markets{' '}
             </span>
           }

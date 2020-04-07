@@ -211,11 +211,14 @@ export default class MarketView extends Component<
     const {
       isConnected,
       marketId,
-      isMarketLoading,
       tradingTutorial,
       updateModal,
       closeMarketLoadingModalOnly,
-      preview
+      preview,
+      loadMarketOrderBook,
+      loadMarketsInfo,
+      loadMarketTradingHistory,
+      marketType,
     } = prevProps;
     if (
       this.props.outcomeId !== prevProps.outcomeId &&
@@ -246,9 +249,9 @@ export default class MarketView extends Component<
     }
 
     if ((isConnected !== this.props.isConnected) && !!marketId && !tradingTutorial && !preview) {
-      this.props.loadMarketOrderBook(marketId);
-      this.props.loadMarketsInfo(this.props.marketId);
-      this.props.loadMarketTradingHistory(marketId);
+      loadMarketOrderBook(marketId);
+      loadMarketsInfo(marketId);
+      loadMarketTradingHistory(marketId);
     }
     if (!this.props.isMarketLoading) {
       if (closeMarketLoadingModalOnly) closeMarketLoadingModalOnly(this.props.modalShowing);
@@ -257,19 +260,14 @@ export default class MarketView extends Component<
     if (
       !tradingTutorial &&
       !this.props.scalarModalSeen &&
-      this.props.marketType === SCALAR &&
+      marketType === SCALAR &&
       !this.state.hasShownScalarModal
     ) {
-      this.props.updateModal({
+      updateModal({
         type: MODAL_SCALAR_MARKET,
         cb: () => this.setState({ hasShownScalarModal: true }),
       });
     }
-  }
-
-  componentWillUnmount() {
-    const { clearOrderBook } = this.props;
-    if (clearOrderBook) this.props.clearOrderBook();
   }
 
   tradingTutorialWidthCheck() {
