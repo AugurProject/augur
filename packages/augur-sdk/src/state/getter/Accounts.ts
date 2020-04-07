@@ -84,6 +84,7 @@ export interface ContractInfo {
   amount: string;
   marketId: string;
   isClaimable: boolean;
+  earnings: string;
 }
 
 export interface ContractOverview {
@@ -194,6 +195,7 @@ export class Accounts<TBigNumber> {
         address: report.initialReporter,
         amount: new BigNumber(report.amountStaked).toFixed(),
         marketId: report.market,
+        earnings: '0',
         isClaimable
       })
     }
@@ -209,10 +211,22 @@ export class Accounts<TBigNumber> {
     for (const crowdsourcer of disputeCrowdsourcerTokens) {
       const market = marketsById[crowdsourcer.market];
       const crowdsourcerCompleted = disputeCrowdsourcerCompletedLogsById[crowdsourcer.token];
-      let isClaimable = false;
+      let isClaimable = false;   
+      let earnings = '0';   
       if (market.reportingState === MarketReportingState.AwaitingFinalization || market.reportingState === MarketReportingState.Finalized) {
         // If the market is finalized/finalizable and this bond was correct its claimable, otherwise we leave it out entirely
         isClaimable = !crowdsourcerCompleted || crowdsourcerCompleted.payoutNumerators.toString() === market.tentativeWinningPayoutNumerators.toString();
+        if (crowdsourcerCompleted) {
+          const totalRepStakedInMarket = new BigNumber(crowdsourcerCompleted.totalRepStakedInMarket);
+          const totalRepStakedInPayout = new BigNumber(crowdsourcerCompleted.totalRepStakedInPayout);
+          const size = new BigNumber(disputeCrowdsourcerCreatedLogsById[crowdsourcer.token].size);
+          const report = reporting.contracts.find(reportingContract => reportingContract.marketId === crowdsourcer.market);
+          let amount = new BigNumber(crowdsourcer.balance);
+          if (report) {
+            amount = amount.plus(report.amount);
+          }
+          earnings = (new BigNumber(.8).multipliedBy(amount).dividedBy(size).multipliedBy(totalRepStakedInMarket.minus(totalRepStakedInPayout)).multipliedBy(new BigNumber(3)).dividedBy(new BigNumber(4))).toFixed();
+        }
         if (!isClaimable) continue;
       } else {
         // Unfinished bonds are always claimable
@@ -220,6 +234,7 @@ export class Accounts<TBigNumber> {
       }
       crowdsourcerContracts.push({
         address: crowdsourcer.token,
+        earnings,
         amount: new BigNumber(crowdsourcer.balance).toFixed(),
         marketId: crowdsourcer.market,
         isClaimable
