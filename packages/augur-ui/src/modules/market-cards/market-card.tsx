@@ -82,9 +82,7 @@ export const MarketCard = ({
   dispute,
   marketLinkCopied,
   toggleFavorite,
-  theme,
-  isForking,
-  forkingMarket,
+  theme
 }: MarketCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const {
@@ -95,17 +93,10 @@ export const MarketCard = ({
     maxPriceBigNumber,
     categories,
     id,
-    marketStatus,
-    author,
     reportingState,
-    openInterestFormatted,
-    volumeFormatted,
     disputeInfo,
     endTimeFormatted,
-    isTemplate,
     consensusFormatted,
-    mostLikelyInvalid,
-    isWarpSync,
   } = market;
 
   if (loading) {
