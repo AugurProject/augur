@@ -23,7 +23,10 @@ import {
   COPY_MARKET_ID,
   COPY_AUTHOR,
   REPORTING_STATE,
+  ASKS,
+  ODDS_TYPE
 } from 'modules/common/constants';
+import { convertToOdds } from 'utils/get-odds';
 import { MARKET_LIST_CARD } from 'services/analytics/helpers';
 import { getTheme } from 'modules/app/actions/update-app-status';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
@@ -57,7 +60,7 @@ import {
   RedFlag,
   TemplateShield,
 } from 'modules/common/labels';
-import Styles from 'modules/market-cards/common.styles.less';
+import Styles, { outcome } from 'modules/market-cards/common.styles.less';
 import { MarketCard } from 'modules/market-cards/market-card';
 import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
@@ -434,7 +437,57 @@ export interface MultiMarketTable {
   }>;
 }
 
-export const MultiMarketTable = ({ multiMarketTableData = mockData }) => {
+const processMultiMarketTableData = (orderBook, outcomes, min, max) => {
+  if (!orderBook || orderBook?.asks) {
+    // this might change, shortcut
+    return mockData;
+  }
+  let data = [];
+  outcomes.forEach(outcome => {
+    const outcomeObject = {
+      title: 'default',
+      spread: {
+        topLabel: null,
+        label: '-110',
+        action: () => {},
+        volume: '$500.70',
+      },
+      moneyLine: {
+        topLabel: null,
+        label: '-157',
+        action: () => {},
+        volume: '$740.98',
+      },
+      overUnder: {
+        topLabel: null,
+        label: '-110',
+        action: () => {},
+        volume: '$540.50',
+      },
+    };
+    if (orderBook[outcome.id]) {
+      const book = orderBook[outcome.id];
+      const topAsk = book[ASKS][0].price;
+      const odds = convertToOdds({
+        price: topAsk,
+        min,
+        max,
+        type: ASKS
+      });
+      outcomeObject.title = outcome.description;
+      outcomeObject.spread.label = odds[ODDS_TYPE.AMERICAN];
+      outcomeObject.moneyLine.label = odds[ODDS_TYPE.AMERICAN];
+      outcomeObject.overUnder.label = odds[ODDS_TYPE.AMERICAN];
+      data.push(outcomeObject);
+    }
+  });
+  return data;
+}
+
+export const MultiMarketTable = ({ orderBook,
+  outcomes, min, max }) => {
+  let multiMarketTableData = processMultiMarketTableData(orderBook, outcomes, min, max);
+  
   return (
     <section className={classNames(Styles.MultiMarketTable)}>
       <div>
@@ -477,6 +530,7 @@ export const MultiMarketTable = ({ multiMarketTableData = mockData }) => {
 };
 
 export interface OutcomeGroupProps {
+  orderBook: any;
   outcomes: OutcomeFormatted[];
   expanded?: Boolean;
   marketType: string;
@@ -495,6 +549,7 @@ export interface OutcomeGroupProps {
 }
 
 export const OutcomeGroup = ({
+  orderBook,
   outcomes,
   expanded,
   marketType,
@@ -512,7 +567,7 @@ export const OutcomeGroup = ({
   theme = getTheme(),
 }: OutcomeGroupProps) => {
   if (theme === THEMES.SPORTS) {
-    return <MultiMarketTable />;
+    return <MultiMarketTable orderBook={orderBook} outcomes={outcomes} min={min} max={max} />;
   }
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     marketType,

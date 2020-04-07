@@ -47,6 +47,7 @@ interface MarketCardProps {
   history: History;
   location: Location;
   toggleFavorite: Function;
+  orderBook: any;
   currentAugurTimestamp: number;
   disputingWindowEndTime: number;
   condensed?: boolean;
@@ -82,7 +83,8 @@ export const MarketCard = ({
   dispute,
   marketLinkCopied,
   toggleFavorite,
-  theme
+  theme,
+  orderBook
 }: MarketCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const {
@@ -102,7 +104,6 @@ export const MarketCard = ({
   if (loading) {
     return <LoadingCard />;
   }
-
   const path =
     location.pathname === makePath(MARKETS)
       ? location
@@ -183,6 +184,7 @@ export const MarketCard = ({
         {!condensed && !marketResolved ? (
           <>
             <OutcomeGroup
+              orderBook={orderBook}
               outcomes={outcomesFormatted}
               marketType={marketType}
               scalarDenomination={scalarDenomination}

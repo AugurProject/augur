@@ -49,10 +49,10 @@ export const test = (examples = mockExamples) => {
 
 interface ConvertToOddsType {
   price: number | string | BigNumber;
-  min: number | string | BigNumber;
-  max: number | string | BigNumber;
-  type: string;
-  toDecimals: number;
+  min?: number | string | BigNumber;
+  max?: number | string | BigNumber;
+  type?: string;
+  toDecimals?: number;
 }
 
 export const convertToOdds = ({

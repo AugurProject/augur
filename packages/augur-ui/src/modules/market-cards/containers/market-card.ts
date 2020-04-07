@@ -12,23 +12,35 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { marketLinkCopied } from 'services/analytics/helpers';
 
 const mapStateToProps = (state, ownProps) => {
-  const positions = state.accountPositions;
-  const hasStaked = hasStakeInMarket(state, ownProps.market.marketId);
-  const { forkingInfo } = state.universe;
-
+  const { marketId } = ownProps.market;
+  const {
+    accountPositions: positions,
+    universe,
+    authStatus,
+    appStatus,
+    blockchain,
+    pendingLiquidityOrders,
+    loginAccount,
+    favorites,
+    orderBooks,
+  } = state;
+  const hasStaked = hasStakeInMarket(state, marketId);
+  const { forkingInfo } = universe;
+  
   return {
-    theme: state.appStatus.theme,
-    hasPosition: !!positions[ownProps.market.marketId],
-    isLogged: state.authStatus.isLogged,
+    theme: appStatus.theme,
+    hasPosition: !!positions[marketId],
+    orderBook: orderBooks[marketId]?.orderBook,
+    isLogged: authStatus.isLogged,
     isForking: !!forkingInfo,
-    isMobile: state.appStatus.isMobile,
-    pendingLiquidityOrders: state.pendingLiquidityOrders,
-    currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
-    disputingWindowEndTime: state.universe.disputeWindow && state.universe.disputeWindow.endTime || 0,
-    address: state.loginAccount.address,
-    isFavorite: !!state.favorites[ownProps.market.marketId],
+    isMobile: appStatus.isMobile,
+    pendingLiquidityOrders,
+    currentAugurTimestamp: blockchain.currentAugurTimestamp,
+    disputingWindowEndTime: universe.disputeWindow?.endTime || 0,
+    address: loginAccount.address,
+    isFavorite: !!favorites[marketId],
     hasStaked,
-    forkingMarket: state.universe.forkingInfo && state.universe.forkingInfo.forkingMarket,
+    forkingMarket: forkingInfo?.forkingMarket,
   };
 };
 
@@ -49,7 +61,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         market: ownProps.market,
       })
     ),
-  marketLinkCopied: (marketId, location) => dispatch(marketLinkCopied(marketId, location)),
+  marketLinkCopied: (marketId, location) =>
+    dispatch(marketLinkCopied(marketId, location)),
 });
 
 const MarketCardContainer = withRouter(
