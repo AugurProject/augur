@@ -243,6 +243,10 @@ export class ContractAPI {
     await this.augur.zeroX.placeOrders(params);
   }
 
+  async safePlaceOrders(params: ZeroXPlaceTradeDisplayParams[]): Promise<void> {
+    await this.augur.zeroX.safePlaceOrders(params);
+  }
+
   async placeZeroXTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
     const price = params.direction === 0 ? params.displayPrice : params.numTicks.minus(params.displayPrice);
     const cost = params.displayAmount.multipliedBy(price).multipliedBy(10**18);
