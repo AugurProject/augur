@@ -109,7 +109,7 @@ export interface SelectableTableProps {
 export interface ActionRow {
   title: string;
   text: string;
-  label: string;
+  label: string | JSX.Element;
   value: string;
   notice?: string;
   action: Function;

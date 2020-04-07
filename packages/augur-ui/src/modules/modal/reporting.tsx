@@ -249,7 +249,7 @@ export default class ModalReporting extends Component<
       // check if new scalar outcome, outcomeId is 'null' in this case
       const inputted = outcomeId === "null" ? parseFloat(
         this.state.inputScalarOutcome) : outcomeId;
-      outcomeId = estimateGas ? minPrice : inputted || this.state.checked;
+      outcomeId = estimateGas ? minPrice : !!this.state.inputScalarOutcome ? inputted : this.state.checked;
     }
     const ONE_REP = '1000000000000000000';
     const report = {
