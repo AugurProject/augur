@@ -299,7 +299,7 @@ export interface ExtraInfo {
 export const ValidationTemplateInputType = {
   [ValidationType.SOCIAL]: `[a-zA-Z0-9_]{1,15}`,
   [TemplateInputType.TEXT]: `(.*)`,
-  [ValidationType.WHOLE_NUMBER]: `[0-9]+`,
+  [ValidationType.WHOLE_NUMBER]: `[1-9][0-9]*`,
   [ValidationType.NUMBER]: `[0-9]+(\\\.[0-9]+){0,1}`,
   [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(.*)`,
   [TemplateInputType.SUBSTITUTE_USER_OUTCOME]: `[0-9]+`,
