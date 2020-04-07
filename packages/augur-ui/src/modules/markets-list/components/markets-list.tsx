@@ -18,7 +18,6 @@ interface MarketsListProps {
   filteredMarkets: string[];
   location: object;
   toggleFavorite: Function;
-  loadMarketsInfoIfNotLoaded: Function;
   linkType?: string;
   isMobile: boolean;
   pendingLiquidityOrders?: object;

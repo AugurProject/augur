@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
 import MarketsList from 'modules/markets-list/components/markets-list';
 import Styles from 'modules/markets-list/components/markets-landing-page.styles.less';
-import {
-  TYPE_TRADE,
-  MARKET_CARD_FORMATS,
-} from 'modules/common/constants';
+import { TYPE_TRADE, MARKET_CARD_FORMATS } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import { PrimaryButton, CategoryButtons } from 'modules/common/buttons';
@@ -21,7 +18,6 @@ interface MarketsViewProps {
   history: History;
   isConnected: boolean;
   toggleFavorite: (...args: any[]) => any;
-  loadMarketsInfoIfNotLoaded: (...args: any[]) => any;
   isMobile: boolean;
   loadMarketsByFilter: Function;
   isSearching: boolean;
@@ -68,12 +64,18 @@ export default class MarketsView extends Component<
   }
 
   updateFilteredMarkets() {
+    const {
+      setLoadMarketsPending,
+      loadMarketsByFilter,
+      updateMarketsListMeta,
+    } = this.props;
     const { marketCategory } = this.state;
 
-    this.props.setLoadMarketsPending(true);
-    this.props.loadMarketsByFilter(
+    setLoadMarketsPending(true);
+    loadMarketsByFilter(
       {
-        categories: marketCategory && marketCategory !== 'all' ? [marketCategory] : [],
+        categories:
+          marketCategory && marketCategory !== 'all' ? [marketCategory] : [],
         offset: 1,
         limit: 25,
       },
@@ -84,8 +86,8 @@ export default class MarketsView extends Component<
           this.setState({
             filterSortedMarkets,
           });
-          this.props.updateMarketsListMeta(result.meta);
-          this.props.setLoadMarketsPending(false);
+          updateMarketsListMeta(result.meta);
+          setLoadMarketsPending(false);
         }
       }
     );
@@ -97,7 +99,6 @@ export default class MarketsView extends Component<
       isLogged,
       restoredAccount,
       isMobile,
-      loadMarketsInfoIfNotLoaded,
       location,
       markets,
       toggleFavorite,
@@ -117,19 +118,21 @@ export default class MarketsView extends Component<
           <title>Markets</title>
         </Helmet>
 
-        <div>
-          The world’s most accessible, no-limit betting platform.
-        </div>
+        <div>The world’s most accessible, no-limit betting platform.</div>
 
-        {!isLogged && !restoredAccount ? <div>
-          <PrimaryButton
-            action={() => signupModal()}
-            text='Signup to start betting'
-          />
-        </div> : <div />}
+        {!isLogged && !restoredAccount ? (
+          <div>
+            <PrimaryButton
+              action={() => signupModal()}
+              text="Signup to start betting"
+            />
+          </div>
+        ) : (
+          <div />
+        )}
 
         <CategoryButtons
-          action={(categoryName) => {
+          action={categoryName => {
             history.push({
               pathname: makePath(MARKETS, null),
               search: `category=${categoryName}`,
@@ -138,28 +141,25 @@ export default class MarketsView extends Component<
           categoryStats={categoryStats}
         />
 
-        <div>
-          Popular markets
-        </div>
+        <div>Popular markets</div>
 
         <CategorySelector
-          action={(marketCategory) => {
+          action={marketCategory => {
             this.setState({ marketCategory }, () => {
-              this.updateFilteredMarkets()
+              this.updateFilteredMarkets();
             });
           }}
           selected={this.state.marketCategory}
         />
 
         <MarketsList
-          testid='markets'
+          testid="markets"
           markets={markets}
           showPagination={false}
           filteredMarkets={this.state.filterSortedMarkets}
           location={location}
           history={history}
           toggleFavorite={toggleFavorite}
-          loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
           linkType={TYPE_TRADE}
           isMobile={isMobile}
           isSearchingMarkets={isSearching}

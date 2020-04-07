@@ -31,7 +31,6 @@ interface MarketsViewProps {
   history: History;
   isConnected: boolean;
   toggleFavorite: (...args: any[]) => any;
-  loadMarketsInfoIfNotLoaded: (...args: any[]) => any;
   isMobile: boolean;
   loadMarketsByFilter: Function;
   search?: string;
@@ -245,7 +244,6 @@ export default class MarketsView extends Component<
     const {
       history,
       isMobile,
-      loadMarketsInfoIfNotLoaded,
       location,
       markets,
       toggleFavorite,
@@ -389,7 +387,6 @@ export default class MarketsView extends Component<
           location={location}
           history={history}
           toggleFavorite={toggleFavorite}
-          loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
           linkType={TYPE_TRADE}
           isMobile={isMobile}
           limit={limit}
