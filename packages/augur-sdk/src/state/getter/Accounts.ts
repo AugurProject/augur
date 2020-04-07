@@ -29,7 +29,7 @@ import {
   PayoutNumeratorValue
 } from '../../index';
 import { MarketReportingState } from '../../constants';
-import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize, convertAttoValueToDisplayValue, QUINTILLION } from '../../utils';
+import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize, convertAttoValueToDisplayValue } from '../../utils';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
 import Dexie from 'dexie';
@@ -226,6 +226,7 @@ export class Accounts<TBigNumber> {
           if (report) {
             amount = amount.plus(report.amount);
           }
+          amount = amount.gt(size) ? size : amount;
           earnings = (new BigNumber(.8).multipliedBy(amount).dividedBy(size).multipliedBy(totalRepStakedInMarket.minus(totalRepStakedInPayout)).multipliedBy(new BigNumber(3)).dividedBy(new BigNumber(4))).toFixed();
         } else if (crowdsourcerCompleted) {
           earnings = (new BigNumber(.4).multipliedBy(amount)).toFixed();
