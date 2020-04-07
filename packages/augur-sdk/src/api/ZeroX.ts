@@ -353,6 +353,11 @@ export class ZeroX {
         throw new Error(`Order not multiple of ${multipleOf.toNumber()}`);
       }
 
+      const invalidReason = await this.checkIfTradeValid(order);
+      if (invalidReason) throw new Error(invalidReason);
+    };
+
+    for(const order of [bestBid, bestAsk]) {
       const { orders } = await this.getMatchingOrders(
         order,
         []
@@ -360,10 +365,7 @@ export class ZeroX {
       if (orders.length > 0) {
         throw new Error("Order would cross Orderbook spread");
       }
-
-      const invalidReason = await this.checkIfTradeValid(order);
-      if (invalidReason) throw new Error(invalidReason);
-    };
+    }
 
     return await this.placeOnChainOrders(onChainOrders);
   }
