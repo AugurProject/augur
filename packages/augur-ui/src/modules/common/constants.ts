@@ -17,6 +17,22 @@ import * as d3 from 'd3-time';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatShares, formatDai } from 'utils/format-number';
 
+// Help Center links
+export const HELP_CENTER = 'https://help.augur.net/';
+export const HELP_CENTER_ADD_FUNDS = 'https://help.augur.net/getting-started/adding-funds';
+export const HELP_CENTER_HOW_TO_TRADE = 'https://help.augur.net/trading/how-to-make-a-trade';
+export const HELP_CENTER_HOW_TO_DISPUTE = 'https://help.augur.net/disputing-explained#how-to-dispute';
+export const HELP_CENTER_SCALAR_MARKETS = 'https://help.augur.net/trading/trading-faq#how-do-scalar-markets-work';
+export const HELP_CENTER_PARTICIPATION_TOKENS = 'https://help.augur.net/reporting-or-disputing-faq#what-are-participation-tokens';
+export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://help.augur.net/getting-started/signing-up#gas-station-network';
+export const HELP_CENTER_MIGRATE_REP = 'https://help.augur.net/prediction-markets/migrating-rep-v1-greater-than-v2';
+export const HELP_CENTER_THIRD_PARTY_COOKIES = 'https://www.whatismybrowser.com/guides/how-to-enable-cookies';
+export const HELP_CENTER_INVALID_MARKETS = 'https://help.augur.net/trading/trading-faq#what-does-invalid-mean';
+export const HELP_CENTER_HOW_DO_I_SHORT_AN_OUTCOME = 'https://help.augur.net/trading/trading-faq#how-do-i-short-an-outcome';
+export const HELP_CENTER_DISPUTING_QUICK_GUIDE = 'https://help.augur.net/disputing-explained#dispute-rounds';
+export const HELP_CENTER_REPORTING_QUICK_GUIDE = 'https://help.augur.net/disputing-explained';
+export const HELP_CENTER_RESOLUTION_SOURCE = 'https://help.augur.net/trading/trading-page-explained#8-resolution-source';
+
 // # MISC Constants
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const FAKE_HASH = '1111111111111111111111111';
@@ -1017,7 +1033,7 @@ export const TRADING_TUTORIAL_COPY = {
         text:
           "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the",
         linkText: 'community guidelines.',
-        link: 'https://docs.augur.net',
+        link: HELP_CENTER_RESOLUTION_SOURCE,
       },
     ],
   },
@@ -1040,7 +1056,7 @@ export const TRADING_TUTORIAL_COPY = {
       {
         text: "To learn more about selling shares, or going 'short,' see our",
         linkText: 'guide.',
-        link: 'https://docs.augur.net',
+        link: HELP_CENTER_HOW_DO_I_SHORT_AN_OUTCOME,
       },
     ],
   },
@@ -1053,7 +1069,7 @@ export const TRADING_TUTORIAL_COPY = {
       {
         text: "To learn why invalid is an outcome, see our",
         linkText: "guide.",
-        link: 'https://docs.augur.net'
+        link: HELP_CENTER_INVALID_MARKETS,
       },
     ],
   },[TRADING_TUTORIAL_STEPS.QUANTITY]: {
@@ -1224,6 +1240,7 @@ export const DISPUTING_GUIDE = {
     ]
   }],
   learnMoreButtonText: 'Learn more about disputing',
+  learnMoreUrl: HELP_CENTER_DISPUTING_QUICK_GUIDE,
   closeButtonText: 'Close'
 };
 
@@ -1247,6 +1264,7 @@ export const REPORTING_GUIDE = {
     ]
   }],
   learnMoreButtonText: 'Learn more about reporting',
+  learnMoreUrl: HELP_CENTER_REPORTING_QUICK_GUIDE,
   closeButtonText: 'Close'
 };
 
@@ -1334,14 +1352,3 @@ export enum HEADER_TYPE {
 }
 
 export const LOGGED_IN_USER_LOCAL_STORAGE_KEY = 'loggedInUser';
-
-// Help Center links
-export const HELP_CENTER = 'https://augur.gitbook.io/help-center/';
-export const HELP_CENTER_ADD_FUNDS = 'https://augur.gitbook.io/help-center/trading-ui-1/adding-funds';
-export const HELP_CENTER_HOW_TO_TRADE = 'https://augur.gitbook.io/help-center/market-creation-1/how-to-make-a-trade';
-export const HELP_CENTER_HOW_TO_DISPUTE = 'https://augur.gitbook.io/help-center/disputing-explained';
-export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://augur.gitbook.io/help-center/trading-ui-1/signing-up#gas-station-network';
-export const HELP_CENTER_MIGRATE_REP = 'https://augur.gitbook.io/help-center/migrating-rep-v1-greater-than-v2';
-export const HELP_CENTER_PARTICIPATION_TOKENS = 'https://augur.gitbook.io/help-center/reporting-or-disputing-faq#what-are-participation-tokens';
-export const HELP_CENTER_INVALID_MARKETS = 'https://augur.gitbook.io/help-center/market-creation-1/trading-faq#what-does-invalid-mean';
-export const HELP_CENTER_THIRD_PARTY_COOKIES = 'https://www.whatismybrowser.com/guides/how-to-enable-cookies';
