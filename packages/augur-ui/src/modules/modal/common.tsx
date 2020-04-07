@@ -919,6 +919,7 @@ export const generateDaiTooltip = (
         className={classNames(TooltipStyles.TooltipHint)}
         data-tip
         data-for='tooltip--confirm'
+        data-iscapture={true}
       >
         {helpIcon}
       </label>
@@ -928,8 +929,8 @@ export const generateDaiTooltip = (
         effect='solid'
         place='top'
         type='light'
-        data-event="mouseover"
-        data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         <p>{tipText}</p>
       </ReactTooltip>

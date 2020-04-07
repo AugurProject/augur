@@ -111,7 +111,15 @@ export const MarketHeaderReporting = ({
     reportingState === REPORTING_STATE.OPEN_REPORTING
   ) {
     content = (
-      <div data-tip data-for={'tooltip--reporting' + id} className={classNames(Styles.Content, Styles.Report)}>
+      <div
+        className={classNames(
+          Styles.Content,
+          Styles.Report
+        )}
+        data-tip
+        data-for={'tooltip--reporting' + id}
+        data-iscapture={true}
+      >
         <ProcessingButton
           text='Report'
           action={() => showReportingModal()}
@@ -126,8 +134,8 @@ export const MarketHeaderReporting = ({
             effect="solid"
             place="top"
             type="light"
-            data-event="mouseover"
-            data-event-off="blur scroll"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
           >
             <p>{'Market cannot be reported on while universe is forking'} </p>
           </ReactTooltip>
