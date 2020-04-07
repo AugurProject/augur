@@ -358,7 +358,7 @@ export class ZeroX {
     };
 
     for(const order of [bestBid, bestAsk]) {
-      if (!!!order) return;
+      if (!order) return;
       const { orders } = await this.getMatchingOrders(
         order,
         []
