@@ -749,6 +749,8 @@ export const DEFAULT_FALLBACK_GAS_FAST = 21000000000; // 21 Gwei
 export const LONG = 'long';
 export const SHORT = 'short';
 export const CLOSED = 'closed';
+export const CLOSED_LONG = 'closed (long)';
+export const CLOSED_SHORT = 'closed (short)';
 export const NO_POSITION = '—';
 
 export const AWAITING_SIGNATURE = 'awaiting signature';

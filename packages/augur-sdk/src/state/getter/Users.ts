@@ -144,6 +144,11 @@ export interface TradingPosition {
   unrealized24HrPercent: string // unrealized 24Hr profit percent (ie. 24Hr profit/cost)
   totalPercent: string; // total profit percent (ie. profit/cost)
   currentValue: string; // current value of netPosition, always equal to unrealized minus frozenFunds
+  priorPosition?: {
+    unrealizedCost: string;
+    avgPrice: string;
+    netPosition: string;
+  }
 }
 
 export interface UserTradingPositions {
@@ -631,12 +636,19 @@ export class Users {
         return true;
       })
       .toArray();
+    const groupedProfitLossRecords = await getProfitLossRecordsByMarketAndOutcome(
+      db,
+      params.account,
+      profitLossRecords
+    );
+
     const profitLossResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
-      await getProfitLossRecordsByMarketAndOutcome(
-        db,
-        params.account,
-        profitLossRecords
-      )
+      groupedProfitLossRecords
+    );
+
+    const profitLossResultsByMarketAndOutcomePrior = reduceMarketAndOutcomeDocsToOnlyPriorLatest(
+      groupedProfitLossRecords,
+      profitLossResultsByMarketAndOutcome
     );
 
     let allOrders: ParsedOrderEventLog[];
@@ -715,6 +727,7 @@ export class Users {
         return _.mapValues(
           profitLossResultsByOutcome,
           (profitLossResult: ProfitLossChangedLog) => {
+            let priorPosition = null;
             const marketDoc = markets[profitLossResult.market];
             if (
               !ordersFilledResultsByMarketAndOutcome[profitLossResult.market] ||
@@ -752,7 +765,14 @@ export class Users {
                 ]
               );
             }
-            const tradingPosition = getTradingPositionFromProfitLossFrame(
+            // net position is 0, must have claimed, get prior order for display use
+            if (new BigNumber(profitLossResult.netPosition).eq(0) &&
+              profitLossResultsByMarketAndOutcomePrior[profitLossResult.market] &&
+              profitLossResultsByMarketAndOutcomePrior[profitLossResult.market][profitLossResult.outcome]) {
+                const prior = profitLossResultsByMarketAndOutcomePrior[profitLossResult.market][profitLossResult.outcome];
+                priorPosition = getDisplayValuesForPosition(prior, marketDoc);
+            }
+            const tradingPosition = ({ ...getTradingPositionFromProfitLossFrame(
               profitLossResult,
               marketDoc,
               outcomeValue,
@@ -760,7 +780,7 @@ export class Users {
               new BigNumber(profitLossResult.timestamp).toNumber(),
               shareTokenBalancesByMarketAndOutcome,
               !!marketFinalizedByMarket[profitLossResult.market],
-            );
+            ), priorPosition });
 
             return tradingPosition;
           }
@@ -1430,6 +1450,31 @@ function reduceMarketAndOutcomeDocsToOnlyLatest<TDoc extends Log>(
   });
 }
 
+function reduceMarketAndOutcomeDocsToOnlyPriorLatest<TDoc extends ProfitLossChangedLog>(
+  docs: _.Dictionary<_.Dictionary<ProfitLossChangedLog[]>>,
+  latest: _.Dictionary<_.Dictionary<ProfitLossChangedLog>>,
+): _.Dictionary<_.Dictionary<ProfitLossChangedLog>> {
+  return _.mapValues(docs, marketResults => {
+    return _.mapValues(marketResults, outcomeResults => {
+      return _.reduce(
+        outcomeResults,
+        (priorResult: ProfitLossChangedLog, outcomeResult) => {
+          let result = priorResult;
+          const endResult = latest[outcomeResult.market][outcomeResult.outcome];
+          if (endResult.blockHash === outcomeResult.blockHash) return priorResult;
+          if (!priorResult) return outcomeResult;
+          if (priorResult.blockNumber < outcomeResult.blockNumber) result = outcomeResult;
+          if (priorResult.blockNumber === outcomeResult.blockNumber && outcomeResult.logIndex > priorResult.logIndex) result = outcomeResult;
+          if (endResult && endResult.blockNumber < result.blockNumber) result = priorResult;
+          if (endResult && endResult.blockNumber === result.blockNumber && result.logIndex > endResult.logIndex) result = priorResult;
+          return result;
+        },
+        outcomeResults[0]
+      );
+    });
+  });
+}
+
 function getLastDocBeforeTimestamp<TDoc extends {timestamp: LogTimestamp}>(
   docs: TDoc[],
   timestamp: BigNumber
@@ -1642,4 +1687,38 @@ function getTradingPositionFromProfitLossFrame(
     totalPercent: totalPercent.toFixed(4),
     currentValue: currentValue.toFixed(),
   } as TradingPosition;
+}
+
+function getDisplayValuesForPosition(
+  profitLossFrame: ProfitLossChangedLog,
+  marketDoc: MarketData,
+) {
+  const minPrice = new BigNumber(marketDoc.prices[0]);
+  const maxPrice = new BigNumber(marketDoc.prices[1]);
+  const numTicks = new BigNumber(marketDoc.numTicks);
+  const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+  const onChainAvgPrice = new BigNumber(profitLossFrame.avgPrice).div(10**18);
+  const onChainNetPosition = new BigNumber(profitLossFrame.netPosition);
+  // convert prior to display values
+  const netPosition = convertOnChainAmountToDisplayAmount(
+    new BigNumber(profitLossFrame.netPosition),
+    tickSize
+  );
+  const avgPrice: BigNumber = convertOnChainPriceToDisplayPrice(
+    onChainAvgPrice,
+    minPrice,
+    tickSize
+  );
+  const onChainAvgCost = onChainNetPosition.isNegative()
+    ? numTicks.minus(onChainAvgPrice)
+    : onChainAvgPrice;
+  const onChainUnrealizedCost = onChainNetPosition
+    .abs()
+    .multipliedBy(onChainAvgCost);
+
+  return {
+    unrealizedCost: onChainUnrealizedCost.dividedBy(10 ** 18).toFixed(),
+    avgPrice: avgPrice.toFixed(),
+    netPosition: netPosition.toFixed(),
+  }
 }

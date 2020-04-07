@@ -193,7 +193,7 @@ const MarketsListFilters = ({
 
 export default MarketsListFilters;
 
-const generateTooltip = (tipText: string, key: string) => {
+export const generateTooltip = (tipText: string, key: string) => {
   return (
     <span className={Styles.Filter_TooltipContainer}>
       <label

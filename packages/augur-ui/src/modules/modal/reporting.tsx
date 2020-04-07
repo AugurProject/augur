@@ -43,6 +43,7 @@ import { ExplainerBlock } from 'modules/create-market/components/common';
 import { EventDetailsContent, WarpSyncErrorHeader, WarpSyncErrorSubheader } from 'modules/create-market/constants';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
+import MarketLink from 'modules/market/components/market-link/market-link';
 
 interface ModalReportingProps {
   closeAction: Function;
@@ -249,7 +250,7 @@ export default class ModalReporting extends Component<
       // check if new scalar outcome, outcomeId is 'null' in this case
       const inputted = outcomeId === "null" ? parseFloat(
         this.state.inputScalarOutcome) : outcomeId;
-      outcomeId = estimateGas ? minPrice : inputted || this.state.checked;
+      outcomeId = estimateGas ? minPrice : !!this.state.inputScalarOutcome ? inputted : this.state.checked;
     }
     const ONE_REP = '1000000000000000000';
     const report = {
@@ -361,7 +362,7 @@ export default class ModalReporting extends Component<
       userCurrentDisputeRound,
       radioButtons,
     } = this.state;
-    const { description, marketType, details, isTemplate } = market;
+    const { description, marketType, details, isTemplate, marketId } = market;
     const {
       explainerBlockTitle,
       explainerBlockSubtexts,
@@ -392,7 +393,9 @@ export default class ModalReporting extends Component<
               <RedFlag market={market} />
               {isTemplate && <TemplateShield market={market} />}
             </section>
-            <span>{description}</span>
+            <MarketLink id={marketId}>
+              <span>{description}</span>
+            </MarketLink>
             {details && details.length > 0 && (
               <div className={Styles.Details}>
                 <h2>Resolution Details</h2>
