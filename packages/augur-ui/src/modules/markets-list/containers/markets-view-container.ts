@@ -10,6 +10,7 @@ import {
   LoadMarketsFilterOptions,
   organizeReportingStates,
 } from 'modules/markets/actions/load-markets';
+import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { buildSearchString } from 'modules/markets/selectors/build-search-string';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
@@ -89,6 +90,7 @@ const mapDispatchToProps = (
     filter: LoadMarketsFilterOptions,
     cb: NodeStyleCallback
   ) => dispatch(loadMarketsByFilter(filter, cb)),
+  loadMarketOrderBook: (marketId) => dispatch(loadMarketOrderBook(marketId)),
   removeFeeFilter: () =>
     dispatch(updateFilterSortOptions(MARKET_MAX_FEES, MAX_FEE_100_PERCENT)),
   removeLiquiditySpreadFilter: () =>

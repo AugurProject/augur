@@ -16,7 +16,6 @@ export const loadMarketsInfo = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('loadMarketInfos called', marketIds);
   if (!marketIds || marketIds === undefined || marketIds.length === 0) {
     return callback(null, []);
   }
@@ -50,7 +49,6 @@ export const loadMarketsInfoIfNotLoaded = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  console.log('loadMarketsInfoIfNotLoaded called', marketIds);
   const { marketInfos } = getState();
   const marketIdsToLoad = marketIds.filter(
     (marketId: string) => !isMarketLoaded(marketId, marketInfos)

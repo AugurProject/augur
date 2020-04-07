@@ -58,6 +58,7 @@ interface MarketsViewProps {
   setMarketsListSearchInPlace: Function;
   marketListViewed: Function;
   marketsInReportingState: MarketData[];
+  loadMarketOrderBook: Function;
 }
 
 interface MarketsViewState {
@@ -200,6 +201,7 @@ export default class MarketsView extends Component<
       setMarketsListSearchInPlace,
       loadMarketsByFilter,
       updateMarketsListMeta,
+      loadMarketOrderBook,
     } = this.props;
 
     const { limit, offset } = this.state;
@@ -233,6 +235,7 @@ export default class MarketsView extends Component<
             marketCount,
             showPagination,
           });
+          filterSortedMarkets.forEach(marketId => loadMarketOrderBook(marketId));
           updateMarketsListMeta(result.meta);
           setLoadMarketsPending(false);
         }

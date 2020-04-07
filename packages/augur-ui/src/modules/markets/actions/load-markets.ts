@@ -72,6 +72,7 @@ export const loadMarketsByFilter = (
   dispatch,
   getState
 ) => {
+  console.log('loadMarketsByFilter called', filterOptions);
   const { universe, connection } = getState();
   if (!(universe && universe.id)) return;
 
