@@ -334,7 +334,7 @@ export class ZeroX {
     const groupSorted = _.groupBy(_.sortBy(onChainOrders, ['direction', 'price']), 'direction');
     const bestBid = _.last(groupSorted[OrderType.Bid]);
     const bestAsk = _.first(groupSorted[OrderType.Ask]);
-    if (bestBid.price.gte(bestAsk.price)) {
+    if (!!bestAsk && !!bestBid && bestBid.price.gte(bestAsk.price)) {
       throw new Error("Order collection has cross orderbook order(s)");
     }
 
@@ -358,6 +358,7 @@ export class ZeroX {
     };
 
     for(const order of [bestBid, bestAsk]) {
+      if (!!!order) return;
       const { orders } = await this.getMatchingOrders(
         order,
         []
