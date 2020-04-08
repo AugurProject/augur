@@ -16,6 +16,24 @@
     flex-grow: 1;
     overflow: overlay;
     max-height: 50vh;
+
+    > span {
+      .mono-10-medium;
+
+      align-items: center;
+      align-self: center;
+      color: @color-inactive-text;
+      display: flex;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    @media @breakpoint-mobile {
+      min-height: 200px;
+    }
   }
 }
 
