@@ -12,6 +12,7 @@ import {
   mergeConfig,
   RecursivePartial
 } from '@augurproject/artifacts';
+import { addWarpSyncScripts } from './warp-sync';
 
 async function processAccounts(flash: FlashSession, args: any) {
     // Figure out which private key to use.
@@ -35,6 +36,7 @@ async function run() {
 
   addScripts(flash);
   addGanacheScripts(flash);
+  addWarpSyncScripts(flash);
 
   program
     .name('flash')

@@ -121,35 +121,14 @@ export class TestContractAPI extends ContractAPI {
     }
   };
 
-  async reportAndFinalizeWarpSyncMarket(hash:string) {
-    const warpSyncMarket = await this.reportWarpSyncMarket(hash);
-    return this.finalizeWarpSyncMarket(warpSyncMarket);
-  }
-
-  async finalizeWarpSyncMarket(warpSyncMarket: ContractInterfaces.Market) {
-    const timestamp = (await this.getTimestamp()).plus(1000000);;
-    await this.setTimestamp(timestamp);
-
-    await this.finalizeMarket(warpSyncMarket);
-
-    return warpSyncMarket;
-  }
-
   async reportWarpSyncMarket(hash?:string) {
-    if(!hash) {
+    if (!hash) {
       const mostRecentWarpSync = await this.db.warpCheckpoints.getMostRecentWarpSync();
       hash = mostRecentWarpSync.hash;
     }
-
-    const payoutNumerators = await this.getPayoutFromWarpSyncHash(hash);
-    const warpSyncMarket = await this.getWarpSyncMarket();
-
-    const timestamp = (await this.getTimestamp()).plus(1000000);
-    await this.setTimestamp(timestamp);
-    await this.doInitialReport(warpSyncMarket, payoutNumerators);
-
-    return warpSyncMarket;
+    return super.reportWarpSyncMarket(hash);
   }
+
 
   async initializeUniverse() {
     return this.augur.warpSync.initializeUniverse(this.augur.contracts.universe.address);
