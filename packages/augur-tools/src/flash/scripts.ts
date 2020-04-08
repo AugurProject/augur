@@ -7,6 +7,7 @@ import {
   abiV1,
   buildConfig,
   printConfig,
+  sanitizeConfig,
 } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import moment from 'moment';
@@ -90,17 +91,16 @@ export function addScripts(flash: FlashSession) {
       const serial = !Boolean(args.parallel);
       if (this.noProvider()) return;
 
-      this.config = this.deriveConfig({deploy: { serial }});
-      console.log('Deploying: ', this.config.deploy);
+      this.pushConfig({ deploy: { serial }});
+      console.log('Deploying: ', sanitizeConfig(this.config).deploy);
 
-      const { addresses } = await deployContracts(
+      await deployContracts(
         this.network,
         this.provider,
         this.accounts[0],
         compilerOutput,
         this.config
       );
-      this.config.addresses = addresses;
     },
   });
 
@@ -584,7 +584,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const marketId = args.marketId as string;
-      this.config = this.deriveConfig({
+      this.pushConfig({
         flash: { syncSDK: true },
         zeroX: {
           rpc: { enabled: true },
@@ -809,8 +809,8 @@ export function addScripts(flash: FlashSession) {
       const marketId = args.marketId as string;
       const fillOrder = Boolean(args.fillOrder);
 
-      const config = this.deriveConfig({ zeroX: { rpc: { enabled: isZeroX }}});
-      const user = await this.createUser(this.getAccount(), config);
+      this.pushConfig({ zeroX: { rpc: { enabled: isZeroX }}});
+      const user = await this.createUser(this.getAccount(), this.config);
 
       if (!skipFaucetOrApproval) {
         console.log('create-market-order, faucet and approval');
@@ -938,7 +938,7 @@ export function addScripts(flash: FlashSession) {
       const outcome = Number(args.outcome) || 2;
       const wait = Number(args.wait as string) || 1;
 
-      this.config = this.deriveConfig({
+      this.pushConfig({
         flash: { syncSDK: true },
         zeroX: {
           rpc: { enabled: true },
@@ -1023,8 +1023,9 @@ export function addScripts(flash: FlashSession) {
       const serial = !Boolean(args.parallel);
       const createMarkets = Boolean(args.createMarkets);
 
-      const config = this.deriveConfig({ deploy: { serial, normalTime: false }});
-      await deployContracts(this.network, this.provider, this.getAccount(), compilerOutput, config)
+      this.pushConfig({ deploy: { serial, normalTime: false }});
+      const { addresses } = await deployContracts(this.network, this.provider, this.getAccount(), compilerOutput, this.config);
+      this.pushConfig({ addresses });
 
       if (createMarkets) {
         const user = await this.createUser(this.getAccount(), this.config);
@@ -1055,11 +1056,13 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       const serial = !Boolean(args.parallel);
       const createMarkets = Boolean(args.createMarkets);
-      const config = this.deriveConfig({ deploy: { serial, normalTime: true }});
 
-      await deployContracts(this.network, this.provider, this.getAccount(), compilerOutput, config)
+      this.pushConfig({ deploy: { serial, normalTime: true }});
+      const { addresses } = await deployContracts(this.network, this.provider, this.getAccount(), compilerOutput, this.config);
+      this.pushConfig({ addresses });
+
       if (createMarkets) {
-        const user = await this.createUser(this.getAccount(), config);
+        const user = await this.createUser(this.getAccount(), this.config);
         await createCannedMarkets(user);
       }
     },
@@ -1540,8 +1543,7 @@ export function addScripts(flash: FlashSession) {
     name: 'rep-supply',
     async call(this: FlashSession) {
       if (this.noProvider()) return;
-      const config = this.deriveConfig({addresses: {Universe: '0xBcdE24aBef27b2e537B8ded8139c7991DE308607'}});
-      const user = await this.createUser(this.getAccount(), config);
+      const user = await this.createUser(this.getAccount(), this.config);
       console.log('Total theoretical supply:', await user.augur.contracts.getReputationToken().getTotalTheoreticalSupply_());
     },
   });

@@ -269,6 +269,10 @@ export async function updateConfig(env: string, config: RecursivePartial<SDKConf
 }
 
 export function serializeConfig(config: RecursivePartial<SDKConfiguration>): string {
+  return JSON.stringify(sanitizeConfig(config), null, 2);
+}
+
+export function sanitizeConfig(config: RecursivePartial<SDKConfiguration>): RecursivePartial<SDKConfiguration> {
   // Prefer not to save private key.
   let finalConfig = config;
   if (config.deploy?.privateKey && !config.deploy?.savePrivateKey) {
@@ -283,7 +287,7 @@ export function serializeConfig(config: RecursivePartial<SDKConfiguration>): str
   if (config.flash) {
     delete finalConfig.flash;
   }
-  return JSON.stringify(finalConfig, null, 2);
+  return finalConfig;
 }
 
 export async function writeConfig(env: string, config: SDKConfiguration): Promise<void> {
