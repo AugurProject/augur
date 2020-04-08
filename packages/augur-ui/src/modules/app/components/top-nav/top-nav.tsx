@@ -95,6 +95,7 @@ const TopNav = ({
                       className={classNames(TooltipStyles.TooltipHint)}
                       data-tip
                       data-for={'migrateRep'}
+                      data-iscapture={true}
                     >
                       {helpIcon}
                     </label>
@@ -104,8 +105,8 @@ const TopNav = ({
                       effect="solid"
                       place="top"
                       type="light"
-                      data-event="mouseover"
-                      data-event-off="blur scroll"
+                      event="mouseover mouseenter"
+                      eventOff="mouseleave mouseout scroll mousewheel blur"
                     >
                       <p>
                         {
