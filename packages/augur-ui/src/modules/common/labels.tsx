@@ -153,6 +153,7 @@ export interface ValueLabelProps {
   useFull?: boolean;
   usePercent?: boolean;
   alert?: boolean;
+  showFullPrecision?: boolean;
 }
 
 interface SizableValueLabelProps extends ValueLabelProps {
@@ -481,6 +482,25 @@ export function formatExpandedValue(
   };
 }
 
+export function formatDecimalValue(
+  value,
+  showDenomination,
+  usePercent = false,
+) {
+  const { fullPrecision, roundedFormatted, denomination } = value;
+  const fullWithoutDecimals = fullPrecision.split('.');
+  const denominationLabel = showDenomination ? `${denomination}` : '';
+  
+  return {
+    fullPrecision,
+    postfix: '',
+    frontFacingLabel: roundedFormatted,
+    denominationLabel,
+    showHover: !!fullWithoutDecimals[1] && !createBigNumber(roundedFormatted).eq(createBigNumber(fullPrecision))
+  };
+}
+
+
 export const SizableValueLabel = (props: SizableValueLabelProps) => (
   <span
     className={classNames(Styles.SizableValueLabel, {
@@ -499,16 +519,25 @@ export const ValueLabel = (props: ValueLabelProps) => {
   if (!props.value || props.value === null)
     return props.showEmptyDash ? <span>&#8213;</span> : <span />;
 
-  const expandedValues = formatExpandedValue(
+  let expandedValues = formatExpandedValue(
     props.value,
     props.showDenomination
   );
+
+  if (props.showFullPrecision) {
+    expandedValues = formatDecimalValue(
+      props.value,
+      props.showDenomination,
+      props.usePercent 
+    );
+  }
 
   const {
     fullPrecision,
     postfix,
     frontFacingLabel,
     denominationLabel,
+    showHover
   } = expandedValues;
 
   return (
@@ -526,10 +555,10 @@ export const ValueLabel = (props: ValueLabelProps) => {
         {props.usePercent
           ? props.value.percent
           : props.useFull && props.value.full}
-        {!props.useFull && `${frontFacingLabel}${postfix}`}
-        {!props.useFull && <span>{denominationLabel}</span>}
+        {!props.useFull && !props.usePercent && <span>{denominationLabel}</span>}
+        {!props.useFull && !props.usePercent && `${frontFacingLabel}${postfix}`}
       </label>
-      {postfix.length !== 0 && (
+      {(!postfix.length !== 0 || showHover) && !props.usePercent && (
         <ReactTooltip
           id={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
           className={TooltipStyles.Tooltip}
@@ -540,7 +569,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
           eventOff="mouseleave mouseout scroll mousewheel blur"
         >
           {props.useFull && props.value.full}
-          {!props.useFull && `${fullPrecision} ${denominationLabel}`}
+          {!props.useFull && !props.usePercent && `${denominationLabel}${fullPrecision}`}
         </ReactTooltip>
       )}
     </span>
@@ -623,13 +652,11 @@ export class HoverValueLabel extends React.Component<
     const { value, showDenomination, useFull } = this.props;
     if (!value || value === null) return <span />;
 
-    const expandedValues = formatExpandedValue(
+    const expandedValues = formatDecimalValue(
       value,
-      showDenomination,
-      true,
-      '99999'
+      showDenomination
     );
-    const { fullPrecision, postfix, frontFacingLabel } = expandedValues;
+    const { fullPrecision, postfix, frontFacingLabel, showHover } = expandedValues;
 
     const frontFacingLabelSplit = frontFacingLabel.toString().split('.');
     const firstHalf = frontFacingLabelSplit[0];
@@ -653,7 +680,7 @@ export class HoverValueLabel extends React.Component<
           });
         }}
       >
-        {this.state.hover && postfix.length !== 0 ? (
+        {this.state.hover && showHover ? (
           <span>
             {useFull && value.full}
             {!useFull && (
