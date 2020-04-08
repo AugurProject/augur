@@ -826,7 +826,10 @@ export class Users {
       ] = tokenBalanceChangedLog.balance;
     }
 
+    const fullTotalLossMarketsPositions = await getFullMarketPositionLoss(db, groupedProfitLossRecords, shareTokenBalancesByMarketAndOutcome);
+
     for (const marketData of marketsData) {
+      marketTradingPositions[marketData.market].fullLoss = !!fullTotalLossMarketsPositions[marketData.market];
       marketTradingPositions[marketData.market].unclaimedProceeds = '0';
       marketTradingPositions[marketData.market].unclaimedProfit = '0';
       marketTradingPositions[marketData.market].fee = '0';
@@ -979,16 +982,6 @@ export class Users {
       _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
     );
 
-    const marketFinalizedResults = await db.MarketFinalized.where('market')
-      .anyOf(_.map(allProfitLossResults, 'market'))
-      .toArray();
-    const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
-    const finalizedMarketIds = _.map(marketFinalizedResults, 'market');
-    const marketsData = await db.Markets.where('market')
-      .anyOf(_.map(marketFinalizedResults, 'market'))
-      .toArray();
-    const markets = _.keyBy(marketsData, 'market');
-
     const shareTokenBalances = await db.ShareTokenBalanceChangedRollup.where(
       '[universe+account]'
     )
@@ -1004,27 +997,11 @@ export class Users {
 
     // if winning position value is less than frozen funds, market position is complete loss
     // if complete loss then ignore profit loss in frozen funds
-    const ignoreTotalLossMarkets = _.reduce(
-      finalizedMarketIds,
-      (result, marketId) => {
-        const marketDoc = markets[marketId];
-        const payoutNumerators = marketDoc.winningPayoutNumerators;
-        const outcomeBalance = shareTokenBalancesByMarketAndOutcome[marketId];
-        const totalPositionValue = _.reduce(
-          payoutNumerators, (sum, outcome, index) => {
-            const balance = new BigNumber(outcomeBalance[`0x0${index}`]?.balance || 0);
-            return sum.plus(balance.times(outcome));
-          }, new BigNumber(0));
-        return totalPositionValue.gt(0)
-          ? result
-          : [...result, marketId];
-      },
-      []
-    );
+    const fullTotalLossMarketsPositions = await getFullMarketPositionLoss(db, allProfitLossResults, shareTokenBalancesByMarketAndOutcome);
     const frozenFunds = _.reduce(
       allProfitLossResults,
       (value, tradingPosition) => {
-        if (ignoreTotalLossMarkets.includes(tradingPosition.market)) return value;
+        if (fullTotalLossMarketsPositions.includes(tradingPosition.market)) return value;
         return value.plus(tradingPosition.frozenFunds);
       },
       new BigNumber(0)
@@ -1721,4 +1698,39 @@ function getDisplayValuesForPosition(
     avgPrice: avgPrice.toFixed(),
     netPosition: netPosition.toFixed(),
   }
+}
+
+async function getFullMarketPositionLoss(
+  db,
+  allProfitLossResults,
+  shareTokenBalancesByMarketAndOutcome
+): Promise<string[]> {
+
+  const marketFinalizedResults = await db.MarketFinalized.where('market')
+    .anyOf(_.map(allProfitLossResults, 'market'))
+    .toArray();
+
+  const finalizedMarketIds = _.map(marketFinalizedResults, 'market');
+  const marketsData = await db.Markets.where('market')
+    .anyOf(_.map(marketFinalizedResults, 'market'))
+    .toArray();
+  const markets = _.keyBy(marketsData, 'market');
+
+  return _.reduce(
+    finalizedMarketIds,
+    (result, marketId) => {
+      const marketDoc = markets[marketId];
+      const payoutNumerators = marketDoc.winningPayoutNumerators;
+      const outcomeBalance = shareTokenBalancesByMarketAndOutcome[marketId];
+      const totalPositionValue = _.reduce(
+        payoutNumerators, (sum, outcome, index) => {
+          const balance = new BigNumber(outcomeBalance[`0x0${index}`]?.balance || 0);
+          return sum.plus(balance.times(outcome));
+        }, new BigNumber(0));
+      return totalPositionValue.gt(0)
+        ? result
+        : [...result, marketId];
+    },
+    []
+  );
 }
