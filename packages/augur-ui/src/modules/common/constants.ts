@@ -993,13 +993,13 @@ export const POPULAR_CATEGORIES = [
   'crypto',
 ];
 
-export const POPULAR_CATEGORIES_ICONS = [
-  CategorySports,
-  CategoryPolitics,
-  CategoryEntertainment,
-  CategoryFinance,
-  CategoryCrypto,
-];
+export const POPULAR_CATEGORIES_ICONS = {
+  'sports': CategorySports,
+  'politics': CategoryPolitics,
+  'entertainment': CategoryEntertainment,
+  'finance': CategoryFinance,
+  'crypto': CategoryCrypto,
+};
 
 export const CATEGORIES_MAX = 8;
 
