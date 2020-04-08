@@ -129,14 +129,26 @@ export default class AccountView extends React.Component<
                     [Styles.HideActiveMarkets]: extendNotifications,
                   })}
                 >
+                  <div>
                   <Notifications />
+                  <OpenMarkets />
+                    </div>
+                  <div>
                   <Overview hideHeader={false} />
                   <AugurStatus hideHeader={false} />
+                    </div>
+                  <div>
                   <Transactions />
+                  
                   <Favorites />
+                  
                   <OpenMarkets />
+                  </div>
+                  
+                                    
+                  
+                  
                 </div>
-                <TermsAndConditions />  
               </div>
             )
           }

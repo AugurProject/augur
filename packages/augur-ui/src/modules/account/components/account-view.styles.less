@@ -155,75 +155,68 @@
 
   .AccountView {
     margin: @size-8 @size-32;
-    display: flex;
-    flex-flow: column wrap;
-    align-content: space-between;
-    min-height: @size-1400;
+    display: grid;
+    grid-auto-rows: 10px;
+    grid-gap: 0px;
+    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+    grid-template-rows: none;
 
     > div {
-      border: @size-1 solid var(--color-outline);
-      border-radius: @border-radius-rounded;
-      margin: 0 @size-24 @size-32 0;
-      width: 32%;
-      min-height: @size-360;
-      max-height: @size-600;
+      border: none;
 
-      div[class*='BoxHeader'] {
-        background: var(--color-table-header-50);
+      > div {
+        min-height: unset;
+        background: var(--color-module-background);
+        border: @size-1 solid var(--color-outline);
         border-radius: @border-radius-rounded;
-
-        > div:first-of-type {
-          background: transparent;
-          max-height: @size-56;
-          min-height: @size-56;
-
+        margin: 0 @size-24 @size-32 0;
+  
+        div[class*='BoxHeader'] {
+          background: var(--color-table-header-50);
+          border-radius: @border-radius-rounded;
+  
           > div:first-of-type {
-            .text-16-bold;
-
-            text-transform: capitalize;
+            background: transparent;
+            max-height: @size-56;
+            min-height: @size-56;
+  
+            > div:first-of-type {
+              .text-16-bold;
+  
+              text-transform: capitalize;
+            }
           }
         }
-      }
 
-      > div:last-of-type {
-        border-bottom-left-radius: @border-radius-rounded;
-        border-bottom-right-radius: @border-radius-rounded;
+        > div:last-of-type {
+          border-bottom-left-radius: @border-radius-rounded;
+          border-bottom-right-radius: @border-radius-rounded;
+        }
       }
     }
 
     > div:first-of-type {
-      order: 1;
-    }
-
-    > div:nth-of-type(2) {
-      order: 2;
-      min-height: @size-744;
-      max-height: @size-744;
+      > div {
+        min-height: @size-360;
+      }
     }
 
     > div:nth-of-type(3) {
-      order: 2;
-      min-height: @size-550;
-      max-height: @size-550;
-    }
+      > div {
+        margin-right: 0;
+      }
 
-    > div:nth-of-type(4) {
-      order: 3;
-      min-height: @size-160;
-      max-height: @size-160;
-      margin-right: 0;
-    }
+      > div:first-of-type  {
+        min-height: @size-160;
+      }
 
-    > div:nth-of-type(5) {
-      order: 3;
-      margin-right: 0;
-    }
-
-    > div:nth-of-type(6) {
-      order: 1;
+      > div:nth-of-type(2)  {
+        min-height: @size-360;
+      }
     }
 
     > footer {
+      display: none;
       min-height: @size-40;
     }
   }
