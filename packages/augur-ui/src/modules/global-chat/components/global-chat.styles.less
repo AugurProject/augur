@@ -82,6 +82,8 @@
   }
 
   input[class*='sc-popup-window--search'] {
+    width: 232px;
+
     &:focus {
       border: none;
     }
@@ -113,5 +115,16 @@
 
   h3[class*='sc-header--team-name_text'] {
     .text-16-bold;
+  }
+
+  div[class*="sc-popup-window--cointainer"] {
+    width: 282px;
+    bottom: @size-16;
+    right: -@size-18;
+
+    &:after {
+      background-color: @color-dark-grey;
+      right: @size-12;
+    }
   }
 }
