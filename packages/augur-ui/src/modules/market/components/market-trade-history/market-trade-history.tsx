@@ -51,6 +51,9 @@ export default class MarketTradeHistory extends Component<
         />
         <div>
           {isArchived && <DataArchivedLabel label="tradeHistory" />}
+          {!isArchived && Object.keys(groupedTradeHistory).length === 0 && (
+            <span>No Trade History</span>
+          )}
           {!isArchived &&
             groupedTradeHistory &&
             Object.keys(groupedTradeHistory).map((date, index) => (
