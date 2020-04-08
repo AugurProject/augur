@@ -28,6 +28,7 @@ const mapStateToProps = (state, ownProps) => {
     isFavorite: !!state.favorites[ownProps.market.marketId],
     hasStaked,
     forkingMarket: state.universe.forkingInfo && state.universe.forkingInfo.forkingMarket,
+    forkingEndTime: forkingInfo && forkingInfo.forkEndTime
   };
 };
 
