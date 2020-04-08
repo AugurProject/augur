@@ -162,6 +162,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         selectedOrderProperties.orderQuantity !== orderQuantity ||
         selectedOrderProperties.selectedNav !== selectedNav
       ) {
+        if (selectedOrderProperties.selectedNav !== selectedNav) {
+          this.setState({selectedNav: selectedOrderProperties.selectedNav})
+        }
         if (
           !selectedOrderProperties.orderPrice &&
           !selectedOrderProperties.orderQuantity
