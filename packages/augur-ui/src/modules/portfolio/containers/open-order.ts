@@ -26,6 +26,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     currentTimestamp: blockchain.currentAugurTimestamp,
     pendingOrderCancellations: selectCancelingOrdersState(state),
     usePercent,
+    marketType: market.marketType,
     minPrice: market && market.minPrice,
     maxPrice: market && market.maxPrice,
   }
@@ -83,7 +84,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       columnType: COLUMN_TYPES.VALUE,
       value: avgPrice,
       usePercent: !!avgPrice.percent,
-      useFull: true,
+      useFull: sP.marketType === constants.SCALAR ? false : true,
       keyId: 'openOrder-price-' + openOrder.id,
     },
     {

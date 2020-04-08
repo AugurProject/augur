@@ -80,6 +80,12 @@
     > li:nth-of-type(2) {
       color: @color-positive;
       text-align: center;
+      align-items: center;
+      display: flex;
+
+      > span {
+        flex: unset;
+      }
     }
 
     > li:last-of-type {
@@ -95,7 +101,6 @@
   border: solid transparent;
   border-width: @size-4;
   margin-left: @size-8;
-  position: relative;
 }
 
 .Up {
