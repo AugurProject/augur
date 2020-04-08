@@ -305,8 +305,7 @@ export default class MarketCard extends React.Component<
               [Styles.scalar]: isScalar,
               [Styles.template]: isTemplate,
               [Styles.invalid]: mostLikelyInvalid,
-              [Styles.nonOpenTemplate]:
-                marketType !== REPORTING_STATE.PRE_REPORTING && isTemplate,
+              [Styles.inReport]: !marketResolved && reportingState !== REPORTING_STATE.PRE_REPORTING,
             })}
           >
             {marketStatus === MARKET_REPORTING && (
