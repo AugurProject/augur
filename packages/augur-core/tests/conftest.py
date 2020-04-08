@@ -77,7 +77,7 @@ import rlp
 import web3
 
 genesis_overrides = {
-    'gas_limit': 800000000
+    'gas_limit': 1100000000
 }
 custom_genesis_params = PyEVMBackend._generate_genesis_params(overrides=genesis_overrides)
 custom_genesis_state = PyEVMBackend._generate_genesis_state(num_accounts=9)
@@ -107,7 +107,7 @@ def new_create_header_from_parent(self,
     header = self.get_vm_class_for_block_number(
         block_number=parent_header.block_number + 1,
     ).create_header_from_parent(parent_header, **header_params)
-    header._gas_limit = 800000000
+    header._gas_limit = 1100000000
     return header
 
 eth.vm.code_stream.CodeStream.is_valid_opcode = new_is_valid_opcode
