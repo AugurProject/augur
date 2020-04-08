@@ -72,6 +72,8 @@ describe('State API :: Users :: ', () => {
         market: market1,
         timestamp: startTime.toNumber(),
         unrealizedPL: 0,
+        unrealizedPercent: 0,
+        realizedPercent: 0,
       },
       {
         direction: LONG,
@@ -82,6 +84,8 @@ describe('State API :: Users :: ', () => {
         market: market1,
         timestamp: startTime.plus(day * 2).toNumber(),
         unrealizedPL: -2,
+        unrealizedPercent: 0,
+        realizedPercent: 0,
       },
     ];
 
