@@ -927,3 +927,61 @@
 		}
 	}
 }
+
+:root[theme="SPORTS"] {
+	div.ReportedOutcome {
+		max-width: @size-106;
+
+		> div {
+			align-items: center;
+			background: var(--color-open-20);
+			border-radius: @border-radius-default;
+			display: flex;
+			flex-flow: row nowrap;
+			height: @size-36;
+			justify-content: center;
+			width: @size-106;
+
+			> svg {
+				height: @size-16;
+				margin-right: @size-8;
+				width: @size-16;
+			}
+
+			> div {
+				display: flex;
+				flex-flow: column nowrap;
+
+				> span {
+					.text-12;
+	
+					color: var(--color-primary-text);
+					white-space: nowrap;
+				}
+	
+				> span:last-of-type {
+					.text-10-semi-bold;
+				}
+			}
+
+		}
+
+		&.Tenatative > div {
+			background: var(--color-reporting-15);
+
+			> svg {
+				display: none;
+			}
+
+			> div > span:nth-of-type(2) {
+				display: none;
+			}
+		}
+
+		> span:last-of-type {
+			.text-10-semi-bold;
+
+			text-transform: uppercase;
+		}
+	}
+}

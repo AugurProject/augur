@@ -41,6 +41,7 @@ import {
   DisputeStake,
   MarketCreator,
   PositionIcon,
+  WinningMedal,
 } from 'modules/common/icons';
 import { isSameAddress } from 'utils/isSameAddress';
 import {
@@ -482,7 +483,33 @@ const processMultiMarketTableData = (orderBook, outcomes, min, max) => {
     }
   });
   return data;
+};
+
+interface ReportedOutcomeProps {
+  isTentative?: boolean;
+  label?: string;
+  value?: string;
 }
+
+export const ReportedOutcome = ({
+  isTentative = false,
+  value,
+}: ReportedOutcomeProps) => {
+  return (
+    <div className={classNames(Styles.ReportedOutcome, {
+      [Styles.Tenatative]: isTentative,
+    })}>
+      <div>
+        {WinningMedal}
+        <div>
+          <span>{value}</span>
+          <span>Winner</span>
+        </div>
+      </div>
+      {isTentative && <span>Tenative Winner</span>}
+    </div>
+  );
+};
 
 export const MultiMarketTable = ({ orderBook,
   outcomes, min, max }) => {
