@@ -827,10 +827,15 @@ export class Users {
       ] = tokenBalanceChangedLog.balance;
     }
 
-    const fullTotalLossMarketsPositions = await getFullMarketPositionLoss(db, groupedProfitLossRecords, shareTokenBalancesByMarketAndOutcome);
+    // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
+    const allProfitLossResults = _.flatten(
+      _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
+    );
+
+    const fullTotalLossMarketsPositions = await getFullMarketPositionLoss(db, allProfitLossResults, shareTokenBalancesByMarketAndOutcome);
 
     for (const marketData of marketsData) {
-      marketTradingPositions[marketData.market].fullLoss = !!fullTotalLossMarketsPositions[marketData.market];
+      marketTradingPositions[marketData.market].fullLoss = !!fullTotalLossMarketsPositions.includes(marketData.market);
       marketTradingPositions[marketData.market].unclaimedProceeds = '0';
       marketTradingPositions[marketData.market].unclaimedProfit = '0';
       marketTradingPositions[marketData.market].fee = '0';
@@ -919,11 +924,6 @@ export class Users {
           )
         : {};
     }
-
-    // tradingPositions filters out users create open orders, need to use `profitLossResultsByMarketAndOutcome` to calc total frozen funds
-    const allProfitLossResults = _.flatten(
-      _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
-    );
 
     frozenFundsTotal = _.reduce(
       allProfitLossResults,
