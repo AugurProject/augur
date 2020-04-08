@@ -15,7 +15,7 @@ import {
 import { formatDai, formatPercent, formatShares, formatNone } from 'utils/format-number';
 
 export const positionSummary = memoize(
-  (adjustedPosition, outcome, marketType, reportingState) => {
+  (adjustedPosition, outcome, marketType, reportingState, isFullLoss) => {
     if (!adjustedPosition) {
       return null;
     }
@@ -55,6 +55,11 @@ export const positionSummary = memoize(
         quantity = createBigNumber(priorPosition.netPosition).abs();
         avgPrice = priorPosition.avgPrice;
         totalCost = priorPosition.unrealizedCost;
+      }
+    } else {
+      // user has full loss on market positions and the market is finalized
+      if (isFullLoss) {
+        type = createBigNumber(netPosition).gte(0) ? CLOSED_LONG : CLOSED_SHORT;
       }
     }
     return {
