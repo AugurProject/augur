@@ -329,8 +329,6 @@ export default class MarketView extends Component<
 
   updateSelectedOutcomeSwitch(selectedOutcomeId, keepOrder) {
     this.updateSelectedOutcome(selectedOutcomeId, keepOrder);
-
-    FindReact(document.getElementById('tabs_mobileView')).handleClick(null, 1);
   }
 
   updateSelectedOutcome(selectedOutcomeId, keepOrder) {
