@@ -85,6 +85,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       value: avgPrice,
       usePercent: !!avgPrice.percent,
       useFull: sP.marketType === constants.SCALAR ? false : true,
+      showFullPrecision: sP.marketType === constants.SCALAR ? true : false,
+      showDenomination: sP.marketType === constants.SCALAR ? true : false,
       keyId: 'openOrder-price-' + openOrder.id,
     },
     {
