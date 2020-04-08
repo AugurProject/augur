@@ -122,6 +122,7 @@ export interface MarketTradingPosition {
     // outcomes that have a share balance
     [outcome: string]: string;
   };
+  fullLoss?: boolean;
 }
 
 export interface TradingPosition {
