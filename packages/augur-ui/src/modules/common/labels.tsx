@@ -13,7 +13,8 @@ import {
   ScalarIcon,
   TemplateIcon,
   YellowTemplateIcon,
-  ArchivedIcon
+  ArchivedIcon,
+  ExclamationCircle
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -50,6 +51,7 @@ import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
 import { Market } from 'modules/portfolio/components/common/market-row';
+import { AsyncBooleanResultCallback } from 'async';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -65,6 +67,7 @@ export interface MarketStatusProps {
 
 export interface InReportingLabelProps extends MarketStatusProps {
   disputeInfo: Getters.Markets.DisputeInfo;
+  isForkingMarket?: boolean;
 }
 
 export interface MovementLabelProps {
@@ -964,7 +967,7 @@ export const MarketStatusLabel = (props: MarketStatusProps) => {
 };
 
 export const InReportingLabel = (props: InReportingLabelProps) => {
-  const { reportingState, disputeInfo, isWarpSync } = props;
+  const { reportingState, disputeInfo, isWarpSync, isForkingMarket } = props;
 
   const reportingStates = [
     REPORTING_STATE.DESIGNATED_REPORTING,
@@ -997,14 +1000,19 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
     reportingExtraText = 'Warp Sync Market';
   }
 
+  if (isForkingMarket) {
+    reportingExtraText = 'Forking Market';
+  }
+
   return (
     <span
       className={classNames(
         Styles.MarketStatus,
         Styles.MarketStatus_reporting,
-        { [Styles.MarketStatus_warpSync]: isWarpSync }
+        { [Styles.MarketStatus_warpSync]: isWarpSync, [Styles.MarketStatus_forking]: isForkingMarket }
       )}
     >
+      {isForkingMarket && ExclamationCircle}
       {text}
       {reportingExtraText && (
         <span className={Styles.InReporting_reportingDetails}>
