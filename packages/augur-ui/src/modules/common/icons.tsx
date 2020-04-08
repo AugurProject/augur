@@ -1160,8 +1160,8 @@ export const DesignatedReporter = (
     <path
       d="M4.53279 9.14035L7.46455 11.1252L10.9352 5.9798"
       stroke="#D7DDE0"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
