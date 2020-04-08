@@ -154,12 +154,13 @@
   }
 
   .AccountView {
-    margin: @size-8 @size-32;
+    margin: @size-8 @size-32 @size-82;
     display: grid;
-    grid-auto-rows: 10px;
-    grid-gap: 0px;
+    grid-auto-rows: @size-120;
+    grid-gap: 0;
     grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
     grid-template-rows: none;
+    min-height: unset;
 
     > div {
       border: none;
@@ -201,6 +202,10 @@
       }
     }
 
+    > div:nth-of-type(2) {
+      grid-row: 1 / span 11;
+    }
+
     > div:nth-of-type(3) {
       > div {
         margin-right: 0;
@@ -213,11 +218,6 @@
       > div:nth-of-type(2)  {
         min-height: @size-360;
       }
-    }
-
-    > footer {
-      display: none;
-      min-height: @size-40;
     }
   }
 
