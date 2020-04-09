@@ -183,7 +183,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled
   );
 
-  if(config.warpSync && config.warpSync.enabled && config.warpSync.autoReport) {
+  if(config.warpSync?.enabled && config.warpSync?.autoReport) {
     client.events.on(SubscriptionEventName.WarpSyncHashUpdated,
       async ({ hash }) => {
         if (hash) {
