@@ -436,6 +436,8 @@ export const PRICE_WIDTH_DEFAULT = 0.1;
 export const PRICE_WIDTH_MIN = 0.01;
 export const PRICE_DEPTH_DEFAULT = 0.1; // Not used yet
 export const IS_SIMULATION = false; // Not used yet
+export const DEFAULT_MIN_PRICE = 0;
+export const DEFAULT_MAX_PRICE = 100;
 
 // # Permissible Periods
 // Note: times are in seconds
