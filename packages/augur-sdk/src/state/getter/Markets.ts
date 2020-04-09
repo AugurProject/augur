@@ -568,6 +568,10 @@ export class Markets {
     }
 
     let marketData = await marketsCollection.and((market) => {
+      if (params.universe && market.universe !== params.universe) {
+        return false;
+      }
+      
       if(!params.includeWarpSyncMarkets && market.isWarpSync) {
         return false;
       } else if (market.isWarpSync) {
