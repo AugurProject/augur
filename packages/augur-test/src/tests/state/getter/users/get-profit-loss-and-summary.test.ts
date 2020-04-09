@@ -172,17 +172,9 @@ describe('State API :: Users :: ', () => {
 
         const plResult = makerTakerTradeData.result[address];
         const oneDayPLSummary = profitLossSummary[ONE];
-        //console.log(address, JSON.stringify(oneDayPLSummary));
-        //console.log('oneDayPLSummary.realized, trade.realizedPL', oneDayPLSummary.realized, plResult.realizedPL);
         await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(plResult.realizedPL);
-
-        //console.log('oneDayPLSummary.unrealized, trade.unrealizedPL', oneDayPLSummary.realized, plResult.unrealizedPL);
         await expect(Number.parseFloat(oneDayPLSummary.unrealized)).toEqual(plResult.unrealizedPL);
-
-        //console.log('oneDayPLSummary.realizedPercent, trade.realizedPercent', oneDayPLSummary.realized, plResult.realizedPercent);
         await expect(Number.parseFloat(oneDayPLSummary.realizedPercent)).toEqual(plResult.realizedPercent);
-
-        //console.log('oneDayPLSummary.unrealizedPercent, trade.unrealizedPercent', oneDayPLSummary.realized, plResult.unrealizedPercent);
         await expect(Number.parseFloat(oneDayPLSummary.unrealizedPercent)).toEqual(plResult.unrealizedPercent);
       }
     }
