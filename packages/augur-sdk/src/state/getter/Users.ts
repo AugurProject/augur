@@ -1099,7 +1099,7 @@ export class Users {
       }
     );
 
-    const buckets = bucketRangeByInterval(startTime, endTime, periodInterval).reverse();
+    const buckets = bucketRangeByInterval(startTime, endTime, periodInterval);
     return _.map(buckets, bucketTimestamp => {
       const tradingPositionsByMarketAndOutcome = _.mapValues(
         profitLossByMarketAndOutcome,
