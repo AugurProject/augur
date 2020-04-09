@@ -47,7 +47,6 @@ import {
   SUBMIT_DISPUTE,
   CLAIMMARKETSPROCEEDS,
   DISAVOWCROWDSOURCERS,
-  REDEEMDISPUTINGSTAKE,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -609,7 +608,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = (
   ))
   if (userLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
-    userLogs.map(log => handleAlert(log, REDEEMDISPUTINGSTAKE, false, dispatch, getState));
+    userLogs.map(log => handleAlert(log, REDEEMSTAKE, false, dispatch, getState));
   }
   dispatch(removePendingTransaction(REDEEMSTAKE));
 };
