@@ -1770,7 +1770,7 @@ export function addScripts(flash: FlashSession) {
         },
         warpSync: {
           enabled: Boolean(args.useWarpSync),
-          autoReport: Boolean(args.autoReport),
+          autoReport: Boolean(args.autoReport) && Boolean(this.config?.deploy?.privateKey),
         }
       });
       const api = await startServer(this.config, this.getAccount().address);
