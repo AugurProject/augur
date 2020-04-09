@@ -13,8 +13,7 @@ import { CloseButton, ProcessingButton, SecondaryButton } from 'modules/common/b
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
 import { ethToDai, displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getDaiBalance, getEthBalance } from 'modules/contracts/actions/contractCalls';
-import { TRANSACTIONS } from 'modules/routes/constants/views';
-import { WITHDRAWALLFUNDSASDAI } from 'modules/common/constants';
+import { WITHDRAWALLFUNDSASDAI, TRANSACTIONS } from 'modules/common/constants';
 
 interface CashOutFormProps {
   closeAction: Function;
@@ -94,6 +93,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     {
       label: 'Send',
       value: formattedTotalInDai,
+      showDenomination: true,
     },
     {
       label: 'Transaction Fee',
@@ -102,6 +102,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     {
       label: 'Total',
       value: formattedTotalMinusGasInDai,
+      showDenomination: true,
     },
   ];
 
