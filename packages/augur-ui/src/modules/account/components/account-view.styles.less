@@ -140,84 +140,88 @@
 
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
-  .AccountViewWrap {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-
-    > div:first-of-type {
-      .text-24-bold;
-
-      color: var(--color-primary-text);
-      margin: @size-32;
-    }
-  }
-
   .AccountView {
-    margin: @size-8 @size-32 @size-82;
+    margin: @size-22 @size-32 @size-82;
     display: grid;
-    grid-auto-rows: @size-120;
-    grid-gap: 0;
+    grid-auto-rows: @size-80;
+    grid-gap: 0 @size-24;
     grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
     grid-template-rows: none;
     min-height: unset;
+    width: 100%;
 
     > div {
-      border: none;
+      min-height: unset;
+      background: var(--color-module-background);
+      border: @size-1 solid var(--color-outline);
+      border-radius: @border-radius-rounded;
+      margin: 0 0 @size-24;
 
-      > div {
-        min-height: unset;
-        background: var(--color-module-background);
-        border: @size-1 solid var(--color-outline);
+      div[class*='BoxHeader'] {
+        background: var(--color-table-header-50);
         border-radius: @border-radius-rounded;
-        margin: 0 @size-24 @size-32 0;
-  
-        div[class*='BoxHeader'] {
-          background: var(--color-table-header-50);
-          border-radius: @border-radius-rounded;
-  
+
+        > div:first-of-type {
+          background: transparent;
+          max-height: @size-56;
+          min-height: @size-56;
+
           > div:first-of-type {
-            background: transparent;
-            max-height: @size-56;
-            min-height: @size-56;
-  
-            > div:first-of-type {
-              .text-16-bold;
-  
-              text-transform: capitalize;
-            }
+            .text-16-bold;
+
+            text-transform: capitalize;
           }
         }
-
-        > div:last-of-type {
-          border-bottom-left-radius: @border-radius-rounded;
-          border-bottom-right-radius: @border-radius-rounded;
-        }
       }
+
+      > div:last-of-type {
+        border-bottom-left-radius: @border-radius-rounded;
+        border-bottom-right-radius: @border-radius-rounded;
+      }
+    }
+
+    > h1 {
+      .text-24-bold;
+
+      color: var(--color-primary-text);
+      margin-top: @size-10;
+      grid-column: 1 / span 3;
+      grid-row: 1;
     }
 
     > div:first-of-type {
-      > div {
-        min-height: @size-360;
-      }
+      grid-column: ~"1/2";
+      grid-row: ~"2/8";
     }
 
     > div:nth-of-type(2) {
-      grid-row: 1 / span 11;
+      grid-column: ~"1/2";
+      grid-row: ~"8/14";
     }
 
     > div:nth-of-type(3) {
-      > div {
-        margin-right: 0;
-      }
+      grid-column: ~"2/3";
+      grid-row: ~"2/13";
+    }
 
-      > div:first-of-type  {
-        min-height: @size-160;
-      }
+    > div:nth-of-type(4) {
+      grid-column: ~"2/3";
+      grid-row: ~"13/20";
+    }
 
-      > div:nth-of-type(2)  {
-        min-height: @size-360;
-      }
+    > div:nth-of-type(5) {
+      grid-column: ~"3/4";
+      grid-row: ~"2/4";
+    }
+
+    > div:nth-of-type(6) {
+      grid-column: ~"3/4";
+      grid-row: ~"4/10";
+    }
+
+    > footer {
+      grid-column: 1 / span 3;
+      grid-row: 21;
     }
   }
 

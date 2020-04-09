@@ -117,31 +117,19 @@ export default class AccountView extends React.Component<
               </div>
             ) : (
               <div
-                className={classNames(Styles.AccountViewWrap)}
+                className={classNames(Styles.AccountView, {
+                  [Styles.HideNotifications]: extendActiveMarkets,
+                  [Styles.HideTransactions]: extendWatchlist,
+                  [Styles.HideActiveMarkets]: extendNotifications,
+                })}
               >
-                <div>
-                  My Account
-                </div>
-                <div
-                  className={classNames(Styles.AccountView, {
-                    [Styles.HideNotifications]: extendActiveMarkets,
-                    [Styles.HideTransactions]: extendWatchlist,
-                    [Styles.HideActiveMarkets]: extendNotifications,
-                  })}
-                >
-                  <div>
-                    <Notifications />
-                    <OpenMarkets />
-                  </div>
-                  <div>
-                    <Overview hideHeader={false} />
-                    <AugurStatus hideHeader={false} />
-                  </div>
-                  <div>
-                    <Transactions />
-                    <Favorites />
-                  </div>
-                </div>
+                <h1>My Account</h1>
+                <Notifications />
+                <OpenMarkets />
+                <Overview hideHeader={false} />
+                <AugurStatus hideHeader={false} />
+                <Transactions />
+                <Favorites />
                 <TermsAndConditions />
               </div>
             )
