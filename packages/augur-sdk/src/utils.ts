@@ -7,6 +7,7 @@ import {
   YesNoOutcomes,
   MarketData
 } from './state/logs/types';
+import { ZeroXOrders, OrderData } from './state/db/ZeroXOrders';
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
@@ -397,4 +398,9 @@ export function getTradeInterval(minPrice: BigNumber, maxPrice: BigNumber, numTi
   }
   displayAmount = displayInterval;
   return displayInterval.multipliedBy(displayRange).div(numTicks).div(10**18);
+}
+
+export function parseZeroXMakerAssetData(makerAssetData: string): OrderData {
+  const { orderData } = ZeroXOrders.parseAssetData(makerAssetData);
+  return orderData;
 }
