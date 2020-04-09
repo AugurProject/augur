@@ -1,5 +1,6 @@
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { BigNumber } from 'bignumber.js';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { SupportedProvider } from 'ethereum-types';
@@ -207,6 +208,16 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
 
 export async function startServer(config: SDKConfiguration, account?: string): Promise<API> {
   const { api, sync } = await createServer(config, undefined, account);
+
+  api.augur.on(SubscriptionEventName.WarpSyncHashUpdated, async ({hash}) => {
+    // TODO - Add guard for instances launched without private key.
+    if(hash) {
+      const market = await api.augur.warpSync.getWarpSyncMarket(config.addresses.Universe);
+      const payoutNumerators = await api.augur.warpSync.getPayoutFromWarpSyncHash(hash);
+
+      await market.doInitialReport(payoutNumerators, '', new BigNumber(0));
+    }
+  });
 
   // TODO should this await?
   sync();
