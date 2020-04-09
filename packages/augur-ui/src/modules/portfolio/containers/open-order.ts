@@ -13,6 +13,7 @@ import { selectCancelingOrdersState } from 'appStore/select-state';
 import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { calcPercentageFromPrice } from 'utils/format-number';
+import { MIN_PRICE } from 'modules/create-market/constants';
 
 const { COLUMN_TYPES } = constants;
 
@@ -20,15 +21,22 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const { blockchain, marketInfos} = state;
   const { openOrder, marketId }  = ownProps;
   const market = marketInfos[marketId];
-  const { outcomeId } = openOrder;
-  const usePercent = !!market && outcomeId === constants.INVALID_OUTCOME_ID && market.marketType === constants.SCALAR;
+  let usePercent = false;
+  const minPrice = market ? market.minPrice : constants.DEFAULT_MIN_PRICE;
+  const maxPrice = market ? market.maxPrice : constants.DEFAULT_MAX_PRICE;
+  const marketType = market ? market.marketType : constants.YES_NO;
+  if (market) {
+    const { outcomeId } = openOrder;
+    usePercent = !!market && outcomeId === constants.INVALID_OUTCOME_ID && market.marketType === constants.SCALAR;
+  }
+
   return {
     currentTimestamp: blockchain.currentAugurTimestamp,
     pendingOrderCancellations: selectCancelingOrdersState(state),
     usePercent,
-    marketType: market.marketType,
-    minPrice: market && market.minPrice,
-    maxPrice: market && market.maxPrice,
+    marketType,
+    minPrice,
+    maxPrice,
   }
 };
 
