@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { ETH, DAI, REP } from 'modules/common/constants';
+import { ETH, DAI, REP, TRANSACTIONS, SWAPEXACTTOKENSFORTOKENS } from 'modules/common/constants';
 import { AccountBalances, FormattedNumber } from 'modules/types';
 import {
   SwapArrow,
@@ -8,12 +8,17 @@ import {
   ETH as ETHIcon,
   DaiLogoIcon,
 } from 'modules/common/icons';
-import { formatEther, formatDai } from 'utils/format-number';
+import { formatEther } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { Rate } from 'modules/swap/components/rate';
 import { SwapRow } from 'modules/swap/components/swap-row';
+import {
+  uniswapRepForDai,
+  uniswapDaiForRep,
+} from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/swap/components/index.styles.less';
+import { ProcessingButton } from 'modules/common/buttons';
 
 interface SwapProps {
   balances: AccountBalances;
@@ -30,65 +35,49 @@ export const Swap = ({
   ETH_RATE,
   REP_RATE,
 }: SwapProps) => {
-  let tokenPairs = [];
-  if (toToken === REP) {
-    tokenPairs = [DAI, ETH];
-  } else {
-    tokenPairs = [REP, ETH];
-  }
+  let formattedInputAmount: FormattedNumber;
+  let outputAmount: FormattedNumber = formatEther(0);
+  let poolRate: FormattedNumber = formatEther(0);
 
-  const setToken = () => {
-    const nextToken =
-      selectedToken === tokenPairs[0] ? tokenPairs[1] : tokenPairs[0];
-    setSelectedFromTokenAmount(createBigNumber(0));
-    setSelectedToken(nextToken);
-  };
-
-  const setTokenAmount = (amount: BigNumber, displayBalance: BigNumber) => {
+  const [inputAmount, setInputAmount] = useState(createBigNumber(0));
+  const setAmountToSwap = (
+    amount: BigNumber,
+    formattedInputAmount: BigNumber
+  ) => {
     if (amount.lte(0) || isNaN(amount.toNumber())) {
-      setSelectedFromTokenAmount(createBigNumber(0));
-    } else if (amount.gt(displayBalance)) {
-      setSelectedFromTokenAmount(displayBalance);
+      setInputAmount(createBigNumber(0));
+    } else if (amount.gt(formattedInputAmount)) {
+      setInputAmount(formattedInputAmount);
     } else {
-      setSelectedFromTokenAmount(amount);
+      setInputAmount(amount);
     }
   };
 
-  let displayBalance: FormattedNumber;
-  const [selectedToken, setSelectedToken] = useState(fromToken);
-  const [selectedFromTokenAmount, setSelectedFromTokenAmount] = useState(
-    createBigNumber(0)
-  );
-
-  if (selectedToken === DAI) {
-    displayBalance = formatDai(Number(balances.dai) || 0);
-  } else {
-    displayBalance = formatEther(
-      Number(balances[selectedToken === REP ? 'rep' : 'eth']) || 0
-    );
+  if (fromToken === DAI) {
+    formattedInputAmount = formatEther(Number(balances.dai) || 0);
+  } else if (fromToken === REP) {
+    formattedInputAmount = formatEther(Number(balances.rep) || 0);
   }
 
-  let result = formatEther(0);
   if (toToken === REP) {
-    if (selectedToken === DAI) {
-      result = formatEther(selectedFromTokenAmount.dividedBy(REP_RATE));
+    if (fromToken === DAI) {
+      outputAmount = formatEther(inputAmount.dividedBy(REP_RATE));
     }
-    if (selectedToken === ETH) {
-      result = formatEther(
-        selectedFromTokenAmount.multipliedBy(ETH_RATE).dividedBy(REP_RATE)
+    if (fromToken === ETH) {
+      outputAmount = formatEther(
+        inputAmount.multipliedBy(ETH_RATE).dividedBy(REP_RATE)
       );
     }
-  } else {
-    if (selectedToken === REP) {
-      result = formatEther(REP_RATE.multipliedBy(selectedFromTokenAmount));
+  } else if (toToken === DAI) {
+    if (fromToken === REP) {
+      outputAmount = formatEther(REP_RATE.multipliedBy(inputAmount));
     }
-    if (selectedToken === ETH) {
-      result = formatEther(ETH_RATE.multipliedBy(selectedFromTokenAmount));
+    if (fromToken === ETH) {
+      outputAmount = formatEther(ETH_RATE.multipliedBy(inputAmount));
     }
   }
 
-  let poolRate = formatEther(0);
-  if (selectedToken === REP) {
+  if (fromToken === REP) {
     poolRate = formatEther(
       createBigNumber(1)
         .multipliedBy(ETH_RATE)
@@ -98,30 +87,47 @@ export const Swap = ({
     poolRate = formatEther(createBigNumber(1).multipliedBy(ETH_RATE));
   }
 
+  const clearForm = () => {
+    setInputAmount(createBigNumber(0));
+    outputAmount = formatEther(0);
+  }
+
+  const makeTrade = async () => {
+    const input = inputAmount;
+    const output = createBigNumber(outputAmount.value);
+
+    if (fromToken === DAI) {
+      await uniswapDaiForRep(input, output);
+      clearForm();
+    } else if (fromToken === REP) {
+      await uniswapRepForDai(input, output);
+      clearForm();
+    }
+  }
+
   return (
     <div className={Styles.Swap}>
       <>
         <SwapRow
-          amount={formatEther(selectedFromTokenAmount)}
-          token={selectedToken}
+          amount={formatEther(inputAmount)}
+          token={fromToken}
           label={'Input'}
-          balance={displayBalance}
+          balance={formattedInputAmount}
           logo={
-            selectedToken === DAI
+            fromToken === DAI
               ? DaiLogoIcon
-              : selectedToken === REP
+              : fromToken === REP
               ? REPIcon
               : ETHIcon
           }
-          setAmount={setTokenAmount}
-          setMaxAmount={setSelectedFromTokenAmount}
-          setToken={setToken}
+          setAmount={setAmountToSwap}
+          setMaxAmount={setInputAmount}
         />
 
         <div>{SwapArrow}</div>
 
         <SwapRow
-          amount={result}
+          amount={outputAmount}
           token={toToken}
           label={'Output (estimated)'}
           balance={
@@ -133,14 +139,20 @@ export const Swap = ({
         />
       </>
       <Rate
-        baseToken={selectedToken}
+        baseToken={fromToken}
         swapForToken={toToken}
         repRate={REP_RATE}
         ethRate={ETH_RATE}
       />
 
       <div>
-        <button>{'Trade'}</button>
+        <ProcessingButton
+          text={'Trade'}
+          action={() => makeTrade()}
+          queueName={TRANSACTIONS}
+          queueId={SWAPEXACTTOKENSFORTOKENS}
+          disabled={outputAmount.value <= 0}
+        />
       </div>
     </div>
   );

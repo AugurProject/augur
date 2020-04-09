@@ -11,7 +11,6 @@
 
   > div {
     user-select: none;
-    cursor: pointer;
     display: grid;
     grid-template-columns: 1fr auto;
   }
@@ -20,6 +19,7 @@
     > div {
       .text-12;
 
+      cursor: pointer;
       color: @color-primary-text;
     }
   }
@@ -54,8 +54,8 @@
   }
 }
 
-.SwapRow:first-of-type {
-  > div:last-of-type > input {
+.SwapRow {
+  input {
     .text-24;
 
     padding: 0;

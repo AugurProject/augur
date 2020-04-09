@@ -223,7 +223,7 @@ export const AddFunds = ({
                 <Swap
                   balances={loginAccount.balances}
                   toToken={fundTypeToUse === REP ? REP : DAI}
-                  fromToken={fundTypeToUse === REP ? DAI : ETH}
+                  fromToken={fundTypeToUse === REP ? DAI : REP}
                   ETH_RATE={ETH_RATE}
                   REP_RATE={REP_RATE}
                 />
