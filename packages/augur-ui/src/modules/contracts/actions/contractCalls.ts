@@ -9,6 +9,7 @@ import {
   formatAttoRep,
   formatAttoEth,
   formatAttoDai,
+  formatRep,
 } from 'utils/format-number';
 import {
   PlaceTradeDisplayParams,
@@ -344,40 +345,44 @@ export function getEthForDaiRate(): BigNumber {
   return ethToDaiRate;
 }
 
-export async function uniswapDaiForEthRate(dai: BigNumber): Promise<BigNumber> {
-  return new BigNumber(104);
+export async function addLiquidityRepDai(dai: BigNumber, rep: BigNumber): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
+  const cashAmount = dai.multipliedBy(ETHER);
+  const repAmount = rep.multipliedBy(ETHER);
+
+  uniswap.addLiquidity(contracts.reputationToken.address, contracts.cash.address, repAmount, cashAmount, new BigNumber(0), new BigNumber(0));
 }
 
-export async function uniswapRepForDaiRate(rep: BigNumber): Promise<BigNumber> {
-  return new BigNumber(108);
+export async function uniswapDaiForRep(dai: BigNumber, rep: BigNumber): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
+
+  const exactDai = dai.multipliedBy(10**18);
+  // TODO revisit, for testing accept 75% spread
+  const TRADE_SPREAD = 0.75;
+  const minRep = rep.minus(rep.multipliedBy(TRADE_SPREAD)).multipliedBy(10**18);
+
+  try {
+    uniswap.swapExactTokensForTokens(contracts.cash.address, contracts.reputationToken.address, exactDai, minRep);
+  }
+  catch(error) {
+    console.error('uniswapDaiForRep', error);
+  }
 }
 
-export async function uniswapDaiForRepRate(dai: BigNumber): Promise<BigNumber> {
-  return new BigNumber(110);
-}
+export async function uniswapRepForDai(rep: BigNumber, dai: BigNumber): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
 
-export async function uniswapEthForRep(wei: BigNumber): Promise<BigNumber> {
-  return new BigNumber(103);
-}
+  const exactRep = rep.multipliedBy(10**18);
+  // TODO revisit, for testing accept 75% spread
+  const TRADE_SPREAD = 0.75;
+  const minDai = dai.minus(dai.multipliedBy(TRADE_SPREAD)).multipliedBy(10**18);
 
-export async function uniswapRepForEth(rep: BigNumber): Promise<BigNumber> {
-  return new BigNumber(101);
-}
-
-export async function uniswapEthForDai(wei: BigNumber): Promise<BigNumber> {
-  return new BigNumber(107);
-}
-
-export async function uniswapDaiForEth(dai: BigNumber): Promise<BigNumber> {
-  return new BigNumber(105);
-}
-
-export async function uniswapRepForDai(rep: BigNumber): Promise<BigNumber> {
-  return new BigNumber(109);
-}
-
-export async function uniswapDaiForRep(dai: BigNumber): Promise<BigNumber> {
-  return new BigNumber(111);
+  try {
+    uniswap.swapExactTokensForTokens(contracts.reputationToken.address, contracts.cash.address, exactRep, minDai);
+  }
+  catch(error) {
+    console.error('uniswapRepForDai', error);
+  }
 }
 
 export function getRep() {
