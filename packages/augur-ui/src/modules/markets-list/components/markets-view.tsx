@@ -13,6 +13,8 @@ import {
   MAX_FEE_100_PERCENT,
   MAX_SPREAD_ALL_SPREADS,
   HELP_CENTER_INVALID_MARKETS,
+  THEMES,
+  SPORTS_MARKET_TYPES,
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
@@ -20,6 +22,9 @@ import classNames from 'classnames';
 import LandingHero from 'modules/markets-list/containers/landing-hero';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKETS_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import FilterSearch from 'modules/filter-sort/containers/filter-search';
+import { PillSelection } from 'modules/common/selection';
+import { getTheme } from 'modules/app/actions/update-app-status';
 
 const PAGINATION_COUNT = 10;
 
@@ -67,6 +72,7 @@ interface MarketsViewState {
   limit: number;
   offset: number;
   showPagination: boolean;
+  selectedMarketCardType: number;
 }
 
 export default class MarketsView extends Component<
@@ -88,11 +94,17 @@ export default class MarketsView extends Component<
       limit: PAGINATION_COUNT,
       offset: 1,
       showPagination: false,
+      selectedMarketCardType: 0
     };
 
     this.setPageNumber = this.setPageNumber.bind(this);
     this.updateLimit = this.updateLimit.bind(this);
     this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this);
+    this.updateSelected = this.updateSelected.bind(this);
+  }
+
+  updateSelected(selectedMarketCardType) {
+    this.setState({selectedMarketCardType});
   }
 
   componentDidMount() {
@@ -115,7 +127,7 @@ export default class MarketsView extends Component<
       isLogged,
       templateFilter,
       marketListViewed,
-      marketsInReportingState
+      marketsInReportingState,
     } = this.props;
     const { marketCount, offset } = this.state;
 
@@ -148,7 +160,8 @@ export default class MarketsView extends Component<
     if (
       isConnected !== prevProps.isConnected ||
       isLogged !== prevProps.isLogged ||
-      marketsInReportingState.length !== prevProps.marketsInReportingState.length ||
+      marketsInReportingState.length !==
+        prevProps.marketsInReportingState.length ||
       (search !== prevProps.search ||
         selectedCategories !== prevProps.selectedCategories ||
         maxLiquiditySpread !== prevProps.maxLiquiditySpread ||
@@ -235,7 +248,9 @@ export default class MarketsView extends Component<
             marketCount,
             showPagination,
           });
-          filterSortedMarkets.forEach(marketId => loadMarketOrderBook(marketId));
+          filterSortedMarkets.forEach(marketId =>
+            loadMarketOrderBook(marketId)
+          );
           updateMarketsListMeta(result.meta);
           setLoadMarketsPending(false);
         }
@@ -277,7 +292,10 @@ export default class MarketsView extends Component<
       limit,
       offset,
       showPagination,
+      selectedMarketCardType,
     } = this.state;
+
+    const isTrading = getTheme() === THEMES.TRADING;
 
     const displayFee = maxFee !== MAX_FEE_100_PERCENT;
     const displayLiquiditySpread =
@@ -302,39 +320,57 @@ export default class MarketsView extends Component<
       >
         <HelmetTag {...MARKETS_VIEW_HEAD_TAGS} />
         {!isLogged && !restoredAccount && <LandingHero />}
-        <MarketsHeader
-          location={location}
-          isSearchingMarkets={isSearching}
-          filter={marketFilter}
-          sort={marketSort}
-          history={history}
-          selectedCategory={selectedCategories}
-          search={search}
-          updateMobileMenuState={updateMobileMenuState}
-          marketCardFormat={marketCardFormat}
-          updateMarketsListCardFormat={updateMarketsListCardFormat}
-        />
+        {isTrading && (
+          <>
+            <MarketsHeader
+              location={location}
+              isSearchingMarkets={isSearching}
+              filter={marketFilter}
+              sort={marketSort}
+              history={history}
+              selectedCategory={selectedCategories}
+              search={search}
+              updateMobileMenuState={updateMobileMenuState}
+              marketCardFormat={marketCardFormat}
+              updateMarketsListCardFormat={updateMarketsListCardFormat}
+            />
 
-        <div
-          className={classNames({
-            [Styles.Disabled]: isSearching,
-          })}
-        >
-          <MarketTypeFilter
-            isSearchingMarkets={isSearching}
-            marketCount={marketCount}
-            updateMarketsFilter={updateMarketsFilter}
-            marketFilter={marketFilter}
-          />
+            <div
+              className={classNames({
+                [Styles.Disabled]: isSearching,
+              })}
+            >
+              <MarketTypeFilter
+                isSearchingMarkets={isSearching}
+                marketCount={marketCount}
+                updateMarketsFilter={updateMarketsFilter}
+                marketFilter={marketFilter}
+              />
 
-          <MarketCardFormatSwitcher
-            marketCardFormat={marketCardFormat}
-            updateMarketsListCardFormat={updateMarketsListCardFormat}
-          />
+              <MarketCardFormatSwitcher
+                marketCardFormat={marketCardFormat}
+                updateMarketsListCardFormat={updateMarketsListCardFormat}
+              />
 
-          <FilterDropDowns />
-        </div>
-
+              <FilterDropDowns />
+            </div>
+          </>
+        )}
+        {!isTrading && (
+          <section>
+            <PillSelection
+              options={SPORTS_MARKET_TYPES}
+              defaultSelection={selectedMarketCardType}
+              onChange={selected => this.updateSelected(selected)}
+            />
+            <FilterDropDowns />
+            <FilterSearch
+              isSearchingMarkets={isSearching}
+              search={search}
+              selectedCategory={selectedCategories}
+            />
+          </section>
+        )}
         <FilterTags
           maxLiquiditySpread={maxLiquiditySpread}
           maxFee={maxFee}
@@ -356,7 +392,11 @@ export default class MarketsView extends Component<
             <span>
               Invalid markets are no longer hidden. This puts you at risk of
               trading on invalid markets.{' '}
-              <a href={HELP_CENTER_INVALID_MARKETS} target="_blank" rel="noopener noreferrer">
+              <a
+                href={HELP_CENTER_INVALID_MARKETS}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Learn more
               </a>
             </span>
@@ -374,7 +414,11 @@ export default class MarketsView extends Component<
           content={
             <span>
               {feesLiquidityMessage}{' '}
-              <a href={HELP_CENTER_INVALID_MARKETS} target="_blank" rel="noopener noreferrer">
+              <a
+                href={HELP_CENTER_INVALID_MARKETS}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Learn more
               </a>
             </span>
@@ -401,15 +445,11 @@ export default class MarketsView extends Component<
         />
 
         <FilterNotice
-          show={
-            !isSearching &&
-            filteredOutCount &&
-            filteredOutCount > 0
-          }
+          show={!isSearching && filteredOutCount && filteredOutCount > 0}
           content={
             <span>
-              There are {filteredOutCount} additional markets outside
-              of the current filters applied. Edit filters to view all markets{' '}
+              There are {filteredOutCount} additional markets outside of the
+              current filters applied. Edit filters to view all markets{' '}
             </span>
           }
         />
