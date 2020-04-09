@@ -8,7 +8,7 @@ import {
   ACCOUNTS,
   ContractAPI,
   defaultSeedPath,
-  loadSeedFile,
+  loadSeed,
 } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
@@ -96,7 +96,7 @@ export interface SomeState {
 }
 
 export async function _beforeAll(): Promise<AllState> {
-  const seed = await loadSeedFile(defaultSeedPath);
+  const seed = await loadSeed(defaultSeedPath);
   const baseProvider = await makeProvider(seed, ACCOUNTS);
   return { baseProvider };
 }
@@ -116,6 +116,7 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
     provider,
     config
   );
+
   const bob = await TestContractAPI.userWrapper(
     ACCOUNTS[2],
     provider,
@@ -152,7 +153,7 @@ export async function processTrades(
       'getUserTradingPositions',
       {
         universe,
-        account: user1.account.publicKey,
+        account: user1.account.address,
         marketId: market.address,
       }
     );

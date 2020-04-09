@@ -39,7 +39,7 @@ describe('State API :: Markets :: ', () => {
     const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
     const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
     const affiliateFeeDivisor = new BigNumber(0);
-    const designatedReporter = john.account.publicKey;
+    const designatedReporter = john.account.address;
     const yesNoMarket1 = await bob.createYesNoMarket({
       endTime,
       feePerCashInAttoCash: lowFeePerCashInAttoCash,
@@ -80,7 +80,7 @@ describe('State API :: Markets :: ', () => {
       new BigNumber(100),
       new BigNumber(0),
     ];
-    await bob.repFaucet(new BigNumber(1));
+    await bob.faucetRep(new BigNumber(1));
     await bob.contribute(categoricalMarket1, payoutSet, new BigNumber(1));
 
     // Trade on a market with Bob
@@ -105,7 +105,7 @@ describe('State API :: Markets :: ', () => {
     // Test user portfolio filter
     marketList = await john.api.route('getMarkets', {
       universe: universe.address,
-      userPortfolioAddress: getAddress(ACCOUNTS[2].publicKey),
+      userPortfolioAddress: getAddress(ACCOUNTS[2].address),
     });
     expect(marketList.markets.length).toEqual(4);
     const marketIds = _.map(marketList.markets, 'id');
@@ -393,7 +393,7 @@ describe('State API :: Markets :: ', () => {
       await john.sync();
       const orderBook = (await john.api.route('getMarketOrderBook', {
         marketId: yesNoMarket.address,
-        account: john.account.publicKey,
+        account: john.account.address,
         onChain: true,
       })) as MarketOrderBook;
 

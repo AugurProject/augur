@@ -81,8 +81,8 @@ describe('State API :: Markets :: GetMarkets', () => {
     );
 
     // Fill orders
-    await john.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
-    await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
+    await john.faucetCash(new BigNumber(1e18)); // faucet enough cash for the various fill orders
+    await mary.faucetCash(new BigNumber(1e18)); // faucet enough cash for the various fill orders
     let yesNoOrderId0 = await john.getBestOrderId(
       ORDER_TYPES.BID,
       yesNoMarket.address,

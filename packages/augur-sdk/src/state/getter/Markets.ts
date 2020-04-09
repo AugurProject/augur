@@ -616,7 +616,7 @@ export class Markets {
     const meta = {
       filteredOutCount,
       marketCount: marketData.length
-    }
+    };
 
     if (params.sortBy) {
       const sortBy = params.sortBy;
@@ -626,7 +626,7 @@ export class Markets {
     // If returning Recently Depleted Liquidity (spread===0)
     if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
       // Have invalid markets appear at the bottom
-      marketData =_.sortBy(marketData, 'invalidFilter')
+      marketData = _.sortBy(marketData, 'invalidFilter');
     }
 
     // Get category meta data before slicing for pagination
@@ -1068,7 +1068,7 @@ async function getMarketsInfo(
   // TODO This is just used to get the last price. This can be acheived far more efficiently than pulling all order events for all time
   const orderFilledLogs = await db.ParsedOrderEvent.where('market').
     anyOfIgnoreCase(marketIds).
-    and(function(item) {
+    and((item) => {
       return item.eventType === OrderEventType.Fill;
     }).
     toArray();
