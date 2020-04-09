@@ -107,6 +107,18 @@
     @media @breakpoint-mobile {
       .mono-12-medium;
     }
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      > span:nth-of-type(2) {
+        .mono-9-bold;
+
+        color: @color-secondary-text;
+      }
+    }
   }
 }
 
