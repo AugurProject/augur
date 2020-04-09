@@ -10,7 +10,7 @@ export async function createYesNoZeroXOrders(
   skipFaucetApproval: boolean,
 ) {
   if (!skipFaucetApproval) {
-    await user.faucetCashUpTo(QUINTILLION.multipliedBy(1000000));
+    await user.faucetCashUpTo(QUINTILLION.multipliedBy(1000000), QUINTILLION.multipliedBy(1000000));
     await user.approveIfNecessary();
   }
   const yesNoMarket = cannedMarkets.find(c => c.marketType === 'yesNo');
