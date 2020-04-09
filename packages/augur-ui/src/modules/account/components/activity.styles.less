@@ -39,3 +39,18 @@
     }
   }
 }
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Activity {
+    background: transparent;
+
+    > div {
+      background: var(--color-module-background);
+    }
+
+    > div:nth-of-type(2) {
+      border-top: none;
+    }
+  }
+}

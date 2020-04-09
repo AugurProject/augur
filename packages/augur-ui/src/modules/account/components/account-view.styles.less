@@ -141,9 +141,21 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .AccountView {
+    margin: @size-22 @size-32 @size-82;
+    display: grid;
+    grid-auto-rows: @size-80;
+    grid-gap: 0 @size-24;
+    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+    grid-template-rows: none;
+    min-height: unset;
+    width: 100%;
+
     > div {
+      min-height: unset;
+      background: var(--color-module-background);
       border: @size-1 solid var(--color-outline);
       border-radius: @border-radius-rounded;
+      margin: 0 0 @size-24;
 
       div[class*='BoxHeader'] {
         background: var(--color-table-header-50);
@@ -154,12 +166,10 @@
           max-height: @size-56;
           min-height: @size-56;
 
-
           > div:first-of-type {
             .text-16-bold;
 
             text-transform: capitalize;
-            
           }
         }
       }
@@ -170,23 +180,49 @@
       }
     }
 
+    > h1 {
+      .text-24-bold;
+
+      color: var(--color-primary-text);
+      margin-top: @size-10;
+      grid-column: 1 / span 3;
+      grid-row: 1;
+    }
+
+    > div:first-of-type {
+      grid-column: ~"1/2";
+      grid-row: ~"2/8";
+    }
+
     > div:nth-of-type(2) {
-      > div[class*='Headers'] {
-        background: var(--color-table-header-50);
-        border-top-left-radius: @border-radius-rounded;
-        border-top-right-radius: @border-radius-rounded;
+      grid-column: ~"1/2";
+      grid-row: ~"8/14";
+    }
 
-        > ul > li {
-          border-bottom: none;
+    > div:nth-of-type(3) {
+      grid-column: ~"2/3";
+      grid-row: ~"2/13";
+    }
 
-          > button {
-            .text-16-bold;
+    > div:nth-of-type(4) {
+      grid-column: ~"2/3";
+      grid-row: ~"13/20";
+    }
 
-            text-transform: capitalize;
-            height: @size-56;
-          }
-        }
-      }
+    > div:nth-of-type(5) {
+      grid-column: ~"3/4";
+      grid-row: ~"2/4";
+    }
+
+    > div:nth-of-type(6) {
+      grid-column: ~"3/4";
+      grid-row: ~"4/10";
+    }
+
+    > footer {
+      grid-column: 1 / span 3;
+      grid-row: 21;
     }
   }
+
 }

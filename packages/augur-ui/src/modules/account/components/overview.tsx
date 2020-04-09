@@ -16,18 +16,20 @@ import { FormattedNumber } from 'modules/types';
 export interface OverviewProps {
   repTotalAmountStakedFormatted: FormattedNumber;
   repBalanceFormatted: FormattedNumber;
+  hideHeader: boolean;
 }
 
 const Overview = ({
   repTotalAmountStakedFormatted,
   repBalanceFormatted,
+  hideHeader,
 }: OverviewProps) => {
   const [selected, setSelected] = useState(TIMEFRAME_OPTIONS[2].id);
 
   return (
     <QuadBox
       title={YOUR_OVERVIEW_TITLE}
-      hideHeader
+      hideHeader={hideHeader}
       content={
         <div className={Styles.AccountOverview}>
           <Funds />
