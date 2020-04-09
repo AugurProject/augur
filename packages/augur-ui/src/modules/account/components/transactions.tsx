@@ -4,10 +4,10 @@ import QuadBox from 'modules/portfolio/components/common/quad-box';
 import {
   DepositButton,
   WithdrawButton,
+  CashOutButton,
   ViewTransactionsButton,
   REPFaucetButton,
   DAIFaucetButton,
-  FundGSNWalletButton,
   ExternalLinkButton,
 } from 'modules/common/buttons';
 import { AccountAddressDisplay } from 'modules/modal/common';
@@ -24,7 +24,7 @@ interface TransactionsProps {
   approval: Function;
   addFunds: Function;
   legacyRepFaucet: Function;
-  fundGsnWallet: Function;
+  cashOut: Function;
   targetAddress: string;
   signingEth: number;
   signingWalletNoEth: boolean;
@@ -39,7 +39,7 @@ export const Transactions = ({
   repFaucet,
   daiFaucet,
   legacyRepFaucet,
-  fundGsnWallet,
+  cashOut,
   targetAddress,
   signingEth,
   signingWalletNoEth,
@@ -57,6 +57,7 @@ export const Transactions = ({
           <h4>Your funds</h4>
           <DepositButton action={addFunds} />
           <WithdrawButton action={withdraw} />
+          <CashOutButton action={cashOut} />
         </div>
         {showFaucets && (
           <div>
