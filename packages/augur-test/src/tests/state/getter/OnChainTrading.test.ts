@@ -4,7 +4,7 @@ import {
   Orders,
   OrderState,
 } from '@augurproject/sdk/build/state/getter/OnChainTrading';
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
@@ -17,7 +17,7 @@ describe('State API :: Trading :: ', () => {
   let config: SDKConfiguration;
 
   beforeAll(async () => {
-    const seed = await loadSeedFile(defaultSeedPath);
+    const seed = await loadSeed(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
     config = provider.getConfig();
 
@@ -34,8 +34,8 @@ describe('State API :: Trading :: ', () => {
   });
 
   test(':getTradingHistory', async () => {
-    await john.approveCentralAuthority();
-    await mary.approveCentralAuthority();
+    await john.approve();
+    await mary.approve();
 
     // Create a market
     const market1 = await john.createReasonableMarket([
@@ -80,7 +80,7 @@ describe('State API :: Trading :: ', () => {
     await john.fillOrder(orderId2, numShares.div(2), '42');
 
     // And the rest using another account
-    await mary.faucet(new BigNumber(1e18)); // faucet enough to cover fills
+    await mary.faucetCash(new BigNumber(1e18)); // faucet enough to cover fills
     await mary.fillOrder(orderId1, numShares.div(2), '43');
     await mary.fillOrder(orderId2, numShares.div(2), '43');
 
@@ -90,7 +90,7 @@ describe('State API :: Trading :: ', () => {
     let trades: MarketTradingHistory[] = await john.api.route(
       'getTradingHistory',
       {
-        account: mary.account.publicKey,
+        account: mary.account.address,
       }
     );
 
@@ -140,8 +140,8 @@ describe('State API :: Trading :: ', () => {
   });
 
   test('State API :: Trading :: getOpenOnChainOrders', async () => {
-    await john.approveCentralAuthority();
-    await mary.approveCentralAuthority();
+    await john.approve();
+    await mary.approve();
 
     // Create a market
     const market = await john.createReasonableMarket([

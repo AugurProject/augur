@@ -58,9 +58,9 @@ describe('State API :: Users :: ', () => {
           price: 0.5,
         }],
         result: {
-          [john.account.publicKey] : defaultPL,
-          [mary.account.publicKey] : defaultPL,
-          [bob.account.publicKey] : defaultPL,
+          [john.account.address] : defaultPL,
+          [mary.account.address] : defaultPL,
+          [bob.account.address] : defaultPL,
         }
       },
       {
@@ -75,19 +75,19 @@ describe('State API :: Users :: ', () => {
           price: 0.25,
         }],
         result: {
-          [john.account.publicKey] : {
+          [john.account.address] : {
             unrealizedPL: 2.5,
             unrealizedPercent: 0.5,
             realizedPL: 0,
             realizedPercent: 0,
           },
-          [mary.account.publicKey] : {
+          [mary.account.address] : {
             unrealizedPL: -2.5,
             unrealizedPercent: -0.3333,
             realizedPL: 0,
             realizedPercent: 0,
           },
-          [bob.account.publicKey] : defaultPL,
+          [bob.account.address] : defaultPL,
         },
       },
       {
@@ -102,19 +102,19 @@ describe('State API :: Users :: ', () => {
           price: 0.75,
         }],
         result: {
-          [john.account.publicKey] : {
+          [john.account.address] : {
           unrealizedPL: 0,
           unrealizedPercent: 0,
           realizedPL: -2.50075,
           realizedPercent: -0.5001,
         },
-        [mary.account.publicKey] : {
+        [mary.account.address] : {
           unrealizedPL: 3.75,
           unrealizedPercent: 1.0000,
           realizedPL: 3.74975,
           realizedPercent: 0.9999,
         },
-        [bob.account.publicKey] : {
+        [bob.account.address] : {
           unrealizedPL: -5,
           unrealizedPercent: -0.6667,
           realizedPL: 0,
@@ -134,19 +134,19 @@ describe('State API :: Users :: ', () => {
         price: 0.5,
       }],
       result: {
-        [john.account.publicKey] : {
+        [john.account.address] : {
         unrealizedPL: 0,
         unrealizedPercent: 0,
         realizedPL: -5.0015,
         realizedPercent: -1.0003,
       },
-      [mary.account.publicKey] : {
+      [mary.account.address] : {
         unrealizedPL: 0,
         unrealizedPercent: 0,
         realizedPL: 8.749,
         realizedPercent: 1.1665,
       },
-      [bob.account.publicKey] : {
+      [bob.account.address] : {
         unrealizedPL: 0,
         unrealizedPercent: 0,
         realizedPL: -2.5005,

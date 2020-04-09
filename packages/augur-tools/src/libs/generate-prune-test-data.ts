@@ -2,7 +2,6 @@ import { SDKConfiguration } from '@augurproject/artifacts';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import { BigNumber } from 'bignumber.js';
 import { ACCOUNTS } from '../constants';
-import { awaitUserInput } from '../flash/util';
 import { ContractAPI } from './contract-api';
 import { extractSeed, Seed } from './ganache';
 import { makeProviderWithDB } from './LocalAugur';
@@ -22,10 +21,10 @@ export async function generatePruneTestData(config: SDKConfiguration, seed: Seed
     config
   );
 
-  await john.faucet(new BigNumber(1000000000));
+  await john.faucetCash(new BigNumber(1000000000));
 
-  await john.approveCentralAuthority();
-  await mary.approveCentralAuthority();
+  await john.approve();
+  await mary.approve();
 
   // Market to sunset.
   const market = await john.createReasonableYesNoMarket();

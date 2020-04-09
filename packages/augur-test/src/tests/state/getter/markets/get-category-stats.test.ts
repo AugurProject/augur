@@ -39,8 +39,8 @@ describe('State API :: Markets :: Categories', () => {
     const numShares = new BigNumber(1e21);
     const price = new BigNumber(22);
 
-    await john.faucet(new BigNumber(1e25)); // faucet enough cash for orders
-    await mary.faucet(new BigNumber(1e25)); // faucet enough cash for orders
+    await john.faucetCash(new BigNumber(1e25)); // faucet enough cash for orders
+    await mary.faucetCash(new BigNumber(1e25)); // faucet enough cash for orders
 
     const order1Id = await john.placeOrder(
       yesNoMarket1.address,

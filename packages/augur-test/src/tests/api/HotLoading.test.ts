@@ -1,4 +1,4 @@
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { makeProvider } from '../../libs';
@@ -6,7 +6,7 @@ import { makeProvider } from '../../libs';
 let john: TestContractAPI;
 
 beforeAll(async () => {
-  const seed = await loadSeedFile(defaultSeedPath);
+  const seed = await loadSeed(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
 
   john = await TestContractAPI.userWrapper(
@@ -14,7 +14,7 @@ beforeAll(async () => {
     provider,
     provider.getConfig()
   );
-  await john.approveCentralAuthority();
+  await john.approve();
 });
 
 test('Hot Loading :: Get Market Data', async () => {
@@ -24,8 +24,8 @@ test('Hot Loading :: Get Market Data', async () => {
 
   await expect(eventData).toBeDefined();
 
-  await expect(eventData.author).toEqual(john.account.publicKey);
-  await expect(eventData.designatedReporter).toEqual(john.account.publicKey);
+  await expect(eventData.author).toEqual(john.account.address);
+  await expect(eventData.designatedReporter).toEqual(john.account.address);
   await expect(eventData.marketType).toEqual('YesNo');
   await expect(eventData.tickSize).toEqual('0.01');
   await expect(eventData.reportingState).toEqual('PreReporting');

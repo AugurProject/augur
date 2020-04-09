@@ -14,13 +14,11 @@ import { Controller } from '@augurproject/sdk/build/state/Controller';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { BlockAndLogStreamerSyncStrategy } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
-import { BigNumber } from 'bignumber.js';
 import { Account } from '../constants';
 import { makeGSNDependencies, makeSigner } from './blockchain';
 import { ContractAPI } from './contract-api';
 import { makeDbMock } from './MakeDbMock';
 import { API } from '@augurproject/sdk/build/state/getter/API';
-import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 
 export class TestContractAPI extends ContractAPI {
   protected bulkSyncStrategy: BulkSyncStrategy;
@@ -44,7 +42,7 @@ export class TestContractAPI extends ContractAPI {
       config.addresses.EthExchange,
       config.addresses.WETH9,
       config.addresses.Cash,
-      account.publicKey,
+      account.address,
     );
 
     let zeroX = null;
@@ -66,18 +64,17 @@ export class TestContractAPI extends ContractAPI {
 
     const db = await makeDbMock().makeDB(augur);
 
-    return new TestContractAPI(augur, provider, dependencies, account, db, config);
+    return new TestContractAPI(augur, provider, account, db, config);
   }
 
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
-    readonly dependencies: ContractDependenciesGSN,
     public account: Account,
     public db: DB,
     public config: SDKConfiguration,
   ) {
-    super(augur, provider, dependencies, account);
+    super(augur, provider, account);
 
     this.api = new API(augur, Promise.resolve(db));
 

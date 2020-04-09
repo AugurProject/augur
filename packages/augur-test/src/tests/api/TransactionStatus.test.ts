@@ -1,4 +1,4 @@
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -10,7 +10,7 @@ import { makeProvider } from '../../libs';
 let john: TestContractAPI;
 
 beforeAll(async () => {
-  const seed = await loadSeedFile(defaultSeedPath);
+  const seed = await loadSeed(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
 
   john = await TestContractAPI.userWrapper(
@@ -18,7 +18,7 @@ beforeAll(async () => {
     provider,
     provider.getConfig()
   );
-  await john.approveCentralAuthority();
+  await john.approve();
 });
 
 test('TransactionStatus :: transaction status updates', async () => {
@@ -72,7 +72,7 @@ test("TransactionStatus :: transaction status events", async () => {
 }, 15000);
 
 test("TransactionStatus :: transaction status events failure", async (done) => {
-  const seed = await loadSeedFile(defaultSeedPath);
+  const seed = await loadSeed(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
 
   const awaitingSigning = jest.fn();
@@ -115,7 +115,7 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
   });
 
   john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, seed.addresses);
-  await john.approveCentralAuthority();
+  await john.approve();
 
   john.augur.on(TXEventName.Failure, failure);
   john.augur.on(TXEventName.Pending, pending);
@@ -125,7 +125,7 @@ test("TransactionStatus :: transaction status events failure", async (done) => {
     endTime: (await john.getTimestamp()).minus(Getters.Markets.SECONDS_IN_A_DAY),
     feePerCashInAttoCash: new BigNumber(10).pow(18).div(20), // 5% creator fee
     affiliateFeeDivisor: new BigNumber(0),
-    designatedReporter: john.account.publicKey,
+    designatedReporter: john.account.address,
     extraInfo:
       '{"categories": ["yesNo category 1"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1", "tags": ["yesNo tag1-1", "yesNo tag1-2", "yesNo tag1-3"]}',
   }).catch((e) => { });

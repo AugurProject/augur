@@ -15,9 +15,7 @@ import { WarpController } from '@augurproject/sdk/build/warp/WarpController';
 import { TestContractAPI } from '@augurproject/tools';
 import { Account } from '@augurproject/tools';
 import { makeGSNDependencies, makeSigner } from '@augurproject/tools/build';
-import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { makeDbMock } from '@augurproject/tools/build/libs/MakeDbMock';
-import { BigNumber } from 'bignumber.js';
 import * as IPFS from 'ipfs';
 
 const filterRetrievelFn = (ipfs: Promise<IPFS>) => async (ipfsPath: string) =>
@@ -31,13 +29,12 @@ export class WarpTestContractApi extends TestContractAPI {
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
-    readonly dependencies: ContractDependenciesGSN,
     public account: Account,
     public db: DB,
     public config: SDKConfiguration,
     ipfsServer: Promise<IPFS>,
   ) {
-    super(augur, provider, dependencies, account, db, config);
+    super(augur, provider, account, db, config);
 
     this.warpController = new WarpController(db, augur, provider, config.uploadBlockNumber, ipfsServer, filterRetrievelFn(ipfsServer));
 
@@ -64,7 +61,7 @@ export class WarpTestContractApi extends TestContractAPI {
       config.addresses.EthExchange,
       config.addresses.WETH9,
       config.addresses.Cash,
-      account.publicKey,
+      account.address,
     );
 
     let zeroX = null;
@@ -86,7 +83,7 @@ export class WarpTestContractApi extends TestContractAPI {
 
     const db = await makeDbMock().makeDB(augur);
 
-    return new WarpTestContractApi(augur, provider, dependencies, account, db, config, ipfsServer);
+    return new WarpTestContractApi(augur, provider, account, db, config, ipfsServer);
   }
 
   sync = async (highestBlockNumberToSync?: number) => {

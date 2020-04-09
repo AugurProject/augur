@@ -1,7 +1,7 @@
 import { WSClient } from '@0x/mesh-rpc-client';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { BrowserMesh, Connectors } from '@augurproject/sdk';
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
@@ -26,7 +26,7 @@ describe('State API :: Market Sorts', () => {
     meshClient = new WSClient(`ws://localhost:${port}`);
     meshBrowser = new MockBrowserMesh(meshClient);
 
-    const seed = await loadSeedFile(defaultSeedPath);
+    const seed = await loadSeed(defaultSeedPath);
     provider = await makeProvider(seed, ACCOUNTS);
     config = provider.getConfig();
   });
@@ -50,7 +50,7 @@ describe('State API :: Market Sorts', () => {
 
       johnConnector.initialize(john.augur, john.db);
 
-      await john.approveCentralAuthority();
+      await john.approve();
     });
 
     test(':horizontal/vertical liquidity', async () => {

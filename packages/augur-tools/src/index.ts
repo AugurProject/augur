@@ -9,15 +9,10 @@ export {
   makeGSNDependencies,
 } from './libs/blockchain';
 import * as blockchain from './libs/blockchain';
+export * from './libs/Utils'
 
 export { blockchain };
 
-export {
-  makeGanacheProvider,
-  loadSeedFile,
-  createDbFromSeed,
-  createSeed,
-  Seed,
-} from './libs/ganache';
+export * from './libs/ganache';
 
 export { Account, ACCOUNTS, NULL_ADDRESS, DEADBEEF_ADDRESS } from './constants';

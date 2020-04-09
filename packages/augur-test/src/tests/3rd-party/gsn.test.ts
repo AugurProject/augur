@@ -33,10 +33,10 @@ describe('3rd Party :: GSN :: ', () => {
     );
 
     connectorJohn.initialize(john.augur, john.db);
-    await john.approveCentralAuthority();
+    await john.approve();
     const walletCash = new BigNumber(10).pow(24);
-    const walletAddress = await john.getWalletAddress(john.account.publicKey);
-    await john.faucet(walletCash);
+    const walletAddress = await john.getWalletAddress(john.account.address);
+    await john.faucetCash(walletCash);
     await john.transferCash(walletAddress, walletCash);
 
     john.setUseWallet(true);
@@ -45,7 +45,7 @@ describe('3rd Party :: GSN :: ', () => {
   }, 120000);
 
   test('State API :: GSN :: getOrders', async () => {
-    const walletAddress = await john.getWalletAddress(john.account.publicKey);
+    const walletAddress = await john.getWalletAddress(john.account.address);
 
     // Create a market
     const market = await john.createReasonableMarket([
@@ -58,14 +58,14 @@ describe('3rd Party :: GSN :: ', () => {
     // Faucet some REP and confirm the wallet recieves it
     const repAmount = new BigNumber(1e10);
     const repBalance = await john.getRepBalance(walletAddress);
-    await john.repFaucet(repAmount);
+    await john.faucetRep(repAmount);
     const newRepBalance = await john.getRepBalance(walletAddress);
     await expect(newRepBalance.toFixed()).toBe(repBalance.plus(repAmount).toFixed());
 
     // Give John enough cash to pay for the 0x order.
 
     const cashAmount = new BigNumber(1e22);
-    await john.faucetOnce(cashAmount, john.account.publicKey);
+    await john.faucetCash(cashAmount);
 
     // Place an order
     const bid = new BigNumber(0);
@@ -101,7 +101,7 @@ describe('3rd Party :: GSN :: ', () => {
     john.setUseRelay(false);
 
     // Give the wallet some eth
-    const walletAddress = await john.getWalletAddress(john.account.publicKey);
+    const walletAddress = await john.getWalletAddress(john.account.address);
     const initialWalletBalance = await john.getEthBalance(walletAddress);
     const ethAmount = new BigNumber(100);
     await john.sendEther(walletAddress, ethAmount);
@@ -114,7 +114,7 @@ describe('3rd Party :: GSN :: ', () => {
     john.setUseWallet(true);
     john.setUseRelay(true);
 
-    const recipient = ACCOUNTS[3].publicKey;
+    const recipient = ACCOUNTS[3].address;
     const initialBalance = await john.getEthBalance(recipient);
 
     await john.sendEther(recipient, ethAmount);
