@@ -58,8 +58,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 
   const marketNeedsMigrating =
     hasForkPassed &&
-    reportingState !== REPORTING_STATE.FINALIZED &&
-    reportingState !== REPORTING_STATE.AWAITING_FINALIZATION;
+    reportingState !== REPORTING_STATE.FINALIZED;
 
   const releasableRep = selectReportingWinningsByMarket(state);
   let hasReleaseRep = releasableRep.totalUnclaimedRep.gt(ZERO);
