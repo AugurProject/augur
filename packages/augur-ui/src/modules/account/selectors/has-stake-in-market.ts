@@ -16,6 +16,7 @@ const selectMarketStake = createSelector(
     accountReporting: Getters.Accounts.AccountReportingHistory,
     marketId: string
   ) => {
+    if (!accountReporting) return false;
     const { reporting, disputing } = accountReporting;
     let hasStaked = false;
 

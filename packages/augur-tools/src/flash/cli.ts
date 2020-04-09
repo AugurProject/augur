@@ -43,8 +43,8 @@ async function run() {
     .option('--key <key>', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('--keyfile <keyfile>', 'File containing private key to use. Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('--network <network>', `Name of network to run on. Use "none" for commands that don't use a network.`, 'local')
-    .option('--use-gsn <useGsn>', 'Use GSN instead of making contract calls directly', false)
-    .option('--skip-approval <useGsn>', 'Do not approve', false)
+    .option('--use-gsn <useGsn>', 'Use GSN instead of making contract calls directly', 'false')
+    .option('--skip-approval <skipApproval>', 'Do not approve', 'false')
     .option('--config <config>', 'JSON of configuration')
     .option('--configFile <configFile>', 'Path to configuration file');
 
@@ -68,11 +68,12 @@ async function run() {
 
         let specified: RecursivePartial<SDKConfiguration> = {
           flash: {
-            useGSN: Boolean(opts.useGSN?.toLowerCase() === 'true'),
+            useGSN: Boolean(opts.useGsn?.toLowerCase() === 'true'),
+            skipApproval: Boolean(opts.skipApproval?.toLowerCase() === 'true'),
           }
         };
         if (opts.configFile) {
-          specified = JSON.parse(fs.readFileSync(opts.configFile).toString());
+          specified = mergeConfig(specified, JSON.parse(fs.readFileSync(opts.configFile).toString()));
         }
         if (opts.config) {
           specified = mergeConfig(specified, JSON.parse(opts.config));
