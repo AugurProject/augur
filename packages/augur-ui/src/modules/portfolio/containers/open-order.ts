@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import getValue from 'utils/get-value';
 import { AppState } from 'appStore';
 import * as constants from 'modules/common/constants';
 
@@ -13,7 +12,6 @@ import { selectCancelingOrdersState } from 'appStore/select-state';
 import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { calcPercentageFromPrice } from 'utils/format-number';
-import { MIN_PRICE } from 'modules/create-market/constants';
 
 const { COLUMN_TYPES } = constants;
 
