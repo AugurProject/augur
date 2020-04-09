@@ -21,6 +21,7 @@ import {
   PUBLICFILLBESTORDERWITHLIMIT,
   PUBLICTRADE,
   PUBLICTRADEWITHLIMIT,
+  REDEEMDISPUTINGSTAKE,
 } from 'modules/common/constants';
 
 export const ADD_ALERT = 'ADD_ALERT';
@@ -97,6 +98,11 @@ function createUniqueOrderId(alert) {
   return `${alert.id}_${price}_${outcome}_${direction}`;
 }
 
+function createDisptuteUniqueOrderId(alert) {
+  const crowdsourcer = alert.params.disputeCrowdsourcer;
+  return `${alert.id}_${crowdsourcer}_${alert.params.logIndex}`;
+}
+
 export function updateAlert(
   id: string,
   alert: any,
@@ -109,6 +115,9 @@ export function updateAlert(
       alert.id = id;
       alert.uniqueId =
         alertName === PUBLICTRADE || alertName === PUBLICFILLORDER ? createUniqueOrderId(alert) : id;
+      if (alertName === REDEEMDISPUTINGSTAKE) {
+        alert.uniqueId = createDisptuteUniqueOrderId(alert);
+      }
 
       if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
         dispatch(
