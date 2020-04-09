@@ -34,6 +34,7 @@ import {
   OUTCOMES,
   MARKET_TYPE_NAME,
   MARKET_COPY_LIST,
+  DEFAULT_TICK_SIZE,
 } from 'modules/create-market/constants';
 import { checkValidNumber } from 'modules/common/validations';
 import { setCategories } from 'modules/create-market/set-categories';
@@ -101,7 +102,7 @@ export default class FormDetails extends React.Component<
     } = newMarket;
 
     const tickSize =
-      isTemplate && template.tickSize ? template.tickSize : newMarket.tickSize;
+      isTemplate && template.tickSize ? template.tickSize : newMarket?.tickSize || DEFAULT_TICK_SIZE;
 
     let resolutionTimeSubheader = null
     if (isTemplate) {
