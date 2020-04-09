@@ -9,6 +9,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { loadMarketsByFilter } from 'modules/markets/actions/load-markets';
 import { ALL_MARKETS } from 'modules/common/constants';
+import { setSelectedUniverse } from 'modules/auth/actions/selected-universe-management';
 
 export const switchUniverse = (
   universeId: string,
@@ -22,6 +23,7 @@ export const switchUniverse = (
   dispatch(
     loadUniverseDetails(universeId, account, () => {
       dispatch(switchUniverseState());
+      dispatch(setSelectedUniverse(universeId));
       dispatch(loadUniverseForkingInfo());
       dispatch(loadDisputeWindow());
       dispatch(loadAccountData());
