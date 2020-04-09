@@ -30,6 +30,7 @@ contract RepOracle is Initializable {
     IUniswapV2Factory public uniswapFactory;
 
     function initialize(IAugur _augur) public beforeInitialized {
+        endInitialization();
         cash = _augur.lookup("Cash");
         uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
     }

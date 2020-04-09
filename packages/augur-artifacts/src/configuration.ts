@@ -114,6 +114,7 @@ export interface ContractAddresses {
   UniswapV2Factory?: string;
   EthExchange?: string;
   UniswapV2Router01?: string;
+  AuditFunds?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.

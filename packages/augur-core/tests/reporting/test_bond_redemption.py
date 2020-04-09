@@ -1,4 +1,4 @@
-from eth_tester.exceptions import TransactionFailed
+ from eth_tester.exceptions import TransactionFailed
 from pytest import fixture, mark, raises
 from utils import longTo32Bytes, TokenDelta, EtherDelta, longToHexString, PrintGasUsed, AssertLog
 from reporting_utils import proceedToNextRound, finalize, proceedToDesignatedReporting
