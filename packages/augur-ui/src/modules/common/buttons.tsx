@@ -473,6 +473,17 @@ export const WithdrawButton = (props: DefaultActionButtonProps) => (
   </button>
 );
 
+export const CashOutButton = (props: DefaultActionButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.CurrenyActionButton}
+    disabled={props.disabled}
+    title={props.title || 'Withdraw'}
+  >
+    Cash Out
+  </button>
+);
+
 export const ViewTransactionsButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
