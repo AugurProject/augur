@@ -43,30 +43,30 @@ describe('State API :: Users :: ', () => {
         outcome: YES,
         quantity: 10,
         price: 0.5,
-        realizedPL: 0.4697,
+        realizedPL: 0,
         market: market1,
         timestamp: startTime.toNumber(),
-        unrealizedPL: -1.5,
+        unrealizedPL: 0,
       },
       {
         direction: LONG,
         outcome: YES,
         quantity: 10,
         price: 0.3,
-        realizedPL: 0.4697,
+        realizedPL: 0,
         market: market1,
         timestamp: startTime.plus(day * 2).toNumber(),
-        unrealizedPL: -1.5,
+        unrealizedPL: -2,
       },
       {
         direction: LONG,
         outcome: YES,
         quantity: 10,
         price: 0.3,
-        realizedPL: 0.4697,
+        realizedPL: 0,
         market: market2,
         timestamp: startTime.plus(30 * day).toNumber(),
-        unrealizedPL: -1.5,
+        unrealizedPL: -2,
       },
       {
         direction: SHORT,
@@ -115,9 +115,9 @@ describe('State API :: Users :: ', () => {
     const thirtyDayPLSummary = profitLossSummary['30'];
     await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(trades[3].realizedPL);
     await expect(Number.parseFloat(oneDayPLSummary.unrealized)).toEqual(0.5);
-    await expect(Number.parseFloat(oneDayPLSummary.frozenFunds)).toEqual(3);
+    await expect(Number.parseFloat(oneDayPLSummary.frozenFunds)).toEqual(1.5);
     await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(trades[3].realizedPL);
     await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(-3.5);
-    await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(8);
+    await expect(Number.parseFloat(thirtyDayPLSummary.frozenFunds)).toEqual(9.5);
   });
 });
