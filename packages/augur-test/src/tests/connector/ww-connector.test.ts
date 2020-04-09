@@ -47,7 +47,7 @@
 //   john = await TestContractAPI.userWrapper(ACCOUNTS, 0, provider, addresses);
 //   db = mock.makeDB(john.augur, ACCOUNTS);
 
-//   await john.approveCentralAuthority();
+//   await john.approve();
 // }, 120000);
 
 test('WebWorkerConnector :: Should route correctly and handle events', async done => {

@@ -504,9 +504,11 @@ export class ZeroX {
         return this._rpc.addOrdersAsync(orders);
       }
     } catch (error) {
-      console.error(error);
-      if (this._mesh || this._rpc)
+      console.error('Retrying 0x addOrders:', error);
+      if (this._mesh || this._rpc) {
+        // Wait 5 seconds then retry.
         return setTimeout(this.addOrders(orders), 5000);
+      }
     }
   }
 

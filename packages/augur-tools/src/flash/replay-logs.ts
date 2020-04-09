@@ -36,7 +36,7 @@ export class LogReplayer {
 
   async User(account: Account): Promise<ContractAPI> {
     const user = await ContractAPI.userWrapper(account, this.provider, this.config);
-    await user.approveCentralAuthority();
+    await user.approveIfNecessary();
     return user;
   }
 
@@ -47,12 +47,12 @@ export class LogReplayer {
       } else { // Create and fund new account.
         const wallet = ethers.Wallet.createRandom();
         this.accounts[address] = {
-          secretKey: wallet.privateKey,
-          publicKey: wallet.address,
-          balance: _1_HUNDRED_ETH,
+          privateKey: wallet.privateKey,
+          address: wallet.address,
+          initialBalance: _1_HUNDRED_ETH,
         };
 
-        const piggybankWallet = new ethers.Wallet(this.piggybank.secretKey, this.provider);
+        const piggybankWallet = new ethers.Wallet(this.piggybank.privateKey, this.provider);
         await piggybankWallet.sendTransaction({
           to: wallet.address,
           value: `0x${new BigNumber(_1_HUNDRED_ETH).toString(16)}`,
@@ -114,7 +114,7 @@ export class LogReplayer {
           endTime: adjustedEndTime,
           feePerCashInAttoCash,
           affiliateFeeDivisor: feeDivisor,
-          designatedReporter: reporter.publicKey,
+          designatedReporter: reporter.address,
           extraInfo,
         });
         break;
@@ -123,7 +123,7 @@ export class LogReplayer {
           endTime: adjustedEndTime,
           feePerCashInAttoCash,
           affiliateFeeDivisor: feeDivisor,
-          designatedReporter: reporter.publicKey,
+          designatedReporter: reporter.address,
           outcomes,
           extraInfo});
         break;
@@ -132,7 +132,7 @@ export class LogReplayer {
           endTime: adjustedEndTime,
           feePerCashInAttoCash,
           affiliateFeeDivisor: feeDivisor,
-          designatedReporter: reporter.publicKey,
+          designatedReporter: reporter.address,
           prices,
           numTicks,
           extraInfo});

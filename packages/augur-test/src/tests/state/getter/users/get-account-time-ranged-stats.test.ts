@@ -136,7 +136,7 @@ describe('State API :: Users :: ', () => {
     await john.sync();
 
     // Fill orders
-    await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
+    await mary.faucetCash(new BigNumber(1e18)); // faucet enough cash for the various fill orders
     await mary.fillOrder(
       await john.getBestOrderId(bid, johnYesNoMarket.address, outcome0),
       numShares.div(10).times(2),
@@ -236,8 +236,8 @@ describe('State API :: Users :: ', () => {
       new BigNumber(1)
     );
 
-    await john.repFaucet(new BigNumber(1e25));
-    await mary.repFaucet(new BigNumber(1e25));
+    await john.faucetRep(new BigNumber(1e25));
+    await mary.faucetRep(new BigNumber(1e25));
 
     // Dispute 2 times
     for (let disputeRound = 1; disputeRound <= 3; disputeRound++) {
@@ -285,23 +285,23 @@ describe('State API :: Users :: ', () => {
     // Redeem participation tokens
     await john.redeemParticipationTokens(
       disputeWindow.address,
-      john.account.publicKey
+      john.account.address
     );
 
     // Claim initial reporter
     let initialReporter = await john.getInitialReporter(johnYesNoMarket);
-    await initialReporter.redeem(john.account.publicKey);
+    await initialReporter.redeem(john.account.address);
 
     // Claim winning crowdsourcers
     let winningReportingParticipant = await john.getWinningReportingParticipant(
       johnYesNoMarket
     );
-    await winningReportingParticipant.redeem(john.account.publicKey);
+    await winningReportingParticipant.redeem(john.account.address);
 
     // Claim trading proceeds
     await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket.address,
-      john.account.publicKey,
+      john.account.address,
       formatBytes32String('')
     );
 
@@ -334,7 +334,7 @@ describe('State API :: Users :: ', () => {
     try {
       await john.api.route('getAccountTimeRangedStats', {
         universe: universe.address,
-        account: ACCOUNTS[0].publicKey,
+        account: ACCOUNTS[0].address,
         startTime: 123456,
         endTime: 12,
       });
@@ -347,7 +347,7 @@ describe('State API :: Users :: ', () => {
 
     let stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
-      account: ACCOUNTS[0].publicKey,
+      account: ACCOUNTS[0].address,
       startTime: 0,
       endTime: newTime.minus(1).toNumber(),
     });
@@ -355,7 +355,7 @@ describe('State API :: Users :: ', () => {
 
     stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
-      account: ACCOUNTS[0].publicKey,
+      account: ACCOUNTS[0].address,
       startTime: newTime.plus(1).toNumber(),
       endTime: newTime.plus(100).toNumber(),
     });
@@ -363,7 +363,7 @@ describe('State API :: Users :: ', () => {
 
     stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
-      account: ACCOUNTS[0].publicKey,
+      account: ACCOUNTS[0].address,
     });
     expect(stats).toMatchObject({
       marketsCreated: 3,
@@ -529,7 +529,7 @@ describe('State API :: Users :: ', () => {
     // Re-test startTime and endTime with order filler account
     stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
-      account: ACCOUNTS[1].publicKey,
+      account: ACCOUNTS[1].address,
       startTime: 0,
       endTime: newTime.minus(1).toNumber(),
     });
@@ -537,7 +537,7 @@ describe('State API :: Users :: ', () => {
 
     stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
-      account: ACCOUNTS[1].publicKey,
+      account: ACCOUNTS[1].address,
       startTime: 0,
       endTime: newTime.toNumber(),
     });
@@ -552,7 +552,7 @@ describe('State API :: Users :: ', () => {
 
     stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
-      account: ACCOUNTS[1].publicKey,
+      account: ACCOUNTS[1].address,
       startTime: newTime.plus(1).toNumber(),
       endTime: newTime.plus(100).toNumber(),
     });
@@ -646,23 +646,23 @@ describe('State API :: Users :: ', () => {
     // Redeem participation tokens
     await john.redeemParticipationTokens(
       disputeWindow.address,
-      john.account.publicKey
+      john.account.address
     );
 
     // Claim initial reporter
     initialReporter = await john.getInitialReporter(johnYesNoMarket2);
-    await initialReporter.redeem(john.account.publicKey);
+    await initialReporter.redeem(john.account.address);
 
     // Claim winning crowdsourcers
     winningReportingParticipant = await john.getWinningReportingParticipant(
       johnYesNoMarket2
     );
-    await winningReportingParticipant.redeem(john.account.publicKey);
+    await winningReportingParticipant.redeem(john.account.address);
 
     // Claim trading proceeds
     await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket2.address,
-      john.account.publicKey,
+      john.account.address,
       formatBytes32String('')
     );
 
@@ -670,7 +670,7 @@ describe('State API :: Users :: ', () => {
 
     stats = await john.api.route('getAccountTimeRangedStats', {
       universe: universe.address,
-      account: ACCOUNTS[0].publicKey,
+      account: ACCOUNTS[0].address,
     });
     // Note: one market will be pruned out.
     expect(stats).toMatchObject({

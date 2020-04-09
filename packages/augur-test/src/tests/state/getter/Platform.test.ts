@@ -4,7 +4,7 @@ import {
   ContractAPI,
   defaultSeedPath,
   fork,
-  loadSeedFile,
+  loadSeed,
 } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
@@ -16,7 +16,7 @@ describe('State API :: get-platform-activity-stats :: ', () => {
   let mary: TestContractAPI;
 
   beforeAll(async () => {
-    const seed = await loadSeedFile(defaultSeedPath);
+    const seed = await loadSeed(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
     const config = provider.getConfig();
 
@@ -31,8 +31,8 @@ describe('State API :: get-platform-activity-stats :: ', () => {
       config
     );
 
-    await john.approveCentralAuthority();
-    await mary.approveCentralAuthority();
+    await john.approve();
+    await mary.approve();
   });
 
   test('getPlatformActivityStats', async () => {
@@ -52,10 +52,10 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     const price = new BigNumber(22);
     const cost = numShares.times(78).div(10);
 
-    await john.faucet(new BigNumber(1e18));
-    await mary.faucet(new BigNumber(1e18));
-    mary.repFaucet(new BigNumber(1e18).multipliedBy(1000000));
-    john.repFaucet(new BigNumber(1e18).multipliedBy(1000000));
+    await john.faucetCash(new BigNumber(1e18));
+    await mary.faucetCash(new BigNumber(1e18));
+    mary.faucetRep(new BigNumber(1e18).multipliedBy(1000000));
+    john.faucetRep(new BigNumber(1e18).multipliedBy(1000000));
 
     // Trade
     await placeOrders(john, yesNoMarket, numShares, price);
@@ -92,7 +92,7 @@ describe('State API :: get-platform-activity-stats :: ', () => {
       marketsCreated: 3,
       numberOfTrades: 9,
     });
-    expect(stats.amountStaked.toFixed()).toEqual('975612413119039911495168');
+    expect(stats.amountStaked.toFixed()).toEqual('975612109375000000000512');
     expect(stats.openInterest.toFixed()).toEqual('2040000000000000');
     expect(stats.volume.toFixed()).toEqual('0.006093');
   });

@@ -1,7 +1,7 @@
 import {
   ACCOUNTS,
   defaultSeedPath,
-  loadSeedFile,
+  loadSeed,
   TestContractAPI,
 } from '@augurproject/tools';
 import { makeProvider } from '../../../libs';
@@ -9,7 +9,7 @@ import { makeProvider } from '../../../libs';
 let john: TestContractAPI;
 
 beforeAll(async () => {
-  const seed = await loadSeedFile(defaultSeedPath);
+  const seed = await loadSeed(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
 
   john = await TestContractAPI.userWrapper(
@@ -17,7 +17,7 @@ beforeAll(async () => {
     provider,
     provider.getConfig()
   );
-  await john.approveCentralAuthority();
+  await john.approve();
 });
 
 // NOTE: Full-text searching is tested more in SyncableDB.test.ts

@@ -7,14 +7,14 @@ import { ContractInterfaces } from '@augurproject/core';
 
 export async function fork(user: ContractAPI, market: ContractInterfaces.Market): Promise<boolean> {
   const MAX_DISPUTES = 20;
-  let SOME_REP = new BigNumber(1e18).times(10e2);
+  const SOME_REP = new BigNumber(1e18).times(10e2);
   const numOutcomes = await market.getNumberOfOutcomes_();
   const numTicks = await market.getNumTicks_();
 
   const payoutNumerators = [numTicks, ...(new Array(numOutcomes.minus(1).toNumber()).fill(new BigNumber(0)))];
   const conflictNumerators = [...payoutNumerators].reverse();
 
-  await user.repFaucet(SOME_REP);
+  await user.faucetRep(SOME_REP);
   // Get past the market time, into when we can accept the initial report.
   const endTime = await market.getEndTime_();
   await user.setTimestamp(endTime.plus(1));
@@ -22,7 +22,7 @@ export async function fork(user: ContractAPI, market: ContractInterfaces.Market)
   await user.doInitialReport(market, payoutNumerators, '', SOME_REP.toString());
   // Contribution (dispute) fulfills the first dispute bond,
   // pushing into next dispute round that takes additional stake into account.
-  await user.repFaucet(SOME_REP);
+  await user.faucetRep(SOME_REP);
   await user.contribute(market, conflictNumerators, SOME_REP);
   for (let i = 0; i < MAX_DISPUTES; i++) {
     if ((await market.getForkingMarket_()) !== NULL_ADDRESS) {
@@ -36,13 +36,13 @@ export async function fork(user: ContractAPI, market: ContractInterfaces.Market)
 
     // Contribute aka dispute. Opposing sides to keep raising the stakes.
     const numerators = i % 2 === 0 ? conflictNumerators : payoutNumerators;
-    await user.repFaucet(SOME_REP);
+    await user.faucetRep(SOME_REP);
     await user.contribute(market, numerators, SOME_REP);
     const remainingToFill = await user.getRemainingToFill(
       market,
       numerators
     );
-    await user.repFaucet(remainingToFill);
+    await user.faucetRep(remainingToFill);
     if (remainingToFill.gt(0)) await user.contribute(market, numerators, remainingToFill);
   }
 

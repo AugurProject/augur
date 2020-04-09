@@ -13,12 +13,12 @@ export interface CreatedCannedMarket {
   canned: CannedMarket;
 }
 
-async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promise<CreatedCannedMarket> {
+async function createCannedMarket(person: ContractAPI, can: CannedMarket, faucet=true): Promise<CreatedCannedMarket> {
   console.log('CREATING CANNED MARKET: ', can.extraInfo.description);
 
   const { endTime, affiliateFeeDivisor } = can;
   const feePerEthInWei = new BigNumber(10).pow(16);
-  const designatedReporter = person.account.publicKey;
+  const designatedReporter = person.account.address;
 
   let market: Market;
   switch (can.marketType) {
@@ -29,7 +29,7 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         affiliateFeeDivisor: new BigNumber(affiliateFeeDivisor),
         designatedReporter,
         extraInfo: JSON.stringify(can.extraInfo),
-      });
+      }, faucet);
       break;
     case 'scalar':
       if (!can.minPrice || !can.maxPrice || !can.tickSize) {
@@ -52,7 +52,7 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         prices: [minPrice, maxPrice],
         numTicks,
         extraInfo: JSON.stringify(can.extraInfo),
-      });
+      }), faucet;
       break;
     case 'categorical':
       if (typeof can.outcomes === 'undefined') {
@@ -65,7 +65,7 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket): Promi
         designatedReporter,
         outcomes: can.outcomes,
         extraInfo: JSON.stringify(can.extraInfo),
-      });
+      }, faucet);
       break;
     default:
       throw Error(`Invalid CannedMarket.marketType "${can.marketType}"`);
@@ -133,19 +133,19 @@ async function createOrderBook(person: ContractAPI, market: Market, can: CannedM
   }
 }
 
-export async function createCannedMarkets(person: ContractAPI): Promise<CreatedCannedMarket[]> {
+export async function createCannedMarkets(person: ContractAPI, faucet=true): Promise<CreatedCannedMarket[]> {
   const markets = [];
   for (const can of cannedMarkets) {
-    const market = await createCannedMarket(person, can);
+    const market = await createCannedMarket(person, can, faucet);
     markets.push(market);
   }
   return markets;
 }
 
-export async function createCannedMarketsAndOnChainOrders(person: ContractAPI): Promise<CreatedCannedMarket[]> {
+export async function createCannedMarketsAndOnChainOrders(person: ContractAPI, faucet=true): Promise<CreatedCannedMarket[]> {
   const markets = [];
   for (const can of cannedMarkets) {
-    const createdMarket = await createCannedMarket(person, can);
+    const createdMarket = await createCannedMarket(person, can, faucet);
     markets.push(createdMarket.market);
     await createOrderBook(person, createdMarket.market, can);
   }
