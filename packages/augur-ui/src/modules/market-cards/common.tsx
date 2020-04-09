@@ -214,7 +214,7 @@ interface ScalarBlankDisputeOutcomeProps {
   dispute: Function;
   canDispute: boolean;
   marketId: string;
-  outcomes: string[];
+  otherOutcomes: string[];
 }
 
 export const ScalarBlankDisputeOutcome = (
@@ -228,7 +228,7 @@ export const ScalarBlankDisputeOutcome = (
         secondaryButton
         queueName={SUBMIT_DISPUTE}
         queueId={props.marketId}
-        nonMatchingIds={props.outcomes}
+        nonMatchingIds={props.otherOutcomes}
         small
         disabled={!props.canDispute}
         text={'Dispute Tentative Winner'}
@@ -377,7 +377,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                       dispute={props.dispute}
                       canDispute={props.canDispute}
                       marketId={props.marketId}
-                      outcomes={outcomesShow.map(o => String(o.id))}
+                      otherOutcomes={outcomesShow.map(o => String(o.id))}
                     />
                   )}
                 <DisputeOutcome
@@ -418,7 +418,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
           dispute={props.dispute}
           canDispute={props.canDispute}
           marketId={props.marketId}
-          outcomes={outcomesShow.map(o => String(o.id))}
+          otherOutcomes={outcomesShow.map(o => String(o.id))}
         />
       )}
     </div>
