@@ -10,7 +10,7 @@ import {
   GetMarketsSortBy,
   MarketList,
 } from '@augurproject/sdk/build/state/getter/Markets';
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import {
   NULL_ADDRESS,
@@ -39,7 +39,7 @@ describe('State API :: General', () => {
     meshClient = new WSClient(`ws://localhost:${port}`);
     meshBrowser = new MockBrowserMesh(meshClient);
 
-    const seed = await loadSeedFile(defaultSeedPath);
+    const seed = await loadSeed(defaultSeedPath);
     provider = await makeProvider(seed, ACCOUNTS);
     config = provider.getConfig();
   });
@@ -64,7 +64,7 @@ describe('State API :: General', () => {
       expect(john).toBeDefined();
 
       johnConnector.initialize(john.augur, john.db);
-      await john.approveCentralAuthority();
+      await john.approve();
 
       const maryConnector = new Connectors.DirectConnector();
       const maryBrowserMesh = new MockBrowserMesh(meshClient);
@@ -77,12 +77,12 @@ describe('State API :: General', () => {
         maryBrowserMesh
       );
       maryConnector.initialize(mary.augur, mary.db);
-      await mary.approveCentralAuthority();
+      await mary.approve();
 
       maryBrowserMesh.addOtherBrowserMeshToMockNetwork(johnBrowserMesh);
       johnBrowserMesh.addOtherBrowserMeshToMockNetwork(maryBrowserMesh);
     });
-    test('State API :: Market :: getMarkets', async () => {
+    test.skip('State API :: Market :: getMarkets', async () => {
       let marketList: MarketList;
       const bid = 0;
       const ask = 1;
@@ -120,7 +120,7 @@ describe('State API :: General', () => {
       // Test creator
       marketList = await john.api.route('getMarkets', {
         universe: config.addresses.Universe,
-        creator: ACCOUNTS[0].publicKey,
+        creator: ACCOUNTS[0].address,
         isSortDescending: false,
       });
 
@@ -142,7 +142,7 @@ describe('State API :: General', () => {
       // Test designatedReporter
       marketList = await john.api.route('getMarkets', {
         universe: config.addresses.Universe,
-        designatedReporter: ACCOUNTS[0].publicKey,
+        designatedReporter: ACCOUNTS[0].address,
       });
       expect(marketList.markets.length).toEqual(1);
 
@@ -196,7 +196,7 @@ describe('State API :: General', () => {
 
       marketList = await john.api.route('getMarkets', {
         universe: config.addresses.Universe,
-        search: ACCOUNTS[0].publicKey,
+        search: ACCOUNTS[0].address,
       });
       expect(marketList.markets.length).toEqual(1);
       expect(marketList.markets[0].id).toEqual(yesNoMarket1.address);

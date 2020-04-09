@@ -107,9 +107,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   }
 
   if (isForking && forkingInfo.forkingMarket === market.id) {
-    title = 'Forking Market, This market can not be migrated';
-    description = '';
-    buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
+    show = false;
   }
 
   return {

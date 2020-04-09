@@ -548,6 +548,22 @@ div.LinearPropertyViewTransaction {
   color: @color-primary-action;
 }
 
+.MarketStatus_forking {
+  background: fade(@color-error, 20%);
+  color: @color-error;
+  display: flex;
+
+  > svg {
+    width: @size-10;
+    height: @size-10;
+    margin-right: @size-4;
+
+    > circle {
+      fill: @color-error;
+    }
+  }
+}
+
 .Archived {
   &:hover {
     > svg > g > path {

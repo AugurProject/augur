@@ -8,8 +8,8 @@ import { databasesToSync } from '@augurproject/sdk/build/warp/WarpController';
 import {
   ACCOUNTS,
   defaultSeedPath,
-  loadSeedFile,
   Seed,
+  loadSeed,
 } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { BigNumber } from 'bignumber.js';
@@ -37,7 +37,7 @@ describe('Warp Sync markets', () => {
   });
 
   beforeEach(async () => {
-    seed = await loadSeedFile(defaultSeedPath);
+    seed = await loadSeed(defaultSeedPath);
     provider = await makeProvider(seed, ACCOUNTS);
     const config = provider.getConfig();
 
@@ -62,10 +62,10 @@ describe('Warp Sync markets', () => {
       ipfs
     );
 
-    await john.faucet(new BigNumber(1000000000));
+    await john.faucetCash(new BigNumber(1000000000));
 
-    await john.approveCentralAuthority();
-    await mary.approveCentralAuthority();
+    await john.approve();
+    await mary.approve();
 
     await john.sync();
   });
@@ -92,8 +92,8 @@ describe('Warp Sync markets', () => {
 
     describe('with reported and finalized market', () => {
       beforeEach(async () => {
-        await john.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
-        await mary.faucet(new BigNumber(1e18)); // faucet enough cash for the various fill orders
+        await john.faucetCash(new BigNumber(1e18)); // faucet enough cash for the various fill orders
+        await mary.faucetCash(new BigNumber(1e18)); // faucet enough cash for the various fill orders
 
         await john.createReasonableYesNoMarket();
         await john.createReasonableYesNoMarket();
@@ -273,15 +273,15 @@ describe('Warp Sync markets', () => {
 
       await provider.provider.send('evm_increaseTime', [sizeOfStep]);
 
-      await john.transferCash(mary.account.publicKey, amountToTransfer);
-      await john.transferCash(mary.account.publicKey, amountToTransfer);
+      await john.transferCash(mary.account.address, amountToTransfer);
+      await john.transferCash(mary.account.address, amountToTransfer);
 
       const end = await provider.getBlock('latest');
 
       await provider.provider.send('evm_increaseTime', [sizeOfStep]);
 
-      await john.transferCash(mary.account.publicKey, amountToTransfer);
-      await john.transferCash(mary.account.publicKey, amountToTransfer);
+      await john.transferCash(mary.account.address, amountToTransfer);
+      await john.transferCash(mary.account.address, amountToTransfer);
 
       await expect(john.db.warpCheckpoints.table.toArray()).resolves.toEqual([
         {
@@ -392,12 +392,7 @@ describe('Warp Sync markets', () => {
         'latest'
       );
 
-      const newSizeOfStep = Math.floor((endTimestamp - currentBlockTimestamp) / 2);
-
-
-
       expect(newCurrentBlockTimestamp).toBeGreaterThan(newEndTimestamp);
-
 
       const { hash: newHash } = await john.api.route(
         'getMostRecentWarpSync',
@@ -413,7 +408,7 @@ describe('Warp Sync markets', () => {
       for (let i = 0; i < databasesToSync.length; i++) {
         const { databaseName } = databasesToSync[i];
 
-        if(databaseName === 'TimestampSet') continue;
+        if (databaseName === 'TimestampSet') continue;
 
         johnLogs[databaseName] = await john.db[databaseName].toArray();
         otherJohnLogs[databaseName] = await otherJohn.db[

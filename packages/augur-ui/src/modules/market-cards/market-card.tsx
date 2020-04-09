@@ -69,6 +69,7 @@ interface MarketCardProps {
   marketLinkCopied: Function;
   forkingMarket: string | null;
   isForking?: boolean;
+  forkingEndTime?: number; 
 }
 
 interface MarketCardState {
@@ -112,6 +113,7 @@ export default class MarketCard extends React.Component<
       marketLinkCopied,
       forkingMarket,
       isForking,
+      forkingEndTime
     } = this.props;
 
     const s = this.state;
@@ -258,7 +260,7 @@ export default class MarketCard extends React.Component<
           [Styles.Loading]: loading,
           [Styles.Nonexpanding]: !expandedOptionShowing || condensed,
           [Styles.Condensed]: condensed,
-          [Styles.Forking]: isForking,
+          [Styles.Forking]: isForking && forkingMarket !== id,
         })}
       >
         <>
@@ -298,6 +300,8 @@ export default class MarketCard extends React.Component<
               currentTime={currentAugurTimestamp}
               endTimeFormatted={endTimeFormatted}
               reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+              forkingMarket={isForking && forkingMarket === id}
+              forkingEndTime={forkingEndTime}
             />
           </div>
           <div
@@ -314,6 +318,7 @@ export default class MarketCard extends React.Component<
                 reportingState={reportingState}
                 disputeInfo={disputeInfo}
                 isWarpSync={market.isWarpSync}
+                isForkingMarket={isForking && forkingMarket === id}
               />
             )}
             {isScalar && !isWarpSync && (
@@ -328,6 +333,8 @@ export default class MarketCard extends React.Component<
               currentTime={currentAugurTimestamp}
               endTimeFormatted={endTimeFormatted}
               reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+              forkingMarket={isForking && forkingMarket === id}
+              forkingEndTime={forkingEndTime}
             />
             <FavoritesButton
               action={this.addToFavorites}
@@ -373,6 +380,7 @@ export default class MarketCard extends React.Component<
                 canSupport={canSupport}
                 marketId={id}
                 isWarpSync={market.isWarpSync}
+                forkingMarket={isForking && forkingMarket === id}
               />
               {expandedOptionShowing && (
                 <button onClick={this.expand}>
@@ -394,7 +402,7 @@ export default class MarketCard extends React.Component<
           ) : (
             <div style={{ display: 'none' }}></div>
           )}
-          {isForking && (
+          {isForking && forkingMarket !== id && (
             <div className={Styles.MigrateMarketNotice}>
               <MigrateMarketNotice marketId={id} />
             </div>
@@ -413,6 +421,7 @@ export default class MarketCard extends React.Component<
                 stake => stake.tentativeWinning
               )}
               dispute={dispute}
+              isForkingMarket={isForking && forkingMarket === id}
               canDispute={canDispute}
             />
           )}

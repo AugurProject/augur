@@ -123,7 +123,7 @@ describe('State API :: Markets :: GetMarkets', () => {
     );
 
     // Fill orders
-    mary.faucet(new BigNumber(1e18)); // faucet enough
+    mary.faucetCash(new BigNumber(1e18)); // faucet enough
 
     const cost0 = numShares
       .multipliedBy(new BigNumber(100).minus(price0))

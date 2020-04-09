@@ -2,8 +2,12 @@ import readline from 'readline';
 import { ContractAPI } from '..';
 
 export function waitForSigint(): Promise<void> {
+  process.removeAllListeners('SIGINT');
+  process.removeAllListeners('SIGTERM');
+  process.removeAllListeners('SIGHUP');
+
   process.stdin.resume();
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     process.prependListener('SIGINT', () => {
       resolve();
     });
@@ -122,4 +126,14 @@ export async function mapPromises<T>(readiedPromises: Array<ReadiedPromise<T>>, 
   } else {
     return Promise.all(readiedPromises.map((promise) => promise()));
   }
+}
+
+export async function getOrCreateMarket(user: ContractAPI, marketId?: string|boolean, title?: string): Promise<string> {
+  marketId = (marketId as string) || null;
+  if (marketId === null) {
+    const market = await user.createReasonableYesNoMarket(title);
+    marketId = market.address;
+    console.log(`Created market ${marketId}`);
+  }
+  return marketId
 }

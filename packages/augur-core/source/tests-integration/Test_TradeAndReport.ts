@@ -17,8 +17,8 @@ describe('TradeAndReport', () => {
     });
     it('#tradeAndReport', async () => {
         await fixture.faucet(new BigNumber(1000).times(1e18));
-        await fixture.repFaucet(new BigNumber(11000000).times(1e18));
-        await fixture.approveCentralAuthority();
+        await fixture.faucetRep(new BigNumber(11000000).times(1e18));
+        await fixture.approve();
 
         console.log("Poking REP MCAP");
         const repPrice = await fixture.pokeRepOracle();
