@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js';
 import { FlashArguments, FlashSession } from './flash';
 
 export function addWarpSyncScripts(flash: FlashSession) {
@@ -50,6 +51,25 @@ export function addWarpSyncScripts(flash: FlashSession) {
       const hash = args.hash as string;
       const user = await this.createUser(this.getAccount(), this.config);
       await user.reportAndFinalizeWarpSyncMarket(hash);
+    },
+  });
+
+  flash.addScript({
+    name: 'mine',
+    options: [
+      {
+        name: 'count',
+        abbr: 'c',
+        description: 'Mine a certain number of blocks. Only works against ganache.',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const count = Number(args.count);
+      const user = await this.createUser(this.getAccount(), this.config);
+      for (let i = 1;i < count;i++) {
+        await user.advanceTimestamp(new BigNumber(10));
+        console.log(`Advancing block ${i} of ${count}`);
+      }
     },
   });
 }
