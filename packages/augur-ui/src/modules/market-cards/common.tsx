@@ -511,8 +511,12 @@ export const ReportedOutcome = ({
   );
 };
 
-export const MultiMarketTable = ({ orderBook,
-  outcomes, min, max }) => {
+export const MultiMarketTable = ({
+  orderBook,
+  outcomes,
+  min,
+  max,
+}) => {
   let multiMarketTableData = processMultiMarketTableData(orderBook, outcomes, min, max);
   
   return (
@@ -528,33 +532,37 @@ export const MultiMarketTable = ({ orderBook,
         {multiMarketTableData.map(({ title, spread, moneyLine, overUnder }) => (
           <article key={title}>
             <h3>{title}</h3>
-            <div>
-              <button onClick={() => spread.action()}>
-                {spread.topLabel && <span>{spread.topLabel}</span>}
-                <span>{spread.label}</span>
-              </button>
-              <span>{spread.volume}</span>
-            </div>
-            <div>
-              <button onClick={() => moneyLine.action()}>
-                {moneyLine.topLabel && <span>{moneyLine.topLabel}</span>}
-                <span>{moneyLine.label}</span>
-              </button>
-              <span>{moneyLine.volume}</span>
-            </div>
-            <div>
-              <button onClick={() => overUnder.action()}>
-                {overUnder.topLabel && <span>{overUnder.topLabel}</span>}
-                <span>{overUnder.label}</span>
-              </button>
-              <span>{overUnder.volume}</span>
-            </div>
+            <SportsOutcome {...spread} />
+            <SportsOutcome {...moneyLine} />
+            <SportsOutcome {...overUnder} />
           </article>
         ))}
       </>
     </section>
   );
 };
+
+export interface SportsOutcomeProps {
+  action: Function;
+  topLabel?: string;
+  label?: string;
+  volume?: string;
+}
+
+export const SportsOutcome = ({
+  action,
+  topLabel,
+  label,
+  volume,
+}: SportsOutcomeProps) => (
+  <div className={Styles.SportsOutcome}>
+    <button onClick={() => action()}>
+      {topLabel && <span>{topLabel}</span>}
+      <span>{label}</span>
+    </button>
+    <span>{volume}</span>
+  </div>
+)
 
 export interface OutcomeGroupProps {
   orderBook: any;

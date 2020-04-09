@@ -871,51 +871,97 @@
 				}
 			}
 
-			> div {
-				display: grid;
-				grid-gap: @size-4;
+			// > div {
+			// 	display: grid;
+			// 	grid-gap: @size-4;
 
-				> button {
-					border: @size-1 solid var(--color-positive);
-					border-radius: @border-radius-default;
-					background: var(--color-positive-15);
-					display: flex;
-					flex-flow: column nowrap;
-					align-items: center;
-					justify-content: center;
-					height: @size-36;
+			// 	> button {
+			// 		border: @size-1 solid var(--color-positive);
+			// 		border-radius: @border-radius-default;
+			// 		background: var(--color-positive-15);
+			// 		display: flex;
+			// 		flex-flow: column nowrap;
+			// 		align-items: center;
+			// 		justify-content: center;
+			// 		height: @size-36;
 
-					&:hover:enabled,
-					&:active:enabled {
-						background: var(--color-positive);
-					}
+			// 		&:hover:enabled,
+			// 		&:active:enabled {
+			// 			background: var(--color-positive);
+			// 		}
 
-					&:disabled {
-						opacity: 0.25;
+			// 		&:disabled {
+			// 			opacity: 0.25;
 
-						> span:first-of-type {
-							display: none;
-						}
-					}
+			// 			> span:first-of-type {
+			// 				display: none;
+			// 			}
+			// 		}
 
-					> span {
-						.text-12-semi-bold;
+			// 		> span {
+			// 			.text-12-semi-bold;
 
-						color: var(--color-primary-text);
+			// 			color: var(--color-primary-text);
 
-						&:last-of-type {
-							.text-12;
-						}
-					}
-				}
+			// 			&:last-of-type {
+			// 				.text-12;
+			// 			}
+			// 		}
+			// 	}
 
-				> span {
-					.text-10;
+			// 	> span {
+			// 		.text-10;
 
-					color: var(--color-primary-text);
-					text-align: center;
+			// 		color: var(--color-primary-text);
+			// 		text-align: center;
+			// 	}
+			// }
+		}
+	}
+
+	.SportsOutcome {
+		display: grid;
+		grid-gap: @size-4;
+
+		> button {
+			border: @size-1 solid var(--color-positive);
+			border-radius: @border-radius-default;
+			background: var(--color-positive-15);
+			display: flex;
+			flex-flow: column nowrap;
+			align-items: center;
+			justify-content: center;
+			height: @size-36;
+
+			&:hover:enabled,
+			&:active:enabled {
+				background: var(--color-positive);
+			}
+
+			&:disabled {
+				opacity: 0.25;
+
+				> span:first-of-type {
+					display: none;
 				}
 			}
+
+			> span {
+				.text-12-semi-bold;
+
+				color: var(--color-primary-text);
+
+				&:last-of-type {
+					.text-12;
+				}
+			}
+		}
+
+		> span {
+			.text-10;
+
+			color: var(--color-primary-text);
+			text-align: center;
 		}
 	}
 }
