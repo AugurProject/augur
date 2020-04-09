@@ -29,7 +29,10 @@ export interface SDKConfiguration {
     writeArtifacts?: boolean,
     externalAddresses?: ExternalAddresses,
   },
-  useWarpSync?: boolean,
+  warpSync?: {
+    enabled?: boolean,
+    autoReport?: boolean
+  },
   gsn?: {
     enabled: boolean,
   },
@@ -189,7 +192,10 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     contractInputPath: path.join(__dirname, 'contracts.json'),
     writeArtifacts: true,
   },
-  useWarpSync: false,
+  warpSync: {
+    enabled: false,
+    autoReport: false,
+  },
   gsn: {
     enabled: true
   },

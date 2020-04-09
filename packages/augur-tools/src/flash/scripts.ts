@@ -1750,9 +1750,15 @@ export function addScripts(flash: FlashSession) {
     ignoreNetwork: true,
     options: [
       {
-        name: 'useWarpSync',
+        name: 'warpSync',
         abbr: 'w',
-        description: 'Pass this to generate and report a warp sync hash when the time comes.',
+        description: 'Generate a warp sync hash when the market end time elapses.',
+        flag: true,
+      },
+      {
+        name: 'autoReport',
+        abbr: 'a',
+        description: 'Report the generated warp sync hash to the market when end time elapses. Requires `--warpSync` option be specified',
         flag: true,
       },
     ],
@@ -1762,7 +1768,10 @@ export function addScripts(flash: FlashSession) {
           rpc: { enabled: true },
           mesh: { enabled: false },
         },
-        useWarpSync: Boolean(args.useWarpSync),
+        warpSync: {
+          enabled: Boolean(args.useWarpSync),
+          autoReport: Boolean(args.autoReport),
+        }
       });
       const api = await startServer(this.config, this.getAccount().address);
       const app = createApp(api);

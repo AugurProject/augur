@@ -36,7 +36,7 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     );
 
     let endWarpSyncBlockNumber = await (await db).getSyncStartingBlock() || uploadBlockNumber;
-    if (config.useWarpSync) {
+    if (config.warpSync && config.warpSync.enabled) {
       const currentBlock = await provider.getBlock('latest');
       const warpController = new WarpController((await db), client, provider,
         uploadBlockNumber);
@@ -183,6 +183,20 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled
   );
 
+  if(config.warpSync && config.warpSync.enabled && config.warpSync.autoReport) {
+    client.events.on(SubscriptionEventName.WarpSyncHashUpdated,
+      async ({ hash }) => {
+        if (hash) {
+          const market = await client.warpSync.getWarpSyncMarket(
+            config.addresses.Universe);
+          const payoutNumerators = await client.warpSync.getPayoutFromWarpSyncHash(
+            hash);
+
+          await market.doInitialReport(payoutNumerators, '', new BigNumber(0));
+        }
+      });
+  }
+
   const sync = buildSyncStrategies(client, db, ethersProvider, logFilterAggregator, config);
 
   const controller = new Controller(client, db, logFilterAggregator);
@@ -209,15 +223,7 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
 export async function startServer(config: SDKConfiguration, account?: string): Promise<API> {
   const { api, sync } = await createServer(config, undefined, account);
 
-  api.augur.on(SubscriptionEventName.WarpSyncHashUpdated, async ({hash}) => {
-    // TODO - Add guard for instances launched without private key.
-    if(hash) {
-      const market = await api.augur.warpSync.getWarpSyncMarket(config.addresses.Universe);
-      const payoutNumerators = await api.augur.warpSync.getPayoutFromWarpSyncHash(hash);
 
-      await market.doInitialReport(payoutNumerators, '', new BigNumber(0));
-    }
-  });
 
   // TODO should this await?
   sync();
