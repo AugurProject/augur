@@ -126,7 +126,6 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
   await mary.approve();
   await bob.approve();
 
-
   return {
     john,
     mary,
