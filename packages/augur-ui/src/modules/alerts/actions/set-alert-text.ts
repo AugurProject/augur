@@ -48,7 +48,6 @@ import {
   ZERO,
   ONE,
   MIGRATE_FROM_LEG_REP_TOKEN,
-  REDEEMDISPUTINGSTAKE,
 } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { Action } from 'redux';
@@ -193,13 +192,12 @@ export default function setAlertText(alert: any, callback: Function) {
         break;
 
       case REDEEMSTAKE:
-      case REDEEMDISPUTINGSTAKE:
         let participation = false;
         if (alert.params && alert.params.attoParticipationTokens) {
           participation = true;
         }
         alert.title = participation ? 'Redeem participation tokens' : 'REP Stake Redeemed';
-        if (!alert.description && alert.params) {
+        if (alert.params) {
           if (participation) {
             const tokens = formatRep(
               convertAttoValueToDisplayValue(createBigNumber(alert.params.attoParticipationTokens)).toString()
