@@ -42,7 +42,9 @@ beforeAll(async () => {
       rpcRetryInterval: 0,
       rpcConcurrency: 40,
     },
-    useWarpSync: false,
+    warpSync: {
+      enabled: false
+    },
   };
   connector.client = john.augur;
   await connector.connect(config);

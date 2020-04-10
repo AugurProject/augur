@@ -392,8 +392,7 @@ jobs:
         not(eq(variables['Build.sourceBranch'], 'refs/heads/demo')),
         not(eq(variables['Build.sourceBranch'], 'refs/tags'))
       )
-    pool:
-      vmImage: 'Ubuntu 16.04'
+    pool: 'Default'
     timeoutInMinutes: 240
     strategy:
       matrix:

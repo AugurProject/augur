@@ -29,13 +29,13 @@ export const ethToDai = (ethAmount: number, ethToDaiRate: BigNumber) => {
   return formatDaiEstimate(ethToDaiRate.times(ethAmount));
 };
 
-export const getGasInDai = (amount): FormattedNumber => {
+export const getGasInDai = (amount: BigNumber): FormattedNumber => {
   const augur = augurSdk.get();
   const gasInAttoDai = augur.convertGasEstimateToDaiCost(amount);
   return formatDaiEstimate(gasInAttoDai.dividedBy(10 ** 18));
 }
 
-export const displayGasInDai = (amount): string => {
+export const displayGasInDai = (amount: BigNumber): string => {
   const gasInDai = getGasInDai(amount);
   if (Number(gasInDai.roundedFormatted) === 0) {
     return '$0.01';

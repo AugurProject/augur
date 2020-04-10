@@ -126,11 +126,11 @@ function processOutcomes(
       invalid = market.consensus.invalid;
       outcome = market.consensus.outcome;
     } else {
-      const tentativeWinner = market.disputeInfo.stakes.find(
+      const tentativeWinner =  market.disputeInfo && market.disputeInfo.stakes.find(
         s => s.tentativeWinning
       );
-      invalid = tentativeWinner.isInvalidOutcome;
-      outcome = tentativeWinner.outcome;
+      invalid = tentativeWinner && tentativeWinner.isInvalidOutcome;
+      outcome = tentativeWinner && tentativeWinner.outcome;
     }
     if (invalid) {
       outcomes.find(o => o.id === INVALID_OUTCOME_ID).price = market.maxPrice;

@@ -493,7 +493,7 @@ export function formatDecimalValue(
   const { fullPrecision, roundedFormatted, denomination } = value;
   const fullWithoutDecimals = fullPrecision.split('.');
   const denominationLabel = showDenomination ? `${denomination}` : '';
-  
+
   return {
     fullPrecision,
     postfix: '',
@@ -531,7 +531,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
     expandedValues = formatDecimalValue(
       props.value,
       props.showDenomination,
-      props.usePercent 
+      props.usePercent
     );
   }
 
@@ -820,25 +820,6 @@ export const LinearPropertyLabel = ({
   >
     <span>{label}</span>
     <DashlineNormal />
-    {useValueLabel ? (
-      <ValueLabel
-        value={value}
-        showDenomination={showDenomination}
-        useFull={useFull}
-      />
-    ) : (
-      <span
-        className={classNames({
-          [Styles.isAccented]: accentValue,
-        })}
-      >
-        {value && value.formatted
-          ? `${
-              showDenomination || useFull ? value.full : value.roundedFormatted
-            }`
-          : value}
-      </span>
-    )}
     {useValueLabel ? (
       <ValueLabel
         value={value}
@@ -1271,6 +1252,51 @@ export const LinearPropertyLabelTooltip = (
   </span>
 );
 
+interface LinearPropertyLabelUnderlineTooltipProps extends LinearPropertyLabelProps {
+  tipText: string,
+  id: string,
+}
+
+export const LinearPropertyLabelUnderlineTooltip = ({
+  tipText,
+  value,
+  id,
+  label,
+  accentValue,
+  showDenomination,
+  useFull,
+}: LinearPropertyLabelUnderlineTooltipProps) => (
+  <div className={Styles.LinearPropertyLabel}>
+    <span>{label}</span>
+    <DashlineNormal />
+    <span
+      className={classNames({
+        [Styles.TEXT]: !!tipText,
+        [Styles.isAccented]: accentValue,
+      })}
+      data-tip
+      data-for={`underlinetooltip-${id}`}
+      data-iscapture={true}
+    >
+      {value && value.formatted
+        ? `${showDenomination || useFull ? value.full : value.roundedFormatted}`
+        : value}
+        <ReactTooltip
+          id={`underlinetooltip-${id}`}
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="right"
+          type="light"
+          event="mouseover mouseenter"
+          eventOff="mouseleave mouseout scroll mousewheel blur"
+        >
+          {tipText}
+        </ReactTooltip>
+    </span>
+  </div>
+);
+
+
 export const LinearPropertyViewTransaction = (
   props: LinearPropertyLabelViewTransactionProps
 ) => (
@@ -1462,3 +1488,4 @@ export const AddFundsHelp = props => (
     </li>
   </ol>
 );
+

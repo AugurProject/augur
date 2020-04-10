@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
-import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH } from 'modules/common/constants';
+import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, GWEI_CONVERSION } from 'modules/common/constants';
 import {
   DaiLogoIcon,
   EthIcon,
@@ -14,7 +14,7 @@ import {
   ClipboardCopy,
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { formatDai, formatEther, formatRep } from 'utils/format-number';
+import { formatDai, formatEther, formatRep, formatGasCostToEther } from 'utils/format-number';
 import { AccountBalances, FormattedNumber } from 'modules/types';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -23,6 +23,7 @@ import { displayGasInDai, ethToDai } from 'modules/app/actions/get-ethToDai-rate
 
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
+import { augurSdk } from 'services/augursdk';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -39,6 +40,7 @@ interface ConnectDropdownProps {
   userDefinedGasPrice: number;
   gasPriceSpeed: number;
   gasPriceTime: string;
+  gasPrice: BigNumber;
   showAddFundsModal: Function;
   universeSelectorModal: Function;
   universeOutcomeName: string;
@@ -47,6 +49,7 @@ interface ConnectDropdownProps {
   GsnEnabled: boolean;
   ethToDaiRate: FormattedNumber;
   loginAccountAddress: string;
+  reserveEthAmount: FormattedNumber;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
@@ -67,18 +70,21 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     GsnEnabled,
     ethToDaiRate,
     loginAccountAddress,
+    reserveEthAmount,
   } = props;
+
+  const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   let gasCostTrade;
 
   if (GsnEnabled && ethToDaiRate) {
-    gasCostTrade = displayGasInDai(NEW_ORDER_GAS_ESTIMATE);
+    const gasCost = NEW_ORDER_GAS_ESTIMATE.multipliedBy(userDefinedGasPrice);
+    gasCostTrade = displayGasInDai(gasCost);
   }
 
   if (!isLogged && !restoredAccount) return null;
 
-  const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
   let timeoutId = null;
   const referralLink = `${window.location.origin}?${AFFILIATE_NAME}=${loginAccountAddress}`;
 
@@ -126,7 +132,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     </span>
   );
 
-  const ethReserveInDai = (ethToDai(balances.ethNonSafe, createBigNumber(ethToDaiRate?.value || 0))).formattedValue;
+  const ethReserveInDai = (ethToDai(reserveEthAmount.value, createBigNumber(ethToDaiRate?.value || 0))).formattedValue;
 
   const accountFunds = [
     {
@@ -162,14 +168,11 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         'tooltip--ethReserve',
         <div>
           <p>Augur is a peer-to-peer system, and certain actions require paying a small fee to other users of the system. The cost of these fees will be included in the total fees displayed when taking that action. Trades, Creating Markets, and Reporting on the market outcome are examples of such actions.</p>
-          <p>Augur will reserve ${ethReserveInDai} of your funds in order to pay these fees, but your total balance can be cashed out at any time. To see the total amount reserved for fees, click on the Account menu.</p>
+          <p>Augur will reserve ${ethReserveInDai} of your funds in order to pay these fees. Your total balance can be cashed out at any time.</p>
         </div>
       ),
       logo: EthIcon,
-      value: formatEther(balances.ethNonSafe, {
-        zeroStyled: false,
-        decimalsRounded: 4,
-      }).formattedValue,
+      value: reserveEthAmount.formattedValue,
       subValue: ethReserveInDai,
       disabled: GsnEnabled ? balances.ethNonSafe === 0 : false,
     },
@@ -289,11 +292,11 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
               </div>
             </div>
           </div>
-          {/* <SecondaryButton
+          <SecondaryButton
             action={() => gasModal()}
             text='EDIT'
             icon={Pencil}
-          /> */}
+          />
         </div>}
 
         <div className={Styles.GasEdit}>
