@@ -204,7 +204,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         Invite friends to Augur using this link and collect a portion of the
         market fees whenever they trade in markets.
       </p>
-    </div>
+    </div>)
 
   return (
     <div onClick={event => event.stopPropagation()}>
