@@ -14,7 +14,6 @@ import {
 } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import classNames = require('classnames');
-import { FormattedNumber } from 'modules/types';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface GasProps {
@@ -23,7 +22,7 @@ interface GasProps {
   safeLow: number;
   average: number;
   fast: number;
-  userDefinedGasPrice?: number;
+  userDefinedGasPrice: number;
   feeTooLow: boolean;
 }
 
@@ -33,12 +32,12 @@ interface GasState {
   showAdvanced: boolean;
 }
 
-export const getEthTradeCost = (amount: number) => {
+export const getEthTradeCost = (gasPrice: number) => {
   return formatEtherEstimate(
     formatGasCostToEther(
       NEW_ORDER_GAS_ESTIMATE,
       { decimalsRounded: 4 },
-      createBigNumber(amount).times(GWEI_CONVERSION)
+      createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
     )
   );
 };
@@ -51,17 +50,17 @@ export const Gas = (props: GasProps) => {
     average,
     fast,
     feeTooLow,
+    userDefinedGasPrice
   } = props;
-
   const doesGasPriceMatchPresets = (amount: number) => {
     return amount === fast || amount === average || amount === safeLow;
   };
 
   const [showLowAlert, setShowLowAlert] = useState(
-    (props.userDefinedGasPrice || props.average) < props.safeLow
+    (userDefinedGasPrice || average) < safeLow
   );
   const [amount, setAmount] = useState(
-    props.userDefinedGasPrice || props.average
+    userDefinedGasPrice || average
   );
   const [showAdvanced, setShowAdvanced] = useState(
     !doesGasPriceMatchPresets(amount)
@@ -124,6 +123,8 @@ export const Gas = (props: GasProps) => {
     },
   ];
 
+  const gasCost = NEW_ORDER_GAS_ESTIMATE.multipliedBy(amount);
+  const gasCostTrade = displayGasInDai(gasCost);
   return (
     <div onClick={event => event.stopPropagation()} className={Styles.Gas}>
       <Title title='Transaction Fee' closeAction={closeAction} />
@@ -132,7 +133,7 @@ export const Gas = (props: GasProps) => {
           Selecting a faster transaction fee will result in your transaction
           being processed quicker. For more important transactions such as
           securing a sell order before anyone else takes it, we recommend a
-          faster transaction fee.*
+          faster transaction fee.
         </p>
         <div>
           {gasButtonsData.map(data => (
@@ -148,7 +149,7 @@ export const Gas = (props: GasProps) => {
                 <span>{data.avgTime}</span>
               </div>
               <div>
-                <span>${displayGasInDai(data.gwei)}</span>
+                <span>{displayGasInDai(NEW_ORDER_GAS_ESTIMATE.multipliedBy(data.gwei))}</span>
                 <span> / Trade</span>
               </div>
             </div>
@@ -180,7 +181,7 @@ export const Gas = (props: GasProps) => {
             </div>
             <div>
               <div>
-                <span>&lt; ${displayGasInDai(amount)}</span>
+                <span>&lt; {gasCostTrade}</span>
                 <span> / Trade</span>
               </div>
               <span>{getEthTradeCost(amount).formatted} ETH</span>

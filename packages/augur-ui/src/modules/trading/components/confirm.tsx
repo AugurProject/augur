@@ -17,6 +17,7 @@ import {
   HELP_CENTER,
   CREATEAUGURWALLET,
   TRANSACTIONS,
+  GWEI_CONVERSION,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -162,13 +163,13 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let messages: Message | null = null;
 
     const gasCost = gasLimit
-      ? formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, gasPrice)
+      ? formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice))
       : ZERO;
 
     let gasCostDai = null;
 
     if (GsnEnabled) {
-      gasCostDai = getGasInDai(gasLimit);
+      gasCostDai = getGasInDai(gasLimit.multipliedBy(gasPrice));
     }
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
@@ -327,7 +328,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let gasCostDai = null;
 
     if (GsnEnabled) {
-      gasCostDai = getGasInDai(gasLimit);
+      gasCostDai = getGasInDai(gasLimit.multipliedBy(gasPrice));
     }
 
     const limitPricePercentage = (side === BUY
