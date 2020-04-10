@@ -142,7 +142,7 @@ export class ContractAPI {
 
     return this.createYesNoMarket({
       endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
-      feePerCashInAttoCash: new BigNumber(feePercentage).pow(18),
+      feePerCashInAttoCash: new BigNumber(feePercentage * 10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
       designatedReporter: this.account.address,
       extraInfo: JSON.stringify({
