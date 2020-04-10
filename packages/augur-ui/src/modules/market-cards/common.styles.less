@@ -699,6 +699,29 @@
 	}
 }
 
+.OutcomeArticle {
+	// used for sportsbook.
+	background: var(--color-page-background);
+	border-radius: @border-radius-default;
+	border: @size-1 solid var(--color-outline);
+	display: flex;
+	flex-flow: row nowrap;
+	padding: @size-8;
+
+	> h3 {
+		.text-12-semi-bold;
+
+		color: var(--color-primary-text);
+		text-transform: capitalize;
+		white-space: nowrap;
+		flex: 1;
+	}
+
+	> div {
+		flex: 0 0 90px;
+	}
+}
+
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
 	.TopRow {
@@ -879,26 +902,9 @@
 		grid-template-columns: 1fr 1fr;
 
 		> article {
-			background: var(--color-page-background);
-			border-radius: @border-radius-default;
-			border: @size-1 solid var(--color-outline);
-			display: flex;
-			flex-flow: row nowrap;
-			padding: @size-8;
+			.OutcomeArticle;
+			
 			width: 100%;
-
-			> h3 {
-				.text-12-semi-bold;
-
-				color: var(--color-primary-text);
-				text-transform: capitalize;
-				white-space: nowrap;
-				flex: 1;
-			}
-
-			> div {
-				flex: 0 0 90px;
-			}
 		}
 	}
 
@@ -968,26 +974,9 @@
 			justify-content: space-between;
 
 			> article {
+				.OutcomeArticle;
+
 				flex: .325;
-				background: var(--color-page-background);
-				border-radius: @border-radius-default;
-				border: @size-1 solid var(--color-outline);
-				display: flex;
-				flex-flow: row nowrap;
-				padding: @size-8;
-
-				> h3 {
-					.text-12-semi-bold;
-
-					color: var(--color-primary-text);
-					text-transform: capitalize;
-					white-space: nowrap;
-					flex: 1;
-				}
-
-				> div {
-					flex: 0 0 90px;
-				}
 			}
 		}
 	}
