@@ -10,7 +10,7 @@ import deepClone from "utils/deep-clone";
 
 const DEFAULT_STATE: PendingQueue = {};
 
-export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data }: BaseAction): PendingQueue {
+export default function(pendingQueue: PendingQueue = deepClone<PendingQueue>(DEFAULT_STATE), { type, data }: BaseAction): PendingQueue {
   switch (type) {
     case ADD_PENDING_DATA: {
       const { pendingId, queueName, status, blockNumber, hash, info } = data;
@@ -29,7 +29,7 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
     }
     case REMOVE_PENDING_DATA_BY_HASH: {
       const { hash, queueName } = data;
-      let pending = deepClone<PendingQueue>(pendingQueue);
+      let pending = pendingQueue;
       if (pendingQueue[queueName]) {
         const queue = pendingQueue;
         pending[queueName] = Object.keys(queue).reduce(
@@ -43,7 +43,7 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
     }
     case REMOVE_PENDING_DATA: {
       const { pendingId, queueName } = data;
-      let pending = deepClone<PendingQueue>(pendingQueue);
+      let pending = pendingQueue;
       if (pendingQueue[queueName] && pendingQueue[queueName][pendingId]) {
         delete pending[queueName][pendingId];
       }
