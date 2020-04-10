@@ -873,6 +873,35 @@
 		}
 	}
 
+	.MultiOutcomeMarketGrid {
+		display: grid;
+		grid-gap: @size-8;
+		grid-template-columns: 1fr 1fr;
+
+		> article {
+			background: var(--color-page-background);
+			border-radius: @border-radius-default;
+			border: @size-1 solid var(--color-outline);
+			display: flex;
+			flex-flow: row nowrap;
+			padding: @size-8;
+			width: 100%;
+
+			> h3 {
+				.text-12-semi-bold;
+
+				color: var(--color-primary-text);
+				text-transform: capitalize;
+				white-space: nowrap;
+				flex: 1;
+			}
+
+			> div {
+				flex: 0 0 90px;
+			}
+		}
+	}
+
 	.SubMarketCollapsible {
 		display: flex;
 		flex-flow: column nowrap;

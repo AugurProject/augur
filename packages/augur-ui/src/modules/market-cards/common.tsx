@@ -568,6 +568,88 @@ export const MultiOutcomeMarketTable = ({
   )
 }
 
+function processMultiOutcomeMarketGridData(orderBook, outcomes, min, max) {
+  const data = [
+    {
+      title: 'Man City',
+      topLabel: null,
+      action: () => {},
+      label: '+310',
+      volume: '$100.43'
+    },
+    {
+      title: 'Liverpool',
+      topLabel: null,
+      action: () => {},
+      label: '+530',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Bayern Munich',
+      topLabel: null,
+      action: () => {},
+      label: '+440',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Barcelona',
+      topLabel: null,
+      action: () => {},
+      label: '+550',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'PSG',
+      topLabel: null,
+      action: () => {},
+      label: '+540',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Juventus',
+      topLabel: null,
+      action: () => {},
+      label: '+730',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Other',
+      topLabel: null,
+      action: () => {},
+      label: '+490',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Event Canceled',
+      topLabel: null,
+      action: () => {},
+      label: '+1000',
+      volume: '$100.43'
+    }, 
+  ];
+  return data;
+}
+
+export const MultiOutcomeMarketGrid = ({
+  orderBook = {},
+  outcomes = {},
+  min = 0,
+  max = 1,
+}) => {
+  const multiOutcomeMarketGridData = processMultiOutcomeMarketGridData(orderBook, outcomes, min, max);
+
+  return (
+    <section className={Styles.MultiOutcomeMarketGrid}>
+      {multiOutcomeMarketGridData.map(({ title, ...outcomeData }) => (
+        <article key={title}>
+         <h3>{title}</h3>
+         <SportsOutcome {...outcomeData} />
+        </article>
+      ))}
+    </section>
+  );
+}
+
 export const MultiMarketTable = ({
   orderBook,
   outcomes,
@@ -597,6 +679,7 @@ export const MultiMarketTable = ({
         ))}
       </>
     </section>
+    <MultiOutcomeMarketGrid />
     <MultiOutcomeMarketTable />
     <SubMarketCollapsible title='over / under 230.5' />
     <SubMarketCollapsible title='over / under 230.5' />
