@@ -41,17 +41,12 @@
   },
   "devDependencies": {
     "@types/argparse": "1.0.36",
-    "@types/jest": "24.0.18",
-    "@types/jest-environment-puppeteer": "4.3.1",
     "@types/node": "10.14.18",
     "@types/supertest": "2.0.8",
     "ganache-core": "2.9.1",
     "ipfsd-ctl": "3.0.0",
-    "jest": "24.9.0",
-    "jest-puppeteer": "4.3.0",
     "puppeteer": "1.20.0",
     "supertest": "4.0.2",
-    "ts-jest": "24.0.2",
     "ts-node": "8.4.1",
     "tsconfig-paths": "3.9.0"
   },
