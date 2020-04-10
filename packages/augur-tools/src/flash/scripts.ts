@@ -1234,10 +1234,12 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       const user = await this.createUser(this.getAccount(), this.config);
 
+      const currentBlock = await this.provider.getBlock('latest');
       const blocktime = await user.getTimestamp();
-      const epoch = Number(blocktime.toString()) * 1000;
 
-      console.log(`block: ${blocktime}`);
+      const epoch = Number(blocktime.toString()) * 1000;
+      console.log(`block number: ${currentBlock.number}`);
+      console.log(`block timestamp: ${blocktime}`);
       console.log(`local: ${moment(epoch).toString()}`);
       console.log(
         `utc: ${moment(epoch)
@@ -1746,11 +1748,29 @@ export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: 'sdk-server',
     ignoreNetwork: true,
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'warpSync',
+        abbr: 'w',
+        description: 'Generate a warp sync hash when the market end time elapses.',
+        flag: true,
+      },
+      {
+        name: 'autoReport',
+        abbr: 'a',
+        description: 'Report the generated warp sync hash to the market when end time elapses. Requires `--warpSync` option be specified',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
       this.pushConfig({
         zeroX: {
           rpc: { enabled: true },
           mesh: { enabled: false },
+        },
+        warpSync: {
+          enabled: Boolean(args.useWarpSync),
+          autoReport: Boolean(args.autoReport) && Boolean(this.config?.deploy?.privateKey),
         }
       });
       const api = await startServer(this.config, this.getAccount().address);
@@ -1867,14 +1887,6 @@ export function addScripts(flash: FlashSession) {
       const wei = new BigNumber(ethAmount).times(_1_ETH);
       const user = await this.createUser(this.getAccount(), this.config);
       await user.depositRelay(address, wei);
-    },
-  });
-
-  flash.addScript({
-    name: 'init-warp-sync',
-    async call(this: FlashSession) {
-      const user = await this.createUser(this.getAccount(), this.config);
-      await user.initWarpSync(user.augur.contracts.universe.address);
     },
   });
 

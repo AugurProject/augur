@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { submitNewMarket } from 'modules/markets/actions/submit-new-market';
 import { updateNewMarket } from 'modules/markets/actions/update-new-market';
 import Review from 'modules/create-market/components/review';
-import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import { estimateSubmitNewMarket } from 'modules/markets/actions/estimate-submit-new-market';
 import { formatDai, formatRep, formatEther } from 'utils/format-number';
 import { AppState } from 'appStore';
@@ -18,7 +17,7 @@ const mapStateToProps = (state: AppState) => {
     newMarket: newMarket,
     currentTimestamp: blockchain.currentAugurTimestamp,
     address: loginAccount.address,
-    gasPrice: getGasPrice(state),
+    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
     availableEthFormatted: formatEther(loginAccount.balances.eth),
     availableRepFormatted: formatRep(loginAccount.balances.rep),
     availableDaiFormatted: formatDai(
