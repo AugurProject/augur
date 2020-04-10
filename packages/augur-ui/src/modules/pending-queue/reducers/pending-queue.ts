@@ -6,6 +6,7 @@ import {
 import { PendingQueue, BaseAction } from "modules/types";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
+import deepClone from "utils/deep-clone";
 
 const DEFAULT_STATE: PendingQueue = {};
 
@@ -28,7 +29,7 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
     }
     case REMOVE_PENDING_DATA_BY_HASH: {
       const { hash, queueName } = data;
-      let pending = pendingQueue;
+      let pending = deepClone<PendingQueue>(pendingQueue);
       if (pendingQueue[queueName]) {
         const queue = pendingQueue;
         pending[queueName] = Object.keys(queue).reduce(
@@ -42,7 +43,7 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
     }
     case REMOVE_PENDING_DATA: {
       const { pendingId, queueName } = data;
-      let pending = pendingQueue;
+      let pending = deepClone<PendingQueue>(pendingQueue);
       if (pendingQueue[queueName] && pendingQueue[queueName][pendingId]) {
         delete pending[queueName][pendingId];
       }
