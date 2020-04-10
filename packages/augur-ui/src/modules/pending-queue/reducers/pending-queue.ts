@@ -4,6 +4,8 @@ import {
   REMOVE_PENDING_DATA_BY_HASH
 } from "modules/pending-queue/actions/pending-queue-management";
 import { PendingQueue, BaseAction } from "modules/types";
+import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
+import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE: PendingQueue = {};
 
@@ -55,6 +57,9 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
         ...pendingQueue,
       };
     }
+    case RESET_STATE:
+    case CLEAR_LOGIN_ACCOUNT:
+      return DEFAULT_STATE;
     default:
       return pendingQueue;
   }
