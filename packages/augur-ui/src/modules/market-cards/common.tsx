@@ -512,6 +512,62 @@ export const ReportedOutcome = ({
   );
 };
 
+function processMultiOutcomeMarketTableData(orderBook, outcomes, min, max) {
+  const data = [
+    {
+      title: 'Team A',
+      action: () => {},
+      topLabel: null,
+      label: '+132',
+      volume: '$100.43',
+    },
+    {
+      title: 'Draw',
+      action: () => {},
+      topLabel: null,
+      label: '+200',
+      volume: '$100.43',
+    },
+    {
+      title: 'Team B',
+      action: () => {},
+      topLabel: null,
+      label: '+150',
+      volume: '$100.43',
+    },
+    {
+      title: 'Game Canceled',
+      action: () => {},
+      topLabel: null,
+      label: '+200',
+      volume: '$100.43',
+    },
+  ];
+  return data;
+}
+
+export const MultiOutcomeMarketTable = ({
+  orderBook = {},
+  outcomes = {},
+  min = 0,
+  max = 1,
+}) => {
+  const multiOutcomeMarketTableData = processMultiOutcomeMarketTableData(orderBook, outcomes, min, max);
+
+  return (
+    <section className={Styles.MultiOutcomeMarketTable} >
+      <ul>
+        {multiOutcomeMarketTableData.map(({ title, ...outcomeData }) => (
+          <li>
+            <h3>{title}</h3>
+            <SportsOutcome {...outcomeData} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 export const MultiMarketTable = ({
   orderBook,
   outcomes,
@@ -541,6 +597,7 @@ export const MultiMarketTable = ({
         ))}
       </>
     </section>
+    <MultiOutcomeMarketTable />
     <SubMarketCollapsible title='over / under 230.5' />
     <SubMarketCollapsible title='over / under 230.5' />
     <SubMarketCollapsible title='over / under 230.5' />
@@ -549,7 +606,7 @@ export const MultiMarketTable = ({
 };
 
 function processSubMarketCollapsibleData(orderBook, outcomes, min, max) {
-  let data = [
+  const data = [
     {
       title: 'O 230.5',
       action: () => {},
