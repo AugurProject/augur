@@ -14,6 +14,7 @@ import Logo from 'modules/app/components/logo';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
+import { generateTooltip } from 'modules/app/components/inner-nav/markets-list-filters';
 
 interface TopBarProps {
   alertsVisible: boolean;
@@ -53,7 +54,13 @@ const TopBar: React.FC<TopBarProps> = ({
           <div>
             <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
             <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
-            <LinearPropertyLabel {...totalFunds} highlightAlternateBolded />
+            <span>
+              <LinearPropertyLabel {...totalFunds} highlightAlternateBolded />
+              {generateTooltip(
+                'Your total funds does not include those funds Reserved for fees',
+                'ReservedFeesTotalFunds'
+              )}
+            </span>
             <LinearPropertyLabel {...realizedPL} highlightAlternateBolded />
           </div>
           <div>

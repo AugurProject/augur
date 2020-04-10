@@ -468,16 +468,17 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      const market = args.marketId as string;
+      const skipFaucetOrApproval = Boolean(args.skipFaucetOrApproval);
       this.pushConfig({
         zeroX: {
           rpc: { enabled: true },
           mesh: { enabled: false },
-        }
+        },
       });
-      const market = args.marketId as string;
+
       const user = await this.createUser(this.getAccount(), this.config);
-      const skipFaucetApproval = Boolean(args.skipFaucetOrApproval);
-      await createYesNoZeroXOrders(user, market, skipFaucetApproval);
+      await createYesNoZeroXOrders(user, market, skipFaucetOrApproval);
     },
   });
 

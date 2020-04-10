@@ -21,8 +21,9 @@ import {
   PUBLICFILLBESTORDERWITHLIMIT,
   PUBLICTRADE,
   PUBLICTRADEWITHLIMIT,
-  REDEEMDISPUTINGSTAKE,
+  REDEEMSTAKE,
 } from 'modules/common/constants';
+import { convertAttoValueToDisplayValue } from '@augurproject/sdk/src';
 
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
@@ -115,10 +116,7 @@ export function updateAlert(
       alert.id = id;
       alert.uniqueId =
         alertName === PUBLICTRADE || alertName === PUBLICFILLORDER ? createUniqueOrderId(alert) : id;
-      if (alertName === REDEEMDISPUTINGSTAKE) {
-        alert.uniqueId = createDisptuteUniqueOrderId(alert);
-      }
-
+     
       if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
         dispatch(
           updateAlert(id, {
@@ -131,11 +129,19 @@ export function updateAlert(
           })
         );
       }
-      const foundAlert = alerts.find(
+      
+      let foundAlert = alerts.find(
         findAlert =>
           findAlert.uniqueId === alert.uniqueId &&
           findAlert.name.toUpperCase() === alert.name.toUpperCase()
       );
+      if (alertName === REDEEMSTAKE) {
+        foundAlert = alerts.find(
+          findAlert =>
+            findAlert.id === alert.id &&
+            findAlert.name.toUpperCase() === REDEEMSTAKE
+        );
+      }
       if (foundAlert) {
         dispatch(removeAlert(alert.uniqueId, alert.name));
         dispatch(
@@ -146,6 +152,7 @@ export function updateAlert(
             params: {
               ...foundAlert.params,
               ...alert.params,
+              repReceived: alert.params.repReceived && foundAlert.params.repReceived && createBigNumber(alert.params.repReceived).plus(createBigNumber(foundAlert.params.repReceived))
             },
           })
         );
