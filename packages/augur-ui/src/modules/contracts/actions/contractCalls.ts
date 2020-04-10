@@ -312,12 +312,21 @@ export function fundGsnWallet() {
   contracts.cashFaucet.faucet(amount);
 }
 
-export async function uniswapEthForRepRate(wei: BigNumber): Promise<BigNumber> {
-  return new BigNumber(102);
+export async function withdrawAllFunds(destination: string): Promise<void> {
+  const { gsn } = augurSdk.get();
+  await gsn.withdrawAllFunds(destination);
 }
 
-export async function uniswapRepForEthRate(rep: BigNumber): Promise<BigNumber> {
-  return new BigNumber(100);
+export async function withdrawAllFundsEstimateGas(destination: string): Promise<BigNumber> {
+  const { gsn } = augurSdk.get();
+  return await gsn.withdrawAllFundsEstimateGas(destination);
+}
+
+
+export async function getRepRate(): Promise<BigNumber> {
+  const { uniswap, contracts } = augurSdk.get();
+  const rate = await uniswap.getExchangeRate(contracts.reputationToken.address, contracts.cash.address);
+  return rate;
 }
 
 export function getEthForDaiRate(): BigNumber {

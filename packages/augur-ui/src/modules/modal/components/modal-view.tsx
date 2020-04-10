@@ -12,6 +12,7 @@ import ModalDaiFaucet from 'modules/modal/containers/modal-dai-faucet';
 import ModalCreationHelp from 'modules/modal/containers/modal-creation-help';
 import ModalDeposit from 'modules/modal/containers/modal-deposit';
 import ModalWithdraw from 'modules/modal/containers/modal-withdraw';
+import ModalCashOut from 'modules/modal/containers/modal-cash-out';
 import ModalMigrateRep from 'modules/modal/containers/modal-migrate-rep';
 import ModalNetworkDisabled from 'modules/modal/containers/modal-network-disabled';
 import ModalTransactions from 'modules/modal/containers/modal-transactions';
@@ -102,6 +103,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalDeposit />;
     case TYPES.MODAL_WITHDRAW:
       return <ModalWithdraw />;
+    case TYPES.MODAL_CASHOUT:
+      return <ModalCashOut />;
     case TYPES.MODAL_MIGRATE_REP:
       return <ModalMigrateRep />;
     case TYPES.MODAL_CONFIRM:

@@ -4,12 +4,12 @@ import { Transactions } from 'modules/account/components/transactions';
 import {
   NETWORK_IDS,
   MODAL_WITHDRAW,
+  MODAL_CASHOUT,
   MODAL_REP_FAUCET,
   MODAL_DAI_FAUCET,
   MODAL_ADD_FUNDS,
   MODAL_TRANSACTIONS,
   MODAL_ACCOUNT_APPROVAL,
-  MODAL_GSN_FAUCET,
   ZERO,
 } from 'modules/common/constants';
 import { AppState } from 'appStore';
@@ -24,8 +24,6 @@ const mapStateToProps = (state: AppState) => {
   const { meta, balances } = loginAccount;
   const signingWallet = meta.signer?._address;
   const networkId = getNetworkId();
-  const gsnCreated = !isGSNUnavailable(state);
-
   const showFaucets = networkId !== NETWORK_IDS.Mainnet;
 
   const localLabel = networkId !== NETWORK_IDS.Kovan ? 'Use flash to transfer ETH to address' : null;
@@ -50,7 +48,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   transactions: () => dispatch(updateModal({ type: MODAL_TRANSACTIONS })),
   approval: () => dispatch(updateModal({ type: MODAL_ACCOUNT_APPROVAL })),
   legacyRepFaucet: () => getLegacyRep(),
-  fundGsnWallet: () => dispatch(updateModal({ type: MODAL_GSN_FAUCET })),
+  cashOut: () => dispatch(updateModal({ type: MODAL_CASHOUT })),
 });
 
 const TransactionsContainer = connect(
