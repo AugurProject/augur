@@ -28,7 +28,7 @@ import moment from 'moment';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const MAX_APPROVAL = new BigNumber(2).pow(256).minus(1);
-const MAX_REP_FAUCET = new BigNumber(500000).multipliedBy(10**18);
+const MAX_REP_FAUCET = new BigNumber(499999).multipliedBy(10**18);
 
 export class ContractAPI {
   static async userWrapper(
