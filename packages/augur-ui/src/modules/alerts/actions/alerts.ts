@@ -22,6 +22,9 @@ import {
   PUBLICTRADE,
   PUBLICTRADEWITHLIMIT,
   REDEEMSTAKE,
+  CLAIMMARKETSPROCEEDS,
+  CLAIMTRADINGPROCEEDS,
+  ZERO,
 } from 'modules/common/constants';
 import { convertAttoValueToDisplayValue } from '@augurproject/sdk/src';
 
@@ -99,9 +102,8 @@ function createUniqueOrderId(alert) {
   return `${alert.id}_${price}_${outcome}_${direction}`;
 }
 
-function createDisptuteUniqueOrderId(alert) {
-  const crowdsourcer = alert.params.disputeCrowdsourcer;
-  return `${alert.id}_${crowdsourcer}_${alert.params.logIndex}`;
+function createAlternateUniqueOrderId(alert) {
+  return `${alert.id}_${alert.params.logIndex}`;
 }
 
 export function updateAlert(
@@ -117,6 +119,13 @@ export function updateAlert(
       alert.uniqueId =
         alertName === PUBLICTRADE || alertName === PUBLICFILLORDER ? createUniqueOrderId(alert) : id;
      
+      if (alertName === CLAIMTRADINGPROCEEDS) {
+        alert.uniqueId = createAlternateUniqueOrderId(alert);
+        if (createBigNumber(alert.params.numPayoutTokens).eq(ZERO)) {
+          return;
+        } 
+      }
+
       if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
         dispatch(
           updateAlert(id, {
