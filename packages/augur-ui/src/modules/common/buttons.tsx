@@ -237,10 +237,11 @@ const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
     pendingQueue[ownProps.queueName][ownProps.queueId];
 
   let status = pendingData && pendingData.status;
-
-  if (ownProps.matchingId !== undefined && pendingData) {
+  if (pendingData) {
     if (
-      pendingData.data.matchingId.toString() !== ownProps.matchingId.toString()
+      (ownProps.matchingId !== undefined && String(pendingData.data?.matchingId) !== String(ownProps.matchingId)) ||
+      (ownProps.nonMatchingIds && ownProps.nonMatchingIds.length &&
+        ownProps.nonMatchingIds.includes(pendingData.data.matchingId))
     ) {
       status = null;
       disabled = true;
@@ -469,6 +470,17 @@ export const WithdrawButton = (props: DefaultActionButtonProps) => (
     title={props.title || 'Withdraw'}
   >
     Withdraw funds
+  </button>
+);
+
+export const CashOutButton = (props: DefaultActionButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.CurrenyActionButton}
+    disabled={props.disabled}
+    title={props.title || 'Withdraw'}
+  >
+    Cash Out
   </button>
 );
 

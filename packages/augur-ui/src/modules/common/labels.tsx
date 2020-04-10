@@ -561,7 +561,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
         {!props.useFull && !props.usePercent && <span>{denominationLabel}</span>}
         {!props.useFull && !props.usePercent && `${frontFacingLabel}${postfix}`}
       </label>
-      {(!postfix.length !== 0 || showHover) && !props.usePercent && (
+      {(postfix.length !== 0 || showHover) && !props.usePercent && (
         <ReactTooltip
           id={`valueLabel-${fullPrecision}-${denominationLabel}-${props.keyId}`}
           className={TooltipStyles.Tooltip}

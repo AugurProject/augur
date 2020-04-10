@@ -773,9 +773,7 @@ export default class MarketView extends Component<
                     </div>
                   </ModulePane>
                 </ModuleTabs>
-                {pane !== 'Market Info' && (
-                  <MarketComments marketId={marketId} networkId={networkId} />
-                )}
+                <MarketComments marketId={marketId} networkId={networkId} />
               </>
             ) : (
               <>

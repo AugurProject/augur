@@ -179,8 +179,8 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         effect='solid'
         place='top'
         type='light'
-        event="mouseover mouseenter"
-        eventOff="mouseleave mouseout scroll mousewheel blur"
+        data-event="mouseover mouseenter"
+        data-eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         {content}
       </ReactTooltip>
