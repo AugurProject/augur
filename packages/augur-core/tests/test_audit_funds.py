@@ -5,7 +5,6 @@ from pytest import raises, fixture, mark
 from utils import fix, AssertLog, EtherDelta, TokenDelta, BuyWithCash, nullAddress, longTo32Bytes
 from reporting_utils import proceedToDesignatedReporting, proceedToInitialReporting, proceedToNextRound, proceedToFork, finalize
 from constants import YES, NO
-from old_eth_utils import mk_contract_address
 
 def test_shares(kitchenSinkFixture, universe, cash, market, scalarMarket):
     shareToken = kitchenSinkFixture.contracts['ShareToken']
@@ -14,7 +13,6 @@ def test_shares(kitchenSinkFixture, universe, cash, market, scalarMarket):
     account = kitchenSinkFixture.accounts[0]
 
     marketFactory = kitchenSinkFixture.contracts['MarketFactory']
-    marketAddress = mk_contract_address(marketFactory.address, 1).hex()
     assert auditFunds.addressFrom(marketFactory.address, 1) == market.address
 
     # Get scalar LONG shares with a1
