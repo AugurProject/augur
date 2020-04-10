@@ -187,7 +187,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
                 secondaryButton
                 disabled={!props.canDispute}
                 text={buttonText}
-                action={() => props.dispute(props.id.toString())}
+                action={() => props.dispute(props.id.toString(), props.invalid)}
               />
             )}
           </div>
@@ -202,7 +202,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
           secondaryButton
           disabled={!props.canDispute}
           text={buttonText}
-          action={() => props.dispute(props.id.toString())}
+          action={() => props.dispute(props.id.toString(), props.invalid)}
         />
       )}
     </div>
