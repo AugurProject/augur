@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import Clipboard from 'clipboard';
 
@@ -42,6 +42,7 @@ import {
   MarketCreator,
   PositionIcon,
   WinningMedal,
+  ThickChevron,
 } from 'modules/common/icons';
 import { isSameAddress } from 'utils/isSameAddress';
 import {
@@ -517,9 +518,10 @@ export const MultiMarketTable = ({
   min,
   max,
 }) => {
-  let multiMarketTableData = processMultiMarketTableData(orderBook, outcomes, min, max);
+  const multiMarketTableData = processMultiMarketTableData(orderBook, outcomes, min, max);
   
   return (
+    <>
     <section className={classNames(Styles.MultiMarketTable)}>
       <div>
         <ul>
@@ -538,6 +540,67 @@ export const MultiMarketTable = ({
           </article>
         ))}
       </>
+    </section>
+    <SubMarketCollapsible title='over / under 230.5' />
+    <SubMarketCollapsible title='over / under 230.5' />
+    <SubMarketCollapsible title='over / under 230.5' />
+    </>
+  );
+};
+
+function processSubMarketCollapsibleData(orderBook, outcomes, min, max) {
+  let data = [
+    {
+      title: 'O 230.5',
+      action: () => {},
+      topLabel: null,
+      label: '-105',
+      volume: '$100.43',
+    }, {
+      title: 'U 230.5',
+      action: () => {},
+      topLabel: null,
+      label: '-115',
+      volume: '$100.43',
+    }, {
+      title: 'Game Cancelled',
+      action: () => {},
+      topLabel: null,
+      label: '-128',
+      volume: '$100.43',
+    }
+  ];
+  return data;
+}
+
+export const SubMarketCollapsible = ({
+  title,
+  orderBook = {},
+  outcomes = {},
+  min = 0,
+  max = 1,
+}) => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const SubMarketCollapsibleData = processSubMarketCollapsibleData(orderBook, outcomes, min, max);
+
+  return (
+    <section className={classNames(Styles.SubMarketCollapsible, {
+      [Styles.Collapsed]: isCollapsed,
+    })}>
+      <div>
+        <h6>{title}</h6>
+        <button onClick={() => setIsCollapsed(!isCollapsed)}>
+          {ThickChevron}
+        </button>
+      </div>
+      <div>
+        {SubMarketCollapsibleData.map(({ title, ...outcomeData }) => (
+          <article key={title}>
+            <h3>{title}</h3>
+            <SportsOutcome {...outcomeData} />
+          </article>
+        ))}
+      </div>
     </section>
   );
 };

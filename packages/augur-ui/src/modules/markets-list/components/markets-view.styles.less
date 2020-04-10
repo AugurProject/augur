@@ -45,7 +45,7 @@
   .MarketsView {
     margin: 0;
 
-    > section {
+    > section:not([class*='LandingHero']) {
       // this is the sportsbook/betting-ui topsection
       align-items: center;
       display: grid;
@@ -66,7 +66,7 @@
 }
 
 :root[theme="SPORTS"] {
-  .MarketsView > section > ul {
+  .MarketsView > section:not([class*='LandingHero']) > ul {
     display: flex;
     height: @size-40;
     grid-column: 1;
