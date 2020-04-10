@@ -384,10 +384,10 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                   key={outcome.id}
                   marketId={props.marketId}
                   description={outcome.description}
-                  invalid={outcome.id === 0}
+                  invalid={outcome.isInvalid}
                   index={index > 2 ? index : index + 1}
                   stake={props.stakes.find(
-                    stake => parseFloat(stake.outcome) === outcome.id
+                    stake => parseFloat(stake.outcome) === outcome.id && stake.isInvalidOutcome === outcome.isInvalid
                   )}
                   dispute={props.dispute}
                   id={outcome.id}
@@ -402,7 +402,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                 key={outcome.id}
                 description={outcome.description}
                 lastPricePercent={outcome.lastPricePercent}
-                invalid={outcome.id === 0}
+                invalid={outcome.isInvalid}
                 index={index > 2 ? index : index + 1}
                 min={props.min}
                 max={props.max}

@@ -107,6 +107,7 @@ const buildScalarDisputingOutcomes = (
             price: null,
             volume: '0',
             isTradeable: true,
+            isInvalid: false,
           } as OutcomeFormatted,
         ];
   }, []);
