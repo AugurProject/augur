@@ -47,6 +47,7 @@ interface ConnectDropdownProps {
   GsnEnabled: boolean;
   ethToDaiRate: FormattedNumber;
   loginAccountAddress: string;
+  reserveEthAmount: FormattedNumber;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
@@ -67,6 +68,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     GsnEnabled,
     ethToDaiRate,
     loginAccountAddress,
+    reserveEthAmount,
   } = props;
 
   let gasCostTrade;
@@ -126,7 +128,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     </span>
   );
 
-  const ethReserveInDai = (ethToDai(balances.ethNonSafe, createBigNumber(ethToDaiRate?.value || 0))).formattedValue;
+  const ethReserveInDai = (ethToDai(reserveEthAmount.value, createBigNumber(ethToDaiRate?.value || 0))).formattedValue;
 
   const accountFunds = [
     {
@@ -162,14 +164,11 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         'tooltip--ethReserve',
         <div>
           <p>Augur is a peer-to-peer system, and certain actions require paying a small fee to other users of the system. The cost of these fees will be included in the total fees displayed when taking that action. Trades, Creating Markets, and Reporting on the market outcome are examples of such actions.</p>
-          <p>Augur will reserve ${ethReserveInDai} of your funds in order to pay these fees, but your total balance can be cashed out at any time. To see the total amount reserved for fees, click on the Account menu.</p>
+          <p>Augur will reserve ${ethReserveInDai} of your funds in order to pay these fees. Your total balance can be cashed out at any time.</p>
         </div>
       ),
       logo: EthIcon,
-      value: formatEther(balances.ethNonSafe, {
-        zeroStyled: false,
-        decimalsRounded: 4,
-      }).formattedValue,
+      value: reserveEthAmount.formattedValue,
       subValue: ethReserveInDai,
       disabled: GsnEnabled ? balances.ethNonSafe === 0 : false,
     },

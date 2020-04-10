@@ -307,6 +307,11 @@ export function addScripts(flash: FlashSession) {
         name: 'title',
         abbr: 'd',
         description: 'market title',
+      },
+      {
+        name: 'marketFee',
+        abbr: 'f',
+        description: 'market trading fee'
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -314,10 +319,11 @@ export function addScripts(flash: FlashSession) {
       const cat = Boolean(args.categorical);
       const scalar = Boolean(args.scalar);
       const title = args.title ? String(args.title) : undefined;
+      const fee = args.marketFee ? Number(args.marketFee) : 0;
       const user = await this.createUser(this.getAccount(), this.config);
 
       if (yesno || !(cat || scalar)) {
-        const market = await user.createReasonableYesNoMarket(title);
+        const market = await user.createReasonableYesNoMarket(title, true, fee);
         console.log(`Created YesNo market "${market.address}".`);
       }
       if (cat) {
@@ -1892,6 +1898,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.createUser(this.getAccount(), this.config);
       const balance = await user.getEthBalance(target || this.getAccount().address);
       console.log(balance.toFixed());
+      console.log(balance.dividedBy(_1_ETH));
     },
   });
 
@@ -1909,6 +1916,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.createUser(this.getAccount(), this.config);
       const balance = await user.getCashBalance(target || this.getAccount().address);
       console.log(balance.toFixed());
+      console.log(balance.dividedBy(_1_ETH));
     },
   });
 
@@ -1926,6 +1934,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.createUser(this.getAccount(), this.config);
       const balance = await user.getRepBalance(target || this.getAccount().address);
       console.log(balance.toFixed());
+      console.log(balance.dividedBy(_1_ETH));
     },
   });
 
