@@ -113,7 +113,6 @@ export interface LinearPropertyLabelProps {
   useValueLabel?: boolean;
   showDenomination?: boolean;
   useFull?: boolean;
-  valueTooltip?: string;
 }
 
 export interface LinearPropertyLabelTooltipProps {
@@ -811,7 +810,6 @@ export const LinearPropertyLabel = ({
   accentValue,
   value,
   useFull,
-  valueTooltip,
 }: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
