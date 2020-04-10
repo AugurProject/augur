@@ -98,7 +98,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 
   if (marketNeedsMigrating && !canMigrateMarkets) {
     title =
-      'Fork has finalized. REP on Winning Univese is needed to migrate markets ';
+      'Fork has finalized. REP on Winning Universe is needed to migrate markets ';
     buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
   }
 

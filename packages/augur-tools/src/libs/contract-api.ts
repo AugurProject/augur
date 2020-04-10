@@ -673,6 +673,32 @@ export class ContractAPI {
     }
   }
 
+  async reportAndFinalizeWarpSyncMarket(hash:string) {
+    const warpSyncMarket = await this.reportWarpSyncMarket(hash);
+    return this.finalizeWarpSyncMarket(warpSyncMarket);
+  }
+
+  async finalizeWarpSyncMarket(warpSyncMarket: ContractInterfaces.Market) {
+    const timestamp = (await this.getTimestamp()).plus(1000000);;
+    await this.setTimestamp(timestamp);
+
+    await this.finalizeMarket(warpSyncMarket);
+
+    return warpSyncMarket;
+  }
+
+  async reportWarpSyncMarket(hash:string) {
+    const payoutNumerators = await this.getPayoutFromWarpSyncHash(hash);
+    const warpSyncMarket = await this.getWarpSyncMarket();
+
+    const timestamp = (await this.getTimestamp()).plus(1000000);
+    await this.setTimestamp(timestamp);
+    await this.doInitialReport(warpSyncMarket, payoutNumerators);
+
+    return warpSyncMarket;
+  }
+
+
   getLegacyRepBalance(owner: string): Promise<BigNumber> {
     return this.augur.contracts.legacyReputationToken.balanceOf_(owner);
   }

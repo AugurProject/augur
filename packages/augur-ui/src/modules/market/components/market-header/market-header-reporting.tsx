@@ -10,6 +10,7 @@ import {
   PROCEEDS_TO_CLAIM_TITLE,
   TRANSACTIONS,
   CLAIMMARKETSPROCEEDS,
+  FINALIZE,
 } from 'modules/common/constants';
 import { ProcessingButton } from 'modules/common/buttons';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
@@ -17,6 +18,7 @@ import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
+import { finalizeMarket } from 'modules/contracts/actions/contractCalls';
 
 interface MarketHeaderReportingProps {
   market: MarketData;
@@ -27,6 +29,8 @@ interface MarketHeaderReportingProps {
   claimMarketsProceeds: Function;
   showReportingModal: Function;
   isForking?: boolean;
+  isForkingMarket?: boolean;
+  isLoggedIn?: boolean;
 }
 
 export const MarketHeaderReporting = ({
@@ -37,7 +41,9 @@ export const MarketHeaderReporting = ({
   isLogged,
   canClaimProceeds,
   showReportingModal,
-  isForking
+  isForking,
+  isForkingMarket,
+  isLoggedIn
 }: MarketHeaderReportingProps) => {
   const { reportingState, id, consensusFormatted } = market;
   let content = null;
@@ -62,6 +68,16 @@ export const MarketHeaderReporting = ({
             disabled={!isLogged || !canClaimProceeds}
             queueName={CLAIMMARKETSPROCEEDS}
             queueId={id}
+          />
+        )}
+        {reportingState === REPORTING_STATE.AWAITING_FINALIZATION && isForkingMarket && (
+          <ProcessingButton
+            queueName={TRANSACTIONS}
+            queueId={FINALIZE}
+            small
+            disabled={!isLoggedIn}
+            text={'Finalize Market'}
+            action={() => finalizeMarket(id)}
           />
         )}
       </div>

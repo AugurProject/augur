@@ -67,45 +67,30 @@
     "docker:deploy": "npm run docker:deploy:net -- aura clique rinkeby"
   },
   "dependencies": {
-    "@0x/migrations": "4.3.2",
     "@augurproject/artifacts": "2.0.0-alpha.2",
     "@augurproject/solidity-docgen": "0.2.0-alpha.3",
-    "@types/get-port": "4.0.1",
-    "@types/mkdirp": "0.5.2",
-    "async-mkdirp": "1.2.7",
-    "async-parallel": "1.2.3",
     "bignumber.js": "9.0.0",
-    "binascii": "0.0.2",
-    "bn.js": "5.0.0",
     "contract-dependencies-ethers": "2.0.0-alpha.2",
-    "copy-dir": "0.4.0",
-    "crypto-promise": "2.1.0",
     "ethers": "4.0.37",
-    "get-port": "4.2.0",
-    "js-sha3": "0.8.0",
-    "path": "0.12.7",
-    "recursive-readdir": "2.2.2",
-    "replace": "1.1.1",
-    "rimraf": "2.7.1",
-    "solidity-coverage": "0.6.7"
+    "path": "0.12.7"
   },
   "devDependencies": {
     "@augurproject/solidity-typescript-generator": "1.1.13",
     "@types/chai": "4.2.3",
-    "@types/jest": "24.0.18",
+    
+    "@types/mkdirp": "0.5.2",
     "@types/node": "10.14.18",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
     "child_process": "1.0.2",
     "cross-env": "5.2.1",
-    "jest": "24.9.0",
     "options-parser": "0.4.0",
     "solc": "0.5.11",
     "solium": "1.2.5",
     "source-map-support": "0.5.13",
-    "ts-jest": "24.1.0",
     "ts-node": "7.0.1",
     "typescript": "3.7.5",
-    "util": "0.12.1"
+    "util": "0.12.1",
+    "solidity-coverage": "0.6.7"
   }
 }
