@@ -78,6 +78,8 @@ export interface DismissableNoticeProps {
   buttonAction?: Function;
   className?: string;
   show: boolean;
+  queueName?: string;
+  queueId?: string;
 }
 
 export const DismissableNotice = (props: DismissableNoticeProps) => {
@@ -93,13 +95,12 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
             {props.description && <div>{props.description}</div>}
           </div>
           {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON && (
-            <button
-              type="button"
-              className={ButtonStyles.PrimaryButton}
-              onClick={props.buttonAction}
-            >
-              {props.buttonText}
-            </button>
+             <ProcessingButton
+              text={props.buttonText}
+              action={props.buttonAction}
+              queueName={props.queueName}
+              queueId={props.queueId}
+            />
           )}
           {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE && (
             <button

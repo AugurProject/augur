@@ -994,8 +994,6 @@ export async function migrateThroughOneFork(
   payoutNumerators: BigNumber[] = [],
   description: string = ''
 ) {
-  const Augur = augurSdk.get();
-  const market = Augur.getMarket(marketId);
   try {
     market.migrateThroughOneFork(payoutNumerators, description);
   } catch (e) {
@@ -1022,11 +1020,7 @@ export async function reportAndMigrateMarket(
   const Augur = augurSdk.get();
   const market = Augur.getMarket(migration.marketId);
   const payoutNumerators = await getPayoutNumerators(migration);
-  try {
-    market.migrateThroughOneFork(payoutNumerators, migration.description);
-  } catch (e) {
-    console.error('Could not report and migrate market', e);
-  }
+  return market.migrateThroughOneFork(payoutNumerators, migration.description);
 }
 
 export async function migrateRepToUniverseEstimateGas(
