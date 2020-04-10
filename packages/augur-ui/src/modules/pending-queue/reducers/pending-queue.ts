@@ -6,7 +6,6 @@ import {
 import { PendingQueue, BaseAction } from "modules/types";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import deepClone from "utils/deep-clone";
 
 const DEFAULT_STATE: PendingQueue = {};
 
@@ -14,33 +13,24 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
   switch (type) {
     case ADD_PENDING_DATA: {
       const { pendingId, queueName, status, blockNumber, hash, info } = data;
-      let pending = deepClone<PendingQueue>(pendingQueue);
-      if (pendingQueue[queueName]) {
-        pending[queueName][pendingId] = {
-          status,
-          data: info,
-          hash,
-          blockNumber,
-        };
-      } else {
-        pending[queueName] = {};
-        pending[queueName][pendingId] = {
-          status,
-          data: info,
-          hash,
-          blockNumber,
-        };
-      }
-
       return {
-        ...pending,
+        ...pendingQueue,
+        [queueName]: {
+          ...pendingQueue[queueName],
+          [pendingId]: {
+            status,
+            data: info,
+            hash,
+            blockNumber,
+          },
+        },
       };
     }
     case REMOVE_PENDING_DATA_BY_HASH: {
       const { hash, queueName } = data;
-      let pending = deepClone<PendingQueue>(pendingQueue);
+      let pending = pendingQueue;
       if (pendingQueue[queueName]) {
-        const queue = deepClone<PendingQueue>(pendingQueue);
+        const queue = pendingQueue;
         pending[queueName] = Object.keys(queue).reduce(
           (p, o) => (queue[o].hash !== hash ? {...p, [o]: queue[o]} : p),
           {}
@@ -52,7 +42,7 @@ export default function(pendingQueue: PendingQueue = DEFAULT_STATE, { type, data
     }
     case REMOVE_PENDING_DATA: {
       const { pendingId, queueName } = data;
-      let pending = deepClone<PendingQueue>(pendingQueue);
+      let pending = pendingQueue;
       if (pendingQueue[queueName] && pendingQueue[queueName][pendingId]) {
         delete pending[queueName][pendingId];
       }
