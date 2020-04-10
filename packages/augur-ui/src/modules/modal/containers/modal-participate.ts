@@ -6,7 +6,6 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import { updateModal } from '../actions/update-modal';
 import { MODAL_INITIALIZE_ACCOUNT, GSN_WALLET_SEEN } from 'modules/common/constants';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
@@ -18,7 +17,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     modal: state.modal,
     rep: state.loginAccount.balances.rep,
-    gasPrice: getGasPrice(state),
+    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
     messages: [
       {
         key: 'quant',

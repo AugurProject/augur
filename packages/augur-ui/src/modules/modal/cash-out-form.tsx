@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Breakdown } from 'modules/modal/common';
 import {
-  formatDai,
+  formatDai, formatGasCostToEther,
 } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
@@ -13,7 +13,7 @@ import { CloseButton, ProcessingButton, SecondaryButton } from 'modules/common/b
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
 import { ethToDai, displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getDaiBalance, getEthBalance } from 'modules/contracts/actions/contractCalls';
-import { WITHDRAWALLFUNDSASDAI, TRANSACTIONS } from 'modules/common/constants';
+import { WITHDRAWALLFUNDSASDAI, TRANSACTIONS, GWEI_CONVERSION } from 'modules/common/constants';
 
 interface CashOutFormProps {
   closeAction: Function;
@@ -23,6 +23,7 @@ interface CashOutFormProps {
   account: string;
   GsnEnabled: boolean;
   ethToDaiRate: FormattedNumber;
+  gasPrice: number;
 }
 
 export const CashOutForm = ( props: CashOutFormProps) => {
@@ -34,6 +35,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     account,
     signerAccount,
     ethToDaiRate,
+    gasPrice,
   } = props;
   const [gasCosts, setGasCosts] = useState(createBigNumber(TRANSFER_ETH_GAS_COST));
   const [address, setAddress] = useState('');
@@ -56,12 +58,10 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     setEthBalance(ethBalance);
   }
 
-
   useEffect(() => {
     getGasCost(account);
     getSignerBalances();
   }, []);
-
 
   const addressChange = (address: string) => {
     let updatedErrors = '';
@@ -76,16 +76,21 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     setErrors(updatedErrors);
   };
 
-
   const totalDai = createBigNumber(daiBalance || 0);
-
   const totalEthInDai1 = ethToDai(ethSignerBalance || 0, createBigNumber(ethToDaiRate?.value || 0));
   const totalEthInDai2 = ethToDai(ethBalance || 0, createBigNumber(ethToDaiRate?.value || 0));
   const formattedTotalInDai = formatDai(totalDai.plus(totalEthInDai1.value).plus(totalEthInDai2.value));
-  const gasInDai = getGasInDai(gasCosts || TRANSFER_ETH_GAS_COST);
+  const gasLimit = createBigNumber(gasCosts || TRANSFER_ETH_GAS_COST);
+  const gasInDai = getGasInDai(gasLimit.multipliedBy(gasPrice));
+  const gasEstimateInEth = formatGasCostToEther(
+    TRANSFER_ETH_GAS_COST,
+    { decimalsRounded: 4 },
+    createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+  );
+
   const gasEstimate = GsnEnabled
-    ? displayGasInDai(gasCosts)
-    : displayGasInDai(TRANSFER_ETH_GAS_COST);
+  ? displayGasInDai(gasLimit.multipliedBy(gasPrice))
+  : gasEstimateInEth;
 
   const formattedTotalMinusGasInDai = formatDai(formattedTotalInDai.value - gasInDai.value);
 
