@@ -63,7 +63,7 @@ const mapStateToProps = (state: AppState) => {
               label: labelWithTooltip({
                 labelText: "Proceeds after market fees",
                 key: "proceeds-after-market-fees",
-                tipText: "This number is the return of Frozen Funds for any position(s) held in this market in addition to any profit and lose accrued in this market"
+                tipText: "This number is the return of Frozen Funds for any position(s) held in this market in addition to any profit or loss accrued in this market"
               }),
               value: unclaimedProceeds.full,
             },
