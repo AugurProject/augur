@@ -1185,7 +1185,7 @@ export const EVENT_EXPIRATION_TOOLTIP = {
   header: 'Event expiration',
   content: 'This date time indicates when the settlement process begins.',
 };
-export const TOTAL_FUNDS_TOOLTIP = 'Your total funds does not include reserved funds for fees';
+export const TOTAL_FUNDS_TOOLTIP = 'Your total funds does not include the ETH reserve';
 export const TUTORIAL_OUTCOME = 1;
 export const TUTORIAL_QUANTITY = 100;
 export const TUTORIAL_PRICE = 0.4;
