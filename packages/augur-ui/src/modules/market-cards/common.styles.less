@@ -699,6 +699,29 @@
 	}
 }
 
+.OutcomeArticle {
+	// used for sportsbook.
+	background: var(--color-page-background);
+	border-radius: @border-radius-default;
+	border: @size-1 solid var(--color-outline);
+	display: flex;
+	flex-flow: row nowrap;
+	padding: @size-8;
+
+	> h3 {
+		.text-12-semi-bold;
+
+		color: var(--color-primary-text);
+		text-transform: capitalize;
+		white-space: nowrap;
+		flex: 1;
+	}
+
+	> div {
+		flex: 0 0 90px;
+	}
+}
+
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
 	.TopRow {
@@ -870,52 +893,203 @@
 					grid-column: span 3;
 				}
 			}
+		}
+	}
 
-			> div {
-				display: grid;
-				grid-gap: @size-4;
+	.MultiOutcomeMarketGrid {
+		display: grid;
+		grid-gap: @size-8;
+		grid-template-columns: 1fr 1fr;
 
-				> button {
-					border: @size-1 solid var(--color-positive);
-					border-radius: @border-radius-default;
-					background: var(--color-positive-15);
-					display: flex;
-					flex-flow: column nowrap;
-					align-items: center;
-					justify-content: center;
-					height: @size-36;
+		> article {
+			.OutcomeArticle;
+			
+			width: 100%;
+		}
+	}
 
-					&:hover:enabled,
-					&:active:enabled {
-						background: var(--color-positive);
-					}
+	.SubMarketCollapsible {
+		display: flex;
+		flex-flow: column nowrap;
+		flex: 1;
+		border: @size-1 solid var(--color-outline);
+		border-radius: @border-radius-default;
 
-					&:disabled {
-						opacity: 0.25;
+		&.Collapsed {
+			> div:first-of-type {
+				border-radius: @border-radius-default;
+				border-bottom: none;
 
-						> span:first-of-type {
-							display: none;
-						}
-					}
-
-					> span {
-						.text-12-semi-bold;
-
-						color: var(--color-primary-text);
-
-						&:last-of-type {
-							.text-12;
-						}
-					}
-				}
-
-				> span {
-					.text-10;
-
-					color: var(--color-primary-text);
-					text-align: center;
+				> button > svg {
+					transform: none;
 				}
 			}
+
+			> div:last-of-type {
+				display: none;
+			}
+		}
+
+		> div:first-of-type {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			background: var(--color-table-header);
+			border-top-right-radius: @border-radius-default;
+			border-top-left-radius: @border-radius-default;
+			border-bottom: @size-1 solid var(--color-outline);
+			max-height: @size-30;
+			height: @size-30;
+			padding: 0 @size-12;
+
+			> h6 {
+				.text-10-semi-bold;
+
+				color: var(--color-secondary-text);
+				text-transform: uppercase;
+			}
+
+			> button {
+				display: flex;
+				height: @size-16;
+				width: @size-16;
+
+				> svg {
+					height: @size-6;
+					width: @size-10;
+					transform: rotate(.5turn);
+
+					> path {
+						fill: var(--color-primary-text);
+					}
+				}
+			}
+		}
+
+		> div:last-of-type {
+			padding: @size-8;
+			display: flex;
+			flex-flow: row wrap;
+			align-items: center;
+			justify-content: space-between;
+
+			> article {
+				.OutcomeArticle;
+
+				flex: .325;
+			}
+		}
+	}
+
+	.MultiOutcomeMarketTable {
+		border: @size-1 solid var(--color-outline);
+		border-radius: @border-radius-default;
+		width: 100%;
+
+		> ul {
+			border-radius: @border-radius-default;
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
+
+			> li {
+				background: var(--color-page-background);
+				display: flex;
+				flex-flow: column nowrap;
+				flex: 1;
+	
+				> h3 {
+					.text-10-semi-bold;
+	
+					color: var(--color-secondary-text);
+					background: var(--color-table-header);
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					height: @size-24;
+					width: 100%;
+					border-bottom: @size-1 solid var(--color-outline);
+					text-transform: uppercase;
+				}
+
+				> div {
+					padding: @size-8 @size-4;
+				}
+
+				&:first-of-type {
+					border-top-left-radius: @border-radius-default;
+					border-bottom-left-radius: @border-radius-default;
+
+					> h3 {
+						border-top-left-radius: @border-radius-default;
+					}
+
+					> div {
+						padding-left: @size-8;
+					}
+				}
+				
+				&:last-of-type {
+					border-top-right-radius: @border-radius-default;
+					border-bottom-right-radius: @border-radius-default;
+
+					> h3 {
+						border-top-right-radius: @border-radius-default;
+					}
+
+					> div {
+						padding-right: @size-8;
+					}
+				}
+			}
+		}
+	}
+
+	.SportsOutcome {
+		display: grid;
+		grid-gap: @size-4;
+
+		> button {
+			border: @size-1 solid var(--color-positive);
+			border-radius: @border-radius-default;
+			background: var(--color-positive-15);
+			display: flex;
+			flex-flow: column nowrap;
+			align-items: center;
+			justify-content: center;
+			height: @size-36;
+
+			&:hover:enabled,
+			&:active:enabled {
+				background: var(--color-positive);
+			}
+
+			&:disabled {
+				opacity: 0.25;
+
+				> span:first-of-type {
+					display: none;
+				}
+			}
+
+			> span {
+				.text-12-semi-bold;
+
+				color: var(--color-primary-text);
+
+				&:last-of-type {
+					.text-12;
+				}
+			}
+		}
+
+		> span {
+			.text-10;
+
+			color: var(--color-primary-text);
+			text-align: center;
 		}
 	}
 }
@@ -924,6 +1098,64 @@
 	.TopRow {
 		span[class*="MarketTypeLabel"] {
 			display: none;
+		}
+	}
+}
+
+:root[theme="SPORTS"] {
+	div.ReportedOutcome {
+		max-width: @size-106;
+
+		> div {
+			align-items: center;
+			background: var(--color-open-20);
+			border-radius: @border-radius-default;
+			display: flex;
+			flex-flow: row nowrap;
+			height: @size-36;
+			justify-content: center;
+			width: @size-106;
+
+			> svg {
+				height: @size-16;
+				margin-right: @size-8;
+				width: @size-16;
+			}
+
+			> div {
+				display: flex;
+				flex-flow: column nowrap;
+
+				> span {
+					.text-12;
+	
+					color: var(--color-primary-text);
+					white-space: nowrap;
+				}
+	
+				> span:last-of-type {
+					.text-10-semi-bold;
+				}
+			}
+
+		}
+
+		&.Tenatative > div {
+			background: var(--color-reporting-15);
+
+			> svg {
+				display: none;
+			}
+
+			> div > span:nth-of-type(2) {
+				display: none;
+			}
+		}
+
+		> span:last-of-type {
+			.text-10-semi-bold;
+
+			text-transform: uppercase;
 		}
 	}
 }

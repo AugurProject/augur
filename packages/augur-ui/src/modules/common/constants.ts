@@ -908,6 +908,17 @@ export const TIMEFRAME_OPTIONS = [
   { label: TIMEFRAMES.MONTH, periodInterval: 2592000, id: 2 },
 ];
 
+export const SPORTS_MARKET_TYPES = [
+  {
+    label: 'Games',
+    id: 0,
+  },
+  {
+    label: 'Futures',
+    id: 1,
+  }
+];
+
 // Pending Queue Types
 export const CLAIM_STAKE_FEES = 'CLAIM_STAKE_FEES';
 export const CLAIM_MARKETS_PROCEEDS = 'CLAIM_MARKETS_PROCEEDS';

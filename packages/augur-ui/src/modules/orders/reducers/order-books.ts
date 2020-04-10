@@ -13,6 +13,7 @@ export default function(orderBooks = DEFAULT_STATE, { type, data }: BaseAction):
     case UPDATE_ORDER_BOOK: {
       const { marketId, orderBook } = data;
       return {
+        ...orderBooks,
         [marketId]: orderBook,
       };
     }

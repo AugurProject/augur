@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import Clipboard from 'clipboard';
 
@@ -23,7 +23,10 @@ import {
   COPY_MARKET_ID,
   COPY_AUTHOR,
   REPORTING_STATE,
+  ASKS,
+  ODDS_TYPE
 } from 'modules/common/constants';
+import { convertToOdds } from 'utils/get-odds';
 import { MARKET_LIST_CARD } from 'services/analytics/helpers';
 import { getTheme } from 'modules/app/actions/update-app-status';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
@@ -38,6 +41,8 @@ import {
   DisputeStake,
   MarketCreator,
   PositionIcon,
+  WinningMedal,
+  ThickChevron,
 } from 'modules/common/icons';
 import { isSameAddress } from 'utils/isSameAddress';
 import {
@@ -57,7 +62,7 @@ import {
   RedFlag,
   TemplateShield,
 } from 'modules/common/labels';
-import Styles from 'modules/market-cards/common.styles.less';
+import Styles, { outcome } from 'modules/market-cards/common.styles.less';
 import { MarketCard } from 'modules/market-cards/market-card';
 import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
@@ -434,8 +439,227 @@ export interface MultiMarketTable {
   }>;
 }
 
-export const MultiMarketTable = ({ multiMarketTableData = mockData }) => {
+const processMultiMarketTableData = (orderBook, outcomes, min, max) => {
+  if (!orderBook || orderBook?.asks) {
+    // this might change, shortcut
+    return mockData;
+  }
+  let data = [];
+  outcomes.forEach(outcome => {
+    const outcomeObject = {
+      title: 'default',
+      spread: {
+        topLabel: null,
+        label: '-110',
+        action: () => {},
+        volume: '$500.70',
+      },
+      moneyLine: {
+        topLabel: null,
+        label: '-157',
+        action: () => {},
+        volume: '$740.98',
+      },
+      overUnder: {
+        topLabel: null,
+        label: '-110',
+        action: () => {},
+        volume: '$540.50',
+      },
+    };
+    if (orderBook[outcome.id]) {
+      const book = orderBook[outcome.id];
+      const topAsk = book[ASKS][0].price;
+      const odds = convertToOdds({
+        price: topAsk,
+        min,
+        max,
+        type: ASKS
+      });
+      outcomeObject.title = outcome.description;
+      outcomeObject.spread.label = odds[ODDS_TYPE.AMERICAN];
+      outcomeObject.moneyLine.label = odds[ODDS_TYPE.AMERICAN];
+      outcomeObject.overUnder.label = odds[ODDS_TYPE.AMERICAN];
+      data.push(outcomeObject);
+    }
+  });
+  return data;
+};
+
+interface ReportedOutcomeProps {
+  isTentative?: boolean;
+  label?: string;
+  value?: string;
+}
+
+export const ReportedOutcome = ({
+  isTentative = false,
+  value,
+}: ReportedOutcomeProps) => {
   return (
+    <div className={classNames(Styles.ReportedOutcome, {
+      [Styles.Tenatative]: isTentative,
+    })}>
+      <div>
+        {WinningMedal}
+        <div>
+          <span>{value}</span>
+          <span>Winner</span>
+        </div>
+      </div>
+      {isTentative && <span>Tenative Winner</span>}
+    </div>
+  );
+};
+
+function processMultiOutcomeMarketTableData(orderBook, outcomes, min, max) {
+  const data = [
+    {
+      title: 'Team A',
+      action: () => {},
+      topLabel: null,
+      label: '+132',
+      volume: '$100.43',
+    },
+    {
+      title: 'Draw',
+      action: () => {},
+      topLabel: null,
+      label: '+200',
+      volume: '$100.43',
+    },
+    {
+      title: 'Team B',
+      action: () => {},
+      topLabel: null,
+      label: '+150',
+      volume: '$100.43',
+    },
+    {
+      title: 'Game Canceled',
+      action: () => {},
+      topLabel: null,
+      label: '+200',
+      volume: '$100.43',
+    },
+  ];
+  return data;
+}
+
+export const MultiOutcomeMarketTable = ({
+  orderBook = {},
+  outcomes = {},
+  min = 0,
+  max = 1,
+}) => {
+  const multiOutcomeMarketTableData = processMultiOutcomeMarketTableData(orderBook, outcomes, min, max);
+
+  return (
+    <section className={Styles.MultiOutcomeMarketTable} >
+      <ul>
+        {multiOutcomeMarketTableData.map(({ title, ...outcomeData }) => (
+          <li>
+            <h3>{title}</h3>
+            <SportsOutcome {...outcomeData} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function processMultiOutcomeMarketGridData(orderBook, outcomes, min, max) {
+  const data = [
+    {
+      title: 'Man City',
+      topLabel: null,
+      action: () => {},
+      label: '+310',
+      volume: '$100.43'
+    },
+    {
+      title: 'Liverpool',
+      topLabel: null,
+      action: () => {},
+      label: '+530',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Bayern Munich',
+      topLabel: null,
+      action: () => {},
+      label: '+440',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Barcelona',
+      topLabel: null,
+      action: () => {},
+      label: '+550',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'PSG',
+      topLabel: null,
+      action: () => {},
+      label: '+540',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Juventus',
+      topLabel: null,
+      action: () => {},
+      label: '+730',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Other',
+      topLabel: null,
+      action: () => {},
+      label: '+490',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Event Canceled',
+      topLabel: null,
+      action: () => {},
+      label: '+1000',
+      volume: '$100.43'
+    }, 
+  ];
+  return data;
+}
+
+export const MultiOutcomeMarketGrid = ({
+  orderBook = {},
+  outcomes = {},
+  min = 0,
+  max = 1,
+}) => {
+  const multiOutcomeMarketGridData = processMultiOutcomeMarketGridData(orderBook, outcomes, min, max);
+
+  return (
+    <section className={Styles.MultiOutcomeMarketGrid}>
+      {multiOutcomeMarketGridData.map(({ title, ...outcomeData }) => (
+        <article key={title}>
+         <h3>{title}</h3>
+         <SportsOutcome {...outcomeData} />
+        </article>
+      ))}
+    </section>
+  );
+}
+
+export const MultiMarketTable = ({
+  orderBook,
+  outcomes,
+  min,
+  max,
+}) => {
+  const multiMarketTableData = processMultiMarketTableData(orderBook, outcomes, min, max);
+  
+  return (
+    <>
     <section className={classNames(Styles.MultiMarketTable)}>
       <div>
         <ul>
@@ -448,35 +672,103 @@ export const MultiMarketTable = ({ multiMarketTableData = mockData }) => {
         {multiMarketTableData.map(({ title, spread, moneyLine, overUnder }) => (
           <article key={title}>
             <h3>{title}</h3>
-            <div>
-              <button onClick={() => spread.action()}>
-                {spread.topLabel && <span>{spread.topLabel}</span>}
-                <span>{spread.label}</span>
-              </button>
-              <span>{spread.volume}</span>
-            </div>
-            <div>
-              <button onClick={() => moneyLine.action()}>
-                {moneyLine.topLabel && <span>{moneyLine.topLabel}</span>}
-                <span>{moneyLine.label}</span>
-              </button>
-              <span>{moneyLine.volume}</span>
-            </div>
-            <div>
-              <button onClick={() => overUnder.action()}>
-                {overUnder.topLabel && <span>{overUnder.topLabel}</span>}
-                <span>{overUnder.label}</span>
-              </button>
-              <span>{overUnder.volume}</span>
-            </div>
+            <SportsOutcome {...spread} />
+            <SportsOutcome {...moneyLine} />
+            <SportsOutcome {...overUnder} />
           </article>
         ))}
       </>
     </section>
+    <MultiOutcomeMarketGrid />
+    <MultiOutcomeMarketTable />
+    <SubMarketCollapsible title='over / under 230.5' />
+    <SubMarketCollapsible title='over / under 230.5' />
+    <SubMarketCollapsible title='over / under 230.5' />
+    </>
   );
 };
 
+function processSubMarketCollapsibleData(orderBook, outcomes, min, max) {
+  const data = [
+    {
+      title: 'O 230.5',
+      action: () => {},
+      topLabel: null,
+      label: '-105',
+      volume: '$100.43',
+    }, {
+      title: 'U 230.5',
+      action: () => {},
+      topLabel: null,
+      label: '-115',
+      volume: '$100.43',
+    }, {
+      title: 'Game Cancelled',
+      action: () => {},
+      topLabel: null,
+      label: '-128',
+      volume: '$100.43',
+    }
+  ];
+  return data;
+}
+
+export const SubMarketCollapsible = ({
+  title,
+  orderBook = {},
+  outcomes = {},
+  min = 0,
+  max = 1,
+}) => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const SubMarketCollapsibleData = processSubMarketCollapsibleData(orderBook, outcomes, min, max);
+
+  return (
+    <section className={classNames(Styles.SubMarketCollapsible, {
+      [Styles.Collapsed]: isCollapsed,
+    })}>
+      <div>
+        <h6>{title}</h6>
+        <button onClick={() => setIsCollapsed(!isCollapsed)}>
+          {ThickChevron}
+        </button>
+      </div>
+      <div>
+        {SubMarketCollapsibleData.map(({ title, ...outcomeData }) => (
+          <article key={title}>
+            <h3>{title}</h3>
+            <SportsOutcome {...outcomeData} />
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export interface SportsOutcomeProps {
+  action: Function;
+  topLabel?: string;
+  label?: string;
+  volume?: string;
+}
+
+export const SportsOutcome = ({
+  action,
+  topLabel,
+  label,
+  volume,
+}: SportsOutcomeProps) => (
+  <div className={Styles.SportsOutcome}>
+    <button onClick={() => action()}>
+      {topLabel && <span>{topLabel}</span>}
+      <span>{label}</span>
+    </button>
+    <span>{volume}</span>
+  </div>
+)
+
 export interface OutcomeGroupProps {
+  orderBook: any;
   outcomes: OutcomeFormatted[];
   expanded?: Boolean;
   marketType: string;
@@ -495,6 +787,7 @@ export interface OutcomeGroupProps {
 }
 
 export const OutcomeGroup = ({
+  orderBook,
   outcomes,
   expanded,
   marketType,
@@ -512,7 +805,7 @@ export const OutcomeGroup = ({
   theme = getTheme(),
 }: OutcomeGroupProps) => {
   if (theme === THEMES.SPORTS) {
-    return <MultiMarketTable />;
+    return <MultiMarketTable orderBook={orderBook} outcomes={outcomes} min={min} max={max} />;
   }
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     marketType,

@@ -24,6 +24,7 @@ import { MarketData } from 'modules/types';
 import MigrateMarketNotice from 'modules/market-cards/containers/migrate-market-notice';
 import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
+import { ThickChevron } from 'modules/common/icons';
 
 const LoadingCard = () => (<div
 className={classNames(Styles.MarketCard, {
@@ -47,6 +48,7 @@ interface MarketCardProps {
   history: History;
   location: Location;
   toggleFavorite: Function;
+  orderBook: any;
   currentAugurTimestamp: number;
   disputingWindowEndTime: number;
   condensed?: boolean;
@@ -83,10 +85,10 @@ export const MarketCard = ({
   marketLinkCopied,
   toggleFavorite,
   theme,
-  isForking,
-  forkingMarket,
+  orderBook
 }: MarketCardProps) => {
   const [expanded, setExpanded] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const {
     outcomesFormatted,
     marketType,
@@ -95,23 +97,15 @@ export const MarketCard = ({
     maxPriceBigNumber,
     categories,
     id,
-    marketStatus,
-    author,
     reportingState,
-    openInterestFormatted,
-    volumeFormatted,
     disputeInfo,
     endTimeFormatted,
-    isTemplate,
     consensusFormatted,
-    mostLikelyInvalid,
-    isWarpSync,
   } = market;
 
   if (loading) {
     return <LoadingCard />;
   }
-
   const path =
     location.pathname === makePath(MARKETS)
       ? location
@@ -168,6 +162,7 @@ export const MarketCard = ({
         [Styles.Nonexpanding]: !expandedOptionShowing || condensed,
         [Styles.Condensed]: condensed,
         [Styles.Scalar]: isScalar,
+        [Styles.ShowMore]: notTrading && showMore
       })}
     >
       <>
@@ -192,6 +187,7 @@ export const MarketCard = ({
         {!condensed && !marketResolved ? (
           <>
             <OutcomeGroup
+              orderBook={orderBook}
               outcomes={outcomesFormatted}
               marketType={marketType}
               scalarDenomination={scalarDenomination}
@@ -250,12 +246,19 @@ export const MarketCard = ({
         />
       </div>
       {notTrading && (
+        <>
         <MarketProgress
           reportingState={reportingState}
           currentTime={currentAugurTimestamp}
           endTimeFormatted={endTimeFormatted}
           reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
         />
+        <button
+          onClick={() => setShowMore(!showMore)}
+        >
+          {ThickChevron} {`${showMore ? 'Show Less' : 'Show More' }`}
+        </button>
+        </>
       )}
     </div>
   );

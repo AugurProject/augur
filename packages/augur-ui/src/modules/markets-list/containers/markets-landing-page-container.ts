@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 
 import MarketsLandingPage from 'modules/markets-list/components/markets-landing-page';
 import { toggleFavorite } from 'modules/markets/actions/update-favorites';
-import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import {
   loadMarketsByFilter,
@@ -47,8 +46,6 @@ const mapDispatchToProps = (
   setLoadMarketsPending: isSearching =>
     dispatch(setLoadMarketsPending(isSearching)),
   updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
-  loadMarketsInfoIfNotLoaded: marketIds =>
-    dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
   loadMarketsByFilter: (
     filter: LoadMarketsFilterOptions,
     cb: NodeStyleCallback

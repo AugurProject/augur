@@ -44,6 +44,55 @@
 :root[theme="SPORTS"] {
   .MarketsView {
     margin: 0;
+
+    > section:not([class*='LandingHero']) {
+      // this is the sportsbook/betting-ui topsection
+      align-items: center;
+      display: grid;
+      grid-gap: 0 @size-8;
+      grid-template-columns: 0fr 1fr minmax(270px, 1fr);
+      margin-top: @size-32;
+
+      > ul {
+        display: none;
+      }
+
+      > div {
+        justify-self: flex-end;
+        grid-column: 2;
+      }
+    }
+  }
+}
+
+:root[theme="SPORTS"] {
+  .MarketsView > section:not([class*='LandingHero']) > ul {
+    display: flex;
+    height: @size-40;
+    grid-column: 1;
+
+    > li {
+      background: var(--color-module-background);
+
+      &:first-of-type:hover:not([class*="Selected"]) {
+        border-right: 0;
+      }
+      
+      > button {
+        .text-14-bold;
+
+        color: var(--color-inactive-text);
+        text-transform: capitalize;
+      }
+
+      &[class*="Selected"] {
+        border: @size-1 solid var(--color-primary-text);
+
+        > button {
+          color: var(--color-primary-text);
+        }
+      }
+    }
   }
 }
 
