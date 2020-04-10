@@ -47,6 +47,8 @@ import {
   SUBMIT_DISPUTE,
   CLAIMMARKETSPROCEEDS,
   DISAVOWCROWDSOURCERS,
+  REDEEMDISPUTINGSTAKE,
+  MARKETMIGRATED,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -295,6 +297,7 @@ export const handleMarketMigratedLog = (log: any) => (
   const userAddress = getState().loginAccount.address;
   if (log.originalUniverse === universeId) {
     dispatch(removeMarket(log.market));
+    dispatch(addPendingData(log.market, MARKETMIGRATED, TXEventName.Success, '0', undefined));
   } else {
     dispatch(loadMarketsInfo([log.market]));
   }

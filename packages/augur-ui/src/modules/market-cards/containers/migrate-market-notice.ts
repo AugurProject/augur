@@ -7,6 +7,7 @@ import {
   REPORTING_STATE,
   MODAL_CLAIM_FEES,
   ZERO,
+  MARKETMIGRATED,
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { selectMarket } from 'modules/markets/selectors/market';
@@ -78,13 +79,18 @@ const mapStateToProps = (state: AppState, ownProps) => {
   let buttonText = '';
   let description = '';
   let buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
-
+  let queueName = '';
+  let queueId = '';
+  
   if (marketNeedsMigrating && canMigrateMarkets) {
     title =
       'Fork has finalized. Please migrate this market to the new universe.';
+    description = 'This market will be migrated to the winning universe and will no longer be viewable in the current universe.';
     buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON;
     if (hasMarketEnded) {
       buttonText = 'Report and Migrate Market';
+      queueName = MARKETMIGRATED;
+      queueId = marketId;
     } else {
       buttonText = 'Migrate Market';
     }
@@ -113,6 +119,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     market,
     show,
     buttonText,
+    queueName,
+    queueId,
     buttonType,
     title,
     description,
