@@ -4,14 +4,16 @@ import { formatBytes32String } from 'ethers/utils';
 import { QUINTILLION, numTicksToTickSizeWithDisplayPrices } from '@augurproject/sdk';
 import { ContractAPI } from '..';
 
+const MILLION = QUINTILLION.multipliedBy(1000000);
+
 export async function createYesNoZeroXOrders(
   user: ContractAPI,
   market: string,
   skipFaucetApproval: boolean,
 ) {
   if (!skipFaucetApproval) {
-    await user.faucetCashUpTo(QUINTILLION.multipliedBy(1000000));
-    await user.approveIfNecessary();
+    await user.faucetCashUpTo(MILLION, MILLION);
+    await user.approve();
   }
   const yesNoMarket = cannedMarkets.find(c => c.marketType === 'yesNo');
   const orderBook = yesNoMarket.orderBook;
@@ -66,6 +68,7 @@ export async function createYesNoZeroXOrders(
       });
     }
   }
+
   await user.placeZeroXOrders(orders).catch(console.error);
 }
 
@@ -76,8 +79,8 @@ export async function createCatZeroXOrders(
   numOutcomes: number,
 ) {
   if (!skipFaucetApproval) {
-    await user.faucetCashUpTo(QUINTILLION.multipliedBy(1000000));
-    await user.approveIfNecessary();
+    await user.faucetCashUpTo(MILLION, MILLION);
+    await user.approve();
   }
 
   const orderBook = {
@@ -176,8 +179,8 @@ export async function createScalarZeroXOrders(
   maxPrice: BigNumber,
 ) {
   if (!skipFaucetApproval) {
-    await user.faucetCashUpTo(QUINTILLION.multipliedBy(1000000));
-    await user.approveIfNecessary();
+    await user.faucetCashUpTo(MILLION, MILLION);
+    await user.approve();
   }
 
   const timestamp = await user.getTimestamp();

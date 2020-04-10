@@ -205,7 +205,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         market fees whenever they trade in markets.
       </p>
     </div>
-  );
 
   return (
     <div onClick={event => event.stopPropagation()}>

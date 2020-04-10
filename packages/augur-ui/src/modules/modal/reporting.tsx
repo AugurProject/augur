@@ -21,6 +21,7 @@ import {
   INVALID_OUTCOME_NAME,
   SUBMIT_REPORT,
   SUBMIT_DISPUTE,
+  MARKETMIGRATED,
 } from 'modules/common/constants';
 import {
   doInitialReport,
@@ -280,7 +281,10 @@ export default class ModalReporting extends Component<
       if (estimateGas) {
         return reportAndMigrateMarket_estimateGas(report);
       } else {
-        reportAndMigrateMarket(report);
+        addPendingData(marketId, MARKETMIGRATED, TXEventName.Pending, '0', undefined);
+        reportAndMigrateMarket(report).catch(err => {
+          addPendingData(marketId, MARKETMIGRATED, TXEventName.Failure, '0', undefined);
+        });
       }
     } else if (isReporting) {
       if (estimateGas) {
