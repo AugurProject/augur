@@ -47,8 +47,8 @@ export const selectResolvedMarketsOpenOrders = createSelector(
       .map(id => selectMarket(id))
       .filter(
         market =>
-          market.reportingState == REPORTING_STATE.AWAITING_FINALIZATION ||
-          market.reportingState === REPORTING_STATE.FINALIZED
+        market && (market.reportingState == REPORTING_STATE.AWAITING_FINALIZATION ||
+          market.reportingState === REPORTING_STATE.FINALIZED)
       )
       .filter(market => userOpenOrders(market.id).length > 0)
       .map(getRequiredMarketData);
@@ -62,7 +62,7 @@ export const selectMostLikelyInvalidMarkets = createSelector(
       .map(id => selectMarket(id))
       .filter(
         market =>
-          market.mostLikelyInvalid
+          market && market.mostLikelyInvalid
       )
       .filter(market => userOpenOrders(market.id).length > 0)
       .map(getRequiredMarketData);
@@ -115,7 +115,7 @@ export const selectMarketsInDispute = createSelector(
     const state = store.getState() as AppState;
     let marketIds = Object.keys(positions);
     const { reporting } = state.loginAccount;
-    if (reporting.disputing && reporting.disputing.contracts) {
+    if (reporting && reporting.disputing && reporting.disputing.contracts) {
       marketIds = Array.from(
         new Set([
           ...marketIds,
@@ -125,7 +125,7 @@ export const selectMarketsInDispute = createSelector(
         ])
       );
     }
-    if (reporting.reporting && reporting.reporting.contracts) {
+    if (reporting && reporting.reporting && reporting.reporting.contracts) {
       marketIds = Array.from(
         new Set([
           ...marketIds,
@@ -303,68 +303,69 @@ const getRequiredMarketData = market => ({
 
 // Build notification objects and include market data
 const generateCards = (markets, type) => {
-  let defaults = {};
-
-  if (type === NOTIFICATION_TYPES.resolvedMarketsOpenOrders) {
-    defaults = {
-      type,
-      isImportant: false,
-      isNew: true,
-      title: RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
-      buttonLabel: TYPE_VIEW_ORDERS,
-      queueName: TRANSACTIONS,
-      queueId: CANCELORDERS,
-    };
-  } else if (type === NOTIFICATION_TYPES.reportOnMarkets) {
-    defaults = {
-      type,
-      isImportant: true,
-      redIcon: true,
-      isNew: true,
-      title: REPORTING_ENDS_SOON_TITLE,
-      buttonLabel: TYPE_REPORT,
-      queueName: SUBMIT_REPORT
-    };
-  } else if (type === NOTIFICATION_TYPES.marketsInDispute) {
-    defaults = {
-      type,
-      isImportant: false,
-      isNew: true,
-      title: TYPE_DISPUTE,
-      buttonLabel: TYPE_DISPUTE,
-      queueName: SUBMIT_DISPUTE,
-    };
-  } else if (type === NOTIFICATION_TYPES.unsignedOrders) {
-    defaults = {
-      type,
-      isImportant: false,
-      isNew: true,
-      title: SIGN_SEND_ORDERS,
-      buttonLabel: TYPE_VIEW_ORDERS,
-    };
-  } else if (type === NOTIFICATION_TYPES.proceedsToClaim) {
-    defaults = {
-      type,
-      isImportant: false,
-      isNew: true,
-      title: PROCEEDS_TO_CLAIM_TITLE,
-      buttonLabel: TYPE_VIEW_DETAILS,
-      queueName: TRANSACTIONS,
-      queueId: CLAIMMARKETSPROCEEDS,
-    };
-  } else if (type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid) {
-    defaults = {
-      type,
-      isImportant: false,
-      isNew: true,
-      title: MARKET_IS_MOST_LIKELY_INVALID_TITLE,
-      buttonLabel: TYPE_VIEW_DETAILS,
-    };
+  const getDefaults = market => {
+    let defaults = {};
+    if (type === NOTIFICATION_TYPES.resolvedMarketsOpenOrders) {
+      defaults = {
+        type,
+        isImportant: false,
+        isNew: true,
+        title: RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
+        buttonLabel: TYPE_VIEW_ORDERS,
+        queueName: CANCELORDERS,
+        queueId: market.id,
+      };
+    } else if (type === NOTIFICATION_TYPES.reportOnMarkets) {
+      defaults = {
+        type,
+        isImportant: true,
+        redIcon: true,
+        isNew: true,
+        title: REPORTING_ENDS_SOON_TITLE,
+        buttonLabel: TYPE_REPORT,
+        queueName: SUBMIT_REPORT
+      };
+    } else if (type === NOTIFICATION_TYPES.marketsInDispute) {
+      defaults = {
+        type,
+        isImportant: false,
+        isNew: true,
+        title: TYPE_DISPUTE,
+        buttonLabel: TYPE_DISPUTE,
+        queueName: SUBMIT_DISPUTE,
+      };
+    } else if (type === NOTIFICATION_TYPES.unsignedOrders) {
+      defaults = {
+        type,
+        isImportant: false,
+        isNew: true,
+        title: SIGN_SEND_ORDERS,
+        buttonLabel: TYPE_VIEW_ORDERS,
+      };
+    } else if (type === NOTIFICATION_TYPES.proceedsToClaim) {
+      defaults = {
+        type,
+        isImportant: false,
+        isNew: true,
+        title: PROCEEDS_TO_CLAIM_TITLE,
+        buttonLabel: TYPE_VIEW_DETAILS,
+        queueName: TRANSACTIONS,
+        queueId: CLAIMMARKETSPROCEEDS,
+      };
+    } else if (type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid) {
+      defaults = {
+        type,
+        isImportant: false,
+        isNew: true,
+        title: MARKET_IS_MOST_LIKELY_INVALID_TITLE,
+        buttonLabel: TYPE_VIEW_DETAILS,
+      };
+    }
+    return defaults;
   }
-
   return markets.map(market => ({
     market,
-    ...defaults,
+    ...getDefaults(market),
     id: `${type}-${market.id}`,
   }));
 };

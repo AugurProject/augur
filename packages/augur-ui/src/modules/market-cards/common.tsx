@@ -187,7 +187,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
                 secondaryButton
                 disabled={!props.canDispute}
                 text={buttonText}
-                action={() => props.dispute(props.id.toString())}
+                action={() => props.dispute(props.id.toString(), props.invalid)}
               />
             )}
           </div>
@@ -202,7 +202,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
           secondaryButton
           disabled={!props.canDispute}
           text={buttonText}
-          action={() => props.dispute(props.id.toString())}
+          action={() => props.dispute(props.id.toString(), props.invalid)}
         />
       )}
     </div>
@@ -214,6 +214,7 @@ interface ScalarBlankDisputeOutcomeProps {
   dispute: Function;
   canDispute: boolean;
   marketId: string;
+  otherOutcomes: string[];
 }
 
 export const ScalarBlankDisputeOutcome = (
@@ -227,6 +228,7 @@ export const ScalarBlankDisputeOutcome = (
         secondaryButton
         queueName={SUBMIT_DISPUTE}
         queueId={props.marketId}
+        nonMatchingIds={props.otherOutcomes}
         small
         disabled={!props.canDispute}
         text={'Dispute Tentative Winner'}
@@ -375,16 +377,17 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                       dispute={props.dispute}
                       canDispute={props.canDispute}
                       marketId={props.marketId}
+                      otherOutcomes={outcomesShow.map(o => String(o.id))}
                     />
                   )}
                 <DisputeOutcome
                   key={outcome.id}
                   marketId={props.marketId}
                   description={outcome.description}
-                  invalid={outcome.id === 0}
+                  invalid={outcome.isInvalid}
                   index={index > 2 ? index : index + 1}
                   stake={props.stakes.find(
-                    stake => parseFloat(stake.outcome) === outcome.id
+                    stake => parseFloat(stake.outcome) === outcome.id && stake.isInvalidOutcome === outcome.isInvalid
                   )}
                   dispute={props.dispute}
                   id={outcome.id}
@@ -399,7 +402,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
                 key={outcome.id}
                 description={outcome.description}
                 lastPricePercent={outcome.lastPricePercent}
-                invalid={outcome.id === 0}
+                invalid={outcome.isInvalid}
                 index={index > 2 ? index : index + 1}
                 min={props.min}
                 max={props.max}
@@ -415,6 +418,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
           dispute={props.dispute}
           canDispute={props.canDispute}
           marketId={props.marketId}
+          otherOutcomes={outcomesShow.map(o => String(o.id))}
         />
       )}
     </div>
