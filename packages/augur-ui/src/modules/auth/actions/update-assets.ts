@@ -14,17 +14,16 @@ import { addedDaiEvent } from 'services/analytics/helpers';
 import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { createBigNumber } from 'utils/create-big-number';
 import { WALLET_STATUS_VALUES, TWO } from 'modules/common/constants';
-import { windowRef } from 'utils/window-ref';
 
 export const updateAssets = (
   callback: NodeStyleCallback,
-): ThunkAction<any, any, any, any> => async (
+): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { loginAccount, universe, appStatus } = getState();
   const { address, meta } = loginAccount;
-  const nonSafeWallet = await meta.signer.getAddress();
+  const nonSafeWallet = meta.signer._address;
 
   updateBalances(
     universe.id,
@@ -56,7 +55,6 @@ function updateBalances(
     getLegacyRepBalance(nonSafeWallet),
     getEthBalance(nonSafeWallet),
   ]).then(amounts => {
-    console.log('BALANCE UPDATE!', amounts);
     const attoRep = amounts[0].toString();
     const dai = amounts[1];
     const eth = amounts[2];
