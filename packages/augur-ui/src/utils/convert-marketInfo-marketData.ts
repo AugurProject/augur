@@ -193,7 +193,7 @@ function processDisputeInfo(
   if (!disputeInfo) return disputeInfo;
   if (marketType === SCALAR) {
     const invalidIncluded = disputeInfo.stakes.find(
-      s => Number(s.outcome) === INVALID_OUTCOME_ID
+      s => s.isInvalidOutcome
     );
     // add blank outcome
     const blankStake = getEmptyStake(null, disputeInfo.bondSizeOfNewStake);
