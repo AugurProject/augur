@@ -163,13 +163,13 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let messages: Message | null = null;
 
     const gasCost = gasLimit
-      ? formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice))
+      ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
 
     let gasCostDai = null;
 
     if (GsnEnabled) {
-      gasCostDai = getGasInDai(gasLimit.multipliedBy(gasPrice));
+      gasCostDai = getGasInDai(gasCost);
     }
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
@@ -327,8 +327,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = null;
 
+    const gasCost = gasLimit
+    ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
+    : ZERO;
+
     if (GsnEnabled) {
-      gasCostDai = getGasInDai(gasLimit.multipliedBy(gasPrice));
+      gasCostDai = getGasInDai(gasCost);
     }
 
     const limitPricePercentage = (side === BUY
