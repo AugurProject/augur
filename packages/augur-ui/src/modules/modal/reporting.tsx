@@ -21,6 +21,7 @@ import {
   INVALID_OUTCOME_NAME,
   SUBMIT_REPORT,
   SUBMIT_DISPUTE,
+  MARKETMIGRATED,
 } from 'modules/common/constants';
 import {
   doInitialReport,
@@ -51,6 +52,7 @@ interface ModalReportingProps {
   rep: string;
   title: string;
   selectedOutcome?: number;
+  isInvalid?: boolean;
   reportAction: Function;
   userAccount?: string;
   migrateRep: boolean;
@@ -135,7 +137,7 @@ export default class ModalReporting extends Component<
   };
 
   buildRadioButtonCollection = () => {
-    const { market, selectedOutcome, warpSyncHash } = this.props;
+    const { market, selectedOutcome, warpSyncHash, isInvalid } = this.props;
     const { checked } = this.state;
     const {
       marketType,
@@ -212,7 +214,7 @@ export default class ModalReporting extends Component<
             : `Enter a range from ${minPrice} to ${maxPrice}`,
           value: stake.outcome ? Number(stake.outcome) : null,
           description: stake.outcome,
-          checked: checked === stake.outcome,
+          checked: (checked === stake.outcome && stake.isInvalidOutcome === isInvalid),
           isInvalid: stake.isInvalidOutcome,
           stake,
         });
@@ -280,7 +282,10 @@ export default class ModalReporting extends Component<
       if (estimateGas) {
         return reportAndMigrateMarket_estimateGas(report);
       } else {
-        reportAndMigrateMarket(report);
+        addPendingData(marketId, MARKETMIGRATED, TXEventName.Pending, '0', undefined);
+        reportAndMigrateMarket(report).catch(err => {
+          addPendingData(marketId, MARKETMIGRATED, TXEventName.Failure, '0', undefined);
+        });
       }
     } else if (isReporting) {
       if (estimateGas) {

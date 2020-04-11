@@ -138,12 +138,12 @@ export class ContractAPI {
     await this.faucetRepUpTo(repBond.plus(1e18));
   }
 
-  async createReasonableYesNoMarket(description = 'YesNo market description', faucet=true): Promise<ContractInterfaces.Market> {
+  async createReasonableYesNoMarket(description = 'YesNo market description', faucet=true, feePercentage: number = 1): Promise<ContractInterfaces.Market> {
     const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createYesNoMarket({
       endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
-      feePerCashInAttoCash: new BigNumber(10).pow(16),
+      feePerCashInAttoCash: new BigNumber(feePercentage * 10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
       designatedReporter: this.account.address,
       extraInfo: JSON.stringify({
@@ -674,6 +674,32 @@ export class ContractAPI {
       await this.augur.contracts.warpSync.initializeUniverse(universe);
     }
   }
+
+  async reportAndFinalizeWarpSyncMarket(hash:string) {
+    const warpSyncMarket = await this.reportWarpSyncMarket(hash);
+    return this.finalizeWarpSyncMarket(warpSyncMarket);
+  }
+
+  async finalizeWarpSyncMarket(warpSyncMarket: ContractInterfaces.Market) {
+    const timestamp = (await this.getTimestamp()).plus(1000000);;
+    await this.setTimestamp(timestamp);
+
+    await this.finalizeMarket(warpSyncMarket);
+
+    return warpSyncMarket;
+  }
+
+  async reportWarpSyncMarket(hash:string) {
+    const payoutNumerators = await this.getPayoutFromWarpSyncHash(hash);
+    const warpSyncMarket = await this.getWarpSyncMarket();
+
+    const timestamp = (await this.getTimestamp()).plus(1000000);
+    await this.setTimestamp(timestamp);
+    await this.doInitialReport(warpSyncMarket, payoutNumerators);
+
+    return warpSyncMarket;
+  }
+
 
   getLegacyRepBalance(owner: string): Promise<BigNumber> {
     return this.augur.contracts.legacyReputationToken.balanceOf_(owner);

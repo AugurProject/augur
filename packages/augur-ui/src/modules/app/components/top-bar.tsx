@@ -5,6 +5,7 @@ import ConnectAccount from 'modules/auth/containers/connect-account';
 import {
   MovementLabel,
   LinearPropertyLabel,
+  LinearPropertyLabelUnderlineTooltip,
 } from 'modules/common/labels';
 import { CoreStats } from 'modules/types';
 import Styles from 'modules/app/components/top-bar.styles.less';
@@ -14,6 +15,7 @@ import Logo from 'modules/app/components/logo';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
+import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
 
 interface TopBarProps {
   alertsVisible: boolean;
@@ -39,7 +41,6 @@ const TopBar: React.FC<TopBarProps> = ({
   loginModal,
 }) => {
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
-
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -53,20 +54,24 @@ const TopBar: React.FC<TopBarProps> = ({
           <div>
             <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
             <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
-            <LinearPropertyLabel {...totalFunds} highlightAlternateBolded />
+            <LinearPropertyLabelUnderlineTooltip
+              {...totalFunds}
+              highlightAlternateBolded
+              id={'totalFunds'}
+              tipText={TOTAL_FUNDS_TOOLTIP}
+            />
             <LinearPropertyLabel {...realizedPL} highlightAlternateBolded />
           </div>
           <div>
             <span>{realizedPL.label}</span>
-            <MovementLabel
-              value={realizedPL.value}
-              useFull
-            />
+            <MovementLabel value={realizedPL.value} useFull />
           </div>
         </div>
       )}
       <div>
-        {((!isLogged) || !isMobile && (isLogged || restoredAccount)) && <HelpResources />}
+        {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
+          <HelpResources />
+        )}
         {!isLogged && !restoredAccount && (
           <SecondaryButton action={() => loginModal()} text={'Login'} />
         )}
@@ -74,7 +79,7 @@ const TopBar: React.FC<TopBarProps> = ({
           <PrimaryButton action={() => signupModal()} text={'Signup'} />
         )}
 
-        { !isMobile && (<ConnectAccount />)}
+        {!isMobile && <ConnectAccount />}
         {(isLogged || restoredAccount) && (
           <button
             className={classNames(Styles.alerts, {

@@ -23,6 +23,7 @@ import {
   TRADINGPROCEEDSCLAIMED,
   CLAIMMARKETSPROCEEDS,
   FORKANDREDEEM,
+  FINALIZE,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -50,6 +51,7 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   CREATEAUGURWALLET,
   WITHDRAWALLFUNDSASDAI,
   CLAIMMARKETSPROCEEDS,
+  FINALIZE
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';

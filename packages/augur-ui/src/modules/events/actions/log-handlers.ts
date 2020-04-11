@@ -47,6 +47,8 @@ import {
   SUBMIT_DISPUTE,
   CLAIMMARKETSPROCEEDS,
   DISAVOWCROWDSOURCERS,
+  REDEEMDISPUTINGSTAKE,
+  MARKETMIGRATED,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -74,7 +76,6 @@ import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
-import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 
 const handleAlert = (
   log: any,
@@ -200,7 +201,6 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   }
   // update ethToDaiRate/gasPrice each block
   dispatch(getEthToDaiRate());
-  dispatch(registerUserDefinedGasPriceFunction());
 
   if (log.logs && log.logs.length > 0){
     console.log(log.logs);
@@ -295,6 +295,7 @@ export const handleMarketMigratedLog = (log: any) => (
   const userAddress = getState().loginAccount.address;
   if (log.originalUniverse === universeId) {
     dispatch(removeMarket(log.market));
+    dispatch(addPendingData(log.market, MARKETMIGRATED, TXEventName.Success, '0', undefined));
   } else {
     dispatch(loadMarketsInfo([log.market]));
   }

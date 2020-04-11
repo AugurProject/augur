@@ -908,6 +908,7 @@ export const CREATE_MARKET = 'CREATE_MARKET';
 export const SUBMIT_REPORT = 'SUBMIT_REPORT';
 export const SUBMIT_DISPUTE = 'SUBMIT_DISPUTE';
 export const TRANSACTIONS = 'TRANSACTIONS';
+export const MARKETMIGRATED = 'MARKETMIGRATED';
 
 // Pending Queue SINGLE TYPE
 export const CLAIM_FEE_WINDOWS = 'CLAIM_FEE_WINDOWS';
@@ -1184,6 +1185,7 @@ export const EVENT_EXPIRATION_TOOLTIP = {
   header: 'Event expiration',
   content: 'This date time indicates when the settlement process begins.',
 };
+export const TOTAL_FUNDS_TOOLTIP = 'Your total funds does not include the ETH reserve';
 export const TUTORIAL_OUTCOME = 1;
 export const TUTORIAL_QUANTITY = 100;
 export const TUTORIAL_PRICE = 0.4;

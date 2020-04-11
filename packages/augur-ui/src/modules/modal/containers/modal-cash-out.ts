@@ -19,6 +19,7 @@ const mapStateToProps = (state: AppState) => {
     modal,
     GsnEnabled: appStatus.gsnEnabled,
     ethToDaiRate: appStatus.ethToDaiRate,
+    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
   }
 };
 
@@ -34,6 +35,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   account: sP.account,
   signerAccount: sP.signerAccount,
   ethToDaiRate: sP.ethToDaiRate,
+  gasPrice: sP.gasPrice,
   closeAction: () => dP.closeModal(),
   withdrawAllFunds: (destination: string) => dP.withdrawAllFunds(destination),
   withdrawAllFundsEstimateGas: (destination: string) => dP.withdrawAllFundsEstimateGas(destination),

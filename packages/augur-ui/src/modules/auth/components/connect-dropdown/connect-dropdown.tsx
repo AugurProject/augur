@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
-import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE } from 'modules/common/constants';
+import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, GWEI_CONVERSION } from 'modules/common/constants';
 import {
   DaiLogoIcon,
   EthIcon,
@@ -14,14 +14,16 @@ import {
   ClipboardCopy,
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { formatDai, formatEther, formatRep } from 'utils/format-number';
+import { formatDai, formatEther, formatRep, formatGasCostToEther } from 'utils/format-number';
 import { AccountBalances, FormattedNumber } from 'modules/types';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
-import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { displayGasInDai, ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
+import { createBigNumber } from 'utils/create-big-number';
+import { augurSdk } from 'services/augursdk';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -38,6 +40,7 @@ interface ConnectDropdownProps {
   userDefinedGasPrice: number;
   gasPriceSpeed: number;
   gasPriceTime: string;
+  gasPrice: BigNumber;
   showAddFundsModal: Function;
   universeSelectorModal: Function;
   universeOutcomeName: string;
@@ -46,6 +49,7 @@ interface ConnectDropdownProps {
   GsnEnabled: boolean;
   ethToDaiRate: FormattedNumber;
   loginAccountAddress: string;
+  reserveEthAmount: FormattedNumber;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
@@ -66,18 +70,21 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     GsnEnabled,
     ethToDaiRate,
     loginAccountAddress,
+    reserveEthAmount,
   } = props;
+
+  const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   let gasCostTrade;
 
   if (GsnEnabled && ethToDaiRate) {
-    gasCostTrade = displayGasInDai(NEW_ORDER_GAS_ESTIMATE);
+    const gasCost = NEW_ORDER_GAS_ESTIMATE.multipliedBy(userDefinedGasPrice);
+    gasCostTrade = displayGasInDai(gasCost);
   }
 
   if (!isLogged && !restoredAccount) return null;
 
-  const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
   let timeoutId = null;
   const referralLink = `${window.location.origin}?${AFFILIATE_NAME}=${loginAccountAddress}`;
 
@@ -100,6 +107,32 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     const { logout } = props;
     logout();
   };
+
+  const renderToolTip = (id: string, content: JSX.Element) => (
+    <span>
+      <label
+        className={classNames(TooltipStyles.TooltipHint)}
+        data-tip
+        data-for={id}
+        data-iscapture={true}
+      >
+        {helpIcon}
+      </label>
+      <ReactTooltip
+        id={id}
+        className={TooltipStyles.Tooltip}
+        effect='solid'
+        place='top'
+        type='light'
+        data-event="mouseover mouseenter"
+        data-eventOff="mouseleave mouseout scroll mousewheel blur"
+      >
+        {content}
+      </ReactTooltip>
+    </span>
+  );
+
+  const ethReserveInDai = (ethToDai(reserveEthAmount.value, createBigNumber(ethToDaiRate?.value || 0))).formattedValue;
 
   const accountFunds = [
     {
@@ -128,6 +161,20 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         decimalsRounded: 4,
       }).formattedValue,
       disabled: GsnEnabled ? balances.rep === 0 : false,
+    },
+    {
+      name: 'ETH RESERVE',
+      toolTip: renderToolTip(
+        'tooltip--ethReserve',
+        <div>
+          <p>Augur is a peer-to-peer system, and certain actions require paying a small fee to other users of the system. The cost of these fees will be included in the total fees displayed when taking that action. Trades, Creating Markets, and Reporting on the market outcome are examples of such actions.</p>
+          <p>Augur will reserve ${ethReserveInDai} of your funds in order to pay these fees. Your total balance can be cashed out at any time.</p>
+        </div>
+      ),
+      logo: EthIcon,
+      value: reserveEthAmount.formattedValue,
+      subValue: ethReserveInDai,
+      disabled: GsnEnabled ? balances.ethNonSafe === 0 : false,
     },
   ];
 
@@ -160,32 +207,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         Invite friends to Augur using this link and collect a portion of the
         market fees whenever they trade in markets.
       </p>
-    </div>
-  );
-
-  const renderToolTip = (id: string, content: JSX.Element) => (
-    <span>
-      <label
-        className={classNames(TooltipStyles.TooltipHint)}
-        data-tip
-        data-for={id}
-        data-iscapture={true}
-      >
-        {helpIcon}
-      </label>
-      <ReactTooltip
-        id={id}
-        className={TooltipStyles.Tooltip}
-        effect='solid'
-        place='top'
-        type='light'
-        data-event="mouseover mouseenter"
-        data-eventOff="mouseleave mouseout scroll mousewheel blur"
-      >
-        {content}
-      </ReactTooltip>
-    </span>
-  );
+    </div>)
 
   return (
     <div onClick={event => event.stopPropagation()}>
@@ -203,10 +225,13 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           .map((fundType, idx) => (
             <div key={idx} className={Styles.AccountFunds}>
               <div>
-                {fundType.logo} {fundType.name}
+                {fundType.logo} {fundType.name} {fundType.toolTip ? fundType.toolTip : null}
               </div>
               <div>
-                {fundType.value} {fundType.name}
+                <div>
+                  <span>{fundType.value} {fundType.name === 'ETH RESERVE' ? ETH : fundType.name}</span>
+                  {fundType.subValue && <span>${fundType.subValue}</span>}
+                </div>
               </div>
             </div>
           ))}
@@ -267,11 +292,11 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
               </div>
             </div>
           </div>
-          {/* <SecondaryButton
+          <SecondaryButton
             action={() => gasModal()}
             text='EDIT'
             icon={Pencil}
-          /> */}
+          />
         </div>}
 
         <div className={Styles.GasEdit}>

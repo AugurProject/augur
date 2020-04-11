@@ -1,5 +1,6 @@
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { BigNumber } from 'bignumber.js';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { SupportedProvider } from 'ethereum-types';
@@ -35,7 +36,7 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     );
 
     let endWarpSyncBlockNumber = await (await db).getSyncStartingBlock() || uploadBlockNumber;
-    if (config.useWarpSync) {
+    if (config.warpSync && config.warpSync.enabled) {
       const currentBlock = await provider.getBlock('latest');
       const warpController = new WarpController((await db), client, provider,
         uploadBlockNumber);
@@ -182,6 +183,20 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
     config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled
   );
 
+  if(config.warpSync?.enabled && config.warpSync?.autoReport) {
+    client.events.on(SubscriptionEventName.WarpSyncHashUpdated,
+      async ({ hash }) => {
+        if (hash) {
+          const market = await client.warpSync.getWarpSyncMarket(
+            config.addresses.Universe);
+          const payoutNumerators = await client.warpSync.getPayoutFromWarpSyncHash(
+            hash);
+
+          await market.doInitialReport(payoutNumerators, '', new BigNumber(0));
+        }
+      });
+  }
+
   const sync = buildSyncStrategies(client, db, ethersProvider, logFilterAggregator, config);
 
   const controller = new Controller(client, db, logFilterAggregator);
@@ -207,6 +222,8 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
 
 export async function startServer(config: SDKConfiguration, account?: string): Promise<API> {
   const { api, sync } = await createServer(config, undefined, account);
+
+
 
   // TODO should this await?
   sync();

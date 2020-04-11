@@ -32,11 +32,12 @@ import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);
   let availableDai = totalTradingBalance(state.loginAccount);
+  const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
   return {
     modal: state.modal,
     market,
     liquidity: state.pendingLiquidityOrders[market.transactionHash],
-    gasPrice: getGasPrice(state),
+    gasPrice,
     loginAccount: state.loginAccount,
     chunkOrders: !state.appStatus.zeroXEnabled,
     GsnEnabled: state.appStatus.gsnEnabled,
@@ -69,7 +70,7 @@ const mergeProps = (sP, dP, oP) => {
   });
 
   const gasCost = sP.GsnEnabled
-  ? NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions)
+  ? NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).multipliedBy(sP.gasPrice)
   : formatGasCostToEther(
     NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).toFixed(),
     { decimalsRounded: 4 },

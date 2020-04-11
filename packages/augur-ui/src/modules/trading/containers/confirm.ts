@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import Confirm from 'modules/trading/components/confirm';
 import { createBigNumber } from 'utils/create-big-number';
-import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -25,7 +24,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   }
   const sweepStatus = state.pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
   return {
-    gasPrice: getGasPrice(state),
+    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
     availableEth: createBigNumber(loginAccount.balances.eth),
     availableDai,
     hasFunds,

@@ -351,10 +351,6 @@
     }
   }
 
-  > span:nth-of-type(2) {
-    display: none;
-  }
-
   @media @breakpoint-mobile {
     &.HighlightFirst,
     &.Highlight {
@@ -385,10 +381,6 @@
 
     > span:nth-of-type(2) {
       display: block;
-    }
-
-    > span:last-of-type {
-      display: none;
     }
   }
 }
@@ -996,4 +988,11 @@ span.PendingLabel {
     display: inline-block;
     margin-bottom: 0;
   }
+}
+
+.TEXT {
+  position: relative;
+  white-space: nowrap;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
 }

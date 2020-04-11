@@ -47,8 +47,8 @@ export const selectResolvedMarketsOpenOrders = createSelector(
       .map(id => selectMarket(id))
       .filter(
         market =>
-          market.reportingState == REPORTING_STATE.AWAITING_FINALIZATION ||
-          market.reportingState === REPORTING_STATE.FINALIZED
+        market && (market.reportingState == REPORTING_STATE.AWAITING_FINALIZATION ||
+          market.reportingState === REPORTING_STATE.FINALIZED)
       )
       .filter(market => userOpenOrders(market.id).length > 0)
       .map(getRequiredMarketData);
@@ -62,7 +62,7 @@ export const selectMostLikelyInvalidMarkets = createSelector(
       .map(id => selectMarket(id))
       .filter(
         market =>
-          market.mostLikelyInvalid
+          market && market.mostLikelyInvalid
       )
       .filter(market => userOpenOrders(market.id).length > 0)
       .map(getRequiredMarketData);
@@ -115,7 +115,7 @@ export const selectMarketsInDispute = createSelector(
     const state = store.getState() as AppState;
     let marketIds = Object.keys(positions);
     const { reporting } = state.loginAccount;
-    if (reporting.disputing && reporting.disputing.contracts) {
+    if (reporting && reporting.disputing && reporting.disputing.contracts) {
       marketIds = Array.from(
         new Set([
           ...marketIds,
@@ -125,7 +125,7 @@ export const selectMarketsInDispute = createSelector(
         ])
       );
     }
-    if (reporting.reporting && reporting.reporting.contracts) {
+    if (reporting && reporting.reporting && reporting.reporting.contracts) {
       marketIds = Array.from(
         new Set([
           ...marketIds,
