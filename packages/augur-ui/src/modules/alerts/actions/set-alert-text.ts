@@ -151,24 +151,16 @@ export default function setAlertText(alert: any, callback: Function) {
 
       // ClaimTradingProceeds
       case CLAIMTRADINGPROCEEDS:
-        alert.title = 'Claim Winnings';
+        alert.title = 'Claim Proceeds';
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
             alert.description = marketInfo.description;
             const amount = createBigNumber(alert.params.numPayoutTokens);
-            const outcomeDescription =
-              alert.params.outcome === null
-                ? 'Market Is Invalid'
-                : getOutcomeNameWithOutcome(
-                    marketInfo,
-                    new BigNumber(alert.params.outcome).toString(),
-                    false
-                  );
             alert.details = `$${
               formatAttoDai(amount, { zeroStyled: false }).formatted
-            } won on ${outcomeDescription}`;
+            } claimed`;
           })
         );
         break;
