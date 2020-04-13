@@ -547,6 +547,14 @@ export class ContractAPI {
 
     if (this.augur.contracts.isTimeControlled(time)) {
       await time.setTimestamp(timestamp);
+
+      try {
+        // sync our timestamp with our fake timestamp.
+        await this.provider.providerSend('evm_mine', [timestamp])
+      } catch (e) {
+        // Not using ganache. Nothing really to do here.
+      }
+
     } else {
       throw Error('Cannot set timestamp because Time contract is not TimeControlled');
     }
