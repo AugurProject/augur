@@ -3,7 +3,7 @@ import { SDKConfiguration } from '@augurproject/artifacts';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { Connectors } from '@augurproject/sdk';
 import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { NULL_ADDRESS, stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
@@ -27,7 +27,7 @@ describe('Augur API :: ZeroX :: ', () => {
     const { port } = await MockMeshServer.create();
     meshClient = new WSClient(`ws://localhost:${port}`);
 
-    const seed = await loadSeedFile(defaultSeedPath);
+    const seed = await loadSeed(defaultSeedPath);
     provider = await makeProvider(seed, ACCOUNTS);
     config = provider.getConfig();
   });
@@ -50,7 +50,7 @@ describe('Augur API :: ZeroX :: ', () => {
         johnBrowserMesh
       );
       johnConnector.initialize(john.augur, john.db);
-      await john.approveCentralAuthority();
+      await john.approve();
 
       const maryConnector = new Connectors.DirectConnector();
       const maryBrowserMesh = new MockBrowserMesh(meshClient);
@@ -63,7 +63,7 @@ describe('Augur API :: ZeroX :: ', () => {
         maryBrowserMesh
       );
       maryConnector.initialize(mary.augur, mary.db);
-      await mary.approveCentralAuthority();
+      await mary.approve();
 
       maryBrowserMesh.addOtherBrowserMeshToMockNetwork(johnBrowserMesh);
       johnBrowserMesh.addOtherBrowserMeshToMockNetwork(maryBrowserMesh);

@@ -95,7 +95,7 @@ export default class OverviewChart extends React.Component<
 
       const lastData =
         data.length > 0
-          ? data[0]
+          ? data[data.length - 1]
           : { realized: 0, realizedPercent: 0 };
 
       const chartValues = data.reduce(
@@ -128,7 +128,7 @@ export default class OverviewChart extends React.Component<
           profitLossChangeHasValue: !createBigNumber(lastData.realized || 0).eq(
             constants.ZERO
           ),
-          profitLossValue: formatDai(lastData.realized, { removeComma: true }).full,
+          profitLossValue: String(formatDai(lastData.realized, { removeComma: true }).full),
           noTrades: false,
         });
       }
@@ -142,7 +142,6 @@ export default class OverviewChart extends React.Component<
       profitLossData,
       profitLossChange,
       profitLossValue,
-      profitLossChangeHasValue,
       noTrades,
     } = this.state;
 

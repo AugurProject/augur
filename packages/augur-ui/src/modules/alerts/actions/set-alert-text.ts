@@ -62,7 +62,8 @@ function toCapitalizeCase(label) {
 export function getInfo(params: any, status: string, marketInfo: MarketData) {
   const outcome = new BigNumber(params.outcome || params._outcome).toString();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
-  let orderType = params.orderType === HEX_BUY || params.orderType === BUY_INDEX ? BUY : SELL;
+  let orderType =
+    params.orderType === HEX_BUY || params.orderType === BUY_INDEX ? BUY : SELL;
   if (status === TXEventName.Failure) {
     orderType =
       new BigNumber(params._direction).toNumber() === BUY_INDEX ? BUY : SELL;
@@ -165,7 +166,7 @@ export default function setAlertText(alert: any, callback: Function) {
                     false
                   );
             alert.details = `$${
-              formatAttoDai(amount).formatted
+              formatAttoDai(amount, { zeroStyled: false }).formatted
             } won on ${outcomeDescription}`;
           })
         );
@@ -177,7 +178,13 @@ export default function setAlertText(alert: any, callback: Function) {
         alert.title = 'Buy participation tokens';
         if (!alert.description && alert.params) {
           if (alert.params.startTime && alert.params.endTime) {
-              alert.details = `Dispute Window ${convertUnixToFormattedDate(alert.params.startTime).formattedLocalShortDate} - ${convertUnixToFormattedDate(alert.params.endTime).formattedLocalShortDate}`
+            alert.details = `Dispute Window ${
+              convertUnixToFormattedDate(alert.params.startTime)
+                .formattedLocalShortDate
+            } - ${
+              convertUnixToFormattedDate(alert.params.endTime)
+                .formattedLocalShortDate
+            }`;
           }
           alert.description = `Purchased ${
             formatRep(
@@ -186,7 +193,11 @@ export default function setAlertText(alert: any, callback: Function) {
               )
             ).formatted
           } Participation Token${
-            createBigNumber(alert.params._attotokens).eq(TEN_TO_THE_EIGHTEENTH_POWER) ? '' : 's'
+            createBigNumber(alert.params._attotokens).eq(
+              TEN_TO_THE_EIGHTEENTH_POWER
+            )
+              ? ''
+              : 's'
           }`;
         }
         break;
@@ -196,11 +207,15 @@ export default function setAlertText(alert: any, callback: Function) {
         if (alert.params && alert.params.attoParticipationTokens) {
           participation = true;
         }
-        alert.title = participation ? 'Redeem participation tokens' : 'REP Stake Redeemed';
-        if (!alert.description && alert.params) {
+        alert.title = participation
+          ? 'Redeem participation tokens'
+          : 'REP Stake Redeemed';
+        if (alert.params) {
           if (participation) {
             const tokens = formatRep(
-              convertAttoValueToDisplayValue(createBigNumber(alert.params.attoParticipationTokens)).toString()
+              convertAttoValueToDisplayValue(
+                createBigNumber(alert.params.attoParticipationTokens)
+              ).toString()
             );
             alert.description = `Redeemed ${
               tokens.formatted
@@ -209,11 +224,11 @@ export default function setAlertText(alert: any, callback: Function) {
             }`;
           } else {
             const REPVal = formatRep(
-              convertAttoValueToDisplayValue(createBigNumber(alert.params.amountRedeemed)).toString()
+              convertAttoValueToDisplayValue(
+                createBigNumber(alert.params.repReceived)
+              ).toString()
             );
-            alert.description = `${
-              REPVal.formatted
-            } REP stake redeemed`;
+            alert.description = `${REPVal.formatted} REP stake redeemed`;
           }
         }
         break;
@@ -225,9 +240,9 @@ export default function setAlertText(alert: any, callback: Function) {
         alert.title = 'Filled';
         if (alert.params.marketInfo) {
           alert.description = alert.params.marketInfo.description;
-          alert.details = `${
-            toCapitalizeCase(alert.params.orderType)
-          } ${formatShares(alert.params.amount).formatted} of ${alert.params.outcome} @ ${
+          alert.details = `${toCapitalizeCase(alert.params.orderType)} ${
+            formatShares(alert.params.amount).formatted
+          } of ${alert.params.outcome} @ ${
             formatDai(alert.params.price).formatted
           }`;
         } else {
@@ -321,7 +336,10 @@ export default function setAlertText(alert: any, callback: Function) {
               );
               alert.details = `${orderType}  ${
                 formatShares(amount).formatted
-              } ${ originalQuantity ? ` of ${formatShares(originalQuantity).formatted}` : ''
+              } ${
+                originalQuantity
+                  ? ` of ${formatShares(originalQuantity).formatted}`
+                  : ''
               } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
             })
           );
@@ -344,13 +362,19 @@ export default function setAlertText(alert: any, callback: Function) {
         const payoutNums = convertPayoutNumeratorsToStrings(
           alert.params._payoutNumerators || alert.params.payoutNumerators
         );
-        const amountStaked = alert.params.amountStaked && convertAttoValueToDisplayValue(createBigNumber(alert.params.amountStaked)).toString()
+        const amountStaked =
+          alert.params.amountStaked &&
+          convertAttoValueToDisplayValue(
+            createBigNumber(alert.params.amountStaked)
+          ).toString();
         const repAmount = formatRep(
-          amountStaked ? amountStaked : createBigNumber(
-            alert.params.preFilled
-              ? alert.params._additionalStake
-              : alert.params._amount
-          ).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER)
+          amountStaked
+            ? amountStaked
+            : createBigNumber(
+                alert.params.preFilled
+                  ? alert.params._additionalStake
+                  : alert.params._amount
+              ).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER)
         ).formatted;
 
         if (!marketId) {
@@ -465,7 +489,9 @@ export default function setAlertText(alert: any, callback: Function) {
         break;
 
       case MIGRATE_FROM_LEG_REP_TOKEN:
-        const amount = formatRep(convertAttoValueToDisplayValue(createBigNumber(alert.params.amount)));
+        const amount = formatRep(
+          convertAttoValueToDisplayValue(createBigNumber(alert.params.amount))
+        );
         alert.title = 'REP migrated from V1 to V2';
         alert.description = `You have migrated ${amount.formatted} V1 REP to V2 REP`;
         break;

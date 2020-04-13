@@ -5,9 +5,9 @@ import { Contracts } from '@augurproject/sdk';
 import {
   ACCOUNTS,
   defaultSeedPath,
-  loadSeedFile,
   makeDependencies,
   makeSigner,
+  loadSeed,
 } from '@augurproject/tools';
 import { NULL_ADDRESS } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
@@ -26,7 +26,7 @@ let addresses: ContractAddresses;
 let dependencies: ContractDependenciesEthers;
 let contracts: Contracts;
 beforeAll(async () => {
-  const seed = await loadSeedFile(defaultSeedPath);
+  const seed = await loadSeed(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
   const signer = await makeSigner(ACCOUNTS[0], provider);
   dependencies = makeDependencies(ACCOUNTS[0], provider, signer);
@@ -53,14 +53,14 @@ test('Contract :: ReputationToken', async () => {
     GenericAugurInterfaces.TestNetReputationToken
   ) {
     const initialBalance = new BigNumber(
-      await contracts.reputationToken.balanceOf_(ACCOUNTS[0].publicKey)
+      await contracts.reputationToken.balanceOf_(ACCOUNTS[0].address)
     );
     const delta = new BigNumber('1000');
     await contracts.reputationToken.faucet(delta, {
-      sender: ACCOUNTS[0].publicKey,
+      sender: ACCOUNTS[0].address,
     });
     const newBalance = await contracts.reputationToken.balanceOf_(
-      ACCOUNTS[0].publicKey
+      ACCOUNTS[0].address
     );
     expect(new BigNumber(newBalance)).toEqual(initialBalance.plus(delta));
   }
@@ -72,12 +72,12 @@ test('Contract :: Cash', async () => {
   const universe = contracts.universe;
   const marketCreationCost = await universe.getOrCacheValidityBond_();
   await cashFaucet.faucet(marketCreationCost, {
-    sender: ACCOUNTS[0].publicKey,
+    sender: ACCOUNTS[0].address,
   });
   await cash.approve(addresses.Augur, marketCreationCost, {
-    sender: ACCOUNTS[0].publicKey,
+    sender: ACCOUNTS[0].address,
   });
-  expect(await cash.allowance_(ACCOUNTS[0].publicKey, addresses.Augur)).toEqual(
+  expect(await cash.allowance_(ACCOUNTS[0].address, addresses.Augur)).toEqual(
     marketCreationCost
   );
 });
@@ -89,10 +89,10 @@ test('Contract :: Universe :: Create Market', async () => {
   const cashFaucet = contracts.cashFaucet;
   const cash = contracts.cash;
   await cashFaucet.faucet(marketCreationCost, {
-    sender: ACCOUNTS[0].publicKey,
+    sender: ACCOUNTS[0].address,
   });
   await cash.approve(addresses.Augur, marketCreationCost, {
-    sender: ACCOUNTS[0].publicKey,
+    sender: ACCOUNTS[0].address,
   });
 
   const reputationToken = contracts.getReputationToken() as TestNetReputationToken;
@@ -116,10 +116,10 @@ test('Contract :: Universe :: Create Market', async () => {
     fee,
     NULL_ADDRESS,
     affiliateFeeDivisor,
-    ACCOUNTS[0].publicKey,
+    ACCOUNTS[0].address,
     outcomes,
     extraInfo,
-    { sender: ACCOUNTS[0].publicKey }
+    { sender: ACCOUNTS[0].address }
   )).pop();
 
   if (typeof maybeMarketCreatedEvent === 'undefined') {

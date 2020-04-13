@@ -41,17 +41,19 @@ const mapStateToProps = (state, ownProps) => {
     isFavorite: !!favorites[marketId],
     hasStaked,
     forkingMarket: forkingInfo?.forkingMarket,
+    forkingEndTime: forkingInfo?.forkEndTime
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
-  dispute: (selectedOutcome: string) =>
+  dispute: (selectedOutcome: string, isInvalid: boolean) =>
     dispatch(
       updateModal({
         type: MODAL_REPORTING,
         market: ownProps.market,
         selectedOutcome,
+        isInvalid,
       })
     ),
   migrateMarketModal: () =>

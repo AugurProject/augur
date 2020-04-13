@@ -37,6 +37,15 @@ const sortByOptions = [
       );
     },
   },
+  {
+    label: 'Most Recently Depleted',
+    value: 'recentlyDepleted',
+    comp(marketA, marketB) {
+      return (
+        marketB.recentlyTraded.timestamp - marketA.recentlyTraded.timestamp
+      );
+    },
+  },
 ];
 
 function filterComp(input, market) {

@@ -23,7 +23,9 @@ const mapStateToProps = (state, ownProps) => {
     currentTimestamp: selectCurrentTimestampInSeconds(state) || 0,
     market,
     isForking: !!state.universe.forkingInfo,
+    isForkingMarket: state.universe.forkingInfo && state.universe.forkingInfo.forkingMarket === market.id,
     isLogged: state.authStatus.isLogged && !state.universe.forkingInfo,
+    isLoggedIn: state.authStatus.isLogged,
     isDesignatedReporter: ownProps.preview
       ? market.designatedReporterType === DESIGNATED_REPORTER_SELF
       : isSameAddress(market.designatedReporter, state.loginAccount.address),

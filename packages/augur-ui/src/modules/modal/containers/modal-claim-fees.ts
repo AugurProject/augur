@@ -38,9 +38,10 @@ import { TXEventName } from '@augurproject/sdk/src';
 import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 const mapStateToProps = (state: AppState) => {
+  const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
   return {
     modal: state.modal,
-    gasCost: CLAIM_FEES_GAS_COST,
+    gasCost: CLAIM_FEES_GAS_COST.multipliedBy(gasPrice),
     GsnEnabled: state.appStatus.gsnEnabled,
     pendingQueue: state.pendingQueue || [],
     claimReportingFees: selectReportingWinningsByMarket(state),

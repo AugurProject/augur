@@ -131,6 +131,7 @@ export interface MarketInfoOutcome {
   price: string | null;
   description: string;
   volume: string;
+  isInvalid: boolean;
 }
 
 export interface MarketInfo {
@@ -568,6 +569,10 @@ export class Markets {
     }
 
     let marketData = await marketsCollection.and((market) => {
+      if (params.universe && market.universe !== params.universe) {
+        return false;
+      }
+
       if(!params.includeWarpSyncMarkets && market.isWarpSync) {
         return false;
       } else if (market.isWarpSync) {
@@ -616,7 +621,7 @@ export class Markets {
     const meta = {
       filteredOutCount,
       marketCount: marketData.length
-    }
+    };
 
     if (params.sortBy) {
       const sortBy = params.sortBy;
@@ -626,7 +631,7 @@ export class Markets {
     // If returning Recently Depleted Liquidity (spread===0)
     if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
       // Have invalid markets appear at the bottom
-      marketData =_.sortBy(marketData, 'invalidFilter')
+      marketData = _.sortBy(marketData, 'invalidFilter');
     }
 
     // Get category meta data before slicing for pagination
@@ -981,6 +986,7 @@ function getMarketOutcomes(
           ).toString(10)
           : null,
       description: 'Invalid',
+      isInvalid: true,
       volume: marketData.outcomeVolumes ? new BigNumber(marketData.outcomeVolumes[0]).toString(10) : '0',
     });
     outcomes.push({
@@ -993,6 +999,7 @@ function getMarketOutcomes(
           tickSize
           ).toString(10)
           : null,
+      isInvalid: false,
       description: marketData.marketType === 0 ? 'No' : denomination,
       volume: marketData.outcomeVolumes ? new BigNumber(marketData.outcomeVolumes[1]).toString(10) : '0',
     });
@@ -1006,6 +1013,7 @@ function getMarketOutcomes(
           tickSize
           ).toString(10)
           : null,
+      isInvalid: false,
       description: marketData.marketType === 0 ? 'Yes' : denomination,
       volume: marketData.outcomeVolumes ? new BigNumber(marketData.outcomeVolumes[2]).toString(10) : '0',
     });
@@ -1022,6 +1030,7 @@ function getMarketOutcomes(
           ).toString(10)
           : null,
       description: 'Invalid',
+      isInvalid: true,
       volume: marketData.outcomeVolumes ? new BigNumber(marketData.outcomeVolumes[0]).toString(10) : '0',
     });
     for (let i = 0; i < marketData.outcomes.length; i++) {
@@ -1037,6 +1046,7 @@ function getMarketOutcomes(
             tickSize
             ).toString(10)
             : null,
+        isInvalid: false,
         description: outcomeDescription,
         volume: marketData.outcomeVolumes ? new BigNumber(marketData.outcomeVolumes[i + 1]).toString(10) : '0',
       });
@@ -1068,7 +1078,7 @@ async function getMarketsInfo(
   // TODO This is just used to get the last price. This can be acheived far more efficiently than pulling all order events for all time
   const orderFilledLogs = await db.ParsedOrderEvent.where('market').
     anyOfIgnoreCase(marketIds).
-    and(function(item) {
+    and((item) => {
       return item.eventType === OrderEventType.Fill;
     }).
     toArray();

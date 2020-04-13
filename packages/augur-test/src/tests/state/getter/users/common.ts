@@ -8,7 +8,7 @@ import {
   ACCOUNTS,
   ContractAPI,
   defaultSeedPath,
-  loadSeedFile,
+  loadSeed,
 } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
@@ -32,10 +32,32 @@ export interface UTPTradeData extends TradeData {
 }
 
 export interface PLTradeData extends TradeData {
-  market: ContractInterfaces.Market;
-  timestamp: number;
+  market?: ContractInterfaces.Market;
+  timestamp?: number;
   realizedPL: number;
   unrealizedPL: number;
+  unrealizedPercent: number;
+  realizedPercent: number;
+}
+
+export interface PLResultData {
+  realizedPL: number;
+  unrealizedPL: number;
+  unrealizedPercent: number;
+  realizedPercent: number;
+}
+
+export interface MakerTakerTrade extends TradeData {
+  market: ContractInterfaces.Market,
+  maker: TestContractAPI,
+  taker: TestContractAPI,
+}
+export interface MakerTakerTradeData {
+  timestamp: number;
+  trades: MakerTakerTrade[],
+  result: {
+    [address: string]: PLResultData,
+  }
 }
 
 export const CHUNK_SIZE = 100000;
@@ -46,6 +68,7 @@ export const ZERO = 0;
 export const ONE = 1;
 export const TWO = 2;
 export const THREE = 3;
+export const THIRTY = 30;
 
 export const BID = ZERO;
 export const LONG = ZERO;
@@ -69,10 +92,11 @@ export interface AllState {
 export interface SomeState {
   john: TestContractAPI;
   mary: TestContractAPI;
+  bob: TestContractAPI;
 }
 
 export async function _beforeAll(): Promise<AllState> {
-  const seed = await loadSeedFile(defaultSeedPath);
+  const seed = await loadSeed(defaultSeedPath);
   const baseProvider = await makeProvider(seed, ACCOUNTS);
   return { baseProvider };
 }
@@ -92,12 +116,20 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
     provider,
     config
   );
-  await john.approveCentralAuthority();
-  await mary.approveCentralAuthority();
+  const bob = await TestContractAPI.userWrapper(
+    ACCOUNTS[2],
+    provider,
+    config
+  );
+
+  await john.approve();
+  await mary.approve();
+  await bob.approve();
 
   return {
     john,
     mary,
+    bob,
   };
 }
 
@@ -120,7 +152,7 @@ export async function processTrades(
       'getUserTradingPositions',
       {
         universe,
-        account: user1.account.publicKey,
+        account: user1.account.address,
         marketId: market.address,
       }
     );

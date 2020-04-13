@@ -2,7 +2,7 @@ import { Augur } from '@augurproject/sdk';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import * as HTTPEndpoint from '@augurproject/sdk/build/state/HTTPEndpoint';
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import request from 'supertest';
 import { makeDbMock, makeTestAugur } from '../../libs';
 
@@ -16,7 +16,7 @@ let augur: Augur;
 let db: Promise<DB>;
 
 beforeAll(async () => {
-  const seed = await loadSeedFile(defaultSeedPath);
+  const seed = await loadSeed(defaultSeedPath);
   augur = await makeTestAugur(seed, ACCOUNTS);
   db = mock.makeDB(augur);
   // Must wait for the db for initialize before we start the http server.

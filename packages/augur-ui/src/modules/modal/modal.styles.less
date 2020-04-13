@@ -2087,7 +2087,7 @@ div.ButtonsRow:last-of-type {
           font-weight: @weight-bold;
 
           > span:first-of-type {
-            .mono-11-bold;
+            .mono-10-bold;
             color: var(--color-secondary-text);
             text-transform: uppercase;
           }
@@ -3219,8 +3219,14 @@ div.ButtonsRow:last-of-type {
           }
         }
 
-        .Details {
-          .text-12;
+      > span > a > span {
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .Details {
+        .text-12;
 
           color: var(--color-secondary-text);
 
@@ -3454,6 +3460,8 @@ div.ButtonsRow:last-of-type {
   }
 
   input[class*='sc-popup-window--search'] {
+    width: 232px;
+
     &:focus {
       border: none;
     }
@@ -3485,6 +3493,17 @@ div.ButtonsRow:last-of-type {
 
   h3[class*='sc-header--team-name_text'] {
     .text-16-bold;
+  }
+
+  div[class*="sc-popup-window--cointainer"] {
+    width: 282px;
+    bottom: @size-16;
+    right: -@size-18;
+
+    &:after {
+      background-color: @color-dark-grey;
+      right: @size-12;
+    }
   }
 }
 

@@ -130,6 +130,7 @@ const SideNav = ({
                     className={classNames(Styles.SideNavMigrateTooltipHint)}
                     data-tip
                     data-for={'migrateRep'}
+                    data-iscapture={true}
                   >
                     {helpIcon}
                   </label>
@@ -139,8 +140,8 @@ const SideNav = ({
                     effect='solid'
                     place='top'
                     type='light'
-                    data-event="mouseover"
-                    data-event-off="blur scroll"
+                    event="mouseover mouseenter"
+                    eventOff="mouseleave mouseout scroll mousewheel blur"
                   >
                     <p>
                       {

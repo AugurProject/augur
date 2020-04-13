@@ -1,4 +1,4 @@
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { Checkpoints } from '@augurproject/sdk/build/warp/Checkpoints';
 import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
@@ -12,7 +12,7 @@ describe('Checkpoint', () => {
 
   beforeAll(async () => {
     blocks = [];
-    const seed = await loadSeedFile(defaultSeedPath);
+    const seed = await loadSeed(defaultSeedPath);
     const provider = await makeProvider(seed, ACCOUNTS);
     const config = provider.getConfig();
 
@@ -29,8 +29,8 @@ describe('Checkpoint', () => {
       config,
     );
 
-    await john.faucet(new BigNumber(1000000000));
-    await john.approveCentralAuthority();
+    await john.faucetCash(new BigNumber(1000000000));
+    await john.approve();
 
     const amountToTransfer = new BigNumber(1000);
 
@@ -38,7 +38,7 @@ describe('Checkpoint', () => {
     for (let i = 0; i < 5; i++) {
       // Advance time 15 seconds between blocks.
       await provider.provider.send('evm_increaseTime', [15]);
-      await john.transferCash(mary.account.publicKey, amountToTransfer.plus(i));
+      await john.transferCash(mary.account.address, amountToTransfer.plus(i));
       blocks.push(await provider.getBlock('latest'));
     }
 

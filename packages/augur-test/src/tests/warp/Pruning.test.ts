@@ -4,7 +4,7 @@ import { Seed, TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../libs';
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import Dexie from 'dexie';
 
 describe('market pruning', () => {
@@ -17,7 +17,7 @@ describe('market pruning', () => {
   let market: ContractInterfaces.Market;
 
   beforeEach(async () => {
-    seed = await loadSeedFile(defaultSeedPath);
+    seed = await loadSeed(defaultSeedPath);
     provider = await makeProvider(seed, ACCOUNTS);
     const config = provider.getConfig();
 
@@ -27,11 +27,11 @@ describe('market pruning', () => {
 
     mark = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, config);
 
-    await john.faucet(new BigNumber(1000000000));
+    await john.faucetCash(new BigNumber(1000000000));
 
-    await john.approveCentralAuthority();
-    await mary.approveCentralAuthority();
-    await mark.approveCentralAuthority();
+    await john.approve();
+    await mary.approve();
+    await mark.approve();
 
     // Market to sunset.
     market = await john.createReasonableYesNoMarket();

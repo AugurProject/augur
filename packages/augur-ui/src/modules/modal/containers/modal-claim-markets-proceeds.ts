@@ -26,6 +26,7 @@ import {
 } from 'modules/types';
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { labelWithTooltip } from 'modules/common/label-with-tooltip';
 
 const mapStateToProps = (state: AppState) => {
   const pendingQueue = state.pendingQueue || [];
@@ -59,7 +60,11 @@ const mapStateToProps = (state: AppState) => {
           status: pending && pending.status,
           properties: [
             {
-              label: 'Proceeds after market fees',
+              label: labelWithTooltip({
+                labelText: "Proceeds after market fees",
+                key: "proceeds-after-market-fees",
+                tipText: "This number is the return of Frozen Funds for any position(s) held in addition to any profit or loss accrued in this market."
+              }),
               value: unclaimedProceeds.full,
             },
             {

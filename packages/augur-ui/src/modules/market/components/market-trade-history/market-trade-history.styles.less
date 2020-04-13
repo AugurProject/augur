@@ -16,6 +16,24 @@
     flex-grow: 1;
     overflow: overlay;
     max-height: 50vh;
+
+    > span {
+      .mono-10-medium;
+
+      align-items: center;
+      align-self: center;
+      color: @color-inactive-text;
+      display: flex;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    @media @breakpoint-mobile {
+      min-height: 200px;
+    }
   }
 }
 
@@ -80,6 +98,13 @@
     > li:nth-of-type(2) {
       color: var(--color-positive);
       text-align: right;
+      align-items: center;
+      display: flex;
+      justify-content: center;
+
+      > span {
+        flex: unset;
+      }
     }
 
     > li:last-of-type {
@@ -95,7 +120,6 @@
   border: solid transparent;
   border-width: @size-4;
   margin-left: @size-8;
-  position: relative;
 }
 
 .Up {
