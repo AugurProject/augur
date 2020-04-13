@@ -129,21 +129,16 @@ export function updateAlert(
       }
 
       if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
-        dispatch(loadMarketsInfoIfNotLoaded([alert.params.market], () => {
-          const marketInfo = selectMarket(alert.params.market);
-          if (!marketInfo.isWarpSync) {
-            dispatch(
-              updateAlert(id, {
-                ...alert,
-                params: {
-                  ...alert.params,
-                  preFilled: true,
-                },
-                name: CONTRIBUTE,
-              })
-            );
-          } 
-        }));
+        dispatch(
+          updateAlert(id, {
+            ...alert,
+            params: {
+              ...alert.params,
+              preFilled: true,
+            },
+            name: CONTRIBUTE,
+          })
+        );
       }
       
       let foundAlert = alerts.find(
