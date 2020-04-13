@@ -62,7 +62,7 @@ const getProfitLossSummaryParams = t.partial({
   universe: t.string,
   account: t.string,
   endTime: t.number,
-  ignoreFinalizedMarkets: t.boolean
+  ignoreAwaitingAndFinalizedMarkets: t.boolean
 });
 
 const getProfitLossParams = t.intersection([
@@ -71,7 +71,7 @@ const getProfitLossParams = t.intersection([
     startTime: t.number,
     periodInterval: t.number,
     outcome: t.number,
-    ignoreFinalizedMarkets: t.boolean,
+    ignoreAwaitingAndFinalizedMarkets: t.boolean,
   }),
 ]);
 
@@ -941,7 +941,7 @@ export class Users {
     profitLossSummary = await Users.getProfitLossSummary(augur, db, {
       universe,
       account: params.account,
-      ignoreFinalizedMarkets: true,
+      ignoreAwaitingAndFinalizedMarkets: true,
     });
 
     return {
@@ -1035,7 +1035,7 @@ export class Users {
         "'getProfitLoss' requires a 'startTime' param be provided"
       );
     }
-    const ignoreFinalizedMarkets = params.ignoreFinalizedMarkets;
+    const ignoreAwaitingAndFinalizedMarkets = params.ignoreAwaitingAndFinalizedMarkets;
     const now = await augur.contracts.augur.getTimestamp_();
     const startTime = params.startTime!;
     const endTime = params.endTime || now.toNumber();
@@ -1109,6 +1109,7 @@ export class Users {
         profitLossByMarketAndOutcome,
         (profitLossByOutcome, marketId) => {
           const marketDoc = markets[marketId];
+          const isAwaiting = marketDoc.reportingState === MarketReportingState.AwaitingFinalization;
           return _.mapValues(
             profitLossByOutcome,
             (outcomePLValues, outcome) => {
@@ -1120,7 +1121,7 @@ export class Users {
                 ordersFilledResultsByMarketAndOutcome[marketId] &&
                 ordersFilledResultsByMarketAndOutcome[marketId][outcome]
               ) || finalized;
-              if (!latestOutcomePLValue || !hasOutcomeValues || (ignoreFinalizedMarkets && finalized)) {
+              if (!latestOutcomePLValue || !hasOutcomeValues || (ignoreAwaitingAndFinalizedMarkets && ( isAwaiting || finalized))) {
                 return {
                   timestamp: bucketTimestamp.toNumber(),
                   frozenFunds: '0',
@@ -1208,7 +1209,7 @@ export class Users {
           startTime,
           endTime,
           periodInterval,
-          ignoreFinalizedMarkets: params.ignoreFinalizedMarkets
+          ignoreAwaitingAndFinalizedMarkets: params.ignoreAwaitingAndFinalizedMarkets
         }
       );
 
