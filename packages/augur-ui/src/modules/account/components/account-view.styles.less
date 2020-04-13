@@ -96,6 +96,14 @@
     }
   }
 
+  > div:nth-of-type(5) {
+    div[class*='BoxHeader'] {
+      > div:first-of-type > div:last-of-type {
+        display: none;
+      }
+    }
+  }
+
   > footer {
     grid-column: 1 / span 3;
     grid-row: 5;
@@ -143,8 +151,8 @@
   .AccountView {
     margin: @size-22 @size-32 @size-82;
     display: grid;
-    grid-auto-rows: @size-80;
-    grid-gap: 0 @size-24;
+    grid-auto-rows: @size-32;
+    grid-gap: @size-32 @size-24;
     grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
     grid-template-rows: none;
     min-height: unset;
@@ -155,7 +163,7 @@
       background: var(--color-module-background);
       border: @size-1 solid var(--color-outline);
       border-radius: @border-radius-rounded;
-      margin: 0 0 @size-24;
+      margin: 0;
 
       div[class*='BoxHeader'] {
         background: var(--color-table-header-50);
@@ -201,27 +209,33 @@
 
     > div:nth-of-type(3) {
       grid-column: ~"2/3";
-      grid-row: ~"2/13";
+      grid-row: ~"2/15";
     }
 
     > div:nth-of-type(4) {
       grid-column: ~"2/3";
-      grid-row: ~"13/20";
+      grid-row: ~"15/24";
     }
 
     > div:nth-of-type(5) {
       grid-column: ~"3/4";
-      grid-row: ~"2/4";
+      grid-row: ~"2/5";
+
+      div[class*='BoxHeader'] {
+        > div:first-of-type > div:last-of-type {
+          display: initial;
+        }
+      }
     }
 
     > div:nth-of-type(6) {
       grid-column: ~"3/4";
-      grid-row: ~"4/10";
+      grid-row: ~"5/11";
     }
 
     > footer {
       grid-column: 1 / span 3;
-      grid-row: 21;
+      grid-row: 23;
     }
   }
 

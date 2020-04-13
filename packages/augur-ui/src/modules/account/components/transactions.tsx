@@ -11,6 +11,7 @@ import {
   ExternalLinkButton,
 } from 'modules/common/buttons';
 import { THEMES } from 'modules/common/constants';
+import { AddIcon } from 'modules/common/icons';
 import { getTheme } from 'modules/app/actions/update-app-status';
 import { AccountAddressDisplay } from 'modules/modal/common';
 import { toChecksumAddress } from 'ethereumjs-util';
@@ -49,6 +50,11 @@ export const Transactions = ({
 }: TransactionsProps) => (
   <QuadBox
     title={getTheme() === THEMES.TRADING ? 'Transactions': 'Your funds'}
+    rightContent={
+      <div className={Styles.RightContent}>
+        <ViewTransactionsButton action={transactions} />
+      </div>
+    }
     content={
       <div className={Styles.Content}>
         <div>
@@ -59,7 +65,12 @@ export const Transactions = ({
           <h4>Your funds</h4>
           <DepositButton action={addFunds} />
           <WithdrawButton action={withdraw} />
-          <CashOutButton action={cashOut} />
+          <div>
+            <span>
+              {AddIcon}
+              Get REP or add liquidity of the REP pool
+            </span>
+          </div>
         </div>
         {showFaucets && (
           <div>
