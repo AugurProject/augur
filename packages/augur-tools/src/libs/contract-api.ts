@@ -23,11 +23,11 @@ import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { Account } from '../constants';
 import { makeGSNDependencies, makeSigner } from './blockchain';
-import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { SDKConfiguration } from '@augurproject/artifacts';
+import moment from 'moment';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
-const ETERNAL_APPROVAL_VALUE = new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'); // 2^256 - 1
+const MAX_APPROVAL = new BigNumber(2).pow(256).minus(1);
 
 export class ContractAPI {
   static async userWrapper(
@@ -39,7 +39,7 @@ export class ContractAPI {
     meshBrowser: BrowserMesh = undefined,
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = await makeGSNDependencies(provider, signer, config.addresses.AugurWalletRegistry, config.addresses.EthExchange, config.addresses.WETH9, config.addresses.Cash, account.publicKey);
+    const dependencies = await makeGSNDependencies(provider, signer, config.addresses.AugurWalletRegistry, config.addresses.EthExchange, config.addresses.WETH9, config.addresses.Cash, account.address);
 
     let zeroX = null;
     if (meshClient || meshBrowser) {
@@ -50,7 +50,7 @@ export class ContractAPI {
     if (zeroX && meshBrowser) {
       zeroX.mesh = meshBrowser;
     }
-    return new ContractAPI(augur, provider, dependencies, account);
+    return new ContractAPI(augur, provider, account);
   }
 
   static async wrapUsers(
@@ -69,40 +69,57 @@ export class ContractAPI {
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
-    readonly dependencies: ContractDependenciesGSN,
     public account: Account
   ) {}
+
+  get dependencies() {
+    return this.augur.dependencies;
+  }
 
   async sendEther(to: string, amount: BigNumber): Promise<void> {
     return await this.augur.sendETH(to, amount);
   }
 
-  async approveCentralAuthority(): Promise<void> {
+  async approve(wei=MAX_APPROVAL): Promise<void> {
     const authority = this.augur.config.addresses.Augur;
-    await this.augur.contracts.cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+    await this.augur.contracts.cash.approve(authority, wei);
 
     const fillOrder = this.augur.config.addresses.FillOrder;
-    await this.augur.contracts.cash.approve(fillOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+    await this.augur.contracts.cash.approve(fillOrder, wei);
     await this.augur.contracts.shareToken.setApprovalForAll(fillOrder, true);
 
     const createOrder = this.augur.config.addresses.CreateOrder;
-    await this.augur.contracts.cash.approve(createOrder, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+    await this.augur.contracts.cash.approve(createOrder,wei);
     await this.augur.contracts.shareToken.setApprovalForAll(createOrder, true);
 
-    await this.augur.contracts.cash.approve(this.augur.config.addresses.ZeroXTrade, new BigNumber(2).pow(256).minus(new BigNumber(1)));
+    const zeroXTrade = this.augur.config.addresses.ZeroXTrade;
+    await this.augur.contracts.cash.approve(zeroXTrade, wei);
   }
 
-  async createYesNoMarket(params: CreateYesNoMarketParams, faucet = true): Promise<ContractInterfaces.Market> {
+  async getCashAllowance(): Promise<BigNumber> {
+    const owner = this.account.address;
+    const authority = this.augur.config.addresses.Augur;
+    return this.augur.contracts.cash.allowance_(owner, authority);
+  }
+
+  async approveIfNecessary(wei=MAX_APPROVAL): Promise<void> {
+    const current = await this.getCashAllowance();
+    if (current.lt(wei)) {
+      await this.approve(wei);
+    }
+  }
+
+  async createYesNoMarket(params: CreateYesNoMarketParams, faucet=true): Promise<ContractInterfaces.Market> {
     if (faucet) await this.marketFauceting();
     return this.augur.createYesNoMarket(params);
   }
 
-  async createCategoricalMarket(params: CreateCategoricalMarketParams, faucet = true): Promise<ContractInterfaces.Market> {
+  async createCategoricalMarket(params: CreateCategoricalMarketParams, faucet=true): Promise<ContractInterfaces.Market> {
     if (faucet) await this.marketFauceting();
     return this.augur.createCategoricalMarket(params);
   }
 
-  async createScalarMarket(params: CreateScalarMarketParams, faucet = true): Promise<ContractInterfaces.Market> {
+  async createScalarMarket(params: CreateScalarMarketParams, faucet=true): Promise<ContractInterfaces.Market> {
     if (faucet) await this.marketFauceting();
     return this.augur.createScalarMarket(params);
   }
@@ -115,19 +132,19 @@ export class ContractAPI {
     const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
     const repBond = await this.getRepBond();
     console.log('Cash Faucet for market creation');
-    await this.faucet(marketCreationFee);
+    await this.faucetCashUpTo(marketCreationFee);
     console.log('REP Faucet for market creation');
-    await this.repFaucet(repBond.plus(10**18));
+    await this.faucetRepUpTo(repBond.plus(1e18));
   }
 
-  async createReasonableYesNoMarket(description = 'YesNo market description', faucet=true): Promise<ContractInterfaces.Market> {
+  async createReasonableYesNoMarket(description = 'YesNo market description', faucet=true, feePercentage: number = 1): Promise<ContractInterfaces.Market> {
     const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createYesNoMarket({
       endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
-      feePerCashInAttoCash: new BigNumber(10).pow(16),
+      feePerCashInAttoCash: new BigNumber(feePercentage * 10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
-      designatedReporter: this.account.publicKey,
+      designatedReporter: this.account.address,
       extraInfo: JSON.stringify({
         categories: ['flash', 'Reasonable', 'YesNo'],
         description,
@@ -142,7 +159,7 @@ export class ContractAPI {
       endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
       feePerCashInAttoCash: new BigNumber(10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
-      designatedReporter: this.account.publicKey,
+      designatedReporter: this.account.address,
       extraInfo: JSON.stringify({
         categories: ['flash', 'Reasonable', 'Categorical'],
         description,
@@ -160,7 +177,7 @@ export class ContractAPI {
       endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
       feePerCashInAttoCash: new BigNumber(10).pow(16),
       affiliateFeeDivisor: new BigNumber(25),
-      designatedReporter: this.account.publicKey,
+      designatedReporter: this.account.address,
       extraInfo: JSON.stringify({
         categories: ['flash', 'Reasonable', 'Scalar'],
         description,
@@ -184,12 +201,12 @@ export class ContractAPI {
 
     if (type.isEqualTo(0)) { // BID
       const cost = numShares.multipliedBy(price);
-      await this.faucet(cost);
+      await this.faucetCashUpTo(cost);
     } else if (type.isEqualTo(1)) { // ASK
       const m = await this.getMarketContract(market);
       const numTicks = await m.getNumTicks_();
       const cost = numTicks.plus(price.multipliedBy(-1)).multipliedBy(numShares);
-      await this.faucet(cost);
+      await this.faucetCashUpTo(cost);
     } else {
       throw Error(`Invalid order type ${type.toString()}`);
     }
@@ -229,7 +246,7 @@ export class ContractAPI {
 
   async fillOrder(orderId: string, numShares: BigNumber, tradeGroupId: string, cost?: BigNumber) {
     if (cost) {
-      await this.faucet(cost);
+      await this.faucetCashUpTo(cost);
     }
     await this.augur.contracts.fillOrder.publicFillOrder(orderId, numShares, formatBytes32String(tradeGroupId), formatBytes32String(''));
   }
@@ -239,14 +256,18 @@ export class ContractAPI {
   }
 
   async placeZeroXOrders(params: ZeroXPlaceTradeDisplayParams[]): Promise<void> {
-    console.log(`${this.account.publicKey} is creating orders: ${JSON.stringify(params, null, 2)}`)
+    console.log(`${this.account.address} is creating orders: ${JSON.stringify(params, null, 2)}`)
     await this.augur.zeroX.placeOrders(params);
+  }
+
+  async safePlaceOrders(params: ZeroXPlaceTradeDisplayParams[]): Promise<void> {
+    await this.augur.zeroX.safePlaceOrders(params);
   }
 
   async placeZeroXTrade(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
     const price = params.direction === 0 ? params.displayPrice : params.numTicks.minus(params.displayPrice);
     const cost = params.displayAmount.multipliedBy(price).multipliedBy(10**18);
-    await this.faucet(cost);
+    await this.faucetCashUpTo(cost);
     await this.augur.zeroX.placeTrade(params);
   }
 
@@ -271,7 +292,7 @@ export class ContractAPI {
 
   async takeBestOrder(marketAddress: string, type: BigNumber, numShares: BigNumber, price: BigNumber, outcome: BigNumber, tradeGroupID: string): Promise<void> {
     const cost = numShares.multipliedBy(price);
-    await this.faucet(cost);
+    await this.faucetCashUpTo(cost);
     const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(type, marketAddress, outcome, numShares, price, tradeGroupID, new BigNumber(3), formatBytes32String(''));
     if (bestPriceAmount === new BigNumber(0)) {
       throw new Error('Could not take best Order');
@@ -291,7 +312,7 @@ export class ContractAPI {
   async placeNativeTrade(params: PlaceTradeDisplayParams): Promise<void> {
     const price = params.direction === 0 ? params.displayPrice : params.numTicks.minus(params.displayPrice);
     const cost = params.displayAmount.multipliedBy(price).multipliedBy(10**18);
-    await this.faucet(cost);
+    await this.faucetCashUpTo(cost);
     await this.augur.trade.placeTrade(params);
   }
 
@@ -366,7 +387,7 @@ export class ContractAPI {
     });
   }
 
-  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder = this.account.publicKey, fingerprint = formatBytes32String('11')): Promise<void> {
+  async claimTradingProceeds(market: ContractInterfaces.Market, shareholder = this.account.address, fingerprint = formatBytes32String('11')): Promise<void> {
     await this.augur.contracts.shareToken.claimTradingProceeds(market.address, shareholder, fingerprint);
   }
 
@@ -401,7 +422,7 @@ export class ContractAPI {
   async buyCompleteSets(market: ContractInterfaces.Market, amount: BigNumber): Promise<void> {
     const numTicks = await market.getNumTicks_();
     const cashValue = amount.multipliedBy(numTicks);
-    await this.faucet(cashValue);
+    await this.faucetCashUpTo(cashValue);
     await this.augur.contracts.shareToken.publicBuyCompleteSets(market.address, amount);
   }
 
@@ -501,12 +522,12 @@ export class ContractAPI {
     return this.augur.contracts.getReportingParticipant(reportingParticipantAddress);
   }
 
-  async buyParticipationTokens(disputeWindowAddress: string, amount: BigNumber, sender: string=this.account.publicKey): Promise<void> {
+  async buyParticipationTokens(disputeWindowAddress: string, amount: BigNumber, sender: string=this.account.address): Promise<void> {
     const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
     await disputeWindow.buy(amount, {sender});
   }
 
-  async redeemParticipationTokens(disputeWindowAddress: string, account: string=this.account.publicKey): Promise<void> {
+  async redeemParticipationTokens(disputeWindowAddress: string, account: string=this.account.address): Promise<void> {
     const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
     await disputeWindow.redeem(account);
   }
@@ -533,6 +554,19 @@ export class ContractAPI {
 
   async getTimestamp(): Promise<BigNumber> {
     return (this.augur.contracts.augur.getTimestamp_());
+  }
+
+  async printTimestamp() {
+    const blocktime = await this.getTimestamp();
+    const epoch = Number(blocktime.toString()) * 1000;
+
+    console.log(`block: ${blocktime}`);
+    console.log(`local: ${moment(epoch).toString()}`);
+    console.log(
+      `utc: ${moment(epoch)
+        .utc()
+        .toString()}\n`
+    );
   }
 
   async doInitialReport(market: ContractInterfaces.Market, payoutNumerators: BigNumber[], description = '', extraStake = '0'): Promise<void> {
@@ -569,25 +603,28 @@ export class ContractAPI {
     await market.finalize();
   }
 
-  async faucet(attoCash: BigNumber, account?: string): Promise<void> {
-    const realAccount = await this.augur.getAccount();
-    account = account || realAccount;
-    let balance = await this.getCashBalance(realAccount);
-    while (balance.lt(attoCash)) {
-      await this.augur.contracts.cashFaucet.faucet(attoCash);
-      balance = await this.getCashBalance(realAccount);
-    }
-    if (account !== realAccount) {
+  async faucetCash(attoCash: BigNumber, targetAddress?: string): Promise<void> {
+    const userAddress = await this.augur.getAccount();
+    const account = targetAddress || userAddress;
+    await this.augur.contracts.cashFaucet.faucet(attoCash);
+    if (account !== userAddress) {
       await this.augur.contracts.cash.transfer(account, attoCash);
     }
   }
 
-  async faucetOnce(attoCash: BigNumber, account?: string): Promise<void> {
-    account = account ||  await this.augur.getAccount();
-    await this.augur.contracts.cashFaucet.faucet(attoCash, { sender: account });
+  // Faucets cash if the target address (or current user) has less than `attoCash`.
+  // When fauceting, adds `extra` cash as a buffer.
+  async faucetCashUpTo(attoCash: BigNumber, extra = new BigNumber(0), targetAddress: string = null): Promise<void> {
+    targetAddress = targetAddress || await this.augur.getAccount();
+    const balance = await this.getCashBalance(targetAddress);
+    const leftToFaucet = attoCash.minus(balance);
+    if (leftToFaucet.gt(0)) {
+      const totalToFaucet = leftToFaucet.plus(extra);
+      await this.faucetCash(totalToFaucet, targetAddress);
+    }
   }
 
-  async repFaucet(attoRep: BigNumber, useLegacy = false): Promise<void> {
+  async faucetRep(attoRep: BigNumber, useLegacy = false): Promise<void> {
     const reputationToken = this.augur.contracts.getReputationToken();
     if (useLegacy) {
       await this.augur.contracts.legacyReputationToken.faucet(attoRep);
@@ -600,12 +637,24 @@ export class ContractAPI {
     }
   }
 
+  // Faucets rep if the target address (or current user) has less than `attoRep`.
+  // When fauceting, adds `extra` rep as a buffer.
+  async faucetRepUpTo(attoRep: BigNumber, extra = new BigNumber(0), useLegacy = false): Promise<void> {
+    const address = await this.augur.getAccount();
+    const balance = await this.getRepBalance(address);
+    const leftToFaucet = attoRep.minus(balance);
+    if (leftToFaucet.gt(0)) {
+      const totalToFaucet = leftToFaucet.plus(extra);
+      await this.faucetRep(totalToFaucet, useLegacy);
+    }
+  }
+
   async transferCash(to: string, attoCash: BigNumber): Promise<void> {
     await this.augur.contracts.cash.transfer(to, attoCash);
   }
 
   async addEthExchangeLiquidity(attoCash: BigNumber, attoEth: BigNumber): Promise<void> {
-    await this.faucet(attoCash);
+    await this.faucetCashUpTo(attoCash);
     await this.augur.contracts.cash.transfer(this.augur.contracts.ethExchange.address, attoCash);
     await this.augur.contracts.weth.deposit({attachedEth: attoEth});
     await this.augur.contracts.weth.transfer(this.augur.contracts.ethExchange.address, attoEth);
@@ -624,15 +673,31 @@ export class ContractAPI {
     }
   }
 
-  async approve(wei: BigNumber): Promise<void> {
-    await this.augur.contracts.cash.approve(this.augur.config.addresses.Augur, wei);
-
-    await this.augur.contracts.cash.approve(this.augur.config.addresses.FillOrder, wei);
-    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.config.addresses.FillOrder, true);
-
-    await this.augur.contracts.cash.approve(this.augur.config.addresses.CreateOrder, wei);
-    await this.augur.contracts.shareToken.setApprovalForAll(this.augur.config.addresses.CreateOrder, true);
+  async reportAndFinalizeWarpSyncMarket(hash:string) {
+    const warpSyncMarket = await this.reportWarpSyncMarket(hash);
+    return this.finalizeWarpSyncMarket(warpSyncMarket);
   }
+
+  async finalizeWarpSyncMarket(warpSyncMarket: ContractInterfaces.Market) {
+    const timestamp = (await this.getTimestamp()).plus(1000000);;
+    await this.setTimestamp(timestamp);
+
+    await this.finalizeMarket(warpSyncMarket);
+
+    return warpSyncMarket;
+  }
+
+  async reportWarpSyncMarket(hash:string) {
+    const payoutNumerators = await this.getPayoutFromWarpSyncHash(hash);
+    const warpSyncMarket = await this.getWarpSyncMarket();
+
+    const timestamp = (await this.getTimestamp()).plus(1000000);
+    await this.setTimestamp(timestamp);
+    await this.doInitialReport(warpSyncMarket, payoutNumerators);
+
+    return warpSyncMarket;
+  }
+
 
   getLegacyRepBalance(owner: string): Promise<BigNumber> {
     return this.augur.contracts.legacyReputationToken.balanceOf_(owner);
@@ -646,10 +711,6 @@ export class ContractAPI {
     await this.augur.contracts.legacyReputationToken.transfer(to, amount);
   }
 
-  async approveLegacyRep(spender: string, amount: BigNumber): Promise<void> {
-    await this.augur.contracts.legacyReputationToken.approve(spender, amount);
-  }
-
   async getChildUniverseReputationToken(parentPayoutDistributionHash: string) {
     const childUniverseAddress = await this.augur.contracts.universe!.getChildUniverse_(parentPayoutDistributionHash);
     const childUniverse = this.augur.contracts.universeFromAddress(childUniverseAddress);
@@ -659,7 +720,7 @@ export class ContractAPI {
 
   // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants
   async getEthBalance(owner?: string): Promise<BigNumber> {
-    const balance = await this.provider.getBalance(owner);
+    const balance = await this.provider.getBalance(owner || this.account.address);
     return new BigNumber(balance.toString());
   }
 
@@ -687,22 +748,6 @@ export class ContractAPI {
 
   setUseRelay(useRelay: boolean): void {
     this.augur.setUseRelay(useRelay);
-  }
-
-  async approveAugurEternalApprovalValue(owner: string) {
-    const augur = this.augur.config.addresses.Augur;
-    const allowance = new BigNumber(await this.augur.contracts.cash.allowance_(owner, augur));
-
-    if (!allowance.eq(ETERNAL_APPROVAL_VALUE)) {
-      const fillOrder = this.augur.config.addresses.FillOrder;
-      const createOrder = this.augur.config.addresses.CreateOrder;
-      await this.augur.contracts.cash.approve(augur, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
-      await this.augur.contracts.cash.approve(fillOrder, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
-      await this.augur.contracts.cash.approve(createOrder, ETERNAL_APPROVAL_VALUE, { sender: this.account.publicKey });
-
-      await this.augur.contracts.shareToken.setApprovalForAll(fillOrder, true, { sender: this.account.publicKey });
-      await this.augur.contracts.shareToken.setApprovalForAll(createOrder, true, { sender: this.account.publicKey });
-    }
   }
 
   async getWalletAddress(account: string): Promise<string> {
@@ -749,20 +794,20 @@ export class ContractAPI {
 
   async fundSafe(safe: string, minimum=new BigNumber(1e21)) {
     if ((await this.getCashBalance(safe)).lt(minimum)) {
-      await this.faucet(minimum, safe);
+      await this.faucetCashUpTo(minimum, new BigNumber(0), safe);
     }
 
     return safe;
   }
 
   async getOrCreateWallet(): Promise<string> {
-    const walletFromRegistry = await this.augur.contracts.augurWalletRegistry.getWallet_(this.account.publicKey);
+    const walletFromRegistry = await this.augur.contracts.augurWalletRegistry.getWallet_(this.account.address);
     if (walletFromRegistry !== NULL_ADDRESS) {
       console.log(`Found wallet: ${walletFromRegistry}`);
       return walletFromRegistry;
     }
 
-    const walletAddress = await this.augur.gsn.calculateWalletAddress(this.account.publicKey);
+    const walletAddress = await this.augur.gsn.calculateWalletAddress(this.account.address);
     console.log('Funding Wallet Address');
     await this.fundSafe(walletAddress);
     return walletAddress;

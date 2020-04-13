@@ -4,7 +4,6 @@ import { WithdrawForm } from 'modules/modal/withdraw-form';
 import { AppState } from 'appStore';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { formatGasCostToEther, formatEtherEstimate } from 'utils/format-number';
-import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
   transferFunds,
   TRANSFER_ETH_GAS_COST,
@@ -20,34 +19,34 @@ const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
   const balances = loginAccount.balances;
   balances.dai = totalTradingBalance(loginAccount).toNumber();
-
+  const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
   return {
   account: loginAccount.address,
   modal,
   balances,
   GsnEnabled: appStatus.gsnEnabled,
   ethToDaiRate: appStatus.ethToDaiRate,
-  gasPrice: getGasPrice(state),
+  gasPrice,
   fallBackGasCosts: {
     eth: formatEtherEstimate(
       formatGasCostToEther(
         TRANSFER_ETH_GAS_COST,
         { decimalsRounded: 4 },
-        getGasPrice(state)
+        gasPrice
       )
     ),
     rep: formatEtherEstimate(
       formatGasCostToEther(
         TRANSFER_REP_GAS_COST,
         { decimalsRounded: 4 },
-        getGasPrice(state)
+        gasPrice
       )
     ),
     dai: formatEtherEstimate(
       formatGasCostToEther(
         TRANSFER_DAI_GAS_COST,
         { decimalsRounded: 4 },
-        getGasPrice(state)
+        gasPrice
       )
     ),
   },

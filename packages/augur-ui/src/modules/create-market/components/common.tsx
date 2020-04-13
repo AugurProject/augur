@@ -230,6 +230,7 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
             className={TooltipStyles.TooltipHint}
             data-tip
             data-for={`tooltip-${props.header}`}
+            data-iscapture={true}
           >
             {helpIcon}
           </label>
@@ -239,8 +240,8 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
             effect="solid"
             place="top"
             type="light"
-            data-event="mouseover"
-            data-event-off="blur scroll"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
           >
             {props.text}
           </ReactTooltip>
@@ -255,6 +256,7 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
             className={TooltipStyles.TooltipHint}
             data-tip
             data-for={`tooltip-${props.header}`}
+            data-iscapture={true}
           >
             {helpIcon}
           </label>
@@ -264,8 +266,8 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
             effect="solid"
             place="top"
             type="light"
-            data-event="mouseover"
-            data-event-off="blur scroll"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
           >
             {props.text}
           </ReactTooltip>

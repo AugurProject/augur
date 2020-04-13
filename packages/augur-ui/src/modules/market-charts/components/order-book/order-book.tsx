@@ -19,7 +19,7 @@ import {
   QuantityOrderBookOrder,
 } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatShares } from 'utils/format-number';
+import { formatShares, formatDai } from 'utils/format-number';
 import { NUMBER_OF_SECONDS_IN_A_DAY } from 'utils/format-date';
 
 interface OrderBookSideProps {
@@ -73,8 +73,9 @@ const OrderBookSide = ({
     current: { clientHeight: 0, scrollHeight: 0, scrollTop: 0 },
   });
   const isAsks = type === ASKS;
+  const isScalar = marketType === SCALAR;
   const opts =
-    marketType === SCALAR
+    isScalar
       ? { removeComma: true }
       : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS, removeComma: true };
   const orderBookOrders = orderBook[type] || [];
@@ -108,8 +109,8 @@ const OrderBookSide = ({
                 title="Add Offer"
                 action={() =>
                   updateSelectedOrderProperties({
-                    orderPrice: '0',
-                    orderQuantity: '0',
+                    orderPrice: '',
+                    orderQuantity: '',
                     selectedNav: SELL,
                   })
                 }
@@ -120,8 +121,8 @@ const OrderBookSide = ({
                 title="Add Bid"
                 action={() =>
                   updateSelectedOrderProperties({
-                    orderPrice: '0',
-                    orderQuantity: '0',
+                    orderPrice: '',
+                    orderQuantity: '',
                     selectedNav: BUY,
                   })
                 }
@@ -172,7 +173,10 @@ const OrderBookSide = ({
               showEmptyDash={true}
               showDenomination={false}
             />
-            <span>{usePercent ? order.percent : createBigNumber(order.price).toFixed(pricePrecision)}</span>
+            {isScalar && !usePercent ?
+              <HoverValueLabel value={formatDai(order.price)}/> :
+              <span>{usePercent ? order.percent : createBigNumber(order.price).toFixed(pricePrecision)}</span>
+            }
             <span>
               {hasSize
                 ? createBigNumber(order.mySize).toFixed(fixedPrecision)

@@ -4,7 +4,6 @@ import {
   CANCELORDERS,
   BATCHCANCELORDERS,
   TX_ORDER_ID,
-  TX_ORDER_IDS,
   CREATEMARKET,
   CREATECATEGORICALMARKET,
   CREATESCALARMARKET,
@@ -15,6 +14,7 @@ import {
   YES_NO,
   PUBLICFILLORDER,
   CREATEAUGURWALLET,
+  WITHDRAWALLFUNDSASDAI,
   BUYPARTICIPATIONTOKENS,
   MODAL_ERROR,
   MIGRATE_FROM_LEG_REP_TOKEN,
@@ -23,11 +23,12 @@ import {
   TRADINGPROCEEDSCLAIMED,
   CLAIMMARKETSPROCEEDS,
   FORKANDREDEEM,
+  FINALIZE,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Events, TXEventName } from '@augurproject/sdk';
+import { Events, TXEventName, parseZeroXMakerAssetData } from '@augurproject/sdk';
 import {
   addPendingData, addUpdatePendingTransaction, addCanceledOrder,
 } from 'modules/pending-queue/actions/pending-queue-management';
@@ -48,7 +49,9 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   MIGRATEOUTBYPAYOUT,
   FORKANDREDEEM,
   CREATEAUGURWALLET,
+  WITHDRAWALLFUNDSASDAI,
   CLAIMMARKETSPROCEEDS,
+  FINALIZE
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
@@ -220,6 +223,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       case CANCELORDERS: {
         const orders = transaction.params && transaction.params._orders || [];
         orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
+        orders.map(order => dispatch(addPendingData(parseZeroXMakerAssetData(order.makerAssetData).market, CANCELORDERS, eventName, hash)));
         break;
       }
 

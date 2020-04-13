@@ -1,5 +1,4 @@
 import { FlashSession } from './flash';
-import Vorpal from 'vorpal';
 import program from 'commander';
 import { addScripts } from './scripts';
 import { addGanacheScripts } from './ganache-scripts';
@@ -13,6 +12,7 @@ import {
   mergeConfig,
   RecursivePartial
 } from '@augurproject/artifacts';
+import { addWarpSyncScripts } from './warp-sync';
 
 async function processAccounts(flash: FlashSession, args: any) {
     // Figure out which private key to use.
@@ -36,6 +36,7 @@ async function run() {
 
   addScripts(flash);
   addGanacheScripts(flash);
+  addWarpSyncScripts(flash);
 
   program
     .name('flash')
@@ -44,21 +45,13 @@ async function run() {
     .option('--key <key>', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('--keyfile <keyfile>', 'File containing private key to use. Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('--network <network>', `Name of network to run on. Use "none" for commands that don't use a network.`, 'local')
+    .option('--use-gsn <useGsn>', 'Use GSN instead of making contract calls directly', 'false')
+    .option('--skip-approval <skipApproval>', 'Do not approve', 'false')
     .option('--config <config>', 'JSON of configuration')
     .option('--configFile <configFile>', 'Path to configuration file');
 
-  program
-    .command('interactive')
-    .description('Run flash interactively, where you can connect once and run multiple flash scripts in the same session.')
-    .action(async (args) => {
-      const opts = Object.assign({}, program.opts(), args);
-      await processAccounts(flash, opts);
-      const vorpal = makeVorpalCLI(flash);
-      flash.log = vorpal.log.bind(vorpal);
-      vorpal.show();
-    });
-
-  for (const name of Object.keys(flash.scripts) || []) {
+  const scriptNames = Object.keys(flash.scripts) || [];
+  for (const name of scriptNames) {
     const script = flash.scripts[name];
     const subcommand = program.command(script.name).description(script.description);
 
@@ -75,9 +68,14 @@ async function run() {
         await processAccounts(flash, opts);
         flash.network = opts.network;
 
-        let specified: RecursivePartial<SDKConfiguration> = {};
+        let specified: RecursivePartial<SDKConfiguration> = {
+          flash: {
+            useGSN: Boolean(opts.useGsn?.toLowerCase() === 'true'),
+            skipApproval: Boolean(opts.skipApproval?.toLowerCase() === 'true'),
+          }
+        };
         if (opts.configFile) {
-          specified = JSON.parse(fs.readFileSync(opts.configFile).toString());
+          specified = mergeConfig(specified, JSON.parse(fs.readFileSync(opts.configFile).toString()));
         }
         if (opts.config) {
           specified = mergeConfig(specified, JSON.parse(opts.config));
@@ -102,55 +100,21 @@ async function run() {
     });
   }
 
-  if (process.argv.length === 2) {
+  if (process.argv.length < 3) { // no subcommand
+    program.help();
+  } else if (!intersects(scriptNames, process.argv)) { // no valid subcommand given
     program.help();
   } else {
     await program.parseAsync(process.argv);
   }
 }
 
-function makeVorpalCLI(flash: FlashSession): Vorpal {
-  const vorpal = new Vorpal();
-
-  for (const script of Object.values(flash.scripts)) {
-    let v: Vorpal|Vorpal.Command = vorpal;
-    v = v.command(script.name, script.description || '');
-
-    const types = { string: [], boolean: [] };
-    for (const option of script.options || []) {
-      // Vorpal interprets options as boolean (flag) or string,
-      // depending on the structure of its first argument.
-      //   boolean: --foo
-      //   string: --foo <bar>
-      const flag = option.flag || false;
-      const abbr = option.abbr ? `-${option.abbr},` : '';
-      const optionValue = `${abbr}--${option.name}${flag ? '' : ' <arg>'}`;
-      v = v.option(optionValue, option.description);
-      if (flag) {
-        types.boolean.push(option.name);
-        if (option.abbr) types.boolean.push(option.abbr);
-      } else {
-        types.string.push(option.name);
-        if (option.abbr) types.string.push(option.abbr);
-      }
-    }
-    v.types(types);
-    v = v.action(async function(this: Vorpal.CommandInstance, args: Vorpal.Args): Promise<void> {
-      await flash.call(script.name, args.options).catch(console.error);
-    });
-  }
-
-  vorpal.delimiter('augur$');
-
-  return vorpal;
-}
-
 function accountFromPrivateKey(key: string): Account {
   key = cleanKey(key);
   return {
-    secretKey: key,
-    publicKey: computeAddress(key),
-    balance: 0, // not used here; only for ganache premining
+    privateKey: key,
+    address: computeAddress(key),
+    initialBalance: 0, // not used here; only for ganache premining
   }
 }
 
@@ -162,6 +126,13 @@ function cleanKey(key: string): string {
     key = key.slice(0, key.length - 1)
   }
   return key;
+}
+
+function intersects<T>(arrayA: T[], arrayB: T[]): boolean {
+  for (const element of arrayA) {
+    if (arrayB.indexOf(element) !== -1) return true;
+  }
+  return false;
 }
 
 if (require.main === module) {

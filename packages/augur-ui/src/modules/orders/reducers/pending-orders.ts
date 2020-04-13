@@ -4,6 +4,8 @@ import {
   UPDATE_PENDING_ORDER,
 } from 'modules/orders/actions/pending-orders-management';
 import { PendingOrders, BaseAction } from 'modules/types';
+import { RESET_STATE } from 'modules/app/actions/reset-state';
+import { CLEAR_LOGIN_ACCOUNT } from 'modules/account/actions/login-account';
 
 const DEFAULT_STATE: PendingOrders = {};
 
@@ -46,6 +48,9 @@ export default function(
         ...pendingOrders,
       };
     }
+    case RESET_STATE:
+    case CLEAR_LOGIN_ACCOUNT:
+      return DEFAULT_STATE;
     default:
       return pendingOrders;
   }

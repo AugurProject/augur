@@ -7474,6 +7474,48 @@ export const TEMPLATES = {
         resolutionRules: {},
       },
       {
+        marketType: YES_NO,
+        question: `Will there be [0] or more total [1] Coronavirus (Covid-19) in US State: [2] by [3] according to https://covidtracking.com/data/?`,
+        example: `Will there be 1000 or more total Cases of Coronavirus (Covid-19) in US State: Georgia by May 3, 2020 according to https://covidtracking.com/data/?`,
+        inputs: [
+          {
+            id: 0,
+            type: TemplateInputType.TEXT,
+            validationType: ValidationType.WHOLE_NUMBER,
+            placeholder: 'Whole #',
+          },
+          {
+            id: 1,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `Case/Death`,
+            values: LIST_VALUES.MEDICAL_CASE_DEATH,
+          },
+          {
+            id: 2,
+            type: TemplateInputType.DROPDOWN,
+            placeholder: `US States`,
+            values: LIST_VALUES.US_STATES,
+            categoryDestId: 1,
+          },
+          {
+            id: 3,
+            type: TemplateInputType.DATESTART,
+            daysAfterDateStart: 2,
+            placeholder: `Day of Year`,
+          },
+        ],
+        resolutionRules: {
+          [REQUIRED]: [
+            {
+              text: `Cases: Settlement is based of the https://covidtracking.com/data/ website. To find the Total number of positive cases for a US State. You must find the State you are searching for and click on that State, to go to that State's details, Scroll down until you see history. Look for the specific date mentioned in the market question and scroll over until you find "Positive" column and use that number.`,
+            },
+            {
+              text: `Deaths: Settlement is based of the https://covidtracking.com/data/ website. To find the Total number of deaths from Covid-19 for a US State. You must find the State you are searching for and click on that State, to go to that State's details, Scroll down until you see history. Look for the specific date mentioned in the market question and scroll over until you find "Deaths" column and use that number.`
+            }
+          ],
+        },
+      },
+      {
         marketType: CATEGORICAL,
         question: `Which of these countries will have the highest amount of total confirmed [0] Coronavirus (Covid-19) by [1] according to https://www.worldometers.info/coronavirus/#countries?`,
         example: `Which of these countries will have the highest amount of total confirmed cases of Coronavirus (Covid-19) by July 20, 2020 according to https://www.worldometers.info/coronavirus/#countries?`,

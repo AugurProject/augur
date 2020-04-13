@@ -83,6 +83,7 @@ function selectColumn(columnType: string, properties: Properties) {
                   showEmptyDash={properties.showEmptyDash}
                   useFull={properties.useFull}
                   usePercent={properties.usePercent}
+                  showFullPrecision={properties.showFullPrecision}
                   alert={properties.alert}
                 />
               </button>
@@ -93,7 +94,9 @@ function selectColumn(columnType: string, properties: Properties) {
                 keyId={properties.keyId}
                 showEmptyDash={properties.showEmptyDash}
                 useFull={properties.useFull}
+                showFullPrecision={properties.showFullPrecision}
                 usePercent={properties.usePercent}
+                showDenomination={properties.showDenomination}
                 alert={properties.alert}
               />
             )}

@@ -228,6 +228,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         onClick={this.toggleList}
         data-tip
         data-for={'dropdown-' + id + staticLabel}
+        data-iscapture={true}
       >
         <button
           className={classNames(Styles.label, {
@@ -280,8 +281,8 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
             effect="solid"
             place="top"
             type="light"
-            data-event="mouseover"
-            data-event-off="blur scroll"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
           >
             {selected.label}
           </ReactTooltip>

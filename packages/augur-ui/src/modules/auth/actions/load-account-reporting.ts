@@ -22,9 +22,9 @@ export const loadAccountReportingHistory = () => async (
   // pull all markets from reporting, disputing.
   let marketIds = [];
   if (reporting.reporting && reporting.reporting.contracts.length > 0)
-    marketIds = reporting.reporting.contracts.map(c => [...marketIds, c.marketId]);
+    marketIds = reporting.reporting.contracts.map(c => c.marketId);
   if (reporting.disputing && reporting.disputing.contracts.length > 0)
-    marketIds = reporting.disputing.contracts.map(c => [...marketIds, c.marketId]);
+    marketIds = reporting.disputing.contracts.map(c => c.marketId);
 
   const notification = readNotifications.find(n => n.type === NOTIFICATION_TYPES.claimReportingFees);
   if (notification) {

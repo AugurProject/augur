@@ -15,23 +15,37 @@ interface Metadata {
   [item:string]: any
 }
 
-interface SeedCommon {
+export interface SeedFile {
   addresses: ContractAddresses;
   contractsHash: string;
-}
-
-export interface SeedFile extends SeedCommon{
   seeds: {
     [seedName:string]: {
-      data: LevelDBRow[],
-      metadata: Metadata
+      data: LevelDBRow[];
+      metadata: Metadata;
     };
   };
 }
 
-export interface Seed extends SeedCommon {
+export interface Seed {
+  addresses: ContractAddresses;
+  contractsHash: string;
   data: LevelDBRow[];
   metadata: Metadata;
+}
+
+export interface GanacheReturn {
+  provider: EthersProvider,
+  db: MemDown,
+}
+export async function startGanacheServer(accounts: Account[], port = 8545): Promise<GanacheReturn> {
+  const db = createDb();
+  const ganacheServer = await makeGanacheServer(db, accounts);
+  const ganacheProvider = new ethers.providers.Web3Provider(ganacheServer.ganacheProvider);
+  ganacheServer.listen(port, () => null);
+  console.log(`Server started on port ${port}`);
+  const provider = new EthersProvider(ganacheProvider, 5, 0, 40);
+
+  return { provider, db }
 }
 
 export async function makeGanacheProvider(db: MemDown, accounts: Account[]): Promise<ethers.providers.Web3Provider> {
@@ -40,6 +54,16 @@ export async function makeGanacheProvider(db: MemDown, accounts: Account[]): Pro
 
 export async function makeGanacheServer(db: MemDown, accounts: Account[]): Promise<ganache.GanacheServer> {
   return ganache.server(await makeGanacheOpts(accounts, db));
+}
+
+function toGanacheAccounts(accounts: Account[]): ganache.Account[] {
+  return accounts.map((account) => {
+    return {
+      secretKey: account.privateKey,
+      publicKey: account.address,
+      balance: account.initialBalance,
+    }
+  })
 }
 
 export function createDb(): MemDown {
@@ -86,7 +110,7 @@ async function makeGanacheOpts(accounts: Account[], db: MemDown) {
   while(Date.now() % 1000 > 100) {}
 
   return {
-    accounts,
+    accounts: toGanacheAccounts(accounts),
     // TODO: For some reason, our contracts here are too large even though production ones aren't. Is it from debugging or lack of flattening?
     allowUnlimitedContractSize: true,
     db,
@@ -94,7 +118,7 @@ async function makeGanacheOpts(accounts: Account[], db: MemDown) {
     debug: false,
     network_id: 123456,
     _chainId: 123456,
-    hardfork: "istanbul",
+    hardfork: 'istanbul',
     time: maxBlockTimeStamp
     // vmErrorsOnRPCResponse: false,
   };
@@ -133,7 +157,27 @@ export async function extractSeed(db: MemDown):Promise<LevelDBRow[]> {
       resolve(payload);
     });
   });
+}
 
+export function addSeedToSeedFile(seedName: string, seed: Seed, seedFile: SeedFile): SeedFile {
+  const { data, metadata } = seed;
+  seedFile.seeds[seedName] = { data, metadata };
+  return seedFile;
+}
+
+export function seedFromSeedFile(seedFile: SeedFile, seedName: string): Seed {
+  const { contractsHash, addresses, seeds } = seedFile;
+  const { data, metadata } = seeds[seedName];
+  return { contractsHash, addresses, data, metadata };
+}
+
+export function seedFileFromSeed(seed: Seed): SeedFile {
+  const { addresses, contractsHash } = seed;
+  return {
+    addresses,
+    contractsHash,
+    seeds: {}
+  }
 }
 
 export async function createSeed(provider: EthersProvider, db: MemDown, addresses: ContractAddresses, metadata: Metadata = {}): Promise<Seed> {
@@ -145,16 +189,32 @@ export async function createSeed(provider: EthersProvider, db: MemDown, addresse
   };
 }
 
-export async function writeSeedFile(seed: SeedFile, filePath: string): Promise<void> {
-  await fs.writeFile(path.resolve(filePath), JSON.stringify(seed));
+export async function loadSeed(seedFilePath: string, seedToLoad = 'default'): Promise<Seed> {
+  return seedFromSeedFile(await loadSeedFile(seedFilePath), seedToLoad)
 }
 
-export async function loadSeedFile(seedFilePath: string, seedToLoad = 'default'): Promise<Seed> {
-  const {contractsHash, addresses, seeds}:SeedFile = JSON.parse(await fs.readFile(seedFilePath));
+export async function writeSeeds(seeds: {[name: string]: Seed}, filePath: string): Promise<void> {
+  if (Object.keys(seeds).length === 0) throw Error("writeSeed's first argument must contain at least one seed");
 
-  return {
-    contractsHash,
-    addresses,
-    ...seeds[seedToLoad]
+  const someSeed = Object.values(seeds)[0] as Seed;
+  let seedFile = await fs.exists(filePath) ? await loadSeedFile(filePath) : seedFileFromSeed(someSeed);
+  for (const name of Object.keys(seeds)) {
+    const seed = seeds[name];
+    seedFile = addSeedToSeedFile(name, seed, seedFile)
   }
+  await writeSeedFile(seedFile, filePath);
+}
+
+export async function writeSeed(seedName: string, seed: Seed, filePath: string): Promise<void> {
+  let seedFile = fs.exists(filePath) ? await loadSeedFile(filePath) : seedFileFromSeed(seed);
+  seedFile = addSeedToSeedFile(seedName, seed, seedFile);
+  await writeSeedFile(seedFile, filePath);
+}
+
+export async function loadSeedFile(seedFilePath: string): Promise<SeedFile> {
+  return JSON.parse(await fs.readFile(seedFilePath));
+}
+
+export async function writeSeedFile(seedFile: SeedFile, filePath: string): Promise<void> {
+  await fs.writeFile(path.resolve(filePath), JSON.stringify(seedFile));
 }

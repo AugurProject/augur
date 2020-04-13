@@ -84,6 +84,26 @@
       padding: @size-3 @size-3 @size-12;
     }
 
+
+    > span:first-of-type {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      span label {
+        margin-top: -@size-10;
+        transform: translateY(@size-10);
+      }
+
+      span div {
+        margin-top: @size-10;
+
+        @media @breakpoint-mobile {
+          margin-top: 0;
+        }
+      }
+    }
+
     > div {
       display: flex;
       justify-content: space-between;

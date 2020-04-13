@@ -63,6 +63,7 @@ interface MarketCardProps {
   marketLinkCopied: Function;
   forkingMarket: string | null;
   isForking?: boolean;
+  forkingEndTime?: number; 
 }
 
 const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;

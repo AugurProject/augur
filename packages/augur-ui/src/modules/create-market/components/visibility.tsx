@@ -84,6 +84,10 @@ export default class Visibility extends Component<
     };
   }
 
+  getNumOutcomes(marketType, numOutcomes) {
+    return marketType === SCALAR ? 3 : numOutcomes;
+  }
+
   validate(newMarket: NewMarket) {
     const validations = DEFAULT_VALIDATIONS;
     let validationMessage = '';
@@ -184,7 +188,7 @@ export default class Visibility extends Component<
     return {
       orderBook: formattedOrderBook,
       numTicks: numTicks.toFixed(),
-      numOutcomes: outcomesFormatted.length,
+      numOutcomes: this.getNumOutcomes(marketType, outcomesFormatted.length),
       marketType: marketTypeNumber,
       feePerCashInAttoCash: String(settlementFee),
       reportingFeeDivisor: String(this.state.reportingFeeDivisor),
@@ -200,7 +204,6 @@ export default class Visibility extends Component<
     const MarketLiquidityRanking = await Augur.getMarketLiquidityRanking(
       params
     );
-    console.log('MarketLiquidityRanking', JSON.stringify(MarketLiquidityRanking));
     callback(null, MarketLiquidityRanking);
   };
 

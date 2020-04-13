@@ -2,6 +2,7 @@ import { BigNumber } from "bignumber.js";
 import { Augur } from "../Augur";
 import { formatBytes32String } from "ethers/utils";
 import { ContractInterfaces } from "@augurproject/core";
+import { NULL_ADDRESS } from "../constants";
 
 export interface CreateYesNoMarketParams {
   endTime: BigNumber;
@@ -43,7 +44,7 @@ export class Market {
   async createYesNoMarket(params: CreateYesNoMarketParams): Promise<ContractInterfaces.Market> {
     const universe = this.augur.contracts.universe;
     // TODO
-    const affiliateValidator = params.affiliateValidator || "0x0000000000000000000000000000000000000000";
+    const affiliateValidator = params.affiliateValidator || NULL_ADDRESS;
 
     const events = await universe.createYesNoMarket(
       params.endTime,
@@ -51,8 +52,8 @@ export class Market {
       affiliateValidator,
       params.affiliateFeeDivisor,
       params.designatedReporter,
-      params.extraInfo)
-    ;
+      params.extraInfo,
+    );
     const marketId = this.extractMarketIdFromEvents(events);
     return this.augur.contracts.marketFromAddress(marketId);
   }
@@ -60,7 +61,7 @@ export class Market {
   async createCategoricalMarket(params: CreateCategoricalMarketParams): Promise<ContractInterfaces.Market> {
     const universe = this.augur.contracts.universe;
     // TODO
-    const affiliateValidator = params.affiliateValidator || "0x0000000000000000000000000000000000000000";
+    const affiliateValidator = params.affiliateValidator || NULL_ADDRESS;
 
     const events = await universe.createCategoricalMarket(
       params.endTime,
@@ -78,7 +79,7 @@ export class Market {
   async createScalarMarket(params: CreateScalarMarketParams): Promise<ContractInterfaces.Market> {
     const universe = this.augur.contracts.universe;
     // TODO
-    const affiliateValidator = params.affiliateValidator || "0x0000000000000000000000000000000000000000";
+    const affiliateValidator = params.affiliateValidator || NULL_ADDRESS;
 
     const events = await universe.createScalarMarket(
       params.endTime,

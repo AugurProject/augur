@@ -28,10 +28,11 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP, dP, oP) => {
   const openOrders = sP.userOpenOrders;
-  const { description: marketTitle } = sP.market;
+  const { description: marketTitle, marketId } = sP.market;
   return {
     title: 'Open Orders in resolved market',
     description: ['You have open orders in this resolved market:'],
+    marketId,
     openOrders: true,
     marketTitle,
     orders: openOrders,

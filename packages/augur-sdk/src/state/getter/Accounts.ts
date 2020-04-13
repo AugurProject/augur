@@ -29,7 +29,7 @@ import {
   PayoutNumeratorValue
 } from '../../index';
 import { MarketReportingState } from '../../constants';
-import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize, convertAttoValueToDisplayValue } from '../../utils';
+import { compareObjects, convertOnChainPriceToDisplayPrice, numTicksToTickSize, convertAttoValueToDisplayValue, QUINTILLION } from '../../utils';
 import * as _ from 'lodash';
 import * as t from 'io-ts';
 import Dexie from 'dexie';
@@ -84,6 +84,7 @@ export interface ContractInfo {
   amount: string;
   marketId: string;
   isClaimable: boolean;
+  earnings: string;
 }
 
 export interface ContractOverview {
@@ -194,6 +195,7 @@ export class Accounts<TBigNumber> {
         address: report.initialReporter,
         amount: new BigNumber(report.amountStaked).toFixed(),
         marketId: report.market,
+        earnings: '0',
         isClaimable
       })
     }
@@ -208,11 +210,27 @@ export class Accounts<TBigNumber> {
 
     for (const crowdsourcer of disputeCrowdsourcerTokens) {
       const market = marketsById[crowdsourcer.market];
+      if (!market) continue;
       const crowdsourcerCompleted = disputeCrowdsourcerCompletedLogsById[crowdsourcer.token];
-      let isClaimable = false;
+      let isClaimable = false;   
+      let earnings = '0';   
       if (market.reportingState === MarketReportingState.AwaitingFinalization || market.reportingState === MarketReportingState.Finalized) {
         // If the market is finalized/finalizable and this bond was correct its claimable, otherwise we leave it out entirely
         isClaimable = !crowdsourcerCompleted || crowdsourcerCompleted.payoutNumerators.toString() === market.tentativeWinningPayoutNumerators.toString();
+        let amount = new BigNumber(crowdsourcer.balance);
+        if (crowdsourcerCompleted && crowdsourcerCompleted.disputeRound === market.disputeRound) {
+          const totalRepStakedInMarket = new BigNumber(crowdsourcerCompleted.totalRepStakedInMarket);
+          const totalRepStakedInPayout = new BigNumber(crowdsourcerCompleted.totalRepStakedInPayout);
+          const size = new BigNumber(disputeCrowdsourcerCreatedLogsById[crowdsourcer.token].size);
+          const report = reporting.contracts.find(reportingContract => reportingContract.marketId === crowdsourcer.market);
+          if (report) {
+            amount = amount.plus(report.amount);
+          }
+          amount = amount.gt(size) ? size : amount;
+          earnings = (new BigNumber(.8).multipliedBy(amount).dividedBy(size).multipliedBy(totalRepStakedInMarket.minus(totalRepStakedInPayout)).multipliedBy(new BigNumber(3)).dividedBy(new BigNumber(4))).toFixed();
+        } else if (crowdsourcerCompleted) {
+          earnings = (new BigNumber(.4).multipliedBy(amount)).toFixed();
+        }
         if (!isClaimable) continue;
       } else {
         // Unfinished bonds are always claimable
@@ -220,6 +238,7 @@ export class Accounts<TBigNumber> {
       }
       crowdsourcerContracts.push({
         address: crowdsourcer.token,
+        earnings,
         amount: new BigNumber(crowdsourcer.balance).toFixed(),
         marketId: crowdsourcer.market,
         isClaimable
@@ -567,9 +586,7 @@ export class Accounts<TBigNumber> {
       | CompleteSetsSoldLog
     >
   ): Promise<MarketCreatedInfo> {
-    const markets = transactionLogs.map(
-      transactionLogs => transactionLogs.market
-    );
+    const markets = _.uniq(_.map(transactionLogs, 'market'));
     return Accounts.getMarketCreatedInfoByIds(db, markets);
   }
 
@@ -591,11 +608,12 @@ function formatOrderFilledLogs(
   transactionLogs: ParsedOrderEventLog[],
   marketInfo: MarketCreatedInfo,
 ): AccountTransaction[] {
-  return transactionLogs.map((transactionLog: ParsedOrderEventLog) => {
+  return transactionLogs.reduce((p, transactionLog: ParsedOrderEventLog) => {
     const { amountFilled, orderType, fees, outcome, market, timestamp, transactionHash } = transactionLog;
     const onChainPrice = new BigNumber(transactionLog.price);
     const onChainQuantity = new BigNumber(amountFilled);
     const marketData = marketInfo[market];
+    if (!marketData) return p;
     const maxPrice = new BigNumber(marketData.prices[1]);
     const minPrice = new BigNumber(marketData.prices[0]);
     const numTicks = new BigNumber(marketData.numTicks);
@@ -612,7 +630,7 @@ function formatOrderFilledLogs(
         ? convertAttoValueToDisplayValue(maxPrice).minus(price).times(quantity)
         : quantity.times(price);
     const orderTypeName = orderType === OrderType.Ask ? 'Buy' : 'Sell';
-      return {
+      return [...p, {
         action: orderTypeName,
         coin: Coin.DAI,
         details: orderTypeName,
@@ -625,8 +643,8 @@ function formatOrderFilledLogs(
         timestamp: new BigNumber(timestamp).toNumber(),
         total: total.toString(),
         transactionHash,
-      };
-  })
+      }];
+  }, [])
 };
 
 
@@ -634,8 +652,9 @@ function formatZeroXOrders(
   storedOrders: StoredOrder[],
   marketInfo: MarketCreatedInfo
 ): AccountTransaction[] {
-  return storedOrders.map(order => {
+  return storedOrders.reduce((p, order) => {
     const marketData = marketInfo[order.market];
+    if (!marketData) return p;
     const maxPrice = new BigNumber(marketData.prices[1]);
     const minPrice = new BigNumber(marketData.prices[0]);
     const numTicks = new BigNumber(marketData.numTicks);
@@ -647,7 +666,7 @@ function formatZeroXOrders(
     if (marketData.marketType === MarketType.Scalar) {
       outcomeDescription = marketData.extraInfo._scalarDenomination;
     }
-    return {
+    return [...p, {
       action: `Open ${orderType}`,
       coin: Coin.DAI,
       details: `Open ${orderType}`,
@@ -661,16 +680,17 @@ function formatZeroXOrders(
       timestamp: new BigNumber(order.signedOrder.salt).dividedBy(1000).integerValue().toNumber(),
       total: '0',
       transactionHash: order.orderHash,
-    };
-  }) as unknown as AccountTransaction[];
+    }];
+  }, []) as unknown as AccountTransaction[];
 }
 
 function formatZeroXCancelledOrders(
   storedOrders: CancelZeroXOrderLog[],
   marketInfo: MarketCreatedInfo
 ) {
-  return storedOrders.map(order => {
+  return storedOrders.reduce((p, order) => {
     const marketData = marketInfo[order.market];
+    if (!marketData) return p;
     const maxPrice = new BigNumber(marketData.prices[1]);
     const minPrice = new BigNumber(marketData.prices[0]);
     const numTicks = new BigNumber(marketData.numTicks);
@@ -688,7 +708,7 @@ function formatZeroXCancelledOrders(
     if (marketData.marketType === MarketType.Scalar) {
       outcomeDescription = marketData.extraInfo._scalarDenomination;
     }
-    return {
+    return [...p, {
       action: `Cancelled ${orderTypeName}`,
       coin: Coin.DAI,
       details: `Cancelled ${orderTypeName}`,
@@ -701,8 +721,8 @@ function formatZeroXCancelledOrders(
       timestamp: 0, //new BigNumber(order.signedOrder.salt).dividedBy(1000).integerValue().toNumber(),
       total: '0',
       transactionHash: order.orderHash,
-    };
-  }) as unknown as AccountTransaction[];
+    }];
+  }, []) as unknown as AccountTransaction[];
 }
 function formatParticipationTokensRedeemedLogs(
   transactionLogs: ParticipationTokensRedeemedLog[]
@@ -739,6 +759,7 @@ async function formatTradingProceedsClaimedLogs(
     const transactionLog = transactionLogs[i];
     const { market, transactionHash, outcome, numShares, timestamp, numPayoutTokens, fees } = transactionLog;
     const marketData = marketInfo[market];
+    if (!marketData) continue;
     const extraInfo = marketData.extraInfo;
     formattedLogs.push({
       action: Action.CLAIM_TRADING_PROCEEDS,
@@ -770,6 +791,7 @@ async function formatCrowdsourcerRedeemedLogs(
     const transactionLog = transactionLogs[i];
     const { market } = transactionLog;
     const marketData = marketInfo[market];
+    if (!marketData) continue;
     const extraInfo = marketData.extraInfo;
 
     const payoutNumerators: BigNumber[] = [];
@@ -798,7 +820,7 @@ async function formatCrowdsourcerRedeemedLogs(
         price: '0',
         quantity: '0',
         timestamp: new BigNumber(transactionLog.timestamp).toNumber(),
-        total: new BigNumber(transactionLog.repReceived).toString(),
+        total: convertAttoValueToDisplayValue(new BigNumber(transactionLog.repReceived)).toString(),
         transactionHash: transactionLog.transactionHash,
       });
     }
@@ -845,6 +867,7 @@ async function formatDisputeCrowdsourcerContributionLogs(
     const transactionLog = transactionLogs[i];
     const { amountStaked, disputeCrowdsourcer, market, timestamp, transactionHash } = transactionLog;
     const marketData = marketInfo[market];
+    if (!marketData) continue;
     const extraInfo = marketData.extraInfo;
 
     const reportingParticipant = augur.contracts.getReportingParticipant(disputeCrowdsourcer);
@@ -881,6 +904,7 @@ async function formatInitialReportSubmittedLogs(
     const transactionLog = transactionLogs[i];
     const { amountStaked, market, timestamp, transactionHash } = transactionLog;
     const marketData = marketInfo[market];
+    if (!marketData) continue;
     const extraInfo = marketData.extraInfo;
 
     const reportingParticipantAddress = await augur.contracts
@@ -889,10 +913,10 @@ async function formatInitialReportSubmittedLogs(
     const reportingParticipant = augur.contracts.getReportingParticipant(
       reportingParticipantAddress
     );
-
+    const payoutNumerators = await reportingParticipant.getPayoutNumerators_();
     const value = outcomeFromMarketLog(
       marketData,
-      await reportingParticipant.getPayoutNumerators_()
+      payoutNumerators
     );
 
     formattedLogs.push({
@@ -914,10 +938,13 @@ async function formatInitialReportSubmittedLogs(
 }
 
 function outcomeFromMarketLog(market: MarketData, payoutNumerators: Array<BigNumber|string>): PayoutNumeratorValue {
+  const maxDisplayPrice = new BigNumber(market.prices[1]).dividedBy(QUINTILLION).toString();
+  const minDisplayPrice = new BigNumber(market.prices[0]).dividedBy(QUINTILLION).toString();
+
   return calculatePayoutNumeratorsValue(
-    convertOnChainAmountToDisplayAmount(new BigNumber(market.prices[1]), new BigNumber(market.numTicks)).toString(),
-    convertOnChainAmountToDisplayAmount(new BigNumber(market.prices[0]), new BigNumber(market.numTicks)).toString(),
-    new BigNumber(market.numTicks).toString(),
+    maxDisplayPrice,
+    minDisplayPrice,
+    market.numTicks,
     marketTypeToName(market.marketType),
     payoutNumerators.map(String));
 }

@@ -70,7 +70,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       columnType: COLUMN_TYPES.VALUE,
       value: orderPrice,
       usePercent: !!orderPrice.percent,
-      useFull: true,
+      useFull: filledOrder.marketType === SCALAR ? false : true,
+      showFullPrecision: filledOrder.marketType === SCALAR ? true : false,
+      showDenomination: filledOrder.marketType === SCALAR ? true : false,
       keyId: 'filledOrder-orderPrice-' + filledOrder.id,
     },
     {

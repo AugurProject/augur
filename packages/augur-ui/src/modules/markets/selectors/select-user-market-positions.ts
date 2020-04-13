@@ -21,13 +21,14 @@ export const selectUserMarketPositions = createSelector(
   (marketInfo, marketAccountPositions): Getters.Users.TradingPosition[] => {
     if (!marketInfo || !marketAccountPositions || !marketAccountPositions.tradingPositions) return [];
       const { marketType, reportingState } = marketInfo;
+      const isFullLoss = marketAccountPositions.tradingPositionsPerMarket?.fullLoss;
       const userPositions = Object.values(
         marketAccountPositions.tradingPositions || []
       ).map((value) => {
         const position = value as Getters.Users.TradingPosition;
         const outcome = marketInfo.outcomesFormatted[position.outcome];
         return {
-          ...positionSummary(position, outcome, marketType, reportingState),
+          ...positionSummary(position, outcome, marketType, reportingState, isFullLoss),
           outcomeName: outcome.description
         };
       });
