@@ -19,6 +19,8 @@ import parseQuery from 'modules/routes/helpers/parse-query';
 import updateQuery from 'modules/routes/helpers/update-query';
 import { INVALID_OPTIONS } from 'modules/types';
 import ChevronFlip from 'modules/common/chevron-flip';
+import { WindowApp } from "modules/types";
+import { windowRef } from 'utils/window-ref';
 
 interface MarketsListFiltersProps {
   maxFee: string;
@@ -57,31 +59,37 @@ const MarketsListFilters = ({
   setTemplateOrCustomFilter,
   isMobile,
 }: MarketsListFiltersProps) => {
+  const { localStorage } = windowRef as WindowApp;
+
   useEffect(() => {
+    const filterOptionsFromLocalStorage =
+      JSON.parse(localStorage.getItem('savedFilters')) || {};
     const filterOptionsFromQuery = parseQuery(location.search);
-    if (
-      filterOptionsFromQuery.maxFee &&
-      filterOptionsFromQuery.maxFee !== maxFee
-    ) {
-      updateMaxFee(filterOptionsFromQuery.maxFee);
+
+    const newMaxFee =
+      filterOptionsFromQuery.maxFee ||
+      filterOptionsFromLocalStorage.maxFee;
+    const newSpread =
+      filterOptionsFromQuery.spread ||
+      filterOptionsFromLocalStorage.spread;
+    const newTemplateFilter =
+      filterOptionsFromQuery.templateFilter ||
+      filterOptionsFromLocalStorage.templateFilter;
+    const newShowInvalid =
+      filterOptionsFromQuery.showInvalid ||
+      filterOptionsFromLocalStorage.showInvalid;
+
+    if (newMaxFee && newMaxFee !== maxFee) {
+      updateMaxFee(newMaxFee);
     }
-    if (
-      filterOptionsFromQuery.spread &&
-      filterOptionsFromQuery.spread !== maxLiquiditySpread
-    ) {
-      updateMaxSpread(filterOptionsFromQuery.spread);
+    if (newSpread && newSpread !== maxLiquiditySpread) {
+      updateMaxSpread(newSpread);
     }
-    if (
-      filterOptionsFromQuery.templateFilter &&
-      filterOptionsFromQuery.templateFilter !== allTemplateFilter
-    ) {
-      updateTemplateFilter(filterOptionsFromQuery.templateFilter);
+    if (newTemplateFilter && newTemplateFilter !== allTemplateFilter) {
+      updateTemplateFilter(newTemplateFilter);
     }
-    if (
-      filterOptionsFromQuery.showInvalid &&
-      filterOptionsFromQuery.showInvalid !== includeInvalidMarkets
-    ) {
-      updateShowInvalid(filterOptionsFromQuery.showInvalid);
+    if (newShowInvalid && newShowInvalid !== includeInvalidMarkets) {
+      updateShowInvalid(newShowInvalid);
     }
   }, [location.search]);
 
@@ -89,13 +97,15 @@ const MarketsListFilters = ({
 
   if (!maxLiquiditySpread) return null;
 
-  function updateFilter (value: string, whichFilterToUpdate: string) {
+  const updateFilter = (value: string, whichFilterToUpdate: string) => {
     updateQuery(
       whichFilterToUpdate,
       value,
       location,
       history
     );
+
+    const filterOptionsFromLocalStorage = JSON.parse(localStorage.getItem('savedFilters')) || {};
 
     switch (whichFilterToUpdate) {
       case TEMPLATE_FILTER:
@@ -111,6 +121,9 @@ const MarketsListFilters = ({
         updateShowInvalid(value);
         break;
     }
+
+    filterOptionsFromLocalStorage[whichFilterToUpdate] = value;
+    localStorage.setItem('savedFilters', JSON.stringify(filterOptionsFromLocalStorage));
   };
 
   return (

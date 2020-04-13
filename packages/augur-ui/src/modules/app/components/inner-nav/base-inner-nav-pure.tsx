@@ -14,9 +14,10 @@ import CategoryFilters from 'modules/app/containers/category-filters';
 import { PrimaryButton } from 'modules/common/buttons';
 
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles.less';
-import { FilterSortOptions } from 'modules/types';
+import { FilterSortOptions, WindowApp } from 'modules/types';
 import updateQuery from 'modules/routes/helpers/update-query';
 import updateMultipleQueries from 'modules/routes/helpers/update-multiple-queries';
+import { windowRef } from 'utils/window-ref';
 
 interface BaseInnerNavPureProps {
   mobileMenuState: number;
@@ -49,6 +50,8 @@ const BaseInnerNavPure = ({
   location,
   history,
 }: BaseInnerNavPureProps) => {
+  const { localStorage } = windowRef as WindowApp;
+
   const showMainMenu = mobileMenuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN;
 
   const [originalSelectedCategories, setOriginalSelectedCategories] = useState(
@@ -108,6 +111,7 @@ const BaseInnerNavPure = ({
 
   const applyFilters = () => {
     const changedFilters = getFilters();
+    const filterOptionsFromLocalStorage = JSON.parse(localStorage.getItem('savedFilters')) || {};
 
     updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
 
@@ -129,6 +133,9 @@ const BaseInnerNavPure = ({
             updateShowInvalid(value);
             break;
         }
+
+        filterOptionsFromLocalStorage[filterType] = value;
+        localStorage.setItem('savedFilters', JSON.stringify(filterOptionsFromLocalStorage));
       });
     }
 
