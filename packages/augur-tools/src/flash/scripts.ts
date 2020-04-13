@@ -32,7 +32,7 @@ import {
 import { generateTemplateValidations } from './generate-templates';
 import { spawn, spawnSync } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
-import { ContractAPI, deployContracts } from '..';
+import { ContractAPI, deployContracts, startGanacheServer } from '..';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
@@ -1684,6 +1684,13 @@ export function addScripts(flash: FlashSession) {
         flag: true,
       },
       {
+        name: 'ganache',
+        // G is already taken. Using lowercase.
+        abbr: 'g',
+        description: 'Use ganache instead of geth.',
+        flag: true,
+      },
+      {
         name: 'do-not-create-markets',
         abbr: 'M',
         description: 'Do not create markets. Only applies when --dev is specified.',
@@ -1695,6 +1702,7 @@ export function addScripts(flash: FlashSession) {
       const detach = Boolean(args.detach);
       const runGeth = !Boolean(args.doNotRunGeth);
       const createMarkets = !Boolean(args.doNotCreateMarkets);
+      const runGanache = Boolean(args.ganache);
 
       spawnSync('docker', ['pull', '0xorg/mesh:latest']);
 
@@ -1706,7 +1714,7 @@ export function addScripts(flash: FlashSession) {
 
       let env;
       try {
-        if (runGeth) {
+        if (runGeth && !runGanache) {
           if (dev) {
             spawnSync('yarn', ['workspace', '@augurproject/tools', 'docker:geth:detached']);
           } else {
@@ -1716,6 +1724,8 @@ export function addScripts(flash: FlashSession) {
           console.log('Waiting for Geth to start up');
           await sleep(10000); // give geth some time to start
           await refreshSDKConfig(); // only grabs new local.json for non-dev
+        } else if(runGanache) {
+          await startGanacheServer(this.accounts);
         }
 
         this.config = buildConfig('local', { deploy: { normalTime }});
