@@ -27,6 +27,8 @@ import {
   ZERO,
 } from 'modules/common/constants';
 import { convertAttoValueToDisplayValue } from '@augurproject/sdk/src';
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
+import { selectMarket } from 'modules/markets/selectors/market';
 
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
@@ -127,16 +129,21 @@ export function updateAlert(
       }
 
       if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
-        dispatch(
-          updateAlert(id, {
-            ...alert,
-            params: {
-              ...alert.params,
-              preFilled: true,
-            },
-            name: CONTRIBUTE,
-          })
-        );
+        dispatch(loadMarketsInfoIfNotLoaded([alert.params.market], () => {
+          const marketInfo = selectMarket(alert.params.market);
+          if (!marketInfo.isWarpSync) {
+            dispatch(
+              updateAlert(id, {
+                ...alert,
+                params: {
+                  ...alert.params,
+                  preFilled: true,
+                },
+                name: CONTRIBUTE,
+              })
+            );
+          } 
+        }));
       }
       
       let foundAlert = alerts.find(
