@@ -47,7 +47,6 @@ import {
   SUBMIT_DISPUTE,
   CLAIMMARKETSPROCEEDS,
   DISAVOWCROWDSOURCERS,
-  REDEEMDISPUTINGSTAKE,
   MARKETMIGRATED,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
@@ -55,7 +54,6 @@ import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import {
   isOnDisputingPage,
   isOnReportingPage,
-  isOnTradePage,
 } from 'modules/trades/helpers/is-on-page';
 import {
   reloadDisputingPage,
@@ -281,9 +279,9 @@ export const handleReportingStateChanged = (event: any) => (
 ) => {
   if (event.data) {
     const marketIds = _.map(event.data, 'market');
-    dispatch(loadMarketsInfo(marketIds));
     if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
     if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
+    dispatch(checkUpdateUserPositions(marketIds));
   }
 };
 

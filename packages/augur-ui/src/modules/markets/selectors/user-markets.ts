@@ -10,6 +10,7 @@ import selectAllMarkets from "modules/markets/selectors/markets-all";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
 import { isSameAddress } from "utils/isSameAddress";
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
+import { formatDate } from "utils/format-date";
 
 export const selectAuthorOwnedMarkets = createSelector(
   selectAllMarkets,
@@ -33,13 +34,18 @@ export const selectAuthorOwnedMarkets = createSelector(
       const pendingTradedId = m.transactionHash || generateTxParameterId(m.txParams);
       const marketId = m.id || pendingTradedId;
       const recentlyTraded = getLastTradeTimestamp(marketTradingHistory[marketId]);
+      const hasTradeHistory = (marketTradingHistory[marketId] || []).length > 0;
       return {
         ...m,
         hasPendingLiquidityOrders: !!pendingLiquidityOrders[pendingTradedId],
         orderBook: pendingLiquidityOrders[marketId],
         recentlyTraded,
-        recentlyDepleted: m.passDefaultLiquiditySpread ? recentlyTraded : ZERO,
-      }
+        recentlyDepleted: !m.passDefaultLiquiditySpread
+          ? hasTradeHistory
+            ? recentlyTraded
+            : m.creationTimeFormatted
+          : formatDate(ZERO),
+      };
     });
   }
 );
