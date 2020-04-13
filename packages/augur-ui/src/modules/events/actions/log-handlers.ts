@@ -47,7 +47,6 @@ import {
   SUBMIT_DISPUTE,
   CLAIMMARKETSPROCEEDS,
   DISAVOWCROWDSOURCERS,
-  REDEEMDISPUTINGSTAKE,
   MARKETMIGRATED,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
@@ -55,7 +54,6 @@ import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import {
   isOnDisputingPage,
   isOnReportingPage,
-  isOnTradePage,
 } from 'modules/trades/helpers/is-on-page';
 import {
   reloadDisputingPage,
@@ -76,6 +74,8 @@ import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
+import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
+import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 
 const handleAlert = (
   log: any,
@@ -135,6 +135,8 @@ export const handleTxSuccess = (txStatus: Events.TXStatus) => (
   getState: () => AppState
 ) => {
   console.log('TxSuccess Transaction', txStatus.transaction.name);
+  // update wallet status on any TxSuccess
+  dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
   dispatch(addUpdateTransaction(txStatus));
 };
 
@@ -281,9 +283,9 @@ export const handleReportingStateChanged = (event: any) => (
 ) => {
   if (event.data) {
     const marketIds = _.map(event.data, 'market');
-    dispatch(loadMarketsInfo(marketIds));
     if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
     if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
+    dispatch(checkUpdateUserPositions(marketIds));
   }
 };
 

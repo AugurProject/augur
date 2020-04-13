@@ -161,6 +161,8 @@ export class WarpController {
         case MarketReportingState.AwaitingFinalization:
           // confirm hash matches and emit dispute event if needed.
 
+          break;
+
         case MarketReportingState.Finalized:
           const [begin, end] = await this.checkpoints.calculateBoundary(
             mostRecentCheckpoint.endTimestamp,

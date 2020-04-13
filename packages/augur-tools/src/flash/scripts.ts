@@ -32,7 +32,7 @@ import {
 import { generateTemplateValidations } from './generate-templates';
 import { spawn, spawnSync } from 'child_process';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
-import { ContractAPI, deployContracts } from '..';
+import { ContractAPI, deployContracts, startGanacheServer } from '..';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
@@ -307,27 +307,51 @@ export function addScripts(flash: FlashSession) {
         name: 'title',
         abbr: 'd',
         description: 'market title',
+      },
+      {
+        name: 'orders',
+        abbr: 'z',
+        flag: true,
+        description: 'add orders to newly created market',
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const yesno = Boolean(args.yesno);
       const cat = Boolean(args.categorical);
       const scalar = Boolean(args.scalar);
+      const orders = Boolean(args.orders);
       const title = args.title ? String(args.title) : undefined;
+      if (orders) {
+        this.pushConfig({
+          zeroX: {
+            rpc: { enabled: true },
+            mesh: { enabled: false },
+          },
+        });
+      }
       const user = await this.createUser(this.getAccount(), this.config);
 
       if (yesno || !(cat || scalar)) {
         const market = await user.createReasonableYesNoMarket(title);
         console.log(`Created YesNo market "${market.address}".`);
+        if (orders) {
+          await createYesNoZeroXOrders(user, market.address, true);
+        }
       }
       if (cat) {
         const outcomes = ['first', 'second', 'third', 'fourth', 'fifth'].map(formatBytes32String);
         const market = await user.createReasonableMarket(outcomes, title);
         console.log(`Created Categorical market "${market.address}".`);
+        if (orders) {
+          await createCatZeroXOrders(user, market.address, true, 5);
+        }
       }
       if (scalar) {
         const market = await user.createReasonableScalarMarket(title);
         console.log(`Created Scalar market "${market.address}".`);
+        if (orders) {
+          await createScalarZeroXOrders(user, market.address, true, false, new BigNumber(20000), new BigNumber(50), new BigNumber(250));
+        }
       }
     }
   });
@@ -1660,6 +1684,13 @@ export function addScripts(flash: FlashSession) {
         flag: true,
       },
       {
+        name: 'ganache',
+        // G is already taken. Using lowercase.
+        abbr: 'g',
+        description: 'Use ganache instead of geth.',
+        flag: true,
+      },
+      {
         name: 'do-not-create-markets',
         abbr: 'M',
         description: 'Do not create markets. Only applies when --dev is specified.',
@@ -1671,6 +1702,7 @@ export function addScripts(flash: FlashSession) {
       const detach = Boolean(args.detach);
       const runGeth = !Boolean(args.doNotRunGeth);
       const createMarkets = !Boolean(args.doNotCreateMarkets);
+      const runGanache = Boolean(args.ganache);
 
       spawnSync('docker', ['pull', '0xorg/mesh:latest']);
 
@@ -1682,7 +1714,7 @@ export function addScripts(flash: FlashSession) {
 
       let env;
       try {
-        if (runGeth) {
+        if (runGeth && !runGanache) {
           if (dev) {
             spawnSync('yarn', ['workspace', '@augurproject/tools', 'docker:geth:detached']);
           } else {
@@ -1692,6 +1724,8 @@ export function addScripts(flash: FlashSession) {
           console.log('Waiting for Geth to start up');
           await sleep(10000); // give geth some time to start
           await refreshSDKConfig(); // only grabs new local.json for non-dev
+        } else if(runGanache) {
+          await startGanacheServer(this.accounts);
         }
 
         this.config = buildConfig('local', { deploy: { normalTime }});
