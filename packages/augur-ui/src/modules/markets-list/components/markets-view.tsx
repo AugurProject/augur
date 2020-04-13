@@ -335,7 +335,7 @@ export default class MarketsView extends Component<
               updateMarketsListCardFormat={updateMarketsListCardFormat}
             />
 
-            <div
+            <section
               className={classNames({
                 [Styles.Disabled]: isSearching,
               })}
@@ -353,7 +353,7 @@ export default class MarketsView extends Component<
               />
 
               <FilterDropDowns />
-            </div>
+            </section>
           </>
         )}
         {!isTrading && (
