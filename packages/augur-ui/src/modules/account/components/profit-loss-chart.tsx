@@ -21,14 +21,14 @@ const getPointRangeInfo = data => {
 const positiveColor = '#00F1C4';
 const negativeColor = '#FF7D5E';
 
-const getGradientColor = data => {
+const getGradientColor = (data: number[][]) => {
   if (data[data.length - 1][1] < 0) {
     return [[0, negativeColor], [1, 'transparent']];
   }
   return [[0, positiveColor], [1, 'transparent']];
 };
 
-const getOptions = data => ({
+const getOptions = () => ({
   title: {
     text: '',
   },
@@ -48,15 +48,6 @@ const getOptions = data => ({
         units: [['hour', [1]], ['day', [1]]],
       },
       marker: false,
-      fillColor: {
-        linearGradient: {
-          x1: 0,
-          y1: 0,
-          x2: 0,
-          y2: 1,
-        },
-        stops: getGradientColor(data),
-      },
     },
   },
   scrollbar: { enabled: false },
@@ -105,10 +96,43 @@ const getOptions = data => ({
   },
 });
 
+interface AxisData {
+  type: string;
+  lineWidth: number;
+  data: number[][];
+  color: string;
+  fillColor: any;
+  negativeColor: string;
+}
+
+const getAreaSpline = (data: number[][]): AxisData => {
+  return {
+    type: 'areaspline',
+    lineWidth: HIGHLIGHTED_LINE_WIDTH,
+    data,
+    color:
+      data[0][1] > 0 || data[data.length - 1][1] > 0
+        ? positiveColor
+        : negativeColor,
+    fillColor: {
+      linearGradient: {
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+      },
+      stops: getGradientColor(data),
+    },
+    negativeColor: !!getPointRangeInfo(data).hasNegativePoints
+      ? negativeColor
+      : positiveColor,
+  };
+};
+
 const ProfitLossChart = ({ width, data }: ChartProps) => {
   const container = useRef(null);
   useEffect(() => {
-    const options = getOptions(data);
+    const options = getOptions();
     const intervalInfo = calculateTickInterval(data);
     const tickPositions = [data[0][0], data[data.length - 1][0]];
     options.chart = {
@@ -138,17 +162,34 @@ const ProfitLossChart = ({ width, data }: ChartProps) => {
         ...intervalInfo,
       };
     }
-    const series = [
-      {
-        type: 'areaspline',
-        lineWidth: HIGHLIGHTED_LINE_WIDTH,
-        data,
-        color: positiveColor,
-        negativeColor: !!getPointRangeInfo(data).hasNegativePoints
-          ? negativeColor
-          : positiveColor,
+    interface dataObject {
+      arr: number[][];
+    }
+    // break up data based on crossing 0 x axis.
+    const series = data.reduce(
+      (p, d): dataObject[] => {
+        if (p.length === 0) {
+          return [{ arr: [d] }];
+        }
+        const last = p[p.length - 1];
+        const lastArrValue = last.arr[last.arr.length - 1];
+        const lastValueIsPositive = lastArrValue[1] > 0;
+        const currentValueIsPositive = d[1] > 0;
+        if (
+          (lastValueIsPositive && currentValueIsPositive) ||
+          (!lastValueIsPositive && !currentValueIsPositive)
+        ) {
+          // add to existing
+          last.arr.push(d);
+          return p;
+        }
+
+        // create new array
+        return [...p, { arr: [lastArrValue, d] }];
       },
-    ];
+      [] as dataObject[]
+    )
+    .map((d: dataObject) => getAreaSpline(d.arr));
 
     const newOptions: Highcharts.Options = Object.assign(options, {
       series,
