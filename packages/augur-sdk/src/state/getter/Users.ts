@@ -62,6 +62,7 @@ const getProfitLossSummaryParams = t.partial({
   universe: t.string,
   account: t.string,
   endTime: t.number,
+  ignoreFinalizedMarkets: t.boolean
 });
 
 const getProfitLossParams = t.intersection([
@@ -70,6 +71,7 @@ const getProfitLossParams = t.intersection([
     startTime: t.number,
     periodInterval: t.number,
     outcome: t.number,
+    ignoreFinalizedMarkets: t.boolean,
   }),
 ]);
 
@@ -238,13 +240,19 @@ export class Users {
     let userPositions: UserTradingPositions = null;
     let userStakedRep: AccountReportingHistory = null;
 
+    marketList = await Markets.getMarkets(augur, db, {
+      creator: params.account,
+      universe: params.universe,
+    });
+
     userTradeHistory = await OnChainTrading.getTradingHistory(augur, db, {
       account: params.account,
       universe: params.universe,
       filterFinalized: true,
     });
 
-    const uniqMarketIds = Object.keys(userTradeHistory);
+    const userCreateMarketIds = _.map(marketList.markets, 'id');
+    const uniqMarketIds = Object.keys(userTradeHistory).concat(userCreateMarketIds);
 
     if (uniqMarketIds.length > 0) {
       marketTradeHistory = await OnChainTrading.getTradingHistory(augur, db, {
@@ -259,12 +267,6 @@ export class Users {
 
     userOpenOrders = await Users.getUserOpenOrders(augur, db, {
       account: params.account,
-      universe: params.universe,
-    });
-
-    marketList = await Markets.getMarkets(augur, db, {
-      creator: params.account,
-      designatedReporter: params.account,
       universe: params.universe,
     });
 
@@ -939,6 +941,7 @@ export class Users {
     profitLossSummary = await Users.getProfitLossSummary(augur, db, {
       universe,
       account: params.account,
+      ignoreFinalizedMarkets: true,
     });
 
     return {
@@ -1032,6 +1035,7 @@ export class Users {
         "'getProfitLoss' requires a 'startTime' param be provided"
       );
     }
+    const ignoreFinalizedMarkets = params.ignoreFinalizedMarkets;
     const now = await augur.contracts.augur.getTimestamp_();
     const startTime = params.startTime!;
     const endTime = params.endTime || now.toNumber();
@@ -1116,7 +1120,7 @@ export class Users {
                 ordersFilledResultsByMarketAndOutcome[marketId] &&
                 ordersFilledResultsByMarketAndOutcome[marketId][outcome]
               ) || finalized;
-              if (!latestOutcomePLValue || !hasOutcomeValues) {
+              if (!latestOutcomePLValue || !hasOutcomeValues || (ignoreFinalizedMarkets && finalized)) {
                 return {
                   timestamp: bucketTimestamp.toNumber(),
                   frozenFunds: '0',
@@ -1204,6 +1208,7 @@ export class Users {
           startTime,
           endTime,
           periodInterval,
+          ignoreFinalizedMarkets: params.ignoreFinalizedMarkets
         }
       );
 
