@@ -1,26 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import {
   feeFilters,
-  spreadFilters,
   invalidFilters,
-  templateFilterValues,
   MAXFEE_PARAM_NAME,
-  SPREAD_PARAM_NAME,
   SHOW_INVALID_MARKETS_PARAM_NAME,
+  SPREAD_PARAM_NAME,
+  spreadFilters,
   TEMPLATE_FILTER,
+  templateFilterValues,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/inner-nav/markets-list-filters.styles.less';
-import { helpIcon, FilterIcon } from 'modules/common/icons';
+import { FilterIcon, helpIcon } from 'modules/common/icons';
 import { RadioBarGroup } from 'modules/common/form';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import updateQuery from 'modules/routes/helpers/update-query';
-import { INVALID_OPTIONS } from 'modules/types';
+import { INVALID_OPTIONS, LoginAccountSettings } from 'modules/types';
 import ChevronFlip from 'modules/common/chevron-flip';
-import { WindowApp } from "modules/types";
-import { windowRef } from 'utils/window-ref';
 
 interface MarketsListFiltersProps {
   maxFee: string;
@@ -38,6 +36,7 @@ interface MarketsListFiltersProps {
   setMaxSpreadFilter: Function;
   setShowInvalidFilter: Function;
   setTemplateOrCustomFilter: Function;
+  settings: LoginAccountSettings;
   isMobile: boolean;
 }
 
@@ -57,27 +56,24 @@ const MarketsListFilters = ({
   setMaxSpreadFilter,
   setShowInvalidFilter,
   setTemplateOrCustomFilter,
+  settings,
   isMobile,
 }: MarketsListFiltersProps) => {
-  const { localStorage } = windowRef as WindowApp;
-
   useEffect(() => {
-    const filterOptionsFromLocalStorage =
-      JSON.parse(localStorage.getItem('savedFilters')) || {};
     const filterOptionsFromQuery = parseQuery(location.search);
 
     const newMaxFee =
       filterOptionsFromQuery.maxFee ||
-      filterOptionsFromLocalStorage.maxFee;
+      settings.maxFee;
     const newSpread =
       filterOptionsFromQuery.spread ||
-      filterOptionsFromLocalStorage.spread;
+      settings.spread;
     const newTemplateFilter =
       filterOptionsFromQuery.templateFilter ||
-      filterOptionsFromLocalStorage.templateFilter;
+      settings.templateFilter;
     const newShowInvalid =
       filterOptionsFromQuery.showInvalid ||
-      filterOptionsFromLocalStorage.showInvalid;
+      settings.showInvalid;
 
     if (newMaxFee && newMaxFee !== maxFee) {
       updateMaxFee(newMaxFee);
@@ -91,7 +87,7 @@ const MarketsListFilters = ({
     if (newShowInvalid && newShowInvalid !== includeInvalidMarkets) {
       updateShowInvalid(newShowInvalid);
     }
-  }, [location.search]);
+  }, [location.search, settings]);
 
   const [showFilters, setShowFilters] = useState(false);
 
@@ -104,8 +100,6 @@ const MarketsListFilters = ({
       location,
       history
     );
-
-    const filterOptionsFromLocalStorage = JSON.parse(localStorage.getItem('savedFilters')) || {};
 
     switch (whichFilterToUpdate) {
       case TEMPLATE_FILTER:
@@ -121,9 +115,6 @@ const MarketsListFilters = ({
         updateShowInvalid(value);
         break;
     }
-
-    filterOptionsFromLocalStorage[whichFilterToUpdate] = value;
-    localStorage.setItem('savedFilters', JSON.stringify(filterOptionsFromLocalStorage));
   };
 
   return (
