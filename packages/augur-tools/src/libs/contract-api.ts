@@ -550,7 +550,7 @@ export class ContractAPI {
 
       try {
         // sync our timestamp with our fake timestamp.
-        await this.provider.providerSend('evm_mine', [timestamp])
+        await this.provider.providerSend('evm_mine', [timestamp.toNumber()])
       } catch (e) {
         // Not using ganache. Nothing really to do here.
       }
