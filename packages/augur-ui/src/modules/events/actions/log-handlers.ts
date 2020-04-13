@@ -48,6 +48,7 @@ import {
   CLAIMMARKETSPROCEEDS,
   DISAVOWCROWDSOURCERS,
   MARKETMIGRATED,
+  DOINITIALREPORTWARPSYNC,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -487,6 +488,9 @@ export const handleInitialReporterTransferredLog = (logs: any) => (
     isSameAddress(log.to, address));
   if (userLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
+    userLogs.map(log => {
+      handleAlert(log, DOINITIALREPORTWARPSYNC, false, dispatch, getState);
+    })
   }
   const marketIds = userLogs.map(log => log.market)
   if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));

@@ -27,6 +27,8 @@ import {
   ZERO,
 } from 'modules/common/constants';
 import { convertAttoValueToDisplayValue } from '@augurproject/sdk/src';
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
+import { selectMarket } from 'modules/markets/selectors/market';
 
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
