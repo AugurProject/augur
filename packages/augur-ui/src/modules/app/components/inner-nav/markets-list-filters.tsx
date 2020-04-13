@@ -188,7 +188,7 @@ const MarketsListFilters = ({
 
 export default MarketsListFilters;
 
-const generateTooltip = (tipText: string, key: string) => {
+export const generateTooltip = (tipText: string, key: string) => {
   return (
     <span className={Styles.Filter_TooltipContainer}>
       <label
@@ -198,6 +198,7 @@ const generateTooltip = (tipText: string, key: string) => {
         )}
         data-tip
         data-for={key}
+        data-iscapture={true}
       >
         {helpIcon}
       </label>
@@ -207,8 +208,8 @@ const generateTooltip = (tipText: string, key: string) => {
         effect="solid"
         place="top"
         type="light"
-        data-event="mouseover"
-        data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         <p>{tipText}</p>
       </ReactTooltip>
@@ -226,6 +227,7 @@ const templateFilterTooltip = () => {
         )}
         data-tip
         data-for={'template'}
+        data-iscapture={true}
       >
         {helpIcon}
       </label>
@@ -235,8 +237,8 @@ const templateFilterTooltip = () => {
         effect="solid"
         place="top"
         type="light"
-        data-event="mouseover"
-        data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         <>
           <p>

@@ -25,10 +25,14 @@ export interface SDKConfiguration {
     savePrivateKey?: boolean,
     privateKey: string,
     contractInputPath: string,
+    serial?: boolean,
     writeArtifacts?: boolean,
     externalAddresses?: ExternalAddresses,
   },
-  useWarpSync?: boolean,
+  warpSync?: {
+    enabled?: boolean,
+    autoReport?: boolean
+  },
   gsn?: {
     enabled: boolean,
   },
@@ -68,6 +72,11 @@ export interface SDKConfiguration {
   plugins?: {
     chat?: '3box'|'orbit',
     comments?: '3box'|'facebook',
+  },
+  flash?: {
+    useGSN?: boolean,
+    syncSDK?: boolean,
+    skipApproval?: boolean,
   }
 };
 
@@ -183,7 +192,10 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     contractInputPath: path.join(__dirname, 'contracts.json'),
     writeArtifacts: true,
   },
-  useWarpSync: false,
+  warpSync: {
+    enabled: false,
+    autoReport: false,
+  },
   gsn: {
     enabled: true
   },
@@ -263,6 +275,10 @@ export async function updateConfig(env: string, config: RecursivePartial<SDKConf
 }
 
 export function serializeConfig(config: RecursivePartial<SDKConfiguration>): string {
+  return JSON.stringify(sanitizeConfig(config), null, 2);
+}
+
+export function sanitizeConfig(config: RecursivePartial<SDKConfiguration>): RecursivePartial<SDKConfiguration> {
   // Prefer not to save private key.
   let finalConfig = config;
   if (config.deploy?.privateKey && !config.deploy?.savePrivateKey) {
@@ -273,7 +289,11 @@ export function serializeConfig(config: RecursivePartial<SDKConfiguration>): str
   if (config.deploy?.contractInputPath) {
     delete finalConfig.deploy.contractInputPath;
   }
-  return JSON.stringify(finalConfig, null, 2);
+  // flash isn't saved
+  if (config.flash) {
+    delete finalConfig.flash;
+  }
+  return finalConfig;
 }
 
 export async function writeConfig(env: string, config: SDKConfiguration): Promise<void> {
@@ -388,6 +408,7 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   if (t(e.SAVE_PRIVATE_KEY)) config = d(config, { deploy: { savePrivateKey: bool(e.SAVE_PRIVATE_KEY) }});
   if (t(e.CONTRACT_INPUT_PATH)) config = d(config, { deploy: { contractInputPath: e.CONTRACT_INPUT_PATH }});
   if (t(e.WRITE_ARTIFACTS)) config = d(config, { deploy: { writeArtifacts: bool(e.WRITE_ARTIFACTS) }});
+  if (t(e.DEPLOY_SERIAL)) config = d(config, { deploy: { serial: bool(e.DEPLOY_SERIAL) }});
 
   if (t(e.GSN_ENABLED)) config = d(config, { gsn: { enabled: bool(e.GSN_ENABLED) }});
 
@@ -433,7 +454,7 @@ function loadSDKConfigs(relativePath: string) {
   if (process?.versions?.node) {
     const envs = requireAll({
       dirname: path.join(__dirname, relativePath),
-      filter: /^(.+)\.json/,
+      filter: /^(.+)\.json$/,
       recursive: false,
     });
     Object.keys(envs).forEach((key) => {

@@ -57,6 +57,9 @@ export interface DisputeCrowdsourcerCompletedLog extends Log {
   nextWindowEndTime: LogTimestamp;
   pacingOn: boolean;
   payoutNumerators: PayoutNumerators;
+  totalRepStakedInPayout: string;
+  totalRepStakedInMarket: string;
+  disputeRound: string;
 }
 
 export interface DisputeCrowdsourcerContributionLog
@@ -398,6 +401,7 @@ export interface UniverseCreatedLog extends Log {
   childUniverse: Address;
   payoutNumerators: string[];
   creationTimestamp: LogTimestamp;
+  address: Address;
 }
 
 export interface LiquidityData {

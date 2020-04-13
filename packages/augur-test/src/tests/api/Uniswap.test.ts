@@ -1,4 +1,4 @@
-import { ACCOUNTS, defaultSeedPath, loadSeedFile } from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { makeProvider } from '../../libs';
 import { BigNumber } from 'bignumber.js';
@@ -6,7 +6,7 @@ import { BigNumber } from 'bignumber.js';
 let john: TestContractAPI;
 
 beforeAll(async () => {
-  const seed = await loadSeedFile(defaultSeedPath);
+  const seed = await loadSeed(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
 
   john = await TestContractAPI.userWrapper(
@@ -19,8 +19,6 @@ beforeAll(async () => {
 test('Uniswap :: Token Exchange', async () => {
   const cash = john.augur.contracts.cash;
   const rep = john.augur.contracts.getReputationToken();
-  const uniswapFactory = john.augur.contracts.uniswapV2Factory;
-  const account = john.account.publicKey;
   const uniswap = john.augur.uniswap;
 
   const approvalAmount = (new BigNumber(2)).pow(255);

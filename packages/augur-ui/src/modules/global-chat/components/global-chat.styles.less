@@ -93,6 +93,8 @@
   }
 
   input[class*='sc-popup-window--search'] {
+    width: 232px;
+
     &:focus {
       border: none;
     }
@@ -135,6 +137,17 @@
     div[class*='sc-popup-window--cointainer'],
     div[class*='sc-popup-window--cointainer'] input {
       background-color: #fff;
+    }
+  }
+
+  div[class*="sc-popup-window--cointainer"] {
+    width: 282px;
+    bottom: @size-16;
+    right: -@size-18;
+
+    &:after {
+      background-color: @color-dark-grey;
+      right: @size-12;
     }
   }
 }

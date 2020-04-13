@@ -3,7 +3,7 @@ import {
   ACCOUNTS,
   defaultSeedPath,
   fork,
-  loadSeedFile,
+  loadSeed,
 } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import {
@@ -27,7 +27,7 @@ describe('State API :: Universe :: ', () => {
   let config: SDKConfiguration;
 
   beforeAll(async () => {
-    const seed = await loadSeedFile(defaultSeedPath);
+    const seed = await loadSeed(defaultSeedPath);
     baseProvider = await makeProvider(seed, ACCOUNTS);
     config = baseProvider.getConfig();
 
@@ -46,9 +46,9 @@ describe('State API :: Universe :: ', () => {
       baseProvider,
       config
     );
-    await john.approveCentralAuthority();
-    await mary.approveCentralAuthority();
-    await bob.approveCentralAuthority();
+    await john.approve();
+    await mary.approve();
+    await bob.approve();
   });
 
   beforeEach(async () => {
@@ -86,11 +86,11 @@ describe('State API :: Universe :: ', () => {
     const invalidNumerators = getPayoutNumerators(marketInfo, 0);
     const noNumerators = getPayoutNumerators(marketInfo, 1);
 
-    await john.repFaucet(new BigNumber(1e21));
+    await john.faucetRep(new BigNumber(1e21));
     await john.augur.contracts.universe.createChildUniverse(invalidNumerators);
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
 
-    await john.repFaucet(new BigNumber(1e21));
+    await john.faucetRep(new BigNumber(1e21));
     await john.augur.contracts.universe.createChildUniverse(noNumerators);
     await repToken.migrateOutByPayout(noNumerators, new BigNumber(1e21));
 
@@ -147,11 +147,11 @@ describe('State API :: Universe :: ', () => {
     const invalidNumerators = getPayoutNumerators(marketInfo, 0);
     const fooNumerators = getPayoutNumerators(marketInfo, 1);
 
-    await john.repFaucet(new BigNumber(1e21));
+    await john.faucetRep(new BigNumber(1e21));
     await john.augur.contracts.universe.createChildUniverse(invalidNumerators);
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
 
-    await john.repFaucet(new BigNumber(1e21));
+    await john.faucetRep(new BigNumber(1e21));
     await john.augur.contracts.universe.createChildUniverse(fooNumerators);
     await repToken.migrateOutByPayout(fooNumerators, new BigNumber(1e21));
 
@@ -208,11 +208,11 @@ describe('State API :: Universe :: ', () => {
       john.augur.config.networkId
     );
 
-    await john.repFaucet(new BigNumber(1e21));
+    await john.faucetRep(new BigNumber(1e21));
 
     await john.augur.contracts.universe.createChildUniverse(invalidNumerators);
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
-    await john.repFaucet(new BigNumber(1e21));
+    await john.faucetRep(new BigNumber(1e21));
     await john.augur.contracts.universe.createChildUniverse(fooNumerators);
     await repToken.migrateOutByPayout(fooNumerators, new BigNumber(1e21));
     await john.sync();
@@ -244,14 +244,14 @@ describe('State API :: Universe :: ', () => {
     const genesisUniverse = john.augur.contracts.universe;
 
     const legacyRep = new BigNumber(11000000).multipliedBy(10 ** 18);
-    let johnRep = await john.augur.contracts.reputationToken.balanceOf_(john.account.publicKey);
+    let johnRep = await john.augur.contracts.reputationToken.balanceOf_(john.account.address);
     let maryRep = new BigNumber(0);
     const bobRep = new BigNumber(0);
     let totalRep = await john.augur.contracts.reputationToken.totalSupply_();
 
-    await john.repFaucet(new BigNumber(91));
+    await john.faucetRep(new BigNumber(91));
     johnRep = johnRep.plus(91);
-    await mary.repFaucet(new BigNumber(19));
+    await mary.faucetRep(new BigNumber(19));
     maryRep = maryRep.plus(19);
     totalRep = totalRep.plus(91).plus(19);
 
@@ -263,7 +263,7 @@ describe('State API :: Universe :: ', () => {
       'getUniverseChildren',
       {
         universe: genesisUniverse.address,
-        account: john.account.publicKey,
+        account: john.account.address,
       }
     );
 
@@ -286,7 +286,7 @@ describe('State API :: Universe :: ', () => {
     await john.sync();
     universeChildren = await john.api.route('getUniverseChildren', {
       universe: genesisUniverse.address,
-      account: bob.account.publicKey,
+      account: bob.account.address,
     });
 
     expect(universeChildren).toMatchObject({
@@ -306,14 +306,13 @@ describe('State API :: Universe :: ', () => {
     console.log('Create a market to see how that affects numberOfMarkets.');
     const repBond = await genesisUniverse.getOrCacheMarketRepBond_();
     const market = await john.createReasonableScalarMarket();
-    johnRep = johnRep.plus(10 ** 18).minus(42905190235); // extra fauceted REP, minus bond increase from fauceting REP
-    totalRep = totalRep.plus(repBond).plus(10 ** 18); // repBond not added to john because he put it in the market
+    johnRep = johnRep.minus(repBond);
 
     await john.sync();
 
     universeChildren = await john.api.route('getUniverseChildren', {
       universe: genesisUniverse.address,
-      account: john.account.publicKey,
+      account: john.account.address,
     });
     expect(universeChildren).toMatchObject({
       id: genesisUniverse.address,
@@ -340,7 +339,7 @@ describe('State API :: Universe :: ', () => {
       john.augur.config.networkId
     );
     // The fork script faucets a lot of REP then uses up a difficult-to-predict amount.
-    johnRep = await repToken.balanceOf_(john.account.publicKey);
+    johnRep = await repToken.balanceOf_(john.account.address);
     totalRep = await repToken.totalSupply_();
 
     const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
@@ -358,7 +357,7 @@ describe('State API :: Universe :: ', () => {
     await john.sync();
     universeChildren = await john.api.route('getUniverseChildren', {
       universe: genesisUniverse.address,
-      account: john.account.publicKey,
+      account: john.account.address,
     });
 
     expect(universeChildren).toMatchObject({

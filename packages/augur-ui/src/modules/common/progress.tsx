@@ -4,6 +4,7 @@ import * as format from 'utils/format-date';
 import classNames from 'classnames';
 import { DateFormattedObject } from 'modules/types';
 import { REPORTING_STATE } from 'modules/common/constants';
+import { formatDate } from 'utils/format-date';
 
 export interface CountdownProgressProps {
   time?: DateFormattedObject;
@@ -32,6 +33,8 @@ export interface MarketProgressProps {
   reportingWindowEndTime: DateFormattedObject | number;
   customLabel?: string;
   alignRight?: boolean;
+  forkingMarket?: boolean;
+  forkingEndTime?: number;
 }
 // default breakpoints
 const OneWeek = 168 * 60 * 60;
@@ -102,7 +105,9 @@ const reportingStateToLabelTime = (
   reportingState: string,
   endTimeFormatted: DateFormattedObject,
   reportingEndTime: DateFormattedObject,
-  alignRight: boolean
+  alignRight: boolean,
+  forkingMarket: boolean,
+  forkingEndTime: number
 ) => {
   let label: string = '';
   let time: DateFormattedObject = null;
@@ -141,6 +146,11 @@ const reportingStateToLabelTime = (
       break;
   }
 
+  if (forkingMarket) {
+    label = 'Time Left in Fork Window'
+    time = formatTime(forkingEndTime);
+  }
+
   return { label, time };
 };
 
@@ -151,13 +161,17 @@ export const MarketProgress = (props: MarketProgressProps) => {
     reportingWindowEndTime,
     customLabel,
     alignRight,
+    forkingEndTime,
+    forkingMarket
   } = props;
   const reportingEndTime = formatTime(reportingWindowEndTime);
   const { label, time } = reportingStateToLabelTime(
     reportingState,
     endTimeFormatted,
     reportingEndTime,
-    alignRight
+    alignRight,
+    forkingMarket,
+    forkingEndTime,
   );
 
   return (

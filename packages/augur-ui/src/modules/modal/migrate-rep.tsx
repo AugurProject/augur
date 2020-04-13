@@ -9,10 +9,11 @@ import { LinearPropertyLabel } from 'modules/common/labels';
 import { InfoIcon } from 'modules/common/icons';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
-  V1_REP_MIGRATE_ESTIMATE, HELP_CENTER_LEARN_ABOUT_ADDRESS, HELP_CENTER_MIGRATE_REP,
+  V1_REP_MIGRATE_ESTIMATE, HELP_CENTER_LEARN_ABOUT_ADDRESS, HELP_CENTER_MIGRATE_REP, GWEI_CONVERSION,
 } from 'modules/common/constants';
 
 import Styles from 'modules/modal/modal.styles.less';
+import { createBigNumber } from 'utils/create-big-number';
 
 interface MigrateRepForm {
   closeAction: Function;
@@ -45,10 +46,10 @@ export const MigrateRep = (props: MigrateRepForm) => {
     }
   }, []);
 
-  const gasEstimate = formatGasCostToEther(
+  const gasEstimateInEth = formatGasCostToEther(
     gasLimit,
     { decimalsRounded: 4 },
-    gasPrice
+    createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
   );
 
   const safeWalletContent = (
@@ -63,8 +64,8 @@ export const MigrateRep = (props: MigrateRepForm) => {
           label={GsnEnabled ? 'Transaction Fee' : 'Gas Cost'}
           value={
             GsnEnabled
-              ? displayGasInDai(gasLimit)
-              : gasEstimate
+              ? displayGasInDai(gasLimit.multipliedBy(gasPrice))
+              : gasEstimateInEth
           }
         />
       </div>

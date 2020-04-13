@@ -5,7 +5,7 @@ import {
   selectPendingQueue,
   selectPendingLiquidityOrders
 } from "appStore/select-state";
-import { CREATE_MARKET } from 'modules/common/constants';
+import { CREATE_MARKET, ZERO } from 'modules/common/constants';
 import selectAllMarkets from "modules/markets/selectors/markets-all";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
 import { isSameAddress } from "utils/isSameAddress";
@@ -32,12 +32,13 @@ export const selectAuthorOwnedMarkets = createSelector(
     return filteredMarkets.map(m => {
       const pendingTradedId = m.transactionHash || generateTxParameterId(m.txParams);
       const marketId = m.id || pendingTradedId;
-
+      const recentlyTraded = getLastTradeTimestamp(marketTradingHistory[marketId]);
       return {
         ...m,
         hasPendingLiquidityOrders: !!pendingLiquidityOrders[pendingTradedId],
         orderBook: pendingLiquidityOrders[marketId],
-        recentlyTraded: getLastTradeTimestamp(marketTradingHistory[marketId])
+        recentlyTraded,
+        recentlyDepleted: m.passDefaultLiquiditySpread ? recentlyTraded : ZERO,
       }
     });
   }

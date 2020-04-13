@@ -21,6 +21,7 @@ import {
   INVALID_OUTCOME_NAME,
   SUBMIT_REPORT,
   SUBMIT_DISPUTE,
+  MARKETMIGRATED,
 } from 'modules/common/constants';
 import {
   doInitialReport,
@@ -43,6 +44,7 @@ import { ExplainerBlock } from 'modules/create-market/components/common';
 import { EventDetailsContent, WarpSyncErrorHeader, WarpSyncErrorSubheader } from 'modules/create-market/constants';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
+import MarketLink from 'modules/market/components/market-link/market-link';
 
 interface ModalReportingProps {
   closeAction: Function;
@@ -50,6 +52,7 @@ interface ModalReportingProps {
   rep: string;
   title: string;
   selectedOutcome?: number;
+  isInvalid?: boolean;
   reportAction: Function;
   userAccount?: string;
   migrateRep: boolean;
@@ -134,7 +137,7 @@ export default class ModalReporting extends Component<
   };
 
   buildRadioButtonCollection = () => {
-    const { market, selectedOutcome, warpSyncHash } = this.props;
+    const { market, selectedOutcome, warpSyncHash, isInvalid } = this.props;
     const { checked } = this.state;
     const {
       marketType,
@@ -211,7 +214,7 @@ export default class ModalReporting extends Component<
             : `Enter a range from ${minPrice} to ${maxPrice}`,
           value: stake.outcome ? Number(stake.outcome) : null,
           description: stake.outcome,
-          checked: checked === stake.outcome,
+          checked: (checked === stake.outcome && stake.isInvalidOutcome === isInvalid),
           isInvalid: stake.isInvalidOutcome,
           stake,
         });
@@ -249,7 +252,7 @@ export default class ModalReporting extends Component<
       // check if new scalar outcome, outcomeId is 'null' in this case
       const inputted = outcomeId === "null" ? parseFloat(
         this.state.inputScalarOutcome) : outcomeId;
-      outcomeId = estimateGas ? minPrice : inputted || this.state.checked;
+      outcomeId = estimateGas ? minPrice : !!this.state.inputScalarOutcome ? inputted : this.state.checked;
     }
     const ONE_REP = '1000000000000000000';
     const report = {
@@ -279,7 +282,10 @@ export default class ModalReporting extends Component<
       if (estimateGas) {
         return reportAndMigrateMarket_estimateGas(report);
       } else {
-        reportAndMigrateMarket(report);
+        addPendingData(marketId, MARKETMIGRATED, TXEventName.Pending, '0', undefined);
+        reportAndMigrateMarket(report).catch(err => {
+          addPendingData(marketId, MARKETMIGRATED, TXEventName.Failure, '0', undefined);
+        });
       }
     } else if (isReporting) {
       if (estimateGas) {
@@ -361,7 +367,7 @@ export default class ModalReporting extends Component<
       userCurrentDisputeRound,
       radioButtons,
     } = this.state;
-    const { description, marketType, details, isTemplate } = market;
+    const { description, marketType, details, isTemplate, marketId } = market;
     const {
       explainerBlockTitle,
       explainerBlockSubtexts,
@@ -392,7 +398,9 @@ export default class ModalReporting extends Component<
               <RedFlag market={market} />
               {isTemplate && <TemplateShield market={market} />}
             </section>
-            <span>{description}</span>
+            <MarketLink id={marketId}>
+              <span>{description}</span>
+            </MarketLink>
             {details && details.length > 0 && (
               <div className={Styles.Details}>
                 <h2>Resolution Details</h2>

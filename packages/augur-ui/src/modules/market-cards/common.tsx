@@ -190,12 +190,14 @@ export interface DisputeOutcomeProps {
   canSupport: boolean;
   marketId: string;
   isWarpSync?: boolean;
+  forkingMarket?: boolean;
 }
 
 // TODO: needs a refactor. repeated Logic, overwrapped HTML.
 export const DisputeOutcome = ({
   description,
   invalid,
+  forkingMarket,
   index,
   stake,
   dispute,
@@ -211,71 +213,99 @@ export const DisputeOutcome = ({
   const showButton =
     !stake.tentativeWinning || (canSupport && stake.tentativeWinning);
 
+  let buttonText =
+    stake?.tentativeWinning
+      ? 'Support Tentative Winner'
+      : 'Dispute Tentative Winner';
+
+  if (forkingMarket) {
+    buttonText = "Migrate Rep to this Outcome's Universe";
+  }
+
   return (
     <div
       className={classNames(Styles.DisputeOutcome, {
         [Styles.invalid]: invalid,
+        [Styles.forking]: forkingMarket,
         [Styles[`Outcome-${index}`]]: !invalid,
       })}
     >
-      <span>{isWarpSync && !invalid ? stake.warpSyncHash : description}</span>
-      {stake && stake.tentativeWinning ? (
-        <span>tentative winner</span>
-      ) : (
-        <Percent
-          percent={
-            stake
-              ? calculatePosition(
-                  ZERO,
-                  createBigNumber(bondSizeCurrent.value),
-                  stakeCurrent
-                )
-              : 0
-          }
+      <span>
+        {isWarpSync && !invalid
+          ? stake.warpSyncHash
+          : description}
+      </span>
+      {!forkingMarket && (
+        <>
+          {stake && stake.tentativeWinning ? (
+            <span>tentative winner</span>
+          ) : (
+            <Percent
+              percent={
+                stake
+                  ? calculatePosition(
+                      ZERO,
+                      createBigNumber(bondSizeCurrent.value),
+                      stakeCurrent
+                    )
+                  : 0
+              }
+            />
+          )}
+          <div>
+            <div>
+              <span>
+                {stake?.tentativeWinning ? (
+                  <SmallSubheadersTooltip
+                    header="pre-filled stake"
+                    subheader={``}
+                    text="Users can add extra support for a Tentative Winning Outcome"
+                  />
+                ) : (
+                  'make tentative winner'
+                )}
+              </span>
+              {stake?.tentativeWinning ? (
+                <span>
+                  {stake ? stakeCurrent.formatted : 0}
+                  <span> REP</span>
+                </span>
+              ) : (
+                <span>
+                  {stake ? stakeCurrent.formatted : 0}
+                  <span>
+                    / {stake ? bondSizeCurrent.formatted : 0} REP
+                  </span>
+                </span>
+              )}
+            </div>
+            {showButton && (
+              <ProcessingButton
+                small
+                queueName={SUBMIT_DISPUTE}
+                queueId={marketId}
+                matchingId={id}
+                secondaryButton
+                disabled={!canDispute}
+                text={buttonText}
+                action={() => dispute(id.toString(), invalid)}
+              />
+            )}
+          </div>
+        </>
+      )}
+      {forkingMarket && (
+        <ProcessingButton
+          small
+          queueName={SUBMIT_DISPUTE}
+          queueId={marketId}
+          matchingId={id}
+          secondaryButton
+          disabled={!canDispute}
+          text={buttonText}
+          action={() => dispute(id.toString(), invalid)}
         />
       )}
-      <div>
-        <div>
-          <span>
-            {stake && stake.tentativeWinning ? (
-              <SmallSubheadersTooltip
-                header="pre-filled stake"
-                subheader={``}
-                text="Users can add extra support for a Tentative Winning Outcome"
-              />
-            ) : (
-              'make tentative winner'
-            )}
-          </span>
-          {stake && stake.tentativeWinning ? (
-            <span>
-              {stake ? stakeCurrent.formatted : 0}
-              <span> REP</span>
-            </span>
-          ) : (
-            <span>
-              {stake ? stakeCurrent.formatted : 0}
-              <span>/ {stake ? bondSizeCurrent.formatted : 0} REP</span>
-            </span>
-          )}
-        </div>
-        {showButton && (
-          <ProcessingButton
-            small
-            queueName={SUBMIT_DISPUTE}
-            queueId={marketId}
-            matchingId={id}
-            secondaryButton
-            disabled={!canDispute}
-            text={
-              stake && stake.tentativeWinning
-                ? 'Support Tentative Winner'
-                : 'Dispute Tentative Winner'
-            }
-            action={() => dispute(id.toString())}
-          />
-        )}
-      </div>
     </div>
   );
 };
@@ -285,6 +315,7 @@ interface ScalarBlankDisputeOutcomeProps {
   dispute: Function;
   canDispute: boolean;
   marketId: string;
+  otherOutcomes: string[];
 }
 
 export const ScalarBlankDisputeOutcome = ({
@@ -292,6 +323,7 @@ export const ScalarBlankDisputeOutcome = ({
   dispute,
   canDispute,
   marketId,
+  otherOutcomes,
 }: ScalarBlankDisputeOutcomeProps) => (
   <div className={classNames(Styles.DisputeOutcome, Styles[`Outcome-1`])}>
     <span>{`Dispute current Tentative Winner with new ${denomination} value`}</span>
@@ -301,6 +333,7 @@ export const ScalarBlankDisputeOutcome = ({
         secondaryButton
         queueName={SUBMIT_DISPUTE}
         queueId={marketId}
+        nonMatchingIds={otherOutcomes}
         small
         disabled={!canDispute}
         text={'Dispute Tentative Winner'}
@@ -784,6 +817,7 @@ export interface OutcomeGroupProps {
   marketId: string;
   isWarpSync?: boolean;
   theme: string;
+  forkingMarket?: boolean;
 }
 
 export const OutcomeGroup = ({
@@ -802,6 +836,7 @@ export const OutcomeGroup = ({
   canSupport,
   marketId,
   isWarpSync,
+  forkingMarket,
   theme = getTheme(),
 }: OutcomeGroupProps) => {
   if (theme === THEMES.SPORTS) {
@@ -886,22 +921,36 @@ export const OutcomeGroup = ({
             ((!expanded && index < showOutcomeNumber) ||
               (expanded || marketType === YES_NO)) &&
             (inDispute &&
-            !!stakes.find(stake => parseFloat(stake.outcome) === outcome.id) ? (
+            !!stakes.find(
+              stake => parseFloat(stake.outcome) === outcome.id
+            ) ? (
               <>
+                {marketType === SCALAR &&
+                  index === 1 &&
+                  expanded && (
+                    <ScalarBlankDisputeOutcome
+                      denomination={scalarDenomination}
+                      dispute={dispute}
+                      canDispute={canDispute}
+                      marketId={marketId}
+                      otherOutcomes={outcomesShow.map(o => String(o.id))}
+                    />
+                  )}
                 <DisputeOutcome
                   key={outcome.id}
                   marketId={marketId}
                   description={outcome.description}
-                  invalid={outcome.id === 0}
+                  invalid={outcome.isInvalid}
                   index={index > 2 ? index : index + 1}
                   stake={stakes.find(
-                    stake => parseFloat(stake.outcome) === outcome.id
+                    stake => parseFloat(stake.outcome) === outcome.id && stake.isInvalidOutcome === outcome.isInvalid
                   )}
                   dispute={dispute}
                   id={outcome.id}
                   canDispute={canDispute}
                   canSupport={canSupport}
                   isWarpSync={isWarpSync}
+                  forkingMarket={forkingMarket}
                 />
               </>
             ) : (
@@ -909,7 +958,7 @@ export const OutcomeGroup = ({
                 key={outcome.id}
                 description={outcome.description}
                 lastPricePercent={outcome.lastPricePercent}
-                invalid={outcome.id === 0}
+                invalid={outcome.isInvalid}
                 index={index > 2 ? index : index + 1}
                 min={min}
                 max={max}
@@ -926,6 +975,7 @@ export const OutcomeGroup = ({
           dispute={dispute}
           canDispute={canDispute}
           marketId={marketId}
+          otherOutcomes={outcomesShow.map(o => String(o.id))}
         />
       )}
     </div>
@@ -960,7 +1010,7 @@ export interface HoverIconProps {
 }
 
 export const HoverIcon = ({ id, icon, hoverText, label }: HoverIconProps) => (
-  <div className={Styles.HoverIcon} data-tip data-for={`tooltip-${id}${label}`}>
+  <div className={Styles.HoverIcon} data-tip data-for={`tooltip-${id}${label}`} data-iscapture={true}>
     {icon}
     <ReactTooltip
       id={`tooltip-${id}${label}`}
@@ -1022,6 +1072,7 @@ export interface TentativeWinnerProps {
   market: MarketData;
   dispute: Function;
   canDispute: boolean;
+  isForkingMarket?: boolean;
 }
 
 export const TentativeWinner = ({
@@ -1029,29 +1080,38 @@ export const TentativeWinner = ({
   market,
   dispute,
   canDispute,
+  isForkingMarket,
 }: TentativeWinnerProps) => {
   return (
     <div
-      className={classNames(Styles.ResolvedOutcomes, Styles.TentativeWinner)}
+      className={classNames(Styles.ResolvedOutcomes, Styles.TentativeWinner, {[Styles.forking]: isForkingMarket})}
     >
-      <span>Tentative Winner</span>
-      <span>
-        {tentativeWinner.isInvalidOutcome
-          ? INVALID_OUTCOME_NAME
-          : getOutcomeNameWithOutcome(
-              market,
-              tentativeWinner.outcome,
-              tentativeWinner.isInvalidOutcome,
-              true
-            )}
-      </span>
+      {!isForkingMarket && (
+        <>
+          <span>Tentative Winner</span>
+          <span>
+            {tentativeWinner.isInvalidOutcome
+              ? INVALID_OUTCOME_NAME
+              : getOutcomeNameWithOutcome(
+                  market,
+                  tentativeWinner.outcome,
+                  tentativeWinner.isInvalidOutcome,
+                  true
+                )}
+          </span>
+        </>
+      )}
       <ProcessingButton
         small
         queueName={SUBMIT_DISPUTE}
         queueId={market.id}
         secondaryButton
         disabled={!canDispute}
-        text={'SUPPORT OR DISPUTE OUTCOME'}
+        text={
+          isForkingMarket
+            ? "Migrate Rep to this Outcome's Universe"
+            : 'SUPPORT OR DISPUTE OUTCOME'
+        }
         action={() => dispute()}
       />
     </div>

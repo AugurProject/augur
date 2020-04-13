@@ -181,7 +181,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   state: FormState = {
     blockShown: false,
     templateFormStarts: hasNoTemplateCategoryChildren(
-      this.props.newMarket.categories[0]
+      this.props.newMarket.navCategories[0]
     )
       ? 3
       : 4,

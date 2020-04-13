@@ -327,8 +327,6 @@ export default class MarketView extends Component<
 
   updateSelectedOutcomeSwitch(selectedOutcomeId, keepOrder) {
     this.updateSelectedOutcome(selectedOutcomeId, keepOrder);
-
-    FindReact(document.getElementById('tabs_mobileView')).handleClick(null, 1);
   }
 
   updateSelectedOutcome(selectedOutcomeId, keepOrder) {
@@ -355,10 +353,10 @@ export default class MarketView extends Component<
 
   updateSelectedOrderProperties(selectedOrderProperties) {
     this.checkTutorialErrors(selectedOrderProperties);
-    if (this.state.pane === 'Trade') {
+    if (this.state.pane === 'Market Info') {
       document
         .querySelector('.trading-form-styles_TradingForm')
-        .scrollIntoView({ block: 'center', behavior: 'smooth' });
+        .scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
     this.setState({
       selectedOrderProperties,
@@ -665,30 +663,6 @@ export default class MarketView extends Component<
                           this.updateSelectedOrderProperties
                         }
                       />
-                      <div className={Styles.PriceHistory}>
-                        <h3>Price History</h3>
-                        {!preview && (
-                          <PriceHistory
-                            marketId={marketId}
-                            market={preview && market}
-                            selectedOutcomeId={outcomeId}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  </ModulePane>
-                  <ModulePane
-                    label="Trade"
-                    onClickCallback={() => {
-                      this.setState({ pane: 'Trade' });
-                      this.node.children[0].children[1].scrollTo({
-                        top: 0,
-                        behavior: 'smooth',
-                      });
-                    }}
-                  >
-                    <div className={Styles.PaneContainer}>
-                      <h1>{description}</h1>
                       <ModuleTabs selected={0} fillForMobile>
                         <ModulePane label="Order Book">
                           <div className={Styles.Orders}>
@@ -737,7 +711,30 @@ export default class MarketView extends Component<
                           this.updateSelectedOrderProperties
                         }
                       />
-
+                    </div>
+                  </ModulePane>
+                  <ModulePane
+                    label="Charts"
+                    onClickCallback={() => {
+                      this.setState({ pane: 'Charts' });
+                      this.node.children[0].children[1].scrollTo({
+                        top: 0,
+                        behavior: 'smooth',
+                      });
+                    }}
+                  >
+                    <div className={Styles.PaneContainer}>
+                      <h1>{description}</h1>
+                      <div className={Styles.PriceHistory}>
+                        <h3>Price History</h3>
+                        {!preview && (
+                          <PriceHistory
+                            marketId={marketId}
+                            market={preview && market}
+                            selectedOutcomeId={outcomeId}
+                          />
+                        )}
+                      </div>
                       <MarketChartsPane
                         marketId={!tradingTutorial && marketId}
                         market={preview && market}
@@ -774,9 +771,7 @@ export default class MarketView extends Component<
                     </div>
                   </ModulePane>
                 </ModuleTabs>
-                {pane !== 'Trade' && (
-                  <MarketComments marketId={marketId} networkId={networkId} />
-                )}
+                <MarketComments marketId={marketId} networkId={networkId} />
               </>
             ) : (
               <>

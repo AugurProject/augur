@@ -326,10 +326,11 @@ export function formatAttoRep(
   );
 }
 
-export function formatAttoDai(num: NumStrBigNumber): FormattedNumber {
+export function formatAttoDai(num: NumStrBigNumber, optsInc: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   const opts = Object.assign(optionsBlank(), {
     decimals: 2,
     decimalsRounded: 2,
+    ...optsInc,
     denomination: v => {
       const isNegative = Number(v) < 0;
       const val = isNegative

@@ -298,6 +298,10 @@
     margin: @size-4 0;
 
     > div:nth-of-type(2) {
+      > label {
+        margin-right: 0;
+      }
+
       > svg {
         grid-row: 1;
       }
@@ -365,6 +369,10 @@
     > div[class*="OutcomeGroup"] {
       grid-column: 1 / span 2;
       margin-bottom: @size-10;
+
+      > label {
+        margin-right: 0;
+      }
     }
 
     > span,
@@ -555,6 +563,53 @@
         .text-12-bold;
 
         color: var(--color-primary-text);
+      }
+
+      &.inReport.scalar {
+        > span[class*="MarketStatus"] {
+          grid-column: 2;
+          grid-row: 1;
+        }
+
+        > div[class*="CategoryTagTrail"] {
+          grid-row: 2;
+          grid-column: 1 / span 4;
+        }
+
+        > span[class*="MarketTypeLabel"] {
+          margin-right: 0;
+        }
+      }
+
+      &.inReport.scalar.template {
+        grid-template-columns: auto auto 1fr 1rem 1rem;
+
+        > span[class*="MarketStatus"] {
+          grid-column: 3;
+          grid-row: 1;
+        }
+
+        > button {
+          grid-column: 4;
+        }
+
+        > div:last-of-type {
+          grid-column: 5;
+        }
+
+        > div[class*="CategoryTagTrail"] {
+          grid-column: 1 / span 4;
+          grid-row: 2;
+        }
+
+        > label {
+          margin-left: 0;
+          grid-column: 2;
+        }
+
+        > span[class*="MarketTypeLabel"] {
+          margin-right: 0;
+        }
       }
     }
 

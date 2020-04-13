@@ -17,6 +17,22 @@ import * as d3 from 'd3-time';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatShares, formatDai } from 'utils/format-number';
 
+// Help Center links
+export const HELP_CENTER = 'https://help.augur.net/';
+export const HELP_CENTER_ADD_FUNDS = 'https://help.augur.net/getting-started/adding-funds';
+export const HELP_CENTER_HOW_TO_TRADE = 'https://help.augur.net/trading/how-to-make-a-trade';
+export const HELP_CENTER_HOW_TO_DISPUTE = 'https://help.augur.net/disputing-explained#how-to-dispute';
+export const HELP_CENTER_SCALAR_MARKETS = 'https://help.augur.net/trading/trading-faq#how-do-scalar-markets-work';
+export const HELP_CENTER_PARTICIPATION_TOKENS = 'https://help.augur.net/reporting-or-disputing-faq#what-are-participation-tokens';
+export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://help.augur.net/getting-started/signing-up#gas-station-network';
+export const HELP_CENTER_MIGRATE_REP = 'https://help.augur.net/prediction-markets/migrating-rep-v1-greater-than-v2';
+export const HELP_CENTER_THIRD_PARTY_COOKIES = 'https://www.whatismybrowser.com/guides/how-to-enable-cookies';
+export const HELP_CENTER_INVALID_MARKETS = 'https://help.augur.net/trading/trading-faq#what-does-invalid-mean';
+export const HELP_CENTER_HOW_DO_I_SHORT_AN_OUTCOME = 'https://help.augur.net/trading/trading-faq#how-do-i-short-an-outcome';
+export const HELP_CENTER_DISPUTING_QUICK_GUIDE = 'https://help.augur.net/disputing-explained#dispute-rounds';
+export const HELP_CENTER_REPORTING_QUICK_GUIDE = 'https://help.augur.net/disputing-explained';
+export const HELP_CENTER_RESOLUTION_SOURCE = 'https://help.augur.net/trading/trading-page-explained#8-resolution-source';
+
 // # MISC Constants
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const FAKE_HASH = '1111111111111111111111111';
@@ -443,6 +459,8 @@ export const PRICE_WIDTH_DEFAULT = 0.1;
 export const PRICE_WIDTH_MIN = 0.01;
 export const PRICE_DEPTH_DEFAULT = 0.1; // Not used yet
 export const IS_SIMULATION = false; // Not used yet
+export const DEFAULT_MIN_PRICE = 0;
+export const DEFAULT_MAX_PRICE = 100;
 
 // # Permissible Periods
 // Note: times are in seconds
@@ -565,6 +583,7 @@ export const MODAL_DAI_FAUCET = 'MODAL_DAI_FAUCET';
 export const MODAL_CREATION_HELP = 'MODAL_CREATION_HELP';
 export const MODAL_DEPOSIT = 'MODAL_DEPOSIT';
 export const MODAL_WITHDRAW = 'MODAL_WITHDRAW';
+export const MODAL_CASHOUT = 'MODAL_CASHOUT';
 export const MODAL_MIGRATE_REP = 'MODAL_MIGRATE_REP';
 export const MODAL_TRANSACTIONS = 'MODAL_TRANSACTIONS';
 export const MODAL_UNSIGNED_ORDERS = 'MODAL_UNSIGNED_ORDERS';
@@ -694,6 +713,7 @@ export const CUSTOM = 'Custom';
 export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
 export const CREATEAUGURWALLET = 'RUNPERIODICALS';
+export const WITHDRAWALLFUNDSASDAI = 'WITHDRAWALLFUNDSASDAI';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
@@ -760,6 +780,8 @@ export const DEFAULT_FALLBACK_GAS_FAST = 21000000000; // 21 Gwei
 export const LONG = 'long';
 export const SHORT = 'short';
 export const CLOSED = 'closed';
+export const CLOSED_LONG = 'closed (long)';
+export const CLOSED_SHORT = 'closed (short)';
 export const NO_POSITION = '—';
 
 export const AWAITING_SIGNATURE = 'awaiting signature';
@@ -926,6 +948,7 @@ export const CREATE_MARKET = 'CREATE_MARKET';
 export const SUBMIT_REPORT = 'SUBMIT_REPORT';
 export const SUBMIT_DISPUTE = 'SUBMIT_DISPUTE';
 export const TRANSACTIONS = 'TRANSACTIONS';
+export const MARKETMIGRATED = 'MARKETMIGRATED';
 
 // Pending Queue SINGLE TYPE
 export const CLAIM_FEE_WINDOWS = 'CLAIM_FEE_WINDOWS';
@@ -1014,13 +1037,13 @@ export const POPULAR_CATEGORIES = [
   'crypto',
 ];
 
-export const POPULAR_CATEGORIES_ICONS = [
-  CategorySports,
-  CategoryPolitics,
-  CategoryEntertainment,
-  CategoryFinance,
-  CategoryCrypto,
-];
+export const POPULAR_CATEGORIES_ICONS = {
+  'sports': CategorySports,
+  'politics': CategoryPolitics,
+  'entertainment': CategoryEntertainment,
+  'finance': CategoryFinance,
+  'crypto': CategoryCrypto,
+};
 
 export const CATEGORIES_MAX = 8;
 
@@ -1054,9 +1077,7 @@ export const TRADING_TUTORIAL_COPY = {
     subheader: [
       {
         text:
-          "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the",
-        linkText: 'community guidelines.',
-        link: 'https://docs.augur.net',
+          "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the community guidelines and, if a Resolution Source is used, the source's URL or full name is in the Market Question.",
       },
     ],
   },
@@ -1079,7 +1100,7 @@ export const TRADING_TUTORIAL_COPY = {
       {
         text: "To learn more about selling shares, or going 'short,' see our",
         linkText: 'guide.',
-        link: 'https://docs.augur.net',
+        link: HELP_CENTER_HOW_DO_I_SHORT_AN_OUTCOME,
       },
     ],
   },
@@ -1091,9 +1112,9 @@ export const TRADING_TUTORIAL_COPY = {
           'Select the outcome you believe will be correct or appreciate in price.',
       },
       {
-        text: 'To learn why invalid is an outcome, see our',
-        linkText: 'guide.',
-        link: 'https://docs.augur.net',
+        text: "To learn why invalid is an outcome, see our",
+        linkText: "guide.",
+        link: HELP_CENTER_INVALID_MARKETS,
       },
     ],
   },
@@ -1211,6 +1232,7 @@ export const EVENT_EXPIRATION_TOOLTIP = {
   header: 'Event expiration',
   content: 'This date time indicates when the settlement process begins.',
 };
+export const TOTAL_FUNDS_TOOLTIP = 'Your total funds does not include the ETH reserve';
 export const TUTORIAL_OUTCOME = 1;
 export const TUTORIAL_QUANTITY = 100;
 export const TUTORIAL_PRICE = 0.4;
@@ -1276,7 +1298,8 @@ export const DISPUTING_GUIDE = {
     },
   ],
   learnMoreButtonText: 'Learn more about disputing',
-  closeButtonText: 'Close',
+  learnMoreUrl: HELP_CENTER_DISPUTING_QUICK_GUIDE,
+  closeButtonText: 'Close'
 };
 
 export const REPORTING_GUIDE = {
@@ -1303,7 +1326,8 @@ export const REPORTING_GUIDE = {
     },
   ],
   learnMoreButtonText: 'Learn more about reporting',
-  closeButtonText: 'Close',
+  learnMoreUrl: HELP_CENTER_REPORTING_QUICK_GUIDE,
+  closeButtonText: 'Close'
 };
 
 function createOrder(disappear, price, quantity, id, outcomeId, type) {
@@ -1390,14 +1414,3 @@ export enum HEADER_TYPE {
 }
 
 export const LOGGED_IN_USER_LOCAL_STORAGE_KEY = 'loggedInUser';
-
-// Help Center links
-export const HELP_CENTER = 'https://augur.gitbook.io/help-center/';
-export const HELP_CENTER_ADD_FUNDS = 'https://augur.gitbook.io/help-center/trading-ui-1/adding-funds';
-export const HELP_CENTER_HOW_TO_TRADE = 'https://augur.gitbook.io/help-center/market-creation-1/how-to-make-a-trade';
-export const HELP_CENTER_HOW_TO_DISPUTE = 'https://augur.gitbook.io/help-center/disputing-explained';
-export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://augur.gitbook.io/help-center/trading-ui-1/signing-up#gas-station-network';
-export const HELP_CENTER_MIGRATE_REP = 'https://augur.gitbook.io/help-center/migrating-rep-v1-greater-than-v2';
-export const HELP_CENTER_PARTICIPATION_TOKENS = 'https://augur.gitbook.io/help-center/reporting-or-disputing-faq#what-are-participation-tokens';
-export const HELP_CENTER_INVALID_MARKETS = 'https://augur.gitbook.io/help-center/market-creation-1/trading-faq#what-does-invalid-mean';
-export const HELP_CENTER_THIRD_PARTY_COOKIES = 'https://www.whatismybrowser.com/guides/how-to-enable-cookies';

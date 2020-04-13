@@ -22,7 +22,8 @@ import {
   DESIGNATED_REPORTER_SELF,
   ETH,
   DAI,
-  REP
+  REP,
+  GWEI_CONVERSION
 } from 'modules/common/constants';
 import { MARKET_TYPE_NAME, MARKET_COPY_LIST } from 'modules/create-market/constants';
 import { getCreateMarketBreakdown } from 'modules/contracts/actions/contractCalls';
@@ -80,7 +81,7 @@ export default class Review extends React.Component<
         formatGasCostToEther(
           this.props.newMarket.initialLiquidityGas,
           { decimalsRounded: 4 },
-          this.props.gasPrice
+          createBigNumber(GWEI_CONVERSION).multipliedBy(this.props.gasPrice)
         )
       ),
     };
@@ -111,7 +112,7 @@ export default class Review extends React.Component<
             formatGasCostToEther(
               prevProps.newMarket.initialLiquidityGas,
               { decimalsRounded: 4 },
-              gasPrice
+              createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
             )
           ),
         },
@@ -201,14 +202,7 @@ export default class Review extends React.Component<
           newMarket,
           (err, gasEstimateValue) => {
             if (err) console.error(err);
-            const gasCost = GsnEnabled
-            ? gasEstimateValue
-            : formatEtherEstimate(formatGasCostToEther(
-                gasEstimateValue,
-                { decimalsRounded: 4 },
-                gasPrice,
-              )
-            );
+            const gasCost = gasEstimateValue;
 
 
             this.setState(
@@ -233,6 +227,7 @@ export default class Review extends React.Component<
       availableRepFormatted,
       GsnEnabled,
       showAddFundsModal,
+      gasPrice,
     } = this.props;
     const s = this.state;
 
@@ -256,10 +251,17 @@ export default class Review extends React.Component<
     const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
 
     // Total Gas in ETH
-    const totalEth = formatEther(createBigNumber(s.gasCost ? s.gasCost.value : 0));
+    const gasCost = createBigNumber(s.gasCost ? s.gasCost : 0);
+    const totalEth = formatEtherEstimate(
+      formatGasCostToEther(
+        gasCost,
+        { decimalsRounded: 4 },
+        createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+      )
+    );
 
     // Total Gas in DAI
-    const totalGasInDai = displayGasInDai(createBigNumber(s.gasCost ? s.gasCost : 0));
+    const totalGasInDai = displayGasInDai((gasCost).multipliedBy(gasPrice));
 
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];

@@ -107,13 +107,13 @@ function sumClaims(
   const marketId = contractInfo.marketId;
   // only add reporting contracts for the forking market
   if (marketId === forkingMarket && filterForkingMarket) {
-    const addedValue = createBigNumber(contractInfo.amount);
+    const addedValue = createBigNumber(contractInfo.amount).plus(createBigNumber(contractInfo.earnings));
     marketsCollection.marketContracts = [
       ...marketsCollection.marketContracts,
       {
         ...contractInfo,
         contracts: [contractInfo.address],
-        totalAmount: createBigNumber(contractInfo.amount),
+        totalAmount: createBigNumber(contractInfo.amount).plus(createBigNumber(contractInfo.earnings)),
         marketObject: selectMarket(contractInfo.marketId),
       },
     ];
@@ -132,17 +132,17 @@ function sumClaims(
   if (found) {
     found.totalAmount = createBigNumber(found.totalAmount).plus(
       createBigNumber(contractInfo.amount)
-    );
+    ).plus(createBigNumber(contractInfo.earnings));
     found.contracts = [...found.contracts, contractInfo.address];
-    addedValue = createBigNumber(contractInfo.amount);
+    addedValue = createBigNumber(contractInfo.amount).plus(createBigNumber(contractInfo.earnings));
   } else {
-    addedValue = createBigNumber(contractInfo.amount);
+    addedValue = createBigNumber(contractInfo.amount).plus(createBigNumber(contractInfo.earnings));
     marketsCollection.marketContracts = [
       ...marketsCollection.marketContracts,
       {
         ...contractInfo,
         contracts: [contractInfo.address],
-        totalAmount: createBigNumber(contractInfo.amount),
+        totalAmount: createBigNumber(contractInfo.amount).plus(createBigNumber(contractInfo.earnings)),
         marketObject: selectMarket(contractInfo.marketId),
       },
     ];

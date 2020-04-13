@@ -10,6 +10,7 @@ import {
   PROCEEDS_TO_CLAIM_TITLE,
   TRANSACTIONS,
   CLAIMMARKETSPROCEEDS,
+  FINALIZE,
 } from 'modules/common/constants';
 import { ProcessingButton } from 'modules/common/buttons';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
@@ -17,6 +18,7 @@ import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
+import { finalizeMarket } from 'modules/contracts/actions/contractCalls';
 
 interface MarketHeaderReportingProps {
   market: MarketData;
@@ -27,6 +29,8 @@ interface MarketHeaderReportingProps {
   claimMarketsProceeds: Function;
   showReportingModal: Function;
   isForking?: boolean;
+  isForkingMarket?: boolean;
+  isLoggedIn?: boolean;
 }
 
 export const MarketHeaderReporting = ({
@@ -37,7 +41,9 @@ export const MarketHeaderReporting = ({
   isLogged,
   canClaimProceeds,
   showReportingModal,
-  isForking
+  isForking,
+  isForkingMarket,
+  isLoggedIn
 }: MarketHeaderReportingProps) => {
   const { reportingState, id, consensusFormatted } = market;
   let content = null;
@@ -62,6 +68,16 @@ export const MarketHeaderReporting = ({
             disabled={!isLogged || !canClaimProceeds}
             queueName={CLAIMMARKETSPROCEEDS}
             queueId={id}
+          />
+        )}
+        {reportingState === REPORTING_STATE.AWAITING_FINALIZATION && isForkingMarket && (
+          <ProcessingButton
+            queueName={TRANSACTIONS}
+            queueId={FINALIZE}
+            small
+            disabled={!isLoggedIn}
+            text={'Finalize Market'}
+            action={() => finalizeMarket(id)}
           />
         )}
       </div>
@@ -111,7 +127,15 @@ export const MarketHeaderReporting = ({
     reportingState === REPORTING_STATE.OPEN_REPORTING
   ) {
     content = (
-      <div data-tip data-for={'tooltip--reporting' + id} className={classNames(Styles.Content, Styles.Report)}>
+      <div
+        className={classNames(
+          Styles.Content,
+          Styles.Report
+        )}
+        data-tip
+        data-for={'tooltip--reporting' + id}
+        data-iscapture={true}
+      >
         <ProcessingButton
           text='Report'
           action={() => showReportingModal()}
@@ -126,8 +150,8 @@ export const MarketHeaderReporting = ({
             effect="solid"
             place="top"
             type="light"
-            data-event="mouseover"
-            data-event-off="blur scroll"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
           >
             <p>{'Market cannot be reported on while universe is forking'} </p>
           </ReactTooltip>

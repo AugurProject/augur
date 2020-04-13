@@ -78,6 +78,8 @@ export interface DismissableNoticeProps {
   buttonAction?: Function;
   className?: string;
   show: boolean;
+  queueName?: string;
+  queueId?: string;
 }
 
 export const DismissableNotice = (props: DismissableNoticeProps) => {
@@ -93,13 +95,12 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
             {props.description && <div>{props.description}</div>}
           </div>
           {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON && (
-            <button
-              type="button"
-              className={ButtonStyles.PrimaryButton}
-              onClick={props.buttonAction}
-            >
-              {props.buttonText}
-            </button>
+             <ProcessingButton
+              text={props.buttonText}
+              action={props.buttonAction}
+              queueName={props.queueName}
+              queueId={props.queueId}
+            />
           )}
           {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE && (
             <button
@@ -154,6 +155,7 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
         style={{ width: `${secondPercent > 100 ? 100 : secondPercent}%` }}
         data-tip
         data-for={key}
+        data-iscapture={true}
       />
       <ReactTooltip
         id={key}
@@ -161,8 +163,8 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
         effect="solid"
         place="top"
         type="light"
-        data-event="mouseover"
-        data-event-off="blur scroll"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         My Existing Stake
         <p>{props.userValue.formattedValue} REP</p>
@@ -195,7 +197,11 @@ export const Subheaders = (props: SubheadersProps) => (
       {props.header}
       {props.info && (
         <>
-          <label data-tip data-for={'tooltip--' + props.header}>
+          <label
+            data-tip
+            data-for={'tooltip--' + props.header}
+            data-iscapture={true}
+          >
             {InfoIcon}
           </label>
           <ReactTooltip
@@ -204,8 +210,8 @@ export const Subheaders = (props: SubheadersProps) => (
             effect="solid"
             place="top"
             type="light"
-            data-event="mouseover"
-            data-event-off="blur scroll"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
           >
             <p>{props.tooltipText}</p>
           </ReactTooltip>
@@ -882,7 +888,7 @@ export class ReportingBondsView extends Component<
             threshold={threshold}
           />
         )}
-        {!market.isWarpSync && (
+        {!market.isWarpSync && !migrateRep && (
           <div className={Styles.ShowTotals}>
             <span>Totals</span>
             {!market.isForking && (
@@ -967,7 +973,6 @@ export class ReportingBondsView extends Component<
               reportAction();
             }
           }}
-
         />
       </div>
     );
@@ -1032,7 +1037,11 @@ export const ReportingCard = (props: ReportingCardProps) => {
           reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
         />
       )}
-      <div data-tip data-for={'tooltip--preReporting' + id}>
+      <div
+        data-tip
+        data-for={'tooltip--preReporting' + id}
+        data-iscapture={true}
+      >
         <ProcessingButton
           text="Report"
           action={showReportingModal}
@@ -1047,8 +1056,8 @@ export const ReportingCard = (props: ReportingCardProps) => {
             effect="solid"
             place="top"
             type="light"
-            data-event="mouseover"
-            data-event-off="blur scroll"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
           >
             <p>{disabledTooltipText} </p>
           </ReactTooltip>

@@ -184,6 +184,17 @@
 			}
 		}
 	}
+
+	&.forking {
+		grid-template-columns: 1fr auto;
+		grid-template-rows: auto auto;
+		display: grid;
+
+		> button {
+			grid-row: 2;
+			grid-column: 2;
+		}
+	}
 }
 
 .Percent {
@@ -464,6 +475,12 @@
 		margin-left: auto;
 		width: fit-content;
 		height: fit-content;
+	}
+
+	&.forking {
+		grid-row: unset;
+		grid-column: unset;
+		margin-left: unset;
 	}
 }
 

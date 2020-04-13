@@ -18,9 +18,10 @@ import { updateAssets } from 'modules/auth/actions/update-assets';
 import { NetworkId } from '@augurproject/artifacts';
 import { AppState } from 'appStore';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET } from 'modules/common/constants';
+import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET, SUCCESS } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
+import { addAlert } from 'modules/alerts/actions/alerts';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
@@ -86,8 +87,26 @@ export const createFundedGsnWallet = () => async (
 ) => {
   try {
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending));
+
     await augurSdk.client.gsn.initializeWallet();
+
     dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
+
+    const timestamp = getState().blockchain.currentAugurTimestamp * 1000;
+    const alert = {
+      name: CREATEAUGURWALLET,
+      uniqueId: timestamp,
+      toast: true,
+      description: 'Your account has been initialized!',
+      title: 'Account initialization',
+      index: 0,
+      timestamp,
+      status: SUCCESS,
+      params: {
+        market: '0x0000000000000000000000000000000000000000',
+      }
+    }
+    dispatch(addAlert(alert));
   } catch (e) {
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Failure));
     dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE));

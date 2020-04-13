@@ -4,10 +4,17 @@ import { logout } from 'modules/auth/actions/logout';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, GAS_TIME_LEFT_LABELS, MODAL_ADD_FUNDS, MODAL_UNIVERSE_SELECTOR } from 'modules/common/constants';
 import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
+import { FormattedNumber } from 'modules/types';
+import { DESIRED_SIGNER_ETH_BALANCE } from 'contract-dependencies-gsn/src/ContractDependenciesGSN';
+import { formatAttoEth, formatEther } from 'utils/format-number';
+import { AppState } from 'appStore';
+import { createBigNumber } from 'utils/create-big-number';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: AppState) => {
   const { fast, average, safeLow, userDefinedGasPrice } = state.gasPriceInfo;
-
+  const { loginAccount } = state;
+  const { balances } = loginAccount;
+  const ethNonSafeBN = createBigNumber(balances.ethNonSafe);
   const userDefined = userDefinedGasPrice || average || 0;
   let gasPriceSpeed = GAS_SPEED_LABELS.STANDARD;
   let gasPriceTime = GAS_TIME_LEFT_LABELS.STANDARD
@@ -21,6 +28,13 @@ const mapStateToProps = state => {
     gasPriceTime = GAS_TIME_LEFT_LABELS.SLOW;
     gasPriceSpeed = GAS_SPEED_LABELS.SLOW;
   }
+
+  let desiredSignerEthBalance = createBigNumber(formatAttoEth(Number(DESIRED_SIGNER_ETH_BALANCE)).value);
+  if (ethNonSafeBN.lt(desiredSignerEthBalance)) desiredSignerEthBalance = ethNonSafeBN;
+  const reserveEthAmount: FormattedNumber = formatEther(desiredSignerEthBalance, {
+    zeroStyled: false,
+    decimalsRounded: 4,
+  });
 
   return {
     universeOutcomeName: state.universe.outcomeName ? state.universe.outcomeName : null,
@@ -39,6 +53,7 @@ const mapStateToProps = state => {
     balances: state.loginAccount && state.loginAccount.balances,
     GsnEnabled: state.appStatus.gsnEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
+    reserveEthAmount,
   };
 };
 

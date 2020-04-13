@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import getValue from 'utils/get-value';
 import { AppState } from 'appStore';
 import * as constants from 'modules/common/constants';
 
@@ -20,14 +19,22 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const { blockchain, marketInfos} = state;
   const { openOrder, marketId }  = ownProps;
   const market = marketInfos[marketId];
-  const { outcomeId } = openOrder;
-  const usePercent = !!market && outcomeId === constants.INVALID_OUTCOME_ID && market.marketType === constants.SCALAR;
+  let usePercent = false;
+  const minPrice = market ? market.minPrice : constants.DEFAULT_MIN_PRICE;
+  const maxPrice = market ? market.maxPrice : constants.DEFAULT_MAX_PRICE;
+  const marketType = market ? market.marketType : constants.YES_NO;
+  if (market) {
+    const { outcomeId } = openOrder;
+    usePercent = !!market && outcomeId === constants.INVALID_OUTCOME_ID && market.marketType === constants.SCALAR;
+  }
+
   return {
     currentTimestamp: blockchain.currentAugurTimestamp,
     pendingOrderCancellations: selectCancelingOrdersState(state),
     usePercent,
-    minPrice: market && market.minPrice,
-    maxPrice: market && market.maxPrice,
+    marketType,
+    minPrice,
+    maxPrice,
   }
 };
 
@@ -83,7 +90,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       columnType: COLUMN_TYPES.VALUE,
       value: avgPrice,
       usePercent: !!avgPrice.percent,
-      useFull: true,
+      useFull: sP.marketType === constants.SCALAR ? false : true,
+      showFullPrecision: sP.marketType === constants.SCALAR ? true : false,
+      showDenomination: sP.marketType === constants.SCALAR ? true : false,
       keyId: 'openOrder-price-' + openOrder.id,
     },
     {

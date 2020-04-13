@@ -6,13 +6,14 @@ import { ethers } from 'ethers';
 import * as _ from 'lodash';
 import * as constants from '../constants';
 import { NULL_ADDRESS, } from '../constants';
-import { OrderEventLog, OrderEventUint256Value } from '../state/logs/types';
+import { OrderEventLog, OrderEventUint256Value, OrderType } from '../state/logs/types';
 import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
   convertOnChainAmountToDisplayAmount,
   numTicksToTickSizeWithDisplayPrices,
   QUINTILLION,
+  getTradeInterval,
 } from '../utils';
 import { Augur } from './../Augur';
 import {
@@ -323,6 +324,53 @@ export class ZeroX {
     }
   }
 
+  async safePlaceOrders(params: ZeroXPlaceTradeDisplayParams[]): Promise<void> {
+    if (!this.client) throw new Error('To place ZeroX trade, make sure Augur client instance was initialized with it enabled.');
+    const onChainOrders = params.map((params) => ({...params, ...this.getOnChainTradeParams(params)}));
+    const marketIds = _.keys(_.keyBy(onChainOrders, 'market'));
+    const markets = await this.client.getMarketsInfo({ marketIds });
+    const keyedMarkets = _.keyBy(markets, 'id');
+
+    const groupSorted = _.groupBy(_.sortBy(onChainOrders, ['direction', 'price']), 'direction');
+    const bestBid = _.last(groupSorted[OrderType.Bid]);
+    const bestAsk = _.first(groupSorted[OrderType.Ask]);
+    if (!!bestAsk && !!bestBid && bestBid.price.gte(bestAsk.price)) {
+      throw new Error("Order collection has cross orderbook order(s)");
+    }
+
+    for (const order of onChainOrders) {
+      const market = keyedMarkets[order.market];
+      const maxPrice = new BigNumber(market.maxPrice);
+      const minPrice = new BigNumber(market.minPrice);
+      const displayPrice = new BigNumber(order.displayPrice);
+      if (displayPrice.gt(maxPrice) || displayPrice.lt(minPrice)) {
+        throw new Error("Order Price Out of Market Price Range");
+      }
+
+      const tradeInterval = getTradeInterval(minPrice, maxPrice, new BigNumber(market.numTicks));
+      const multipleOf = tradeInterval.dividedBy(market.tickSize).dividedBy(10 ** 18)
+      if (!order.amount.mod(multipleOf).eq(0)) {
+        throw new Error(`Order not multiple of ${multipleOf.toNumber()}`);
+      }
+
+      const invalidReason = await this.checkIfTradeValid(order);
+      if (invalidReason) throw new Error(invalidReason);
+    };
+
+    for(const order of [bestBid, bestAsk]) {
+      if (!order) return;
+      const { orders } = await this.getMatchingOrders(
+        order,
+        []
+      );
+      if (orders.length > 0) {
+        throw new Error("Order would cross Orderbook spread");
+      }
+    }
+
+    return await this.placeOnChainOrders(onChainOrders);
+  }
+
   async placeOrder(params: ZeroXPlaceTradeDisplayParams): Promise<void> {
     await this.placeOrders([params]);
   }
@@ -456,9 +504,11 @@ export class ZeroX {
         return this._rpc.addOrdersAsync(orders);
       }
     } catch (error) {
-      console.error(error);
-      if (this._mesh || this._rpc)
+      console.error('Retrying 0x addOrders:', error);
+      if (this._mesh || this._rpc) {
+        // Wait 5 seconds then retry.
         return setTimeout(this.addOrders(orders), 5000);
+      }
     }
   }
 

@@ -17,6 +17,7 @@ import {
   HELP_CENTER,
   CREATEAUGURWALLET,
   TRANSACTIONS,
+  GWEI_CONVERSION,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -162,13 +163,13 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let messages: Message | null = null;
 
     const gasCost = gasLimit
-      ? formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, gasPrice)
+      ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
 
     let gasCostDai = null;
 
     if (GsnEnabled) {
-      gasCostDai = getGasInDai(gasLimit);
+      gasCostDai = getGasInDai(gasCost);
     }
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
@@ -326,8 +327,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = null;
 
+    const gasCost = gasLimit
+    ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
+    : ZERO;
+
     if (GsnEnabled) {
-      gasCostDai = getGasInDai(gasLimit);
+      gasCostDai = getGasInDai(gasCost);
     }
 
     const limitPricePercentage = (side === BUY
@@ -417,6 +422,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                   )}
                   data-tip
                   data-for="tooltip--confirm"
+                  data-iscapture={true}
                 >
                   {QuestionIcon}
                 </label>
@@ -426,8 +432,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                   effect="solid"
                   place="top"
                   type="light"
-                  data-event="mouseover"
-                  data-event-off="blur scroll"
+                  event="mouseover mouseenter"
+                  eventOff="mouseleave mouseout scroll mousewheel blur"
                 >
                   <p>{tooltip}</p>
                 </ReactTooltip>

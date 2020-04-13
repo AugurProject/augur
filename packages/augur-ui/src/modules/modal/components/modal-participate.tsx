@@ -6,6 +6,7 @@ import { formatRep, formatGasCostToEther } from 'utils/format-number';
 import {
   BUY_PARTICIPATION_TOKENS_GAS_LIMIT,
   REP,
+  GWEI_CONVERSION,
 } from 'modules/common/constants';
 import ModalActions from './common/modal-actions';
 import {
@@ -45,10 +46,11 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
   const [errors, setErrors] = useState([]);
 
   const formattedQuantity = formatRep(quantity || 0);
-  const gasEstimate = formatGasCostToEther(
+
+  const gasEstimateInEth = formatGasCostToEther(
     gasLimit,
     { decimalsRounded: 4 },
-    gasPrice
+    createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
   );
 
   useEffect(() => {
@@ -131,8 +133,8 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     {
       label: 'gas',
       value: GsnEnabled
-        ? displayGasInDai(gasLimit)
-        : gasEstimate,
+        ? displayGasInDai(gasLimit.multipliedBy(gasPrice))
+        : gasEstimateInEth,
       denomination: GsnEnabled ? 'DAI' : 'ETH',
       showDenomination: true,
     },
