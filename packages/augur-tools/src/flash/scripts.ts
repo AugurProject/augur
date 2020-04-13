@@ -307,27 +307,51 @@ export function addScripts(flash: FlashSession) {
         name: 'title',
         abbr: 'd',
         description: 'market title',
+      },
+      {
+        name: 'orders',
+        abbr: 'z',
+        flag: true,
+        description: 'add orders to newly created market',
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const yesno = Boolean(args.yesno);
       const cat = Boolean(args.categorical);
       const scalar = Boolean(args.scalar);
+      const orders = Boolean(args.orders);
       const title = args.title ? String(args.title) : undefined;
+      if (orders) {
+        this.pushConfig({
+          zeroX: {
+            rpc: { enabled: true },
+            mesh: { enabled: false },
+          },
+        });
+      }
       const user = await this.createUser(this.getAccount(), this.config);
 
       if (yesno || !(cat || scalar)) {
         const market = await user.createReasonableYesNoMarket(title);
         console.log(`Created YesNo market "${market.address}".`);
+        if (orders) {
+          await createYesNoZeroXOrders(user, market.address, true);
+        }
       }
       if (cat) {
         const outcomes = ['first', 'second', 'third', 'fourth', 'fifth'].map(formatBytes32String);
         const market = await user.createReasonableMarket(outcomes, title);
         console.log(`Created Categorical market "${market.address}".`);
+        if (orders) {
+          await createCatZeroXOrders(user, market.address, true, 5);
+        }
       }
       if (scalar) {
         const market = await user.createReasonableScalarMarket(title);
         console.log(`Created Scalar market "${market.address}".`);
+        if (orders) {
+          await createScalarZeroXOrders(user, market.address, true, false, new BigNumber(20000), new BigNumber(50), new BigNumber(250));
+        }
       }
     }
   });
