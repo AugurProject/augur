@@ -83,7 +83,7 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
                 <div>
                   {userInfo.email
                     ? userInfo.email
-                    : formatAddress(userInfo.address)}
+                    : userInfo.accountType}
                 </div>
               </div>
             </div>

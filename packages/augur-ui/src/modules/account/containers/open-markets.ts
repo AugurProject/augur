@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { AppState } from "appStore";
 import OpenMarkets from "modules/account/components/open-markets";
-import { CLOSED, MARKET_CLOSED } from "modules/common/constants";
+import { CLOSED, MARKET_CLOSED, CLOSED_LONG, CLOSED_SHORT } from "modules/common/constants";
 import getLoginAccountPositions from "modules/positions/selectors/login-account-positions";
 import getSelectLoginAccountTotals from "modules/positions/selectors/login-account-totals";
 import memoize from "memoizee";
@@ -51,7 +51,10 @@ const getPositionsMarkets = memoize(
     positions.markets.reduce((p, m) => {
       if (m.marketStatus === MARKET_CLOSED) return p;
       const pos = m.userPositions.filter(
-        (position: any) => position.type !== CLOSED
+        (position: any) =>
+          position.type !== CLOSED &&
+          position.type !== CLOSED_LONG &&
+          position.type !== CLOSED_SHORT
       );
       return pos.length === 0
         ? p
