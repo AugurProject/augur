@@ -1,5 +1,5 @@
 import Dexie from 'dexie';
-const setGlobalVars = require('indexeddbshim');
+const setGlobalVars = require('@augurproject/indexeddbshim');
 
 // ID_Start (includes Other_ID_Start)
 const UnicodeIDStart =

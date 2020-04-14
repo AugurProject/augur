@@ -191,21 +191,15 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               )
           );
         } else {
-          this.setState(
+         
+          this.updateTradeTotalCost(
             {
-              orderPrice: selectedOrderProperties.orderPrice,
-              orderQuantity: selectedOrderProperties.orderQuantity,
+              ...selectedOrderProperties,
+              orderQuantity: convertExponentialToDecimal(
+                selectedOrderProperties.orderQuantity
+              ),
             },
-            () =>
-              this.updateTradeTotalCost(
-                {
-                  ...selectedOrderProperties,
-                  orderQuantity: convertExponentialToDecimal(
-                    selectedOrderProperties.orderQuantity
-                  ),
-                },
-                true
-              )
+            true
           );
         }
       }
@@ -374,6 +368,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       });
       if (order.orderPrice) {
         await this.queueStimulateTrade(order, useValues, selectedNav);
+      } else {
+        this.setState({
+          orderQuantity: order.orderQuantity
+        })
       }
     }
   }
