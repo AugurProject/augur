@@ -196,6 +196,7 @@ const BETSLIP_ACTIONS = {
 
 function BetslipReducer(state, action) {
   const {
+    ADD_BET,
     ADD_MATCHED,
     ADD_MULTIPLE_MATCHED,
     CASH_OUT,
@@ -234,6 +235,27 @@ function BetslipReducer(state, action) {
     case TOGGLE_STEP: {
       const currentStep = updatedState.step;
       updatedState.step = currentStep === 0 ? 1 : 0;
+      return updatedState;
+    }
+    case ADD_BET: {
+      const { marketId, description, outcome, odds } = action;
+      if (!betslipItems[marketId]) {
+        betslipItems[marketId] = {
+          description,
+          orders: []
+        };
+      }
+      betslipItems.orders.push({
+        outcome,
+        odds,
+        wager: '0',
+        toWin: '0',
+        amountFilled: '0',
+        amountWon: '0',
+        status: BET_STATUS.UNSENT,
+        dateUpdated: null,
+      });
+      updatedState.betslip.count++;
       return updatedState;
     }
     case SEND_BET: {
@@ -416,6 +438,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const {
     CASH_OUT,
     RETRY,
+    ADD_BET,
     MODIFY_BET,
     UPDATE_UNMATCHED,
     UPDATE_MATCHED,
@@ -441,6 +464,9 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
           dispatch({ type: TOGGLE_SUBHEADER });
       },
       toggleStep: () => dispatch({ type: TOGGLE_STEP }),
+      addBet: (marketId, description, odds, outcome, wager = "0") => {
+        dispatch({ type: ADD_BET, marketId, description, odds, outcome, wager });
+      },
       sendBet: (marketId, orderId, description, order) => {
         dispatch({ type: SEND_BET, marketId, orderId, description, order });
       },
