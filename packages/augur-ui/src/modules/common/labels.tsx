@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
 import Styles from 'modules/common/labels.styles.less';
@@ -34,7 +35,6 @@ import {
   DISCORD_LINK,
   ACCOUNT_TYPES,
   CLOSED_SHORT,
-  CLOSED_LONG,
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
@@ -51,7 +51,8 @@ import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
 import { Market } from 'modules/portfolio/components/common/market-row';
-import { AsyncBooleanResultCallback } from 'async';
+import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
+import { AppState } from 'appStore';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -1375,11 +1376,33 @@ export const BulkTxLabel = ({
     </div>
   ) : null;
 
-export const InsufficientModalLabel = (props: DismissableNoticeProps) => (
+export const ModalLabelNotice = (props: DismissableNoticeProps) => (
   <div className={classNames(Styles.ModalMessageLabel)}>
     <DismissableNotice {...props} />
   </div>
 );
+
+const mapStateToPropsInitWalletModal = (state: AppState) => ({
+  gsnUnavailable: isGSNUnavailable(state),
+});
+
+const InitializeWalletModalNoticeCmp = ({ gsnUnavailable }) => (
+  <>
+    {gsnUnavailable && (
+      <div className={classNames(Styles.ModalMessageLabelInitWallet)}>
+        <DismissableNotice
+          show
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+          title={`The fee displayed is high than normal because it includes a one time only account initialization.`}
+        />
+      </div>
+    )}
+  </>
+);
+
+export const InitializeWalletModalNotice = connect(
+  mapStateToPropsInitWalletModal
+)(InitializeWalletModalNoticeCmp);
 
 export const ValueDenomination: React.FC<ValueDenominationProps> = ({
   className,
