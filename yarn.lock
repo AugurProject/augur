@@ -429,6 +429,18 @@
   dependencies:
     "@analytics/cookie-utils" "^0.2.2"
 
+"@augurproject/indexeddbshim@6.1.1":
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/@augurproject/indexeddbshim/-/indexeddbshim-6.1.1.tgz#60f2d5e73a255aaea2fdc4d749e5fdca8bade9d2"
+  integrity sha512-fPt/E0R/vudoHAKVXfS1vndmuSb0MCSUIhRs+sRJpDRGfTr7VdwxLbL4j4RqFDLz1ucZt9EHaOlRL6vWwrekQg==
+  dependencies:
+    eventtargeter "0.8.0"
+    regenerator-runtime "^0.13.3"
+    sync-promise "https://github.com/brettz9/sync-promise.git#full-sync-missing-promise-features"
+    typeson "5.18.2"
+    typeson-registry "1.0.0-alpha.35"
+    websql "https://github.com/brettz9/node-websql.git#configurable-secure2"
+
 "@augurproject/solidity-docgen@0.2.0-alpha.3":
   version "0.2.0-alpha.3"
   resolved "https://registry.yarnpkg.com/@augurproject/solidity-docgen/-/solidity-docgen-0.2.0-alpha.3.tgz#7ccb905f5e9b213a505fe1ae14ddaf23efc9d390"
@@ -12441,18 +12453,6 @@ indent-string@^4.0.0:
   resolved "https://registry.yarnpkg.com/indent-string/-/indent-string-4.0.0.tgz#624f8f4497d619b2d9768531d58f4122854d7251"
   integrity sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==
 
-indexeddbshim@6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/indexeddbshim/-/indexeddbshim-6.1.0.tgz#3af4e91b8ede2067ea1b040a2b7ca50c7ffce5d4"
-  integrity sha512-y56LxY6900CzpdmqmlF+8gp2KRcM6dIK5cTO48fsv+5fHInOR1qqGBCr5qdsPR6wI5DoT57ICot0un4R4SIWCg==
-  dependencies:
-    eventtargeter "0.8.0"
-    regenerator-runtime "^0.13.3"
-    sync-promise "https://github.com/brettz9/sync-promise.git#full-sync-missing-promise-features"
-    typeson "5.18.2"
-    typeson-registry "1.0.0-alpha.35"
-    websql "https://github.com/brettz9/node-websql.git#configurable-secure2"
-
 indexes-of@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/indexes-of/-/indexes-of-1.0.1.tgz#f30f716c8e2bd346c7b67d3df3915566a7c05607"
@@ -24072,9 +24072,9 @@ symbol-tree@^3.2.2:
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
 
-"sync-promise@https://github.com/brettz9/sync-promise.git#full-sync-missing-promise-features":
+"sync-promise@git+https://github.com/brettz9/sync-promise.git#full-sync-missing-promise-features":
   version "1.0.1"
-  resolved "https://github.com/brettz9/sync-promise.git#25845a49a00aa2d2c985a5149b97c86a1fcdc75a"
+  resolved "git+https://github.com/brettz9/sync-promise.git#25845a49a00aa2d2c985a5149b97c86a1fcdc75a"
 
 syntax-error@^1.1.1:
   version "1.4.0"
@@ -26828,9 +26828,9 @@ websocket@^1.0.29:
     typedarray-to-buffer "^3.1.5"
     yaeti "^0.0.6"
 
-"websql@https://github.com/brettz9/node-websql.git#configurable-secure2":
+"websql@git+https://github.com/brettz9/node-websql.git#configurable-secure2":
   version "1.0.0"
-  resolved "https://github.com/brettz9/node-websql.git#5149bc0763376ca757fc32dc74345ada0467bfbb"
+  resolved "git+https://github.com/brettz9/node-websql.git#5149bc0763376ca757fc32dc74345ada0467bfbb"
   dependencies:
     argsarray "^0.0.1"
     immediate "^3.2.2"

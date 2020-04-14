@@ -23,7 +23,7 @@
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
     "deploy": "ts-node ./src/flash/cli deploy",
     "deploy:merge": "scripts/deploy-merge-addresses.py",
-    "flash": "ts-node ./src/flash/cli",
+    "flash": "node --inspect -r ts-node/register ./src/flash/cli",
     "blockstream-console": "ts-node ./src/blockstream-console.ts",
     "run:gsn": "oz-gsn run-relayer"
   },
