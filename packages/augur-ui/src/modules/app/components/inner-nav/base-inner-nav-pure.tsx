@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import {
+  MAXFEE_PARAM_NAME,
   MOBILE_MENU_STATES,
   SHOW_INVALID_MARKETS_PARAM_NAME,
-  MAXFEE_PARAM_NAME,
   SPREAD_PARAM_NAME,
   TEMPLATE_FILTER,
 } from 'modules/common/constants';
@@ -15,7 +15,6 @@ import { PrimaryButton } from 'modules/common/buttons';
 
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles.less';
 import { FilterSortOptions } from 'modules/types';
-import updateQuery from 'modules/routes/helpers/update-query';
 import updateMultipleQueries from 'modules/routes/helpers/update-multiple-queries';
 
 interface BaseInnerNavPureProps {
@@ -23,6 +22,7 @@ interface BaseInnerNavPureProps {
   updateMobileMenuState: Function;
   selectedCategories: String[];
   filterSortOptions: FilterSortOptions;
+  updateLoginAccount: Function;
   updateMarketsListMeta: Function;
   updateMarketsSortBy: Function;
   updateMaxFee: Function;
@@ -39,6 +39,7 @@ const BaseInnerNavPure = ({
   updateMobileMenuState,
   selectedCategories,
   filterSortOptions,
+  updateLoginAccount,
   updateMarketsListMeta,
   updateMarketsSortBy,
   updateMaxFee,
@@ -113,8 +114,11 @@ const BaseInnerNavPure = ({
 
     if (changedFilters.length > 0) {
       updateMultipleQueries(changedFilters, location, history);
+      const newSettings = {};
 
       changedFilters.forEach(({ value, filterType }) => {
+        newSettings[filterType] = value;
+
         switch (filterType) {
           case TEMPLATE_FILTER:
             updateTemplateFilter(value);
@@ -130,6 +134,8 @@ const BaseInnerNavPure = ({
             break;
         }
       });
+
+      updateLoginAccount(newSettings);
     }
 
     sortOptions && updateMarketsSortBy(sortOptions);
