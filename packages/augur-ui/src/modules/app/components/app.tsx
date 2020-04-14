@@ -11,7 +11,9 @@ import TopNav from 'modules/app/components/top-nav/top-nav';
 import Routes from 'modules/routes/components/routes/routes';
 import AlertsContainer from 'modules/alerts/containers/alerts-view';
 import ToastsContainer from 'modules/alerts/containers/toasts-view';
+
 import { Betslip } from 'modules/trading/betslip';
+import { BetslipProvider } from 'modules/trading/store/betslip';
 
 import {
   MobileNavHamburgerIcon,
@@ -425,6 +427,7 @@ export default class AppView extends Component<AppProps> {
       parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
 
     return (
+      <BetslipProvider>
       <main>
         <OddsContext.Provider value={{ oddsType, changeOddsType }} >
         <HelmetTag {...APP_HEAD_TAGS} />
@@ -563,6 +566,7 @@ export default class AppView extends Component<AppProps> {
         </div>
         </OddsContext.Provider>
       </main>
+      </BetslipProvider>
     );
   }
 }

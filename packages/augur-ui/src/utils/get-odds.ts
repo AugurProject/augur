@@ -72,6 +72,11 @@ export const convertToOdds = ({
   return getOddsObject(normalizedPrice, toDecimals);
 };
 
+export const convertAmericanToFractional = (americanOdds) => {
+  const bnAmerican = createBigNumber(americanOdds);
+  return bnAmerican.isNegative() ? (HUNDRED.times(-1)).dividedBy(bnAmerican).toFixed() : bnAmerican.dividedBy(HUNDRED).toFixed();
+};
+
 const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   const percentage: BigNumber = convertToPercentage(normalizedValue);
   const decimal: BigNumber = convertToDecimal(percentage);

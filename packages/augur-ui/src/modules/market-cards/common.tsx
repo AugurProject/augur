@@ -68,6 +68,7 @@ import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market'
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { SmallSubheadersTooltip } from 'modules/create-market/components/common';
+import { useBetslipStore } from 'modules/trading/store/betslip';
 
 export interface PercentProps {
   percent: number;
@@ -382,25 +383,25 @@ export const ScalarOutcome = ({
   </MarketLink>
 );
 
-const mockData = [
+const mockData = (marketId, addBet, description) => [
   {
     title: 'Team A',
     spread: {
       topLabel: '+ 3.5',
       label: '-110',
-      action: () => {},
+      action: () => addBet(marketId, description, '-110', 'Team A', "0"),
       volume: '$5,000.43',
     },
     moneyLine: {
       topLabel: null,
       label: '+132',
-      action: () => {},
+      action: () => addBet(marketId, description, '+132', 'Team A', "0"),
       volume: '$6,500.12',
     },
     overUnder: {
       topLabel: 'O 227.5',
       label: '-110',
-      action: () => {},
+      action: () => addBet(marketId, description, '-110', 'Team A', "0"),
       volume: '$2,542.00',
     },
   },
@@ -409,40 +410,40 @@ const mockData = [
     spread: {
       topLabel: '- 3.5',
       label: '-110',
-      action: () => {},
+      action: () => addBet(marketId, description, '-110', 'Team B', "0"),
       volume: '$6,093.50',
     },
     moneyLine: {
       topLabel: null,
       label: '-156',
-      action: () => {},
+      action: () => addBet(marketId, description, '-156', 'Team B', "0"),
       volume: '$10,000.54',
     },
     overUnder: {
       topLabel: 'U 227.5',
       label: '-110',
-      action: () => {},
+      action: () => addBet(marketId, description, '-110', 'Team B', "0"),
       volume: '$5,000.18',
     },
   },
   {
-    title: 'NoWinner',
+    title: 'No Winner',
     spread: {
       topLabel: null,
       label: '-110',
-      action: () => {},
+      action: () => addBet(marketId, description, '-110', 'No Winner', "0"),
       volume: '$500.70',
     },
     moneyLine: {
       topLabel: null,
       label: '-157',
-      action: () => {},
+      action: () => addBet(marketId, description, '-157', 'No Winner', "0"),
       volume: '$740.98',
     },
     overUnder: {
       topLabel: null,
       label: '-110',
-      action: () => {},
+      action: () => addBet(marketId, description, '-110', 'No Winner', "0"),
       volume: '$540.50',
     },
   },
@@ -472,10 +473,11 @@ export interface MultiMarketTable {
   }>;
 }
 
-const processMultiMarketTableData = (orderBook, outcomes, min, max) => {
+const processMultiMarketTableData = (orderBook, outcomes, min, max, addBet, description) => {
+  const marketId = outcomes[0].marketId;
   if (!orderBook || orderBook?.asks) {
     // this might change, shortcut
-    return mockData;
+    return mockData(marketId, addBet, description);
   }
   let data = [];
   outcomes.forEach(outcome => {
@@ -484,35 +486,39 @@ const processMultiMarketTableData = (orderBook, outcomes, min, max) => {
       spread: {
         topLabel: null,
         label: '-110',
-        action: () => {},
+        action: () => addBet(marketId, description, '-110', outcome.description, "0"),
         volume: '$500.70',
       },
       moneyLine: {
         topLabel: null,
         label: '-157',
-        action: () => {},
+        action: () => addBet(marketId, description, '-157', outcome.description, "0"),
         volume: '$740.98',
       },
       overUnder: {
         topLabel: null,
         label: '-110',
-        action: () => {},
+        action: () => addBet(marketId, description, '-110', outcome.description, "0"),
         volume: '$540.50',
       },
     };
     if (orderBook[outcome.id]) {
       const book = orderBook[outcome.id];
-      const topAsk = book[ASKS][0].price;
+      const { price, amount } = book[ASKS][0];
       const odds = convertToOdds({
-        price: topAsk,
+        price,
         min,
         max,
         type: ASKS
       });
+      const OddToUse = odds[ODDS_TYPE.AMERICAN];
       outcomeObject.title = outcome.description;
-      outcomeObject.spread.label = odds[ODDS_TYPE.AMERICAN];
-      outcomeObject.moneyLine.label = odds[ODDS_TYPE.AMERICAN];
-      outcomeObject.overUnder.label = odds[ODDS_TYPE.AMERICAN];
+      outcomeObject.spread.label = OddToUse;
+      outcomeObject.spread.action = () => addBet(marketId, description, OddToUse, outcome.description, amount);
+      outcomeObject.moneyLine.label = OddToUse;
+      outcomeObject.moneyLine.action = () => addBet(marketId, description, OddToUse, outcome.description, amount);
+      outcomeObject.overUnder.label = OddToUse;
+      outcomeObject.overUnder.action = () => addBet(marketId, description, OddToUse, outcome.description, amount);
       data.push(outcomeObject);
     }
   });
@@ -688,9 +694,11 @@ export const MultiMarketTable = ({
   outcomes,
   min,
   max,
+  description,
 }) => {
-  const multiMarketTableData = processMultiMarketTableData(orderBook, outcomes, min, max);
-  
+  const state = useBetslipStore();
+  const { actions } = state;
+  const multiMarketTableData = processMultiMarketTableData(orderBook, outcomes, min, max, actions.addBet, description);
   return (
     <>
     <section className={classNames(Styles.MultiMarketTable)}>
@@ -702,14 +710,18 @@ export const MultiMarketTable = ({
         </ul>
       </div>
       <>
-        {multiMarketTableData.map(({ title, spread, moneyLine, overUnder }) => (
-          <article key={title}>
-            <h3>{title}</h3>
-            <SportsOutcome {...spread} />
-            <SportsOutcome {...moneyLine} />
-            <SportsOutcome {...overUnder} />
-          </article>
-        ))}
+        {multiMarketTableData.map(({ title, spread, moneyLine, overUnder }) => {
+
+          return (
+            <article key={title}>
+              <h3>{title}</h3>
+              <SportsOutcome {...spread} />
+              <SportsOutcome {...moneyLine} />
+              <SportsOutcome {...overUnder} />
+            </article>
+          );
+        }
+      )}
       </>
     </section>
     <MultiOutcomeMarketGrid />
@@ -805,6 +817,7 @@ export interface OutcomeGroupProps {
   outcomes: OutcomeFormatted[];
   expanded?: Boolean;
   marketType: string;
+  description: string;
   scalarDenomination?: string;
   min?: BigNumber;
   max?: BigNumber;
@@ -825,6 +838,7 @@ export const OutcomeGroup = ({
   outcomes,
   expanded,
   marketType,
+  description,
   scalarDenomination,
   min,
   max,
@@ -840,7 +854,7 @@ export const OutcomeGroup = ({
   theme = getTheme(),
 }: OutcomeGroupProps) => {
   if (theme === THEMES.SPORTS) {
-    return <MultiMarketTable orderBook={orderBook} outcomes={outcomes} min={min} max={max} />;
+    return <MultiMarketTable orderBook={orderBook} outcomes={outcomes} min={min} max={max} description={description} />;
   }
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     marketType,

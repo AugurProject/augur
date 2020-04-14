@@ -17,6 +17,7 @@ import {
   BetslipActionsContext,
   BETSLIP_SELECTED,
 } from 'modules/trading/hooks/betslip';
+import { useBetslipStore } from 'modules/trading/store/betslip';
 
 import Styles from 'modules/trading/betslip.styles';
 
@@ -26,7 +27,7 @@ interface BetslipProps {
 
 export const Betslip = ({ theme = getTheme() }: BetslipProps) => {
   const [minimized, setMinimized] = useState(true);
-  const state = useBetslip();
+  const state = useBetslipStore();
   const { step, selected, betslip, unmatched, matched, actions } = state;
   useEffect(() => {
     // this has to be done as useAnything must go above any other declarations.

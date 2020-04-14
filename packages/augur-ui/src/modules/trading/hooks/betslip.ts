@@ -194,7 +194,7 @@ const BETSLIP_ACTIONS = {
   TOGGLE_SUBHEADER: 'TOGGLE_SUBHEADER',
 };
 
-function BetslipReducer(state, action) {
+export function BetslipReducer(state, action) {
   const {
     ADD_BET,
     ADD_MATCHED,
@@ -245,7 +245,7 @@ function BetslipReducer(state, action) {
           orders: []
         };
       }
-      betslipItems.orders.push({
+      betslipItems[marketId].orders.push({
         outcome,
         odds,
         wager: '0',
