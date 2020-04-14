@@ -22,6 +22,7 @@ interface BaseInnerNavPureProps {
   updateMobileMenuState: Function;
   selectedCategories: String[];
   filterSortOptions: FilterSortOptions;
+  updateLoginAccount: Function;
   updateMarketsListMeta: Function;
   updateMarketsSortBy: Function;
   updateMaxFee: Function;
@@ -38,6 +39,7 @@ const BaseInnerNavPure = ({
   updateMobileMenuState,
   selectedCategories,
   filterSortOptions,
+  updateLoginAccount,
   updateMarketsListMeta,
   updateMarketsSortBy,
   updateMaxFee,
@@ -112,8 +114,11 @@ const BaseInnerNavPure = ({
 
     if (changedFilters.length > 0) {
       updateMultipleQueries(changedFilters, location, history);
+      const newSettings = {};
 
       changedFilters.forEach(({ value, filterType }) => {
+        newSettings[filterType] = value;
+
         switch (filterType) {
           case TEMPLATE_FILTER:
             updateTemplateFilter(value);
@@ -129,6 +134,8 @@ const BaseInnerNavPure = ({
             break;
         }
       });
+
+      updateLoginAccount(newSettings);
     }
 
     sortOptions && updateMarketsSortBy(sortOptions);
