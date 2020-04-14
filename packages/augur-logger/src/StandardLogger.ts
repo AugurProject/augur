@@ -16,4 +16,17 @@ export class StandardLogger implements LoggerInterface {
   debug(...msg: string[]): void {
     console.debug(...msg);
   }
+
+  table(...tabularData: any[]): void {
+    console.table(...tabularData);
+  }
+
+  time(label: string): void {
+    console.time(label);
+  }
+
+  timeEnd(label: string): void {
+    console.timeEnd(label);
+  }
 }
+

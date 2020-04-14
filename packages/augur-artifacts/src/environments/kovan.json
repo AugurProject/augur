@@ -98,5 +98,6 @@
   "warpSync": {
     "enabled": false,
     "autoReport": false
-  }
+  },
+  "logLevel": 2
 }

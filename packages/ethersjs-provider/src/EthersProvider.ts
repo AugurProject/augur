@@ -1,4 +1,5 @@
 import { NetworkId } from '@augurproject/artifacts';
+import { LoggerLevels } from '@augurproject/logger';
 import { Filter, Log, LogValues } from '@augurproject/types';
 import { Transaction } from 'contract-dependencies';
 import { EthersProvider as EProvider } from 'contract-dependencies-ethers';
@@ -6,6 +7,7 @@ import { ethers } from 'ethers';
 import { Abi } from 'ethereum';
 import * as _ from 'lodash';
 import { AsyncQueue, queue, retry } from 'async';
+import { logger } from '@augurproject/logger';
 import { isInstanceOfBigNumber, isInstanceOfArray, Counter } from './utils';
 import { JSONRPCRequestPayload, JSONRPCErrorCallback, JSONRPCResponsePayload } from 'ethereum-types';
 import { BigNumber } from "bignumber.js";
@@ -53,9 +55,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   private callCount = new Counter();
 
   printOutAndClearCallCount = () => {
-    console.group('Number of calls in last 60 seconds:');
-    console.table(this.callCount.toTabularData());
-    console.groupEnd();
+    logger.table(LoggerLevels.info, this.callCount.toTabularData());
     this.callCount.clear();
   };
 
