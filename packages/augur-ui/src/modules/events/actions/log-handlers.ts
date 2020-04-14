@@ -24,7 +24,6 @@ import { isSameAddress } from 'utils/isSameAddress';
 import { Events, Logs, TXEventName, OrderEventType } from '@augurproject/sdk';
 import {
   addUpdateTransaction,
-  getRelayerDownErrorMessage,
 } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';

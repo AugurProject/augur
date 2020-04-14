@@ -290,6 +290,7 @@ export class Users {
     const profitLoss = await Users.getProfitLossSummary(augur, db, {
       account: params.account,
       universe: params.universe,
+      ignoreAwaitingAndFinalizedMarkets: true,
     });
 
     const funds = await Users.getTotalOnChainFrozenFunds(augur, db, {
@@ -367,6 +368,7 @@ export class Users {
     const profitLoss = await Users.getProfitLossSummary(augur, db, {
       account: params.account,
       universe: params.universe,
+      ignoreAwaitingAndFinalizedMarkets: true,
     });
 
     const funds = await Users.getTotalOnChainFrozenFunds(augur, db, {
@@ -1053,7 +1055,7 @@ export class Users {
         params.account,
         Dexie.maxKey
       ]).toArray();
-    const profitLossByMarketAndOutcome = await getProfitLossRecordsByMarketAndOutcome(
+    let profitLossByMarketAndOutcome = await getProfitLossRecordsByMarketAndOutcome(
       db,
       params.account!,
       profitLossOrders
@@ -1103,13 +1105,23 @@ export class Users {
       }
     );
 
+    if (ignoreAwaitingAndFinalizedMarkets) {
+      profitLossByMarketAndOutcome = _.reduce(Object.keys(profitLossByMarketAndOutcome), (filteredMarkets, marketId) => {
+        const marketDoc = markets[marketId];
+        if (marketDoc.reportingState === MarketReportingState.AwaitingFinalization ||
+        marketDoc.reportingState === MarketReportingState.Finalized) {
+          return filteredMarkets
+        }
+        return {...filteredMarkets, [marketId] : profitLossByMarketAndOutcome[marketId] };
+      }, {})
+    }
+
     const buckets = bucketRangeByInterval(startTime, endTime, periodInterval);
     return _.map(buckets, bucketTimestamp => {
       const tradingPositionsByMarketAndOutcome = _.mapValues(
         profitLossByMarketAndOutcome,
         (profitLossByOutcome, marketId) => {
           const marketDoc = markets[marketId];
-          const isAwaiting = marketDoc.reportingState === MarketReportingState.AwaitingFinalization;
           return _.mapValues(
             profitLossByOutcome,
             (outcomePLValues, outcome) => {
@@ -1121,7 +1133,7 @@ export class Users {
                 ordersFilledResultsByMarketAndOutcome[marketId] &&
                 ordersFilledResultsByMarketAndOutcome[marketId][outcome]
               ) || finalized;
-              if (!latestOutcomePLValue || !hasOutcomeValues || (ignoreAwaitingAndFinalizedMarkets && ( isAwaiting || finalized))) {
+              if (!latestOutcomePLValue || !hasOutcomeValues) {
                 return {
                   timestamp: bucketTimestamp.toNumber(),
                   frozenFunds: '0',
@@ -1209,7 +1221,7 @@ export class Users {
           startTime,
           endTime,
           periodInterval,
-          ignoreAwaitingAndFinalizedMarkets: params.ignoreAwaitingAndFinalizedMarkets
+          ignoreAwaitingAndFinalizedMarkets: days === ONE_DAY ? params.ignoreAwaitingAndFinalizedMarkets : false,
         }
       );
 
