@@ -191,14 +191,21 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               )
           );
         } else {
-          this.updateTradeTotalCost(
+          this.setState(
             {
-              ...selectedOrderProperties,
-              orderQuantity: convertExponentialToDecimal(
-                selectedOrderProperties.orderQuantity
-              ),
+              orderPrice: selectedOrderProperties.orderPrice,
+              orderQuantity: selectedOrderProperties.orderQuantity,
             },
-            true
+            () =>
+              this.updateTradeTotalCost(
+                {
+                  ...selectedOrderProperties,
+                  orderQuantity: convertExponentialToDecimal(
+                    selectedOrderProperties.orderQuantity
+                  ),
+                },
+                true
+              )
           );
         }
       }
