@@ -60,7 +60,7 @@ export const SportsMarketBets = ({ market }) => {
     ...order,
     orderId,
     modifyBet: orderUpdate =>
-      modifyBet(marketId, orderId, { ...order, orderUpdate }),
+      modifyBet(marketId, orderId, { ...order, ...orderUpdate }),
     cancelBet: () => cancelBet(marketId, orderId),
   }));
   return (
@@ -274,6 +274,12 @@ export const BetslipInput = ({
 }) => {
   const [curVal, setCurVal] = useState(formatDai(value).full);
   const [invalid, setInvalid] = useState(false);
+  useEffect(() => {
+    const cleanCurVal = curVal.replace('$', '');
+    if (cleanCurVal !== value) {
+      setCurVal(formatDai(value).full);
+    }
+  }, [value]);
   return (
     <div
       className={classNames(Styles.BetslipInput, {

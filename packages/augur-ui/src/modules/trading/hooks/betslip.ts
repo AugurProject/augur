@@ -1,6 +1,7 @@
 import { useReducer, createContext } from 'react';
 import { formatDate } from 'utils/format-date';
 import { createBigNumber } from 'utils/create-big-number';
+import { getNewToWin } from 'utils/get-odds';
 import noop from 'utils/noop';
 
 const now = new Date();
@@ -384,7 +385,8 @@ export function BetslipReducer(state, action) {
     }
     case MODIFY_BET: {
       const { marketId, orderId, order } = action;
-      betslipItems[marketId].orders[orderId] = order;
+      const toWin = getNewToWin(order.odds, order.wager);
+      betslipItems[marketId].orders[orderId] = {...order, toWin };
       return updatedState;
     }
     case CANCEL_BET: {
@@ -470,8 +472,8 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
       sendBet: (marketId, orderId, description, order) => {
         dispatch({ type: SEND_BET, marketId, orderId, description, order });
       },
-      modifyBet: (marketId, order) =>
-        dispatch({ type: MODIFY_BET, marketId, order }),
+      modifyBet: (marketId, orderId, order) =>
+        dispatch({ type: MODIFY_BET, marketId, orderId, order }),
       cancelBet: (marketId, order) =>
         dispatch({ type: CANCEL_BET, marketId, order }),
       sendAllBets: () => dispatch({ type: SEND_ALL_BETS }),
