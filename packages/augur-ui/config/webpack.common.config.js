@@ -2,7 +2,6 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const DeadCodePlugin = require("webpack-deadcode-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WorkerPlugin = require('worker-plugin');
 
@@ -152,6 +151,7 @@ module.exports = {
     // `unusedExports: true` is required by DeadCodePlugin
     usedExports: true,
     splitChunks: {
+      maxSize: 7*1024*1024,
       cacheGroups: {
         vendor: {
           test: /node_modules\/(?!@augurproject)/,
