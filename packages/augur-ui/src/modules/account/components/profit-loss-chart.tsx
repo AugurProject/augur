@@ -86,6 +86,17 @@ const getOptions = () => ({
       x: 0,
       y: -2,
     },
+    tickPositioner: (min, max) => {
+      let arr = []
+      if(min !== 0) {
+        arr.push(min);
+      }
+      arr.push(0);
+      if (max !== 0) {
+        arr.push(max);
+      }
+      return arr;
+    },
     resize: {
       enabled: true,
     },
