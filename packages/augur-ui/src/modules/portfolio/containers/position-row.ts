@@ -65,7 +65,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       action: () => {
         updateSelectedOrderProperties({
           orderQuantity: position.quantity.value,
-          selectedNav: position.type === SHORT ? SELL : BUY,
+          selectedNav: position.type === SHORT ? BUY : SELL,
           orderPrice: ''
         });
       },
