@@ -525,6 +525,130 @@ const processMultiMarketTableData = (orderBook, outcomes, min, max, addBet, desc
   return data;
 };
 
+function processMultiOutcomeMarketTableData(orderBook, outcomes, min, max, addBet, description) {
+  const marketId = outcomes[0].marketId;
+  const data = [
+    {
+      title: 'Team A',
+      action: () => addBet(marketId, description, '+132', 'Team A', "0"),
+      topLabel: null,
+      label: '+132',
+      volume: '$100.43',
+    },
+    {
+      title: 'Draw',
+      action: () => addBet(marketId, description, '+200', 'Draw', "0"),
+      topLabel: null,
+      label: '+200',
+      volume: '$100.43',
+    },
+    {
+      title: 'Team B',
+      action: () => addBet(marketId, description, '+150', 'Team B', "0"),
+      topLabel: null,
+      label: '+150',
+      volume: '$100.43',
+    },
+    {
+      title: 'Game Canceled',
+      action: () => addBet(marketId, description, '+200', 'Game Canceled', "0"),
+      topLabel: null,
+      label: '+200',
+      volume: '$100.43',
+    },
+  ];
+  return data;
+};
+
+function processMultiOutcomeMarketGridData(orderBook, outcomes, min, max, addBet, description) {
+  const marketId = outcomes[0].marketId;
+  const data = [
+    {
+      title: 'Man City',
+      topLabel: null,
+      action: () => addBet(marketId, description, '+310', 'Man City', "0"),
+      label: '+310',
+      volume: '$100.43'
+    },
+    {
+      title: 'Liverpool',
+      topLabel: null,
+      action: () => addBet(marketId, description, '+530', 'Liverpool', "0"),
+      label: '+530',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Bayern Munich',
+      topLabel: null,
+      action: () => addBet(marketId, description, '+440', 'Bayern Munich', "0"),
+      label: '+440',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Barcelona',
+      topLabel: null,
+      action: () => addBet(marketId, description, '+550', 'Barcelona', "0"),
+      label: '+550',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'PSG',
+      topLabel: null,
+      action: () => addBet(marketId, description, '+540', 'PSG', "0"),
+      label: '+540',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Juventus',
+      topLabel: null,
+      action: () => addBet(marketId, description, '+730', 'Juventus', "0"),
+      label: '+730',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Other',
+      topLabel: null,
+      action: () => addBet(marketId, description, '+490', 'Other', "0"),
+      label: '+490',
+      volume: '$100.43'
+    }, 
+    {
+      title: 'Event Canceled',
+      topLabel: null,
+      action: () => addBet(marketId, description, '+1000', 'Event Canceled', "0"),
+      label: '+1000',
+      volume: '$100.43'
+    }, 
+  ];
+  return data;
+};
+
+function processSubMarketCollapsibleData(orderBook, outcomes, min, max, addBet, description) {
+  const marketId = outcomes[0].marketId;
+  const data = [
+    {
+      title: 'O 230.5',
+      action: () => addBet(marketId, description, '-105', 'O 230.5', "0"),
+      topLabel: null,
+      label: '-105',
+      volume: '$100.43',
+    }, {
+      title: 'U 230.5',
+      action: () => addBet(marketId, description, '-115', 'U 230.5', "0"),
+      topLabel: null,
+      label: '-115',
+      volume: '$100.43',
+    }, {
+      title: 'Game Cancelled',
+      action: () => addBet(marketId, description, '-128', 'Game Cancelled', "0"),
+      topLabel: null,
+      label: '-128',
+      volume: '$100.43',
+    }
+  ];
+  return data;
+};
+
 interface ReportedOutcomeProps {
   isTentative?: boolean;
   label?: string;
@@ -551,143 +675,31 @@ export const ReportedOutcome = ({
   );
 };
 
-function processMultiOutcomeMarketTableData(orderBook, outcomes, min, max) {
-  const data = [
-    {
-      title: 'Team A',
-      action: () => {},
-      topLabel: null,
-      label: '+132',
-      volume: '$100.43',
-    },
-    {
-      title: 'Draw',
-      action: () => {},
-      topLabel: null,
-      label: '+200',
-      volume: '$100.43',
-    },
-    {
-      title: 'Team B',
-      action: () => {},
-      topLabel: null,
-      label: '+150',
-      volume: '$100.43',
-    },
-    {
-      title: 'Game Canceled',
-      action: () => {},
-      topLabel: null,
-      label: '+200',
-      volume: '$100.43',
-    },
-  ];
-  return data;
-}
-
 export const MultiOutcomeMarketTable = ({
-  orderBook = {},
-  outcomes = {},
-  min = 0,
-  max = 1,
-}) => {
-  const multiOutcomeMarketTableData = processMultiOutcomeMarketTableData(orderBook, outcomes, min, max);
-
-  return (
-    <section className={Styles.MultiOutcomeMarketTable} >
-      <ul>
-        {multiOutcomeMarketTableData.map(({ title, ...outcomeData }) => (
-          <li>
-            <h3>{title}</h3>
-            <SportsOutcome {...outcomeData} />
-          </li>
-        ))}
-      </ul>
-    </section>
-  )
-}
-
-function processMultiOutcomeMarketGridData(orderBook, outcomes, min, max) {
-  const data = [
-    {
-      title: 'Man City',
-      topLabel: null,
-      action: () => {},
-      label: '+310',
-      volume: '$100.43'
-    },
-    {
-      title: 'Liverpool',
-      topLabel: null,
-      action: () => {},
-      label: '+530',
-      volume: '$100.43'
-    }, 
-    {
-      title: 'Bayern Munich',
-      topLabel: null,
-      action: () => {},
-      label: '+440',
-      volume: '$100.43'
-    }, 
-    {
-      title: 'Barcelona',
-      topLabel: null,
-      action: () => {},
-      label: '+550',
-      volume: '$100.43'
-    }, 
-    {
-      title: 'PSG',
-      topLabel: null,
-      action: () => {},
-      label: '+540',
-      volume: '$100.43'
-    }, 
-    {
-      title: 'Juventus',
-      topLabel: null,
-      action: () => {},
-      label: '+730',
-      volume: '$100.43'
-    }, 
-    {
-      title: 'Other',
-      topLabel: null,
-      action: () => {},
-      label: '+490',
-      volume: '$100.43'
-    }, 
-    {
-      title: 'Event Canceled',
-      topLabel: null,
-      action: () => {},
-      label: '+1000',
-      volume: '$100.43'
-    }, 
-  ];
-  return data;
-}
-
-export const MultiOutcomeMarketGrid = ({
-  orderBook = {},
-  outcomes = {},
-  min = 0,
-  max = 1,
-}) => {
-  const multiOutcomeMarketGridData = processMultiOutcomeMarketGridData(orderBook, outcomes, min, max);
-
-  return (
-    <section className={Styles.MultiOutcomeMarketGrid}>
-      {multiOutcomeMarketGridData.map(({ title, ...outcomeData }) => (
-        <article key={title}>
-         <h3>{title}</h3>
-         <SportsOutcome {...outcomeData} />
-        </article>
+  multiOutcomeMarketTableData
+}) => (
+  <section className={Styles.MultiOutcomeMarketTable} >
+    <ul>
+      {multiOutcomeMarketTableData.map(({ title, ...outcomeData }) => (
+        <li>
+          <h3>{title}</h3>
+          <SportsOutcome {...outcomeData} />
+        </li>
       ))}
-    </section>
-  );
-}
+    </ul>
+  </section>
+);
+
+export const MultiOutcomeMarketGrid = ({ multiOutcomeMarketGridData }) => (
+  <section className={Styles.MultiOutcomeMarketGrid}>
+    {multiOutcomeMarketGridData.map(({ title, ...outcomeData }) => (
+      <article key={title}>
+        <h3>{title}</h3>
+        <SportsOutcome {...outcomeData} />
+      </article>
+    ))}
+  </section>
+);
 
 export const MultiMarketTable = ({
   orderBook,
@@ -699,6 +711,9 @@ export const MultiMarketTable = ({
   const state = useBetslipStore();
   const { actions } = state;
   const multiMarketTableData = processMultiMarketTableData(orderBook, outcomes, min, max, actions.addBet, description);
+  const multiOutcomeMarketGridData = processMultiOutcomeMarketGridData(orderBook, outcomes, min, max, actions.addBet, description);
+  const multiOutcomeMarketTableData = processMultiOutcomeMarketTableData(orderBook, outcomes, min, max, actions.addBet, description);
+  const SubMarketCollapsibleData = processSubMarketCollapsibleData(orderBook, outcomes, min, max, actions.addBet, description);
   return (
     <>
     <section className={classNames(Styles.MultiMarketTable)}>
@@ -710,64 +725,30 @@ export const MultiMarketTable = ({
         </ul>
       </div>
       <>
-        {multiMarketTableData.map(({ title, spread, moneyLine, overUnder }) => {
-
-          return (
-            <article key={title}>
-              <h3>{title}</h3>
-              <SportsOutcome {...spread} />
-              <SportsOutcome {...moneyLine} />
-              <SportsOutcome {...overUnder} />
-            </article>
-          );
-        }
-      )}
+        {multiMarketTableData.map(({ title, spread, moneyLine, overUnder }) => (
+          <article key={title}>
+            <h3>{title}</h3>
+            <SportsOutcome {...spread} />
+            <SportsOutcome {...moneyLine} />
+            <SportsOutcome {...overUnder} />
+          </article>
+        ))}
       </>
     </section>
-    <MultiOutcomeMarketGrid />
-    <MultiOutcomeMarketTable />
-    <SubMarketCollapsible title='over / under 230.5' />
-    <SubMarketCollapsible title='over / under 230.5' />
-    <SubMarketCollapsible title='over / under 230.5' />
+    <MultiOutcomeMarketGrid multiOutcomeMarketGridData={multiOutcomeMarketGridData} />
+    <MultiOutcomeMarketTable multiOutcomeMarketTableData={multiOutcomeMarketTableData} />
+    <SubMarketCollapsible title='over / under 230.5' SubMarketCollapsibleData={SubMarketCollapsibleData} />
+    <SubMarketCollapsible title='over / under 230.5' SubMarketCollapsibleData={SubMarketCollapsibleData} />
+    <SubMarketCollapsible title='over / under 230.5' SubMarketCollapsibleData={SubMarketCollapsibleData} />
     </>
   );
 };
 
-function processSubMarketCollapsibleData(orderBook, outcomes, min, max) {
-  const data = [
-    {
-      title: 'O 230.5',
-      action: () => {},
-      topLabel: null,
-      label: '-105',
-      volume: '$100.43',
-    }, {
-      title: 'U 230.5',
-      action: () => {},
-      topLabel: null,
-      label: '-115',
-      volume: '$100.43',
-    }, {
-      title: 'Game Cancelled',
-      action: () => {},
-      topLabel: null,
-      label: '-128',
-      volume: '$100.43',
-    }
-  ];
-  return data;
-}
-
 export const SubMarketCollapsible = ({
-  title,
-  orderBook = {},
-  outcomes = {},
-  min = 0,
-  max = 1,
+  title
+  SubMarketCollapsibleData,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const SubMarketCollapsibleData = processSubMarketCollapsibleData(orderBook, outcomes, min, max);
-
   return (
     <section className={classNames(Styles.SubMarketCollapsible, {
       [Styles.Collapsed]: isCollapsed,
