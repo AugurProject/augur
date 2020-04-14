@@ -15,7 +15,7 @@ import {
   Breakdown,
 } from "modules/modal/common";
 import {
-  LinearPropertyLabelProps, PendingLabel, BulkTxLabel, InsufficientModalLabel,
+  LinearPropertyLabelProps, PendingLabel, BulkTxLabel, ModalLabelNotice,
 } from "modules/common/labels";
 import { BUY } from "modules/common/constants";
 import { formatShares, formatDai } from "utils/format-number";
@@ -148,7 +148,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => (
       {props.breakdown && <Breakdown rows={props.breakdown} short />}
     </main>
     <BulkTxLabel buttonName={"Submit All"} count={props.submitAllTxCount} needsApproval={props.needsApproval}/>
-    {props.insufficientFunds && <InsufficientModalLabel
+    {props.insufficientFunds && <ModalLabelNotice
       show
       buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
       title={`You do not have enough DAI to place ${props.submitAllTxCount > 1 ? 'these orders' : 'this order'}`}
