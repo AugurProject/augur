@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import {
   feeFilters,
-  spreadFilters,
   invalidFilters,
-  templateFilterValues,
   MAXFEE_PARAM_NAME,
-  SPREAD_PARAM_NAME,
   SHOW_INVALID_MARKETS_PARAM_NAME,
+  SPREAD_PARAM_NAME,
+  spreadFilters,
   TEMPLATE_FILTER,
+  templateFilterValues,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/inner-nav/markets-list-filters.styles.less';
-import { helpIcon, FilterIcon } from 'modules/common/icons';
+import { FilterIcon, helpIcon } from 'modules/common/icons';
 import { RadioBarGroup } from 'modules/common/form';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import updateQuery from 'modules/routes/helpers/update-query';
-import { INVALID_OPTIONS } from 'modules/types';
+import { INVALID_OPTIONS, LoginAccountSettings } from 'modules/types';
 import ChevronFlip from 'modules/common/chevron-flip';
 
 interface MarketsListFiltersProps {
@@ -36,6 +36,7 @@ interface MarketsListFiltersProps {
   setMaxSpreadFilter: Function;
   setShowInvalidFilter: Function;
   setTemplateOrCustomFilter: Function;
+  settings: LoginAccountSettings;
   isMobile: boolean;
 }
 
@@ -55,41 +56,44 @@ const MarketsListFilters = ({
   setMaxSpreadFilter,
   setShowInvalidFilter,
   setTemplateOrCustomFilter,
+  settings,
   isMobile,
 }: MarketsListFiltersProps) => {
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(location.search);
-    if (
-      filterOptionsFromQuery.maxFee &&
-      filterOptionsFromQuery.maxFee !== maxFee
-    ) {
-      updateMaxFee(filterOptionsFromQuery.maxFee);
+
+    const newMaxFee =
+      filterOptionsFromQuery.maxFee ||
+      settings.maxFee;
+    const newSpread =
+      filterOptionsFromQuery.spread ||
+      settings.spread;
+    const newTemplateFilter =
+      filterOptionsFromQuery.templateFilter ||
+      settings.templateFilter;
+    const newShowInvalid =
+      filterOptionsFromQuery.showInvalid ||
+      settings.showInvalid;
+
+    if (newMaxFee && newMaxFee !== maxFee) {
+      updateMaxFee(newMaxFee);
     }
-    if (
-      filterOptionsFromQuery.spread &&
-      filterOptionsFromQuery.spread !== maxLiquiditySpread
-    ) {
-      updateMaxSpread(filterOptionsFromQuery.spread);
+    if (newSpread && newSpread !== maxLiquiditySpread) {
+      updateMaxSpread(newSpread);
     }
-    if (
-      filterOptionsFromQuery.templateFilter &&
-      filterOptionsFromQuery.templateFilter !== allTemplateFilter
-    ) {
-      updateTemplateFilter(filterOptionsFromQuery.templateFilter);
+    if (newTemplateFilter && newTemplateFilter !== allTemplateFilter) {
+      updateTemplateFilter(newTemplateFilter);
     }
-    if (
-      filterOptionsFromQuery.showInvalid &&
-      filterOptionsFromQuery.showInvalid !== includeInvalidMarkets
-    ) {
-      updateShowInvalid(filterOptionsFromQuery.showInvalid);
+    if (newShowInvalid && newShowInvalid !== includeInvalidMarkets) {
+      updateShowInvalid(newShowInvalid);
     }
-  }, [location.search]);
+  }, [location.search, settings]);
 
   const [showFilters, setShowFilters] = useState(false);
 
   if (!maxLiquiditySpread) return null;
 
-  function updateFilter (value: string, whichFilterToUpdate: string) {
+  const updateFilter = (value: string, whichFilterToUpdate: string) => {
     updateQuery(
       whichFilterToUpdate,
       value,
