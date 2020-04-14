@@ -613,13 +613,13 @@ describe('State API :: Accounts :: ', () => {
         action: 'CLAIM_TRADING_PROCEEDS',
         coin: 'DAI',
         details: 'Claimed trading proceeds',
-        fee: '0.101',
+        fee: '3.433333333333333333',
         marketDescription: 'YesNo market description',
         outcome: 2,
         outcomeDescription: 'Yes',
-        price: '98.99',
+        price: '65.66666666666666667',
         quantity: '0.1',
-        total: '9.899',
+        total: '6.566666666666666667',
       },
     ]);
 
