@@ -36,6 +36,7 @@ import {
   DAI,
   REP,
   ETHER,
+  NETWORK_IDS,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { CreateMarketData, LiquidityOrder } from 'modules/types';
@@ -43,6 +44,7 @@ import { formatBytes32String } from 'ethers/utils';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import { getFingerprint } from 'utils/get-fingerprint';
+import { EXCHANGE_RATE_BUFFER_MULTIPLIER } from 'contract-dependencies-gsn/src/ContractDependenciesGSN';
 
 export function clearUserTx(): void {
   // const Augur = augurSdk.get();
@@ -333,12 +335,6 @@ export async function getRepRate(): Promise<BigNumber> {
   return rate;
 }
 
-export async function getRepRate(): Promise<BigNumber> {
-  const { uniswap, contracts } = augurSdk.get();
-  const rate = await uniswap.getExchangeRate(contracts.reputationToken.address, contracts.cash.address);
-  return rate;
-}
-
 export function getEthForDaiRate(): BigNumber {
   const { dependencies } = augurSdk.get();
   const ethToDaiRate = dependencies.ethToDaiRate
@@ -357,9 +353,10 @@ export async function uniswapDaiForRep(dai: BigNumber, rep: BigNumber): Promise<
   const { contracts, uniswap } = augurSdk.get();
 
   const exactDai = dai.multipliedBy(10**18);
-  // TODO revisit, for testing accept 75% spread
-  const TRADE_SPREAD = 0.75;
-  const minRep = rep.minus(rep.multipliedBy(TRADE_SPREAD)).multipliedBy(10**18);
+  const networkId = getNetworkId();
+  const isMainnet = networkId === NETWORK_IDS.Mainnet;
+  const TRADE_SPREAD = isMainnet ? EXCHANGE_RATE_BUFFER_MULTIPLIER : 1.75;
+  const minRep = rep.minus(rep.multipliedBy(TRADE_SPREAD - 1)).multipliedBy(10**18);
 
   try {
     uniswap.swapExactTokensForTokens(contracts.cash.address, contracts.reputationToken.address, exactDai, minRep);
@@ -373,15 +370,45 @@ export async function uniswapRepForDai(rep: BigNumber, dai: BigNumber): Promise<
   const { contracts, uniswap } = augurSdk.get();
 
   const exactRep = rep.multipliedBy(10**18);
-  // TODO revisit, for testing accept 75% spread
-  const TRADE_SPREAD = 0.75;
-  const minDai = dai.minus(dai.multipliedBy(TRADE_SPREAD)).multipliedBy(10**18);
+  const networkId = getNetworkId();
+  const isMainnet = networkId === NETWORK_IDS.Mainnet;
+  const TRADE_SPREAD = isMainnet ? EXCHANGE_RATE_BUFFER_MULTIPLIER : 1.75;
+  const minDai = dai.minus(dai.multipliedBy(TRADE_SPREAD - 1)).multipliedBy(10**18);
 
   try {
     uniswap.swapExactTokensForTokens(contracts.reputationToken.address, contracts.cash.address, exactRep, minDai);
   }
   catch(error) {
     console.error('uniswapRepForDai', error);
+  }
+}
+
+
+export async function uniswapEthForDai(eth: BigNumber, dai: BigNumber): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
+
+  const exactDai = dai.multipliedBy(10**18);
+  const maxEth = eth.multipliedBy(10**18).multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER);
+
+  try {
+    uniswap.swapETHForExactTokens(contracts.cash.address, exactDai, maxEth);
+  }
+  catch(error) {
+    console.error('uniswapEthForDai', error);
+  }
+}
+
+export async function uniswapEthForRep(eth: BigNumber, rep: BigNumber): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
+
+  const exactRep = rep.multipliedBy(10**18);
+  const maxEth = eth.multipliedBy(10**18).multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER);
+
+  try {
+    uniswap.swapETHForExactTokens(contracts.reputationToken.address, exactRep, maxEth);
+  }
+  catch(error) {
+    console.error('uniswapEthForRep', error);
   }
 }
 

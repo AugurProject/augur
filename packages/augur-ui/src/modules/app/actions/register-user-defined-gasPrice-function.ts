@@ -11,7 +11,7 @@ export const registerUserDefinedGasPriceFunction = (
 ) => async (dispatch: ThunkDispatch<void, any, Action>) => {
   const Augur = augurSdk.get();
   const gasPrice = createBigNumber(GWEI_CONVERSION).multipliedBy(
-    userDefinedGasPrice
+    userDefinedGasPrice || 1
   );
   Augur.dependencies.setGasPrice(gasPrice);
 

@@ -140,6 +140,7 @@ export const handleTxSuccess = (txStatus: Events.TXStatus) => (
   console.log('TxSuccess Transaction', txStatus.transaction.name);
   // update wallet status on any TxSuccess
   dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
+  dispatch(updateAssets());
   dispatch(addUpdateTransaction(txStatus));
 };
 

@@ -4,6 +4,7 @@ import { FormattedNumber } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 
 import Styles from 'modules/swap/components/swap-row.styles.less';
+import { TextInput } from 'modules/common/form';
 
 interface SwapBlockProps {
   token: string;
@@ -43,16 +44,17 @@ export const SwapRow = ({
     <div>
       {!setAmount && <div>{amount.formattedValue}</div>}
       {setAmount && (
-        <input
-          placeholder='0'
-          type='number'
-          value={Number(amount.formattedValue).toString()}
-          onChange={e =>
+        <TextInput
+          placeholder={'0.0000'}
+          value={String(amount.formattedValue)}
+          onChange={value => {
             setAmount(
-              createBigNumber(e.target.value),
+              createBigNumber(value),
               createBigNumber(balance.value)
-            )
-          }
+            );
+          }}
+          errorMessage={''}
+          innerLabel={' '}
         />
       )}
       <div>

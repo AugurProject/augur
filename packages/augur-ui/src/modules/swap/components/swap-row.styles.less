@@ -55,9 +55,14 @@
 }
 
 .SwapRow {
-  input {
+  div[class*='TextInput'] > div > input {
     .text-24;
 
+    border: none;
     padding: 0;
+  }
+
+  div[class*='TextInput'] > div:hover {
+    border: none;
   }
 }
