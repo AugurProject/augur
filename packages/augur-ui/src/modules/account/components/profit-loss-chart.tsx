@@ -224,9 +224,9 @@ const ProfitLossChart = ({ width, data }: ChartProps) => {
       )
     );
 
-    const max = formatDai(bnMax.gt(0) ? bnMax.times(1) : bnMax)
+    const max = formatDai(bnMax)
       .formattedValue;
-    const min = formatDai(bnMin.lt(0) ? bnMin.times(1) : bnMin)
+    const min = formatDai(bnMin)
       .formattedValue;
     const intervalDivision = bnMin.eq(0) || bnMax.eq(0) ? 1.99 : 3;
     const tickInterval = formatDai(
