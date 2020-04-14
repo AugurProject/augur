@@ -178,7 +178,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           this.setState(
             {
               orderPrice: '',
-              orderQuantity: selectedOrderProperties.orderQuantity,
             },
             () =>
               this.updateTradeTotalCost(
