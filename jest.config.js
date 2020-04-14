@@ -1,5 +1,6 @@
 module.exports = {
   projects: [
+    "<rootDir>/packages/augur-logger",
     "<rootDir>/packages/augur-sdk",
     "<rootDir>/packages/augur-ui",
     "<rootDir>/packages/augur-test",
