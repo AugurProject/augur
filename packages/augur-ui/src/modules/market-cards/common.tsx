@@ -62,7 +62,7 @@ import {
   RedFlag,
   TemplateShield,
 } from 'modules/common/labels';
-import Styles, { outcome } from 'modules/market-cards/common.styles.less';
+import Styles from 'modules/market-cards/common.styles.less';
 import { MarketCard } from 'modules/market-cards/market-card';
 import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
@@ -708,8 +708,7 @@ export const MultiMarketTable = ({
   max,
   description,
 }) => {
-  const state = useBetslipStore();
-  const { actions } = state;
+  const { actions } = useBetslipStore();
   const multiMarketTableData = processMultiMarketTableData(orderBook, outcomes, min, max, actions.addBet, description);
   const multiOutcomeMarketGridData = processMultiOutcomeMarketGridData(orderBook, outcomes, min, max, actions.addBet, description);
   const multiOutcomeMarketTableData = processMultiOutcomeMarketTableData(orderBook, outcomes, min, max, actions.addBet, description);

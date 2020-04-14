@@ -2,7 +2,7 @@ import { useReducer, createContext } from 'react';
 import { formatDate } from 'utils/format-date';
 import { createBigNumber } from 'utils/create-big-number';
 import { getNewToWin } from 'utils/get-odds';
-import noop from 'utils/noop';
+import { betslipList } from '../betslip.styles.less';
 
 const now = new Date();
 
@@ -400,40 +400,20 @@ export function BetslipReducer(state, action) {
       return updatedState;
     }
     case CANCEL_ALL_BETS: {
-      updatedState.betslip = EMPTY_BETSLIST;
+      delete updatedState.betslip;
+      updatedState.betslip = { count: 0, items: {} };
       return updatedState;
     }
     case CANCEL_ALL_UNMATCHED: {
       // TODO: make this cancel all open orders
-      updatedState.unmatched = EMPTY_BETSLIST;
+      delete updatedState.unmatched;
+      updatedState.unmatched = { count: 0, items: {} };
       return updatedState;
     }
     default:
       throw new Error(`Error: ${action.type} not caught by reducer`);
   }
 }
-
-export const SelectedContext = createContext({
-  header: BETSLIP_SELECTED.BETSLIP,
-  subHeader: BETSLIP_SELECTED.UNMATCHED,
-});
-export const BetslipStepContext = createContext(0);
-export const BetslipActionsContext = createContext({
-  toggleHeader: noop,
-  toggleSubHeader: noop,
-  toggleStep: noop,
-  sendBet: noop,
-  modifyBet: noop,
-  cancelBet: noop,
-  sendAllBets: noop,
-  cancelAllBets: noop,
-  retry: noop,
-  cashOut: noop,
-  updateMatched: noop,
-  trash: noop,
-  cancelAllUnmatched: noop,
-  updateUnmatched: noop,
-});
 
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const [state, dispatch] = useReducer(BetslipReducer, defaultState);
