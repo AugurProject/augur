@@ -6,7 +6,7 @@ import { ethers } from 'ethers';
 import { Abi } from 'ethereum';
 import * as _ from 'lodash';
 import { AsyncQueue, queue, retry } from 'async';
-import { isInstanceOfBigNumber, isInstanceOfArray } from './utils';
+import { isInstanceOfBigNumber, isInstanceOfArray, Counter } from './utils';
 import { JSONRPCRequestPayload, JSONRPCErrorCallback, JSONRPCResponsePayload } from 'ethereum-types';
 import { BigNumber } from "bignumber.js";
 import { FasterAbiInterface } from './FasterAbiInterface';
@@ -50,6 +50,14 @@ export class EthersProvider extends ethers.providers.BaseProvider
   }
 
   private _mostRecentLatestBlockHeaders: Promise<any> | null;
+  private callCount = new Counter();
+
+  printOutAndClearCallCount = () => {
+    console.group('Number of calls in last 60 seconds:');
+    console.table(this.callCount.toTabularData());
+    console.groupEnd();
+    this.callCount.clear();
+  };
 
   constructor(
     provider: ethers.providers.JsonRpcProvider,
@@ -58,6 +66,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     concurrency: number
   ) {
     super(provider.getNetwork());
+    setInterval(this.printOutAndClearCallCount, 60000);
     this.on('block', (blockNumber) => this._mostRecentLatestBlockHeaders = null);
     this.provider = provider;
     this.performQueue = queue(
@@ -68,6 +77,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
           async () => {
             if (item.message === 'send') {
               const {method, params: [blocktag, includeHeaders]} = item.params;
+              this.callCount.increment(method);
               if (method === 'eth_getBlockByNumber'
                 && blocktag === 'latest'
                 && !!includeHeaders === false
@@ -83,6 +93,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
               return _this.providerSend(item.params.method, item.params.params);
             } else {
               const { blockTag, includeTransactions } = item.params;
+              this.callCount.increment(item.message);
               if(item.message === 'getBlock'
                 && blockTag === 'latest'
                 && !!includeTransactions === false
