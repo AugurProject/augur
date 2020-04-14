@@ -744,7 +744,7 @@ export const MultiMarketTable = ({
 };
 
 export const SubMarketCollapsible = ({
-  title
+  title,
   SubMarketCollapsibleData,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
