@@ -16,7 +16,6 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls'
-import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => {

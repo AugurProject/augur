@@ -8,21 +8,32 @@ import { Action } from 'redux';
 import { withdrawAllFunds, withdrawAllFundsEstimateGas } from 'modules/contracts/actions/contractCalls';
 import { FormattedNumber } from 'modules/types';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
+import { formatDai } from 'utils/format-number';
+import { selectAccountFunds } from 'modules/auth/selectors/login-account';
+import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
+import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
 
-  const { address } = loginAccount;
+  const { address, totalOpenOrdersFrozenFunds } = loginAccount;
+  const { ethToDaiRate} = appStatus;
 
   const ethReserveAmount: FormattedNumber = getEthReserve(state);
+  const balances = selectAccountFunds(state);
+  const totalOpenOrderFundsFormatted: FormattedNumber = formatDai(totalOpenOrdersFrozenFunds || 0);
+  const availableFundsFormatted = formatDai(balances.totalAvailableTradingBalance);
+  const reserveInDaiFormatted = ethToDai(ethReserveAmount.value || 0, createBigNumber(ethToDaiRate?.value || 0));
+  const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(balances.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
 
   return {
     account: address,
     modal,
-    GsnEnabled: appStatus.gsnEnabled,
-    ethToDaiRate: appStatus.ethToDaiRate,
     gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
-    ethReserveAmount
+    totalOpenOrderFundsFormatted,
+    availableFundsFormatted,
+    reserveInDaiFormatted,
+    totalDaiFormatted,
   }
 };
 
@@ -33,21 +44,17 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  GsnEnabled: sP.GsnEnabled,
-  balances: sP.balances,
-  account: sP.account,
-  ethReserveAmount: sP.ethReserveAmount,
-  ethToDaiRate: sP.ethToDaiRate,
-  gasPrice: sP.gasPrice,
+  ...sP,
   closeAction: () => dP.closeModal(),
   withdrawAllFunds: (destination: string) => dP.withdrawAllFunds(destination),
   withdrawAllFundsEstimateGas: (destination: string) => dP.withdrawAllFundsEstimateGas(destination),
 });
 
+
 export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
+    mergeProps,
   )(CashOutForm)
 );
