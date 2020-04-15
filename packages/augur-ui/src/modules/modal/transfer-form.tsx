@@ -18,7 +18,7 @@ import { CloseButton } from 'modules/common/buttons';
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
 import { ethToDai, displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
-interface WithdrawFormProps {
+interface TransferFormProps {
   closeAction: Function;
   transferFunds: Function;
   transferFundsGasEstimate: Function;
@@ -37,7 +37,7 @@ interface WithdrawFormProps {
   gasPrice: number;
 }
 
-interface WithdrawFormState {
+interface TransferFormState {
   address: string;
   currency: string;
   amount: string;
@@ -52,11 +52,11 @@ function sanitizeArg(arg) {
   return arg == null || arg === '' ? '' : arg;
 }
 
-export class WithdrawForm extends Component<
-  WithdrawFormProps,
-  WithdrawFormState
+export class TransferForm extends Component<
+  TransferFormProps,
+  TransferFormState
 > {
-  state: WithdrawFormState = {
+  state: TransferFormState = {
     relayerGasCosts: createBigNumber(TRANSFER_ETH_GAS_COST),
     address: '',
     currency: ETH,
@@ -278,8 +278,8 @@ export class WithdrawForm extends Component<
             <CloseButton action={() => closeAction()} />
           </div>
           <div>
-            <h1>Withdraw funds</h1>
-            <h2>Withdraw funds to another address</h2>
+            <h1>Transfer funds</h1>
+            <h2>Transfer funds to another address</h2>
           </div>
         </header>
 
