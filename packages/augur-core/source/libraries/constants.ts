@@ -31,6 +31,7 @@ export const INTERNAL_CONTRACTS = [
     'HotLoading',
     'RedeemStake',
     'RepSymbol',
+    'AuditFunds',
     // factories
     'DisputeCrowdsourcerFactory',
     'DisputeWindowFactory',

@@ -479,7 +479,7 @@ class ContractsFixture:
         self.upload("../source/contracts/uniswap/UniswapV2Router01.sol", constructorArgs=[wethAddress, factory.address])
 
     def initializeAllContracts(self):
-        coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepOracle']
+        coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepOracle','AuditFunds']
         for contractName in coreContractsToInitialize:
             if getattr(self.contracts[contractName], "initialize", None):
                 print("Initializing %s" % contractName)
