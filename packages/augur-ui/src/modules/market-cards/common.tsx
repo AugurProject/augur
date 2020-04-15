@@ -547,7 +547,7 @@ export const TentativeWinner = (props: TentativeWinnerProps) => {
         disabled={!props.canDispute}
         text={
           props.isForkingMarket
-            ? "Migrate Rep to this Outcome's Universe"
+            ? "Migrate Rep to an Outcome's Universe"
             : 'SUPPORT OR DISPUTE OUTCOME'
         }
         action={() => props.dispute()}
