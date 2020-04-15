@@ -32,8 +32,8 @@ export const Betslip = ({ theme = getTheme() }: BetslipProps) => {
   useEffect(() => {
     // this has to be done as useAnything must go above any other declarations.
     const isSportsBook = theme === THEMES.SPORTS;
-    if (isSportsBook && isUnmatched) {
-      toggleSubHeader();
+    if (isSportsBook) {
+      toggleSubHeader(BETSLIP_SELECTED.MATCHED);
     }
   }, [theme]);
 

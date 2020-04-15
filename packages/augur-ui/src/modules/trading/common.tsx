@@ -342,7 +342,7 @@ export const BetslipHeader = ({ myBetsCount }) => {
       <li
         className={classNames({ [Styles.Selected]: isBetslip })}
         onClick={() => {
-          if (!isBetslip) toggleHeader();
+          toggleHeader(BETSLIP_SELECTED.BETSLIP);
         }}
       >
         Betslip<span>{count}</span>
@@ -350,7 +350,7 @@ export const BetslipHeader = ({ myBetsCount }) => {
       <li
         className={classNames({ [Styles.Selected]: isMyBets })}
         onClick={() => {
-          if (!isMyBets) toggleHeader();
+          toggleHeader(BETSLIP_SELECTED.MY_BETS);
         }}
       >
         My Bets<span>{myBetsCount}</span>
@@ -373,7 +373,7 @@ export const MyBetsSubheader = () => {
       <li
         className={classNames({ [Styles.Selected]: isUnmatched })}
         onClick={() => {
-          if (!isUnmatched) toggleSubHeader();
+          toggleSubHeader(BETSLIP_SELECTED.UNMATCHED);
         }}
       >
         Unmatched Bets ({unmatchedCount})
@@ -381,7 +381,7 @@ export const MyBetsSubheader = () => {
       <li
         className={classNames({ [Styles.Selected]: isMatched })}
         onClick={() => {
-          if (!isMatched) toggleSubHeader();
+          toggleSubHeader(BETSLIP_SELECTED.MATCHED);
         }}
       >
         Matched Bets ({matchedCount})

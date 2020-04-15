@@ -190,3 +190,21 @@ export const BETSLIP_ACTIONS = {
   TOGGLE_HEADER: 'TOGGLE_HEADER',
   TOGGLE_SUBHEADER: 'TOGGLE_SUBHEADER',
 };
+
+export const STUBBED_BETSLIP_ACTIONS = {
+  toggleHeader: selected => {},
+  toggleSubHeader: selected => {},
+  toggleStep: () => {},
+  addBet: (marketId, description, odds, outcome, wager) => {},
+  sendBet: (marketId, orderId, description, order) => {},
+  modifyBet: (marketId, orderId, order) => {},
+  cancelBet: (marketId, orderId) => {},
+  sendAllBets: () => {},
+  cancelAllBets: () => {},
+  retry: (marketId, orderId) => {},
+  cashOut: (marketId, orderId) => {},
+  updateMatched: (marketId, orderId, updates) => {},
+  trash: (marketId, orderId) => {},
+  cancelAllUnmatched: () => {},
+  updateUnmatched: (marketId, orderId, updates) => {},
+};
