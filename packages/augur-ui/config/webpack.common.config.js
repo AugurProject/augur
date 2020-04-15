@@ -15,6 +15,7 @@ const PATHS = {
   TEST: path.resolve(__dirname, "../test"),
   WASM: path.resolve(__dirname, "../../../node_modules/@0x/mesh-browser/wasm"),
   ROOT_UI: path.resolve(__dirname, "../"),
+  SITEMAP: path.resolve(__dirname, "../src/modules/sitemap")
 };
 
 module.exports = {
@@ -132,6 +133,17 @@ module.exports = {
             }
           },
         }]
+      },
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        include: PATHS.SITEMAP,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
       }
     ]
   },
