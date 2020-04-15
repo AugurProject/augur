@@ -44,10 +44,19 @@
         height: @size-32;
         width: 98px;
 
-        svg {
+        svg:first-of-type {
           fill: @color-outcome-seven;
           transform: scale(1.25);
           width: @size-16;
+        }
+
+        svg:last-of-type {
+          fill: @color-outcome-seven;
+          width: @size-12;
+
+          > g {
+            stroke-width: 2;
+          }
         }
       }
     }

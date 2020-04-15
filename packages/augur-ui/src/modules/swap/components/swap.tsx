@@ -148,6 +148,7 @@ export const Swap = ({
           amount={formatEther(inputAmount)}
           token={fromTokenType}
           label={'Input'}
+          showChevron={true}
           balance={formattedInputAmount}
           logo={
             fromTokenType === DAI
