@@ -289,3 +289,17 @@ export const MostLikelyInvalidMarketsTemplate = (
     />
   );
 };
+
+export const FinalizeMarketTemplate = (
+  props: MostLikelyInvalidMarketsTemplateProps
+) => {
+  const { description } = props.market;
+
+  return (
+    <Template
+      message={`Please finalize: "${description}"`}
+      {...props}
+    />
+  );
+};
+

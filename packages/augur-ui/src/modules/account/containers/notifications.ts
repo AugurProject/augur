@@ -12,6 +12,7 @@ import {
   MODAL_UNSIGNED_ORDERS,
   MODAL_OPEN_ORDERS,
   MODAL_REPORTING,
+  MODAL_FINALIZE_MARKET,
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -76,6 +77,14 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
         market
       }),
     )},
+  finalize: (marketId: string, cb: NodeStyleCallback) =>
+    dispatch(
+      updateModal({
+        type: MODAL_FINALIZE_MARKET,
+        cb,
+        marketId,
+      })
+    ),
 });
 
 const NotificationsContainer = withRouter(
