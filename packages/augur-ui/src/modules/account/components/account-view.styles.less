@@ -199,25 +199,27 @@
 
     > div:first-of-type {
       grid-column: ~"1/2";
-      grid-row: ~"2/8";
-      min-height: @size-360;
+      grid-row: ~"2/6";
+      div[class*='EmptyDisplay'] {
+        min-height: @size-240;
+      }
     }
 
     > div:nth-of-type(2) {
       grid-column: ~"1/2";
-      grid-row: ~"8/14";
+      grid-row: ~"6/12";
       min-height: @size-360;
     }
 
     > div:nth-of-type(3) {
       grid-column: ~"2/3";
-      grid-row: ~"2/15";
+      grid-row: ~"2/13";
       min-height: @size-820;
     }
 
     > div:nth-of-type(4) {
       grid-column: ~"2/3";
-      grid-row: ~"15/24";
+      grid-row: ~"13/24";
       min-height: @size-550;
     }
 
@@ -235,9 +237,13 @@
 
     > div:nth-of-type(6) {
       grid-column: ~"3/4";
-      grid-row: ~"5/11";
-      min-height: @size-360;
+      grid-row: ~"5/10";
+      div[class*='EmptyDisplay'] {
+        min-height: @size-240;
+      }
     }
+
+
 
     > footer {
       grid-column: 1 / span 3;
