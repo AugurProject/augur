@@ -85,10 +85,15 @@ export default class Favorites extends Component<FavoritesProps> {
   render() {
     const { markets, toggle } = this.props;
 
+    let customClass = favoriteStyles.Watchlist;
+    if (getTheme() !== THEMES.TRADING && markets.length === 0) {
+      customClass = favoriteStyles.Watchlist__EmptyDisplay;
+    }
+
     return (
       <FilterBox
         title={getTheme() === THEMES.TRADING ? "Watchlist" : "Favorites"}
-        customClass={favoriteStyles.Watchlist}
+        customClass={customClass}
         sortByOptions={sortByOptions}
         sortByStyles={{ minWidth: "10.625rem" }}
         markets={markets}
