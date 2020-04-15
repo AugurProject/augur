@@ -29,7 +29,6 @@ export const Betslip = ({ theme = getTheme() }: BetslipProps) => {
     actions: { toggleSubHeader },
   } = useBetslipStore();
 
-  const isUnmatched = subHeader === BETSLIP_SELECTED.UNMATCHED;
   useEffect(() => {
     // this has to be done as useAnything must go above any other declarations.
     const isSportsBook = theme === THEMES.SPORTS;
@@ -39,10 +38,11 @@ export const Betslip = ({ theme = getTheme() }: BetslipProps) => {
   }, [theme]);
 
   const isSportsBook = theme === THEMES.SPORTS;
+  const isMyBets = header === BETSLIP_SELECTED.MY_BETS;
+  const isUnmatched = subHeader === BETSLIP_SELECTED.UNMATCHED;
   const myBetsCount = isSportsBook
     ? matchedCount
     : unmatchedCount + matchedCount;
-  const isMyBets = header === BETSLIP_SELECTED.MY_BETS;
   const isSelectedEmpty = isMyBets ? myBetsCount === 0 : betslipCount === 0;
   const marketItems = isMyBets
     ? Object.entries(isUnmatched ? unmatchedItems : matchedItems)
@@ -59,12 +59,9 @@ export const Betslip = ({ theme = getTheme() }: BetslipProps) => {
         </button>
       </div>
       <section className={Styles.Container}>
-        <BetslipHeader myBetsCount={myBetsCount} betslipCount={betslipCount} />
+        <BetslipHeader myBetsCount={myBetsCount} />
         {isMyBets && (
-          <MyBetsSubheader
-            unmatchedCount={unmatchedCount}
-            matchedCount={matchedCount}
-          />
+          <MyBetsSubheader />
         )}
         <section
           className={classNames(Styles.MainSection, {

@@ -329,10 +329,11 @@ export const BetslipList = ({ marketItems }) => {
   );
 };
 
-export const BetslipHeader = ({ betslipCount, myBetsCount }) => {
+export const BetslipHeader = ({ myBetsCount }) => {
   const {
     selected: { header },
     actions: { toggleHeader },
+    betslip: { count },
   } = useBetslipStore();
   const isBetslip = header === BETSLIP_SELECTED.BETSLIP;
   const isMyBets = !isBetslip;
@@ -344,7 +345,7 @@ export const BetslipHeader = ({ betslipCount, myBetsCount }) => {
           if (!isBetslip) toggleHeader();
         }}
       >
-        Betslip<span>{betslipCount}</span>
+        Betslip<span>{count}</span>
       </li>
       <li
         className={classNames({ [Styles.Selected]: isMyBets })}
@@ -358,10 +359,12 @@ export const BetslipHeader = ({ betslipCount, myBetsCount }) => {
   );
 };
 
-export const MyBetsSubheader = ({ unmatchedCount, matchedCount }) => {
+export const MyBetsSubheader = () => {
   const {
     selected: { subHeader },
     actions: { toggleSubHeader },
+    matched: { count: matchedCount },
+    unmatched: { count: unmatchedCount },
   } = useBetslipStore();
   const isUnmatched = subHeader === BETSLIP_SELECTED.UNMATCHED;
   const isMatched = !isUnmatched;
