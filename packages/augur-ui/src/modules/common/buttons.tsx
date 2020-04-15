@@ -462,7 +462,7 @@ export const DepositButton = (props: DefaultActionButtonProps) => (
   </button>
 );
 
-export const WithdrawButton = (props: DefaultActionButtonProps) => (
+export const TransferButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
     className={Styles.CurrenyActionButton}
@@ -473,7 +473,7 @@ export const WithdrawButton = (props: DefaultActionButtonProps) => (
   </button>
 );
 
-export const CashOutButton = (props: DefaultActionButtonProps) => (
+export const WithdrawButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
     className={Styles.CurrenyActionButton}

@@ -11,7 +11,7 @@ import ModalCreateMarket from 'modules/modal/containers/modal-create-market';
 import ModalDaiFaucet from 'modules/modal/containers/modal-dai-faucet';
 import ModalCreationHelp from 'modules/modal/containers/modal-creation-help';
 import ModalDeposit from 'modules/modal/containers/modal-deposit';
-import ModalWithdraw from 'modules/modal/containers/modal-withdraw';
+import ModalWithdraw from 'modules/modal/containers/modal-transfer';
 import ModalCashOut from 'modules/modal/containers/modal-cash-out';
 import ModalMigrateRep from 'modules/modal/containers/modal-migrate-rep';
 import ModalNetworkDisabled from 'modules/modal/containers/modal-network-disabled';
@@ -101,7 +101,7 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalCreationHelp {...modal} />;
     case TYPES.MODAL_DEPOSIT:
       return <ModalDeposit />;
-    case TYPES.MODAL_WITHDRAW:
+    case TYPES.MODAL_TRANSFER:
       return <ModalWithdraw />;
     case TYPES.MODAL_CASHOUT:
       return <ModalCashOut />;
