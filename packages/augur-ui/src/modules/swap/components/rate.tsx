@@ -24,13 +24,13 @@ export const Rate = ({
     const rate =
       baseToken === DAI
         ? formatDai(repRate).formattedValue + ' DAI'
-        : formatEther(repRate.dividedBy(ethRate)).formattedValue + ' ETH';
+        : formatEther(repRate.multipliedBy(ethRate)).formattedValue + ' ETH';
 
     displayRate = `1 ${swapForToken} = ${rate}`;
   } else {
     const rate =
       baseToken === ETH
-        ? formatEther(createBigNumber(1).dividedBy(ethRate)).formattedValue +
+        ? formatEther(ethRate).formattedValue +
           ' ETH'
         : formatRep(createBigNumber(1).dividedBy(repRate)).formattedValue +
           ' REP';

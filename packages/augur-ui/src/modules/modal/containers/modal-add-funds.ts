@@ -10,9 +10,9 @@ import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => {
   const ethToDaiRate = state.appStatus.ethToDaiRate;
+  const repToDaiRate = state.appStatus.repToDaiRate;
   const ETH_RATE = createBigNumber(1).dividedBy(ethToDaiRate?.value  || createBigNumber(1));
-  // TODO placeholder rates until price feed is hooked up
-  const REP_RATE = createBigNumber(15.87);
+  const REP_RATE = createBigNumber(1).dividedBy(repToDaiRate?.value  || createBigNumber(1));
 
   return {
     modal: state.modal,

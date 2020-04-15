@@ -10,6 +10,7 @@ import { Action } from 'redux';
 import { AppState } from 'appStore';
 import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
+import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 
 export const loadAccountData = (
   callback: NodeStyleCallback = logError
@@ -37,6 +38,7 @@ export const loadAccountData = (
     dispatch(checkAccountAllowance());
     dispatch(loadUniverseDetails(universe.id, address));
     dispatch(getEthToDaiRate());
+    dispatch(getRepToDaiRate());
     dispatch(registerUserDefinedGasPriceFunction(gasPriceInfo.userDefinedGasPrice, gasPriceInfo.average));
   }
 };

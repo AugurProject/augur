@@ -133,7 +133,7 @@ export const AddFunds = ({
     },
     {
       header: 'Convert',
-      description: fundTypeToUse === DAI ? 'Trade ETH or REP for DAI and vice versa' : 'Trade ETH or DAI for REP and vice versa',
+      description: fundTypeToUse === DAI ? 'Trade ETH or REP for DAI' : 'Trade ETH or DAI for REP',
       value: ADD_FUNDS_SWAP,
     },
   ];
@@ -153,11 +153,7 @@ export const AddFunds = ({
   }
 
   const SWAP_ID = 0;
-  const POOL_ID = 1;
-  const pillOptions = [
-    { label: 'Convert', id: SWAP_ID },
-    { label: 'Pool', subLabel: '(Advanced)', id: POOL_ID },
-  ];
+  const pillOptions = [{ label: 'Convert', id: SWAP_ID }];
 
   return (
     <div
@@ -201,7 +197,7 @@ export const AddFunds = ({
           {selectedOption === ADD_FUNDS_SWAP && (
             <>
               <h1>Convert</h1>
-              <h2>{fundTypeToUse === REP ? 'Trade a currency for REP or add to the REP pool' : 'Trade ETH or REP for DAI and vice versa'}</h2>
+              <h2>{fundTypeToUse === REP ? 'Trade a currency for REP' : 'Trade ETH or REP for DAI'}</h2>
 
               <div className={Styles.AddFundsSwap}>
                 <PillSelection
@@ -211,19 +207,19 @@ export const AddFunds = ({
                 />
               </div>
 
-              {poolSelected && (
+              {/* {poolSelected && (
                 <Pool
                   balances={loginAccount.balances}
                   ETH_RATE={ETH_RATE}
                   REP_RATE={REP_RATE}
                 />
-              )}
+              )} */}
 
               {swapSelected && (
                 <Swap
                   balances={loginAccount.balances}
                   toToken={fundTypeToUse === REP ? REP : DAI}
-                  fromToken={fundTypeToUse === REP ? DAI : ETH}
+                  fromToken={fundTypeToUse === REP ? DAI : REP}
                   ETH_RATE={ETH_RATE}
                   REP_RATE={REP_RATE}
                 />

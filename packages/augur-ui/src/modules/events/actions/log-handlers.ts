@@ -76,6 +76,8 @@ import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
+import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
+import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 
 const handleAlert = (
   log: any,
@@ -137,6 +139,7 @@ export const handleTxSuccess = (txStatus: Events.TXStatus) => (
   console.log('TxSuccess Transaction', txStatus.transaction.name);
   // update wallet status on any TxSuccess
   dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
+  dispatch(updateAssets());
   dispatch(addUpdateTransaction(txStatus));
 };
 
@@ -201,8 +204,9 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
       loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
     );
   }
-  // update ethToDaiRate/gasPrice each block
+  // update ETH/REP rate and gasPrice each block
   dispatch(getEthToDaiRate());
+  dispatch(getRepToDaiRate());
 
   if (log.logs && log.logs.length > 0){
     console.log(log.logs);
