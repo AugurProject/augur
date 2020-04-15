@@ -19,11 +19,11 @@ interface CashOutFormProps {
   closeAction: Function;
   withdrawAllFunds: Function;
   withdrawAllFundsEstimateGas: Function;
-  signerAccount: string;
   account: string;
   GsnEnabled: boolean;
   ethToDaiRate: FormattedNumber;
   gasPrice: number;
+  ethReserveAmount: FormattedNumber;
 }
 
 export const CashOutForm = ( props: CashOutFormProps) => {
@@ -33,14 +33,13 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     withdrawAllFundsEstimateGas,
     GsnEnabled,
     account,
-    signerAccount,
     ethToDaiRate,
     gasPrice,
+    ethReserveAmount,
   } = props;
   const [gasCosts, setGasCosts] = useState(createBigNumber(TRANSFER_ETH_GAS_COST));
   const [address, setAddress] = useState('');
   const [errors, setErrors] = useState('');
-  const [ethSignerBalance, setSignerEthBalance] = useState(0);
   const [ethBalance, setEthBalance] = useState(0);
   const [daiBalance, setDaiBalance] = useState(0);
 
@@ -50,11 +49,9 @@ export const CashOutForm = ( props: CashOutFormProps) => {
   }
 
   async function getSignerBalances() {
-    const ethSignerBalance = await getEthBalance(signerAccount);
     const daiBalance = await getDaiBalance(account);
     const ethBalance = await getEthBalance(account);
     setDaiBalance(daiBalance);
-    setSignerEthBalance(ethSignerBalance);
     setEthBalance(ethBalance);
   }
 
@@ -77,7 +74,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
   };
 
   const totalDai = createBigNumber(daiBalance || 0);
-  const totalEthInDai1 = ethToDai(ethSignerBalance || 0, createBigNumber(ethToDaiRate?.value || 0));
+  const totalEthInDai1 = ethToDai(ethReserveAmount.value || 0, createBigNumber(ethToDaiRate?.value || 0));
   const totalEthInDai2 = ethToDai(ethBalance || 0, createBigNumber(ethToDaiRate?.value || 0));
   const formattedTotalInDai = formatDai(totalDai.plus(totalEthInDai1.value).plus(totalEthInDai2.value));
   const gasLimit = createBigNumber(gasCosts || TRANSFER_ETH_GAS_COST);
