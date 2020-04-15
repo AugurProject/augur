@@ -60,8 +60,8 @@ interface Schemas {
   [table: string]: string;
 }
 
-// Prune horizon is 30 days.
-const PRUNE_HORIZON = SECONDS_IN_A_DAY.multipliedBy(30).toNumber();
+// Prune horizon is 60 days.
+const PRUNE_HORIZON = SECONDS_IN_A_DAY.multipliedBy(60).toNumber();
 
 export class DB {
   private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
@@ -398,7 +398,7 @@ export class DB {
   }
 
   async prune(timestamp: number) {
-    // Discover the markets that whose time has come.
+    // Discover the markets whose time has come.
     const marketsToRemove = await this.MarketFinalized.where('timestamp')
       .belowOrEqual(`0x${(timestamp - PRUNE_HORIZON).toString(16)}`)
       .toArray();

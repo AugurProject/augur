@@ -1,37 +1,49 @@
 import { ContractInterfaces } from '@augurproject/core';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
-import { Seed, TestContractAPI } from '@augurproject/tools';
+import { Seed } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../libs';
 import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
-import Dexie from 'dexie';
+import * as IPFS from 'ipfs';
+import { tmpdir } from 'os';
+import { WarpTestContractApi } from '../../libs/warp-test-contract-api';
 
 describe('market pruning', () => {
+  let ipfs: Promise<IPFS>;
   let provider: TestEthersProvider;
-  let john: TestContractAPI;
-  let mary: TestContractAPI;
-  let mark: TestContractAPI;
+  let john: WarpTestContractApi;
+  let mary: WarpTestContractApi;
+  let mark: WarpTestContractApi;
   let seed: Seed;
 
   let market: ContractInterfaces.Market;
+
+  beforeAll(async () => {
+    ipfs = IPFS.create({
+      silent: true,
+      repo: tmpdir(),
+    });
+  });
 
   beforeEach(async () => {
     seed = await loadSeed(defaultSeedPath);
     provider = await makeProvider(seed, ACCOUNTS);
     const config = provider.getConfig();
 
-    john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, config);
+    john = await WarpTestContractApi.warpUserWrapper(ACCOUNTS[0], provider, config, ipfs);
 
-    mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, config);
+    mary = await WarpTestContractApi.warpUserWrapper(ACCOUNTS[1], provider, config, ipfs);
 
-    mark = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, config);
+    mark = await WarpTestContractApi.warpUserWrapper(ACCOUNTS[2], provider, config, ipfs);
 
     await john.faucetCash(new BigNumber(1000000000));
 
     await john.approve();
     await mary.approve();
     await mark.approve();
+
+    await john.augur.warpSync.initializeUniverse(seed.addresses.Universe);
 
     // Market to sunset.
     market = await john.createReasonableYesNoMarket();
@@ -100,6 +112,8 @@ describe('market pruning', () => {
   test('should remove markets from db that have been finalized for a period.', async () => {
     await john.sync();
 
+    await expect(john.db.warpCheckpoints.table.toArray()).resolves.toHaveLength(1);
+
     await expect(
       john.api.route('getMarkets', {
         universe: seed.addresses.Universe,
@@ -109,19 +123,31 @@ describe('market pruning', () => {
       meta: expect.any(Object),
     });
 
-    // advance 30 days.
-    for (let i = 0; i < 31; i++) {
-      await john.advanceTimestamp(SECONDS_IN_A_DAY);
+    // advance 60 days
+    await john.advanceTimestamp(SECONDS_IN_A_DAY.multipliedBy(60));
+    await john.sync();
+
+    // Finalize the initial warp sync market and then another now that 60 days has passed and its relatve timestamp will include pruning
+    const hash = "bad";
+
+    let warpSyncMarket = await john.reportWarpSyncMarket(hash);
+    await john.finalizeWarpSyncMarket(warpSyncMarket);
+
+    // Force the db to prune.
+    for (let i = 0; i < 30; i++) {
+      await provider.providerSend('evm_mine', []);
       await john.sync();
     }
 
-    const allGenericLogs = await Promise.all(
-      john.db.genericEventDBDescriptions.map(({ EventName }) =>
-        john.db[EventName].toArray()
-      )
-    )
-      .then((...logs) => [].concat.apply([], ...logs))
-      .then(logs => logs.filter(item => item.market === market.address));
+    await john.advanceTimestamp(SECONDS_IN_A_DAY.multipliedBy(3));
+    warpSyncMarket = await john.reportWarpSyncMarket(hash);
+    await john.finalizeWarpSyncMarket(warpSyncMarket);
+
+    // Force the db to prune.
+    for (let i = 0; i < 30; i++) {
+      await provider.providerSend('evm_mine', []);
+      await john.sync();
+    }
 
     await expect(
       john.api.route('getMarkets', {
