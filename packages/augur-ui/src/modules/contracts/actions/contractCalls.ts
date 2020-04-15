@@ -567,6 +567,16 @@ export async function doInitialReportWarpSync(report: doReportDisputeAddStake) {
   );
 }
 
+export async function getWarpSyncRepReward(
+  warpMarketAddress: string
+): Promise<string> {
+  const Augur = augurSdk.get();
+  const attoRep = await Augur.contracts.warpSync.getFinalizationReward_(
+    warpMarketAddress
+  );
+  return formatAttoRep(attoRep || 0).formatted;
+}
+
 export async function addRepToTentativeWinningOutcome_estimateGas(
   addStake: doReportDisputeAddStake
 ) {

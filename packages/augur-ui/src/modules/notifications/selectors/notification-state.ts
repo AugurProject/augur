@@ -92,8 +92,7 @@ export const selectReportOnMarkets = createSelector(
 // not filtering out markets that resolve as invalid.
 export const selectFinalizeMarkets = createSelector(
   selectMarketInfosState,
-  selectLoginAccountAddress,
-  (marketInfos, address) => {
+  marketInfos => {
     const marketId = Object.keys(marketInfos).filter(
       id => marketInfos[id].reportingState === REPORTING_STATE.AWAITING_FINALIZATION && marketInfos[id].isWarpSync
     );
