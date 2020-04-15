@@ -14,6 +14,7 @@ import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
 import { ethToDai, displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getDaiBalance, getEthBalance } from 'modules/contracts/actions/contractCalls';
 import { WITHDRAWALLFUNDSASDAI, TRANSACTIONS, GWEI_CONVERSION } from 'modules/common/constants';
+import { AutoCancelOrdersNotice } from 'modules/common/labels';
 
 interface CashOutFormProps {
   closeAction: Function;
@@ -136,6 +137,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
           </div>
         </div>
         <Breakdown rows={breakdown} />
+        <AutoCancelOrdersNotice />
       </main>
       <div>
         <ProcessingButton

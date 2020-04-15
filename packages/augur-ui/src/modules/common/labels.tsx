@@ -1404,6 +1404,16 @@ export const InitializeWalletModalNotice = connect(
   mapStateToPropsInitWalletModal
 )(InitializeWalletModalNoticeCmp);
 
+export const AutoCancelOrdersNotice = () => (
+    <div className={classNames(Styles.ModalMessageAutoCancel)}>
+      <DismissableNotice
+        show
+        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+        title={`When cashing out, all open orders will automatically be cancelled`}
+      />
+    </div>
+);
+
 export const ValueDenomination: React.FC<ValueDenominationProps> = ({
   className,
   prefix,
