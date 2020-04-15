@@ -23,6 +23,7 @@ import {
   WarpSync,
   AugurWalletRegistry,
   RepOracle,
+  AuditFunds,
   // 0x
   Exchange,
   ERC1155Proxy,
@@ -267,6 +268,7 @@ Deploying to: ${env}
         mapping['UniswapV2Router01'] = this.contracts.get('UniswapV2Router01').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
         mapping['EthExchange'] = await uniswapV2Factory.getExchange_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
+        mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
 
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
@@ -532,6 +534,7 @@ Deploying to: ${env}
             async () => new ZeroXTrade(this.dependencies, await this.getContractAddress('ZeroXTrade')).initialize(this.augur!.address, this.augurTrading!.address),
             async () => new WarpSync(this.dependencies, await this.getContractAddress('WarpSync')).initialize(this.augur!.address),
             async () => new RepOracle(this.dependencies, await this.getContractAddress('RepOracle')).initialize(this.augur!.address),
+            async () => new AuditFunds(this.dependencies, await this.getContractAddress('AuditFunds')).initialize(this.augur!.address),
             async () => new AugurWalletRegistry(this.dependencies, await this.getContractAddress('AugurWalletRegistry')).initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) }),
         ];
 
@@ -633,6 +636,7 @@ Deploying to: ${env}
         mapping['UniswapV2Router01'] = this.contracts.get('UniswapV2Router01').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
         mapping['EthExchange'] = await uniswapV2Factory.getExchange_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
+        mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
 
         // 0x
         mapping['ERC20Proxy'] = this.contracts.get('ERC20Proxy').address!;

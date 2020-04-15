@@ -137,11 +137,6 @@ describe('market pruning', () => {
       []
     );
     await expect(john.db.MarketOIChangedRollup.toArray()).resolves.toEqual([]);
-
-    const result = await john.db.ShareTokenBalanceChanged.toArray();
-    expect(result).toHaveLength(4);
-    expect(result).toEqual(
-      expect.arrayContaining(await john.db.ShareTokenBalanceChangedRollup.toArray())
-    );
+    await expect(john.db.ShareTokenBalanceChangedRollup.toArray()).resolves.toEqual([]);
   });
 });
