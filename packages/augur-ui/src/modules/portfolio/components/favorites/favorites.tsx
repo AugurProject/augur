@@ -3,8 +3,9 @@ import React, { Component } from "react";
 import FilterBox from "modules/portfolio/containers/filter-box";
 import { MarketProgress } from "modules/common/progress";
 import { FavoritesButton } from "modules/common/buttons";
-import { END_TIME } from "modules/common/constants";
+import { END_TIME, THEMES } from "modules/common/constants";
 
+import { getTheme } from 'modules/app/actions/update-app-status';
 import Styles from "modules/portfolio/components/common/quad.styles.less";
 import favoriteStyles from 'modules/portfolio/components/favorites/favorites.styles.less'
 import { MarketData } from "modules/types";
@@ -86,7 +87,7 @@ export default class Favorites extends Component<FavoritesProps> {
 
     return (
       <FilterBox
-        title="Watchlist"
+        title={getTheme() === THEMES.TRADING ? "Watchlist" : "Favorites"}
         customClass={favoriteStyles.Watchlist}
         sortByOptions={sortByOptions}
         sortByStyles={{ minWidth: "10.625rem" }}
