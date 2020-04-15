@@ -1409,7 +1409,7 @@ export const AutoCancelOrdersNotice = () => (
       <DismissableNotice
         show
         buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-        title={`When cashing out, all open orders will automatically be cancelled`}
+        title={`When cashing out, all open orders will automatically be cancelled, positions are left unchanged.`}
       />
     </div>
 );
