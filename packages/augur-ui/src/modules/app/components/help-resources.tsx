@@ -63,7 +63,7 @@ export const HelpMenuList = () => {
   return (
     <span className={classNames(Styles.HelpMenuList)}>
       <li>popular help resources</li>
-      {HELP_LINKS.map((helpLink, index) => (
+      {HELP_LINKS.filter(helpLink => helpLink.label !== 'view trading tutorial').map((helpLink, index) => (
         <li key={'helpLink_' + index} className={helpLink.className}>
           <ExternalLinkButton
             light

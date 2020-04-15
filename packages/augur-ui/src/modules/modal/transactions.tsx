@@ -246,7 +246,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
         break;
     }
     // @ts-ignore
-    setQuantitySort(quantitySort);
+    setQuantitySort(updatedQuantitySort);
     setFilteredTransactions(filteredTransactions);
   };
 
