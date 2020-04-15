@@ -329,7 +329,7 @@ export const ScalarBlankDisputeOutcome = ({
   <div className={classNames(Styles.DisputeOutcome, Styles[`Outcome-1`])}>
     <span>{`Dispute current Tentative Winner with new ${denomination} value`}</span>
     <div className={Styles.blank}>
-      <div></div>
+      <div />
       <ProcessingButton
         secondaryButton
         queueName={SUBMIT_DISPUTE}

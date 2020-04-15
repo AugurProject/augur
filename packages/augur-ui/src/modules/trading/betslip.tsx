@@ -10,7 +10,7 @@ import {
 } from 'modules/trading/common';
 import { getTheme } from 'modules/app/actions/update-app-status';
 import { THEMES } from 'modules/common/constants';
-import { BETSLIP_SELECTED } from 'modules/trading/hooks/betslip';
+import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 
 import Styles from 'modules/trading/betslip.styles';
@@ -24,14 +24,16 @@ export const Betslip = ({ theme = getTheme() }: BetslipProps) => {
   const {
     selected: { header, subHeader },
     betslip: { count: betslipCount, items: betslipItems },
-    unmatched: { count: unmatchedCount },
-    matched: { count: matchedCount },
+    unmatched: { count: unmatchedCount, items: unmatchedItems },
+    matched: { count: matchedCount, items: matchedItems },
     actions: { toggleSubHeader },
   } = useBetslipStore();
+
+  const isUnmatched = subHeader === BETSLIP_SELECTED.UNMATCHED;
   useEffect(() => {
     // this has to be done as useAnything must go above any other declarations.
     const isSportsBook = theme === THEMES.SPORTS;
-    if (isSportsBook && subHeader === BETSLIP_SELECTED.UNMATCHED) {
+    if (isSportsBook && isUnmatched) {
       toggleSubHeader();
     }
   }, [theme]);
@@ -43,7 +45,7 @@ export const Betslip = ({ theme = getTheme() }: BetslipProps) => {
   const isMyBets = header === BETSLIP_SELECTED.MY_BETS;
   const isSelectedEmpty = isMyBets ? myBetsCount === 0 : betslipCount === 0;
   const marketItems = isMyBets
-    ? Object.entries(state[subHeader].items)
+    ? Object.entries(isUnmatched ? unmatchedItems : matchedItems)
     : Object.entries(betslipItems);
   return (
     <aside

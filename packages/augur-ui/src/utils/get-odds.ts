@@ -81,7 +81,7 @@ export const getNewToWin = (odds, wager, toDecimals = 2) => {
   const fractional = convertAmericanToFractional(odds);
   const bnWager = createBigNumber(wager);
   return bnWager.times(fractional).toFixed(toDecimals);
-}
+};
 
 const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   const percentage: BigNumber = convertToPercentage(normalizedValue);

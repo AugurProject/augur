@@ -427,7 +427,6 @@ export default class AppView extends Component<AppProps> {
       parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
 
     return (
-      <BetslipProvider>
       <main>
         <OddsContext.Provider value={{ oddsType, changeOddsType }} >
         <HelmetTag {...APP_HEAD_TAGS} />
@@ -548,6 +547,7 @@ export default class AppView extends Component<AppProps> {
                 role="presentation"
                 id="mainContent"
               >
+                <BetslipProvider>
                 {!isLogged && (
                   <div className={Styles.BettingUI}>
                     <ExternalLinkText
@@ -560,13 +560,13 @@ export default class AppView extends Component<AppProps> {
                 <ForkingBanner />
                 <Routes isLogged={isLogged || restoredAccount} />
                 {isLogged && <Betslip theme={theme} />}
+                </BetslipProvider>
               </section>
             </section>
           </section>
         </div>
         </OddsContext.Provider>
       </main>
-      </BetslipProvider>
     );
   }
 }
