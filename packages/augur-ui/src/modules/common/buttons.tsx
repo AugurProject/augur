@@ -469,7 +469,7 @@ export const WithdrawButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Withdraw'}
   >
-    Withdraw funds
+    Transfer
   </button>
 );
 
@@ -480,7 +480,7 @@ export const CashOutButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Withdraw'}
   >
-    Cash Out
+    Withdraw
   </button>
 );
 
