@@ -29,6 +29,10 @@
   }
 
   > div:last-of-type {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     margin: auto;
 
     > button {
@@ -47,4 +51,11 @@
 
     color: @color-dark-text;
   }
+}
+
+.SwapError {
+  .text-12;
+
+  color: @color-error;
+  margin: @size-16 0 0 0;
 }

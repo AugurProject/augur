@@ -359,10 +359,11 @@ export async function uniswapDaiForRep(dai: BigNumber, rep: BigNumber): Promise<
   const minRep = rep.minus(rep.multipliedBy(TRADE_SPREAD - 1)).multipliedBy(10**18);
 
   try {
-    uniswap.swapExactTokensForTokens(contracts.cash.address, contracts.reputationToken.address, exactDai, minRep);
+    await uniswap.swapExactTokensForTokens(contracts.cash.address, contracts.reputationToken.address, exactDai, minRep);
   }
   catch(error) {
     console.error('uniswapDaiForRep', error);
+    throw error;
   }
 }
 
@@ -376,39 +377,40 @@ export async function uniswapRepForDai(rep: BigNumber, dai: BigNumber): Promise<
   const minDai = dai.minus(dai.multipliedBy(TRADE_SPREAD - 1)).multipliedBy(10**18);
 
   try {
-    uniswap.swapExactTokensForTokens(contracts.reputationToken.address, contracts.cash.address, exactRep, minDai);
+    await uniswap.swapExactTokensForTokens(contracts.reputationToken.address, contracts.cash.address, exactRep, minDai);
   }
   catch(error) {
     console.error('uniswapRepForDai', error);
+    throw error;
   }
 }
 
 
 export async function uniswapEthForDai(eth: BigNumber, dai: BigNumber): Promise<void> {
   const { contracts, uniswap } = augurSdk.get();
-
   const exactDai = dai.multipliedBy(10**18);
   const maxEth = eth.multipliedBy(10**18).multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER);
 
   try {
-    uniswap.swapETHForExactTokens(contracts.cash.address, exactDai, maxEth);
+    await uniswap.swapETHForExactTokens(contracts.cash.address, exactDai, maxEth);
   }
   catch(error) {
     console.error('uniswapEthForDai', error);
+    throw error;
   }
 }
 
 export async function uniswapEthForRep(eth: BigNumber, rep: BigNumber): Promise<void> {
   const { contracts, uniswap } = augurSdk.get();
-
   const exactRep = rep.multipliedBy(10**18);
   const maxEth = eth.multipliedBy(10**18).multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER);
 
   try {
-    uniswap.swapETHForExactTokens(contracts.reputationToken.address, exactRep, maxEth);
+    await uniswap.swapETHForExactTokens(contracts.reputationToken.address, exactRep, maxEth);
   }
   catch(error) {
     console.error('uniswapEthForRep', error);
+    throw error;
   }
 }
 

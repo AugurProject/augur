@@ -51,6 +51,7 @@ export const Swap = ({
 
   const [inputAmount, setInputAmount] = useState(createBigNumber(0.0));
   const [fromTokenType, setFromTokenType] = useState(fromToken);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   if (![DAI, REP, ETH].includes(fromTokenType)) {
     throw Error('unsupported uniswap token');
@@ -61,6 +62,7 @@ export const Swap = ({
     amount: BigNumber,
     formattedInputAmount: BigNumber
   ) => {
+    setErrorMessage('');
     if (amount.lt(0) || isNaN(amount.toNumber())) {
       setInputAmount(createBigNumber(0));
     } else if (amount.gt(formattedInputAmount)) {
@@ -79,23 +81,31 @@ export const Swap = ({
     const input = inputAmount;
     const output = createBigNumber(outputAmount.value);
 
-    if (fromTokenType === DAI) {
-      await uniswapDaiForRep(input, output);
-      clearForm();
-    } else if (fromTokenType === REP) {
-      await uniswapRepForDai(input, output);
-      clearForm();
-    } else if (fromTokenType === ETH) {
-      if (toToken === DAI) {
-        await uniswapEthForDai(input, output);
-      } else if (toToken === REP) {
-        await uniswapEthForRep(input, output);
+    try {
+      if (fromTokenType === DAI) {
+        await uniswapDaiForRep(input, output);
+        clearForm();
+      } else if (fromTokenType === REP) {
+        await uniswapRepForDai(input, output);
+        clearForm();
+      } else if (fromTokenType === ETH) {
+        if (toToken === DAI) {
+          await uniswapEthForDai(input, output);
+        } else if (toToken === REP) {
+          await uniswapEthForRep(input, output);
+        }
+        clearForm();
       }
-      clearForm();
+    }
+    catch (error) {
+      if (error?.data === 'Reverted') {
+        setErrorMessage('Liquidity error, please try reducing the size of your trade to avoid a price slippage.');
+      }
     }
   };
 
   const handleSetToken = () => {
+    setErrorMessage('');
     if (fromToken === REP) {
       if (fromTokenType === REP) {
         setFromTokenType(ETH);
@@ -191,6 +201,7 @@ export const Swap = ({
           queueId={fromTokenType === ETH ? SWAPETHFOREXACTTOKENS : SWAPEXACTTOKENSFORTOKENS}
           disabled={outputAmount.value <= 0}
         />
+        {errorMessage && <div className={Styles.SwapError}>{errorMessage}</div>}
       </div>
     </div>
   );
