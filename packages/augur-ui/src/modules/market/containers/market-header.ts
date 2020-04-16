@@ -13,7 +13,7 @@ import { isSameAddress } from 'utils/isSameAddress';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
-
+  const userAccount = state.loginAccount.address;
   const { reportingState, consensusFormatted: consensus } = market;
   let reportingBarShowing = false;
 
@@ -22,7 +22,7 @@ const mapStateToProps = (state, ownProps) => {
     reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
     reportingState === REPORTING_STATE.OPEN_REPORTING ||
     (reportingState === REPORTING_STATE.DESIGNATED_REPORTING &&
-      isSameAddress(market.designatedReporter, state.loginAccount.address))
+      isSameAddress(market.designatedReporter, userAccount))
   ) {
     reportingBarShowing = true;
   }
@@ -42,6 +42,7 @@ const mapStateToProps = (state, ownProps) => {
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     reportingBarShowing,
     preview: ownProps.preview,
+    userAccount
   };
 };
 
