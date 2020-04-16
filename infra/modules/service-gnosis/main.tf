@@ -108,7 +108,7 @@ module "task-gnosis-web" {
     },
     {
       name : "ETHEREUM_NODE_URL",
-      value : "https://eth-kovan.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
+      value : "https://eth-kovan.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
     },
     {
       name : "PYTHONPATH",
@@ -342,7 +342,7 @@ module "task-gnosis-scheduler" {
     },
     {
       name : "ETHEREUM_NODE_URL",
-      value : "https://eth-kovan.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
+      value : "https://eth-kovan.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
     },
     {
       name : "PYTHONPATH",
