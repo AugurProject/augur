@@ -1,6 +1,6 @@
 @import (reference) "~assets/styles/shared";
 
-div.OpenMarkets {
+.OpenMarkets {
   > div:last-of-type > div:nth-of-type(2):not([class*="EmptyDisplay"]) {
     @media @breakpoint-mobile {
       border-top: @size-1 solid var(--color-dark-grey);
@@ -141,6 +141,20 @@ div.OpenMarkets {
 
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
+  .OpenMarkets {
+    > div:last-of-type {
+      min-height: @size-414;
+    }
+  }
+
+  .OpenMarketsEmptyDisplay {
+    .OpenMarkets;
+
+    > div:last-of-type {
+      min-height: @size-198;
+    }
+  }
+
   .ExpandedContent {
     > div {
       border-top: @size-1 dotted var(--color-dark-grey);
@@ -182,6 +196,9 @@ div.OpenMarkets {
   }
 
   .OpenMarketsRow {
+    min-height: @size-54;
+    max-height: @size-54;
+
     > span > div[class*="MovementLabel"] {
       > div[class*="MovementLabel_Icon"] {
         margin: 0 @size-4 0 0;

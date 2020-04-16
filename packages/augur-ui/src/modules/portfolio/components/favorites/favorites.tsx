@@ -87,7 +87,7 @@ export default class Favorites extends Component<FavoritesProps> {
 
     let customClass = favoriteStyles.Watchlist;
     if (getTheme() !== THEMES.TRADING && markets.length === 0) {
-      customClass = favoriteStyles.Watchlist__EmptyDisplay;
+      customClass = favoriteStyles.WatchlistEmptyDisplay;
     }
 
     return (
