@@ -10,3 +10,12 @@
   justify-content: center;
   margin: @size-32 @size-16;
 }
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .EmptyDisplay {
+    .text-16-bold;
+    color: var(--color-primary-text);
+    min-height: @size-240;
+  }
+}

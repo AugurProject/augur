@@ -4,7 +4,9 @@ import FilterSwitchBox from "modules/portfolio/components/common/filter-switch-b
 import MarketRow from "modules/portfolio/containers/market-row";
 import { MovementLabel } from "modules/common/labels";
 import { SizeTypes, FormattedNumber, MarketData } from "modules/types";
+import { THEMES } from "modules/common/constants";
 
+import { getTheme } from 'modules/app/actions/update-app-status';
 import Styles from "modules/account/components/open-markets.styles.less";
 import { formatNumber } from "utils/format-number";
 
@@ -73,13 +75,18 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
   render() {
     const { markets, totalPercentage, toggle} = this.props;
 
+    let customClass = Styles.OpenMarkets;
+    if (getTheme() !== THEMES.TRADING && markets.length === 0) {
+      customClass = Styles.OpenMarketsEmptyDisplay;
+    }
+
     return (
       <FilterSwitchBox
         filterLabel="markets"
         title="My Active Markets"
         showFilterSearch
         data={markets}
-        customClass={Styles.OpenMarkets}
+        customClass={customClass}
         filterComp={filterComp}
         noBackgroundBottom
         toggle={toggle}

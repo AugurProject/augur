@@ -187,7 +187,11 @@
 :root[theme='SPORTS'] {
   .BoxHeader {
     > div:first-of-type > div:last-of-type {
-      display: none;
+      div[class*='SearchBar'] {
+        > svg > g {
+          fill: var(--color-primary-text-50);
+        }
+      }
     }
   }
 
