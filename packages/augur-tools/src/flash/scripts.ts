@@ -31,6 +31,7 @@ import {
 } from '@augurproject/sdk/build/state/getter/Markets';
 import { generateTemplateValidations } from './generate-templates';
 import { spawn, spawnSync } from 'child_process';
+import { perfSetup } from './perf-setup';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { ContractAPI, deployContracts, startGanacheServer } from '..';
 import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
@@ -38,7 +39,6 @@ import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOr
 import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
 import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
 import { orderFirehose } from './order-firehose';
-import { Market } from '@augurproject/core/build/libraries/ContractInterfaces';
 import {
   AccountCreator,
   createOrders,
@@ -1030,6 +1030,11 @@ export function addScripts(flash: FlashSession) {
     name: 'fake-all',
     options: [
       {
+        name: 'traders',
+        abbr: 't',
+        description: 'Number of accounts prefunded upon deploy. Funds come from deployer\'s wallet. Defaults to zero.',
+      },
+      {
         name: 'createMarkets',
         abbr: 'c',
         description:
@@ -1047,6 +1052,7 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       const serial = !Boolean(args.parallel);
       const createMarkets = Boolean(args.createMarkets);
+      const traderCount = Number(args.traders || 0);
 
       this.pushConfig({ deploy: { serial, normalTime: false }});
       const { addresses } = await deployContracts(this.network, this.provider, this.getAccount(), compilerOutput, this.config);
@@ -1056,13 +1062,20 @@ export function addScripts(flash: FlashSession) {
         const user = await this.createUser(this.getAccount(), this.config);
         await createCannedMarkets(user);
       }
+
+      const ethSource = await this.createUser(this.getAccount(), this.config);
+      await perfSetup(ethSource, 0, traderCount, serial, this.config);
     },
   });
 
   flash.addScript({
     name: 'normal-all',
     options: [
-
+      {
+        name: 'traders',
+        abbr: 't',
+        description: 'Number of accounts prefunded upon deploy. Funds come from deployer\'s wallet. Defaults to zero.',
+      },
       {
         name: 'createMarkets',
         abbr: 'c',
@@ -1081,6 +1094,7 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       const serial = !Boolean(args.parallel);
       const createMarkets = Boolean(args.createMarkets);
+      const traderCount = Number(args.traders || 0);
 
       this.pushConfig({ deploy: { serial, normalTime: true }});
       const { addresses } = await deployContracts(this.network, this.provider, this.getAccount(), compilerOutput, this.config);
@@ -1090,6 +1104,9 @@ export function addScripts(flash: FlashSession) {
         const user = await this.createUser(this.getAccount(), this.config);
         await createCannedMarkets(user);
       }
+
+      const ethSource = await this.createUser(this.getAccount(), this.config);
+      await perfSetup(ethSource, 0, traderCount, serial, this.config);
     },
   });
 
@@ -2058,22 +2075,8 @@ export function addScripts(flash: FlashSession) {
         throw Error('perf-setup requires market-makers or traders to be specified');
       }
 
-      const accountCreator = new AccountCreator(BASE_MNEMONIC);
-      const marketMakerAccounts = accountCreator.marketMakers(marketMakerCount);
-      const traderAccounts = accountCreator.traders(traderCount);
       const ethSource = await this.createUser(this.getAccount(), this.config);
-      if (marketMakerCount > 0) {
-        const makers: ContractAPI[] = await setupUsers(marketMakerAccounts, ethSource, new BigNumber(FINNEY).times(40), this.config, serial);
-        const markets: Market[] = await setupMarkets(makers, serial);
-        console.log('Created markets:', markets.map((market) => market.address).join(','))
-      }
-      if (traderCount > 0) {
-        await setupUsers(traderAccounts, ethSource, new BigNumber(FINNEY).times(5), this.config, serial);
-        console.log('Created traders:')
-        traderAccounts.forEach((trader, index) => {
-          console.log(`#${index}: ${trader.privateKey} -> ${trader.address}`);
-        })
-      }
+      await perfSetup(ethSource, marketMakerCount, traderCount, serial, this.config);
     }
   });
 
