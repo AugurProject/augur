@@ -1,5 +1,5 @@
 import { createBigNumber } from 'utils/create-big-number';
-import { BUY, ZERO, ZEROX_GAS_FEE, BUY_INDEX } from 'modules/common/constants';
+import { BUY, ZERO, ZEROX_GAS_FEE, BUY_INDEX, SELL_INDEX } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import { AppState } from 'appStore';
@@ -164,11 +164,11 @@ async function runSimulateTrade(
   }
 
   const orderType: 0 | 1 = newTradeDetails.side === BUY ? 0 : 1;
-  const fingerprint = undefined; // TODO: get this from state
+  const fingerprint = undefined; // set in contract calls
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
 
   let userShares = (orderType !== BUY_INDEX) ? createBigNumber(marketOutcomeShares[outcomeId] || 0) : ZERO;
-  if (!!reversal) {
+  if (!!reversal && orderType === BUY_INDEX) {
     // ignore trading outcome shares and find min across all other outcome shares.
     const userSharesBalancesRemoveOutcome = Object.keys(
       marketOutcomeShares
