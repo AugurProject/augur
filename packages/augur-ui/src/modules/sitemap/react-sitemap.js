@@ -1,12 +1,27 @@
-require('@babel/register'); // 1.
+require('@babel/register');
+const fs = require('fs');
 
 const router = require('./routes').default;
 const Sitemap = require('react-router-sitemap').default;
 
-(
-  new Sitemap(router)
-    .build('http://localhost:8080/')
-    .save('./sitemap.xml')
-); // 2.
+const address =
+  process.env.NODE_ENV === 'development'
+    ? 'https://v2.augur.net'
+    : `https://cloudflare-eth.com/${process.env.IPFS_STABLE_LOADER_HASH}`;
 
-console.log("The sitemap was built."); // Only shows this message after everything works well.
+new Sitemap(router).build(address).save('./sitemap.xml');
+
+const robotsFileData = `User-agent: *
+Sitemap: ${address}/sitemap.xml
+Disallow:
+`;
+
+fs.writeFile('./robots.txt', robotsFileData, error => {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('The robots.txt file was saved!');
+  }
+});
+
+console.log('The sitemap was built.'); // Only shows this message after everything works well.

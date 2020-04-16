@@ -220,6 +220,7 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       "process.env": {
+        IPFS_STABLE_LOADER_HASH: JSON.stringify(process.env.IPFS_STABLE_LOADER_HASH || "QmVfCcpugkz2WRCWJ75jnDSKAGXAQEgV8XEd839An6aXLE"),
         ETHEREUM_NETWORK: JSON.stringify(process.env.ETHEREUM_NETWORK || "local"),
         AUTO_LOGIN: process.env.AUTO_LOGIN || false,
 
