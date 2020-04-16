@@ -17,14 +17,9 @@ import {
 } from 'modules/common/icons';
 import { MY_POSITIONS } from 'modules/routes/constants/views';
 import { LinearPropertyLabel } from 'modules/common/labels';
-import {
-  SelectedContext,
-  BetslipStepContext,
-  BET_STATUS,
-  BETSLIP_SELECTED,
-  calculateBetslipTotals,
-  BetslipActionsContext,
-} from 'modules/trading/hooks/betslip';
+import { calculateBetslipTotals } from 'modules/trading/hooks/betslip';
+import { useBetslipStore } from 'modules/trading/store/betslip';
+import { BET_STATUS, BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import { formatDai } from 'utils/format-number';
 
 import Styles from 'modules/trading/common.styles';
@@ -34,7 +29,9 @@ export interface EmptyStateProps {
 }
 
 export const EmptyState = () => {
-  const { header } = useContext(SelectedContext);
+  const {
+    selected: { header },
+  } = useBetslipStore();
   return (
     <>
       <div>{Ticket}</div>
@@ -54,13 +51,15 @@ export const EmptyState = () => {
 
 export const SportsMarketBets = ({ market }) => {
   const marketId = market[0];
-  const { modifyBet, cancelBet } = useContext(BetslipActionsContext);
+  const {
+    actions: { modifyBet, cancelBet },
+  } = useBetslipStore();
   const { description, orders } = market[1];
   const bets = orders.map((order, orderId) => ({
     ...order,
     orderId,
     modifyBet: orderUpdate =>
-      modifyBet(marketId, orderId, { ...order, orderUpdate }),
+      modifyBet(marketId, orderId, { ...order, ...orderUpdate }),
     cancelBet: () => cancelBet(marketId, orderId),
   }));
   return (
@@ -76,9 +75,11 @@ export const SportsMarketBets = ({ market }) => {
 };
 
 export const SportsMarketMyBets = ({ market }) => {
-  const { subHeader } = useContext(SelectedContext);
+  const {
+    selected: { subHeader },
+    actions: { retry, cashOut, updateMatched, updateUnmatched, trash },
+  } = useBetslipStore();
   const marketId = market[0];
-  const { retry, cashOut, updateMatched, updateUnmatched, trash } = useContext(BetslipActionsContext);
   const { description, orders } = market[1];
   const bets = orders.map((order, orderId) => ({
     ...order,
@@ -104,7 +105,7 @@ export const SportsMarketMyBets = ({ market }) => {
 };
 
 export const SportsBet = ({ bet }) => {
-  const step = useContext(BetslipStepContext);
+  const { step } = useBetslipStore();
   const isReview = step === 1;
   const { outcome, odds, wager, toWin, modifyBet, cancelBet } = bet;
   return (
@@ -274,6 +275,12 @@ export const BetslipInput = ({
 }) => {
   const [curVal, setCurVal] = useState(formatDai(value).full);
   const [invalid, setInvalid] = useState(false);
+  useEffect(() => {
+    const cleanCurVal = curVal.replace('$', '');
+    if (cleanCurVal !== value) {
+      setCurVal(formatDai(value).full);
+    }
+  }, [value]);
   return (
     <div
       className={classNames(Styles.BetslipInput, {
@@ -304,21 +311,17 @@ export const BetslipInput = ({
 };
 
 export const BetslipList = ({ marketItems }) => {
-  const { header } = useContext(SelectedContext);
+  const {
+    selected: { header },
+  } = useBetslipStore();
   return (
     <>
       <section className={Styles.BetslipList}>
         {marketItems.map(market => {
           return header === BETSLIP_SELECTED.BETSLIP ? (
-            <SportsMarketBets
-              key={`${market[0]}`}
-              market={market}
-            />
+            <SportsMarketBets key={`${market[0]}`} market={market} />
           ) : (
-            <SportsMarketMyBets
-              key={`${market[0]}`}
-              market={market}
-            />
+            <SportsMarketMyBets key={`${market[0]}`} market={market} />
           );
         })}
       </section>
@@ -326,12 +329,12 @@ export const BetslipList = ({ marketItems }) => {
   );
 };
 
-export const BetslipHeader = ({
-  betslipCount,
-  myBetsCount,
-}) => {
-  const { header } = useContext(SelectedContext);
-  const { toggleHeader } = useContext(BetslipActionsContext);
+export const BetslipHeader = ({ myBetsCount }) => {
+  const {
+    selected: { header },
+    actions: { toggleHeader },
+    betslip: { count },
+  } = useBetslipStore();
   const isBetslip = header === BETSLIP_SELECTED.BETSLIP;
   const isMyBets = !isBetslip;
   return (
@@ -339,15 +342,15 @@ export const BetslipHeader = ({
       <li
         className={classNames({ [Styles.Selected]: isBetslip })}
         onClick={() => {
-          if (!isBetslip) toggleHeader();
+          toggleHeader(BETSLIP_SELECTED.BETSLIP);
         }}
       >
-        Betslip<span>{betslipCount}</span>
+        Betslip<span>{count}</span>
       </li>
       <li
         className={classNames({ [Styles.Selected]: isMyBets })}
         onClick={() => {
-          if (!isMyBets) toggleHeader();
+          toggleHeader(BETSLIP_SELECTED.MY_BETS);
         }}
       >
         My Bets<span>{myBetsCount}</span>
@@ -356,12 +359,13 @@ export const BetslipHeader = ({
   );
 };
 
-export const MyBetsSubheader = ({
-  unmatchedCount,
-  matchedCount,
-}) => {
-  const { subHeader } = useContext(SelectedContext);
-  const { toggleSubHeader } = useContext(BetslipActionsContext);
+export const MyBetsSubheader = () => {
+  const {
+    selected: { subHeader },
+    actions: { toggleSubHeader },
+    matched: { count: matchedCount },
+    unmatched: { count: unmatchedCount },
+  } = useBetslipStore();
   const isUnmatched = subHeader === BETSLIP_SELECTED.UNMATCHED;
   const isMatched = !isUnmatched;
   return (
@@ -369,7 +373,7 @@ export const MyBetsSubheader = ({
       <li
         className={classNames({ [Styles.Selected]: isUnmatched })}
         onClick={() => {
-          if (!isUnmatched) toggleSubHeader();
+          toggleSubHeader(BETSLIP_SELECTED.UNMATCHED);
         }}
       >
         Unmatched Bets ({unmatchedCount})
@@ -377,7 +381,7 @@ export const MyBetsSubheader = ({
       <li
         className={classNames({ [Styles.Selected]: isMatched })}
         onClick={() => {
-          if (!isMatched) toggleSubHeader();
+          toggleSubHeader(BETSLIP_SELECTED.MATCHED);
         }}
       >
         Matched Bets ({matchedCount})
@@ -386,12 +390,13 @@ export const MyBetsSubheader = ({
   );
 };
 
-export const BetslipFooter = ({
-  betslip
-}) => {
-  const { header, subHeader } = useContext(SelectedContext);
-  const { toggleStep, sendAllBets, cancelAllBets, cancelAllUnmatched } = useContext(BetslipActionsContext);
-  const step = useContext(BetslipStepContext);
+export const BetslipFooter = () => {
+  const {
+    selected: { header, subHeader },
+    betslip,
+    actions: { toggleStep, sendAllBets, cancelAllBets, cancelAllUnmatched },
+    step,
+  } = useBetslipStore();
   const { wager, potential, fees } = calculateBetslipTotals(betslip);
   const bet = formatDai(wager).full;
   const win = formatDai(potential).full;
@@ -434,6 +439,7 @@ export const BetslipFooter = ({
             text="Cancel Bets"
             action={() => {
               cancelAllBets();
+              if (isReview) toggleStep();
             }}
             icon={Trash}
           />

@@ -72,6 +72,12 @@ export const convertToOdds = ({
   return getOddsObject(normalizedPrice, toDecimals);
 };
 
+export const getNewToWin = (odds, wager, toDecimals = 2) => {
+  const fractional = convertAmericanToFractional(odds);
+  const bnWager = createBigNumber(wager);
+  return bnWager.times(fractional).toFixed(toDecimals);
+};
+
 const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   const percentage: BigNumber = convertToPercentage(normalizedValue);
   const decimal: BigNumber = convertToDecimal(percentage);
@@ -107,6 +113,11 @@ const convertToAmerican = (percentage: BigNumber) =>
   percentage.gte(FIFTY)
     ? convertToPositiveAmerican(percentage)
     : convertToNegativeAmerican(percentage);
+
+const convertAmericanToFractional = (americanOdds) => {
+  const bnAmerican = createBigNumber(americanOdds);
+  return bnAmerican.isNegative() ? (HUNDRED.times(-1)).dividedBy(bnAmerican) : bnAmerican.dividedBy(HUNDRED);
+};
 
 // Percentage = normalized price times 100, e.g. a normalized price of .85 = .85 * 100 = 85.
 

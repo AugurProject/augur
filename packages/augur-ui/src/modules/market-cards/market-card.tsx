@@ -102,6 +102,7 @@ export const MarketCard = ({
     disputeInfo,
     endTimeFormatted,
     consensusFormatted,
+    description,
   } = market;
 
   if (loading) {
@@ -191,6 +192,7 @@ export const MarketCard = ({
               orderBook={orderBook}
               outcomes={outcomesFormatted}
               marketType={marketType}
+              description={description}
               scalarDenomination={scalarDenomination}
               min={minPriceBigNumber}
               max={maxPriceBigNumber}
