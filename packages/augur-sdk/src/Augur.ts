@@ -411,6 +411,9 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.warpSync.getWarpSyncHashFromPayout(payout[2]);
   };
 
+  getWarpSyncMarket = (universe: string): Promise<ContractInterfaces.Market> => {
+    return this.warpSync.getWarpSyncMarket(universe);
+  }
   getProfitLoss = (
     params: Parameters<typeof Users.getProfitLoss>[2]
   ): ReturnType<typeof Users.getProfitLoss> => {

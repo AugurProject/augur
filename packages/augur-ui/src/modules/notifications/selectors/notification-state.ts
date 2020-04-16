@@ -88,12 +88,10 @@ export const selectReportOnMarkets = createSelector(
   }
 );
 
-// Get all the users markets that can be finalized to get their validity bond
-// not filtering out markets that resolve as invalid.
+// Tell user they can get REP if they finalize warp sync market
 export const selectFinalizeMarkets = createSelector(
   selectMarketInfosState,
-  selectLoginAccountAddress,
-  (marketInfos, address) => {
+  marketInfos => {
     const marketId = Object.keys(marketInfos).filter(
       id => marketInfos[id].reportingState === REPORTING_STATE.AWAITING_FINALIZATION && marketInfos[id].isWarpSync
     );
@@ -370,7 +368,7 @@ const generateCards = (markets, type) => {
         type,
         isImportant: false,
         isNew: true,
-        title: 'Finalize Market',
+        title: 'Finalize Warp Sync Market',
         buttonLabel: TYPE_VIEW_DETAILS,
         queueName: TRANSACTIONS,
         queueId: FINALIZE,

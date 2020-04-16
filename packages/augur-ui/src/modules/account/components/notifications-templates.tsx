@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   CountdownProgress,
   formatTime,
@@ -22,6 +22,7 @@ import {
 import MarketTitle from 'modules/market/containers/market-title';
 import { MarketReportingState } from '@augurproject/sdk/build';
 import classNames from 'classnames';
+import { getWarpSyncRepReward } from 'modules/contracts/actions/contractCalls';
 
 interface BaseProps {
   market: MarketData;
@@ -290,14 +291,20 @@ export const MostLikelyInvalidMarketsTemplate = (
   );
 };
 
-export const FinalizeMarketTemplate = (
+export const FinalizeWarpSyncMarketTemplate = (
   props: MostLikelyInvalidMarketsTemplateProps
 ) => {
+  const [reward, setReward] = useState('-');
+  useEffect(() => {
+    getWarpSyncRepReward(props.market.id).then(reward =>
+      setReward(reward)
+    );
+  }, []);
   const { description } = props.market;
 
   return (
     <Template
-      message={`Please finalize: "${description}"`}
+      message={`Get ${reward} REP Reward, please finalize warp sync market: "${description}"`}
       {...props}
     />
   );
