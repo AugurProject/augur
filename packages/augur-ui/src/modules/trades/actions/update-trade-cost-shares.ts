@@ -174,7 +174,7 @@ async function runSimulateTrade(
       marketOutcomeShares
     ).reduce(
       (p, o) =>
-        String(outcomeId) !== o ? p : [...p, new BigNumber(marketOutcomeShares[o])],
+        (orderType === BUY_INDEX && String(outcomeId) === o || orderType !== BUY_INDEX && String(outcomeId) !== o) ? p : [...p, new BigNumber(marketOutcomeShares[o])],
       []
     );
     userShares = userSharesBalancesRemoveOutcome.length > 0 ? BigNumber.min(
