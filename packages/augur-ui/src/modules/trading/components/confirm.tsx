@@ -164,6 +164,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       loopLimit,
     } = trade;
 
+
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
     let needsApproval = false;
     let messages: Message | null = null;
@@ -252,8 +253,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       totalCost &&
       createBigNumber(potentialDaiLoss.fullPrecision).gt(
         createBigNumber(availableDai)
-      ) &&
-      !tradingTutorial
+      )
     ) {
       messages = {
         header: 'Insufficient DAI',
