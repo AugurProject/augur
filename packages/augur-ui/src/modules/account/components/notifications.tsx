@@ -20,7 +20,7 @@ import {
   DisputeTemplate,
   ClaimReportingFeesTemplate,
   UnsignedOrdersTemplate,
-  ProceedsToClaimTemplate, MostLikelyInvalidMarketsTemplate, FinalizeMarketTemplate,
+  ProceedsToClaimTemplate, MostLikelyInvalidMarketsTemplate, FinalizeWarpSyncMarketTemplate,
 } from "modules/account/components/notifications-templates";
 
 import { Notification, DateFormattedObject, QueryEndpoints } from "modules/types";
@@ -301,7 +301,7 @@ class Notifications extends React.Component<
             />
           ) as any : null}
           {type === NOTIFICATION_TYPES.finalizeMarket ? (
-            <FinalizeMarketTemplate
+            <FinalizeWarpSyncMarketTemplate
               isDisabled={isDisabled}
               {...templateProps}
             />

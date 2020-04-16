@@ -567,6 +567,25 @@ export async function doInitialReportWarpSync(report: doReportDisputeAddStake) {
   );
 }
 
+// cash the value doesn't change fast
+let attoRep = null;
+export async function getWarpSyncRepReward(
+  warpMarketAddress: string
+): Promise<string> {
+  if (!attoRep) {
+    const Augur = augurSdk.get();
+    attoRep = await Augur.contracts.warpSync.getFinalizationReward_(
+      warpMarketAddress
+    ).catch(e => {
+      console.error(e);
+      return formatAttoRep(0).formatted;
+    });
+    return formatAttoRep(attoRep || 0).formatted;
+  } else {
+    return formatAttoRep(attoRep || 0).formatted;
+  }
+}
+
 export async function addRepToTentativeWinningOutcome_estimateGas(
   addStake: doReportDisputeAddStake
 ) {

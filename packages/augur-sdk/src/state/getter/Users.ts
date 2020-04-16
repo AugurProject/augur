@@ -317,11 +317,14 @@ export class Users {
     );
     const userOpenOrdersMarketIds = Object.keys(userOpenOrders.orders);
     if (userOpenOrdersMarketIds.length === 0) console.log('User has no open orders')
+    const warpSyncMarket = await augur.getWarpSyncMarket(params.universe);
+
     const set = new Set(
       uniqMarketIds
         .concat(userOpenOrdersMarketIds)
         .concat(stakedRepMarketIds)
         .concat(userPositionsMarketIds)
+        .concat(warpSyncMarket.address)
     );
 
     var marketIds: string[] = Array.from(set);
