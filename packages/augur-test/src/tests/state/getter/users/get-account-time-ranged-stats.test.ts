@@ -672,14 +672,13 @@ describe('State API :: Users :: ', () => {
       universe: universe.address,
       account: ACCOUNTS[0].address,
     });
-    // Note: one market will be pruned out.
     expect(stats).toMatchObject({
-      marketsCreated: 5,
+      marketsCreated: 6,
       marketsTraded: 6,
       numberOfTrades: 2,
-      positions: 13,
-      redeemedPositions: 2,
-      successfulDisputes: 1,
+      positions: 16,
+      redeemedPositions: 4,
+      successfulDisputes: 2,
     });
   });
 });
