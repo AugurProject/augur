@@ -516,7 +516,7 @@ export default class AppView extends Component<AppProps> {
                 role="presentation"
                 id={'mainContent'}
               >
-                {!isLogged && (
+                {!isLogged && currentPath === MARKETS && (
                   <div className={Styles.BettingUI}>
                     <ExternalLinkText
                       title={'Betting UI'}
