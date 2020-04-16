@@ -153,7 +153,7 @@ module "task-0x-mesh-rpc" {
     },
     {
       name : "ETHEREUM_RPC_URL",
-      value : "https://eth-kovan.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
+      value : "https://eth-kovan.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM"
     },
     {
       name : "HTTP_RPC_ADDR",
