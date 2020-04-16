@@ -168,7 +168,7 @@ async function runSimulateTrade(
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
 
   let userShares = (orderType !== BUY_INDEX) ? createBigNumber(marketOutcomeShares[outcomeId] || 0) : ZERO;
-  if (!!reversal && orderType === BUY_INDEX) {
+  if (!!reversal) {
     // ignore trading outcome shares and find min across all other outcome shares.
     const userSharesBalancesRemoveOutcome = Object.keys(
       marketOutcomeShares

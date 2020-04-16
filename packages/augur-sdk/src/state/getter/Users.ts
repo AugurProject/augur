@@ -915,7 +915,7 @@ export class Users {
       ].userSharesBalances = marketOutcomeBalances[marketData.market]
         ? Object.keys(marketOutcomeBalances[marketData.market]).reduce(
             (p, outcome) => {
-              p[outcome] = convertOnChainAmountToDisplayAmount(
+              p[outcome] = String(convertOnChainAmountToDisplayAmount(
                 new BigNumber(
                   marketOutcomeBalances[marketData.market][outcome]
                 ),
@@ -924,7 +924,7 @@ export class Users {
                   new BigNumber(marketData.prices[0]),
                   new BigNumber(marketData.prices[1])
                 )
-              );
+              ));
               return p;
             },
             {}
