@@ -689,7 +689,7 @@ export class ContractAPI {
   }
 
   async finalizeWarpSyncMarket(warpSyncMarket: ContractInterfaces.Market) {
-    const timestamp = (await this.getTimestamp()).plus(1000000);;
+    const timestamp = (await this.getTimestamp()).plus(1000000);
     await this.setTimestamp(timestamp);
 
     await this.finalizeMarket(warpSyncMarket);

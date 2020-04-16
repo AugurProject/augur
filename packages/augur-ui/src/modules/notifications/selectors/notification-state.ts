@@ -30,6 +30,7 @@ import {
   SUBMIT_REPORT,
   CLAIMMARKETSPROCEEDS,
   CANCELORDERS,
+  FINALIZE,
 } from 'modules/common/constants';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'appStore';
@@ -87,17 +88,12 @@ export const selectReportOnMarkets = createSelector(
   }
 );
 
-// Get all the users markets that can be finalized to get their validity bond
-// not filtering out markets that resolve as invalid.
+// Tell user they can get REP if they finalize warp sync market
 export const selectFinalizeMarkets = createSelector(
   selectMarketInfosState,
-  selectLoginAccountAddress,
-  (marketInfos, address) => {
+  marketInfos => {
     const marketId = Object.keys(marketInfos).filter(
-      id =>
-        (isSameAddress(marketInfos[id].author, address) ||
-          isSameAddress(marketInfos[id].designatedReporter, address)) &&
-        marketInfos[id].reportingState === REPORTING_STATE.AWAITING_FINALIZATION
+      id => marketInfos[id].reportingState === REPORTING_STATE.AWAITING_FINALIZATION && marketInfos[id].isWarpSync
     );
     if (marketId.length > 0) {
       return marketId.map(id => selectMarket(id)).map(getRequiredMarketData);
@@ -190,6 +186,7 @@ export const selectNotifications = createSelector(
   selectReportingWinningsByMarket,
   selectUnsignedOrders,
   selectMostLikelyInvalidMarkets,
+  selectFinalizeMarkets,
   selectReadNotificationState,
   (
     reportOnMarkets,
@@ -198,7 +195,8 @@ export const selectNotifications = createSelector(
     claimReportingFees,
     unsignedOrders,
     mostLikelyInvalidMarkets,
-    readNotifications
+    finalizeMarkets,
+    readNotifications,
   ): Notification[] => {
     // Generate non-unquie notifications
     const reportOnMarketsNotifications = generateCards(
@@ -221,6 +219,10 @@ export const selectNotifications = createSelector(
       mostLikelyInvalidMarkets,
       NOTIFICATION_TYPES.marketIsMostLikelyInvalid
     );
+    const finalizeNotifications = generateCards(
+      finalizeMarkets,
+      NOTIFICATION_TYPES.finalizeMarket
+    );
     // Add non unquie notifications
     let notifications = [
       ...reportOnMarketsNotifications,
@@ -228,6 +230,7 @@ export const selectNotifications = createSelector(
       ...marketsInDisputeNotifications,
       ...unsignedOrdersNotifications,
       ...mostLikelyInvalidMarketsNotifications,
+      ...finalizeNotifications
     ];
 
     // Add unquie notifications
@@ -359,6 +362,16 @@ const generateCards = (markets, type) => {
         isNew: true,
         title: MARKET_IS_MOST_LIKELY_INVALID_TITLE,
         buttonLabel: TYPE_VIEW_DETAILS,
+      };
+    } else if (type === NOTIFICATION_TYPES.finalizeMarket) {
+      defaults = {
+        type,
+        isImportant: false,
+        isNew: true,
+        title: 'Finalize Warp Sync Market',
+        buttonLabel: TYPE_VIEW_DETAILS,
+        queueName: TRANSACTIONS,
+        queueId: FINALIZE,
       };
     }
     return defaults;
