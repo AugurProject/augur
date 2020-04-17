@@ -9,7 +9,6 @@ import {
   formatAttoRep,
   formatAttoEth,
   formatAttoDai,
-  formatRep,
 } from 'utils/format-number';
 import {
   PlaceTradeDisplayParams,
@@ -33,11 +32,10 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   BUY,
   ZERO,
-  DAI,
-  REP,
   ETHER,
   NETWORK_IDS,
 } from 'modules/common/constants';
+import { TransactionResponse } from 'ethers/providers';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { CreateMarketData, LiquidityOrder } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
@@ -57,16 +55,21 @@ export function isWeb3Transport(): boolean {
 }
 
 export async function isTransactionConfirmed(hash: string): Promise<boolean> {
-  const tx = await getTransaction(hash);
-  if (!tx) {
+  const confirmations = await transactionConfirmations(hash);
+  if (confirmations === null || confirmations === undefined) {
     console.log('Transaction could not be found', hash);
     return false;
   }
   // confirmations is number of blocks beyond block that includes tx
-  return tx.confirmations > 0;
+  return confirmations > 0;
 }
 
-export async function getTransaction(hash: string): Promise<any> {
+export async function transactionConfirmations(hash: string): Promise<number> {
+  const tx = await getTransaction(hash);
+  return tx?.confirmations;
+}
+
+export async function getTransaction(hash: string): Promise<TransactionResponse> {
   const Augur = augurSdk.get();
   const tx = await Augur.getTransaction(hash);
   return tx;

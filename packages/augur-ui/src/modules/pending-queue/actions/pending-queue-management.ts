@@ -1,10 +1,11 @@
 import { BaseAction, CreateMarketData } from "modules/types";
 import { TransactionMetadata } from "contract-dependencies-ethers/build";
-import { isTransactionConfirmed } from 'modules/contracts/actions/contractCalls';
+import { isTransactionConfirmed, transactionConfirmations } from 'modules/contracts/actions/contractCalls';
 import { TXEventName } from '@augurproject/sdk';
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { TRANSACTIONS, CANCELORDER } from "modules/common/constants";
+import { TRANSACTIONS, CANCELORDER, TX_CHECK_BLOCKNUMBER_LIMIT } from "modules/common/constants";
+import { AppState } from "appStore";
 
 export const ADD_PENDING_DATA = "ADD_PENDING_DATA";
 export const REMOVE_PENDING_DATA = "REMOVE_PENDING_DATA";
@@ -57,16 +58,35 @@ export const addPendingData = (
   status: string,
   hash: string,
   info?: CreateMarketData,
-): BaseAction => ({
-  type: ADD_PENDING_DATA,
-  data: {
+): BaseAction => addPendingDataWithBlockNumber(
     pendingId,
     queueName,
     status,
     hash,
-    info
-  },
-});
+    info,
+);
+
+const addPendingDataWithBlockNumber = (
+  pendingId: string,
+  queueName: string,
+  status: string,
+  hash: string,
+  info?: CreateMarketData
+): BaseAction => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  const { blockchain } = getState();
+  const blockNumber = blockchain.currentBlockNumber;
+  return {
+    type: ADD_PENDING_DATA,
+    data: {
+      pendingId,
+      queueName,
+      status,
+      hash,
+      info,
+      blockNumber,
+    },
+  };
+};
 
 export const removePendingData = (
   pendingId: string,
@@ -84,8 +104,52 @@ export const removePendingDataByHash = (
   data: { hash, queueName },
 });
 
-export const addCanceledOrder = (orderId: string, status: string, hash: string) => (dispatch: ThunkDispatch<void, any, Action>) =>
+export const addCanceledOrder = (orderId: string, status: string, hash: string) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(addPendingData(orderId, CANCELORDER, status, hash));
+}
 
 export const removeCanceledOrder = (orderId: string) => (dispatch: ThunkDispatch<void, any, Action>) =>
   dispatch(removePendingData(orderId, CANCELORDER));
+
+interface PendingItem {
+  queueName: string;
+  pendingId: string;
+  status: string;
+  blockNumber: number;
+  hash: string;
+  parameters?: any;
+  data: CreateMarketData;
+}
+
+export const findAndSetTransactionsTimeouts = (blockNumber: number) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  const { pendingQueue } = getState();
+  const pending = TXEventName.Pending;
+  const topBlockNumber = blockNumber + TX_CHECK_BLOCKNUMBER_LIMIT;
+  const pendingItems: PendingItem[] = Object.keys(pendingQueue).reduce(
+    (p, queueName) =>
+      p.concat(Object.keys(pendingQueue[queueName]).map(
+        pendingId => ({queueName, pendingId, ...pendingQueue[queueName][pendingId]}
+      )).filter(pendingItem =>
+        pendingItem.status === pending
+          && pendingItem.hash
+          && pendingItem.blockNumber > topBlockNumber
+          )),
+    [] as PendingItem[]
+  );
+  pendingItems.forEach(async queueItem => {
+    const confirmations = await transactionConfirmations(queueItem.hash);
+    if (confirmations === undefined) {
+      dispatch(addPendingData(queueItem.pendingId,
+        queueItem.queueName,
+        TXEventName.Failure,
+        queueItem.hash,
+        queueItem?.data));
+    } else if (confirmations > 0) {
+      dispatch(addPendingData(queueItem.pendingId,
+        queueItem.queueName,
+        TXEventName.Success,
+        queueItem.hash,
+        queueItem?.data));
+    }
+  });
+}
