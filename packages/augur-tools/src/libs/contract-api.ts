@@ -846,4 +846,18 @@ export class ContractAPI {
   async getWarpSyncHashFromMarket(market: ContractInterfaces.Market): Promise<string> {
     return this.augur.warpSync.getWarpSyncHashFromMarket(market);
   }
+
+  async addTokenExchangeLiquidity(attoCash: BigNumber, attoRep: BigNumber): Promise<void> {
+    const contracts = this.augur.contracts;
+    const owner = await this.augur.getAccount();
+    const now = new Date();
+    const deadline = (now.valueOf() * 1) + 3600000;
+    const APPROVAL_AMOUNT = new BigNumber(2**255);
+
+    await this.faucetCashUpTo(attoCash);
+    await this.faucetRepUpTo(attoRep)
+    await contracts.cash.approve(contracts.uniswap.address, APPROVAL_AMOUNT)
+    await contracts.reputationToken.approve(contracts.uniswap.address, APPROVAL_AMOUNT)
+    await contracts.uniswap.addLiquidity(contracts.reputationToken.address, contracts.cash.address, attoRep, attoCash, new BigNumber(0), new BigNumber(0), owner, new BigNumber(deadline))
+  }
 }

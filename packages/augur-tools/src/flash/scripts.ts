@@ -2215,4 +2215,28 @@ export function addScripts(flash: FlashSession) {
         console.log(`${trader.privateKey} -> ${trader.address}`);
       })
     }});
+
+    flash.addScript({
+      name: 'add-dai-rep-exchange-liquidity',
+      options: [
+        {
+          name: 'reputationToken',
+          abbr: 'r',
+          description: 'amount of REP to provide to the exchange',
+          required: true,
+        },
+        {
+          name: 'cashAmount',
+          abbr: 'c',
+          description: 'amount of DAI to provide to the exchange',
+          required: true,
+        },
+      ],
+      async call(this: FlashSession, args: FlashArguments) {
+        const attoRep = new BigNumber(Number(args.reputationToken)).times(_1_ETH);
+        const attoCash = new BigNumber(Number(args.cashAmount)).times(_1_ETH);
+        const user = await this.createUser(this.getAccount(), this.config);
+        await user.addTokenExchangeLiquidity(attoCash, attoRep);
+      },
+    });
 }
