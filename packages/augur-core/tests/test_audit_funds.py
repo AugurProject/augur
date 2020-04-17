@@ -42,45 +42,6 @@ def test_shares(kitchenSinkFixture, universe, cash, market, scalarMarket):
     assert results[3][0] == scalarMarket.address
     assert results[3][1] == 300000
 
-def test_affiliates(kitchenSinkFixture, universe, cash, market):
-    affiliates = kitchenSinkFixture.contracts['Affiliates']
-    shareToken = kitchenSinkFixture.contracts['ShareToken']
-    auditFunds = kitchenSinkFixture.contracts['AuditFunds']
-
-    accountFingerprint = longTo32Bytes(11)
-    affiliateFingerprint = longTo32Bytes(12)
-
-    account = kitchenSinkFixture.accounts[0]
-    affiliate = kitchenSinkFixture.accounts[1]
-
-    affiliates.setFingerprint(accountFingerprint, sender=account)
-    affiliates.setFingerprint(affiliateFingerprint, sender=affiliate)
-    affiliates.setReferrer(affiliate)
-
-    numSets = 10
-    cost = numSets * market.getNumTicks()
-    cash.faucet(cost)
-    shareToken.buyCompleteSets(market.address, account, numSets)
-    shareToken.sellCompleteSets(market.address, account, account, numSets, accountFingerprint)
-
-    expectedAffiliateFees = cost * .0025
-    expectedAffiliateFees *= .8
-
-    assert market.affiliateFeesAttoCash(affiliate) == expectedAffiliateFees
-
-    finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**2])
-
-    marketResult, done = auditFunds.getAvailableAffiliateFees(affiliate, 0, 1)
-    assert len(marketResult) == 1
-    assert done == False
-    assert marketResult[0][0] == market.address
-    assert marketResult[0][1] == expectedAffiliateFees
-
-    results, done = auditFunds.getAvailableAffiliateFees(affiliate, 0, 10)
-    assert done
-    assert results[0][0] == market.address
-    assert results[0][1] == expectedAffiliateFees
-
 def test_reports(kitchenSinkFixture, universe, cash, market):
     auditFunds = kitchenSinkFixture.contracts['AuditFunds']
 

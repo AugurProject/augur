@@ -18362,27 +18362,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "affiliateFeesAttoCash",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "augur",
 			"outputs": [
@@ -19291,21 +19270,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "totalPreFinalizationAffiliateFeesAttoCash",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -19375,27 +19339,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_affiliate",
-					"type": "address"
-				}
-			],
-			"name": "withdrawAffiliateFees",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	],
@@ -30962,54 +30905,6 @@
 					"internalType": "address",
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_account",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_offset",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_num",
-					"type": "uint256"
-				}
-			],
-			"name": "getAvailableAffiliateFees",
-			"outputs": [
-				{
-					"components": [
-						{
-							"internalType": "contract IMarket",
-							"name": "market",
-							"type": "address"
-						},
-						{
-							"internalType": "uint256",
-							"name": "fees",
-							"type": "uint256"
-						}
-					],
-					"internalType": "struct AuditFunds.AffiliateFeesData[]",
-					"name": "_data",
-					"type": "tuple[]"
-				},
-				{
-					"internalType": "bool",
-					"name": "_done",
-					"type": "bool"
 				}
 			],
 			"payable": false,

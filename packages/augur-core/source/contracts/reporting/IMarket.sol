@@ -48,5 +48,4 @@ contract IMarket is IOwnable {
     function finalize() public returns (bool);
     function isFinalized() public view returns (bool);
     function getOpenInterest() public view returns (uint256);
-    function affiliateFeesAttoCash(address) external view returns (uint256);
 }
