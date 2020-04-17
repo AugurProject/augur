@@ -206,7 +206,7 @@ export function checkForUserInputFilled(
     ) {
       return 'Must be a whole positive number';
     } else if (
-      input.validationType === ValidationType.NUMBER &&
+      (input.validationType === ValidationType.NUMBER || input.validationType === ValidationType.NUMBER_ONE_DECIMAL) &&
       checkValidNumber(input.userInput)
     ) {
       return 'Must enter a valid number';
