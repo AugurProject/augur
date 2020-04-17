@@ -72,22 +72,6 @@ contract AuditFunds is Initializable {
         }
     }
 
-    function getAvailableAffiliateFees(address _account, uint256 _offset, uint256 _num) external view returns (AffiliateFeesData[] memory _data, bool _done) {
-        _data = new AffiliateFeesData[](_num);
-        for (uint256 _i = 0; _i < _num; _i++) {
-            address _marketAddress = addressFrom(marketFactory, _offset +_i + 1);
-            if (!_marketAddress.exists()) {
-                return (_data, true);
-            }
-            IMarket _market = IMarket(_marketAddress);
-            if (!_market.isFinalized() || _market.isFinalizedAsInvalid()) {
-                continue;
-            }
-            _data[_i].market = _market;
-            _data[_i].fees = _market.affiliateFeesAttoCash(_account);
-        }
-    }
-
     function getAvailableReports(address _account, uint256 _offset, uint256 _num) external view returns (StakeData[] memory _data, bool _done) {
         _data = new StakeData[](_num);
         for (uint256 _i = 0; _i < _num; _i++) {

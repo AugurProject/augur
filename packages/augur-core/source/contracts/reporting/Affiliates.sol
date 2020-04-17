@@ -8,7 +8,7 @@ import 'ROOT/reporting/AffiliateValidator.sol';
  * @notice A contract used to record an account's referrer and their browser fingerprint for use in the affiliate system
  */
 contract Affiliates {
-    // Maps an account to their fingerprint. Used to naievly filter out attempts at self reference
+    // Maps an account to their fingerprint. Used to naively filter out attempts at self reference
     mapping (address => bytes32) public fingerprints;
 
     // Maps an account to the referral account. Used to apply affiliate fees on settlement.

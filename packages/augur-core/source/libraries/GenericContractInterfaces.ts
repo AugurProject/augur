@@ -7345,13 +7345,6 @@ export class Market<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public affiliateFeesAttoCash_ = async (arg0: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"affiliateFeesAttoCash","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [arg0], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public augur_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"augur","outputs":[{"internalType":"contract IAugur","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -7790,13 +7783,6 @@ export class Market<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public totalPreFinalizationAffiliateFeesAttoCash_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"totalPreFinalizationAffiliateFeesAttoCash","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public transferOwnership = async (newOwner: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -7847,25 +7833,6 @@ export class Market<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"warpSync","outputs":[{"internalType":"contract IWarpSync","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
-	}
-
-	public withdrawAffiliateFees = async (affiliate: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_affiliate","type":"address"}],"name":"withdrawAffiliateFees","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [affiliate], 'withdrawAffiliateFees', options.sender)
-	}
-	
-	public withdrawAffiliateFees_estimateGas = async (affiliate: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_affiliate","type":"address"}],"name":"withdrawAffiliateFees","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [affiliate], 'withdrawAffiliateFees', options.sender)
-	}
-
-	public withdrawAffiliateFees_ = async (affiliate: string, options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_affiliate","type":"address"}],"name":"withdrawAffiliateFees","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [affiliate], options.sender)
-		return <boolean>result[0]
 	}
 }
 
@@ -12567,13 +12534,6 @@ export class AuditFunds<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"disputeCrowdsourcerFactory","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
-	}
-
-	public getAvailableAffiliateFees_ = async (account: string, offset: TBigNumber, num: TBigNumber, options?: { sender?: string }): Promise<{_data: Array<{ market: string, fees: TBigNumber }>, _done: boolean}> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"},{"internalType":"uint256","name":"_offset","type":"uint256"},{"internalType":"uint256","name":"_num","type":"uint256"}],"name":"getAvailableAffiliateFees","outputs":[{"components":[{"internalType":"contract IMarket","name":"market","type":"address"},{"internalType":"uint256","name":"fees","type":"uint256"}],"internalType":"struct AuditFunds.AffiliateFeesData[]","name":"_data","type":"tuple[]"},{"internalType":"bool","name":"_done","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account, offset, num], options.sender)
-		return <{_data: Array<{ market: string, fees: TBigNumber }>, _done: boolean}>result
 	}
 
 	public getAvailableDisputes_ = async (account: string, offset: TBigNumber, num: TBigNumber, options?: { sender?: string }): Promise<{_data: Array<{ market: string, bond: string, amount: TBigNumber }>, _done: boolean}> => {
