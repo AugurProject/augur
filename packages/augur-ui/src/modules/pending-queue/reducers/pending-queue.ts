@@ -31,7 +31,7 @@ export default function(pendingQueue: PendingQueue = deepClone<PendingQueue>(DEF
       const { hash, queueName } = data;
       let pending = pendingQueue;
       if (pendingQueue[queueName]) {
-        const queue = pendingQueue;
+        const queue = pendingQueue[queueName];
         pending[queueName] = Object.keys(queue).reduce(
           (p, o) => (queue[o].hash !== hash ? {...p, [o]: queue[o]} : p),
           {}
