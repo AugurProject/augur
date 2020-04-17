@@ -1,5 +1,5 @@
 export const LIST_VALUES = {
-  MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Aug', 'September', 'October', 'November', 'December'],
+  MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
   YEARS: ['2020', '2021', '2022', '2023', '2024', '2025'],
   PRES_YEARS: ['2020', '2024', '2028'],
   SUMMER_OLYMPIC_YEARS: ['2021', '2024', '2028'],

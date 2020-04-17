@@ -6413,12 +6413,15 @@ export const TEMPLATES = {
                 eventExpEndNextMonth: true,
                 yearDropdown: 1,
                 values: LIST_VALUES.MONTHS,
+                noSort: true,
               },
               {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                eventExpEndNextMonth: true,
                 values: LIST_VALUES.YEARS,
+                monthDropdown: 0,
               },
               {
                 id: 2,
@@ -6429,12 +6432,12 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1]% or Higher`,
+                placeholder: `[2]% or Higher`,
               },
               {
                 id: 4,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Below [1]%`,
+                placeholder: `Below [2]%`,
               },
             ],
             resolutionRules: {
@@ -6457,12 +6460,15 @@ export const TEMPLATES = {
                 eventExpEndNextMonth: true,
                 yearDropdown: 1,
                 values: LIST_VALUES.MONTHS,
+                noSort: true,
               },
               {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                eventExpEndNextMonth: true,
                 values: LIST_VALUES.YEARS,
+                monthDropdown: 0,
               },
             ],
             tickSize: 0.1,

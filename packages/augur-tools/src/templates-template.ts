@@ -136,6 +136,11 @@ export interface CategoricalOutcomes {
   [id: number]: string;
 }
 
+export interface EventExpEndNextMonth {
+  id: number;
+  yearDropdown?: number;
+  monthDropdown?: number;
+}
 export interface DateDependencies {
   id: number;
   noWeekendHolidays?: boolean;
@@ -170,6 +175,7 @@ export interface TemplateValidation {
   noAdditionalOutcomes: boolean;
   hoursAfterEstimatedStartTime: number;
   daysAfterStartDate: number;
+  eventExpEndNextMonthValues: EventExpEndNextMonth[];
   categoricalOutcomes: CategoricalOutcomes;
 }
 
@@ -209,6 +215,7 @@ export interface TemplateInput {
   categoryDestId?: number;
   eventExpEndNextMonth?: boolean;
   yearDropdown?: number;
+  monthDropdown?: number;
   inputDestValues: {
     // dropdown source data structure to use to set target input list values
     [key: string]: string[];
@@ -449,6 +456,26 @@ function daysRequiredAfterStartDate(
   // add number of hours to estimated start timestamp then compare to market event expiration
   const secondsAfterStartDate = SECONDS_IN_A_DAY * daysAfterStartDate;
   return (Number(input.timestamp) + secondsAfterStartDate) >= Number(endTime);
+}
+
+function daysRequiredAfterMonthDate(
+  inputs: ExtraInfoTemplateInput[],
+  eventExpEndNextMonthValues: EventExpEndNextMonth[],
+  endTime: number
+) {
+  const monthId = eventExpEndNextMonthValues.find(i => i.yearDropdown !== undefined);
+  const yearId = eventExpEndNextMonthValues.find(i => i.monthDropdown !== undefined);
+
+  const monthInput = monthId && inputs.find(i => i.id === monthId.id);
+  const yearInput = yearId && inputs.find(i => i.id === yearId.id);
+
+  if (!monthInput || !yearInput) return false;
+  const monthNum = moment().month(monthInput.value).format("M");
+  const date = moment(`${monthNum}-1-${yearInput.value}`, "MM-DD-YYYY").add(1, 'M');
+  const newEndTime = moment(date).endOf('month').unix();
+  if (newEndTime > Number(endTime)) {
+    return false;
+  } else return true;
 }
 
 function dateStartAfterMarketEndTime(
@@ -701,6 +728,19 @@ export const isTemplateMarket = (
     ) {
       errors.push(
         'start date in question is not the required number of days before market event expiration endTime'
+      );
+      return false;
+    }
+
+    if (
+      !daysRequiredAfterMonthDate(
+        template.inputs,
+        validation.eventExpEndNextMonthValues,
+        new BigNumber(endTime).toNumber()
+      )
+    ) {
+      errors.push(
+        'month and year in question is not a month before market event expiration endTime'
       );
       return false;
     }
