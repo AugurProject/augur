@@ -44,12 +44,6 @@ import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { EXCHANGE_RATE_BUFFER_MULTIPLIER } from 'contract-dependencies-gsn/src/ContractDependenciesGSN';
 
-export function clearUserTx(): void {
-  // const Augur = augurSdk.get();
-  // TODO: impl this for ethers
-  // old comment - clear ethrpc transaction history, registered callbacks, and alerts
-}
-
 export function isWeb3Transport(): boolean {
   return augurSdk.isWeb3Transport;
 }

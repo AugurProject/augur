@@ -33,20 +33,18 @@ export const loadPendingQueue = (pendingQueue: any) => (
 export const addUpdatePendingTransaction = (
   methodCall: string,
   status: string,
-  blockNumber: number = 0,
   hash: string = null,
   info?: TransactionMetadata,
-): BaseAction => ({
-  type: ADD_PENDING_DATA,
-  data: {
-    pendingId: methodCall,
-    queueName: TRANSACTIONS,
-    blockNumber,
+): BaseAction => (dispatch: ThunkDispatch<void, any, Action>) => {
+  dispatch(addPendingDataWithBlockNumber(
+    methodCall,
+    TRANSACTIONS,
     status,
     hash,
-    info
-  },
-});
+    info,
+  ));
+  };
+
 
 export const removePendingTransaction = (
   methodCall: string,
@@ -58,34 +56,36 @@ export const addPendingData = (
   status: string,
   hash: string,
   info?: CreateMarketData,
-): BaseAction => addPendingDataWithBlockNumber(
-    pendingId,
-    queueName,
-    status,
-    hash,
-    info,
-);
+): BaseAction => (dispatch: ThunkDispatch<void, any, Action>) => {
+    dispatch(addPendingDataWithBlockNumber(
+      pendingId,
+      queueName,
+      status,
+      hash,
+      info,
+  ));
+  }
 
 const addPendingDataWithBlockNumber = (
   pendingId: string,
   queueName: string,
   status: string,
   hash: string,
-  info?: CreateMarketData
+  info?: CreateMarketData | TransactionMetadata,
 ): BaseAction => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { blockchain } = getState();
   const blockNumber = blockchain.currentBlockNumber;
-  return {
-    type: ADD_PENDING_DATA,
-    data: {
-      pendingId,
-      queueName,
-      status,
-      hash,
-      info,
-      blockNumber,
-    },
-  };
+    dispatch({
+      type: ADD_PENDING_DATA,
+      data: {
+        pendingId,
+        queueName,
+        status,
+        hash,
+        info,
+        blockNumber,
+      },
+    });
 };
 
 export const removePendingData = (
@@ -124,7 +124,7 @@ interface PendingItem {
 export const findAndSetTransactionsTimeouts = (blockNumber: number) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { pendingQueue } = getState();
   const pending = TXEventName.Pending;
-  const topBlockNumber = blockNumber + TX_CHECK_BLOCKNUMBER_LIMIT;
+  const topBlockNumber = blockNumber - TX_CHECK_BLOCKNUMBER_LIMIT;
   const pendingItems: PendingItem[] = Object.keys(pendingQueue).reduce(
     (p, queueName) =>
       p.concat(Object.keys(pendingQueue[queueName]).map(
@@ -132,7 +132,7 @@ export const findAndSetTransactionsTimeouts = (blockNumber: number) => (dispatch
       )).filter(pendingItem =>
         pendingItem.status === pending
           && pendingItem.hash
-          && pendingItem.blockNumber > topBlockNumber
+          && pendingItem.blockNumber < topBlockNumber
           )),
     [] as PendingItem[]
   );
