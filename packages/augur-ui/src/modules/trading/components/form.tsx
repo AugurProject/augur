@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import {
   SCALAR,
-  MIN_QUANTITY,
   UPPER_FIXED_PRECISION_BOUND,
   BUY,
   SELL,
@@ -12,6 +11,7 @@ import {
   ONE,
   SMALL_MOBILE,
   MIN_ORDER_LIFESPAN,
+  MIN_QUANTITY,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
@@ -838,6 +838,7 @@ class Form extends Component<FromProps, FormState> {
     const s = this.state;
 
     const tickSize = parseFloat(market.tickSize);
+    const quantityStep = getPrecision(tickSize, .001);
     const max = maxPrice && maxPrice.toString();
     const min = minPrice && minPrice.toString();
     const errors = Array.from(
@@ -905,8 +906,7 @@ class Form extends Component<FromProps, FormState> {
                 type="number"
                 step={
                   quantityValue && quantityValue !== ''
-                    ? MIN_QUANTITY.toFixed()
-                    : 1
+                    && isScalar ? quantityStep : 10
                 }
                 placeholder="0.00"
                 value={quantityValue}
