@@ -124,19 +124,18 @@ interface PendingItem {
 export const findAndSetTransactionsTimeouts = (blockNumber: number) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { pendingQueue } = getState();
   const pending = TXEventName.Pending;
-  const topBlockNumber = blockNumber - TX_CHECK_BLOCKNUMBER_LIMIT;
-  const pendingItems: PendingItem[] = Object.keys(pendingQueue).reduce(
+  const thresholdBlockNumber = blockNumber - TX_CHECK_BLOCKNUMBER_LIMIT;
+  Object.keys(pendingQueue).reduce(
     (p, queueName) =>
       p.concat(Object.keys(pendingQueue[queueName]).map(
         pendingId => ({queueName, pendingId, ...pendingQueue[queueName][pendingId]}
       )).filter(pendingItem =>
         pendingItem.status === pending
           && pendingItem.hash
-          && pendingItem.blockNumber < topBlockNumber
+          && pendingItem.blockNumber < thresholdBlockNumber
           )),
     [] as PendingItem[]
-  );
-  pendingItems.forEach(async queueItem => {
+  ).forEach(async queueItem => {
     const confirmations = await transactionConfirmations(queueItem.hash);
     if (confirmations === undefined) {
       dispatch(addPendingData(queueItem.pendingId,
