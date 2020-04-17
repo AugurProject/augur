@@ -6,10 +6,11 @@ const Sitemap = require('react-router-sitemap').default;
 
 const address =
   process.env.NODE_ENV === 'development'
-    ? 'https://v2.augur.net'
-    : `https://cloudflare-eth.com/${process.env.IPFS_STABLE_LOADER_HASH}`;
+    ? 'https://v2.augur.net/#!'
+    : `https://cloudflare-eth.com/${process.env.IPFS_STABLE_LOADER_HASH ||
+        'QmVfCcpugkz2WRCWJ75jnDSKAGXAQEgV8XEd839An6aXLE'}/#!`;
 
-new Sitemap(router).build(address).save('./sitemap.xml');
+new Sitemap(router).build(address).save('./src/sitemap.xml');
 
 const robotsFileData = `User-agent: *
 Sitemap: ${address}/sitemap.xml
