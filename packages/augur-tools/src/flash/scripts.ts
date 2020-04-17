@@ -1854,7 +1854,7 @@ export function addScripts(flash: FlashSession) {
           autoReport: Boolean(args.autoReport) && Boolean(this.config?.deploy?.privateKey),
         }
       });
-      const api = await startServer(this.config, this.getAccount().address);
+      const api = await startServer(this.config);
       const app = createApp(api);
 
       const httpServer = this.config.server?.startHTTP && runHttpServer(app, this.config);
