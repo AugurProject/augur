@@ -10,6 +10,8 @@ const address =
     : `https://cloudflare-eth.com/${process.env.IPFS_STABLE_LOADER_HASH ||
         'QmVfCcpugkz2WRCWJ75jnDSKAGXAQEgV8XEd839An6aXLE'}/#!`;
 
+console.log(`Using the following base address: "${address}".`);
+
 new Sitemap(router).build(address).save('./src/sitemap.xml');
 
 const robotsFileData = `User-agent: *
@@ -17,7 +19,7 @@ Sitemap: ${address}/sitemap.xml
 Disallow:
 `;
 
-fs.writeFile('./robots.txt', robotsFileData, error => {
+fs.writeFile('./src/robots.txt', robotsFileData, error => {
   if (error) {
     console.log(error);
   } else {
@@ -25,4 +27,4 @@ fs.writeFile('./robots.txt', robotsFileData, error => {
   }
 });
 
-console.log('The sitemap was built.'); // Only shows this message after everything works well.
+console.log(`The sitemap was built!`);
