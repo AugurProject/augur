@@ -538,7 +538,7 @@ export class ContractAPI {
     return this.augur.contracts.universeFromAddress(universeAddress);
   }
 
-  async advanceTimestamp(secondsToAdvance: BigNumber): Promise<void> {
+  async advanceTimestamp(secondsToAdvance: number|BigNumber): Promise<void> {
     const currentTimestamp = await this.getTimestamp();
     return this.setTimestamp(currentTimestamp.plus(secondsToAdvance))
   }
@@ -760,7 +760,8 @@ export class ContractAPI {
     this.augur.setUseRelay(useRelay);
   }
 
-  async getWalletAddress(account: string): Promise<string> {
+  async getWalletAddress(account?: string): Promise<string> {
+    if (!account) account = await this.augur.getAccount();
     return this.augur.gsn.calculateWalletAddress(account);
   }
 
