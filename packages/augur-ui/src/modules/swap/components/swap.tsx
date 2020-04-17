@@ -7,6 +7,7 @@ import {
   TRANSACTIONS,
   SWAPEXACTTOKENSFORTOKENS,
   SWAPETHFOREXACTTOKENS,
+  ZERO,
 } from 'modules/common/constants';
 import { AccountBalances, FormattedNumber } from 'modules/types';
 import {
@@ -45,7 +46,7 @@ export const Swap = ({
   REP_RATE,
 }: SwapProps) => {
 
-
+  const hasEth = createBigNumber(balances.eth).gt(ZERO);
   let formattedInputAmount: FormattedNumber;
   let outputAmount: FormattedNumber = formatEther(0);
 
@@ -108,17 +109,18 @@ export const Swap = ({
     setErrorMessage('');
     if (fromToken === REP) {
       if (fromTokenType === REP) {
-        setFromTokenType(ETH);
+        hasEth ? setFromTokenType(ETH) : REP;
       } else {
         setFromTokenType(REP);
       }
     } else if (fromToken === DAI) {
       if (fromTokenType === DAI) {
-        setFromTokenType(ETH);
+        hasEth ? setFromTokenType(ETH) : DAI;
       } else {
         setFromTokenType(DAI);
       }
     }
+    clearForm()
   }
 
   if (fromTokenType === DAI) {
@@ -158,7 +160,7 @@ export const Swap = ({
           amount={formatEther(inputAmount)}
           token={fromTokenType}
           label={'Input'}
-          showChevron={true}
+          showChevron={hasEth}
           balance={formattedInputAmount}
           logo={
             fromTokenType === DAI
