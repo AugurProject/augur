@@ -131,24 +131,23 @@ export const findAndSetTransactionsTimeouts = (blockNumber: number) => (dispatch
         pendingId => ({queueName, pendingId, ...pendingQueue[queueName][pendingId]}
       )).filter(pendingItem =>
         pendingItem.status === pending
-          && pendingItem.hash
           && pendingItem.blockNumber < thresholdBlockNumber
           )),
     [] as PendingItem[]
   ).forEach(async queueItem => {
-    const confirmations = await transactionConfirmations(queueItem.hash);
-    if (confirmations === undefined) {
-      dispatch(addPendingData(queueItem.pendingId,
-        queueItem.queueName,
-        TXEventName.Failure,
-        queueItem.hash,
-        queueItem?.data));
-    } else if (confirmations > 0) {
-      dispatch(addPendingData(queueItem.pendingId,
-        queueItem.queueName,
-        TXEventName.Success,
-        queueItem.hash,
-        queueItem?.data));
-    }
+      const confirmations = queueItem.hash ? await transactionConfirmations(queueItem.hash) : undefined;
+      if (confirmations === undefined) {
+        dispatch(addPendingData(queueItem.pendingId,
+          queueItem.queueName,
+          TXEventName.Failure,
+          queueItem.hash,
+          queueItem?.data));
+      } else if (confirmations > 0) {
+        dispatch(addPendingData(queueItem.pendingId,
+          queueItem.queueName,
+          TXEventName.Success,
+          queueItem.hash,
+          queueItem?.data));
+      }
   });
 }
