@@ -33,7 +33,7 @@ const HELP_LINKS = [
       }),
     },
   },
-  {    
+  {
     label: 'help center',
     link: HELP_CENTER,
   },
@@ -50,7 +50,7 @@ const HELP_LINKS = [
     link: HELP_CENTER_HOW_TO_DISPUTE,
   },
   {
-    label: 'submit feedback',
+    label: 'report a bug',
     link: 'https://github.com/AugurProject/augur/issues/new/choose',
   },
   {
