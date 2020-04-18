@@ -1609,7 +1609,7 @@
     levenary "^1.1.1"
     semver "^5.5.0"
 
-"@babel/preset-es2015@^7.0.0-beta.53":
+"@babel/preset-es2015@7.0.0-beta.53":
   version "7.0.0-beta.53"
   resolved "https://registry.yarnpkg.com/@babel/preset-es2015/-/preset-es2015-7.0.0-beta.53.tgz#4982fa1948db1093766288f69913e2ce360311e4"
   integrity sha1-SYL6GUjbEJN2Yoj2mRPizjYDEeQ=
@@ -22327,7 +22327,7 @@ react-router-dom@4.3.1:
     react-router "^4.3.1"
     warning "^4.0.1"
 
-react-router-sitemap@^1.2.0:
+react-router-sitemap@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/react-router-sitemap/-/react-router-sitemap-1.2.0.tgz#4a32ddf7a1adbb3ad3c59a4e3e5338ca00b4febb"
   integrity sha512-3aETwxCFTGHsGbXpyh7sr+c/WDr0q1rpng0M4pgoV6Owl3673buejPHGvzDmZEdiqhRa+I0znRDneKRc1NC06Q==
@@ -23394,7 +23394,7 @@ sass-graph@^2.2.4:
     scss-tokenizer "^0.2.3"
     yargs "^7.0.0"
 
-sass-loader@^8.0.2:
+sass-loader@8.0.2:
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-8.0.2.tgz#debecd8c3ce243c76454f2e8290482150380090d"
   integrity sha512-7o4dbSK8/Ol2KflEmSco4jTjQoV988bM82P9CZdmo9hR3RLnvNc0ufMNdMrB0caq38JQ/FgF4/7RcbcfKzxoFQ==
