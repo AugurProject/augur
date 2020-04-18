@@ -20,8 +20,8 @@ export class BulkSyncStrategy extends AbstractSyncStrategy implements SyncStrate
     startBlockNumber: number,
     endBlockNumber: number,
   ): Promise<number> {
-    if(!endBlockNumber) throw new Error('Cannot bulk sync forever. Please pass in an endblock');
-    if(startBlockNumber > endBlockNumber) throw new Error('Starting point of bulk sync must be less than or equal to the endpoint')
+    if(!endBlockNumber) throw new Error('Cannot bulk sync forever. Please pass in an ending block for the syncing range.');
+    if(startBlockNumber > endBlockNumber) throw new Error(`Attempting to bulk sync logs starting at block ${startBlockNumber}, but ethereum says the current block number is ${endBlockNumber}, which is before ${startBlockNumber}. If you're in development mode and restarted your eth node, make sure to clear your browser's IndexDB state before continuing. If you're connected to hosted testnet infrastructure, then something is wrong and it is returning an old value for eth_blockNumber.`)
 
     console.log(`Syncing from ${startBlockNumber} to ${endBlockNumber}`);
     for(const [fromBlock, toBlock] of chunkRange(startBlockNumber, endBlockNumber, this.chunkSize)) {

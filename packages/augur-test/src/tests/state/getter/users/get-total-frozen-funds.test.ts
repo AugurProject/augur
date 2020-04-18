@@ -8,7 +8,7 @@ import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersPro
 import {
   _beforeAll,
   _beforeEach,
-  doTrade,
+  doTradeTakerView,
   LONG,
   PLTradeData,
   YES,
@@ -91,7 +91,7 @@ describe('State API :: Users :: ', () => {
 
     for (const trade of trades) {
       await john.setTimestamp(new BigNumber(trade.timestamp));
-      await doTrade(john, mary, trade, trade.market);
+      await doTradeTakerView(john, mary, trade, trade.market);
     }
 
     await john.sync();
