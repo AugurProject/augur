@@ -11,6 +11,7 @@ import {
   INVALID_OUTCOME_NAME,
   SUBMIT_DISPUTE,
   SCALAR_DOWN_ID,
+  SCALAR_INVALID_BEST_BID_ALERT_VALUE as INVALID_ALERT_PERCENTAGE,
 } from 'modules/common/constants';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
@@ -77,7 +78,9 @@ export const Outcome = (props: OutcomeProps) => {
           ) : (
             <span>{props.description}</span>
           )}
-          <span className={classNames({ [Styles.Zero]: percent === 0 })}>
+          <span className={classNames({ [Styles.Zero]: percent === 0,
+          [Styles.InvalidPrice]: props.invalid
+            && percent >= INVALID_ALERT_PERCENTAGE.toNumber()})}>
             {percent === 0
               ? `0.00${props.isScalar ? '' : '%'}`
               : `${formatDai(percent).formatted}%`}
