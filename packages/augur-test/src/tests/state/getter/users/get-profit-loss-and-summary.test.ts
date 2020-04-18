@@ -12,6 +12,7 @@ import {
 } from './common';
 import { formatBytes32String } from 'ethers/utils';
 import { Market } from "@augurproject/core/build/libraries/ContractInterfaces";
+import { repeat } from '@augurproject/utils';
 
 const ZERO = new BigNumber(0);
 const HOUR = 60 * 60;
@@ -532,10 +533,3 @@ async function claimProceeds(market: Market, users: TestContractAPI[]) {
   }
 }
 
-function repeat<T>(thing: T, times: number): T[] {
-  const things: T[] = [];
-  for (let i = 0; i < times; i++) {
-    things.push(thing);
-  }
-  return things;
-}
