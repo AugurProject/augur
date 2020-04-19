@@ -90,12 +90,17 @@ export default class Favorites extends Component<FavoritesProps> {
       customClass = favoriteStyles.WatchlistEmptyDisplay;
     }
 
+    let sortByStyles = {}
+    if (getTheme() === THEMES.TRADING) {
+      sortByStyles = { minWidth: "10.625rem" };
+    }
+
     return (
       <FilterBox
         title={getTheme() === THEMES.TRADING ? "Watchlist" : "Favorites"}
         customClass={customClass}
         sortByOptions={sortByOptions}
-        sortByStyles={{ minWidth: "10.625rem" }}
+        sortByStyles={sortByStyles}
         markets={markets}
         filterComp={filterComp}
         renderRightContent={this.renderRightContent}

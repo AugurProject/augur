@@ -7,9 +7,6 @@ import { SCALAR, SIGN_SEND_ORDERS } from 'modules/common/constants';
 import MarketTitle from 'modules/market/containers/market-title';
 import { TXEventName } from '@augurproject/sdk';
 import { SubmitTextButton } from 'modules/common/buttons';
-import { THEMES } from "modules/common/constants";
-
-import { getTheme } from 'modules/app/actions/update-app-status';
 import Styles from 'modules/portfolio/components/common/market-row.styles.less';
 
 export interface TimeObject {
