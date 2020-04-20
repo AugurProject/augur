@@ -78,7 +78,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     const { blockchain, loginAccount } = getState();
 
     if (ADD_PENDING_QUEUE_METHOD_CALLS.includes(methodCall)) {
-      dispatch(addUpdatePendingTransaction(methodCall, eventName, blockchain.currentBlockNumber, hash, { ...transaction }));
+      dispatch(addUpdatePendingTransaction(methodCall, eventName, hash, { ...transaction }));
     }
 
     if (eventName === TXEventName.RelayerDown) {
@@ -159,7 +159,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         if (params._markets.length === 1) {
           dispatch(addPendingData(params._markets[0], CLAIMMARKETSPROCEEDS, eventName, hash, {...transaction}));
         } else {
-          dispatch(addUpdatePendingTransaction(methodCall, eventName, blockchain.currentBlockNumber, hash, { ...transaction }));
+          dispatch(addUpdatePendingTransaction(methodCall, eventName, hash, { ...transaction }));
         }
         break;
       }

@@ -68,7 +68,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
-import { removePendingDataByHash, addPendingData, removePendingData, removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
+import { removePendingDataByHash, addPendingData, removePendingData, removePendingTransaction, findAndSetTransactionsTimeouts } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
@@ -203,6 +203,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
     dispatch(
       loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
     );
+    dispatch(findAndSetTransactionsTimeouts(log.highestAvailableBlockNumber));
   }
   // update ETH/REP rate and gasPrice each block
   dispatch(getEthToDaiRate());
@@ -540,7 +541,7 @@ export const handleMarketParticipantsDisavowedLog = (logs: any) => (
 ) => {
   const marketIds = logs.map(log => log.market);
   marketIds.map(marketId => {
-    dispatch(addPendingData(marketId, DISAVOWCROWDSOURCERS, TXEventName.Success, 0, {}));
+    dispatch(addPendingData(marketId, DISAVOWCROWDSOURCERS, TXEventName.Success, "0"));
   })
   dispatch(loadMarketsInfo(marketIds));
 };
