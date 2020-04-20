@@ -62,6 +62,7 @@ const getProfitLossSummaryParams = t.partial({
   universe: t.string,
   account: t.string,
   endTime: t.number,
+  ignoreAwaitingAndFinalizedMarkets: t.boolean
 });
 
 const getProfitLossParams = t.intersection([
@@ -70,6 +71,7 @@ const getProfitLossParams = t.intersection([
     startTime: t.number,
     periodInterval: t.number,
     outcome: t.number,
+    ignoreAwaitingAndFinalizedMarkets: t.boolean,
   }),
 ]);
 
@@ -238,13 +240,19 @@ export class Users {
     let userPositions: UserTradingPositions = null;
     let userStakedRep: AccountReportingHistory = null;
 
+    marketList = await Markets.getMarkets(augur, db, {
+      creator: params.account,
+      universe: params.universe,
+    });
+
     userTradeHistory = await OnChainTrading.getTradingHistory(augur, db, {
       account: params.account,
       universe: params.universe,
       filterFinalized: true,
     });
 
-    const uniqMarketIds = Object.keys(userTradeHistory);
+    const userCreateMarketIds = _.map(marketList.markets, 'id');
+    const uniqMarketIds = Object.keys(userTradeHistory).concat(userCreateMarketIds);
 
     if (uniqMarketIds.length > 0) {
       marketTradeHistory = await OnChainTrading.getTradingHistory(augur, db, {
@@ -259,12 +267,6 @@ export class Users {
 
     userOpenOrders = await Users.getUserOpenOrders(augur, db, {
       account: params.account,
-      universe: params.universe,
-    });
-
-    marketList = await Markets.getMarkets(augur, db, {
-      creator: params.account,
-      designatedReporter: params.account,
       universe: params.universe,
     });
 
@@ -288,6 +290,7 @@ export class Users {
     const profitLoss = await Users.getProfitLossSummary(augur, db, {
       account: params.account,
       universe: params.universe,
+      ignoreAwaitingAndFinalizedMarkets: true,
     });
 
     const funds = await Users.getTotalOnChainFrozenFunds(augur, db, {
@@ -314,11 +317,14 @@ export class Users {
     );
     const userOpenOrdersMarketIds = Object.keys(userOpenOrders.orders);
     if (userOpenOrdersMarketIds.length === 0) console.log('User has no open orders')
+    const warpSyncMarket = await augur.getWarpSyncMarket(params.universe);
+
     const set = new Set(
       uniqMarketIds
         .concat(userOpenOrdersMarketIds)
         .concat(stakedRepMarketIds)
         .concat(userPositionsMarketIds)
+        .concat(warpSyncMarket.address)
     );
 
     var marketIds: string[] = Array.from(set);
@@ -365,6 +371,7 @@ export class Users {
     const profitLoss = await Users.getProfitLossSummary(augur, db, {
       account: params.account,
       universe: params.universe,
+      ignoreAwaitingAndFinalizedMarkets: true,
     });
 
     const funds = await Users.getTotalOnChainFrozenFunds(augur, db, {
@@ -908,7 +915,7 @@ export class Users {
       ].userSharesBalances = marketOutcomeBalances[marketData.market]
         ? Object.keys(marketOutcomeBalances[marketData.market]).reduce(
             (p, outcome) => {
-              p[outcome] = convertOnChainAmountToDisplayAmount(
+              p[outcome] = String(convertOnChainAmountToDisplayAmount(
                 new BigNumber(
                   marketOutcomeBalances[marketData.market][outcome]
                 ),
@@ -917,7 +924,7 @@ export class Users {
                   new BigNumber(marketData.prices[0]),
                   new BigNumber(marketData.prices[1])
                 )
-              );
+              ));
               return p;
             },
             {}
@@ -939,6 +946,7 @@ export class Users {
     profitLossSummary = await Users.getProfitLossSummary(augur, db, {
       universe,
       account: params.account,
+      ignoreAwaitingAndFinalizedMarkets: true,
     });
 
     return {
@@ -1032,6 +1040,7 @@ export class Users {
         "'getProfitLoss' requires a 'startTime' param be provided"
       );
     }
+    const ignoreAwaitingAndFinalizedMarkets = params.ignoreAwaitingAndFinalizedMarkets;
     const now = await augur.contracts.augur.getTimestamp_();
     const startTime = params.startTime!;
     const endTime = params.endTime || now.toNumber();
@@ -1049,7 +1058,7 @@ export class Users {
         params.account,
         Dexie.maxKey
       ]).toArray();
-    const profitLossByMarketAndOutcome = await getProfitLossRecordsByMarketAndOutcome(
+    let profitLossByMarketAndOutcome = await getProfitLossRecordsByMarketAndOutcome(
       db,
       params.account!,
       profitLossOrders
@@ -1098,6 +1107,17 @@ export class Users {
         return _.keyBy(marketShares, 'outcome');
       }
     );
+
+    if (ignoreAwaitingAndFinalizedMarkets) {
+      profitLossByMarketAndOutcome = _.reduce(Object.keys(profitLossByMarketAndOutcome), (filteredMarkets, marketId) => {
+        const marketDoc = markets[marketId];
+        if (marketDoc.reportingState === MarketReportingState.AwaitingFinalization ||
+        marketDoc.reportingState === MarketReportingState.Finalized) {
+          return filteredMarkets
+        }
+        return {...filteredMarkets, [marketId] : profitLossByMarketAndOutcome[marketId] };
+      }, {})
+    }
 
     const buckets = bucketRangeByInterval(startTime, endTime, periodInterval);
     return _.map(buckets, bucketTimestamp => {
@@ -1204,6 +1224,7 @@ export class Users {
           startTime,
           endTime,
           periodInterval,
+          ignoreAwaitingAndFinalizedMarkets: days === ONE_DAY ? params.ignoreAwaitingAndFinalizedMarkets : false,
         }
       );
 

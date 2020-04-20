@@ -14,8 +14,7 @@ const mergeProps = (sP: AppState) => {
   const { expectedNetwork } = sP.modal;
   const description: Array<string> | undefined = [];
   if (isMetaMask()) {
-    description.push(`MetaMask is connected to the wrong Ethereum network.`);
-    description.push(`Please set the MetaMask network to: ${expectedNetwork}.`);
+    description.push(`MetaMask is connected to the wrong Ethereum network. Please set the MetaMask network to: ${expectedNetwork}.`);
   } else {
     description.push(
       `Your Ethereum node and Augur node are connected to different networks.`,

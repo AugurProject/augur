@@ -9,6 +9,7 @@ import {
   formatAttoRep,
   formatAttoEth,
   formatAttoDai,
+  formatRep,
 } from 'utils/format-number';
 import {
   PlaceTradeDisplayParams,
@@ -32,6 +33,10 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   BUY,
   ZERO,
+  DAI,
+  REP,
+  ETHER,
+  NETWORK_IDS,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { CreateMarketData, LiquidityOrder } from 'modules/types';
@@ -39,6 +44,7 @@ import { formatBytes32String } from 'ethers/utils';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import { getFingerprint } from 'utils/get-fingerprint';
+import { EXCHANGE_RATE_BUFFER_MULTIPLIER } from 'contract-dependencies-gsn/src/ContractDependenciesGSN';
 
 export function clearUserTx(): void {
   // const Augur = augurSdk.get();
@@ -335,40 +341,77 @@ export function getEthForDaiRate(): BigNumber {
   return ethToDaiRate;
 }
 
-export async function uniswapDaiForEthRate(dai: BigNumber): Promise<BigNumber> {
-  return new BigNumber(104);
+export async function addLiquidityRepDai(dai: BigNumber, rep: BigNumber): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
+  const cashAmount = dai.multipliedBy(ETHER);
+  const repAmount = rep.multipliedBy(ETHER);
+
+  uniswap.addLiquidity(contracts.reputationToken.address, contracts.cash.address, repAmount, cashAmount, new BigNumber(0), new BigNumber(0));
 }
 
-export async function uniswapRepForDaiRate(rep: BigNumber): Promise<BigNumber> {
-  return new BigNumber(108);
+export async function uniswapDaiForRep(dai: BigNumber, rep: BigNumber): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
+
+  const exactDai = dai.multipliedBy(10**18);
+  const networkId = getNetworkId();
+  const isMainnet = networkId === NETWORK_IDS.Mainnet;
+  const TRADE_SPREAD = isMainnet ? EXCHANGE_RATE_BUFFER_MULTIPLIER : 1.75;
+  const minRep = rep.minus(rep.multipliedBy(TRADE_SPREAD - 1)).multipliedBy(10**18);
+
+  try {
+    await uniswap.swapExactTokensForTokens(contracts.cash.address, contracts.reputationToken.address, exactDai, minRep);
+  }
+  catch(error) {
+    console.error('uniswapDaiForRep', error);
+    throw error;
+  }
 }
 
-export async function uniswapDaiForRepRate(dai: BigNumber): Promise<BigNumber> {
-  return new BigNumber(110);
+export async function uniswapRepForDai(rep: BigNumber, dai: BigNumber): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
+
+  const exactRep = rep.multipliedBy(10**18);
+  const networkId = getNetworkId();
+  const isMainnet = networkId === NETWORK_IDS.Mainnet;
+  const TRADE_SPREAD = isMainnet ? EXCHANGE_RATE_BUFFER_MULTIPLIER : 1.75;
+  const minDai = dai.minus(dai.multipliedBy(TRADE_SPREAD - 1)).multipliedBy(10**18);
+
+  try {
+    await uniswap.swapExactTokensForTokens(contracts.reputationToken.address, contracts.cash.address, exactRep, minDai);
+  }
+  catch(error) {
+    console.error('uniswapRepForDai', error);
+    throw error;
+  }
 }
 
-export async function uniswapEthForRep(wei: BigNumber): Promise<BigNumber> {
-  return new BigNumber(103);
+
+export async function uniswapEthForDai(eth: BigNumber, dai: BigNumber): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
+  const exactDai = dai.multipliedBy(10**18);
+  const maxEth = eth.multipliedBy(10**18).multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER);
+
+  try {
+    await uniswap.swapETHForExactTokens(contracts.cash.address, exactDai, maxEth);
+  }
+  catch(error) {
+    console.error('uniswapEthForDai', error);
+    throw error;
+  }
 }
 
-export async function uniswapRepForEth(rep: BigNumber): Promise<BigNumber> {
-  return new BigNumber(101);
-}
+export async function uniswapEthForRep(eth: BigNumber, rep: BigNumber): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
+  const exactRep = rep.multipliedBy(10**18);
+  const maxEth = eth.multipliedBy(10**18).multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER);
 
-export async function uniswapEthForDai(wei: BigNumber): Promise<BigNumber> {
-  return new BigNumber(107);
-}
-
-export async function uniswapDaiForEth(dai: BigNumber): Promise<BigNumber> {
-  return new BigNumber(105);
-}
-
-export async function uniswapRepForDai(rep: BigNumber): Promise<BigNumber> {
-  return new BigNumber(109);
-}
-
-export async function uniswapDaiForRep(dai: BigNumber): Promise<BigNumber> {
-  return new BigNumber(111);
+  try {
+    await uniswap.swapETHForExactTokens(contracts.reputationToken.address, exactRep, maxEth);
+  }
+  catch(error) {
+    console.error('uniswapEthForRep', error);
+    throw error;
+  }
 }
 
 export function getRep() {
@@ -522,6 +565,25 @@ export async function doInitialReportWarpSync(report: doReportDisputeAddStake) {
     payoutNumerators,
     report.description
   );
+}
+
+// cash the value doesn't change fast
+let attoRep = null;
+export async function getWarpSyncRepReward(
+  warpMarketAddress: string
+): Promise<string> {
+  if (!attoRep) {
+    const Augur = augurSdk.get();
+    attoRep = await Augur.contracts.warpSync.getFinalizationReward_(
+      warpMarketAddress
+    ).catch(e => {
+      console.error(e);
+      return formatAttoRep(0).formatted;
+    });
+    return formatAttoRep(attoRep || 0).formatted;
+  } else {
+    return formatAttoRep(attoRep || 0).formatted;
+  }
 }
 
 export async function addRepToTentativeWinningOutcome_estimateGas(

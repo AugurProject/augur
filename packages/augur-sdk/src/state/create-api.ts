@@ -1,5 +1,7 @@
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { logger } from '@augurproject/logger';
+import { LoggerLevels } from '@augurproject/logger/build';
 import { BigNumber } from 'bignumber.js';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
@@ -72,7 +74,7 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     client.events.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
-    console.log('Syncing Complete - SDK Ready');
+    logger.info('Syncing Complete - SDK Ready');
 
     blockAndLogStreamerSyncStrategy.listenForBlockRemoved(logFilterAggregator.onBlockRemoved);
 
@@ -144,7 +146,9 @@ export async function createClient(
 }
 
 export async function createServer(config: SDKConfiguration, client?: Augur, account?: string): Promise<{ api: API, controller: Controller, sync: () => Promise<void> }> {
-  console.log('Creating Server');
+  logger.logLevel = config.logLevel;
+  logger.info('Creating Server');
+
   // Validate the config -- check that the syncing key exists and use defaults if not
   config = {
     syncing: {
@@ -159,9 +163,9 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
   // over a connector TO the server.
   if (!client) {
     const creatingClientLabel = 'Creating a new client';
-    console.time(creatingClientLabel);
+    logger.time(LoggerLevels.debug, creatingClientLabel);
     client = await createClient(config, new EmptyConnector(), account, undefined, undefined, true);
-    console.time(creatingClientLabel);
+    logger.timeEnd(LoggerLevels.debug, creatingClientLabel);
   }
 
   const ethersProvider: EthersProvider = client.provider as EthersProvider;
@@ -222,8 +226,6 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
 
 export async function startServer(config: SDKConfiguration, account?: string): Promise<API> {
   const { api, sync } = await createServer(config, undefined, account);
-
-
 
   // TODO should this await?
   sync();

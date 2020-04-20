@@ -60,8 +60,8 @@ interface Schemas {
   [table: string]: string;
 }
 
-// Prune horizon is 30 days.
-const PRUNE_HORIZON = SECONDS_IN_A_DAY.multipliedBy(30).toNumber();
+// Prune horizon is 60 days.
+const PRUNE_HORIZON = SECONDS_IN_A_DAY.multipliedBy(60).toNumber();
 
 export class DB {
   private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
@@ -398,7 +398,7 @@ export class DB {
   }
 
   async prune(timestamp: number) {
-    // Discover the markets that whose time has come.
+    // Discover the markets whose time has come.
     const marketsToRemove = await this.MarketFinalized.where('timestamp')
       .belowOrEqual(`0x${(timestamp - PRUNE_HORIZON).toString(16)}`)
       .toArray();
@@ -413,37 +413,15 @@ export class DB {
         [...indexes, primaryKey].includes('market')
       )
       .map(({ EventName }) => EventName)
-      .filter((eventName) => eventName !== 'ShareTokenBalanceChanged');
 
     await Promise.all(
-      [...dbsToRemoveMarketsFrom, 'Markets', 'MarketVolumeChangedRollup', 'MarketOIChangedRollup'].map(dbName =>
+      [...dbsToRemoveMarketsFrom, 'Markets', 'MarketVolumeChangedRollup', 'MarketOIChangedRollup', 'ShareTokenBalanceChangedRollup'].map(dbName =>
         this[dbName]
           .where('market')
           .anyOf(marketIdsToRemove)
           .delete()
       )
     );
-
-    // Now to deal with 'ShareTokenBalanceChanged' logs.
-    const rollupShareTokenBalanceChangedLogs = await this.ShareTokenBalanceChangedRollup.where(
-      'market'
-    )
-    .anyOf(marketIdsToRemove)
-    .toArray();
-
-    await this.ShareTokenBalanceChanged.where(
-      'market'
-    )
-    .anyOf(marketIdsToRemove)
-    .and((needle) => !rollupShareTokenBalanceChangedLogs.some(
-        (stack) =>
-          // We need to filter out the matches because we are removing the matches.
-          needle.outcome === stack.outcome &&
-          needle.blockNumber === stack.blockNumber &&
-          needle.logIndex === stack.logIndex
-      )
-    )
-    .delete();
   }
 
   /**

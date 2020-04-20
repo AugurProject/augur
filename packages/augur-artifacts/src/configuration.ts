@@ -1,3 +1,4 @@
+import { LoggerLevels } from '@augurproject/logger';
 import path from 'path';
 import deepmerge from 'deepmerge';
 import requireAll from 'require-all';
@@ -77,7 +78,9 @@ export interface SDKConfiguration {
     useGSN?: boolean,
     syncSDK?: boolean,
     skipApproval?: boolean,
-  }
+  },
+  // In the JSON configs an integer will need to be used.
+  logLevel?: LoggerLevels,
 };
 
 export interface ContractAddresses {
@@ -117,6 +120,7 @@ export interface ContractAddresses {
   UniswapV2Factory?: string;
   EthExchange?: string;
   UniswapV2Router01?: string;
+  AuditFunds?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.
@@ -231,6 +235,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     startWSS: true,
   },
   uploadBlockNumber: 0,
+  logLevel: LoggerLevels.warn,
 };
 
 export function isDevNetworkId(id: NetworkId): boolean {

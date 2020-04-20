@@ -79,7 +79,7 @@
     margin: 0;
 
     > span {
-      color: var(--color-secondary-text);
+      color: var(--color-primary-text);
     }
   }
 }
@@ -945,6 +945,22 @@ span.PendingLabel {
 
   @media @breakpoint-mobile {
     margin: 0 @size-16 @size-16;
+  }
+}
+
+.ModalMessageLabelInitWallet {
+  margin: unset;
+
+  @media @breakpoint-mobile {
+    margin: unset;
+  }
+}
+
+.ModalMessageAutoCancel {
+  margin: @size-24 0;
+
+  @media @breakpoint-mobile {
+    margin: @size-24 0;
   }
 }
 

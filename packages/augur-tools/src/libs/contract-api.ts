@@ -28,6 +28,7 @@ import moment from 'moment';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const MAX_APPROVAL = new BigNumber(2).pow(256).minus(1);
+const MAX_REP_FAUCET = new BigNumber(499999).multipliedBy(10**18);
 
 export class ContractAPI {
   static async userWrapper(
@@ -537,7 +538,7 @@ export class ContractAPI {
     return this.augur.contracts.universeFromAddress(universeAddress);
   }
 
-  async advanceTimestamp(secondsToAdvance: BigNumber): Promise<void> {
+  async advanceTimestamp(secondsToAdvance: number|BigNumber): Promise<void> {
     const currentTimestamp = await this.getTimestamp();
     return this.setTimestamp(currentTimestamp.plus(secondsToAdvance))
   }
@@ -547,6 +548,14 @@ export class ContractAPI {
 
     if (this.augur.contracts.isTimeControlled(time)) {
       await time.setTimestamp(timestamp);
+
+      try {
+        // sync our timestamp with our fake timestamp.
+        await this.provider.providerSend('evm_mine', [timestamp.toNumber()])
+      } catch (e) {
+        // Not using ganache. Nothing really to do here.
+      }
+
     } else {
       throw Error('Cannot set timestamp because Time contract is not TimeControlled');
     }
@@ -625,6 +634,7 @@ export class ContractAPI {
   }
 
   async faucetRep(attoRep: BigNumber, useLegacy = false): Promise<void> {
+    attoRep = BigNumber.min(attoRep, MAX_REP_FAUCET);
     const reputationToken = this.augur.contracts.getReputationToken();
     if (useLegacy) {
       await this.augur.contracts.legacyReputationToken.faucet(attoRep);
@@ -644,7 +654,7 @@ export class ContractAPI {
     const balance = await this.getRepBalance(address);
     const leftToFaucet = attoRep.minus(balance);
     if (leftToFaucet.gt(0)) {
-      const totalToFaucet = leftToFaucet.plus(extra);
+      const totalToFaucet = BigNumber.min(MAX_REP_FAUCET, leftToFaucet.plus(extra));
       await this.faucetRep(totalToFaucet, useLegacy);
     }
   }
@@ -679,7 +689,7 @@ export class ContractAPI {
   }
 
   async finalizeWarpSyncMarket(warpSyncMarket: ContractInterfaces.Market) {
-    const timestamp = (await this.getTimestamp()).plus(1000000);;
+    const timestamp = (await this.getTimestamp()).plus(1000000);
     await this.setTimestamp(timestamp);
 
     await this.finalizeMarket(warpSyncMarket);
@@ -750,7 +760,8 @@ export class ContractAPI {
     this.augur.setUseRelay(useRelay);
   }
 
-  async getWalletAddress(account: string): Promise<string> {
+  async getWalletAddress(account?: string): Promise<string> {
+    if (!account) account = await this.augur.getAccount();
     return this.augur.gsn.calculateWalletAddress(account);
   }
 

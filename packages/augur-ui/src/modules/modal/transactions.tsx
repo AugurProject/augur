@@ -246,7 +246,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
         break;
     }
     // @ts-ignore
-    setQuantitySort(quantitySort);
+    setQuantitySort(updatedQuantitySort);
     setFilteredTransactions(filteredTransactions);
   };
 
@@ -464,7 +464,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
         <DismissableNotice
           show
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE}
-          title="Augur only saves the data for 30 days after a market is finalized"
+          title="Augur only saves the data for 60 days after a market is finalized"
         />
       </section>
       <div>

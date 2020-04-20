@@ -1,11 +1,13 @@
 import { SDKConfiguration, NetworkId } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
+import { logger } from '@augurproject/logger';
 import { BigNumber } from 'bignumber.js';
 import { EthersSigner, TransactionStatus, TransactionStatusCallback } from 'contract-dependencies-ethers';
 import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
+import { LoggerLevels } from '../../augur-logger/build';
 import { ContractEvents } from './api/ContractEvents';
 import { Contracts } from './api/Contracts';
 import { HotLoading, DisputeWindow, GetDisputeWindowParams } from './api/HotLoading';
@@ -97,7 +99,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.events = new Subscriptions(augurEmitter);
     this.events.on(SubscriptionEventName.SDKReady, () => {
       this._sdkReady = true;
-      console.log('SDK is ready')
+      logger.info('SDK is ready')
     });
 
     this.connector.client = this;
@@ -287,6 +289,19 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.connector?.bindTo(f);
   }
 
+  /*
+  * Enums are not available at runtime. These acceptable values/meanings.
+  * debug = 0
+  * info  = 1
+  * warn  = 2
+  * error = 3
+  */
+  setLoggerLevel(logLevel: LoggerLevels) {
+    if(0 >= logLevel && logLevel <= 3) {
+      logger.logLevel = logLevel;
+    }
+  }
+
   async on(
     eventName: SubscriptionEventName | TXEventName | string,
     callback: Callback | TXStatusCallback
@@ -411,6 +426,9 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.warpSync.getWarpSyncHashFromPayout(payout[2]);
   };
 
+  getWarpSyncMarket = (universe: string): Promise<ContractInterfaces.Market> => {
+    return this.warpSync.getWarpSyncMarket(universe);
+  }
   getProfitLoss = (
     params: Parameters<typeof Users.getProfitLoss>[2]
   ): ReturnType<typeof Users.getProfitLoss> => {

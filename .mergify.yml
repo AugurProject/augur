@@ -7,6 +7,7 @@ pull_request_rules:
       - status-success=AugurProject.augur
       - base=master
       - label!=work-in-progress
+      - label!=status/wip
     actions:
       merge:
         method: merge

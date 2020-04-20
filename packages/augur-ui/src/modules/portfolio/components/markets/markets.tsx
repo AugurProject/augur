@@ -42,7 +42,7 @@ const sortByOptions = [
     value: 'recentlyDepleted',
     comp(marketA, marketB) {
       return (
-        marketB.recentlyTraded.timestamp - marketA.recentlyTraded.timestamp
+        marketB.recentlyDepleted.timestamp - marketA.recentlyDepleted.timestamp
       );
     },
   },
@@ -175,6 +175,7 @@ class MyMarkets extends Component<MyMarketsProps> {
           'description',
           'reportingState',
           'recentlyTraded',
+          'recentlyDepleted',
           'creationTime',
           'endTime',
         ]}

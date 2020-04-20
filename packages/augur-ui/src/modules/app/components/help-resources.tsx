@@ -33,7 +33,7 @@ const HELP_LINKS = [
       }),
     },
   },
-  {    
+  {
     label: 'help center',
     link: HELP_CENTER,
   },
@@ -50,7 +50,7 @@ const HELP_LINKS = [
     link: HELP_CENTER_HOW_TO_DISPUTE,
   },
   {
-    label: 'submit feedback',
+    label: 'report a bug',
     link: 'https://github.com/AugurProject/augur/issues/new/choose',
   },
   {
@@ -63,20 +63,19 @@ export const HelpMenuList = () => {
   return (
     <ul className={classNames(Styles.HelpMenuList)}>
       <li>popular help resources</li>
-      {HELP_LINKS.map(
-        ({ className, link, label, customLink, showNonLink }, index) => (
-          <li key={'helpLink_' + index} className={className}>
-            <ExternalLinkButton
-              light
-              URL={link}
-              label={label}
-              customLink={customLink}
-              showNonLink={showNonLink}
-            />
-          </li>
-        )
-      )}
-    </ul>
+      {HELP_LINKS.filter(({ label }) => label !== 'view trading tutorial').map(({ className, link, label, customLink, showNonLink, lightLink }, index) => (
+        <li key={'helpLink_' + index} className={className}>
+          <ExternalLinkButton
+            light
+            URL={link}
+            label={label}
+            customLink={customLink}
+            showNonLink={showNonLink}
+            lightLink={lightLink}
+          />
+        </li>
+      ))}
+    </span>
   );
 };
 

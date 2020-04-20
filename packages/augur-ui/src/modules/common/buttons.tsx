@@ -489,6 +489,17 @@ export const DepositButton = (props: DefaultActionButtonProps) => (
   </button>
 );
 
+export const TransferButton = (props: DefaultActionButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.CurrenyActionButton}
+    disabled={props.disabled}
+    title={props.title || 'Withdraw'}
+  >
+    Transfer
+  </button>
+);
+
 export const WithdrawButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
@@ -496,18 +507,7 @@ export const WithdrawButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Withdraw'}
   >
-    Withdraw funds
-  </button>
-);
-
-export const CashOutButton = (props: DefaultActionButtonProps) => (
-  <button
-    onClick={e => props.action(e)}
-    className={Styles.CurrenyActionButton}
-    disabled={props.disabled}
-    title={props.title || 'Withdraw'}
-  >
-    Cash Out
+    Withdraw
   </button>
 );
 

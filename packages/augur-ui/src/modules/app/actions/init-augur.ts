@@ -17,6 +17,8 @@ import {
   MODAL_LOADING,
   MODAL_ERROR,
   SIGNIN_SIGN_WALLET,
+  MODAL_NETWORK_MISMATCH,
+  NETWORK_NAMES,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'appStore';
@@ -226,7 +228,16 @@ export function connectAugur(
       sdk = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
-      return callback('SDK could not be created', { config });
+      if (provider._network && config.networkId !== provider._network.chainId) {
+        return dispatch(
+          updateModal({
+            type: MODAL_NETWORK_MISMATCH,
+            expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
+          })
+        );
+      } else {
+        return callback('SDK could not be created', { config });
+      }
     }
 
     let universeId = config.addresses?.Universe || sdk.contracts.universe.address;

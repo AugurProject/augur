@@ -812,8 +812,9 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
             with TokenDelta(cash, expectedAffiliateFees, contractsFixture.accounts[3], "Affiliate did not recieve the correct fees"):
                 assert trade.publicFillBestOrder(BID, market.address, 0, fix(1), 60, "43", 6, fingerprint, sender=contractsFixture.accounts[2]) == 0
     else:
-        assert trade.publicFillBestOrder(BID, market.address, 0, fix(0.5), 60, "43", 6, fingerprint, sender=contractsFixture.accounts[2]) == 0
-        assert trade.publicFillBestOrder(BID, market.address, 0, fix(0.5), 60, "43", 6, fingerprint, sender=contractsFixture.accounts[2]) == 0
+        with TokenDelta(cash, 0 if invalid else expectedAffiliateFees, contractsFixture.accounts[3]):
+            assert trade.publicFillBestOrder(BID, market.address, 0, fix(0.5), 60, "43", 6, fingerprint, sender=contractsFixture.accounts[2]) == 0
+            assert trade.publicFillBestOrder(BID, market.address, 0, fix(0.5), 60, "43", 6, fingerprint, sender=contractsFixture.accounts[2]) == 0
 
     assert shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[1]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[1]) == fix(1)
@@ -823,13 +824,6 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[2]) == 0
 
     if not finalized:
-        # We can confirm that the 3rd test account has an affiliate fee balance of 25% of the market creator fee 1% taken from the 1 ETH order
-        assert market.affiliateFeesAttoCash(contractsFixture.accounts[3]) == expectedAffiliateFees
-
-        # The affiliate can withdraw their fees only after the market is finalized as valid
-        with raises(TransactionFailed):
-            market.withdrawAffiliateFees(contractsFixture.accounts[3])
-
         if invalid:
             contractsFixture.contracts["Time"].setTimestamp(market.getDesignatedReportingEndTime() + 1)
             market.doInitialReport([market.getNumTicks(), 0, 0], "", 0)
@@ -838,20 +832,13 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
 
         disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
         contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
-        totalCollectedFees = market.marketCreatorFeesAttoCash() + market.totalPreFinalizationAffiliateFeesAttoCash() + market.validityBondAttoCash()
+        totalCollectedFees = market.marketCreatorFeesAttoCash() + expectedAffiliateFees + market.validityBondAttoCash()
         nextDisputeWindowAddress = universe.getOrCreateNextDisputeWindow(False)
         nextDisputeWindowBalanceBeforeFinalization = cash.balanceOf(universe.getOrCreateNextDisputeWindow(False))
         assert market.finalize()
 
         if invalid:
-            with raises(TransactionFailed):
-                market.withdrawAffiliateFees(contractsFixture.accounts[3])
-            assert cash.balanceOf(universe.getOrCreateNextDisputeWindow(False)) == nextDisputeWindowBalanceBeforeFinalization + totalCollectedFees
-        else:
-            with TokenDelta(cash, expectedAffiliateFees, contractsFixture.accounts[3], "Affiliate did not recieve the correct fees"):
-                market.withdrawAffiliateFees(contractsFixture.accounts[3])
-
-    # No more fees can be withdrawn
-    if not invalid:
-        with TokenDelta(cash, 0, contractsFixture.accounts[3], "Affiliate double received fees"):
-            market.withdrawAffiliateFees(contractsFixture.accounts[3])
+            if finalized:
+                assert cash.balanceOf(universe.getOrCreateNextDisputeWindow(False)) == nextDisputeWindowBalanceBeforeFinalization + totalCollectedFees
+            else:
+                assert cash.balanceOf(universe.getOrCreateNextDisputeWindow(False)) == nextDisputeWindowBalanceBeforeFinalization + totalCollectedFees - expectedAffiliateFees

@@ -2,8 +2,8 @@
     "blockstreamDelay": 10,
     "chunkSize": 100000,
     "ethNodeURLs": {
-        "4": "https://eth-rinkeby.alchemyapi.io/jsonrpc/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
-        "42": "https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA"
+        "4": "https://eth-rinkeby.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
+        "42": "https://eth-kovan.alchemyapi.io/v2/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA"
     },
     "meshClientURLs": {
         "12346": "ws://localhost:60557",

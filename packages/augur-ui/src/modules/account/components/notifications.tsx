@@ -20,7 +20,7 @@ import {
   DisputeTemplate,
   ClaimReportingFeesTemplate,
   UnsignedOrdersTemplate,
-  ProceedsToClaimTemplate, MostLikelyInvalidMarketsTemplate,
+  ProceedsToClaimTemplate, MostLikelyInvalidMarketsTemplate, FinalizeWarpSyncMarketTemplate,
 } from "modules/account/components/notifications-templates";
 
 import { Notification, DateFormattedObject, QueryEndpoints } from "modules/types";
@@ -48,6 +48,7 @@ export interface NotificationsProps extends RouteComponentProps {
   unsignedOrdersModal: Function;
   openOrdersModal: Function;
   toggle: Function;
+  finalize: Function;
 }
 
 export interface NotificationsState {
@@ -149,6 +150,16 @@ class Notifications extends React.Component<
           });
         };
         break;
+
+      case NOTIFICATION_TYPES.finalizeMarket:
+          buttonAction = () => {
+            this.markAsRead(notification);
+            this.disableNotification(notification.id, true);
+            this.props.finalize(notification.market.id, () =>
+              this.disableNotification(notification.id, false)
+            );
+          };
+          break;
 
       default:
         buttonAction = () => {
@@ -285,6 +296,12 @@ class Notifications extends React.Component<
           ) as any : null}
           {type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid ? (
             <MostLikelyInvalidMarketsTemplate
+              isDisabled={isDisabled}
+              {...templateProps}
+            />
+          ) as any : null}
+          {type === NOTIFICATION_TYPES.finalizeMarket ? (
+            <FinalizeWarpSyncMarketTemplate
               isDisabled={isDisabled}
               {...templateProps}
             />

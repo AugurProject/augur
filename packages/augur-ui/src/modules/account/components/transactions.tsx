@@ -3,8 +3,8 @@ import React from 'react';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import {
   DepositButton,
+  TransferButton,
   WithdrawButton,
-  CashOutButton,
   ViewTransactionsButton,
   REPFaucetButton,
   DAIFaucetButton,
@@ -22,14 +22,13 @@ interface TransactionsProps {
   repFaucet: Function;
   daiFaucet: Function;
   deposit: Function;
-  withdraw: Function;
+  transfer: Function;
   transactions: Function;
   approval: Function;
   addFunds: Function;
   legacyRepFaucet: Function;
   cashOut: Function;
   targetAddress: string;
-  signingEth: number;
   signingWalletNoEth: boolean;
   localLabel: string;
 }
@@ -37,14 +36,13 @@ interface TransactionsProps {
 export const Transactions = ({
   transactions,
   addFunds,
-  withdraw,
+  transfer,
   showFaucets,
   repFaucet,
   daiFaucet,
   legacyRepFaucet,
   cashOut,
   targetAddress,
-  signingEth,
   signingWalletNoEth,
   localLabel
 }: TransactionsProps) => (
@@ -64,7 +62,8 @@ export const Transactions = ({
         <div>
           <h4>Your funds</h4>
           <DepositButton action={addFunds} />
-          <WithdrawButton action={withdraw} />
+          <TransferButton action={transfer} />
+          <WithdrawButton action={cashOut} />
           <div>
             <span>
               {AddIcon}

@@ -547,8 +547,7 @@ export default class AppView extends Component<AppProps> {
                 role="presentation"
                 id="mainContent"
               >
-                <BetslipProvider>
-                {!isLogged && (
+                {!isLogged && currentPath === MARKETS && (
                   <div className={Styles.BettingUI}>
                     <ExternalLinkText
                       title={'Betting UI'}
@@ -557,6 +556,7 @@ export default class AppView extends Component<AppProps> {
                     />
                   </div>
                 )}
+                <BetslipProvider>
                 <ForkingBanner />
                 <Routes isLogged={isLogged || restoredAccount} />
                 {isLogged && <Betslip theme={theme} />}

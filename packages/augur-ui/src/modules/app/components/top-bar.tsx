@@ -18,6 +18,8 @@ import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
 import { OddsMenu } from 'modules/app/components/odds-menu';
 import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
+import { formatDai } from 'utils/format-number';
+import { createBigNumber } from 'utils/create-big-number';
 
 interface TopBarProps {
   alertsVisible: boolean;
@@ -62,7 +64,10 @@ const TopBar: React.FC<TopBarProps> = ({
               id={'totalFunds'}
               tipText={TOTAL_FUNDS_TOOLTIP}
             />
-            <LinearPropertyLabel {...realizedPL} highlightAlternateBolded />
+            <div>
+              <span>{realizedPL.label}</span>
+              <MovementLabel value={realizedPL.value} useFull />
+            </div>
           </div>
           <div>
             <span>{realizedPL.label}</span>

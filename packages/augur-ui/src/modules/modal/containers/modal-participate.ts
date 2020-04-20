@@ -12,7 +12,7 @@ import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
 
 const mapStateToProps = (state: AppState) => {
-  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
+  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN) === "true" ? true : false;
 
   return {
     modal: state.modal,

@@ -573,12 +573,6 @@ export class Markets {
         return false;
       }
 
-      if(!params.includeWarpSyncMarkets && market.isWarpSync) {
-        return false;
-      } else if (market.isWarpSync) {
-        return !tentativeWinningHashMatch;
-      }
-
       // Apply reporting states if we did the original query without using that index
       if (!usedReportingStates && params.reportingStates) {
         if (!params.reportingStates.includes(market.reportingState)) return false;
@@ -613,6 +607,13 @@ export class Markets {
           if (market.invalidFilter && market.hasRecentlyDepletedLiquidity) return false;
         }
       }
+
+      if(!params.includeWarpSyncMarkets && market.isWarpSync) {
+        return false;
+      } else if (market.isWarpSync) {
+        return !tentativeWinningHashMatch;
+      }
+      
       return true;
     }).toArray();
 
