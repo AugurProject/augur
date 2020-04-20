@@ -10,6 +10,7 @@ import {
   formatAttoEth,
   formatAttoDai,
   formatRep,
+  formatPercent,
 } from 'utils/format-number';
 import {
   PlaceTradeDisplayParams,
@@ -37,9 +38,10 @@ import {
   REP,
   ETHER,
   NETWORK_IDS,
+  ONE,
 } from 'modules/common/constants';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
-import { CreateMarketData, LiquidityOrder } from 'modules/types';
+import { CreateMarketData, LiquidityOrder, FormattedNumber } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import { ExtraInfoTemplate } from '@augurproject/artifacts';
@@ -435,6 +437,13 @@ export async function getCreateMarketBreakdown() {
     decimals: 4,
   });
   return { validityBondFormatted, noShowFormatted };
+}
+
+export async function getReportingFeePercentage(): Promise<FormattedNumber> {
+  const { contracts } = augurSdk.get();
+  const reportingFee = await contracts.universe.getReportingFeeDivisor_();
+  const reportingFeePercent = (ONE.dividedBy(reportingFee)).times(100);
+  return formatPercent(reportingFeePercent);
 }
 
 export async function buyParticipationTokensEstimateGas(
