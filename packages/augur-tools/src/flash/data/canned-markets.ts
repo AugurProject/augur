@@ -6,7 +6,7 @@ import {
   midnightTomorrow,
 } from '../time';
 import moment from 'moment';
-import { TEMPLATES, POLITICS, US_POLITICS, Template, REQUIRED, FINANCE, INDEXES, AMERICAN_FOOTBALL, SPORTS, NFL } from '@augurproject/artifacts';
+import { TEMPLATES, POLITICS, US_POLITICS, Template, REQUIRED, FINANCE, INDEXES, AMERICAN_FOOTBALL, SPORTS, NFL, SOCCER, MENS_LEAGUES } from '@augurproject/artifacts';
 
 interface AskBid {
   shares: string;
@@ -504,97 +504,141 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
   },
 ]);
 
-
 export const templatedCannedMarkets = (): CannedMarket[] => {
   const markets = [];
-  const usPoliticsTemplates = TEMPLATES[POLITICS].children[US_POLITICS].templates as Template[];
+  const usPoliticsTemplates = TEMPLATES[POLITICS].children[US_POLITICS]
+    .templates as Template[];
   const template1: Template = usPoliticsTemplates[0];
-  const usLongDescription = template1.resolutionRules[REQUIRED].map(m => m.text).join('\n');
+  const usLongDescription = template1.resolutionRules[REQUIRED].map(
+    m => m.text
+  ).join('\n');
   const usInputValues = ['Donald Trump', '2020'];
   const usTemplate = {
     hash: template1.hash,
     question: template1.question,
-    inputs: template1.inputs.map((input) => ({...input, value: usInputValues[input.id]})),
-  }
-  markets.push(
-  {
+    inputs: getFilledInputs(template1, usInputValues),
+  };
+  markets.push({
     marketType: 'yesNo',
     endTime: inTenMonths.getTime() / 1000,
     affiliateFeeDivisor: 0,
-    creatorFeeDecimal: "0.01",
+    creatorFeeDecimal: '0.01',
     extraInfo: {
       categories: ['Politics', 'US Politics'],
-      description:
-        'Will Donald Trump win the 2020 U.S. Presidential election?',
+      description: 'Will Donald Trump win the 2020 U.S. Presidential election?',
       tags: ['Politics', 'US Politics'],
-      longDescription: usLongDescription,
+      longDescription: getLongDescription(template1),
       template: usTemplate,
     },
     orderBook: yesNoOrderBook,
   });
 
-  const finTemplates = TEMPLATES[FINANCE].children[INDEXES].templates as Template[];
+  const finTemplates = TEMPLATES[FINANCE].children[INDEXES]
+    .templates as Template[];
   const finTemplate: Template = finTemplates[0];
-  const finLongDescription = finTemplate.resolutionRules[REQUIRED].map(m => m.text).join('\n');
   const wed = 3;
-  const finExpDate = moment().day(wed).add(3, 'weeks').add(6, 'hours');
-  const date = finExpDate.format("MMMM DD, YYYY");
+  const finExpDate = moment()
+    .day(wed)
+    .add(3, 'weeks')
+    .add(6, 'hours');
+  const date = finExpDate.format('MMMM DD, YYYY');
   const finUnixEndTime = finExpDate.unix();
   const finInputValues = ['Dow Jones Industrial Average', '25000', date];
   const finDescription = fillInQuestion(finTemplate, finInputValues);
   const finInputTemplate = {
     hash: finTemplate.hash,
     question: finTemplate.question,
-    inputs: finInputValues.map((input, index) => ({id: finTemplate.inputs[index].id, type: finTemplate.inputs[index].type, value: input})),
-  }
-  markets.push(
-  {
+    inputs: getFilledInputs(finTemplate, finInputValues),
+  };
+  markets.push({
     marketType: 'yesNo',
     endTime: finUnixEndTime,
     affiliateFeeDivisor: 0,
-    creatorFeeDecimal: "0.015",
+    creatorFeeDecimal: '0.015',
     extraInfo: {
       categories: [FINANCE, INDEXES],
       description: finDescription,
       tags: [],
-      longDescription: finLongDescription,
+      longDescription: getLongDescription(finTemplate),
       template: finInputTemplate,
     },
     orderBook: yesNoOrderBook,
   });
 
-const fbTemplates = TEMPLATES[SPORTS].children[AMERICAN_FOOTBALL].children[NFL].templates as Template[];
-const fbTemplate: Template = fbTemplates[3];
-const longDescription = fbTemplate.resolutionRules[REQUIRED].map(m => m.text).join('\n');
-const expDate = moment().add(3, 'weeks');
-const year = expDate.year();
-const unixEndTime = expDate.unix();
-const inputValues = ['Dallas Cowboys', '9', String(year)];
-const description = fillInQuestion(fbTemplate, inputValues);
-const template = {
-  hash: fbTemplate.hash,
-  question: fbTemplate.question,
-  inputs: fbTemplate.inputs.map((input) => ({...input, value: inputValues[input.id]})),
-}
-markets.push(
-{
-  marketType: 'yesNo',
-  endTime: unixEndTime,
-  affiliateFeeDivisor: 0,
-  creatorFeeDecimal: "0.01",
-  extraInfo: {
-    categories: [SPORTS, AMERICAN_FOOTBALL, NFL],
-    description,
-    tags: [],
-    longDescription,
-    template,
-  },
-  orderBook: yesNoOrderBook,
-});
+  const fbTemplates = TEMPLATES[SPORTS].children[AMERICAN_FOOTBALL].children[
+    NFL
+  ].templates as Template[];
+  const fbTemplate: Template = fbTemplates[3];
+  const expDate = moment().add(3, 'weeks');
+  const year = expDate.year();
+  const unixEndTime = expDate.unix();
+  const inputValues = ['Dallas Cowboys', '9', String(year)];
+  const description = fillInQuestion(fbTemplate, inputValues);
+  const template = {
+    hash: fbTemplate.hash,
+    question: fbTemplate.question,
+    inputs: getFilledInputs(fbTemplate, inputValues),
+  };
+  markets.push({
+    marketType: 'yesNo',
+    endTime: unixEndTime,
+    affiliateFeeDivisor: 0,
+    creatorFeeDecimal: '0.01',
+    extraInfo: {
+      categories: [SPORTS, AMERICAN_FOOTBALL, NFL],
+      description,
+      tags: [],
+      longDescription: getLongDescription(fbTemplate),
+      template,
+    },
+    orderBook: yesNoOrderBook,
+  });
 
+  const socTemplates = TEMPLATES[SPORTS].children[SOCCER].children[MENS_LEAGUES]
+    .templates as Template[];
+  const socTemplate: Template = socTemplates[0];
+  const socExpDate = moment().add(3, 'weeks');
+  const estTime = socExpDate.unix();
+  const socEndTime = socExpDate.add(8, 'hours').unix();
+  const socInputValues = [
+    'English Premier League',
+    'Liverpool',
+    'Manchester United',
+    String(estTime),
+  ];
+  const socDescription = fillInQuestion(socTemplate, socInputValues);
+  const socInputTemplate = {
+    hash: socTemplate.hash,
+    question: socTemplate.question,
+    inputs: getFilledInputs(socTemplate, socInputValues),
+  };
+  const convertedMarkets = massageMarkets([
+    {
+      marketType: 'categorical',
+      endTime: socEndTime,
+      affiliateFeeDivisor: 0,
+      creatorFeeDecimal: '0.01',
+      outcomes: [
+        'Liverpool',
+        'Manchester United',
+        'Draw',
+        'Unofficial game/Cancelled',
+      ],
+      extraInfo: {
+        categories: [SPORTS, SOCCER, MENS_LEAGUES],
+        description: socDescription,
+        tags: [],
+        longDescription: getLongDescription(socTemplate),
+        template: socInputTemplate,
+      },
+      orderBook: yesNoOrderBook,
+    },
+  ]);
+
+  markets.push(convertedMarkets[0]);
 
   return markets;
-}
+};
 
 const fillInQuestion = (template, values) => {
   let description = template.question;
@@ -604,3 +648,16 @@ const fillInQuestion = (template, values) => {
   });
   return description;
 }
+
+const getLongDescription = (template) => {
+  return template.resolutionRules[REQUIRED].map(m => m.text).join('\n');
+}
+
+const getFilledInputs = (template, values) => {
+  return values.map((value, index) => ({
+    id: template.inputs[index].id,
+    type: template.inputs[index].type,
+    value,
+    timestamp: !isNaN(value) ? value : null,
+  }));
+};
