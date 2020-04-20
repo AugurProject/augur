@@ -27,7 +27,6 @@ module.exports = {
       "react-dom",
       "redux",
       "redux-thunk",
-      "moment",
       "react-datetime",
       `${PATHS.APP}/main`
     ],
@@ -151,14 +150,7 @@ module.exports = {
     // `unusedExports: true` is required by DeadCodePlugin
     usedExports: true,
     splitChunks: {
-      maxSize: 7*1024*1024,
-      cacheGroups: {
-        vendor: {
-          test: /node_modules\/(?!@augurproject)/,
-          name: 'vendor',
-          chunks: 'all',
-        }
-      }
+      maxSize: 7*1024*1024
     }
   },
   plugins: [
