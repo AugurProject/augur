@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 
 import { TextInput } from "modules/common/form";
 import { LargeSubheaders } from "modules/create-market/components/common";
@@ -16,10 +16,13 @@ import QuadBox from "modules/portfolio/components/common/quad-box";
 import Visibility from "modules/create-market/containers/visibility";
 
 import Styles from "modules/create-market/fees-liquidity.styles.less";
-import { OutcomeFormatted, NewMarket } from "modules/types";
+import { OutcomeFormatted, NewMarket, FormattedNumberOptions, FormattedNumber } from "modules/types";
 import { MARKET_COPY_LIST } from "modules/create-market/constants";
 import { formatOrderBook } from "modules/create-market/helpers/format-order-book";
 import { DefaultOrderPropertiesMap } from "modules/market/components/market-view/market-view";
+import { getReportingFeePercentage } from "modules/contracts/actions/contractCalls";
+import { formatPercent } from 'utils/format-number';
+import { Subheader, SmallSubheader } from 'modules/modal/common';
 
 interface FeesLiquidityProps {
   newMarket: NewMarket;
@@ -37,6 +40,8 @@ interface FeesLiquidityState {
   hoveredDepth: any;
   hoveredPrice: any;
   selectedOrderProperties: DefaultOrderPropertiesMap;
+  reportingFeePercent: FormattedNumber;
+  creatorFeePercent: FormattedNumber;
 }
 
 export default class FeesLiquidity extends React.Component<
@@ -53,7 +58,32 @@ export default class FeesLiquidity extends React.Component<
     hoveredDepth: [],
     hoveredPrice: null,
     selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
+    reportingFeePercent: formatPercent(0),
+    creatorFeePercent: formatPercent(0),
   };
+
+  getReportingFeePct = async () => {
+    const reportingFeePercent = await getReportingFeePercentage();
+    this.setState({ reportingFeePercent });
+    if (this.props.newMarket.settlementFee) {
+      const creatorFee = Number(this.props.newMarket.settlementFee) - reportingFeePercent.value
+      this.setState({ creatorFeePercent: formatPercent((!isNaN(creatorFee) && creatorFee < 0) ? 0 : creatorFee) });
+    }
+  }
+
+  componentDidMount() {
+    this.getReportingFeePct();
+  }
+
+  localSettlementFeeChange = value => {
+    const fee = this.state.reportingFeePercent.value
+    let creatorFee = value;
+    if (!isNaN(value)) {
+      creatorFee = value - fee;
+      this.setState({ creatorFeePercent: formatPercent(creatorFee < 0 ? 0 : creatorFee) });
+    }
+    this.props.onChange("settlementFee", value);
+  }
 
   updateSelectedOrderProperties = (selectedOrderProperties) => {
     this.setState({selectedOrderProperties})
@@ -142,8 +172,13 @@ export default class FeesLiquidity extends React.Component<
             link
             smallSubheader
             copyType={MARKET_COPY_LIST.CREATOR_FEE}
-            header="Market creator fee"
-            subheader="You have the option of setting a fee on your market. It is a percentage amount you get whenever shares are redeemed for DAI. Fees are typically set below 2%."
+            header="Market trading fee"
+            subheader={`Market Trading fee is made up of market creator fee and reporting fee combined. Currently the reporting fee is ${s.reportingFeePercent.formatted}%. Set market trading fee to 2% or less in order for your market to show up traders, by default.`}
+          />
+          <LargeSubheaders
+            smallSubheader
+            header=""
+            subheader={`The Market Creator Fee is the percentage amount the market creator receives whenever market shares are settled, either during trading or upon market resolution. This fee will be ${s.creatorFeePercent.formatted}%.`}
           />
           <TextInput
             value={String(settlementFee)}
@@ -151,7 +186,7 @@ export default class FeesLiquidity extends React.Component<
             placeholder="0"
             innerLabel="%"
             errorMessage={validations.settlementFee}
-            onChange={(value: string) => onChange("settlementFee", value)}
+            onChange={(value: string) => this.localSettlementFeeChange(value)}
           />
         </div>
 
