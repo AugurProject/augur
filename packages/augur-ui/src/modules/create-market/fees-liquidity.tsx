@@ -22,7 +22,6 @@ import { formatOrderBook } from "modules/create-market/helpers/format-order-book
 import { DefaultOrderPropertiesMap } from "modules/market/components/market-view/market-view";
 import { getReportingFeePercentage } from "modules/contracts/actions/contractCalls";
 import { formatPercent } from 'utils/format-number';
-import { Subheader, SmallSubheader } from 'modules/modal/common';
 
 interface FeesLiquidityProps {
   newMarket: NewMarket;
@@ -173,7 +172,7 @@ export default class FeesLiquidity extends React.Component<
             smallSubheader
             copyType={MARKET_COPY_LIST.CREATOR_FEE}
             header="Market trading fee"
-            subheader={`Market Trading fee is made up of market creator fee and reporting fee combined. Currently the reporting fee is ${s.reportingFeePercent.formatted}%. Set market trading fee to 2% or less in order for your market to show up traders, by default.`}
+            subheader={`Market Trading fee is made up of market creator fee and reporting fee combined. Currently the reporting fee is ${s.reportingFeePercent.formatted}%. Set market trading fee to 2% or less in order for your market to show up to traders, by default.`}
           />
           <LargeSubheaders
             smallSubheader
