@@ -1,7 +1,7 @@
 import { THEMES, ODDS_TYPE } from 'modules/common/constants';
 
 export const THEME = 'theme';
-export const ODDS = 'odds';
+export const ODDS = 'oddsType';
 
 export const DEFAULT_APP_STATUS = {
   [THEME]: THEMES.TRADING,

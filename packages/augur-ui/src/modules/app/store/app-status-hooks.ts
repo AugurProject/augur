@@ -6,6 +6,8 @@ const {
   SET_ODDS,
 } = APP_STATUS_ACTIONS;
 
+const setHTMLTheme = (theme) => document.documentElement.setAttribute(THEME, theme);
+
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
   switch (action.type) {
@@ -24,10 +26,14 @@ export function AppStatusReducer(state, action) {
 
 export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
   const [state, dispatch] = useReducer(AppStatusReducer, defaultState);
+  setHTMLTheme(state.theme);
   return {
     ...state,
     actions: {
-      setTheme: theme => dispatch({ type: SET_THEME, theme }),
+      setTheme: theme => { 
+        setHTMLTheme(theme);
+        dispatch({ type: SET_THEME, theme });
+      },
       setOdds: odds => dispatch({ type: SET_ODDS, odds }),
     }
   }
