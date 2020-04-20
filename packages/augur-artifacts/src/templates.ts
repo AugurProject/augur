@@ -473,10 +473,11 @@ function daysRequiredAfterMonthDate(
   const monthNum = moment().month(monthInput.value).format("M");
   const date = moment(`${monthNum}-1-${yearInput.value}`, "MM-DD-YYYY").add(1, 'M');
   const newEndTime = moment(date).endOf('month').unix();
-  if (newEndTime > Number(endTime)) {
+  if (newEndTime !== Number(endTime)) {
     return false;
   } else return true;
 }
+
 function dateStartAfterMarketEndTime(
   inputs: ExtraInfoTemplateInput[],
   endTime: number
