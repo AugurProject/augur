@@ -38,6 +38,7 @@ import {
   RepBalance,
   MovementLabel,
   InReportingLabel,
+  InitializeWalletModalNotice,
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
 import {
@@ -619,6 +620,7 @@ export class DisputingBondsView extends Component<
           label={GsnEnabled ? 'Transaction Fee' : 'Gas Fee'}
           value={displayGasInDai(gasEstimate)}
         />
+        <InitializeWalletModalNotice />
         <PrimaryButton
           text="Confirm"
           action={() => {
@@ -921,6 +923,7 @@ export class ReportingBondsView extends Component<
               Insufficient Funds to complete transaction
             </span>
           )}
+          <InitializeWalletModalNotice />
         </div>
 
         {migrateRep &&

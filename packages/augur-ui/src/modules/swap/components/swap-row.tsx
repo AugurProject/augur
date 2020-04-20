@@ -4,6 +4,8 @@ import { FormattedNumber } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 
 import Styles from 'modules/swap/components/swap-row.styles.less';
+import { TextInput } from 'modules/common/form';
+import { ChevronDown } from 'modules/common/icons';
 
 interface SwapBlockProps {
   token: string;
@@ -14,6 +16,7 @@ interface SwapBlockProps {
   setToken?: Function;
   setAmount?: Function;
   logo?: React.ReactFragment;
+  showChevron?: boolean
 }
 
 export const SwapRow = ({
@@ -25,6 +28,7 @@ export const SwapRow = ({
   setAmount,
   setToken,
   logo = null,
+  showChevron = false,
 }: SwapBlockProps) => (
   <div className={Styles.SwapRow}>
     <div>
@@ -43,21 +47,22 @@ export const SwapRow = ({
     <div>
       {!setAmount && <div>{amount.formattedValue}</div>}
       {setAmount && (
-        <input
-          placeholder='0'
-          type='number'
-          value={Number(amount.formattedValue).toString()}
-          onChange={e =>
+        <TextInput
+          placeholder={'0.0000'}
+          value={String(amount.formattedValue)}
+          onChange={value => {
             setAmount(
-              createBigNumber(e.target.value),
+              createBigNumber(value),
               createBigNumber(balance.value)
-            )
-          }
+            );
+          }}
+          errorMessage={''}
+          innerLabel={' '}
         />
       )}
       <div>
         <div onClick={setToken ? () => setToken() : null}>
-          {logo} {token}
+          {logo} {token} {showChevron && <ChevronDown />}
         </div>
       </div>
     </div>

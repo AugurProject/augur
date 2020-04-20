@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { WithdrawForm } from 'modules/modal/withdraw-form';
+import { TransferForm } from 'modules/modal/transfer-form';
 import { AppState } from 'appStore';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { formatGasCostToEther, formatEtherEstimate } from 'utils/format-number';
@@ -81,5 +81,5 @@ export default withRouter(
     mapStateToProps,
     mapDispatchToProps,
     mergeProps
-  )(WithdrawForm)
+  )(TransferForm)
 );

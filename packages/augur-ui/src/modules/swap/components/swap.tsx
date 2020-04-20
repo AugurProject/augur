@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 
-import { ETH, DAI, REP } from 'modules/common/constants';
+import {
+  ETH,
+  DAI,
+  REP,
+  TRANSACTIONS,
+  SWAPEXACTTOKENSFORTOKENS,
+  SWAPETHFOREXACTTOKENS,
+  ZERO,
+} from 'modules/common/constants';
 import { AccountBalances, FormattedNumber } from 'modules/types';
 import {
   SwapArrow,
@@ -8,12 +16,19 @@ import {
   ETH as ETHIcon,
   DaiLogoIcon,
 } from 'modules/common/icons';
-import { formatEther, formatDai } from 'utils/format-number';
+import { formatEther } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { Rate } from 'modules/swap/components/rate';
 import { SwapRow } from 'modules/swap/components/swap-row';
+import {
+  uniswapRepForDai,
+  uniswapDaiForRep,
+  uniswapEthForDai,
+  uniswapEthForRep,
+} from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/swap/components/index.styles.less';
+import { ProcessingButton } from 'modules/common/buttons';
 
 interface SwapProps {
   balances: AccountBalances;
@@ -30,98 +45,139 @@ export const Swap = ({
   ETH_RATE,
   REP_RATE,
 }: SwapProps) => {
-  let tokenPairs = [];
-  if (toToken === REP) {
-    tokenPairs = [DAI, ETH];
-  } else {
-    tokenPairs = [REP, ETH];
+
+  const hasEth = createBigNumber(balances.eth).gt(ZERO);
+  let formattedInputAmount: FormattedNumber;
+  let outputAmount: FormattedNumber = formatEther(0);
+
+  const [inputAmount, setInputAmount] = useState(createBigNumber(0.0));
+  const [fromTokenType, setFromTokenType] = useState(fromToken);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  if (![DAI, REP, ETH].includes(fromTokenType)) {
+    throw Error('unsupported uniswap token');
   }
 
-  const setToken = () => {
-    const nextToken =
-      selectedToken === tokenPairs[0] ? tokenPairs[1] : tokenPairs[0];
-    setSelectedFromTokenAmount(createBigNumber(0));
-    setSelectedToken(nextToken);
-  };
 
-  const setTokenAmount = (amount: BigNumber, displayBalance: BigNumber) => {
-    if (amount.lte(0) || isNaN(amount.toNumber())) {
-      setSelectedFromTokenAmount(createBigNumber(0));
-    } else if (amount.gt(displayBalance)) {
-      setSelectedFromTokenAmount(displayBalance);
+  const setAmountToSwap = (
+    amount: BigNumber,
+    formattedInputAmount: BigNumber
+  ) => {
+    setErrorMessage('');
+    if (amount.lt(0) || isNaN(amount.toNumber())) {
+      setInputAmount(createBigNumber(0));
+    } else if (amount.gt(formattedInputAmount)) {
+      setInputAmount(formattedInputAmount);
     } else {
-      setSelectedFromTokenAmount(amount);
+      setInputAmount(amount);
     }
   };
 
-  let displayBalance: FormattedNumber;
-  const [selectedToken, setSelectedToken] = useState(fromToken);
-  const [selectedFromTokenAmount, setSelectedFromTokenAmount] = useState(
-    createBigNumber(0)
-  );
+  const clearForm = () => {
+    setInputAmount(createBigNumber(0));
+    outputAmount = formatEther(0);
+  };
 
-  if (selectedToken === DAI) {
-    displayBalance = formatDai(Number(balances.dai) || 0);
-  } else {
-    displayBalance = formatEther(
-      Number(balances[selectedToken === REP ? 'rep' : 'eth']) || 0
-    );
+  const makeTrade = async () => {
+    const input = inputAmount;
+    const output = createBigNumber(outputAmount.value);
+
+    try {
+      if (fromTokenType === DAI) {
+        await uniswapDaiForRep(input, output);
+        clearForm();
+      } else if (fromTokenType === REP) {
+        await uniswapRepForDai(input, output);
+        clearForm();
+      } else if (fromTokenType === ETH) {
+        if (toToken === DAI) {
+          await uniswapEthForDai(input, output);
+        } else if (toToken === REP) {
+          await uniswapEthForRep(input, output);
+        }
+        clearForm();
+      }
+    }
+    catch (error) {
+      if (error?.data === 'Reverted') {
+        setErrorMessage('Liquidity error, please try reducing the size of your trade to avoid a price slippage.');
+      }
+    }
+  };
+
+  const handleSetToken = () => {
+    setErrorMessage('');
+    if (fromToken === REP) {
+      if (fromTokenType === REP) {
+        hasEth ? setFromTokenType(ETH) : REP;
+      } else {
+        setFromTokenType(REP);
+      }
+    } else if (fromToken === DAI) {
+      if (fromTokenType === DAI) {
+        hasEth ? setFromTokenType(ETH) : DAI;
+      } else {
+        setFromTokenType(DAI);
+      }
+    }
+    clearForm()
   }
 
-  let result = formatEther(0);
-  if (toToken === REP) {
-    if (selectedToken === DAI) {
-      result = formatEther(selectedFromTokenAmount.dividedBy(REP_RATE));
-    }
-    if (selectedToken === ETH) {
-      result = formatEther(
-        selectedFromTokenAmount.multipliedBy(ETH_RATE).dividedBy(REP_RATE)
-      );
-    }
-  } else {
-    if (selectedToken === REP) {
-      result = formatEther(REP_RATE.multipliedBy(selectedFromTokenAmount));
-    }
-    if (selectedToken === ETH) {
-      result = formatEther(ETH_RATE.multipliedBy(selectedFromTokenAmount));
-    }
+  if (fromTokenType === DAI) {
+    formattedInputAmount = formatEther(Number(balances.dai) || 0);
+  } else if (fromTokenType === REP) {
+    formattedInputAmount = formatEther(Number(balances.rep) || 0);
+  } else if (fromTokenType === ETH) {
+    formattedInputAmount = formatEther(Number(balances.eth) || 0);
   }
 
-  let poolRate = formatEther(0);
-  if (selectedToken === REP) {
-    poolRate = formatEther(
-      createBigNumber(1)
-        .multipliedBy(ETH_RATE)
-        .dividedBy(REP_RATE)
-    );
+  if (inputAmount.lt(0)) {
+    outputAmount = formatEther(0);
   } else {
-    poolRate = formatEther(createBigNumber(1).multipliedBy(ETH_RATE));
+    if (toToken === REP) {
+      if (fromTokenType === DAI) {
+        outputAmount = formatEther(inputAmount.dividedBy(REP_RATE));
+      } else if (fromTokenType === ETH) {
+        const ethToDai = createBigNumber(1).dividedBy(ETH_RATE);
+        const inputValueInDai = ethToDai.multipliedBy(inputAmount);
+        outputAmount = formatEther(inputValueInDai.dividedBy(REP_RATE));
+      }
+    } else if (toToken === DAI) {
+      if (fromTokenType === REP) {
+        outputAmount = formatEther(REP_RATE.multipliedBy(inputAmount));
+      } else if (fromTokenType === ETH) {
+        outputAmount = formatEther(
+          createBigNumber(inputAmount).dividedBy(ETH_RATE)
+        );
+      }
+    }
   }
 
   return (
     <div className={Styles.Swap}>
       <>
         <SwapRow
-          amount={formatEther(selectedFromTokenAmount)}
-          token={selectedToken}
+          amount={formatEther(inputAmount)}
+          token={fromTokenType}
           label={'Input'}
-          balance={displayBalance}
+          showChevron={hasEth}
+          balance={formattedInputAmount}
           logo={
-            selectedToken === DAI
+            fromTokenType === DAI
               ? DaiLogoIcon
-              : selectedToken === REP
+              : fromTokenType === REP
               ? REPIcon
               : ETHIcon
           }
-          setAmount={setTokenAmount}
-          setMaxAmount={setSelectedFromTokenAmount}
-          setToken={setToken}
+          setAmount={setAmountToSwap}
+          setMaxAmount={setInputAmount}
+          setToken={() => handleSetToken()}
         />
 
         <div>{SwapArrow}</div>
 
         <SwapRow
-          amount={result}
+          amount={outputAmount}
           token={toToken}
           label={'Output (estimated)'}
           balance={
@@ -133,14 +189,21 @@ export const Swap = ({
         />
       </>
       <Rate
-        baseToken={selectedToken}
+        baseToken={fromTokenType}
         swapForToken={toToken}
         repRate={REP_RATE}
         ethRate={ETH_RATE}
       />
 
       <div>
-        <button>{'Trade'}</button>
+        <ProcessingButton
+          text={'Trade'}
+          action={() => makeTrade()}
+          queueName={TRANSACTIONS}
+          queueId={fromTokenType === ETH ? SWAPETHFOREXACTTOKENS : SWAPEXACTTOKENSFORTOKENS}
+          disabled={outputAmount.value <= 0}
+        />
+        {errorMessage && <div className={Styles.SwapError}>{errorMessage}</div>}
       </div>
     </div>
   );

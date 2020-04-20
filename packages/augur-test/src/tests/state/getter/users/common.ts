@@ -22,6 +22,9 @@ export interface TradeData {
   outcome: number;
   quantity: number;
   price: number;
+  // scalar market
+  minPrice?: number
+  maxPrice?: number;
 }
 
 export interface UTPTradeData extends TradeData {
@@ -93,6 +96,7 @@ export interface SomeState {
   john: TestContractAPI;
   mary: TestContractAPI;
   bob: TestContractAPI;
+  jasmine: TestContractAPI;
 }
 
 export async function _beforeAll(): Promise<AllState> {
@@ -105,7 +109,7 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
   const { baseProvider } = allState;
 
   const provider = await baseProvider.fork();
-  const config = baseProvider.getConfig();
+  const config = baseProvider.getConfig({gsn: {enabled: true}});
   const john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
@@ -121,15 +125,22 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
     provider,
     config
   );
+  const jasmine = await TestContractAPI.userWrapper(
+    ACCOUNTS[3],
+    provider,
+    config
+  );
 
   await john.approve();
   await mary.approve();
   await bob.approve();
+  await jasmine.approve();
 
   return {
     john,
     mary,
     bob,
+    jasmine,
   };
 }
 
@@ -143,7 +154,7 @@ export async function processTrades(
   maxPrice: BigNumber = DEFAULT_DISPLAY_RANGE
 ): Promise<void> {
   for (const trade of tradeData) {
-    await doTrade(user0, user1, trade, market, minPrice, maxPrice);
+    await doTradeTakerView(user0, user1, trade, market, minPrice, maxPrice);
 
     await user0.sync();
     await user1.sync();
@@ -174,7 +185,8 @@ export async function processTrades(
   }
 }
 
-export async function doTrade(
+// In `trade`, direction is from the taker's perspective.
+export async function doTradeTakerView(
   maker: ContractAPI,
   taker: ContractAPI,
   trade: TradeData,
@@ -182,6 +194,9 @@ export async function doTrade(
   minPrice: BigNumber = DEFAULT_MIN_PRICE,
   maxPrice: BigNumber = DEFAULT_DISPLAY_RANGE
 ): Promise<void> {
+  minPrice = typeof trade.minPrice !== 'undefined' ? new BigNumber(trade.minPrice) : minPrice;
+  maxPrice = typeof trade.maxPrice !== 'undefined' ? new BigNumber(trade.maxPrice) : maxPrice;
+
   const numTicks = await market.getNumTicks_();
   const price = new BigNumber(trade.price);
   const tickSize = numTicksToTickSize(

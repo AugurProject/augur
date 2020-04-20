@@ -95,6 +95,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     this.clearErrorMessage = this.clearErrorMessage.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.walletStatus === WALLET_STATUS_VALUES.CREATED && this.props.sweepStatus === TXEventName.Success) {
+      this.props.updateWalletStatus();
+    }
+  }
+
   componentDidUpdate(prevProps) {
     const {
       trade,

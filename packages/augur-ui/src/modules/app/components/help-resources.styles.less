@@ -107,6 +107,12 @@
   display: flex;
   flex-direction: column;
 
+  @media @breakpoint-mobile-tablet {
+    > span:nth-of-type(2) {
+      display: none;
+    }
+  }
+
   > span {
       > button {
       width: 100%;

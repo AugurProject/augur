@@ -36,6 +36,7 @@ export class Contracts {
   relayHub: ContractInterfaces.RelayHub;
   weth: ContractInterfaces.WETH9;
   uniswap: ContractInterfaces.UniswapV2Router01;
+  auditFunds: ContractInterfaces.AuditFunds;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -71,6 +72,7 @@ export class Contracts {
     this.relayHub = new ContractInterfaces.RelayHub(dependencies, RELAY_HUB_ADDRESS);
     this.weth = new ContractInterfaces.WETH9(dependencies, addresses.WETH9);
     this.uniswap = new ContractInterfaces.UniswapV2Router01(dependencies, addresses.UniswapV2Router01);
+    this.auditFunds = new ContractInterfaces.AuditFunds(dependencies, addresses.AuditFunds);
 
     if (typeof addresses.Time !== "undefined") {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);

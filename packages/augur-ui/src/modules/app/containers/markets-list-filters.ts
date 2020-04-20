@@ -12,38 +12,43 @@ import { TEMPLATE_FILTER } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 
-const mapStateToProps = (state: AppState) => {
+const mapStateToProps = ({
+  filterSortOptions,
+  marketsList,
+  loginAccount,
+  appStatus,
+}: AppState) => {
   const {
     maxFee,
     maxLiquiditySpread,
     includeInvalidMarkets,
     templateFilter,
-  } = state.filterSortOptions;
+  } = filterSortOptions;
   return {
     maxFee,
     maxLiquiditySpread,
     includeInvalidMarkets,
-    isSearching: state.marketsList.isSearching,
+    isSearching: marketsList.isSearching,
     allTemplateFilter: templateFilter,
-    settings: state.loginAccount.settings || {},
-    isMobile: state.appStatus.isMobile,
+    settings: loginAccount.settings || {},
+    isMobile: appStatus.isMobile,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  updateMaxFee: (maxFee) => {
+  updateMaxFee: maxFee => {
     dispatch(updateFilterSortOptions(MARKET_MAX_FEES, maxFee));
   },
-  updateMaxSpread: (maxLiquiditySpread) => {
+  updateMaxSpread: maxLiquiditySpread => {
     dispatch(updateFilterSortOptions(MARKET_MAX_SPREAD, maxLiquiditySpread));
   },
-  updateShowInvalid: (showInvalid) => {
+  updateShowInvalid: showInvalid => {
     dispatch(updateFilterSortOptions(MARKET_SHOW_INVALID, showInvalid));
   },
-  updateTemplateFilter: (templateFilter) => {
+  updateTemplateFilter: templateFilter => {
     dispatch(updateFilterSortOptions(TEMPLATE_FILTER, templateFilter));
   },
-  updateLoginAccount: (settings) => {
+  updateLoginAccount: settings => {
     dispatch(updateLoginAccount({ settings }));
   },
 });
@@ -52,25 +57,26 @@ const mergeProps = (sP, dP, oP) => {
   return {
     ...sP,
     ...oP,
-    updateMaxFee: (maxFee) => {
+    updateMaxFee: maxFee => {
       dP.updateMaxFee(maxFee);
       dP.updateLoginAccount(Object.assign({}, sP.settings, { maxFee }));
     },
-    updateMaxSpread: (maxLiquiditySpread) => {
+    updateMaxSpread: maxLiquiditySpread => {
       dP.updateMaxSpread(maxLiquiditySpread);
-      dP.updateLoginAccount(Object.assign({}, sP.settings, { spread: maxLiquiditySpread }));
+      dP.updateLoginAccount(
+        Object.assign({}, sP.settings, { spread: maxLiquiditySpread })
+      );
     },
-    updateShowInvalid: (showInvalid) => {
+    updateShowInvalid: showInvalid => {
       dP.updateShowInvalid(showInvalid);
       dP.updateLoginAccount(Object.assign({}, sP.settings, { showInvalid }));
     },
-    updateTemplateFilter: (templateFilter) => {
+    updateTemplateFilter: templateFilter => {
       dP.updateTemplateFilter(templateFilter);
       dP.updateLoginAccount(Object.assign({}, sP.settings, { templateFilter }));
     },
   };
-}
-
+};
 
 const MarketsListFiltersContainer = withRouter(
   compose(

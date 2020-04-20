@@ -37,6 +37,7 @@ import { TutorialPopUp } from 'modules/market/components/common/tutorial-pop-up'
 import MarketTitle from 'modules/market/containers/market-title';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 import { MARKET_PAGE } from 'services/analytics/helpers';
+import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 
 const OVERFLOW_DETAILS_LENGTH = 48; // in px, overflow limit to trigger MORE details
 
@@ -61,6 +62,7 @@ interface MarketHeaderProps {
   totalSteps: number;
   showTutorialDetails?: boolean;
   marketLinkCopied: Function;
+  userAccount: string;
 }
 
 interface MarketHeaderState {
@@ -203,6 +205,7 @@ export default class MarketHeader extends Component<
       text,
       showTutorialDetails,
       marketLinkCopied,
+      userAccount,
     } = this.props;
     let { details } = this.props;
     const {
@@ -289,7 +292,7 @@ export default class MarketHeader extends Component<
                 <div
                   id="copy_marketURL"
                   title="Copy Market link"
-                  data-clipboard-text={window.location.href}
+                  data-clipboard-text={`${window.location.href}&${AFFILIATE_NAME}=${userAccount}`}
                   onClick={() => {
                     marketLinkCopied(market.id, MARKET_PAGE);
                     this.setState({ showCopied: true }, () => {

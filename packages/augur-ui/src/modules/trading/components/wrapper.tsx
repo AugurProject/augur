@@ -191,6 +191,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               )
           );
         } else {
+         
           this.updateTradeTotalCost(
             {
               ...selectedOrderProperties,
@@ -367,6 +368,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       });
       if (order.orderPrice) {
         await this.queueStimulateTrade(order, useValues, selectedNav);
+      } else {
+        this.setState({
+          orderQuantity: order.orderQuantity
+        })
       }
     }
   }

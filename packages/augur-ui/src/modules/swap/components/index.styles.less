@@ -5,6 +5,16 @@
   flex-direction: column;
   justify-content: center;
 
+  > div:first-of-type {
+    > div:nth-of-type(2) div {
+      cursor: pointer;
+    }
+
+    > div:nth-of-type(2) > div:nth-of-type(2) > div:hover {
+      border: @size-1 solid var(--color-primary-text);
+    }
+  }
+
   > div:nth-of-type(2) {
     align-items: center;
     background: var(--color-table-header);
@@ -24,6 +34,10 @@
   }
 
   > div:last-of-type {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     margin: auto;
 
     > button {
@@ -44,4 +58,11 @@
 
     color: var(--color-dark-text);
   }
+}
+
+.SwapError {
+  .text-12;
+
+  color: var(--color-error);
+  margin: @size-16 0 0 0;
 }

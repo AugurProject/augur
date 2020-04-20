@@ -54,7 +54,6 @@ contract Market is Initializable, Ownable, IMarket {
     bool private disputePacingOn;
     address public repBondOwner;
     uint256 public marketCreatorFeesAttoCash;
-    uint256 public totalPreFinalizationAffiliateFeesAttoCash;
     IDisputeCrowdsourcer public preemptiveDisputeCrowdsourcer;
 
     // Collections
@@ -62,8 +61,6 @@ contract Market is Initializable, Ownable, IMarket {
 
     mapping(bytes32 => address) public crowdsourcers;
     uint256 public crowdsourcerGeneration;
-
-    mapping (address => uint256) public affiliateFeesAttoCash;
 
     function initialize(IAugur _augur, IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public beforeInitialized {
         endInitialization();
@@ -340,52 +337,42 @@ contract Market is Initializable, Ownable, IMarket {
             uint256 _sourceCut = _totalAffiliateFees / Reporting.getAffiliateSourceCutDivisor();
             uint256 _affiliateFees = _totalAffiliateFees.sub(_sourceCut);
             universe.withdraw(_sourceAccount, _sourceCut, address(this));
-            affiliateFeesAttoCash[_affiliateAddress] += _affiliateFees;
+            distributeAffiliateFees(_affiliateAddress, _affiliateFees);
             _marketCreatorFees = _marketCreatorFees.sub(_totalAffiliateFees);
-            totalPreFinalizationAffiliateFeesAttoCash = totalPreFinalizationAffiliateFeesAttoCash.add(_affiliateFees);
         }
 
         marketCreatorFeesAttoCash = marketCreatorFeesAttoCash.add(_marketCreatorFees);
 
         if (isFinalized()) {
-            distributeMarketCreatorAndAffiliateFees(_affiliateAddress);
+            distributeMarketCreatorFees();
         }
     }
 
     function distributeValidityBondAndMarketCreatorFees() private {
         // If the market resolved to invalid the bond gets sent to the dispute window. Otherwise it gets returned to the market creator.
         marketCreatorFeesAttoCash = validityBondAttoCash.add(marketCreatorFeesAttoCash);
-        distributeMarketCreatorAndAffiliateFees(NULL_ADDRESS);
+        distributeMarketCreatorFees();
     }
 
-    function distributeMarketCreatorAndAffiliateFees(address _affiliateAddress) private {
+    function distributeMarketCreatorFees() private {
         uint256 _marketCreatorFeesAttoCash = marketCreatorFeesAttoCash;
         marketCreatorFeesAttoCash = 0;
         if (!isFinalizedAsInvalid()) {
             universe.withdraw(owner, _marketCreatorFeesAttoCash, address(this));
-            if (_affiliateAddress != NULL_ADDRESS) {
-                withdrawAffiliateFees(_affiliateAddress);
-            }
         } else {
-            universe.withdraw(address(universe.getOrCreateNextDisputeWindow(false)), _marketCreatorFeesAttoCash.add(totalPreFinalizationAffiliateFeesAttoCash), address(this));
-            totalPreFinalizationAffiliateFeesAttoCash = 0;
+            universe.withdraw(address(universe.getOrCreateNextDisputeWindow(false)), _marketCreatorFeesAttoCash, address(this));
         }
     }
 
-    /**
-     * @notice Redeems any owed affiliate fees for a particular address
-     * @dev Will fail if the market is Invalid
-     * @param _affiliate The address that is owed affiliate fees
-     * @return Bool True
-     */
-    function withdrawAffiliateFees(address _affiliate) public returns (bool) {
-        require(!isFinalizedAsInvalid());
-        uint256 _affiliateBalance = affiliateFeesAttoCash[_affiliate];
+    function distributeAffiliateFees(address _affiliate, uint256 _affiliateBalance) private returns (bool) {
         if (_affiliateBalance == 0) {
             return true;
         }
-        affiliateFeesAttoCash[_affiliate] = 0;
-        universe.withdraw(_affiliate, _affiliateBalance, address(this));
+        if (isFinalized() && isFinalizedAsInvalid()) {
+            universe.withdraw(address(universe.getOrCreateNextDisputeWindow(false)), _affiliateBalance, address(this));
+        } else {
+            universe.withdraw(_affiliate, _affiliateBalance, address(this));
+        }
         return true;
     }
 

@@ -24,7 +24,8 @@ import {
   COPY_AUTHOR,
   REPORTING_STATE,
   ASKS,
-  ODDS_TYPE
+  ODDS_TYPE,
+  SCALAR_INVALID_BEST_BID_ALERT_VALUE as INVALID_ALERT_PERCENTAGE,
 } from 'modules/common/constants';
 import { convertToOdds } from 'utils/get-odds';
 import { MARKET_LIST_CARD } from 'services/analytics/helpers';
@@ -74,9 +75,9 @@ export interface PercentProps {
   percent: number;
 }
 
-export const Percent = (props: PercentProps) => (
+export const Percent = ({ percent }: PercentProps) => (
   <div className={Styles.Percent}>
-    <span style={{ width: props.percent + '%' }}></span>
+    <span style={{ width: percent + '%' }}></span>
   </div>
 );
 
@@ -168,7 +169,9 @@ export const Outcome = ({
           ) : (
             <span>{description}</span>
           )}
-          <span className={classNames({ [Styles.Zero]: percent === 0 })}>
+          <span className={classNames({ [Styles.Zero]: percent === 0,
+          [Styles.InvalidPrice]: invalid
+            && percent >= INVALID_ALERT_PERCENTAGE.toNumber()})}>
             {percent === 0
               ? `0.00${isScalar ? '' : '%'}`
               : `${formatDai(percent).formatted}%`}
@@ -1103,7 +1106,7 @@ export const TentativeWinner = ({
         disabled={!canDispute}
         text={
           isForkingMarket
-            ? "Migrate Rep to this Outcome's Universe"
+            ? "Migrate Rep to an Outcome's Universe"
             : 'SUPPORT OR DISPUTE OUTCOME'
         }
         action={() => dispute()}

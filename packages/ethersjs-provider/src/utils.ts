@@ -17,3 +17,26 @@ export function isObject(val: any) {
     if (val === null) { return false;}
     return ( (typeof val === 'function') || (typeof val === 'object') );
 }
+
+export class Counter extends Map {
+  increment(key: string) {
+    this.set(key, (this.get(key) || 0) + 1);
+  }
+
+  decrement(key: string) {
+    this.set(key, (this.get(key) || 0) - 1);
+  }
+
+  // This will output in the form that drives `console.table`.
+  toTabularData() {
+    const output = [];
+    for(const [method, count] of this) {
+      output.push({
+        method,
+        count,
+      });
+    }
+
+    return output;
+  }
+}

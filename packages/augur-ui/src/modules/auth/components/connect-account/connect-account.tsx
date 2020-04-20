@@ -85,7 +85,7 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
                 <div>
                   {userInfo.email
                     ? userInfo.email
-                    : formatAddress(userInfo.address)}
+                    : userInfo.accountType}
                 </div>
                 <span>{formatDai(balances.dai).full}</span>
               </div>

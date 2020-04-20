@@ -14,16 +14,20 @@ import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
 import { ethToDai, displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getDaiBalance, getEthBalance } from 'modules/contracts/actions/contractCalls';
 import { WITHDRAWALLFUNDSASDAI, TRANSACTIONS, GWEI_CONVERSION } from 'modules/common/constants';
+import { AutoCancelOrdersNotice } from 'modules/common/labels';
 
 interface CashOutFormProps {
   closeAction: Function;
   withdrawAllFunds: Function;
   withdrawAllFundsEstimateGas: Function;
-  signerAccount: string;
   account: string;
   GsnEnabled: boolean;
   ethToDaiRate: FormattedNumber;
   gasPrice: number;
+  totalOpenOrderFundsFormatted: FormattedNumber;
+  availableFundsFormatted: FormattedNumber;
+  reserveInDaiFormatted: FormattedNumber;
+  totalDaiFormatted: FormattedNumber;
 }
 
 export const CashOutForm = ( props: CashOutFormProps) => {
@@ -33,34 +37,23 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     withdrawAllFundsEstimateGas,
     GsnEnabled,
     account,
-    signerAccount,
-    ethToDaiRate,
     gasPrice,
+    totalOpenOrderFundsFormatted,
+    availableFundsFormatted,
+    reserveInDaiFormatted,
+    totalDaiFormatted,
   } = props;
   const [gasCosts, setGasCosts] = useState(createBigNumber(TRANSFER_ETH_GAS_COST));
   const [address, setAddress] = useState('');
   const [errors, setErrors] = useState('');
-  const [ethSignerBalance, setSignerEthBalance] = useState(0);
-  const [ethBalance, setEthBalance] = useState(0);
-  const [daiBalance, setDaiBalance] = useState(0);
 
   async function getGasCost(account) {
     const gasCosts = await withdrawAllFundsEstimateGas(account);
     setGasCosts(gasCosts);
   }
 
-  async function getSignerBalances() {
-    const ethSignerBalance = await getEthBalance(signerAccount);
-    const daiBalance = await getDaiBalance(account);
-    const ethBalance = await getEthBalance(account);
-    setDaiBalance(daiBalance);
-    setSignerEthBalance(ethSignerBalance);
-    setEthBalance(ethBalance);
-  }
-
   useEffect(() => {
     getGasCost(account);
-    getSignerBalances();
   }, []);
 
   const addressChange = (address: string) => {
@@ -76,10 +69,6 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     setErrors(updatedErrors);
   };
 
-  const totalDai = createBigNumber(daiBalance || 0);
-  const totalEthInDai1 = ethToDai(ethSignerBalance || 0, createBigNumber(ethToDaiRate?.value || 0));
-  const totalEthInDai2 = ethToDai(ethBalance || 0, createBigNumber(ethToDaiRate?.value || 0));
-  const formattedTotalInDai = formatDai(totalDai.plus(totalEthInDai1.value).plus(totalEthInDai2.value));
   const gasLimit = createBigNumber(gasCosts || TRANSFER_ETH_GAS_COST);
   const gasInDai = getGasInDai(gasLimit.multipliedBy(gasPrice));
   const gasEstimateInEth = formatGasCostToEther(
@@ -92,17 +81,27 @@ export const CashOutForm = ( props: CashOutFormProps) => {
   ? displayGasInDai(gasLimit.multipliedBy(gasPrice))
   : gasEstimateInEth;
 
-  const formattedTotalMinusGasInDai = formatDai(formattedTotalInDai.value - gasInDai.value);
+  const formattedTotalMinusGasInDai = formatDai(totalDaiFormatted.value - gasInDai.value);
 
   const breakdown = [
     {
-      label: 'Send',
-      value: formattedTotalInDai,
+      label: 'Available Funds',
+      value: availableFundsFormatted.formatted,
+      showDenomination: true,
+    },
+    {
+      label: 'Open Orders (Funds Held)',
+      value: totalOpenOrderFundsFormatted.formatted,
+      showDenomination: true,
+    },
+    {
+      label: 'ETH Reserve',
+      value: reserveInDaiFormatted.formatted,
       showDenomination: true,
     },
     {
       label: 'Transaction Fee',
-      value: gasEstimate,
+      value: gasInDai.full,
     },
     {
       label: 'Total',
@@ -120,7 +119,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
           <CloseButton action={() => closeAction()} />
         </div>
         <div>
-          <h1>Cash Out all funds</h1>
+          <h1>Withdraw all funds</h1>
           <h2>Withdraw all funds to another address</h2>
         </div>
       </header>
@@ -139,6 +138,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
           </div>
         </div>
         <Breakdown rows={breakdown} />
+        <AutoCancelOrdersNotice />
       </main>
       <div>
         <ProcessingButton
