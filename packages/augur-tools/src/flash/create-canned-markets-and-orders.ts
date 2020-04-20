@@ -5,7 +5,8 @@ import { GenericAugurInterfaces } from '@augurproject/core';
 import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, QUINTILLION } from '@augurproject/sdk';
 
 import { ContractAPI } from '../libs/contract-api';
-import { cannedMarkets, CannedMarket } from './data/canned-markets';
+import { cannedMarkets, CannedMarket, templatedCannedMarkets } from './data/canned-markets';
+import { _1_ETH } from '../constants';
 
 export type Market = GenericAugurInterfaces.Market<BigNumber>;
 export interface CreatedCannedMarket {
@@ -17,7 +18,7 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket, faucet
   console.log('CREATING CANNED MARKET: ', can.extraInfo.description);
 
   const { endTime, affiliateFeeDivisor } = can;
-  const feePerEthInWei = new BigNumber(10).pow(16);
+  const feePerEthInWei = can.creatorFeeDecimal ? new BigNumber(can.creatorFeeDecimal).times(_1_ETH) : new BigNumber(10).pow(16);
   const designatedReporter = person.account.address;
 
   let market: Market;
@@ -139,6 +140,7 @@ export async function createCannedMarkets(person: ContractAPI, faucet=true): Pro
     const market = await createCannedMarket(person, can, faucet);
     markets.push(market);
   }
+  markets.concat(createTemplatedMarkets(person, faucet));
   return markets;
 }
 
@@ -148,6 +150,16 @@ export async function createCannedMarketsAndOnChainOrders(person: ContractAPI, f
     const createdMarket = await createCannedMarket(person, can, faucet);
     markets.push(createdMarket.market);
     await createOrderBook(person, createdMarket.market, can);
+  }
+  return markets;
+}
+
+
+export async function createTemplatedMarkets(person: ContractAPI, faucet=true) {
+  const markets = [];
+  for (const can of templatedCannedMarkets()) {
+    const market = await createCannedMarket(person, can, faucet);
+    markets.push(market);
   }
   return markets;
 }
