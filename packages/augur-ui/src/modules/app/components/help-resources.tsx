@@ -75,7 +75,7 @@ export const HelpMenuList = () => {
           />
         </li>
       ))}
-    </span>
+    </ul>
   );
 };
 
