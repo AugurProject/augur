@@ -1,10 +1,12 @@
 import { formatBytes32String } from 'ethers/utils';
 import {
   today, thisYear,
-  inOneMonths, inTwoMonths, inThreeMonths, inFourMonths, inFiveMonths, inSixMonths,
+  inOneMonths, inTwoMonths, inThreeMonths, inFourMonths, inFiveMonths, inSixMonths, inTenMonths,
   closingBellTomorrow,
   midnightTomorrow,
 } from '../time';
+import moment from 'moment';
+import { TEMPLATES, POLITICS, US_POLITICS, Template, REQUIRED, FINANCE, INDEXES, AMERICAN_FOOTBALL, SPORTS, NFL } from '@augurproject/artifacts';
 
 interface AskBid {
   shares: string;
@@ -47,9 +49,11 @@ export interface ExtraInfo {
   tags: string[];
   longDescription?: string;
   _scalarDenomination?: string;
+  template?: object;
 }
 export interface CannedMarket {
   marketType: string;
+  creatorFeeDecimal?: string; // 0.10 for 10%, 0.01 for 1%, ...
   endTime: number;
   minPrice?: string;
   maxPrice?: string;
@@ -499,3 +503,104 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
     },
   },
 ]);
+
+
+export const templatedCannedMarkets = (): CannedMarket[] => {
+  const markets = [];
+  const usPoliticsTemplates = TEMPLATES[POLITICS].children[US_POLITICS].templates as Template[];
+  const template1: Template = usPoliticsTemplates[0];
+  const usLongDescription = template1.resolutionRules[REQUIRED].map(m => m.text).join('\n');
+  const usInputValues = ['Donald Trump', '2020'];
+  const usTemplate = {
+    hash: template1.hash,
+    question: template1.question,
+    inputs: template1.inputs.map((input) => ({...input, value: usInputValues[input.id]})),
+  }
+  markets.push(
+  {
+    marketType: 'yesNo',
+    endTime: inTenMonths.getTime() / 1000,
+    affiliateFeeDivisor: 0,
+    creatorFeeDecimal: "0.01",
+    extraInfo: {
+      categories: ['Politics', 'US Politics'],
+      description:
+        'Will Donald Trump win the 2020 U.S. Presidential election?',
+      tags: ['Politics', 'US Politics'],
+      longDescription: usLongDescription,
+      template: usTemplate,
+    },
+    orderBook: yesNoOrderBook,
+  });
+
+  const finTemplates = TEMPLATES[FINANCE].children[INDEXES].templates as Template[];
+  const finTemplate: Template = finTemplates[0];
+  const finLongDescription = finTemplate.resolutionRules[REQUIRED].map(m => m.text).join('\n');
+  const wed = 3;
+  const finExpDate = moment().day(wed).add(3, 'weeks').add(6, 'hours');
+  const date = finExpDate.format("MMMM DD, YYYY");
+  const finUnixEndTime = finExpDate.unix();
+  const finInputValues = ['Dow Jones Industrial Average', '25000', date];
+  const finDescription = fillInQuestion(finTemplate, finInputValues);
+  const finInputTemplate = {
+    hash: finTemplate.hash,
+    question: finTemplate.question,
+    inputs: finInputValues.map((input, index) => ({id: finTemplate.inputs[index].id, type: finTemplate.inputs[index].type, value: input})),
+  }
+  markets.push(
+  {
+    marketType: 'yesNo',
+    endTime: finUnixEndTime,
+    affiliateFeeDivisor: 0,
+    creatorFeeDecimal: "0.015",
+    extraInfo: {
+      categories: [FINANCE, INDEXES],
+      description: finDescription,
+      tags: [],
+      longDescription: finLongDescription,
+      template: finInputTemplate,
+    },
+    orderBook: yesNoOrderBook,
+  });
+
+const fbTemplates = TEMPLATES[SPORTS].children[AMERICAN_FOOTBALL].children[NFL].templates as Template[];
+const fbTemplate: Template = fbTemplates[3];
+const longDescription = fbTemplate.resolutionRules[REQUIRED].map(m => m.text).join('\n');
+const expDate = moment().add(3, 'weeks');
+const year = expDate.year();
+const unixEndTime = expDate.unix();
+const inputValues = ['Dallas Cowboys', '9', String(year)];
+const description = fillInQuestion(fbTemplate, inputValues);
+const template = {
+  hash: fbTemplate.hash,
+  question: fbTemplate.question,
+  inputs: fbTemplate.inputs.map((input) => ({...input, value: inputValues[input.id]})),
+}
+markets.push(
+{
+  marketType: 'yesNo',
+  endTime: unixEndTime,
+  affiliateFeeDivisor: 0,
+  creatorFeeDecimal: "0.01",
+  extraInfo: {
+    categories: [SPORTS, AMERICAN_FOOTBALL, NFL],
+    description,
+    tags: [],
+    longDescription,
+    template,
+  },
+  orderBook: yesNoOrderBook,
+});
+
+
+  return markets;
+}
+
+const fillInQuestion = (template, values) => {
+  let description = template.question;
+  template.inputs.forEach((input) => {
+    let value = values[input.id];
+    description = description.replace(`[${input.id}]`, `${value}`);
+  });
+  return description;
+}

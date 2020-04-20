@@ -1,5 +1,5 @@
 import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarkets } from './create-canned-markets-and-orders';
+import { createCannedMarkets, createTemplatedMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH, BASE_MNEMONIC } from '../constants';
 import {
   Contracts as compilerOutput,
@@ -431,6 +431,14 @@ export function addScripts(flash: FlashSession) {
       await user.initWarpSync(user.augur.contracts.universe.address);
       await user.addEthExchangeLiquidity(new BigNumber(4e18), new BigNumber(600e18));
       await createCannedMarkets(user, false);
+    },
+  });
+
+  flash.addScript({
+    name: 'create-canned-template-markets',
+    async call(this: FlashSession) {
+      const user = await this.createUser(this.getAccount(), this.config);
+      await createTemplatedMarkets(user, false);
     },
   });
 
@@ -2215,4 +2223,28 @@ export function addScripts(flash: FlashSession) {
         console.log(`${trader.privateKey} -> ${trader.address}`);
       })
     }});
+
+    flash.addScript({
+      name: 'add-dai-rep-exchange-liquidity',
+      options: [
+        {
+          name: 'reputationToken',
+          abbr: 'r',
+          description: 'amount of REP to provide to the exchange',
+          required: true,
+        },
+        {
+          name: 'cashAmount',
+          abbr: 'c',
+          description: 'amount of DAI to provide to the exchange',
+          required: true,
+        },
+      ],
+      async call(this: FlashSession, args: FlashArguments) {
+        const attoRep = new BigNumber(Number(args.reputationToken)).times(_1_ETH);
+        const attoCash = new BigNumber(Number(args.cashAmount)).times(_1_ETH);
+        const user = await this.createUser(this.getAccount(), this.config);
+        await user.addTokenExchangeLiquidity(attoCash, attoRep);
+      },
+    });
 }
