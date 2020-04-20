@@ -11,7 +11,6 @@ export enum ACCOUNT_TYPES {
   UNLOCKED_ETHEREUM_NODE = "unlockedEthereumNode",
   META_MASK = "metaMask",
   TREZOR = "trezor",
-  EDGE = "edge",
 }
 
 export enum SubscriptionEventName {
