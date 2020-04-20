@@ -1,4 +1,4 @@
-import { ContractAddresses, SDKConfiguration, NetworkId } from '@augurproject/artifacts';
+import { ContractAddresses, SDKConfiguration, RecursivePartial } from '@augurproject/artifacts';
 import { MemDown } from 'memdown';
 import { ethers } from 'ethers';
 import { createSeed } from './ganache';
@@ -25,9 +25,10 @@ export class TestEthersProvider extends EthersProvider {
     return makeProvider(seed, this.accounts);
   };
 
-  getConfig(): SDKConfiguration {
+  getConfig(overwrites?: RecursivePartial<SDKConfiguration>): SDKConfiguration {
     return buildConfig('test', {
-      addresses: this.contractAddresses
+      addresses: this.contractAddresses,
+      ...overwrites || {}
     });
   }
 }
