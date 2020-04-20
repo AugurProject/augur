@@ -3,7 +3,6 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
-import Fortmatic from 'fortmatic';
 import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY, NETWORK_IDS, NETWORK_NAMES } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'appStore';
@@ -19,6 +18,8 @@ export const loginWithFortmatic = () => async (
 
   if (supportedNetwork) {
     try {
+      // Split point +_ dynamic load for fortmatic
+      const {default: Fortmatic} = await import(/* webpackChunkName: "fortmatic" */ 'fortmatic');
       const fm = new Fortmatic(networkId === NETWORK_IDS.Kovan ? FORTMATIC_API_TEST_KEY : FORTMATIC_API_KEY, supportedNetwork);
       const provider = new PersonalSigningWeb3Provider(fm.getProvider());
 

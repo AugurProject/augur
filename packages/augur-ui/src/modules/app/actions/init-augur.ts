@@ -190,9 +190,11 @@ export function connectAugur(
       } else {
         // Use torus provider
 
-        // Use require instead of import for wallet SDK packages
-        // to conditionally load web3 into the DOM
-        const Torus = require('@toruslabs/torus-embed').default;
+        // Use import instead of import for wallet SDK packages
+        // to conditionally load web3 into the DOM.
+        //
+        // Note: This also creates a split point in webpack
+        const {default: Torus} = await import(/* webpackChunkName: "torus" */ '@toruslabs/torus-embed');
         const torus = new Torus({});
 
         const host = getNetwork(networkId);
