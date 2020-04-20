@@ -1,8 +1,9 @@
 import {
+  MarketInfo,
   MarketOrderBook,
   MarketOrderBookOrder,
-  OutcomeOrderBook
-} from "@augurproject/sdk/src/state/getter/Markets";
+  OutcomeOrderBook,
+} from '@augurproject/sdk/src/state/getter/Markets';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ZeroXPlaceTradeDisplayParams } from '@augurproject/sdk';
@@ -61,14 +62,10 @@ const ORDER_TYPE = {
 }
 
 export class OrderBookShaper {
-  readonly maxPrice: BigNumber = new BigNumber(1);
-  readonly minPrice: BigNumber = new BigNumber(0);
-  readonly numTicks: BigNumber = new BigNumber(100);
   readonly minAllowedSize: BigNumber = new BigNumber(100);
-  readonly numOutcomes: 3;
 
   constructor (
-    public marketId: string,
+    public marketInfo: MarketInfo,
     public orderSize: number = null,
     public expiration: BigNumber = new BigNumber(300),
     public outcomes: number[] = [2, 1],
@@ -77,6 +74,7 @@ export class OrderBookShaper {
 
   nextRun = (orderBook: OutcomeOrderBook, timestamp: BigNumber): ZeroXPlaceTradeDisplayParams[] => {
     const marketOutcomesBook: MarketOutcomesBook = this.outcomes.reduce((p, o) => ({...p, [o]: this.orderBookConfig}), {})
+
     let orders: SimpleOrder[] = [];
     this.outcomes.forEach((o: number) => {
       orders = [...orders, ...this.createMissingOrders(o, marketOutcomesBook[o], orderBook[o])];
@@ -84,23 +82,9 @@ export class OrderBookShaper {
     return this.createOrders(orders, timestamp);
   }
 
-  createMissingOrders2 = (outcome: number, orderBookConfig: OrderBookConfig): SimpleOrder[] => {
-    const orders: SimpleOrder[] = []
-    console.log(`no bids asks for ${this.marketId}`);
-    Object.keys(orderBookConfig).forEach((type: string) => {
-      const priceVol: OrderPriceVol = orderBookConfig[type];
-      const direction = ORDER_TYPE[type];
-      Object.keys(priceVol).forEach((price: string) => {
-        const quantity = priceVol[price]; // aka volume
-        orders.push({ outcome, direction, price, quantity });
-      });
-    })
-    return orders;
-  }
-
   createMissingOrders = (outcome: number, orderBookConfig: OrderBookConfig, bidsAsks: BidsAsks): SimpleOrder[] => {
     const orders: SimpleOrder[] = []
-    if (!bidsAsks) console.log(`no bids asks for ${this.marketId}`);
+    if (!bidsAsks) console.log(`no bids asks for ${this.marketInfo.id}`);
     Object.keys(orderBookConfig).forEach((type: string) => {
       const direction = ORDER_TYPE[type];
       const priceVol: OrderPriceVol = orderBookConfig[type];
@@ -130,14 +114,14 @@ export class OrderBookShaper {
     return orders.map(order => {
       return {
         direction: order.direction as 0 | 1,
-        market: this.marketId,
-        numTicks: this.numTicks,
-        numOutcomes: this.numOutcomes,
+        market: this.marketInfo.id,
+        numTicks: new BigNumber(this.marketInfo.numTicks),
+        numOutcomes: this.marketInfo.numOutcomes,
         outcome: order.outcome as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
         fingerprint: formatBytes32String('11'),
         doNotCreateOrders: false,
-        displayMinPrice: this.minPrice,
-        displayMaxPrice: this.maxPrice,
+        displayMinPrice: new BigNumber(this.marketInfo.minPrice),
+        displayMaxPrice: new BigNumber(this.marketInfo.maxPrice),
         displayAmount: new BigNumber(order.quantity),
         displayPrice: new BigNumber(order.price),
         displayShares: new BigNumber(0),
@@ -150,17 +134,17 @@ export class OrderBookShaper {
 
 export async function simpleOrderbookShaper(
   user: ContractAPI,
-  marketIds: string[],
+  marketInfos: MarketInfo[],
   intervalMS: number,
   orderSize: number,
   expiration: BigNumber
 ) {
-  const orderBooks = marketIds.map(m => new OrderBookShaper(m, orderSize, expiration));
+  const orderBooks = marketInfos.map(m => new OrderBookShaper(m, orderSize, expiration));
   while (true) {
     const timestamp = await user.getTimestamp();
     for (let i = 0; i < orderBooks.length; i++) {
       const orderBook: OrderBookShaper = orderBooks[i];
-      const marketId = orderBook.marketId;
+      const { id: marketId } = orderBook.marketInfo;
       const marketBook: MarketOrderBook = await user.augur.getMarketOrderBook(
         { marketId }
       );
