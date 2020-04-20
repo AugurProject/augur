@@ -140,7 +140,7 @@ export async function createCannedMarkets(person: ContractAPI, faucet=true): Pro
     const market = await createCannedMarket(person, can, faucet);
     markets.push(market);
   }
-  markets.concat(createTemplatedMarkets(person, faucet));
+  markets.push(createTemplatedMarkets(person, faucet));
   return markets;
 }
 
