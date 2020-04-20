@@ -81,7 +81,7 @@ export default class FeesLiquidity extends React.Component<
       creatorFee = value - fee;
       this.setState({ creatorFeePercent: formatPercent(creatorFee < 0 ? 0 : creatorFee) });
     }
-    this.props.onChange("settlementFee", value);
+    this.props.onChange("settlementFee", creatorFee);
   }
 
   updateSelectedOrderProperties = (selectedOrderProperties) => {
@@ -162,6 +162,7 @@ export default class FeesLiquidity extends React.Component<
       validations,
     } = newMarket;
 
+    const marketTradingFee = settlementFee ? s.reportingFeePercent.value + Number(settlementFee) : 0;
     return (
       <div
         className={Styles.FeesLiquidity}
@@ -180,7 +181,7 @@ export default class FeesLiquidity extends React.Component<
             subheader={`The Market Creator Fee is the percentage amount the market creator receives whenever market shares are settled, either during trading or upon market resolution. This fee will be ${s.creatorFeePercent.formatted}%.`}
           />
           <TextInput
-            value={String(settlementFee)}
+            value={String(marketTradingFee)}
             type="number"
             placeholder="0"
             innerLabel="%"
