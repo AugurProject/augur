@@ -463,13 +463,14 @@ function daysRequiredAfterMonthDate(
   eventExpEndNextMonthValues: EventExpEndNextMonth[],
   endTime: number
 ) {
+  if (eventExpEndNextMonthValues.length === 0) return true;
   const monthId = eventExpEndNextMonthValues.find(i => i.yearDropdown !== undefined);
   const yearId = eventExpEndNextMonthValues.find(i => i.monthDropdown !== undefined);
 
   const monthInput = monthId && inputs.find(i => i.id === monthId.id);
   const yearInput = yearId && inputs.find(i => i.id === yearId.id);
 
-  if (!monthInput || !yearInput) return false;
+  if (!monthInput || !yearInput) return true;
   const monthNum = moment().month(monthInput.value).format("M");
   const date = moment(`${monthNum}-1-${yearInput.value}`, "MM-DD-YYYY").add(1, 'M');
   const newEndTime = moment(date).endOf('month').unix();
