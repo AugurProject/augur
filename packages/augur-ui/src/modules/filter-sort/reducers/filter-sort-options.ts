@@ -9,12 +9,11 @@ import {
   MARKET_SHOW_INVALID,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import {
-  MAX_FEE_05_PERCENT,
+  MAX_FEE_02_PERCENT,
   MARKET_OPEN,
   MARKET_SORT_PARAMS,
   DAY,
-  MAX_SPREAD_10_PERCENT,
-  TEMPLATE_FILTER_ALL,
+  MAX_SPREAD_ALL_SPREADS,
   TEMPLATE_FILTER,
 } from 'modules/common/constants';
 import { FilterSortOptions, BaseAction, INVALID_OPTIONS } from 'modules/types';
@@ -23,8 +22,8 @@ import { Getters } from '@augurproject/sdk/src';
 const DEFAULT_STATE: FilterSortOptions = {
   [MARKET_FILTER]: MARKET_OPEN,
   [MARKET_SORT]: MARKET_SORT_PARAMS.RECENTLY_TRADED,
-  [MARKET_MAX_FEES]: MAX_FEE_05_PERCENT,
-  [MARKET_MAX_SPREAD]: MAX_SPREAD_10_PERCENT,
+  [MARKET_MAX_FEES]: MAX_FEE_02_PERCENT,
+  [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS,
   [MARKET_SHOW_INVALID]: INVALID_OPTIONS.Hide,
   [TRANSACTION_PERIOD]: DAY,
   [TEMPLATE_FILTER]: Getters.Markets.TemplateFilters.templateOnly,

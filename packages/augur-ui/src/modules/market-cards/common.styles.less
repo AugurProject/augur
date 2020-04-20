@@ -27,7 +27,11 @@
 
 			&.Zero {
 				color: @color-secondary-text;
-			}
+      }
+      &.InvalidPrice {
+        color: @color-error;
+        font-weight: 900;
+      }
 		}
 	}
 
@@ -432,7 +436,7 @@
 
 	> span:last-of-type {
 		.text-12-bold;
-		
+
 		color: @color-primary-text;
 	}
 

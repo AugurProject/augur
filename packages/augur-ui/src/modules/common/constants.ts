@@ -41,6 +41,7 @@ export const INVALID_BEST_BID_ALERT_VALUE = createBigNumber('.1');
 export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;
+export const TX_CHECK_BLOCKNUMBER_LIMIT = 10;
 export const UNIVERSE_ID = '0xf69b5';
 // network id to names map
 export const NETWORK_NAMES = {
@@ -63,7 +64,7 @@ export const NETWORK_IDS = {
   Private4: '104',
 };
 
-export const ARCHIVED_MARKET_LENGTH = 30;
+export const ARCHIVED_MARKET_LENGTH = 60;
 export const MIN_ORDER_LIFESPAN = 70;
 export const GAS_PRICE_BACKUP_API_ENDPOINT = {
   [NETWORK_IDS.Mainnet]: 'https://api.etherscan.io/api?module=gastracker&action=gasoracle',
