@@ -14,6 +14,7 @@ import ToastsContainer from 'modules/alerts/containers/toasts-view';
 
 import { Betslip } from 'modules/trading/betslip';
 import { BetslipProvider } from 'modules/trading/store/betslip';
+import { AppStatusProvider } from 'modules/app/store/app-status';
 
 import {
   MobileNavHamburgerIcon,
@@ -104,7 +105,6 @@ interface AppProps {
   showCreateAccountButton: boolean;
   showMigrateRepButton: boolean;
   theme: string;
-  setTheme: Function;
   changeOddsType: Function;
   oddsType: string;
 }
@@ -172,10 +172,7 @@ export default class AppView extends Component<AppProps> {
       updateModal,
       useWeb3Transport,
       updateCurrentBasePath,
-      setTheme,
-      theme,
     } = this.props;
-    setTheme(theme);
     initAugur(
       history,
       {
@@ -428,6 +425,7 @@ export default class AppView extends Component<AppProps> {
 
     return (
       <main>
+        <AppStatusProvider>
         <OddsContext.Provider value={{ oddsType, changeOddsType }} >
         <HelmetTag {...APP_HEAD_TAGS} />
         {ModalShowing && <Modal />}
@@ -566,6 +564,7 @@ export default class AppView extends Component<AppProps> {
           </section>
         </div>
         </OddsContext.Provider>
+        </AppStatusProvider>
       </main>
     );
   }
