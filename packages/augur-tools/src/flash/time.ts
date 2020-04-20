@@ -26,7 +26,9 @@ today.setDate(today.getDate() - 3);
 export const inOneMonths = addMonths(today, 1);
 export const inTwoMonths = addMonths(today, 2);
 export const inThreeMonths = addMonths(today, 3);
-export const inFourMonths = addMonths(today, 1);
-export const inFiveMonths = addMonths(today, 2);
-export const inSixMonths = addMonths(today, 3);
+export const inFourMonths = addMonths(today, 4);
+export const inFiveMonths = addMonths(today, 5);
+export const inSixMonths = addMonths(today, 6);
+export const inTenMonths = addMonths(today, 10);
 export const thisYear = today.getUTCFullYear();
+
