@@ -312,7 +312,7 @@ export const ValidationTemplateInputType = {
   [TemplateInputType.TEXT]: `(.*)`,
   [ValidationType.WHOLE_NUMBER]: `[1-9][0-9]*`,
   [ValidationType.NUMBER]: `[0-9]+(\\\.[0-9]+){0,1}`,
-  [ValidationType.NUMBER_ONE_DECIMAL]: `[0-9]+(\\\.[0-9]+){0,1}`,
+  [ValidationType.NUMBER_ONE_DECIMAL]: `[0-9]+(\.[0-9]{1}){0,1}`,
   [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(.*)`,
   [TemplateInputType.SUBSTITUTE_USER_OUTCOME]: `[0-9]+`,
   [TemplateInputType.DATETIME]: `(January|February|March|April|May|June|July|August|September|October|November|December){1} ([0]?[1-9]|[1-2][0-9]|3[0-1]), 20[0-9]{2} [0]?[1-9]|2[0-3]:[0-5][0-9] (AM|PM) \\(UTC 0\\)`,
