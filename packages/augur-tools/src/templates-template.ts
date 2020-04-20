@@ -32,6 +32,7 @@ export const HORSE_RACING = 'Horse Racing';
 export const US_POLITICS = 'US Politics';
 export const WORLD = 'World';
 export const STOCKS = 'Stocks/ETFs';
+export const STATISTICS = 'Statistics';
 export const INDEXES = 'Indexes';
 export const BITCOIN = 'Bitcoin';
 export const ETHEREUM = 'Ethereum';
@@ -135,6 +136,11 @@ export interface CategoricalOutcomes {
   [id: number]: string;
 }
 
+export interface EventExpEndNextMonth {
+  id: number;
+  yearDropdown?: number;
+  monthDropdown?: number;
+}
 export interface DateDependencies {
   id: number;
   noWeekendHolidays?: boolean;
@@ -169,6 +175,7 @@ export interface TemplateValidation {
   noAdditionalOutcomes: boolean;
   hoursAfterEstimatedStartTime: number;
   daysAfterStartDate: number;
+  eventExpEndNextMonthValues: EventExpEndNextMonth[];
   categoricalOutcomes: CategoricalOutcomes;
 }
 
@@ -206,6 +213,9 @@ export interface TemplateInput {
   defaultLabel?: string; // dropdown default label shown
   inputDestIds?: number[]; // target inputs to set list values
   categoryDestId?: number;
+  eventExpEndNextMonth?: boolean;
+  yearDropdown?: number;
+  monthDropdown?: number;
   inputDestValues: {
     // dropdown source data structure to use to set target input list values
     [key: string]: string[];
@@ -236,6 +246,7 @@ export interface RetiredTemplate {
 export enum ValidationType {
   WHOLE_NUMBER = 'WHOLE_NUMBER',
   NUMBER = 'NUMBER',
+  NUMBER_ONE_DECIMAL = 'NUMBER_ONE_DECIMAL',
   NOWEEKEND_HOLIDAYS = 'NOWEEKEND_HOLIDAYS',
   EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY = 'EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY',
   SOCIAL = 'SOCIAL', // social media username/handle
@@ -301,6 +312,7 @@ export const ValidationTemplateInputType = {
   [TemplateInputType.TEXT]: `(.*)`,
   [ValidationType.WHOLE_NUMBER]: `[1-9][0-9]*`,
   [ValidationType.NUMBER]: `[0-9]+(\\\.[0-9]+){0,1}`,
+  [ValidationType.NUMBER_ONE_DECIMAL]: `[0-9]+(\.[0-9]{1}){0,1}`,
   [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(.*)`,
   [TemplateInputType.SUBSTITUTE_USER_OUTCOME]: `[0-9]+`,
   [TemplateInputType.DATETIME]: `(January|February|March|April|May|June|July|August|September|October|November|December){1} ([0]?[1-9]|[1-2][0-9]|3[0-1]), 20[0-9]{2} [0]?[1-9]|2[0-3]:[0-5][0-9] (AM|PM) \\(UTC 0\\)`,
@@ -444,6 +456,26 @@ function daysRequiredAfterStartDate(
   // add number of hours to estimated start timestamp then compare to market event expiration
   const secondsAfterStartDate = SECONDS_IN_A_DAY * daysAfterStartDate;
   return (Number(input.timestamp) + secondsAfterStartDate) >= Number(endTime);
+}
+
+function daysRequiredAfterMonthDate(
+  inputs: ExtraInfoTemplateInput[],
+  eventExpEndNextMonthValues: EventExpEndNextMonth[],
+  endTime: number
+) {
+  const monthId = eventExpEndNextMonthValues.find(i => i.yearDropdown !== undefined);
+  const yearId = eventExpEndNextMonthValues.find(i => i.monthDropdown !== undefined);
+
+  const monthInput = monthId && inputs.find(i => i.id === monthId.id);
+  const yearInput = yearId && inputs.find(i => i.id === yearId.id);
+
+  if (!monthInput || !yearInput) return false;
+  const monthNum = moment().month(monthInput.value).format("M");
+  const date = moment(`${monthNum}-1-${yearInput.value}`, "MM-DD-YYYY").add(1, 'M');
+  const newEndTime = moment(date).endOf('month').unix();
+  if (newEndTime !== Number(endTime)) {
+    return false;
+  } else return true;
 }
 
 function dateStartAfterMarketEndTime(
@@ -696,6 +728,19 @@ export const isTemplateMarket = (
     ) {
       errors.push(
         'start date in question is not the required number of days before market event expiration endTime'
+      );
+      return false;
+    }
+
+    if (
+      !daysRequiredAfterMonthDate(
+        template.inputs,
+        validation.eventExpEndNextMonthValues,
+        new BigNumber(endTime).toNumber()
+      )
+    ) {
+      errors.push(
+        'month and year in question is not a month before market event expiration endTime'
       );
       return false;
     }

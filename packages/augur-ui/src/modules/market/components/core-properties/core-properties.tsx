@@ -109,9 +109,9 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 }
                 hint={
                   <>
-                    <h4>Trading Settlement Fee</h4>
+                    <h4>Market Trading Fee</h4>
                     <p>
-                      The trading settlement fee is a combination of the Market
+                      The market trading fee is a combination of the Market
                       Creator Fee (
                       <b>
                         {

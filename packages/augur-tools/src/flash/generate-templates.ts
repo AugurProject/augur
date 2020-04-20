@@ -14,7 +14,8 @@ import {
   ValidationType,
   DateInputDependencies,
   PlaceholderValues,
-  CategoricalOutcomes
+  CategoricalOutcomes,
+  EventExpEndNextMonth
 } from '../templates-template';
 import { TEMPLATES, TEMPLATES2 } from '../templates-source';
 import { retiredTemplates } from '../templates-retired';
@@ -87,6 +88,7 @@ const generateValidations = (
     noAdditionalOutcomes: false,
     hoursAfterEstimatedStartTime: null,
     daysAfterStartDate: null,
+    eventExpEndNextMonthValues: null,
   };
   const newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -132,6 +134,7 @@ const addTemplates = (
         hoursAfterEstimatedStartTime: getHoursAfterEstimatedStartTime(t.inputs),
         daysAfterStartDate: getHoursAfterStartdate(t.inputs),
         noAdditionalOutcomes: t.noAdditionalUserOutcomes,
+        eventExpEndNextMonthValues: getEventExpEndNextMonth(t.inputs),
       };
     });
   }
@@ -201,6 +204,18 @@ function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
       id: i.id,
       noWeekendHolidays: i.validationType === ValidationType.NOWEEKEND_HOLIDAYS,
       dateAfterId: i.dateAfterId,
+    }));
+}
+
+function getEventExpEndNextMonth(inputs: TemplateInput[]): EventExpEndNextMonth[] {
+  return inputs
+    .filter(
+      i => i.eventExpEndNextMonth
+    )
+    .map(i => ({
+      id: i.id,
+      yearDropdown: i.yearDropdown,
+      monthDropdown: i.monthDropdown,
     }));
 }
 
