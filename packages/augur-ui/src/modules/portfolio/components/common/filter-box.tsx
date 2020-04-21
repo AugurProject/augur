@@ -187,7 +187,6 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
               defaultValue={selectedTab}
               options={tabs}
               onChange={(tab) => {
-                console.log('onChange', tab);
                 setSelectedTab(tab)
               }}
             />

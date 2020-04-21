@@ -90,9 +90,9 @@ export default class Favorites extends Component<FavoritesProps> {
       customClass = favoriteStyles.WatchlistEmptyDisplay;
     }
 
-    let sortByStyles = {}
-    if (getTheme() === THEMES.TRADING) {
-      sortByStyles = { minWidth: "10.625rem" };
+    let sortByStyles = { minWidth: "10.625rem" }
+    if (getTheme() !== THEMES.TRADING) {
+      sortByStyles = {};
     }
 
     return (
