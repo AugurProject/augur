@@ -9,7 +9,7 @@ import {
   MARKET_SHOW_INVALID,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import {
-  MAX_FEE_05_PERCENT,
+  MAX_FEE_02_PERCENT,
   MARKET_OPEN,
   MARKET_SORT_PARAMS,
   DAY,
@@ -22,7 +22,7 @@ import { Getters } from '@augurproject/sdk/src';
 const DEFAULT_STATE: FilterSortOptions = {
   [MARKET_FILTER]: MARKET_OPEN,
   [MARKET_SORT]: MARKET_SORT_PARAMS.RECENTLY_TRADED,
-  [MARKET_MAX_FEES]: MAX_FEE_05_PERCENT,
+  [MARKET_MAX_FEES]: MAX_FEE_02_PERCENT,
   [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS,
   [MARKET_SHOW_INVALID]: INVALID_OPTIONS.Hide,
   [TRANSACTION_PERIOD]: DAY,

@@ -35,6 +35,7 @@ import {
   US_POLITICS,
   WORLD,
   STOCKS,
+  STATISTICS,
   INDEXES,
   BITCOIN,
   ETHEREUM,
@@ -357,6 +358,12 @@ export const MARKET_SUB_TEMPLATES = {
       description: defaultDescription,
       icon: icons.Indexes,
     },
+    {
+      value: STATISTICS,
+      header: STATISTICS,
+      description: defaultDescription,
+      icon: icons.Statistics,
+    },
   ],
   [ENTERTAINMENT]: [
     {
@@ -566,7 +573,6 @@ export const TemplateBannerText = {
     'Enter Stock name and ticker symbol to ensure the market resolves as valid, i.e. Apple (AAPL)',
   etfs:
     'Enter ETF name and ticker symbol to ensure the market resolves as valid, i.e. S & P 500 Index (SPY)',
-
 };
 
 export const SelectEventNoticeText =
