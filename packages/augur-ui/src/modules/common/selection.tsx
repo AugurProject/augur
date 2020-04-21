@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/common/selection.styles';
-import { ThickChevron, Chevron, ShareIcon } from 'modules/common/icons';
+import { ThickChevron, Chevron, ShareIcon, SlimArrow } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
@@ -28,6 +28,7 @@ export interface DropdownProps {
   showColor?: boolean;
   disabled?: boolean;
   sort?: boolean;
+  minimalStyle?: boolean
 }
 
 interface DropdownState {
@@ -49,6 +50,7 @@ interface PillSelectionProps {
   options: SelectionOption[];
   onChange(value: number): void;
   defaultSelection: number;
+  large?: boolean;
 }
 
 interface PillSelectionState {
@@ -203,6 +205,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       id,
       showColor,
       disabled,
+      minimalStyle
     } = this.props;
     const { selected, showList, isDisabled, sortedList } = this.state;
     return (
@@ -217,6 +220,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
           [`${activeClassName}`]: showList,
           [Styles.showColor]: showColor,
           [Styles.Disabled]: disabled,
+          [Styles.Minimal]: minimalStyle,
           [`${Styles[`showColor-${selected ? selected.value + 1 : 1}`]}`]:
             selected && showColor,
         })}
@@ -238,7 +242,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
           <span ref={ref => (this.labelRef = ref)}>
             {selected ? selected.label : staticLabel}
           </span>
-          {ThickChevron}
+          {minimalStyle ? SlimArrow : ThickChevron}
         </button>
         <div>
           <div
@@ -389,6 +393,7 @@ export const PillSelection = ({
   options,
   onChange,
   defaultSelection = 0,
+  large
 }: PillSelectionProps) => {
   const [selected, setSelected] = useState(defaultSelection);
   const buttonSelect = (option: SelectionOption) => {
@@ -401,7 +406,7 @@ export const PillSelection = ({
   const renderButton = (option: SelectionOption): React.ReactNode => (
     <li
       className={classNames({
-        [Styles.Selected]: selected === option.id,
+        [Styles.Selected]: selected === option.id
       })}
       key={option.label}
     >
@@ -412,7 +417,7 @@ export const PillSelection = ({
   );
 
   return (
-    <ul className={Styles.PillSelection}>
+    <ul className={classNames(Styles.PillSelection, {[Styles.LargePillSelection]: large})}>
       {options.map(
         (option: SelectionOption): React.ReactNode => renderButton(option)
       )}

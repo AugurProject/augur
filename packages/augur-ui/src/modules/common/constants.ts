@@ -1420,3 +1420,25 @@ export enum HEADER_TYPE {
 }
 
 export const LOGGED_IN_USER_LOCAL_STORAGE_KEY = 'loggedInUser';
+
+export const MY_BETS_VIEW_BY = [
+  {
+    label: 'Event',
+    value: 'Event',
+  },
+  {
+    label: 'Outcomes',
+    value: 'Outcomes',
+  },
+];
+
+export const MY_BETS_MARKET_STATUS = [
+  {
+    label: 'All',
+    value: 'All',
+  },
+  {
+    label: 'Open',
+    value: 'Open',
+  },
+];

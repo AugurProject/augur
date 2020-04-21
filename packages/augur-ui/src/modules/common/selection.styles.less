@@ -254,6 +254,46 @@
       }
     }
   }
+
+
+  &.Minimal {
+    border: 0;
+
+    > button {
+      background-color: transparent;
+      padding: 0;
+
+      > span {
+        .text-14;
+
+        border: 0;
+        color: var(--color-primary-text);
+        text-transform: capitalize;
+        border-bottom: @size-1 dotted;
+        border-color: var(--color-primary-text);
+        padding: 0;
+      }
+
+      > svg {
+        width: @size-10;
+        height: @size-7;
+        margin-right: @size-8;
+
+        > path {
+          stroke: var(--color-primary-text);
+          fill: none;
+        }
+      }
+    }
+
+    &:hover {
+      > button {
+        > span {
+          border-bottom: 1px solid;
+        }
+      }
+    }
+  }
 }
 
 .stretchOut {
@@ -446,6 +486,34 @@
         .text-9;
 
         color: var(--color-secondary-text);
+      }
+    }
+  }
+
+  &.LargePillSelection {
+    display: flex;
+    height: @size-40;
+
+    > li {
+      background: var(--color-module-background);
+
+      &:first-of-type:hover:not([class*="Selected"]) {
+        border-right: 0;
+      }
+      
+      > button {
+        .text-14-bold;
+
+        color: var(--color-inactive-text);
+        text-transform: capitalize;
+      }
+
+      &[class*="Selected"] {
+        border: @size-1 solid var(--color-primary-text);
+
+        > button {
+          color: var(--color-primary-text);
+        }
       }
     }
   }

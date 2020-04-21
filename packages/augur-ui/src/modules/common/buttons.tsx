@@ -115,6 +115,7 @@ export interface ExternalLinkButtonProps {
   light?: boolean;
   customLink?: any;
   callback?: Function;
+  condensedStyle?: boolean;
 }
 
 export interface ExternalLinkTextProps {
@@ -634,30 +635,31 @@ export const ExternalLinkText = (props: ExternalLinkTextProps) => (
   </button>
 );
 
-export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
+export const ExternalLinkButton = ({light, condensedStyle, action, callback, customLink, label, URL, showNonLink}: ExternalLinkButtonProps) => (
   <button
     className={classNames(Styles.ExternalLinkButton, {
-      [Styles.LightAlternate]: props.light,
+      [Styles.LightAlternate]: light,
+      [Styles.CondensedStyle]: condensedStyle
     })}
     onClick={e => {
-      props.action && props.action(e);
-      props.callback && props.callback();
+      action && action(e);
+      callback && callback();
     }}
   >
-    {props.customLink ? (
-      <Link to={props.customLink}>{props.label}</Link>
+    {customLink ? (
+      <Link to={customLink}>{label}</Link>
     ) : (
       <>
-        {props.URL && (
-          <a href={props.URL} target="_blank" rel="noopener noreferrer">
-            {props.label}
+        {URL && (
+          <a href={URL} target="_blank" rel="noopener noreferrer">
+            {label}
           </a>
         )}
-        {!props.URL && <span>{props.label}</span>}
+        {!URL && <span>{label}</span>}
       </>
     )}
 
-    {!props.showNonLink && ViewIcon}
+    {!showNonLink && ViewIcon}
   </button>
 );
 
