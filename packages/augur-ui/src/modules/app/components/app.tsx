@@ -37,8 +37,6 @@ import {
   TRADING_TUTORIAL,
   THEMES,
 } from 'modules/common/constants';
-import { getTheme } from 'modules/app/actions/update-app-status';
-
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
 import {
@@ -368,12 +366,7 @@ export default class AppView extends Component<AppProps> {
     } = this.props;
     const sideNavMenuData = this.sideNavMenuData;
     const { forkEndTime } = universe;
-    const { currentAugurTimestamp } = blockchain;
-    const theme = getTheme();
-    sideNavMenuData[1].title =
-      theme !== THEMES.TRADING ? 'My Account' : 'Account Summary';
-    sideNavMenuData[2].title =
-      theme !== THEMES.TRADING ? 'My Bets' : 'Portfolio';
+    const { currentAugurTimestamp } = blockchain;    
     sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
     const currentPath = parsePath(location.pathname)[0];
@@ -507,7 +500,12 @@ const SideBarSection = ({
   showCreateAccountButton,
   createFundedGsnWallet,
 }) => {
-  const { actions: { closeAppMenus } } = useAppStatusStore();
+  const { theme, actions: { closeAppMenus } } = useAppStatusStore();
+  sideNavMenuData[1].title =
+      theme !== THEMES.TRADING ? 'My Account' : 'Account Summary';
+  sideNavMenuData[2].title =
+    theme !== THEMES.TRADING ? 'My Bets' : 'Portfolio';
+
   return (
     <section
       className={Styles.SideBar}
