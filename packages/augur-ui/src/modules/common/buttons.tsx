@@ -25,7 +25,7 @@ import {
   BackIcon,
   AlternateDaiLogoIcon,
 } from 'modules/common/icons';
-import { getTheme } from 'modules/app/actions/update-app-status';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
@@ -35,6 +35,7 @@ import { Getters, TXEventName } from '@augurproject/sdk/src';
 import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
+
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 export interface DefaultButtonProps {
@@ -370,20 +371,23 @@ export const FavoritesButton = ({
   disabled,
   title,
   hideText,
-}: FavoritesButtonProps) => (
-  <button
-    onClick={e => action(e)}
-    className={classNames(Styles.FavoriteButton, {
-      [Styles.FavoriteButton_Favorite]: isFavorite,
-      [Styles.FavoriteButton_small]: isSmall,
-    })}
-    disabled={disabled}
-    title={title || 'Toggle Favorite'}
-  >
-    {getTheme() !== THEMES.TRADING ? StarIconSportsBetting : StarIcon}
-    {!hideText && `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
-  </button>
-);
+}: FavoritesButtonProps) => {
+  const { theme } = useAppStatusStore();
+  return (
+    <button
+      onClick={e => action(e)}
+      className={classNames(Styles.FavoriteButton, {
+        [Styles.FavoriteButton_Favorite]: isFavorite,
+        [Styles.FavoriteButton_small]: isSmall,
+      })}
+      disabled={disabled}
+      title={title || 'Toggle Favorite'}
+    >
+      {theme !== THEMES.TRADING ? StarIconSportsBetting : StarIcon}
+      {!hideText && `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
+    </button>
+  );
+};
 
 export const CompactButton = (props: DefaultButtonProps) => (
   <button

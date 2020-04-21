@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
@@ -37,7 +37,7 @@ import {
   THEMES,
   CLOSED_SHORT,
 } from 'modules/common/constants';
-import { getTheme } from 'modules/app/actions/update-app-status';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber } from 'utils/format-number';
 import { DateFormattedObject, FormattedNumber, SizeTypes, MarketData } from 'modules/types';
@@ -266,7 +266,9 @@ interface RedFlagProps {
   market: Getters.Markets.MarketInfo;
 }
 
-export const RedFlag = ({ market }: RedFlagProps) => market.mostLikelyInvalid ? (
+export const RedFlag = ({ market }: RedFlagProps) => {
+  const { theme } = useAppStatusStore();
+  return market.mostLikelyInvalid ? (
   <>
     <label
       className={classNames(TooltipStyles.TooltipHint, Styles.RedFlag)}
@@ -274,27 +276,29 @@ export const RedFlag = ({ market }: RedFlagProps) => market.mostLikelyInvalid ? 
       data-for={`tooltip-${market.id}-redFlag`}
       data-iscapture={true}
     >
-      {getTheme() !== THEMES.TRADING ? `High Risk` : RedFlagIcon}
+      {theme !== THEMES.TRADING ? `High Risk` : RedFlagIcon}
     </label>
     <ReactTooltip
       id={`tooltip-${market.id}-redFlag`}
       className={TooltipStyles.Tooltip}
       effect="solid"
       place="right"
-      type={getTheme() === THEMES.TRADING ? "light" : null}
+      type={theme === THEMES.TRADING ? "light" : null}
       event="mouseover mouseenter"
       eventOff="mouseleave mouseout scroll mousewheel blur"
     >
       {PROBABLE_INVALID_MARKET}
     </ReactTooltip>
   </>
-) : null;
+  ) : null
+};
 
 interface TemplateShieldProps {
   market: Getters.Markets.MarketInfo;
 }
 
 export const TemplateShield = ({ market }: TemplateShieldProps) => {
+  const { theme } = useAppStatusStore();
   const yellowShield = hasTemplateTextInputs(market.template.hash, market.marketType === CATEGORICAL);
   return (
     <>
@@ -314,7 +318,7 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
         className={TooltipStyles.Tooltip}
         effect="solid"
         place="right"
-        type={getTheme() === THEMES.TRADING ? "light" : null}
+        type={theme === THEMES.TRADING ? "light" : null}
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
@@ -583,69 +587,50 @@ export const ValueLabel = (props: ValueLabelProps) => {
   );
 };
 
-export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
-  labelRef: any = null;
-  state: TextLabelState = {
-    scrollWidth: null,
-    clientWidth: null,
-    isDisabled: true,
-  };
+export const TextLabel = ({
+  text,
+  keyId,
+}: TextLabelProps) => {
+  const [state, setState] = useState({
+    scrollWidth: 0,
+    clientWidth: 0,
+    isDisalbed: true,
+  });
+  const labelRef = useRef({
+    current: { clientWidth: 0, scrollWidth: 0 },
+  });
+  useEffect(() => {
+    const { scrollWidth, clientWidth } = labelRef.current;
+    setState({ ...state, clientWidth, scrollWidth })
+  }, [labelRef.current.clientWidth, labelRef.current.scrollWidth, text]);
+  const { theme } = useAppStatusStore();
+  const { isDisabled } = state;
 
-  measure() {
-    const { clientWidth, scrollWidth } = this.labelRef;
-
-    this.setState({
-      scrollWidth,
-      clientWidth,
-      isDisabled: !(scrollWidth > clientWidth),
-    });
-  }
-
-  componentDidMount() {
-    this.measure();
-  }
-
-  componentDidUpdate() {
-    this.measure();
-  }
-
-  shouldComponentUpdate(nextProps: any, nextState: any) {
-    return (
-      this.state.scrollWidth !== nextState.scrollWidth ||
-      this.state.clientWidth !== nextState.clientWidth ||
-      this.props.text !== nextProps.text
-    );
-  }
-  render() {
-    const { text, keyId } = this.props;
-    const { isDisabled } = this.state;
-
-    return (
-      <span className={Styles.TextLabel}>
-        <label
-          ref={ref => (this.labelRef = ref)}
-          data-tip
-          data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
-          data-iscapture={true}
+  return (
+    <span className={Styles.TextLabel}>
+      <label
+        ref={labelRef}
+        data-tip
+        data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
+        data-iscapture={true}
+      >
+        {text}
+      </label>
+      {!isDisabled && (
+        <ReactTooltip
+          id={`${keyId}-${text.replace(/\s+/g, '-')}`}
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="top"
+          type={theme === THEMES.TRADING ? "light" : null}
+          event="mouseover mouseenter"
+          eventOff="mouseleave mouseout scroll mousewheel blur"
         >
           {text}
-        </label>
-        {!isDisabled && (
-          <ReactTooltip
-            id={`${keyId}-${text.replace(/\s+/g, '-')}`}
-            className={TooltipStyles.Tooltip}
-            effect="solid"
-            place="top"
-            type={getTheme() === THEMES.TRADING ? "light" : null}
-            event="mouseover mouseenter"
-            eventOff="mouseleave mouseout scroll mousewheel blur"
-          >
-            {text}
-          </ReactTooltip>
-        )}
-      </span>
-    );
-  }
+        </ReactTooltip>
+      )}
+    </span>
+  );
 }
 
 export class HoverValueLabel extends React.Component<
@@ -727,6 +712,7 @@ export const InvalidLabel = ({
   openInvalidMarketRulesModal,
   tooltipPositioning,
 }: InvalidLabelProps) => {
+  const { theme } = useAppStatusStore();
   const {
     explainerBlockTitle,
     explainerBlockSubtexts,
@@ -758,7 +744,7 @@ export const InvalidLabel = ({
         )}
         effect="solid"
         place={tooltipPositioning || 'left'}
-        type={getTheme() === THEMES.TRADING ? "dark" : null}
+        type={theme === THEMES.TRADING ? "dark" : null}
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
