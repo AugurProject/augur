@@ -2,7 +2,6 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const DeadCodePlugin = require("webpack-deadcode-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WorkerPlugin = require('worker-plugin');
 
@@ -28,7 +27,6 @@ module.exports = {
       "react-dom",
       "redux",
       "redux-thunk",
-      "moment",
       "react-datetime",
       `${PATHS.APP}/main`
     ],
@@ -152,13 +150,7 @@ module.exports = {
     // `unusedExports: true` is required by DeadCodePlugin
     usedExports: true,
     splitChunks: {
-      cacheGroups: {
-        vendor: {
-          test: /node_modules\/(?!@augurproject)/,
-          name: 'vendor',
-          chunks: 'all',
-        }
-      }
+      maxSize: 7*1024*1024
     }
   },
   plugins: [

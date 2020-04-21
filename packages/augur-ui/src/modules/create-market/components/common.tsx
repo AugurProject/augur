@@ -954,7 +954,7 @@ export const InputFactory = (props: InputFactoryProps) => {
                 })
               }
             }
-          } else if (TemplateInputType.DROPDOWN) {
+          } else if (input.type === TemplateInputType.DROPDOWN) {
             const target = props.inputs.find(i => i.inputSourceId === input.id);
             if (
               value &&
@@ -962,6 +962,31 @@ export const InputFactory = (props: InputFactoryProps) => {
               target.type === TemplateInputType.DATEYEAR_CLOSING
             ) {
               target.userInputObject = target.inputTimeOffset[value];
+            }
+
+            if (input.eventExpEndNextMonth) {
+              let month = '0';
+              let year = '0';
+              if (input.yearDropdown) {
+                month = value;
+                year = inputs[input.yearDropdown].userInput;
+              } else {
+                year = value;
+                month = inputs[input.monthDropdown].userInput;
+              }
+              if (year && month && year !== '' && month !== '') {
+                const newEndTime = moment().utc().month(month).year(year).add(1, 'M').endOf('month').unix();
+                const comps = timestampComponents(newEndTime, 0);
+                onChange('updateEventExpiration', {
+                  setEndTime: comps.setEndTime,
+                  hour: comps.hour,
+                  minute: comps.minute,
+                  meridiem: comps.meridiem,
+                  offset: 0,
+                  offsetName: null,
+                  timezone: null,
+                });
+              }
             }
           }
           updateData(value);

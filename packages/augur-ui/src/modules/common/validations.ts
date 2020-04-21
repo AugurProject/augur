@@ -206,11 +206,16 @@ export function checkForUserInputFilled(
     ) {
       return 'Must be a whole positive number';
     } else if (
-      input.validationType === ValidationType.NUMBER &&
+      (input.validationType === ValidationType.NUMBER || input.validationType === ValidationType.NUMBER_ONE_DECIMAL) &&
       checkValidNumber(input.userInput)
     ) {
       return 'Must enter a valid number';
-    } else if (input.type === TemplateInputType.DATEYEAR) {
+    } else if (
+      input.validationType === ValidationType.NUMBER_ONE_DECIMAL &&
+      moreThanDecimals(input.userInput, 1)
+    ) {
+      return 'Must have only one or fewer digits after the decimal';
+    }else if (input.type === TemplateInputType.DATEYEAR) {
       if (!input.userInput) return 'Input is required';
       if (input.dateAfterId) {
         const source = inputs.find(i => i.id === input.dateAfterId);

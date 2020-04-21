@@ -1,34 +1,19 @@
 import store, { AppState } from 'appStore';
 import setAlertText from 'modules/alerts/actions/set-alert-text';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import makePath from 'modules/routes/helpers/make-path';
-import { TRANSACTIONS } from 'modules/routes/constants/views';
-import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import {
-  PREFILLEDSTAKE,
-  DOINITIALREPORT,
-  CONTRIBUTE,
-  CREATEMARKET,
-  CREATEYESNOMARKET,
-  CREATECATEGORICALMARKET,
-  CREATESCALARMARKET,
-  PUBLICFILLORDER,
-  INFO,
-  PUBLICFILLBESTORDER,
-  PUBLICFILLBESTORDERWITHLIMIT,
-  PUBLICTRADE,
-  PUBLICTRADEWITHLIMIT,
-  REDEEMSTAKE,
-  CLAIMMARKETSPROCEEDS,
   CLAIMTRADINGPROCEEDS,
+  CONTRIBUTE,
+  DOINITIALREPORT,
+  INFO,
+  PUBLICFILLORDER,
+  PUBLICTRADE,
+  REDEEMSTAKE,
   ZERO,
 } from 'modules/common/constants';
-import { convertAttoValueToDisplayValue } from '@augurproject/sdk/src';
-import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
-import { selectMarket } from 'modules/markets/selectors/market';
+import { getNetworkId } from 'modules/contracts/actions/contractCalls';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
@@ -120,12 +105,12 @@ export function updateAlert(
       alert.id = id;
       alert.uniqueId =
         alertName === PUBLICTRADE || alertName === PUBLICFILLORDER ? createUniqueOrderId(alert) : id;
-     
+
       if (alertName === CLAIMTRADINGPROCEEDS) {
         alert.uniqueId = createAlternateUniqueOrderId(alert);
         if (createBigNumber(alert.params.numPayoutTokens).eq(ZERO)) {
           return;
-        } 
+        }
       }
 
       if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
@@ -140,7 +125,7 @@ export function updateAlert(
           })
         );
       }
-      
+
       let foundAlert = alerts.find(
         findAlert =>
           findAlert.uniqueId === alert.uniqueId &&

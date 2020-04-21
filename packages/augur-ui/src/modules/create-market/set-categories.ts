@@ -1278,6 +1278,10 @@ export const setCategories: SortedGroup[] = [
           { value: CUSTOM, label: CUSTOM },
         ],
       },
+      { 
+        value: 'Statistics',
+        label: 'Statistics',
+      },
       {
         value: 'Index',
         label: 'Index',

@@ -24,6 +24,7 @@ import {
   WORLD,
   FINANCE,
   STOCKS,
+  STATISTICS,
   INDEXES,
   ENTERTAINMENT,
   CRYPTO,
@@ -6398,6 +6399,92 @@ export const TEMPLATES = {
   },
   [FINANCE]: {
     children: {
+      [STATISTICS]: {
+        templates: [
+          {
+            marketType: CATEGORICAL,
+            question: `Will the seasonally adjusted national Unemployment Rate for [0] [1] be [2]% or higher according to the US Bureau Labor of Statistics?`,
+            example: `Will the seasonally adjusted national Unemployment Rate for September 2020 be 5% or higher according to the US Bureau Labor of Statistics?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Month`,
+                eventExpEndNextMonth: true,
+                yearDropdown: 1,
+                values: LIST_VALUES.MONTHS,
+                noSort: true,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                eventExpEndNextMonth: true,
+                values: LIST_VALUES.YEARS,
+                monthDropdown: 0,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                placeholder: `Number`,
+                validationType: ValidationType.NUMBER_ONE_DECIMAL,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[2]% or Higher`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Below [2]%`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Settlement is found using the US Bureau Labor of Statistics website (https://www.bls.gov/). You can go directly to https://data.bls.gov/timeseries/LNS14000000 to find the market settlement number, go to the Year/Month stated in the market question in the chart.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What will the seasonally adjusted national Unemployment Rate be for [0] [1] according to the US Bureau Labor of Statistics?`,
+            example: `What will the seasonally adjusted national Unemployment Rate be for September 2020 according to the US Bureau Labor of Statistics?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Month`,
+                eventExpEndNextMonth: true,
+                yearDropdown: 1,
+                values: LIST_VALUES.MONTHS,
+                noSort: true,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                eventExpEndNextMonth: true,
+                values: LIST_VALUES.YEARS,
+                monthDropdown: 0,
+              },
+            ],
+            tickSize: 0.1,
+            minPrice: 0,
+            maxPrice: 30,
+            denomination: '%',
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Settlement is found using the US Bureau Labor of Statistics website (https://www.bls.gov/). You can go directly to https://data.bls.gov/timeseries/LNS14000000 to find the market settlement number, go to the Year/Month stated in the market question in the chart.`,
+                },
+              ],
+            },
+          },
+        ]
+      },
       [STOCKS]: {
         templates: [
           {

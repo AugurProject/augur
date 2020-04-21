@@ -1,14 +1,13 @@
-import {
-  ADD_ALERT,
-  REMOVE_ALERT,
-  UPDATE_EXISTING_ALERT,
-  CLEAR_ALERTS
-} from "modules/alerts/actions/alerts";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
 import { Alert, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: Array<Alert> = [];
+
+export const ADD_ALERT = 'ADD_ALERT';
+export const REMOVE_ALERT = 'REMOVE_ALERT';
+export const UPDATE_EXISTING_ALERT = 'UPDATE_EXISTING_ALERT';
+export const CLEAR_ALERTS = 'CLEAR_ALERTS';
 
 /**
  * @typedef {Object} AlertAction
