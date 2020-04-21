@@ -26,7 +26,6 @@ interface TopBarProps {
   restoredAccount: boolean;
   stats: CoreStats;
   unseenCount: number;
-  updateIsAlertVisible: Function;
   signupModal: Function;
   loginModal: Function;
 }
@@ -37,7 +36,6 @@ const TopBar: React.FC<TopBarProps> = ({
   restoredAccount,
   stats,
   unseenCount,
-  updateIsAlertVisible,
   signupModal,
   loginModal,
 }) => {

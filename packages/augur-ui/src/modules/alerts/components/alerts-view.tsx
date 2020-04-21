@@ -28,7 +28,6 @@ const AlertsView: React.FC<AlertsViewProps> = ({
 })=>{
   const { isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
   const alertsVisible = isLogged && isAlertsMenuOpen;
-  console.log(alertsVisible, isLogged, isAlertsMenuOpen);
   useEffect(() =>{
     if (alertsVisible) {
       alerts.forEach(alert => {
