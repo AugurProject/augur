@@ -105,7 +105,6 @@ interface AppProps {
   createFundedGsnWallet: Function;
   showCreateAccountButton: boolean;
   showMigrateRepButton: boolean;
-  changeOddsType: Function;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -124,14 +123,13 @@ export default class AppView extends Component<AppProps> {
       disabled: false,
     },
     {
-      title:
-        this.props.theme !== THEMES.TRADING ? 'My Account' : 'Account Summary',
+      title:'Account Summary',
       route: ACCOUNT_SUMMARY,
       requireLogin: true,
       showAlert: this.props.notifications.filter(item => item.isNew).length > 0,
     },
     {
-      title: this.props.theme !== THEMES.TRADING ? 'My Bets' : 'Portfolio',
+      title: 'Portfolio',
       route: MY_POSITIONS,
       requireLogin: true,
     },
@@ -551,7 +549,7 @@ export default class AppView extends Component<AppProps> {
                 <BetslipProvider>
                 <ForkingBanner />
                 <Routes isLogged={isLogged || restoredAccount} />
-                {isLogged && <Betslip theme={theme} />}
+                {isLogged && <Betslip />}
                 </BetslipProvider>
               </section>
             </section>

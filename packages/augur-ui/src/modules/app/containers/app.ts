@@ -58,7 +58,6 @@ const mapStateToProps = (state: AppState) => {
     env: state.env,
     isLogged: state.authStatus.isLogged,
     restoredAccount: state.authStatus.restoredAccount,
-    theme: state.appStatus.theme,
     isMobile: state.appStatus.isMobile,
     oddsType: state.appStatus.odds,
     isMobileSmall: state.appStatus.isMobileSmall,
@@ -97,7 +96,6 @@ const mapDispatchToProps = dispatch => ({
   migrateV1Rep: () => dispatch(updateModal({ type: MODAL_MIGRATE_REP })),
   saveAffilateAddress: address => dispatch(saveAffiliateAddress(address)),
   createFundedGsnWallet: () => dispatch(createFundedGsnWallet()),
-  changeOddsType: odds => dispatch(updateAppStatus(ODDS, odds)),
 });
 
 const AppContainer = compose(
