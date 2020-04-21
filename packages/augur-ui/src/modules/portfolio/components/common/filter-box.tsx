@@ -3,7 +3,6 @@ import React, { ReactNode } from 'react';
 import { ALL_MARKETS, END_TIME } from 'modules/common/constants';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import { SquareDropdown } from 'modules/common/selection';
-import { SearchSort } from 'modules/common/search-sort';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
 import { NameValuePair, Market, Tab } from 'modules/portfolio/types';
 import MarketRow from 'modules/portfolio/containers/market-row';
@@ -159,6 +158,7 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
   return (
     <QuadBox
       title={title}
+      leftContent={(<div className={Styles.Count}>{filteredData.length}</div>)}
       customClass={customClass}
       switchHeaders={true}
       showFilterSearch={true}
@@ -176,7 +176,6 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
             tabs={tabs}
             selectedTab={selectedTab}
             selectTab={(tab) => {
-              console.log('selectTab', tab)
               setSelectedTab(tab)
             }}
           />

@@ -40,14 +40,14 @@
   }
 
   &.HideToggle {
-    max-height: 43px;
+    max-height: @size-43;
     min-height: unset;
     overflow-y: hidden;
     flex: 0;
   }
 
   &.Extend {
-    min-height: calc(100% - 43px);
+    min-height: calc(100% - @size-43);
   }
 }
 
@@ -58,7 +58,7 @@
 @media @breakpoint-mobile {
   .NormalOnMobile {
     background: var(--color-module-background);
-    border: 1px solid var(--color-dark-grey);
+    border: @size-1 solid var(--color-dark-grey);
   }
   
   .ShowOnMobile {
@@ -81,6 +81,10 @@
   }
 }
 
+.Count {
+  display: none;
+}
+
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .Quad {
@@ -96,5 +100,19 @@
         padding: 0 0 @size-4;
       }
     }
+  }
+
+  .Count {
+    .text-12;
+
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    width: @size-19;
+    height: @size-21;
+    color: var(--color-secondary-text);
+    border: @size-1 solid var(--color-outline);
+    border-radius: @border-radius-default;
+    background: var(--color-module-background);
   }
 }
