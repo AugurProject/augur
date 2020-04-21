@@ -284,6 +284,7 @@ const MarketsView = ({
           <PillSelection
             options={SPORTS_MARKET_TYPES}
             defaultSelection={selectedMarketCardType}
+            large
             onChange={selected =>
               setState({ ...state, selectedMarketCardType: selected })
             }
