@@ -92,8 +92,8 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .PrimaryButton {
     align-items: center;
     background: var(--color-primary-action-15);
@@ -328,8 +328,8 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .SecondaryButton {
     align-items: center;
     background: var(--color-secondary-action);
@@ -508,8 +508,8 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .FavoriteButton {
     > svg > path {
       fill: var(--color-dark-text);
@@ -962,8 +962,8 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .ExternalLinkButton {
     color: var(--color-text-secondary);
     flex-flow: row-reverse nowrap;
@@ -1028,6 +1028,35 @@
         }
       }
     }
+
+    &.CondensedStyle {
+      border: 0;
+      background: transparent;
+
+      > a {
+        .text-10-medium;
+
+        color: var(--color-primary-text);
+        text-transform: uppercase;
+      }
+
+      > svg {
+        margin-right: @size-6;
+        width: @size-12;
+        height: @size-12;
+
+        > path {
+          &:nth-child(odd) {
+            fill: var(--color-primary-text);
+            stroke: none;
+          }
+
+          &:nth-child(even) {
+            stroke: var(--color-primary-text);
+          }
+        }
+      }
+    }
   }
 }
 
@@ -1058,8 +1087,8 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .DirectionButton {
     // background: var(--color-module-background);
     background: transparent;

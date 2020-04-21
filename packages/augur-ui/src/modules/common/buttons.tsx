@@ -114,6 +114,7 @@ export interface ExternalLinkButtonProps {
   light?: boolean;
   customLink?: any;
   callback?: Function;
+  condensedStyle?: boolean;
 }
 
 export interface ExternalLinkTextProps {
@@ -634,6 +635,7 @@ export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
   <button
     className={classNames(Styles.ExternalLinkButton, {
       [Styles.LightAlternate]: props.light,
+      [Styles.CondensedStyle]: props.condensedStyle
     })}
     onClick={e => {
       props.action && props.action(e);

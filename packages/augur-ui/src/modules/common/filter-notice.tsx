@@ -1,6 +1,7 @@
 import React from 'react';
 import Styles from 'modules/common/filter-notice.styles.less';
 import {ExclamationCircle, XIcon} from 'modules/common/icons';
+import classNames from 'classnames';
 
 interface Settings {
   propertyName: string;
@@ -20,10 +21,10 @@ export const FilterNotice = (props: FilterNoticeProps) => {
   const showNotice = () => props.showDismissButton ? props.settings.propertyValue && props.show : props.show;
 
   return (
-    <div className={Styles.filterNotice}>
+    <div className={classNames(Styles.filterNotice,{[Styles.active]: props.color === 'active'})}>
       {showNotice() ? (
         <div>
-          <span className={props.color === 'invalid' ? Styles.invalid : Styles.primary}>
+          <span className={props.color === 'active' ? Styles.active : Styles.primary}>
             {ExclamationCircle}
           </span>
           {props.content}

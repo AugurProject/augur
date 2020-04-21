@@ -362,6 +362,7 @@ export default class MarketsView extends Component<
               options={SPORTS_MARKET_TYPES}
               defaultSelection={selectedMarketCardType}
               onChange={selected => this.updateSelected(selected)}
+              large
             />
             <FilterDropDowns />
             <FilterSearch

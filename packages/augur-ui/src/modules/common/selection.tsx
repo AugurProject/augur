@@ -49,6 +49,7 @@ interface PillSelectionProps {
   options: SelectionOption[];
   onChange(value: number): void;
   defaultSelection: number;
+  large?: boolean;
 }
 
 interface PillSelectionState {
@@ -389,6 +390,7 @@ export const PillSelection = ({
   options,
   onChange,
   defaultSelection = 0,
+  large
 }: PillSelectionProps) => {
   const [selected, setSelected] = useState(defaultSelection);
   const buttonSelect = (option: SelectionOption) => {
@@ -401,7 +403,7 @@ export const PillSelection = ({
   const renderButton = (option: SelectionOption): React.ReactNode => (
     <li
       className={classNames({
-        [Styles.Selected]: selected === option.id,
+        [Styles.Selected]: selected === option.id
       })}
       key={option.label}
     >
@@ -412,7 +414,7 @@ export const PillSelection = ({
   );
 
   return (
-    <ul className={Styles.PillSelection}>
+    <ul className={classNames(Styles.PillSelection, {[Styles.LargePillSelection]: large})}>
       {options.map(
         (option: SelectionOption): React.ReactNode => renderButton(option)
       )}

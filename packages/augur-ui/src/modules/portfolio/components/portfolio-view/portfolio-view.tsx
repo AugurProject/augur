@@ -7,12 +7,14 @@ import OpenOrders from 'modules/portfolio/containers/open-orders';
 import FilledOrders from 'modules/portfolio/containers/filled-orders';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
-import { SMALL_MOBILE } from 'modules/common/constants';
+import { SMALL_MOBILE, THEMES } from 'modules/common/constants';
 import Styles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles.less';
 import { PORTFOLIO_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { CREATE_MARKET_PORTFOLIO } from 'modules/routes/constants/param-names';
+import { getTheme } from 'modules/app/actions/update-app-status';
+import { MyBets } from './my-bets';
 
 interface PortfolioViewProps {
   location: Location;
@@ -51,6 +53,14 @@ export default class PortfolioView extends React.Component<
 
   render() {
     const s = this.state;
+
+    const theme = getTheme();
+
+    if (theme === THEMES.SPORTS) {
+      return (
+        <MyBets />
+      );
+    }
 
     return (
       <div className={Styles.PortfolioView}>
