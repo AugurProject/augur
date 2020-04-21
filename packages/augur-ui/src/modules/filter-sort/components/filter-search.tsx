@@ -36,12 +36,12 @@ export default class FilterSearch extends Component<
   constructor(props) {
     super(props);
 
-    const { location } = this.props;
+    const { location, placeholder } = props;
     const search = parseQuery(location.search)[FILTER_SEARCH_PARAM];
 
     this.state = {
       search: search || '',
-      placeholder: props.placeholder || SERACH_PLACEHOLDER,
+      placeholder: placeholder || SERACH_PLACEHOLDER,
     };
 
     this.updateQuery = this.updateQuery.bind(this);

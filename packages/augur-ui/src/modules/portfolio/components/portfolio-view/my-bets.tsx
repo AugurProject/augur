@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 
 import Styles from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
@@ -12,6 +12,14 @@ import { MARKETS } from 'modules/routes/constants/views';
 import { FilterNotice } from 'modules/common/filter-notice';
 
 export const MyBets = () => {
+  const [state, setState] = useState({
+    selectedMarketCardType: 0
+  });
+
+  const {
+    selectedMarketCardType,
+  } = state;
+
   return (
     <div className={classNames(Styles.MyBets)}>
       <HelmetTag {...PORTFOLIO_VIEW_HEAD_TAGS} />
@@ -60,13 +68,15 @@ export const MyBets = () => {
         </div>
         <PillSelection
           options={SPORTS_MARKET_TYPES}
-          defaultSelection={0}
-          onChange={selected => null}
+          defaultSelection={selectedMarketCardType}
           large
+          onChange={selected =>
+            setState({ ...state, selectedMarketCardType: selected })
+          }
         />
         <FilterSearch
           placeholder={'Search markets & outcomes...'}
-          search={''}
+          search=''
           isSearchingMarkets={false}
         />
       </div>

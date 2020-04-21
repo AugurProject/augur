@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Media from 'react-media';
 
 import MyPositions from 'modules/portfolio/containers/positions';
@@ -15,6 +15,7 @@ import parseQuery from 'modules/routes/helpers/parse-query';
 import { CREATE_MARKET_PORTFOLIO } from 'modules/routes/constants/param-names';
 import { getTheme } from 'modules/app/actions/update-app-status';
 import { MyBets } from './my-bets';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface PortfolioViewProps {
   location: Location;
@@ -28,48 +29,43 @@ interface PortfolioViewState {
   initialPage: number;
 }
 
-export default class PortfolioView extends React.Component<
-  PortfolioViewProps,
-  PortfolioViewState
-> {
-  state: PortfolioViewState = {
+const PortfolioView = ({ location }: PortfolioViewProps) => {
+  const [state, setState] = useState({
     extendPositions: false,
     extendMarkets: false,
     extendOpenOrders: false,
     extendFilledOrders: false,
-    initialPage: parseFloat(parseQuery(this.props.location.search)[CREATE_MARKET_PORTFOLIO]) || 0,
+    initialPage: parseFloat(parseQuery(location.search)[CREATE_MARKET_PORTFOLIO]) || 0,
+  });
+
+  const {
+    extendPositions,
+    extendMarkets,
+    extendOpenOrders,
+    extendFilledOrders,
+    initialPage,
+  } = state;
+
+  function toggle(extend: string, hide: string) {
+    setState({ ...state, [extend]: !state[extend], [hide]: false });
   };
 
-  toggle = (extend: string, hide: string) => {
-    if (!this.state[extend] && this.state[hide]) {
-      this.setState({ [extend]: false, [hide]: false });
-    } else {
-      this.setState({
-        [extend]: !this.state[extend],
-        [hide]: false,
-      });
-    }
-  };
+  const { theme } = useAppStatusStore();
 
-  render() {
-    const s = this.state;
-
-    const theme = getTheme();
-
-    if (theme === THEMES.SPORTS) {
-      return (
-        <MyBets />
-      );
-    }
-
+  if (theme === THEMES.SPORTS) {
     return (
-      <div className={Styles.PortfolioView}>
+      <MyBets />
+    );
+  }
+
+  return (
+    <div className={Styles.PortfolioView}>
         <HelmetTag {...PORTFOLIO_VIEW_HEAD_TAGS} />
         <Media query={SMALL_MOBILE}>
           {matches =>
             matches ? (
               <>
-              <ModuleTabs selected={s.initialPage} fillWidth noBorder>
+              <ModuleTabs selected={initialPage} fillWidth noBorder>
                 <ModulePane label="Positions">
                   <MyPositions />
                 </ModulePane>
@@ -89,33 +85,33 @@ export default class PortfolioView extends React.Component<
                 <div>
                   <MyPositions
                     toggle={() =>
-                      this.toggle('extendPositions', 'extendMarkets')
+                      toggle('extendPositions', 'extendMarkets')
                     }
-                    extend={s.extendPositions}
-                    hide={s.extendMarkets}
+                    extend={extendPositions}
+                    hide={extendMarkets}
                   />
                   <MyMarkets
                     toggle={() =>
-                      this.toggle('extendMarkets', 'extendPositions')
+                      toggle('extendMarkets', 'extendPositions')
                     }
-                    extend={s.extendMarkets}
-                    hide={s.extendPositions}
+                    extend={extendMarkets}
+                    hide={extendPositions}
                   />
                 </div>
                 <div>
                   <OpenOrders
                     toggle={() =>
-                      this.toggle('extendOpenOrders', 'extendFilledOrders')
+                      toggle('extendOpenOrders', 'extendFilledOrders')
                     }
-                    extend={s.extendOpenOrders}
-                    hide={s.extendFilledOrders}
+                    extend={extendOpenOrders}
+                    hide={extendFilledOrders}
                   />
                   <FilledOrders
                     toggle={() =>
-                      this.toggle('extendFilledOrders', 'extendOpenOrders')
+                      toggle('extendFilledOrders', 'extendOpenOrders')
                     }
-                    extend={s.extendFilledOrders}
-                    hide={s.extendOpenOrders}
+                    extend={extendFilledOrders}
+                    hide={extendOpenOrders}
                   />
                 </div>
               </section>
@@ -123,6 +119,7 @@ export default class PortfolioView extends React.Component<
           }
         </Media>
       </div>
-    );
-  }
+  );
 }
+
+export default PortfolioView;
