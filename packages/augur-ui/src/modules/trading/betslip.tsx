@@ -8,19 +8,16 @@ import {
   BetslipList,
   MyBetsSubheader,
 } from 'modules/trading/common';
-import { getTheme } from 'modules/app/actions/update-app-status';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import { THEMES } from 'modules/common/constants';
 import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 
 import Styles from 'modules/trading/betslip.styles';
 
-interface BetslipProps {
-  theme: string;
-}
-
-export const Betslip = ({ theme = getTheme() }: BetslipProps) => {
+export const Betslip = () => {
   const [minimized, setMinimized] = useState(true);
+  const { theme } = useAppStatusStore();
   const {
     selected: { header, subHeader },
     betslip: { count: betslipCount, items: betslipItems },

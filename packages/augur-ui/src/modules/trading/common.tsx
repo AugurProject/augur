@@ -17,7 +17,7 @@ import {
 } from 'modules/common/icons';
 import { MY_POSITIONS } from 'modules/routes/constants/views';
 import { LinearPropertyLabel } from 'modules/common/labels';
-import { calculateBetslipTotals } from 'modules/trading/hooks/betslip';
+import { calculateBetslipTotals } from 'modules/trading/store/betslip-hooks';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 import { BET_STATUS, BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import { formatDai } from 'utils/format-number';

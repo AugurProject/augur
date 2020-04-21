@@ -14,6 +14,7 @@ import ToastsContainer from 'modules/alerts/containers/toasts-view';
 
 import { Betslip } from 'modules/trading/betslip';
 import { BetslipProvider } from 'modules/trading/store/betslip';
+import { AppStatusProvider } from 'modules/app/store/app-status';
 
 import {
   MobileNavHamburgerIcon,
@@ -36,6 +37,7 @@ import {
   TRADING_TUTORIAL,
   THEMES,
 } from 'modules/common/constants';
+import { getTheme } from 'modules/app/actions/update-app-status';
 
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
@@ -103,13 +105,8 @@ interface AppProps {
   createFundedGsnWallet: Function;
   showCreateAccountButton: boolean;
   showMigrateRepButton: boolean;
-  theme: string;
-  setTheme: Function;
   changeOddsType: Function;
-  oddsType: string;
 }
-
-export const OddsContext = createContext({ oddsType: null, changeOddsType: (odds: string) => {} });
 
 export default class AppView extends Component<AppProps> {
   static defaultProps = {
@@ -172,10 +169,7 @@ export default class AppView extends Component<AppProps> {
       updateModal,
       useWeb3Transport,
       updateCurrentBasePath,
-      setTheme,
-      theme,
     } = this.props;
-    setTheme(theme);
     initAugur(
       history,
       {
@@ -398,18 +392,16 @@ export default class AppView extends Component<AppProps> {
       isHelpMenuOpen,
       updateHelpMenuState,
       notifications,
-      theme,
       createFundedGsnWallet,
       showCreateAccountButton,
       showMigrateRepButton,
       logout,
       showGlobalChat,
-      oddsType,
-      changeOddsType,
     } = this.props;
     const sideNavMenuData = this.sideNavMenuData;
     const { forkEndTime } = universe;
     const { currentAugurTimestamp } = blockchain;
+    const theme = getTheme();
     sideNavMenuData[1].title =
       theme !== THEMES.TRADING ? 'My Account' : 'Account Summary';
     sideNavMenuData[2].title =
@@ -428,7 +420,7 @@ export default class AppView extends Component<AppProps> {
 
     return (
       <main>
-        <OddsContext.Provider value={{ oddsType, changeOddsType }} >
+        <AppStatusProvider>
         <HelmetTag {...APP_HEAD_TAGS} />
         {ModalShowing && <Modal />}
         {toasts.length > 0 && (
@@ -565,7 +557,7 @@ export default class AppView extends Component<AppProps> {
             </section>
           </section>
         </div>
-        </OddsContext.Provider>
+        </AppStatusProvider>
       </main>
     );
   }
