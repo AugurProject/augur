@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/common/selection.styles';
-import { ThickChevron, Chevron, ShareIcon } from 'modules/common/icons';
+import { ThickChevron, Chevron, ShareIcon, SlimArrow } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
@@ -28,6 +28,7 @@ export interface DropdownProps {
   showColor?: boolean;
   disabled?: boolean;
   sort?: boolean;
+  minimalStyle?: boolean
 }
 
 interface DropdownState {
@@ -204,6 +205,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       id,
       showColor,
       disabled,
+      minimalStyle
     } = this.props;
     const { selected, showList, isDisabled, sortedList } = this.state;
     return (
@@ -218,6 +220,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
           [`${activeClassName}`]: showList,
           [Styles.showColor]: showColor,
           [Styles.Disabled]: disabled,
+          [Styles.Minimal]: minimalStyle,
           [`${Styles[`showColor-${selected ? selected.value + 1 : 1}`]}`]:
             selected && showColor,
         })}
@@ -239,7 +242,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
           <span ref={ref => (this.labelRef = ref)}>
             {selected ? selected.label : staticLabel}
           </span>
-          {ThickChevron}
+          {minimalStyle ? SlimArrow : ThickChevron}
         </button>
         <div>
           <div

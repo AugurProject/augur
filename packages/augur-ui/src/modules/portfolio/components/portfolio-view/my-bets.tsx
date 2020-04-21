@@ -3,11 +3,11 @@ import classNames from 'classnames';
 
 import Styles from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
 import { ExternalLinkButton, PrimaryButton } from 'modules/common/buttons';
-import { PillSelection } from 'modules/common/selection';
+import { PillSelection, SquareDropdown } from 'modules/common/selection';
 import FilterSearch from 'modules/filter-sort/containers/filter-search';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { PORTFOLIO_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
-import { SPORTS_MARKET_TYPES } from 'modules/common/constants';
+import { SPORTS_MARKET_TYPES, MY_BETS_VIEW_BY, MY_BETS_MARKET_STATUS } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
 import { FilterNotice } from 'modules/common/filter-notice';
 
@@ -39,8 +39,24 @@ export const MyBets = () => {
           }
         />
         <div>
-          <span>View by Event</span>
-          <span>Market Status: All</span>
+          <span>
+            View by{' '}
+            <SquareDropdown
+              options={MY_BETS_VIEW_BY}
+              defaultValue={'Event'}
+              onChange={null}
+              minimalStyle
+            />
+          </span>
+          <span>
+            Market Status:{' '}
+            <SquareDropdown
+              options={MY_BETS_MARKET_STATUS}
+              defaultValue={'All'}
+              onChange={null}
+              minimalStyle
+            />
+          </span>
         </div>
         <PillSelection
           options={SPORTS_MARKET_TYPES}
@@ -48,7 +64,11 @@ export const MyBets = () => {
           onChange={selected => null}
           large
         />
-        <FilterSearch placeholder={'Search markets & outcomes...'} search={''} isSearchingMarkets={false} />
+        <FilterSearch
+          placeholder={'Search markets & outcomes...'}
+          search={''}
+          isSearchingMarkets={false}
+        />
       </div>
     </div>
   );
