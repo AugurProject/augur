@@ -2,6 +2,7 @@ import { ParsedLog } from '@augurproject/types';
 import { Block } from 'ethers/providers';
 import * as fp from 'lodash/fp';
 import { Augur } from '../Augur';
+import { ZeroXStats } from '../api/ZeroX';
 import { SubscriptionEventName, NULL_ADDRESS } from '../constants';
 import { Subscriptions } from '../subscriptions';
 import { DB } from './db/DB';
@@ -74,6 +75,7 @@ export class Controller {
     const percentSynced = ((lowestBlock / blockNumber) * 100).toFixed(4);
 
     const timestamp = await this.augur.getTimestamp();
+    const stats: ZeroXStats = await this.augur.zeroX.getStats();
 
     this.augur.events.emit(SubscriptionEventName.NewBlock, {
       eventName: SubscriptionEventName.NewBlock,
@@ -83,6 +85,7 @@ export class Controller {
       percentSynced,
       timestamp: timestamp.toNumber(),
       logs,
+      ...stats
     });
   };
 
