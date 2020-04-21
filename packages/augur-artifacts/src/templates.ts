@@ -463,6 +463,7 @@ function daysRequiredAfterMonthDate(
   eventExpEndNextMonthValues: EventExpEndNextMonth[],
   endTime: number
 ) {
+  if (eventExpEndNextMonthValues.length === 0) return true;
   const monthId = eventExpEndNextMonthValues.find(i => i.yearDropdown !== undefined);
   const yearId = eventExpEndNextMonthValues.find(i => i.monthDropdown !== undefined);
 
