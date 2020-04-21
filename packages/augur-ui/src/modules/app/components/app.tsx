@@ -1,7 +1,7 @@
 // TODO -- this component needs to be broken up
 //         all logic related to sidebar(s) need to be housed w/in a separate component
 
-import React, { Component, createContext } from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 import isWindows from 'utils/is-windows';
 import Modal from 'modules/modal/containers/modal-view';
@@ -266,7 +266,7 @@ export default class AppView extends Component<AppProps> {
       stateUpdate.mobileMenuState = MOBILE_MENU_STATES.CLOSED;
       updateState = true;
     }
-
+    
     if (sidebarStatus.isAlertsVisible) {
       stateUpdate.isAlertsVisible = false;
       updateState = true;
@@ -382,13 +382,9 @@ export default class AppView extends Component<AppProps> {
       sidebarStatus,
       updateMobileMenuState,
       toasts,
-      isConnectionTrayOpen,
-      updateConnectionTray,
       migrateV1Rep,
       walletBalances,
       updateModal,
-      isHelpMenuOpen,
-      updateHelpMenuState,
       notifications,
       createFundedGsnWallet,
       showCreateAccountButton,
@@ -471,16 +467,11 @@ export default class AppView extends Component<AppProps> {
               <SideNav
                 showNav={navShowing}
                 defaultMobileClick={() => {
-                  updateConnectionTray(false);
                   updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
                 }}
                 isLogged={isLogged || restoredAccount}
                 menuData={sideNavMenuData}
                 currentBasePath={currentBasePath}
-                isConnectionTrayOpen={isConnectionTrayOpen}
-                isHelpMenuOpen={isHelpMenuOpen}
-                updateConnectionTray={updateConnectionTray}
-                updateHelpMenuState={updateHelpMenuState}
                 logout={() => logout()}
                 showGlobalChat={() => showGlobalChat()}
                 migrateV1Rep={migrateV1Rep}

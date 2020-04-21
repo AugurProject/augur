@@ -15,11 +15,9 @@ import { NewLogo } from 'modules/app/components/logo';
 import ThemeSwitch from 'modules/app/containers/theme-switch';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
-import HelpResources from 'modules/app/containers/help-resources';
+import { HelpResources } from 'modules/app/components/help-resources';
 import { OddsMenu } from 'modules/app/components/odds-menu';
 import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
-import { formatDai } from 'utils/format-number';
-import { createBigNumber } from 'utils/create-big-number';
 
 interface TopBarProps {
   alertsVisible: boolean;

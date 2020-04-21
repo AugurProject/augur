@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
@@ -14,22 +14,23 @@ import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { helpIcon, Chevron, Dot } from 'modules/common/icons';
-import { MODAL_ADD_FUNDS, MIGRATE_FROM_LEG_REP_TOKEN, TRANSACTIONS } from 'modules/common/constants';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import {
+  MODAL_ADD_FUNDS,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  TRANSACTIONS,
+} from 'modules/common/constants';
 
 interface SideNavProps {
   defaultMobileClick: Function;
   isLogged: boolean;
   menuData: NavMenuItem[];
   currentBasePath: string;
-  isConnectionTrayOpen: boolean;
   logout: Function;
   showNav: boolean;
   showGlobalChat: Function;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
-  isHelpMenuOpen: boolean;
-  updateHelpMenuState: Function;
-  updateConnectionTray: Function;
   updateModal: Function;
 }
 
@@ -37,23 +38,19 @@ const SideNav = ({
   isLogged,
   defaultMobileClick,
   menuData,
-  isConnectionTrayOpen,
   logout,
   currentBasePath,
   showNav,
   showGlobalChat,
   migrateV1Rep,
   showMigrateRepButton,
-  isHelpMenuOpen,
-  updateHelpMenuState,
-  updateConnectionTray,
   updateModal,
 }: SideNavProps) => {
-  useEffect(() => {
-    if (isHelpMenuOpen) {
-      updateConnectionTray(false);
-    }
-  }, [isHelpMenuOpen]);
+  const {
+    isHelpMenuOpen,
+    isConnectionTrayOpen,
+    actions: { setIsHelpMenuOpen },
+  } = useAppStatusStore();
 
   const accessFilteredMenu = menuData.filter(
     item => !(item.requireLogin && !isLogged)
@@ -68,7 +65,7 @@ const SideNav = ({
         {isLogged && (
           <HelpIcon
             isHelpMenuOpen={isHelpMenuOpen}
-            updateHelpMenuState={updateHelpMenuState}
+            updateHelpMenuState={setIsHelpMenuOpen}
           />
         )}
         <ConnectAccount />
@@ -78,9 +75,7 @@ const SideNav = ({
           {isConnectionTrayOpen && <ConnectDropdown />}
           {isHelpMenuOpen && <HelpMenuList />}
           <ThemeSwitch />
-          <ul
-            className={Styles.MainMenu}
-          >
+          <ul className={Styles.MainMenu}>
             {isLogged && (
               <SecondaryButton
                 action={() => updateModal({ type: MODAL_ADD_FUNDS })}
@@ -98,7 +93,10 @@ const SideNav = ({
               >
                 <Link
                   to={item.route ? makePath(item.route) : null}
-                  onClick={() => defaultMobileClick()}
+                  onClick={() => {
+                    setIsHelpMenuOpen(false);
+                    defaultMobileClick();
+                  }}
                 >
                   {item.button ? (
                     <SecondaryButton text={item.title} action={null} />
@@ -131,9 +129,9 @@ const SideNav = ({
                   <ReactTooltip
                     id={'migrateRep'}
                     className={TooltipStyles.Tooltip}
-                    effect='solid'
-                    place='top'
-                    type='light'
+                    effect="solid"
+                    place="top"
+                    type="light"
                     event="mouseover mouseenter"
                     eventOff="mouseleave mouseout scroll mousewheel blur"
                   >
