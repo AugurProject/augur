@@ -63,25 +63,27 @@ function createBrowserMeshRestartFunction(
 ) {
   return err => {
     console.error('Browser mesh error: ', err.message, err.stack);
-      console.log('Restarting Mesh Sync');
+    console.log('Restarting Mesh Sync');
+    zeroX.client.emit('ZeroX:State:Restarting', {error: err});
 
-      // Passing `true` as the last parameter to make sure the config doesn't include custom addresses on retry
-      const mesh = new Mesh(
-        createBrowserMeshConfig(
-          meshConfig.ethereumRPCURL,
-          web3Provider,
-          meshConfig.ethereumChainID,
-          sdkConfig.addresses,
-          meshConfig.verbosity,
-          meshConfig.useBootstrapList,
-          meshConfig.bootstrapList,
-          true
-        )
-      );
-      mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, sdkConfig));
-      mesh.startAsync().then(() => {
-        zeroX.mesh = mesh;
-      })
+    // Passing `true` as the last parameter to make sure the config doesn't include custom addresses on retry
+    const mesh = new Mesh(
+      createBrowserMeshConfig(
+        meshConfig.ethereumRPCURL,
+        web3Provider,
+        meshConfig.ethereumChainID,
+        sdkConfig.addresses,
+        meshConfig.verbosity,
+        meshConfig.useBootstrapList,
+        meshConfig.bootstrapList,
+        true
+      )
+    );
+    mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, sdkConfig));
+    mesh.startAsync().then(() => {
+      zeroX.client.emit('ZeroX:State:Restarted');
+      zeroX.mesh = mesh;
+    })
   };
 }
 
@@ -118,5 +120,6 @@ export async function createBrowserMesh(
   const mesh = new Mesh(meshConfig);
   mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
   await mesh.startAsync();
+  zeroX.client.emit('ZeroX:State:Started');
   zeroX.mesh = mesh;
 }
