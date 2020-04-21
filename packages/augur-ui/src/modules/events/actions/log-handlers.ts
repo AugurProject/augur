@@ -642,11 +642,11 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
   const userAddress = getState().loginAccount.address;
   const isForking = !!getState().universe.forkingInfo;
   const universeId = getState().universe.id;
+  let isParticipationTokens = !!logs.find(l => l.tokenType === Logs.TokenType.ParticipationToken);
   logs.filter(log => isSameAddress(log.target, userAddress)).map(log => {
     if (log.tokenType === Logs.TokenType.ParticipationToken) {
       dispatch(removePendingTransaction(BUYPARTICIPATIONTOKENS));
       dispatch(loadAccountReportingHistory());
-      dispatch(loadDisputeWindow());
     }
     if (log.tokenType === Logs.TokenType.ReputationToken && isForking) {
         dispatch(loadUniverseDetails(universeId, userAddress));
@@ -665,6 +665,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
         dispatch(removePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN));
       }
     })
+    if (isParticipationTokens) dispatch(loadDisputeWindow());
 };
 
 const EventHandlers = {

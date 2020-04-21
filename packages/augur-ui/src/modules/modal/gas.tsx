@@ -12,8 +12,8 @@ import {
   GWEI_CONVERSION,
   NEW_ORDER_GAS_ESTIMATE,
 } from 'modules/common/constants';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import classNames = require('classnames');
+import { createBigNumber } from 'utils/create-big-number';
+import classNames from 'classnames';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface GasProps {
