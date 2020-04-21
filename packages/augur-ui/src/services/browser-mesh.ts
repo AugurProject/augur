@@ -1,6 +1,6 @@
 import { Config, ContractAddresses as ZeroXContractAddresses, Mesh, loadMeshStreamingWithURLAsync } from '@0x/mesh-browser-lite';
 import { NetworkId, SDKConfiguration, ContractAddresses } from '@augurproject/artifacts';
-import { ZeroX } from '@augurproject/sdk';
+import { ZeroX, SubscriptionEventName } from '@augurproject/sdk';
 
 type BrowserMeshErrorFunction = (err: Error, mesh: Mesh) => void;
 /**
