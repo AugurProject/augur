@@ -96,9 +96,10 @@ export class MockMeshServer {
             connection.on('message', ((message: WSMessage) => {
                 const jsonRpcRequest = JSON.parse(message.utf8Data);
                 let response = "";
-                if (jsonRpcRequest.method == "mesh_getOrders") response = self.getOrders(jsonRpcRequest.id, jsonRpcRequest.params);
-                else if (jsonRpcRequest.method == "mesh_addOrders") response = self.addOrders(jsonRpcRequest.id, jsonRpcRequest.params, connection);
-                else if (jsonRpcRequest.method == "mesh_subscribe") response = self.subscribe(jsonRpcRequest.id, jsonRpcRequest.params, connection);
+                if (jsonRpcRequest.method === "mesh_getOrders") response = self.getOrders(jsonRpcRequest.id, jsonRpcRequest.params);
+                else if (jsonRpcRequest.method === "mesh_addOrders") response = self.addOrders(jsonRpcRequest.id, jsonRpcRequest.params, connection);
+                else if (jsonRpcRequest.method === "mesh_subscribe") response = self.subscribe(jsonRpcRequest.id, jsonRpcRequest.params, connection);
+                else if (jsonRpcRequest.method === "mesh_getStats") response = '{"numPeers": 1, "numOrders": 1}';
                 else throw new Error(`Bad Request: ${jsonRpcRequest.method}`);
                 connection.sendUTF(response);
             }) as any);
