@@ -133,7 +133,7 @@ export class ZeroXOrders extends AbstractTable {
       if (augur.zeroX.isReady()) {
         this.sync();
       } else {
-        this.augur.events.once(SubscriptionEventName.ZeroXReady, this.sync.bind(this));
+        this.augur.events.once(SubscriptionEventName.ZeroXStatusReady, this.sync.bind(this));
       }
     });
   }
