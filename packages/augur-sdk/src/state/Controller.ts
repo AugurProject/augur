@@ -75,7 +75,11 @@ export class Controller {
     const percentSynced = ((lowestBlock / blockNumber) * 100).toFixed(4);
 
     const timestamp = await this.augur.getTimestamp();
-    const stats: ZeroXStats = await this.augur.zeroX.getStats();
+
+    let stats: ZeroXStats = {peers: 0, orders: 0};
+    if(this.augur.zeroX) {
+      stats = await this.augur.zeroX.getStats();
+    }
 
     this.augur.events.emit(SubscriptionEventName.NewBlock, {
       eventName: SubscriptionEventName.NewBlock,
