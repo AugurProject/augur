@@ -11,7 +11,7 @@ import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
 import { Action } from 'redux';
 
 const mapStateToProps = (state: AppState) => {
-  const { sidebarStatus, authStatus, appStatus } = state;
+  const { authStatus, appStatus } = state;
   const { unseenCount } = selectInfoAlertsAndSeenCount(state);
   return {
     stats: selectCoreStats(state),
@@ -19,12 +19,10 @@ const mapStateToProps = (state: AppState) => {
     isMobile: appStatus.isMobile,
     isLogged: authStatus.isLogged,
     restoredAccount: authStatus.restoredAccount,
-    alertsVisible: authStatus.isLogged && sidebarStatus.isAlertsVisible,
   };
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  updateIsAlertVisible: (data: boolean) => dispatch(updateIsAlertVisible(data)),
   loginModal: () => dispatch(updateModal({ type: MODAL_LOGIN })),
   signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
 });

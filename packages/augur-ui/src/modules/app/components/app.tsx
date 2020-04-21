@@ -300,13 +300,6 @@ export default class AppView extends Component<AppProps> {
     updateIsMobileSmall(isMobileSmall);
   };
 
-  toggleAlerts() {
-    const { isLogged, sidebarStatus, updateIsAlertVisible } = this.props;
-    if (isLogged) {
-      updateIsAlertVisible(!sidebarStatus.isAlertsVisible);
-    }
-  }
-
   renderMobileMenuButton(sidebarStatus, updateMobileMenuState, cbForMobileClick = () => {}) {
     const { mobileMenuState: menuState } = sidebarStatus;
 
@@ -371,7 +364,7 @@ export default class AppView extends Component<AppProps> {
       notifications.filter(item => item.isNew).length > 0;
     const currentPath = parsePath(location.pathname)[0];
 
-    const { currentBasePath, mobileMenuState, isAlertsVisible } = sidebarStatus;
+    const { currentBasePath, mobileMenuState } = sidebarStatus;
     const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
     const ModalShowing = Object.keys(modal).length !== 0;
 
@@ -440,10 +433,7 @@ export default class AppView extends Component<AppProps> {
               showCreateAccountButton={showCreateAccountButton}
               createFundedGsnWallet={createFundedGsnWallet}
             />
-            <AlertsContainer
-              alertsVisible={isLogged && isAlertsVisible}
-              toggleAlerts={() => this.toggleAlerts()}
-            />
+            <AlertsContainer isLogged={isLogged} />
             {forkEndTime !== '0' && currentAugurTimestamp && (
               <section className={Styles.TopBar} />
             )}

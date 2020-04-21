@@ -5,6 +5,7 @@ export const ODDS = 'oddsType';
 export const IS_ODDS_MENU_OPEN = 'isOddsMenuOpen';
 export const IS_HELP_MENU_OPEN = 'isHelpMenuOpen';
 export const IS_CONNECTION_TRAY_OPEN = 'isConnectionTrayOpen';
+export const IS_ALERTS_MENU_OPEN = 'isAlertsMenuOpen';
 
 export const DEFAULT_APP_STATUS = {
   [THEME]: THEMES.TRADING,
@@ -12,6 +13,7 @@ export const DEFAULT_APP_STATUS = {
   [IS_HELP_MENU_OPEN]: false,
   [IS_CONNECTION_TRAY_OPEN]: false,
   [IS_ODDS_MENU_OPEN]: false,
+  [IS_ALERTS_MENU_OPEN]: false,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -20,6 +22,7 @@ export const APP_STATUS_ACTIONS = {
   SET_IS_ODDS_MENU_OPEN: 'SET_IS_ODDS_MENU_OPEN',
   SET_IS_HELP_MENU_OPEN: 'SET_IS_HELP_MENU_OPEN',
   SET_IS_CONNECTION_TRAY_OPEN: 'SET_IS_CONNECTION_TRAY_OPEN',
+  SET_IS_ALERTS_MENU_OPEN: 'SET_IS_ALERTS_MENU_OPEN',
   CLOSE_APP_MENUS: 'CLOSE_APP_MENUS',
 };
 
@@ -29,5 +32,6 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setIsOddsMenuOpen: isOpen => {},
   setIsHelpMenuOpen: isOpen => {},
   setIsConnectionTrayOpen: isOpen => {},
+  setIsAlertsMenuOpen: isOpen => {},
   closeAppMenus: () => {},
 };

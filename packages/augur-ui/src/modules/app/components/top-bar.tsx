@@ -18,9 +18,9 @@ import { MARKETS } from 'modules/routes/constants/views';
 import { HelpResources } from 'modules/app/components/help-resources';
 import { OddsMenu } from 'modules/app/components/odds-menu';
 import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface TopBarProps {
-  alertsVisible: boolean;
   isLogged: boolean;
   isMobile: boolean;
   restoredAccount: boolean;
@@ -32,7 +32,6 @@ interface TopBarProps {
 }
 
 const TopBar: React.FC<TopBarProps> = ({
-  alertsVisible,
   isLogged,
   isMobile,
   restoredAccount,
@@ -42,6 +41,7 @@ const TopBar: React.FC<TopBarProps> = ({
   signupModal,
   loginModal,
 }) => {
+  const { isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
   return (
     <header className={Styles.TopBar}>
@@ -87,11 +87,11 @@ const TopBar: React.FC<TopBarProps> = ({
         {(isLogged || restoredAccount) && (
           <button
             className={classNames(Styles.alerts, {
-              [Styles.alertsDark]: alertsVisible,
+              [Styles.alertsDark]: isAlertsMenuOpen,
               [Styles.Empty]: unseenCount < 1,
             })}
             onClick={() => {
-              updateIsAlertVisible(!alertsVisible);
+              setIsAlertsMenuOpen(!isAlertsMenuOpen);
             }}
             tabIndex={-1}
           >
