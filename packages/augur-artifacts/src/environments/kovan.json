@@ -32,9 +32,7 @@
       "verbosity": 1,
       "enabled": true,
       "useBootstrapList": true,
-      "bootstrapList": [
-        "/dns4/v2-bootstrap.augur.net/tcp/443/wss/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
-      ]
+      "bootstrapList": []
     }
   },
   "uploadBlockNumber": 18010673,
