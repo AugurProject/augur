@@ -438,6 +438,11 @@ export function addScripts(flash: FlashSession) {
     name: 'create-canned-template-markets',
     async call(this: FlashSession) {
       const user = await this.createUser(this.getAccount(), this.config);
+      const million = QUINTILLION.multipliedBy(1e7);
+      await user.faucetRepUpTo(million, million);
+      await user.faucetCashUpTo(million, million);
+      await user.approveIfNecessary();
+
       await createTemplatedMarkets(user, false);
     },
   });
