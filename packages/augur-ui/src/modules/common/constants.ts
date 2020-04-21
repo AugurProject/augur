@@ -1,11 +1,5 @@
 import { Getters, Logs, MarketReportingState } from '@augurproject/sdk';
 import {
-  Edge,
-  Fortmatic,
-  Ledger,
-  MetaMask,
-  Portis,
-  Trezor,
   CategorySports,
   CategoryPolitics,
   CategoryEntertainment,
@@ -135,7 +129,6 @@ export const ADD_FUNDS_SWAP = '3';
 
 // # Connect Constants
 export const ACCOUNT_TYPES = {
-  EDGE: 'Edge',
   PORTIS: 'Portis',
   FORTMATIC: 'Fortmatic',
   TORUS: 'Torus',

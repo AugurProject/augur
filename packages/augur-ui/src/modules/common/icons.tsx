@@ -854,35 +854,6 @@ export const Trezor = (
   </svg>
 );
 
-export const Edge = (
-  <svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1">
-    <defs />
-    <g
-      id="Create/Connect-Account"
-      stroke="none"
-      strokeWidth="1"
-      fill="none"
-      fillRule="evenodd"
-    >
-      <g
-        id="SoftwareWalletDisconnectedActive"
-        transform="translate(-24.000000, -143.000000)"
-        fill="#FFFFFF"
-        fillRule="nonzero"
-      >
-        <g id="dropdown" transform="translate(0.000000, 72.000000)">
-          <g id="edge" transform="translate(0.000000, 56.000000)">
-            <path
-              d="M26.7901934,15 L33.4904666,15 L30.5986628,22.673431 L24,22.673431 L26.7901934,15 Z M31.8857655,24.4729727 L34.4520286,17.5466409 L41.974343,17.5466409 L36.6694783,32.0513509 L24.2990517,32.0513509 L27.0278822,24.4155608 L31.8857655,24.4729727 Z"
-              id="edgeLogo"
-            />
-          </g>
-        </g>
-      </g>
-    </g>
-  </svg>
-);
-
 export const Fortmatic = (
   <svg
     width="24px"
