@@ -7,6 +7,7 @@ const {
   SET_IS_ODDS_MENU_OPEN,
   SET_IS_HELP_MENU_OPEN,
   SET_IS_CONNECTION_TRAY_OPEN,
+  CLOSE_APP_MENUS,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = (theme) => document.documentElement.setAttribute(THEME, theme);
@@ -40,6 +41,12 @@ export function AppStatusReducer(state, action) {
       updatedState[IS_CONNECTION_TRAY_OPEN] = action.isOpen;
       return updatedState;
     }
+    case (CLOSE_APP_MENUS): {
+      updatedState[IS_ODDS_MENU_OPEN] = false;
+      updatedState[IS_HELP_MENU_OPEN] = false;
+      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
+      return updatedState;
+    }
     default:
       throw new Error(`Error: ${action.type} not caught by App Status reducer.`);
   }
@@ -59,6 +66,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setIsOddsMenuOpen: isOpen => dispatch({ type: SET_IS_ODDS_MENU_OPEN, isOpen }),
       setIsHelpMenuOpen: isOpen => dispatch({ type: SET_IS_HELP_MENU_OPEN, isOpen }),
       setIsConnectionTrayOpen: isOpen => dispatch({ type: SET_IS_CONNECTION_TRAY_OPEN, isOpen }),
+      closeAppMenus: () => dispatch({ type: CLOSE_APP_MENUS }),
     }
   }
 }

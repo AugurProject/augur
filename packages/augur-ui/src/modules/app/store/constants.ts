@@ -20,6 +20,7 @@ export const APP_STATUS_ACTIONS = {
   SET_IS_ODDS_MENU_OPEN: 'SET_IS_ODDS_MENU_OPEN',
   SET_IS_HELP_MENU_OPEN: 'SET_IS_HELP_MENU_OPEN',
   SET_IS_CONNECTION_TRAY_OPEN: 'SET_IS_CONNECTION_TRAY_OPEN',
+  CLOSE_APP_MENUS: 'CLOSE_APP_MENUS',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -28,4 +29,5 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setIsOddsMenuOpen: isOpen => {},
   setIsHelpMenuOpen: isOpen => {},
   setIsConnectionTrayOpen: isOpen => {},
+  closeAppMenus: () => {},
 };

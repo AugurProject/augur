@@ -10,10 +10,8 @@ import { selectNotifications } from "modules/notifications/selectors/notificatio
 import {
   IS_MOBILE,
   IS_MOBILE_SMALL,
-  IS_HELP_MENU_OPEN,
   updateAppStatus,
   WALLET_STATUS,
-  ODDS
 } from "modules/app/actions/update-app-status";
 import { initAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
@@ -29,7 +27,6 @@ import {
   updateSidebarStatus
 } from "modules/app/actions/update-sidebar-status";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
-import { updateAuthStatus, IS_CONNECTION_TRAY_OPEN } from "modules/auth/actions/auth-status";
 import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, WALLET_STATUS_VALUES, TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
 import { saveAffiliateAddress } from "modules/account/actions/login-account";
 import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
@@ -61,14 +58,12 @@ const mapStateToProps = (state: AppState) => {
     isMobile: state.appStatus.isMobile,
     oddsType: state.appStatus.odds,
     isMobileSmall: state.appStatus.isMobileSmall,
-    isHelpMenuOpen: state.appStatus.isHelpMenuOpen,
     loginAccount,
     modal: state.modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
     universe: state.universe,
     useWeb3Transport: isGlobalWeb3(),
     sidebarStatus: state.sidebarStatus,
-    isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,
     walletBalances,
     showCreateAccountButton,
     showMigrateRepButton,
@@ -79,7 +74,6 @@ const mapDispatchToProps = dispatch => ({
   initAugur: (history, overrides, cb) =>
     dispatch(initAugur(history, overrides, cb)),
   updateIsMobile: isMobile => dispatch(updateAppStatus(IS_MOBILE, isMobile)),
-  updateHelpMenuState: isHelpMenuOpen => dispatch(updateAppStatus(IS_HELP_MENU_OPEN, isHelpMenuOpen)),
   updateIsMobileSmall: isMobileSmall => dispatch(updateAppStatus(IS_MOBILE_SMALL, isMobileSmall)),
   updateModal: modal => dispatch(updateModal(modal)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
@@ -90,8 +84,6 @@ const mapDispatchToProps = dispatch => ({
   updateIsAlertVisible: data => dispatch(updateIsAlertVisible(data)),
   updateSidebarStatus: data => dispatch(updateSidebarStatus(data)),
   updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
-  updateConnectionTray: value =>
-  dispatch(updateAuthStatus(IS_CONNECTION_TRAY_OPEN, value)),
   showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
   migrateV1Rep: () => dispatch(updateModal({ type: MODAL_MIGRATE_REP })),
   saveAffilateAddress: address => dispatch(saveAffiliateAddress(address)),
