@@ -975,15 +975,13 @@ export const InputFactory = (props: InputFactoryProps) => {
                 month = inputs[input.monthDropdown].userInput;
               }
               if (year && month && year !== '' && month !== '') {
-                const monthNum = moment().month(month).format("M");
-                const date = moment(`${monthNum}-1-${year}`, "MM-DD-YYYY").add(1, 'M');
-                const newEndTime = moment(date).endOf('month').unix();
+                const newEndTime = moment().utc().month(month).year(year).add(1, 'M').endOf('month').unix();
                 const comps = timestampComponents(newEndTime, 0);
                 onChange('updateEventExpiration', {
                   setEndTime: comps.setEndTime,
-                  hour: '12',
-                  minute: '00',
-                  meridiem: "AM",
+                  hour: comps.hour,
+                  minute: comps.minute,
+                  meridiem: comps.meridiem,
                   offset: 0,
                   offsetName: null,
                   timezone: null,
