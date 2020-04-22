@@ -310,6 +310,46 @@ div.SingleRow3 {
   }
 }
 
+.MyBetRow {
+  padding: 0;
+  min-height: @size-64;
+  max-height: @size-64;
+
+  > ul {
+    grid-template-columns: 2fr repeat(5, 1fr);
+    border-top: @size-1 solid var(--color-dark-grey);
+    padding: 0 @size-16;
+
+    > li {
+      border-bottom: 0;
+
+      &:first-child {
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+
+        > span:nth-of-type(1) {
+          .text-14-bold;
+          color: var(--color-primary-text);
+        }
+
+        > span:nth-of-type(2) {
+          .text-12;
+
+          margin-top: @size-4;
+          color: var(--color-secondary-text);
+        }
+      }
+
+      &:not(:first-child) {
+        .text-12;
+
+        color: var(--color-primary-text);
+      }
+    }
+  }
+}
+
 @media @breakpoint-mobile {
 
   .BottomBorder {

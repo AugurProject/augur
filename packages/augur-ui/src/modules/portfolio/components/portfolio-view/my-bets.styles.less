@@ -3,13 +3,14 @@
 .MyBets {
     padding: @size-32;
     display: flex;
+    flex-direction: column;
     flex: 1;
 
-    > div {
+    > div:first-of-type {
         display: grid;
         grid-template-columns: auto 1fr auto;
         grid-template-rows: auto 1fr;
-        max-height: 172px;
+        height: 172px;
         width: 100%;
     
         > div:first-of-type {
@@ -79,6 +80,51 @@
             margin-top: auto;
         }
     }
+
+    > div:nth-of-type(2) {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        > section:first-of-type {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 80px;
+
+            > svg {
+                width: 80px;
+                height: 80px;
+                margin-bottom: @size-16;
+
+                > circle {
+                    fill: var(--color-secondary-action);
+                }
+
+                > path {
+                    fill: var(--color-primary-text);
+                }
+            }
+
+            > span {
+                color: var(--color-primary-text);
+
+                &:first-of-type {
+                    .text-16-bold;
+                }
+
+                &:last-of-type {
+                    .text-14;
+
+                    margin-top: @size-4;
+                    
+                    > b {
+                        border-bottom: @size-1 dotted var(--color-primary-text);
+                    }
+                }
+            }
+        }
+    }
 }
 
 .ClaimWinnings {
@@ -97,3 +143,4 @@
         margin: 0 @size-3;
     }
 }
+

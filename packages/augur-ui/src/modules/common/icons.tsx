@@ -291,14 +291,25 @@ export const TwoArrowsOutline = (
 );
 
 export const SlimArrow = (
-  <svg
-    viewBox="0 0 10 7"
-    fill="none"
-  >
+  <svg viewBox="0 0 10 7" fill="none">
     <path
       d="M1.66797 1L5.0013 4.61111L8.33464 1"
       strokeWidth="2"
       strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const EmptyMagnifyingGlass = (
+  <svg
+    viewBox="0 0 80 80"
+    fill="none"
+  >
+    <circle cx="40" cy="40" r="40" />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M22 36C22 28.268 28.268 22 36 22C43.732 22 50 28.268 50 36C50 39.7699 48.5099 43.1918 46.0866 45.7088L45.7088 46.0866C43.1918 48.5099 39.7699 50 36 50C28.268 50 22 43.732 22 36ZM47.2355 50.0637C44.1561 52.527 40.2501 54 36 54C26.0589 54 18 45.9411 18 36C18 26.0589 26.0589 18 36 18C45.9411 18 54 26.0589 54 36C54 40.25 52.5271 44.1559 50.0639 47.2353L62.8284 59.9998L60 62.8283L47.2355 50.0637Z"
     />
   </svg>
 );

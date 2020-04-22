@@ -1441,4 +1441,19 @@ export const MY_BETS_MARKET_STATUS = [
     label: 'Open',
     value: 'Open',
   },
+  {
+    label: 'In reporting',
+    value: 'In reporting',
+  },
+  {
+    label: 'Resolved',
+    value: 'Resolved',
+  },
+];
+
+export const MY_BETS_BET_DATE = [
+  {
+    label: 'Last 30 days',
+    value: 'Last 30 days',
+  },
 ];

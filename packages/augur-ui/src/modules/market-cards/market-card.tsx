@@ -7,7 +7,8 @@ import {
   TentativeWinner,
   TopRow,
   InfoIcons,
-  TradingSideSection
+  TradingSideSection,
+  getCategoriesWithClick
 } from 'modules/market-cards/common';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
@@ -108,22 +109,6 @@ export const MarketCard = ({
   if (loading) {
     return <LoadingCard />;
   }
-  const path =
-    location.pathname === makePath(MARKETS)
-      ? location
-      : { pathname: makePath(MARKETS) };
-
-  const categoriesLowerCased = categories.map(item => item.toLowerCase());
-  const categoriesWithClick = categoriesLowerCased
-    .filter(Boolean)
-    .map((label, idx) => ({
-      label,
-      onClick: toggleCategory(
-        categoriesLowerCased.slice(0, idx + 1).toString(),
-        path,
-        history
-      ),
-    }));
 
   const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
   const isScalar = marketType === SCALAR;
@@ -178,7 +163,7 @@ export const MarketCard = ({
         />
         <TopRow
           market={market}
-          categoriesWithClick={categoriesWithClick}
+          categoriesWithClick={getCategoriesWithClick(categories)}
           toggleFavorite={toggleFavorite}
           marketLinkCopied={marketLinkCopied}
           currentAugurTimestamp={currentAugurTimestamp}

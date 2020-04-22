@@ -70,6 +70,9 @@ import { calculatePosition } from 'modules/market/components/market-scalar-outco
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { SmallSubheadersTooltip } from 'modules/create-market/components/common';
 import { useBetslipStore } from 'modules/trading/store/betslip';
+import { MARKETS } from 'modules/routes/constants/views';
+import makePath from 'modules/routes/helpers/make-path';
+import toggleCategory from 'modules/routes/helpers/toggle-category';
 
 export interface PercentProps {
   percent: number;
@@ -1346,3 +1349,20 @@ export const TradingSideSection = ({
     </div>
   );
 };
+
+export function getCategoriesWithClick(categories) {
+  const path = { pathname: makePath(MARKETS) };
+  const categoriesLowerCased = categories.map(item => item.toLowerCase());
+  const categoriesWithClick = categoriesLowerCased
+    .filter(Boolean)
+    .map((label, idx) => ({
+      label,
+      onClick: toggleCategory(
+        categoriesLowerCased.slice(0, idx + 1).toString(),
+        path,
+        history
+      ),
+    }));
+    console.log(categoriesWithClick);
+  return categoriesWithClick;
+}
