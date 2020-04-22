@@ -6,7 +6,8 @@ import {
   PositionTypeLabel,
   TextLabel,
   ValueLabel,
-  CountdownLabel
+  CountdownLabel,
+  RedFlag,
 } from 'modules/common/labels';
 import InvalidLabel from 'modules/common/containers/labels';
 import { CancelTextButton } from 'modules/common/buttons';
@@ -14,6 +15,7 @@ import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outc
 import { DateFormattedObject } from 'modules/types';
 import { TXEventName } from '@augurproject/sdk/src';
 import { XIcon } from 'modules/common/icons';
+import { MostLikelyInvalidMarketsTemplate } from 'modules/account/components/notifications-templates';
 
 const { COLUMN_TYPES } = constants;
 
@@ -42,6 +44,7 @@ export interface Properties {
   expiry?: DateFormattedObject;
   currentTimestamp?: Number;
   usePercent?: boolean;
+  highRisk?: boolean;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -50,15 +53,21 @@ function selectColumn(columnType: string, properties: Properties) {
       return (
         <>
           <TextLabel text={properties.text} keyId={properties.keyId} />
+          {properties.showExtraNumber && properties.highRisk && (
+            <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} />
+          )}
           {properties.showExtraNumber && <span>{properties.value}</span>}
         </>
       );
     case COLUMN_TYPES.POSITION_TYPE:
       return (
         <>
-          {properties.showCountdown &&
-            <CountdownLabel currentTimestamp={properties.currentTimestamp} expiry={properties.expiry} />
-          }
+          {properties.showCountdown && (
+            <CountdownLabel
+              currentTimestamp={properties.currentTimestamp}
+              expiry={properties.expiry}
+            />
+          )}
           <PositionTypeLabel
             type={properties.type}
             pastTense={properties.pastTense}
@@ -105,12 +114,20 @@ function selectColumn(columnType: string, properties: Properties) {
       );
     case COLUMN_TYPES.INVALID_LABEL:
       return (
-        <InvalidLabel text={properties.text} keyId={properties.keyId} tooltipPositioning='right' />
+        <InvalidLabel
+          text={properties.text}
+          keyId={properties.keyId}
+          tooltipPositioning="right"
+        />
       );
     case COLUMN_TYPES.CANCEL_TEXT_BUTTON:
       const confirmed = properties.status === TXEventName.Success;
       const failed = properties.status === TXEventName.Failure;
-      const buttonText = confirmed ? 'Confirmed' : failed ? 'Failed' : 'Processing ...';
+      const buttonText = confirmed
+        ? 'Confirmed'
+        : failed
+        ? 'Failed'
+        : 'Processing ...';
       const isDisabled = !failed && !confirmed;
       const icon = failed || confirmed ? XIcon : null;
       return properties.pending ? (
@@ -126,9 +143,12 @@ function selectColumn(columnType: string, properties: Properties) {
         </span>
       ) : (
         <>
-          {properties.showCountdown &&
-            <CountdownLabel currentTimestamp={properties.currentTimestamp} expiry={properties.expiry} />
-          }
+          {properties.showCountdown && (
+            <CountdownLabel
+              currentTimestamp={properties.currentTimestamp}
+              expiry={properties.expiry}
+            />
+          )}
           <CancelTextButton
             disabled={properties.disabled}
             text={properties.text}

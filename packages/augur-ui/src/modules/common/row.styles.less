@@ -324,20 +324,30 @@ div.SingleRow3 {
       border-bottom: 0;
 
       &:first-child {
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        padding: @size-12 0; 
 
-        > span:nth-of-type(1) {
+        > span:nth-of-type(1), 
+        > span:nth-of-type(1) > label {
           .text-14-bold;
+
           color: var(--color-primary-text);
+          grid-column: 1 / span 2;
+        }
+
+        > label {
+          margin: @size-4 @size-4 0 0;
+          grid-column: 1;
+          grid-row: 2;
         }
 
         > span:nth-of-type(2) {
           .text-12;
 
-          margin-top: @size-4;
           color: var(--color-secondary-text);
+          grid-row: 2;
+          margin-top: @size-4;
         }
       }
 

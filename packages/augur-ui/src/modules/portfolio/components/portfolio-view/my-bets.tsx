@@ -113,7 +113,7 @@ export const MyBets = () => {
             </span>
           </section>
         )}
-        {rows.length > 0 && rows.map(row => <Game row={row} />)}
+        {rows.length > 0 && rows.map(row => <Game row={row} type={SPORTS_MARKET_TYPES[selectedMarketCardType].label} />)}
       </div>
     </div>
   );

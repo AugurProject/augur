@@ -7,12 +7,14 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import MyBetsRow from 'modules/portfolio/containers/my-bets-row';
 
 import Styles from 'modules/portfolio/components/common/common.styles.less';
+import { FUTURES } from 'modules/common/constants';
 
 export interface GameProps {
   row: Object;
+  type: string;
 }
 
-export const Game = ({ row }: GameProps) => (
+export const Game = ({ row, type }: GameProps) => (
   <div className={Styles.Game}>
     <div>
       <TemplateShield market={row} />
@@ -37,7 +39,7 @@ export const Game = ({ row }: GameProps) => (
         <li>Bet date</li>
       </ul>
       {Object.values(row.outcomes).map(outcome => (
-        <MyBetsRow outcome={outcome} />
+        <MyBetsRow outcome={outcome} showExtraRow={type !== FUTURES}/>
       ))}
     </div>
   </div>

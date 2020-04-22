@@ -16,7 +16,7 @@ const mapStateToProps = (state: AppState, ownProps) => {};
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
-  const { outcome } = oP;
+  const { outcome, showExtraRow } = oP;
 
   const columnProperties = [
     {
@@ -24,8 +24,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       columnType: COLUMN_TYPES.TEXT,
       text: outcome.outcome,
       keyId: outcome.outcome,
-      showExtraNumber: !!outcome.betType,
+      showExtraNumber: showExtraRow,
       value: outcome.betType,
+      highRisk: outcome.highRisk
     },
     {
       key: 'wager',
