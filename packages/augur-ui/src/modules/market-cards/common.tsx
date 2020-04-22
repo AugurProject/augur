@@ -1363,6 +1363,5 @@ export function getCategoriesWithClick(categories) {
         history
       ),
     }));
-    console.log(categoriesWithClick);
   return categoriesWithClick;
 }
