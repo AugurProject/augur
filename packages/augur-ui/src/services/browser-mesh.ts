@@ -64,7 +64,7 @@ function createBrowserMeshRestartFunction(
   return err => {
     console.error('Browser mesh error: ', err.message, err.stack);
     console.log('Restarting Mesh Sync');
-    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusRestarting, {error: err});
+    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarting, {error: err});
 
     // Passing `true` as the last parameter to make sure the config doesn't include custom addresses on retry
     const mesh = new Mesh(
