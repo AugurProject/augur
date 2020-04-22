@@ -96,14 +96,38 @@ export class MockMeshServer {
             connection.on('message', ((message: WSMessage) => {
                 const jsonRpcRequest = JSON.parse(message.utf8Data);
                 let response = "";
-                if (jsonRpcRequest.method === "mesh_getOrders") response = self.getOrders(jsonRpcRequest.id, jsonRpcRequest.params);
-                else if (jsonRpcRequest.method === "mesh_addOrders") response = self.addOrders(jsonRpcRequest.id, jsonRpcRequest.params, connection);
-                else if (jsonRpcRequest.method === "mesh_subscribe") response = self.subscribe(jsonRpcRequest.id, jsonRpcRequest.params, connection);
-                else if (jsonRpcRequest.method === "mesh_getStats") response = '{"numPeers": 1, "numOrders": 1}';
-                else throw new Error(`Bad Request: ${jsonRpcRequest.method}`);
+
+                switch(jsonRpcRequest.method) {
+                  case "mesh_getOrders":
+                    response = self.getOrders(jsonRpcRequest.id, jsonRpcRequest.params);
+                    break;
+                  case "mesh_addOrders":
+                    response = self.addOrders(jsonRpcRequest.id, jsonRpcRequest.params, connection);
+                    break;
+                  case "mesh_subscribe":
+                    response = self.subscribe(jsonRpcRequest.id, jsonRpcRequest.params, connection);
+                    break;
+                  case  "mesh_getStats":
+                    response = self.getStats(jsonRpcRequest.id);
+                    break;
+                  default:
+                    throw new Error(`Bad Request: ${jsonRpcRequest.method}`);
+                }
                 connection.sendUTF(response);
             }) as any);
         }) as any);
+    }
+
+
+    getStats(id: number) {
+      return JSON.stringify({
+        jsonrpc: "2.0",
+        id,
+        result: {
+          numPeers: 1,
+          numOrders: 1
+        }
+      });
     }
 
     subscribe(id: number, params: string[], connection: WebSocket.connection): string {
