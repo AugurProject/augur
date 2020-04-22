@@ -3,7 +3,7 @@ import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-import ThemeSwitch from 'modules/app/containers/theme-switch';
+import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
 import ConnectAccount from 'modules/auth/containers/connect-account';

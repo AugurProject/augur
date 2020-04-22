@@ -23,7 +23,6 @@ interface BaseInnerNavPureProps {
   selectedCategories: String[];
   filterSortOptions: FilterSortOptions;
   updateLoginAccount: Function;
-  updateMarketsListMeta: Function;
   updateMarketsSortBy: Function;
   updateMaxFee: Function;
   updateMaxSpread: Function;
@@ -40,7 +39,6 @@ const BaseInnerNavPure = ({
   selectedCategories,
   filterSortOptions,
   updateLoginAccount,
-  updateMarketsListMeta,
   updateMarketsSortBy,
   updateMaxFee,
   updateMaxSpread,

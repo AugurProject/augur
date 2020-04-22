@@ -1,7 +1,7 @@
 // TODO -- this component needs to be broken up
 //         all logic related to sidebar(s) need to be housed w/in a separate component
 
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import isWindows from 'utils/is-windows';
 import Modal from 'modules/modal/containers/modal-view';
@@ -83,7 +83,6 @@ interface AppProps {
   logout: Function;
   sidebarStatus: {
     mobileMenuState: number;
-    isAlertsVisible: boolean;
     currentBasePath: string;
   };
   updateCurrentBasePath: Function;
@@ -101,15 +100,106 @@ interface AppProps {
   showMigrateRepButton: boolean;
 }
 
-export default class AppView extends Component<AppProps> {
-  static defaultProps = {
-    ethereumNodeHttp: null,
-    ethereumNodeWs: null,
-    sdkEndpoint: null,
-    useWeb3Transport: false,
-  };
+function renderMobileMenuButton(mobileMenuState, updateMobileMenuState, cbForMobileClick = () => {}) {
+  let icon: any = null;
+  if (mobileMenuState === MOBILE_MENU_STATES.CLOSED) {
+    icon = <MobileNavHamburgerIcon />;
+  } else {
+    if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
+      icon = null;
+    } else {
+      icon = <MobileNavCloseIcon />;
+    }
+  }
 
-  sideNavMenuData = [
+  return (
+    <button
+      type="button"
+      className={Styles.MobileBars}
+      onClick={() => {
+        cbForMobileClick();
+        switch (mobileMenuState) {
+          case MOBILE_MENU_STATES.CLOSED:
+            updateMobileMenuState(MOBILE_MENU_STATES.SIDEBAR_OPEN);
+            break;
+          default:
+            updateMobileMenuState(mobileMenuState - 1);
+            break;
+        }
+      }}
+    >
+      {icon}
+    </button>
+  );
+};
+
+function changeMenu(nextBasePath, updateCurrentInnerNavType, updateMobileMenuState) {
+  if (nextBasePath === MARKETS) {
+    updateCurrentInnerNavType(MarketsInnerNavContainer);
+  } else {
+    updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+  }
+}
+
+function checkIsMobile(updateIsMobile, updateIsMobileSmall) {
+  // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
+  // CSS breakpoint sets the value when a user is mobile
+  const isMobile =
+    (
+      window
+        .getComputedStyle(document.body)
+        .getPropertyValue('--is-mobile') || ''
+    ).indexOf('true') !== -1;
+  const isMobileSmall =
+    (
+      window
+        .getComputedStyle(document.body)
+        .getPropertyValue('--is-mobile-small') || ''
+    ).indexOf('true') !== -1;
+  updateIsMobile(isMobile);
+  updateIsMobileSmall(isMobileSmall);
+};
+
+const AppView = ({
+  ethereumNodeHttp = null,
+  ethereumNodeWs = null,
+  sdkEndpoint = null,
+  useWeb3Transport = false,
+  notifications,
+  universe: { forkEndTime, forkingInfo },
+  env,
+  history,
+  initAugur,
+  location: locationProp,
+  updateModal,
+  updateCurrentBasePath,
+  saveAffilateAddress,
+  isMobile,
+  updateMobileMenuState,
+  sidebarStatus: { currentBasePath, mobileMenuState },
+  updateSidebarStatus,
+  updateIsMobile,
+  updateIsMobileSmall,
+  blockchain: { currentAugurTimestamp },
+  isLogged,
+  restoredAccount,
+  modal,
+  toasts,
+  migrateV1Rep,
+  walletBalances,
+  createFundedGsnWallet,
+  showCreateAccountButton,
+  showMigrateRepButton,
+  logout,
+  showGlobalChat,
+  updateCurrentInnerNavType,
+}:AppProps) => {
+  const currentPath = parsePath(locationProp.pathname)[0];
+  const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
+  const ModalShowing = Object.keys(modal).length !== 0;
+  const onTradingTutorial =
+    parseQuery(locationProp.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
+  const sideNavMenuData = [
     {
       title: 'Markets',
       route: MARKETS,
@@ -120,7 +210,7 @@ export default class AppView extends Component<AppProps> {
       title:'Account Summary',
       route: ACCOUNT_SUMMARY,
       requireLogin: true,
-      showAlert: this.props.notifications.filter(item => item.isNew).length > 0,
+      showAlert: notifications.filter(item => item.isNew).length > 0,
     },
     {
       title: 'Portfolio',
@@ -145,23 +235,11 @@ export default class AppView extends Component<AppProps> {
       requireLogin: true,
       button: true,
       alternateStyle: true,
-      disabled: !!this.props.universe.forkingInfo,
+      disabled: !!forkingInfo,
     },
   ];
 
-  handleComponentMount = () => {
-    const {
-      env,
-      ethereumNodeHttp,
-      ethereumNodeWs,
-      sdkEndpoint,
-      history,
-      initAugur,
-      location,
-      updateModal,
-      useWeb3Transport,
-      updateCurrentBasePath,
-    } = this.props;
+  useEffect(() => {
     initAugur(
       history,
       {
@@ -181,298 +259,162 @@ export default class AppView extends Component<AppProps> {
         }
       }
     );
-    const currentPath = parsePath(location.pathname)[0];
-    updateCurrentBasePath(currentPath);
-    this.changeMenu(currentPath);
-  };
+    // checkIsMobile(updateIsMobile, updateIsMobileSmall);
+    // we only want this to run the first mount, so we set the things to look at to a static value.
+  }, [false])
 
-  componentDidMount() {
-    this.handleComponentMount();
-    window.addEventListener('resize', this.handleWindowResize);
-
-    // Restyle all scrollbars on windows
+  useEffect(() => {
+    function handleRezize() {
+      checkIsMobile(updateIsMobile, updateIsMobileSmall);
+    }
+    window.addEventListener('resize', handleRezize);
     if (isWindows()) {
       document.body.classList.add('App--windowsScrollBars');
     }
-    this.checkIsMobile();
+    checkIsMobile(updateIsMobile, updateIsMobileSmall);
+    return () => {
+      window.removeEventListener('resize', handleRezize);
+    };
+  }, [])
 
+  useEffect(() => {
+    // weirdly location and the passed location prop are both needed, this uses the standard location object.
     const affiliate = parseLocation(location.href)[AFFILIATE_NAME];
     if (affiliate) {
-      this.props.saveAffilateAddress(affiliate);
+      saveAffilateAddress(affiliate);
     }
-  }
+  }, [location])
 
-  compomentWillUnmount() {
-    window.removeEventListener('resize', this.handleWindowResize);
-  }
-
-  componentDidUpdate(prevProps: AppProps) {
-    const {
-      isMobile,
-      location,
-      universe,
-      updateCurrentBasePath,
-      updateMobileMenuState,
-      sidebarStatus,
-    } = this.props;
-    if (isMobile !== prevProps.isMobile) {
+  useEffect(() => {
+    if (mobileMenuState !== MOBILE_MENU_STATES.CLOSED && !isMobile) {
+      // make sure to close sidenav if we aren't in mobile view.
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
-    if (universe.forkingInfo !== prevProps.universe.forkingInfo) {
-      this.sideNavMenuData[5].disabled = !!universe.forkingInfo;
-    }
-
-    if (location !== prevProps.location) {
-      const nextBasePath = parsePath(location.pathname)[0];
-      const lastBasePath = parsePath(prevProps.location.pathname)[0];
-
-      if (lastBasePath !== nextBasePath) {
-        updateCurrentBasePath(nextBasePath);
-        this.changeMenu(nextBasePath);
-      }
-    }
-
-    if (sidebarStatus.mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
+    updateCurrentBasePath(currentPath);
+    changeMenu(currentPath, updateCurrentInnerNavType, updateMobileMenuState);
+    if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
       document.body.classList.add('App--noScroll');
     } else {
       document.body.classList.remove('App--noScroll');
     }
-  }
+  }, [mobileMenuState, isMobile, currentPath])
 
-  mainSectionClickHandler = (e: any, testSideNav = true) => {
+  function mainSectionClickHandler(e: any, testSideNav = true) {
     const stateUpdate: any = {};
-    const {
-      isMobile,
-      sidebarStatus,
-      updateSidebarStatus,
-    } = this.props;
-    let updateState = false;
-
     if (
       testSideNav &&
       isMobile &&
-      sidebarStatus.mobileMenuState !== MOBILE_MENU_STATES.CLOSED
+      mobileMenuState !== MOBILE_MENU_STATES.CLOSED
     ) {
       stateUpdate.mobileMenuState = MOBILE_MENU_STATES.CLOSED;
-      updateState = true;
-    }
-    
-    if (sidebarStatus.isAlertsVisible) {
-      stateUpdate.isAlertsVisible = false;
-      updateState = true;
-    }
-
-    if (updateState) {
       updateSidebarStatus(stateUpdate);
     }
   };
 
-  changeMenu(nextBasePath: string) {
-    if (nextBasePath === MARKETS) {
-      this.props.updateCurrentInnerNavType(MarketsInnerNavContainer);
-    } else {
-      this.props.updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
-    }
-  }
-
-  handleWindowResize = () => {
-    this.checkIsMobile();
-  };
-
-  checkIsMobile = () => {
-    const { updateIsMobile, updateIsMobileSmall } = this.props;
-    // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
-    // CSS breakpoint sets the value when a user is mobile
-    const isMobile =
-      (
-        window
-          .getComputedStyle(document.body)
-          .getPropertyValue('--is-mobile') || ''
-      ).indexOf('true') !== -1;
-    const isMobileSmall =
-      (
-        window
-          .getComputedStyle(document.body)
-          .getPropertyValue('--is-mobile-small') || ''
-      ).indexOf('true') !== -1;
-
-    updateIsMobile(isMobile);
-    updateIsMobileSmall(isMobileSmall);
-  };
-
-  renderMobileMenuButton(sidebarStatus, updateMobileMenuState, cbForMobileClick = () => {}) {
-    const { mobileMenuState: menuState } = sidebarStatus;
-
-    let icon: any = null;
-    if (menuState === MOBILE_MENU_STATES.CLOSED) {
-      icon = <MobileNavHamburgerIcon />;
-    } else {
-      if (menuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
-        icon = null;
-      } else {
-        icon = <MobileNavCloseIcon />;
-      }
-    }
-
-    return (
-      <button
-        type="button"
-        className={Styles.MobileBars}
-        onClick={() => {
-          cbForMobileClick();
-          switch (menuState) {
-            case MOBILE_MENU_STATES.CLOSED:
-              updateMobileMenuState(MOBILE_MENU_STATES.SIDEBAR_OPEN);
-              break;
-            default:
-              updateMobileMenuState(menuState - 1);
-              break;
-          }
-        }}
+  return (
+    <main>
+      <AppStatusProvider>
+      <HelmetTag {...APP_HEAD_TAGS} />
+      {ModalShowing && <Modal />}
+      {toasts.length > 0 && (
+        <ToastsContainer
+          toasts={toasts}
+          onTradingTutorial={onTradingTutorial}
+        />
+      )}
+      <div
+        className={classNames({
+          [Styles.AppBlur]: ModalShowing,
+        })}
       >
-        {icon}
-      </button>
-    );
-  }
-
-  render() {
-    const {
-      blockchain,
-      history,
-      isLogged,
-      restoredAccount,
-      location,
-      modal,
-      universe,
-      sidebarStatus,
-      updateMobileMenuState,
-      toasts,
-      migrateV1Rep,
-      walletBalances,
-      updateModal,
-      notifications,
-      createFundedGsnWallet,
-      showCreateAccountButton,
-      showMigrateRepButton,
-      logout,
-      showGlobalChat,
-    } = this.props;
-    const sideNavMenuData = this.sideNavMenuData;
-    const { forkEndTime } = universe;
-    const { currentAugurTimestamp } = blockchain;    
-    sideNavMenuData[1].showAlert =
-      notifications.filter(item => item.isNew).length > 0;
-    const currentPath = parsePath(location.pathname)[0];
-
-    const { currentBasePath, mobileMenuState } = sidebarStatus;
-    const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
-    const ModalShowing = Object.keys(modal).length !== 0;
-
-    const onTradingTutorial =
-      parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
-
-    return (
-      <main>
-        <AppStatusProvider>
-        <HelmetTag {...APP_HEAD_TAGS} />
-        {ModalShowing && <Modal />}
-        {toasts.length > 0 && (
-          <ToastsContainer
-            toasts={toasts}
-            onTradingTutorial={onTradingTutorial}
-          />
-        )}
-        <div
-          className={classNames({
-            [Styles.AppBlur]: ModalShowing,
+        <section
+          className={classNames(Styles.Main, {
+            [Styles.TradingTutorial]: onTradingTutorial,
           })}
         >
+          {onTradingTutorial && (
+            <section className={Styles.TutorialBanner}>
+              <span>Test market</span>
+              <button
+                onClick={() =>
+                  history.push({
+                    pathname: makePath(MARKETS),
+                  })
+                }
+              >
+                {XIcon}
+              </button>
+            </section>
+          )}
           <section
-            className={classNames(Styles.Main, {
-              [Styles.TradingTutorial]: onTradingTutorial,
+            className={classNames(Styles.TopBar, Styles.FloatAbove, {
+              [Styles.SideNavOpen]: navShowing,
+            })}
+            role="presentation"
+          >
+            <TopBar />
+          </section>
+          <SideBarSection
+            mobileMenuState={mobileMenuState}
+            renderMobileMenuButton={renderMobileMenuButton}
+            mainSectionClickHandler={mainSectionClickHandler}
+            navShowing={navShowing}
+            updateMobileMenuState={updateMobileMenuState}
+            isLogged={isLogged}
+            restoredAccount={restoredAccount}
+            sideNavMenuData={sideNavMenuData}
+            currentBasePath={currentBasePath}
+            logout={logout}
+            showGlobalChat={showGlobalChat}
+            migrateV1Rep={migrateV1Rep}
+            showMigrateRepButton={showMigrateRepButton}
+            walletBalances={walletBalances}
+            updateModal={updateModal}
+            showCreateAccountButton={showCreateAccountButton}
+            createFundedGsnWallet={createFundedGsnWallet}
+          />
+          <AlertsContainer isLogged={isLogged} />
+          {forkEndTime !== '0' && currentAugurTimestamp && (
+            <section className={Styles.TopBar} />
+          )}
+          <section
+            className={classNames(Styles.Wrap, {
+              [Styles.WrapMarkets]: currentPath === MARKETS,
+              [Styles.TopBarOpen]: navShowing,
             })}
           >
-            {onTradingTutorial && (
-              <section className={Styles.TutorialBanner}>
-                <span>Test market</span>
-                <button
-                  onClick={() =>
-                    history.push({
-                      pathname: makePath(MARKETS),
-                    })
-                  }
-                >
-                  {XIcon}
-                </button>
-              </section>
+            {currentPath === MARKETS ? (
+              <MarketsInnerNavContainer
+                location={location}
+                history={history}
+                mobileMenuState={mobileMenuState}
+              />
+            ) : (
+              <div className="no-nav-placehold" />
             )}
-            <section
-              className={classNames(Styles.TopBar, Styles.FloatAbove, {
-                [Styles.SideNavOpen]: navShowing,
-              })}
-              role="presentation"
-            >
-              <TopBar />
-            </section>
-            <SideBarSection
-              sidebarStatus={sidebarStatus}
-              renderMobileMenuButton={this.renderMobileMenuButton}
-              mainSectionClickHandler={this.mainSectionClickHandler}
-              navShowing={navShowing}
-              updateMobileMenuState={updateMobileMenuState}
+            <MainAppContent
               isLogged={isLogged}
               restoredAccount={restoredAccount}
-              sideNavMenuData={sideNavMenuData}
+              onTradingTutorial={onTradingTutorial}
+              ModalShowing={ModalShowing}
+              navShowing={navShowing}
+              currentPath={currentPath}
               currentBasePath={currentBasePath}
-              logout={logout}
-              showGlobalChat={showGlobalChat}
-              migrateV1Rep={migrateV1Rep}
-              showMigrateRepButton={showMigrateRepButton}
-              walletBalances={walletBalances}
-              updateModal={updateModal}
-              showCreateAccountButton={showCreateAccountButton}
-              createFundedGsnWallet={createFundedGsnWallet}
+              mainSectionClickHandler={mainSectionClickHandler}
             />
-            <AlertsContainer isLogged={isLogged} />
-            {forkEndTime !== '0' && currentAugurTimestamp && (
-              <section className={Styles.TopBar} />
-            )}
-            <section
-              className={classNames(Styles.Wrap, {
-                [Styles.WrapMarkets]: currentPath === MARKETS,
-                [Styles.TopBarOpen]: navShowing,
-              })}
-            >
-              {currentPath === MARKETS ? (
-                <MarketsInnerNavContainer
-                  location={location}
-                  history={history}
-                  mobileMenuState={mobileMenuState}
-                />
-              ) : (
-                <div className="no-nav-placehold" />
-              )}
-              <MainAppContent
-                isLogged={isLogged}
-                restoredAccount={restoredAccount}
-                onTradingTutorial={onTradingTutorial}
-                ModalShowing={ModalShowing}
-                navShowing={navShowing}
-                currentPath={currentPath}
-                currentBasePath={currentBasePath}
-                mainSectionClickHandler={this.mainSectionClickHandler}
-              />
-            </section>
           </section>
-        </div>
-        </AppStatusProvider>
-      </main>
-    );
-  }
+        </section>
+      </div>
+      </AppStatusProvider>
+    </main>
+  );
 };
 
+export default AppView;
+
+
 const SideBarSection = ({
-  sidebarStatus,
+  mobileMenuState,
   renderMobileMenuButton,
   mainSectionClickHandler,
   navShowing,
@@ -502,7 +444,7 @@ const SideBarSection = ({
       onClick={e => { mainSectionClickHandler(e, false); closeAppMenus(); }}
       role="presentation"
     >
-      <div>{renderMobileMenuButton(sidebarStatus, updateMobileMenuState, closeAppMenus)}</div>
+      <div>{renderMobileMenuButton(mobileMenuState, updateMobileMenuState, closeAppMenus)}</div>
 
       {/* HIDDEN ON DESKTOP */}
       <SideNav

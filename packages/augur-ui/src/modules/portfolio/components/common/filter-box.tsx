@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState, useEffect, useRef } from 'react';
 
 import { ALL_MARKETS, END_TIME } from 'modules/common/constants';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
@@ -8,8 +8,8 @@ import { NameValuePair, Market, Tab } from 'modules/portfolio/types';
 import MarketRow from 'modules/portfolio/containers/market-row';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { createTabsInfo } from 'modules/portfolio/helpers/create-tabs-info';
-import { THEMES } from "modules/common/constants";
-import { getTheme } from 'modules/app/actions/update-app-status';
+import { THEMES } from 'modules/common/constants';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
 
 export interface MarketsByReportingState {
@@ -39,49 +39,44 @@ export interface FilterBoxProps {
   showLiquidityDepleted?: boolean;
 }
 
-interface FilterBoxState {
-  search: string;
-  sortBy: string;
-  selectedTab: string;
-  tabs: Array<Tab>;
-  filteredData: Array<Market>;
-}
-
-const FilterBox: React.FC<FilterBoxProps> = props => {
-  const {
-    title,
-    sortByOptions,
-    currentAugurTimestamp,
-    bottomRightContent,
-    noToggle,
-    renderRightContent,
-    dataObj,
-    renderToggleContent,
-    filterLabel,
-    sortByStyles,
-    showPending,
-    filterComp,
-    toggle,
-    hide,
-    extend,
-    data,
-    customClass,
-    showLiquidityDepleted
-  } = props;
-
-  // states
-  const [search, setSearch] = React.useState('');
-  const [selectedTab, setSelectedTab] = React.useState(ALL_MARKETS);
-  const [sortBy, setSortBy] = React.useState(
+const FilterBox: React.FC<FilterBoxProps> = ({
+  title,
+  sortByOptions,
+  currentAugurTimestamp,
+  bottomRightContent,
+  noToggle,
+  renderRightContent,
+  dataObj,
+  renderToggleContent,
+  filterLabel,
+  sortByStyles,
+  showPending,
+  filterComp,
+  toggle,
+  hide,
+  extend,
+  data,
+  customClass,
+  showLiquidityDepleted,
+}) => {
+  const [search, setSearch] = useState('');
+  const [selectedTab, setSelectedTab] = useState(ALL_MARKETS);
+  const [sortBy, setSortBy] = useState(
     (sortByOptions && sortByOptions[0].value) || ''
   );
-  const [filteredData, setFilteredData] = React.useState(data[ALL_MARKETS]);
-  const [tabs, setTabs] = React.useState(createTabsInfo(data));
+  const [filteredData, setFilteredData] = useState(data[ALL_MARKETS]);
+  const [tabs, setTabs] = useState(createTabsInfo(data));
+  const dataRef = useRef(null);
+  const { theme } = useAppStatusStore();
 
-  // refs
-  const dataRef = React.useRef(null);
+  useEffect(() => {
+    applySearchAndSort();
+  }, [search, sortBy, selectedTab, data]);
 
-  // funcs
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
+
   const applySearchAndSort = () => {
     let nextFilteredData = data[selectedTab];
     // filter markets
@@ -90,7 +85,7 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
     );
 
     // sort markets
-    const sortOption = sortByOptions.find(option => option.value === sortBy);
+    const sortOption = sortByOptions.find(({ value }) => value === sortBy);
 
     if (sortOption) {
       let comp: Function;
@@ -141,62 +136,49 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
     setFilteredData(nextFilteredData);
   };
 
-  // effects
-
-  // for:
-  // - component did mount
-  // - search, sortBy, selectedTab, data did change
-  React.useEffect(() => {
-    applySearchAndSort();
-  }, [search, sortBy, selectedTab, data]);
-
-  // for: - maintain dataRef
-  React.useEffect(() => {
-    dataRef.current = data;
-  }, [data]);
-
   return (
     <QuadBox
       title={title}
-      leftContent={(<div className={Styles.Count}>{filteredData.length}</div>)}
+      leftContent={<div className={Styles.Count}>{filteredData.length}</div>}
       customClass={customClass}
       switchHeaders={true}
       showFilterSearch={true}
-      onSearchChange={(search) => setSearch(search)}
+      onSearchChange={search => setSearch(search)}
       sortByOptions={sortByOptions}
       sortByStyles={sortByStyles}
-      updateDropdown={(sortBy) => setSortBy(sortBy)}
-      bottomRightBarContent={bottomRightContent && bottomRightContent}
+      updateDropdown={sortBy => setSortBy(sortBy)}
+      bottomRightBarContent={bottomRightContent}
       toggle={toggle}
       hide={hide}
       extend={extend}
       bottomBarContent={
-        getTheme() === THEMES.TRADING ?
+        theme === THEMES.TRADING ? (
           <SwitchLabelsGroup
             tabs={tabs}
             selectedTab={selectedTab}
-            selectTab={(tab) => {
-              setSelectedTab(tab)
+            selectTab={tab => {
+              setSelectedTab(tab);
             }}
           />
-          :
+        ) : (
           <div>
             <span>Status:</span>
             <SquareDropdown
               defaultValue={selectedTab}
               options={tabs}
-              onChange={(tab) => {
-                setSelectedTab(tab)
+              onChange={tab => {
+                setSelectedTab(tab);
               }}
             />
             <span>Sort by:</span>
             <SquareDropdown
               defaultValue={sortByOptions[0].value}
               options={sortByOptions}
-              onChange={(sortBy) => setSortBy(sortBy)}
+              onChange={sortBy => setSortBy(sortBy)}
               sortByStyles={sortByStyles}
             />
           </div>
+        )
       }
       content={
         <>
@@ -208,27 +190,25 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
             />
           )}
           <div className={Styles.MarketBox}>
-            {filteredData.length > 0 &&
-              filteredData.map((market: any, index: number) =>
-                dataObj[market.id] ? (
-                  <MarketRow
-                    key={`position_${market.id}_${index}`}
-                    market={dataObj[market.id]}
-                    showState
-                    showLiquidityDepleted={showLiquidityDepleted}
-                    noToggle={noToggle}
-                    showPending={showPending}
-                    toggleContent={
-                      renderToggleContent &&
-                      renderToggleContent(dataObj[market.id])
-                    }
-                    rightContent={
-                      renderRightContent && renderRightContent(dataObj[market.id])
-                    }
-                  />
-                ) : null
-              )}
-            </div>
+            {filteredData.map(({ id }: any, index: number) =>
+              dataObj[id] ? (
+                <MarketRow
+                  key={`position_${id}_${index}`}
+                  market={dataObj[id]}
+                  showState
+                  showLiquidityDepleted={showLiquidityDepleted}
+                  noToggle={noToggle}
+                  showPending={showPending}
+                  toggleContent={
+                    renderToggleContent && renderToggleContent(dataObj[id])
+                  }
+                  rightContent={
+                    renderRightContent && renderRightContent(dataObj[id])
+                  }
+                />
+              ) : null
+            )}
+          </div>
         </>
       }
       search={search}

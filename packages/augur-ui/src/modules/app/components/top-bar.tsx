@@ -12,7 +12,7 @@ import Styles from 'modules/app/components/top-bar.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import { NewLogo } from 'modules/app/components/logo';
-import ThemeSwitch from 'modules/app/containers/theme-switch';
+import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import { HelpResources } from 'modules/app/components/help-resources';

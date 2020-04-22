@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
-import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, GWEI_CONVERSION} from 'modules/common/constants';
+import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH } from 'modules/common/constants';
 import { DaiLogoIcon, EthIcon, helpIcon, LogoutIcon, Open, Pencil, v2AugurLogo, ClipboardCopy } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatDai, formatEther, formatRep } from 'utils/format-number';
