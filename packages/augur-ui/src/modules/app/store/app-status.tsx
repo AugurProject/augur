@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { createContext, useContext } from 'react';
 import { DEFAULT_APP_STATUS, STUBBED_APP_STATUS_ACTIONS } from 'modules/app/store/constants';
 import { useAppStatus } from 'modules/app/store/app-status-hooks';
 
-const AppStatusContext = React.createContext({
+const AppStatusContext = createContext({
   ...DEFAULT_APP_STATUS,
   actions: STUBBED_APP_STATUS_ACTIONS,
 });
@@ -17,4 +17,4 @@ export const AppStatusProvider = ({ children }) => {
   );
 };
 
-export const useAppStatusStore = () => React.useContext(AppStatusContext);
+export const useAppStatusStore = () => useContext(AppStatusContext);

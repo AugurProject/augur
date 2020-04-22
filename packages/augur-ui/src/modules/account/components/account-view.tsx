@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Media from 'react-media';
 
-import TermsAndConditions from 'modules/app/containers/terms-and-conditions';
+import TermsAndConditions from 'modules/app/components/terms-and-conditions';
 import Notifications from 'modules/account/containers/notifications';
 import Transactions from 'modules/account/containers/transactions';
 import AugurStatus from 'modules/account/components/augur-status';

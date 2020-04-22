@@ -18,7 +18,6 @@ interface AlertProps {
   removeAlert: Function;
   seen: boolean;
   timestampInMilliseconds: number;
-  toggleAlerts: Function;
   noShow?: boolean;
   showToast?: boolean;
   status: string;

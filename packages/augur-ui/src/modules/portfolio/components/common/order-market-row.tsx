@@ -13,8 +13,7 @@ export interface OrderMarketRowProps {
   filledOrders: boolean;
 }
 
-const OrderMarketRow = (props: OrderMarketRowProps) => {
-  const { market, filledOrders } = props;
+const OrderMarketRow = ({ market, filledOrders }: OrderMarketRowProps) => {
 
   let orders = [];
   if (!filledOrders) {

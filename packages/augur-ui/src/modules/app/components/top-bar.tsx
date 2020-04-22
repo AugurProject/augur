@@ -12,38 +12,34 @@ import Styles from 'modules/app/components/top-bar.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import { NewLogo } from 'modules/app/components/logo';
-import ThemeSwitch from 'modules/app/containers/theme-switch';
+import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
-import HelpResources from 'modules/app/containers/help-resources';
+import { HelpResources } from 'modules/app/components/help-resources';
 import { OddsMenu } from 'modules/app/components/odds-menu';
 import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
-import { formatDai } from 'utils/format-number';
-import { createBigNumber } from 'utils/create-big-number';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface TopBarProps {
-  alertsVisible: boolean;
   isLogged: boolean;
   isMobile: boolean;
   restoredAccount: boolean;
   stats: CoreStats;
   unseenCount: number;
-  updateIsAlertVisible: Function;
   signupModal: Function;
   loginModal: Function;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
-  alertsVisible,
   isLogged,
   isMobile,
   restoredAccount,
   stats,
   unseenCount,
-  updateIsAlertVisible,
   signupModal,
   loginModal,
 }) => {
+  const { isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
   return (
     <header className={Styles.TopBar}>
@@ -89,11 +85,11 @@ const TopBar: React.FC<TopBarProps> = ({
         {(isLogged || restoredAccount) && (
           <button
             className={classNames(Styles.alerts, {
-              [Styles.alertsDark]: alertsVisible,
+              [Styles.alertsDark]: isAlertsMenuOpen,
               [Styles.Empty]: unseenCount < 1,
             })}
             onClick={() => {
-              updateIsAlertVisible(!alertsVisible);
+              setIsAlertsMenuOpen(!isAlertsMenuOpen);
             }}
             tabIndex={-1}
           >

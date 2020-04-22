@@ -3,7 +3,6 @@ import {
   UPDATE_CURRENT_INNER_NAV_TYPE,
   UPDATE_MOBILE_MENU_STATE,
   UPDATE_SIDEBAR_STATUS,
-  UPDATE_IS_ALERT_VISIBLE
 } from "modules/app/actions/update-sidebar-status";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { MOBILE_MENU_STATES } from "modules/common/constants";
@@ -14,7 +13,6 @@ const DEFAULT_STATE = {
   mobileMenuState: MOBILE_MENU_STATES.CLOSED,
   currentBasePath: MARKETS,
   currentInnerNavType: null,
-  isAlertsVisible: false,
 };
 
 export default function(sideNavStatus = DEFAULT_STATE, { type, data }: BaseAction): any {
@@ -30,9 +28,6 @@ export default function(sideNavStatus = DEFAULT_STATE, { type, data }: BaseActio
         ...sideNavStatus,
         currentInnerNavType: data,
       };
-    }
-    case UPDATE_IS_ALERT_VISIBLE: {
-      return { ...sideNavStatus, isAlertsVisible: data };
     }
     case UPDATE_SIDEBAR_STATUS: {
       return {

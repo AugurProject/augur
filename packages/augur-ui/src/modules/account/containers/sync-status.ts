@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 
-import { selectBlockInfoData } from "modules/block-info/selectors/block-info-data";
+import { selectBlockInfoData } from "modules/app/selectors/block-info-data";
 import { ZERO } from 'modules/common/constants';
 import SyncStatus from "modules/account/components/sync-status";
 import { AppState } from "appStore";

@@ -14,7 +14,6 @@ import { addedDaiEvent } from 'services/analytics/helpers';
 import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { createBigNumber } from 'utils/create-big-number';
 import { WALLET_STATUS_VALUES, TWO } from 'modules/common/constants';
-import { windowRef } from 'utils/window-ref';
 
 export const updateAssets = (
   callback: NodeStyleCallback,

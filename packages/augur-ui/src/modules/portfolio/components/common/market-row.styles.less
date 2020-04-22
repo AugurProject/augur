@@ -75,6 +75,14 @@
       color: var(--color-secondary-text);
       margin-top: @size-4;
     }
+
+    > span:last-of-type {
+      display: none;
+    }
+  }
+
+  > div:first-of-type > div:first-of-type > span:last-of-type {
+    display: none;
   }
 
   > span {
@@ -142,10 +150,59 @@
   }
 
   .MarketRowContent {
+    &.NoToggle {
+      padding-right: 0;
+    }
+
     > div {
       > span {
         .text-12-semi-bold;
+        margin-right: 0;
       }
+
+      &.Show {
+        padding: @size-12;
+      }
+
+      > span:last-of-type {
+        display: initial;
+
+        > div {
+          > span {
+            flex-flow: row;
+
+            > span:first-of-type {
+              .text-12;
+              color: var(--color-secondary-text);
+              padding-right: @size-4;
+            }
+
+            > span:nth-of-type(2) {
+              .text-12-semi-bold;
+              color: var(--color-primary-text);
+            }
+          }
+
+          > button {
+            display: none;
+          }
+        }
+      }
+    }
+
+    > div:first-of-type > div:first-of-type > span:last-of-type {
+      display: initial;
+      margin-left: auto;
+
+      > div {
+        > span {
+          display: none;
+        }
+      }
+    }
+
+    > span {
+      display: none;
     }
   }
 

@@ -39,7 +39,6 @@ import ModalDrQuickGuide from 'modules/modal/containers/modal-dr-quick-guide';
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market';
 import ModalAddFunds from 'modules/modal/containers/modal-add-funds';
 import ModalSignin from 'modules/modal/containers/modal-signin';
-import ModalHardwareWallet from 'modules/modal/containers/modal-hardware-wallet';
 import ModalLoading from 'modules/modal/containers/modal-loading';
 import ModalUniverseSelector from 'modules/modal/containers/modal-universe-selector';
 import ModalTestBet from 'modules/modal/containers/modal-test-bet';
@@ -152,8 +151,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalSignin {...props} isLogin />;
     case TYPES.MODAL_SIGNUP:
       return <ModalSignin {...props} isLogin={false} />;
-    case TYPES.MODAL_HARDWARE_WALLET:
-      return <ModalHardwareWallet {...props} />;
     case TYPES.MODAL_LOADING:
       return <ModalLoading />;
     case TYPES.MODAL_UNIVERSE_SELECTOR:

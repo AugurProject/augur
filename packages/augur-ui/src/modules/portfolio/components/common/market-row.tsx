@@ -81,6 +81,7 @@ const MarketRow = ({
             />
             {market.marketType === SCALAR && <MarketTypeLabel marketType={market.marketType} />}
             {showLiquidityDepleted && <LiquidityDepletedLabel market={market} />}
+            <span>{rightContent}</span>
           </div>
         )}
         {!market.pending && <MarketTitle id={market.id} />}
@@ -102,6 +103,7 @@ const MarketRow = ({
               />
             </span>
           )}
+        <span>{rightContent}</span>
       </div>
       <span
         className={classNames({
