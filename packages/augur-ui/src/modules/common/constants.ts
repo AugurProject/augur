@@ -944,11 +944,6 @@ export const COLUMN_TYPES = {
   [PLAIN]: PLAIN,
 };
 
-export const BINARY_CATEGORICAL_FORMAT_OPTIONS = {
-  decimals: 2,
-  decimalsRounded: 2,
-};
-
 // Login method variables
 export const TREZOR_MANIFEST_EMAIL = 'team@augur.net';
 export const TREZOR_MANIFEST_APPURL = 'https://dev.augur.net';

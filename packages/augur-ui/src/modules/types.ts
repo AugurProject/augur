@@ -305,6 +305,7 @@ export interface UIOrder {
   numTicks: number;
   minPrice: string;
   creationTime?: DateFormattedObject;
+  blockNumber?: number;
 }
 
 export interface CreateLiquidityOrders {

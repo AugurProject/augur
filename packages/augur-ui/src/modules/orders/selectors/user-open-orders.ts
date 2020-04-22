@@ -9,14 +9,13 @@ import {
   SELL_INDEX,
   SELL,
   BUY,
-  SCALAR,
-  BINARY_CATEGORICAL_FORMAT_OPTIONS,
+  YES_NO,
 } from 'modules/common/constants';
 import {
   TXEventName
 } from '@augurproject/sdk';
 import { convertUnixToFormattedDate, convertSaltToFormattedDate } from 'utils/format-date';
-import { formatNone, formatShares, formatDai } from 'utils/format-number';
+import { formatNone, formatShares, formatDai, formatMarketShares } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import {
   selectMarketInfosState,
@@ -52,8 +51,6 @@ export const selectUserOpenOrders = createSelector(
   selectPendingOrdersStateMarket,
   (market, userMarketOpenOrders, orderCancellation, pendingOrders) => {
     if (!market) return [];
-    const isScalar = market.marketType === SCALAR;
-    const shareOptions = isScalar ? {} : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS };
     let userOpenOrders =
       market.outcomes
         .map(outcome =>
@@ -64,7 +61,7 @@ export const selectUserOpenOrders = createSelector(
             orderCancellation,
             market.description,
             outcome.description,
-            shareOptions
+            market.marketType
           )
         )
         .filter(collection => collection.length !== 0)
@@ -74,10 +71,10 @@ export const selectUserOpenOrders = createSelector(
     if (pendingOrders && pendingOrders.length > 0) {
       const formatted = pendingOrders.map(o => ({
         ...o,
-        unmatchedShares: formatShares(o.amount, shareOptions),
+        unmatchedShares: formatMarketShares(market.marketType, o.amount),
         avgPrice: formatDai(o.fullPrecisionPrice),
         tokensEscrowed: formatDai(0, {zeroStyled: true}),
-        sharesEscrowed: formatShares(0, { ...shareOptions, zeroStyled: true }),
+        sharesEscrowed: formatMarketShares(market.marketType, 0, { zeroStyled: true }),
         pending: !!o.status, // TODO: can show status of transaction in the future
         status: o.status,
       }))
@@ -95,7 +92,7 @@ function selectUserOpenOrdersInternal(
   orderCancellation,
   marketDescription,
   name,
-  shareOptions
+  marketType
 ) {
   const { loginAccount } = store.getState() as AppState;
   if (!loginAccount.address || userMarketOpenOrders == null) return [];
@@ -108,7 +105,7 @@ function selectUserOpenOrdersInternal(
     orderCancellation,
     marketDescription,
     name,
-    shareOptions
+    marketType
   );
 }
 
@@ -121,7 +118,7 @@ const userOpenOrders = memoize(
     orderCancellation,
     marketDescription,
     name,
-    shareOptions
+    marketType
   ) => {
     const orderData = userMarketOpenOrders[outcomeId];
 
@@ -137,7 +134,7 @@ const userOpenOrders = memoize(
             orderCancellation,
             marketDescription,
             name,
-            shareOptions
+            marketType
           );
     const userAsks =
       orderData == null || orderData[SELL_INDEX] == null
@@ -151,7 +148,7 @@ const userOpenOrders = memoize(
             orderCancellation,
             marketDescription,
             name,
-            shareOptions
+            marketType
           );
 
     const orders = userAsks.concat(userBids);
@@ -171,7 +168,7 @@ function getUserOpenOrders(
   orderCancellation = {},
   marketDescription = '',
   name = '',
-  shareOptions = {},
+  marketType = YES_NO,
 ) {
   const typeOrders = orders[orderType];
 
@@ -196,9 +193,9 @@ function getUserOpenOrders(
       originalShares: formatNone(),
       avgPrice: formatDai(order.fullPrecisionPrice),
       matchedShares: formatNone(),
-      unmatchedShares: formatShares(order.amount, shareOptions),
+      unmatchedShares: formatMarketShares(marketType, order.amount),
       tokensEscrowed: formatDai(order.tokensEscrowed),
-      sharesEscrowed: formatShares(order.sharesEscrowed, shareOptions),
+      sharesEscrowed: formatMarketShares(marketType, order.sharesEscrowed),
       marketDescription,
       name,
       cancelOrder: (order) => store.dispatch(cancelOrder(order))
