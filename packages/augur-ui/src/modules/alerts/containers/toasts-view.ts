@@ -1,7 +1,6 @@
 import { connect } from "react-redux";
 import { AppState } from "appStore";
 import ToastsView from "modules/alerts/components/toasts-view";
-import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import {
   removeAlert,
   updateExistingAlert,
