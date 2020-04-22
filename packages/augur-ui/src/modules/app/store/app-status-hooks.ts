@@ -62,7 +62,6 @@ export function AppStatusReducer(state, action) {
     default:
       throw new Error(`Error: ${action.type} not caught by App Status reducer.`);
   }
-
   console.log("AppStatusStateUpdated:", updatedState);
   return updatedState;
 };
