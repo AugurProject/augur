@@ -2,7 +2,6 @@ import {
   IS_LOGGED,
   EDGE_CONTEXT,
   EDGE_LOADING,
-  IS_CONNECTION_TRAY_OPEN,
   UPDATE_AUTH_STATUS,
   RESTORED_ACCOUNT,
 } from 'modules/auth/actions/auth-status';
@@ -15,7 +14,6 @@ const DEFAULT_STATE: AuthStatus = {
   [RESTORED_ACCOUNT]: false,
   [EDGE_CONTEXT]: undefined,
   [EDGE_LOADING]: false,
-  [IS_CONNECTION_TRAY_OPEN]: false,
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);
