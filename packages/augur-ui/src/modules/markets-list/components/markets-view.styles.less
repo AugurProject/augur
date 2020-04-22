@@ -68,31 +68,7 @@
 :root[theme="SPORTS"] {
   .MarketsView > section:not([class*='LandingHero']) > ul {
     display: flex;
-    height: @size-40;
     grid-column: 1;
-
-    > li {
-      background: var(--color-module-background);
-
-      &:first-of-type:hover:not([class*="Selected"]) {
-        border-right: 0;
-      }
-      
-      > button {
-        .text-14-bold;
-
-        color: var(--color-inactive-text);
-        text-transform: capitalize;
-      }
-
-      &[class*="Selected"] {
-        border: @size-1 solid var(--color-primary-text);
-
-        > button {
-          color: var(--color-primary-text);
-        }
-      }
-    }
   }
 }
 

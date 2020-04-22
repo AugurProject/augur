@@ -4,7 +4,8 @@ import {
   YES_NO_YES_OUTCOME_NAME,
   YES_NO_YES_ID,
   YES_NO_NO_OUTCOME_NAME,
-  INVALID_OUTCOME_ID
+  INVALID_OUTCOME_ID,
+  SCALAR
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { INVALID_OUTCOME } from 'modules/create-market/constants';
@@ -22,7 +23,7 @@ const getOutcomeName = (
   // default to handle app loading
   if (!marketType) return YES_NO_YES_OUTCOME_NAME;
 
-  if (outcomeId === INVALID_OUTCOME_ID || isInvalid) return INVALID_OUTCOME;
+  if ((marketType !== SCALAR && outcomeId === INVALID_OUTCOME_ID) || isInvalid) return INVALID_OUTCOME;
 
   switch (marketType) {
     case YES_NO: {

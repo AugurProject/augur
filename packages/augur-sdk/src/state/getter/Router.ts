@@ -1,3 +1,5 @@
+import { logger } from '@augurproject/logger';
+import { LoggerLevels } from '@augurproject/logger/build';
 import { Augur } from "../../Augur";
 import { DB } from "../db/DB";
 import { PathReporter } from "io-ts/lib/PathReporter";
@@ -69,9 +71,10 @@ export class Router {
 
     const db = await this.db;
     const timerName = `getter: ${name} called at ${Date.now()}`;
-    console.time(timerName);
+
+    logger.time(LoggerLevels.debug, timerName);
     const result = await getter.func(this.augur, db, decodedParams.value);
-    console.timeEnd(timerName);
+    logger.timeEnd(LoggerLevels.debug, timerName)
     return result;
   }
 }

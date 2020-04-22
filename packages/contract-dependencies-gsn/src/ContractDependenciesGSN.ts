@@ -22,7 +22,7 @@ const MIN_GAS_PRICE = new BigNumber(1e9); // Min: 1 Gwei
 const DEFAULT_GAS_PRICE = new BigNumber(4e9); // Default: GasPrice: 4 Gwei
 
 export const DESIRED_SIGNER_ETH_BALANCE = `0x${new BigNumber(.1 * 10**18).toString(16)}`; // .1 ETH
-const EXCHANGE_RATE_BUFFER_MULTIPLIER = 1.1;
+export const EXCHANGE_RATE_BUFFER_MULTIPLIER = 1.1;
 
 const OVEREAD_RELAY_GAS = 500000;
 const UNISWAP_MAX_GAS_COST = 150000;

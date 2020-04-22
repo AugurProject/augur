@@ -3,6 +3,9 @@
   "include": [],
   "references": [
     {
+      "path": "./packages/augur-logger"
+    },
+    {
       "path": "./packages/ethersjs-provider"
     },
     {

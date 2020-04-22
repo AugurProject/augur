@@ -161,17 +161,19 @@ export class WarpController {
         case MarketReportingState.AwaitingFinalization:
           // confirm hash matches and emit dispute event if needed.
 
+          break;
+
         case MarketReportingState.Finalized:
           const [begin, end] = await this.checkpoints.calculateBoundary(
             mostRecentCheckpoint.endTimestamp,
             mostRecentCheckpoint.end
           );
 
+          const newWarpSyncMarket = await this.augur.warpSync.getWarpSyncMarket(this.augur.contracts.universe.address);
+
           await this.db.warpCheckpoints.createInitialCheckpoint(
             end,
-            await this.augur.warpSync.getWarpSyncMarket(
-              this.augur.contracts.universe.address
-            )
+            newWarpSyncMarket
           );
 
           break;
@@ -195,6 +197,7 @@ export class WarpController {
       // Market has finished and now we need to wait 30 blocks.
       if((newBlock.number - newEndBlock.number) < 30) return;
 
+      await this.db.prune(newEndBlock.timestamp);
       /*
        * To create the checkpoint properly we need to discover the boundary blocks around the end time.
        **/

@@ -83,7 +83,7 @@ export const NETWORK_IDS = {
   Private4: '104',
 };
 
-export const ARCHIVED_MARKET_LENGTH = 30;
+export const ARCHIVED_MARKET_LENGTH = 60;
 export const MIN_ORDER_LIFESPAN = 70;
 export const GAS_PRICE_BACKUP_API_ENDPOINT = {
   [NETWORK_IDS.Mainnet]:
@@ -582,7 +582,7 @@ export const MODAL_CREATE_MARKET = 'MODAL_CREATE_MARKET';
 export const MODAL_DAI_FAUCET = 'MODAL_DAI_FAUCET';
 export const MODAL_CREATION_HELP = 'MODAL_CREATION_HELP';
 export const MODAL_DEPOSIT = 'MODAL_DEPOSIT';
-export const MODAL_WITHDRAW = 'MODAL_WITHDRAW';
+export const MODAL_TRANSFER = 'MODAL_TRANSFER';
 export const MODAL_CASHOUT = 'MODAL_CASHOUT';
 export const MODAL_MIGRATE_REP = 'MODAL_MIGRATE_REP';
 export const MODAL_TRANSACTIONS = 'MODAL_TRANSACTIONS';
@@ -655,6 +655,7 @@ export const WITHDRAWTOKENS = 'WITHDRAWTOKENS';
 export const CONTRIBUTE = 'CONTRIBUTE';
 export const DISAVOWCROWDSOURCERS = 'DISAVOWCROWDSOURCERS';
 export const DOINITIALREPORT = 'DOINITIALREPORT';
+export const DOINITIALREPORTWARPSYNC = 'DOINITIALREPORTWARPSYNC';
 export const FINALIZE = 'FINALIZE';
 export const FINALIZEFORK = 'FINALIZEFORK';
 export const MIGRATETHROUGHONEFORK = 'MIGRATETHROUGHONEFORK';
@@ -714,6 +715,9 @@ export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
 export const CREATEAUGURWALLET = 'RUNPERIODICALS';
 export const WITHDRAWALLFUNDSASDAI = 'WITHDRAWALLFUNDSASDAI';
+export const SWAPEXACTTOKENSFORTOKENS = 'SWAPEXACTTOKENSFORTOKENS'
+export const SWAPETHFOREXACTTOKENS = 'SWAPETHFOREXACTTOKENS'
+export const ADDLIQUIDITY = 'ADDLIQUIDITY';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
@@ -753,7 +757,7 @@ export const TEN = createBigNumber(10, 10);
 export const FIFTY = createBigNumber(50, 10);
 export const HUNDRED = createBigNumber(100, 10);
 export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
-export const MIN_QUANTITY = createBigNumber('0.00000001');
+export const MIN_QUANTITY = createBigNumber('0.01');
 export const DISPUTE_GAS_COST = createBigNumber(480000);
 export const INITAL_REPORT_GAS_COST = createBigNumber(1094412);
 export const V1_REP_MIGRATE_ESTIMATE = createBigNumber(303000);
@@ -905,6 +909,7 @@ export const CLAIM_REPORTING_FEES = 'claimReportingFees';
 export const UNSIGNED_ORDERS = 'unsignedOrders';
 export const PROCEEDS_TO_CLAIM = 'proceedsToClaim';
 export const MARKET_IS_MOST_LIKELY_INVALID = 'marketIsMostLikelyInvalid';
+export const FINALIZE_MARKET = 'finalizeMarket';
 
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
@@ -914,6 +919,7 @@ export const NOTIFICATION_TYPES = {
   [UNSIGNED_ORDERS]: UNSIGNED_ORDERS,
   [PROCEEDS_TO_CLAIM]: PROCEEDS_TO_CLAIM,
   [MARKET_IS_MOST_LIKELY_INVALID]: MARKET_IS_MOST_LIKELY_INVALID,
+  [FINALIZE_MARKET]: FINALIZE_MARKET,
 };
 
 // Account View - Timeframe selection options
@@ -1414,3 +1420,25 @@ export enum HEADER_TYPE {
 }
 
 export const LOGGED_IN_USER_LOCAL_STORAGE_KEY = 'loggedInUser';
+
+export const MY_BETS_VIEW_BY = [
+  {
+    label: 'Event',
+    value: 'Event',
+  },
+  {
+    label: 'Outcomes',
+    value: 'Outcomes',
+  },
+];
+
+export const MY_BETS_MARKET_STATUS = [
+  {
+    label: 'All',
+    value: 'All',
+  },
+  {
+    label: 'Open',
+    value: 'Open',
+  },
+];

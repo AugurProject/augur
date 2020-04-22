@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import { QuestionIcon } from 'modules/common/icons';
@@ -16,11 +16,7 @@ import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 
-interface HelpResourcesProps {
-  isHelpMenuOpen: boolean;
-  updateHelpMenuState: Function;
-  updateConnectionTray: Function;
-}
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const HELP_LINKS = [
   {
@@ -33,7 +29,7 @@ const HELP_LINKS = [
       }),
     },
   },
-  {    
+  {
     label: 'help center',
     link: HELP_CENTER,
   },
@@ -50,7 +46,7 @@ const HELP_LINKS = [
     link: HELP_CENTER_HOW_TO_DISPUTE,
   },
   {
-    label: 'submit feedback',
+    label: 'report a bug',
     link: 'https://github.com/AugurProject/augur/issues/new/choose',
   },
   {
@@ -63,19 +59,18 @@ export const HelpMenuList = () => {
   return (
     <ul className={classNames(Styles.HelpMenuList)}>
       <li>popular help resources</li>
-      {HELP_LINKS.map(
-        ({ className, link, label, customLink, showNonLink }, index) => (
-          <li key={'helpLink_' + index} className={className}>
-            <ExternalLinkButton
-              light
-              URL={link}
-              label={label}
-              customLink={customLink}
-              showNonLink={showNonLink}
-            />
-          </li>
-        )
-      )}
+      {HELP_LINKS.filter(({ label }) => label !== 'view trading tutorial').map(({ className, link, label, customLink, showNonLink, lightLink }, index) => (
+        <li key={'helpLink_' + index} className={className}>
+          <ExternalLinkButton
+            light
+            URL={link}
+            label={label}
+            customLink={customLink}
+            showNonLink={showNonLink}
+            lightLink={lightLink}
+          />
+        </li>
+      ))}
     </ul>
   );
 };
@@ -129,17 +124,8 @@ export const HelpIcon = ({
   );
 };
 
-export const HelpResources = ({
-  isHelpMenuOpen,
-  updateHelpMenuState,
-  updateConnectionTray,
-}: HelpResourcesProps) => {
-  useEffect(() => {
-    if (isHelpMenuOpen) {
-      updateConnectionTray(false);
-    }
-  }, [isHelpMenuOpen]);
-
+export const HelpResources = () => {
+  const { isHelpMenuOpen, actions: { setIsHelpMenuOpen } } = useAppStatusStore();
   return (
     <div
       className={classNames(Styles.HelpResources, {
@@ -148,11 +134,11 @@ export const HelpResources = ({
       onClick={event => event.stopPropagation()}
     >
       <HelpIcon
-        updateHelpMenuState={updateHelpMenuState}
+        updateHelpMenuState={setIsHelpMenuOpen}
         isHelpMenuOpen={isHelpMenuOpen}
       />
       {isHelpMenuOpen && (
-        <HelpMenu closeHelpMenu={() => updateHelpMenuState(false)} />
+        <HelpMenu closeHelpMenu={() => setIsHelpMenuOpen(false)} />
       )}
     </div>
   );

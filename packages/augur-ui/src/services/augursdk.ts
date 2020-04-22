@@ -20,6 +20,10 @@ import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { createBrowserMesh } from './browser-mesh';
 import { getFingerprint } from 'utils/get-fingerprint';
+import { BigNumber } from 'utils/create-big-number';
+
+window.BigNumber = BigNumber;
+
 
 export class SDK {
   client: Augur | null = null;

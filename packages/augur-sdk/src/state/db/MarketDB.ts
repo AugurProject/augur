@@ -487,11 +487,12 @@ export class MarketDB extends DerivedDB {
           reportingState = MarketReportingState.DesignatedReporting;
       }
 
-      if (reportingState && reportingState != marketData.reportingState) {
+      if (reportingState && reportingState !== marketData.reportingState) {
         updateDocs.push({
           market: marketData.market,
           blockNumber,
-          reportingState
+          reportingState,
+          isWarpSync: marketData.isWarpSync,
         });
       }
     }

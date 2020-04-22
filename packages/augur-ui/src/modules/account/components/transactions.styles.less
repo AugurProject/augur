@@ -50,7 +50,7 @@
       }
 
       > h4 {
-        grid-column: 1 / span 2;
+        grid-column: 1 / span 3;
 
         @media @breakpoint-mobile {
           grid-column: 1;
@@ -111,7 +111,7 @@
         max-height: unset;
         height: @size-48;
 
-        &:nth-of-type(2) {
+        &:nth-of-type(3) {
           border: @size-1 solid var(--color-primary-text);
 
           &:not(:disabled):hover {
@@ -135,6 +135,10 @@
 
       &:nth-of-type(2) {
         display: grid;
+
+        > button:nth-of-type(2) {
+          display: none;
+        }
 
         > h4 {
           display: none;

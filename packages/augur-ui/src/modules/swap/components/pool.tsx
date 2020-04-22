@@ -1,106 +1,92 @@
 import React, { useState } from 'react';
 
-import { ETH, DAI, REP } from 'modules/common/constants';
+import { DAI, REP, TRANSACTIONS, ADDLIQUIDITY } from 'modules/common/constants';
 import { AccountBalances } from 'modules/types';
 import {
   REP as REPIcon,
-  ETH as ETHIcon,
   DaiLogoIcon,
 } from 'modules/common/icons';
 import { formatEther } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { PoolRate } from 'modules/swap/components/rate';
+import { addLiquidityRepDai } from 'modules/contracts/actions/contractCalls';
 import { SwapRow } from 'modules/swap/components/swap-row';
-
 import Styles from 'modules/swap/components/index.styles.less';
+import { ProcessingButton } from 'modules/common/buttons';
 
 interface PoolProps {
   balances: AccountBalances;
-  ETH_RATE: BigNumber;
-  REP_RATE: BigNumber;
 }
 
-export const Pool = ({ balances, ETH_RATE, REP_RATE }: PoolProps) => {
-  let poolRate = formatEther(0);
-  const tokenPairs = [DAI, REP];
-  const [selectedToken, setSelectedToken] = useState(tokenPairs[0]);
-  const [selectedFromTokenAmount, setSelectedFromTokenAmount] = useState(
-    createBigNumber(0)
-  );
-  const [selectedETHAmount, setSelectedETHAmount] = useState(
+export const Pool = ({ balances }: PoolProps) => {
+  const [selectedBottomAmount, setSelectedBottomAmount] = useState(
     createBigNumber(0)
   );
 
-  const setToken = () => {
-    const nextToken =
-      selectedToken === tokenPairs[0] ? tokenPairs[1] : tokenPairs[0];
-    setSelectedFromTokenAmount(createBigNumber(0));
-    setSelectedToken(nextToken);
-  };
+  const [selectedTopAmount, setSelectedTopAmount] = useState(
+    createBigNumber(0)
+  );
 
-  const setEthAmount = (amount: BigNumber, displayBalance: BigNumber) => {
-    if (amount.lte(0)) {
-      setSelectedETHAmount(createBigNumber(0));
-    } else if (amount.gt(displayBalance)) {
-      setSelectedETHAmount(displayBalance);
-    } else {
-      setSelectedETHAmount(amount);
-    }
-  };
-
-  const setTokenAmount = (amount: BigNumber, displayBalance: BigNumber) => {
-    if (amount.lte(0)) {
-      setSelectedFromTokenAmount(createBigNumber(0));
-    } else if (amount.gt(displayBalance)) {
-      setSelectedFromTokenAmount(displayBalance);
-    } else {
-      setSelectedFromTokenAmount(amount);
-    }
-  };
-
-  if (selectedToken === REP) {
-    poolRate = formatEther(
-      createBigNumber(1)
-        .multipliedBy(ETH_RATE)
-        .dividedBy(REP_RATE)
-    );
-  } else {
-    poolRate = formatEther(createBigNumber(1).multipliedBy(ETH_RATE));
+  const clearForm = () => {
+    setSelectedBottomAmount(createBigNumber(0));
+    setSelectedTopAmount(createBigNumber(0));
   }
+
+
+  const setTopAmount = (amount: BigNumber, displayBalance: BigNumber) => {
+    if (amount.lte(0)) {
+      setSelectedTopAmount(createBigNumber(0));
+    } else if (amount.gt(displayBalance)) {
+      setSelectedTopAmount(displayBalance);
+    } else {
+      setSelectedTopAmount(amount);
+    }
+  };
+
+  const setBottomAmount = (amount: BigNumber, displayBalance: BigNumber) => {
+    if (amount.lte(0)) {
+      setSelectedBottomAmount(createBigNumber(0));
+    } else if (amount.gt(displayBalance)) {
+      setSelectedBottomAmount(displayBalance);
+    } else {
+      setSelectedBottomAmount(amount);
+    }
+  };
 
   return (
     <div className={Styles.Pool}>
       <SwapRow
-        amount={formatEther(selectedETHAmount)}
-        setAmount={setEthAmount}
-        setMaxAmount={setSelectedETHAmount}
-        token={ETH}
+        amount={formatEther(selectedTopAmount)}
+        setAmount={setTopAmount}
+        setMaxAmount={setSelectedTopAmount}
         label={'Deposit'}
-        balance={formatEther(balances.eth)}
-        logo={ETHIcon}
+        balance={formatEther(balances.dai)}
+        logo={DaiLogoIcon}
+        token={DAI}
       />
 
       <div>+</div>
 
       <SwapRow
-        amount={formatEther(selectedFromTokenAmount)}
-        setAmount={setTokenAmount}
-        setMaxAmount={setSelectedFromTokenAmount}
-        label={'Input'}
-        balance={
-          selectedToken === DAI
-            ? formatEther(balances.dai)
-            : formatEther(balances.rep)
-        }
-        logo={selectedToken === DAI ? DaiLogoIcon : REPIcon}
-        setToken={setToken}
-        token={selectedToken}
+        amount={formatEther(selectedBottomAmount)}
+        setAmount={setBottomAmount}
+        setMaxAmount={setSelectedBottomAmount}
+        label={'Deposit'}
+        balance={formatEther(balances.rep)}
+        logo={REPIcon}
+        token={REP}
       />
 
-      <PoolRate ethRate={poolRate} ethRateLabel={selectedToken} />
-
       <div>
-        <button>{'Add Liquidity'}</button>
+        <ProcessingButton
+          text={'Add Liquidity'}
+          action={() => {
+            clearForm();
+            addLiquidityRepDai(selectedTopAmount, selectedBottomAmount);
+          }}
+          queueName={TRANSACTIONS}
+          queueId={ADDLIQUIDITY}
+          disabled={selectedTopAmount.isLessThanOrEqualTo(0) || selectedBottomAmount.isLessThanOrEqualTo(0)}
+        />
       </div>
     </div>
   );

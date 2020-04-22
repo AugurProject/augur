@@ -271,8 +271,8 @@ export default class MarketView extends Component<
   }
 
   tradingTutorialWidthCheck() {
-    if (this.props.tradingTutorial && window.innerWidth <= 1280) {
-      // TEMP_TABLET
+    if (this.props.tradingTutorial && window.innerWidth < 1150) {
+      // tablet-max
       // Don't show tradingTutorial on mobile,
       // redirect to markets when we enter tablet breakpoints
       this.props.history.push({ pathname: makePath(MARKETS) });

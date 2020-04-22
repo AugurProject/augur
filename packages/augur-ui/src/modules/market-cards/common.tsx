@@ -24,11 +24,12 @@ import {
   COPY_AUTHOR,
   REPORTING_STATE,
   ASKS,
-  ODDS_TYPE
+  ODDS_TYPE,
+  SCALAR_INVALID_BEST_BID_ALERT_VALUE as INVALID_ALERT_PERCENTAGE,
 } from 'modules/common/constants';
 import { convertToOdds } from 'utils/get-odds';
 import { MARKET_LIST_CARD } from 'services/analytics/helpers';
-import { getTheme } from 'modules/app/actions/update-app-status';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -74,9 +75,9 @@ export interface PercentProps {
   percent: number;
 }
 
-export const Percent = (props: PercentProps) => (
+export const Percent = ({ percent }: PercentProps) => (
   <div className={Styles.Percent}>
-    <span style={{ width: props.percent + '%' }}></span>
+    <span style={{ width: percent + '%' }}></span>
   </div>
 );
 
@@ -168,7 +169,9 @@ export const Outcome = ({
           ) : (
             <span>{description}</span>
           )}
-          <span className={classNames({ [Styles.Zero]: percent === 0 })}>
+          <span className={classNames({ [Styles.Zero]: percent === 0,
+          [Styles.InvalidPrice]: invalid
+            && percent >= INVALID_ALERT_PERCENTAGE.toNumber()})}>
             {percent === 0
               ? `0.00${isScalar ? '' : '%'}`
               : `${formatDai(percent).formatted}%`}
@@ -831,8 +834,8 @@ export const OutcomeGroup = ({
   marketId,
   isWarpSync,
   forkingMarket,
-  theme = getTheme(),
 }: OutcomeGroupProps) => {
+  const { theme } = useAppStatusStore();
   if (theme === THEMES.SPORTS) {
     return <MultiMarketTable orderBook={orderBook} outcomes={outcomes} min={min} max={max} description={description} />;
   }
@@ -1103,7 +1106,7 @@ export const TentativeWinner = ({
         disabled={!canDispute}
         text={
           isForkingMarket
-            ? "Migrate Rep to this Outcome's Universe"
+            ? "Migrate Rep to an Outcome's Universe"
             : 'SUPPORT OR DISPUTE OUTCOME'
         }
         action={() => dispute()}
@@ -1139,6 +1142,7 @@ export const TopRow = ({
     const clipboardMarketId = new Clipboard('#copy_marketId');
     const clipboardAuthor = new Clipboard('#copy_author');
   }, [market.id, market.author]);
+  const { theme } = useAppStatusStore();
   const {
     settlementFeePercent,
     marketType,
@@ -1176,7 +1180,7 @@ export const TopRow = ({
       <RedFlag market={market} />
       {isTemplate && <TemplateShield market={market} />}
       <CategoryTagTrail categories={categoriesWithClick} />
-      {getTheme() !== THEMES.TRADING ? (
+      {theme !== THEMES.TRADING ? (
         <>
           <span className={Styles.MatchedLine}>
             Matched<b>{` ${volumeFormatted.full}`}</b>

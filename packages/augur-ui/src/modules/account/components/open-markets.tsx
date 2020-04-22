@@ -1,14 +1,13 @@
-import React, { Component } from "react";
-
+import React from "react";
 import FilterSwitchBox from "modules/portfolio/components/common/filter-switch-box";
 import MarketRow from "modules/portfolio/containers/market-row";
 import { MovementLabel } from "modules/common/labels";
 import { SizeTypes, FormattedNumber, MarketData } from "modules/types";
 import { THEMES } from "modules/common/constants";
-
-import { getTheme } from 'modules/app/actions/update-app-status';
-import Styles from "modules/account/components/open-markets.styles.less";
 import { formatNumber } from "utils/format-number";
+import { useAppStatusStore } from 'modules/app/store/app-status';
+
+import Styles from "modules/account/components/open-markets.styles.less";
 
 function filterComp(input: any, market: any) {
   return market && market.description ? market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0 : true;
@@ -21,15 +20,19 @@ interface OpenMarketsProps {
   toggle: Function;
 }
 
-export default class OpenMarkets extends Component<OpenMarketsProps> {
-  constructor(props: OpenMarketsProps) {
-    super(props);
-
-    this.renderRows = this.renderRows.bind(this);
+const OpenMarkets = ({
+  markets,
+  marketsObj,
+  totalPercentage,
+  toggle,
+}: OpenMarketProps) => {
+  const { theme } = useAppStatusStore();
+  let customClass = Styles.OpenMarkets;
+  if (theme !== THEMES.TRADING && markets.length === 0) {
+    customClass = Styles.OpenMarketsEmptyDisplay;
   }
 
-  renderRows(market: Partial<MarketData>) {
-    const { marketsObj } = this.props;
+  function renderRows(market: Partial<MarketData>) {
     const positionValueChange =
       marketsObj[market.id] &&
       marketsObj[market.id].myPositionsSummary &&
@@ -72,40 +75,33 @@ export default class OpenMarkets extends Component<OpenMarketsProps> {
     );
   }
 
-  render() {
-    const { markets, totalPercentage, toggle} = this.props;
+  return (
+    <FilterSwitchBox
+      filterLabel="markets"
+      title="My Active Markets"
+      showFilterSearch
+      data={markets}
+      customClass={customClass}
+      filterComp={filterComp}
+      noBackgroundBottom
+      toggle={toggle}
+      bottomBarContent={
+        <div className={Styles.BottomBar}>
+          <span>24hr</span>
+          <MovementLabel
+            showIcon
+            showBrackets
+            showPlusMinus
+            value={totalPercentage}
+            useFull
+            size={SizeTypes.SMALL}
+          />
+        </div>
+      }
+      noSwitch
+      renderRows={renderRows}
+    />
+  );
+};
 
-    let customClass = Styles.OpenMarkets;
-    if (getTheme() !== THEMES.TRADING && markets.length === 0) {
-      customClass = Styles.OpenMarketsEmptyDisplay;
-    }
-
-    return (
-      <FilterSwitchBox
-        filterLabel="markets"
-        title="My Active Markets"
-        showFilterSearch
-        data={markets}
-        customClass={customClass}
-        filterComp={filterComp}
-        noBackgroundBottom
-        toggle={toggle}
-        bottomBarContent={
-          <div className={Styles.BottomBar}>
-            <span>24hr</span>
-            <MovementLabel
-              showIcon
-              showBrackets
-              showPlusMinus
-              value={totalPercentage}
-              useFull
-              size={SizeTypes.SMALL}
-            />
-          </div>
-        }
-        noSwitch
-        renderRows={this.renderRows}
-      />
-    );
-  }
-}
+export default OpenMarkets;

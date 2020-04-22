@@ -3,7 +3,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { Transactions } from 'modules/account/components/transactions';
 import {
   NETWORK_IDS,
-  MODAL_WITHDRAW,
+  MODAL_TRANSFER,
   MODAL_CASHOUT,
   MODAL_REP_FAUCET,
   MODAL_DAI_FAUCET,
@@ -16,7 +16,6 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls'
-import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => {
@@ -44,7 +43,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   repFaucet: () => dispatch(updateModal({ type: MODAL_REP_FAUCET })),
   daiFaucet: () => dispatch(updateModal({ type: MODAL_DAI_FAUCET })),
   addFunds: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
-  withdraw: () => dispatch(updateModal({ type: MODAL_WITHDRAW })),
+  transfer: () => dispatch(updateModal({ type: MODAL_TRANSFER })),
   transactions: () => dispatch(updateModal({ type: MODAL_TRANSACTIONS })),
   approval: () => dispatch(updateModal({ type: MODAL_ACCOUNT_APPROVAL })),
   legacyRepFaucet: () => getLegacyRep(),

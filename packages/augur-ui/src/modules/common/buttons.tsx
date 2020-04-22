@@ -25,7 +25,7 @@ import {
   BackIcon,
   AlternateDaiLogoIcon,
 } from 'modules/common/icons';
-import { getTheme } from 'modules/app/actions/update-app-status';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
@@ -35,6 +35,7 @@ import { Getters, TXEventName } from '@augurproject/sdk/src';
 import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
+
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 export interface DefaultButtonProps {
@@ -114,6 +115,7 @@ export interface ExternalLinkButtonProps {
   light?: boolean;
   customLink?: any;
   callback?: Function;
+  condensedStyle?: boolean;
 }
 
 export interface ExternalLinkTextProps {
@@ -369,20 +371,23 @@ export const FavoritesButton = ({
   disabled,
   title,
   hideText,
-}: FavoritesButtonProps) => (
-  <button
-    onClick={e => action(e)}
-    className={classNames(Styles.FavoriteButton, {
-      [Styles.FavoriteButton_Favorite]: isFavorite,
-      [Styles.FavoriteButton_small]: isSmall,
-    })}
-    disabled={disabled}
-    title={title || 'Toggle Favorite'}
-  >
-    {getTheme() !== THEMES.TRADING ? StarIconSportsBetting : StarIcon}
-    {!hideText && `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
-  </button>
-);
+}: FavoritesButtonProps) => {
+  const { theme } = useAppStatusStore();
+  return (
+    <button
+      onClick={e => action(e)}
+      className={classNames(Styles.FavoriteButton, {
+        [Styles.FavoriteButton_Favorite]: isFavorite,
+        [Styles.FavoriteButton_small]: isSmall,
+      })}
+      disabled={disabled}
+      title={title || 'Toggle Favorite'}
+    >
+      {theme !== THEMES.TRADING ? StarIconSportsBetting : StarIcon}
+      {!hideText && `${isFavorite ? ' Remove from' : ' Add to'} watchlist`}
+    </button>
+  );
+};
 
 export const CompactButton = (props: DefaultButtonProps) => (
   <button
@@ -489,6 +494,17 @@ export const DepositButton = (props: DefaultActionButtonProps) => (
   </button>
 );
 
+export const TransferButton = (props: DefaultActionButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.CurrenyActionButton}
+    disabled={props.disabled}
+    title={props.title || 'Withdraw'}
+  >
+    Transfer
+  </button>
+);
+
 export const WithdrawButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
@@ -496,18 +512,7 @@ export const WithdrawButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title || 'Withdraw'}
   >
-    Withdraw funds
-  </button>
-);
-
-export const CashOutButton = (props: DefaultActionButtonProps) => (
-  <button
-    onClick={e => props.action(e)}
-    className={Styles.CurrenyActionButton}
-    disabled={props.disabled}
-    title={props.title || 'Withdraw'}
-  >
-    Cash Out
+    Withdraw
   </button>
 );
 
@@ -630,30 +635,31 @@ export const ExternalLinkText = (props: ExternalLinkTextProps) => (
   </button>
 );
 
-export const ExternalLinkButton = (props: ExternalLinkButtonProps) => (
+export const ExternalLinkButton = ({light, condensedStyle, action, callback, customLink, label, URL, showNonLink}: ExternalLinkButtonProps) => (
   <button
     className={classNames(Styles.ExternalLinkButton, {
-      [Styles.LightAlternate]: props.light,
+      [Styles.LightAlternate]: light,
+      [Styles.CondensedStyle]: condensedStyle
     })}
     onClick={e => {
-      props.action && props.action(e);
-      props.callback && props.callback();
+      action && action(e);
+      callback && callback();
     }}
   >
-    {props.customLink ? (
-      <Link to={props.customLink}>{props.label}</Link>
+    {customLink ? (
+      <Link to={customLink}>{label}</Link>
     ) : (
       <>
-        {props.URL && (
-          <a href={props.URL} target="_blank" rel="noopener noreferrer">
-            {props.label}
+        {URL && (
+          <a href={URL} target="_blank" rel="noopener noreferrer">
+            {label}
           </a>
         )}
-        {!props.URL && <span>{props.label}</span>}
+        {!URL && <span>{label}</span>}
       </>
     )}
 
-    {!props.showNonLink && ViewIcon}
+    {!showNonLink && ViewIcon}
   </button>
 );
 

@@ -11,6 +11,7 @@ interface FilterSearchProps {
   location: Location;
   history: History;
   isSearchingMarkets?: boolean;
+  placeholder?: string;
 }
 
 interface FilterSearchState {
@@ -35,12 +36,12 @@ export default class FilterSearch extends Component<
   constructor(props) {
     super(props);
 
-    const { location } = this.props;
+    const { location, placeholder } = props;
     const search = parseQuery(location.search)[FILTER_SEARCH_PARAM];
 
     this.state = {
       search: search || '',
-      placeholder: SERACH_PLACEHOLDER,
+      placeholder: placeholder || SERACH_PLACEHOLDER,
     };
 
     this.updateQuery = this.updateQuery.bind(this);
@@ -68,8 +69,8 @@ export default class FilterSearch extends Component<
     this.setState({ placeholder: '' });
   }
 
-  onBlur() {
-    this.setState({ placeholder: SERACH_PLACEHOLDER });
+  onBlur = () => {
+    this.setState({ placeholder: this.props.placeholder || SERACH_PLACEHOLDER });
   }
 
   onChange(search) {

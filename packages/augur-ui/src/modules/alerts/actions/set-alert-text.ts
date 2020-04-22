@@ -48,6 +48,7 @@ import {
   ZERO,
   ONE,
   MIGRATE_FROM_LEG_REP_TOKEN,
+  DOINITIALREPORTWARPSYNC,
 } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { Action } from 'redux';
@@ -150,24 +151,16 @@ export default function setAlertText(alert: any, callback: Function) {
 
       // ClaimTradingProceeds
       case CLAIMTRADINGPROCEEDS:
-        alert.title = 'Claim Winnings';
+        alert.title = 'Claim Proceeds';
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
             alert.description = marketInfo.description;
             const amount = createBigNumber(alert.params.numPayoutTokens);
-            const outcomeDescription =
-              alert.params.outcome === null
-                ? 'Market Is Invalid'
-                : getOutcomeNameWithOutcome(
-                    marketInfo,
-                    new BigNumber(alert.params.outcome).toString(),
-                    false
-                  );
             alert.details = `$${
               formatAttoDai(amount, { zeroStyled: false }).formatted
-            } won on ${outcomeDescription}`;
+            } claimed`;
           })
         );
         break;
@@ -414,6 +407,7 @@ export default function setAlertText(alert: any, callback: Function) {
         );
         break;
       case DOINITIALREPORT:
+      case DOINITIALREPORTWARPSYNC:
         alert.title = 'Market Reported';
         if (!marketId) {
           alert.description = 'Initial Report';
@@ -423,24 +417,26 @@ export default function setAlertText(alert: any, callback: Function) {
           loadMarketsInfoIfNotLoaded([marketId], () => {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
-            const payoutNumeratorResultObject = calculatePayoutNumeratorsValue(
-              marketInfo.maxPrice,
-              marketInfo.minPrice,
-              marketInfo.numTicks,
-              marketInfo.marketType,
-              alert.params.payoutNumerators ||
-                convertPayoutNumeratorsToStrings(alert.params._payoutNumerators)
-            );
-            const outcomeDescription = payoutNumeratorResultObject.malformed
-              ? MALFORMED_OUTCOME
-              : getOutcomeNameWithOutcome(
-                  marketInfo,
-                  payoutNumeratorResultObject.outcome,
-                  payoutNumeratorResultObject.invalid,
-                  true
-                );
+            if (alert.name.toUpperCase() === DOINITIALREPORT) {
+              const payoutNumeratorResultObject = calculatePayoutNumeratorsValue(
+                marketInfo.maxPrice,
+                marketInfo.minPrice,
+                marketInfo.numTicks,
+                marketInfo.marketType,
+                alert.params.payoutNumerators ||
+                  convertPayoutNumeratorsToStrings(alert.params._payoutNumerators)
+              );
+              const outcomeDescription = payoutNumeratorResultObject.malformed
+                ? MALFORMED_OUTCOME
+                : getOutcomeNameWithOutcome(
+                    marketInfo,
+                    payoutNumeratorResultObject.outcome,
+                    payoutNumeratorResultObject.invalid,
+                    true
+                  );
+              alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
+            }
             alert.description = marketInfo.description;
-            alert.details = `Tentative winning outcome: "${outcomeDescription}"`;
           })
         );
         break;

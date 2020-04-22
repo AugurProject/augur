@@ -16,6 +16,7 @@ import {
   Breakdown,
 } from '../common';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { InitializeWalletModalNotice } from 'modules/common/labels';
 
 interface ModalParticipateProps {
   rep: string;
@@ -131,7 +132,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
       showDenomination: true,
     },
     {
-      label: 'gas',
+      label: 'transaction fee',
       value: GsnEnabled
         ? displayGasInDai(gasLimit.multipliedBy(gasPrice))
         : gasEstimateInEth,
@@ -153,6 +154,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
           innerLabel={REP}
         />
         <Breakdown rows={items} />
+        <InitializeWalletModalNotice />
       </div>
       <ModalActions
         buttons={[
