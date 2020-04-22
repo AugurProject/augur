@@ -25,13 +25,6 @@ export function updateMobileMenuState(data: number) {
   };
 }
 
-export function updateIsAlertVisible(data: boolean) {
-  return {
-    type: UPDATE_IS_ALERT_VISIBLE,
-    data
-  };
-}
-
 export function updateSidebarStatus(data: any) {
   return {
     type: UPDATE_SIDEBAR_STATUS,

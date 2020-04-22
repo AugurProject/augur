@@ -23,7 +23,6 @@ import {
   updateCurrentBasePath,
   updateCurrentInnerNavType,
   updateMobileMenuState,
-  updateIsAlertVisible,
   updateSidebarStatus
 } from "modules/app/actions/update-sidebar-status";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
@@ -81,7 +80,6 @@ const mapDispatchToProps = dispatch => ({
   updateCurrentBasePath: data => dispatch(updateCurrentBasePath(data)),
   updateCurrentInnerNavType: data => dispatch(updateCurrentInnerNavType(data)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
-  updateIsAlertVisible: data => dispatch(updateIsAlertVisible(data)),
   updateSidebarStatus: data => dispatch(updateSidebarStatus(data)),
   updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
   showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),

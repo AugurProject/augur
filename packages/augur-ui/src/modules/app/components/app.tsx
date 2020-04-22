@@ -83,7 +83,6 @@ interface AppProps {
   logout: Function;
   sidebarStatus: {
     mobileMenuState: number;
-    isAlertsVisible: boolean;
     currentBasePath: string;
   };
   updateCurrentBasePath: Function;
@@ -254,11 +253,6 @@ export default class AppView extends Component<AppProps> {
       sidebarStatus.mobileMenuState !== MOBILE_MENU_STATES.CLOSED
     ) {
       stateUpdate.mobileMenuState = MOBILE_MENU_STATES.CLOSED;
-      updateState = true;
-    }
-    
-    if (sidebarStatus.isAlertsVisible) {
-      stateUpdate.isAlertsVisible = false;
       updateState = true;
     }
 

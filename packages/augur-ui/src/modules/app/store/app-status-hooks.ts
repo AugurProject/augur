@@ -18,50 +18,53 @@ export function AppStatusReducer(state, action) {
   switch (action.type) {
     case (SET_THEME): {
       updatedState[THEME] = action.theme;
-      return updatedState;
+      break;
     }
     case (SET_ODDS): {
       updatedState[ODDS] = action.odds;
-      return updatedState;
+      break;
     }
     case (SET_IS_ODDS_MENU_OPEN): {
       updatedState[IS_ODDS_MENU_OPEN] = action.isOpen;
       updatedState[IS_HELP_MENU_OPEN] = false;
       updatedState[IS_CONNECTION_TRAY_OPEN] = false;
       updatedState[IS_ALERTS_MENU_OPEN] = false;
-      return updatedState;
+      break;
     }
     case (SET_IS_HELP_MENU_OPEN): {
       updatedState[IS_ODDS_MENU_OPEN] = false;
       updatedState[IS_HELP_MENU_OPEN] = action.isOpen;
       updatedState[IS_CONNECTION_TRAY_OPEN] = false;
       updatedState[IS_ALERTS_MENU_OPEN] = false;
-      return updatedState;
+      break;
     }
     case (SET_IS_CONNECTION_TRAY_OPEN): {
       updatedState[IS_ODDS_MENU_OPEN] = false;
       updatedState[IS_HELP_MENU_OPEN] = false;
       updatedState[IS_CONNECTION_TRAY_OPEN] = action.isOpen;
       updatedState[IS_ALERTS_MENU_OPEN] = false;
-      return updatedState;
+      break;
     }
     case (SET_IS_ALERTS_MENU_OPEN): {
       updatedState[IS_ODDS_MENU_OPEN] = false;
       updatedState[IS_HELP_MENU_OPEN] = false;
       updatedState[IS_CONNECTION_TRAY_OPEN] = false;
       updatedState[IS_ALERTS_MENU_OPEN] = action.isOpen;
-      return updatedState;
+      break;
     }
     case (CLOSE_APP_MENUS): {
       updatedState[IS_ODDS_MENU_OPEN] = false;
       updatedState[IS_HELP_MENU_OPEN] = false;
       updatedState[IS_CONNECTION_TRAY_OPEN] = false;
       updatedState[IS_ALERTS_MENU_OPEN] = false;
-      return updatedState;
+      break;
     }
     default:
       throw new Error(`Error: ${action.type} not caught by App Status reducer.`);
   }
+
+  console.log("AppStatusStateUpdated:", updatedState);
+  return updatedState;
 };
 
 export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
