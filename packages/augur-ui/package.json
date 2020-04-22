@@ -94,7 +94,7 @@
     "redux-devtools-extension": "2.13.8",
     "redux-thunk": "2.3.0",
     "redux-whenever": "2.0.8",
-    "remarkable": "1.7.1",
+    "remarkable": "2.0.0",
     "reselect": "3.0.1",
     "sass-loader": "8.0.2",
     "web3": "1.2.1"
