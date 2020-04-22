@@ -117,6 +117,8 @@ export async function createBrowserMesh(
     config.zeroX.mesh.bootstrapList,
   );
 
+  console.log('new Mesh(meshConfig); Starting Mesh');
+  zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarting);
   const mesh = new Mesh(meshConfig);
   mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
   await mesh.startAsync();

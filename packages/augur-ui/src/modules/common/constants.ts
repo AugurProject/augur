@@ -836,6 +836,14 @@ export const VOLUME_ETH_SHARES = [
   },
 ];
 
+export const ZEROX_STATUSES = {
+  STARTING: 'STARTING',
+  READY: 'READY',
+  STARTED: 'STARTED',
+  RESTARTING: 'RESTARTING',
+  RESTARTED: 'RESTARTED'
+}
+
 // Account Summary - Your Overview
 export const YOUR_OVERVIEW_TITLE = 'Your Overview';
 export const PROFIT_LOSS_CHART_TITLE = 'Profit and Loss';

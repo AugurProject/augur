@@ -53,6 +53,7 @@ export enum SubscriptionEventName {
   MarketsUpdated = "updated:Markets",
   DBMarketCreatedEvent = "DerivedDB:updated:Markets",
   ReportingStateChanged = "ReportingStateChanged",
+  ZeroXStatusStarting = "ZeroX:Status:Starting",
   ZeroXStatusReady = "ZeroX:Status:Ready",
   ZeroXStatusStarted = "ZeroX:Status:Started",
   ZeroXStatusRestarting = "ZeroX:Status:Restarting",

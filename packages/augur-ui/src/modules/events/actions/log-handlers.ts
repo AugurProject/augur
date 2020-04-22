@@ -48,6 +48,7 @@ import {
   DISAVOWCROWDSOURCERS,
   MARKETMIGRATED,
   DOINITIALREPORTWARPSYNC,
+  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -74,10 +75,9 @@ import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
-import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
+import { updateAppStatus, WALLET_STATUS, Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
-import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 
 const handleAlert = (
   log: any,
@@ -167,6 +167,41 @@ export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
   dispatch(addUpdateTransaction(txStatus));
   dispatch(updateModal({ type: MODAL_GAS_PRICE, feeTooLow: true }));
 };
+
+export const handleZeroXStarting = () => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.STARTING))
+}
+
+export const handleZeroXReady = () => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.READY))
+}
+
+export const handleZeroXStarted = () => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.STARTED))
+}
+
+export const handleZeroXRestarting = () => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.RESTARTING))
+}
+
+export const handleZeroXRestarted = () => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.RESTARTED))
+}
 
 export const handleSDKReadyEvent = () => (
   dispatch: ThunkDispatch<void, any, Action>,
