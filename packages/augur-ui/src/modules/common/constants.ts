@@ -936,13 +936,16 @@ export const TIMEFRAME_OPTIONS = [
   { label: TIMEFRAMES.MONTH, periodInterval: 2592000, id: 2 },
 ];
 
+export const GAMES = 'Games';
+export const FUTURES = 'Futures';
+
 export const SPORTS_MARKET_TYPES = [
   {
-    label: 'Games',
+    label: GAMES,
     id: 0,
   },
   {
-    label: 'Futures',
+    label: FUTURES,
     id: 1,
   }
 ];

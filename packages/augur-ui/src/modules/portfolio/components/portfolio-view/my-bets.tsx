@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 
 import Styles from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
@@ -13,11 +13,13 @@ import {
   MY_BETS_MARKET_STATUS,
   INVALID_BEST_BID_ALERT_VALUE,
   MY_BETS_BET_DATE,
+  GAMES,
+  FUTURES,
 } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
 import { FilterNotice } from 'modules/common/filter-notice';
 import { EmptyMagnifyingGlass } from 'modules/common/icons';
-import { MOCK_GAMES_DATA } from 'modules/trading/store/constants';
+import { MOCK_GAMES_DATA, MOCK_FUTURES_DATA } from 'modules/trading/store/constants';
 import { Game } from '../common/common';
 
 export const MyBets = () => {
@@ -30,6 +32,14 @@ export const MyBets = () => {
   });
 
   const { selectedMarketCardType, viewBy, marketStatus, betDate, rows } = state;
+
+  useEffect(() => {
+    if (SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES) {
+      setState({...state, rows: MOCK_GAMES_DATA})
+    } else if (SPORTS_MARKET_TYPES[selectedMarketCardType].label === FUTURES) {
+      setState({...state, rows: MOCK_FUTURES_DATA})
+    } 
+  }, [selectedMarketCardType]);
 
   return (
     <div className={classNames(Styles.MyBets)}>

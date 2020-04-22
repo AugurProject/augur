@@ -289,9 +289,9 @@ export const MOCK_GAMES_DATA = [
 
 export const MOCK_FUTURES_DATA = [
   {
-    description: 'River Plate vs. Boca Juniors',
+    description: 'NBA Championship 2019-20',
     reportingState: REPORTING_STATE.PRE_REPORTING,
-    categories: ['Sports', 'Soccer'],
+    categories: ['Sports', 'NBA'],
     isTemplate: true,
     startTime: 1587511165,
     template: {
@@ -299,7 +299,7 @@ export const MOCK_FUTURES_DATA = [
     },
     outcomes: {
       '0x01': {
-        outcome: 'River Plate, +2',
+        outcome: 'Chicago Bulls',
         odds: '-105',
         wager: '10.00',
         toWin: '9.52',
@@ -307,29 +307,6 @@ export const MOCK_FUTURES_DATA = [
         amountWon: '0',
         status: BET_STATUS.UNSENT,
         betDate: 1587511165,
-        betType: BET_TYPE.SPREAD
-      },
-      '0x02': {
-        outcome: 'River Plate',
-        odds: '-105',
-        wager: '10.00',
-        toWin: '9.52',
-        amountFilled: '0',
-        amountWon: '5.6',
-        status: BET_STATUS.FILLED,
-        betDate: 1587511165,
-        betType: BET_TYPE.SPREAD
-      },
-      '0x03': {
-        outcome: 'Event Cancelled',
-        odds: '-105',
-        wager: '10.00',
-        toWin: '9.52',
-        amountFilled: '0',
-        amountWon: '0',
-        status: BET_STATUS.UNSENT,
-        betDate: 1587511165,
-        betType: BET_TYPE.MONEYLINE
       },
     }
   },

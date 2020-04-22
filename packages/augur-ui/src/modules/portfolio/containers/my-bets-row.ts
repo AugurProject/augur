@@ -24,7 +24,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       columnType: COLUMN_TYPES.TEXT,
       text: outcome.outcome,
       keyId: outcome.outcome,
-      showExtraNumber: true,
+      showExtraNumber: !!outcome.betType,
       value: outcome.betType,
     },
     {
