@@ -4,12 +4,12 @@ import classNames from "classnames";
 import ReactHtmlParser from "react-html-parser";
 import Styles from "modules/common/markdown-renderer.styles.less";
 
-const Remarkable = require("remarkable");
+import { Remarkable } from "remarkable";
+import { linkify } from "remarkable/linkify";
 
 const md = new Remarkable({
-  linkify: false,
   breaks: true,
-});
+}).use(linkify);
 md.core.ruler.enable([]);
 md.block.ruler.enable([]);
 md.inline.ruler.enable(["emphasis", "newline"]);

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'appStore';
-import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL, SCALAR, INVALID_BEST_BID_ALERT_VALUE, SCALAR_INVALID_BEST_BID_ALERT_VALUE } from 'modules/common/constants';
+import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL, SCALAR, INVALID_BEST_BID_ALERT_VALUE, SCALAR_INVALID_BEST_BID_ALERT_VALUE, YES_NO } from 'modules/common/constants';
 import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import Row from 'modules/common/row';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
@@ -14,6 +14,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const minPrice = market ? market.minPrice : 0;
   const maxPrice = market ? market.maxPrice : 1;
   const tickSize = market ? market.tickSize : 100;
+  const marketType = market ? market.marketType : YES_NO; // default to yes no. has to be something
 
   const usePercent = ownProps.outcome && ownProps.outcome.id === INVALID_OUTCOME_ID && market.marketType === SCALAR;
   return {
@@ -22,7 +23,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     maxPrice,
     tickSize,
     preview: ownProps.preview,
-    usePercent
+    usePercent,
+    marketType
   };
 };
 
@@ -39,7 +41,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       outcomeOrderBook = formatOrderBook(outcomeOrderBook);
     }
   }
-  const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(outcomeOrderBook, sP.tickSize);
+  const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(outcomeOrderBook, sP.marketType, sP.tickSize);
   const topBidShares = topBid.shares;
   const topAskShares = topAsk.shares;
 

@@ -1,8 +1,9 @@
-import { formatNone, formatShares, formatBestPrice } from 'utils/format-number';
+import { formatNone, formatBestPrice, formatMarketShares } from 'utils/format-number';
 import memoize from 'memoizee';
+import { YES_NO } from 'modules/common/constants';
 
 export const selectMarketOutcomeBestBidAsk = memoize(
-  (orderBook, tickSize = 0) => {
+  (orderBook, marketType = YES_NO, tickSize = 0) => {
     const none = { price: formatNone(), shares: formatNone() };
     let topAsk = none;
     let topBid = none;
@@ -10,7 +11,7 @@ export const selectMarketOutcomeBestBidAsk = memoize(
     const formatData = item => {
       return {
         price: formatBestPrice(item.price, tickSize),
-        shares: formatShares(item.shares, { decimals: 2, decimalsRounded: 2 }),
+        shares: formatMarketShares(marketType, item.shares),
       };
     };
 
