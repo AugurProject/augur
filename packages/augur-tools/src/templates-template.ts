@@ -44,6 +44,7 @@ export const NBA = 'NBA';
 export const WNBA = 'WNBA';
 export const NCAA = 'NCAA';
 export const NFL = 'NFL';
+export const NFL_DRAFT = 'NFL Draft';
 export const PGA = 'PGA';
 export const LPGA = 'LPGA';
 export const EURO_TOUR = 'Euro Tour';
