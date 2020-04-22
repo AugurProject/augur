@@ -528,6 +528,11 @@ export class ContractAPI {
     await disputeWindow.buy(amount, {sender});
   }
 
+  async simpleBuyParticipationTokens(attoRep: BigNumber): Promise<void> {
+    const universe = this.augur.contracts.universe.address;
+    await this.augur.contracts.buyParticipationTokens.buyParticipationTokens(universe, attoRep);
+  }
+
   async redeemParticipationTokens(disputeWindowAddress: string, account: string=this.account.address): Promise<void> {
     const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
     await disputeWindow.redeem(account);
@@ -861,4 +866,5 @@ export class ContractAPI {
     await contracts.reputationToken.approve(contracts.uniswap.address, APPROVAL_AMOUNT)
     await contracts.uniswap.addLiquidity(contracts.reputationToken.address, contracts.cash.address, attoRep, attoCash, new BigNumber(0), new BigNumber(0), owner, new BigNumber(deadline))
   }
+
 }
