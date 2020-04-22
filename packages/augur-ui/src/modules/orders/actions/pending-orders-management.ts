@@ -9,18 +9,14 @@ import {
 import { createBigNumber } from 'utils/create-big-number';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/src';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
+import { AppState } from 'appStore';
 
 export const ADD_PENDING_ORDER = 'ADD_PENDING_ORDER';
 export const REMOVE_PENDING_ORDER = 'REMOVE_PENDING_ORDER';
 export const UPDATE_PENDING_ORDER = 'UPDATE_PENDING_ORDER';
 
-export const addPendingOrder = (pendingOrder: UIOrder, marketId: string) => ({
-  type: ADD_PENDING_ORDER,
-  data: {
-    pendingOrder,
-    marketId,
-  },
-});
+export const addPendingOrder = (pendingOrder: UIOrder, marketId: string) =>
+  addPendingOrderWithBlockNumber(pendingOrder, marketId);
 
 export const removePendingOrder = (id: string, marketId: string) => ({
   type: REMOVE_PENDING_ORDER,
@@ -32,10 +28,38 @@ export const updatePendingOrderStatus = (
   marketId: string,
   status: string,
   hash: string
-) => ({
-  type: UPDATE_PENDING_ORDER,
-  data: { id, marketId, status, hash },
-});
+) => updatePendingOrderStatusWithBlockNumber(id, marketId, status, hash);
+
+
+
+export const addPendingOrderWithBlockNumber = (pendingOrder: UIOrder, marketId: string) =>
+(dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  const { blockchain } = getState();
+  pendingOrder.blockNumber = blockchain.currentBlockNumber;
+
+  dispatch({
+    type: ADD_PENDING_ORDER,
+    data: {
+      pendingOrder,
+      marketId,
+    },
+  })
+};
+
+const updatePendingOrderStatusWithBlockNumber = (
+  id: string,
+  marketId: string,
+  status: string,
+  hash: string,
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  const { blockchain } = getState();
+  const blockNumber = blockchain.currentBlockNumber;
+
+  dispatch({
+    type: UPDATE_PENDING_ORDER,
+    data: { id, marketId, status, hash, blockNumber },
+  })
+}
 
 export const loadPendingOrdersTransactions = (pendingOrders: UIOrder[]) => (
   dispatch: ThunkDispatch<void, any, Action>

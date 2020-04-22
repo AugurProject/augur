@@ -1,4 +1,4 @@
-import { BaseAction, CreateMarketData } from "modules/types";
+import { BaseAction, CreateMarketData, PendingOrders, PendingQueue } from "modules/types";
 import { TransactionMetadata } from "contract-dependencies-ethers/build";
 import { isTransactionConfirmed, transactionConfirmations } from 'modules/contracts/actions/contractCalls';
 import { TXEventName } from '@augurproject/sdk';
@@ -6,6 +6,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { TRANSACTIONS, CANCELORDER, TX_CHECK_BLOCKNUMBER_LIMIT } from "modules/common/constants";
 import { AppState } from "appStore";
+import { updatePendingOrderStatus } from "modules/orders/actions/pending-orders-management";
 
 export const ADD_PENDING_DATA = "ADD_PENDING_DATA";
 export const REMOVE_PENDING_DATA = "REMOVE_PENDING_DATA";
@@ -118,36 +119,87 @@ interface PendingItem {
   blockNumber: number;
   hash: string;
   parameters?: any;
-  data: CreateMarketData;
+  data?: CreateMarketData;
 }
 
 export const findAndSetTransactionsTimeouts = (blockNumber: number) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { pendingQueue } = getState();
-  const pending = TXEventName.Pending;
+  const { pendingQueue, pendingOrders } = getState();
   const thresholdBlockNumber = blockNumber - TX_CHECK_BLOCKNUMBER_LIMIT;
-  Object.keys(pendingQueue).reduce(
-    (p, queueName) =>
-      p.concat(Object.keys(pendingQueue[queueName]).map(
-        pendingId => ({queueName, pendingId, ...pendingQueue[queueName][pendingId]}
-      )).filter(pendingItem =>
-        pendingItem.status === pending
-          && pendingItem.blockNumber < thresholdBlockNumber
-          )),
-    [] as PendingItem[]
-  ).forEach(async queueItem => {
-      const confirmations = queueItem.hash ? await transactionConfirmations(queueItem.hash) : undefined;
-      if (confirmations === undefined) {
-        dispatch(addPendingData(queueItem.pendingId,
-          queueItem.queueName,
-          TXEventName.Failure,
-          queueItem.hash,
-          queueItem?.data));
-      } else if (confirmations > 0) {
-        dispatch(addPendingData(queueItem.pendingId,
-          queueItem.queueName,
-          TXEventName.Success,
-          queueItem.hash,
-          queueItem?.data));
-      }
-  });
+
+  dispatch(processingPendingQueue(thresholdBlockNumber, pendingQueue));
+  dispatch(processingPendingOrders(thresholdBlockNumber, pendingOrders));
 }
+
+const processingPendingQueue = (
+  thresholdBlockNumber: number,
+  pendingQueue: PendingQueue
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
+  Object.keys(pendingQueue)
+    .reduce(
+      (p, queueName) =>
+        p.concat(
+          Object.keys(pendingQueue[queueName])
+            .map(pendingId => ({
+              queueName,
+              pendingId,
+              ...pendingQueue[queueName][pendingId],
+            }))
+            .filter(
+              pendingItem =>
+                (pendingItem.status === TXEventName.AwaitingSigning || pendingItem.status === TXEventName.Pending) &&
+                pendingItem.blockNumber <= thresholdBlockNumber
+            )
+        ),
+      [] as PendingItem[]
+    )
+    .forEach(async queueItem => {
+      const confirmations = queueItem.hash
+        ? await transactionConfirmations(queueItem.hash)
+        : undefined;
+      if (confirmations === undefined) {
+        dispatch(
+          addPendingData(
+            queueItem.pendingId,
+            queueItem.queueName,
+            TXEventName.Failure,
+            queueItem.hash,
+            queueItem.data
+          )
+        );
+      } else if (confirmations > 0) {
+        dispatch(
+          addPendingData(
+            queueItem.pendingId,
+            queueItem.queueName,
+            TXEventName.Success,
+            queueItem.hash,
+            queueItem.data
+          )
+        );
+      }
+    });
+};
+
+const processingPendingOrders = (
+  thresholdBlockNumber: number,
+  pendingOrders: PendingOrders
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
+  Object.keys(pendingOrders).map(marketId => {
+    pendingOrders[marketId]
+      .filter(
+        order =>
+          order.blockNumber <= thresholdBlockNumber &&
+          (order.status === TXEventName.Pending || order.status === TXEventName.AwaitingSigning)
+      )
+      .map(order =>
+        dispatch(
+          updatePendingOrderStatus(
+            order.id,
+            marketId,
+            TXEventName.Failure,
+            order.hash
+          )
+        )
+      );
+  });
+};
