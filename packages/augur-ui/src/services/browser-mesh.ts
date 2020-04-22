@@ -103,8 +103,9 @@ export async function createBrowserMesh(
       return await WebAssembly.instantiate(source, importObject);
     };
   }
-  // NB: Remove this when we move to the version of 0x after 9.2.1
+  zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarting);
 
+  // NB: Remove this when we move to the version of 0x after 9.2.1
   await loadMeshStreamingWithURLAsync("zerox.wasm");
 
   const meshConfig = createBrowserMeshConfig(
@@ -117,7 +118,6 @@ export async function createBrowserMesh(
     config.zeroX.mesh.bootstrapList,
   );
 
-  zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarting);
   const mesh = new Mesh(meshConfig);
   mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
   await mesh.startAsync();
