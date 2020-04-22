@@ -164,7 +164,7 @@ export class ZeroX {
       throw Error(`Failure when subscribing to OrdersAsync in ZeroX set rpc: ${err}`);
     });
 
-    if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXStatusReady);
+    if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXStatusReady, {});
   }
 
   private _mesh?: BrowserMesh;
@@ -189,7 +189,7 @@ export class ZeroX {
       }
     });
 
-    if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXStatusReady);
+    if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXStatusReady, {});
   }
 
   private _client: Augur;
