@@ -2,11 +2,14 @@ import React, { ReactNode } from 'react';
 
 import { ALL_MARKETS, END_TIME } from 'modules/common/constants';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
+import { SquareDropdown } from 'modules/common/selection';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
 import { NameValuePair, Market, Tab } from 'modules/portfolio/types';
 import MarketRow from 'modules/portfolio/containers/market-row';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { createTabsInfo } from 'modules/portfolio/helpers/create-tabs-info';
+import { THEMES } from "modules/common/constants";
+import { getTheme } from 'modules/app/actions/update-app-status';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
 
 export interface MarketsByReportingState {
@@ -155,6 +158,7 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
   return (
     <QuadBox
       title={title}
+      leftContent={(<div className={Styles.Count}>{filteredData.length}</div>)}
       customClass={customClass}
       switchHeaders={true}
       showFilterSearch={true}
@@ -167,13 +171,32 @@ const FilterBox: React.FC<FilterBoxProps> = props => {
       hide={hide}
       extend={extend}
       bottomBarContent={
-        <SwitchLabelsGroup
-          tabs={tabs}
-          selectedTab={selectedTab}
-          selectTab={(tab) => {
-            setSelectedTab(tab)
-          }}
-        />
+        getTheme() === THEMES.TRADING ?
+          <SwitchLabelsGroup
+            tabs={tabs}
+            selectedTab={selectedTab}
+            selectTab={(tab) => {
+              setSelectedTab(tab)
+            }}
+          />
+          :
+          <div>
+            <span>Status:</span>
+            <SquareDropdown
+              defaultValue={selectedTab}
+              options={tabs}
+              onChange={(tab) => {
+                setSelectedTab(tab)
+              }}
+            />
+            <span>Sort by:</span>
+            <SquareDropdown
+              defaultValue={sortByOptions[0].value}
+              options={sortByOptions}
+              onChange={(sortBy) => setSortBy(sortBy)}
+              sortByStyles={sortByStyles}
+            />
+          </div>
       }
       content={
         <>

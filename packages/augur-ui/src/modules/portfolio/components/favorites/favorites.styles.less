@@ -68,6 +68,52 @@
           display: none;
         }
       }
+
+      > div:nth-of-type(2) > div {
+        display: flex;
+        width: 100%;
+
+        > span {
+          .text-14;
+
+          color: var(--color-secondary-text);
+          margin: auto @size-4 auto 0;
+        }
+
+        > div {
+          border: none;
+          margin: auto 0;
+          min-width: unset;
+
+          > button {
+            padding: 0;
+
+            > span {
+              .text-14;
+              
+              color: var(--color-primary-text);
+              text-transform: none;
+              border-right: none;
+              padding: 0 @size-8 0 0;
+              text-decoration-line: underline;
+              text-decoration-style: dashed;
+              text-decoration-color: var(--color-primary-text);
+            }
+
+            > svg {
+              margin: 0;
+
+              > path {
+                fill: var(--color-primary-text);
+              }
+            }
+          }
+        }
+
+        > span:last-of-type {
+          margin-left: auto;
+        }
+      }
     }
 
     > div:last-of-type {

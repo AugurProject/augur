@@ -90,6 +90,7 @@ const BoxHeader = ({
     >
       <div>
         <div>{h1Title ? <h1>{title}</h1> : title}</div>
+        <div>{leftContent}</div>
         <div>
           {rightContent}
           {mostRightContent}

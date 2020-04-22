@@ -186,10 +186,16 @@
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .BoxHeader {
-    > div:first-of-type > div:last-of-type {
-      div[class*='SearchBar'] {
-        > svg > g {
-          fill: var(--color-primary-text-50);
+    > div:first-of-type {
+      > div:first-of-type {
+        margin-right: @size-8;
+      }
+
+      > div:last-of-type {
+        div[class*='SearchBar'] {
+          > svg > g {
+            fill: var(--color-primary-text-50);
+          }
         }
       }
     }
