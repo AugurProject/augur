@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classNames';
 
 import { Gear, CheckMark } from 'modules/common/icons';
@@ -12,12 +12,11 @@ const { DECIMAL, FRACTIONAL, AMERICAN, PERCENT } = ODDS_TYPE;
 const Odds = [DECIMAL, FRACTIONAL, AMERICAN, PERCENT];
 
 export const OddsMenu = () => {
-  const [open, setOpen] = useState(false);
-  const { oddsType, actions: { setOdds } } = useAppStatusStore();
+  const { oddsType, isOddsMenuOpen, actions: { setOdds, setIsOddsMenuOpen } } = useAppStatusStore();
 
   return (
-    <div className={classNames(Styles.OddsMenu, { [Styles.Open]: open })}>
-      <button onClick={() => setOpen(!open)}>{Gear}</button>
+    <div className={classNames(Styles.OddsMenu, { [Styles.Open]: isOddsMenuOpen })}>
+      <button onClick={() => setIsOddsMenuOpen(!isOddsMenuOpen)}>{Gear}</button>
       <ul>
         <li>
           <h4>Odds Settings</h4>

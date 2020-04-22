@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classNames from "classnames";
 
 import NullStateMessage from "modules/common/null-state-message";
@@ -8,14 +8,14 @@ import { Close } from "modules/common/icons";
 
 import Styles from "modules/alerts/components/alerts-view.styles.less";
 import ToggleHeightStyles from "utils/toggle-height.styles.less";
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface AlertsViewProps {
   alerts: AlertType[];
   updateExistingAlert: (alertId: string, alert: AlertType) => void;
   removeAlert: (alertId:string, alertName:string) => void;
   clearAlerts: () => void;
-  toggleAlerts: () => void;
-  alertsVisible: boolean;
+  isLogged: boolean;
 }
 
 
@@ -24,11 +24,11 @@ const AlertsView: React.FC<AlertsViewProps> = ({
   updateExistingAlert,
   removeAlert,
   clearAlerts,
-  toggleAlerts,
-  alertsVisible
+  isLogged,
 })=>{
-
-  React.useEffect(() =>{
+  const { isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
+  const alertsVisible = isLogged && isAlertsMenuOpen;
+  useEffect(() =>{
     if (alertsVisible) {
       alerts.forEach(alert => {
         updateExistingAlert(alert.uniqueId, { ...alert, seen: true });
@@ -41,21 +41,21 @@ const AlertsView: React.FC<AlertsViewProps> = ({
       className={classNames(Styles.parent, {
         [ToggleHeightStyles.target]: true,
         [ToggleHeightStyles.quick]: true,
-        [ToggleHeightStyles.open]: alertsVisible
+        [ToggleHeightStyles.open]: isAlertsMenuOpen
       })}
     >
       <section
         id="alerts_view"
         className={classNames(Styles.AlertsView, {
           [Styles.dark]: !(alerts && alerts.length),
-          [Styles.isOpen]: alertsVisible,
+          [Styles.isOpen]: isAlertsMenuOpen,
         })}
       >
         <button
           className={Styles.close}
           onClick={e => {
             e.stopPropagation();
-            toggleAlerts();
+            setIsAlertsMenuOpen(!isAlertsMenuOpen);
           }}
         >
           {Close}
@@ -68,7 +68,6 @@ const AlertsView: React.FC<AlertsViewProps> = ({
               <Alert
                 key={`${i}-${alert.uniqueId}-${alert.title}`}
                 removeAlert={() => removeAlert(alert.uniqueId, alert.name)}
-                toggleAlerts={toggleAlerts}
                 timestampInMilliseconds={alert.timestamp}
                 {...alert}
               />
