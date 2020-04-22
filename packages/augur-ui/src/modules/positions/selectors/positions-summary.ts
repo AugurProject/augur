@@ -6,13 +6,11 @@ import {
   LONG,
   SHORT,
   ZERO,
-  BINARY_CATEGORICAL_FORMAT_OPTIONS,
-  SCALAR,
   REPORTING_STATE,
   CLOSED_LONG,
   CLOSED_SHORT,
 } from 'modules/common/constants';
-import { formatDai, formatPercent, formatShares, formatNone } from 'utils/format-number';
+import { formatDai, formatPercent, formatShares, formatNone, formatMarketShares } from 'utils/format-number';
 
 export const positionSummary = memoize(
   (adjustedPosition, outcome, marketType, reportingState, isFullLoss) => {
@@ -20,8 +18,6 @@ export const positionSummary = memoize(
       return null;
     }
 
-    const opts =
-      marketType === SCALAR ? {} : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS };
     const {
       netPosition,
       realized,
@@ -66,7 +62,7 @@ export const positionSummary = memoize(
       marketId,
       outcomeId,
       type,
-      quantity: formatShares(quantity, opts),
+      quantity: formatMarketShares(marketType, quantity),
       purchasePrice: formatDai(avgPrice),
       realizedNet: formatDai(realized),
       unrealizedNet: formatDai(unrealized),

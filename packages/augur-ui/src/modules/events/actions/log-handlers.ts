@@ -77,7 +77,6 @@ import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
-import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 
 const handleAlert = (
   log: any,

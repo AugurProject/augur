@@ -472,9 +472,7 @@ function daysRequiredAfterMonthDate(
   const yearInput = yearId && inputs.find(i => i.id === yearId.id);
 
   if (!monthInput || !yearInput) return false;
-  const monthNum = moment().month(monthInput.value).format("M");
-  const date = moment(`${monthNum}-1-${yearInput.value}`, "MM-DD-YYYY").add(1, 'M');
-  const newEndTime = moment(date).endOf('month').unix();
+  const newEndTime = moment().utc().month(monthInput.value).year(Number(yearInput.value)).add(1, 'M').endOf('month').unix();
   if (newEndTime !== Number(endTime)) {
     return false;
   } else return true;
