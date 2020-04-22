@@ -36,7 +36,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     {
       key: 'quantity',
       columnType: COLUMN_TYPES.VALUE,
-      value: formatMarketShares(sP.market.markettype, order.quantity),
+      value: formatMarketShares(sP.market.marketType, order.quantity),
       keyId: 'order-quantity-' + order.id,
     },
     {
