@@ -141,7 +141,7 @@ function changeMenu(nextBasePath, updateCurrentInnerNavType, updateMobileMenuSta
   }
 }
 
-function checkIsMobile (updateIsMobile, updateIsMobileSmall) {
+function checkIsMobile(updateIsMobile, updateIsMobileSmall) {
   // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
   // CSS breakpoint sets the value when a user is mobile
   const isMobile =
@@ -156,7 +156,6 @@ function checkIsMobile (updateIsMobile, updateIsMobileSmall) {
         .getComputedStyle(document.body)
         .getPropertyValue('--is-mobile-small') || ''
     ).indexOf('true') !== -1;
-
   updateIsMobile(isMobile);
   updateIsMobileSmall(isMobileSmall);
 };
@@ -260,6 +259,7 @@ const AppView = ({
         }
       }
     );
+    // checkIsMobile(updateIsMobile, updateIsMobileSmall);
     // we only want this to run the first mount, so we set the things to look at to a static value.
   }, [false])
 
@@ -271,6 +271,7 @@ const AppView = ({
     if (isWindows()) {
       document.body.classList.add('App--windowsScrollBars');
     }
+    checkIsMobile(updateIsMobile, updateIsMobileSmall);
     return () => {
       window.removeEventListener('resize', handleRezize);
     };
@@ -285,7 +286,10 @@ const AppView = ({
   }, [location])
 
   useEffect(() => {
-    updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+    if (mobileMenuState !== MOBILE_MENU_STATES.CLOSED && !isMobile) {
+      // make sure to close sidenav if we aren't in mobile view.
+      updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+    }
     updateCurrentBasePath(currentPath);
     changeMenu(currentPath, updateCurrentInnerNavType, updateMobileMenuState);
     if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
@@ -437,7 +441,7 @@ const SideBarSection = ({
   return (
     <section
       className={Styles.SideBar}
-      onClick={e => { console.log('SideBar clicked');mainSectionClickHandler(e, false); closeAppMenus(); }}
+      onClick={e => { mainSectionClickHandler(e, false); closeAppMenus(); }}
       role="presentation"
     >
       <div>{renderMobileMenuButton(mobileMenuState, updateMobileMenuState, closeAppMenus)}</div>
@@ -497,7 +501,7 @@ const MainAppContent = ({
       [Styles.SideNavOpen]: navShowing,
       [Styles.HideBetslip]: hideBetslip,
     })}
-    onClick={e => { console.log('main content clicked'); mainSectionClickHandler(e); closeAppMenus(); }}
+    onClick={e => { mainSectionClickHandler(e); closeAppMenus(); }}
     role="presentation"
     id="mainContent"
   >
