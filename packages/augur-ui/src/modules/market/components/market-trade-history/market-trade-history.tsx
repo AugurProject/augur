@@ -3,16 +3,15 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 
-import { formatShares, formatDai } from 'utils/format-number';
+import { formatShares, formatDai, formatScalarShares, formatMarketShares } from 'utils/format-number';
 import {
   SELL,
   SCALAR,
-  BINARY_CATEGORICAL_FORMAT_OPTIONS,
 } from 'modules/common/constants';
 import { HoverValueLabel, DataArchivedLabel } from 'modules/common/labels';
 import OrderHeader from 'modules/market-charts/components/order-header/order-header';
 
-import Styles from 'modules/market/components/market-trade-history/market-trade-history.styles';
+import Styles from 'modules/market/components/market-trade-history/market-trade-history.styles.less';
 
 interface MarketTradeHistoryProps {
   groupedTradeHistoryVolume: object;
@@ -37,10 +36,6 @@ export default class MarketTradeHistory extends Component<
     } = this.props;
     const isScalar = marketType === SCALAR;
 
-    const opts = isScalar
-      ? { removeComma: true }
-      : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS, removeComma: true };
-
     return (
       <section className={Styles.TradeHistory}>
         <OrderHeader
@@ -60,7 +55,7 @@ export default class MarketTradeHistory extends Component<
               <div className={Styles.TradeHistoryTable} key={index}>
                 <span>
                   {`${
-                    formatShares(groupedTradeHistoryVolume[date], opts).full
+                    formatMarketShares(marketType, groupedTradeHistoryVolume[date]).full
                   } - ${date}`}
                 </span>
                 {groupedTradeHistory[date].map((priceTime, indexJ) => {
@@ -72,7 +67,7 @@ export default class MarketTradeHistory extends Component<
                     >
                       <li>
                         <HoverValueLabel
-                          value={formatShares(priceTime.amount, opts)}
+                          value={formatMarketShares(marketType, priceTime.amount)}
                           useFull
                         />
                       </li>
