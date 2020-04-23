@@ -3,6 +3,7 @@ import Styles from 'modules/market-charts/components/order-header/order-header.s
 import { ToggleExtendButton } from 'modules/common/buttons';
 import { ZEROX_STATUSES_TOOLTIP } from 'modules/common/constants';
 import { StatusDotTooltip } from 'modules/common/labels';
+import classNames from 'classnames';
 
 interface OrderHeaderProps {
   title: string;
@@ -20,8 +21,16 @@ const OrderHeader = ({
   status,
 }: OrderHeaderProps) => (
   <section className={Styles.OrderHeader}>
-    <span>
-      <StatusDotTooltip status={status} tooltip={ZEROX_STATUSES_TOOLTIP[status]} title={title} />
+    <span
+      className={classNames({
+        [Styles.WithStatus]: !!status,
+      })}
+    >
+      <StatusDotTooltip
+        status={status}
+        tooltip={ZEROX_STATUSES_TOOLTIP[status]}
+        title={title}
+      />
       <ToggleExtendButton toggle={toggle} />
     </span>
     {!hide && (
@@ -35,8 +44,3 @@ const OrderHeader = ({
 );
 
 export default OrderHeader;
-
-interface StatusTitleProps {
-  status: string;
-  title: string;
-}
