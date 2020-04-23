@@ -841,11 +841,11 @@ export const ZEROX_STATUSES = {
 
 export const ZEROX_STATUSES_TOOLTIP = {
   STARTING: 'Degrated Service',
-  READY: 'Degrated Service',
+  READY: 'Degraded Service',
   SYNCED: 'Service Operational',
-  STARTED: 'Degrated Service',
-  RESTARTING: 'Degrated Service',
-  RESTARTED: 'Degrated Service',
+  STARTED: 'Degraded Service',
+  RESTARTING: 'Degraded Service',
+  RESTARTED: 'Service Operational',
   ERROR: 'Something went wrong, please refresh your page'
 }
 
