@@ -47,6 +47,7 @@ export interface Properties {
   highRisk?: boolean;
   useFull?: boolean;
   showFullPrecision?: boolean;
+  showDenomination?: boolean;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -77,7 +78,8 @@ function selectColumn(columnType: string, properties: Properties) {
     usePercent,
     highRisk,
     useFull,
-    showFullPrecision
+    showFullPrecision,
+    showDenomination
   } = properties;
 
   switch (columnType) {
