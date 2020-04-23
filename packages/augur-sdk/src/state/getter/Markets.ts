@@ -475,9 +475,10 @@ export class Markets {
     params: t.TypeOf<typeof Markets.getMarketsParams>
   ): Promise<MarketList> {
     // Validate params & set defaults
-    if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
+    if ((await db.UniverseCreated.where('childUniverse').equals(params.universe).count()) !== 1) {
       throw new Error('Unknown universe: ' + params.universe);
     }
+
     params.includeWarpSyncMarkets = typeof params.includeWarpSyncMarkets === 'undefined' ? false : params.includeWarpSyncMarkets;
     params.maxLiquiditySpread = typeof params.maxLiquiditySpread === 'undefined' ? MaxLiquiditySpread.OneHundredPercent : params.maxLiquiditySpread;
     params.includeInvalidMarkets = typeof params.includeInvalidMarkets === 'undefined' ? true : params.includeInvalidMarkets;
