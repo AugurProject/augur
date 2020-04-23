@@ -53,6 +53,7 @@ import { useTimer } from 'modules/common/progress';
 import { Market } from 'modules/portfolio/components/common/market-row';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { AppState } from 'appStore';
+import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -1293,6 +1294,27 @@ export const StatusDotTooltip = (props: StatusDotTooltipProps) => (
     {!props.status && props.title}
   </>
 );
+
+const mapStateToPropsStatusMessage = (state: AppState) => ({
+    status: state.appStatus[Ox_STATUS]
+});
+
+export const StatusErrorMessageCmp = ({ status }) => {
+  if (status !== constants.ZEROX_STATUSES.ERROR) return null;
+  return (
+    <div className={classNames(Styles.StatusErrorMessage)}>
+      <span>
+        {ExclamationCircle}
+        {constants.ZEROX_STATUSES_TOOLTIP[constants.ZEROX_STATUSES.ERROR]}
+      </span>
+    </div>
+  );
+};
+
+export const StatusErrorMessage = connect(
+  mapStateToPropsStatusMessage
+)(StatusErrorMessageCmp);
+
 
 interface LinearPropertyLabelUnderlineTooltipProps extends LinearPropertyLabelProps {
   tipText: string,
