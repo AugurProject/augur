@@ -96,7 +96,8 @@ function selectColumn(columnType: string, properties: Properties) {
           {showExtraNumber && highRisk && (
             <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} />
           )}
-          {showExtraNumber && <span>{value}</span>}
+          {showExtraNumber && templateShield && <a>{value}</a>}
+          {showExtraNumber && !templateShield && <span>{value}</span>}
         </>
       );
     case COLUMN_TYPES.POSITION_TYPE:

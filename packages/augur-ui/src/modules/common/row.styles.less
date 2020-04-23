@@ -343,11 +343,16 @@ div.SingleRow3 {
           margin: auto @size-4 auto 0;
         }
 
-        > span:nth-of-type(2) {
+        > span:nth-of-type(2), 
+        > a {
           .text-12;
 
           color: var(--color-secondary-text);
           grid-row: 2;
+        }
+
+        > a:hover {
+          text-decoration: underline;
         }
       }
 
@@ -360,6 +365,15 @@ div.SingleRow3 {
       &:last-child {
         justify-content: center;
       }
+    }
+  }
+
+  &:hover {
+    background: var(--color-page-background);
+
+    &:last-of-type {
+      border-bottom-right-radius: @border-radius-rounded;
+      border-bottom-left-radius: @border-radius-rounded;
     }
   }
 }

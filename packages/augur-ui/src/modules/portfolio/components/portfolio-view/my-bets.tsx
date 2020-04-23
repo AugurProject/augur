@@ -173,6 +173,7 @@ export const MyBets = () => {
             {EmptyMagnifyingGlass}
             <span>No events found</span>
             <span>
+              
               Try a different date range. <b>Clear Filter</b>
             </span>
           </section>
