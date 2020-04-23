@@ -9,7 +9,6 @@ import {
   BUY,
   SELL,
   SCALAR,
-  BINARY_CATEGORICAL_FORMAT_OPTIONS,
   MIN_ORDER_LIFESPAN,
 } from 'modules/common/constants';
 import { CancelTextButton } from 'modules/common/buttons';
@@ -19,7 +18,7 @@ import {
   QuantityOrderBookOrder,
 } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatShares, formatDai } from 'utils/format-number';
+import { formatDai, formatMarketShares } from 'utils/format-number';
 import { NUMBER_OF_SECONDS_IN_A_DAY } from 'utils/format-date';
 
 interface OrderBookSideProps {
@@ -74,10 +73,7 @@ const OrderBookSide = ({
   });
   const isAsks = type === ASKS;
   const isScalar = marketType === SCALAR;
-  const opts =
-    isScalar
-      ? { removeComma: true }
-      : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS, removeComma: true };
+  const opts = { removeComma: true };
   const orderBookOrders = orderBook[type] || [];
   const isScrollable =
     side.current && orderBookOrders.length * 20 >= side.current.clientHeight;
@@ -142,7 +138,7 @@ const OrderBookSide = ({
             hoveredSide === BIDS &&
             i < hoveredOrderIndex);
         const isHovered = i === hoveredOrderIndex && hoveredSide === type;
-
+        const mySize = formatMarketShares(marketType, order.mySize).formattedValue;
         return (
           <div
             key={order.cumulativeShares + i}
@@ -168,7 +164,7 @@ const OrderBookSide = ({
               />
             </div>
             <HoverValueLabel
-              value={formatShares(order.shares, opts)}
+              value={formatMarketShares(marketType, order.shares, opts)}
               useFull={true}
               showEmptyDash={true}
               showDenomination={false}
@@ -179,7 +175,7 @@ const OrderBookSide = ({
             }
             <span>
               {hasSize
-                ? createBigNumber(order.mySize).toFixed(fixedPrecision)
+                ? mySize
                 : '—'}
             </span>
           </div>

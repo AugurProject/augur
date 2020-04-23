@@ -17,6 +17,25 @@ export const LIST_VALUES = {
     'AFC Championship game',
     'NFC Championship game',
   ],
+  NFL_DRAFT_PICK_NUMBER: [
+    '1st',
+    '2nd',
+    '3rd',
+  ],
+  NFL_DRAFT_POSITIONS: [
+    'Quarterback',
+    'Wide Receiver',
+    'Running Back',
+    'Offensive Player',
+    'Defensive Player',
+  ],
+  NFL_DRAFT_TOTAL_POSITIONS: [
+    'Quarterbacks',
+    'Wide Receivers',
+    'Running Backs',
+    'Offensive Players',
+    'Defensive Players',
+  ],
   NFL_SUPER_BOWL: ['LIV (54th)', 'LV (55th)', 'LVI (56th)', 'LVII (57th)'],
   BASEBALL_EVENT: [
     'American League Championship Series',

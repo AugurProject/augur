@@ -1542,6 +1542,23 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'buy-pt',
+    options: [
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'amount of REP to stake, defaults to 10',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const amount = args.amount ? String(args.amount) : "10";
+      const user = await this.createUser(this.getAccount(), this.config);
+      const attoAmount = new BigNumber(amount).times(_1_ETH);
+      return user.simpleBuyParticipationTokens(attoAmount);
+    }
+  })
+
+  flash.addScript({
     name: 'finalize',
     options: [
       {

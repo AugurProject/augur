@@ -11,7 +11,6 @@ export enum ACCOUNT_TYPES {
   UNLOCKED_ETHEREUM_NODE = "unlockedEthereumNode",
   META_MASK = "metaMask",
   TREZOR = "trezor",
-  EDGE = "edge",
 }
 
 export enum SubscriptionEventName {
@@ -53,7 +52,11 @@ export enum SubscriptionEventName {
   MarketsUpdated = "updated:Markets",
   DBMarketCreatedEvent = "DerivedDB:updated:Markets",
   ReportingStateChanged = "ReportingStateChanged",
-  ZeroXReady = "ZeroXReady",
+  ZeroXStatusStarting = "ZeroX:Status:Starting",
+  ZeroXStatusReady = "ZeroX:Status:Ready",
+  ZeroXStatusStarted = "ZeroX:Status:Started",
+  ZeroXStatusRestarting = "ZeroX:Status:Restarting",
+  ZeroXStatusRestarted = "ZeroX:Status:Restarted",
   WarpSyncHashUpdated = "WarpSyncHashUpdated",
 }
 

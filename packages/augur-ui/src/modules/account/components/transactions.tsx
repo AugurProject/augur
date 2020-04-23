@@ -76,7 +76,7 @@ export const Transactions = ({
             />
           </div>
         )}
-        {signingWalletNoEth && (
+        {showFaucets && signingWalletNoEth && (
           <div>
             <ExternalLinkButton
               URL={!localLabel ? "https://faucet.kovan.network/" : null}

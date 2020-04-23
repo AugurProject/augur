@@ -8,6 +8,7 @@ import {
   GSN_ENABLED,
   Ox_ENABLED,
   WALLET_STATUS,
+  Ox_STATUS,
 } from 'modules/app/actions/update-app-status';
 import { RESET_STATE } from 'modules/app/actions/reset-state';
 import { AppStatus, BaseAction } from 'modules/types';
@@ -21,6 +22,7 @@ const DEFAULT_STATE = {
   [GSN_ENABLED]: false,
   [WALLET_STATUS]: null,
   [Ox_ENABLED]: false,
+  [Ox_STATUS]: null,
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);

@@ -14,6 +14,11 @@ import {
   handleSDKReadyEvent,
   handleReportingStateChanged,
   handleWarpSyncHashUpdatedLog,
+  handleZeroXReady,
+  handleZeroXStarted,
+  handleZeroXRestarting,
+  handleZeroXRestarted,
+  handleZeroXStarting,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
@@ -25,6 +30,21 @@ const StartUpEvents = {
   [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
     handleMarketsUpdatedLog
   ),
+  [SubscriptionEventName.ZeroXStatusStarting]: wrapLogHandler(
+    handleZeroXStarting
+  ),
+  [SubscriptionEventName.ZeroXStatusReady]: wrapLogHandler(
+    handleZeroXReady
+  ),
+  [SubscriptionEventName.ZeroXStatusStarted]: wrapLogHandler(
+    handleZeroXStarted
+  ),
+  [SubscriptionEventName.ZeroXStatusRestarting]: wrapLogHandler(
+    handleZeroXRestarting
+  ),
+  [SubscriptionEventName.ZeroXStatusRestarted]: wrapLogHandler(
+    handleZeroXRestarted
+  )
 };
 
 const EVENTS = {

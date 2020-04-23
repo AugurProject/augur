@@ -1,4 +1,4 @@
-import { ExchangeFillEvent, ValidationResults, GetOrdersResponse } from '@0x/mesh-browser-lite';
+import { ExchangeFillEvent, ValidationResults, GetOrdersResponse, Stats } from '@0x/mesh-browser-lite';
 import { OrderEvent, OrderInfo, WSClient } from '@0x/mesh-rpc-client';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { BigNumber } from 'bignumber.js';
@@ -55,6 +55,7 @@ export interface BrowserMesh {
     pinned?: boolean
   ): Promise<ValidationResults>;
   getOrdersAsync(): Promise<GetOrdersResponse>;
+  getStatsAsync(): Promise<Stats>;
 }
 
 export interface ZeroXPlaceTradeDisplayParams
@@ -70,6 +71,11 @@ export interface ZeroXOrder {
   amount: BigNumber;
   displayPrice: BigNumber;
   owner: string;
+}
+
+export interface ZeroXStats {
+  peers: number;
+  orders: number;
 }
 
 export interface ZeroXSingleOutcomeOrderBook {
@@ -158,7 +164,7 @@ export class ZeroX {
       throw Error(`Failure when subscribing to OrdersAsync in ZeroX set rpc: ${err}`);
     });
 
-    if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXReady);
+    if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXStatusReady, {});
   }
 
   private _mesh?: BrowserMesh;
@@ -183,7 +189,7 @@ export class ZeroX {
       }
     });
 
-    if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXReady);
+    if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXStatusReady, {});
   }
 
   private _client: Augur;
@@ -220,6 +226,20 @@ export class ZeroX {
 
   isReady(): boolean {
     return Boolean(this.rpc || this.mesh);
+  }
+
+  async getStats(): Promise<ZeroXStats> {
+    let stats;
+    if (this.rpc) {
+      stats = await this.rpc.getStatsAsync();
+    } else if (this.mesh) {
+      stats = await this.mesh.getStatsAsync();
+    }
+
+    return {
+      peers: stats?.numPeers || 0,
+      orders: stats?.numOrders || 0
+    };
   }
 
   async placeTrade(params: ZeroXPlaceTradeDisplayParams): Promise<boolean> {
