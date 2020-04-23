@@ -1268,10 +1268,10 @@ export const StatusDotTooltip = (props: StatusDotTooltipProps) => (
           data-for={`tooltip-${props.status}`}
           data-iscapture={true}
           className={classNames({
-            [Styles.Ready]: props.status === constants.ZEROX_STATUSES.READY,
+            [Styles.Ready]: props.status === constants.ZEROX_STATUSES.SYNCED,
             [Styles.Lag]:
-              props.status === constants.ZEROX_STATUSES.RESTARTING ||
-              props.status === constants.ZEROX_STATUSES.STARTING,
+              props.status !== constants.ZEROX_STATUSES.SYNCED &&
+              props.status !== constants.ZEROX_STATUSES.ERROR,
             [Styles.Error]: props.status === constants.ZEROX_STATUSES.ERROR,
           })}
         >

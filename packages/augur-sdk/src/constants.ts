@@ -54,6 +54,7 @@ export enum SubscriptionEventName {
   ReportingStateChanged = "ReportingStateChanged",
   ZeroXStatusStarting = "ZeroX:Status:Starting",
   ZeroXStatusReady = "ZeroX:Status:Ready",
+  ZeroXStatusSynced = "ZeroX:Status:Synced",
   ZeroXStatusStarted = "ZeroX:Status:Started",
   ZeroXStatusRestarting = "ZeroX:Status:Restarting",
   ZeroXStatusRestarted = "ZeroX:Status:Restarted",

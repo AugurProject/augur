@@ -835,15 +835,17 @@ export const ZEROX_STATUSES = {
   STARTED: 'STARTED',
   RESTARTING: 'RESTARTING',
   RESTARTED: 'RESTARTED',
-  ERROR: 'ERROR'
+  ERROR: 'ERROR',
+  SYNCED: 'SYNCED',
 }
 
 export const ZEROX_STATUSES_TOOLTIP = {
   STARTING: 'Degrated Service',
-  READY: 'Service Operational',
-  STARTED: 'Service Operational',
+  READY: 'Degrated Service',
+  SYNCED: 'Service Operational',
+  STARTED: 'Degrated Service',
   RESTARTING: 'Degrated Service',
-  RESTARTED: 'Service Operational',
+  RESTARTED: 'Degrated Service',
   ERROR: 'Something went wrong, please refresh your page'
 }
 

@@ -168,46 +168,11 @@ export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
   dispatch(updateModal({ type: MODAL_GAS_PRICE, feeTooLow: true }));
 };
 
-export const handleZeroXStarting = () => (
+export const handleZeroStatusUpdated = (status) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.STARTING))
-}
-
-export const handleZeroXReady = () => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.READY))
-}
-
-export const handleZeroXStarted = () => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.STARTED))
-}
-
-export const handleZeroXRestarting = () => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.RESTARTING))
-}
-
-export const handleZeroXRestarted = () => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.RESTARTED))
-}
-
-export const handleZeroXError = () => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.ERROR))
+  dispatch(updateAppStatus(Ox_STATUS, status))
 }
 
 export const handleSDKReadyEvent = () => (

@@ -12,7 +12,6 @@ import {
 } from 'modules/app/actions/update-app-status';
 import { RESET_STATE } from 'modules/app/actions/reset-state';
 import { AppStatus, BaseAction } from 'modules/types';
-import { ZEROX_STATUSES } from 'modules/common/constants';
 
 const DEFAULT_STATE = {
   [IS_MOBILE]: false,
@@ -23,7 +22,7 @@ const DEFAULT_STATE = {
   [GSN_ENABLED]: false,
   [WALLET_STATUS]: null,
   [Ox_ENABLED]: false,
-  [Ox_STATUS]: ZEROX_STATUSES.ERROR,
+  [Ox_STATUS]: null,
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);
