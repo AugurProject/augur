@@ -90,6 +90,7 @@ interface MarketViewProps {
   orderBook?: Getters.Markets.OutcomeOrderBook | OutcomeTestTradingOrder;
   loadMarketOrderBook: Function;
   clearOrderBook: Function;
+  zeroXstatus: string;
 }
 
 export interface DefaultOrderPropertiesMap {
@@ -469,6 +470,7 @@ export default class MarketView extends Component<
       hotloadMarket,
       canHotload,
       orderBook,
+      zeroXstatus,
     } = this.props;
     const {
       selectedOutcomeId,
@@ -666,7 +668,7 @@ export default class MarketView extends Component<
                         }
                       />
                       <ModuleTabs selected={0} fillForMobile>
-                        <ModulePane status={'READY'} label="Order Book">
+                        <ModulePane status={zeroXstatus} label="Order Book">
                           <div className={Styles.Orders}>
                             <OrderBook
                               updateSelectedOrderProperties={
