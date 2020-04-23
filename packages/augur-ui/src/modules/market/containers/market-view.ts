@@ -23,6 +23,7 @@ import {
   TUTORIAL_ORDER_BOOK,
   TUTORIAL_TRADING_HISTORY,
   SCALAR_MODAL_SEEN,
+  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { getAddress } from 'ethers/utils/address';
@@ -140,6 +141,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     ),
     account: loginAccount.address,
     zeroXstatus,
+    hasZeroXError: zeroXstatus === ZEROX_STATUSES.ERROR,
   };
 };
 

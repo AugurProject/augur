@@ -58,6 +58,7 @@ import { formatOrderBook } from 'modules/create-market/helpers/format-order-book
 import { Getters } from '@augurproject/sdk';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { StatusErrorMessage } from 'modules/common/labels';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -91,6 +92,7 @@ interface MarketViewProps {
   loadMarketOrderBook: Function;
   clearOrderBook: Function;
   zeroXstatus: string;
+  hasZeroXError: boolean;
 }
 
 export interface DefaultOrderPropertiesMap {
@@ -196,7 +198,7 @@ export default class MarketView extends Component<
   }
 
   componentDidMount() {
-    if (!this.props.preview) {
+    if (!this.props.preview && !this.props.hasZeroXError) {
       this.node && this.node.scrollIntoView();
       window.scrollTo(0, 1);
     }
@@ -629,6 +631,7 @@ export default class MarketView extends Component<
           {matches =>
             matches ? (
               <>
+                <StatusErrorMessage />
                 <ModuleTabs
                   selected={0}
                   fillWidth

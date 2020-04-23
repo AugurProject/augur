@@ -92,18 +92,6 @@ export default class ModuleTabs extends Component<
         [Styles.IsNew]: isNew,
       };
 
-      const content = status ? (
-        <StatusDotTooltip
-          status={status}
-          tooltip={ZEROX_STATUSES_TOOLTIP[status]}
-          title={label}
-        />
-      ) : headerType === HEADER_TYPE.H1 ? (
-        <h1 className={classNames(classNameObject)}>{label || ''}</h1>
-      ) : (
-        <span className={classNames(classNameObject)}>{label || ''}</span>
-      );
-
       return (
         <li
           key={index}
@@ -112,9 +100,24 @@ export default class ModuleTabs extends Component<
             [Styles.ActiveTabFill]: selected === index && fillWidth,
           })}
         >
-          <button onClick={e => this.handleClick(e, index, onClickCallback)}>
-            {content}
-          </button>
+          <>
+            {status && (
+              <StatusDotTooltip
+                status={status}
+                tooltip={ZEROX_STATUSES_TOOLTIP[status]}
+                title={''}
+              />
+            )}
+            <button onClick={e => this.handleClick(e, index, onClickCallback)}>
+              {headerType === HEADER_TYPE.H1 ? (
+                <h1 className={classNames(classNameObject)}>{label || ''}</h1>
+              ) : (
+                <span className={classNames(classNameObject)}>
+                  {label || ''}
+                </span>
+              )}
+            </button>
+          </>
         </li>
       );
     }
