@@ -54,19 +54,25 @@ export const MyBets = () => {
 
   useEffect(() => {
     if (MY_BETS_VIEW_BY[viewBy].label === EVENT) {
-      setState({ ...state, rows: MOCK_GAMES_DATA });
+      setState({ ...state, rows: MOCK_GAMES_DATA});
     } else if (MY_BETS_VIEW_BY[viewBy].label === OUTCOMES) {
       setState({ ...state, rows: MOCK_OUTCOMES_DATA });
     }
   }, [viewBy]);
 
   useEffect(() => {
-    if (SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES) {
+    if (
+      MY_BETS_VIEW_BY[viewBy].label === EVENT &&
+      SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES
+    ) {
       setState({ ...state, rows: MOCK_GAMES_DATA });
-    } else if (SPORTS_MARKET_TYPES[selectedMarketCardType].label === FUTURES) {
+    } else if (
+      MY_BETS_VIEW_BY[viewBy].label === EVENT &&
+      SPORTS_MARKET_TYPES[selectedMarketCardType].label === FUTURES
+    ) {
       setState({ ...state, rows: MOCK_FUTURES_DATA });
-    }
-  }, [selectedMarketCardType]);
+    } 
+  }, [selectedMarketCardType, viewBy]);
 
   const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
 
@@ -110,10 +116,7 @@ export const MyBets = () => {
                   viewBy: selected,
                   rows:
                     MY_BETS_VIEW_BY[selected].label === EVENT
-                      ? SPORTS_MARKET_TYPES[selectedMarketCardType].label ===
-                        GAMES
-                        ? MOCK_GAMES_DATA
-                        : MOCK_FUTURES_DATA
+                    ? MOCK_GAMES_DATA
                       : MOCK_OUTCOMES_DATA,
                 })
               }
