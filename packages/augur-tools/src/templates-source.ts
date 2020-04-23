@@ -2739,7 +2739,7 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
                     {
-                      text: `If the event in the market question is not determined for any reason, by event resolution, this market should resolve as "Invalid".`,
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
                     },
                   ],
                 },
@@ -2782,7 +2782,7 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
                     {
-                      text: `If the event in the market question is not determined for any reason, by event resolution, this market should resolve as "Invalid".`,
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
                     },
                   ],
                 },
@@ -2830,10 +2830,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, If a QB was selected in the first round and was later traded for another player in the 2nd round. The QB would count towards the first round total.`,
+                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results.`,
                     },
                     {
-                      text: `If the event in the market question is not determined for any reason, by event resolution, this market should resolve as "Invalid".`,
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
                     },
                     {
                       text: `If player is not selected "Over #.5" should be the winning outcome`
@@ -5485,7 +5485,7 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
                     {
-                      text: `If the event in the market question is not determined for any reason, by event resolution, this market should resolve as "Invalid".`,
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
                     },
                   ],
                 },
@@ -5529,7 +5529,7 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
                     {
-                      text: `If the event in the market question is not determined for any reason, by event resolution, this market should resolve as "Invalid".`,
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
                     },
                   ],
                 },
@@ -5572,7 +5572,7 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
                     {
-                      text: `If the event in the market question is not determined for any reason, by event resolution, this market should resolve as "Invalid".`,
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
                     },
                   ],
                 },
@@ -5624,7 +5624,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, If a QB was selected in the first round and was later traded for another player in the 2nd round. The QB would count towards the first round total.`,
                     },
                     {
-                      text: `If the event in the market question is not determined for any reason, by event resolution, this market should resolve as "Invalid".`,
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
                     },
                   ],
                 },
@@ -5675,7 +5675,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, If a QB was selected in the first round and was later traded for another player in the 2nd round. The QB would count towards the first round total.`,
                     },
                     {
-                      text: `If the event in the market question is not determined for any reason, by event resolution, this market should resolve as "Invalid".`,
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
                     },
                     {
                       text: `If player is not selected "Over #.5" should be the winning outcome`
