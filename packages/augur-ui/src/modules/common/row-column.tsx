@@ -45,6 +45,8 @@ export interface Properties {
   currentTimestamp?: Number;
   usePercent?: boolean;
   highRisk?: boolean;
+  useFull?: boolean;
+  showFullPrecision?: boolean;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -74,6 +76,8 @@ function selectColumn(columnType: string, properties: Properties) {
     currentTimestamp,
     usePercent,
     highRisk,
+    useFull,
+    showFullPrecision
   } = properties;
 
   switch (columnType) {
