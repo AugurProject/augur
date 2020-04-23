@@ -1436,7 +1436,7 @@ const InitializeWalletModalNoticeCmp = ({ gsnUnavailable }) => (
         <DismissableNotice
           show
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          title={`The fee displayed is high than normal because it includes a one time only account initialization.`}
+          title={`The fee displayed is higher than normal because it includes a one time only account initialization.`}
         />
       </div>
     )}
