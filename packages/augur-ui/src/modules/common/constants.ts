@@ -950,6 +950,20 @@ export const SPORTS_MARKET_TYPES = [
   }
 ];
 
+export const ACTIVE = 'Active';
+export const RESOLVED = 'Resolved';
+
+export const MARKET_STATE_TYPES = [
+  {
+    label: ACTIVE,
+    id: 0,
+  },
+  {
+    label: RESOLVED,
+    id: 1,
+  }
+];
+
 // Pending Queue Types
 export const CLAIM_STAKE_FEES = 'CLAIM_STAKE_FEES';
 export const CLAIM_MARKETS_PROCEEDS = 'CLAIM_MARKETS_PROCEEDS';
@@ -982,6 +996,7 @@ export const VALUE = 'VALUE';
 export const CANCEL_TEXT_BUTTON = 'CANCEL_TEXT_BUTTON';
 export const MOVEMENT_LABEL = 'MOVEMENT_LABEL';
 export const INVALID_LABEL = 'INVALID_LABEL';
+export const CASHOUT_BUTTON = 'CASHOUT_BUTTON';
 
 export const COLUMN_TYPES = {
   [TEXT]: TEXT,
@@ -991,6 +1006,7 @@ export const COLUMN_TYPES = {
   [CANCEL_TEXT_BUTTON]: CANCEL_TEXT_BUTTON,
   [MOVEMENT_LABEL]: MOVEMENT_LABEL,
   [PLAIN]: PLAIN,
+  [CASHOUT_BUTTON]: CASHOUT_BUTTON
 };
 
 export const BINARY_CATEGORICAL_FORMAT_OPTIONS = {
@@ -1424,39 +1440,50 @@ export enum HEADER_TYPE {
 
 export const LOGGED_IN_USER_LOCAL_STORAGE_KEY = 'loggedInUser';
 
+export const EVENT = 'Event';
+export const OUTCOMES = 'Outcomes';
+
 export const MY_BETS_VIEW_BY = [
   {
-    label: 'Event',
-    value: 'Event',
+    label: EVENT,
+    value: 0,
   },
   {
-    label: 'Outcomes',
-    value: 'Outcomes',
+    label: OUTCOMES,
+    value: 1,
   },
 ];
 
 export const MY_BETS_MARKET_STATUS = [
   {
     label: 'All',
-    value: 'All',
+    value: 0,
   },
   {
     label: 'Open',
-    value: 'Open',
+    value: 1,
   },
   {
     label: 'In reporting',
-    value: 'In reporting',
+    value: 2,
   },
   {
     label: 'Resolved',
-    value: 'Resolved',
+    value: 3,
   },
 ];
 
 export const MY_BETS_BET_DATE = [
   {
     label: 'Last 30 days',
-    value: 'Last 30 days',
+    value: 0,
+  },
+  {
+    label: 'Last 7 days',
+    value: 0,
+  },
+  {
+    label: 'Last 24 hours',
+    value: 0,
   },
 ];

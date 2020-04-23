@@ -37,6 +37,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
 
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { BET_STATUS } from 'modules/trading/store/constants';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -634,6 +635,40 @@ export const ExternalLinkText = (props: ExternalLinkTextProps) => (
     {ViewIcon}
   </button>
 );
+
+interface CashoutButtonProps {
+  action: Function;
+  outcome: Object;
+}
+
+export const CashoutButton = ({action, outcome}: CashoutButtonProps) => {
+  let amountWon = false;
+  let loss = false;
+  let notAvailable = false;
+  let text = 'CASHOUT: $00.00'
+  const won = parseFloat(outcome.amountWon);
+  if (won !== 0) {
+    amountWon = true;
+    if (won < 0) {
+      loss = true;
+    }
+    text = `${loss ? 'LOSS' : 'WIN'}: $${Math.abs(won)}`;
+  } else if (outcome.status === BET_STATUS.CLOSED) {
+    notAvailable = true;
+    text = 'Cashout not available'
+  }
+  return (
+    <button 
+      disabled={notAvailable} 
+      className={classNames(Styles.CashoutButton, {[Styles.Won]: amountWon && !loss, [Styles.Loss]: loss})} 
+      onClick={e => {
+        action && action(e);
+      }}
+    >
+      {text}
+    </button>
+  );
+}
 
 export const ExternalLinkButton = ({light, condensedStyle, action, callback, customLink, label, URL, showNonLink}: ExternalLinkButtonProps) => (
   <button
