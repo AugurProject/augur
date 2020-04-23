@@ -5305,7 +5305,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft: Who will be the [1] overall pick?`,
-                example: `2020 NFL Draft: Who will be the 1st overall pick?`,
+                example: `2020 NFL Draft: Who will be the 1st overall pick?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -5321,6 +5321,12 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 8,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
@@ -5342,7 +5348,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft: Who will be the first [1] selected?`,
-                example: `2020 NFL Draft: Who will be the first Quarterback selected?`,
+                example: `2020 NFL Draft: Who will be the first Quarterback selected?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -5359,6 +5365,12 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 8,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
@@ -5379,8 +5391,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] NFL Draft: Which team will pick the first draft?`,
-                example: `2020 NFL Draft: Which team will pick the first draft?`,
+                question: `[0] NFL Draft: The First draft pick by the {Team}?`,
+                example: `2020 NFL Draft: The First draft pick by the {Team}?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -5390,11 +5402,17 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 8,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.USER_DROPDOWN_OUTCOME,
                     placeholder: `Select Team`,
                     values: LIST_VALUES.NFL_TEAMS,
