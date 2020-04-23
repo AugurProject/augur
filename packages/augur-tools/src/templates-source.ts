@@ -40,6 +40,7 @@ import {
   WNBA,
   TEXT_PLACEHOLDERS,
   NFL_DRAFT,
+  NBA_DRAFT,
 } from './templates-template';
 import {
   LIST_VALUES,
@@ -2698,6 +2699,150 @@ export const TEMPLATES = {
               },
             ],
           },
+          [NBA_DRAFT]: {
+            templates: [
+              {
+                marketType: CATEGORICAL,
+                question: `[0] NBA Draft: Who will be the [1] overall pick?`,
+                example: `2020 NBA Draft: Who will be the 1st overall pick?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `pick number`,
+                    values: LIST_VALUES.DRAFT_PICK_NUMBER,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
+                    },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the event in the market question is not determined for any reason, by event resolution, this market should resolve as "Invalid".`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] NBA Draft: The First draft pick by the [1]?`,
+                example: `2020 NBA Draft: The First draft pick by the LA Lakers?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team`,
+                    values: LIST_VALUES.NBA_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 48,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
+                    },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the event in the market question is not determined for any reason, by event resolution, this market should resolve as "Invalid".`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] NBA Draft(O/U): What round will [1] be selected? Over/Under, Pick [2].5?`,
+                example: `2020 NBA Draft(O/U): What round will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    noSort: true,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Person's Name`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 48,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [2].5`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [2].5`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, If a QB was selected in the first round and was later traded for another player in the 2nd round. The QB would count towards the first round total.`,
+                    },
+                    {
+                      text: `If the event in the market question is not determined for any reason, by event resolution, this market should resolve as "Invalid".`,
+                    },
+                    {
+                      text: `If player is not selected "Over #.5" should be the winning outcome`
+                    }
+                  ],
+                },
+              },
+            ],
+          },
           [WNBA]: {
             templates: [
               {
@@ -5317,7 +5462,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `pick number`,
-                    values: LIST_VALUES.NFL_DRAFT_PICK_NUMBER,
+                    values: LIST_VALUES.DRAFT_PICK_NUMBER,
                   },
                   {
                     id: 2,
