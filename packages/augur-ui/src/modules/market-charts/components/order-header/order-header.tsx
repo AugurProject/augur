@@ -1,8 +1,7 @@
 import React from 'react';
-import classNames from 'classnames';
 import Styles from 'modules/market-charts/components/order-header/order-header.styles.less';
 import { ToggleExtendButton } from 'modules/common/buttons';
-import { ZEROX_STATUSES, ZEROX_STATUSES_TOOLTIP } from 'modules/common/constants';
+import { ZEROX_STATUSES_TOOLTIP } from 'modules/common/constants';
 import { StatusDotTooltip } from 'modules/common/labels';
 
 interface OrderHeaderProps {
@@ -22,7 +21,7 @@ const OrderHeader = ({
 }: OrderHeaderProps) => (
   <section className={Styles.OrderHeader}>
     <span>
-      <StatusDotTooltip status={status} tooltip={ZEROX_STATUSES_TOOLTIP[status]} title={title}/>
+      <StatusDotTooltip status={status} tooltip={ZEROX_STATUSES_TOOLTIP[status]} title={title} />
       <ToggleExtendButton toggle={toggle} />
     </span>
     {!hide && (

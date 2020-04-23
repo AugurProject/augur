@@ -1014,21 +1014,25 @@ span.PendingLabel {
 }
 
 .StatusDotTooltip {
-  border-radius: 50%;
-  height: @size-8;
-  margin-right: @size-4;
-  align-self: center;
-  width: @size-8;
+  display: flex;
 
-  &.Ready {
-    background: @color-open;
-  }
-  &.Lag {
-    background: @color-reporting;
-    cursor: pointer;
-  }
-  &.Error {
-    background: @color-error;
-    cursor: pointer;
+  > span {
+    border-radius: 50%;
+    height: @size-8;
+    margin-right: @size-4;
+    align-self: center;
+    width: @size-8;
+
+    &.Ready {
+      background: @color-open;
+    }
+    &.Lag {
+      background: @color-reporting;
+      cursor: pointer;
+    }
+    &.Error {
+      background: @color-error;
+      cursor: pointer;
+    }
   }
 }

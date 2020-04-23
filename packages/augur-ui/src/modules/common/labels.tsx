@@ -1261,23 +1261,21 @@ interface StatusDotTooltipProps {
 
 export const StatusDotTooltip = (props: StatusDotTooltipProps) => (
   <>
-  {props.status && <span
-    className={classNames(Styles.StatusDotTooltip, {
-      [Styles.Ready]: props.status === constants.ZEROX_STATUSES.READY,
-      [Styles.Lag]:
-        props.status === constants.ZEROX_STATUSES.RESTARTING ||
-        props.status === constants.ZEROX_STATUSES.STARTING,
-      [Styles.Error]: props.status === constants.ZEROX_STATUSES.ERROR,
-    })}
-  >
-    {props.tooltip && (
-      <>
+    {props.status && (
+      <div className={classNames(Styles.StatusDotTooltip)}>
         <span
-          className={TooltipStyles.TooltipHint}
           data-tip
           data-for={`tooltip-${props.status}`}
           data-iscapture={true}
-        />
+          className={classNames({
+            [Styles.Ready]: props.status === constants.ZEROX_STATUSES.READY,
+            [Styles.Lag]:
+              props.status === constants.ZEROX_STATUSES.RESTARTING ||
+              props.status === constants.ZEROX_STATUSES.STARTING,
+            [Styles.Error]: props.status === constants.ZEROX_STATUSES.ERROR,
+          })}
+        >
+        </span>
         <ReactTooltip
           id={`tooltip-${props.status}`}
           className={TooltipStyles.Tooltip}
@@ -1289,10 +1287,10 @@ export const StatusDotTooltip = (props: StatusDotTooltipProps) => (
         >
           {props.tooltip}
         </ReactTooltip>
-      </>
+        {props.title}
+      </div>
     )}
-  </span>}
-  {props.title}
+    {!props.status && props.title}
   </>
 );
 
