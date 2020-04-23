@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 
 import Styles from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
-import { ExternalLinkButton, PrimaryButton, FilterButton } from 'modules/common/buttons';
+import {
+  ExternalLinkButton,
+  PrimaryButton,
+  FilterButton,
+} from 'modules/common/buttons';
 import { PillSelection, SquareDropdown } from 'modules/common/selection';
 import FilterSearch from 'modules/filter-sort/containers/filter-search';
 import { HelmetTag } from 'modules/seo/helmet-tag';
@@ -57,18 +61,12 @@ export const MyBets = () => {
   }, [viewBy]);
 
   useEffect(() => {
-    if (
-      MY_BETS_VIEW_BY[viewBy].label === EVENT &&
-      SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES
-    ) {
+    if (SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES) {
       setState({ ...state, rows: MOCK_GAMES_DATA });
-    } else if (
-      MY_BETS_VIEW_BY[viewBy].label === EVENT &&
-      SPORTS_MARKET_TYPES[selectedMarketCardType].label === FUTURES
-    ) {
+    } else if (SPORTS_MARKET_TYPES[selectedMarketCardType].label === FUTURES) {
       setState({ ...state, rows: MOCK_FUTURES_DATA });
     }
-  }, [selectedMarketCardType, viewBy]);
+  }, [selectedMarketCardType]);
 
   const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
 
@@ -93,7 +91,9 @@ export const MyBets = () => {
           color="active"
           content={
             <div className={Styles.ClaimWinnings}>
-              <span>You have <b>$200.00</b> in winnings to claim.</span>
+              <span>
+                You have <b>$200.00</b> in winnings to claim.
+              </span>
               <PrimaryButton text={'Claim Bets'} action={null} />
             </div>
           }
@@ -110,7 +110,10 @@ export const MyBets = () => {
                   viewBy: selected,
                   rows:
                     MY_BETS_VIEW_BY[selected].label === EVENT
-                      ? MOCK_GAMES_DATA
+                      ? SPORTS_MARKET_TYPES[selectedMarketCardType].label ===
+                        GAMES
+                        ? MOCK_GAMES_DATA
+                        : MOCK_FUTURES_DATA
                       : MOCK_OUTCOMES_DATA,
                 })
               }
@@ -165,7 +168,7 @@ export const MyBets = () => {
           search=""
           isSearchingMarkets={false}
         />
-        <FilterButton title='Filters' action={null}/>
+        <FilterButton title="Filters" action={null} />
       </div>
       <div>
         {rows.length === 0 && (
@@ -173,7 +176,6 @@ export const MyBets = () => {
             {EmptyMagnifyingGlass}
             <span>No events found</span>
             <span>
-              
               Try a different date range. <b>Clear Filter</b>
             </span>
           </section>
