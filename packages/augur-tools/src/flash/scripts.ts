@@ -1908,7 +1908,7 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'ugly',
         abbr: 'u',
-        description: 'print the addresses json as a blob instead of nicely formatted',
+        description: 'print the contract addresses for this network as a blob instead of nicely formatted',
         flag: true,
       },
     ],
