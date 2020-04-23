@@ -738,13 +738,13 @@ export const CategoryButtons = ({
   </div>
 );
 
-export const FilterButton = (props: DefaultActionButtonProps) => (
+export const FilterButton = ({action, disabled, title}: DefaultActionButtonProps) => (
   <button
-    onClick={e => props.action(e)}
+    onClick={e => action(e)}
     className={Styles.FilterButton}
-    disabled={props.disabled}
+    disabled={disabled}
   >
-    Categories & Filters
+    {title || 'Categories & Filters'}
     {Filter}
   </button>
 );

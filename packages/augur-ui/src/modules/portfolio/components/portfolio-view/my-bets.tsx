@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 
 import Styles from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
-import { ExternalLinkButton, PrimaryButton } from 'modules/common/buttons';
+import { ExternalLinkButton, PrimaryButton, FilterButton } from 'modules/common/buttons';
 import { PillSelection, SquareDropdown } from 'modules/common/selection';
 import FilterSearch from 'modules/filter-sort/containers/filter-search';
 import { HelmetTag } from 'modules/seo/helmet-tag';
@@ -93,7 +93,7 @@ export const MyBets = () => {
           color="active"
           content={
             <div className={Styles.ClaimWinnings}>
-              You have <b>$200.00</b> in winnings to claim.
+              <span>You have <b>$200.00</b> in winnings to claim.</span>
               <PrimaryButton text={'Claim Bets'} action={null} />
             </div>
           }
@@ -165,6 +165,7 @@ export const MyBets = () => {
           search=""
           isSearchingMarkets={false}
         />
+        <FilterButton title='Filters' action={null}/>
       </div>
       <div>
         {rows.length === 0 && (
