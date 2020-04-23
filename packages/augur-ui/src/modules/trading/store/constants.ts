@@ -1,6 +1,12 @@
 import { formatDate } from 'utils/format-date';
+import { REPORTING_STATE } from 'modules/common/constants';
 
 const now = new Date();
+
+export const BET_TYPE = {
+  SPREAD: 'Spread',
+  MONEYLINE: 'Moneyline',
+};
 
 export const BET_STATUS = {
   UNSENT: 'UNSENT',
@@ -208,3 +214,123 @@ export const STUBBED_BETSLIP_ACTIONS = {
   cancelAllUnmatched: () => {},
   updateUnmatched: (marketId, orderId, updates) => {},
 };
+
+export const MOCK_GAMES_DATA = [
+  {
+    description: 'River Plate vs. Boca Juniors',
+    reportingState: REPORTING_STATE.PRE_REPORTING,
+    categories: ['Sports', 'Soccer'],
+    isTemplate: true,
+    startTime: 1587511165,
+    template: {
+      hash: '0101',
+    },
+    outcomes: {
+      '0x01': {
+        outcome: 'River Plate, +2',
+        odds: '-105',
+        wager: '10.00',
+        toWin: '9.52',
+        amountFilled: '0',
+        amountWon: '0',
+        status: BET_STATUS.UNSENT,
+        betDate: 1587511165,
+        betType: BET_TYPE.SPREAD
+      },
+      '0x02': {
+        outcome: 'River Plate',
+        odds: '-105',
+        wager: '10.00',
+        toWin: '9.52',
+        amountFilled: '0',
+        amountWon: '5.6',
+        status: BET_STATUS.FILLED,
+        betDate: 1587511165,
+        betType: BET_TYPE.SPREAD
+      },
+      '0x03': {
+        outcome: 'Event Cancelled',
+        odds: '-105',
+        wager: '10.00',
+        toWin: '9.52',
+        amountFilled: '0',
+        amountWon: '0',
+        status: BET_STATUS.UNSENT,
+        betDate: 1587511165,
+        betType: BET_TYPE.MONEYLINE
+      },
+    }
+  },
+  {
+    description: 'Dallas Maverick vs. Houston Rockets',
+    reportingState: REPORTING_STATE.OPEN_REPORTING,
+    categories: ['Sports', 'NBA'],
+    isTemplate: true,
+    startTime: 1587511165,
+    template: {
+      hash: '0101',
+    },
+    outcomes: {
+      '0x01': {
+        outcome: 'Dallas Maverick',
+        odds: '-105',
+        wager: '10.00',
+        toWin: '9.52',
+        amountFilled: '0',
+        amountWon: '0',
+        status: BET_STATUS.UNSENT,
+        betDate: 1587511165,
+        highRisk: true,
+        betType: BET_TYPE.MONEYLINE
+      },
+    }
+  }
+];
+
+export const MOCK_FUTURES_DATA = [
+  {
+    description: 'NBA Championship 2019-20',
+    reportingState: REPORTING_STATE.PRE_REPORTING,
+    categories: ['Sports', 'NBA'],
+    isTemplate: true,
+    startTime: 1587511165,
+    template: {
+      hash: '0101',
+    },
+    outcomes: {
+      '0x01': {
+        outcome: 'Chicago Bulls',
+        odds: '-105',
+        wager: '10.00',
+        toWin: '9.52',
+        amountFilled: '0',
+        amountWon: '0',
+        status: BET_STATUS.UNSENT,
+        betDate: 1587511165,
+      },
+    }
+  },
+  {
+    description: 'Central Division 2019 - 20',
+    reportingState: REPORTING_STATE.PRE_REPORTING,
+    categories: ['Sports', 'NBA'],
+    isTemplate: true,
+    startTime: 1587511165,
+    template: {
+      hash: '0101',
+    },
+    outcomes: {
+      '0x01': {
+        outcome: 'Indiana Pacers',
+        odds: '-105',
+        wager: '10.00',
+        toWin: '9.52',
+        amountFilled: '0',
+        amountWon: '0',
+        status: BET_STATUS.UNSENT,
+        betDate: 1587511165,
+        highRisk: true,
+      },
+    }
+  }
+]

@@ -936,13 +936,16 @@ export const TIMEFRAME_OPTIONS = [
   { label: TIMEFRAMES.MONTH, periodInterval: 2592000, id: 2 },
 ];
 
+export const GAMES = 'Games';
+export const FUTURES = 'Futures';
+
 export const SPORTS_MARKET_TYPES = [
   {
-    label: 'Games',
+    label: GAMES,
     id: 0,
   },
   {
-    label: 'Futures',
+    label: FUTURES,
     id: 1,
   }
 ];
@@ -1440,5 +1443,20 @@ export const MY_BETS_MARKET_STATUS = [
   {
     label: 'Open',
     value: 'Open',
+  },
+  {
+    label: 'In reporting',
+    value: 'In reporting',
+  },
+  {
+    label: 'Resolved',
+    value: 'Resolved',
+  },
+];
+
+export const MY_BETS_BET_DATE = [
+  {
+    label: 'Last 30 days',
+    value: 'Last 30 days',
   },
 ];
