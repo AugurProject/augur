@@ -56,6 +56,7 @@ interface OrderBookProps {
 }
 
 const OrderBookSide = ({
+  fixedPrecision = 4,
   pricePrecision = 4,
   orderBook,
   updateSelectedOrderProperties,
