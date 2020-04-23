@@ -5391,8 +5391,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] NFL Draft: The First draft pick by the {Team}?`,
-                example: `2020 NFL Draft: The First draft pick by the {Team}?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                question: `[0] NFL Draft: The First draft pick by the [1]?`,
+                example: `2020 NFL Draft: The First draft pick by the NY Giants?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -5402,20 +5402,20 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team`,
+                    values: LIST_VALUES.NFL_TEAMS,
+                  },
+                  {
+                    id: 2,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 8,
                     placeholder: `Date time`,
                   },
                   {
-                    id: 2,
+                    id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.USER_DROPDOWN_OUTCOME,
-                    placeholder: `Select Team`,
-                    values: LIST_VALUES.NFL_TEAMS,
                   },
                 ],
                 resolutionRules: {
