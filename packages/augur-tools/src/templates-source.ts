@@ -5322,7 +5322,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 8,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -5366,7 +5366,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 8,
+                    hoursAfterEst: 48,
                     placeholder: `Date time`,
                   },
                   {
@@ -5409,7 +5409,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 8,
+                    hoursAfterEst: 48,
                     placeholder: `Date time`,
                   },
                   {
@@ -5459,7 +5459,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 8,
+                    hoursAfterEst: 6,
                     placeholder: `Date time`,
                   },
                   {
@@ -5510,7 +5510,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 8,
+                    hoursAfterEst: 48,
                     placeholder: `Date time`,
                   },
                   {
@@ -5532,6 +5532,9 @@ export const TEMPLATES = {
                     {
                       text: `If the event in the market question is not determined for any reason, by event resolution, this market should resolve as "Invalid".`,
                     },
+                    {
+                      text: `If player is not selected "Over #.5" should be the winning outcome`
+                    }
                   ],
                 },
               },
