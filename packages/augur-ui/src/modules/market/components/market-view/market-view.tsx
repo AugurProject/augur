@@ -666,7 +666,7 @@ export default class MarketView extends Component<
                         }
                       />
                       <ModuleTabs selected={0} fillForMobile>
-                        <ModulePane label="Order Book">
+                        <ModulePane status={'READY'} label="Order Book">
                           <div className={Styles.Orders}>
                             <OrderBook
                               updateSelectedOrderProperties={

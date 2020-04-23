@@ -4,7 +4,8 @@ import classNames from 'classnames';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 import Styles from 'modules/market/components/common/module-tabs/module-tabs.style.less';
 import { ToggleExtendButton } from 'modules/common/buttons';
-import { HEADER_TYPE } from 'modules/common/constants';
+import { HEADER_TYPE, ZEROX_STATUSES_TOOLTIP } from 'modules/common/constants';
+import { StatusDotTooltip } from 'modules/common/labels';
 
 interface ModuleTabsProps {
   className?: string;
@@ -18,6 +19,7 @@ interface ModuleTabsProps {
   scrollOver?: boolean;
   showToggle?: boolean;
   toggle?: Function;
+  status?: string;
 }
 
 interface ModuleTabsState {
@@ -81,7 +83,7 @@ export default class ModuleTabs extends Component<
     } = this.props;
 
     function labels(child, index) {
-      const { onClickCallback, headerType, label, isNew } =
+      const { onClickCallback, headerType, label, isNew, status } =
         child && child.props;
 
       const classNameObject = {
@@ -89,6 +91,18 @@ export default class ModuleTabs extends Component<
         [Styles.ActiveNoBorder]: selected === index && noBorder,
         [Styles.IsNew]: isNew,
       };
+
+      const content = status ? (
+        <StatusDotTooltip
+          status={status}
+          tooltip={ZEROX_STATUSES_TOOLTIP[status]}
+          title={label}
+        />
+      ) : headerType === HEADER_TYPE.H1 ? (
+        <h1 className={classNames(classNameObject)}>{label || ''}</h1>
+      ) : (
+        <span className={classNames(classNameObject)}>{label || ''}</span>
+      );
 
       return (
         <li
@@ -99,11 +113,7 @@ export default class ModuleTabs extends Component<
           })}
         >
           <button onClick={e => this.handleClick(e, index, onClickCallback)}>
-            {headerType === HEADER_TYPE.H1 ? (
-              <h1 className={classNames(classNameObject)}>{label || ''}</h1>
-            ) : (
-              <span className={classNames(classNameObject)}>{label || ''}</span>
-            )}
+            {content}
           </button>
         </li>
       );
