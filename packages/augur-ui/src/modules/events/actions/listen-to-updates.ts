@@ -19,6 +19,7 @@ import {
   handleZeroXRestarting,
   handleZeroXRestarted,
   handleZeroXStarting,
+  handleZeroXError,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
@@ -44,6 +45,9 @@ const StartUpEvents = {
   ),
   [SubscriptionEventName.ZeroXStatusRestarted]: wrapLogHandler(
     handleZeroXRestarted
+  ),
+  [SubscriptionEventName.ZeroXStatusError]: wrapLogHandler(
+    handleZeroXError
   )
 };
 

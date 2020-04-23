@@ -839,11 +839,11 @@ export const ZEROX_STATUSES = {
 }
 
 export const ZEROX_STATUSES_TOOLTIP = {
-  STARTING: 'Degrated service',
-  READY: null,
-  STARTED: null,
-  RESTARTING: 'Degrated service',
-  RESTARTED: null,
+  STARTING: 'Degrated Service',
+  READY: 'Service Operational',
+  STARTED: 'Service Operational',
+  RESTARTING: 'Degrated Service',
+  RESTARTED: 'Service Operational',
   ERROR: 'Something went wrong, please refresh your page'
 }
 

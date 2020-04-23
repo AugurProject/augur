@@ -203,6 +203,13 @@ export const handleZeroXRestarted = () => (
   dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.RESTARTED))
 }
 
+export const handleZeroXError = () => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(updateAppStatus(Ox_STATUS, ZEROX_STATUSES.ERROR))
+}
+
 export const handleSDKReadyEvent = () => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
