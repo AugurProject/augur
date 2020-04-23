@@ -17,7 +17,7 @@ import { OnChainTrade } from './api/OnChainTrade';
 import { PlaceTradeDisplayParams, SimulateTradeData, Trade } from './api/Trade';
 import { ZeroX } from './api/ZeroX';
 import { BaseConnector, EmptyConnector, SingleThreadConnector } from './connector';
-import { isSubscriptionEventName, SubscriptionEventName, TXEventName } from './constants';
+import { isSubscriptionEventName, SubscriptionEventName, TXEventName, NULL_ADDRESS } from './constants';
 import { Provider } from './ethereum/Provider';
 import { TXStatus } from './event-handlers';
 import { augurEmitter, Callback, TXStatusCallback } from './events';
@@ -180,13 +180,16 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async getAccount(): Promise<string | null> {
     let account = this.dependencies.address;
+    if (!this.dependencies.signer) {
+      return NULL_ADDRESS;
+    }
     const signer = await this.dependencies.signer.getAddress();
     if (this.dependencies.useWallet) {
       account = await this.gsn.calculateWalletAddress(signer);
     } else if (!account) {
       account = signer;
     }
-    if (!account) return null;
+    if (!account) return NULL_ADDRESS;
     return getAddress(account);
   }
 

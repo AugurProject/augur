@@ -112,7 +112,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         if (_maxDaiNeeded > _payment) {
             return GSNRecipientERC20FeeErrorCodes.TX_COST_TOO_HIGH;
         }
-        if (cash.balanceOf(getCreate2WalletAddress(_from)) < _maxDaiNeeded) {
+        if (cash.balanceOf(getCreate2WalletAddress(_from)) < payment) {
             return GSNRecipientERC20FeeErrorCodes.INSUFFICIENT_BALANCE;
         }
         return GSNRecipientERC20FeeErrorCodes.OK;

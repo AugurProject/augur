@@ -21,7 +21,7 @@ const RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494";
 const MIN_GAS_PRICE = new BigNumber(1e9); // Min: 1 Gwei
 const DEFAULT_GAS_PRICE = new BigNumber(4e9); // Default: GasPrice: 4 Gwei
 
-export const DESIRED_SIGNER_ETH_BALANCE = `0x${new BigNumber(.1 * 10**18).toString(16)}`; // .1 ETH
+export const DESIRED_SIGNER_ETH_BALANCE = `0x${new BigNumber(.04 * 10**18).toString(16)}`; // .04 ETH
 export const EXCHANGE_RATE_BUFFER_MULTIPLIER = 1.1;
 
 const OVEREAD_RELAY_GAS = 500000;
