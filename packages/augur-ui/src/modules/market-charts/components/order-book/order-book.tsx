@@ -52,10 +52,10 @@ interface OrderBookProps {
   expirationTime: number;
   currentTimeInSeconds: number;
   loadMarketOrderBook: Function;
+  status: string;
 }
 
 const OrderBookSide = ({
-  fixedPrecision = 4,
   pricePrecision = 4,
   orderBook,
   updateSelectedOrderProperties,
@@ -200,6 +200,7 @@ const OrderBook = ({
   expirationTime,
   currentTimeInSeconds,
   loadMarketOrderBook,
+  status,
 }: OrderBookProps) => {
   const [hoverState, setHoverState] = useState({ hoveredOrderIndex: null, hoveredSide: null });
   const setHovers = (hoveredOrderIndex: number, hoveredSide: string) => setHoverState({ hoveredOrderIndex, hoveredSide });
@@ -221,6 +222,7 @@ const OrderBook = ({
         headers={['quantity', usePercent ? 'percent' : 'price', 'my quantity']}
         toggle={toggle}
         hide={hide}
+        status={status}
       />
       <OrderBookSide
         fixedPrecision={fixedPrecision}

@@ -1253,6 +1253,49 @@ export const LinearPropertyLabelTooltip = (
   </span>
 );
 
+interface StatusDotTooltipProps {
+  status: string;
+  tooltip: string;
+  title: string;
+}
+
+export const StatusDotTooltip = (props: StatusDotTooltipProps) => (
+  <>
+  {props.status && <span
+    className={classNames(Styles.StatusDotTooltip, {
+      [Styles.Ready]: props.status === constants.ZEROX_STATUSES.READY,
+      [Styles.Lag]:
+        props.status === constants.ZEROX_STATUSES.RESTARTING ||
+        props.status === constants.ZEROX_STATUSES.STARTING,
+      [Styles.Error]: props.status === constants.ZEROX_STATUSES.ERROR,
+    })}
+  >
+    {props.tooltip && (
+      <>
+        <span
+          className={TooltipStyles.TooltipHint}
+          data-tip
+          data-for={`tooltip-${props.status}`}
+          data-iscapture={true}
+        />
+        <ReactTooltip
+          id={`tooltip-${props.status}`}
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="top"
+          type="light"
+          event="mouseover mouseenter"
+          eventOff="mouseleave mouseout scroll mousewheel blur"
+        >
+          {props.tooltip}
+        </ReactTooltip>
+      </>
+    )}
+  </span>}
+  {props.title}
+  </>
+);
+
 interface LinearPropertyLabelUnderlineTooltipProps extends LinearPropertyLabelProps {
   tipText: string,
   id: string,
