@@ -1,7 +1,6 @@
 pragma solidity 0.5.15;
 
 import 'ROOT/libraries/Initializable.sol';
-import 'ROOT/libraries/Ownable.sol';
 import 'ROOT/IAugurWallet.sol';
 import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
@@ -13,7 +12,7 @@ import 'ROOT/uniswap/interfaces/IWETH.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
-contract AugurWallet is Initializable, Ownable, IAugurWallet {
+contract AugurWallet is Initializable, IAugurWallet {
     using SafeMathUint256  for uint256;
 
     IAugurWalletRegistry public registry;
@@ -28,6 +27,8 @@ contract AugurWallet is Initializable, Ownable, IAugurWallet {
 
     // bytes4(keccak256("isValidSignature(bytes,bytes)")
     bytes4 constant internal EIP1271_MAGIC_VALUE = 0x20c13b0b;
+
+    address owner;
 
     bytes32 public domainSeparator;
     IERC20 public cash;
@@ -67,7 +68,8 @@ contract AugurWallet is Initializable, Ownable, IAugurWallet {
         return _didSucceed;
     }
 
-    function withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai) external payable onlyOwner returns (bool) {
+    function withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai) external payable returns (bool) {
+        require(msg.sender == owner);
         IUniswapV2Exchange _ethExchange = registry.ethExchange();
         IWETH _weth = registry.WETH();
         bool _token0IsCash = registry.token0IsCash();
@@ -111,16 +113,12 @@ contract AugurWallet is Initializable, Ownable, IAugurWallet {
         return EIP1271_MAGIC_VALUE;
     }
 
-    /// @dev Returns hash of a message that can be signed by owners.
+    /// @dev Returns hash of a message that can be signed by the owner.
     /// @param _message Message that should be hashed
     /// @return Message hash.
     function getMessageHash(bytes memory _message) public view returns (bytes32) {
         bytes32 safeMessageHash = keccak256(abi.encode(MSG_TYPEHASH, keccak256(_message)));
         return keccak256(abi.encodePacked(byte(0x19), byte(0x01), domainSeparator, safeMessageHash));
-    }
-
-    function onTransferOwnership(address _oldOwner, address _newOwner) internal {
-        registry.walletTransferedOwnership(_oldOwner, _newOwner);
     }
 
     function () external payable {}
