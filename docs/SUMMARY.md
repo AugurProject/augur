@@ -8,7 +8,7 @@
 
 ## Contracts
 
-* [Index](contract/index.md)
+* [Index](contracts/index.md)
 
 ## SDK
 
