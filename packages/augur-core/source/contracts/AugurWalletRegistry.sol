@@ -249,14 +249,6 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         emit ExecuteTransactionStatus(_success, _fundingSuccess);
     }
 
-    function walletTransferedOwnership(address _oldOwner, address _newOwner) external {
-        require(wallets[_newOwner] == IAugurWallet(0));
-        IAugurWallet _wallet = IAugurWallet(_msgSender());
-        require(_wallet == wallets[_oldOwner]);
-        wallets[_oldOwner] = IAugurWallet(0);
-        wallets[_newOwner] = _wallet;
-    }
-
     function getRelayMessageHash(
         address relay,
         address from,

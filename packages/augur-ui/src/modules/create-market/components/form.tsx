@@ -78,6 +78,7 @@ import {
 import {
   buildformattedDate,
   convertUnixToFormattedDate,
+  timestampComponents,
 } from 'utils/format-date';
 import TemplatePicker from 'modules/create-market/containers/template-picker';
 
@@ -560,34 +561,12 @@ export default class Form extends React.Component<FormProps, FormState> {
         newMarket.template.inputs.length > 0
       ) {
         const inputs = newMarket.template.inputs;
-        const closing = inputs.find(
-          i => i.type === TemplateInputType.DATEYEAR_CLOSING
-        );
         const afterTuesday: TemplateInput = inputs.find(
           i =>
             i.type === TemplateInputType.DATEYEAR &&
             i.validationType ===
               ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY
         );
-        if (closing) {
-          const dateYearSource = inputs.find(
-            i => i.id === closing.inputDateYearId
-          );
-          const timeOffset = closing.userInputObject as TimeOffset;
-          if (dateYearSource && dateYearSource.setEndTime && timeOffset) {
-            const closingDateTime = getTemplateExchangeClosingWithBuffer(
-              dateYearSource.setEndTime,
-              timeOffset.hour,
-              timeOffset.minutes,
-              timeOffset.offset
-            );
-            const dateTime = convertUnixToFormattedDate(closingDateTime);
-            const message = `${ExchangeClosingMessage} ${dateTime.formattedLocalShortDateTimeWithTimezone}`;
-            checkValidations.push(
-              dateGreater(endTimeFormatted.timestamp, closingDateTime, message)
-            );
-          }
-        }
         if (afterTuesday && afterTuesday.setEndTime) {
           const wednesdayAfterOpening = getTemplateWednesdayAfterOpeningDay(
             afterTuesday.setEndTime

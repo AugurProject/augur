@@ -23,6 +23,7 @@ import {
   TUTORIAL_ORDER_BOOK,
   TUTORIAL_TRADING_HISTORY,
   SCALAR_MODAL_SEEN,
+  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { getAddress } from 'ethers/utils/address';
@@ -42,9 +43,11 @@ import {
 import { AppState } from 'appStore';
 import { loadMarketOrderBook, clearOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
+import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { connection, universe, modal, loginAccount, orderBooks } = state;
+  const { connection, universe, modal, loginAccount, orderBooks, appStatus } = state;
+  const zeroXstatus = appStatus[Ox_STATUS];
   const queryId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const marketId = queryId === TRADING_TUTORIAL ? queryId : getAddress(queryId);
   const queryOutcomeId = parseQuery(ownProps.location.search)[
@@ -137,6 +140,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
       market.outcomesFormatted
     ),
     account: loginAccount.address,
+    zeroXstatus,
+    hasZeroXError: zeroXstatus === ZEROX_STATUSES.ERROR,
   };
 };
 

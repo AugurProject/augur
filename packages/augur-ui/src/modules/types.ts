@@ -213,6 +213,9 @@ export interface PendingOrders {
 export interface QuantityOrderBookOrder extends Getters.Markets.MarketOrderBookOrder {
   quantityScale: number;
   percent: number;
+  mySize: string;
+  price: string;
+  cumulativeShares: string;
 }
 export interface QuantityOutcomeOrderBook {
   spread: string | BigNumber | null;

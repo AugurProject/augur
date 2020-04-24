@@ -2958,7 +2958,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#AugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#AugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li><li><a href="#AugurWallet.withdrawAllFundsAsDai(address,uint256)"><code class="function-signature">withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai)</code></a></li><li><a href="#AugurWallet.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWallet.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#AugurWallet.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes _message)</code></a></li><li><a href="#AugurWallet.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#AugurWallet.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#AugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#AugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li><li><a href="#AugurWallet.withdrawAllFundsAsDai(address,uint256)"><code class="function-signature">withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai)</code></a></li><li><a href="#AugurWallet.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWallet.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#AugurWallet.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes _message)</code></a></li><li><a href="#AugurWallet.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
@@ -3000,15 +3000,9 @@ MUST emit when the URI is updated for a token ID.
 
 <h4><a class="anchor" aria-hidden="true" id="AugurWallet.getMessageHash(bytes)"></a><code class="function-signature">getMessageHash(bytes _message) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">public</span></h4>
 
-Returns hash of a message that can be signed by owners.
+Returns hash of a message that can be signed by the owner.
  @param _message Message that should be hashed
  @return Message hash.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="AugurWallet.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address _oldOwner, address _newOwner)</code><span class="function-visibility">internal</span></h4>
-
-
 
 
 
@@ -3052,13 +3046,7 @@ Returns hash of a message that can be signed by owners.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWalletRegistry.walletTransferedOwnership(address,address)"><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#IAugurWalletRegistry.ethExchange()"><code class="function-signature">ethExchange()</code></a></li><li><a href="#IAugurWalletRegistry.WETH()"><code class="function-signature">WETH()</code></a></li><li><a href="#IAugurWalletRegistry.token0IsCash()"><code class="function-signature">token0IsCash()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IAugurWalletRegistry.walletTransferedOwnership(address,address)"></a><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code><span class="function-visibility">external</span></h4>
-
-
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWalletRegistry.ethExchange()"><code class="function-signature">ethExchange()</code></a></li><li><a href="#IAugurWalletRegistry.WETH()"><code class="function-signature">WETH()</code></a></li><li><a href="#IAugurWalletRegistry.token0IsCash()"><code class="function-signature">token0IsCash()</code></a></li></ul></div>
 
 
 
@@ -3196,47 +3184,11 @@ Returns hash of a message that can be signed by owners.
 
 
 
-### `Ownable`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li><a href="#Ownable.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Ownable.constructor()"></a><code class="function-signature">constructor()</code><span class="function-visibility">public</span></h4>
-
-The Ownable constructor sets the original `owner` of the contract to the sender
-account.
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Ownable.getOwner()"></a><code class="function-signature">getOwner() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Ownable.transferOwnership(address)"></a><code class="function-signature">transferOwnership(address _newOwner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-Allows the current owner to transfer control of the contract to a newOwner.
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Ownable.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address, address)</code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-
-
 ### `AugurWalletRegistry`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWalletRegistry.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AugurWalletRegistry.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address, address _from, bytes _encodedFunction, uint256, uint256, uint256, uint256, bytes, uint256 _maxPossibleCharge)</code></a></li><li><a href="#AugurWalletRegistry._preRelayedCall(bytes)"><code class="function-signature">_preRelayedCall(bytes _context)</code></a></li><li><a href="#AugurWalletRegistry._postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">_postRelayedCall(bytes _context, bool, uint256 _actualCharge, bytes32)</code></a></li><li><a href="#AugurWalletRegistry.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWalletRegistry.getAmountIn(uint256,uint256,uint256)"><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWalletRegistry.getCreate2WalletAddress(address)"><code class="function-signature">getCreate2WalletAddress(address _owner)</code></a></li><li><a href="#AugurWalletRegistry.getWallet(address)"><code class="function-signature">getWallet(address _account)</code></a></li><li><a href="#AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32,uint256,uint256,bool)"><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint, uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai, bool _revertOnFailure)</code></a></li><li><a href="#AugurWalletRegistry.walletTransferedOwnership(address,address)"><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code></a></li><li><a href="#AugurWalletRegistry.getRelayMessageHash(address,address,address,bytes,uint256,uint256,uint256,uint256)"><code class="function-signature">getRelayMessageHash(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce)</code></a></li><li><a href="#AugurWalletRegistry.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#GSNRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li class="inherited"><a href="#GSNRecipient._upgradeRelayHub(address)"><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code></a></li><li class="inherited"><a href="#GSNRecipient.relayHubVersion()"><code class="function-signature">relayHubVersion()</code></a></li><li class="inherited"><a href="#GSNRecipient._withdrawDeposits(uint256,address payable)"><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code></a></li><li class="inherited"><a href="#GSNRecipient._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li class="inherited"><a href="#GSNRecipient._msgData()"><code class="function-signature">_msgData()</code></a></li><li class="inherited"><a href="#GSNRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall()"><code class="function-signature">_approveRelayedCall()</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall(bytes)"><code class="function-signature">_approveRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient._rejectRelayedCall(uint256)"><code class="function-signature">_rejectRelayedCall(uint256 errorCode)</code></a></li><li class="inherited"><a href="#GSNRecipient._computeCharge(uint256,uint256,uint256)"><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee)</code></a></li><li class="inherited"><a href="#Context.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#AugurWalletRegistry.ExecuteTransactionStatus(bool,bool)"><code class="function-signature">ExecuteTransactionStatus(bool success, bool fundingSuccess)</code></a></li><li class="inherited"><a href="#GSNRecipient.RelayHubChanged(address,address)"><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWalletRegistry.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AugurWalletRegistry.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address, address _from, bytes _encodedFunction, uint256, uint256, uint256, uint256, bytes, uint256 _maxPossibleCharge)</code></a></li><li><a href="#AugurWalletRegistry._preRelayedCall(bytes)"><code class="function-signature">_preRelayedCall(bytes _context)</code></a></li><li><a href="#AugurWalletRegistry._postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">_postRelayedCall(bytes _context, bool, uint256 _actualCharge, bytes32)</code></a></li><li><a href="#AugurWalletRegistry.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWalletRegistry.getAmountIn(uint256,uint256,uint256)"><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWalletRegistry.getCreate2WalletAddress(address)"><code class="function-signature">getCreate2WalletAddress(address _owner)</code></a></li><li><a href="#AugurWalletRegistry.getWallet(address)"><code class="function-signature">getWallet(address _account)</code></a></li><li><a href="#AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32,uint256,uint256,bool)"><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint, uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai, bool _revertOnFailure)</code></a></li><li><a href="#AugurWalletRegistry.getRelayMessageHash(address,address,address,bytes,uint256,uint256,uint256,uint256)"><code class="function-signature">getRelayMessageHash(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce)</code></a></li><li><a href="#AugurWalletRegistry.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#GSNRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li class="inherited"><a href="#GSNRecipient._upgradeRelayHub(address)"><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code></a></li><li class="inherited"><a href="#GSNRecipient.relayHubVersion()"><code class="function-signature">relayHubVersion()</code></a></li><li class="inherited"><a href="#GSNRecipient._withdrawDeposits(uint256,address payable)"><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code></a></li><li class="inherited"><a href="#GSNRecipient._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li class="inherited"><a href="#GSNRecipient._msgData()"><code class="function-signature">_msgData()</code></a></li><li class="inherited"><a href="#GSNRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall()"><code class="function-signature">_approveRelayedCall()</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall(bytes)"><code class="function-signature">_approveRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient._rejectRelayedCall(uint256)"><code class="function-signature">_rejectRelayedCall(uint256 errorCode)</code></a></li><li class="inherited"><a href="#GSNRecipient._computeCharge(uint256,uint256,uint256)"><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee)</code></a></li><li class="inherited"><a href="#Context.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#AugurWalletRegistry.ExecuteTransactionStatus(bool,bool)"><code class="function-signature">ExecuteTransactionStatus(bool success, bool fundingSuccess)</code></a></li><li class="inherited"><a href="#GSNRecipient.RelayHubChanged(address,address)"><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code></a></li></ul></div>
 
 
 
@@ -3289,12 +3241,6 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 <h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32,uint256,uint256,bool)"></a><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint, uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai, bool _revertOnFailure)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="AugurWalletRegistry.walletTransferedOwnership(address,address)"></a><code class="function-signature">walletTransferedOwnership(address _oldOwner, address _newOwner)</code><span class="function-visibility">external</span></h4>
 
 
 

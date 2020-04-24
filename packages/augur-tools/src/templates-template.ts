@@ -41,6 +41,7 @@ export const BTC = 'BTC';
 export const ETH = 'ETH';
 export const LTC = 'LTC';
 export const NBA = 'NBA';
+export const NBA_DRAFT = 'NBA Draft';
 export const WNBA = 'WNBA';
 export const NCAA = 'NCAA';
 export const NFL = 'NFL';
@@ -646,7 +647,7 @@ function closingDateDependencies(
         timeOffset.minutes,
         timeOffset.offset
       );
-      if (closingDateTime >= endTime) {
+      if (closingDateTime > endTime) {
         return false;
       }
     }

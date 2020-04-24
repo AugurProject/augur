@@ -17,7 +17,7 @@ export const LIST_VALUES = {
     'AFC Championship game',
     'NFC Championship game',
   ],
-  NFL_DRAFT_PICK_NUMBER: [
+  DRAFT_PICK_NUMBER: [
     '1st',
     '2nd',
     '3rd',
@@ -3369,7 +3369,7 @@ export const FIN_INDEXES_CLOSING_OFFSETS = {
   },
   DAX: {
     offset: 2,
-    hour: 13,
+    hour: 17,
     minutes: 30,
   },
   'Shanghai SE Composite': {
