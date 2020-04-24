@@ -10931,21 +10931,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "getOwner",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -11062,27 +11047,6 @@
 			],
 			"name": "transferCash",
 			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_newOwner",
-					"type": "address"
-				}
-			],
-			"name": "transferOwnership",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
@@ -11709,26 +11673,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_oldOwner",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_newOwner",
-					"type": "address"
-				}
-			],
-			"name": "walletTransferedOwnership",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
