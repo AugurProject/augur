@@ -647,7 +647,7 @@ function closingDateDependencies(
         timeOffset.minutes,
         timeOffset.offset
       );
-      if (closingDateTime >= endTime) {
+      if (closingDateTime > endTime) {
         return false;
       }
     }
