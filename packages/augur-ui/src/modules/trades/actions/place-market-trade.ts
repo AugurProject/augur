@@ -1,6 +1,6 @@
 import { createBigNumber } from "utils/create-big-number";
 import {
-  BUY, INVALID_OUTCOME_ID, MODAL_ERROR,
+  BUY, INVALID_OUTCOME_ID, MODAL_ERROR, ZEROX_STATUSES,
 } from "modules/common/constants";
 import { AppState } from "appStore";
 import { ThunkDispatch } from "redux-thunk";
@@ -11,6 +11,7 @@ import { addPendingOrder, updatePendingOrderStatus, generatePendingOrderId } fro
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { getOutcomeNameWithOutcome } from "utils/get-outcome";
 import { updateModal } from "modules/modal/actions/update-modal";
+import { Ox_STATUS } from "modules/app/actions/update-app-status";
 
 export const placeMarketTrade = ({
   marketId,
@@ -20,6 +21,8 @@ export const placeMarketTrade = ({
 }: any) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
   const { marketInfos, loginAccount, blockchain, appStatus } = getState();
+  // numFills is 0 and zerox mesh client has error auto fail processing order label
+  const autoFailOrder = appStatus[Ox_STATUS] === ZEROX_STATUSES.ERROR;
   const market: Getters.Markets.MarketInfo = marketInfos[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
@@ -52,7 +55,7 @@ export const placeMarketTrade = ({
       fullPrecisionPrice: tradeInProgress.limitPrice,
       id: tradeGroupId,
       amount: tradeInProgress.numShares,
-      status: TXEventName.Pending,
+      status: (autoFailOrder && tradeInProgress.numFills === 0) ? TXEventName.Failure : TXEventName.Pending,
       creationTime: convertUnixToFormattedDate(
         blockchain.currentAugurTimestamp
       ),
