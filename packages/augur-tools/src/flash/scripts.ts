@@ -437,14 +437,54 @@ export function addScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'create-canned-template-markets',
-    async call(this: FlashSession) {
-      const user = await this.createUser(this.getAccount(), this.config);
+    options: [
+      {
+        name: 'orders',
+        abbr: 'o',
+        flag: true,
+        description: 'create orders on markets',
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const withOrders = args.orders ? Boolean(args.orders) : false;
+      let user = await this.createUser(this.getAccount(), this.config);
       const million = QUINTILLION.multipliedBy(1e7);
       await user.faucetRepUpTo(million, million);
       await user.faucetCashUpTo(million, million);
       await user.approveIfNecessary();
 
-      await createTemplatedMarkets(user, false);
+      const markets = await createTemplatedMarkets(user, false);
+      if (withOrders) {
+        this.pushConfig({
+          zeroX: {
+            rpc: { enabled: true },
+            mesh: { enabled: false },
+          },
+        });
+        user = await this.createUser(this.getAccount(), this.config);
+        for (let i = 0; i < markets.length; i++) {
+          const createdMarket = markets[i];
+          const numTicks = await createdMarket.market.getNumTicks_();
+          const numOutcomes = await createdMarket.market.getNumberOfOutcomes_();
+          const marketId = createdMarket.market.address;
+          if (numOutcomes.gt(new BigNumber(3))) {
+            await createCatZeroXOrders(user, marketId, true, numOutcomes.toNumber() - 1);
+          } else {
+            if (numTicks.eq(new BigNumber(100))) {
+              await createYesNoZeroXOrders(user, marketId, true);
+            } else {
+              try {
+                const minPrice = new BigNumber(createdMarket.canned.minPrice);
+                const maxPrice = new BigNumber(createdMarket.canned.maxPrice);
+
+                await createScalarZeroXOrders(user, marketId, true, false, numTicks, minPrice, maxPrice);
+              } catch (e) {
+                console.warn('could not create orders for scalar market', e)
+              }
+            }
+          }
+        }
+      }
     },
   });
 

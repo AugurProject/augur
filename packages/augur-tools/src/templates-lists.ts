@@ -17,7 +17,7 @@ export const LIST_VALUES = {
     'AFC Championship game',
     'NFC Championship game',
   ],
-  NFL_DRAFT_PICK_NUMBER: [
+  DRAFT_PICK_NUMBER: [
     '1st',
     '2nd',
     '3rd',
