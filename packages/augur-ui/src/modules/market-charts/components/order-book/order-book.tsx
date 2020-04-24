@@ -18,7 +18,7 @@ import {
   QuantityOrderBookOrder,
 } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatShares, formatDai, formatMarketShares } from 'utils/format-number';
+import { formatDai, formatMarketShares } from 'utils/format-number';
 import { NUMBER_OF_SECONDS_IN_A_DAY } from 'utils/format-date';
 
 interface OrderBookSideProps {
@@ -139,7 +139,7 @@ const OrderBookSide = ({
             hoveredSide === BIDS &&
             i < hoveredOrderIndex);
         const isHovered = i === hoveredOrderIndex && hoveredSide === type;
-
+        const mySize = formatMarketShares(marketType, order.mySize).formattedValue;
         return (
           <div
             key={order.cumulativeShares + i}
@@ -176,7 +176,7 @@ const OrderBookSide = ({
             }
             <span>
               {hasSize
-                ? createBigNumber(order.mySize).toFixed(fixedPrecision)
+                ? mySize
                 : '—'}
             </span>
           </div>

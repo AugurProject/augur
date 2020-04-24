@@ -3369,7 +3369,7 @@ export const FIN_INDEXES_CLOSING_OFFSETS = {
   },
   DAX: {
     offset: 2,
-    hour: 13,
+    hour: 17,
     minutes: 30,
   },
   'Shanghai SE Composite': {
