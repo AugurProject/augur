@@ -17,7 +17,7 @@
 
   > div[class*="LinearPropertyLabel"] {
     align-items: baseline;
-    min-width: 269px;
+    min-width: @size-269;
     max-width: 80%;
     margin-left: auto;
     margin-right: auto;
@@ -155,7 +155,69 @@
 
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
+  .AugurStatusContent {
+    margin: 0;
+
+    div[class*="Activity"] {
+      > div[class*="LinearPropertyLabel"]:first-of-type {
+        padding: 0 @size-12;
+      }
+
+      div[class*="Stats"] {
+        padding-top: @size-16;
+      }
+    }
+  }
+
+  .BlockStatus {
+    > div[class*="LinearPropertyLabel"] {
+      > span:first-of-type {
+        .mono-10-semi-bold;
+      }
+  
+      > span {
+        .mono-12;  
+      }
+    }
+  }
+
   .SyncStatus {
     background: transparent;
+    padding: @size-24 @size-12;
+    border-bottom: @size-1 solid var(--color-outline);
+    border-radius: 0;
+
+    &.synced {
+      > div:not([class*="BlockStatus"]) {
+        background: var(--color-primary-action-15);
+        color: var(--color-primary-text);
+        border: @size-1 solid var(--color-primary-action);
+      }
+    }
+
+    &.syncing {
+      > div:not([class*="BlockStatus"]) {
+        background: var(--color-reporting-15);
+        color: var(--color-primary-text);
+        border: @size-1 solid var(--color-reporting);
+      }
+    }
+
+    > span {
+      text-transform: uppercase;
+    }
+
+    > h5 {
+      .mono-24-bold;  
+    }
+
+    > div:not([class*="BlockStatus"]) {
+      background: var(--color-reporting-15);
+      color: var(--color-primary-text);
+      border: @size-1 solid var(--color-reporting);
+      margin: @size-14 0 @size-26;
+      min-width: @size-269;
+      max-width: 80%;
+    }
   }
 }

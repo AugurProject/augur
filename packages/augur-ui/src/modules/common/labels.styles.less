@@ -385,6 +385,32 @@
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .LinearPropertyLabel {
+    > svg > line {
+      stroke: var(--color-dark-text);
+    }
+
+    &.Highlight {
+      > span:first-of-type {
+        .mono-10-semi-bold;
+  
+        color: var(--color-secondary-text);
+      }
+  
+      > span:nth-of-type(2),
+      > span:last-of-type,
+      > span:nth-of-type(2) > label,
+      > span:last-of-type > label {
+        .mono-12;
+
+        color: var(--color-primary-text);
+      }
+    }  
+  }
+}
+
 div.LinearPropertyViewTransaction {
   > div {
     margin-bottom: 0;
