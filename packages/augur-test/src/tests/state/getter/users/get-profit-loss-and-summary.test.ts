@@ -1,22 +1,23 @@
 import { TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
-import { BigNumber } from 'bignumber.js';
-import * as _ from 'lodash';
+
 import {
   _beforeAll,
   _beforeEach,
-  doTradeTakerView,
   LONG,
   SHORT,
-  ONE, MakerTakerTrade, TradeData, PLResultData
+  createCategoricalMarket,
+  trade,
+  verifyPL,
+  createScalarMarket,
+  report,
+  verifyCash,
+  claimProceeds,
+  finalize,
+  reportScalar,
 } from './common';
-import { formatBytes32String } from 'ethers/utils';
-import { Market } from "@augurproject/core/build/libraries/ContractInterfaces";
-import { repeat } from '@augurproject/utils';
 
-const ZERO = new BigNumber(0);
-const HOUR = 60 * 60;
-const DAY = HOUR * 24;
+
 const defaultPL = {
   unrealizedPL: 0,
   unrealizedPercent: 0,
@@ -393,143 +394,3 @@ describe('State API :: Users :: ', () => {
 
   });
 });
-
-async function trade(user: TestContractAPI, timeDelta: number, trades: MakerTakerTrade[]): Promise<void> {
-  await user.advanceTimestamp(timeDelta);
-
-  for (const trade_ of trades) {
-    const tradeData = makerTakerTradeToTradeData(trade_);
-    await doTradeTakerView(trade_.maker, trade_.taker, tradeData, trade_.market);
-  }
-}
-
-async function verifyPL(user: TestContractAPI, result: {[address: string]: PLResultData}) {
-  await user.sync();
-  for (const address of _.keys(result)) {
-    const plResult = result[address];
-    const profitLossSummary = await user.api.route('getProfitLossSummary', {
-      universe: user.augur.contracts.universe.address,
-      account: address
-    });
-
-    const oneDayPLSummary = profitLossSummary[ONE]; // one is one day?
-    await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(plResult.realizedPL);
-    await expect(Number.parseFloat(oneDayPLSummary.unrealized)).toEqual(plResult.unrealizedPL);
-    await expect(Number.parseFloat(oneDayPLSummary.realizedPercent)).toEqual(plResult.realizedPercent);
-    await expect(Number.parseFloat(oneDayPLSummary.unrealizedPercent)).toEqual(plResult.unrealizedPercent);
-  }
-}
-
-function makerTakerTradeToTradeData(trade: MakerTakerTrade): TradeData {
-  const { direction, outcome, quantity, price, minPrice, maxPrice } = trade;
-  return { direction, outcome, quantity, price, minPrice, maxPrice };
-}
-
-// Verifies users' balances less any fees.
-async function verifyCash(user: TestContractAPI, market: Market, balances: Balances, feeAdjustment=true): Promise<Balances> {
-  const marketFeeDivisor = (await market.getMarketCreatorSettlementFeeDivisor_()).toNumber();
-  const reportingFeeDivisor = (await user.augur.contracts.universe.getOrCacheReportingFeeDivisor_()).toNumber();
-  const actualBalances: Balances = {};
-  for (const address in balances) {
-    const balance = balances[address];
-    const reportingFee = reportingFeeDivisor ? balance / reportingFeeDivisor: 0;
-    const marketFee = marketFeeDivisor ? balance / marketFeeDivisor : 0;
-    const expectedBalance =feeAdjustment ? balance - reportingFee - marketFee : balance;
-    const actualBalance = (await user.getCashBalance(address)).toNumber();
-    expect(actualBalance).toEqual(expectedBalance);
-    actualBalances[address] = actualBalance;
-  }
-  return actualBalances;
-}
-interface Balances {[address: string]: number};
-
-async function createCategoricalMarket (
-  user: TestContractAPI,
-  { timeDelta = DAY,
-    marketFee = 0,
-    affiliateFee = 25,
-    designatedReporter,
-    categories = ['test', 'fake', 'Categorical'],
-    description = 'test market',
-    outcomes = ['outcome1', 'outcome2', 'outcome3'],
-    formatOutcomes = true,
-    faucet = true,
-  }: {
-    timeDelta?: number, marketFee?: number, affiliateFee?: number, designatedReporter?: string,
-    categories?: string[], description?: string, outcomes?: string[], formatOutcomes?: boolean, faucet?: boolean
-  } = {}): Promise<Market> {
-  return user.createCategoricalMarket({
-    endTime: (await user.getTimestamp()).plus(timeDelta),
-    feePerCashInAttoCash: new BigNumber(marketFee),
-    affiliateFeeDivisor: new BigNumber(affiliateFee),
-    designatedReporter: designatedReporter || user.account.address,
-    extraInfo: JSON.stringify({
-      categories,
-      description,
-    }),
-    outcomes: formatOutcomes ? outcomes.map(formatBytes32String) : outcomes,
-  }, faucet);
-}
-
-async function createScalarMarket (
-  user: TestContractAPI,
-  { timeDelta = DAY,
-    marketFee = 0,
-    affiliateFee = 25,
-    designatedReporter,
-    prices = [0, 100],
-    numTicks = 100,
-    categories = ['test', 'fake', 'Categorical'],
-    description = 'test market',
-    faucet = true,
-  }: {
-    timeDelta?: number, marketFee?: number, affiliateFee?: number, designatedReporter?: string,
-    categories?: string[], description?: string, prices?: Array<number|BigNumber>, numTicks?: number, faucet?: boolean
-  } = {}): Promise<Market> {
-  return user.createScalarMarket({
-    endTime: (await user.getTimestamp()).plus(timeDelta),
-    feePerCashInAttoCash: new BigNumber(marketFee),
-    affiliateFeeDivisor: new BigNumber(affiliateFee),
-    designatedReporter: designatedReporter || user.account.address,
-    prices: prices.map((p) => new BigNumber(p)),
-    numTicks: new BigNumber(numTicks),
-    extraInfo: JSON.stringify({
-      categories,
-      description,
-    }),
-  }, faucet);
-}
-
-async function finalize(user: TestContractAPI, market: Market): Promise<void> {
-  await user.advanceTimestamp(DAY * 2);
-  await market.finalize();
-  await user.advanceTimestamp(1);
-}
-
-async function report(user: TestContractAPI, market: Market, outcome: number) {
-  const endTime = await market.getEndTime_();
-  await user.setTimestamp(endTime.plus(1));
-
-  const numTicks = await market.getNumTicks_();
-  const numOutcomes = (await market.getNumberOfOutcomes_()).toNumber();
-  const outcomeList = repeat(ZERO, numOutcomes);
-  outcomeList[outcome] = numTicks;
-  await user.doInitialReport(market, outcomeList);
-}
-
-async function reportScalar(user: TestContractAPI, market: Market, outcome: number|'invalid') {
-  const endTime = await market.getEndTime_();
-  await user.setTimestamp(endTime.plus(1));
-
-  const numTicks = await market.getNumTicks_();
-  const other = numTicks.minus(outcome);
-  const outcomeList = outcome === 'invalid' ? [numTicks, ZERO, ZERO] : [ZERO, new BigNumber(outcome), other];
-  await user.doInitialReport(market, outcomeList);
-}
-
-async function claimProceeds(market: Market, users: TestContractAPI[]) {
-  for (const user of users) {
-    await user.claimTradingProceeds(market);
-  }
-}
-
