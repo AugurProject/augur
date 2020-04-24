@@ -284,8 +284,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             selectedNav,
           });
         }
-        const newOrderDaiEstimate = formatMarketShares(
-          market.marketType,
+        const newOrderDaiEstimate = formatDai(
           createBigNumber(newOrder.totalOrderValue.fullPrecision),
           {
             roundDown: false,
