@@ -9,19 +9,13 @@ import { DB } from './db/DB';
 import { Markets } from './getter/Markets';
 import { LogFilterAggregatorInterface } from './logs/LogFilterAggregator';
 
-const settings = require('./settings.json');
-
 export class Controller {
   private static latestBlock: Block;
-
-  private readonly events;
-
   constructor(
     private augur: Augur,
     private db: Promise<DB>,
     private logFilterAggregator: LogFilterAggregatorInterface,
   ) {
-    this.events = new Subscriptions(augur.events);
     this.logFilterAggregator.listenForAllEvents(this.allEvents);
     this.logFilterAggregator.notifyNewBlockAfterLogsProcess(this.notifyNewBlockEvent.bind(this));
 
