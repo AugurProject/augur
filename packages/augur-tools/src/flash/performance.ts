@@ -84,9 +84,9 @@ export function setupMarketSet(maker: ContractAPI): Array<ReadiedPromise<Market>
   ]
 }
 
-export function setupOrderBookShapers(markets: string[], orderSize: number, expiration: BigNumber): OrderBookShaper[] {
+export function setupOrderBookShapers(marketInfos: MarketInfo[], orderSize: number, expiration: BigNumber): OrderBookShaper[] {
   const orderBookConfig = createTightOrderBookConfig(orderSize);
-  return markets.map((market) => {
+  return marketInfos.map((market) => {
     return new OrderBookShaper(market, null, expiration, [2, 1], orderBookConfig);
   })
 }
