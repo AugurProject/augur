@@ -17,7 +17,7 @@
 
   > div[class*="LinearPropertyLabel"] {
     align-items: baseline;
-    min-width: 269px;
+    min-width: @size-269;
     max-width: 80%;
     margin: @size-24 auto @size-8;
 
@@ -44,6 +44,7 @@
 :root[theme="SPORTS"] {
   .Activity {
     background: transparent;
+    padding: @size-20 0 0;
 
     > div {
       background: var(--color-module-background);
