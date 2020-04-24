@@ -54,7 +54,7 @@ export const MyBets = () => {
 
   useEffect(() => {
     if (MY_BETS_VIEW_BY[viewBy].label === EVENT) {
-      setState({ ...state, rows: MOCK_GAMES_DATA});
+      setState({ ...state, rows: MOCK_GAMES_DATA });
     } else if (MY_BETS_VIEW_BY[viewBy].label === OUTCOMES) {
       setState({ ...state, rows: MOCK_OUTCOMES_DATA });
     }
@@ -71,7 +71,7 @@ export const MyBets = () => {
       SPORTS_MARKET_TYPES[selectedMarketCardType].label === FUTURES
     ) {
       setState({ ...state, rows: MOCK_FUTURES_DATA });
-    } 
+    }
   }, [selectedMarketCardType, viewBy]);
 
   const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
@@ -116,7 +116,7 @@ export const MyBets = () => {
                   viewBy: selected,
                   rows:
                     MY_BETS_VIEW_BY[selected].label === EVENT
-                    ? MOCK_GAMES_DATA
+                      ? MOCK_GAMES_DATA
                       : MOCK_OUTCOMES_DATA,
                 })
               }
@@ -147,7 +147,7 @@ export const MyBets = () => {
             </span>
           )}
         </div>
-        {showEvents ? (
+        {showEvents && (
           <PillSelection
             options={SPORTS_MARKET_TYPES}
             defaultSelection={selectedMarketCardType}
@@ -156,7 +156,8 @@ export const MyBets = () => {
               setState({ ...state, selectedMarketCardType: selected })
             }
           />
-        ) : (
+        )}
+        {!showEvents && (
           <PillSelection
             options={MARKET_STATE_TYPES}
             defaultSelection={selectedMarketStateType}

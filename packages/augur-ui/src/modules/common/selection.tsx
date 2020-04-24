@@ -402,7 +402,7 @@ export const PillSelection = ({
       onChange(option.id);
     }
   };
-
+  
   const renderButton = (option: SelectionOption): React.ReactNode => (
     <li
       className={classNames({
