@@ -446,7 +446,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const withOrders = args.orders ? Boolean(args.orders) : false;
-      const user = await this.createUser(this.getAccount(), this.config);
+      let user = await this.createUser(this.getAccount(), this.config);
       const million = QUINTILLION.multipliedBy(1e7);
       await user.faucetRepUpTo(million, million);
       await user.faucetCashUpTo(million, million);
@@ -454,6 +454,13 @@ export function addScripts(flash: FlashSession) {
 
       const markets = await createTemplatedMarkets(user, false);
       if (withOrders) {
+        this.pushConfig({
+          zeroX: {
+            rpc: { enabled: true },
+            mesh: { enabled: false },
+          },
+        });
+        user = await this.createUser(this.getAccount(), this.config);
         for (let i = 0; i < markets.length; i++) {
           const createdMarket = markets[i];
           const numTicks = await createdMarket.market.getNumTicks_();
