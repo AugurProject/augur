@@ -155,7 +155,7 @@ export async function createCannedMarketsAndOnChainOrders(person: ContractAPI, f
 }
 
 
-export async function createTemplatedMarkets(person: ContractAPI, faucet=true) {
+export async function createTemplatedMarkets(person: ContractAPI, faucet=true): Promise<CreatedCannedMarket[]> {
   const markets = [];
   for (const can of templatedCannedMarkets()) {
     const market = await createCannedMarket(person, can, faucet);

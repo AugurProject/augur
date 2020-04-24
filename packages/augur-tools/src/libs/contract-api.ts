@@ -593,8 +593,9 @@ export class ContractAPI {
     return this.augur.getMarket(address);
   }
 
-  async getMarketInfo(address: string): Promise<Getters.Markets.MarketInfo[]> {
-    return this.augur.getMarketsInfo({marketIds: [address]});
+  async getMarketInfo(marketIds: string | string[] ): Promise<Getters.Markets.MarketInfo[]> {
+    marketIds = Array.isArray(marketIds) ? marketIds : [marketIds];
+    return this.augur.getMarketsInfo({marketIds});
   }
 
   async getMarkets(): Promise<Getters.Markets.MarketList> {
