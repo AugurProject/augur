@@ -95,6 +95,7 @@ export const MyBets = () => {
   const {
     viewBy,
     rows,
+    selectedMarketCardType
   } = state;
   const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
 
@@ -132,8 +133,8 @@ export const MyBets = () => {
             <SquareDropdown
               options={MY_BETS_VIEW_BY}
               defaultValue={MY_BETS_VIEW_BY[0].value}
-              onChange={selected =>
-                dispatch({ type: SET_VIEW_BY, viewBy: selected })
+              onChange={viewBy =>
+                dispatch({ type: SET_VIEW_BY, viewBy })
               }
               minimalStyle
             />
@@ -144,10 +145,10 @@ export const MyBets = () => {
               <SquareDropdown
                 options={MY_BETS_MARKET_STATUS}
                 defaultValue={MY_BETS_MARKET_STATUS[0].value}
-                onChange={selected =>
+                onChange={marketStatus =>
                   dispatch({
                     type: SET_MARKET_STATUS,
-                    markeStatus: selected,
+                    marketStatus
                   })
                 }
                 minimalStyle
@@ -160,10 +161,10 @@ export const MyBets = () => {
               <SquareDropdown
                 options={MY_BETS_BET_DATE}
                 defaultValue={MY_BETS_BET_DATE[0].value}
-                onChange={selected =>
+                onChange={betDate =>
                   dispatch({
                     type: SET_BET_DATE,
-                    betDate: selected,
+                    betDate
                   })
                 }
                 minimalStyle
@@ -176,10 +177,10 @@ export const MyBets = () => {
             options={SPORTS_MARKET_TYPES}
             defaultSelection={0}
             large
-            onChange={selected =>
+            onChange={selectedMarketCardType =>
               dispatch({
                 type: SET_SELECTED_MARKET_CARD_TYPE,
-                selectedMarketCardType: selected,
+                selectedMarketCardType
               })
             }
           />
@@ -189,10 +190,10 @@ export const MyBets = () => {
             options={MARKET_STATE_TYPES}
             defaultSelection={0}
             large
-            onChange={selected =>
+            onChange={selectedMarketStateType =>
               dispatch({
                 type: SET_SELECTED_MARKET_STATE_TYPE,
-                selectedMarketStateType: selected,
+                selectedMarketStateType
               })
             }
           />
@@ -216,7 +217,7 @@ export const MyBets = () => {
         )}
         {showEvents &&
           rows.map(row => (
-            <Game row={row} type={SPORTS_MARKET_TYPES[0].label} />
+            <Game row={row} type={SPORTS_MARKET_TYPES[selectedMarketCardType].label} />
           ))}
         {rows.length > 0 && !showEvents && <Outcomes rows={rows} />}
       </div>
