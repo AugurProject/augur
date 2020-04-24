@@ -64,7 +64,7 @@ function createBrowserMeshRestartFunction(
   return err => {
     console.error('Browser mesh error: ', err.message, err.stack);
     console.log('Restarting Mesh Sync');
-    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarting, {error: err});
+    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {error: err});
 
     // Passing `true` as the last parameter to make sure the config doesn't include custom addresses on retry
     const mesh = new Mesh(
@@ -79,10 +79,7 @@ function createBrowserMeshRestartFunction(
         true
       )
     );
-    mesh.onError(() => {
-      zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {});
-      return createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, sdkConfig)
-    });
+    mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, sdkConfig));
     mesh.startAsync().then(() => {
       zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusRestarted, {});
       zeroX.mesh = mesh;
@@ -123,10 +120,7 @@ export async function createBrowserMesh(
   );
 
   const mesh = new Mesh(meshConfig);
-  mesh.onError(() => {
-    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {});
-    return createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config);
-  });
+  mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
   await mesh.startAsync();
   zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarted, {});
   zeroX.mesh = mesh;
