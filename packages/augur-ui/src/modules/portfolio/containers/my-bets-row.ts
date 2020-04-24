@@ -16,7 +16,7 @@ const mapStateToProps = (state: AppState, ownProps) => {};
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
-  const { outcome, showExtraRow } = oP;
+  const { outcome, showExtraRow, isEvent } = oP;
 
   const columnProperties = [
     {
@@ -25,8 +25,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       text: outcome.outcome,
       keyId: outcome.outcome,
       showExtraNumber: showExtraRow,
-      value: outcome.betType,
-      highRisk: outcome.highRisk
+      value: isEvent ? outcome.description : outcome.betType,
+      highRisk: outcome.highRisk,
+      templateShield: isEvent,
+      outcome: outcome
     },
     {
       key: 'wager',
@@ -54,7 +56,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     },
     {
       key: 'button',
-      columnType: COLUMN_TYPES.CANCEL_TEXT_BUTTON,
+      columnType: COLUMN_TYPES.CASHOUT_BUTTON,
+      outcome: outcome,
       action: async (e: Event) => {},
     },
   ];

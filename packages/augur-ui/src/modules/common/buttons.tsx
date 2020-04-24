@@ -6,7 +6,8 @@ import {
   BUY,
   BETTING_LAY,
   BETTING_BACK,
-  THEMES
+  THEMES,
+  ZERO
 } from 'modules/common/constants';
 import {
   StarIcon,
@@ -37,6 +38,9 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
 
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { BET_STATUS } from 'modules/trading/store/constants';
+import { formatDai } from 'utils/format-number';
+import { createBigNumber } from 'utils/create-big-number';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -635,6 +639,36 @@ export const ExternalLinkText = (props: ExternalLinkTextProps) => (
   </button>
 );
 
+interface CashoutButtonProps {
+  action: Function;
+  outcome: Object;
+}
+
+export const CashoutButton = ({action, outcome: {amountWon, status}}: CashoutButtonProps) => {
+  let didWin = false;
+  let loss = false;
+  let text = 'CASHOUT: $00.00'
+  const won = createBigNumber(amountWon);
+  if (!won.eq(ZERO)) {
+    didWin = true;
+    if (won.lt(ZERO)) {
+      loss = true;
+    }
+    text = `${loss ? 'LOSS' : 'WIN'}: $${Math.abs(amountWon)}`;
+  } 
+  return (
+    <button 
+      disabled={status === BET_STATUS.CLOSED} 
+      className={classNames(Styles.CashoutButton, {[Styles.Won]: didWin && !loss, [Styles.Loss]: loss})} 
+      onClick={e => {
+        action && action(e);
+      }}
+    >
+      {status === BET_STATUS.CLOSED ? 'Cashout not available' : text}
+    </button>
+  );
+}
+
 export const ExternalLinkButton = ({light, condensedStyle, action, callback, customLink, label, URL, showNonLink}: ExternalLinkButtonProps) => (
   <button
     className={classNames(Styles.ExternalLinkButton, {
@@ -703,13 +737,13 @@ export const CategoryButtons = ({
   </div>
 );
 
-export const FilterButton = (props: DefaultActionButtonProps) => (
+export const FilterButton = ({action, disabled, title}: DefaultActionButtonProps) => (
   <button
-    onClick={e => props.action(e)}
+    onClick={e => action(e)}
     className={Styles.FilterButton}
-    disabled={props.disabled}
+    disabled={disabled}
   >
-    Categories & Filters
+    {title || 'Categories & Filters'}
     {Filter}
   </button>
 );

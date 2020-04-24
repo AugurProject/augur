@@ -56,7 +56,7 @@ export const MOCK_BETSLIP_STATE = {
           {
             outcome: 'Chicogo Bulls, +5',
             odds: '-105',
-            wager: '10.00',
+            wager: '22.00',
             toWin: '9.52',
             amountFilled: '0',
             amountWon: '0',
@@ -228,63 +228,63 @@ export const MOCK_GAMES_DATA = [
     outcomes: {
       '0x01': {
         outcome: 'River Plate, +2',
-        odds: '-105',
-        wager: '10.00',
+        odds: '-54',
+        wager: '11.00',
         toWin: '9.52',
         amountFilled: '0',
         amountWon: '0',
         status: BET_STATUS.UNSENT,
         betDate: 1587511165,
-        betType: BET_TYPE.SPREAD
+        betType: BET_TYPE.SPREAD,
       },
       '0x02': {
         outcome: 'River Plate',
-        odds: '-105',
-        wager: '10.00',
+        odds: '-102',
+        wager: '54.00',
         toWin: '9.52',
         amountFilled: '0',
         amountWon: '5.6',
         status: BET_STATUS.FILLED,
         betDate: 1587511165,
-        betType: BET_TYPE.SPREAD
+        betType: BET_TYPE.SPREAD,
       },
       '0x03': {
         outcome: 'Event Cancelled',
-        odds: '-105',
-        wager: '10.00',
+        odds: '-145',
+        wager: '3.00',
         toWin: '9.52',
         amountFilled: '0',
-        amountWon: '0',
+        amountWon: '-2',
         status: BET_STATUS.UNSENT,
-        betDate: 1587511165,
-        betType: BET_TYPE.MONEYLINE
+        betDate: 1587511465,
+        betType: BET_TYPE.MONEYLINE,
       },
-    }
+    },
   },
   {
     description: 'Dallas Maverick vs. Houston Rockets',
     reportingState: REPORTING_STATE.OPEN_REPORTING,
     categories: ['Sports', 'NBA'],
     isTemplate: true,
-    startTime: 1587511165,
+    startTime: 1587513165,
     template: {
       hash: '0101',
     },
     outcomes: {
       '0x01': {
         outcome: 'Dallas Maverick',
-        odds: '-105',
-        wager: '10.00',
-        toWin: '9.52',
+        odds: '125',
+        wager: '11.00',
+        toWin: '10.52',
         amountFilled: '0',
         amountWon: '0',
         status: BET_STATUS.UNSENT,
-        betDate: 1587511165,
+        betDate: 1387512165,
         highRisk: true,
-        betType: BET_TYPE.MONEYLINE
+        betType: BET_TYPE.MONEYLINE,
       },
-    }
-  }
+    },
+  },
 ];
 
 export const MOCK_FUTURES_DATA = [
@@ -293,44 +293,75 @@ export const MOCK_FUTURES_DATA = [
     reportingState: REPORTING_STATE.PRE_REPORTING,
     categories: ['Sports', 'NBA'],
     isTemplate: true,
-    startTime: 1587511165,
+    startTime: 1509511175,
     template: {
       hash: '0101',
     },
     outcomes: {
       '0x01': {
         outcome: 'Chicago Bulls',
-        odds: '-105',
-        wager: '10.00',
-        toWin: '9.52',
+        odds: '205',
+        wager: '110.00',
+        toWin: '9.42',
         amountFilled: '0',
         amountWon: '0',
-        status: BET_STATUS.UNSENT,
-        betDate: 1587511165,
+        status: BET_STATUS.CLOSED,
+        betDate: 1588511165,
       },
-    }
+    },
   },
   {
     description: 'Central Division 2019 - 20',
     reportingState: REPORTING_STATE.PRE_REPORTING,
     categories: ['Sports', 'NBA'],
     isTemplate: true,
-    startTime: 1587511165,
+    startTime: 1587518165,
     template: {
       hash: '0101',
     },
     outcomes: {
       '0x01': {
         outcome: 'Indiana Pacers',
-        odds: '-105',
-        wager: '10.00',
+        odds: '-115',
+        wager: '101.00',
         toWin: '9.52',
         amountFilled: '0',
         amountWon: '0',
         status: BET_STATUS.UNSENT,
-        betDate: 1587511165,
+        betDate: 1687519165,
         highRisk: true,
       },
-    }
-  }
-]
+    },
+  },
+];
+
+export const MOCK_OUTCOMES_DATA = MOCK_GAMES_DATA.concat(
+  MOCK_FUTURES_DATA
+).reduce(
+  (p, game) => [
+    ...p,
+    ...Object.values(game.outcomes).map(outcome => {
+      return {
+        ...game,
+        outcomes: null,
+        ...outcome,
+      };
+    }),
+  ],
+  []
+);
+
+export const VIEW_BY = 'viewBy';
+export const ROWS = 'rows';
+export const SELECTED_MARKET_CARD_TYPE = 'selectedMarketCardType';
+export const SELECTED_MARKET_STATE_TYPE = 'selectedMarketStateType';
+export const MARKET_STATUS = 'marketStatus';
+export const BET_DATE = 'betDate';
+
+export const MY_BETS_ACTIONS = {
+  SET_VIEW_BY: 'SET_VIEW_BY',
+  SET_SELECTED_MARKET_CARD_TYPE: 'SET_SELECTED_MARKET_CARD_TYPE',
+  SET_SELECTED_MARKET_STATE_TYPE: 'SET_MARKET_STATE_TYPE',
+  SET_MARKET_STATUS: 'SET_MARKET_STATUS',
+  SET_BET_DATE: 'BET_DATE'
+};

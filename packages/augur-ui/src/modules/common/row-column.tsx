@@ -8,9 +8,10 @@ import {
   ValueLabel,
   CountdownLabel,
   RedFlag,
+  TemplateShield,
 } from 'modules/common/labels';
 import InvalidLabel from 'modules/common/containers/labels';
-import { CancelTextButton } from 'modules/common/buttons';
+import { CancelTextButton, CashoutButton } from 'modules/common/buttons';
 import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
 import { DateFormattedObject } from 'modules/types';
 import { TXEventName } from '@augurproject/sdk/src';
@@ -48,6 +49,7 @@ export interface Properties {
   useFull?: boolean;
   showFullPrecision?: boolean;
   showDenomination?: boolean;
+  templateShield?: boolean;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -79,7 +81,8 @@ function selectColumn(columnType: string, properties: Properties) {
     highRisk,
     useFull,
     showFullPrecision,
-    showDenomination
+    showDenomination,
+    templateShield
   } = properties;
 
   switch (columnType) {
@@ -87,10 +90,14 @@ function selectColumn(columnType: string, properties: Properties) {
       return (
         <>
           <TextLabel text={text} keyId={keyId} />
+          {templateShield &&
+            <TemplateShield market={outcome} />
+          }
           {showExtraNumber && highRisk && (
             <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} />
           )}
-          {showExtraNumber && <span>{value}</span>}
+          {showExtraNumber && templateShield && <a>{value}</a>}
+          {showExtraNumber && !templateShield && <span>{value}</span>}
         </>
       );
     case COLUMN_TYPES.POSITION_TYPE:
@@ -153,6 +160,12 @@ function selectColumn(columnType: string, properties: Properties) {
           keyId={keyId}
           tooltipPositioning="right"
         />
+      );
+    case COLUMN_TYPES.CASHOUT_BUTTON: 
+      return (
+        <span>
+          <CashoutButton action={null} outcome={outcome}/>
+        </span>
       );
     case COLUMN_TYPES.CANCEL_TEXT_BUTTON:
       const confirmed = status === TXEventName.Success;
