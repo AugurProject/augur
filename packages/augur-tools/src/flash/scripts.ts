@@ -429,7 +429,8 @@ export function addScripts(flash: FlashSession) {
       await user.approveIfNecessary();
 
       await user.initWarpSync(user.augur.contracts.universe.address);
-      await user.addEthExchangeLiquidity(new BigNumber(4e18), new BigNumber(600e18));
+      await user.addEthExchangeLiquidity(new BigNumber(600e18), new BigNumber(4e18));
+      await user.addTokenExchangeLiquidity(new BigNumber(100e18), new BigNumber(10e18));
       await createCannedMarkets(user, false);
     },
   });
@@ -503,7 +504,8 @@ export function addScripts(flash: FlashSession) {
       await user.approveIfNecessary();
 
       await user.initWarpSync(user.augur.contracts.universe.address);
-      await user.addEthExchangeLiquidity(new BigNumber(4e18), new BigNumber(600e18));
+      await user.addEthExchangeLiquidity(new BigNumber(600e18), new BigNumber(4e18));
+      await user.addTokenExchangeLiquidity(new BigNumber(100e18), new BigNumber(10e18));
       const markets = await createCannedMarkets(user, false);
       for (let i = 0; i < markets.length; i++) {
         const createdMarket = markets[i];
