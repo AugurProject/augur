@@ -1128,20 +1128,25 @@ export class Users {
           return _.mapValues(
             profitLossByOutcome,
             (outcomePLValues, outcome) => {
-              let lastPrice = null;
               const latestOutcomePLValue = getLastDocBeforeTimestamp<
                 ProfitLossChangedLog
               >(outcomePLValues, bucketTimestamp);
-              if (latestOutcomePLValue) lastPrice = latestOutcomePLValue.avgPrice;
+              // if market not traded in timeframe use last pl avg price
+              let lastPrice = null;
+              if (latestOutcomePLValue) {
+                lastPrice = new BigNumber(latestOutcomePLValue.avgPrice).div(
+                  10 ** 18
+                );
+              }
               if (ordersFilledResultsByMarketAndOutcome[marketId] &&
                 ordersFilledResultsByMarketAndOutcome[marketId][outcome]) {
                 const last = getLastDocBeforeTimestamp<ParsedOrderEventLog>(
                   ordersFilledResultsByMarketAndOutcome[marketId][outcome],
                   bucketTimestamp);
-                  if (last) lastPrice = last.price;
+                  if (last) lastPrice =  new BigNumber(last.price);
               }
               const finalized = !!marketFinalizedByMarket[marketId] && new BigNumber(marketFinalizedByMarket[marketId].timestamp).lte(bucketTimestamp);
-              const hasOutcomeValues = lastPrice || finalized;
+              const hasOutcomeValues = (lastPrice !== null) || finalized;
               if (!latestOutcomePLValue || !hasOutcomeValues) {
                 return {
                   timestamp: bucketTimestamp.toNumber(),
@@ -1168,22 +1173,10 @@ export class Users {
                   ]
                 );
               } else {
-                const outcomeValues =
-                ordersFilledResultsByMarketAndOutcome[marketId][outcome];
-              const last = getLastDocBeforeTimestamp<ParsedOrderEventLog>(
-                outcomeValues,
-                bucketTimestamp);
-              // if market not traded in timeframe use last pl avg price
               // if market is finalized set last price to minPrice
               outcomeValue = marketFinalizedByMarket[marketId]
                 ? new BigNumber(marketDoc.prices[0])
-                : new BigNumber(
-                    last
-                      ? last.price
-                      : new BigNumber(latestOutcomePLValue.avgPrice).div(
-                          10 ** 18
-                        )
-                  );
+                : lastPrice;
               }
               return getTradingPositionFromProfitLossFrame(
                 latestOutcomePLValue,
