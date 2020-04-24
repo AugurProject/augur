@@ -350,3 +350,18 @@ export const MOCK_OUTCOMES_DATA = MOCK_GAMES_DATA.concat(
   ],
   []
 );
+
+export const VIEW_BY = 'viewBy';
+export const ROWS = 'rows';
+export const SELECTED_MARKET_CARD_TYPE = 'selectedMarketCardType';
+export const SELECTED_MARKET_STATE_TYPE = 'selectedMarketStateType';
+export const MARKET_STATUS = 'marketStatus';
+export const BET_DATE = 'betDate';
+
+export const MY_BETS_ACTIONS = {
+  SET_VIEW_BY: 'SET_VIEW_BY',
+  SET_SELECTED_MARKET_CARD_TYPE: 'SET_SELECTED_MARKET_CARD_TYPE',
+  SET_SELECTED_MARKET_STATE_TYPE: 'SET_MARKET_STATE_TYPE',
+  SET_MARKET_STATUS: 'SET_MARKET_STATUS',
+  SET_BET_DATE: 'BET_DATE'
+};
