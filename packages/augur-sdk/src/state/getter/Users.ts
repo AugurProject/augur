@@ -1128,14 +1128,20 @@ export class Users {
           return _.mapValues(
             profitLossByOutcome,
             (outcomePLValues, outcome) => {
+              let lastPrice = null;
               const latestOutcomePLValue = getLastDocBeforeTimestamp<
                 ProfitLossChangedLog
               >(outcomePLValues, bucketTimestamp);
+              if (latestOutcomePLValue) lastPrice = latestOutcomePLValue.avgPrice;
+              if (ordersFilledResultsByMarketAndOutcome[marketId] &&
+                ordersFilledResultsByMarketAndOutcome[marketId][outcome]) {
+                const last = getLastDocBeforeTimestamp<ParsedOrderEventLog>(
+                  ordersFilledResultsByMarketAndOutcome[marketId][outcome],
+                  bucketTimestamp);
+                  if (last) lastPrice = last.price;
+              }
               const finalized = !!marketFinalizedByMarket[marketId] && new BigNumber(marketFinalizedByMarket[marketId].timestamp).lte(bucketTimestamp);
-              let hasOutcomeValues = !!(
-                ordersFilledResultsByMarketAndOutcome[marketId] &&
-                ordersFilledResultsByMarketAndOutcome[marketId][outcome]
-              ) || finalized;
+              const hasOutcomeValues = lastPrice || finalized;
               if (!latestOutcomePLValue || !hasOutcomeValues) {
                 return {
                   timestamp: bucketTimestamp.toNumber(),

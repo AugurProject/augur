@@ -436,6 +436,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(loadMarketTradingHistory(marketId));
     dispatch(updateMarketOrderBook(marketId));
   }
+  dispatch(checkUpdateUserPositions([marketId]));
 };
 
 export const handleTradingProceedsClaimedLog = (
