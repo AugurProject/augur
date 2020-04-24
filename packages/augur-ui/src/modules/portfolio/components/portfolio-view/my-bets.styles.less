@@ -69,8 +69,12 @@
             justify-content: flex-end;
 
             > div {
-                width: 100%;
+                width: 270px;
                 height: @size-40;
+
+                @media @breakpoint-mobile-tablet {
+                    width: 100%;
+                }
             }
         }
     
