@@ -79,7 +79,10 @@ function createBrowserMeshRestartFunction(
         true
       )
     );
-    mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, sdkConfig));
+    mesh.onError(() => {
+      zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {});
+      createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, sdkConfig)
+    });
     mesh.startAsync().then(() => {
       zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusRestarted, {});
       zeroX.mesh = mesh;

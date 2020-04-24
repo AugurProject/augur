@@ -161,6 +161,7 @@ export class ZeroX {
         this.client.events.emit('ZeroX:RPC:OrderEvent', orderEvents);
       }
     }).catch((err) => {
+      if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXStatusError, {});
       throw Error(`Failure when subscribing to OrdersAsync in ZeroX set rpc: ${err}`);
     });
 
