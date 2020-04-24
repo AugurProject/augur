@@ -34,7 +34,7 @@ export class Subscriptions extends EventEmitter {
     this.waitingOn[after].push({
       eventName,
       eventArgs,
-    })
+    });
   }
 
   emit(event: string, ...args: any[]): boolean {
@@ -62,10 +62,15 @@ export class Subscriptions extends EventEmitter {
 
   removeAllListeners(eventName?: string | symbol): this {
     this.emit('removeAllListeners');
-    return eventName ? super.removeAllListeners(eventName) : super.removeAllListeners();
+    return eventName
+      ? super.removeAllListeners(eventName)
+      : super.removeAllListeners();
   }
 
-  private subscribeToEvent(eventName: string, publish: (...args: any[]) => void): string {
+  private subscribeToEvent(
+    eventName: string,
+    publish: (...args: any[]) => void
+  ): string {
     const subscription: string = uuidv4();
 
     const handler = (...args: any[]): void => {
