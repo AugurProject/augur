@@ -6,7 +6,11 @@
 
 * [Introduction](quick-start/untitled-1.md)
 
-## Contract API
+## Contracts
 
-* [Untitled](contract-api/untitled.md)
+* [Index](contract/index.md)
+
+## SDK
+
+* [Index](sdk/index.md)
 
