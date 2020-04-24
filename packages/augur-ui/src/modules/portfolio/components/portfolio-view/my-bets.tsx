@@ -52,29 +52,30 @@ export const MyBets = () => {
     selectedMarketStateType,
   } = state;
 
+  const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
+
   useEffect(() => {
-    if (MY_BETS_VIEW_BY[viewBy].label === EVENT) {
+    if (showEvents) {
       setState({ ...state, rows: MOCK_GAMES_DATA });
-    } else if (MY_BETS_VIEW_BY[viewBy].label === OUTCOMES) {
+    } else if (!showEvents) {
       setState({ ...state, rows: MOCK_OUTCOMES_DATA });
     }
   }, [viewBy]);
 
   useEffect(() => {
     if (
-      MY_BETS_VIEW_BY[viewBy].label === EVENT &&
+      showEvents &&
       SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES
     ) {
       setState({ ...state, rows: MOCK_GAMES_DATA });
     } else if (
-      MY_BETS_VIEW_BY[viewBy].label === EVENT &&
+      showEvents &&
       SPORTS_MARKET_TYPES[selectedMarketCardType].label === FUTURES
     ) {
       setState({ ...state, rows: MOCK_FUTURES_DATA });
     }
   }, [selectedMarketCardType, viewBy]);
 
-  const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
 
   return (
     <div className={classNames(Styles.MyBets)}>
@@ -106,7 +107,7 @@ export const MyBets = () => {
         />
         <div>
           <span>
-            View by{' '}
+            View by 
             <SquareDropdown
               options={MY_BETS_VIEW_BY}
               defaultValue={MY_BETS_VIEW_BY[0].value}
@@ -125,7 +126,7 @@ export const MyBets = () => {
           </span>
           {showEvents ? (
             <span>
-              Market Status:{' '}
+              Market Status: 
               <SquareDropdown
                 options={MY_BETS_MARKET_STATUS}
                 defaultValue={MY_BETS_MARKET_STATUS[0].value}
@@ -137,7 +138,7 @@ export const MyBets = () => {
             </span>
           ) : (
             <span>
-              Bet Date:{' '}
+              Bet Date:
               <SquareDropdown
                 options={MY_BETS_BET_DATE}
                 defaultValue={MY_BETS_BET_DATE[0].value}
@@ -184,8 +185,7 @@ export const MyBets = () => {
             </span>
           </section>
         )}
-        {rows.length > 0 &&
-          showEvents &&
+        {showEvents &&
           rows.map(row => (
             <Game
               row={row}
