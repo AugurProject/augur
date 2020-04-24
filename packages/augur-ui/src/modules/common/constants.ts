@@ -834,7 +834,19 @@ export const ZEROX_STATUSES = {
   READY: 'READY',
   STARTED: 'STARTED',
   RESTARTING: 'RESTARTING',
-  RESTARTED: 'RESTARTED'
+  RESTARTED: 'RESTARTED',
+  ERROR: 'ERROR',
+  SYNCED: 'SYNCED',
+}
+
+export const ZEROX_STATUSES_TOOLTIP = {
+  STARTING: 'Degrated Service',
+  READY: 'Degraded Service',
+  SYNCED: 'Service Operational',
+  STARTED: 'Degraded Service',
+  RESTARTING: 'Degraded Service',
+  RESTARTED: 'Service Operational',
+  ERROR: 'Something went wrong, please refresh your page'
 }
 
 // Account Summary - Your Overview

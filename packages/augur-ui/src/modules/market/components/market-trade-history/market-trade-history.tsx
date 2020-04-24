@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 
-import { formatShares, formatDai, formatScalarShares, formatMarketShares } from 'utils/format-number';
+import { formatDai, formatMarketShares } from 'utils/format-number';
 import {
   SELL,
   SCALAR,

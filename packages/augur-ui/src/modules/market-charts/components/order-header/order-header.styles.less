@@ -18,7 +18,11 @@
     height: @size-32;
     max-height: @size-32;
     min-height: @size-32;
-    
+
+    &.WithStatus {
+      padding: @size-8 @size-10 @size-8 @size-8;
+    }
+
     @media @breakpoint-mobile {
       display: none;
     }
@@ -49,7 +53,7 @@
       margin-left: @size-40;
       text-align: left;
     }
-    
+
     > li:nth-of-type(2) {
       text-align: center;
     }
