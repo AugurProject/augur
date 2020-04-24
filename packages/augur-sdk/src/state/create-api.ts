@@ -125,7 +125,7 @@ export async function createClient(
     connector,
     zeroX,
     enableFlexSearch
-  );{}
+  );
 
   // Delay loading of the browser mesh until we're finished syncing
   client.events.once(SubscriptionEventName.BulkSyncComplete, () => {

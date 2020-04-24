@@ -57,6 +57,7 @@ export function addGanacheScripts(flash: FlashSession) {
 
       if (await fs.exists(filepath)) {
         const seed: Seed = await loadSeed(filepath);
+        console.log('MARINA', seed.contractsHash)
         if (seed.contractsHash === hashContracts()) {
           console.log('Seed file exists and is up to date.');
           return; // no need to update seed
@@ -64,13 +65,13 @@ export function addGanacheScripts(flash: FlashSession) {
       }
 
       console.log('Creating seed file.');
-      const { provider, db } = await startGanacheServer(this.accounts);
-
-      const config = this.deriveConfig({ deploy: { normalTime: false, writeArtifacts: true }});
-      const { addresses } = await deployContracts(this.network, provider, this.getAccount(), compilerOutput, config)
-      config.addresses = addresses;
-
-      await makeSeed(provider, db, config, name, filepath);
+      // const { provider, db } = await startGanacheServer(this.accounts);
+      //
+      // const config = this.deriveConfig({ deploy: { normalTime: false, writeArtifacts: true }});
+      // const { addresses } = await deployContracts(this.network, provider, this.getAccount(), compilerOutput, config)
+      // config.addresses = addresses;
+      //
+      // await makeSeed(provider, db, config, name, filepath);
     },
   });
 

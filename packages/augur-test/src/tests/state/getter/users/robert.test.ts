@@ -24,6 +24,7 @@ import { Controller } from '@augurproject/sdk/build/state/Controller';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 
 import { LONG, SHORT, trade } from './common';
+import { createClient, startServerFromClient } from "@augurproject/sdk/build";
 
 async function makeDependencies(provider: EthersProvider, config: SDKConfiguration, account: Account, signer?: EthersFastSubmitWallet) {
   signer = signer || await makeSigner(account, provider);
@@ -155,13 +156,40 @@ async function makeUser(config: SDKConfiguration, provider: EthersProvider, acco
   const wallet = await getWallet(augur, account);
   await augur.contracts.cash.transfer(wallet, new BigNumber(100e18)); // put DAI into the wallet
 
-  augur.setUseWallet(true); // gsn wallet
-  augur.setUseRelay(true); // gsn relay
+  // augur.setUseWallet(true); // gsn wallet
+  // augur.setUseRelay(true); // gsn relay
 
   return { augur, sync };
 }
 
 describe('robert', () => {
+  test('hamlet', async () => {
+    const config = buildConfig('local', {
+      gsn: { enabled: true },
+      zeroX: { rpc: { enabled: true }},
+    });
+    const provider = new EthersProvider(
+      new JsonRpcProvider(config.ethereum.http),
+      config.ethereum.rpcRetryCount,
+      config.ethereum.rpcRetryInterval,
+      config.ethereum.rpcConcurrency
+    );
+    const connector = new Connectors.DirectConnector();
+    const account = ACCOUNTS[0];
+    const signer = await makeSigner(account, provider);
+    const augur = await createClient(config, connector, signer, provider, true);
+    const api = await startServerFromClient(config, augur);
+    connector.initialize(augur, await api.db);
+
+    // TODO figure out why using gsn cause failure
+    // augur.setUseWallet(true); // gsn wallet
+    // augur.setUseRelay(true); // gsn relay
+
+    console.log('TARTIGRADE', 0)
+    await augur.sendETH(NULL_ADDRESS, new BigNumber(1))
+    console.log('TARTIGRADE', 1)
+  });
+
   test('zerion', async () => {
     // setup
     const config = buildConfig('local', {
