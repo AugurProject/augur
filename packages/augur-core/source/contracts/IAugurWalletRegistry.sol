@@ -5,7 +5,6 @@ import 'ROOT/uniswap/interfaces/IWETH.sol';
 
 
 interface IAugurWalletRegistry {
-    function walletTransferedOwnership(address _oldOwner, address _newOwner) external;
     function ethExchange() external returns (IUniswapV2Exchange);
     function WETH() external returns (IWETH);
     function token0IsCash() external returns (bool);
