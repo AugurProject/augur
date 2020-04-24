@@ -120,7 +120,7 @@ export default class FormDetails extends React.Component<
       }
       const marketClose = template.inputs.find(i => i.type === TemplateInputType.DATEYEAR_CLOSING);
       if (marketClose) {
-        resolutionTimeSubheader = `This templated market has a predefined event expiration date, which is based on exchange in market question.`
+        resolutionTimeSubheader = `This templated market has a predefined event expiration date and time, which is based on the exchange in the market question.`
       }
     }
     return (
