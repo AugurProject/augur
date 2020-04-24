@@ -22,7 +22,7 @@
     "clean-start": "yarn rebuild && yarn start",
     "clean-start-local": "yarn rebuild && ETHEREUM_HTTP=http://127.0.0.1:8545 ETHEREUM_WS=ws://127.0.0.1:8546 yarn start",
     "start-kovan": "ETHEREUM_HTTP=https://eth-kovan.alchemyapi.io/v2/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA yarn start",
-    "build:documentation": "yarn typedoc --theme markdown --mdDocusaurus --disableOutputCheck --ignoreCompilerErrors --out ../../docs/v2/docs/sdk ./src",
+    "build:documentation": "yarn typedoc --theme markdown --mdDocusaurus --disableOutputCheck --ignoreCompilerErrors --out ../../docs/sdk ./src",
     "check": "gts check",
     "fix": "gts fix"
   },
@@ -41,8 +41,8 @@
     "@augurproject/artifacts": "2.0.0-alpha.2",
     "@augurproject/core": "2.0.0-alpha.2",
     "@augurproject/ethersjs-provider": "2.0.0-alpha.2",
-    "@augurproject/utils": "2.0.0-alpha.2",
     "@augurproject/indexeddbshim": "6.1.1",
+    "@augurproject/utils": "2.0.0-alpha.2",
     "async": "3.1.0",
     "bs58": "4.0.1",
     "contract-dependencies-gsn": "2.0.0-alpha.2",
@@ -61,6 +61,8 @@
     "isomorphic-ws": "4.0.1",
     "lodash": "4.17.15",
     "moment": "2.24.0",
+    "typedoc": "0.17.4",
+    "typedoc-plugin-markdown": "2.2.17",
     "websocket-as-promised": "1.0.1",
     "ws": "7.1.2"
   },
