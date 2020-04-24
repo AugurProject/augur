@@ -203,7 +203,7 @@ export const MyBets = () => {
           search=""
           isSearchingMarkets={false}
         />
-        <FilterButton title="Filters" action={null} />
+        <FilterButton title="Filters" />
       </div>
       <div>
         {rows.length === 0 && (

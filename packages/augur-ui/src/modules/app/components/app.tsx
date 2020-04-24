@@ -57,6 +57,7 @@ import { ExternalLinkText } from 'modules/common/buttons';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { SDKConfiguration } from '@augurproject/artifacts';
+import { MyBetsInnerNav } from 'modules/portfolio/components/common/my-bets-inner-nav';
 
 interface AppProps {
   notifications: Notification[];
@@ -134,7 +135,7 @@ function renderMobileMenuButton(mobileMenuState, updateMobileMenuState, cbForMob
 };
 
 function changeMenu(nextBasePath, updateCurrentInnerNavType, updateMobileMenuState) {
-  if (nextBasePath === MARKETS) {
+  if (nextBasePath === MARKETS || nextBasePath === MY_POSITIONS) {
     updateCurrentInnerNavType(MarketsInnerNavContainer);
   } else {
     updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
@@ -383,15 +384,21 @@ const AppView = ({
               [Styles.TopBarOpen]: navShowing,
             })}
           >
-            {currentPath === MARKETS ? (
+            {currentPath === MARKETS && (
               <MarketsInnerNavContainer
                 location={location}
                 history={history}
                 mobileMenuState={mobileMenuState}
               />
-            ) : (
-              <div className="no-nav-placehold" />
             )}
+             {currentPath === MY_POSITIONS && (
+              <MyBetsInnerNav
+                mobileMenuState={mobileMenuState}
+              />
+            )}  
+            {currentPath !== MARKETS && currentPath !== MY_POSITIONS &&
+              <div className="no-nav-placehold" />
+            }
             <MainAppContent
               isLogged={isLogged}
               restoredAccount={restoredAccount}
