@@ -77,7 +77,6 @@
   "devDependencies": {
     "@augurproject/solidity-typescript-generator": "1.1.13",
     "@types/chai": "4.2.3",
-
     "@types/mkdirp": "0.5.2",
     "@types/node": "10.14.18",
     "chai": "4.2.0",
@@ -86,11 +85,11 @@
     "cross-env": "5.2.1",
     "options-parser": "0.4.0",
     "solc": "0.5.11",
+    "solidity-coverage": "0.6.7",
     "solium": "1.2.5",
     "source-map-support": "0.5.13",
     "ts-node": "7.0.1",
-    "typescript": "3.7.5",
-    "util": "0.12.1",
-    "solidity-coverage": "0.6.7"
+    "typescript": "3.8.3",
+    "util": "0.12.1"
   }
 }
