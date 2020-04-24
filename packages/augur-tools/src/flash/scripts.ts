@@ -440,6 +440,7 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'orders',
         abbr: 'o',
+        flag: true,
         description: 'create orders on markets',
       }
     ],
