@@ -49,6 +49,7 @@ import { ExternalLinkText } from 'modules/common/buttons';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { SDKConfiguration } from '@augurproject/artifacts';
+import { StatusErrorMessage } from 'modules/common/labels';
 
 interface AppProps {
   notifications: Notification[];
@@ -527,7 +528,7 @@ export default class AppView extends Component<AppProps> {
                 )}
 
                 <ForkingBanner />
-
+                <StatusErrorMessage />
                 <Routes isLogged={isLogged || restoredAccount} />
               </section>
             </section>

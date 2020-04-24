@@ -1012,3 +1012,74 @@ span.PendingLabel {
   text-decoration-line: underline;
   text-decoration-style: dotted;
 }
+
+.StatusDotTooltip {
+  display: flex;
+
+  > span {
+    border-radius: 50%;
+    height: @size-8;
+    margin-right: @size-4;
+    align-self: center;
+    width: @size-8;
+
+    &.Ready {
+      background: @color-open;
+    }
+    &.Lag {
+      background: @color-reporting;
+      cursor: pointer;
+    }
+    &.Error {
+      background: @color-error;
+      cursor: pointer;
+    }
+  }
+}
+
+
+.StatusErrorMessage {
+  display: flex;
+  justify-content: center;
+  background-color: @color-module-background-action-focus;
+  padding: @size-5 0;
+
+  > span {
+    .text-10-bold;
+
+    display: flex;
+    background: fade(@color-error, 20%);
+    border-bottom: @size-2 solid @color-error;
+    border-left: @size-4 solid @color-error;
+    border-right: @size-2 solid @color-error;
+    border-top: @size-2 solid @color-error;
+    border-radius: 3px;
+    color: @color-primary-text;
+    padding: 0.5rem 0;
+    width: 21.125rem;
+    text-transform: uppercase;
+
+    @media @breakpoint-mobile {
+      margin: 0 @size-5;
+      width: 100%;
+    }
+
+    > svg {
+      align-self: center;
+      grid-row: span 2;
+      fill: none;
+      height: @size-12;
+      margin: 0 0.35rem;
+      width: @size-12;
+
+      > circle {
+        stroke: @color-error;
+      }
+
+      > rect,
+      > path {
+        fill: @color-error;
+      }
+    }
+  }
+}

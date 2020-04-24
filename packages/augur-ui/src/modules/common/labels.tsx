@@ -53,6 +53,7 @@ import { useTimer } from 'modules/common/progress';
 import { Market } from 'modules/portfolio/components/common/market-row';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { AppState } from 'appStore';
+import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -1253,6 +1254,68 @@ export const LinearPropertyLabelTooltip = (
   </span>
 );
 
+interface StatusDotTooltipProps {
+  status: string;
+  tooltip: string;
+  title: string;
+}
+
+export const StatusDotTooltip = (props: StatusDotTooltipProps) => (
+  <>
+    {props.status && (
+      <div className={classNames(Styles.StatusDotTooltip)}>
+        <span
+          data-tip
+          data-for={`tooltip-${props.status}`}
+          data-iscapture={true}
+          className={classNames({
+            [Styles.Ready]: props.status === constants.ZEROX_STATUSES.SYNCED,
+            [Styles.Lag]:
+              props.status !== constants.ZEROX_STATUSES.SYNCED &&
+              props.status !== constants.ZEROX_STATUSES.ERROR,
+            [Styles.Error]: props.status === constants.ZEROX_STATUSES.ERROR,
+          })}
+        >
+        </span>
+        <ReactTooltip
+          id={`tooltip-${props.status}`}
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="top"
+          type="light"
+          event="mouseover mouseenter"
+          eventOff="mouseleave mouseout scroll mousewheel blur"
+        >
+          {props.tooltip}
+        </ReactTooltip>
+        {props.title}
+      </div>
+    )}
+    {!props.status && props.title}
+  </>
+);
+
+const mapStateToPropsStatusMessage = (state: AppState) => ({
+    status: state.appStatus[Ox_STATUS]
+});
+
+export const StatusErrorMessageCmp = ({ status }) => {
+  if (status !== constants.ZEROX_STATUSES.ERROR) return null;
+  return (
+    <div className={classNames(Styles.StatusErrorMessage)}>
+      <span>
+        {ExclamationCircle}
+        {constants.ZEROX_STATUSES_TOOLTIP[constants.ZEROX_STATUSES.ERROR]}
+      </span>
+    </div>
+  );
+};
+
+export const StatusErrorMessage = connect(
+  mapStateToPropsStatusMessage
+)(StatusErrorMessageCmp);
+
+
 interface LinearPropertyLabelUnderlineTooltipProps extends LinearPropertyLabelProps {
   tipText: string,
   id: string,
@@ -1393,7 +1456,7 @@ const InitializeWalletModalNoticeCmp = ({ gsnUnavailable }) => (
         <DismissableNotice
           show
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          title={`The fee displayed is high than normal because it includes a one time only account initialization.`}
+          title={`The fee displayed is higher than normal because it includes a one time only account initialization.`}
         />
       </div>
     )}
