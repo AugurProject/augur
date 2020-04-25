@@ -27,9 +27,6 @@ const StartUpEvents = {
   [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
     handleMarketsUpdatedLog
   ),
-  [SubscriptionEventName.ZeroXStatusStarting]: wrapLogHandler(
-    () => handleZeroStatusUpdated(ZEROX_STATUSES.STARTING)
-  ),
   [SubscriptionEventName.ZeroXStatusReady]: wrapLogHandler(
     () => handleZeroStatusUpdated(ZEROX_STATUSES.READY)
   ),

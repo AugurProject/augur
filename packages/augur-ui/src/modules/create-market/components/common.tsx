@@ -40,6 +40,7 @@ import {
   createTemplateOutcomes,
   substituteUserOutcome,
   createTemplateValueList,
+  getEventExpirationForExchange,
 } from 'modules/create-market/get-template';
 import {
   TemplateInput,
@@ -878,6 +879,18 @@ export const InputFactory = (props: InputFactoryProps) => {
           const stringValue = convertUnixToFormattedDate(Number(startOfDay))
             .formattedSimpleData;
           updateData(stringValue);
+          const comps = getEventExpirationForExchange(inputs);
+          if (comps) {
+            onChange('updateEventExpiration', {
+              setEndTime: comps.setEndTime,
+              hour: comps.hour,
+              minute: comps.minute,
+              meridiem: comps.meridiem,
+              offset: 0,
+              offsetName: null,
+              timezone: null,
+            });
+          }
           if (input.daysAfterDateStart) {
             const newEndTime = SECONDS_IN_A_DAY.times(input.daysAfterDateStart).plus(startOfDay).toNumber()
             onChange('updateEventExpiration', {
@@ -962,6 +975,18 @@ export const InputFactory = (props: InputFactoryProps) => {
               target.type === TemplateInputType.DATEYEAR_CLOSING
             ) {
               target.userInputObject = target.inputTimeOffset[value];
+              const comps = getEventExpirationForExchange(inputs);
+              if (comps) {
+                onChange('updateEventExpiration', {
+                  setEndTime: comps.setEndTime,
+                  hour: comps.hour,
+                  minute: comps.minute,
+                  meridiem: comps.meridiem,
+                  offset: 0,
+                  offsetName: null,
+                  timezone: null,
+                });
+              }
             }
 
             if (input.eventExpEndNextMonth) {
