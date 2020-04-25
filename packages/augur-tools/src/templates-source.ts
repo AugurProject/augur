@@ -2764,7 +2764,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 48,
+                    hoursAfterEst: 8,
                     placeholder: `Date time`,
                   },
                   {
@@ -2789,8 +2789,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] NBA Draft(O/U): What round will [1] be selected? Over/Under, Pick [2].5?`,
-                example: `2020 NBA Draft(O/U): What round will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                question: `[0] NBA Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
+                example: `2020 NBA Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
@@ -2813,7 +2813,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 48,
+                    hoursAfterEst: 8,
                     placeholder: `Date time`,
                   },
                   {
@@ -5631,8 +5631,8 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] NFL Draft(O/U): What round will [1] be selected? Over/Under, Pick [2].5?`,
-                example: `2020 NFL Draft(O/U): What round will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                question: `[0] NFL Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
+                example: `2020 NFL Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 inputs: [
                   {
                     id: 0,
