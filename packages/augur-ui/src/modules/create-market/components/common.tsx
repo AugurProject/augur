@@ -887,8 +887,8 @@ export const InputFactory = (props: InputFactoryProps) => {
               minute: comps.minute,
               meridiem: comps.meridiem,
               offset: 0,
-              offsetName: null,
-              timezone: null,
+              offsetName: comps.timezone,
+              timezone: comps.timezone,
             });
           }
           if (input.daysAfterDateStart) {
@@ -983,8 +983,8 @@ export const InputFactory = (props: InputFactoryProps) => {
                   minute: comps.minute,
                   meridiem: comps.meridiem,
                   offset: 0,
-                  offsetName: null,
-                  timezone: null,
+                  offsetName: comps.timezone,
+                  timezone: comps.timezone,
                 });
               }
             }
