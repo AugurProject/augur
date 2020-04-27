@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useMemo } from 'react';
 import classNames from 'classnames';
 
 import Styles from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
@@ -35,7 +35,6 @@ import {
   MOCK_FUTURES_DATA,
   MOCK_OUTCOMES_DATA,
 } from 'modules/portfolio/store/constants';
-import { useEffect } from 'react';
 
 export function processRows(
   viewBy,
@@ -93,33 +92,23 @@ export const MyBets = () => {
     },
   } = useMyBetsStore();
 
-  const [rows, setRows] = useState(
-    processRows(
-      viewBy,
-      marketStatus,
-      betDate,
-      selectedMarketCardType,
-      selectedMarketStateType
-    )
-  );
-
-  useEffect(() => {
-    setRows(
+  const rows = useMemo(
+    () =>
       processRows(
         viewBy,
         marketStatus,
         betDate,
         selectedMarketCardType,
         selectedMarketStateType
-      )
-    );
-  }, [
-    viewBy,
-    marketStatus,
-    betDate,
-    selectedMarketCardType,
-    selectedMarketStateType,
-  ]);
+      ),
+    [
+      viewBy,
+      marketStatus,
+      betDate,
+      selectedMarketCardType,
+      selectedMarketStateType,
+    ]
+  );
 
   const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
 
@@ -159,11 +148,6 @@ export const MyBets = () => {
               defaultValue={viewBy}
               onChange={viewBy => {
                 setViewBy(viewBy);
-                setRows(
-                  MY_BETS_VIEW_BY[viewBy].label === EVENT
-                    ? MOCK_GAMES_DATA
-                    : MOCK_OUTCOMES_DATA
-                );
               }}
               minimalStyle
             />
