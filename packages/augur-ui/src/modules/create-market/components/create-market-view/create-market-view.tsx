@@ -18,7 +18,6 @@ import { HelmetTag } from 'modules/seo/helmet-tag';
 
 interface CreateMarketViewProps extends RouteComponentProps<{}> {
   categoryStats: Getters.Markets.CategoryStats;
-  isMobileSmall: boolean;
   currentTimestamp: number;
   gasPrice: number;
   newMarket: NewMarket;

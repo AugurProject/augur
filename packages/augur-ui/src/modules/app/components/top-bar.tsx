@@ -22,7 +22,6 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface TopBarProps {
   isLogged: boolean;
-  isMobile: boolean;
   restoredAccount: boolean;
   stats: CoreStats;
   unseenCount: number;
@@ -32,14 +31,13 @@ interface TopBarProps {
 
 const TopBar: React.FC<TopBarProps> = ({
   isLogged,
-  isMobile,
   restoredAccount,
   stats,
   unseenCount,
   signupModal,
   loginModal,
 }) => {
-  const { isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
+  const { isMobile, isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
   return (
     <header className={Styles.TopBar}>

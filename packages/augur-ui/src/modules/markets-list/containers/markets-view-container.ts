@@ -56,7 +56,6 @@ const mapStateToProps = (state: AppState, { location }) => {
     restoredAccount: state.authStatus.restoredAccount,
     universe: (state.universe || {}).id,
     search: searchPhrase,
-    isMobile: state.appStatus.isMobile,
     markets,
     marketsInReportingState: findMarketsInReportingState(markets, state.filterSortOptions.marketFilter),
     maxFee: state.filterSortOptions.maxFee,

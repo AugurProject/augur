@@ -95,7 +95,7 @@ interface FromProps {
   orderBook: Getters.Markets.OutcomeOrderBook;
   availableDai: BigNumber;
   currentTimestamp: number;
-  Ox_ENABLED: boolean;
+  zeroXEnabled: boolean;
   tradingTutorial?: boolean;
   gasCostEst: string;
   orderPriceEntered: Function;
@@ -829,7 +829,7 @@ class Form extends Component<FromProps, FormState> {
       sortedOutcomes,
       initialLiquidity,
       currentTimestamp,
-      Ox_ENABLED,
+      zeroXEnabled,
       tradingTutorial,
       orderPriceEntered,
       orderAmountEntered,
@@ -857,7 +857,7 @@ class Form extends Component<FromProps, FormState> {
     // TODO: figure out default outcome after we figure out ordering of the outcomes
     const defaultOutcome = selectedOutcome !== null ? selectedOutcome.id : 2;
     let advancedOptions = advancedDropdownOptions;
-    if (!Ox_ENABLED) {
+    if (!zeroXEnabled) {
       advancedOptions = [advancedOptions[0], advancedOptions[2]];
     }
     const showLimitPriceInput =

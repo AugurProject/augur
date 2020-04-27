@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
-
+import { AppStatusProvider } from 'modules/app/store/app-status';
 import MainErrorBoundary from 'modules/app/components/main-error-boundary';
 
 import store from 'appStore';
@@ -26,13 +26,15 @@ console.log(`
 
 function render(Root) {
   ReactDOM.render(
-    <Provider store={store}>
-      <HashRouter hashType="hashbang">
-        <MainErrorBoundary>
-          <Root />
-        </MainErrorBoundary>
-      </HashRouter>
-    </Provider>,
+    <AppStatusProvider>
+      <Provider store={store}>
+        <HashRouter hashType="hashbang">
+          <MainErrorBoundary>
+            <Root />
+          </MainErrorBoundary>
+        </HashRouter>
+      </Provider>
+    </AppStatusProvider>,
     document.getElementById('app')
   );
 }

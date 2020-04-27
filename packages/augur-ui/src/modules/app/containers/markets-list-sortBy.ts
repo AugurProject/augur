@@ -11,7 +11,6 @@ const mapStateToProps = (state) => {
   return {
     marketSort,
     isSearching: state.marketsList.isSearching,
-    isMobile: state.appStatus.isMobile,
   };
 };
 

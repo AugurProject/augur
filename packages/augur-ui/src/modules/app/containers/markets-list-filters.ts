@@ -16,7 +16,6 @@ const mapStateToProps = ({
   filterSortOptions,
   marketsList,
   loginAccount,
-  appStatus,
 }: AppState) => {
   const {
     maxFee,
@@ -31,7 +30,6 @@ const mapStateToProps = ({
     isSearching: marketsList.isSearching,
     allTemplateFilter: templateFilter,
     settings: loginAccount.settings || {},
-    isMobile: appStatus.isMobile,
   };
 };
 

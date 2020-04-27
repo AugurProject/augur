@@ -30,7 +30,6 @@ const mapStateToProps = (state: AppState, { location }) => {
     isConnected: state.connection.isConnected && state.universe.id != null,
     isLogged: state.authStatus.isLogged,
     restoredAccount: state.authStatus.restoredAccount,
-    isMobile: state.appStatus.isMobile,
     markets: markets.filter(market =>
       POPULAR_CATEGORIES.includes(market.categories[0])
     ),

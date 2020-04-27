@@ -9,7 +9,7 @@ import { LoginAccount } from 'modules/types';
 import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
 
-export const loginWithTorus = () => async (
+export const loginWithTorus = (setOxEnabled, setGSNEnabled) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
@@ -79,10 +79,10 @@ export const loginWithTorus = () => async (
       );
       accountObject.meta.email = userInfo.email;
       accountObject.meta.profileImage = userInfo.profileImage;
-      dispatch(updateSdk(accountObject, undefined, useGSN));
+      dispatch(updateSdk(accountObject, undefined, useGSN, setOxEnabled, setGSNEnabled));
     } catch (error) {
       // User denied request
-      dispatch(updateSdk(accountObject, undefined, useGSN));
+      dispatch(updateSdk(accountObject, undefined, useGSN, setOxEnabled, setGSNEnabled));
     }
   } else {
     throw Error('Network currently not supported with Torus');

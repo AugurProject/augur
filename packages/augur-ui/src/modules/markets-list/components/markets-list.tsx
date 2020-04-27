@@ -19,7 +19,6 @@ interface MarketsListProps {
   location: object;
   toggleFavorite: Function;
   linkType?: string;
-  isMobile: boolean;
   pendingLiquidityOrders?: object;
   showDisputingCard?: boolean;
   outcomes?: object;

@@ -33,7 +33,6 @@ const mapStateToProps = (state, ownProps) => {
     orderBook: orderBooks[marketId]?.orderBook,
     isLogged: authStatus.isLogged,
     isForking: !!forkingInfo,
-    isMobile: appStatus.isMobile,
     pendingLiquidityOrders,
     currentAugurTimestamp: blockchain.currentAugurTimestamp,
     disputingWindowEndTime: universe.disputeWindow?.endTime || 0,

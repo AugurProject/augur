@@ -7,8 +7,6 @@ import { Action } from 'redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
   updateAppStatus,
-  Ox_ENABLED,
-  GSN_ENABLED,
   WALLET_STATUS,
 } from 'modules/app/actions/update-app-status';
 import { loadAccountDataFromLocalStorage } from './load-account-data-from-local-storage';
@@ -26,7 +24,9 @@ import { addAlert } from 'modules/alerts/actions/alerts';
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
   networkId: string,
-  useGSN: boolean
+  useGSN: boolean,
+  setOxEnabled: Function,
+  setGSNEnabled: Function,
 ) => async (
   dispatch: ThunkDispatch<void, any, Action>,
 ) => {
@@ -36,8 +36,8 @@ export const updateSdk = (
   let newAccount = { ...loginAccount };
 
   try {
-    dispatch(updateAppStatus(Ox_ENABLED, !!augurSdk.sdk.zeroX));
-    dispatch(updateAppStatus(GSN_ENABLED, useGSN));
+    setOxEnabled(!!augurSdk.sdk.zeroX);
+    setGSNEnabled(useGSN);
     if (useGSN) {
       const hasWallet = await augurSdk.client.gsn.userHasInitializedWallet(newAccount.address);
       if (hasWallet) {

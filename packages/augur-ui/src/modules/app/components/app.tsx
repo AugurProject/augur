@@ -14,7 +14,7 @@ import ToastsContainer from 'modules/alerts/containers/toasts-view';
 
 import { Betslip } from 'modules/trading/betslip';
 import { BetslipProvider } from 'modules/trading/store/betslip';
-import { AppStatusProvider, useAppStatusStore } from 'modules/app/store/app-status';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 import {
   MobileNavHamburgerIcon,
@@ -69,13 +69,10 @@ interface AppProps {
   initAugur: Function;
   isLogged: boolean;
   restoredAccount: boolean;
-  isMobile: boolean;
   location: Location;
   loginAccount: LoginAccount;
   modal: object;
   universe: Universe;
-  updateIsMobile: Function;
-  updateIsMobileSmall: Function;
   updateModal: Function;
   finalizeMarket: Function;
   env: any;
@@ -144,7 +141,7 @@ function changeMenu(nextBasePath, updateCurrentInnerNavType, updateMobileMenuSta
   }
 }
 
-function checkIsMobile(updateIsMobile, updateIsMobileSmall) {
+function checkIsMobile(setIsMobile) {
   // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
   // CSS breakpoint sets the value when a user is mobile
   const isMobile =
@@ -153,14 +150,7 @@ function checkIsMobile(updateIsMobile, updateIsMobileSmall) {
         .getComputedStyle(document.body)
         .getPropertyValue('--is-mobile') || ''
     ).indexOf('true') !== -1;
-  const isMobileSmall =
-    (
-      window
-        .getComputedStyle(document.body)
-        .getPropertyValue('--is-mobile-small') || ''
-    ).indexOf('true') !== -1;
-  updateIsMobile(isMobile);
-  updateIsMobileSmall(isMobileSmall);
+    setIsMobile(isMobile);
 };
 
 const AppView = ({
@@ -177,12 +167,9 @@ const AppView = ({
   updateModal,
   updateCurrentBasePath,
   saveAffilateAddress,
-  isMobile,
   updateMobileMenuState,
   sidebarStatus: { currentBasePath, mobileMenuState },
   updateSidebarStatus,
-  updateIsMobile,
-  updateIsMobileSmall,
   blockchain: { currentAugurTimestamp },
   isLogged,
   restoredAccount,
@@ -197,6 +184,7 @@ const AppView = ({
   showGlobalChat,
   updateCurrentInnerNavType,
 }:AppProps) => {
+  const { isMobile, actions: { setIsMobile, setOxEnabled, setGSNEnabled } } = useAppStatusStore();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
   const ModalShowing = Object.keys(modal).length !== 0;
@@ -260,21 +248,22 @@ const AppView = ({
             config: res.config,
           });
         }
-      }
+      },
+      setOxEnabled,
+      setGSNEnabled,
     );
-    // checkIsMobile(updateIsMobile, updateIsMobileSmall);
     // we only want this to run the first mount, so we set the things to look at to a static value.
   }, [false])
 
   useEffect(() => {
     function handleRezize() {
-      checkIsMobile(updateIsMobile, updateIsMobileSmall);
+      checkIsMobile(setIsMobile);
     }
     window.addEventListener('resize', handleRezize);
     if (isWindows()) {
       document.body.classList.add('App--windowsScrollBars');
     }
-    checkIsMobile(updateIsMobile, updateIsMobileSmall);
+    checkIsMobile(setIsMobile);
     return () => {
       window.removeEventListener('resize', handleRezize);
     };
@@ -316,7 +305,6 @@ const AppView = ({
 
   return (
     <main>
-      <AppStatusProvider>
       <HelmetTag {...APP_HEAD_TAGS} />
       {ModalShowing && <Modal />}
       {toasts.length > 0 && (
@@ -418,7 +406,6 @@ const AppView = ({
           </section>
         </section>
       </div>
-      </AppStatusProvider>
     </main>
   );
 };
@@ -445,7 +432,7 @@ const SideBarSection = ({
   showCreateAccountButton,
   createFundedGsnWallet,
 }) => {
-  const { theme, actions: { closeAppMenus } } = useAppStatusStore();
+  const { theme, actions: { closeAppMenus, setGSNEnabled } } = useAppStatusStore();
   sideNavMenuData[1].title =
       theme !== THEMES.TRADING ? 'My Account' : 'Account Summary';
   sideNavMenuData[2].title =
@@ -468,7 +455,7 @@ const SideBarSection = ({
         isLogged={isLogged || restoredAccount}
         menuData={sideNavMenuData}
         currentBasePath={currentBasePath}
-        logout={() => logout()}
+        logout={() => logout(setGSNEnabled)}
         showGlobalChat={() => showGlobalChat()}
         migrateV1Rep={migrateV1Rep}
         showMigrateRepButton={showMigrateRepButton}

@@ -8,7 +8,6 @@ import { AppState } from 'appStore';
 import {
   createLiquidityOrder,
   isTransactionConfirmed,
-  createLiquidityOrders,
   approveToTrade,
   placeTrade,
 } from 'modules/contracts/actions/contractCalls';
@@ -153,9 +152,9 @@ export const sendLiquidityOrder = (options: any) => async (
   getState: () => AppState
 ) => {
   const { order, bnAllowance, marketId } = options;
-  const { appStatus, marketInfos } = getState();
+  const { marketInfos } = getState();
   const market = marketInfos[marketId];
-  const isZeroX = appStatus.zeroXEnabled;
+  const isZeroX = options.zeroXEnabled;
   const { orderEstimate } = order;
 
   dispatch(

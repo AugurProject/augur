@@ -49,7 +49,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(logout()),
+  logout: (setGSNEnabled) => dispatch(logout(setGSNEnabled)),
   gasModal: () => dispatch(updateModal({ type: MODAL_GAS_PRICE })),
   universeSelectorModal: () => dispatch(updateModal({ type: MODAL_UNIVERSE_SELECTOR })),
   showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),

@@ -211,7 +211,6 @@ export class CategorySelection extends Component<
           default={selectedCategory}
           label="Select sub-category"
           options={categoriesList}
-          isMobileSmall={false}
           onChange={subCategory => {
             if (subCategory === 'Other') {
               this.setState({ showText: true });

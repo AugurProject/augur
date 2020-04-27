@@ -19,6 +19,7 @@ import parseQuery from 'modules/routes/helpers/parse-query';
 import updateQuery from 'modules/routes/helpers/update-query';
 import { INVALID_OPTIONS, LoginAccountSettings } from 'modules/types';
 import ChevronFlip from 'modules/common/chevron-flip';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface MarketsListFiltersProps {
   maxFee: string;
@@ -37,7 +38,6 @@ interface MarketsListFiltersProps {
   setShowInvalidFilter: Function;
   setTemplateOrCustomFilter: Function;
   settings: LoginAccountSettings;
-  isMobile: boolean;
 }
 
 const MarketsListFilters = ({
@@ -57,8 +57,8 @@ const MarketsListFilters = ({
   setShowInvalidFilter,
   setTemplateOrCustomFilter,
   settings,
-  isMobile,
 }: MarketsListFiltersProps) => {
+  const { isMobile } = useAppStatusStore();
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(location.search);
 

@@ -8,9 +8,6 @@ import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import { selectNotifications } from "modules/notifications/selectors/notification-state";
 import {
-  IS_MOBILE,
-  IS_MOBILE_SMALL,
-  updateAppStatus,
   WALLET_STATUS,
 } from "modules/app/actions/update-app-status";
 import { initAugur } from "modules/app/actions/init-augur";
@@ -54,9 +51,7 @@ const mapStateToProps = (state: AppState) => {
     env: state.env,
     isLogged: state.authStatus.isLogged,
     restoredAccount: state.authStatus.restoredAccount,
-    isMobile: state.appStatus.isMobile,
     oddsType: state.appStatus.odds,
-    isMobileSmall: state.appStatus.isMobileSmall,
     loginAccount,
     modal: state.modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
@@ -70,13 +65,11 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  initAugur: (history, overrides, cb) =>
-    dispatch(initAugur(history, overrides, cb)),
-  updateIsMobile: isMobile => dispatch(updateAppStatus(IS_MOBILE, isMobile)),
-  updateIsMobileSmall: isMobileSmall => dispatch(updateAppStatus(IS_MOBILE_SMALL, isMobileSmall)),
+  initAugur: (history, overrides, cb, setOxEnabled, setGSNEnabled) =>
+    dispatch(initAugur(history, overrides, cb, setOxEnabled, setGSNEnabled)),
   updateModal: modal => dispatch(updateModal(modal)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
-  logout: () => dispatch(logout()),
+  logout: (setGSNEnabled) => dispatch(logout(setGSNEnabled)),
   updateCurrentBasePath: data => dispatch(updateCurrentBasePath(data)),
   updateCurrentInnerNavType: data => dispatch(updateCurrentInnerNavType(data)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),

@@ -49,7 +49,7 @@ const SideNav = ({
   const {
     isHelpMenuOpen,
     isConnectionTrayOpen,
-    actions: { setIsHelpMenuOpen },
+    actions: { setIsHelpMenuOpen, setGSNEnabled },
   } = useAppStatusStore();
 
   const accessFilteredMenu = menuData.filter(
@@ -155,7 +155,7 @@ const SideNav = ({
               />
             </div>
             {isLogged && (
-              <button onClick={() => logout()}>Logout {LogoutIcon}</button>
+              <button onClick={() => logout(setGSNEnabled)}>Logout {LogoutIcon}</button>
             )}
           </footer>
         </div>
