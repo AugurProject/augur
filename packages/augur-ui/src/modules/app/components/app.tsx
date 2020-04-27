@@ -57,6 +57,8 @@ import { ExternalLinkText } from 'modules/common/buttons';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { SDKConfiguration } from '@augurproject/artifacts';
+import { MyBetsInnerNav } from 'modules/portfolio/components/common/my-bets-inner-nav';
+import { MyBetsProvider } from 'modules/portfolio/store/my-bets';
 import { StatusErrorMessage } from 'modules/common/labels';
 
 interface AppProps {
@@ -135,7 +137,7 @@ function renderMobileMenuButton(mobileMenuState, updateMobileMenuState, cbForMob
 };
 
 function changeMenu(nextBasePath, updateCurrentInnerNavType, updateMobileMenuState) {
-  if (nextBasePath === MARKETS) {
+  if (nextBasePath === MARKETS || nextBasePath === MY_POSITIONS) {
     updateCurrentInnerNavType(MarketsInnerNavContainer);
   } else {
     updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
@@ -384,15 +386,24 @@ const AppView = ({
               [Styles.TopBarOpen]: navShowing,
             })}
           >
-            {currentPath === MARKETS ? (
+            {currentPath === MARKETS && (
               <MarketsInnerNavContainer
                 location={location}
                 history={history}
                 mobileMenuState={mobileMenuState}
               />
-            ) : (
-              <div className="no-nav-placehold" />
             )}
+                <MyBetsProvider>
+
+             {currentPath === MY_POSITIONS && (
+              <MyBetsInnerNav
+                mobileMenuState={mobileMenuState}
+                updateMobileMenuState={updateMobileMenuState}
+              />
+            )}  
+            {currentPath !== MARKETS && currentPath !== MY_POSITIONS &&
+              <div className="no-nav-placehold" />
+            }
             <MainAppContent
               isLogged={isLogged}
               restoredAccount={restoredAccount}
@@ -403,6 +414,7 @@ const AppView = ({
               currentBasePath={currentBasePath}
               mainSectionClickHandler={mainSectionClickHandler}
             />
+            </MyBetsProvider>
           </section>
         </section>
       </div>

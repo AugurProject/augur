@@ -2,10 +2,66 @@
 
 // Used in Betting UI
 .InnerNav {
-  height: calc(~"100vh - @{multi-top-bar-height}");
+  height: calc(~'100vh - @{multi-top-bar-height}');
   overflow: auto;
   position: relative;
   background: var(--color-module-background);
+}
+
+.MyBets {
+  height: unset;
+  background-color: var(--color-module-background);
+
+  @media @breakpoint-mobile-tablet {
+    padding-bottom: 0;
+
+    > ul {
+      margin-top: 50px;
+      height: 100%;
+      background: var(--color-module-background);
+      overflow-x: hidden;
+      overflow-y: auto;
+      width: 100%;
+      z-index: @above-all-content;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+
+      > div {
+        background-color: var(--color-page-background);
+        border-bottom: @size-1 solid var(--color-dark-grey);
+        padding: @size-24 @size-12;
+        flex: 1;
+
+        > span {
+          .text-10-medium;
+  
+          color: var(--color-primary-text);
+          margin-bottom: @size-16;
+          display: flex;
+  
+          &:not(:first-of-type) {
+            margin-top: @size-12;
+          }
+        }
+  
+        > div {
+          flex: unset;
+        }
+  
+        > ul {
+          > li {
+            flex: 1;
+          }
+        }
+  
+      }
+
+      > button {
+        margin: @size-24 @size-12;
+      }
+    }
+  }
 }
 
 .InnerNav__menu {
@@ -110,8 +166,8 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .InnerNav {
     background: none;
   }
@@ -145,7 +201,7 @@
         .text-16-bold;
 
         align-items: center;
-        background: var(--color-dark-grey);
+        background: var(--color-module-background);
         border-bottom: 1px solid var(--color-dark-grey);
         color: var(--color-primary-text);
         display: flex;

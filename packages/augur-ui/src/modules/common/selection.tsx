@@ -5,6 +5,7 @@ import { ThickChevron, Chevron, ShareIcon, SlimArrow } from 'modules/common/icon
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
+import { useEffect } from 'react';
 
 export interface NameValuePair {
   label: string;
@@ -396,6 +397,11 @@ export const PillSelection = ({
   large
 }: PillSelectionProps) => {
   const [selected, setSelected] = useState(defaultSelection);
+
+  useEffect(() => {
+    setSelected(defaultSelection);
+  }, [defaultSelection]);
+
   const buttonSelect = (option: SelectionOption) => {
     if (option.id !== selected) {
       setSelected(option.id);
