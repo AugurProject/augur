@@ -1492,11 +1492,11 @@ export const MY_BETS_BET_DATE = [
   {
     header: 'Last 7 days',
     label: 'Last 7 days',
-    value: 0,
+    value: 1,
   },
   {
     header: 'Last 24 hours',
     label: 'Last 24 hours',
-    value: 0,
+    value: 2,
   },
 ];

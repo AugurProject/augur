@@ -503,6 +503,60 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+
+  &.Light {
+
+    > div {
+      grid-template-columns: @size-32 auto @size-16;
+      border: none;
+      height: auto;
+      margin: 0 0 @size-12 0;
+      cursor: pointer;
+      background: var(--color-module-background);
+
+      @media @breakpoint-mobile {
+        grid-template-columns: @size-34 auto @size-16;
+        height: @size-32;
+      }
+
+      > h5,
+      > span {
+        .text-12-medium;
+
+        color: var(--color-secondary-text);
+        text-transform: capitalize;
+
+        @media @breakpoint-mobile {
+          .text-14-medium;
+        }
+      }
+
+      // radio icon
+      > svg {
+        margin: 0;
+        height: @size-20;
+      }
+
+      &:hover {
+        border: none;
+      }
+  
+      > div:last-of-type {
+        margin: 0 0 @size-16 0;
+      }
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .RadioBarGroup {
+    &.Light {
+      > div {
+        background: transparent;
+      }
+    }
+  }
 }
 
 .ReportingRadioBarGroup {
