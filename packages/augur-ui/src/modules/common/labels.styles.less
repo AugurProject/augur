@@ -1256,14 +1256,14 @@ span.PendingLabel {
     width: @size-8;
 
     &.Ready {
-      background: @color-open;
+      background: var(--color-open);
     }
     &.Lag {
-      background: @color-reporting;
+      background: var(--color-reporting);
       cursor: pointer;
     }
     &.Error {
-      background: @color-error;
+      background: var(--color-error);
       cursor: pointer;
     }
   }
@@ -1273,20 +1273,20 @@ span.PendingLabel {
 .StatusErrorMessage {
   display: flex;
   justify-content: center;
-  background-color: @color-module-background-action-focus;
+  background-color: var(--color-module-background-action-focus);
   padding: @size-5 0;
 
   > span {
     .text-10-bold;
 
     display: flex;
-    background: fade(@color-error, 20%);
-    border-bottom: @size-2 solid @color-error;
-    border-left: @size-4 solid @color-error;
-    border-right: @size-2 solid @color-error;
-    border-top: @size-2 solid @color-error;
+    background: var(--color-error-20);
+    border-bottom: @size-2 solid var(--color-error);
+    border-left: @size-4 solid var(--color-error);
+    border-right: @size-2 solid var(--color-error);
+    border-top: @size-2 solid var(--color-error);
     border-radius: 3px;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     padding: 0.5rem 0;
     width: 21.125rem;
     text-transform: uppercase;
@@ -1305,12 +1305,12 @@ span.PendingLabel {
       width: @size-12;
 
       > circle {
-        stroke: @color-error;
+        stroke: var(--color-error);
       }
 
       > rect,
       > path {
-        fill: @color-error;
+        fill: var(--color-error);
       }
     }
   }
