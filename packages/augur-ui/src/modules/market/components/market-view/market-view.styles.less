@@ -528,6 +528,10 @@ section[class*="OutcomesList"] {
     div[class="reactions"] div[class="emoji-bar"] div[class*="emoji-item"] {
       background-color: transparent;
       color: @color-upvote;
+
+      &[class*="has_reacted"] {
+        background-color: fade(@color-upvote, 20%);
+      }
     }
 
     div[class="comment_vote"] {
