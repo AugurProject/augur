@@ -16,7 +16,6 @@ const mapStateToProps = state => ({
   meta: getValue(state, "loginAccount.meta"),
   newMarket: state.newMarket,
   categories: state.categories,
-  isMobileSmall: state.appStatus.isMobileSmall,
   gasPrice: getGasPrice(state),
   address: getValue(state, "loginAccount.address"),
   currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp")

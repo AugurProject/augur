@@ -9,7 +9,6 @@ import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import { selectNotifications } from "modules/notifications/selectors/notification-state";
 import {
   IS_MOBILE,
-  IS_MOBILE_SMALL,
   updateAppStatus,
   WALLET_STATUS,
 } from "modules/app/actions/update-app-status";
@@ -56,7 +55,6 @@ const mapStateToProps = (state: AppState) => {
     restoredAccount: state.authStatus.restoredAccount,
     isMobile: state.appStatus.isMobile,
     oddsType: state.appStatus.odds,
-    isMobileSmall: state.appStatus.isMobileSmall,
     loginAccount,
     modal: state.modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
@@ -73,7 +71,6 @@ const mapDispatchToProps = dispatch => ({
   initAugur: (history, overrides, cb) =>
     dispatch(initAugur(history, overrides, cb)),
   updateIsMobile: isMobile => dispatch(updateAppStatus(IS_MOBILE, isMobile)),
-  updateIsMobileSmall: isMobileSmall => dispatch(updateAppStatus(IS_MOBILE_SMALL, isMobileSmall)),
   updateModal: modal => dispatch(updateModal(modal)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
   logout: () => dispatch(logout()),

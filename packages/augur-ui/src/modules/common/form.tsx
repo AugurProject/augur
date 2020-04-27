@@ -95,7 +95,6 @@ interface InputDropdownProps {
   onChange: Function;
   default: string;
   options: string[];
-  isMobileSmall?: boolean;
   label: string;
   className?: string;
   onKeyPress?: Function;
@@ -2155,12 +2154,7 @@ export class InputDropdown extends Component<
   }
 
   componentDidMount() {
-    const { isMobileSmall, options } = this.props;
     window.addEventListener('click', this.handleWindowOnClick);
-
-    if (isMobileSmall && this.state.value === '') {
-      this.dropdownSelect(options[0]);
-    }
   }
 
   componentWillUnmount() {

@@ -1,5 +1,14 @@
 import { useReducer } from 'react';
-import { APP_STATUS_ACTIONS, DEFAULT_APP_STATUS, THEME, ODDS, IS_HELP_MENU_OPEN, IS_CONNECTION_TRAY_OPEN, IS_ODDS_MENU_OPEN, IS_ALERTS_MENU_OPEN } from 'modules/app/store/constants';
+import {
+  APP_STATUS_ACTIONS,
+  DEFAULT_APP_STATUS,
+  THEME,
+  ODDS,
+  IS_HELP_MENU_OPEN,
+  IS_CONNECTION_TRAY_OPEN,
+  IS_ODDS_MENU_OPEN,
+  IS_ALERTS_MENU_OPEN
+} from 'modules/app/store/constants';
 
 const {
   SET_THEME,
@@ -62,7 +71,7 @@ export function AppStatusReducer(state, action) {
     default:
       throw new Error(`Error: ${action.type} not caught by App Status reducer.`);
   }
-  console.log("AppStatusStateUpdated:", updatedState);
+  window.appStatus = updatedState;
   return updatedState;
 };
 

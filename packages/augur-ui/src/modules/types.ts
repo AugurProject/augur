@@ -582,7 +582,6 @@ export interface Blockchain {
 
 export interface AppStatus {
   isMobile?: boolean;
-  isMobileSmall?: boolean;
   isHelpMenuOpen: boolean;
   ethToDaiRate: FormattedNumber;
   repToDaiRate: FormattedNumber;

@@ -73,7 +73,6 @@ interface AppProps {
   modal: object;
   universe: Universe;
   updateIsMobile: Function;
-  updateIsMobileSmall: Function;
   updateModal: Function;
   finalizeMarket: Function;
   env: any;
@@ -142,7 +141,7 @@ function changeMenu(nextBasePath, updateCurrentInnerNavType, updateMobileMenuSta
   }
 }
 
-function checkIsMobile(updateIsMobile, updateIsMobileSmall) {
+function checkIsMobile(updateIsMobile) {
   // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
   // CSS breakpoint sets the value when a user is mobile
   const isMobile =
@@ -151,14 +150,7 @@ function checkIsMobile(updateIsMobile, updateIsMobileSmall) {
         .getComputedStyle(document.body)
         .getPropertyValue('--is-mobile') || ''
     ).indexOf('true') !== -1;
-  const isMobileSmall =
-    (
-      window
-        .getComputedStyle(document.body)
-        .getPropertyValue('--is-mobile-small') || ''
-    ).indexOf('true') !== -1;
   updateIsMobile(isMobile);
-  updateIsMobileSmall(isMobileSmall);
 };
 
 const AppView = ({
@@ -180,7 +172,6 @@ const AppView = ({
   sidebarStatus: { currentBasePath, mobileMenuState },
   updateSidebarStatus,
   updateIsMobile,
-  updateIsMobileSmall,
   blockchain: { currentAugurTimestamp },
   isLogged,
   restoredAccount,
@@ -260,19 +251,18 @@ const AppView = ({
         }
       }
     );
-    // checkIsMobile(updateIsMobile, updateIsMobileSmall);
     // we only want this to run the first mount, so we set the things to look at to a static value.
   }, [false])
 
   useEffect(() => {
     function handleRezize() {
-      checkIsMobile(updateIsMobile, updateIsMobileSmall);
+      checkIsMobile(updateIsMobile);
     }
     window.addEventListener('resize', handleRezize);
     if (isWindows()) {
       document.body.classList.add('App--windowsScrollBars');
     }
-    checkIsMobile(updateIsMobile, updateIsMobileSmall);
+    checkIsMobile(updateIsMobile);
     return () => {
       window.removeEventListener('resize', handleRezize);
     };
