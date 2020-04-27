@@ -24,7 +24,8 @@ import {
 } from '../actions/update-markets-list';
 import {
   MAX_SPREAD_ALL_SPREADS,
-  MAX_FEE_100_PERCENT
+  MAX_FEE_100_PERCENT,
+  MARKET_CARD_FORMATS
 } from 'modules/common/constants';
 import {
   updateFilterSortOptions,
@@ -49,6 +50,11 @@ const mapStateToProps = (state: AppState, { location }) => {
   } = getSelectedTagsAndCategoriesFromLocation(location);
 
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
+  let marketCardFormat = state.marketsList.marketCardFormat
+    ? state.marketsList.marketCardFormat
+    : state.appStatus.isMobile
+    ? MARKET_CARD_FORMATS.COMPACT
+    : MARKET_CARD_FORMATS.CLASSIC;
 
   return {
     isConnected: state.connection.isConnected && state.universe.id != null,
@@ -69,7 +75,7 @@ const mapStateToProps = (state: AppState, { location }) => {
     selectedCategories: state.marketsList.selectedCategories,
     marketSort: state.filterSortOptions.marketSort,
     marketFilter: state.filterSortOptions.marketFilter,
-    marketCardFormat: state.marketsList.marketCardFormat,
+    marketCardFormat,
     showInvalidMarketsBannerHideOrShow: (state.loginAccount.settings || {})
       .showInvalidMarketsBannerHideOrShow,
     showInvalidMarketsBannerFeesOrLiquiditySpread: (
