@@ -58,6 +58,7 @@ import { HelmetTag } from 'modules/seo/helmet-tag';
 import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { MyBetsInnerNav } from 'modules/portfolio/components/common/my-bets-inner-nav';
+import { MyBetsProvider } from 'modules/portfolio/store/my-bets';
 
 interface AppProps {
   notifications: Notification[];
@@ -391,9 +392,12 @@ const AppView = ({
                 mobileMenuState={mobileMenuState}
               />
             )}
+                <MyBetsProvider>
+
              {currentPath === MY_POSITIONS && (
               <MyBetsInnerNav
                 mobileMenuState={mobileMenuState}
+                updateMobileMenuState={updateMobileMenuState}
               />
             )}  
             {currentPath !== MARKETS && currentPath !== MY_POSITIONS &&
@@ -409,6 +413,7 @@ const AppView = ({
               currentBasePath={currentBasePath}
               mainSectionClickHandler={mainSectionClickHandler}
             />
+            </MyBetsProvider>
           </section>
         </section>
       </div>

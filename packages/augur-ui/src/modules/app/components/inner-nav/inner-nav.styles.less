@@ -8,6 +8,25 @@
   background: var(--color-module-background);
 }
 
+.MyBets {
+  height: unset;
+
+  @media @breakpoint-mobile-tablet {
+    padding-bottom: 0;
+  
+    > ul {
+      margin-top: 50px;
+      height: 100%;
+      background: var(--color-module-background);
+      overflow-x: hidden;
+      overflow-y: auto;
+      width: 100%;
+      z-index: @above-all-content;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+}
+
 .InnerNav__menu {
   list-style: none;
   margin: 0;
