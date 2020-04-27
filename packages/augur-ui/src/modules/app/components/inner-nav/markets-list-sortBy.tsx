@@ -34,6 +34,7 @@ const MarketsListFilters = ({
         <RadioBarGroup
           radioButtons={SORT_OPTIONS}
           defaultSelected={marketSort}
+          light
           onChange={(value: string) => isMobile ? setSortOptions(value) : updateMarketsSortBy(value)}
         />
       </div>

@@ -228,6 +228,7 @@ export interface RadioCardProps extends BaseRadioButtonProp {
 
 interface RadioGroupProps {
   id: string;
+  light?: boolean;
   onChange: Function;
   radioButtons: BaseRadioButtonProp[];
   market?: MarketData;
@@ -920,7 +921,7 @@ export const ReportingRadioBarGroup = ({
 
 export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   state: RadioGroupState = {
-    selected: this.props.defaultSelected || null,
+    selected: this.props.defaultSelected !== undefined ? this.props.defaultSelected : null,
   };
 
   componentDidUpdate(prevProps: RadioGroupProps, prevState: RadioGroupState) {
@@ -935,10 +936,10 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
   };
 
   render() {
-    const { radioButtons } = this.props;
+    const { radioButtons, light } = this.props;
     const { selected } = this.state;
     return (
-      <div className={Styles.RadioBarGroup}>
+      <div className={classNames(Styles.RadioBarGroup, {[Styles.Light]: light})}>
         {radioButtons.map(radio => (
           <RadioBar
             key={radio.value}

@@ -956,10 +956,12 @@ export const FUTURES = 'Futures';
 
 export const SPORTS_MARKET_TYPES = [
   {
+    header: GAMES,
     label: GAMES,
     id: 0,
   },
   {
+    header: FUTURES,
     label: FUTURES,
     id: 1,
   }
@@ -970,10 +972,12 @@ export const RESOLVED = 'Resolved';
 
 export const MARKET_STATE_TYPES = [
   {
+    header: ACTIVE,
     label: ACTIVE,
     id: 0,
   },
   {
+    header: RESOLVED,
     label: RESOLVED,
     id: 1,
   }
@@ -1455,10 +1459,12 @@ export const OUTCOMES = 'Outcomes';
 
 export const MY_BETS_VIEW_BY = [
   {
+    header: EVENT,
     label: EVENT,
     value: 0,
   },
   {
+    header: OUTCOMES,
     label: OUTCOMES,
     value: 1,
   },
@@ -1466,34 +1472,41 @@ export const MY_BETS_VIEW_BY = [
 
 export const MY_BETS_MARKET_STATUS = [
   {
-    label: 'All',
+    header: ALL_MARKETS,
+    label: ALL_MARKETS,
     value: 0,
   },
   {
-    label: 'Open',
+    header: MARKET_OPEN,
+    label: MARKET_OPEN,
     value: 1,
   },
   {
-    label: 'In reporting',
+    header: MARKET_REPORTING,
+    label: MARKET_REPORTING,
     value: 2,
   },
   {
-    label: 'Resolved',
+    header: MARKET_CLOSED,
+    label: MARKET_CLOSED,
     value: 3,
   },
 ];
 
 export const MY_BETS_BET_DATE = [
   {
+    header: 'Last 30 days',
     label: 'Last 30 days',
     value: 0,
   },
   {
+    header: 'Last 7 days',
     label: 'Last 7 days',
-    value: 0,
+    value: 1,
   },
   {
+    header: 'Last 24 hours',
     label: 'Last 24 hours',
-    value: 0,
+    value: 2,
   },
 ];

@@ -50,7 +50,7 @@ export const Game = ({ row, type }: GameProps) => (
     <div>
       <BetsHeader />
       {Object.values(row.outcomes).map(outcome => (
-        <BetRow outcome={outcome} showExtraRow={type !== FUTURES} />
+        <BetRow key={outcome.outcome} outcome={outcome} showExtraRow={type !== FUTURES} />
       ))}
     </div>
   </div>
@@ -64,7 +64,7 @@ export const Outcomes = ({ rows }: OutcomesProps) => (
   <div className={Styles.Outcomes}>
     <BetsHeader />
     {rows.map(row => (
-      <BetRow outcome={row} showExtraRow isEvent />
+      <BetRow key={row.outcome} outcome={row} showExtraRow isEvent />
     ))}
   </div>
 );

@@ -83,11 +83,7 @@ const MarketsHeader: React.FC<MarketsHeaderProps> = props => {
       <div>
         <FilterSearch isSearchingMarkets={isSearchingMarkets} />
         {/* MOBILE FILTERS TOGGLE */}
-        <FilterButton
-          action={() =>
-            updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)
-          }
-        />
+        <FilterButton />
       </div>
       <div>
         <h2>{headerTitle}</h2>

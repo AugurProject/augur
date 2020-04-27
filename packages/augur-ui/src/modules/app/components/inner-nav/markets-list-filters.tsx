@@ -137,6 +137,7 @@ const MarketsListFilters = ({
             </div>
 
             <RadioBarGroup
+              light
               radioButtons={templateFilterValues}
               defaultSelected={allTemplateFilter}
               onChange={(value: string) => isMobile ? setTemplateOrCustomFilter(value) : updateFilter(value, TEMPLATE_FILTER)}
@@ -152,6 +153,7 @@ const MarketsListFilters = ({
 
             <RadioBarGroup
               radioButtons={feeFilters}
+              light
               defaultSelected={maxFee}
               onChange={(value: string) => isMobile ? setMaxFeeFilter(value) : updateFilter(value, MAXFEE_PARAM_NAME)}
             />
@@ -166,6 +168,7 @@ const MarketsListFilters = ({
 
             <RadioBarGroup
               radioButtons={spreadFilters}
+              light
               defaultSelected={maxLiquiditySpread}
               onChange={(value: string) => isMobile ? setMaxSpreadFilter(value) : updateFilter(value, SPREAD_PARAM_NAME)}
             />
@@ -180,6 +183,7 @@ const MarketsListFilters = ({
 
             <RadioBarGroup
               radioButtons={invalidFilters}
+              light
               defaultSelected={String(includeInvalidMarkets)}
               onChange={(value: string) => isMobile ? setShowInvalidFilter(value) : updateFilter(value, SHOW_INVALID_MARKETS_PARAM_NAME)}
             />

@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useMemo } from 'react';
 import classNames from 'classnames';
 
 import Styles from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
@@ -16,87 +16,100 @@ import {
   MY_BETS_VIEW_BY,
   MY_BETS_MARKET_STATUS,
   MY_BETS_BET_DATE,
-  GAMES,
   EVENT,
   MARKET_STATE_TYPES,
+  GAMES,
+  RESOLVED,
+  REPORTING_STATE,
+  MARKET_OPEN,
+  MARKET_REPORTING,
+  MARKET_CLOSED,
 } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
 import { FilterNotice } from 'modules/common/filter-notice';
 import { EmptyMagnifyingGlass } from 'modules/common/icons';
+import { Game, Outcomes } from '../common/common';
+import { useMyBetsStore } from 'modules/portfolio/store/my-bets';
 import {
   MOCK_GAMES_DATA,
   MOCK_FUTURES_DATA,
   MOCK_OUTCOMES_DATA,
-  MY_BETS_ACTIONS,
-  VIEW_BY,
-  ROWS,
-  SELECTED_MARKET_CARD_TYPE,
-  SELECTED_MARKET_STATE_TYPE,
-  BET_DATE,
-  MARKET_STATUS,
-} from 'modules/trading/store/constants';
-import { Game, Outcomes } from '../common/common';
+} from 'modules/portfolio/store/constants';
 
-const {
-  SET_VIEW_BY,
-  SET_SELECTED_MARKET_CARD_TYPE,
-  SET_SELECTED_MARKET_STATE_TYPE,
-  SET_BET_DATE,
-  SET_MARKET_STATUS,
-} = MY_BETS_ACTIONS;
-
-export function MyBetsReducer(state, action) {
-  const updatedState = { ...state };
-  switch (action.type) {
-    case SET_VIEW_BY: {
-      updatedState[VIEW_BY] = action.viewBy;
-      updatedState[ROWS] =
-        MY_BETS_VIEW_BY[action.viewBy].label === EVENT
-          ? MOCK_GAMES_DATA
-          : MOCK_OUTCOMES_DATA;
-      break;
-    }
-    case SET_SELECTED_MARKET_CARD_TYPE: {
-      updatedState[SELECTED_MARKET_CARD_TYPE] = action.selectedMarketCardType;
-      updatedState[ROWS] =
-        SPORTS_MARKET_TYPES[action.selectedMarketCardType].label === GAMES
-          ? MOCK_GAMES_DATA
-          : MOCK_FUTURES_DATA;
-      break;
-    }
-    case SET_SELECTED_MARKET_STATE_TYPE: {
-      updatedState[SELECTED_MARKET_STATE_TYPE] = action.selectedMarketStateType;
-      break;
-    }
-    case SET_BET_DATE: {
-      updatedState[BET_DATE] = action.betDate;
-      break;
-    }
-    case SET_MARKET_STATUS: {
-      updatedState[MARKET_STATUS] = action.marketStatus;
-      break;
-    }
-    default:
-      throw new Error(`Error: ${action.type} not caught by My Bets reducer.`);
+export function processRows(
+  viewBy,
+  marketStatus,
+  betDate,
+  selectedMarketCardType,
+  selectedMarketStateType
+) {
+  let rows = MOCK_GAMES_DATA;
+  if (MY_BETS_VIEW_BY[viewBy].label === EVENT) {
+    rows =
+      SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES
+        ? MOCK_GAMES_DATA
+        : MOCK_FUTURES_DATA;
+    rows = rows.filter(data => {
+      const marketStatusLabel = MY_BETS_MARKET_STATUS[marketStatus].label;
+      if (marketStatusLabel === MARKET_OPEN) {
+        return data.reportingState === REPORTING_STATE.PRE_REPORTING;
+      } else if (marketStatusLabel === MARKET_REPORTING) {
+        return (
+          data.reportingState === REPORTING_STATE.DESIGNATED_REPORTING ||
+          data.reportingState === REPORTING_STATE.OPEN_REPORTING ||
+          data.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW ||
+          data.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE
+        );
+      } else if (marketStatusLabel === MARKET_CLOSED) {
+        return data.reportingState === REPORTING_STATE.FINALIZED;
+      } else {
+        return true;
+      }
+    });
+  } else {
+    // betDate
+    rows = MOCK_OUTCOMES_DATA.filter(data =>
+      MARKET_STATE_TYPES[selectedMarketStateType].label === RESOLVED
+        ? data.reportingState === REPORTING_STATE.FINALIZED
+        : data.reportingState !== REPORTING_STATE.FINALIZED
+    );
   }
-  return updatedState;
+  return rows;
 }
-
 export const MyBets = () => {
-  const [state, dispatch] = useReducer(MyBetsReducer, {
-    selectedMarketCardType: SPORTS_MARKET_TYPES[0].id,
-    viewBy: MY_BETS_VIEW_BY[0].value,
-    marketStatus: MY_BETS_MARKET_STATUS[0].value,
-    betDate: MY_BETS_BET_DATE[0].value,
-    rows: MOCK_GAMES_DATA,
-    selectedMarketStateType: MARKET_STATE_TYPES[0].id,
-  });
-
   const {
     viewBy,
-    rows,
-    selectedMarketCardType
-  } = state;
+    marketStatus,
+    betDate,
+    selectedMarketCardType,
+    selectedMarketStateType,
+    actions: {
+      setViewBy,
+      setMarketStatus,
+      setBetDate,
+      setSelectedMarketCardType,
+      setSelectedMarketStateType,
+    },
+  } = useMyBetsStore();
+
+  const rows = useMemo(
+    () =>
+      processRows(
+        viewBy,
+        marketStatus,
+        betDate,
+        selectedMarketCardType,
+        selectedMarketStateType
+      ),
+    [
+      viewBy,
+      marketStatus,
+      betDate,
+      selectedMarketCardType,
+      selectedMarketStateType,
+    ]
+  );
+
   const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
 
   return (
@@ -132,10 +145,10 @@ export const MyBets = () => {
             View by
             <SquareDropdown
               options={MY_BETS_VIEW_BY}
-              defaultValue={MY_BETS_VIEW_BY[0].value}
-              onChange={viewBy =>
-                dispatch({ type: SET_VIEW_BY, viewBy })
-              }
+              defaultValue={viewBy}
+              onChange={viewBy => {
+                setViewBy(viewBy);
+              }}
               minimalStyle
             />
           </span>
@@ -144,13 +157,8 @@ export const MyBets = () => {
               Market Status:
               <SquareDropdown
                 options={MY_BETS_MARKET_STATUS}
-                defaultValue={MY_BETS_MARKET_STATUS[0].value}
-                onChange={marketStatus =>
-                  dispatch({
-                    type: SET_MARKET_STATUS,
-                    marketStatus
-                  })
-                }
+                defaultValue={marketStatus}
+                onChange={marketStatus => setMarketStatus(marketStatus)}
                 minimalStyle
               />
             </span>
@@ -160,13 +168,8 @@ export const MyBets = () => {
               Bet Date:
               <SquareDropdown
                 options={MY_BETS_BET_DATE}
-                defaultValue={MY_BETS_BET_DATE[0].value}
-                onChange={betDate =>
-                  dispatch({
-                    type: SET_BET_DATE,
-                    betDate
-                  })
-                }
+                defaultValue={betDate}
+                onChange={betDate => setBetDate(betDate)}
                 minimalStyle
               />
             </span>
@@ -175,26 +178,20 @@ export const MyBets = () => {
         {showEvents && (
           <PillSelection
             options={SPORTS_MARKET_TYPES}
-            defaultSelection={0}
+            defaultSelection={selectedMarketCardType}
             large
             onChange={selectedMarketCardType =>
-              dispatch({
-                type: SET_SELECTED_MARKET_CARD_TYPE,
-                selectedMarketCardType
-              })
+              setSelectedMarketCardType(selectedMarketCardType)
             }
           />
         )}
         {!showEvents && (
           <PillSelection
             options={MARKET_STATE_TYPES}
-            defaultSelection={0}
+            defaultSelection={selectedMarketStateType}
             large
             onChange={selectedMarketStateType =>
-              dispatch({
-                type: SET_SELECTED_MARKET_STATE_TYPE,
-                selectedMarketStateType
-              })
+              setSelectedMarketStateType(selectedMarketStateType)
             }
           />
         )}
@@ -203,7 +200,7 @@ export const MyBets = () => {
           search=""
           isSearchingMarkets={false}
         />
-        <FilterButton title="Filters" action={null} />
+        <FilterButton title="Filters" />
       </div>
       <div>
         {rows.length === 0 && (
@@ -217,7 +214,10 @@ export const MyBets = () => {
         )}
         {showEvents &&
           rows.map(row => (
-            <Game row={row} type={SPORTS_MARKET_TYPES[selectedMarketCardType].label} />
+            <Game
+              row={row}
+              type={SPORTS_MARKET_TYPES[selectedMarketCardType].label}
+            />
           ))}
         {rows.length > 0 && !showEvents && <Outcomes rows={rows} />}
       </div>
