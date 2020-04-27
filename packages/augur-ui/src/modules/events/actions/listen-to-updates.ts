@@ -36,9 +36,6 @@ const StartUpEvents = {
   [SubscriptionEventName.ZeroXStatusRestarting]: wrapLogHandler(
     () => handleZeroStatusUpdated(ZEROX_STATUSES.RESTARTING)
   ),
-  [SubscriptionEventName.ZeroXStatusRestarted]: wrapLogHandler(
-    () => handleZeroStatusUpdated(ZEROX_STATUSES.RESTARTED)
-  ),
   [SubscriptionEventName.ZeroXStatusError]: wrapLogHandler(
     () => handleZeroStatusUpdated(ZEROX_STATUSES.ERROR)
   ),
