@@ -203,6 +203,7 @@ contract AugurTrading is IAugurTrading {
     
     function logZeroXOrderCanceled(address _universe, address _market, address _account, uint256 _outcome, uint256 _price, uint256 _amount, uint8 _type, bytes32 _orderHash) public {
         require(msg.sender == registry["ZeroXTrade"]);
+        require(augur.isKnownMarket(IMarket(_market)));
         emit CancelZeroXOrder(_universe, _market, _account, _outcome, _price, _amount, _type, _orderHash);
     }
 }
