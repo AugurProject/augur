@@ -419,7 +419,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   isValid = currentStep => {
     const { newMarket } = this.props;
     const validations = newMarket.validations;
-    return validations.every(key => validations[key] === '');
+    return (validations || []).every(key => validations[key] === '');
   };
 
   saveDraft = () => {
@@ -785,7 +785,7 @@ export default class Form extends React.Component<FormProps, FormState> {
           if (typeof val === 'string') {
             return val === '' || !val;
           } else {
-            return Object.values(val).filter(v => v === '').length > 0;
+            return Object.values(val || {}).filter(v => v === '').length > 0;
           }
         });
       } else {
