@@ -141,7 +141,7 @@ describe('robert', () => {
       displayMinPrice: new BigNumber(market.minPrice),
       displayMaxPrice: new BigNumber(market.maxPrice),
       displayAmount: new BigNumber(20), // buy 10 shares
-      displayPrice: new BigNumber(0.1), // 90 cents per share ; this is the opposed position from the maker's order
+      displayPrice: new BigNumber(0.1), // 10 cents per share
       displayShares: new BigNumber(0), // user doesn't have any shares they could pay with instead of using DAI
       expirationTime,
     });
