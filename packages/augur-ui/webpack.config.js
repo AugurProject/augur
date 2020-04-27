@@ -28,7 +28,7 @@ if (process.env.NODE_ENV === "development") {
       minimizer: [
         new TerserPlugin({
           chunkFilter: (chunk) => {
-            return chunk.name !== "zerox" || chunk.name !== "vendor"
+            return chunk.name !== "vendor"
           },
           terserOptions: {
             mangle: false,

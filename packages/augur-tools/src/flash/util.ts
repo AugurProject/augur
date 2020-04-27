@@ -96,6 +96,10 @@ export function randomSelect<T>(list: T[]): T {
   return list[index];
 }
 
+export function randomBoolean():boolean {
+  return Math.random() > 0.5;
+}
+
 export function cycle<T>(list: T[]): () => T {
   const shallowCopy = [...list];
   let index = 0;

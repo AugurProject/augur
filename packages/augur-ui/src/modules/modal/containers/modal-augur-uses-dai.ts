@@ -5,7 +5,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { MODAL_BUY_DAI } from 'modules/common/constants';
+import { MODAL_BUY_DAI, HELP_CENTER_WHAT_IS_DAI } from 'modules/common/constants';
 import { OnboardingDollarDaiIcon } from 'modules/common/icons';
 import { AUGUR_USES_DAI, track } from 'services/analytics/helpers';
 
@@ -28,7 +28,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     },
     {
       content: 'Learn more about DAI',
-      link: 'https://augur.gitbook.io/help-center/prediction-markets/crypto-glossary#what-is-dai',
+      link: HELP_CENTER_WHAT_IS_DAI,
     },
   ],
   buttons: [

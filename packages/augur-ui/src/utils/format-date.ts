@@ -190,7 +190,7 @@ export function buildformattedDate(
   };
 }
 
-export function timestampComponents(timestamp: number, offset: number = 0): Partial<DateTimeComponents> {
+export function timestampComponents(timestamp: number, offset: number = 0, timezone: string = null): Partial<DateTimeComponents> {
   const date = moment.unix(timestamp).utcOffset(offset);
   let meridiem = 'AM';
   let hour = date.hours()
@@ -206,6 +206,7 @@ export function timestampComponents(timestamp: number, offset: number = 0): Part
     hour: String(hour),
     minute: `0${date.minutes()}`.slice(-2),
     meridiem,
+    timezone
   }
 }
 

@@ -10,6 +10,7 @@ import {
   formatAttoEth,
   formatAttoDai,
   formatRep,
+  formatPercent,
 } from 'utils/format-number';
 import {
   PlaceTradeDisplayParams,
@@ -33,40 +34,39 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   BUY,
   ZERO,
-  DAI,
-  REP,
   ETHER,
   NETWORK_IDS,
+  ONE,
 } from 'modules/common/constants';
+import { TransactionResponse } from 'ethers/providers';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
-import { CreateMarketData, LiquidityOrder } from 'modules/types';
+import { CreateMarketData, LiquidityOrder, FormattedNumber } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { EXCHANGE_RATE_BUFFER_MULTIPLIER } from 'contract-dependencies-gsn/src/ContractDependenciesGSN';
 
-export function clearUserTx(): void {
-  // const Augur = augurSdk.get();
-  // TODO: impl this for ethers
-  // old comment - clear ethrpc transaction history, registered callbacks, and alerts
-}
-
 export function isWeb3Transport(): boolean {
   return augurSdk.isWeb3Transport;
 }
 
 export async function isTransactionConfirmed(hash: string): Promise<boolean> {
-  const tx = await getTransaction(hash);
-  if (!tx) {
+  const confirmations = await transactionConfirmations(hash);
+  if (confirmations === null || confirmations === undefined) {
     console.log('Transaction could not be found', hash);
     return false;
   }
   // confirmations is number of blocks beyond block that includes tx
-  return tx.confirmations > 0;
+  return confirmations > 0;
 }
 
-export async function getTransaction(hash: string): Promise<any> {
+export async function transactionConfirmations(hash: string): Promise<number> {
+  const tx = await getTransaction(hash);
+  return tx?.confirmations;
+}
+
+export async function getTransaction(hash: string): Promise<TransactionResponse> {
   const Augur = augurSdk.get();
   const tx = await Augur.getTransaction(hash);
   return tx;
@@ -435,6 +435,13 @@ export async function getCreateMarketBreakdown() {
     decimals: 4,
   });
   return { validityBondFormatted, noShowFormatted };
+}
+
+export async function getReportingFeePercentage(): Promise<FormattedNumber> {
+  const { contracts } = augurSdk.get();
+  const reportingFee = await contracts.universe.getReportingFeeDivisor_();
+  const reportingFeePercent = (ONE.dividedBy(reportingFee)).times(100);
+  return formatPercent(reportingFeePercent);
 }
 
 export async function buyParticipationTokensEstimateGas(

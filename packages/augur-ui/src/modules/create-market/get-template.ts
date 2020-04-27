@@ -19,11 +19,14 @@ import {
   TemplateInputType,
   REQUIRED,
   CHOICE,
+  getTemplateExchangeClosingWithBuffer,
+  TimeOffset,
 } from '@augurproject/artifacts';
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
-import { YES_NO, CATEGORICAL, SCALAR, YES_NO_OUTCOMES, SCALAR_OUTCOMES, NON_EXISTENT } from 'modules/common/constants';
+import { YES_NO, CATEGORICAL, SCALAR, YES_NO_OUTCOMES, SCALAR_OUTCOMES } from 'modules/common/constants';
 import { NameValuePair } from 'modules/common/selection';
-import { OutcomeFormatted } from 'modules/types';
+import { OutcomeFormatted, DateTimeComponents } from 'modules/types';
+import { timestampComponents } from 'utils/format-date';
 
 const MarketTypeIcons = {
   [YES_NO]: YesNoMarketIcon,
@@ -372,4 +375,25 @@ export const isValidTemplateMarket = (hash: string, marketTitle: string) => {
 
 export function createTemplateValueList(values: string[]): NameValuePair[] {
   return values.map(v => ({ value: v, label: v }));
+}
+
+export function getEventExpirationForExchange(
+  inputs
+): Partial<DateTimeComponents> {
+  const closing = inputs.find(
+    i => i.type === TemplateInputType.DATEYEAR_CLOSING
+  );
+  if (!closing) return null;
+  const dateYearSource = inputs.find(i => i.id === closing.inputDateYearId);
+  const timeOffset = closing.userInputObject as TimeOffset;
+  if (dateYearSource && dateYearSource.setEndTime && timeOffset) {
+    const closingDateTime = getTemplateExchangeClosingWithBuffer(
+      dateYearSource.setEndTime,
+      timeOffset.hour,
+      timeOffset.minutes,
+      timeOffset.offset
+    );
+    return timestampComponents(closingDateTime, timeOffset.offset, timeOffset.timezone);
+  }
+  return null;
 }
