@@ -59,6 +59,7 @@ import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { MyBetsInnerNav } from 'modules/portfolio/components/common/my-bets-inner-nav';
 import { MyBetsProvider } from 'modules/portfolio/store/my-bets';
+import { StatusErrorMessage } from 'modules/common/labels';
 
 interface AppProps {
   notifications: Notification[];
@@ -530,6 +531,7 @@ const MainAppContent = ({
     <ForkingBanner />
     <Routes isLogged={isLogged || restoredAccount} />
     {isLogged && <Betslip />}
+    <StatusErrorMessage />
     </BetslipProvider>
   </section>
   );

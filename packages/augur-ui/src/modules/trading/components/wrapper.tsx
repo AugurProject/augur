@@ -18,6 +18,7 @@ import {
   formatShares,
   formatGasCostToEther,
   formatNumber,
+  formatMarketShares,
 } from 'utils/format-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted } from 'modules/types';
@@ -191,7 +192,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               )
           );
         } else {
-         
+
           this.updateTradeTotalCost(
             {
               ...selectedOrderProperties,
@@ -283,10 +284,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             selectedNav,
           });
         }
-        const newOrderDaiEstimate = formatShares(
+        const newOrderDaiEstimate = formatDai(
           createBigNumber(newOrder.totalOrderValue.fullPrecision),
           {
-            decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
             roundDown: false,
           }
         ).roundedValue;
@@ -407,8 +407,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       (err, newOrder) => {
         if (err) return console.error(err); // what to do with error here
 
-        const numShares = formatShares(createBigNumber(newOrder.numShares), {
-          decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
+        const numShares = formatMarketShares(market.marketType, createBigNumber(newOrder.numShares), {
           roundDown: false,
         }).rounded;
 

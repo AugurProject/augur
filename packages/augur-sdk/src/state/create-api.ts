@@ -85,7 +85,6 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
 export async function createClient(
   config: SDKConfiguration,
   connector: BaseConnector,
-  account?: string,
   signer?: EthersSigner,
   provider?: EthersProvider,
   enableFlexSearch = false,
@@ -145,7 +144,7 @@ export async function createClient(
   return client;
 }
 
-export async function createServer(config: SDKConfiguration, client?: Augur, account?: string): Promise<{ api: API, controller: Controller, sync: () => Promise<void> }> {
+export async function createServer(config: SDKConfiguration, client?: Augur): Promise<{ api: API, controller: Controller, sync: () => Promise<void> }> {
   logger.logLevel = config.logLevel;
   logger.info('Creating Server');
 
@@ -164,7 +163,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur, acc
   if (!client) {
     const creatingClientLabel = 'Creating a new client';
     logger.time(LoggerLevels.debug, creatingClientLabel);
-    client = await createClient(config, new EmptyConnector(), account, undefined, undefined, true);
+    client = await createClient(config, new EmptyConnector(), undefined, undefined, true);
     logger.timeEnd(LoggerLevels.debug, creatingClientLabel);
   }
 
@@ -224,8 +223,8 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
   return api;
 }
 
-export async function startServer(config: SDKConfiguration, account?: string): Promise<API> {
-  const { api, sync } = await createServer(config, undefined, account);
+export async function startServer(config: SDKConfiguration): Promise<API> {
+  const { api, sync } = await createServer(config, undefined);
 
   // TODO should this await?
   sync();

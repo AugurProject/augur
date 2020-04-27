@@ -4,7 +4,7 @@ import {
   encodeNumberAsJSNumber,
   unfix,
 } from '@augurproject/utils';
-import { ZERO, TEN, ETHER, GWEI_CONVERSION } from 'modules/common/constants';
+import { ZERO, TEN, ETHER, GWEI_CONVERSION, SCALAR } from 'modules/common/constants';
 import addCommas from 'utils/add-commas-to-number';
 import { FormattedNumber, FormattedNumberOptions } from 'modules/types';
 import { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
@@ -58,7 +58,8 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 type NumStrBigNumber = number | BigNumber | string;
 
 export const ETHER_NUMBER_OF_DECIMALS = 4;
-export const SHARES_NUMBER_OF_DECIMALS = 4;
+export const SHARES_SCALAR_NUMBER_OF_DECIMALS = 4;
+export const SHARES_NUMBER_OF_DECIMALS = 0;
 
 const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 const USUAL_NUMBER_DECIMAL_PLACES = 4;
@@ -139,6 +140,30 @@ export function formatShares(
   const formattedShares = formatNumber(num, {
     decimals: SHARES_NUMBER_OF_DECIMALS,
     decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
+    denomination: v => `${v} Shares`,
+    minimized: false,
+    zeroStyled: false,
+    blankZero: false,
+    roundDown: true,
+    bigUnitPostfix: true,
+    ...opts,
+  });
+
+  return formattedShares;
+}
+
+export function formatMarketShares(
+  marketType: string,
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
+  let decimals = SHARES_NUMBER_OF_DECIMALS
+  if (marketType === SCALAR) {
+    decimals = SHARES_SCALAR_NUMBER_OF_DECIMALS;
+  }
+  const formattedShares = formatNumber(num, {
+    decimals: decimals,
+    decimalsRounded: decimals,
     denomination: v => `${v} Shares`,
     minimized: false,
     zeroStyled: false,

@@ -24,6 +24,7 @@ import {
   WORLD,
   FINANCE,
   STOCKS,
+  STATISTICS,
   INDEXES,
   ENTERTAINMENT,
   CRYPTO,
@@ -38,6 +39,8 @@ import {
   DOUBLES,
   WNBA,
   TEXT_PLACEHOLDERS,
+  NFL_DRAFT,
+  NBA_DRAFT,
 } from './templates-template';
 import {
   LIST_VALUES,
@@ -710,12 +713,12 @@ export const TEMPLATES = {
                   text: `If the season is officially cancelled and no Stanley Cup is played, this market should resolve as 'No'`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, and the winner of the Stanley Cup is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the Stanley Cup is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, and the winner of the Stanley Cup is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                }
-              ]
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the Stanley Cup is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                },
+              ],
             },
           },
           {
@@ -919,11 +922,11 @@ export const TEMPLATES = {
                   text: `If the season is officially cancelled and the event named in market is not played, this market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, and the winner of the event named in market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the event named in market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, and the winner of the event named in market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                }
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the event named in market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -998,8 +1001,8 @@ export const TEMPLATES = {
                   text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                 },
                 {
-                  text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
-                }
+                  text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -2314,11 +2317,11 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'No'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -2354,8 +2357,8 @@ export const TEMPLATES = {
                       text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'.`
-                    }
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'.`,
+                    },
                   ],
                 },
               },
@@ -2552,11 +2555,11 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled and event named in the market is not played, this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the event named in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event named in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the event named in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event named in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -2647,8 +2650,8 @@ export const TEMPLATES = {
                       text: `If the league suspends play and starts up again at a later date, statistic at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league suspends play and play is not concluded before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and play is not concluded before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -2689,7 +2692,151 @@ export const TEMPLATES = {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
+                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+          [NBA_DRAFT]: {
+            templates: [
+              {
+                marketType: CATEGORICAL,
+                question: `[0] NBA Draft: Who will be the [1] overall pick?`,
+                example: `2020 NBA Draft: Who will be the 1st overall pick?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `pick number`,
+                    values: LIST_VALUES.DRAFT_PICK_NUMBER,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
+                    },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] NBA Draft: The First draft pick by the [1]?`,
+                example: `2020 NBA Draft: The First draft pick by the LA Lakers?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team`,
+                    values: LIST_VALUES.NBA_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 8,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
+                    },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] NBA Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
+                example: `2020 NBA Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    noSort: true,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Person's Name`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 8,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [2].5`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [2].5`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results.`,
+                    },
+                    {
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
+                    },
+                    {
+                      text: `If player is not selected "Over #.5" should be the winning outcome`
                     }
                   ],
                 },
@@ -2842,11 +2989,11 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'No'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -2882,8 +3029,8 @@ export const TEMPLATES = {
                       text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'.`
-                    }
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'.`,
+                    },
                   ],
                 },
               },
@@ -3069,11 +3216,11 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -3164,8 +3311,8 @@ export const TEMPLATES = {
                       text: `If the league suspends play and starts up again at a later date, statistic at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league suspends play and play is not concluded before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and play is not concluded before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -3206,8 +3353,8 @@ export const TEMPLATES = {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -3383,11 +3530,11 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'No'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -3428,11 +3575,11 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled and the event named in the market is not played, this market should resolve as 'No'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the event named in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event named in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the event named in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event named in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -3661,11 +3808,11 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -3713,11 +3860,11 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -3761,12 +3908,12 @@ export const TEMPLATES = {
                   text: `If the season is officially cancelled and event in market is not played, this market should resolve as 'No'`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, and the winner of the event in market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the event in market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, and the winner of the event in market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                }
-              ]
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the event in market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                },
+              ],
             },
           },
           {
@@ -3979,11 +4126,11 @@ export const TEMPLATES = {
                   text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                }
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -4058,8 +4205,8 @@ export const TEMPLATES = {
                   text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                 },
                 {
-                  text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
-                }
+                  text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                },
               ],
             },
           },
@@ -4923,8 +5070,8 @@ export const TEMPLATES = {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -4952,11 +5099,11 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled and no SuperBowl is played, this market should resolve as 'No'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the SuperBowl is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the SuperBowl is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the SuperBowl is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the SuperBowl is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -4990,8 +5137,8 @@ export const TEMPLATES = {
                       text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'.`
-                    }
+                      text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'.`,
+                    },
                   ],
                 },
               },
@@ -5212,11 +5359,11 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -5291,7 +5438,247 @@ export const TEMPLATES = {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
+                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+          [NFL_DRAFT]: {
+            templates: [
+              {
+                marketType: CATEGORICAL,
+                question: `[0] NFL Draft: Who will be the [1] overall pick?`,
+                example: `2020 NFL Draft: Who will be the 1st overall pick?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `pick number`,
+                    values: LIST_VALUES.DRAFT_PICK_NUMBER,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
+                    },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] NFL Draft: Who will be the first [1] selected?`,
+                example: `2020 NFL Draft: Who will be the first Quarterback selected?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `position`,
+                    values: LIST_VALUES.NFL_DRAFT_POSITIONS,
+                    categoryDestId: 2,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 48,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
+                    },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] NFL Draft: The First draft pick by the [1]?`,
+                example: `2020 NFL Draft: The First draft pick by the NY Giants?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Team`,
+                    values: LIST_VALUES.NFL_TEAMS,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 48,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
+                    },
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                    },
+                    {
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] NFL Draft(O/U): [1].5 Total [2] drafted in Round 1?`,
+                example: `2020 NFL Draft(O/U): 5.5 Total Quarterbacks drafted in Round 1?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    noSort: true,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Positions`,
+                    values: LIST_VALUES.NFL_DRAFT_TOTAL_POSITIONS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [1].5`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [1].5`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, If a QB was selected in the first round and was later traded for another player in the 2nd round. The QB would count towards the first round total.`,
+                    },
+                    {
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] NFL Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
+                example: `2020 NFL Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    noSort: true,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Person's Name`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 48,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [2].5`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [2].5`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, If a QB was selected in the first round and was later traded for another player in the 2nd round. The QB would count towards the first round total.`,
+                    },
+                    {
+                      text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
+                    },
+                    {
+                      text: `If player is not selected "Over #.5" should be the winning outcome`
                     }
                   ],
                 },
@@ -5670,11 +6057,11 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled and no Bowl Game is played, this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Bowl Game is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Bowl Game is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Bowl Game is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Bowl Game is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -5717,11 +6104,11 @@ export const TEMPLATES = {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                     },
                     {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the Championship is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -5790,8 +6177,8 @@ export const TEMPLATES = {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`
-                    }
+                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                    },
                   ],
                 },
               },
@@ -6398,6 +6785,92 @@ export const TEMPLATES = {
   },
   [FINANCE]: {
     children: {
+      [STATISTICS]: {
+        templates: [
+          {
+            marketType: CATEGORICAL,
+            question: `Will the seasonally adjusted national Unemployment Rate for [0] [1] be [2]% or higher according to the US Bureau Labor of Statistics?`,
+            example: `Will the seasonally adjusted national Unemployment Rate for September 2020 be 5% or higher according to the US Bureau Labor of Statistics?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Month`,
+                eventExpEndNextMonth: true,
+                yearDropdown: 1,
+                values: LIST_VALUES.MONTHS,
+                noSort: true,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                eventExpEndNextMonth: true,
+                values: LIST_VALUES.YEARS,
+                monthDropdown: 0,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                placeholder: `Number`,
+                validationType: ValidationType.NUMBER_ONE_DECIMAL,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[2]% or Higher`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Below [2]%`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Settlement is found using the US Bureau Labor of Statistics website (https://www.bls.gov/). You can go directly to https://data.bls.gov/timeseries/LNS14000000 to find the market settlement number, go to the Year/Month stated in the market question in the chart.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What will the seasonally adjusted national Unemployment Rate be for [0] [1] according to the US Bureau Labor of Statistics?`,
+            example: `What will the seasonally adjusted national Unemployment Rate be for September 2020 according to the US Bureau Labor of Statistics?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Month`,
+                eventExpEndNextMonth: true,
+                yearDropdown: 1,
+                values: LIST_VALUES.MONTHS,
+                noSort: true,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                eventExpEndNextMonth: true,
+                values: LIST_VALUES.YEARS,
+                monthDropdown: 0,
+              },
+            ],
+            tickSize: 0.1,
+            minPrice: 0,
+            maxPrice: 30,
+            denomination: '%',
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Settlement is found using the US Bureau Labor of Statistics website (https://www.bls.gov/). You can go directly to https://data.bls.gov/timeseries/LNS14000000 to find the market settlement number, go to the Year/Month stated in the market question in the chart.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
       [STOCKS]: {
         templates: [
           {
@@ -6437,8 +6910,8 @@ export const TEMPLATES = {
                 id: 5,
                 type: TemplateInputType.DATEYEAR_CLOSING,
                 placeholder: ``,
-                inputDateYearId: 3,
-                inputSourceId: 2,
+                inputDateYearId: 4,
+                inputSourceId: 3,
                 inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
                 holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES,
               },
@@ -6507,8 +6980,8 @@ export const TEMPLATES = {
                 id: 6,
                 type: TemplateInputType.DATEYEAR_CLOSING,
                 placeholder: ``,
-                inputDateYearId: 3,
-                inputSourceId: 2,
+                inputDateYearId: 5,
+                inputSourceId: 3,
                 inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
                 holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES,
               },
@@ -6564,8 +7037,8 @@ export const TEMPLATES = {
                 id: 4,
                 type: TemplateInputType.DATEYEAR_CLOSING,
                 placeholder: ``,
-                inputDateYearId: 2,
-                inputSourceId: 1,
+                inputDateYearId: 3,
+                inputSourceId: 2,
                 inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
                 holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES,
               },
@@ -7454,8 +7927,8 @@ export const TEMPLATES = {
               text: `World Cases: Settlement is based off of the https://www.worldometers.info/coronavirus/ website.  To find the Total number of confirmed World cases, go to the Total Case (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.  To find the Total number of  World deaths, go to the Total deaths (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.`,
             },
             {
-              text: `Country Cases: To find the Total cases or deaths for a specific country named in the market question go to https://www.worldometers.info/coronavirus/ website and scroll down the page until you find the list of countries.  Select the country you want.  On that country’s information page, scroll down until you find the corresponding chart needed for the market question. For example, to find the total amount of confirmed cases in the United States, go to the Total Case (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.  To find the Total number of deaths for that country, go to the Total deaths (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.`
-            }
+              text: `Country Cases: To find the Total cases or deaths for a specific country named in the market question go to https://www.worldometers.info/coronavirus/ website and scroll down the page until you find the list of countries.  Select the country you want.  On that country’s information page, scroll down until you find the corresponding chart needed for the market question. For example, to find the total amount of confirmed cases in the United States, go to the Total Case (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.  To find the Total number of deaths for that country, go to the Total deaths (linear scale) chart.  Move your mouse to the date named in the market question and that number is to be used for settlement purposes.`,
+            },
           ],
         },
       },
@@ -7510,8 +7983,8 @@ export const TEMPLATES = {
               text: `Cases: Settlement is based of the https://covidtracking.com/data/ website. To find the Total number of positive cases for a US State. You must find the State you are searching for and click on that State, to go to that State's details, Scroll down until you see history. Look for the specific date mentioned in the market question and scroll over until you find "Positive" column and use that number.`,
             },
             {
-              text: `Deaths: Settlement is based of the https://covidtracking.com/data/ website. To find the Total number of deaths from Covid-19 for a US State. You must find the State you are searching for and click on that State, to go to that State's details, Scroll down until you see history. Look for the specific date mentioned in the market question and scroll over until you find "Deaths" column and use that number.`
-            }
+              text: `Deaths: Settlement is based of the https://covidtracking.com/data/ website. To find the Total number of deaths from Covid-19 for a US State. You must find the State you are searching for and click on that State, to go to that State's details, Scroll down until you see history. Look for the specific date mentioned in the market question and scroll over until you find "Deaths" column and use that number.`,
+            },
           ],
         },
       },
@@ -7547,6 +8020,6 @@ export const TEMPLATES = {
           ],
         },
       },
-    ]
+    ],
   },
 };

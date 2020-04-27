@@ -8,7 +8,7 @@ import {
   doTradeTakerView,
   LONG,
   SHORT,
-  ONE, MakerTakerTrade, TradeData, PLResultData
+  THIRTY, MakerTakerTrade, TradeData, PLResultData
 } from './common';
 import { formatBytes32String } from 'ethers/utils';
 import { Market } from "@augurproject/core/build/libraries/ContractInterfaces";
@@ -63,7 +63,7 @@ describe('State API :: Users :: ', () => {
         { market, maker, taker, direction: SHORT, outcome: 1, quantity: 20, price: 0.60 },
         { market, maker, taker, direction: LONG, outcome: 2, quantity: 50, price: 0.30 },
       ]);
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: defaultPL,
         [maker.account.address]: defaultPL,
       });
@@ -78,7 +78,7 @@ describe('State API :: Users :: ', () => {
         [taker.account.address]: 0,
       });
 
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: {
           unrealizedPL: 0,
           unrealizedPercent: 0,
@@ -112,7 +112,7 @@ describe('State API :: Users :: ', () => {
       await trade(john, 0, [
         { market, maker, taker, direction: SHORT, outcome: 1, quantity: 100, price: 0.10 },
       ]);
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: defaultPL,
         [maker.account.address]: defaultPL,
       });
@@ -126,7 +126,7 @@ describe('State API :: Users :: ', () => {
         [taker.account.address]: 0,
       });
 
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: {
           unrealizedPL: 0,
           unrealizedPercent: 0,
@@ -160,7 +160,7 @@ describe('State API :: Users :: ', () => {
       await trade(john, 0, [
         { market, maker, taker, direction: LONG, outcome: 1, quantity: 10, price: 0.20 },
       ]);
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: defaultPL,
         [maker.account.address]: defaultPL,
       });
@@ -174,7 +174,7 @@ describe('State API :: Users :: ', () => {
         [taker.account.address]: 10e18,
       });
 
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: {
           unrealizedPL: 0,
           unrealizedPercent: 0,
@@ -213,7 +213,7 @@ describe('State API :: Users :: ', () => {
         { market, maker, taker, direction: SHORT, outcome: 2, quantity: 30, price: 0.15 },
         { market, maker, taker, direction: SHORT, outcome: 6, quantity: 50, price: 0.10 },
       ]);
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: defaultPL,
         [maker.account.address]: defaultPL,
       });
@@ -227,7 +227,7 @@ describe('State API :: Users :: ', () => {
       await verifyCash(john, market, { [maker.account.address]: 50e18 });
       await verifyCash(john, market, { [taker.account.address]: 50e18 }, false);
 
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: {
           unrealizedPL: 0,
           unrealizedPercent: 0,
@@ -262,7 +262,7 @@ describe('State API :: Users :: ', () => {
         { market, maker, taker, direction: SHORT, outcome: 1, quantity: 50, price: 0.60 },
         { market, maker, taker, direction: SHORT, outcome: 2, quantity: 200, price: 0.30 },
       ]);
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: defaultPL,
         [maker.account.address]: defaultPL,
       });
@@ -276,7 +276,7 @@ describe('State API :: Users :: ', () => {
       await verifyCash(john, market, { [taker.account.address]: 50e18 }, false);
       await verifyCash(john, market, { [maker.account.address]: 200e18 });
 
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: {
           unrealizedPL: 0,
           unrealizedPercent: 0,
@@ -312,7 +312,7 @@ describe('State API :: Users :: ', () => {
         { market, maker, taker, direction: LONG, outcome: 3, quantity: 100, price: 0.10 },
         { market, maker, taker, direction: SHORT, outcome: 5, quantity: 50, price: 0.30 },
       ]);
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: defaultPL,
         [maker.account.address]: defaultPL,
       });
@@ -326,7 +326,7 @@ describe('State API :: Users :: ', () => {
       await verifyCash(john, market, { [taker.account.address]: 20e18 }, false);
       await verifyCash(john, market, { [maker.account.address]: 150e18 });
 
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: {
           unrealizedPL: 0,
           unrealizedPercent: 0,
@@ -358,7 +358,7 @@ describe('State API :: Users :: ', () => {
       await trade(john, 0, [
         { market, maker, taker, direction: SHORT, outcome: 1, quantity: 10, price: 60, minPrice: 0, maxPrice: 82 },
       ]);
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: defaultPL,
         [maker.account.address]: defaultPL,
       });
@@ -375,7 +375,7 @@ describe('State API :: Users :: ', () => {
       await verifyCash(john, market, { [taker.account.address]: 150e18 });
       await verifyCash(john, market, { [maker.account.address]: 670e18 });
 
-      await verifyPL(john, {
+      await verifyThirtyDayPL(john, {
         [taker.account.address]: {
           unrealizedPL: 0,
           unrealizedPercent: 0,
@@ -403,7 +403,7 @@ async function trade(user: TestContractAPI, timeDelta: number, trades: MakerTake
   }
 }
 
-async function verifyPL(user: TestContractAPI, result: {[address: string]: PLResultData}) {
+async function verifyThirtyDayPL(user: TestContractAPI, result: {[address: string]: PLResultData}) {
   await user.sync();
   for (const address of _.keys(result)) {
     const plResult = result[address];
@@ -412,11 +412,11 @@ async function verifyPL(user: TestContractAPI, result: {[address: string]: PLRes
       account: address
     });
 
-    const oneDayPLSummary = profitLossSummary[ONE]; // one is one day?
-    await expect(Number.parseFloat(oneDayPLSummary.realized)).toEqual(plResult.realizedPL);
-    await expect(Number.parseFloat(oneDayPLSummary.unrealized)).toEqual(plResult.unrealizedPL);
-    await expect(Number.parseFloat(oneDayPLSummary.realizedPercent)).toEqual(plResult.realizedPercent);
-    await expect(Number.parseFloat(oneDayPLSummary.unrealizedPercent)).toEqual(plResult.unrealizedPercent);
+    const thirtyDayPLSummary = profitLossSummary[THIRTY];
+    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(plResult.realizedPL);
+    await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(plResult.unrealizedPL);
+    await expect(Number.parseFloat(thirtyDayPLSummary.realizedPercent)).toEqual(plResult.realizedPercent);
+    await expect(Number.parseFloat(thirtyDayPLSummary.unrealizedPercent)).toEqual(plResult.unrealizedPercent);
   }
 }
 
@@ -503,7 +503,7 @@ async function createScalarMarket (
 async function finalize(user: TestContractAPI, market: Market): Promise<void> {
   await user.advanceTimestamp(DAY * 2);
   await market.finalize();
-  await user.advanceTimestamp(1);
+  await user.advanceTimestamp(DAY * 2);
 }
 
 async function report(user: TestContractAPI, market: Market, outcome: number) {

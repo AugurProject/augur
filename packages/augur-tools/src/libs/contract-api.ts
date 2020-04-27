@@ -528,6 +528,11 @@ export class ContractAPI {
     await disputeWindow.buy(amount, {sender});
   }
 
+  async simpleBuyParticipationTokens(attoRep: BigNumber): Promise<void> {
+    const universe = this.augur.contracts.universe.address;
+    await this.augur.contracts.buyParticipationTokens.buyParticipationTokens(universe, attoRep);
+  }
+
   async redeemParticipationTokens(disputeWindowAddress: string, account: string=this.account.address): Promise<void> {
     const disputeWindow = this.augur.contracts.disputeWindowFromAddress(disputeWindowAddress);
     await disputeWindow.redeem(account);
@@ -588,8 +593,9 @@ export class ContractAPI {
     return this.augur.getMarket(address);
   }
 
-  async getMarketInfo(address: string): Promise<Getters.Markets.MarketInfo[]> {
-    return this.augur.getMarketsInfo({marketIds: [address]});
+  async getMarketInfo(marketIds: string | string[] ): Promise<Getters.Markets.MarketInfo[]> {
+    marketIds = Array.isArray(marketIds) ? marketIds : [marketIds];
+    return this.augur.getMarketsInfo({marketIds});
   }
 
   async getMarkets(): Promise<Getters.Markets.MarketList> {
@@ -847,4 +853,19 @@ export class ContractAPI {
   async getWarpSyncHashFromMarket(market: ContractInterfaces.Market): Promise<string> {
     return this.augur.warpSync.getWarpSyncHashFromMarket(market);
   }
+
+  async addTokenExchangeLiquidity(attoCash: BigNumber, attoRep: BigNumber): Promise<void> {
+    const contracts = this.augur.contracts;
+    const owner = await this.augur.getAccount();
+    const now = new Date();
+    const deadline = (now.valueOf() * 1) + 3600000;
+    const APPROVAL_AMOUNT = new BigNumber(2**255);
+
+    await this.faucetCashUpTo(attoCash);
+    await this.faucetRepUpTo(attoRep)
+    await contracts.cash.approve(contracts.uniswap.address, APPROVAL_AMOUNT)
+    await contracts.reputationToken.approve(contracts.uniswap.address, APPROVAL_AMOUNT)
+    await contracts.uniswap.addLiquidity(contracts.reputationToken.address, contracts.cash.address, attoRep, attoCash, new BigNumber(0), new BigNumber(0), owner, new BigNumber(deadline))
+  }
+
 }
