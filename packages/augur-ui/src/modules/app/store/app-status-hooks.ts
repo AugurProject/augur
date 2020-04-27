@@ -7,7 +7,8 @@ import {
   IS_HELP_MENU_OPEN,
   IS_CONNECTION_TRAY_OPEN,
   IS_ODDS_MENU_OPEN,
-  IS_ALERTS_MENU_OPEN
+  IS_ALERTS_MENU_OPEN,
+  IS_MOBILE,
 } from 'modules/app/store/constants';
 
 const {
@@ -18,6 +19,7 @@ const {
   SET_IS_CONNECTION_TRAY_OPEN,
   SET_IS_ALERTS_MENU_OPEN,
   CLOSE_APP_MENUS,
+  SET_IS_MOBILE,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = (theme) => document.documentElement.setAttribute(THEME, theme);
@@ -68,6 +70,10 @@ export function AppStatusReducer(state, action) {
       updatedState[IS_ALERTS_MENU_OPEN] = false;
       break;
     }
+    case (SET_IS_MOBILE): {
+      updatedState[IS_MOBILE] = action.isMobile;
+      break;
+    }
     default:
       throw new Error(`Error: ${action.type} not caught by App Status reducer.`);
   }
@@ -91,6 +97,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setIsConnectionTrayOpen: isOpen => dispatch({ type: SET_IS_CONNECTION_TRAY_OPEN, isOpen }),
       setIsAlertsMenuOpen: isOpen => dispatch({ type: SET_IS_ALERTS_MENU_OPEN, isOpen }),
       closeAppMenus: () => dispatch({ type: CLOSE_APP_MENUS }),
+      setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
     }
   }
 }

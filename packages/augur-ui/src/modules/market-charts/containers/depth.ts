@@ -32,7 +32,6 @@ const mapStateToProps = (state, ownProps) => {
   return {
     outcomeName: marketOutcome.description,
     selectedOutcome: marketOutcome,
-    isMobile: state.appStatus.isMobile,
     currentTimeInSeconds: selectCurrentTimestampInSeconds(state),
     orderBook: cumulativeOrderBook,
     hasOrders:

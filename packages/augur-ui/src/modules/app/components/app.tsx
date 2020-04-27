@@ -14,7 +14,7 @@ import ToastsContainer from 'modules/alerts/containers/toasts-view';
 
 import { Betslip } from 'modules/trading/betslip';
 import { BetslipProvider } from 'modules/trading/store/betslip';
-import { AppStatusProvider, useAppStatusStore } from 'modules/app/store/app-status';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 import {
   MobileNavHamburgerIcon,
@@ -67,12 +67,10 @@ interface AppProps {
   initAugur: Function;
   isLogged: boolean;
   restoredAccount: boolean;
-  isMobile: boolean;
   location: Location;
   loginAccount: LoginAccount;
   modal: object;
   universe: Universe;
-  updateIsMobile: Function;
   updateModal: Function;
   finalizeMarket: Function;
   env: any;
@@ -141,7 +139,7 @@ function changeMenu(nextBasePath, updateCurrentInnerNavType, updateMobileMenuSta
   }
 }
 
-function checkIsMobile(updateIsMobile) {
+function checkIsMobile(setIsMobile) {
   // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
   // CSS breakpoint sets the value when a user is mobile
   const isMobile =
@@ -150,7 +148,7 @@ function checkIsMobile(updateIsMobile) {
         .getComputedStyle(document.body)
         .getPropertyValue('--is-mobile') || ''
     ).indexOf('true') !== -1;
-  updateIsMobile(isMobile);
+    setIsMobile(isMobile);
 };
 
 const AppView = ({
@@ -167,11 +165,9 @@ const AppView = ({
   updateModal,
   updateCurrentBasePath,
   saveAffilateAddress,
-  isMobile,
   updateMobileMenuState,
   sidebarStatus: { currentBasePath, mobileMenuState },
   updateSidebarStatus,
-  updateIsMobile,
   blockchain: { currentAugurTimestamp },
   isLogged,
   restoredAccount,
@@ -186,6 +182,7 @@ const AppView = ({
   showGlobalChat,
   updateCurrentInnerNavType,
 }:AppProps) => {
+  const { isMobile, actions: { setIsMobile } } = useAppStatusStore();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
   const ModalShowing = Object.keys(modal).length !== 0;
@@ -256,13 +253,13 @@ const AppView = ({
 
   useEffect(() => {
     function handleRezize() {
-      checkIsMobile(updateIsMobile);
+      checkIsMobile(setIsMobile);
     }
     window.addEventListener('resize', handleRezize);
     if (isWindows()) {
       document.body.classList.add('App--windowsScrollBars');
     }
-    checkIsMobile(updateIsMobile);
+    checkIsMobile(setIsMobile);
     return () => {
       window.removeEventListener('resize', handleRezize);
     };
@@ -304,7 +301,6 @@ const AppView = ({
 
   return (
     <main>
-      <AppStatusProvider>
       <HelmetTag {...APP_HEAD_TAGS} />
       {ModalShowing && <Modal />}
       {toasts.length > 0 && (
@@ -396,7 +392,6 @@ const AppView = ({
           </section>
         </section>
       </div>
-      </AppStatusProvider>
     </main>
   );
 };

@@ -8,8 +8,6 @@ import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import { selectNotifications } from "modules/notifications/selectors/notification-state";
 import {
-  IS_MOBILE,
-  updateAppStatus,
   WALLET_STATUS,
 } from "modules/app/actions/update-app-status";
 import { initAugur } from "modules/app/actions/init-augur";
@@ -53,7 +51,6 @@ const mapStateToProps = (state: AppState) => {
     env: state.env,
     isLogged: state.authStatus.isLogged,
     restoredAccount: state.authStatus.restoredAccount,
-    isMobile: state.appStatus.isMobile,
     oddsType: state.appStatus.odds,
     loginAccount,
     modal: state.modal,
@@ -70,7 +67,6 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = dispatch => ({
   initAugur: (history, overrides, cb) =>
     dispatch(initAugur(history, overrides, cb)),
-  updateIsMobile: isMobile => dispatch(updateAppStatus(IS_MOBILE, isMobile)),
   updateModal: modal => dispatch(updateModal(modal)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
   logout: () => dispatch(logout()),

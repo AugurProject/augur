@@ -36,7 +36,6 @@ interface MarketsViewProps {
   history: History;
   isConnected: boolean;
   toggleFavorite: (...args: any[]) => any;
-  isMobile: boolean;
   loadMarketsByFilter: Function;
   search?: string;
   maxFee: string;
@@ -76,7 +75,6 @@ interface MarketsViewState {
 
 const MarketsView = ({
   history,
-  isMobile,
   location,
   markets,
   toggleFavorite,
@@ -163,7 +161,7 @@ const MarketsView = ({
     state.offset,
     state.marketCount
   ]);
-  const { theme } = useAppStatusStore();
+  const { theme, isMobile } = useAppStatusStore();
   const {
     filterSortedMarkets,
     marketCount,

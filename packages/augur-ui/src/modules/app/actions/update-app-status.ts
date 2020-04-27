@@ -1,6 +1,5 @@
 import { FormattedNumber } from 'modules/types';
 
-export const IS_MOBILE = 'isMobile';
 export const UPDATE_APP_STATUS = 'UPDATE_APP_STATUS';
 export const ETH_TO_DAI_RATE = 'ethToDaiRate';
 export const REP_TO_DAI_RATE = 'repToDaiRate';
