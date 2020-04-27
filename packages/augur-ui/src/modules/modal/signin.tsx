@@ -36,7 +36,7 @@ export const SignIn = ({
   isLogin = true,
   connectMethods,
 }: LoginProps) => {
-  const { actions: { setOxEnabled } } = useAppStatusStore();
+  const { actions: { setOxEnabled, setGSNEnabled } } = useAppStatusStore();
   const LOGIN_OR_SIGNUP = isLogin ? 'Login' : 'Signup';
 
   const parimaryButtonsToShow = connectMethods
@@ -45,7 +45,7 @@ export const SignIn = ({
     .map((method, idx) => (
       <PrimarySignInButton
         key={idx}
-        action={() => method.action(setOxEnabled)}
+        action={() => method.action(setOxEnabled, setGSNEnabled)}
         text={method.text}
         subText={method.subText}
         icon={method.icon}
@@ -58,7 +58,7 @@ export const SignIn = ({
     .map((method, idx) => (
       <SecondarySignInButton
         key={idx}
-        action={() => method.action(setOxEnabled)}
+        action={() => method.action(setOxEnabled, setGSNEnabled)}
         text={method.text}
         subText={method.subText}
         icon={method.icon}

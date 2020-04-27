@@ -8,6 +8,7 @@ export const IS_HELP_MENU_OPEN = 'isHelpMenuOpen';
 export const IS_CONNECTION_TRAY_OPEN = 'isConnectionTrayOpen';
 export const IS_ALERTS_MENU_OPEN = 'isAlertsMenuOpen';
 export const Ox_ENABLED = 'zeroXEnabled';
+export const GSN_ENABLED = 'gsnEnabled';
 
 export const DEFAULT_APP_STATUS = {
   [THEME]: THEMES.TRADING,
@@ -18,6 +19,7 @@ export const DEFAULT_APP_STATUS = {
   [IS_ODDS_MENU_OPEN]: false,
   [IS_ALERTS_MENU_OPEN]: false,
   [Ox_ENABLED]: false,
+  [GSN_ENABLED]: false,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -30,6 +32,7 @@ export const APP_STATUS_ACTIONS = {
   SET_IS_ALERTS_MENU_OPEN: 'SET_IS_ALERTS_MENU_OPEN',
   CLOSE_APP_MENUS: 'CLOSE_APP_MENUS',
   SET_Ox_ENABLED: 'SET_Ox_ENABLED',
+  SET_GSN_ENABLED: 'SET_GSN_ENABLED',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -42,4 +45,5 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   closeAppMenus: () => {},
   setIsMobile: isMobile => {},
   setOxEnabled: isOxEnabled => {},
+  setGSNEnabled: isGSNEnabled => {},
 };

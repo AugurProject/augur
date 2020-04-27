@@ -182,7 +182,7 @@ const AppView = ({
   showGlobalChat,
   updateCurrentInnerNavType,
 }:AppProps) => {
-  const { isMobile, actions: { setIsMobile, setOxEnabled } } = useAppStatusStore();
+  const { isMobile, actions: { setIsMobile, setOxEnabled, setGSNEnabled } } = useAppStatusStore();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
   const ModalShowing = Object.keys(modal).length !== 0;
@@ -248,6 +248,7 @@ const AppView = ({
         }
       },
       setOxEnabled,
+      setGSNEnabled,
     );
     // we only want this to run the first mount, so we set the things to look at to a static value.
   }, [false])
@@ -419,7 +420,7 @@ const SideBarSection = ({
   showCreateAccountButton,
   createFundedGsnWallet,
 }) => {
-  const { theme, actions: { closeAppMenus } } = useAppStatusStore();
+  const { theme, actions: { closeAppMenus, setGSNEnabled } } = useAppStatusStore();
   sideNavMenuData[1].title =
       theme !== THEMES.TRADING ? 'My Account' : 'Account Summary';
   sideNavMenuData[2].title =
@@ -442,7 +443,7 @@ const SideBarSection = ({
         isLogged={isLogged || restoredAccount}
         menuData={sideNavMenuData}
         currentBasePath={currentBasePath}
-        logout={() => logout()}
+        logout={() => logout(setGSNEnabled)}
         showGlobalChat={() => showGlobalChat()}
         migrateV1Rep={migrateV1Rep}
         showMigrateRepButton={showMigrateRepButton}

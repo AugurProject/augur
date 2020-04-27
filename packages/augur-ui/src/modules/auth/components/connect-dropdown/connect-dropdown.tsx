@@ -14,6 +14,7 @@ import { displayGasInDai, ethToDai } from 'modules/app/actions/get-ethToDai-rate
 
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -41,29 +42,29 @@ interface ConnectDropdownProps {
   reserveEthAmount: FormattedNumber;
 }
 
-const ConnectDropdown = (props: ConnectDropdownProps) => {
-  const {
-    isLogged,
-    restoredAccount,
-    userDefinedGasPrice,
-    accountMeta,
-    gasPriceSpeed,
-    gasPriceTime,
-    gasModal,
-    balances,
-    showAddFundsModal,
-    universeSelectorModal,
-    universeOutcomeName,
-    parentUniverseId,
-    universeHasChildren,
-    GsnEnabled,
-    ethToDaiRate,
-    loginAccountAddress,
-    reserveEthAmount,
-  } = props;
-
+const ConnectDropdown = ({
+  isLogged,
+  restoredAccount,
+  userDefinedGasPrice,
+  accountMeta,
+  gasPriceSpeed,
+  gasPriceTime,
+  gasModal,
+  balances,
+  showAddFundsModal,
+  universeSelectorModal,
+  universeOutcomeName,
+  parentUniverseId,
+  universeHasChildren,
+  GsnEnabled,
+  ethToDaiRate,
+  loginAccountAddress,
+  reserveEthAmount,
+  logout,
+}: ConnectDropdownProps) => {
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const { actions: { setGSNEnabled }} = useAppStatusStore();
 
   let gasCostTrade;
 
@@ -91,11 +92,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       clearTimeout(timeoutId);
     };
   }, []);
-
-  const logout = () => {
-    const { logout } = props;
-    logout();
-  };
 
   const renderToolTip = (id: string, content: JSX.Element) => (
     <span>
@@ -320,7 +316,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           </div>
         )}
 
-        <button className={Styles.Logout} onClick={() => logout()}>
+        <button className={Styles.Logout} onClick={() => logout(setGSNEnabled)}>
             Logout {LogoutIcon}
         </button>
       </div>

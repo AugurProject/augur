@@ -20,7 +20,7 @@ import { logout } from 'modules/auth/actions/logout';
 import { AppState } from 'appStore';
 
 // MetaMask, dapper, Mobile wallets
-export const loginWithInjectedWeb3 = (setOxEnabled) => async (
+export const loginWithInjectedWeb3 = (setOxEnabled, setGSNEnabled) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
@@ -32,7 +32,7 @@ export const loginWithInjectedWeb3 = (setOxEnabled) => async (
     if (!account) return failure('No Account');
     if (refresh) dispatch(updateAuthStatus(IS_LOGGED, false));
 
-    dispatch(login(account, setOxEnabled));
+    dispatch(login(account, setOxEnabled, setGSNEnabled));
 
     const web3 = windowRef.web3;
     if (
@@ -72,11 +72,11 @@ export const loginWithInjectedWeb3 = (setOxEnabled) => async (
               })
             );
 
-            await dispatch(loginWithInjectedWeb3(setOxEnabled));
+            await dispatch(loginWithInjectedWeb3(setOxEnabled, setGSNEnabled));
           };
 
           console.log('refreshing account to', accounts[0]);
-          await dispatch(logout());
+          await dispatch(logout(setGSNEnabled));
 
           initWeb3(accounts[0]);
         }
@@ -98,7 +98,7 @@ export const loginWithInjectedWeb3 = (setOxEnabled) => async (
   }
 };
 
-const login = (account: string, setOxEnabled) => (
+const login = (account: string, setOxEnabled, setGSNEnabled) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
@@ -119,5 +119,5 @@ const login = (account: string, setOxEnabled) => (
       isWeb3: true,
     },
   };
-  dispatch(updateSdk(accountObject, networkId, useGSN, setOxEnabled));
+  dispatch(updateSdk(accountObject, networkId, useGSN, setOxEnabled, setGSNEnabled));
 };

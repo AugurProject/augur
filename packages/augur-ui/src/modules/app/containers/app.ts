@@ -65,11 +65,11 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  initAugur: (history, overrides, cb, setOxEnabled) =>
-    dispatch(initAugur(history, overrides, cb, setOxEnabled)),
+  initAugur: (history, overrides, cb, setOxEnabled, setGSNEnabled) =>
+    dispatch(initAugur(history, overrides, cb, setOxEnabled, setGSNEnabled)),
   updateModal: modal => dispatch(updateModal(modal)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
-  logout: () => dispatch(logout()),
+  logout: (setGSNEnabled) => dispatch(logout(setGSNEnabled)),
   updateCurrentBasePath: data => dispatch(updateCurrentBasePath(data)),
   updateCurrentInnerNavType: data => dispatch(updateCurrentInnerNavType(data)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),

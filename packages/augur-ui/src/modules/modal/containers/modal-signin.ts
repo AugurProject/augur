@@ -55,13 +55,13 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
         showCloseAfterDelay: true,
       })
     ),
-  connectMetaMask: (setOxEnabled) => dispatch(loginWithInjectedWeb3(setOxEnabled)),
-  connectPortis: (showRegister, setOxEnabled) =>
-    dispatch(loginWithPortis(showRegister, setOxEnabled)),
-  connectTorus: (setOxEnabled) =>
-    dispatch(loginWithTorus(setOxEnabled)),
-  connectFortmatic: (setOxEnabled) =>
-    dispatch(loginWithFortmatic(setOxEnabled)),
+  connectMetaMask: (setOxEnabled, setGSNEnabled) => dispatch(loginWithInjectedWeb3(setOxEnabled, setGSNEnabled)),
+  connectPortis: (showRegister, setOxEnabled, setGSNEnabled) =>
+    dispatch(loginWithPortis(showRegister, setOxEnabled, setGSNEnabled)),
+  connectTorus: (setOxEnabled, setGSNEnabled) =>
+    dispatch(loginWithTorus(setOxEnabled, setGSNEnabled)),
+  connectFortmatic: (setOxEnabled, setGSNEnabled) =>
+    dispatch(loginWithFortmatic(setOxEnabled, setGSNEnabled)),
   errorModal: (error, title = null, link = null, linkLabel = null) => dispatch(
     updateModal({
       type: MODAL_ERROR,
@@ -104,11 +104,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       subText: `Powered by ${ACCOUNT_TYPES.PORTIS}`,
       hidden: false,
       primary: true,
-      action: async (setOxEnabled) => {
+      action: async (setOxEnabled, setGSNEnabled) => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => login());
         try {
           const forceRegisterPage = oP.isLogin ? false : true;
-          await dP.connectPortis(forceRegisterPage, setOxEnabled);
+          await dP.connectPortis(forceRegisterPage, setOxEnabled, setGSNEnabled);
         } catch (error) {
           onError(error, ACCOUNT_TYPES.PORTIS);
         }
@@ -120,10 +120,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       text: `${LOGIN_OR_SIGNUP} with Google`,
       subText: `Powered by ${ACCOUNT_TYPES.TORUS}`,
       hidden: false,
-      action: async (setOxEnabled) => {
+      action: async (setOxEnabled, setGSNEnabled) => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_TORUS, () => login());
         try {
-          await dP.connectTorus(setOxEnabled);
+          await dP.connectTorus(setOxEnabled, setGSNEnabled);
         } catch (error) {
           onError(error, ACCOUNT_TYPES.TORUS);
         }
@@ -135,10 +135,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       text: `${LOGIN_OR_SIGNUP} with Phone Number`,
       subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
       hidden: false,
-      action: async (setOxEnabled) => {
+      action: async (setOxEnabled, setGSNEnabled) => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
         try {
-          await dP.connectFortmatic(setOxEnabled);
+          await dP.connectFortmatic(setOxEnabled, setGSNEnabled);
         } catch (error) {
           onError(error, ACCOUNT_TYPES.FORTMATIC);
         }
@@ -151,14 +151,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       subText: '',
       disabled: false,
       hidden: !isMetaMaskPresent(),
-      action: async (setOxEnabled) => {
+      action: async (setOxEnabled, setGSNEnabled) => {
         const accounts =
           windowRef.ethereum && windowRef.ethereum.selectedAddress;
         const msg = accounts ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
         const showMetaMaskHelper = accounts ? false : true;
         dP.loadingModal(msg, () => login(), showMetaMaskHelper);
         try {
-          await dP.connectMetaMask(setOxEnabled);
+          await dP.connectMetaMask(setOxEnabled, setGSNEnabled);
         } catch (error) {
           onError(error, ACCOUNT_TYPES.WEB3WALLET);
         }

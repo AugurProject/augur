@@ -10,6 +10,7 @@ import {
   IS_ALERTS_MENU_OPEN,
   IS_MOBILE,
   Ox_ENABLED,
+  GSN_ENABLED,
 } from 'modules/app/store/constants';
 
 const {
@@ -22,6 +23,7 @@ const {
   CLOSE_APP_MENUS,
   SET_IS_MOBILE,
   SET_Ox_ENABLED,
+  SET_GSN_ENABLED,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -81,6 +83,10 @@ export function AppStatusReducer(state, action) {
       updatedState[Ox_ENABLED] = action.isOxEnabled;
       break;
     }
+    case SET_GSN_ENABLED: {
+      updatedState[GSN_ENABLED] = action.isGSNEnabled;
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -113,6 +119,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
       setOxEnabled: isOxEnabled =>
         dispatch({ type: SET_Ox_ENABLED, isOxEnabled }),
+      setGSNEnabled: isGSNEnabled => dispatch({ type: SET_GSN_ENABLED, isGSNEnabled }),
     },
   };
 };

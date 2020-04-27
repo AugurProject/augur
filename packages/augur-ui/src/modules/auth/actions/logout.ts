@@ -9,7 +9,7 @@ import { augurSdk } from 'services/augursdk';
 import { updateAppStatus, WALLET_STATUS, GSN_ENABLED } from 'modules/app/actions/update-app-status';
 import { clearLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 
-export function logout() {
+export function logout(setGSNEnabled: Function) {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
     const localStorageRef =
       typeof window !== 'undefined' && window.localStorage;
@@ -39,7 +39,7 @@ export function logout() {
       augurSdk.sdk.setUseWallet(false);
       dispatch(updateAppStatus(WALLET_STATUS, null));
     }
-    dispatch(updateAppStatus(GSN_ENABLED, false));
+    setGSNEnabled(false);
     dispatch(updateAppStatus(WALLET_STATUS, null));
 
 

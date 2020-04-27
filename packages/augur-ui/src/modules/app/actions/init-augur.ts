@@ -57,13 +57,13 @@ import { isGoogleBot } from 'utils/is-google-bot';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
-async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>, setOxEnabled: Function) {
+async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>, setOxEnabled: Function, setGSNEnabled: Function) {
   const loggedInUser = getLoggedInUserFromLocalStorage();
   const loggedInAccount = (loggedInUser && loggedInUser.address) || null;
   const loggedInAccountType = (loggedInUser && loggedInUser.type) || null;
 
   const errorModal = () => {
-    dispatch(logout());
+    dispatch(logout(setGSNEnabled));
     dispatch(
       updateModal({
         type: MODAL_ERROR,
@@ -84,18 +84,18 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>, s
             })
           );
         }
-        await dispatch(loginWithInjectedWeb3(setOxEnabled));
+        await dispatch(loginWithInjectedWeb3(setOxEnabled, setGSNEnabled));
       }
       if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-        await dispatch(loginWithPortis(false, setOxEnabled));
+        await dispatch(loginWithPortis(false, setOxEnabled, setGSNEnabled));
       }
 
       if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
-        await dispatch(loginWithFortmatic(setOxEnabled));
+        await dispatch(loginWithFortmatic(setOxEnabled, setGSNEnabled));
       }
 
       if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
-        await dispatch(loginWithTorus(setOxEnabled));
+        await dispatch(loginWithTorus(setOxEnabled, setGSNEnabled));
       }
     }
   } catch (error) {
@@ -130,6 +130,7 @@ export function connectAugur(
   isInitialConnection = false,
   callback: NodeStyleCallback = logError,
   setOxEnabled: Function,
+  setGSNEnabled: Function,
 ) {
   return async (
     dispatch: ThunkDispatch<void, any, Action>,
@@ -265,7 +266,7 @@ export function connectAugur(
     }
 
     if (isInitialConnection) {
-      loadAccountIfStored(dispatch, setOxEnabled);
+      loadAccountIfStored(dispatch, setOxEnabled, setGSNEnabled);
       pollForNetwork(dispatch, getState);
     }
 
@@ -296,6 +297,7 @@ export function initAugur(
   }: initAugurParams,
   callback: NodeStyleCallback = logError,
   setOxEnabled: Function,
+  setGSNEnabled: Function,
 ) {
   return (
     dispatch: ThunkDispatch<void, any, Action>,
@@ -323,7 +325,7 @@ export function initAugur(
     getFingerprint();
     dispatch(updateEnv(config));
     tryToPersistStorage();
-    connectAugur(history, config, true, callback, setOxEnabled)(dispatch, getState);
+    connectAugur(history, config, true, callback, setOxEnabled, setGSNEnabled)(dispatch, getState);
 
     windowRef.showIndexedDbSize = showIndexedDbSize;
   };

@@ -8,7 +8,7 @@ import { windowRef } from 'utils/window-ref';
 import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
 
-export const loginWithFortmatic = (setOxEnabled) => async (
+export const loginWithFortmatic = (setOxEnabled, setGSNEnabled) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
@@ -43,7 +43,7 @@ export const loginWithFortmatic = (setOxEnabled) => async (
         },
       };
 
-      dispatch(updateSdk(accountObject, undefined, useGSN, setOxEnabled));
+      dispatch(updateSdk(accountObject, undefined, useGSN, setOxEnabled, setGSNEnabled));
     }
     catch (error) {
       throw error;
