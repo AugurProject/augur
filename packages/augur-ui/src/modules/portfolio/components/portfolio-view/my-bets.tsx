@@ -44,6 +44,7 @@ export function processRows(
   selectedMarketStateType
 ) {
   let rows = MOCK_GAMES_DATA;
+  // todo: filter/search
   if (MY_BETS_VIEW_BY[viewBy].label === EVENT) {
     rows =
       SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES
@@ -66,13 +67,22 @@ export function processRows(
         return true;
       }
     });
+
+    rows = rows.sort((a, b) => b.startTime - a.startTime);
   } else {
-    // betDate
-    rows = MOCK_OUTCOMES_DATA.filter(data =>
+    rows = MOCK_OUTCOMES_DATA.filter(data => 
       MARKET_STATE_TYPES[selectedMarketStateType].label === RESOLVED
         ? data.reportingState === REPORTING_STATE.FINALIZED
         : data.reportingState !== REPORTING_STATE.FINALIZED
     );
+
+    rows = rows.filter(data => {
+      const interval = MY_BETS_BET_DATE[betDate].periodInterval;
+      // todo: switch to use currentTimestamp 
+      return (Date.now() / 1000) - data.betDate < interval;
+    });
+
+    rows = rows.sort((a, b) => b.betDate - a.betDate);
   }
   return rows;
 }
