@@ -9,25 +9,8 @@ import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { MarketList } from '@augurproject/sdk/build/state/getter/Markets';
 import { sleep } from '@augurproject/sdk/build/state/utils/utils';
 
-import { createClient, startServerFromClient } from "@augurproject/sdk/build";
+import { createClient, startServerFromClient } from "@augurproject/sdk";
 import { TestNetReputationToken } from "@augurproject/core/build/libraries/ContractInterfaces";
-
-const MAX_APPROVAL = new BigNumber(2).pow(256).minus(1);
-async function approve(augur: Augur, wei=MAX_APPROVAL): Promise<void> {
-  const authority = augur.config.addresses.Augur;
-  await augur.contracts.cash.approve(authority, wei);
-
-  const fillOrder = augur.config.addresses.FillOrder;
-  await augur.contracts.cash.approve(fillOrder, wei);
-  await augur.contracts.shareToken.setApprovalForAll(fillOrder, true);
-
-  const createOrder = augur.config.addresses.CreateOrder;
-  await augur.contracts.cash.approve(createOrder, wei);
-  await augur.contracts.shareToken.setApprovalForAll(createOrder, true);
-
-  const zeroXTrade = augur.config.addresses.ZeroXTrade;
-  await augur.contracts.cash.approve(zeroXTrade, wei);
-}
 
 describe('robert', () => {
   test('zerion', async () => {
@@ -58,11 +41,6 @@ describe('robert', () => {
     taker.setUseWallet(true);
     taker.setUseRelay(true);
 
-    console.log('Approve transfer of all related tokens');
-    await approve(marketMaker);
-    await approve(maker);
-    await approve(taker);
-
     const makerAccount = await maker.getAccount();
     const takerAccount = await taker.getAccount();
     const universe = marketMaker.config.addresses.Universe;
@@ -88,8 +66,10 @@ describe('robert', () => {
         description: 'A simple yes/no market for showing off Augur.',
       }),
     });
+    console.log('MARKET ADDRESS', marketContract.address);
 
     console.log('Syncing the database with the blockchain via the provider');
+    await sleep(2000); // give geth some time to create the market
     await (await api.db).sync();
 
     console.log('Querying for markets');
@@ -99,22 +79,23 @@ describe('robert', () => {
       reportingStates: [MarketReportingState.PreReporting],
       // Can specify other constraints like max liquidity spread and filtering out invalid markets.
     });
-    console.log('MARKETS', JSON.stringify(markets))
+    console.log('MARKETS', JSON.stringify(markets));
     const market = markets.markets.find((m) => m.id === marketContract.address);
 
-    console.log('MARKET', market.id)
+    console.log('MARKET', JSON.stringify(market, null, 2));
 
     console.log('Faucet for trading');
-    // Once you enable GSN, the Augur wallet is used. But the DAI used by 0x resides in your signing wallet.
-    // So for 0x orders, you have to faucet using the signing wallet.
+    // TODO why exactly do we need to specify sender here?
+    //      the gsn deps are translating these to the wallet anyway, according to alex
     await maker.contracts.cashFaucet.faucet(new BigNumber(100e18), { sender: ACCOUNTS[1].address });
+    await taker.contracts.cashFaucet.faucet(new BigNumber(100e18), { sender: ACCOUNTS[2].address });
 
-    console.log('Create an order');
-    const tradeGroupId = '42'; // not strictly necessary. value is arbitrary
+    console.log('Make an order');
+    const tradeGroupId = formatBytes32String('42'); // not strictly necessary. value is arbitrary
     const fingerprint = formatBytes32String('11'); // for affiliate functionality. not strictly necessary. value is arbitrary
     const expirationTime = new BigNumber(new Date().valueOf()).plus(1000000); // in the future a ways
     await maker.placeTrade({
-      doNotCreateOrders: false, // must create an order - won't take if another exists
+      doNotCreateOrders: false, // will make an order if it can't take enough to cover the amount an price
       direction: 0, // 0=bid, 1=ask
       market: market.id,
       numTicks: new BigNumber(market.numTicks),
@@ -144,37 +125,39 @@ describe('robert', () => {
 
     const orders = await maker.getZeroXOrders({ marketId: market.id });
     console.log('ORDERS', JSON.stringify(orders, null, 2));
+    const order  = Object.values(orders[market.id][1][0])[0];
+    console.log('ORDER', JSON.stringify(order, null, 2));
 
-    // Take an existing order at market price. Does not create new orders.
-    const numShares = new BigNumber(10); // 10 shares - would be 10e18 but numShares for place is "display shares" not "atto shares"
-
-    console.log('Take a specific order');
-    await taker.contracts.fillOrder.publicFillOrder(
-      'id taken from 0x',
-      numShares.times(1e18), // numShares here is in attoShares
-      tradeGroupId,
-      fingerprint,
-    );
-
-
-    // take any orders it can, without creating any new ones
-    console.log('Create an order');
-    await marketMaker.placeTrade({
-      doNotCreateOrders: true, // will only take orders, never create new ones
-      direction: 0, // 0=bid, 1=ask
+    console.log('Take an existing order at market price. Does not create a new order.');
+    await taker.placeTrade({
+      doNotCreateOrders: true, // will not make an order: it will take what it can then give up
+      direction: 1, // 0=bid, 1=ask ; taking the other direction to make the order created by the maker earlier
       market: market.id,
       numTicks: new BigNumber(market.numTicks),
       numOutcomes: 3,//market.numOutcomes,
       outcome: 1, // 0=invalid (market will resolve as invalid), 1-7 are valid outcomes whose meaning depends on the market
-      tradeGroupId: '42',
+      tradeGroupId,
       fingerprint,
       displayMinPrice: new BigNumber(market.minPrice),
       displayMaxPrice: new BigNumber(market.maxPrice),
-      displayAmount: numShares,
-      displayPrice: new BigNumber(0.1), // 10 cents per share or better
+      displayAmount: new BigNumber(20), // buy 10 shares
+      displayPrice: new BigNumber(0.1), // 90 cents per share ; this is the opposed position from the maker's order
       displayShares: new BigNumber(0), // user doesn't have any shares they could pay with instead of using DAI
       expirationTime,
     });
+
+    await sleep(5000);
+    await (await api.db).sync();
+
+    const positions2 = await maker.getUserTradingPositions({ account: makerAccount , universe });
+    console.log('POSITIONS', JSON.stringify(positions2, null, 2));
+
+    const profitLossSummary2 = await maker.getProfitLossSummary({ account: makerAccount, universe });
+    console.log('PL', JSON.stringify(profitLossSummary2, null, 2));
+
+    const orders2 = await maker.getZeroXOrders({ marketId: market.id });
+    console.log('ORDERS', JSON.stringify(orders2, null, 2));
+
 
 
     // Cashout: sell entire position at market price, if orderbook is deep enough
