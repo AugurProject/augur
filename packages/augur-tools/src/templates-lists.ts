@@ -3322,7 +3322,7 @@ export const FIN_EXCHANGES_CLOSING_OFFSETS = {
     offset: -4,
     hour: 16,
     minutes: 0,
-    timezone: 'America/Chicago'
+    timezone: 'America/New_York'
   },
   'Tokyo Stock Exchange (traded in JPY)': {
     offset: 9,
@@ -3360,7 +3360,7 @@ export const FIN_EXCHANGES_CLOSING_OFFSETS = {
     minutes: 0,
     timezone: 'America/Toronto',
   },
-  'Euronext NV (traded in Euro)': { offset: 2, hour: 17, minutes: 30, timezone: 'Europe/Amsterdam' },
+  'Euronext NV (traded in EUR)': { offset: 2, hour: 17, minutes: 30, timezone: 'Europe/Amsterdam' },
 };
 
 export const FIN_INDEXES_CLOSING_OFFSETS = {

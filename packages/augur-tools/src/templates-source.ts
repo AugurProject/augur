@@ -6931,6 +6931,9 @@ export const TEMPLATES = {
                   text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`,
                 },
                 {
+                  text: `If the stock mentioned in the market question is not traded on the exchange, this market should resolve as 'Invalid'.`,
+                },
+                {
                   text: `This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as 'Invalid'.`,
                 },
               ],
@@ -7001,6 +7004,9 @@ export const TEMPLATES = {
                   text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`,
                 },
                 {
+                  text: `If the stock mentioned in the market question is not traded on the exchange, this market should resolve as 'Invalid'.`,
+                },
+                {
                   text: `This market is intended to be about a Individual Stock or ETF Name, if this is not the case, this market should settle as 'Invalid'.`,
                 },
               ],
@@ -7056,6 +7062,9 @@ export const TEMPLATES = {
                 },
                 {
                   text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`,
+                },
+                {
+                  text: `If the stock mentioned in the market question is not traded on the exchange, this market should resolve as 'Invalid'.`,
                 },
                 {
                   text: `This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as 'Invalid'.`,
