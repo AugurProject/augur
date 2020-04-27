@@ -124,7 +124,7 @@ export class FlashSession {
     const provider = await providerFromConfig(config);
     const connector = new Connectors.SingleThreadConnector();
     const signer = await makeSigner(account, provider);
-    const client = await createClient(config, connector, account.address, signer, provider);
+    const client = await createClient(config, connector, signer, provider);
     const user = new ContractAPI(client, provider, account);
 
     if (config.flash?.useGSN) {

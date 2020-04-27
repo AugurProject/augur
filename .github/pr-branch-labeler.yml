@@ -1,0 +1,3 @@
+# Apply label "release" if base matches "release/*"
+project/sportsbook:
+  base: "betting-ui"

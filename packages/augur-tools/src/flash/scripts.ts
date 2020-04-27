@@ -1,5 +1,7 @@
+import { createServer, SubscriptionEventName } from '@augurproject/sdk/build';
+import { runChaosMonkey } from './chaos-monkey';
 import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarkets } from './create-canned-markets-and-orders';
+import { createCannedMarkets, createTemplatedMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH, BASE_MNEMONIC } from '../constants';
 import {
   Contracts as compilerOutput,
@@ -54,6 +56,7 @@ import {
 } from './performance';
 import { simpleOrderbookShaper } from './orderbook-shaper';
 import {
+  awaitUserInput,
   formatAddress,
   getOrCreateMarket,
   sleep,
@@ -429,8 +432,62 @@ export function addScripts(flash: FlashSession) {
       await user.approveIfNecessary();
 
       await user.initWarpSync(user.augur.contracts.universe.address);
-      await user.addEthExchangeLiquidity(new BigNumber(4e18), new BigNumber(600e18));
+      await user.addEthExchangeLiquidity(new BigNumber(600e18), new BigNumber(4e18));
+      await user.addTokenExchangeLiquidity(new BigNumber(100e18), new BigNumber(10e18));
       await createCannedMarkets(user, false);
+    },
+  });
+
+  flash.addScript({
+    name: 'create-canned-template-markets',
+    options: [
+      {
+        name: 'orders',
+        abbr: 'o',
+        flag: true,
+        description: 'create orders on markets',
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const withOrders = args.orders ? Boolean(args.orders) : false;
+      let user = await this.createUser(this.getAccount(), this.config);
+      const million = QUINTILLION.multipliedBy(1e7);
+      await user.faucetRepUpTo(million, million);
+      await user.faucetCashUpTo(million, million);
+      await user.approveIfNecessary();
+
+      const markets = await createTemplatedMarkets(user, false);
+      if (withOrders) {
+        this.pushConfig({
+          zeroX: {
+            rpc: { enabled: true },
+            mesh: { enabled: false },
+          },
+        });
+        user = await this.createUser(this.getAccount(), this.config);
+        for (let i = 0; i < markets.length; i++) {
+          const createdMarket = markets[i];
+          const numTicks = await createdMarket.market.getNumTicks_();
+          const numOutcomes = await createdMarket.market.getNumberOfOutcomes_();
+          const marketId = createdMarket.market.address;
+          if (numOutcomes.gt(new BigNumber(3))) {
+            await createCatZeroXOrders(user, marketId, true, numOutcomes.toNumber() - 1);
+          } else {
+            if (numTicks.eq(new BigNumber(100))) {
+              await createYesNoZeroXOrders(user, marketId, true);
+            } else {
+              try {
+                const minPrice = new BigNumber(createdMarket.canned.minPrice);
+                const maxPrice = new BigNumber(createdMarket.canned.maxPrice);
+
+                await createScalarZeroXOrders(user, marketId, true, false, numTicks, minPrice, maxPrice);
+              } catch (e) {
+                console.warn('could not create orders for scalar market', e)
+              }
+            }
+          }
+        }
+      }
     },
   });
 
@@ -450,7 +507,8 @@ export function addScripts(flash: FlashSession) {
       await user.approveIfNecessary();
 
       await user.initWarpSync(user.augur.contracts.universe.address);
-      await user.addEthExchangeLiquidity(new BigNumber(4e18), new BigNumber(600e18));
+      await user.addEthExchangeLiquidity(new BigNumber(600e18), new BigNumber(4e18));
+      await user.addTokenExchangeLiquidity(new BigNumber(100e18), new BigNumber(10e18));
       const markets = await createCannedMarkets(user, false);
       for (let i = 0; i < markets.length; i++) {
         const createdMarket = markets[i];
@@ -604,7 +662,7 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'marketId',
         abbr: 'm',
-        description: 'Show orders that have been placed on the book of this marketId'
+        description: 'Show orders that have been placed on the book of this marketInfo'
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -647,7 +705,8 @@ export function addScripts(flash: FlashSession) {
         const market: ContractInterfaces.Market = await user.createReasonableYesNoMarket(title);
         ids.push(market.address);
       }
-      await simpleOrderbookShaper(user, ids, 15000, null, new BigNumber(600));
+
+      await simpleOrderbookShaper(user, await user.getMarketInfo(ids), 15000, null, new BigNumber(600));
     }
   });
 
@@ -691,7 +750,8 @@ export function addScripts(flash: FlashSession) {
         zeroX: { rpc: { enabled: true }},
       }));
       await waitForSync(user);
-      await simpleOrderbookShaper(user, marketIds, interval, orderSize, expiration);
+
+      await simpleOrderbookShaper(user, await user.getMarketInfo(marketIds), interval, orderSize, expiration);
     },
   });
 
@@ -766,7 +826,7 @@ export function addScripts(flash: FlashSession) {
       await waitForSync(user);
 
       await orderFirehose(
-        marketIds,
+        await user.getMarketInfo(marketIds),
         orderOutcomes,
         delayBetweenBursts,
         numOrderLimit,
@@ -1529,6 +1589,23 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'buy-pt',
+    options: [
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'amount of REP to stake, defaults to 10',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const amount = args.amount ? String(args.amount) : "10";
+      const user = await this.createUser(this.getAccount(), this.config);
+      const attoAmount = new BigNumber(amount).times(_1_ETH);
+      return user.simpleBuyParticipationTokens(attoAmount);
+    }
+  })
+
+  flash.addScript({
     name: 'finalize',
     options: [
       {
@@ -1824,7 +1901,7 @@ export function addScripts(flash: FlashSession) {
           autoReport: Boolean(args.autoReport) && Boolean(this.config?.deploy?.privateKey),
         }
       });
-      const api = await startServer(this.config, this.getAccount().address);
+      const api = await startServer(this.config);
       const app = createApp(api);
 
       const httpServer = this.config.server?.startHTTP && runHttpServer(app, this.config);
@@ -1878,7 +1955,7 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'ugly',
         abbr: 'u',
-        description: 'print the addresses json as a blob instead of nicely formatted',
+        description: 'print the contract addresses for this network as a blob instead of nicely formatted',
         flag: true,
       },
     ],
@@ -2117,7 +2194,7 @@ export function addScripts(flash: FlashSession) {
       const traders = await ContractAPI.wrapUsers(traderAccounts, ethSource.provider, config, undefined, zeroX);
 
       await waitForSync(ethSource);
-      const markets = (await getAllMarkets(ethSource, makerAccounts)).map((market) => market.id);
+      const markets = await getAllMarkets(ethSource, makerAccounts);
       const shapers = setupOrderBookShapers(markets, 10, expiration);
       const orders = await setupOrders(ethSource, shapers);
 
@@ -2215,4 +2292,51 @@ export function addScripts(flash: FlashSession) {
         console.log(`${trader.privateKey} -> ${trader.address}`);
       })
     }});
+  flash.addScript({
+    name: 'run-chaos-monkey',
+    options: [
+      {
+        name: 'traders',
+        abbr: 't',
+        description: 'how many perf traders. uses standard account range. defaults to 200',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments): Promise<void> {
+      const traderCount = Number(args.traders || 200);
+      const { config } = setupPerfConfigAndZeroX(this.config, false);
+      const ethSource = await this.createUser(this.getAccount(), config);
+
+      ethSource.augur.connector.connect(config);
+
+      // @TODO Add flag to prevent seeding funds for already funded accounts to speedup restarts.
+      const users = await perfSetup(ethSource, 0, traderCount, true, this.config);
+      runChaosMonkey(ethSource.augur, users);
+
+      console.log('Running chaos monkey trade process. Type ctrl-c to quit:\n');
+      await waitForSigint();
+    }});
+
+    flash.addScript({
+      name: 'add-dai-rep-exchange-liquidity',
+      options: [
+        {
+          name: 'reputationToken',
+          abbr: 'r',
+          description: 'amount of REP to provide to the exchange',
+          required: true,
+        },
+        {
+          name: 'cashAmount',
+          abbr: 'c',
+          description: 'amount of DAI to provide to the exchange',
+          required: true,
+        },
+      ],
+      async call(this: FlashSession, args: FlashArguments) {
+        const attoRep = new BigNumber(Number(args.reputationToken)).times(_1_ETH);
+        const attoCash = new BigNumber(Number(args.cashAmount)).times(_1_ETH);
+        const user = await this.createUser(this.getAccount(), this.config);
+        await user.addTokenExchangeLiquidity(attoCash, attoRep);
+      },
+    });
 }

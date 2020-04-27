@@ -1,3 +1,5 @@
+import { logger } from '@augurproject/logger/build';
+import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 import { BigNumber } from 'bignumber.js';
 import { ContractAPI } from '..';
 import { OrderBookConfig, OrderBookShaper, OrderPriceVol } from './orderbook-shaper';
@@ -10,7 +12,7 @@ import { cycle, sleep } from './util';
  * Then starts again at the first user.
  */
 export async function orderFirehose(
-  marketIds: string[],
+  marketInfos: MarketInfo[],
   orderOutcomes: number[],
   delayBetweenBursts: number,
   numOrderLimit: number,
@@ -33,8 +35,7 @@ export async function orderFirehose(
       await user.approveIfNecessary();
     }));
   }
-  const config = createTightOrderBookConfig(orderSize);
-  const shapers = marketIds.map((m) => new OrderBookShaper(m, null, expiration, orderOutcomes, config));
+  const shapers = marketInfos.map((m) => new OrderBookShaper(m, null, expiration, orderOutcomes, createTightOrderBookConfig(orderSize, Number(m.minPrice), Number(m.maxPrice), Number(m.numTicks))));
   for (let roundNumber = 0; roundNumber < burstRounds; roundNumber++) {
     const timestamp = new BigNumber(await users[0].getTimestamp());
     for (let i = 0; i < shapers.length; i++) {
@@ -46,8 +47,12 @@ export async function orderFirehose(
           const ordersLeft = numOrderLimit - totalOrdersCreated;
           const grabAmount = Math.min(ordersLeft, orders.length);
           const createOrders = orders.splice(0, grabAmount); // creates the same orders repeatedly
-          createOrders.forEach(order => console.log(`${order.market} Creating ${order.displayAmount} at ${order.displayPrice} on outcome ${order.outcome}`));
-          await userGenerator().placeZeroXOrders(createOrders).catch(console.error);
+          if(createOrders.length > 0) {
+            createOrders.forEach(order => logger.info(`${order.market} Creating ${order.displayAmount} at ${order.displayPrice} on outcome ${order.outcome}`));
+            await userGenerator().placeZeroXOrders(createOrders).catch(console.error);
+          } else {
+            console.log('it empty');
+          }
           totalOrdersCreated += createOrders.length;
         }
       }
@@ -59,14 +64,17 @@ export async function orderFirehose(
   }
 }
 
-export function createTightOrderBookConfig(orderSize: number): OrderBookConfig {
+export function createTightOrderBookConfig(orderSize: number, minPrice = 0, maxPrice = 1, numticks = 100): OrderBookConfig {
+  const scaleFactor = (maxPrice - minPrice) / numticks;
+  const stepSize = Math.trunc(numticks / 100);
+  const numticksMid = Math.floor(numticks / 2);
   const bids: OrderPriceVol = {};
   const asks: OrderPriceVol = {};
-  for (let i = 1; i < 49; i++) {
-    bids[((0.01 * i).toString().slice(0, 4))] = orderSize
+  for (let i = 1; i < numticksMid - 1; i += stepSize) {
+    bids[((i * scaleFactor + minPrice).toFixed(2))] = orderSize
   }
-  for (let i = 50; i < 99; i++) {
-    asks[((0.01 * i).toString().slice(0, 4))] = orderSize
+  for (let i = numticksMid; i < numticks; i += stepSize) {
+    asks[((i * scaleFactor + minPrice).toFixed(2))] = orderSize
   }
   return { bids, asks };
 }

@@ -66,7 +66,7 @@ export class SDK {
       this.connector = new Connectors.SingleThreadConnector();
     }
 
-    this.client = await createClient(this.config, this.connector, account, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
+    this.client = await createClient(this.config, this.connector, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
 
     this.client.dependencies.setReferralAddress(affiliate);
     this.client.dependencies.setFingerprint(getFingerprint());

@@ -1,11 +1,10 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'appStore';
-import { formatDai, formatShares, calcPercentageFromPrice } from 'utils/format-number';
+import { formatDai, calcPercentageFromPrice, formatMarketShares } from 'utils/format-number';
 import {
   COLUMN_TYPES,
   SCALAR,
-  BINARY_CATEGORICAL_FORMAT_OPTIONS,
   INVALID_OUTCOME_NAME,
 } from 'modules/common/constants';
 
@@ -21,15 +20,11 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const filledOrder = oP.filledOrder;
-  const opts =
-    filledOrder.marketType === SCALAR
-      ? {}
-      : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS };
-  const orderQuantity = formatShares(filledOrder.amount, opts);
+  const orderQuantity = formatMarketShares(filledOrder.marketType, filledOrder.amount);
   let orderPrice = formatDai(filledOrder.price, { roundDown: true});
   const orderType = filledOrder.type;
 
-  const originalQuantity = formatShares(filledOrder.originalQuantity, opts);
+  const originalQuantity = formatMarketShares(filledOrder.marketType, filledOrder.originalQuantity);
   const usePercent = filledOrder.outcome === INVALID_OUTCOME_NAME && filledOrder.marketType === SCALAR;
   if (usePercent) {
     const market = sP.marketInfos[filledOrder.marketId];

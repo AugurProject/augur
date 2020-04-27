@@ -48,6 +48,7 @@ import {
   DISAVOWCROWDSOURCERS,
   MARKETMIGRATED,
   DOINITIALREPORTWARPSYNC,
+  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -68,16 +69,15 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
-import { removePendingDataByHash, addPendingData, removePendingData, removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
+import { removePendingDataByHash, addPendingData, removePendingData, removePendingTransaction, findAndSetTransactionsTimeouts } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
-import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
+import { updateAppStatus, WALLET_STATUS, Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
-import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 
 const handleAlert = (
   log: any,
@@ -168,6 +168,13 @@ export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
   dispatch(updateModal({ type: MODAL_GAS_PRICE, feeTooLow: true }));
 };
 
+export const handleZeroStatusUpdated = (status) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  dispatch(updateAppStatus(Ox_STATUS, status))
+}
+
 export const handleSDKReadyEvent = () => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -203,6 +210,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
     dispatch(
       loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
     );
+    dispatch(findAndSetTransactionsTimeouts(log.highestAvailableBlockNumber));
   }
   // update ETH/REP rate and gasPrice each block
   dispatch(getEthToDaiRate());
@@ -428,6 +436,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     dispatch(loadMarketTradingHistory(marketId));
     dispatch(updateMarketOrderBook(marketId));
   }
+  dispatch(checkUpdateUserPositions([marketId]));
 };
 
 export const handleTradingProceedsClaimedLog = (
@@ -540,7 +549,7 @@ export const handleMarketParticipantsDisavowedLog = (logs: any) => (
 ) => {
   const marketIds = logs.map(log => log.market);
   marketIds.map(marketId => {
-    dispatch(addPendingData(marketId, DISAVOWCROWDSOURCERS, TXEventName.Success, 0, {}));
+    dispatch(addPendingData(marketId, DISAVOWCROWDSOURCERS, TXEventName.Success, "0"));
   })
   dispatch(loadMarketsInfo(marketIds));
 };
@@ -641,11 +650,11 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
   const userAddress = getState().loginAccount.address;
   const isForking = !!getState().universe.forkingInfo;
   const universeId = getState().universe.id;
+  let isParticipationTokens = !!logs.find(l => l.tokenType === Logs.TokenType.ParticipationToken);
   logs.filter(log => isSameAddress(log.target, userAddress)).map(log => {
     if (log.tokenType === Logs.TokenType.ParticipationToken) {
       dispatch(removePendingTransaction(BUYPARTICIPATIONTOKENS));
       dispatch(loadAccountReportingHistory());
-      dispatch(loadDisputeWindow());
     }
     if (log.tokenType === Logs.TokenType.ReputationToken && isForking) {
         dispatch(loadUniverseDetails(universeId, userAddress));
@@ -664,6 +673,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
         dispatch(removePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN));
       }
     })
+    if (isParticipationTokens) dispatch(loadDisputeWindow());
 };
 
 const EventHandlers = {

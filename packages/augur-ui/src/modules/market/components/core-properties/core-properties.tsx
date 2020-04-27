@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   EVENT_EXPIRATION_TOOLTIP,
   SCALAR,
-  BINARY_CATEGORICAL_FORMAT_OPTIONS,
 } from 'modules/common/constants';
 import Styles from 'modules/market/components/core-properties/core-properties.styles.less';
 import { PropertyLabel, TimeLabel } from 'modules/common/labels';
@@ -31,10 +30,6 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
 }) => {
   const [showExtraDetails, setShowExtraDetails] = useState(false);
   const isScalar = market.marketType === SCALAR;
-  const opts =
-    isScalar
-      ? {}
-      : { ...BINARY_CATEGORICAL_FORMAT_OPTIONS };
   return (
     <div
       className={classNames(Styles.CoreProperties, {
@@ -104,14 +99,14 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 label="Estimated Fee"
                 value={
                   market.settlementFeePercent
-                    ? formatPercent(market.settlementFeePercent.formattedValue, opts).full
-                    : formatPercent(Number(market.settlementFee) * 100, opts).full
+                    ? formatPercent(market.settlementFeePercent.formattedValue).full
+                    : formatPercent(Number(market.settlementFee) * 100).full
                 }
                 hint={
                   <>
-                    <h4>Trading Settlement Fee</h4>
+                    <h4>Market Trading Fee</h4>
                     <p>
-                      The trading settlement fee is a combination of the Market
+                      The market trading fee is a combination of the Market
                       Creator Fee (
                       <b>
                         {

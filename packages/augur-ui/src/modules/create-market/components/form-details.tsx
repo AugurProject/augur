@@ -114,6 +114,14 @@ export default class FormDetails extends React.Component<
       if (dateStart && dateStart.daysAfterDateStart) {
         resolutionTimeSubheader = `This templated market has a predefined event expiration date, which is ${dateStart.daysAfterDateStart} days after start date in market question.`
       }
+      const monthStart = template.inputs.find(i => i.eventExpEndNextMonth);
+      if (monthStart) {
+        resolutionTimeSubheader = `This templated market has a predefined event expiration date, which is one month after date set in market question.`
+      }
+      const marketClose = template.inputs.find(i => i.type === TemplateInputType.DATEYEAR_CLOSING);
+      if (marketClose) {
+        resolutionTimeSubheader = `This templated market has a predefined event expiration date and time, which is based on the exchange in the market question.`
+      }
     }
     return (
       <div

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import classNames from 'classnames';
 import Clipboard from 'clipboard';
 
@@ -924,7 +924,7 @@ export const OutcomeGroup = ({
             !!stakes.find(
               stake => parseFloat(stake.outcome) === outcome.id
             ) ? (
-              <>
+              <Fragment key={marketId + outcome.id + index}>
                 {marketType === SCALAR &&
                   index === 1 &&
                   expanded && (
@@ -952,7 +952,7 @@ export const OutcomeGroup = ({
                   isWarpSync={isWarpSync}
                   forkingMarket={forkingMarket}
                 />
-              </>
+              </Fragment>
             ) : (
               <Outcome
                 key={outcome.id}

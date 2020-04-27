@@ -1,7 +1,7 @@
 import { UPDATE_BLOCKCHAIN } from "modules/app/actions/update-blockchain";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { Blockchain, BaseAction } from "modules/types";
-import moment = require("moment");
+import moment from 'moment';
 
 const DEFAULT_STATE: Blockchain = {
   currentBlockNumber: 0,

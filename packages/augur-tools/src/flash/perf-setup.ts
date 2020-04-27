@@ -15,16 +15,23 @@ export const perfSetup = async (ethSource: ContractAPI, marketMakerCount: number
   const marketMakerAccounts = accountCreator.marketMakers(marketMakerCount);
   const traderAccounts = accountCreator.traders(traderCount);
 
+  let users:ContractAPI[] = [];
   if (marketMakerCount > 0) {
     const makers: ContractAPI[] = await setupUsers(marketMakerAccounts, ethSource, new BigNumber(FINNEY).times(40), config, serial);
+    users = [...users, ...makers];
+
     const markets: Market[] = await setupMarkets(makers, serial);
     console.log('Created markets:', markets.map((market) => market.address).join(','))
   }
   if (traderCount > 0) {
-    await setupUsers(traderAccounts, ethSource, new BigNumber(FINNEY).times(5), config, serial);
+    const takers: ContractAPI[] = await setupUsers(traderAccounts, ethSource, new BigNumber(FINNEY).times(5), config, serial);
+    users = [...users, ...takers];
+
     console.log('Created traders:');
     traderAccounts.forEach((trader, index) => {
       console.log(`#${index}: ${trader.privateKey} -> ${trader.address}`);
     })
   }
+
+  return users;
 };

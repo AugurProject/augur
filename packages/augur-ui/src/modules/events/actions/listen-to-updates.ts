@@ -14,17 +14,37 @@ import {
   handleSDKReadyEvent,
   handleReportingStateChanged,
   handleWarpSyncHashUpdatedLog,
+  handleZeroStatusUpdated,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { Augur, Provider, SubscriptionEventName, TXEventName, } from '@augurproject/sdk';
+import { ZEROX_STATUSES } from 'modules/common/constants';
 
 const StartUpEvents = {
   [SubscriptionEventName.SDKReady]: wrapLogHandler(handleSDKReadyEvent),
   [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
     handleMarketsUpdatedLog
   ),
+  [SubscriptionEventName.ZeroXStatusReady]: wrapLogHandler(
+    () => handleZeroStatusUpdated(ZEROX_STATUSES.READY)
+  ),
+  [SubscriptionEventName.ZeroXStatusStarted]: wrapLogHandler(
+    () => handleZeroStatusUpdated(ZEROX_STATUSES.STARTED)
+  ),
+  [SubscriptionEventName.ZeroXStatusRestarting]: wrapLogHandler(
+    () => handleZeroStatusUpdated(ZEROX_STATUSES.RESTARTING)
+  ),
+  [SubscriptionEventName.ZeroXStatusRestarted]: wrapLogHandler(
+    () => handleZeroStatusUpdated(ZEROX_STATUSES.RESTARTED)
+  ),
+  [SubscriptionEventName.ZeroXStatusError]: wrapLogHandler(
+    () => handleZeroStatusUpdated(ZEROX_STATUSES.ERROR)
+  ),
+  [SubscriptionEventName.ZeroXStatusSynced]: wrapLogHandler(
+    () => handleZeroStatusUpdated(ZEROX_STATUSES.SYNCED)
+  )
 };
 
 const EVENTS = {
