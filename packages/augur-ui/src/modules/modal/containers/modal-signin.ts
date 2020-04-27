@@ -78,10 +78,24 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
-    if (error.message && error.message.toLowerCase().indexOf('cookies') !== -1) {
+
+    const isPortisCancelError = accountType === ACCOUNT_TYPES.PORTIS && error.message.indexOf('User denied login') !== -1;
+    const isFortmaticCancelError =  accountType === ACCOUNT_TYPES.FORTMATIC &&  error.message.indexOf('User denied account access') !== -1;
+    const isTorusExitCancelError = accountType === ACCOUNT_TYPES.TORUS &&  error.indexOf('user closed popup') !== -1;
+
+    // If the error we get back from the wallet SDK is "User denied access", aka Cancel/Close wallet window, we should just close the modal
+    if (isTorusExitCancelError || isPortisCancelError || isFortmaticCancelError) {
+      dP.closeModal();
+      return;
+    }
+    if (error?.message.toLowerCase().indexOf('cookies') !== -1) {
       dP.errorModal(`Please enable cookies in your browser to proceed with ${accountType}.`, 'Cookies are disabled', HELP_CENTER_THIRD_PARTY_COOKIES, 'Learn more.');
     } else {
-      dP.errorModal(error.message ? error.message : error ? JSON.stringify(error) : '');
+      dP.errorModal(
+        `There was an error while attempting to log in with ${accountType}. Please try again, and if it is still not working checkout the help center for logging in.\n\n${
+          error?.message ? `Error: ${JSON.stringify(error.message)}` : ''
+        }`
+      );
     }
   };
 
