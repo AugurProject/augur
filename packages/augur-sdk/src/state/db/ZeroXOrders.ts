@@ -146,7 +146,7 @@ export class ZeroXOrders extends AbstractTable {
     this.pastOrders = Object.assign(this.pastOrders, _.keyBy(await this.allDocs(), 'orderHash'));
     await this.clearDB();
 
-    if (augur.zeroX.isReady()) {
+    if (this.augur.zeroX.isReady()) {
       this.sync();
     }
   }
