@@ -11,7 +11,7 @@ const DEFAULT_STATE: MarketsList = {
   isSearching: true,
   meta: null,
   selectedCategories: [],
-  marketCardFormat: 'classic',
+  marketCardFormat: null,
   isSearchInPlace: false
 };
 
