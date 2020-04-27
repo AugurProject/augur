@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import classNames from 'classnames';
 
 import Styles from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
@@ -8,7 +8,6 @@ import {
   FilterButton,
 } from 'modules/common/buttons';
 import { PillSelection, SquareDropdown } from 'modules/common/selection';
-import FilterSearch from 'modules/filter-sort/containers/filter-search';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { PORTFOLIO_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import {
@@ -35,13 +34,15 @@ import {
   MOCK_FUTURES_DATA,
   MOCK_OUTCOMES_DATA,
 } from 'modules/portfolio/store/constants';
+import { FilterSearchPure } from 'modules/filter-sort/components/filter-search';
 
 export function processRows(
   viewBy,
   marketStatus,
   betDate,
   selectedMarketCardType,
-  selectedMarketStateType
+  selectedMarketStateType,
+  search
 ) {
   let rows = MOCK_GAMES_DATA;
   // todo: filter/search
@@ -50,39 +51,45 @@ export function processRows(
       SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES
         ? MOCK_GAMES_DATA
         : MOCK_FUTURES_DATA;
-    rows = rows.filter(data => {
-      const marketStatusLabel = MY_BETS_MARKET_STATUS[marketStatus].label;
-      if (marketStatusLabel === MARKET_OPEN) {
-        return data.reportingState === REPORTING_STATE.PRE_REPORTING;
-      } else if (marketStatusLabel === MARKET_REPORTING) {
-        return (
-          data.reportingState === REPORTING_STATE.DESIGNATED_REPORTING ||
-          data.reportingState === REPORTING_STATE.OPEN_REPORTING ||
-          data.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW ||
-          data.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE
-        );
-      } else if (marketStatusLabel === MARKET_CLOSED) {
-        return data.reportingState === REPORTING_STATE.FINALIZED;
-      } else {
-        return true;
-      }
-    });
-
-    rows = rows.sort((a, b) => b.startTime - a.startTime);
+    rows = rows
+      .filter(data => {
+        const marketStatusLabel = MY_BETS_MARKET_STATUS[marketStatus].label;
+        if (marketStatusLabel === MARKET_OPEN) {
+          return data.reportingState === REPORTING_STATE.PRE_REPORTING;
+        } else if (marketStatusLabel === MARKET_REPORTING) {
+          return (
+            data.reportingState === REPORTING_STATE.DESIGNATED_REPORTING ||
+            data.reportingState === REPORTING_STATE.OPEN_REPORTING ||
+            data.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW ||
+            data.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE
+          );
+        } else if (marketStatusLabel === MARKET_CLOSED) {
+          return data.reportingState === REPORTING_STATE.FINALIZED;
+        } else {
+          return true;
+        }
+      })
+      .filter(
+        data => data.description.toLowerCase().indexOf(search.toLowerCase()) >= 0
+      )
+      .sort((a, b) => b.startTime - a.startTime);
   } else {
-    rows = MOCK_OUTCOMES_DATA.filter(data => 
+    rows = MOCK_OUTCOMES_DATA.filter(data =>
       MARKET_STATE_TYPES[selectedMarketStateType].label === RESOLVED
         ? data.reportingState === REPORTING_STATE.FINALIZED
         : data.reportingState !== REPORTING_STATE.FINALIZED
     );
 
-    rows = rows.filter(data => {
-      const interval = MY_BETS_BET_DATE[betDate].periodInterval;
-      // todo: switch to use currentTimestamp 
-      return (Date.now() / 1000) - data.betDate < interval;
-    });
-
-    rows = rows.sort((a, b) => b.betDate - a.betDate);
+    rows = rows
+      .filter(data => {
+        const interval = MY_BETS_BET_DATE[betDate].periodInterval;
+        // todo: switch to use currentTimestamp
+        return Date.now() / 1000 - data.betDate < interval;
+      })
+      .filter(
+        data => data.outcome.toLowerCase().indexOf(search.toLowerCase()) >= 0
+      )
+      .sort((a, b) => b.betDate - a.betDate);
   }
   return rows;
 }
@@ -102,6 +109,8 @@ export const MyBets = () => {
     },
   } = useMyBetsStore();
 
+  const [search, setSearch] = useState('');
+
   const rows = useMemo(
     () =>
       processRows(
@@ -109,7 +118,8 @@ export const MyBets = () => {
         marketStatus,
         betDate,
         selectedMarketCardType,
-        selectedMarketStateType
+        selectedMarketStateType,
+        search
       ),
     [
       viewBy,
@@ -117,6 +127,7 @@ export const MyBets = () => {
       betDate,
       selectedMarketCardType,
       selectedMarketStateType,
+      search,
     ]
   );
 
@@ -205,9 +216,10 @@ export const MyBets = () => {
             }
           />
         )}
-        <FilterSearch
+        <FilterSearchPure
           placeholder={'Search markets & outcomes...'}
-          search=""
+          search={search}
+          onChange={search => setSearch(search)}
           isSearchingMarkets={false}
         />
         <FilterButton title="Filters" />

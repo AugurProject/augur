@@ -4,7 +4,11 @@ import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
 
 import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
-import { FILTER_SEARCH_PARAM, SEARCH_FILTER_PLACHOLDER_MOBILE, SEARCH_FILTER_PLACHOLDER } from 'modules/common/constants';
+import {
+  FILTER_SEARCH_PARAM,
+  SEARCH_FILTER_PLACHOLDER_MOBILE,
+  SEARCH_FILTER_PLACHOLDER,
+} from 'modules/common/constants';
 import Styles from 'modules/filter-sort/components/filter-search.styles.less';
 
 interface FilterSearchProps {
@@ -20,7 +24,10 @@ interface FilterSearchState {
 }
 
 // Show mobile placeholder on devices with 475px or lower screen width
-const SERACH_PLACEHOLDER = window.innerWidth > 475 ? SEARCH_FILTER_PLACHOLDER : SEARCH_FILTER_PLACHOLDER_MOBILE
+const SERACH_PLACEHOLDER =
+  window.innerWidth > 475
+    ? SEARCH_FILTER_PLACHOLDER
+    : SEARCH_FILTER_PLACHOLDER_MOBILE;
 
 export default class FilterSearch extends Component<
   FilterSearchProps,
@@ -52,7 +59,10 @@ export default class FilterSearch extends Component<
     this.timeout = null;
   }
 
-  componentDidUpdate(prevProps: FilterSearchProps, prevState: FilterSearchState) {
+  componentDidUpdate(
+    prevProps: FilterSearchProps,
+    prevState: FilterSearchState
+  ) {
     if (
       this.props.location !== prevProps.location &&
       !this.props.location.search.includes(FILTER_SEARCH_PARAM)
@@ -70,8 +80,10 @@ export default class FilterSearch extends Component<
   }
 
   onBlur = () => {
-    this.setState({ placeholder: this.props.placeholder || SERACH_PLACEHOLDER });
-  }
+    this.setState({
+      placeholder: this.props.placeholder || SERACH_PLACEHOLDER,
+    });
+  };
 
   onChange(search) {
     clearTimeout(this.timeout);
@@ -112,24 +124,53 @@ export default class FilterSearch extends Component<
 
     return (
       <article
-        className={Styles.FilterSearch}
         ref={parent => {
           this.parent = parent;
         }}
       >
-        <Input
-          className={Styles.Search}
-          isSearch
-          isClearable
-          noFocus
+        <FilterSearchPure
           placeholder={placeholder}
-          value={search}
+          search={search}
           onChange={this.onChange}
           onFocus={this.onFocus}
           onBlur={this.onBlur}
-          isLoading={Boolean(isSearchingMarkets || (isSearchingMarkets && search && search !== ''))}
+          isSearchingMarkets={isSearchingMarkets}
         />
       </article>
     );
   }
 }
+
+interface FilterSearchPureProps {
+  placeholder: string;
+  search: string;
+  onChange: Function;
+  onFocus: Function;
+  onBlur: Function;
+  isSearchingMarkets: boolean;
+}
+export const FilterSearchPure = ({
+  placeholder,
+  search,
+  onChange,
+  onFocus,
+  onBlur,
+  isSearchingMarkets,
+}: FilterSearchPureProps) => (
+  <article className={Styles.FilterSearch}>
+    <Input
+      className={Styles.Search}
+      isSearch
+      isClearable
+      noFocus
+      placeholder={placeholder}
+      value={search}
+      onChange={onChange}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      isLoading={Boolean(
+        isSearchingMarkets || (isSearchingMarkets && search && search !== '')
+      )}
+    />
+  </article>
+);
