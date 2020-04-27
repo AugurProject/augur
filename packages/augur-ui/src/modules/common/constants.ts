@@ -18,7 +18,7 @@ export const HELP_CENTER_HOW_TO_TRADE = 'https://help.augur.net/trading/how-to-m
 export const HELP_CENTER_HOW_TO_DISPUTE = 'https://help.augur.net/disputing-explained#how-to-dispute';
 export const HELP_CENTER_SCALAR_MARKETS = 'https://help.augur.net/trading/trading-faq#how-do-scalar-markets-work';
 export const HELP_CENTER_PARTICIPATION_TOKENS = 'https://help.augur.net/reporting-or-disputing-faq#what-are-participation-tokens';
-export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://help.augur.net/getting-started/signing-up#gas-station-network';
+export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://help.augur.net/prediction-markets/augur-faq#what-is-my-account-address';
 export const HELP_CENTER_MIGRATE_REP = 'https://help.augur.net/prediction-markets/migrating-rep-v1-greater-than-v2';
 export const HELP_CENTER_THIRD_PARTY_COOKIES = 'https://www.whatismybrowser.com/guides/how-to-enable-cookies';
 export const HELP_CENTER_INVALID_MARKETS = 'https://help.augur.net/trading/trading-faq#what-does-invalid-mean';
@@ -26,6 +26,7 @@ export const HELP_CENTER_HOW_DO_I_SHORT_AN_OUTCOME = 'https://help.augur.net/tra
 export const HELP_CENTER_DISPUTING_QUICK_GUIDE = 'https://help.augur.net/disputing-explained#dispute-rounds';
 export const HELP_CENTER_REPORTING_QUICK_GUIDE = 'https://help.augur.net/disputing-explained';
 export const HELP_CENTER_RESOLUTION_SOURCE = 'https://help.augur.net/trading/trading-page-explained#8-resolution-source';
+export const HELP_CENTER_WHAT_IS_DAI = 'https://help.augur.net/prediction-markets/augur-faq#what-is-dai';
 
 // # MISC Constants
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
