@@ -1472,23 +1472,23 @@ export const MY_BETS_VIEW_BY = [
 
 export const MY_BETS_MARKET_STATUS = [
   {
-    header: 'All',
-    label: 'All',
+    header: ALL_MARKETS,
+    label: ALL_MARKETS,
     value: 0,
   },
   {
-    header: 'Open',
-    label: 'Open',
+    header: MARKET_OPEN,
+    label: MARKET_OPEN,
     value: 1,
   },
   {
-    header: 'In reporting',
-    label: 'In reporting',
+    header: MARKET_REPORTING,
+    label: MARKET_REPORTING,
     value: 2,
   },
   {
-    header: 'Resolved',
-    label: 'Resolved',
+    header: MARKET_CLOSED,
+    label: MARKET_CLOSED,
     value: 3,
   },
 ];

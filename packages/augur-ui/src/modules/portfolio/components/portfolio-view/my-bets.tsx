@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import classNames from 'classnames';
 
 import Styles from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
@@ -18,13 +18,65 @@ import {
   MY_BETS_BET_DATE,
   EVENT,
   MARKET_STATE_TYPES,
+  GAMES,
+  RESOLVED,
+  REPORTING_STATE,
+  MARKET_OPEN,
+  MARKET_REPORTING,
+  MARKET_CLOSED,
 } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
 import { FilterNotice } from 'modules/common/filter-notice';
 import { EmptyMagnifyingGlass } from 'modules/common/icons';
 import { Game, Outcomes } from '../common/common';
 import { useMyBetsStore } from 'modules/portfolio/store/my-bets';
+import {
+  MOCK_GAMES_DATA,
+  MOCK_FUTURES_DATA,
+  MOCK_OUTCOMES_DATA,
+} from 'modules/portfolio/store/constants';
+import { useEffect } from 'react';
 
+export function processRows(
+  viewBy,
+  marketStatus,
+  betDate,
+  selectedMarketCardType,
+  selectedMarketStateType
+) {
+  let rows = MOCK_GAMES_DATA;
+  if (MY_BETS_VIEW_BY[viewBy].label === EVENT) {
+    rows =
+      SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES
+        ? MOCK_GAMES_DATA
+        : MOCK_FUTURES_DATA;
+    rows = rows.filter(data => {
+      const marketStatusLabel = MY_BETS_MARKET_STATUS[marketStatus].label;
+      if (marketStatusLabel === MARKET_OPEN) {
+        return data.reportingState === REPORTING_STATE.PRE_REPORTING;
+      } else if (marketStatusLabel === MARKET_REPORTING) {
+        return (
+          data.reportingState === REPORTING_STATE.DESIGNATED_REPORTING ||
+          data.reportingState === REPORTING_STATE.OPEN_REPORTING ||
+          data.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW ||
+          data.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE
+        );
+      } else if (marketStatusLabel === MARKET_CLOSED) {
+        return data.reportingState === REPORTING_STATE.FINALIZED;
+      } else {
+        return true;
+      }
+    });
+  } else {
+    // betDate
+    rows = MOCK_OUTCOMES_DATA.filter(data =>
+      MARKET_STATE_TYPES[selectedMarketStateType].label === RESOLVED
+        ? data.reportingState === REPORTING_STATE.FINALIZED
+        : data.reportingState !== REPORTING_STATE.FINALIZED
+    );
+  }
+  return rows;
+}
 export const MyBets = () => {
   const {
     viewBy,
@@ -32,7 +84,6 @@ export const MyBets = () => {
     betDate,
     selectedMarketCardType,
     selectedMarketStateType,
-    rows,
     actions: {
       setViewBy,
       setMarketStatus,
@@ -41,6 +92,35 @@ export const MyBets = () => {
       setSelectedMarketStateType,
     },
   } = useMyBetsStore();
+
+  const [rows, setRows] = useState(
+    processRows(
+      viewBy,
+      marketStatus,
+      betDate,
+      selectedMarketCardType,
+      selectedMarketStateType
+    )
+  );
+
+  useEffect(() => {
+    setRows(
+      processRows(
+        viewBy,
+        marketStatus,
+        betDate,
+        selectedMarketCardType,
+        selectedMarketStateType
+      )
+    );
+  }, [
+    viewBy,
+    marketStatus,
+    betDate,
+    selectedMarketCardType,
+    selectedMarketStateType,
+  ]);
+
   const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
 
   return (
@@ -77,7 +157,14 @@ export const MyBets = () => {
             <SquareDropdown
               options={MY_BETS_VIEW_BY}
               defaultValue={viewBy}
-              onChange={viewBy => setViewBy(viewBy)}
+              onChange={viewBy => {
+                setViewBy(viewBy);
+                setRows(
+                  MY_BETS_VIEW_BY[viewBy].label === EVENT
+                    ? MOCK_GAMES_DATA
+                    : MOCK_OUTCOMES_DATA
+                );
+              }}
               minimalStyle
             />
           </span>

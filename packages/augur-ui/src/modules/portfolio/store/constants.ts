@@ -75,7 +75,7 @@ export const MOCK_GAMES_DATA = [
   export const MOCK_FUTURES_DATA = [
     {
       description: 'NBA Championship 2019-20',
-      reportingState: REPORTING_STATE.PRE_REPORTING,
+      reportingState: REPORTING_STATE.FINALIZED,
       categories: ['Sports', 'NBA'],
       isTemplate: true,
       startTime: 1509511175,

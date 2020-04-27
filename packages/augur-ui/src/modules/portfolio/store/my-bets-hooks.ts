@@ -33,18 +33,10 @@ export function MyBetsReducer(state, action) {
   switch (action.type) {
     case SET_VIEW_BY: {
       updatedState[VIEW_BY] = action.viewBy;
-      updatedState[ROWS] =
-        MY_BETS_VIEW_BY[action.viewBy].label === EVENT
-          ? MOCK_GAMES_DATA
-          : MOCK_OUTCOMES_DATA;
       break;
     }
     case SET_SELECTED_MARKET_CARD_TYPE: {
       updatedState[SELECTED_MARKET_CARD_TYPE] = action.selectedMarketCardType;
-      updatedState[ROWS] =
-        SPORTS_MARKET_TYPES[action.selectedMarketCardType].label === GAMES
-          ? MOCK_GAMES_DATA
-          : MOCK_FUTURES_DATA;
       break;
     }
     case SET_SELECTED_MARKET_STATE_TYPE: {
