@@ -9,16 +9,13 @@ import {
   sendLiquidityOrder,
   startOrderSending,
 } from 'modules/orders/actions/liquidity-management';
-import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
-  MAX_BULK_ORDER_COUNT,
   NEW_ORDER_GAS_ESTIMATE,
   ZERO,
 } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import {
   formatDai,
-  formatEther,
   formatGasCostToEther,
 } from 'utils/format-number';
 import { AppState } from 'appStore';
@@ -26,7 +23,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { CreateLiquidityOrders } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
-import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 
 const mapStateToProps = (state: AppState) => {
@@ -39,7 +35,6 @@ const mapStateToProps = (state: AppState) => {
     liquidity: state.pendingLiquidityOrders[market.transactionHash],
     gasPrice,
     loginAccount: state.loginAccount,
-    chunkOrders: !state.appStatus.zeroXEnabled,
     GsnEnabled: state.appStatus.gsnEnabled,
     availableDai
   };
@@ -56,7 +51,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP, dP, oP) => {
-  const { chunkOrders } = sP;
   let numberOfTransactions = 0;
   let totalCost = ZERO;
 
@@ -79,9 +73,6 @@ const mergeProps = (sP, dP, oP) => {
 
   const bnAllowance = createBigNumber(sP.loginAccount.allowance, 10);
   const needsApproval = bnAllowance.lte(ZERO);
-  const submitAllTxCount = chunkOrders ? Math.ceil(
-    numberOfTransactions / MAX_BULK_ORDER_COUNT
-  ) : numberOfTransactions;
   const insufficientFunds = sP.availableDai.lt(totalCost);
   const {
     marketType,
@@ -115,7 +106,7 @@ const mergeProps = (sP, dP, oP) => {
     transactionHash,
     needsApproval,
     insufficientFunds,
-    submitAllTxCount,
+    numberOfTransactions,
     breakdown: [
       {
         label: 'Total Cost (DAI)',
@@ -142,7 +133,7 @@ const mergeProps = (sP, dP, oP) => {
       {
         disabled: insufficientFunds,
         text: 'Submit All',
-        action: () => dP.startOrderSending({ marketId, chunkOrders }),
+        action: (chunkOrders) => dP.startOrderSending({ marketId, chunkOrders }),
       },
       // Temporarily removed because there is no confirmation, the button just cancels everything on a single click
       // {

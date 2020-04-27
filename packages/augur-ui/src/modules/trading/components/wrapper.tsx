@@ -63,6 +63,7 @@ interface WrapperProps {
   availableDai: number;
   gsnUnavailable: boolean;
   initializeGsnWallet: Function;
+  zeroXEnabled: boolean;
 }
 
 interface WrapperState {
@@ -454,6 +455,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       gsnUnavailable,
       initializeGsnWallet,
       gsnWalletInfoSeen,
+      zeroXEnabled,
     } = this.props;
     let {
       marketType,
@@ -617,6 +619,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               updateTradeNumShares={this.updateTradeNumShares}
               clearOrderConfirmation={this.clearOrderConfirmation}
               initialLiquidity={initialLiquidity}
+              zeroXEnabled={zeroXEnabled}
             />
           )}
         </div>

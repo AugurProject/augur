@@ -57,7 +57,7 @@ import { isGoogleBot } from 'utils/is-google-bot';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
-async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
+async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>, setOxEnabled: Function) {
   const loggedInUser = getLoggedInUserFromLocalStorage();
   const loggedInAccount = (loggedInUser && loggedInUser.address) || null;
   const loggedInAccountType = (loggedInUser && loggedInUser.type) || null;
@@ -84,19 +84,18 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
             })
           );
         }
-
-        await dispatch(loginWithInjectedWeb3());
+        await dispatch(loginWithInjectedWeb3(setOxEnabled));
       }
       if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-        await dispatch(loginWithPortis(false));
+        await dispatch(loginWithPortis(false, setOxEnabled));
       }
 
       if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
-        await dispatch(loginWithFortmatic());
+        await dispatch(loginWithFortmatic(setOxEnabled));
       }
 
       if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
-        await dispatch(loginWithTorus());
+        await dispatch(loginWithTorus(setOxEnabled));
       }
     }
   } catch (error) {
@@ -129,7 +128,8 @@ export function connectAugur(
   history: History,
   config: SDKConfiguration,
   isInitialConnection = false,
-  callback: NodeStyleCallback = logError
+  callback: NodeStyleCallback = logError,
+  setOxEnabled: Function,
 ) {
   return async (
     dispatch: ThunkDispatch<void, any, Action>,
@@ -137,7 +137,6 @@ export function connectAugur(
   ) => {
     const { modal, loginAccount } = getState();
     const windowApp = windowRef as WindowApp;
-
     const loggedInUser = getLoggedInUserFromLocalStorage();
     const loggedInAccount = loggedInUser && loggedInUser.address || null;
     const loggedInAccountType = loggedInUser && loggedInUser.type || null;
@@ -266,7 +265,7 @@ export function connectAugur(
     }
 
     if (isInitialConnection) {
-      loadAccountIfStored(dispatch);
+      loadAccountIfStored(dispatch, setOxEnabled);
       pollForNetwork(dispatch, getState);
     }
 
@@ -295,7 +294,8 @@ export function initAugur(
     sdkEndpoint,
     useWeb3Transport,
   }: initAugurParams,
-  callback: NodeStyleCallback = logError
+  callback: NodeStyleCallback = logError,
+  setOxEnabled: Function,
 ) {
   return (
     dispatch: ThunkDispatch<void, any, Action>,
@@ -323,7 +323,7 @@ export function initAugur(
     getFingerprint();
     dispatch(updateEnv(config));
     tryToPersistStorage();
-    connectAugur(history, config, true, callback)(dispatch, getState);
+    connectAugur(history, config, true, callback, setOxEnabled)(dispatch, getState);
 
     windowRef.showIndexedDbSize = showIndexedDbSize;
   };

@@ -4,6 +4,7 @@ import {
   SecondarySignInButton,
 } from 'modules/common/buttons';
 import { Close } from 'modules/common/icons';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 import Styles from 'modules/modal/modal.styles.less';
 
@@ -27,16 +28,15 @@ interface LoginProps {
   connectMethods: ConnectMethod[];
 }
 
-export const SignIn = (props: LoginProps) => {
-  const {
-    closeModal,
-    signupModal,
-    loginModal,
-    hardwareWalletModal,
-    isLogin = true,
-    connectMethods,
-  } = props;
-
+export const SignIn = ({
+  closeModal,
+  signupModal,
+  loginModal,
+  hardwareWalletModal,
+  isLogin = true,
+  connectMethods,
+}: LoginProps) => {
+  const { actions: { setOxEnabled } } = useAppStatusStore();
   const LOGIN_OR_SIGNUP = isLogin ? 'Login' : 'Signup';
 
   const parimaryButtonsToShow = connectMethods
@@ -45,7 +45,7 @@ export const SignIn = (props: LoginProps) => {
     .map((method, idx) => (
       <PrimarySignInButton
         key={idx}
-        action={method.action}
+        action={() => method.action(setOxEnabled)}
         text={method.text}
         subText={method.subText}
         icon={method.icon}
@@ -58,7 +58,7 @@ export const SignIn = (props: LoginProps) => {
     .map((method, idx) => (
       <SecondarySignInButton
         key={idx}
-        action={method.action}
+        action={() => method.action(setOxEnabled)}
         text={method.text}
         subText={method.subText}
         icon={method.icon}

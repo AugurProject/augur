@@ -3,12 +3,12 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
-import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY, NETWORK_IDS, NETWORK_NAMES } from 'modules/common/constants';
+import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY, NETWORK_IDS } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
 
-export const loginWithFortmatic = () => async (
+export const loginWithFortmatic = (setOxEnabled) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
@@ -43,7 +43,7 @@ export const loginWithFortmatic = () => async (
         },
       };
 
-      dispatch(updateSdk(accountObject, undefined, useGSN));
+      dispatch(updateSdk(accountObject, undefined, useGSN, setOxEnabled));
     }
     catch (error) {
       throw error;

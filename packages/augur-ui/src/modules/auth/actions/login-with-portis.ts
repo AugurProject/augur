@@ -14,7 +14,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
 
- export const loginWithPortis = (forceRegisterPage = false) => async (
+ export const loginWithPortis = (forceRegisterPage = false, setOxEnabled) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
@@ -58,7 +58,7 @@ import { getNetwork } from 'utils/get-network-name';
           },
         };
 
-        dispatch(updateSdk(accountObject, undefined, useGSN));
+        dispatch(updateSdk(accountObject, undefined, useGSN, setOxEnabled));
       };
 
       portis.onLogin((account, email) => {

@@ -65,8 +65,8 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  initAugur: (history, overrides, cb) =>
-    dispatch(initAugur(history, overrides, cb)),
+  initAugur: (history, overrides, cb, setOxEnabled) =>
+    dispatch(initAugur(history, overrides, cb, setOxEnabled)),
   updateModal: modal => dispatch(updateModal(modal)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
   logout: () => dispatch(logout()),

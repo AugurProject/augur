@@ -182,7 +182,7 @@ const AppView = ({
   showGlobalChat,
   updateCurrentInnerNavType,
 }:AppProps) => {
-  const { isMobile, actions: { setIsMobile } } = useAppStatusStore();
+  const { isMobile, actions: { setIsMobile, setOxEnabled } } = useAppStatusStore();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
   const ModalShowing = Object.keys(modal).length !== 0;
@@ -246,7 +246,8 @@ const AppView = ({
             config: res.config,
           });
         }
-      }
+      },
+      setOxEnabled,
     );
     // we only want this to run the first mount, so we set the things to look at to a static value.
   }, [false])

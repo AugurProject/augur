@@ -55,13 +55,13 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
         showCloseAfterDelay: true,
       })
     ),
-  connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
-  connectPortis: (showRegister) =>
-    dispatch(loginWithPortis(showRegister)),
-  connectTorus: () =>
-    dispatch(loginWithTorus()),
-  connectFortmatic: () =>
-    dispatch(loginWithFortmatic()),
+  connectMetaMask: (setOxEnabled) => dispatch(loginWithInjectedWeb3(setOxEnabled)),
+  connectPortis: (showRegister, setOxEnabled) =>
+    dispatch(loginWithPortis(showRegister, setOxEnabled)),
+  connectTorus: (setOxEnabled) =>
+    dispatch(loginWithTorus(setOxEnabled)),
+  connectFortmatic: (setOxEnabled) =>
+    dispatch(loginWithFortmatic(setOxEnabled)),
   errorModal: (error, title = null, link = null, linkLabel = null) => dispatch(
     updateModal({
       type: MODAL_ERROR,
@@ -104,11 +104,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       subText: `Powered by ${ACCOUNT_TYPES.PORTIS}`,
       hidden: false,
       primary: true,
-      action: async () => {
+      action: async (setOxEnabled) => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => login());
         try {
           const forceRegisterPage = oP.isLogin ? false : true;
-          await dP.connectPortis(forceRegisterPage);
+          await dP.connectPortis(forceRegisterPage, setOxEnabled);
         } catch (error) {
           onError(error, ACCOUNT_TYPES.PORTIS);
         }
@@ -120,10 +120,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       text: `${LOGIN_OR_SIGNUP} with Google`,
       subText: `Powered by ${ACCOUNT_TYPES.TORUS}`,
       hidden: false,
-      action: async () => {
+      action: async (setOxEnabled) => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_TORUS, () => login());
         try {
-          await dP.connectTorus();
+          await dP.connectTorus(setOxEnabled);
         } catch (error) {
           onError(error, ACCOUNT_TYPES.TORUS);
         }
@@ -135,10 +135,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       text: `${LOGIN_OR_SIGNUP} with Phone Number`,
       subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
       hidden: false,
-      action: async () => {
+      action: async (setOxEnabled) => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
         try {
-          await dP.connectFortmatic();
+          await dP.connectFortmatic(setOxEnabled);
         } catch (error) {
           onError(error, ACCOUNT_TYPES.FORTMATIC);
         }
@@ -151,14 +151,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       subText: '',
       disabled: false,
       hidden: !isMetaMaskPresent(),
-      action: async () => {
+      action: async (setOxEnabled) => {
         const accounts =
           windowRef.ethereum && windowRef.ethereum.selectedAddress;
         const msg = accounts ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
         const showMetaMaskHelper = accounts ? false : true;
         dP.loadingModal(msg, () => login(), showMetaMaskHelper);
         try {
-          await dP.connectMetaMask();
+          await dP.connectMetaMask(setOxEnabled);
         } catch (error) {
           onError(error, ACCOUNT_TYPES.WEB3WALLET);
         }

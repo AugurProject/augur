@@ -13,7 +13,6 @@ import { augurSdk } from 'services/augursdk';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { loginAccount, appStatus, blockchain } = state;
-  const { zeroXEnabled: Ox_ENABLED } = appStatus;
 
   const getGasConfirmEstimate = async () => {
     const augur = augurSdk.get();
@@ -47,7 +46,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
       ownProps.market.marketType,
       ownProps.market.outcomesFormatted
     ),
-    Ox_ENABLED,
     gasPrice: gasPriceInWei,
     orderBook: outcomeOrderBook,
     getGasConfirmEstimate
