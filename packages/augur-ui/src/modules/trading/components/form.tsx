@@ -904,6 +904,7 @@ class Form extends Component<FromProps, FormState> {
                 )}
                 id="quantity"
                 type="number"
+                inputMode="numeric" pattern="[0-9]*"
                 step={
                   quantityValue && quantityValue !== ''
                     && isScalar ? quantityStep : 10
@@ -953,6 +954,7 @@ class Form extends Component<FromProps, FormState> {
                   )}
                   id="limit-price"
                   type="number"
+                  inputMode="numeric" pattern="[0-9]*"
                   step={tickSize}
                   max={max}
                   min={min}
@@ -1003,6 +1005,7 @@ class Form extends Component<FromProps, FormState> {
                   )}
                   id="percentage"
                   type="number"
+                  inputMode="numeric" pattern="[0-9]*"
                   step={0.1}
                   max={99}
                   min={1}
@@ -1050,6 +1053,7 @@ class Form extends Component<FromProps, FormState> {
                 )}
                 id="total-order-value"
                 type="number"
+                inputMode="numeric" pattern="[0-9]*"
                 disabled={!!initialLiquidity || !showLimitPriceInput}
                 step={MIN_QUANTITY.toFixed()}
                 min={MIN_QUANTITY.toFixed()}
