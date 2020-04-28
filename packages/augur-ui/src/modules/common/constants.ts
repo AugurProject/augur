@@ -1497,16 +1497,19 @@ export const MY_BETS_BET_DATE = [
   {
     header: 'Last 30 days',
     label: 'Last 30 days',
+    periodInterval: 2592000,
     value: 0,
   },
   {
     header: 'Last 7 days',
     label: 'Last 7 days',
+    periodInterval: 604800,
     value: 1,
   },
   {
     header: 'Last 24 hours',
     label: 'Last 24 hours',
+    periodInterval: 86400,
     value: 2,
   },
 ];

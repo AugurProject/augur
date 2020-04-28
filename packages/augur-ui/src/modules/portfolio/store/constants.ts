@@ -19,7 +19,7 @@ export const MOCK_GAMES_DATA = [
           amountFilled: '0',
           amountWon: '0',
           status: BET_STATUS.UNSENT,
-          betDate: 1587511165,
+          betDate: 1587677292,
           betType: BET_TYPE.SPREAD,
         },
         '0x02': {
@@ -113,7 +113,7 @@ export const MOCK_GAMES_DATA = [
           amountFilled: '0',
           amountWon: '0',
           status: BET_STATUS.UNSENT,
-          betDate: 1687519165,
+          betDate: 1582838892,
           highRisk: true,
         },
       },
