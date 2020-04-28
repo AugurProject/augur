@@ -28,7 +28,6 @@ const mapStateToProps = (state, ownProps) => {
   const { forkingInfo } = universe;
   
   return {
-    theme: appStatus.theme,
     hasPosition: !!positions[marketId],
     orderBook: orderBooks[marketId]?.orderBook,
     isLogged: authStatus.isLogged,

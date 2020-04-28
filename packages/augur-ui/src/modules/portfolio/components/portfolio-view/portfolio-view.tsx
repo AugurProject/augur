@@ -13,7 +13,6 @@ import { PORTFOLIO_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { CREATE_MARKET_PORTFOLIO } from 'modules/routes/constants/param-names';
-import { getTheme } from 'modules/app/actions/update-app-status';
 import { MyBets } from './my-bets';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 

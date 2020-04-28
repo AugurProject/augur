@@ -6,13 +6,14 @@ import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_INITIALIZE_ACCOUNT, CREATEAUGURWALLET, TRANSACTIONS } from 'modules/common/constants';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { authStatus, loginAccount, appStatus, newMarket } = state;
+  const { authStatus, loginAccount, newMarket } = state;
   const {
     gsnEnabled: GsnEnabled,
     walletStatus: walletStatus,
-  } = appStatus;
+  } = AppStatusState.get();
 
   const hasFunds = GsnEnabled
     ? !!loginAccount.balances.dai

@@ -73,7 +73,6 @@ import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
-import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { AppStatusActions } from 'modules/app/store/app-status';
@@ -137,7 +136,7 @@ export const handleTxSuccess = (txStatus: Events.TXStatus) => (
 ) => {
   console.log('TxSuccess Transaction', txStatus.transaction.name);
   // update wallet status on any TxSuccess
-  dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
+  AppStatusActions.actions.setWalletStatus(WALLET_STATUS_VALUES.CREATED)
   dispatch(updateAssets());
   dispatch(addUpdateTransaction(txStatus));
 };

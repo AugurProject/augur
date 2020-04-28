@@ -6,6 +6,7 @@ import { use3box } from 'utils/use-3box';
 import { SecondaryButton } from 'modules/common/buttons';
 import { THEMES } from 'modules/common/constants';
 import { Initialized3box } from 'modules/types';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export interface GlobalChatProps {
   provider: any;
@@ -16,7 +17,8 @@ export interface GlobalChatProps {
   isLogged: boolean;
 }
 
-export const GlobalChat = ({ provider, whichChatPlugin, isLogged, initialize3box, initialized3box, theme }: GlobalChatProps) => {
+export const GlobalChat = ({ provider, whichChatPlugin, isLogged, initialize3box, initialized3box }: GlobalChatProps) => {
+  const { theme } = useAppStatusStore();
   const { activate, setActivate, address, box, isReady, profile } =
     whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box, theme);
 
