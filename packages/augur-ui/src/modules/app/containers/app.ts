@@ -33,6 +33,7 @@ import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, WALLET_STATUS_VALUES, TRANSACTION
 import { saveAffiliateAddress } from "modules/account/actions/login-account";
 import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
 import { AppState } from "appStore";
+import { selectCoreStats } from "modules/account/selectors/core-stats";
 
 const mapStateToProps = (state: AppState) => {
   const { appStatus, loginAccount, pendingQueue } = state;
@@ -56,6 +57,7 @@ const mapStateToProps = (state: AppState) => {
     connection: state.connection,
     env: state.env,
     isLogged: state.authStatus.isLogged,
+    stats: selectCoreStats(state),
     restoredAccount: state.authStatus.restoredAccount,
     isMobile: state.appStatus.isMobile,
     isMobileSmall: state.appStatus.isMobileSmall,
