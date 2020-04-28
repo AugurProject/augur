@@ -42,7 +42,7 @@ import {
 } from 'utils/format-date';
 import { AppState } from 'appStore';
 import { loadMarketOrderBook, clearOrderBook } from 'modules/orders/actions/load-market-orderbook';
-import { Getters } from '@augurproject/sdk/src';
+import { Getters } from '@augurproject/sdk';
 import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
