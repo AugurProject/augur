@@ -618,7 +618,7 @@ export const TextLabel = ({
       </label>
       {!isDisabled && (
         <ReactTooltip
-          id={`${keyId}-${text.replace(/\s+/g, '-')}`}
+          id={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
           className={TooltipStyles.Tooltip}
           effect="solid"
           place="top"
