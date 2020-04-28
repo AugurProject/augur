@@ -14,9 +14,9 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
 
- export const loginWithPortis = (forceRegisterPage = false) => async (
+export const loginWithPortis = (forceRegisterPage = false) => async (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState,
+  getState: () => AppState
 ) => {
   const useGSN = getState().env['gsn']?.enabled;
   const networkId: string = getState().env['networkId'];
@@ -32,10 +32,14 @@ import { getNetwork } from 'utils/get-network-name';
       // to conditionally load web3 into the DOM
       const Portis = require('@portis/web3');
       const Web3 = require('web3');
-      const portis = new Portis(PORTIS_API_KEY, portisNetwork === 'localhost' ? localPortisNetwork : portisNetwork, {
-        scope: ['email'],
-        registerPageByDefault: forceRegisterPage,
-      });
+      const portis = new Portis(
+        PORTIS_API_KEY,
+        portisNetwork === 'localhost' ? localPortisNetwork : portisNetwork,
+        {
+          scope: ['email'],
+          registerPageByDefault: forceRegisterPage,
+        }
+      );
 
       const web3 = new Web3(portis.provider);
       const provider = new PersonalSigningWeb3Provider(portis.provider);
@@ -62,27 +66,35 @@ import { getNetwork } from 'utils/get-network-name';
       };
 
       portis.onLogin((account, email) => {
-          initPortis(portis, account, email);
+        initPortis(portis, account, email);
       });
 
       portis.onError(error => {
         document.querySelector('.por_portis-container').remove();
-
-        if (error.message && error.message.toLowerCase().indexOf('cookies') !== -1) {
+        if (
+          error.message &&
+          error.message.toLowerCase().indexOf('cookies') !== -1
+        ) {
           dispatch(
             updateModal({
               type: MODAL_ERROR,
               title: 'Cookies are disabled',
-              error: 'Please enable cookies in your browser to proceed with Portis.',
+              error:
+                'Please enable cookies in your browser to proceed with Portis.',
               link: HELP_CENTER_THIRD_PARTY_COOKIES,
-              linkLabel: 'Learn more.'
+              linkLabel: 'Learn more.',
             })
           );
         } else {
+          const errorMessage = `There was an error while attempting to log in with Portis. Please try again, and if it is still not working checkout the help center for logging in.\n\n${
+            error.message
+              ? `Error: ${JSON.stringify(error.message)}`
+              : ''
+          }`;
           dispatch(
             updateModal({
               type: MODAL_ERROR,
-              error: JSON.stringify(error && error.message ? error.message : 'Sorry, something went wrong.'),
+              error: errorMessage,
             })
           );
         }
