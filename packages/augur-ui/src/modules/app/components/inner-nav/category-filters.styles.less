@@ -266,13 +266,16 @@
   }
 
   .SelectedCategories {
+    margin: 0 @size-32;
+    border-bottom: @size-1 solid var(--color-secondary-action-outline);
+
     > div:not(.SelectedCategory):not(.backToCategory) {
-      margin: @size-8 @size-32 0 @size-60;
+      margin: @size-8 0 0 @size-28;
     }
   }
 
   .SelectedCategory {
-    margin: @size-8 @size-32;
+    margin: @size-8 0;
   }
 
 }
