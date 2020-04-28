@@ -387,7 +387,7 @@ export default class MarketHeader extends Component<
               className={Styles.BackButton}
               onClick={() => history.goBack()}
             >
-              {LeftChevron} Back
+              {LeftChevron} <span>Back</span>
             </button>
           )}
           <button

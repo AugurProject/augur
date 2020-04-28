@@ -94,6 +94,26 @@
 
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
+  .BackButton {
+    height: @size-16;
+    background: var(--color-module-background);
+    border: @size-1 solid var(--color-dark-text);
+    border-radius: @border-radius-soft;
+    margin-right: @size-8;
+    display: flex;
+    justify-content: center;
+
+    > svg {
+      height: @size-6;
+      width: @size-8;
+      display: flex;
+    }
+
+    > span {
+      display: none;
+    }
+  }
+
   .PrimaryButton {
     align-items: center;
     background: var(--color-primary-action-15);

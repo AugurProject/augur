@@ -2,7 +2,12 @@ import { MarketData } from 'modules/types';
 import * as React from 'react';
 import * as classNames from 'classnames';
 import { LeftChevron, CopyAlternateIcon } from 'modules/common/icons';
-import { MarketTypeLabel, RedFlag, WordTrail } from 'modules/common/labels';
+import {
+  MarketTypeLabel,
+  RedFlag,
+  WordTrail,
+  InReportingLabel,
+} from 'modules/common/labels';
 import { TemplateShield } from 'modules/common/labels';
 import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
@@ -23,6 +28,7 @@ interface HeadingBarProps {
   isFavorite?: boolean;
   userAccount?: string;
   setShowCopied?: Function;
+  showReportingLabel?: boolean;
 }
 
 export const HeadingBar = ({
@@ -31,13 +37,22 @@ export const HeadingBar = ({
   history,
   addToFavorites,
   gotoFilter,
-  showCopied, 
+  showCopied,
   isLogged,
   isFavorite,
   userAccount,
-  setShowCopied
+  setShowCopied,
+  showReportingLabel,
 }: HeadingBarProps) => {
-  const { marketType, id, description, categories } = market;
+  const {
+    marketType,
+    id,
+    description,
+    categories,
+    reportingState,
+    marketStatus,
+    disputeInfo
+  } = market;
   const isScalar = marketType === SCALAR;
 
   const process = arr =>
@@ -57,8 +72,15 @@ export const HeadingBar = ({
       })}
     >
       <button className={Styles.BackButton} onClick={() => history.goBack()}>
-        {LeftChevron} Back
+        {LeftChevron} <span>Back</span>
       </button>
+      {showReportingLabel && (
+        <InReportingLabel
+          marketStatus={marketStatus}
+          reportingState={reportingState}
+          disputeInfo={disputeInfo}
+        />
+      )}
       {isScalar && <MarketTypeLabel marketType={marketType} />}
       <RedFlag market={market} />
       {market.isTemplate && <TemplateShield market={market} />}

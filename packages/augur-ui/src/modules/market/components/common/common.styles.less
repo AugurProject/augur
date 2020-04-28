@@ -190,3 +190,57 @@
     display: none;
   }
 }
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .HeadingBar {
+    margin: 0;
+    padding: 0;
+
+    > div:first-of-type {
+      > button {
+        .text-12-medium;
+
+        color: var(--color-primary-text);
+      }
+    }
+
+    > div[class*='CopyButton'],
+    > button:not([class*='BackButton']),
+    > button:not(:first-of-type) {
+      height: @size-20;
+      margin-left: @size-20;
+      width: @size-20;
+
+      > svg {
+        height: @size-20;
+        width: @size-20;
+      }
+    }
+
+    > button[class*='BackButton'] {
+      height: @size-20;
+      width: @size-20;
+      background: var(--color-module-background);
+      border: @size-1 solid var(--color-dark-text);
+      border-radius: @border-radius-soft;
+      margin-right: @size-8;
+      display: flex;
+      justify-content: center;
+
+      > svg {
+        height: @size-6;
+        width: @size-8;
+        display: flex;
+      }
+
+      > span {
+        display: none;
+      }
+    }
+
+    > button:nth-of-type(2) {
+      margin-left: auto;
+    }
+  }
+}
