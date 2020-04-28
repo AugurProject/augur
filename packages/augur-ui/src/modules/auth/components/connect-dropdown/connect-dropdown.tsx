@@ -215,6 +215,11 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         <ModalMetaMaskFinder handleClick={() => setShowMetaMaskHelper(false)} />
       )}
       <div className={Styles.AccountInfo}>
+
+        <div className={Styles.MobileAddFunds}>
+          <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
+        </div>
+
         <div className={Styles.AddFunds}>
           <div>Your account</div>
           <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
@@ -235,10 +240,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
               </div>
             </div>
           ))}
-
-        <div className={Styles.MobileAddFunds}>
-          <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
-        </div>
 
         {walletProviders
           .filter(wallet => wallet.accountType === accountMeta.accountType)
