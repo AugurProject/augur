@@ -16,7 +16,7 @@ import { Action } from 'redux';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount, appStatus, modal } = state;
+  const { loginAccount, modal } = state;
   const balances = loginAccount.balances;
   balances.dai = totalTradingBalance(loginAccount).toNumber();
   const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
@@ -24,8 +24,6 @@ const mapStateToProps = (state: AppState) => {
   account: loginAccount.address,
   modal,
   balances,
-  GsnEnabled: appStatus.gsnEnabled,
-  ethToDaiRate: appStatus.ethToDaiRate,
   gasPrice,
   fallBackGasCosts: {
     eth: formatEtherEstimate(
@@ -65,8 +63,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   fallBackGasCosts: sP.fallBackGasCosts,
-  GsnEnabled: sP.GsnEnabled,
-  ethToDaiRate: sP.ethToDaiRate,
   balances: sP.balances,
   account: sP.account,
   gasPrice: sP.gasPrice,

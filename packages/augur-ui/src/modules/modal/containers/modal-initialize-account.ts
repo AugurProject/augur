@@ -10,8 +10,8 @@ import { formatAttoEth, formatDai } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
 
 const mapStateToProps = (state: AppState) => {
-  const { appStatus, modal } = state;
-  const ethToDaiRate = appStatus.ethToDaiRate.roundedValue;
+  const { modal } = state;
+  const ethToDaiRate = window.appStatus.ethToDaiRate.roundedValue;
   const desiredSignerEthBalance = formatAttoEth(Number(DESIRED_SIGNER_ETH_BALANCE)).value;
   const reserveAmount: FormattedNumber = formatDai(ethToDaiRate.multipliedBy(desiredSignerEthBalance));
 

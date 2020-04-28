@@ -11,41 +11,47 @@ import { FormattedNumber } from 'modules/types';
 import { TextInput } from 'modules/common/form';
 import { CloseButton, ProcessingButton, SecondaryButton } from 'modules/common/buttons';
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
-import { ethToDai, displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
-import { getDaiBalance, getEthBalance } from 'modules/contracts/actions/contractCalls';
+import { displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { WITHDRAWALLFUNDSASDAI, TRANSACTIONS, GWEI_CONVERSION } from 'modules/common/constants';
 import { AutoCancelOrdersNotice } from 'modules/common/labels';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface CashOutFormProps {
   closeAction: Function;
   withdrawAllFunds: Function;
   withdrawAllFundsEstimateGas: Function;
   account: string;
-  GsnEnabled: boolean;
-  ethToDaiRate: FormattedNumber;
   gasPrice: number;
   totalOpenOrderFundsFormatted: FormattedNumber;
   availableFundsFormatted: FormattedNumber;
-  reserveInDaiFormatted: FormattedNumber;
-  totalDaiFormatted: FormattedNumber;
+  ethReserveAmount: FormattedNumber;
+  balances: any;
+  totalOpenOrdersFrozenFunds: any;
 }
 
-export const CashOutForm = ( props: CashOutFormProps) => {
-  const {
-    closeAction,
-    withdrawAllFunds,
-    withdrawAllFundsEstimateGas,
-    GsnEnabled,
-    account,
-    gasPrice,
-    totalOpenOrderFundsFormatted,
-    availableFundsFormatted,
-    reserveInDaiFormatted,
-    totalDaiFormatted,
-  } = props;
+export const CashOutForm = ({
+  closeAction,
+  withdrawAllFunds,
+  withdrawAllFundsEstimateGas,
+  account,
+  gasPrice,
+  totalOpenOrderFundsFormatted,
+  availableFundsFormatted,
+  ethReserveAmount,
+  balances,
+  totalOpenOrdersFrozenFunds
+}: CashOutFormProps) => {
   const [gasCosts, setGasCosts] = useState(createBigNumber(TRANSFER_ETH_GAS_COST));
   const [address, setAddress] = useState('');
   const [errors, setErrors] = useState('');
+
+  const { ethToDaiRate } = useAppStatusStore();
+
+  const reserveInDaiFormatted = ethToDai(ethReserveAmount.value || 0, createBigNumber(ethToDaiRate?.value || 0));
+  const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(balances.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
+
+  const { gsnEnabled } = useAppStatusStore();
 
   async function getGasCost(account) {
     const gasCosts = await withdrawAllFundsEstimateGas(account);
@@ -77,7 +83,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
   );
 
-  const gasEstimate = GsnEnabled
+  const gasEstimate = gsnEnabled
   ? displayGasInDai(gasLimit.multipliedBy(gasPrice))
   : gasEstimateInEth;
 

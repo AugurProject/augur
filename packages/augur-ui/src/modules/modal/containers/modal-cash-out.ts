@@ -10,21 +10,16 @@ import { FormattedNumber } from 'modules/types';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
 import { formatDai } from 'utils/format-number';
 import { selectAccountFunds } from 'modules/auth/selectors/login-account';
-import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
-import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount, appStatus, modal } = state;
+  const { loginAccount, modal } = state;
 
   const { address, totalOpenOrdersFrozenFunds } = loginAccount;
-  const { ethToDaiRate} = appStatus;
 
   const ethReserveAmount: FormattedNumber = getEthReserve(state);
   const balances = selectAccountFunds(state);
   const totalOpenOrderFundsFormatted: FormattedNumber = formatDai(totalOpenOrdersFrozenFunds || 0);
   const availableFundsFormatted = formatDai(balances.totalAvailableTradingBalance);
-  const reserveInDaiFormatted = ethToDai(ethReserveAmount.value || 0, createBigNumber(ethToDaiRate?.value || 0));
-  const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(balances.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
 
   return {
     account: address,
@@ -32,8 +27,9 @@ const mapStateToProps = (state: AppState) => {
     gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
     totalOpenOrderFundsFormatted,
     availableFundsFormatted,
-    reserveInDaiFormatted,
-    totalDaiFormatted,
+    ethReserveAmount,
+    balances,
+    totalOpenOrdersFrozenFunds,
   }
 };
 

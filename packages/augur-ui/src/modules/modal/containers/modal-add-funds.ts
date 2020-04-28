@@ -9,16 +9,9 @@ import { ADD_FUNDS, track } from 'services/analytics/helpers';
 import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => {
-  const ethToDaiRate = state.appStatus.ethToDaiRate;
-  const repToDaiRate = state.appStatus.repToDaiRate;
-  const ETH_RATE = createBigNumber(1).dividedBy(ethToDaiRate?.value  || createBigNumber(1));
-  const REP_RATE = createBigNumber(1).dividedBy(repToDaiRate?.value  || createBigNumber(1));
-
   return {
     modal: state.modal,
     loginAccount: state.loginAccount,
-    ETH_RATE,
-    REP_RATE,
     isRelayDown: false, // TODO XXX Need to have some suitable status update for when relayer is down. No longer related to wallets
   }
 };

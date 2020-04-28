@@ -36,8 +36,6 @@ interface ConnectDropdownProps {
   universeOutcomeName: string;
   parentUniverseId: string;
   universeHasChildren: boolean;
-  GsnEnabled: boolean;
-  ethToDaiRate: FormattedNumber;
   loginAccountAddress: string;
   reserveEthAmount: FormattedNumber;
 }
@@ -56,19 +54,17 @@ const ConnectDropdown = ({
   universeOutcomeName,
   parentUniverseId,
   universeHasChildren,
-  GsnEnabled,
-  ethToDaiRate,
   loginAccountAddress,
   reserveEthAmount,
   logout,
 }: ConnectDropdownProps) => {
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-  const { actions: { setGSNEnabled }} = useAppStatusStore();
+  const { gsnEnabled, ethToDaiRate, actions: { setGSNEnabled }} = useAppStatusStore();
 
   let gasCostTrade;
 
-  if (GsnEnabled && ethToDaiRate) {
+  if (gsnEnabled && ethToDaiRate) {
     const gasCost = NEW_ORDER_GAS_ESTIMATE.multipliedBy(userDefinedGasPrice);
     gasCostTrade = displayGasInDai(gasCost);
   }
@@ -136,7 +132,7 @@ const ConnectDropdown = ({
       }).formattedValue,
       name: 'ETH',
       logo: EthIcon,
-      disabled: GsnEnabled ? balances.eth === 0 : false,
+      disabled: gsnEnabled ? balances.eth === 0 : false,
     },
     {
       name: 'REP',
@@ -145,7 +141,7 @@ const ConnectDropdown = ({
         zeroStyled: false,
         decimalsRounded: 4,
       }).formattedValue,
-      disabled: GsnEnabled ? balances.rep === 0 : false,
+      disabled: gsnEnabled ? balances.rep === 0 : false,
     },
     {
       name: 'ETH RESERVE',
@@ -159,7 +155,7 @@ const ConnectDropdown = ({
       logo: EthIcon,
       value: reserveEthAmount.formattedValue,
       subValue: ethReserveInDai,
-      disabled: GsnEnabled ? balances.ethNonSafe === 0 : false,
+      disabled: gsnEnabled ? balances.ethNonSafe === 0 : false,
     },
   ];
 

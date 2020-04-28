@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
 import { ButtonsRow, Breakdown } from 'modules/modal/common';
 import { DAI, ETH, REP, ZERO } from 'modules/common/constants';
-import {
-  formatEther,
-  formatRep,
-  formatDai,
-  formatGasCostToEther,
-} from 'utils/format-number';
+import { formatEther, formatRep, formatDai } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { createBigNumber } from 'utils/create-big-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
-import { FormattedNumber, LoginAccount } from 'modules/types';
+import { FormattedNumber } from 'modules/types';
 import { FormDropdown, TextInput } from 'modules/common/form';
 import { CloseButton } from 'modules/common/buttons';
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
-import { ethToDai, displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import {
+  displayGasInDai,
+  getGasInDai,
+} from 'modules/app/actions/get-ethToDai-rate';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { useEffect } from 'react';
 
 interface TransferFormProps {
   closeAction: Function;
@@ -33,30 +33,38 @@ interface TransferFormProps {
     dai: number;
   };
   account: string;
-  GsnEnabled: boolean;
   gasPrice: number;
-}
-
-interface TransferFormState {
-  address: string;
-  currency: string;
-  amount: string;
-  errors: {
-    address: string;
-    amount: string;
-  };
-  relayerGasCosts: BigNumber;
 }
 
 function sanitizeArg(arg) {
   return arg == null || arg === '' ? '' : arg;
 }
 
-export class TransferForm extends Component<
-  TransferFormProps,
-  TransferFormState
-> {
-  state: TransferFormState = {
+const options = [
+  {
+    label: DAI,
+    value: DAI,
+  },
+  {
+    label: ETH,
+    value: ETH,
+  },
+  {
+    label: REP,
+    value: REP,
+  },
+];
+
+export const TransferForm = ({
+  closeAction,
+  transferFunds,
+  transferFundsGasEstimate,
+  fallBackGasCosts,
+  balances,
+  account,
+  gasPrice,
+}: TransferFormProps) => {
+  const [state, setState] = useState({
     relayerGasCosts: createBigNumber(TRANSFER_ETH_GAS_COST),
     address: '',
     currency: ETH,
@@ -65,75 +73,77 @@ export class TransferForm extends Component<
       address: '',
       amount: '',
     },
-  };
+  });
+  const { gsnEnabled } = useAppStatusStore();
 
-  options = [
-    {
-      label: DAI,
-      value: DAI,
-    },
-    {
-      label: ETH,
-      value: ETH,
-    },
-    {
-      label: REP,
-      value: REP,
-    },
-  ];
+  useEffect(() => {
+    const formattedAmount =
+      state.currency === ETH
+        ? formatEther(Number(state.amount) || 0)
+        : formatRep(state.amount || 0);
 
-  dropdownChange = (value: string) => {
-    const { amount } = this.state;
-    this.setState({ currency: value }, () => {
-      if (amount.length) {
-        this.amountChange(amount);
-      }
+    const relayerGasCosts = transferFundsGasEstimate(
+      formattedAmount.fullPrecision,
+      state.currency,
+      state.address ? state.address : account
+    );
+    setState({
+      ...state,
+      relayerGasCosts: createBigNumber(relayerGasCosts),
     });
-  };
+  }, [state.currency]);
 
-  handleMax = () => {
-    const { balances, fallBackGasCosts, GsnEnabled, gasPrice } = this.props;
-    const { currency, relayerGasCosts } = this.state;
+  function addressChange(address: string) {
+    const updatedErrors = state.errors;
+    updatedErrors.address = '';
+    if (address && !isAddress(address)) {
+      updatedErrors.address = 'Address is invalid';
+    }
 
-    const gasEstimate = GsnEnabled
+    if (address === '') {
+      updatedErrors.address = 'Address is required';
+    }
+    setState({ ...state, address, errors: updatedErrors });
+  }
+
+  function handleMax() {
+    const { currency, relayerGasCosts } = state;
+
+    const gasEstimate = gsnEnabled
       ? getGasInDai(relayerGasCosts.multipliedBy(gasPrice))
       : fallBackGasCosts[currency.toLowerCase()];
 
-    const fullAmount = createBigNumber(
-      balances[currency.toLowerCase()]
-    );
-    const valueMinusGas = !GsnEnabled ? fullAmount.minus(createBigNumber(gasEstimate.value)) : fullAmount;
+    const fullAmount = createBigNumber(balances[currency.toLowerCase()]);
+    const valueMinusGas = !gsnEnabled
+      ? fullAmount.minus(createBigNumber(gasEstimate.value))
+      : fullAmount;
     const resolvedValue = valueMinusGas.lt(ZERO) ? ZERO : valueMinusGas;
-    this.amountChange(resolvedValue.toFixed(), false);
-  };
+    amountChange(resolvedValue.toFixed(), false);
+  }
 
-  amountChange = (amount: string, dontCheckMinusGas: boolean = false) => {
-    const {
-      balances,
-      fallBackGasCosts,
-      GsnEnabled,
-      gasPrice,
-    } = this.props;
-    const { relayerGasCosts } = this.state;
+  function amountChange(
+    amount: string,
+    dontCheckMinusGas: boolean = false,
+    currency = state.currency
+  ) {
+    const { errors: updatedErrors, relayerGasCosts } = state;
     const newAmount = convertExponentialToDecimal(sanitizeArg(amount));
     const bnNewAmount = createBigNumber(newAmount || '0');
-    const { errors: updatedErrors, currency } = this.state;
     updatedErrors.amount = '';
     const availableEth = createBigNumber(balances.eth);
     const availableDai = createBigNumber(balances.dai);
     let amountMinusGas = ZERO;
 
-    if (GsnEnabled) {
+    if (gsnEnabled) {
       const gasCost = relayerGasCosts.multipliedBy(gasPrice);
       const relayerGasCostsDAI = getGasInDai(gasCost);
       if (currency === DAI) {
         if (dontCheckMinusGas) {
-          amountMinusGas = availableDai
-          .minus(bnNewAmount)
+          amountMinusGas = availableDai.minus(bnNewAmount);
         } else {
           amountMinusGas = availableDai
-          .minus(bnNewAmount)
-          .minus(createBigNumber(relayerGasCostsDAI.value));
+            .minus(bnNewAmount)
+            .minus(createBigNumber(relayerGasCostsDAI.value));
         }
       } else {
         amountMinusGas = availableDai.minus(
@@ -155,7 +165,7 @@ export class TransferForm extends Component<
     // validation...
     if (newAmount === '' || newAmount === undefined) {
       updatedErrors.amount = 'Quantity is required.';
-      return this.setState({ amount: newAmount, errors: updatedErrors });
+      return setState({ ...state, amount: newAmount, errors: updatedErrors });
     }
 
     if (!isFinite(Number(newAmount))) {
@@ -166,11 +176,7 @@ export class TransferForm extends Component<
       updatedErrors.amount = "Quantity isn't a number.";
     }
 
-    if (
-      bnNewAmount.gt(
-        createBigNumber(balances[currency.toLowerCase()])
-      )
-    ) {
+    if (bnNewAmount.gt(createBigNumber(balances[currency.toLowerCase()]))) {
       updatedErrors.amount = 'Quantity is greater than available funds.';
     }
 
@@ -178,155 +184,108 @@ export class TransferForm extends Component<
       updatedErrors.amount = 'Quantity must be greater than zero.';
     }
 
-    if (GsnEnabled && amountMinusGas.lt(ZERO)) {
+    if (gsnEnabled && amountMinusGas.lt(ZERO)) {
       updatedErrors.amount = 'Not enough DAI available to pay gas cost.';
     }
 
-    if (!GsnEnabled && amountMinusGas.lt(ZERO)) {
+    if (!gsnEnabled && amountMinusGas.lt(ZERO)) {
       updatedErrors.amount = 'Not enough ETH available to pay gas cost.';
     }
 
-    this.setState({ amount: newAmount, errors: updatedErrors });
-  };
-
-  async componentDidUpdate(prevProps, prevState) {
-    if (this.state.currency && this.state.currency !== prevState.currency) {
-      const formattedAmount =
-        this.state.currency === ETH
-          ? formatEther(Number(this.state.amount) || 0)
-          : formatRep(this.state.amount || 0);
-
-      const relayerGasCosts = await this.props.transferFundsGasEstimate(
-        formattedAmount.fullPrecision,
-        this.state.currency,
-        this.state.address
-          ? this.state.address
-          : this.props.account
-      );
-      this.setState({
-        relayerGasCosts,
-      });
-    }
+    setState({ ...state, currency, amount: newAmount, errors: updatedErrors });
   }
 
-  addressChange = (address: string) => {
-    const { errors: updatedErrors } = this.state;
-    updatedErrors.address = '';
-    if (address && !isAddress(address)) {
-      updatedErrors.address = 'Address is invalid';
-    }
+  const { relayerGasCosts, amount, currency, address, errors } = state;
+  const { amount: errAmount, address: errAddress } = errors;
+  const isValid =
+    errAmount === '' && errAddress === '' && amount.length && address.length;
 
-    if (address === '') {
-      updatedErrors.address = 'Address is required';
-    }
-    this.setState({ address, errors: updatedErrors });
-  };
+  let formattedAmount = formatEther(amount || 0);
 
-  render() {
-    const {
-      fallBackGasCosts,
-      transferFunds,
-      balances,
-      closeAction,
-      GsnEnabled,
-      gasPrice,
-    } = this.props;
-    const { relayerGasCosts, amount, currency, address, errors } = this.state;
-    const { amount: errAmount, address: errAddress } = errors;
-    const isValid =
-      errAmount === '' && errAddress === '' && amount.length && address.length;
-
-    let formattedAmount = formatEther(amount || 0);
-
-    if (currency === DAI) {
-      formattedAmount = formatDai(amount || 0);
-    } else if (currency === REP) {
-      formattedAmount = formatRep(amount || 0);
-    }
-
-    const gasEstimate = GsnEnabled
-      ? displayGasInDai(relayerGasCosts.multipliedBy(gasPrice))
-      : fallBackGasCosts[currency.toLowerCase()];
-
-    const buttons = [
-      {
-        text: 'Send',
-        action: () =>
-          transferFunds(formattedAmount.fullPrecision, currency, address),
-        disabled: !isValid,
-      },
-      {
-        text: 'Cancel',
-        action: closeAction,
-      },
-    ];
-    const breakdown = [
-      {
-        label: 'Send',
-        value: formattedAmount,
-      },
-      {
-        label: 'Transaction Fee',
-        value: gasEstimate,
-      },
-    ];
-
-    return (
-      <div className={Styles.WithdrawForm}>
-        <header>
-          <div>
-            <CloseButton action={() => closeAction()} />
-          </div>
-          <div>
-            <h1>Transfer funds</h1>
-            <h2>Transfer funds to another address</h2>
-          </div>
-        </header>
-
-        <main>
-          <div className={Styles.GroupedForm}>
-            <div>
-              <label htmlFor='recipient'>Recipient address</label>
-              <TextInput
-                type='text'
-                value={address}
-                placeholder='0x...'
-                onChange={this.addressChange}
-                errorMessage={errors.address.length > 0 ? errors.address : ''}
-              />
-            </div>
-            <div>
-              <div>
-                <label htmlFor='currency'>Currency</label>
-                <span>
-                  Available: {balances[currency.toLowerCase()]}
-                </span>
-              </div>
-              <FormDropdown
-                id='currency'
-                options={this.options}
-                defaultValue={currency}
-                onChange={this.dropdownChange}
-              />
-            </div>
-            <div>
-              <label htmlFor='amount'>Amount</label>
-              <button onClick={this.handleMax}>MAX</button>
-              <TextInput
-                type='number'
-                value={amount}
-                placeholder='0.00'
-                onChange={this.amountChange}
-                errorMessage={
-                  errors.amount && errors.amount.length > 0 ? errors.amount : ''
-                }
-              />
-            </div>
-          </div>
-          <Breakdown rows={breakdown} />
-        </main>
-        <ButtonsRow buttons={buttons} />
-      </div>
-    );
+  if (currency === DAI) {
+    formattedAmount = formatDai(amount || 0);
+  } else if (currency === REP) {
+    formattedAmount = formatRep(amount || 0);
   }
-}
+  const gasEstimate = gsnEnabled
+    ? displayGasInDai(relayerGasCosts.multipliedBy(gasPrice))
+    : fallBackGasCosts[currency.toLowerCase()];
+
+  const buttons = [
+    {
+      text: 'Send',
+      action: () =>
+        transferFunds(formattedAmount.fullPrecision, currency, address),
+      disabled: !isValid,
+    },
+    {
+      text: 'Cancel',
+      action: closeAction,
+    },
+  ];
+  const breakdown = [
+    {
+      label: 'Send',
+      value: formattedAmount,
+    },
+    {
+      label: 'Transaction Fee',
+      value: gasEstimate,
+    },
+  ];
+  return (
+    <div className={Styles.WithdrawForm}>
+      <header>
+        <div>
+          <CloseButton action={() => closeAction()} />
+        </div>
+        <div>
+          <h1>Transfer funds</h1>
+          <h2>Transfer funds to another address</h2>
+        </div>
+      </header>
+
+      <main>
+        <div className={Styles.GroupedForm}>
+          <div>
+            <label htmlFor="recipient">Recipient address</label>
+            <TextInput
+              type="text"
+              value={address}
+              placeholder="0x..."
+              onChange={addressChange}
+              errorMessage={errors.address.length > 0 ? errors.address : ''}
+            />
+          </div>
+          <div>
+            <div>
+              <label htmlFor="currency">Currency</label>
+              <span>Available: {balances[currency.toLowerCase()]}</span>
+            </div>
+            <FormDropdown
+              id="currency"
+              options={options}
+              defaultValue={currency}
+              onChange={currency => amountChange(state.amount, false, currency)}
+            />
+          </div>
+          <div>
+            <label htmlFor="amount">Amount</label>
+            <button onClick={handleMax}>MAX</button>
+            <TextInput
+              type="number"
+              value={amount}
+              placeholder="0.00"
+              onChange={amountChange}
+              errorMessage={
+                errors.amount && errors.amount.length > 0 ? errors.amount : ''
+              }
+            />
+          </div>
+        </div>
+        <Breakdown rows={breakdown} />
+      </main>
+      <ButtonsRow buttons={buttons} />
+    </div>
+  );
+};

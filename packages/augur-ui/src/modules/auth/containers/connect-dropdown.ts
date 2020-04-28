@@ -42,8 +42,6 @@ const mapStateToProps = (state: AppState) => {
       state.loginAccount &&
       state.loginAccount.meta,
     balances: state.loginAccount && state.loginAccount.balances,
-    GsnEnabled: state.appStatus.gsnEnabled,
-    ethToDaiRate: state.appStatus.ethToDaiRate,
     reserveEthAmount,
   };
 };

@@ -1,8 +1,5 @@
 import {
   UPDATE_APP_STATUS,
-  ETH_TO_DAI_RATE,
-  REP_TO_DAI_RATE,
-  GSN_ENABLED,
   WALLET_STATUS,
   Ox_STATUS,
 } from 'modules/app/actions/update-app-status';
@@ -10,9 +7,6 @@ import { RESET_STATE } from 'modules/app/actions/reset-state';
 import { AppStatus, BaseAction } from 'modules/types';
 
 const DEFAULT_STATE = {
-  [ETH_TO_DAI_RATE]: null,
-  [REP_TO_DAI_RATE]: null,
-  [GSN_ENABLED]: false,
   [WALLET_STATUS]: null,
   [Ox_STATUS]: null,
 };

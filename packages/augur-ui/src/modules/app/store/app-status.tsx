@@ -7,9 +7,18 @@ const AppStatusContext = createContext({
   actions: STUBBED_APP_STATUS_ACTIONS,
 });
 
+export const AppStatusActions = {
+  isReady: false,
+  actions: STUBBED_APP_STATUS_ACTIONS,
+};
+
 export const AppStatusProvider = ({ children }) => {
   const state = useAppStatus();
-
+  if (!AppStatusActions.isReady) {
+    AppStatusActions.isReady = true;
+    AppStatusActions.actions = state.actions;
+    Object.freeze(AppStatusActions);
+  }
   return (
     <AppStatusContext.Provider value={state}>
       {children}
