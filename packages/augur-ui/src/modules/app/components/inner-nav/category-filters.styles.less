@@ -218,3 +218,28 @@
 .disabled {
   pointer-events: none;
 }
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .CategoryFilters {
+    > .CategoriesGroup:first-of-type {  
+      > div {
+        height: @size-21;
+      }
+    }
+
+    > .CategoriesGroup:nth-of-type(2) {
+      margin-top: @size-24;
+    }
+  }
+
+  .CategoriesGroup {
+    > span {
+      .mono-14-bold;
+    }
+
+    margin-bottom: 0;
+    padding-bottom: @size-12;
+    border-bottom: @size-1 solid var(--color-secondary-action-outline);
+  }
+}

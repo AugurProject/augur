@@ -322,6 +322,10 @@
         }
       }
     }
+
+    > span {
+      color: var(--color-primary-text);
+    }
   }
 
   &.MultiSelect {
@@ -336,6 +340,19 @@
 
   &.Disabled {
     pointer-events: none;
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .RadioBar {
+    &.Checked {
+      > span {
+        .text-14-bold;
+
+        color: var(--color-primary-text);
+      }
+    }
   }
 }
 
@@ -551,6 +568,14 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .RadioBarGroup {
+    > div {
+      > h5,
+      > span {
+        .text-14;
+        line-height: @size-20;
+      }
+    }
+    
     &.Light {
       > div {
         background: transparent;
@@ -2249,7 +2274,6 @@ div.error > div > div > div > div > input {
   }
 }
 
-// Used in category-filters.styles.less
 .CategoryRow {
   display: flex;
   flex-direction: row;
@@ -2364,12 +2388,28 @@ div.error > div > div > div > div > input {
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .CategoryRow {
-    > span:first-of-type {
-      color: var(--color-primary-text);
+    margin: @size-12 0;
 
-      > svg > path {
-        stroke: var(--color-primary-text);
+    > span:first-of-type {
+      .text-14;
+
+      color: var(--color-secondary-text);
+
+      > svg {
+        width: @size-16;
+        height: @size-16;
+
+        > path {
+          stroke: var(--color-primary-text);
+        }
       }
+    }
+
+    > span:last-of-type {
+      .text-10;
+
+      min-width: @size-25;
+      height: @size-21;
     }
 
     &.loading {
