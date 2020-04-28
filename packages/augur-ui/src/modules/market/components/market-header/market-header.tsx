@@ -5,19 +5,12 @@ import {
   ChevronUp,
   TwoArrowsOutline,
   LeftChevron,
-  CopyAlternateIcon,
 } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import MarketHeaderBar from 'modules/market/containers/market-header-bar';
 import { BigNumber } from 'bignumber.js';
 import Styles from 'modules/market/components/market-header/market-header.styles.less';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
-import {
-  WordTrail,
-  MarketTypeLabel,
-  TemplateShield,
-  RedFlag,
-} from 'modules/common/labels';
 import makeQuery from 'modules/routes/helpers/make-query';
 import {
   CATEGORY_PARAM_NAME,
@@ -28,16 +21,13 @@ import {
   REPORTING_STATE,
 } from 'modules/common/constants';
 import MarketHeaderReporting from 'modules/market/containers/market-header-reporting';
-import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
-import { FavoritesButton } from 'modules/common/buttons';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { MarketData, QueryEndpoints, TextObject } from 'modules/types';
 import Clipboard from 'clipboard';
 import { TutorialPopUp } from 'modules/market/components/common/tutorial-pop-up';
 import MarketTitle from 'modules/market/containers/market-title';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
-import { MARKET_PAGE } from 'services/analytics/helpers';
-import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
+import { HeadingBar } from '../common/common';
 
 const OVERFLOW_DETAILS_LENGTH = 48; // in px, overflow limit to trigger MORE details
 
@@ -227,15 +217,6 @@ export default class MarketHeader extends Component<
       details += warningText;
     }
 
-    const process = arr =>
-      arr.filter(Boolean).map(label => ({
-        label,
-        onClick: () => {
-          this.gotoFilter('category', label);
-        },
-      }));
-
-    const categoriesWithClick = process(market.categories) || [];
     const bigTitle =
       !!this.refTitle && this.refTitle.firstChild.scrollHeight > 64;
     const expandedDetails = detailsTooLong && showReadMore;
@@ -269,53 +250,25 @@ export default class MarketHeader extends Component<
               })}
               style={containerStyle}
             >
-              <div
-                className={classNames(Styles.HeadingBar, {
-                  [Styles.ExpandedHeading]: expandedDetails,
-                })}
-              >
-                <button
-                  className={Styles.BackButton}
-                  onClick={() => history.goBack()}
-                >
-                  {LeftChevron} Back
-                </button>
-                {isScalar && <MarketTypeLabel marketType={marketType} />}
-                <RedFlag market={market} />
-                {market.isTemplate && <TemplateShield market={market} />}
-                <WordTrail items={[...categoriesWithClick]} />
-                <SocialMediaButtons
-                  listView={false}
-                  marketAddress={market.id}
-                  marketDescription={description}
-                />
-                <div
-                  id="copy_marketURL"
-                  title="Copy Market link"
-                  data-clipboard-text={`${window.location.href}&${AFFILIATE_NAME}=${userAccount}`}
-                  onClick={() => {
-                    marketLinkCopied(market.id, MARKET_PAGE);
-                    this.setState({ showCopied: true }, () => {
-                      setTimeout(
-                        () => this.setState({ showCopied: false }),
-                        4000
-                      );
-                    });
-                  }}
-                  className={Styles.CopyButton}
-                >
-                  {CopyAlternateIcon}
-                  {showCopied && <div>Copied</div>}
-                </div>
-                {toggleFavorite && (
-                  <FavoritesButton
-                    action={() => this.addToFavorites()}
-                    isFavorite={isFavorite}
-                    hideText
-                    disabled={!isLogged}
-                  />
-                )}
-              </div>
+              <HeadingBar
+                market={market}
+                expandedDetails={expandedDetails}
+                history={history}
+                addToFavorites={this.addToFavorites}
+                gotoFilter={this.gotoFilter}
+                isLogged={isLogged}
+                isFavorite={isFavorite}
+                userAccount={userAccount}
+                showCopied={showCopied}
+                setShowCopied={() =>
+                  this.setState({ showCopied: true }, () => {
+                    setTimeout(
+                      () => this.setState({ showCopied: false }),
+                      4000
+                    );
+                  })
+                }
+              />
               <div
                 ref={title => {
                   this.refTitle = title;
@@ -363,9 +316,7 @@ export default class MarketHeader extends Component<
                             this.toggleReadMore();
                           }}
                         >
-                          {!showReadMore
-                            ? ChevronDown
-                            : ChevronUp}
+                          {!showReadMore ? ChevronDown : ChevronUp}
                         </button>
                       )}
                     </div>
@@ -410,9 +361,7 @@ export default class MarketHeader extends Component<
                       this.toggleShowProperties();
                     }}
                   >
-                    {!showProperties
-                      ? ChevronDown
-                      : ChevronUp}
+                    {!showProperties ? ChevronDown : ChevronUp}
                   </button>
                 )}
               </div>
@@ -438,7 +387,7 @@ export default class MarketHeader extends Component<
               className={Styles.BackButton}
               onClick={() => history.goBack()}
             >
-              {LeftChevron} Back
+              {LeftChevron} <span>Back</span>
             </button>
           )}
           <button
