@@ -15,7 +15,7 @@
 
   > span:first-of-type {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
 
     > label {
       display: inline-block;
@@ -221,6 +221,33 @@
   }
 }
 
+.PropertyLabel,
+.TimeLabel {
+  &.Large {
+    > span:first-of-type {
+      .text-12-medium;
+
+      text-transform: uppercase;
+    }
+
+    > span:nth-of-type(2) {
+      .text-20-bold;
+    }
+
+    > span:nth-of-type(3) {
+      .text-12;
+    }
+  }
+}
+
+.TimeLabel {
+  &.Large {
+    > span:nth-of-type(2) {
+      .text-16-bold;
+    }
+  }
+}
+
 .LinearPropertyLabelPercent {
   align-items: flex-start;
   display: flex;
@@ -385,8 +412,8 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .LinearPropertyLabel {
     > svg > line {
       stroke: var(--color-dark-text);
@@ -395,10 +422,10 @@
     &.Highlight {
       > span:first-of-type {
         .mono-10-semi-bold;
-  
+
         color: var(--color-secondary-text);
       }
-  
+
       > span:nth-of-type(2),
       > span:last-of-type,
       > span:nth-of-type(2) > label,
@@ -407,7 +434,7 @@
 
         color: var(--color-primary-text);
       }
-    }  
+    }
   }
 }
 
@@ -533,8 +560,8 @@ div.LinearPropertyViewTransaction {
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .MarketTypeLabel {
     &.MarketScalarLabel {
       .mono-10-semi-bold;
@@ -590,9 +617,8 @@ div.LinearPropertyViewTransaction {
   color: var(--color-primary-action);
 }
 
-
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .MarketStatus {
     .mono-10-semi-bold;
 
@@ -602,7 +628,7 @@ div.LinearPropertyViewTransaction {
   }
 
   .MarketStatus_open {
-    color: var(--color-secondary-text)
+    color: var(--color-secondary-text);
   }
 
   .MarketStatus_reporting {
@@ -1001,7 +1027,7 @@ span.PendingLabel {
   padding: @size-9 0;
   text-transform: uppercase;
 
-  @media @breakpoint-mobile{
+  @media @breakpoint-mobile {
     padding-top: @size-6;
   }
 
@@ -1141,9 +1167,7 @@ span.PendingLabel {
 }
 
 .YellowTemplate {
-  .Template 
-
-  > svg {
+  .Template > svg {
     > g {
       > path:first-of-type {
         fill: var(--color-highlight-template-text);
@@ -1157,11 +1181,11 @@ span.PendingLabel {
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   label.RedFlag {
     .text-10-semi-bold;
-    
+
     align-items: center;
     border-radius: @size-4;
     background: var(--color-resolved-10);
@@ -1172,7 +1196,7 @@ span.PendingLabel {
   }
 
   .MarketLabel {
-    &.loading {  
+    &.loading {
       > div:last-of-type {
         > span svg {
           LinearGradient > stop {
@@ -1191,11 +1215,11 @@ span.PendingLabel {
     &_positive {
       color: var(--color-open);
     }
-  
+
     &_negative {
       color: var(--color-resolved);
     }
-  
+
     &_neutral {
       color: var(--color-secondary-text);
     }
@@ -1213,17 +1237,17 @@ span.PendingLabel {
       > svg > path:nth-child(1) {
         fill: var(--color-open);
       }
-  
+
       > svg > path:nth-child(2) {
         stroke: var(--color-open);
       }
     }
-  
+
     &_negative {
       > svg > path:nth-child(1) {
         fill: var(--color-resolved);
       }
-  
+
       > svg > path:nth-child(2) {
         stroke: var(--color-resolved);
       }
@@ -1232,7 +1256,7 @@ span.PendingLabel {
 }
 
 .LabelWithTooltip {
-  > span > label[class*="TooltipHint"] {
+  > span > label[class*='TooltipHint'] {
     display: inline-block;
     margin-bottom: 0;
   }
@@ -1268,7 +1292,6 @@ span.PendingLabel {
     }
   }
 }
-
 
 .StatusErrorMessage {
   display: flex;

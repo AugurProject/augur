@@ -103,6 +103,7 @@ export interface PropertyLabelProps {
   label: string;
   value: string;
   hint?: React.ReactNode;
+  large?: boolean;
 }
 
 export interface LinearPropertyLabelProps {
@@ -236,6 +237,7 @@ interface TimeLabelProps {
   time: DateFormattedObject;
   showLocal?: boolean;
   hint?: React.ReactNode;
+  large?: boolean;
 }
 
 interface CountdownLabelProps {
@@ -390,8 +392,8 @@ export const DataArchivedLabel = ({ label }: DataArchivedProps) => {
   );
 };
 
-export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => (
-  <div className={Styles.TimeLabel}>
+export const TimeLabel = ({ label, time, showLocal, hint, large }: TimeLabelProps) => (
+  <div className={classNames(Styles.TimeLabel, {[Styles.Large]: large})}>
     <span>
       {label}
       {hint && (
@@ -758,22 +760,22 @@ export const InvalidLabel = ({
   );
 };
 
-export const PropertyLabel = (props: PropertyLabelProps) => (
-  <div className={Styles.PropertyLabel}>
+export const PropertyLabel = ({large, label, hint, value}: PropertyLabelProps) => (
+  <div className={classNames(Styles.PropertyLabel, {[Styles.Large]: large})}>
     <span>
-      {props.label}
-      {props.hint && (
+      {label}
+      {hint && (
         <>
           <label
             className={TooltipStyles.TooltipHint}
             data-tip
-            data-for={`tooltip-${props.label.replace(' ', '-')}`}
+            data-for={`tooltip-${label.replace(' ', '-')}`}
             data-iscapture={true}
           >
             {QuestionIcon}
           </label>
           <ReactTooltip
-            id={`tooltip-${props.label.replace(' ', '-')}`}
+            id={`tooltip-${label.replace(' ', '-')}`}
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="right"
@@ -781,12 +783,12 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
             event="mouseover mouseenter"
             eventOff="mouseleave mouseout scroll mousewheel blur"
           >
-            {props.hint}
+            {hint}
           </ReactTooltip>
         </>
       )}
     </span>
-    <span>{props.value}</span>
+    <span>{value}</span>
   </div>
 );
 
