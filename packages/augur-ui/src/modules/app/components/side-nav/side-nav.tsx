@@ -5,15 +5,15 @@ import classNames from 'classnames';
 
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
-import ConnectAccount from 'modules/auth/containers/connect-account';
-import { LogoutIcon, PlusCircleIcon } from 'modules/common/icons';
-import { NavMenuItem, AccountBalances } from 'modules/types';
+import { LogoutIcon } from 'modules/common/icons';
+import { NavMenuItem, AccountBalances, CoreStats } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
-import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
+import { SecondaryButton, ProcessingButton, PrimaryButton } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { helpIcon, Chevron, Dot } from 'modules/common/icons';
 import { MODAL_ADD_FUNDS, MIGRATE_FROM_LEG_REP_TOKEN, TRANSACTIONS, CREATEAUGURWALLET } from 'modules/common/constants';
+import { Stats } from '../top-bar';
 
 interface SideNavProps {
   defaultMobileClick: Function;
@@ -33,6 +33,8 @@ interface SideNavProps {
   updateModal: Function;
   showCreateAccountButton: boolean;
   createFundedGsnWallet: Function;
+  restoredAccount: boolean;
+  stats: CoreStats;
 }
 
 const SideNav = ({
@@ -52,7 +54,9 @@ const SideNav = ({
   updateConnectionTray,
   updateModal,
   showCreateAccountButton,
-  createFundedGsnWallet
+  createFundedGsnWallet,
+  stats,
+  restoredAccount
 }: SideNavProps) => {
   useEffect(() => {
     if (isHelpMenuOpen) {
@@ -76,7 +80,7 @@ const SideNav = ({
             updateHelpMenuState={updateHelpMenuState}
           />
         )}
-        <ConnectAccount />
+        <Stats isLogged={isLogged} stats={stats} restoredAccount={restoredAccount} />
       </div>
       <div className={Styles.SideNav__container}>
         <div>
@@ -88,10 +92,9 @@ const SideNav = ({
           >
             {isHelpMenuOpen && <HelpMenuList />}
             {isLogged && (
-              <SecondaryButton
+              <PrimaryButton
                 action={() => updateModal({ type: MODAL_ADD_FUNDS })}
                 text="Add Funds"
-                icon={PlusCircleIcon}
               />
             )}
             {accessFilteredMenu.map((item, idx) => (

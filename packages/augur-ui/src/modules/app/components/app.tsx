@@ -40,6 +40,7 @@ import {
   LoginAccount,
   Notification,
   AccountBalances,
+  CoreStats,
 } from 'modules/types';
 import ForkingBanner from 'modules/reporting/containers/forking-banner';
 import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
@@ -73,6 +74,7 @@ interface AppProps {
   sdkEndpoint: string;
   useWeb3Transport: boolean;
   logout: Function;
+  stats: CoreStats;
   sidebarStatus: {
     mobileMenuState: number;
     isAlertsVisible: boolean;
@@ -378,6 +380,7 @@ export default class AppView extends Component<AppProps> {
       createFundedGsnWallet,
       showCreateAccountButton,
       showMigrateRepButton,
+      stats
     } = this.props;
     this.sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
@@ -440,6 +443,8 @@ export default class AppView extends Component<AppProps> {
 
               {/* HIDDEN ON DESKTOP */}
               <SideNav
+                restoredAccount={restoredAccount}
+                stats={stats}
                 showNav={
                   sidebarStatus.mobileMenuState ===
                   MOBILE_MENU_STATES.SIDEBAR_OPEN

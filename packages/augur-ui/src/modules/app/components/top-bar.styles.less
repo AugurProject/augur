@@ -18,8 +18,8 @@
     height: 100%;
 
     @media @breakpoint-mobile {
-      flex: 0;
       padding: 0;
+      position: relative;
     }
 
     > button {
@@ -28,6 +28,12 @@
 
     > button[class*="SecondaryButton"] {
       margin-left: @size-24;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    > div[class*='statsContainer'] {
+      display: none;
     }
   }
 }
@@ -45,11 +51,7 @@
   }
 
   @media @breakpoint-mobile {
-    border: 0;
-    display: flex;
-    flex: 2;
-    margin-left: 2.875rem;
-    padding: 0;
+    display: none;
   }
 }
 
@@ -66,10 +68,9 @@
     padding: @size-6 @size-20;
 
     @media @breakpoint-mobile {
-      padding: @size-3 @size-3 @size-12;
+      padding: 0;
     }
-
-
+    
     > span:first-of-type {
       display: flex;
       justify-content: center;
