@@ -53,18 +53,21 @@ export function processRows(
         : MOCK_FUTURES_DATA;
     rows = rows
       .filter(data => {
+        const {
+          reportingState
+        } = data;
         const marketStatusLabel = MY_BETS_MARKET_STATUS[marketStatus].label;
         if (marketStatusLabel === MARKET_OPEN) {
-          return data.reportingState === REPORTING_STATE.PRE_REPORTING;
+          return reportingState === REPORTING_STATE.PRE_REPORTING;
         } else if (marketStatusLabel === MARKET_REPORTING) {
           return (
-            data.reportingState === REPORTING_STATE.DESIGNATED_REPORTING ||
-            data.reportingState === REPORTING_STATE.OPEN_REPORTING ||
-            data.reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW ||
-            data.reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE
+            reportingState === REPORTING_STATE.DESIGNATED_REPORTING ||
+            reportingState === REPORTING_STATE.OPEN_REPORTING ||
+            reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW ||
+            reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE
           );
         } else if (marketStatusLabel === MARKET_CLOSED) {
-          return data.reportingState === REPORTING_STATE.FINALIZED;
+          return reportingState === REPORTING_STATE.FINALIZED;
         } else {
           return true;
         }
