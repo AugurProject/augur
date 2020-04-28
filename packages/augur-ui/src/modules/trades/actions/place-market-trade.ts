@@ -11,7 +11,7 @@ import { addPendingOrder, updatePendingOrderStatus, generatePendingOrderId } fro
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { getOutcomeNameWithOutcome } from "utils/get-outcome";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { Ox_STATUS } from "modules/app/actions/update-app-status";
+import { AppStatusState } from 'modules/app/store/app-status';
 
 export const placeMarketTrade = ({
   marketId,
@@ -20,9 +20,10 @@ export const placeMarketTrade = ({
   doNotCreateOrders,
 }: any) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   if (!marketId) return null;
-  const { marketInfos, loginAccount, blockchain, appStatus } = getState();
+  const { marketInfos, loginAccount, blockchain } = getState();
   // numFills is 0 and zerox mesh client has error auto fail processing order label
-  const autoFailOrder = appStatus[Ox_STATUS] === ZEROX_STATUSES.ERROR;
+  const { zeroXStatus, gsnEnabled } = AppStatusState.get(); 
+  const autoFailOrder = zeroXStatus === ZEROX_STATUSES.ERROR;
   const market: Getters.Markets.MarketInfo = marketInfos[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
@@ -33,7 +34,7 @@ export const placeMarketTrade = ({
   // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
   let needsApproval = false;
 
-  if (!appStatus.gsnEnabled) {
+  if (!gsnEnabled) {
     needsApproval = createBigNumber(loginAccount.allowance).lt(tradeInProgress.totalCost.value);
   }
 

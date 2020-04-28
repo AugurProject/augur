@@ -11,6 +11,7 @@ export const Ox_ENABLED = 'zeroXEnabled';
 export const GSN_ENABLED = 'gsnEnabled';
 export const ETH_TO_DAI_RATE = 'ethToDaiRate';
 export const REP_TO_DAI_RATE = 'repToDaiRate';
+export const Ox_STATUS = 'zeroXStatus';
 
 export const DEFAULT_APP_STATUS = {
   [THEME]: THEMES.TRADING,
@@ -24,6 +25,7 @@ export const DEFAULT_APP_STATUS = {
   [GSN_ENABLED]: false,
   [ETH_TO_DAI_RATE]: null,
   [REP_TO_DAI_RATE]: null,
+  [Ox_STATUS]: null,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -39,6 +41,7 @@ export const APP_STATUS_ACTIONS = {
   SET_GSN_ENABLED: 'SET_GSN_ENABLED',
   SET_ETH_TO_DAI_RATE: 'SET_ETH_TO_DAI_RATE',
   SET_REP_TO_DAI_RATE: 'SET_REP_TO_DAI_RATE',
+  SET_Ox_STATUS: 'SET_Ox_STATUS',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -54,4 +57,5 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setGSNEnabled: isGSNEnabled => {},
   setEthToDaiRate: ethToDaiRate => {},
   setRepToDaiRate: repToDaiRate => {},
+  setOxStatus: OxStatus => {},
 };

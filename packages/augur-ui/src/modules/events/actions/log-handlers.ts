@@ -73,9 +73,10 @@ import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
-import { updateAppStatus, WALLET_STATUS, Ox_STATUS } from 'modules/app/actions/update-app-status';
+import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
+import { AppStatusActions } from 'modules/app/store/app-status';
 
 const handleAlert = (
   log: any,
@@ -170,7 +171,7 @@ export const handleZeroStatusUpdated = (status) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(updateAppStatus(Ox_STATUS, status))
+  AppStatusActions.actions.setOxStatus(status);
 }
 
 export const handleSDKReadyEvent = () => (
