@@ -14,6 +14,8 @@ import { Action } from 'redux';
 import { AppState } from 'appStore';
 import { connect } from 'react-redux';
 import { page } from 'services/analytics/helpers';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { THEMES } from 'modules/common/constants';
 
 const mapStateToProps = (state: AppState) => ({});
 
@@ -25,9 +27,11 @@ const getLoggedInAccountFromLocalStorage = () => {
   let loggedInAccount = null;
   if (window.localStorage && window.localStorage.getItem) {
     try {
-      const loggedInUser = JSON.parse(window.localStorage.getItem('loggedInUser'));
+      const loggedInUser = JSON.parse(
+        window.localStorage.getItem('loggedInUser')
+      );
       loggedInAccount = loggedInUser && loggedInUser.address;
-    } catch(error) {
+    } catch (error) {
       // swallow
       loggedInAccount = null;
     }
@@ -38,10 +42,19 @@ const getLoggedInAccountFromLocalStorage = () => {
 const Routes = p => {
   const loggedInAccount = getLoggedInAccountFromLocalStorage();
 
+  const { theme } = useAppStatusStore();
+
   return (
     <Switch>
       <Route path={makePath(VIEWS.MARKETS)} component={COMPONENTS.Markets} />
-      <Route path={makePath(VIEWS.MARKET)} component={COMPONENTS.Market} />
+      {theme === THEMES.SPORTS ? (
+        <Route
+          path={makePath(VIEWS.MARKET)}
+          component={COMPONENTS.BettingMarket}
+        />
+      ) : (
+        <Route path={makePath(VIEWS.MARKET)} component={COMPONENTS.Market} />
+      )}
       <Route
         path={makePath(VIEWS.LANDING_PAGE)}
         component={COMPONENTS.MarketsLandingPage}

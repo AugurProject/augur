@@ -332,7 +332,7 @@ export const BackButton = (props: DefaultButtonProps) => (
     onClick={e => props.action(e)}
     disabled={props.disabled}
   >
-    {BackIcon} back
+    {BackIcon} <span>back</span>
   </button>
 );
 

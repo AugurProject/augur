@@ -11,6 +11,8 @@ export { default as Account } from "modules/account/containers/account-view";
 
 export { default as Market } from "modules/market/containers/market-view";
 
+export { default as BettingMarket } from "modules/market/components/market-view/betting-market-view";
+
 export {
   default as Portfolio
 } from "modules/portfolio/components/portfolio-view/portfolio-view";
