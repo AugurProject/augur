@@ -324,15 +324,6 @@ export default class MarketsView extends Component<
           <FilterDropDowns />
         </div>
 
-        <FilterTags
-          maxLiquiditySpread={this.props.maxLiquiditySpread}
-          maxFee={this.props.maxFee}
-          removeFeeFilter={this.props.removeFeeFilter}
-          removeLiquiditySpreadFilter={this.props.removeLiquiditySpreadFilter}
-          updateQuery={(param, value) =>
-            updateQuery(param, value, this.props.location, this.props.history)
-          }
-        />
         <FilterNotice
           show={this.props.includeInvalidMarkets === 'show'}
           showDismissButton={true}
