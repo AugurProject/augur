@@ -8,7 +8,7 @@
 
 ## Contracts
 
-* [Contracts Overview](contracts/untitled.md)
+* [Contracts Overview](contracts/overview.md)
 * [Index](contracts/index.md)
 
 ## SDK
