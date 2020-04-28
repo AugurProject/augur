@@ -37,123 +37,6 @@
       min-height: 149px;
       width: 100%;
 
-      // Used in Betting UI
-      > div.HeadingBar {
-        align-items: center;
-        display: flex;
-        flex: 1;
-        min-height: @size-20;
-        max-height: @size-20;
-        padding-left: @size-16;
-        padding-right: @size-8;
-        margin: @size-8 0 @size-4;
-
-        @media @breakpoint-mobile {
-          min-height: @size-40;
-          max-height: @size-40;
-          display: grid;
-          grid-template-columns: min-content 1fr @size-16 repeat(3, @size-24);
-          grid-template-rows: @size-20 @size-20;
-          padding-left: @size-12;
-          padding-right: @size-12;
-
-          > div[class*="WordTrail"] {
-            grid-column: 1 / span 6;
-            grid-row: 2;
-          }
-
-          > button[id="facebookButton"] {
-            grid-column: 3 / span 1;
-          }
-          > button[id="twitterButton"] {
-            grid-column: 4 / span 1;
-          }
-
-          > div[class*="CopyButton"] {
-            grid-column: 5 / span 1;
-          }
-
-          > button[class*="FavoriteButton"] {
-            grid-column: 6 / span 1;
-          }
-        }
-
-        > div[class*="WordTrail"] > button[class*="WordTrailButton"] {
-          .mono-10-bold;
-        }
-
-        > span {
-          .mono-10-bold;
-
-          margin: 0 @size-8 0 0;
-          height: fit-content;
-        }
-
-        > div[class*="CopyButton"],
-        > button:not([class*="BackButton"]) {
-          height: @size-16;
-          margin-left: @size-8;
-          width: @size-16;
-        }
-
-        > label {
-          height: @size-16;
-          margin-bottom: 0;
-          margin-right: @size-8;
-          max-width: fit-content;
-        }
-
-        > button[id="facebookButton"] {
-          justify-content: flex-end;
-          margin-left: auto;
-
-          > svg {
-            height: @size-16;
-            width: @size-16;
-
-            > path:first-of-type {
-              fill: var(--color-facebook);
-            }
-
-            > path:last-of-type {
-              fill: var(--color-facebook-2);
-            }
-          }
-        }
-
-        > button[id="twitterButton"] {
-          > svg {
-            height: @size-16;
-            width: @size-16;
-
-            > path:first-of-type {
-              fill: var(--color-twitter);
-            }
-
-            > path:last-of-type {
-              fill: var(--color-twitter-2);
-            }
-          }
-        }
-
-        > div[class*="CopyButton"],
-        > button:last-of-type {
-          height: @size-16;
-          margin-left: @size-8;
-
-          > svg {
-            height: @size-16;
-            width: @size-16;
-            cursor: pointer;
-            fill: none;
-          }
-        }
-
-        > div[class*="CopyButton"] > svg > path {
-          fill: var(--color-primary-text);
-        }
-      }
-
       > div.MarketDetails {
         display: flex;
         flex: 1 100%;
@@ -305,73 +188,6 @@ div.Toggle {
   }
 }
 
-.BackButton {
-  .mono-10;
-
-  align-items: center;
-  color: var(--color-primary-text);
-  display: flex;
-  text-transform: uppercase;
-  margin-right: @size-10;
-
-  span {
-    color: var(--color-primary-text);
-  }
-
-  svg {
-    height: @size-6;
-    width: @size-10;
-
-    path {
-      stroke: var(--color-primary-text);
-    }
-  }
-}
-
-.CopyButton {
-  position: relative;
-
-  > div {
-    .text-12-medium;
-
-    background: var(--color-secondary-action);
-    border: @size-1 solid var(--color-secondary-action-outline);
-    color: var(--color-primary-text);
-    border-radius: @border-radius-default;
-    padding: @size-4;
-    position: absolute;
-    top: 125%;
-    left: -@size-16;
-    z-index: @mask-modal;
-    max-width: @size-52;
-
-    &:before {
-      content: '';
-      position: absolute;
-      top: -@size-5;
-      left: @size-21;
-      margin: 0;
-      border-top: 0;
-      border-left: @size-5 solid transparent;
-      border-right: @size-5 solid transparent;
-      border-bottom: @size-5 solid var(--color-secondary-action-outline);
-      padding: 0;
-      width: 0;
-      height: 0;
-    }
-  }
-}
-
-div.ExpandedHeading {
-  position: absolute;
-  width: 100%;
-
-  @media @breakpoint-mobile {
-    position: inherit;
-    box-shadow: none;
-    z-index: unset;
-  }
-}
 
 div.ExpandedContent {
   position: absolute;
@@ -579,10 +395,6 @@ div.ExpandedContent {
         }
       }
     }
-  }
-
-  .BackButton {
-    display: none;
   }
 
   div.Toggle {
