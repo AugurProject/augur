@@ -33,6 +33,7 @@ export class TestContractAPI extends ContractAPI {
     connector: Connectors.BaseConnector = new EmptyConnector(),
     meshClient: WSClient = undefined,
     meshBrowser: BrowserMesh = undefined,
+    dbPrefix = undefined
   ) {
     const signer = await makeSigner(account, provider);
     const dependencies = await makeGSNDependencies(
@@ -42,7 +43,7 @@ export class TestContractAPI extends ContractAPI {
       config.addresses.EthExchange,
       config.addresses.WETH9,
       config.addresses.Cash,
-      account.address,
+      account.address
     );
 
     let zeroX = null;
@@ -56,13 +57,13 @@ export class TestContractAPI extends ContractAPI {
       config,
       connector,
       zeroX,
-      true,
+      true
     );
     if (zeroX && meshBrowser) {
       zeroX.mesh = meshBrowser;
     }
 
-    const db = await makeDbMock().makeDB(augur);
+    const db = await makeDbMock(dbPrefix).makeDB(augur);
 
     return new TestContractAPI(augur, provider, account, db, config);
   }
@@ -72,7 +73,7 @@ export class TestContractAPI extends ContractAPI {
     readonly provider: EthersProvider,
     public account: Account,
     public db: DB,
-    public config: SDKConfiguration,
+    public config: SDKConfiguration
   ) {
     super(augur, provider, account);
 
@@ -86,20 +87,24 @@ export class TestContractAPI extends ContractAPI {
       provider.getLogs,
       contractAddresses,
       db.logFilters.onLogsAdded,
-      augur.contractEvents.parseLogs,
+      augur.contractEvents.parseLogs
     );
 
-    this.blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(provider, contractAddresses, db.logFilters, augur.contractEvents.parseLogs)
+    this.blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(
+      provider,
+      contractAddresses,
+      db.logFilters,
+      augur.contractEvents.parseLogs
+    );
   }
 
   sync = async (highestBlockNumberToSync?: number) => {
-    const { number: blockNumber } = await this.provider.getBlock(highestBlockNumberToSync || 'latest');
-    if(this.needsToBulkSync) {
+    const { number: blockNumber } = await this.provider.getBlock(
+      highestBlockNumberToSync || 'latest'
+    );
+    if (this.needsToBulkSync) {
       const syncStartingBlock = await this.db.getSyncStartingBlock();
-      await this.bulkSyncStrategy.start(
-        syncStartingBlock,
-        blockNumber
-      );
+      await this.bulkSyncStrategy.start(syncStartingBlock, blockNumber);
 
       await this.db.sync(blockNumber);
 
@@ -109,8 +114,8 @@ export class TestContractAPI extends ContractAPI {
 
       this.needsToBulkSync = false;
     } else {
-      let highestSyncedBlock = (await this.db.getSyncStartingBlock());
-      while(highestSyncedBlock <= blockNumber) {
+      let highestSyncedBlock = await this.db.getSyncStartingBlock();
+      while (highestSyncedBlock <= blockNumber) {
         const block = await this.provider.getBlock(highestSyncedBlock);
         await this.blockAndLogStreamerSyncStrategy.onBlockAdded({
           ...block,
@@ -121,7 +126,7 @@ export class TestContractAPI extends ContractAPI {
     }
   };
 
-  async reportWarpSyncMarket(hash?:string) {
+  async reportWarpSyncMarket(hash?: string) {
     if (!hash) {
       const mostRecentWarpSync = await this.db.warpCheckpoints.getMostRecentWarpSync();
       hash = mostRecentWarpSync.hash;
@@ -129,8 +134,9 @@ export class TestContractAPI extends ContractAPI {
     return super.reportWarpSyncMarket(hash);
   }
 
-
   async initializeUniverse() {
-    return this.augur.warpSync.initializeUniverse(this.augur.contracts.universe.address);
+    return this.augur.warpSync.initializeUniverse(
+      this.augur.contracts.universe.address
+    );
   }
 }

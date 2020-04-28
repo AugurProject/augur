@@ -9,6 +9,7 @@ import {
   makeGanacheProvider,
   createDb,
 } from '..';
+import { generateDoubleDeploy } from '../libs/seeds/double-deploy';
 import { FlashArguments, FlashSession } from './flash';
 
 import * as ganache from 'ganache-core';
@@ -86,7 +87,22 @@ export function addGanacheScripts(flash: FlashSession) {
       );
       config.addresses = addresses;
 
-      await makeSeed(provider, db, config, name, filepath);
+      const defaultSeed = await createSeed(provider, db, addresses, {});
+
+      const doubleDeploy = await generateDoubleDeploy(
+        config,
+        defaultSeed,
+        addresses,
+        this.getAccount(),
+        this.network
+      );
+
+      const seeds = {
+        [name]: defaultSeed,
+        doubleDeploy,
+      };
+
+      await writeSeeds(seeds, filepath);
     },
   });
 
