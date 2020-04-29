@@ -9,7 +9,7 @@ import { _beforeAll, _beforeEach, outcome1 } from './common';
 describe('State API :: Markets :: Categories', () => {
   let john: TestContractAPI;
   let mary: TestContractAPI;
-  let bob: ContractAPI;
+  let bob: TestContractAPI;
 
   let baseProvider: TestEthersProvider;
   let markets = {};

@@ -1,10 +1,14 @@
-import { ContractInterfaces } from "@augurproject/core";
-import { ContractAddresses } from "@augurproject/artifacts";
-import { ContractDependenciesEthers } from "contract-dependencies-ethers";
+import { ContractInterfaces } from '@augurproject/core';
+import { ContractAddresses } from '@augurproject/artifacts';
+import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 
-export type SomeRepToken = ContractInterfaces.ReputationToken | ContractInterfaces.TestNetReputationToken;
-export type SomeTime = ContractInterfaces.Time | ContractInterfaces.TimeControlled;
-const RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494";
+export type SomeRepToken =
+  | ContractInterfaces.ReputationToken
+  | ContractInterfaces.TestNetReputationToken;
+export type SomeTime =
+  | ContractInterfaces.Time
+  | ContractInterfaces.TimeControlled;
+const RELAY_HUB_ADDRESS = '0xD216153c06E857cD7f72665E0aF1d7D82172F494';
 
 export class Contracts {
   augur: ContractInterfaces.Augur;
@@ -41,50 +45,130 @@ export class Contracts {
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
 
-  constructor (addresses: ContractAddresses, dependencies: ContractDependenciesEthers) {
+  constructor(
+    addresses: ContractAddresses,
+    dependencies: ContractDependenciesEthers
+  ) {
     this.dependencies = dependencies;
     this.augur = new ContractInterfaces.Augur(dependencies, addresses.Augur);
-    this.augurTrading = new ContractInterfaces.AugurTrading(dependencies, addresses.AugurTrading);
+    this.augurTrading = new ContractInterfaces.AugurTrading(
+      dependencies,
+      addresses.AugurTrading
+    );
 
-    this.universe = new ContractInterfaces.Universe(dependencies, addresses.Universe);
+    this.universe = new ContractInterfaces.Universe(
+      dependencies,
+      addresses.Universe
+    );
     this.cash = new ContractInterfaces.Cash(dependencies, addresses.Cash);
     this.orders = new ContractInterfaces.Orders(dependencies, addresses.Orders);
-    this.createOrder = new ContractInterfaces.CreateOrder(dependencies, addresses.CreateOrder);
-    this.cancelOrder = new ContractInterfaces.CancelOrder(dependencies, addresses.CancelOrder);
-    this.fillOrder = new ContractInterfaces.FillOrder(dependencies, addresses.FillOrder);
+    this.createOrder = new ContractInterfaces.CreateOrder(
+      dependencies,
+      addresses.CreateOrder
+    );
+    this.cancelOrder = new ContractInterfaces.CancelOrder(
+      dependencies,
+      addresses.CancelOrder
+    );
+    this.fillOrder = new ContractInterfaces.FillOrder(
+      dependencies,
+      addresses.FillOrder
+    );
     this.trade = new ContractInterfaces.Trade(dependencies, addresses.Trade);
-    this.shareToken = new ContractInterfaces.ShareToken(dependencies, addresses.ShareToken);
-    this.legacyReputationToken = new ContractInterfaces.LegacyReputationToken(dependencies, addresses.LegacyReputationToken);
-    this.simulateTrade = new ContractInterfaces.SimulateTrade(dependencies, addresses.SimulateTrade);
-    this.ZeroXTrade = new ContractInterfaces.ZeroXTrade(dependencies, addresses.ZeroXTrade);
-    this.buyParticipationTokens = new ContractInterfaces.BuyParticipationTokens(dependencies, addresses.BuyParticipationTokens);
-    this.redeemStake = new ContractInterfaces.RedeemStake(dependencies, addresses.RedeemStake);
-    this.cashFaucet = new ContractInterfaces.CashFaucet(dependencies, addresses.CashFaucet);
-    this.hotLoading = new ContractInterfaces.HotLoading(dependencies, addresses.HotLoading);
-    this.zeroXExchange = new ContractInterfaces.Exchange(dependencies, addresses.Exchange);
-    this.affiliates = new ContractInterfaces.Affiliates(dependencies, addresses.Affiliates);
-    this.affiliateValidator = new ContractInterfaces.AffiliateValidator(dependencies, addresses.AffiliateValidator);
-    this.profitLoss= new ContractInterfaces.ProfitLoss(dependencies, addresses.ProfitLoss);
-    this.uniswapV2Factory = new ContractInterfaces.UniswapV2Factory(dependencies, addresses.UniswapV2Factory);
-    this.ethExchange = new ContractInterfaces.UniswapV2Exchange(dependencies, addresses.EthExchange);
-    this.warpSync = new ContractInterfaces.WarpSync(dependencies, addresses.WarpSync);
-    this.augurWalletRegistry = new ContractInterfaces.AugurWalletRegistry(dependencies, addresses.AugurWalletRegistry);
-    this.relayHub = new ContractInterfaces.RelayHub(dependencies, RELAY_HUB_ADDRESS);
+    this.shareToken = new ContractInterfaces.ShareToken(
+      dependencies,
+      addresses.ShareToken
+    );
+    this.legacyReputationToken = new ContractInterfaces.LegacyReputationToken(
+      dependencies,
+      addresses.LegacyReputationToken
+    );
+    this.simulateTrade = new ContractInterfaces.SimulateTrade(
+      dependencies,
+      addresses.SimulateTrade
+    );
+    this.ZeroXTrade = new ContractInterfaces.ZeroXTrade(
+      dependencies,
+      addresses.ZeroXTrade
+    );
+    this.buyParticipationTokens = new ContractInterfaces.BuyParticipationTokens(
+      dependencies,
+      addresses.BuyParticipationTokens
+    );
+    this.redeemStake = new ContractInterfaces.RedeemStake(
+      dependencies,
+      addresses.RedeemStake
+    );
+    this.cashFaucet = new ContractInterfaces.CashFaucet(
+      dependencies,
+      addresses.CashFaucet
+    );
+    this.hotLoading = new ContractInterfaces.HotLoading(
+      dependencies,
+      addresses.HotLoading
+    );
+    this.zeroXExchange = new ContractInterfaces.Exchange(
+      dependencies,
+      addresses.Exchange
+    );
+    this.affiliates = new ContractInterfaces.Affiliates(
+      dependencies,
+      addresses.Affiliates
+    );
+    this.affiliateValidator = new ContractInterfaces.AffiliateValidator(
+      dependencies,
+      addresses.AffiliateValidator
+    );
+    this.profitLoss = new ContractInterfaces.ProfitLoss(
+      dependencies,
+      addresses.ProfitLoss
+    );
+    this.uniswapV2Factory = new ContractInterfaces.UniswapV2Factory(
+      dependencies,
+      addresses.UniswapV2Factory
+    );
+    this.ethExchange = new ContractInterfaces.UniswapV2Exchange(
+      dependencies,
+      addresses.EthExchange
+    );
+    this.warpSync = new ContractInterfaces.WarpSync(
+      dependencies,
+      addresses.WarpSync
+    );
+    this.augurWalletRegistry = new ContractInterfaces.AugurWalletRegistry(
+      dependencies,
+      addresses.AugurWalletRegistry
+    );
+    this.relayHub = new ContractInterfaces.RelayHub(
+      dependencies,
+      RELAY_HUB_ADDRESS
+    );
     this.weth = new ContractInterfaces.WETH9(dependencies, addresses.WETH9);
-    this.uniswap = new ContractInterfaces.UniswapV2Router01(dependencies, addresses.UniswapV2Router01);
-    this.auditFunds = new ContractInterfaces.AuditFunds(dependencies, addresses.AuditFunds);
+    this.uniswap = new ContractInterfaces.UniswapV2Router01(
+      dependencies,
+      addresses.UniswapV2Router01
+    );
+    this.auditFunds = new ContractInterfaces.AuditFunds(
+      dependencies,
+      addresses.AuditFunds
+    );
 
-    if (typeof addresses.Time !== "undefined") {
+    if (typeof addresses.Time !== 'undefined') {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);
     }
-    if (typeof addresses.TimeControlled !== "undefined") {
-      this.time = new ContractInterfaces.TimeControlled(dependencies, addresses.TimeControlled);
+    if (typeof addresses.TimeControlled !== 'undefined') {
+      this.time = new ContractInterfaces.TimeControlled(
+        dependencies,
+        addresses.TimeControlled
+      );
     }
   }
 
   getTime(): SomeTime {
-    if (typeof this.time === "undefined") {
-      throw Error("Cannot use Time or TimeControlled contracts unless defined for Augur's addresses");
+    if (typeof this.time === 'undefined') {
+      throw Error(
+        "Cannot use Time or TimeControlled contracts unless defined for Augur's addresses"
+      );
     } else {
       return this.time;
     }
@@ -92,7 +176,9 @@ export class Contracts {
 
   getReputationToken(): SomeRepToken {
     if (this.reputationToken === null) {
-      throw Error("Must set reputationToken for Augur instance before using it");
+      throw Error(
+        'Must set reputationToken for Augur instance before using it'
+      );
     } else {
       return this.reputationToken;
     }
@@ -104,7 +190,10 @@ export class Contracts {
   }
 
   reputationTokenFromAddress(address: string, networkId: string): SomeRepToken {
-    const Class = networkId === "1" ? ContractInterfaces.ReputationToken : ContractInterfaces.TestNetReputationToken;
+    const Class =
+      networkId === '1'
+        ? ContractInterfaces.ReputationToken
+        : ContractInterfaces.TestNetReputationToken;
     return new Class(this.dependencies, address);
   }
 
@@ -124,23 +213,39 @@ export class Contracts {
     return new ContractInterfaces.DisputeWindow(this.dependencies, address);
   }
 
-  getInitialReporter(initialReporterAddress: string): ContractInterfaces.InitialReporter {
-    return new ContractInterfaces.InitialReporter(this.dependencies, initialReporterAddress);
+  getInitialReporter(
+    initialReporterAddress: string
+  ): ContractInterfaces.InitialReporter {
+    return new ContractInterfaces.InitialReporter(
+      this.dependencies,
+      initialReporterAddress
+    );
   }
 
-  getReportingParticipant(reportingParticipantAddress: string): ContractInterfaces.DisputeCrowdsourcer {
-    return new ContractInterfaces.DisputeCrowdsourcer(this.dependencies, reportingParticipantAddress);
+  getReportingParticipant(
+    reportingParticipantAddress: string
+  ): ContractInterfaces.DisputeCrowdsourcer {
+    return new ContractInterfaces.DisputeCrowdsourcer(
+      this.dependencies,
+      reportingParticipantAddress
+    );
   }
 
-  isTimeControlled(contract: SomeTime): contract is ContractInterfaces.TimeControlled {
-    return (contract as ContractInterfaces.TimeControlled).setTimestamp !== undefined;
+  isTimeControlled(
+    contract: SomeTime
+  ): contract is ContractInterfaces.TimeControlled {
+    return (
+      (contract as ContractInterfaces.TimeControlled).setTimestamp !== undefined
+    );
   }
 
   augurWalletFromAddress(address: string): ContractInterfaces.AugurWallet {
     return new ContractInterfaces.AugurWallet(this.dependencies, address);
   }
 
-  uniswapExchangeFromAddress(address: string): ContractInterfaces.UniswapV2Exchange {
+  uniswapExchangeFromAddress(
+    address: string
+  ): ContractInterfaces.UniswapV2Exchange {
     return new ContractInterfaces.UniswapV2Exchange(this.dependencies, address);
   }
 }

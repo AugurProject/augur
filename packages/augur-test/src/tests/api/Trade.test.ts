@@ -1,7 +1,7 @@
 import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
-import { makeProvider } from '../../libs';
+import { disableZeroX, enableZeroX, makeProvider } from '../../libs';
 import { SDKConfiguration } from '@augurproject/artifacts';
 
 let john: TestContractAPI;
@@ -11,18 +11,10 @@ let config: SDKConfiguration;
 beforeAll(async () => {
   const seed = await loadSeed(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
-  config = provider.getConfig();
+  config = disableZeroX(provider.getConfig());
 
-  john = await TestContractAPI.userWrapper(
-    ACCOUNTS[0],
-    provider,
-    config
-  );
-  mary = await TestContractAPI.userWrapper(
-    ACCOUNTS[1],
-    provider,
-    config
-  );
+  john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, config);
+  mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, config);
   await john.approve();
   await mary.approve();
 });
@@ -39,14 +31,20 @@ test('Trade :: placeTrade', async () => {
     new BigNumber(0)
   );
 
+  console.log('1-checkpoint-1');
+
   const orderId = await john.getBestOrderId(
     new BigNumber(0),
     market1.address,
     new BigNumber(1)
   );
 
+  console.log('2-checkpoint-2');
+
   let amountInOrder = await john.augur.contracts.orders.getAmount_(orderId);
   await expect(amountInOrder.toNumber()).toEqual(10 ** 16);
+
+  console.log('3-checkpoint-3');
 
   await mary.placeBasicYesNoTrade(
     1,
@@ -56,6 +54,8 @@ test('Trade :: placeTrade', async () => {
     new BigNumber(0.4),
     new BigNumber(0)
   );
+
+  console.log('4-checkpoint-4');
 
   amountInOrder = await john.augur.contracts.orders.getAmount_(orderId);
   await expect(amountInOrder.toNumber()).toEqual(10 ** 16 / 2);

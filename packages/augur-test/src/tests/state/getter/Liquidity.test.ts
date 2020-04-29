@@ -42,11 +42,12 @@ describe('State API :: Liquidity', () => {
         ACCOUNTS[0],
         provider,
         config,
-        johnConnector,
-        meshClient,
-        meshBrowser
+        johnConnector
       );
       expect(john).toBeDefined();
+
+      john.augur.zeroX.mesh = meshBrowser;
+      john.augur.zeroX.rpc = meshClient;
 
       johnConnector.initialize(john.augur, john.db);
 
@@ -136,7 +137,7 @@ describe('State API :: Liquidity', () => {
       });
 
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market.address])
+      await john.db.marketDatabase.syncOrderBooks([market.address]);
       marketData = await john.db.Markets.get(market.address);
 
       await expect(marketData.liquidity[10]).toEqual(

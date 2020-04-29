@@ -1,21 +1,15 @@
-import { WSClient } from '@0x/mesh-rpc-client';
+import { SupportedProvider } from 'ethereum-types';
 import { SDKConfiguration } from '@augurproject/artifacts';
-import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import {
-  Augur,
-  BrowserMesh,
-  Connectors,
-  EmptyConnector,
-  ZeroX,
-} from '@augurproject/sdk';
-import { SubscriptionEventName } from '@augurproject/sdk/build';
+import { Augur, Connectors, EmptyConnector, ZeroX } from '@augurproject/sdk';
+import { SubscriptionEventName } from '@augurproject/sdk';
+import { createClient } from '@augurproject/sdk/build';
 import { Controller } from '@augurproject/sdk/build/state/Controller';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { BlockAndLogStreamerSyncStrategy } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import { Account } from '../constants';
-import { makeGSNDependencies, makeSigner } from './blockchain';
+import { makeSigner } from './blockchain';
 import { ContractAPI } from './contract-api';
 import { makeDbMock } from './MakeDbMock';
 import { API } from '@augurproject/sdk/build/state/getter/API';
@@ -31,38 +25,26 @@ export class TestContractAPI extends ContractAPI {
     provider: EthersProvider,
     config: SDKConfiguration,
     connector: Connectors.BaseConnector = new EmptyConnector(),
-    meshClient: WSClient = undefined,
-    meshBrowser: BrowserMesh = undefined,
-    dbPrefix = undefined
+    dbPrefix: string = undefined,
+    createBrowserMesh?: (
+      config: SDKConfiguration,
+      web3Provider: SupportedProvider,
+      zeroX: ZeroX
+    ) => void
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = await makeGSNDependencies(
-      provider,
-      signer,
-      config,
-      account.address
-    );
-
-    let zeroX = null;
-    if (meshClient || meshBrowser) {
-      zeroX = new ZeroX();
-      zeroX.rpc = meshClient;
-    }
-    const augur = await Augur.create(
-      provider,
-      dependencies,
+    const client = await createClient(
       config,
       connector,
-      zeroX,
-      true
+      signer,
+      provider,
+      true,
+      createBrowserMesh
     );
-    if (zeroX && meshBrowser) {
-      zeroX.mesh = meshBrowser;
-    }
 
-    const db = await makeDbMock(dbPrefix).makeDB(augur);
+    const db = await makeDbMock(dbPrefix).makeDB(client);
 
-    return new TestContractAPI(augur, provider, account, db, config);
+    return new TestContractAPI(client, provider, account, db, config);
   }
 
   constructor(

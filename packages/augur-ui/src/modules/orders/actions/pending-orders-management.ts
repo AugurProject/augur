@@ -7,7 +7,7 @@ import {
   convertDisplayPriceToOnChainPrice,
 } from '@augurproject/sdk';
 import { createBigNumber } from 'utils/create-big-number';
-import { TransactionMetadataParams } from 'contract-dependencies-ethers/src';
+import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { AppState } from 'appStore';
 
@@ -30,10 +30,10 @@ export const updatePendingOrderStatus = (
   hash: string
 ) => updatePendingOrderStatusWithBlockNumber(id, marketId, status, hash);
 
-
-
-export const addPendingOrderWithBlockNumber = (pendingOrder: UIOrder, marketId: string) =>
-(dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+export const addPendingOrderWithBlockNumber = (
+  pendingOrder: UIOrder,
+  marketId: string
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { blockchain } = getState();
   pendingOrder.blockNumber = blockchain.currentBlockNumber;
 
@@ -43,14 +43,14 @@ export const addPendingOrderWithBlockNumber = (pendingOrder: UIOrder, marketId: 
       pendingOrder,
       marketId,
     },
-  })
+  });
 };
 
 const updatePendingOrderStatusWithBlockNumber = (
   id: string,
   marketId: string,
   status: string,
-  hash: string,
+  hash: string
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { blockchain } = getState();
   const blockNumber = blockchain.currentBlockNumber;
@@ -58,8 +58,8 @@ const updatePendingOrderStatusWithBlockNumber = (
   dispatch({
     type: UPDATE_PENDING_ORDER,
     data: { id, marketId, status, hash, blockNumber },
-  })
-}
+  });
+};
 
 export const loadPendingOrdersTransactions = (pendingOrders: UIOrder[]) => (
   dispatch: ThunkDispatch<void, any, Action>

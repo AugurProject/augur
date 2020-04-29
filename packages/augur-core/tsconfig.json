@@ -2,10 +2,17 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "source"
+    "rootDir": "src"
   },
   "include": [
-    "source/**/*"
+    "src/**/*"
   ],
-  "references": []
+  "references": [
+    {
+      "path": "../augur-artifacts"
+    },
+    {
+      "path": "../augur-contract-dependencies-ethers"
+    }
+  ]
 }

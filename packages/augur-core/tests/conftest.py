@@ -161,7 +161,7 @@ class ContractsFixture:
         self.privateKeys = self.eth_tester.backend.account_keys
         self.accounts = self.eth_tester.get_accounts()
         self.contracts = {}
-        self.relativeContractsPath = '../source/contracts'
+        self.relativeContractsPath = '../src/contracts'
         self.relativeTestContractsPath = 'solidity_test_helpers'
         # self.relativeTestContractsPath = 'mock_templates/contracts'
         self.coverageMode = request.config.option.cover
@@ -319,14 +319,14 @@ class ContractsFixture:
         key = path.splitext(path.basename(relativePath))[0]
         resolvedPath = resolveRelativePath(relativePath)
         if self.coverageMode:
-            resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("source/", "coverageEnv/")
+            resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("src/", "coverageEnv/")
         if key not in ContractsFixture.signatures:
             ContractsFixture.signatures[key] = self.generateSignature(resolvedPath)
 
     def upload(self, relativeFilePath, lookupKey = None, signatureKey = None, constructorArgs=[]):
         resolvedPath = resolveRelativePath(relativeFilePath)
         if self.coverageMode:
-            resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("source/", "coverageEnv/")
+            resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("src/", "coverageEnv/")
         lookupKey = lookupKey if lookupKey else path.splitext(path.basename(resolvedPath))[0]
         signatureKey = signatureKey if signatureKey else lookupKey
         if lookupKey in self.contracts:
@@ -428,10 +428,10 @@ class ContractsFixture:
                     self.uploadAndAddToAugur(path.join(directory, filename))
 
     def uploadTestDaiContracts(self):
-        self.uploadAndAddToAugur("../source/contracts/Cash.sol")
-        self.uploadAndAddToAugur("../source/contracts/TestNetDaiVat.sol", lookupKey = "DaiVat", signatureKey = "DaiVat")
-        self.uploadAndAddToAugur("../source/contracts/TestNetDaiPot.sol", lookupKey = "DaiPot", signatureKey = "DaiPot", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Time'].address])
-        self.uploadAndAddToAugur("../source/contracts/TestNetDaiJoin.sol", lookupKey = "DaiJoin", signatureKey = "DaiJoin", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Cash'].address])
+        self.uploadAndAddToAugur("../src/contracts/Cash.sol")
+        self.uploadAndAddToAugur("../src/contracts/TestNetDaiVat.sol", lookupKey = "DaiVat", signatureKey = "DaiVat")
+        self.uploadAndAddToAugur("../src/contracts/TestNetDaiPot.sol", lookupKey = "DaiPot", signatureKey = "DaiPot", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Time'].address])
+        self.uploadAndAddToAugur("../src/contracts/TestNetDaiJoin.sol", lookupKey = "DaiJoin", signatureKey = "DaiJoin", constructorArgs=[self.contracts['DaiVat'].address, self.contracts['Cash'].address])
         self.contracts["Cash"].initialize(self.contracts['Augur'].address)
 
     def upload0xContracts(self):
@@ -455,7 +455,7 @@ class ContractsFixture:
                 constructorArgs[0] = zeroXContracts["ZeroXExchange"]
             if constructorArgs and len(constructorArgs) == 2 and constructorArgs[1] == "CHAI_BRIDGE":
                 constructorArgs[1] = zeroXContracts["ChaiBridge"]
-            contract = self.upload("../source/contracts/0x/{}.sol".format(filename), constructorArgs=constructorArgs)
+            contract = self.upload("../src/contracts/0x/{}.sol".format(filename), constructorArgs=constructorArgs)
             zeroXContracts[alias] = contract.address
             self.contracts[alias] = contract
         self.contracts["ZeroXExchange"].registerAssetProxy(zeroXContracts["ERC1155Proxy"])
@@ -473,10 +473,10 @@ class ContractsFixture:
         return zeroXContracts
 
     def uploadUniswapContracts(self):
-        factory = self.uploadAndAddToAugur("../source/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=[nullAddress])
-        self.generateAndStoreSignature("../source/contracts/uniswap/UniswapV2Exchange.sol")
+        factory = self.uploadAndAddToAugur("../src/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=[nullAddress])
+        self.generateAndStoreSignature("../src/contracts/uniswap/UniswapV2Exchange.sol")
         wethAddress = self.contracts["WETH9"].address
-        self.upload("../source/contracts/uniswap/UniswapV2Router01.sol", constructorArgs=[wethAddress, factory.address])
+        self.upload("../src/contracts/uniswap/UniswapV2Router01.sol", constructorArgs=[wethAddress, factory.address])
 
     def initializeAllContracts(self):
         coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepOracle','AuditFunds']
@@ -515,11 +515,11 @@ class ContractsFixture:
     def uploadAugur(self):
         # We have to upload Augur first
         with PrintGasUsed(self, "AUGUR CREATION", 0):
-            return self.upload("../source/contracts/Augur.sol")
+            return self.upload("../src/contracts/Augur.sol")
 
     def uploadAugurTrading(self):
         # We have to upload Augur Trading before trading contracts
-        return self.upload("../source/contracts/trading/AugurTrading.sol", constructorArgs=[self.contracts["Augur"].address])
+        return self.upload("../src/contracts/trading/AugurTrading.sol", constructorArgs=[self.contracts["Augur"].address])
 
     def deployRelayHub(self):
         self.sendEth(self.accounts[0], "0xff20d47eb84b1b85aadcccc43d2dc0124c6211f7", 42 * 10**17)
