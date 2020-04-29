@@ -195,6 +195,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     privateKey: 'fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a',
     contractInputPath: path.join(__dirname, 'contracts.json'),
     writeArtifacts: true,
+    serial: true,
   },
   warpSync: {
     enabled: false,
