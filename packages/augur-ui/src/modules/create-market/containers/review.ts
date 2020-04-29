@@ -12,7 +12,7 @@ import { MODAL_ADD_FUNDS, DAI } from 'modules/common/constants';
 
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount, appStatus, newMarket, blockchain } = state;
+  const { loginAccount, newMarket, blockchain } = state;
   return {
     newMarket: newMarket,
     currentTimestamp: blockchain.currentAugurTimestamp,
@@ -23,8 +23,6 @@ const mapStateToProps = (state: AppState) => {
     availableDaiFormatted: formatDai(
       totalTradingBalance(loginAccount)
     ),
-    GsnEnabled: appStatus.gsnEnabled,
-    ethToDaiRate: appStatus.ethToDaiRate,
   };
 };
 

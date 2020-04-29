@@ -43,11 +43,12 @@ import {
 import { AppState } from 'appStore';
 import { loadMarketOrderBook, clearOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
-import { Ox_STATUS } from 'modules/app/actions/update-app-status';
+import { Ox_STATUS } from 'modules/app/store/constants';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { connection, universe, modal, loginAccount, orderBooks, appStatus } = state;
-  const zeroXstatus = appStatus[Ox_STATUS];
+  const { connection, universe, modal, loginAccount, orderBooks } = state;
+  const zeroXstatus = AppStatusState.get()[Ox_STATUS];
   const queryId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const marketId = queryId === TRADING_TUTORIAL ? queryId : getAddress(queryId);
   const queryOutcomeId = parseQuery(ownProps.location.search)[

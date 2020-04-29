@@ -12,7 +12,7 @@ import { augurSdk } from 'services/augursdk';
 
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { loginAccount, appStatus, blockchain } = state;
+  const { loginAccount, blockchain } = state;
 
   const getGasConfirmEstimate = async () => {
     const augur = augurSdk.get();

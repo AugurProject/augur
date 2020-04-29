@@ -36,7 +36,6 @@ import {
   DOINITIALREPORT,
   PUBLICFILLORDER,
   PUBLICTRADE,
-  MODAL_ERROR,
   REDEEMSTAKE,
   CREATE_MARKET,
   MODAL_GAS_PRICE,
@@ -48,7 +47,6 @@ import {
   DISAVOWCROWDSOURCERS,
   MARKETMIGRATED,
   DOINITIALREPORTWARPSYNC,
-  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -75,9 +73,9 @@ import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
-import { updateAppStatus, WALLET_STATUS, Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
+import { AppStatusActions } from 'modules/app/store/app-status';
 
 const handleAlert = (
   log: any,
@@ -138,7 +136,7 @@ export const handleTxSuccess = (txStatus: Events.TXStatus) => (
 ) => {
   console.log('TxSuccess Transaction', txStatus.transaction.name);
   // update wallet status on any TxSuccess
-  dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
+  AppStatusActions.actions.setWalletStatus(WALLET_STATUS_VALUES.CREATED)
   dispatch(updateAssets());
   dispatch(addUpdateTransaction(txStatus));
 };
@@ -172,7 +170,7 @@ export const handleZeroStatusUpdated = (status) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  dispatch(updateAppStatus(Ox_STATUS, status))
+  AppStatusActions.actions.setOxStatus(status);
 }
 
 export const handleSDKReadyEvent = () => (

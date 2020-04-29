@@ -27,6 +27,7 @@ import { Swap } from 'modules/swap/components/swap';
 import { Pool } from 'modules/swap/components/pool';
 import { PillSelection } from 'modules/common/selection';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface AddFundsProps {
   closeAction: Function;
@@ -34,8 +35,6 @@ interface AddFundsProps {
   isRelayDown?: boolean;
   fundType: string;
   loginAccount: LoginAccount;
-  ETH_RATE: BigNumber;
-  REP_RATE: BigNumber;
   addFundsTorus: Function;
   addFundsFortmatic: Function;
 }
@@ -45,17 +44,20 @@ export const AddFunds = ({
   autoSelect = false,
   fundType = DAI,
   loginAccount,
-  ETH_RATE,
-  REP_RATE,
   isRelayDown = false,
   addFundsTorus,
   addFundsFortmatic,
 }: AddFundsProps) => {
+  const [amountToBuy, setAmountToBuy] = useState(createBigNumber(0));
+  const [isAmountValid, setIsAmountValid] = useState(false);
+  const [poolSelected, setPoolSelected] = useState(false);
+  const { ethToDaiRate, repToDaiRate } = useAppStatusStore();
+  const ETH_RATE = createBigNumber(1).dividedBy(ethToDaiRate?.value  || createBigNumber(1));
+  const REP_RATE = createBigNumber(1).dividedBy(repToDaiRate?.value  || createBigNumber(1));
   const address = loginAccount.address
   const accountMeta = loginAccount.meta;
   let BUY_MIN = 0;
   let BUY_MAX = 0;
-
 
   const usingOnRampSupportedWallet = accountMeta.accountType === ACCOUNT_TYPES.TORUS
     || accountMeta.accountType === ACCOUNT_TYPES.PORTIS
@@ -70,9 +72,6 @@ export const AddFunds = ({
     BUY_MAX = 250
   }
 
-  const [amountToBuy, setAmountToBuy] = useState(createBigNumber(0));
-  const [isAmountValid, setIsAmountValid] = useState(false);
-
   const validateAndSet = (amount) => {
     const amountToBuy = createBigNumber(amount);
     if (amountToBuy.gte(BUY_MIN) && amountToBuy.lte(BUY_MAX)) {
@@ -82,7 +81,6 @@ export const AddFunds = ({
     }
     setAmountToBuy(amountToBuy);
   }
-  const [poolSelected, setPoolSelected] = useState(false);
 
   const toggleSwapPool = (selection) => {
     if (selection === 0) {

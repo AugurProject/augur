@@ -10,7 +10,6 @@ import {
   TradingSideSection,
   getCategoriesWithClick
 } from 'modules/market-cards/common';
-import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import {
@@ -26,6 +25,7 @@ import MigrateMarketNotice from 'modules/market-cards/containers/migrate-market-
 import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
 import { ThickChevron } from 'modules/common/icons';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const LoadingCard = () => (<div
 className={classNames(Styles.MarketCard, {
@@ -86,11 +86,11 @@ export const MarketCard = ({
   dispute,
   marketLinkCopied,
   toggleFavorite,
-  theme,
   orderBook
 }: MarketCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const { theme } = useAppStatusStore();
   const {
     outcomesFormatted,
     marketType,

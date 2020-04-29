@@ -11,6 +11,10 @@ import {
   IS_MOBILE,
   Ox_ENABLED,
   GSN_ENABLED,
+  ETH_TO_DAI_RATE,
+  REP_TO_DAI_RATE,
+  Ox_STATUS,
+  WALLET_STATUS,
 } from 'modules/app/store/constants';
 
 const {
@@ -24,6 +28,10 @@ const {
   SET_IS_MOBILE,
   SET_Ox_ENABLED,
   SET_GSN_ENABLED,
+  SET_ETH_TO_DAI_RATE,
+  SET_REP_TO_DAI_RATE,
+  SET_Ox_STATUS,
+  SET_WALLET_STATUS,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -87,6 +95,22 @@ export function AppStatusReducer(state, action) {
       updatedState[GSN_ENABLED] = action.isGSNEnabled;
       break;
     }
+    case SET_ETH_TO_DAI_RATE: {
+      updatedState[ETH_TO_DAI_RATE] = action.ethToDaiRate;
+      break;
+    }
+    case SET_REP_TO_DAI_RATE: {
+      updatedState[REP_TO_DAI_RATE] = action.repToDaiRate;
+      break;
+    }
+    case SET_Ox_STATUS: {
+      updatedState[Ox_STATUS] = action.OxStatus;
+      break;
+    }
+    case SET_WALLET_STATUS: {
+      updatedState[WALLET_STATUS] = action.walletStatus;
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -120,6 +144,10 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setOxEnabled: isOxEnabled =>
         dispatch({ type: SET_Ox_ENABLED, isOxEnabled }),
       setGSNEnabled: isGSNEnabled => dispatch({ type: SET_GSN_ENABLED, isGSNEnabled }),
+      setEthToDaiRate: ethToDaiRate => dispatch({ type: SET_ETH_TO_DAI_RATE, ethToDaiRate }),
+      setRepToDaiRate: repToDaiRate => dispatch({ type: SET_REP_TO_DAI_RATE, repToDaiRate }),
+      setOxStatus: OxStatus => dispatch({ type: SET_Ox_STATUS, OxStatus }),
+      setWalletStatus: walletStatus => dispatch({ type: SET_WALLET_STATUS, walletStatus }),
     },
   };
 };

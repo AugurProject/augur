@@ -11,9 +11,9 @@ import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 import { formatAttoRep } from 'utils/format-number';
 import { addedDaiEvent } from 'services/analytics/helpers';
-import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { createBigNumber } from 'utils/create-big-number';
 import { WALLET_STATUS_VALUES, TWO } from 'modules/common/constants';
+import { AppStatusActions, AppStatusState } from 'modules/app/store/app-status';
 
 export const updateAssets = (
   callback: NodeStyleCallback,
@@ -21,7 +21,7 @@ export const updateAssets = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount, universe, appStatus } = getState();
+  const { loginAccount, universe } = getState();
   const { address, meta } = loginAccount;
   const nonSafeWallet = await meta.signer.getAddress();
 
@@ -31,10 +31,10 @@ export const updateAssets = (
     nonSafeWallet,
     dispatch,
     (err, balances) => {
-      let status = appStatus[WALLET_STATUS];
+      const { walletStatus } = AppStatusState.get();
       // TODO: set min amount of DAI, for testing need a real values
-      if (createBigNumber(balances.dai).gt(TWO) && (status !== WALLET_STATUS_VALUES.CREATED)) {
-        dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE));
+      if (createBigNumber(balances.dai).gt(TWO) && (walletStatus !== WALLET_STATUS_VALUES.CREATED)) {
+        AppStatusActions.actions.setWalletStatus(WALLET_STATUS_VALUES.FUNDED_NEED_CREATE);
       }
       if (callback) callback(balances);
     });

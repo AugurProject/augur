@@ -25,6 +25,7 @@ import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const getMarketPath = id => {
   return {
@@ -36,12 +37,12 @@ const getMarketPath = id => {
 };
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { authStatus, loginAccount, appStatus, accountPositions, userOpenOrders, blockchain, newMarket } = state;
+  const { authStatus, loginAccount, accountPositions, userOpenOrders, blockchain, newMarket } = state;
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const {
     gsnEnabled: GsnEnabled,
-  } = appStatus;
+  } = AppStatusState.get();
   const hasFunds = GsnEnabled
     ? !!loginAccount.balances.dai
     : !!loginAccount.balances.eth && !!loginAccount.balances.dai;

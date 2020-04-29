@@ -55,7 +55,6 @@ import { useTimer } from 'modules/common/progress';
 import { Market } from 'modules/portfolio/components/common/market-row';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { AppState } from 'appStore';
-import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -621,7 +620,7 @@ export const TextLabel = ({
       </label>
       {!isDisabled && (
         <ReactTooltip
-          id={`${keyId}-${text.replace(/\s+/g, '-')}`}
+          id={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
           className={TooltipStyles.Tooltip}
           effect="solid"
           place="top"
@@ -1251,25 +1250,29 @@ interface StatusDotTooltipProps {
   title: string;
 }
 
-export const StatusDotTooltip = (props: StatusDotTooltipProps) => (
+export const StatusDotTooltip = ({
+  status,
+  tooltip,
+  title,
+}: StatusDotTooltipProps) => (
   <>
-    {props.status && (
+    {status && (
       <div className={classNames(Styles.StatusDotTooltip)}>
         <span
           data-tip
-          data-for={`tooltip-${props.status}`}
+          data-for={`tooltip-${status}`}
           data-iscapture={true}
           className={classNames({
-            [Styles.Ready]: props.status === constants.ZEROX_STATUSES.SYNCED,
+            [Styles.Ready]: status === constants.ZEROX_STATUSES.SYNCED,
             [Styles.Lag]:
-              props.status !== constants.ZEROX_STATUSES.SYNCED &&
-              props.status !== constants.ZEROX_STATUSES.ERROR,
-            [Styles.Error]: props.status === constants.ZEROX_STATUSES.ERROR,
+              status !== constants.ZEROX_STATUSES.SYNCED &&
+              status !== constants.ZEROX_STATUSES.ERROR,
+            [Styles.Error]: status === constants.ZEROX_STATUSES.ERROR,
           })}
         >
         </span>
         <ReactTooltip
-          id={`tooltip-${props.status}`}
+          id={`tooltip-${status}`}
           className={TooltipStyles.Tooltip}
           effect="solid"
           place="top"
@@ -1277,20 +1280,17 @@ export const StatusDotTooltip = (props: StatusDotTooltipProps) => (
           event="mouseover mouseenter"
           eventOff="mouseleave mouseout scroll mousewheel blur"
         >
-          {props.tooltip}
+          {tooltip}
         </ReactTooltip>
-        {props.title}
+        {title}
       </div>
     )}
-    {!props.status && props.title}
+    {!status && title}
   </>
 );
 
-const mapStateToPropsStatusMessage = (state: AppState) => ({
-    status: state.appStatus[Ox_STATUS]
-});
-
-export const StatusErrorMessageCmp = ({ status }) => {
+export const StatusErrorMessage = () => {
+  const { zeroXStatus: status } = useAppStatusStore();
   if (status !== constants.ZEROX_STATUSES.ERROR) return null;
   return (
     <div className={classNames(Styles.StatusErrorMessage)}>
@@ -1301,11 +1301,6 @@ export const StatusErrorMessageCmp = ({ status }) => {
     </div>
   );
 };
-
-export const StatusErrorMessage = connect(
-  mapStateToPropsStatusMessage
-)(StatusErrorMessageCmp);
-
 
 interface LinearPropertyLabelUnderlineTooltipProps extends LinearPropertyLabelProps {
   tipText: string,

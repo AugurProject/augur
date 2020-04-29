@@ -9,7 +9,7 @@ import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import { selectNotifications } from "modules/notifications/selectors/notification-state";
 import {
   WALLET_STATUS,
-} from "modules/app/actions/update-app-status";
+} from "modules/app/store/constants";
 import { initAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { RewriteUrlParams } from "modules/app/hocs/rewrite-url-params";
@@ -27,11 +27,12 @@ import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, WALLET_STATUS_VALUES, TRANSACTION
 import { saveAffiliateAddress } from "modules/account/actions/login-account";
 import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
 import { AppState } from "appStore";
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { appStatus, loginAccount, pendingQueue } = state;
+  const { loginAccount, pendingQueue } = state;
   const { balances } = loginAccount;
-  const walletStatus = appStatus[WALLET_STATUS];
+  const walletStatus = AppStatusState.get()[WALLET_STATUS];
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   const notifications = selectNotifications(state);
   const walletBalances = loginAccount.balances;
@@ -51,7 +52,6 @@ const mapStateToProps = (state: AppState) => {
     env: state.env,
     isLogged: state.authStatus.isLogged,
     restoredAccount: state.authStatus.restoredAccount,
-    oddsType: state.appStatus.odds,
     loginAccount,
     modal: state.modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
@@ -65,11 +65,11 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  initAugur: (history, overrides, cb, setOxEnabled, setGSNEnabled) =>
-    dispatch(initAugur(history, overrides, cb, setOxEnabled, setGSNEnabled)),
+  initAugur: (history, overrides, cb) =>
+    dispatch(initAugur(history, overrides, cb)),
   updateModal: modal => dispatch(updateModal(modal)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
-  logout: (setGSNEnabled) => dispatch(logout(setGSNEnabled)),
+  logout: () => dispatch(logout()),
   updateCurrentBasePath: data => dispatch(updateCurrentBasePath(data)),
   updateCurrentInnerNavType: data => dispatch(updateCurrentInnerNavType(data)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
