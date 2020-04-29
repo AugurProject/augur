@@ -15,12 +15,11 @@ import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET, SUCCESS } from 'm
 import { TXEventName } from '@augurproject/sdk';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { addAlert } from 'modules/alerts/actions/alerts';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatusActions, AppStatusState } from 'modules/app/store/app-status';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
   networkId: string,
-  useGSN: boolean,
 ) => async (
   dispatch: ThunkDispatch<void, any, Action>,
 ) => {
@@ -28,8 +27,9 @@ export const updateSdk = (
   if (!augurSdk.sdk) return;
 
   let newAccount = { ...loginAccount };
-
+  const { env } = AppStatusState.get();
   const { actions: { setGSNEnabled, setOxEnabled, setWalletStatus, setIsLogged } } = AppStatusActions;
+  const useGSN = env.gsn?.enabled;
 
   try {
     setOxEnabled(!!augurSdk.sdk.zeroX);

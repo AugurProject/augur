@@ -20,6 +20,7 @@ import {
   IS_CONNECTED,
   IS_RECONNECTION_PAUSED,
   CAN_HOTLOAD,
+  ENV,
 } from 'modules/app/store/constants';
 
 const {
@@ -42,6 +43,7 @@ const {
   SET_IS_CONNECTED,
   SET_IS_RECONNECTION_PAUSED,
   SET_CAN_HOTLOAD,
+  SET_ENV,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -141,6 +143,10 @@ export function AppStatusReducer(state, action) {
       updatedState[CAN_HOTLOAD] = action.canHotload;
       break;
     }
+    case SET_ENV: {
+      updatedState[ENV] = action.env;
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -191,6 +197,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
         dispatch({ type: SET_IS_RECONNECTION_PAUSED, isReconnectionPaused }),
       setCanHotload: canHotload =>
         dispatch({ type: SET_CAN_HOTLOAD, canHotload }),
+      setEnv: env => dispatch({ type: SET_ENV, env }),
     },
   };
 };

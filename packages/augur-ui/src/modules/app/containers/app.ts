@@ -48,7 +48,6 @@ const mapStateToProps = (state: AppState) => {
   return {
     notifications,
     blockchain: state.blockchain,
-    env: state.env,
     loginAccount,
     modal: state.modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),

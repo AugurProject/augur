@@ -31,7 +31,7 @@ const consoleLog = store => next => action => {
 const localStorageMiddleware = store => next => action => {
   next(action);
   const state = store.getState() as AppState;
-  const { isLogged, isConnected } = AppStatusState.get();
+  const { isLogged, isConnected, env } = AppStatusState.get();
   if (
     !state ||
     !state.loginAccount ||
@@ -51,7 +51,6 @@ const localStorageMiddleware = store => next => action => {
     pendingOrders,
     pendingQueue,
     drafts,
-    env,
     loginAccount
   } = state;
   const windowApp: WindowApp = windowRef as WindowApp;

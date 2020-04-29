@@ -2,7 +2,6 @@ import {
   getNetworkId,
 } from 'modules/contracts/actions/contractCalls';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
-import { updateEnv } from 'modules/app/actions/update-env';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -315,7 +314,7 @@ export function initAugur(
     );
     // cache fingerprint
     getFingerprint();
-    dispatch(updateEnv(config));
+    AppStatusActions.actions.setEnv(config);
     tryToPersistStorage();
     connectAugur(history, config, true, callback)(dispatch, getState);
 

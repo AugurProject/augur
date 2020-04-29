@@ -1,4 +1,5 @@
 import { THEMES, ODDS_TYPE } from 'modules/common/constants';
+import { DEFAULT_SDK_CONFIGURATION, SDKConfiguration } from '@augurproject/artifacts';
 
 export const THEME = 'theme';
 export const ODDS = 'oddsType';
@@ -18,6 +19,9 @@ export const IS_LOGGED = 'isLogged';
 export const IS_CONNECTED = 'isConnected';
 export const IS_RECONNECTION_PAUSED = 'isReconnectionPaused';
 export const CAN_HOTLOAD = 'canHotload';
+export const ENV = 'env';
+
+const DEFAULT_ENV: SDKConfiguration = JSON.parse(JSON.stringify(DEFAULT_SDK_CONFIGURATION));
 
 export const DEFAULT_APP_STATUS = {
   [THEME]: THEMES.TRADING,
@@ -38,6 +42,7 @@ export const DEFAULT_APP_STATUS = {
   [IS_CONNECTED]: false,
   [IS_RECONNECTION_PAUSED]: false,
   [CAN_HOTLOAD]: false,
+  [ENV]: DEFAULT_ENV,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -60,6 +65,7 @@ export const APP_STATUS_ACTIONS = {
   SET_IS_CONNECTED: 'SET_IS_CONNECTED',
   SET_IS_RECONNECTION_PAUSED: 'SET_IS_RECONNECTION_PAUSED',
   SET_CAN_HOTLOAD: 'SET_CAN_HOTLOAD',
+  SET_ENV: 'SET_ENV',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -82,4 +88,5 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setIsConnected: isConnected => {},
   setIsReconnectionPaused: isReconnectionPaused => {},
   setCanHotload: canHotload => {},
+  setEnv: env => {},
 };

@@ -1,7 +1,6 @@
 import accountPositions from 'modules/positions/reducers/account-positions';
 import sidebarStatus from 'modules/app/reducers/sidebar-status';
 import blockchain from 'modules/app/reducers/blockchain';
-import env from 'modules/app/reducers/env';
 import favorites from 'modules/markets/reducers/favorites';
 import filterSortOptions from 'modules/filter-sort/reducers/filter-sort-options';
 import gasPriceInfo from 'modules/app/reducers/gas-price-info';
@@ -57,7 +56,6 @@ export function createReducer() {
     accountPositions,
     alerts,
     blockchain,
-    env,
     favorites,
     filterSortOptions,
     gasPriceInfo,

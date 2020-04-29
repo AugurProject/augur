@@ -73,7 +73,6 @@ interface AppProps {
   universe: Universe;
   updateModal: Function;
   finalizeMarket: Function;
-  env: any;
   ethereumNodeHttp: string;
   ethereumNodeWs: string;
   sdkEndpoint: string;
@@ -158,7 +157,6 @@ const AppView = ({
   useWeb3Transport = false,
   notifications,
   universe: { forkEndTime, forkingInfo },
-  env,
   history,
   initAugur,
   location: locationProp,
@@ -180,7 +178,7 @@ const AppView = ({
   showGlobalChat,
   updateCurrentInnerNavType,
 }:AppProps) => {
-  const { isLogged, isMobile, actions: { setIsMobile} } = useAppStatusStore();
+  const { env, isLogged, isMobile, actions: { setIsMobile} } = useAppStatusStore();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
   const ModalShowing = Object.keys(modal).length !== 0;
