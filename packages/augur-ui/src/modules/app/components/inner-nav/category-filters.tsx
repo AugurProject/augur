@@ -76,7 +76,7 @@ export default class CategoryFilters extends React.Component<
         });
       }
     } else if (categories.length === 0 && categories.length !== this.state.selectedCategories.length) {
-      return this.gotoAllCategories()
+      // return this.gotoAllCategories();
     }
 
     this.loadCategories(prevProps);
