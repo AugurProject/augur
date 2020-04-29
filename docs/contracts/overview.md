@@ -10,7 +10,7 @@ The Augur contract is the first contract in any deployment and serves as:
 
 ### Deployment
 
-When deployed the Augur contract will store the tx sender as the “uploader”. This account has the authority to indicate the singleton contracts for Augur as they are deployed by “registering” them with an identifying string. For example when the [contract responsible for providing a price for the REP token]() is uploaded it is registered with the string “RepOracle”. Other contracts that depend on the [Rep Oracle]() contract will look up its address through the Augur contract when they are first initialized.
+When deployed the Augur contract will store the tx sender as the “uploader”. This account has the authority to indicate the singleton contracts for Augur as they are deployed by “registering” them with an identifying string. For example when the [contract responsible for providing a price for the REP token](#contract-responsible-for-providing-a-price-for-the-rep-token) is uploaded it is registered with the string “RepOracle”. Other contracts that depend on the [Rep Oracle]() contract will look up its address through the Augur contract when they are first initialized.
 
 At the end of the deployment process the Augur contract has a function called “finishDeployment” which will revoke authorization to register any new contracts and will emit an event to indicate this has occurred.
 
@@ -20,9 +20,9 @@ In addition to storing a registry of the singleton contracts uploaded during dep
 
 When contract instances are generated, such as:
 
-* [Markets]()
-* [Universes]()
-* [Bonds]()
+* [Markets](#markets)
+* [Universes](#universes)
+* [Bonds](#bonds)
 
 They are stored in the Augur mapping so that various contract interactions can validate the legitimacy of a sender claiming for example to be a Market instance.
 
@@ -34,7 +34,7 @@ Augur’s contract events are emitted from the Augur contract in the vast majori
 
 Many Augur contracts need to be able to transfer DAI on behalf of the tx sender. Rather than requiring the account to authorize each of these individual contracts the Augur contract maintains a list of “trusted” contract addresses which may request a transferFrom on their behalf. This reduces the various approvals to users simply approving the Augur contract.
 
-It should be noted that this only applies to the core Augur contracts. The [Trading]() contracts which are discussed later require a variety of additional approvals by users, though this can be largely ignored if the [Augur wallet]() is being used.
+It should be noted that this only applies to the core Augur contracts. The [Trading](#trading) contracts which are discussed later require a variety of additional approvals by users, though this can be largely ignored if the [Augur wallet]() is being used.
 
 ### Upgrade Day
 
@@ -44,49 +44,49 @@ The first upgrade day is a chosen constant and is currently set to be July 15th 
 
 ## Universes
 
-A Universe in Augur is a collection of markets and is itself a **node** in a **tree** of **interpretations of truth**. During deployment the initial Universe, called the “Genesis Universe”, is created. The “Genesis Universe” is a blank slate and carries no implicit qualities. It simply contains markets. The Genesis Universe however may end up with Child Universes which are each representative of an interpretation of the truth. For example Child A of the Genesis universe may be the sub-version of the Augur deployment where all participants believe that Hillary Clinton won the 2016 United States presidential election, and Universe B is the version where Donald Trump won. More on this process of Universe creation is detailed in the [forking]() section.
+A Universe in Augur is a collection of markets and is itself a **node** in a **tree** of **interpretations of truth**. During deployment the initial Universe, called the “Genesis Universe”, is created. The “Genesis Universe” is a blank slate and carries no implicit qualities. It simply contains markets. The Genesis Universe however may end up with Child Universes which are each representative of an interpretation of the truth. For example Child A of the Genesis universe may be the sub-version of the Augur deployment where all participants believe that Hillary Clinton won the 2016 United States presidential election, and Universe B is the version where Donald Trump won. More on this process of Universe creation is detailed in the [forking](#forking) section.
 
 ### Markets
 
 Every Market in Augur is part of a Universe. Aside from the implicit assertions about the nature of reality and truth that are inherited from a Universe there are various on-chain properties that a Market derives from its Universe. In particular the following market relevant properties are all derived from its Universe:
 
-* [Reporting Fee]()
-* [No Show Bond]()
-* [Forking Goal]()
-* [Reputation Token]()
-* [Validity Bond]()
+* [Reporting Fee](#reporting-fee)
+* [No Show Bond](#no-show-bond)
+* [Forking Goal](#forking-goal)
+* [Reputation Token](#reputation-token)
+* [Validity Bond](#validity-bond)
 
 ### Universe Forking
 
-Each Universe on Augur maintains a threshold called the “fork threshold”. This value is the amount of [REP]() within a single [dispute bond]() which will trigger the process known as a fork. The fork threshold is set to be:
+Each Universe on Augur maintains a threshold called the “fork threshold”. This value is the amount of [REP](#rep) within a single [dispute bond]() which will trigger the process known as a fork. The fork threshold is set to be:
 
 0.025 \* ReputationToken.getTotalTheoreticalSupply\(\)
 
-When this occurs the Universe will be capable of generating child universes in accordance with the [Market]() corresponding to the triggering [dispute bond](). In particular a child Universe may be created for every possible legitimate outcome \(called a [payout\)]() for the market. Any child universe created this way represents a version of Augur where that payout is considered the truth to all its users.
+When this occurs the Universe will be capable of generating child universes in accordance with the [Market](#market) corresponding to the triggering [dispute bond](). In particular a child Universe may be created for every possible legitimate outcome \(called a [payout\)]() for the market. Any child universe created this way represents a version of Augur where that payout is considered the truth to all its users.
 
-More on the resolution of a fork can be found in the reporting section [here]().
+More on the resolution of a fork can be found in the reporting section [here](#reporting).
 
 ### Reporting Fee
 
-Each Universe has its own fee rate, called the Reporting Fee, that is applied to the sale of [Shares]() . This fee is how active REP holders are compensated for maintaining vigilance of the platform and what gives the [Reputation Token]() inherent value.
+Each Universe has its own fee rate, called the Reporting Fee, that is applied to the sale of [Shares](#shares) . This fee is how active REP holders are compensated for maintaining vigilance of the platform and what gives the [Reputation Token]() inherent value.
 
-The value of the reporting fee is determined by using the current [Open Interest]() of the platform and the current value of the [Reputation Token]() both denominated in DAI. The desire is for income generated for REP holders to give enough value to the REP token such that the REP Market Cap is 5x the value of all funds locked in the platform. In this way until the Market Cap in REP is high enough to provide the desired ratio the reporting fee will continue increasing.
+The value of the reporting fee is determined by using the current [Open Interest](#open-interest) of the platform and the current value of the [Reputation Token]() both denominated in DAI. The desire is for income generated for REP holders to give enough value to the REP token such that the REP Market Cap is 5x the value of all funds locked in the platform. In this way until the Market Cap in REP is high enough to provide the desired ratio the reporting fee will continue increasing.
 
 The calculation of a new reporting fee for a Universe is done with the following algorithm:
 
-Rep Token MCAP = Rep Token Price \* totalTheoreticalSupply  
-Target Rep Token MCAP = Open Interest \* 5  
-New Fee Divisor = Previous Fee \* Rep Token MCAP / Target Rep Token MCAP  
-New Fee Divisor = Maximum\(3, New Fee\) // Maximum 33.3% Fee  
+Rep Token MCAP = Rep Token Price \* totalTheoreticalSupply
+Target Rep Token MCAP = Open Interest \* 5
+New Fee Divisor = Previous Fee \* Rep Token MCAP / Target Rep Token MCAP
+New Fee Divisor = Maximum\(3, New Fee\) // Maximum 33.3% Fee
 New Fee Divisor = Minimum\(10000, New Fee\) // Minimum 0.01% Fee
 
 The initial reporting fee for any new Universe is 0.01% and the fee is recalculated on demand on a weekly cadence.
 
 ### Reputation Token
 
-The Reputation Token, commonly referred to as REP, of a Universe is an ERC20 token which is used to stake on and therefore determine [Market]() payout [resolutions]().
+The Reputation Token, commonly referred to as REP, of a Universe is an ERC20 token which is used to stake on and therefore determine [Market](#market) payout [resolutions]().
 
-The genesis Universe's supply is generated by migrating [Legacy Reputation Tokens](). All other Universes’ supplies are generated by [migrating REP from their parent Universe during a fork]().
+The genesis Universe's supply is generated by migrating [Legacy Reputation Tokens](#legacy-reputation-tokens). All other Universes’ supplies are generated by [migrating REP from their parent Universe during a fork]().
 
 One often used property of Reputation Tokens is something called “Total Theoretical Supply”, which is the amount of REP which could in theory end up as part of the actual total supply. For the Genesis universe this is:
 
@@ -109,15 +109,15 @@ Balances in this contract can be migrated into V2 by:
 
 ### Rep Price Oracle
 
-In order to determine an appropriate [Reporting Fee]() we need to know the price of [REP](). To do this Augur uses a price oracle built on top of Uniswap V2. The oracle contract uses a time weighted average over a 3 day period based on the cumulative token supplies for the REP/DAI uniswap exchnage.
+In order to determine an appropriate [Reporting Fee](#reporting-fee) we need to know the price of [REP](). To do this Augur uses a price oracle built on top of Uniswap V2. The oracle contract uses a time weighted average over a 3 day period based on the cumulative token supplies for the REP/DAI uniswap exchnage.
 
 ### OI
 
-OI is an abbreviation for “Open Interest”, which is the amount of funds currently locked in any given Universe which is “at risk”, meaning held in exchange for issued [Shares]().
+OI is an abbreviation for “Open Interest”, which is the amount of funds currently locked in any given Universe which is “at risk”, meaning held in exchange for issued [Shares](#shares).
 
 ### Parasitic OI
 
-Parasitic OI is any funds which exist outside of the scope of [Shares]() but still resolve according to the payout of a Market. Parasitic OI is bad for Augur as it creates an unknowable amount of funds which if sufficiently high could create an incentive to resolve a market to an incorrect outcome. Currently the system design is vulnerable if the total value of parasitic OI is 2.5x the total OI in Augur \(assuming 50% participation in a fork\).
+Parasitic OI is any funds which exist outside of the scope of [Shares](#shares) but still resolve according to the payout of a Market. Parasitic OI is bad for Augur as it creates an unknowable amount of funds which if sufficiently high could create an incentive to resolve a market to an incorrect outcome. Currently the system design is vulnerable if the total value of parasitic OI is 2.5x the total OI in Augur \(assuming 50% participation in a fork\).
 
 ### OI Cash
 
@@ -125,28 +125,28 @@ OI Cash represents funds \(DAI\) that depend on Market resolution but have not p
 
 ### DSR
 
-While in Augur any [OI]() in the system will be stored within the Dai Savings contract and will accumulate interest. This interest is Universe specific and can be swept into the next pool of [fees for reporters]() by anyone at any time.
+While in Augur any [OI](#oi) in the system will be stored within the Dai Savings contract and will accumulate interest. This interest is Universe specific and can be swept into the next pool of [fees for reporters]() by anyone at any time.
 
 One oddity to note with the DSR is that technically a negative interest rate is feasible. Such an event is not handled in the Augur contracts as there has been an explicit assurance that this is considered an attack on the MKR system and would result in a shutdown, which Augur does operate fine with.
 
 ### Bond Values
 
-There are several bonds that must be placed when a [Market]() is created. The actual floating value of these bonds is adjusted on a weekly cadence as needed using the same algorithm for all but with different input values for each. Each bond value is based on some accumulated value and compared to a constant target value to determine if the bond should increase or decrease. The floating value algorithm is as follows:
+There are several bonds that must be placed when a [Market](#market) is created. The actual floating value of these bonds is adjusted on a weekly cadence as needed using the same algorithm for all but with different input values for each. Each bond value is based on some accumulated value and compared to a constant target value to determine if the bond should increase or decrease. The floating value algorithm is as follows:
 
-if percentage &lt;= target\_percent:  
- value = previous\_value \* \(actual\_percent / \(10 \* percent\) + 0.9\);  
-if percentage &gt; target\_percent:  
+if percentage &lt;= target\_percent:
+ value = previous\_value \* \(actual\_percent / \(10 \* percent\) + 0.9\);
+if percentage &gt; target\_percent:
  value = previous\_value \* \(\(1/\(1 - target\_percent\)\) \* \(percent - target\_percent\) + 1\);
 
 This algorithm results in the value fluctuating between **.9** \* the previous value and **2x** the previous value. The reason Augur drops the value slower than it increases is that once a suitable value has been found it is in the system’s best interest for it to remain at that level. If at any point for example there were enough no shows to double the value it should not immediately drop to its previous level if there are no no shows.
 
 | **Bond** | **Value Checked** | **Target Percentage** | **Initial Value** |
 | :--- | :--- | :--- | :--- |
-| [No Show]() | The REP value of [designated reports]() VS No Shows | 5% | .35 REP |
-| [Initial Report]() | The REP value of incorrect [initial reports]() | 1% | .35 REP |
-| [Validity]() | The DAI value of validity bonds VS number of Invalid Markets | 1% | $10 |
+| [No Show](#no-show) | The REP value of [designated reports]() VS No Shows | 5% | .35 REP |
+| [Initial Report](#initial-report) | The REP value of incorrect [initial reports]() | 1% | .35 REP |
+| [Validity](#validity) | The DAI value of validity bonds VS number of Invalid Markets | 1% | $10 |
 
-Each bond is discussed more in the [Markets]() and [Reporting]() sections.
+Each bond is discussed more in the [Markets](#markets) and [Reporting]() sections.
 
 ## Markets
 
@@ -154,15 +154,15 @@ Markets are the contract instances encapsulating events which can be predicted i
 
 ### Creation Parameters
 
-* **Outcomes \(**[**Categorical**]() **Only\):** In a categorical market the name of each outcome must be provided. For example if the market was on the winner of an election each candidate would have their own outcome. For ALL markets the first outcome is always [Invalid]() and is added automatically. For [Yes/No]() and [Scalar]() markets the outcomes are fixed as Invalid / No / Yes and Invalid / Long / Short respectively.
+* **Outcomes \(**[**Categorical**]() **Only\):** In a categorical market the name of each outcome must be provided. For example if the market was on the winner of an election each candidate would have their own outcome. For ALL markets the first outcome is always [Invalid](#invalid) and is added automatically. For [Yes/No]() and [Scalar]() markets the outcomes are fixed as Invalid / No / Yes and Invalid / Long / Short respectively.
 * **Description:** The description of a market is the long version of the human readable instructions on how to resolve the market.
 * **Title:** The title is a short description of the question the market is asking, e.g “Who will win the 2020 United States Presidential Election”
 * **Min / Max Prices \(**[**Scalar**]() **Only\):** The Min & Max Prices indicate the off chain desired range of prices. In Yes/No and Categorical markets these values are always 0 and 10\*\*18 respectively, resulting in an off-chain range of 0 and 1. For scalar markets one may desire a custom range such as when tracking the price of a stock. If that stock value is currently $1700 it would make sense to have a min value of 0 and a max value of 3400 \* 10\*\*18, resulting in a market that is tracking the movement of the share price from complete collapse to doubling.
-* **Num Ticks \(**[**Scalar**]() **Only\):** The “Num Ticks” of a market is the precision of prices and the value of a [complete set of shares](). In Yes/No and Categorical markets this value is always 100. This results in prices which are denominated in pennies. For scalar markets more novel pricing intervals may be desired such as a market tracking the price of a stock. If that stock value is currently $1700 it could make sense for example to use a Num Ticks value of 3400 which would denominate prices in a dollar if the min/max price range was 0 to 3400 \* 10\*\*18. If instead a numTicks of 340 was used prices would be in increments of $10.
-* **Market Creator Fee:** The Market creator fee is a fee extracted during share settlement that is held until a market resolves as [valid]() and is then given to the market owner. It can be anywhere in the range of 0% to 15% of the value of sold [shares]().
-* **Affiliate Validator:** The Affiliate Validator is a contract reference that may be specified optionally and is used to filter which share settlements will extract an affiliate fee. More information on [affiliates]() is later in the Markets section.
-* **Affiliate Fee:** The affiliate fee is a percentage of the Market Creator Fee specified as a divisor which is given to referrers of traders. More information on [affiliates]() is later in the Markets section.
-* **Designated Reporter:** The designated reporter is the address which will be able to do the [designated report]() on a market when it reaches its end time.
+* **Num Ticks \(**[**Scalar**]() **Only\):** The “Num Ticks” of a market is the precision of prices and the value of a [complete set of shares](#complete-set-of-shares). In Yes/No and Categorical markets this value is always 100. This results in prices which are denominated in pennies. For scalar markets more novel pricing intervals may be desired such as a market tracking the price of a stock. If that stock value is currently $1700 it could make sense for example to use a Num Ticks value of 3400 which would denominate prices in a dollar if the min/max price range was 0 to 3400 \* 10\*\*18. If instead a numTicks of 340 was used prices would be in increments of $10.
+* **Market Creator Fee:** The Market creator fee is a fee extracted during share settlement that is held until a market resolves as [valid](#valid) and is then given to the market owner. It can be anywhere in the range of 0% to 15% of the value of sold [shares]().
+* **Affiliate Validator:** The Affiliate Validator is a contract reference that may be specified optionally and is used to filter which share settlements will extract an affiliate fee. More information on [affiliates](#affiliates) is later in the Markets section.
+* **Affiliate Fee:** The affiliate fee is a percentage of the Market Creator Fee specified as a divisor which is given to referrers of traders. More information on [affiliates](#affiliates) is later in the Markets section.
+* **Designated Reporter:** The designated reporter is the address which will be able to do the [designated report](#designated-report) on a market when it reaches its end time.
 * **End Time:** The end time of a market is the time when reporting on the market outcome begins. Trading on the market is never actually halted so this is sometimes referred to as the “Reporting Start Time” instead. Typically this value is expected to be some buffer of time after the event or prediction is expected to end.
 
 ### Market Types
@@ -191,15 +191,15 @@ When a market is created a deposit of REP is required in order to fulfil 2 diffe
 
 #### No Show Bond
 
-The No Show Bond is a REP deposit given to the market to account for the event the [designated reporter]() does not show up and provide an initial report for the market. It will float over time relative to the amount of No Show REP bonds in markets against the frequency of designated reporters not showing up. When an initial report occurs this bond is always used to fund that report.
+The No Show Bond is a REP deposit given to the market to account for the event the [designated reporter](#designated-reporter) does not show up and provide an initial report for the market. It will float over time relative to the amount of No Show REP bonds in markets against the frequency of designated reporters not showing up. When an initial report occurs this bond is always used to fund that report.
 
 #### Initial Report Bond
 
-The Initial Report Bond is the value required for the very first [payout]() reported during market resolution. It will float over time relative to the proportion of Initial REP bond payments and the number of markets which actually resolve to the initially reported payout.
+The Initial Report Bond is the value required for the very first [payout](#payout) reported during market resolution. It will float over time relative to the proportion of Initial REP bond payments and the number of markets which actually resolve to the initially reported payout.
 
 ### Validity Bond
 
-The Validity bond is a DAI deposit given to the market to incentivize the market creator to craft a market which will not resolve as Invalid. If the market resolves as [valid]() it will be returned to the creator, otherwise it will be given to the next pool of fees collected for reporters.
+The Validity bond is a DAI deposit given to the market to incentivize the market creator to craft a market which will not resolve as Invalid. If the market resolves as [valid](#valid) it will be returned to the creator, otherwise it will be given to the next pool of fees collected for reporters.
 
 ### Shares
 
@@ -207,15 +207,15 @@ Shares in a market are the representation of a particular outcome. The contract 
 
 abi.encodePacked\(\_market, uint8\(\_outcome\)\);
 
-Shares can be created and burned in exchange for DAI through the use of complete sets, or, when the market has [finalized](), by redeeming shares with a [payout]() value.
+Shares can be created and burned in exchange for DAI through the use of complete sets, or, when the market has [finalized](#finalized), by redeeming shares with a [payout]() value.
 
 #### Complete sets
 
-A single complete set is 1 share of each outcome in a market. In a [Yes / No]() market a complete set would be 1 share each of Invalid, Yes, and No shares. Shares are only ever generated as complete sets. A complete set can be purchased from the Share Token contract for [numTicks]() attoDAI.
+A single complete set is 1 share of each outcome in a market. In a [Yes / No]() market a complete set would be 1 share each of Invalid, Yes, and No shares. Shares are only ever generated as complete sets. A complete set can be purchased from the Share Token contract for [numTicks](#numticks) attoDAI.
 
 #### Settlement
 
-Settlement is the term used to describe shares being burned in exchange for DAI. Complete Sets may always be burned in exchange for [numTicks]() attoDai. Once a market has [finalized](), shares may be burned for their [payout]() value.
+Settlement is the term used to describe shares being burned in exchange for DAI. Complete Sets may always be burned in exchange for [numTicks](#numticks) attoDai. Once a market has [finalized](), shares may be burned for their [payout]() value.
 
 Though the settlement values are numTicks and the outcome payout, whenever settlement occurs fees are extracted from this settlement. In particular the market creator fee and the reporting fee are subtracted from the settlement value.
 
@@ -223,11 +223,11 @@ As an example let say a Market has a 1% creator fee and the system currently has
 
 ### Resolution
 
-When a market has reached its end time it enters [Reporting](), which is the process of finalizing a market with a [payout](). There are 3 important distinctions for how a market can resolve below.
+When a market has reached its end time it enters [Reporting](#reporting), which is the process of finalizing a market with a [payout](). There are 3 important distinctions for how a market can resolve below.
 
 #### Valid
 
-In normal circumstances a non-[Scalar]() market will resolve with a payout where one non-Invalid outcome receives numTicks attoDai. More generally they resolve with a normal outcome as the “winner”. For example in a Yes / No market a normal resolution is for Yes or No to win.
+In normal circumstances a non-[Scalar](#scalar) market will resolve with a payout where one non-Invalid outcome receives numTicks attoDai. More generally they resolve with a normal outcome as the “winner”. For example in a Yes / No market a normal resolution is for Yes or No to win.
 
 In Scalar markets a valid outcome will be a payout that distributes numTicks attoDai between the LONG and SHORT outcomes \(1 and 2 respectively\).
 
@@ -239,13 +239,13 @@ When a market is resolved as Invalid Invalid shares will pay out numTicks attoDa
 
 #### Fork
 
-One of the most critical components of the Augur platform is the ability for Markets to resolve in a fork. The concept of a fork is discussed more in the [Universe section]() and the process by which a dispute results in a fork is described in the [Reporting section]().
+One of the most critical components of the Augur platform is the ability for Markets to resolve in a fork. The concept of a fork is discussed more in the [Universe section](#universe-section) and the process by which a dispute results in a fork is described in the [Reporting section]().
 
 From the forking market’s perspective the eventual resolution will actually function just like a normal Valid or Invalid resolution. The way in which the final payout is determined is all that is materially different. Shares will still be redeemable in the same fashion and the payout for those shares follows the same rules.
 
 ### Affiliates
 
- When [settlement]() occurs and fees are taken if the market has specified an affiliate fee and a market creator fee the system will attempt to award fees for the account that referred the trader causing the transaction.
+ When [settlement](#settlement) occurs and fees are taken if the market has specified an affiliate fee and a market creator fee the system will attempt to award fees for the account that referred the trader causing the transaction.
 
 An Augur deployment has an “Affiliates” contract which stores a referring address and a browser fingerprint for a given account. During the normal client based setup of an account these are set for them however a user interacting directly with the contracts could set these values manually if desired.
 
@@ -257,13 +257,13 @@ If an Affiliate Validator contract has been specified there will be an additiona
 
 ## Trading
 
-Trading encompasses the high level contract interactions which are used to match users of the protocol that wish to take complementary [share]() positions in a [market]().
+Trading encompasses the high level contract interactions which are used to match users of the protocol that wish to take complementary [share](#share) positions in a [market]().
 
 The trading contracts in the Augur contract repository are actually a collection of external contracts that are deployed alongside the core Augur protocol. This is significant in that if a problem is found in production that is isolated to the trading portion of contracts they can be redeployed safely without a new version of Augur.
 
 ### Augur Trading
 
-The Augur Trading contract is the Trading equivalent of the [Augur]() contract and performs essentially the same functions, but with the contracts which are related to trading instead. The Augur Trading contract does not however serve as a central authority for token transfers within the trading contracts, so individual approval is needed to use them.
+The Augur Trading contract is the Trading equivalent of the [Augur](#augur) contract and performs essentially the same functions, but with the contracts which are related to trading instead. The Augur Trading contract does not however serve as a central authority for token transfers within the trading contracts, so individual approval is needed to use them.
 
 ### Orders
 
@@ -303,7 +303,7 @@ The trading contracts will always prioritize using a user’s Shares over using 
 
 ### On Chain Trading
 
-The On Chain trading contracts provide functionality to escrow funds on chain in the form of DAI or [Shares]() and let other users take those orders by providing their own funds in a transaction.
+The On Chain trading contracts provide functionality to escrow funds on chain in the form of DAI or [Shares](#shares) and let other users take those orders by providing their own funds in a transaction.
 
 #### Canceling Orders
 
@@ -316,13 +316,13 @@ Filling an on chain order is done with the FillOrder contract and takes these ar
 * **Order ID:** The generated ID of the on chain order
 * **Amount:** The amount of shares the filler wishes to take
 * **Trade Group ID:** An ID provided which is used by higher level contracts to associate trading actions together
-* **Fingerprint:** A browser fingerprint used as a naive prevention measure for spoofing a referral in the [Affiliate]() system.
+* **Fingerprint:** A browser fingerprint used as a naive prevention measure for spoofing a referral in the [Affiliate](#affiliate) system.
 
-The required assets detailed in the [order asset requirements section]() will be taken from the transaction sender and they will receive the specified assets in return.
+The required assets detailed in the [order asset requirements section](#order-asset-requirements-section) will be taken from the transaction sender and they will receive the specified assets in return.
 
 #### Trading
 
-The Trade contract is a somewhat higher level contract that enables one to avoid direct interaction with the contracts to create or fill orders, and instead allows a user to specify a desired position or interaction relative to an existing position via [order parameters](). When a trade is made this way the underlying system will find existing orders to fill first and then if a remaining desired amount is left a new order will be placed.
+The Trade contract is a somewhat higher level contract that enables one to avoid direct interaction with the contracts to create or fill orders, and instead allows a user to specify a desired position or interaction relative to an existing position via [order parameters](#order-parameters). When a trade is made this way the underlying system will find existing orders to fill first and then if a remaining desired amount is left a new order will be placed.
 
 One may also specify that no order should be placed and the transaction will simply not completely fill the entire desired trade if insufficient orders are available on chain.
 
@@ -332,7 +332,7 @@ Creating orders on chain has some negative aspects. In particular it requires a 
 
 By moving orders off chain we make order creation free and allow order cancelation to potentially be much cheaper if done via expiration.
 
-0x off chain orders still have the same [properties]() as on chain orders and the same [asset requirements]() and expectations. The real difference is that they are represented not by a generated ID but by the order properties themselves and a signature of the order creator on those properties. These properties along with the signature can be used by another party that wishes to fill the order as proof that the order creator is willing to take that part of the trade.
+0x off chain orders still have the same [properties](#properties) as on chain orders and the same [asset requirements]() and expectations. The real difference is that they are represented not by a generated ID but by the order properties themselves and a signature of the order creator on those properties. These properties along with the signature can be used by another party that wishes to fill the order as proof that the order creator is willing to take that part of the trade.
 
 #### ZeroXTrade Token
 
@@ -361,19 +361,19 @@ Since off chain orders are not stored and sorted on chain it is the responsibili
 
 * **Amount:** The amount of shares the transaction sender wishes to fill
 * **Trade Group ID:** An ID provided which is used by higher level contracts to associate trading actions together
-* **Fingerprint:** A browser fingerprint used as a naive prevention measure for spoofing a referral in the [Affiliate]() system.
+* **Fingerprint:** A browser fingerprint used as a naive prevention measure for spoofing a referral in the [Affiliate](#affiliate) system.
 * **Max Protocol Fee:** An amount of DAI the user is willing to spend to fulfil the 0x trading protocol fee. Provided since this DAI is exchanged using Uniswap for the required ETH.
 * **Max Trades:** The maximum number of orders to actually fill in this TX. This is provided so that many orders may be passed in which may not end up being filled due to circumstances like order expiration/cancellation, being filled before the sender’s transaction is mined, or the order creators funds dropping too low. In the event no such circumstances happen the transaction would likely exceed the provided gas limit unless a stop was in place.
 * **Orders:** An array of order data corresponding to the orders the sender wishes to fill.
 * **Signatures:** An array of signatures by the order creators corresponding to each of the provided orders.
 
-The contract will iterate each order and apply the same logic used in the [on chain order filling]() process including taking the normally escrowed assets from the order creator to use in the trade.
+The contract will iterate each order and apply the same logic used in the [on chain order filling](#on-chain-order-filling) process including taking the normally escrowed assets from the order creator to use in the trade.
 
 ## Reporting
 
 Reporting in Augur is a term often used to encompass all aspects of the process of resolving markets, including the actual act of reporting on them and the potential following dispute process for challenging that report.
 
-Reporting and disputing both require a deposit of [REP]() which is considered lost to other reporters / disputers if the market resolves differently than the depositor is asserting. This is what provides economic incentives for both telling the truth initially and for seeking out and correcting false reports / disputes.
+Reporting and disputing both require a deposit of [REP](#rep) which is considered lost to other reporters / disputers if the market resolves differently than the depositor is asserting. This is what provides economic incentives for both telling the truth initially and for seeking out and correcting false reports / disputes.
 
 For example if User A reports that outcome YES occurred and ends up staking 2 REP, but the Market resolves such that outcome NO is what occurred, that 2 REP will be distributed to the addresses that staked REP on outcome NO via the disputing process proportionally to the amount they each staked.
 
@@ -381,7 +381,7 @@ In actuality the profit of the winning reporters will end up being 1.6 REP as 20
 
 ### Payouts
 
-When a market resolves, also referred to as becoming “finalized”, it will end up with a “payout”. This payout is a distribution of DAI to be awarded for each [Share]() corresponding to the Market’s outcomes. These payouts are what is being asserted when someone reports or disputes on a market.
+When a market resolves, also referred to as becoming “finalized”, it will end up with a “payout”. This payout is a distribution of DAI to be awarded for each [Share](#share) corresponding to the Market’s outcomes. These payouts are what is being asserted when someone reports or disputes on a market.
 
 Payouts are easiest to represent as an array of integers where the index of each value corresponds to a market outcome. Some examples:
 
@@ -418,21 +418,21 @@ When a Market reaches its configured end time it will be eligible for reporting.
 The first reported payout a market receives is referred to as the Initial Report. It is distinct from other dispute based reports for 2 reasons:
 
 * It is a report by a single party rather than sourced from any number of addresses
-* The REP which is staked is \(in most cases\) provided by the [REP Bond]() given to the market at its creation.
+* The REP which is staked is \(in most cases\) provided by the [REP Bond](#rep-bond) given to the market at its creation.
 
-The value of the initial report is at minimum ~.35 REP and will [float accordingly]() as the [maximum of the No Show and Initial Report Bonds]().
+The value of the initial report is at minimum ~.35 REP and will [float accordingly](#float-accordingly) as the [maximum of the No Show and Initial Report Bonds]().
 
 #### Designated Report
 
-The first type of Initial Report that can occur is called the “Designated Report”. This is an opportunity for the Market’s configured [Designated Reporter]() to provide the Initial report.
+The first type of Initial Report that can occur is called the “Designated Report”. This is an opportunity for the Market’s configured [Designated Reporter](#designated-reporter) to provide the Initial report.
 
-The Designated Report may only be made during the [Initial Window]() which essentially means the Designated Reporter has at least 24 hours to provide their report.
+The Designated Report may only be made during the [Initial Window](#initial-window) which essentially means the Designated Reporter has at least 24 hours to provide their report.
 
-If the Designated Reporter does make the initial report the Market creator will receive the [No Show Bond]() back immediately. In the majority of expected cases however the Market Creator is also the Designated Reporter which means this REP will be immediately used to cover the [Initial Report Bond]().
+If the Designated Reporter does make the initial report the Market creator will receive the [No Show Bond](#no-show-bond) back immediately. In the majority of expected cases however the Market Creator is also the Designated Reporter which means this REP will be immediately used to cover the [Initial Report Bond]().
 
 #### Open Report
 
-If the Designated Reporter does not provide a report within their [allotted window]() anyone will be allowed to provide the Initial Report. In the event this happens the [No Show Bond]() is used to provide the stake for the Initial Report. If the reporter was correct this means they will have essentially been paid that REP bond by the market creator to provide the Initial Report.
+If the Designated Reporter does not provide a report within their [allotted window](#allotted-window) anyone will be allowed to provide the Initial Report. In the event this happens the [No Show Bond]() is used to provide the stake for the Initial Report. If the reporter was correct this means they will have essentially been paid that REP bond by the market creator to provide the Initial Report.
 
 ### Disputing
 
@@ -454,25 +454,25 @@ This formula guarantees that the profit from correctly staking REP is 50% of wha
 
 If contributions are made to a dispute but the bond size is not reached, or if a different dispute crowdsourced is filled first, the bond is considered “disavowed” and contributors may get the stake they placed back immediately.
 
-One unusual restriction on dispute contributions is that there is a threshold of remaining value to fill a bond which may not occur. This means that once a bond is filled up to a particular amount the remaining amount must be filled entirely in any further contributions. This threshold is whatever the current [REP bond]() for market creation is.
+One unusual restriction on dispute contributions is that there is a threshold of remaining value to fill a bond which may not occur. This means that once a bond is filled up to a particular amount the remaining amount must be filled entirely in any further contributions. This threshold is whatever the current [REP bond](#rep-bond) for market creation is.
 
 #### Fast & Slow Disputing
 
 Initially the contributions that are made to dispute the current tentative winning outcome may be made with no time restrictions. This means that as soon as a payout has been reported or has become the tentative winning payout through disputing someone may immediately dispute it. This is the phase of disputing known as “Fast” Disputing.
 
-This phase is in place until a Dispute Bond is filled whose value implies there can be at most 8 more bonds until a [fork]() occurs. Once this threshold is reached contributions to disputes cannot be made until the Market’s current [Dispute Window]() has started. This effectively means that there is at least a 7 day gap in between disputes and provides ample time for those who wish to participate in disputing and the potentially upcoming fork to get the REP out of cold storage. This phase is known as “Slow” disputing.
+This phase is in place until a Dispute Bond is filled whose value implies there can be at most 8 more bonds until a [fork](#fork) occurs. Once this threshold is reached contributions to disputes cannot be made until the Market’s current [Dispute Window]() has started. This effectively means that there is at least a 7 day gap in between disputes and provides ample time for those who wish to participate in disputing and the potentially upcoming fork to get the REP out of cold storage. This phase is known as “Slow” disputing.
 
 #### Pre-emptive Contributions
 
-Due to the nature of how a market [resolves]() the system is vulnerable to a sort of greifing attack where an individual fills low value dispute bonds at the last possible second, dragging out the time it takes to complete.
+Due to the nature of how a market [resolves](#resolves) the system is vulnerable to a sort of greifing attack where an individual fills low value dispute bonds at the last possible second, dragging out the time it takes to complete.
 
-In order to combat this there is an option when contributing to an initial report or a dispute contribution to also contribute excess REP in reserve for the case the asserted payout is disputed. This excess REP is only limited by the threshold where disputes enter [Slow disputing]() and will be used to dispute any new tentative winning payout immediately should one occur. This allows many rounds of back and forth disputing to essentially be skipped and presents an immediate threat to any trolling party that REP staked will likely be lost.
+In order to combat this there is an option when contributing to an initial report or a dispute contribution to also contribute excess REP in reserve for the case the asserted payout is disputed. This excess REP is only limited by the threshold where disputes enter [Slow disputing](#slow-disputing) and will be used to dispute any new tentative winning payout immediately should one occur. This allows many rounds of back and forth disputing to essentially be skipped and presents an immediate threat to any trolling party that REP staked will likely be lost.
 
 One important note about pre-emptive contributions is that any excess REP used this way is not guaranteed the normal 40% ROI on dispute contributions. This is because even if the pre-emptive bond is deployed it will likely be for much more REP than is actually available from losing bonds.
 
 #### Forking
 
-When a [Dispute Bond]()’s size reaches the [forking threshold]() it will trigger a Fork. At this point the [resolution process]() works differently than for normal cases and the universe is in a forking state where:
+When a [Dispute Bond](#dispute-bond)’s size reaches the [forking threshold]() it will trigger a Fork. At this point the [resolution process]() works differently than for normal cases and the universe is in a forking state where:
 
 * New markets may not be created
 * Existing markets may not go through the reporting process
@@ -489,27 +489,27 @@ In the event no universe has 50% of the REP supply migrate to it the Universe wi
 
 The winning universe’s correlated payout determines how the Forking Market ultimately resolves.
 
-Once there is a winning universe any existing markets in the forking universe can be migrated to that winning universe. Until they are migrated they cannot be finalized. The transaction to migrate them will require a new [REP bond]() and if the market is past its end time will require an [Initial Report]() be made.
+Once there is a winning universe any existing markets in the forking universe can be migrated to that winning universe. Until they are migrated they cannot be finalized. The transaction to migrate them will require a new [REP bond](#rep-bond) and if the market is past its end time will require an [Initial Report]() be made.
 
 ### Resolution / Finalization
 
-When a market has a tentative winning payout it must remain without any [Dispute Bond]() being filled for a full [Dispute Window]() \(effectively 7 days\) before the winner becomes non-tentative. At that point the Market may be “finalized” and the payout will become official.
+When a market has a tentative winning payout it must remain without any [Dispute Bond](#dispute-bond) being filled for a full [Dispute Window]() \(effectively 7 days\) before the winner becomes non-tentative. At that point the Market may be “finalized” and the payout will become official.
 
 ### Dispute Windows
 
-Dispute Windows serve the purpose of a cadence mechanism, used for [Reporting](), Fee distribution, and for recalculation of [Universe values]().
+Dispute Windows serve the purpose of a cadence mechanism, used for [Reporting](#reporting), Fee distribution, and for recalculation of [Universe values]().
 
 Each Dispute Window lasts 7 days.
 
-When a market is initially reported on or has a new dispute bond filled it is assigned the next occurring Dispute Window. As described in the [Resolution]() section the market must complete this Dispute Window without having any dispute bond fill to be finalizable. Due to this cadence and assignment it will actually mean markets must wait longer than 7 days to resolve.
+When a market is initially reported on or has a new dispute bond filled it is assigned the next occurring Dispute Window. As described in the [Resolution](#resolution) section the market must complete this Dispute Window without having any dispute bond fill to be finalizable. Due to this cadence and assignment it will actually mean markets must wait longer than 7 days to resolve.
 
 #### Initial Windows
 
-Initial Windows exist only to provide a reliable cadence for the 24 hour periods afforded to [designated reporters]() to make their reports. Every market when it reaches its end time is initially assigned an Initial Window instead of a standard Dispute Window.
+Initial Windows exist only to provide a reliable cadence for the 24 hour periods afforded to [designated reporters](#designated-reporters) to make their reports. Every market when it reaches its end time is initially assigned an Initial Window instead of a standard Dispute Window.
 
 #### Fees & Participation Tokens
 
-[Reporting fees]() which are collected during [Share settlement]() are always deposited into the next upcoming Dispute Window. In order to get a portion of these fees one must purchase “Participation Tokens”. In fact the Dispute Windows are actually ERC20 tokens that may be generated by depositing REP when the window is “active” \(meaning its 7 day period includes the current time\).
+[Reporting fees](#reporting-fees) which are collected during [Share settlement]() are always deposited into the next upcoming Dispute Window. In order to get a portion of these fees one must purchase “Participation Tokens”. In fact the Dispute Windows are actually ERC20 tokens that may be generated by depositing REP when the window is “active” \(meaning its 7 day period includes the current time\).
 
 When the Dispute Window has ended these tokens may be redeemed in order to receive the proportional amount of fees in the window. For example let's imagine a window has 10 DAI in fees and there were 100 Participation Tokens created by depositing 100 REP.
 
