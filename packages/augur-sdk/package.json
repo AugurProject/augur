@@ -60,6 +60,7 @@
     "ipld-dag-pb": "0.18.1",
     "isomorphic-ws": "4.0.1",
     "lodash": "4.17.15",
+    "lz-string": "1.4.4",
     "moment": "2.24.0",
     "websocket-as-promised": "1.0.1",
     "ws": "7.1.2"
@@ -76,7 +77,6 @@
     "@types/node-fetch": "2.5.1",
     "@types/web3": "1.0.19",
     "ganache-core": "2.9.1",
-    "lz-string": "1.4.4",
     "ts-node": "8.4.1",
     "typedoc": "0.17.4",
     "typedoc-plugin-markdown": "2.2.17",
