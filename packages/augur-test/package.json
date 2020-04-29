@@ -31,7 +31,6 @@
   "dependencies": {
     "@augurproject/artifacts": "2.0.0-alpha.2",
     "@augurproject/core": "2.0.0-alpha.2",
-    "@augurproject/ethersjs-provider": "2.0.0-alpha.2",
     "@augurproject/sdk": "2.0.0-alpha.2",
     "@augurproject/tools": "2.0.0-alpha.2",
     "ethereumjs-util": "6.1.0",

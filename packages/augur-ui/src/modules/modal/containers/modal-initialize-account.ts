@@ -5,29 +5,32 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
 import { GSN_WALLET_SEEN } from 'modules/common/constants';
-import { DESIRED_SIGNER_ETH_BALANCE } from 'contract-dependencies-gsn/src/ContractDependenciesGSN';
+import { DESIRED_SIGNER_ETH_BALANCE } from '@augurproject/sdk';
 import { formatAttoEth, formatDai } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
 
 const mapStateToProps = (state: AppState) => {
   const { appStatus, modal } = state;
   const ethToDaiRate = appStatus.ethToDaiRate.roundedValue;
-  const desiredSignerEthBalance = formatAttoEth(Number(DESIRED_SIGNER_ETH_BALANCE)).value;
-  const reserveAmount: FormattedNumber = formatDai(ethToDaiRate.multipliedBy(desiredSignerEthBalance));
+  const desiredSignerEthBalance = formatAttoEth(
+    Number(DESIRED_SIGNER_ETH_BALANCE)
+  ).value;
+  const reserveAmount: FormattedNumber = formatDai(
+    ethToDaiRate.multipliedBy(desiredSignerEthBalance)
+  );
 
   return {
     modal,
     reserveAmount,
-  }
-}
-
-
+  };
+};
 
 const mapDispatchToProps = (dispatch: any) => ({
   closeModal: () => {
     dispatch(closeModal());
 
-    const localStorageRef = typeof window !== 'undefined' && window.localStorage;
+    const localStorageRef =
+      typeof window !== 'undefined' && window.localStorage;
     if (localStorageRef && localStorageRef.setItem) {
       localStorageRef.setItem(GSN_WALLET_SEEN, 'true');
     }

@@ -33,12 +33,20 @@ import {
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Events, TXEventName, parseZeroXMakerAssetData } from '@augurproject/sdk';
 import {
-  addPendingData, addUpdatePendingTransaction, addCanceledOrder, updatePendingReportHash, updatePendingDisputeHash,
+  Events,
+  TXEventName,
+  parseZeroXMakerAssetData,
+} from '@augurproject/sdk';
+import {
+  addPendingData,
+  addUpdatePendingTransaction,
+  addCanceledOrder,
+  updatePendingReportHash,
+  updatePendingDisputeHash,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
+import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-management';
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
@@ -59,16 +67,23 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   SWAPEXACTTOKENSFORTOKENS,
   SWAPETHFOREXACTTOKENS,
   CLAIMMARKETSPROCEEDS,
-  FINALIZE
+  FINALIZE,
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
-  const errorMessage = 'We\'re currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction';
+  const errorMessage =
+    "We're currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction";
 
   if (hasEth) {
-    return errorMessage + `\nIf you need to make the transaction now transaction costs will be paid in ETH from your ${walletType} wallet.`;
+    return (
+      errorMessage +
+      `\nIf you need to make the transaction now transaction costs will be paid in ETH from your ${walletType} wallet.`
+    );
   }
-  return errorMessage + '\nIf you need to make the transaction now please follow these steps:';
-}
+  return (
+    errorMessage +
+    '\nIf you need to make the transaction now please follow these steps:'
+  );
+};
 
 export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -80,23 +95,37 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     const { blockchain, loginAccount } = getState();
 
     if (ADD_PENDING_QUEUE_METHOD_CALLS.includes(methodCall)) {
-      dispatch(addUpdatePendingTransaction(methodCall, eventName, hash, { ...transaction }));
+      dispatch(
+        addUpdatePendingTransaction(methodCall, eventName, hash, {
+          ...transaction,
+        })
+      );
     }
 
     if (eventName === TXEventName.RelayerDown) {
-      const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
+      const hasEth = (await loginAccount.meta.signer.provider.getBalance(
+        loginAccount.meta.signer._address
+      )).gt(0);
 
-      dispatch(updateModal({
-        type: MODAL_ERROR,
-        error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
-        showDiscordLink: false,
-        showAddFundsHelp: !hasEth,
-        walletType: loginAccount.meta.accountType,
-        title: 'We\'re having trouble processing transactions',
-      }));
+      dispatch(
+        updateModal({
+          type: MODAL_ERROR,
+          error: getRelayerDownErrorMessage(
+            loginAccount.meta.accountType,
+            hasEth
+          ),
+          showDiscordLink: false,
+          showAddFundsHelp: !hasEth,
+          walletType: loginAccount.meta.accountType,
+          title: "We're having trouble processing transactions",
+        })
+      );
     }
 
-    if (eventName === TXEventName.Failure || eventName === TXEventName.RelayerDown) {
+    if (
+      eventName === TXEventName.Failure ||
+      eventName === TXEventName.RelayerDown
+    ) {
       const genHash = hash ? hash : generateTxParameterId(transaction.params);
 
       dispatch(
@@ -117,7 +146,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       methodCall !== CANCELORDER &&
       methodCall !== PUBLICFILLORDER
     ) {
-
       if (
         methodCall === CREATEMARKET ||
         methodCall === CREATECATEGORICALMARKET ||
@@ -149,19 +177,39 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       case REDEEMSTAKE: {
         const params = transaction.params;
         params._reportingParticipants.map(participant =>
-          dispatch(addPendingData(participant, REDEEMSTAKE, eventName, hash, {...transaction}))
+          dispatch(
+            addPendingData(participant, REDEEMSTAKE, eventName, hash, {
+              ...transaction,
+            })
+          )
         );
         params._disputeWindows.map(window =>
-          dispatch(addPendingData(window, REDEEMSTAKE, eventName, hash, {...transaction}))
+          dispatch(
+            addPendingData(window, REDEEMSTAKE, eventName, hash, {
+              ...transaction,
+            })
+          )
         );
         break;
       }
       case CLAIMMARKETSPROCEEDS: {
         const params = transaction.params;
         if (params._markets.length === 1) {
-          dispatch(addPendingData(params._markets[0], CLAIMMARKETSPROCEEDS, eventName, hash, {...transaction}));
+          dispatch(
+            addPendingData(
+              params._markets[0],
+              CLAIMMARKETSPROCEEDS,
+              eventName,
+              hash,
+              { ...transaction }
+            )
+          );
         } else {
-          dispatch(addUpdatePendingTransaction(methodCall, eventName, hash, { ...transaction }));
+          dispatch(
+            addUpdatePendingTransaction(methodCall, eventName, hash, {
+              ...transaction,
+            })
+          );
         }
         break;
       }
@@ -171,7 +219,9 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           const { disputeWindow } = universe;
           const { startTime, endTime } = disputeWindow;
 
-          const genHash = hash ? hash : generateTxParameterId(transaction.params);
+          const genHash = hash
+            ? hash
+            : generateTxParameterId(transaction.params);
           dispatch(
             updateAlert(genHash, {
               id: genHash,
@@ -210,7 +260,10 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           dispatch(
             updateLiqTransactionParamHash({ txParamHash: id, txHash: hash })
           );
-        if (hash && eventName === TXEventName.Failure || eventName === TXEventName.RelayerDown) {
+        if (
+          (hash && eventName === TXEventName.Failure) ||
+          eventName === TXEventName.RelayerDown
+        ) {
           // if tx fails, revert hash to generated tx id, for retry
           dispatch(
             updateLiqTransactionParamHash({ txParamHash: hash, txHash: id })
@@ -219,27 +272,47 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         break;
       }
       case CANCELORDER: {
-        const orderId = transaction.params && transaction.params.order[TX_ORDER_ID];
-        dispatch(addCanceledOrder(orderId, eventName, hash))
+        const orderId =
+          transaction.params && transaction.params.order[TX_ORDER_ID];
+        dispatch(addCanceledOrder(orderId, eventName, hash));
         break;
       }
       case BATCHCANCELORDERS: {
-        const orders = transaction.params && transaction.params.orders || [];
-        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
+        const orders = (transaction.params && transaction.params.orders) || [];
+        orders.map(order =>
+          dispatch(addCanceledOrder(order.orderId, eventName, hash))
+        );
         break;
       }
       case CANCELORDERS: {
-        const orders = transaction.params && transaction.params._orders || [];
-        orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
-        orders.map(order => dispatch(addPendingData(parseZeroXMakerAssetData(order.makerAssetData).market, CANCELORDERS, eventName, hash)));
+        const orders = (transaction.params && transaction.params._orders) || [];
+        orders.map(order =>
+          dispatch(addCanceledOrder(order.orderId, eventName, hash))
+        );
+        orders.map(order =>
+          dispatch(
+            addPendingData(
+              parseZeroXMakerAssetData(order.makerAssetData).market,
+              CANCELORDERS,
+              eventName,
+              hash
+            )
+          )
+        );
         break;
       }
       case DOINITIALREPORT: {
-        hash && dispatch(updatePendingReportHash(transaction.params, hash, eventName));
+        hash &&
+          dispatch(
+            updatePendingReportHash(transaction.params, hash, eventName)
+          );
         break;
       }
       case CONTRIBUTE: {
-        hash && dispatch(updatePendingDisputeHash(transaction.params, hash, eventName));
+        hash &&
+          dispatch(
+            updatePendingDisputeHash(transaction.params, hash, eventName)
+          );
         break;
       }
 
