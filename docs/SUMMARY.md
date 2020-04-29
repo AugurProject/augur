@@ -9,7 +9,7 @@
 ## Contracts
 
 * [Contracts Overview](contracts/overview.md)
-* [Index](contracts/index.md)
+* [Index](sdk/index.md)
 
 ## SDK
 
