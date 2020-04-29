@@ -106,7 +106,6 @@
     right: 1px;
     left: 1px;
     margin-top: calc(~'@{top-bar-height-mobile} - 1px');
-    max-width: 10rem;
 
     &.Open {
       border: 1px solid @color-secondary-action-outline;
@@ -131,6 +130,10 @@
     display: flex;
     flex-direction: column;
     margin-left: @size-8;
+
+    @media @breakpoint-mobile {
+      max-width: @size-56;
+    }
 
     > div:first-of-type {
       .mono-10-medium;
