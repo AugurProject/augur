@@ -13,13 +13,13 @@ import { windowRef } from 'utils/window-ref';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
+import { AppStatusState } from 'modules/app/store/app-status';
 
  export const loginWithPortis = (forceRegisterPage = false) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const useGSN = getState().env['gsn']?.enabled;
-  const networkId: string = getState().env['networkId'];
+  const networkId: string = AppStatusState.get().env.networkId;
   const portisNetwork = getNetwork(networkId);
   const localPortisNetwork = {
     nodeUrl: 'http://localhost:8545',
@@ -58,7 +58,7 @@ import { getNetwork } from 'utils/get-network-name';
           },
         };
 
-        dispatch(updateSdk(accountObject, undefined, useGSN));
+        dispatch(updateSdk(accountObject, undefined));
       };
 
       portis.onLogin((account, email) => {

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
 
 import { InputErrorIcon } from "modules/common/icons";
@@ -10,6 +10,7 @@ import { editEndpointParams } from "utils/edit-endpoint-params";
 import { MODAL_NETWORK_CONNECT } from "modules/common/constants";
 import { WindowApp } from "modules/types";
 import { SDKConfiguration } from "@augurproject/artifacts";
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 
 interface ModalNetworkConnectProps {
@@ -18,85 +19,57 @@ interface ModalNetworkConnectProps {
     isInitialConnection?: boolean;
     config: SDKConfiguration;
   };
-  env: SDKConfiguration;
   submitForm: Function;
   isConnectedThroughWeb3: boolean;
 }
 
-interface ModalNetworkConnectState {
-  ethereumNode: string;
-  connectErrors: Array<string>;
-  formErrors: {
-    ethereumNode: Array<string>;
-  };
-  [x: number]: any;
+const types = { IPC: "ipc", HTTP: "http", WS: "ws" };
+
+function calcProtocol(uri) {
+  if (typeof uri === "string" && uri.length && uri.includes("://")) {
+    if (uri.includes(types.IPC)) return types.IPC;
+    if (uri.includes(types.WS)) return types.WS;
+    if (uri.includes(types.HTTP)) return types.HTTP;
+  }
+  return false;
 }
 
-export default class ModalNetworkConnect extends Component<ModalNetworkConnectProps, ModalNetworkConnectState> {
-  public types: {
-    IPC: string;
-    HTTP: string;
-    WS: string;
-  };
-
-  constructor(props) {
-    super(props);
-    // prioritize ethereumNode connections
-    let ethereumNode = "";
-    if (props.env?.ethereum?.http) {
-      ethereumNode = props.env?.ethereum?.http;
-    }
-
-    this.state = {
-      ethereumNode,
-      connectErrors: [],
-      formErrors: {
-        ethereumNode: [],
-      },
-    };
-
-    this.types = { IPC: "ipc", HTTP: "http", WS: "ws" };
-
-    this.submitForm = this.submitForm.bind(this);
-    this.validateField = this.validateField.bind(this);
-    this.isFormInvalid = this.isFormInvalid.bind(this);
-    this.calcProtocol = this.calcProtocol.bind(this);
+function getInitialEthereumNode(env) {
+  let ethereumNode = '';
+  if (env?.ethereum?.http) {
+    ethereumNode = env.ethereum.http;
   }
+  return ethereumNode;
+}
 
-  calcProtocol(uri) {
-    const { types } = this;
-    if (typeof uri === "string" && uri.length && uri.includes("://")) {
-      if (uri.includes(types.IPC)) return types.IPC;
-      if (uri.includes(types.WS)) return types.WS;
-      if (uri.includes(types.HTTP)) return types.HTTP;
-    }
-    return false;
-  }
+function isFormInvalid(isConnectedThroughWeb3, ethereumNode) {
+  return !(
+    (ethereumNode.length || isConnectedThroughWeb3)
+  );
+}
 
-  validateField(field, value) {
-    const { formErrors } = this.state;
-    const connectErrors = [];
-    formErrors[field] = [];
+const ModalNetworkConnect = ({
+  modal,
+  isConnectedThroughWeb3,
+  submitForm,
+}: ModalNetworkConnectProps) => {
+  const { env } = useAppStatusStore();
+  const ethereumNode = getInitialEthereumNode(env);
+  const [formErrors, setFormErrors] = useState({ ethereumNode: [] });
 
+  const ethereumNodeInValid = formErrors.ethereumNode.length > 0;
+  const formInvalid = isFormInvalid(isConnectedThroughWeb3, ethereumNode);
+
+  function validateEthNode(value) {
+    const updatedFormErrors = { ethereumNode:[] };
     if (!value || value.length === 0)
-      formErrors[field].push(`This field is required.`);
-
-    this.setState({ connectErrors, formErrors, [field]: value });
+      updatedFormErrors.ethereumNode.push(`This field is required.`);
+    setFormErrors(updatedFormErrors);
   }
 
-  isFormInvalid() {
-    const { isConnectedThroughWeb3 } = this.props;
-    const { ethereumNode } = this.state;
-    return !(
-      (ethereumNode.length || isConnectedThroughWeb3)
-    );
-  }
-
-  submitForm(e) {
-    const { submitForm, env } = this.props;
-    const { ethereumNode } = this.state;
+  function handleSubmitForm(e) {
     let ethNode = {};
-    const protocol = this.calcProtocol(ethereumNode);
+    const protocol = calcProtocol(ethereumNode);
     if (protocol) {
       ethNode = {
         [`${protocol}`]: ethereumNode,
@@ -123,16 +96,8 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
     // this.props.submitForm used as a hook for disconnection modal, normally just preventsDefault
     submitForm(e);
   }
-
-  render() {
-    const { isConnectedThroughWeb3, modal } = this.props;
-    const { formErrors, connectErrors, ethereumNode } = this.state;
-    const ethereumNodeInValid = formErrors.ethereumNode.length > 0;
-    const hasConnectionErrors = connectErrors.length > 0;
-    const formInvalid = this.isFormInvalid();
-
-    return (
-      <form
+  return (
+    <form
         className={classNames(Styles.ModalForm, {
           [`${Styles.ModalContainer}`]: modal.type === MODAL_NETWORK_CONNECT,
         })}
@@ -155,7 +120,7 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
             })}
             value={ethereumNode}
             placeholder="Enter the Ethereum Node address you would like to connect to."
-            onChange={(value) => this.validateField("ethereumNode", value)}
+            onChange={(value) => validateEthNode(value)}
             required
           />
         )}
@@ -166,23 +131,18 @@ export default class ModalNetworkConnect extends Component<ModalNetworkConnectPr
               {InputErrorIcon()} {error}
             </p>
           ))}
-        {hasConnectionErrors &&
-          connectErrors.map((error) => (
-            <p key={error} className={Styles.Error}>
-              {InputErrorIcon()} {error}
-            </p>
-          ))}
         <ModalActions
           buttons={[
             {
               label: "Connect",
               isDisabled: formInvalid,
               type: "purple",
-              action: this.submitForm,
+              action: (e) => handleSubmitForm(e),
             },
           ]}
         />
       </form>
-    );
-  }
-}
+  );
+};
+
+export default ModalNetworkConnect;

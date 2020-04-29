@@ -19,17 +19,18 @@ import {
 import { MODAL_SIGNUP, POPULAR_CATEGORIES } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { selectMarketStats } from 'modules/markets-list/selectors/markets-list';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, { location }) => {
   const marketStats = selectMarketStats(state);
   const markets = selectMarkets(state);
-
+  const { isLogged, restoredAccount, isConnected } = AppStatusState.get();
   return {
     categoryStats: state.categoryStats,
     categoryData: marketStats,
-    isConnected: state.connection.isConnected && state.universe.id != null,
-    isLogged: state.authStatus.isLogged,
-    restoredAccount: state.authStatus.restoredAccount,
+    isConnected: isConnected && state.universe.id != null,
+    isLogged,
+    restoredAccount,
     markets: markets.filter(market =>
       POPULAR_CATEGORIES.includes(market.categories[0])
     ),

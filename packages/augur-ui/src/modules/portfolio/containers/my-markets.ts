@@ -14,7 +14,6 @@ const mapStateToProps = (state: AppState) => {
 
   // getMyMarkets or it's equivalent will need a way of calculating the outstanding returns for a market and attaching it to each market object. Currently I've just added a key/value pair to the market objects im using below.
   return {
-    isLogged: state.authStatus.isLogged,
     myMarkets: createdMarkets,
     outcomes: {}, // marketDisputeOutcomes() || {},
     currentAugurTimestamp: state.blockchain.currentAugurTimestamp,

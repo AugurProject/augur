@@ -1128,7 +1128,6 @@ export interface TopRowProps {
   marketLinkCopied: Function;
   toggleFavorite: Function;
   currentAugurTimestamp: number;
-  isLogged?: boolean;
   isFavorite?: boolean;
 }
 
@@ -1138,14 +1137,13 @@ export const TopRow = ({
   toggleFavorite,
   marketLinkCopied,
   currentAugurTimestamp,
-  isLogged,
   isFavorite,
 }) => {
   useEffect(() => {
     const clipboardMarketId = new Clipboard('#copy_marketId');
     const clipboardAuthor = new Clipboard('#copy_author');
   }, [market.id, market.author]);
-  const { theme } = useAppStatusStore();
+  const { theme, isLogged } = useAppStatusStore();
   const {
     settlementFeePercent,
     marketType,

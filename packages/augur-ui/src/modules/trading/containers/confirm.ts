@@ -9,10 +9,11 @@ import { removePendingTransaction } from 'modules/pending-queue/actions/pending-
 import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { authStatus, loginAccount, newMarket } = state;
+  const { loginAccount, newMarket } = state;
   const {
     gsnEnabled: GsnEnabled,
     walletStatus: walletStatus,
+    gasPriceInfo,
   } = AppStatusState.get();
 
   const hasFunds = GsnEnabled
@@ -25,11 +26,10 @@ const mapStateToProps = (state: AppState, ownProps) => {
   }
   const sweepStatus = state.pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
   return {
-    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
+    gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,
     availableEth: createBigNumber(loginAccount.balances.eth),
     availableDai,
     hasFunds,
-    isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,
     GsnEnabled,
     walletStatus,

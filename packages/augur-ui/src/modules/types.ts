@@ -559,12 +559,6 @@ export interface Endpoints {
   ethereumNodeWS: string;
 }
 
-export interface Connection {
-  isConnected: boolean;
-  isReconnectionPaused: boolean;
-  canHotload: boolean;
-}
-
 export interface Category {
   categoryName: string;
   nonFinalizedOpenInterest: string;
@@ -586,11 +580,6 @@ export interface AppStatus {
   repToDaiRate: FormattedNumber;
   gsnEnabled: boolean;
   walletStatus: string;
-}
-
-export interface AuthStatus {
-  isLogged?: boolean;
-  restoredAccount?: boolean;
 }
 
 export interface AccountPositionAction {

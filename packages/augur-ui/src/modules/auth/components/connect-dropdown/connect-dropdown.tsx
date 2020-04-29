@@ -17,8 +17,6 @@ import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface ConnectDropdownProps {
-  isLogged: boolean;
-  restoredAccount: boolean;
   logout: Function;
   accountMeta: {
     accountType: string;
@@ -41,8 +39,6 @@ interface ConnectDropdownProps {
 }
 
 const ConnectDropdown = ({
-  isLogged,
-  restoredAccount,
   userDefinedGasPrice,
   accountMeta,
   gasPriceSpeed,
@@ -60,7 +56,7 @@ const ConnectDropdown = ({
 }: ConnectDropdownProps) => {
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-  const { gsnEnabled, ethToDaiRate, actions: { setGSNEnabled }} = useAppStatusStore();
+  const { isLogged, restoredAccount, gsnEnabled, ethToDaiRate, actions: { setGSNEnabled }} = useAppStatusStore();
 
   let gasCostTrade;
 

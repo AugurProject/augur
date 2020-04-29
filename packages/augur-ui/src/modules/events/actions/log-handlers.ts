@@ -26,7 +26,6 @@ import {
   addUpdateTransaction,
 } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
-import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import {
   CANCELORDER,
@@ -75,7 +74,7 @@ import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatusActions, AppStatusState } from 'modules/app/store/app-status';
 
 const handleAlert = (
   log: any,
@@ -181,7 +180,7 @@ export const handleSDKReadyEvent = () => (
   augurSdk.subscribe(dispatch);
 
   // app is connected when subscribed to sdk
-  dispatch(updateConnectionStatus(true));
+  AppStatusActions.actions.setIsConnected(true);
   dispatch(loadAccountData());
   dispatch(loadUniverseForkingInfo());
   dispatch(getCategoryStats());
@@ -202,7 +201,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
     })
   );
   // update assets each block
-  if (getState().authStatus.isLogged) {
+  if (AppStatusState.get().isLogged) {
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());
     dispatch(
@@ -367,12 +366,12 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount, authStatus } = getState();
+  const { loginAccount } = getState();
   const isUserDataUpdate = isSameAddress(
     log.orderCreator,
     loginAccount.mixedCaseAddress
   );
-  if (isUserDataUpdate && authStatus.isLogged) {
+  if (isUserDataUpdate && AppStatusState.get().isLogged) {
     handleAlert(log, PUBLICTRADE, false, dispatch, getState);
     dispatch(throttleLoadUserOpenOrders());
     const pendingOrderId = constructPendingOrderid(log.amount, log.price, log.outcome, log.market)
@@ -386,7 +385,7 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount, authStatus } = getState();
+  const { loginAccount } = getState();
   const isUserDataUpdate = isSameAddress(
     log.orderCreator,
     loginAccount.mixedCaseAddress
@@ -396,7 +395,7 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
     // if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
     //handleAlert(log, CANCELORDER, dispatch, getState);
     const { blockchain } = getState();
-    if (authStatus.isLogged) {
+    if (AppStatusState.get().isLogged) {
       dispatch(
         updateAlert(log.orderId, {
           name: CANCELORDER,
@@ -415,8 +414,8 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount, authStatus } = getState();
-  const { isLogged } = authStatus;
+  const { loginAccount } = getState();
+  const { isLogged } = AppStatusState.get();
   const marketId = log.market;
   const { address } = loginAccount;
   const isUserDataUpdate =

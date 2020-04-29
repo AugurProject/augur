@@ -9,15 +9,17 @@ import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_ADD_FUNDS, DAI } from 'modules/common/constants';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, newMarket, blockchain } = state;
+  const { gasPriceInfo } = AppStatusState.get();
   return {
     newMarket: newMarket,
     currentTimestamp: blockchain.currentAugurTimestamp,
     address: loginAccount.address,
-    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
+    gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,
     availableEthFormatted: formatEther(loginAccount.balances.eth),
     availableRepFormatted: formatRep(loginAccount.balances.rep),
     availableDaiFormatted: formatDai(

@@ -7,7 +7,6 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_DR_QUICK_GUIDE } from 'modules/common/constants';
 
 const mapStateToProps = state => ({
-  isConnected: state.connection.isConnected
 });
 
 const mapDispatchToProps = dispatch => ({

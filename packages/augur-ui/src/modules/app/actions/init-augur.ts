@@ -2,7 +2,6 @@ import {
   getNetworkId,
 } from 'modules/contracts/actions/contractCalls';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
-import { updateEnv } from 'modules/app/actions/update-env';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -33,12 +32,7 @@ import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
-import {
-  updateAuthStatus,
-  RESTORED_ACCOUNT,
-} from 'modules/auth/actions/auth-status';
 import { logout } from 'modules/auth/actions/logout';
-import { updateCanHotload } from 'modules/app/actions/update-connection';
 import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 import { getFingerprint } from 'utils/get-fingerprint';
@@ -54,6 +48,7 @@ import { getNetwork } from 'utils/get-network-name';
 import { buildConfig } from '@augurproject/artifacts';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { isGoogleBot } from 'utils/is-google-bot';
+import { AppStatusActions } from 'modules/app/store/app-status';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -157,7 +152,7 @@ export function connectAugur(
           preloaded: true,
         },
       };
-      dispatch(updateAuthStatus(RESTORED_ACCOUNT, true));
+      AppStatusActions.actions.setRestoredAccount(true);
       dispatch(updateLoginAccount(accountObject));
     };
 
@@ -270,7 +265,7 @@ export function connectAugur(
 
     // wire up start up events for sdk
     dispatch(listenForStartUpEvents(sdk));
-    dispatch(updateCanHotload(true));
+    AppStatusActions.actions.setCanHotload(true);
 
     await augurSdk.connect();
 
@@ -319,7 +314,7 @@ export function initAugur(
     );
     // cache fingerprint
     getFingerprint();
-    dispatch(updateEnv(config));
+    AppStatusActions.actions.setEnv(config);
     tryToPersistStorage();
     connectAugur(history, config, true, callback)(dispatch, getState);
 

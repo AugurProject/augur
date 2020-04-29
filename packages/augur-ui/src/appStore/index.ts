@@ -15,6 +15,7 @@ import { processFavorites } from 'modules/markets/helpers/favorites-processor';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 // console log middleware
 const consoleLog = store => next => action => {
@@ -30,12 +31,13 @@ const consoleLog = store => next => action => {
 const localStorageMiddleware = store => next => action => {
   next(action);
   const state = store.getState() as AppState;
+  const { isLogged, isConnected, env, gasPriceInfo } = AppStatusState.get();
   if (
     !state ||
     !state.loginAccount ||
     !state.loginAccount.address ||
-    !state.authStatus.isLogged ||
-    !state.connection.isConnected
+    !isLogged ||
+    !isConnected
   ) {
     return;
   }
@@ -49,14 +51,11 @@ const localStorageMiddleware = store => next => action => {
     pendingOrders,
     pendingQueue,
     drafts,
-    env,
-    connection,
     loginAccount
   } = state;
   const windowApp: WindowApp = windowRef as WindowApp;
   if (windowApp.localStorage && windowApp.localStorage.setItem) {
     const { localStorage } = windowApp;
-    const { isConnected } = connection;
     const networkIdToUse: number = isConnected
       ? parseInt(getNetworkId(), 10)
       : 1;
@@ -91,7 +90,7 @@ const localStorageMiddleware = store => next => action => {
         pendingQueue,
         drafts,
         gasPriceInfo: {
-          userDefinedGasPrice: state.gasPriceInfo.userDefinedGasPrice,
+          userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
         },
         selectedUniverse: {
           ...storedAccountData.selectedUniverse,

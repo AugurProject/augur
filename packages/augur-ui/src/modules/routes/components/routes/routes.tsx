@@ -23,25 +23,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   page: (eventName, payload) => dispatch(page(eventName, payload)),
 });
 
-const getLoggedInAccountFromLocalStorage = () => {
-  let loggedInAccount = null;
-  if (window.localStorage && window.localStorage.getItem) {
-    try {
-      const loggedInUser = JSON.parse(
-        window.localStorage.getItem('loggedInUser')
-      );
-      loggedInAccount = loggedInUser && loggedInUser.address;
-    } catch (error) {
-      // swallow
-      loggedInAccount = null;
-    }
-  }
-  return loggedInAccount;
-};
-
 const Routes = p => {
-  const loggedInAccount = getLoggedInAccountFromLocalStorage();
-
   const { theme } = useAppStatusStore();
 
   return (

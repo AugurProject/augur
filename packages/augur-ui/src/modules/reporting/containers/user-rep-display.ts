@@ -6,15 +6,15 @@ import {
 import { UserRepDisplay } from 'modules/reporting/common';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_ADD_FUNDS, REP } from 'modules/common/constants';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = state => {
-  const isLoggedIn = state.authStatus.isLogged;
+  const isLoggedIn = AppStatusState.get().isLogged;
   const repBalances = isLoggedIn
     ? selectReportingBalances(state)
     : selectDefaultReportingBalances();
   return {
     ...repBalances,
-    isLoggedIn,
   };
 };
 

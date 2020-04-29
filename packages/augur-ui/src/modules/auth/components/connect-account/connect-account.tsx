@@ -11,8 +11,6 @@ import Styles from 'modules/auth/components/connect-account/connect-account.styl
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 
 interface ConnectAccountProps {
-  isLogged: boolean;
-  restoredAccount: boolean;
   updateMobileMenuState: Function;
   mobileMenuState: number;
   userInfo: LoginAccount['meta'];
@@ -20,8 +18,6 @@ interface ConnectAccountProps {
 }
 
 const ConnectAccount = ({
-  isLogged,
-  restoredAccount,
   updateMobileMenuState,
   mobileMenuState,
   userInfo,
@@ -29,7 +25,7 @@ const ConnectAccount = ({
 }:ConnectAccountProps) => {
   const connectAccount = useRef(null);
   const connectDropdown = useRef(null);
-  const { isConnectionTrayOpen, actions: { setIsConnectionTrayOpen }} = useAppStatusStore();
+  const { isLogged, restoredAccount, isConnectionTrayOpen, actions: { setIsConnectionTrayOpen }} = useAppStatusStore();
   if (!isLogged && !restoredAccount || !userInfo) return null;
 
   function toggleDropdown(cb?: Function) {

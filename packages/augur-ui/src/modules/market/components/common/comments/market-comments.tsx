@@ -6,6 +6,7 @@ import Styles from 'modules/market/components/market-view/market-view.styles.les
 import { use3box } from 'utils/use-3box';
 import { SecondaryButton } from 'modules/common/buttons';
 import { Initialized3box } from 'modules/types';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface MarketCommentsProps {
   adminEthAddr: string;
@@ -17,7 +18,6 @@ interface MarketCommentsProps {
   whichCommentPlugin: string;
   initialize3box: Function;
   initialized3box: Initialized3box;
-  isLogged: boolean;
 }
 
 export const MarketComments = ({
@@ -30,8 +30,8 @@ export const MarketComments = ({
   whichCommentPlugin,
   initialize3box,
   initialized3box,
-  isLogged,
 }: MarketCommentsProps) => {
+  const { isLogged } = useAppStatusStore();
   const { activate, setActivate, address, box, isReady, profile } =
     whichCommentPlugin === '3box' && use3box(provider, initialize3box, initialized3box);
 

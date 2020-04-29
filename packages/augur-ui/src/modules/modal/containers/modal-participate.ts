@@ -10,14 +10,15 @@ import { updateModal } from '../actions/update-modal';
 import { MODAL_INITIALIZE_ACCOUNT, GSN_WALLET_SEEN } from 'modules/common/constants';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN) === "true" ? true : false;
-
+  const { gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatusState.get();
   return {
     modal: state.modal,
     rep: state.loginAccount.balances.rep,
-    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
+    gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,
     messages: [
       {
         key: 'quant',
@@ -25,7 +26,7 @@ const mapStateToProps = (state: AppState) => {
       },
     ],
     title: 'Buy Participation Tokens',
-    GsnEnabled: state.appStatus.gsnEnabled,
+    GsnEnabled,
     gsnUnavailable: isGSNUnavailable(state),
     gsnWalletInfoSeen,
   }

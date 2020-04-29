@@ -1,4 +1,7 @@
-import { THEMES, ODDS_TYPE } from 'modules/common/constants';
+import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_FAST, DEFAULT_FALLBACK_GAS_SAFELOW } from 'modules/common/constants';
+import { DEFAULT_SDK_CONFIGURATION, SDKConfiguration } from '@augurproject/artifacts';
+import { formatGasCostGwei } from 'utils/format-number';
+import { GasPriceInfo } from 'modules/types';
 
 export const THEME = 'theme';
 export const ODDS = 'oddsType';
@@ -13,6 +16,21 @@ export const ETH_TO_DAI_RATE = 'ethToDaiRate';
 export const REP_TO_DAI_RATE = 'repToDaiRate';
 export const Ox_STATUS = 'zeroXStatus';
 export const WALLET_STATUS = 'walletStatus';
+export const RESTORED_ACCOUNT = 'restoredAccount';
+export const IS_LOGGED = 'isLogged';
+export const IS_CONNECTED = 'isConnected';
+export const IS_RECONNECTION_PAUSED = 'isReconnectionPaused';
+export const CAN_HOTLOAD = 'canHotload';
+export const ENV = 'env';
+export const GAS_PRICE_INFO = 'gasPriceInfo';
+
+const DEFAULT_ENV: SDKConfiguration = JSON.parse(JSON.stringify(DEFAULT_SDK_CONFIGURATION));
+const DEFAULT_GAS_PRICE_INFO: GasPriceInfo = {
+  userDefinedGasPrice: null,
+  average: formatGasCostGwei(DEFAULT_FALLBACK_GAS_AVERAGE, {}).value,
+  fast: formatGasCostGwei(DEFAULT_FALLBACK_GAS_FAST, {}).value,
+  safeLow: formatGasCostGwei(DEFAULT_FALLBACK_GAS_SAFELOW, {}).value,
+};
 
 export const DEFAULT_APP_STATUS = {
   [THEME]: THEMES.TRADING,
@@ -28,6 +46,13 @@ export const DEFAULT_APP_STATUS = {
   [REP_TO_DAI_RATE]: null,
   [Ox_STATUS]: null,
   [WALLET_STATUS]: null,
+  [RESTORED_ACCOUNT]: false,
+  [IS_LOGGED]: false,
+  [IS_CONNECTED]: false,
+  [IS_RECONNECTION_PAUSED]: false,
+  [CAN_HOTLOAD]: false,
+  [ENV]: DEFAULT_ENV,
+  [GAS_PRICE_INFO]: DEFAULT_GAS_PRICE_INFO,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -45,6 +70,13 @@ export const APP_STATUS_ACTIONS = {
   SET_REP_TO_DAI_RATE: 'SET_REP_TO_DAI_RATE',
   SET_Ox_STATUS: 'SET_Ox_STATUS',
   SET_WALLET_STATUS: 'SET_WALLET_STATUS',
+  SET_RESTORED_ACCOUNT: 'SET_RESTORED_ACCOUNT',
+  SET_IS_LOGGED: 'SET_IS_LOGGED',
+  SET_IS_CONNECTED: 'SET_IS_CONNECTED',
+  SET_IS_RECONNECTION_PAUSED: 'SET_IS_RECONNECTION_PAUSED',
+  SET_CAN_HOTLOAD: 'SET_CAN_HOTLOAD',
+  SET_ENV: 'SET_ENV',
+  UPDATE_GAS_PRICE_INFO: 'UPDATE_GAS_PRICE_INFO',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -62,4 +94,11 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setRepToDaiRate: repToDaiRate => {},
   setOxStatus: OxStatus => {},
   setWalletStatus: walletStatus => {},
+  setRestoredAccount: restoredAccount => {},
+  setIsLogged: isLogged => {},
+  setIsConnected: isConnected => {},
+  setIsReconnectionPaused: isReconnectionPaused => {},
+  setCanHotload: canHotload => {},
+  setEnv: env => {},
+  updateGasPriceInfo: gasPriceInfo => {},
 };

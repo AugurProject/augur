@@ -5,9 +5,10 @@ import { MODAL_CLAIM_FEES, MODAL_PARTICIPATE, ZERO } from 'modules/common/consta
 import { formatAttoDai, formatAttoRep, formatPercent, } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const isLoggedIn = state.authStatus.isLogged;
+  const { isLogged } = AppStatusState.get();
   const { address, fees, purchased } =
     state.universe && state.universe.disputeWindow;
   const disablePurchaseButton = !!state.universe.forkingInfo;
@@ -42,7 +43,7 @@ const mapStateToProps = (state: AppState) => {
         }, ZERO)
     : ZERO;
 
-  const hasRedeemable = isLoggedIn && pastParticipationTokensPurchased.gt(ZERO);
+  const hasRedeemable = isLogged && pastParticipationTokensPurchased.gt(ZERO);
 
   return {
     disputeWindowFees: formatAttoDai(fees || 0),

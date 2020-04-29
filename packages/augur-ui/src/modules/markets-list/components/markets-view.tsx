@@ -29,8 +29,6 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 const PAGINATION_COUNT = 10;
 
 interface MarketsViewProps {
-  isLogged: boolean;
-  restoredAccount: boolean;
   markets: MarketData[];
   location: object;
   history: History;
@@ -91,8 +89,6 @@ const MarketsView = ({
   isSearching,
   showInvalidMarketsBannerFeesOrLiquiditySpread,
   showInvalidMarketsBannerHideOrShow,
-  isLogged,
-  restoredAccount,
   maxFee,
   maxLiquiditySpread,
   removeFeeFilter,
@@ -117,6 +113,8 @@ const MarketsView = ({
     showPagination: false,
     selectedMarketCardType: 0,
   });
+  const { isLogged, restoredAccount, theme, isMobile } = useAppStatusStore();
+
   useEffect(() => {
     if (state.offset !== 1) {
       setState({ ...state, offset: 1 });
@@ -161,7 +159,6 @@ const MarketsView = ({
     state.offset,
     state.marketCount
   ]);
-  const { theme, isMobile } = useAppStatusStore();
   const {
     filterSortedMarkets,
     marketCount,

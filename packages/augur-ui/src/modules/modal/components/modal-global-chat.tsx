@@ -6,6 +6,7 @@ import { use3box } from 'utils/use-3box';
 import ChatBox from '3box-chatbox-react';
 import { SecondaryButton } from 'modules/common/buttons';
 import { Initialized3box } from 'modules/types';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export interface ModalGlobalChatProps {
   closeModal: Function;
@@ -13,7 +14,6 @@ export interface ModalGlobalChatProps {
   whichChatPlugin: string;
   initialize3box: Function;
   initialized3box: Initialized3box;
-  isLogged: boolean;
 }
 
 export const ModalGlobalChat = ({
@@ -22,8 +22,8 @@ export const ModalGlobalChat = ({
   whichChatPlugin,
   initialize3box,
   initialized3box,
-  isLogged,
 }: ModalGlobalChatProps) => {
+  const { isLogged } = useAppStatusStore();
   const { activate, setActivate, address, box, isReady, profile } =
     whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box);
 

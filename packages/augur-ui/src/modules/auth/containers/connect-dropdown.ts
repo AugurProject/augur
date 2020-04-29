@@ -7,9 +7,10 @@ import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
 import { FormattedNumber } from 'modules/types';
 import { AppState } from 'appStore';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { fast, average, safeLow, userDefinedGasPrice } = state.gasPriceInfo;
+  const { fast, average, safeLow, userDefinedGasPrice } = AppStatusState.get().gasPriceInfo;
 
   const userDefined = userDefinedGasPrice || average || 0;
   let gasPriceSpeed = GAS_SPEED_LABELS.STANDARD;
@@ -36,8 +37,6 @@ const mapStateToProps = (state: AppState) => {
     userDefinedGasPrice: userDefined,
     gasPriceSpeed,
     gasPriceTime,
-    isLogged: state.authStatus.isLogged,
-    restoredAccount: state.authStatus.restoredAccount,
     accountMeta:
       state.loginAccount &&
       state.loginAccount.meta,
@@ -47,7 +46,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  logout: (setGSNEnabled) => dispatch(logout(setGSNEnabled)),
+  logout: () => dispatch(logout()),
   gasModal: () => dispatch(updateModal({ type: MODAL_GAS_PRICE })),
   universeSelectorModal: () => dispatch(updateModal({ type: MODAL_UNIVERSE_SELECTOR })),
   showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),

@@ -1,12 +1,8 @@
 import accountPositions from 'modules/positions/reducers/account-positions';
 import sidebarStatus from 'modules/app/reducers/sidebar-status';
-import authStatus from 'modules/auth/reducers/auth-status';
 import blockchain from 'modules/app/reducers/blockchain';
-import connection from 'modules/app/reducers/connection';
-import env from 'modules/app/reducers/env';
 import favorites from 'modules/markets/reducers/favorites';
 import filterSortOptions from 'modules/filter-sort/reducers/filter-sort-options';
-import gasPriceInfo from 'modules/app/reducers/gas-price-info';
 import loginAccount from 'modules/auth/reducers/login-account';
 import marketTradingHistory from 'modules/markets/reducers/market-trading-history';
 import marketInfos from 'modules/markets/reducers/market-infos';
@@ -30,9 +26,7 @@ import initialized3box from 'modules/global-chat/reducers/initialized-3box'
 import {
   LoginAccount,
   AccountPosition,
-  AuthStatus,
   Blockchain,
-  Connection,
   Favorite,
   FilterSortOptions,
   GasPriceInfo,
@@ -60,13 +54,9 @@ export function createReducer() {
   return {
     accountPositions,
     alerts,
-    authStatus,
     blockchain,
-    connection,
-    env,
     favorites,
     filterSortOptions,
-    gasPriceInfo,
     loginAccount,
     marketTradingHistory,
     marketInfos,
@@ -95,13 +85,10 @@ export function createReducer() {
 export interface AppStateInterface {
   accountPositions: AccountPosition;
   alerts: Alert[];
-  authStatus: AuthStatus;
   blockchain: Blockchain;
-  connection: Connection;
   config: SDKConfiguration;
   favorites: Favorite;
   filterSortOptions: FilterSortOptions;
-  gasPriceInfo: GasPriceInfo;
   loginAccount: LoginAccount;
   marketTradingHistory: Getters.Trading.MarketTradingHistory;
   marketInfos: MarketInfos;

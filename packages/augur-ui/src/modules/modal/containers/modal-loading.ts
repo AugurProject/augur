@@ -5,9 +5,10 @@ import { AppState } from 'appStore';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
-  isLogged: state.authStatus.isLogged,
+  isLogged: AppStatusState.get().isLogged,
   loginAccount: state.loginAccount,
   modal: state.modal,
 });

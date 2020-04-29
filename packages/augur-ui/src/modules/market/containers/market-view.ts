@@ -43,12 +43,11 @@ import {
 import { AppState } from 'appStore';
 import { loadMarketOrderBook, clearOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
-import { Ox_STATUS } from 'modules/app/store/constants';
 import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { connection, universe, modal, loginAccount, orderBooks } = state;
-  const zeroXstatus = AppStatusState.get()[Ox_STATUS];
+  const { universe, modal, loginAccount, orderBooks } = state;
+  const { zeroXStatus: zeroXstatus, isConnected, canHotload } = AppStatusState.get();
   const queryId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const marketId = queryId === TRADING_TUTORIAL ? queryId : getAddress(queryId);
   const queryOutcomeId = parseQuery(ownProps.location.search)[
@@ -94,8 +93,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     return {
       tradingTutorial,
       isMarketLoading: true,
-      isConnected: connection.isConnected && universe.id != null,
-      canHotload: connection.canHotload,
+      isConnected: isConnected && universe.id != null,
+      canHotload,
       marketId,
       marketReviewSeen,
     };
@@ -127,7 +126,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     tradingTutorial,
     currentTimestamp: selectCurrentTimestampInSeconds(state),
     outcomes: market.outcomes || [],
-    isConnected: connection.isConnected && universe.id != null,
+    isConnected: isConnected && universe.id != null,
     marketType: market.marketType,
     description: market.description || '',
     market,

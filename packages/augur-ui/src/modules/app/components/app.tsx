@@ -67,15 +67,12 @@ interface AppProps {
   config: SDKConfiguration;
   history: History;
   initAugur: Function;
-  isLogged: boolean;
-  restoredAccount: boolean;
   location: Location;
   loginAccount: LoginAccount;
   modal: object;
   universe: Universe;
   updateModal: Function;
   finalizeMarket: Function;
-  env: any;
   ethereumNodeHttp: string;
   ethereumNodeWs: string;
   sdkEndpoint: string;
@@ -160,7 +157,6 @@ const AppView = ({
   useWeb3Transport = false,
   notifications,
   universe: { forkEndTime, forkingInfo },
-  env,
   history,
   initAugur,
   location: locationProp,
@@ -171,8 +167,6 @@ const AppView = ({
   sidebarStatus: { currentBasePath, mobileMenuState },
   updateSidebarStatus,
   blockchain: { currentAugurTimestamp },
-  isLogged,
-  restoredAccount,
   modal,
   toasts,
   migrateV1Rep,
@@ -184,7 +178,7 @@ const AppView = ({
   showGlobalChat,
   updateCurrentInnerNavType,
 }:AppProps) => {
-  const { isMobile, actions: { setIsMobile} } = useAppStatusStore();
+  const { env, isLogged, isMobile, actions: { setIsMobile} } = useAppStatusStore();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
   const ModalShowing = Object.keys(modal).length !== 0;
@@ -349,8 +343,6 @@ const AppView = ({
             mainSectionClickHandler={mainSectionClickHandler}
             navShowing={navShowing}
             updateMobileMenuState={updateMobileMenuState}
-            isLogged={isLogged}
-            restoredAccount={restoredAccount}
             sideNavMenuData={sideNavMenuData}
             currentBasePath={currentBasePath}
             logout={logout}
@@ -391,8 +383,6 @@ const AppView = ({
               <div className="no-nav-placehold" />
             }
             <MainAppContent
-              isLogged={isLogged}
-              restoredAccount={restoredAccount}
               onTradingTutorial={onTradingTutorial}
               ModalShowing={ModalShowing}
               navShowing={navShowing}
@@ -417,8 +407,6 @@ const SideBarSection = ({
   mainSectionClickHandler,
   navShowing,
   updateMobileMenuState,
-  isLogged,
-  restoredAccount,
   sideNavMenuData,
   currentBasePath,
   logout,
@@ -430,7 +418,7 @@ const SideBarSection = ({
   showCreateAccountButton,
   createFundedGsnWallet,
 }) => {
-  const { theme, actions: { closeAppMenus } } = useAppStatusStore();
+  const { isLogged, restoredAccount, theme, actions: { closeAppMenus } } = useAppStatusStore();
   sideNavMenuData[1].title =
       theme !== THEMES.TRADING ? 'My Account' : 'Account Summary';
   sideNavMenuData[2].title =
@@ -480,8 +468,6 @@ const SideBarSection = ({
 };
 
 const MainAppContent = ({ 
-  isLogged,
-  restoredAccount,
   onTradingTutorial,
   ModalShowing,
   navShowing,
@@ -489,7 +475,7 @@ const MainAppContent = ({
   currentBasePath,
   mainSectionClickHandler,
 }) => {
-  const { actions: { closeAppMenus }} = useAppStatusStore();
+  const { isLogged, restoredAccount, actions: { closeAppMenus }} = useAppStatusStore();
   const hideBetslip = !currentBasePath?.includes(MARKET);
   return (
     <section
