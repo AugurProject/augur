@@ -292,37 +292,8 @@ export default class MarketHeader extends Component<
                     <span>{PROBABLE_INVALID_MARKET}</span>
                   </div>
                 ) : null}
-                {details.length > 0 && (
-                  <div className={Styles.Details}>
-                    <h2>Resolution Details</h2>
-                    <div>
-                      <label
-                        ref={detailsContainer => {
-                          this.detailsContainer = detailsContainer;
-                        }}
-                        className={classNames(Styles.AdditionalDetails, {
-                          [Styles.Tall]: expandedDetails,
-                        })}
-                      >
-                        <MarkdownRenderer text={details} hideLabel />
-                      </label>
-                      {detailsTooLong && (
-                        <button
-                          className={classNames({
-                            [Styles.Less]: showReadMore,
-                          })}
-                          onClick={e => {
-                            e.stopPropagation();
-                            this.toggleReadMore();
-                          }}
-                        >
-                          {!showReadMore ? ChevronDown : ChevronUp}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
+              <ResolutionDetails details={details}/>
             </div>
             <div
               className={classNames({
@@ -410,4 +381,43 @@ export default class MarketHeader extends Component<
       </section>
     );
   }
+}
+
+interface ResolutionDetailsProps {
+  details: string;
+}
+
+export const ResolutionDetails = ({details}: ResolutionDetailsProps) => {
+  return (
+    {details.length > 0 ? (
+      <div className={Styles.Details}>
+        <h2>Resolution Details</h2>
+        <div>
+          <label
+            ref={detailsContainer => {
+              this.detailsContainer = detailsContainer;
+            }}
+            className={classNames(Styles.AdditionalDetails, {
+              [Styles.Tall]: expandedDetails,
+            })}
+          >
+            <MarkdownRenderer text={details} hideLabel />
+          </label>
+          {detailsTooLong && (
+            <button
+              className={classNames({
+                [Styles.Less]: showReadMore,
+              })}
+              onClick={e => {
+                e.stopPropagation();
+                this.toggleReadMore();
+              }}
+            >
+              {!showReadMore ? ChevronDown : ChevronUp}
+            </button>
+          )}
+        </div>
+      </div>
+    ) : null}         
+  );
 }
