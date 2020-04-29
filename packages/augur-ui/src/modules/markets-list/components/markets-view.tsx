@@ -269,19 +269,6 @@ export default class MarketsView extends Component<
     } = this.state;
 
     const displayFee = this.props.maxFee !== MAX_FEE_100_PERCENT;
-    const displayLiquiditySpread =
-      this.props.maxLiquiditySpread !== MAX_SPREAD_ALL_SPREADS;
-    let feesLiquidityMessage = '';
-
-    if (!displayFee && !displayLiquiditySpread) {
-      feesLiquidityMessage =
-        '“Fee” and “Liquidity Spread” filters are set to “All”. This puts you at risk of trading on invalid markets.';
-    } else if (!displayFee || !displayLiquiditySpread) {
-      feesLiquidityMessage = `The ${
-        !displayFee ? '“Fee”' : '“Liquidity Spread”'
-      } filter is set to “All”. This puts you at risk of trading on invalid markets.`;
-    }
-
     return (
       <section
         className={Styles.MarketsView}
@@ -324,15 +311,6 @@ export default class MarketsView extends Component<
           <FilterDropDowns />
         </div>
 
-        <FilterTags
-          maxLiquiditySpread={this.props.maxLiquiditySpread}
-          maxFee={this.props.maxFee}
-          removeFeeFilter={this.props.removeFeeFilter}
-          removeLiquiditySpreadFilter={this.props.removeLiquiditySpreadFilter}
-          updateQuery={(param, value) =>
-            updateQuery(param, value, this.props.location, this.props.history)
-          }
-        />
         <FilterNotice
           show={this.props.includeInvalidMarkets === 'show'}
           showDismissButton={true}
@@ -353,7 +331,7 @@ export default class MarketsView extends Component<
         />
 
         <FilterNotice
-          show={!displayFee || !displayLiquiditySpread}
+          show={!displayFee}
           showDismissButton={true}
           updateLoginAccountSettings={updateLoginAccountSettings}
           settings={{
@@ -362,7 +340,7 @@ export default class MarketsView extends Component<
           }}
           content={
             <span>
-              {feesLiquidityMessage}{' '}
+              {'The “Fee” filter is set to “All”. This puts you at risk of trading on invalid markets. '}
               <a href={HELP_CENTER_INVALID_MARKETS} target="_blank" rel="noopener noreferrer">
                 Learn more
               </a>

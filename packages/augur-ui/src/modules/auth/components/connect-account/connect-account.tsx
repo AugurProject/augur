@@ -33,15 +33,9 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
       isConnectionTrayOpen,
       mobileMenuState,
     } = this.props;
-    if (mobileMenuState > 0) {
-      updateConnectionTray(!isConnectionTrayOpen);
-      updateHelpMenuState(false);
-    }
-    else {
-      updateMobileMenuState(1);
-      updateConnectionTray(!isConnectionTrayOpen);
-      updateHelpMenuState(false);
-    }
+   
+    updateConnectionTray(!isConnectionTrayOpen);
+    updateHelpMenuState(false);
 
     if (cb && typeof cb === 'function') cb();
   }
@@ -106,6 +100,7 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
             ToggleHeightStyles.target,
             ToggleHeightStyles.quick,
             {
+              [Styles.Open]: isConnectionTrayOpen,
               [ToggleHeightStyles.open]: isConnectionTrayOpen,
             }
           )}

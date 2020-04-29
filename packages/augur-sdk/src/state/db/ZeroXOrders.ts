@@ -108,7 +108,7 @@ export class ZeroXOrders extends AbstractTable {
   readonly cashAssetData: string;
   readonly shareAssetData: string;
   readonly takerAssetData: string;
-  private pastOrders: _.Dictionary<StoredOrder>;
+  private pastOrders: _.Dictionary<StoredOrder> = {};
 
   constructor(
     db: DB,
@@ -128,14 +128,8 @@ export class ZeroXOrders extends AbstractTable {
     this.takerAssetData = `0xa7cb5fb7000000000000000000000000${this.tradeTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
 
     this.subscribeToOrderEvents();
-
-    this.clearDBAndCacheOrders().then(() => {
-      if (augur.zeroX.isReady()) {
-        this.sync();
-      } else {
-        this.augur.events.once(SubscriptionEventName.ZeroXStatusReady, this.sync.bind(this));
-      }
-    });
+    this.clearDBAndCacheOrders();
+    this.augur.events.on(SubscriptionEventName.ZeroXStatusReady, this.clearDBAndCacheOrders.bind(this));
   }
 
   protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
@@ -149,8 +143,12 @@ export class ZeroXOrders extends AbstractTable {
 
   async clearDBAndCacheOrders(): Promise<void> {
     // Note: This does mean if a user reloads before syncing the old orders could be lost if they previous to that had not broadcast their orders completely somehow
-    this.pastOrders = _.keyBy(await this.allDocs(), 'orderHash');
+    this.pastOrders = Object.assign(this.pastOrders, _.keyBy(await this.allDocs(), 'orderHash'));
     await this.clearDB();
+
+    if (this.augur.zeroX.isReady()) {
+      this.sync();
+    }
   }
 
   subscribeToOrderEvents() {
@@ -231,6 +229,8 @@ export class ZeroXOrders extends AbstractTable {
     });
 
     if (ordersToAdd.length > 0) await this.augur.zeroX.addOrders(ordersToAdd);
+    this.pastOrders = {};
+
     console.log(`Synced ${orders.length } ZeroX Orders`);
     this.augur.events.emit(SubscriptionEventName.ZeroXStatusSynced, {});
   }

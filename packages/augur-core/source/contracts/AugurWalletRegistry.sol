@@ -126,7 +126,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         // Refund any excess ETH paid back to the wallet
         uint256 _ethPaid = address(this).balance.sub(_initialEth);
         uint256 _ethRefund = _ethPaid.sub(_actualCharge);
-        (bool _success,) = address(wallets[_from]).call.value(_ethRefund)("");
+        (bool _success,) = address(_from).call.value(_ethRefund)("");
         require(_success);
 
         // Top off Relay Hub balance with whatever ETH we have

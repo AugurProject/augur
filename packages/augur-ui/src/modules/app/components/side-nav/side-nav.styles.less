@@ -18,6 +18,14 @@
 
     > div:first-of-type {
       z-index: @above-all-content;
+
+      > div:first-of-type { 
+        border-right: 1px solid @color-module-background;
+      }
+
+      > div:last-of-type {
+        padding: @size-6 @size-12 @size-6 @size-16;
+      }
     }
 
     > div {
