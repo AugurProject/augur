@@ -260,7 +260,8 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
       throw new Error("Cannot use GSN relay to process TXs except to create a wallet or send wallet transaction execution requests");
     }
 
-    const gasLimit = paymentData.gasCost.multipliedBy(GAS_COST_MULTIPLIER);
+    let gasLimit = paymentData.gasCost.multipliedBy(GAS_COST_MULTIPLIER);
+    gasLimit = BigNumber.min(gasLimit, this.provider.gasLimit.toNumber());
 
     // Just use normal signing/sending if the signer has sufficient ETH or if we're not using the relay
     const gasPrice = await this.provider.getGasPrice();

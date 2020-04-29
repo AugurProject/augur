@@ -588,13 +588,6 @@ Deploying to: ${env}
                 return contract.initialize(this.augur!.address, this.augurTrading!.address);
             },
             async () => {
-                const contract = new ProfitLoss(this.dependencies, await this.getContractAddress('ProfitLoss'));
-                if (await contract.getInitialized_()) {
-                    return true;
-                }
-                return contract.initialize(this.augur!.address, this.augurTrading!.address);
-            },
-            async () => {
                 const contract = new SimulateTrade(this.dependencies, await this.getContractAddress('SimulateTrade'));
                 if (await contract.getInitialized_()) {
                     return true;
