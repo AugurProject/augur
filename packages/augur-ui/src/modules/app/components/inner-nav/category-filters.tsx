@@ -64,6 +64,10 @@ export default class CategoryFilters extends React.Component<
   }
 
   componentDidUpdate(prevProps: CategoryFiltersProps) {
+    const searchCategories = parseQuery(this.props.location.search)[
+      CATEGORY_PARAM_NAME
+    ];
+    const categories = searchCategories ? searchCategories.split(',') : []
     if (JSON.stringify(prevProps && prevProps.categoryMetaData) !== JSON.stringify(this.props.categoryMetaData)) {
       if (this.props.categoryMetaData && this.props.categoryMetaData.categories) {
         const newCategory = this.lookupCategoryFromMeta(this.state.selectedCategory, this.props.categoryMetaData.categories);
@@ -71,6 +75,8 @@ export default class CategoryFilters extends React.Component<
           currentCategories: newCategory ? newCategory.children : null,
         });
       }
+    } else if (categories.length === 0 && categories.length !== this.state.selectedCategories.length) {
+      // return this.gotoAllCategories();
     }
 
     this.loadCategories(prevProps);
@@ -271,7 +277,7 @@ export default class CategoryFilters extends React.Component<
     });
   }
 
-  gotoAllCategories() {
+  gotoAllCategories = () => {
     if (this.props.isSearching) return null;
 
     this.removeCategoryQuery();
@@ -339,7 +345,7 @@ export default class CategoryFilters extends React.Component<
     if (this.props.isSearching && hidden) return null;
 
 
-    const metaCategories = this.props.categoryMetaData.categories;
+    const metaCategories = this.props.categoryMetaData ? this.props.categoryMetaData.categories : selectedCategories;
     const childrenCategories = metaCategories[selectedCategory] && metaCategories[selectedCategory].children;
 
     const updateState = (currentCategories) => {

@@ -21,14 +21,14 @@ const RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494";
 const MIN_GAS_PRICE = new BigNumber(1e9); // Min: 1 Gwei
 const DEFAULT_GAS_PRICE = new BigNumber(4e9); // Default: GasPrice: 4 Gwei
 
-export const DESIRED_SIGNER_ETH_BALANCE = `0x${new BigNumber(.1 * 10**18).toString(16)}`; // .1 ETH
-export const EXCHANGE_RATE_BUFFER_MULTIPLIER = 1.1;
+export const DESIRED_SIGNER_ETH_BALANCE = `0x${new BigNumber(.04 * 10**18).toString(16)}`; // .04 ETH
+export const EXCHANGE_RATE_BUFFER_MULTIPLIER = 1.05;
 
 const OVEREAD_RELAY_GAS = 500000;
 const UNISWAP_MAX_GAS_COST = 150000;
 const REFRESH_INTERVAL_MS = 15000; // 15 seconds
 const GAS_PRICE_MULTIPLIER = 1.2;
-const GAS_COST_MULTIPLIER = 1.1;
+const GAS_COST_MULTIPLIER = 1.2;
 
 const GSN_RELAY_CALL_STATUS = {
   0: "OK",                      // The transaction was successfully relayed and execution successful - never included in the event
@@ -67,6 +67,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
   public relayGasPrice: BigNumber;
   public ethToDaiRate: BigNumber;
+  public signerAccountETHBalance: BigNumber;
 
   _currentNonce = -1;
 
@@ -132,15 +133,15 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     address?: string): Promise<ContractDependenciesGSN> {
       const token0IsCash = new BigNumber(cashAddress.toLowerCase()).lt(wethAddress.toLowerCase());
       const deps = new ContractDependenciesGSN(provider, signer, augurWalletRegistryAddress, ethExchangeAddress, token0IsCash, address);
-      await deps.refreshGasPriceAndExchangeRate();
+      await deps.refreshValues();
       return deps;
   }
 
-  async refreshGasPriceAndExchangeRate(): Promise<void> {
+  async refreshValues(): Promise<void> {
     // Refresh Relay Gas price
     // We bypass the Provider wrapper here and directly get the eth rpc api gas price since we do not want overrides.
     let reccomendedGasPrice = await this.provider.provider.getGasPrice();
-    this.relayGasPrice = new BigNumber(reccomendedGasPrice.toString()).multipliedBy(GAS_PRICE_MULTIPLIER);
+    this.relayGasPrice = new BigNumber(reccomendedGasPrice.toString()).multipliedBy(GAS_PRICE_MULTIPLIER).decimalPlaces(0);
 
     // Refresh Exchange Rate
     const reservesData = await this.ethExchange.getReserves();
@@ -148,10 +149,17 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     const ethReserves: BigNumber = new BigNumber((this.token0IsCash ? reservesData[1] : reservesData[0]).toString());
     this.ethToDaiRate = cashReserves.div(ethReserves).multipliedBy(10**18).decimalPlaces(0);
 
-    // Set max exchnage rate
+    // Set max exchange rate
     this.maxExchangeRate = this.ethToDaiRate.multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER).decimalPlaces(0);
 
-    setTimeout(this.refreshGasPriceAndExchangeRate.bind(this), REFRESH_INTERVAL_MS);
+    // Refresh signer account ETH balance if possible
+    if (this.signer) {
+      this.signerAccountETHBalance = new BigNumber(await (await this.provider.getBalance(await this.signer.getAddress())).toString());
+    } else {
+      this.signerAccountETHBalance = new BigNumber(0);
+    }
+
+    setTimeout(this.refreshValues.bind(this), REFRESH_INTERVAL_MS);
   }
 
   setUseWallet(useWallet: boolean): void {
@@ -252,7 +260,8 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
       throw new Error("Cannot use GSN relay to process TXs except to create a wallet or send wallet transaction execution requests");
     }
 
-    const gasLimit = paymentData.gasCost.multipliedBy(GAS_COST_MULTIPLIER);
+    let gasLimit = paymentData.gasCost.multipliedBy(GAS_COST_MULTIPLIER);
+    gasLimit = BigNumber.min(gasLimit, this.provider.gasLimit.toNumber());
 
     // Just use normal signing/sending if the signer has sufficient ETH or if we're not using the relay
     const gasPrice = await this.provider.getGasPrice();
@@ -345,5 +354,21 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     let cashCost = ethCost.multipliedBy(this.ethToDaiRate).div(10**18);
     cashCost = cashCost.multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER);
     return cashCost.decimalPlaces(0);
+  }
+
+  getDisplayCostInDaiForGasEstimate(gasEstimate: BigNumber | string, manualGasPrice?: number): BigNumber {
+    let tempGasEstimate = new BigNumber(gasEstimate);
+    tempGasEstimate = tempGasEstimate.multipliedBy(GAS_COST_MULTIPLIER);
+    const specifiedGasPrice = this.provider.overrideGasPrice ? this.provider.overrideGasPrice.toNumber() : this.relayGasPrice;
+    const gasPrice = manualGasPrice || specifiedGasPrice;
+    const ethCost = tempGasEstimate.multipliedBy(gasPrice);
+
+    if (!this.useRelay || this.signerAccountETHBalance.gt(ethCost.toString())) {
+      let cashCost = ethCost.multipliedBy(this.ethToDaiRate).div(10**18);
+      cashCost = cashCost.multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER);
+      return cashCost.decimalPlaces(0);
+    }
+
+    return this.convertGasEstimateToDaiCost(gasEstimate);
   }
 }

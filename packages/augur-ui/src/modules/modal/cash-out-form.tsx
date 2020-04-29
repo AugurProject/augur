@@ -78,7 +78,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
   );
 
   const gasEstimate = GsnEnabled
-  ? displayGasInDai(gasLimit.multipliedBy(gasPrice))
+  ? displayGasInDai(gasLimit)
   : gasEstimateInEth;
 
   const formattedTotalMinusGasInDai = formatDai(totalDaiFormatted.value - gasInDai.value);

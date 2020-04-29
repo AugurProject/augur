@@ -30,6 +30,7 @@
     "deploy:ropsten": "npm run deploy:net -- ropsten",
     "deploy:kovan": "npm run deploy:net -- kovan",
     "deploy:foundation": "npm run deploy:net -- foundation",
+    "deploy:mainnet": "npm run deploy:net -- mainnet",
     "deploy": "npm run deploy:net -- aura clique rinkeby",
     "verifyDeployment": "node -r ts-node/register source/deployment/verifyDeployment.ts",
     "docker:build": "docker build --cache-from augurproject/augur-core:monorepo --tag augurproject/augur-core:monorepo -f ./source/support/Dockerfile ./../..",

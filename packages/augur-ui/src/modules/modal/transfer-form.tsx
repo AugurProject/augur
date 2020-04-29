@@ -245,7 +245,7 @@ export class TransferForm extends Component<
     }
 
     const gasEstimate = GsnEnabled
-      ? displayGasInDai(relayerGasCosts.multipliedBy(gasPrice))
+      ? displayGasInDai(relayerGasCosts)
       : fallBackGasCosts[currency.toLowerCase()];
 
     const buttons = [

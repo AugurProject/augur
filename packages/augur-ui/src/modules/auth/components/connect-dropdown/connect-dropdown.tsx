@@ -79,8 +79,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
   let gasCostTrade;
 
   if (GsnEnabled && ethToDaiRate) {
-    const gasCost = NEW_ORDER_GAS_ESTIMATE.multipliedBy(userDefinedGasPrice);
-    gasCostTrade = displayGasInDai(gasCost);
+    gasCostTrade = displayGasInDai(NEW_ORDER_GAS_ESTIMATE, userDefinedGasPrice * 10**9);
   }
 
   if (!isLogged && !restoredAccount) return null;
