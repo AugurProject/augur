@@ -53,9 +53,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         ACCOUNTS[0],
         providerJohn,
         config,
-        johnConnector,
-        meshClient,
-        undefined
+        johnConnector
       );
       johnConnector.initialize(john.augur, john.db);
 
@@ -69,9 +67,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         ACCOUNTS[2],
         providerMary,
         config,
-        maryConnector,
-        meshClient,
-        undefined
+        maryConnector
       );
       maryConnector.initialize(mary.augur, await mary.db);
 
@@ -319,7 +315,6 @@ describe('3rd Party :: ZeroX :: ', () => {
         fillAmount.multipliedBy(fillPrice)
       );
       await expect(simulationData.sharesFilled).toEqual(fillAmount);
-
     }, 240000);
   });
 
@@ -330,9 +325,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         ACCOUNTS[0],
         providerJohn,
         config,
-        connectorJohn,
-        meshClient,
-        undefined
+        connectorJohn
       );
       connectorJohn.initialize(john.augur, john.db);
       await john.approve();

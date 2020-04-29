@@ -1,16 +1,18 @@
 import { NetworkId } from '@augurproject/artifacts';
-import { LoggerLevels, logger } from '@augurproject/utils';
-import { Filter, Log, LogValues } from '@augurproject/types';
-import { Transaction } from 'contract-dependencies';
-import { EthersProvider as EProvider } from 'contract-dependencies-ethers';
-import { ethers } from 'ethers';
-import { Abi } from 'ethereum';
-import * as _ from 'lodash';
+import {
+  EthersProvider as EProvider,
+  Transaction,
+} from '@augurproject/contract-dependencies-ethers';
+import { Log, LogValues } from '@augurproject/types';
+import { logger, LoggerLevels } from '@augurproject/utils';
 import { AsyncQueue, queue, retry } from 'async';
-import { isInstanceOfBigNumber, isInstanceOfArray, Counter } from './utils';
-import { JSONRPCRequestPayload, JSONRPCErrorCallback, JSONRPCResponsePayload } from 'ethereum-types';
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from 'bignumber.js';
+import { Abi } from 'ethereum';
+import { JSONRPCErrorCallback, JSONRPCRequestPayload } from 'ethereum-types';
+import { ethers } from 'ethers';
+import * as _ from 'lodash';
 import { FasterAbiInterface } from './FasterAbiInterface';
+import { Counter, isInstanceOfArray, isInstanceOfBigNumber } from './utils';
 
 interface MultiAddressFilter {
   blockhash?: string;
@@ -31,7 +33,9 @@ interface PerformQueueTask {
 
 export class EthersProvider extends ethers.providers.BaseProvider
   implements EProvider {
-  gasLimit: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(10000000);
+  gasLimit: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(
+    10000000
+  );
   gasEstimateIncreasePercentage: BigNumber | null = new BigNumber(34);
   private contractMapping: ContractMapping = {};
   private performQueue: AsyncQueue<PerformQueueTask>;
@@ -66,10 +70,16 @@ export class EthersProvider extends ethers.providers.BaseProvider
   ) {
     super(provider.getNetwork());
     setInterval(this.printOutAndClearCallCount, 60000);
-    this.on('block', (blockNumber) => this._mostRecentLatestBlockHeaders = null);
+    this.on(
+      'block',
+      blockNumber => (this._mostRecentLatestBlockHeaders = null)
+    );
     this.provider = provider;
     this.performQueue = queue(
-      (item: PerformQueueTask, callback: (err: Error, results: any) => void) => {
+      (
+        item: PerformQueueTask,
+        callback: (err: Error, results: any) => void
+      ) => {
         const _this = this;
         retry(
           { times, interval },
@@ -78,16 +88,23 @@ export class EthersProvider extends ethers.providers.BaseProvider
               if (typeof item.params.params === "undefined") {
                 item.params.params = [];
               }
-              const {method, params: [blocktag, includeHeaders]} = item.params;
+              const {
+                method,
+                params: [blocktag, includeHeaders],
+              } = item.params;
               this.callCount.increment(method);
-              if (method === 'eth_getBlockByNumber'
-                && blocktag === 'latest'
-                && !!includeHeaders === false
-                && _this.polling
-                && process.env.NODE_ENV !== 'test'
+              if (
+                method === 'eth_getBlockByNumber' &&
+                blocktag === 'latest' &&
+                !!includeHeaders === false &&
+                _this.polling &&
+                process.env.NODE_ENV !== 'test'
               ) {
                 if (!_this._mostRecentLatestBlockHeaders) {
-                  _this._mostRecentLatestBlockHeaders = _this.providerSend(item.params.method, item.params.params);
+                  _this._mostRecentLatestBlockHeaders = _this.providerSend(
+                    item.params.method,
+                    item.params.params
+                  );
                 }
                 return _this._mostRecentLatestBlockHeaders;
               }
@@ -96,14 +113,18 @@ export class EthersProvider extends ethers.providers.BaseProvider
             } else {
               const { blockTag, includeTransactions } = item.params;
               this.callCount.increment(item.message);
-              if(item.message === 'getBlock'
-                && blockTag === 'latest'
-                && !!includeTransactions === false
-                && _this.polling
-                && process.env.NODE_ENV !== 'test'
+              if (
+                item.message === 'getBlock' &&
+                blockTag === 'latest' &&
+                !!includeTransactions === false &&
+                _this.polling &&
+                process.env.NODE_ENV !== 'test'
               ) {
                 if (!_this._mostRecentLatestBlockHeaders) {
-                  _this._mostRecentLatestBlockHeaders = _this.providerPerform(item.message, item.params);
+                  _this._mostRecentLatestBlockHeaders = _this.providerPerform(
+                    item.message,
+                    item.params
+                  );
                 }
                 return _this._mostRecentLatestBlockHeaders;
               }
@@ -154,7 +175,9 @@ export class EthersProvider extends ethers.providers.BaseProvider
   async estimateGas(
     transaction: ethers.providers.TransactionRequest
   ): Promise<ethers.utils.BigNumber> {
-    let gasEstimate = new BigNumber((await super.estimateGas(transaction)).toString());
+    let gasEstimate = new BigNumber(
+      (await super.estimateGas(transaction)).toString()
+    );
     if (this.gasEstimateIncreasePercentage) {
       gasEstimate = this.gasEstimateIncreasePercentage
         .div(100)
@@ -164,7 +187,9 @@ export class EthersProvider extends ethers.providers.BaseProvider
     }
 
     if (this.gasLimit) {
-      gasEstimate = gasEstimate.gt(this.gasLimit.toString()) ? new BigNumber(this.gasLimit.toString()) : gasEstimate;
+      gasEstimate = gasEstimate.gt(this.gasLimit.toString())
+        ? new BigNumber(this.gasLimit.toString())
+        : gasEstimate;
     }
 
     return new ethers.utils.BigNumber(gasEstimate.toFixed());
@@ -260,11 +285,17 @@ export class EthersProvider extends ethers.providers.BaseProvider
     await this.ready;
     if (filter.address && Array.isArray(filter.address)) {
       filter.address['toLowerCase'] = () => {
-        return _.map(filter.address, (address) => address.toLowerCase());
-      }
+        return _.map(filter.address, address => address.toLowerCase());
+      };
     }
-    if (filter.fromBlock !== undefined) filter.fromBlock = ethers.utils.hexStripZeros(ethers.utils.hexlify(filter.fromBlock));
-    if (filter.toBlock !== undefined) filter.toBlock = ethers.utils.hexStripZeros(ethers.utils.hexlify(filter.toBlock));
+    if (filter.fromBlock !== undefined)
+      filter.fromBlock = ethers.utils.hexStripZeros(
+        ethers.utils.hexlify(filter.fromBlock)
+      );
+    if (filter.toBlock !== undefined)
+      filter.toBlock = ethers.utils.hexStripZeros(
+        ethers.utils.hexlify(filter.toBlock)
+      );
     const logs = await this.perform('getLogs', { filter });
     for (const log of logs) {
       log.logIndex = parseInt(log.logIndex, 16);
@@ -273,12 +304,14 @@ export class EthersProvider extends ethers.providers.BaseProvider
       log.blockHash = formatLogHash(log.blockHash);
       log.transactionHash = formatLogHash(log.transactionHash);
       log.topics = _.map(log.topics, formatLogHash);
-      log.data = log.data ? ethers.utils.hexlify(log.data) : "0x";
+      log.data = log.data ? ethers.utils.hexlify(log.data) : '0x';
     }
     return logs;
   }
 
-  private async _getLogs(filter: MultiAddressFilter): Promise<ethers.providers.Log[]> {
+  private async _getLogs(
+    filter: MultiAddressFilter
+  ): Promise<ethers.providers.Log[]> {
     try {
       return await this.getMultiAddressLogs(filter);
     } catch (e) {
@@ -321,17 +354,24 @@ export class EthersProvider extends ethers.providers.BaseProvider
       removed: false,
       ...log,
     }));
-  }
+  };
 
   // This is to support the Web3 Spec
-  sendAsync(payload: JSONRPCRequestPayload, callback?: JSONRPCErrorCallback): void {
-    this.performQueue.push({ message: "send", params: payload }, (error, result) => {
-      if (callback) callback(error, {
-        result,
-        id: payload.id,
-        jsonrpc: payload.jsonrpc,
-      });
-    });
+  sendAsync(
+    payload: JSONRPCRequestPayload,
+    callback?: JSONRPCErrorCallback
+  ): void {
+    this.performQueue.push(
+      { message: 'send', params: payload },
+      (error, result) => {
+        if (callback)
+          callback(error, {
+            result,
+            id: payload.id,
+            jsonrpc: payload.jsonrpc,
+          });
+      }
+    );
   }
 
   async perform(message: any, params: any): Promise<any> {
@@ -340,7 +380,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
         if (err) {
           reject(err);
         }
-          resolve(results);
+        resolve(results);
       });
     });
   }
