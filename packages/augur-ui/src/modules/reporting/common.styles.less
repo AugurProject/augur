@@ -242,6 +242,31 @@ div.ReportingSubheaders {
   }
 }
 
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  div.ReportingSubheaders {
+    
+      > span {
+        .text-12-medium;
+
+        color: var(--color-secondary-text);
+
+        > label {
+          margin-bottom: 0;
+        }
+      }
+
+      > p > span {
+        .text-16;
+
+        color: var(--color-primary-text);
+        margin-top: @size-4;
+        line-height: 140%;
+      }
+  }
+}
+
 .ReportingModalButton {
   .text-14;
 

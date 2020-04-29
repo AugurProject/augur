@@ -301,10 +301,7 @@ export const SlimArrow = (
 );
 
 export const EmptyMagnifyingGlass = (
-  <svg
-    viewBox="0 0 80 80"
-    fill="none"
-  >
+  <svg viewBox="0 0 80 80" fill="none">
     <circle cx="40" cy="40" r="40" />
     <path
       fillRule="evenodd"
@@ -991,6 +988,18 @@ export const MetaMask = (
   </svg>
 );
 
+export const BetsIcon = (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M0 3H24V9C22.3431 9 21 10.3431 21 12C21 13.6569 22.3431 15 24 15V21H0V15C1.65685 15 3 13.6569 3 12C3 10.3431 1.65685 9 0 9V3ZM7 13H17V15H7V13ZM17 9H7V11H17V9Z"
+    />
+  </svg>
+);
 export const LogoutIcon = (
   <svg viewBox="0 0 18 18">
     <g fillRule="nonzero">

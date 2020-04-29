@@ -244,3 +244,52 @@
     }
   }
 }
+
+.InfoTicket {
+  background: var(--color-module-background);
+  box-shadow: 0px 0px @size-4 var(--color-primary-text-15);
+  border-radius: @border-radius-default;
+  padding: @size-16;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  position: relative;
+
+  &::before {
+    background-color: var(--color-brand);
+    content: '';
+    position: absolute;
+    width: @size-2;
+    top: @size-4;
+    bottom: @size-4
+  }
+
+  > svg {
+    height: @size-24;
+    width: @size-24;
+    margin-right: @size-8;
+
+    > path {
+      fill: var(--color-primary-text);
+    }
+
+    > circle {
+      fill: transparent;
+      stroke: transparent;
+    }
+  }
+
+  > span:first-of-type {
+    .text-24-bold;
+
+    color: var(--color-primary-text);
+    line-height: @size-28;
+  }
+
+  > span:nth-of-type(2) {
+    .text-14;
+
+    grid-column: 2;
+    color: var(--color-secondary-text);
+    line-height: 140%;
+  }
+}
