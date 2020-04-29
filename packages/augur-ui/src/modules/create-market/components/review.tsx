@@ -261,7 +261,7 @@ export default class Review extends React.Component<
     );
 
     // Total Gas in DAI
-    const totalGasInDai = displayGasInDai((gasCost).multipliedBy(gasPrice));
+    const totalGasInDai = displayGasInDai((gasCost));
 
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];

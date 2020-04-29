@@ -37,7 +37,7 @@ contract MarketFactory is CloneFactory, IMarketFactory {
         // Market param validation
         require(_numTicks.isMultipleOf(2), "MarketFactory.createMarket: numTicks must be multiple of 2");
         require(MIN_OUTCOMES <= _numOutcomes && _numOutcomes <= MAX_OUTCOMES, "MarketFactory.createMarket: numOutcomes out of range");
-        require(_designatedReporterAddress != NULL_ADDRESS, "MarketFactory.createMarket: designated rpeorter address is 0x0");
+        require(_designatedReporterAddress != NULL_ADDRESS, "MarketFactory.createMarket: designated reporter address is 0x0");
         require(_numTicks >= _numOutcomes, "MarketFactory.createMarket: numTicks lower than numOutcomes");
         require(_feePerCashInAttoCash <= MAX_FEE_PER_CASH_IN_ATTOCASH, "MarketFactory.createMarket: market creator fee too high");
         require(_sender != NULL_ADDRESS, "MarketFactory.createMarket: market creator address is 0x0");

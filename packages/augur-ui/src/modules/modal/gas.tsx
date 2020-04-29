@@ -123,8 +123,7 @@ export const Gas = (props: GasProps) => {
     },
   ];
 
-  const gasCost = NEW_ORDER_GAS_ESTIMATE.multipliedBy(amount);
-  const gasCostTrade = displayGasInDai(gasCost);
+  const gasCostTrade = displayGasInDai(NEW_ORDER_GAS_ESTIMATE, amount * 10**9);
   return (
     <div onClick={event => event.stopPropagation()} className={Styles.Gas}>
       <Title title='Transaction Fee' closeAction={closeAction} />
@@ -149,7 +148,7 @@ export const Gas = (props: GasProps) => {
                 <span>{data.avgTime}</span>
               </div>
               <div>
-                <span>{displayGasInDai(NEW_ORDER_GAS_ESTIMATE.multipliedBy(data.gwei))}</span>
+              <span>{displayGasInDai(NEW_ORDER_GAS_ESTIMATE, data.gwei * 10**9)}</span>
                 <span> / Trade</span>
               </div>
             </div>
