@@ -841,7 +841,7 @@ export const ZEROX_STATUSES = {
 }
 
 export const ZEROX_STATUSES_TOOLTIP = {
-  STARTING: 'Degrated Service',
+  STARTING: 'Degraded Service',
   READY: 'Degraded Service',
   SYNCED: 'Service Operational',
   STARTED: 'Degraded Service',
