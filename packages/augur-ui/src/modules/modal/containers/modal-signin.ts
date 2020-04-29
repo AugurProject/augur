@@ -92,7 +92,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       dP.errorModal(`Please enable cookies in your browser to proceed with ${accountType}.`, 'Cookies are disabled', HELP_CENTER_THIRD_PARTY_COOKIES, 'Learn more.');
     } else {
       dP.errorModal(
-        `There was an error while attempting to log in with ${accountType}. Please try again, and if it is still not working checkout the help center for logging in.\n\n${
+        `There was an error while attempting to log in with ${accountType}. Please try again.\n\n${
           error?.message ? `Error: ${JSON.stringify(error.message)}` : ''
         }`
       );
