@@ -6,7 +6,7 @@ describe('Counter', () => {
   let target;
 
   beforeEach(async () => {
-    target = new Counter()
+    target = new Counter();
   });
 
   describe('methods', () => {
@@ -24,13 +24,16 @@ describe('Counter', () => {
       target.set(KEY, 4);
       target.set(KEY1, 3);
 
-      expect(target.toTabularData()).toEqual([{
-        method: KEY,
-        count: 4,
-      }, {
-        method: KEY1,
-        count: 3,
-      }]);
+      expect(target.toTabularData()).toEqual([
+        {
+          method: KEY,
+          count: 4,
+        },
+        {
+          method: KEY1,
+          count: 3,
+        },
+      ]);
     });
   });
 });

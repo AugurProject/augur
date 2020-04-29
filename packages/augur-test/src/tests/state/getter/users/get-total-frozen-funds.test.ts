@@ -32,31 +32,40 @@ describe('State API :: Users :: ', () => {
   });
 
   test(':getTotalOnChainFrozenFunds ', async () => {
-    const initialFrozenFunds: UserTotalOnChainFrozenFunds = await john.api.route('getTotalOnChainFrozenFunds', {
-      universe: john.augur.contracts.universe.address,
-      account: john.account.address,
-    });
+    const initialFrozenFunds: UserTotalOnChainFrozenFunds = await john.api.route(
+      'getTotalOnChainFrozenFunds',
+      {
+        universe: john.augur.contracts.universe.address,
+        account: john.account.address,
+      }
+    );
     await expect(initialFrozenFunds.totalFrozenFunds).toEqual('0');
 
     const market1 = await john.createReasonableYesNoMarket();
     await john.sync();
 
-    const marketCreatedFrozenFunds: UserTotalOnChainFrozenFunds = await john.api.route('getTotalOnChainFrozenFunds', {
-      universe: john.augur.contracts.universe.address,
-      account: john.account.address,
-    });
+    const marketCreatedFrozenFunds: UserTotalOnChainFrozenFunds = await john.api.route(
+      'getTotalOnChainFrozenFunds',
+      {
+        universe: john.augur.contracts.universe.address,
+        account: john.account.address,
+      }
+    );
 
-    await expect(marketCreatedFrozenFunds.totalFrozenFunds).toEqual("10");
+    await expect(marketCreatedFrozenFunds.totalFrozenFunds).toEqual('10');
 
     const market2 = await john.createReasonableYesNoMarket();
     await john.sync();
 
-    const marketCreatedFrozenFunds2: UserTotalOnChainFrozenFunds = await john.api.route('getTotalOnChainFrozenFunds', {
-      universe: john.augur.contracts.universe.address,
-      account: john.account.address,
-    });
+    const marketCreatedFrozenFunds2: UserTotalOnChainFrozenFunds = await john.api.route(
+      'getTotalOnChainFrozenFunds',
+      {
+        universe: john.augur.contracts.universe.address,
+        account: john.account.address,
+      }
+    );
 
-    await expect(marketCreatedFrozenFunds2.totalFrozenFunds).toEqual("20");
+    await expect(marketCreatedFrozenFunds2.totalFrozenFunds).toEqual('20');
 
     const startTime = await john.getTimestamp();
 
@@ -96,17 +105,25 @@ describe('State API :: Users :: ', () => {
 
     await john.sync();
 
-    const { frozenFundsTotal } = await john.api.route('getUserTradingPositions', {
-      universe: john.augur.contracts.universe.address,
-      account: john.account.address,
-    });
+    const { frozenFundsTotal } = await john.api.route(
+      'getUserTradingPositions',
+      {
+        universe: john.augur.contracts.universe.address,
+        account: john.account.address,
+      }
+    );
 
-    const afterTradesFrozenFunds: UserTotalOnChainFrozenFunds = await john.api.route('getTotalOnChainFrozenFunds', {
-      universe: john.augur.contracts.universe.address,
-      account: john.account.address,
-    });
+    const afterTradesFrozenFunds: UserTotalOnChainFrozenFunds = await john.api.route(
+      'getTotalOnChainFrozenFunds',
+      {
+        universe: john.augur.contracts.universe.address,
+        account: john.account.address,
+      }
+    );
 
-    const total = new BigNumber(marketCreatedFrozenFunds2.totalFrozenFunds).plus(new BigNumber(frozenFundsTotal)).toFixed();
+    const total = new BigNumber(marketCreatedFrozenFunds2.totalFrozenFunds)
+      .plus(new BigNumber(frozenFundsTotal))
+      .toFixed();
     await expect(afterTradesFrozenFunds.totalFrozenFunds).toEqual(total);
   });
 });

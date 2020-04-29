@@ -15,7 +15,7 @@ import {
   DateInputDependencies,
   PlaceholderValues,
   CategoricalOutcomes,
-  EventExpEndNextMonth
+  EventExpEndNextMonth,
 } from '../templates-template';
 import { TEMPLATES, TEMPLATES2 } from '../templates-source';
 import { retiredTemplates } from '../templates-retired';
@@ -156,13 +156,13 @@ function getRequiredOutcomes(inputs: TemplateInput[]) {
 }
 
 function getHoursAfterEstimatedStartTime(inputs: TemplateInput[]): number {
-  return (inputs
-    .find(i => i.type === TemplateInputType.ESTDATETIME) || {}).hoursAfterEst;
+  return (inputs.find(i => i.type === TemplateInputType.ESTDATETIME) || {})
+    .hoursAfterEst;
 }
 
 function getHoursAfterStartdate(inputs: TemplateInput[]): number {
-  return (inputs
-    .find(i => i.type === TemplateInputType.DATESTART) || {}).daysAfterDateStart;
+  return (inputs.find(i => i.type === TemplateInputType.DATESTART) || {})
+    .daysAfterDateStart;
 }
 
 function listToRegEx(values: string[]) {
@@ -198,7 +198,8 @@ function getMarketQuestionDependencies(
 function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
   return inputs
     .filter(
-      i => i.dateAfterId || i.validationType === ValidationType.NOWEEKEND_HOLIDAYS
+      i =>
+        i.dateAfterId || i.validationType === ValidationType.NOWEEKEND_HOLIDAYS
     )
     .map(i => ({
       id: i.id,
@@ -207,11 +208,11 @@ function getDateDependencies(inputs: TemplateInput[]): DateDependencies[] {
     }));
 }
 
-function getEventExpEndNextMonth(inputs: TemplateInput[]): EventExpEndNextMonth[] {
+function getEventExpEndNextMonth(
+  inputs: TemplateInput[]
+): EventExpEndNextMonth[] {
   return inputs
-    .filter(
-      i => i.eventExpEndNextMonth
-    )
+    .filter(i => i.eventExpEndNextMonth)
     .map(i => ({
       id: i.id,
       yearDropdown: i.yearDropdown,
@@ -219,21 +220,26 @@ function getEventExpEndNextMonth(inputs: TemplateInput[]): EventExpEndNextMonth[
     }));
 }
 
-function getInputsAfterTuesdayDateNoFriday(inputs: TemplateInput[]): Array<{ id: number }> {
+function getInputsAfterTuesdayDateNoFriday(
+  inputs: TemplateInput[]
+): Array<{ id: number }> {
   return inputs
     .filter(
-      i => i.type === TemplateInputType.DATEYEAR && i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY
+      i =>
+        i.type === TemplateInputType.DATEYEAR &&
+        i.validationType ===
+          ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY
     )
     .map(i => ({
       id: i.id,
     }));
 }
 
-function getClosingDateDependencies(inputs: TemplateInput[]): DateInputDependencies[] {
+function getClosingDateDependencies(
+  inputs: TemplateInput[]
+): DateInputDependencies[] {
   return inputs
-    .filter(
-      i => i.type === TemplateInputType.DATEYEAR_CLOSING
-    )
+    .filter(i => i.type === TemplateInputType.DATEYEAR_CLOSING)
     .map(i => ({
       inputDateYearId: i.inputDateYearId,
       inputSourceId: i.inputSourceId,
@@ -260,7 +266,8 @@ function getPlaceholderValues(inputs: TemplateInput[]): PlaceholderValues {
   return inputs.reduce(
     (p, i) =>
       (i.type === TemplateInputType.TEXT && !i.validationType) ||
-      (i.type === TemplateInputType.USER_DESCRIPTION_OUTCOME && !i.validationType)
+      (i.type === TemplateInputType.USER_DESCRIPTION_OUTCOME &&
+        !i.validationType)
         ? { ...p, [i.id]: i.placeholder }
         : p,
     {}
@@ -270,9 +277,9 @@ function getPlaceholderValues(inputs: TemplateInput[]): PlaceholderValues {
 function getCategoricalOutcomes(inputs: TemplateInput[]): CategoricalOutcomes {
   return inputs.reduce(
     (p, i) =>
-      (i.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME) ||
-      (i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME) ||
-      (i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP)
+      i.type === TemplateInputType.SUBSTITUTE_USER_OUTCOME ||
+      i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
+      i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP
         ? { ...p, [i.id]: i.placeholder }
         : p,
     {}

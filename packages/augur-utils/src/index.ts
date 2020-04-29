@@ -1,14 +1,21 @@
 import BigNumber from 'bignumber.js';
 
-BigNumber.config({ MODULO_MODE: BigNumber.EUCLID, ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN });
+BigNumber.config({
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
+});
 
 export const version = '2.1.4';
 export * from './constants';
 export { unrollArray } from './unroll-array';
 export { byteArrayToUtf8String } from './byte-array-to-utf8-string';
 export { byteArrayToHexString } from './byte-array-to-hex-string';
-export { abiEncodeShortStringAsInt256 } from './abi-encode-short-string-as-int256';
-export { abiDecodeShortStringAsInt256 } from './abi-decode-short-string-as-int256';
+export {
+  abiEncodeShortStringAsInt256,
+} from './abi-encode-short-string-as-int256';
+export {
+  abiDecodeShortStringAsInt256,
+} from './abi-decode-short-string-as-int256';
 export { abiEncodeBytes } from './abi-encode-bytes';
 export { abiDecodeBytes } from './abi-decode-bytes';
 export { unfork } from './unfork';
@@ -31,8 +38,10 @@ export { abiEncodeData } from './abi-encode-data';
 export { abiEncodeTransactionPayload } from './abi-encode-transaction-payload';
 export { abiDecodeData } from './abi-decode-data';
 export { abiDecodeRpcResponse } from './abi-decode-rpc-response';
-export { formatAbiRawDecodedDataArray } from './format-abi-raw-decoded-data-array';
+export {
+  formatAbiRawDecodedDataArray,
+} from './format-abi-raw-decoded-data-array';
 export { formatAbiRawDecodedData } from './format-abi-raw-decoded-data';
 export { chunkRange } from './generators';
-export { serialize  } from './serialize';
+export { serialize } from './serialize';
 export * from './repeat';

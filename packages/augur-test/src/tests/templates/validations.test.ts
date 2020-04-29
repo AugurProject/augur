@@ -10,25 +10,23 @@ beforeAll(async () => {
 const templateValidations = [
   {
     skip: false,
-    title:
-      'PGA: Which team will win the 2020 Presidents Cup?',
+    title: 'PGA: Which team will win the 2020 Presidents Cup?',
     templateInfo:
       '{"hash":"0x32005caba2639c59cba6d6b661c2623eefb32b4457d47188709b52570e61e25b","question":"PGA: Which team will win the [0] Presidents Cup?","inputs":[{"id":0,"value":"2020","type":"DROPDOWN","timestamp":null}]}',
     endTime: '1582588800',
     outcomes: 'No winner/Event cancelled,United States Team,International Team',
     resolutionRules:
       "If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.\nOnly one team can be listed per outcome, if not then the market should resolve as 'Invalid'\nThis market is intended to have two teams, United States verse International, if not the case this market should resolve as 'Invalid'\nIncludes regulation, any play-offs and sudden death",
-    result:
-      'success',
+    result: 'success',
   },
   {
     skip: false,
-    title:
-      'PGA: Which team will win the 2020 Presidents Cup?',
+    title: 'PGA: Which team will win the 2020 Presidents Cup?',
     templateInfo:
       '{"hash":"0x32005caba2639c59cba6d6b661c2623eefb32b4457d47188709b52570e61e25b","question":"PGA: Which team will win the [0] Presidents Cup?","inputs":[{"id":0,"value":"2020","type":"DROPDOWN","timestamp":null}]}',
     endTime: '1582588800',
-    outcomes: 'No winner/Event cancelled,United States Team,International Team,Bad Outcome',
+    outcomes:
+      'No winner/Event cancelled,United States Team,International Team,Bad Outcome',
     resolutionRules:
       "If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.\nOnly one team can be listed per outcome, if not then the market should resolve as 'Invalid'\nThis market is intended to have two teams, United States verse International, if not the case this market should resolve as 'Invalid'\nIncludes regulation, any play-offs and sudden death",
     result:
@@ -51,11 +49,11 @@ const templateValidations = [
     title:
       'Will there be 1000 or more total confirmed deaths from Coronavirus (Covid-19) in Canada by April 1, 2020 according to https://www.worldometers.info/coronavirus/country?',
     templateInfo:
-    '{"hash":"0xf72300773efecec0a82a30d8a9d316c815bea46c9c14fd95c079a11366c1721f","question":"Will there be [0] or more total confirmed [1] Coronavirus (Covid-19) in [2] by [3] according to https://www.worldometers.info/coronavirus/country?","inputs":[{"id":0,"value":"1000","type":"TEXT","timestamp":null},{"id":1,"value":"deaths from","type":"DROPDOWN","timestamp":null},{"id":2,"value":"Canada","type":"DROPDOWN","timestamp":null},{"id":3,"value":"April 1, 2020","type":"DATESTART","timestamp":1585717200}]}',
+      '{"hash":"0xf72300773efecec0a82a30d8a9d316c815bea46c9c14fd95c079a11366c1721f","question":"Will there be [0] or more total confirmed [1] Coronavirus (Covid-19) in [2] by [3] according to https://www.worldometers.info/coronavirus/country?","inputs":[{"id":0,"value":"1000","type":"TEXT","timestamp":null},{"id":1,"value":"deaths from","type":"DROPDOWN","timestamp":null},{"id":2,"value":"Canada","type":"DROPDOWN","timestamp":null},{"id":3,"value":"April 1, 2020","type":"DATESTART","timestamp":1585717200}]}',
     endTime: '1585918800',
     resolutionRules: null,
     result:
-    'start date in question is not the required number of days before market event expiration endTime',
+      'start date in question is not the required number of days before market event expiration endTime',
   },
 ];
 

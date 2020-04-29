@@ -7,11 +7,17 @@ import { ContractAddresses } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { ethers } from 'ethers';
 import { inOneMonths, today } from './time';
-import { SDKConfiguration } from "@augurproject/artifacts/build";
+import { SDKConfiguration } from '@augurproject/artifacts/build';
 
-interface AddressMapping { [addr1: string]: string; }
-interface IdMapping { [id1: string]: string; }
-interface AccountMapping { [addr1: string]: Account; }
+interface AddressMapping {
+  [addr1: string]: string;
+}
+interface IdMapping {
+  [id1: string]: string;
+}
+interface AccountMapping {
+  [addr1: string]: Account;
+}
 
 export class LogReplayerV1 {
   accounts: AccountMapping = {};
@@ -28,7 +34,9 @@ export class LogReplayerV1 {
     private config: SDKConfiguration
   ) {
     if (initialAccounts.length < 1) {
-      throw Error("LogReplayer's initial accounts list must contain at least one account");
+      throw Error(
+        "LogReplayer's initial accounts list must contain at least one account"
+      );
     }
     this.piggybank = initialAccounts[0];
     this.availableAccounts = initialAccounts.slice(1);
@@ -37,7 +45,11 @@ export class LogReplayerV1 {
   }
 
   async User(account: Account): Promise<ContractAPI> {
-    const user = await ContractAPI.userWrapper(account, this.provider, this.config);
+    const user = await ContractAPI.userWrapper(
+      account,
+      this.provider,
+      this.config
+    );
     await user.approveIfNecessary();
     return user;
   }
@@ -46,7 +58,8 @@ export class LogReplayerV1 {
     if (typeof this.accounts[address] === 'undefined') {
       if (this.availableAccounts.length > 0) {
         this.accounts[address] = this.availableAccounts.pop();
-      } else { // Create and fund new account.
+      } else {
+        // Create and fund new account.
         const wallet = ethers.Wallet.createRandom();
         this.accounts[address] = {
           privateKey: wallet.privateKey,
@@ -54,7 +67,10 @@ export class LogReplayerV1 {
           initialBalance: _1_HUNDRED_ETH,
         };
 
-        const piggybankWallet = new ethers.Wallet(this.piggybank.privateKey, this.provider);
+        const piggybankWallet = new ethers.Wallet(
+          this.piggybank.privateKey,
+          this.provider
+        );
         await piggybankWallet.sendTransaction({
           to: wallet.address,
           value: `0x${new BigNumber(_1_HUNDRED_ETH).toString(16)}`,
@@ -72,10 +88,13 @@ export class LogReplayerV1 {
   }
 
   async ReplayLog(log: ParsedLog) {
-    switch(log.name) {
-      case 'UniverseCreated': return this.UniverseCreated(log);
-      case 'MarketCreated': return this.MarketCreated(log);
-      case 'OrderCreated': return this.OrderCreated(log);
+    switch (log.name) {
+      case 'UniverseCreated':
+        return this.UniverseCreated(log);
+      case 'MarketCreated':
+        return this.MarketCreated(log);
+      case 'OrderCreated':
+        return this.OrderCreated(log);
       default:
     }
   }
@@ -85,7 +104,8 @@ export class LogReplayerV1 {
 
     console.log(`Replaying UniverseCreated "${childUniverse}"`);
 
-    if (parentUniverse === NULL_ADDRESS) { // Deployment already gave us a genesis universe so just record it.
+    if (parentUniverse === NULL_ADDRESS) {
+      // Deployment already gave us a genesis universe so just record it.
       const user = await this.User(this.piggybank); // Treating piggybank as the Augur deployer since typically it is.
       this.universes[childUniverse] = user.augur.config.addresses.Universe;
     } else {
@@ -96,8 +116,17 @@ export class LogReplayerV1 {
 
   async MarketCreated(log: ParsedLog) {
     const {
-      universe, extraInfo, market, marketCreator, designatedReporter,
-      prices, marketType, numTicks, outcomes, topic } = log;
+      universe,
+      extraInfo,
+      market,
+      marketCreator,
+      designatedReporter,
+      prices,
+      marketType,
+      numTicks,
+      outcomes,
+      topic,
+    } = log;
 
     console.log(`Replaying MarketCreated "${market}"`);
 
@@ -106,9 +135,11 @@ export class LogReplayerV1 {
     const feeDivisor = new BigNumber(0);
 
     const feePerCashInAttoCash = new BigNumber(10).pow(16); // 1% fee
-    const [ start, end ] = [ makeDate(timestamp), makeDate(endTime) ];
+    const [start, end] = [makeDate(timestamp), makeDate(endTime)];
     const marketLength = end.getTime() - start.getTime();
-    const adjustedEndTime = new BigNumber(Math.floor((Date.now() + marketLength) / 1000));
+    const adjustedEndTime = new BigNumber(
+      Math.floor((Date.now() + marketLength) / 1000)
+    );
 
     let adjustedExtraInfo = JSON.parse(extraInfo);
     adjustedExtraInfo.categories = extraInfo.categories || [];
@@ -117,11 +148,13 @@ export class LogReplayerV1 {
     adjustedExtraInfo.categories.push('flash');
     adjustedExtraInfo = JSON.stringify(adjustedExtraInfo);
 
-    const user = await this.Account(marketCreator).then((account) => this.User(account));
+    const user = await this.Account(marketCreator).then(account =>
+      this.User(account)
+    );
     const reporter = await this.Account(designatedReporter);
 
     let result;
-    switch(marketType) {
+    switch (marketType) {
       case 0: // YES_NO
         result = await user.createYesNoMarket({
           endTime: adjustedEndTime,
@@ -152,7 +185,8 @@ export class LogReplayerV1 {
           extraInfo: adjustedExtraInfo,
         });
         break;
-      default: throw Error(`Unexpected market type "${marketType}`);
+      default:
+        throw Error(`Unexpected market type "${marketType}`);
     }
 
     this.markets[market] = result.address;
@@ -160,15 +194,29 @@ export class LogReplayerV1 {
 
   async OrderCreated(log: ParsedLog) {
     const {
-      name, orderType, amount, price, creator, moneyEscrowed, sharesEscrowed,
-      tradeGroupId, orderId, universe, shareToken, market, outcome } = log;
+      name,
+      orderType,
+      amount,
+      price,
+      creator,
+      moneyEscrowed,
+      sharesEscrowed,
+      tradeGroupId,
+      orderId,
+      universe,
+      shareToken,
+      market,
+      outcome,
+    } = log;
 
     console.log(`Replaying OrderCreated "${orderId}"`);
 
     const betterOrderId = formatBytes32String('');
     const worseOrderId = formatBytes32String('');
 
-    const orderCreatorUser = await this.Account(creator).then((account) => this.User(account));
+    const orderCreatorUser = await this.Account(creator).then(account =>
+      this.User(account)
+    );
 
     this.orders[orderId] = await orderCreatorUser.placeOrder(
       this.markets[market],

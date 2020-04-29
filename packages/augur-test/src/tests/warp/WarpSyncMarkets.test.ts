@@ -5,12 +5,7 @@ import {
   stringTo32ByteHex,
 } from '@augurproject/sdk';
 import { databasesToSync } from '@augurproject/sdk/build/warp/WarpController';
-import {
-  ACCOUNTS,
-  defaultSeedPath,
-  Seed,
-  loadSeed,
-} from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, Seed, loadSeed } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../libs';
@@ -73,7 +68,6 @@ describe('Warp Sync markets', () => {
       config,
       ipfs
     );
-
 
     await john.faucetCash(new BigNumber(1000000000));
 
@@ -338,7 +332,7 @@ describe('Warp Sync markets', () => {
         johnLogs[databaseName] = await john.db[databaseName].toArray();
         otherJohnLogs[databaseName] = await otherJohn.db[
           databaseName
-          ].toArray();
+        ].toArray();
       }
 
       expect(otherJohnLogs).toEqual(johnLogs);
@@ -381,8 +375,10 @@ describe('Warp Sync markets', () => {
         await john.sync();
       }
 
-      console.log('(await john.getTimestamp()).toNumber()',
-        JSON.stringify((await john.getTimestamp()).toNumber()));
+      console.log(
+        '(await john.getTimestamp()).toNumber()',
+        JSON.stringify((await john.getTimestamp()).toNumber())
+      );
 
       await expect(john.db.warpCheckpoints.table.toArray()).resolves.toEqual([
         expect.objectContaining({
@@ -500,9 +496,11 @@ describe('Warp Sync markets', () => {
       await mark.claimTradingProceeds(market);
 
       await john.sync();
-  
-      await expect(john.db.warpCheckpoints.table.toArray()).resolves.toHaveLength(1);
-  
+
+      await expect(
+        john.db.warpCheckpoints.table.toArray()
+      ).resolves.toHaveLength(1);
+
       await expect(
         john.api.route('getMarkets', {
           universe: seed.addresses.Universe,
@@ -511,33 +509,33 @@ describe('Warp Sync markets', () => {
         markets: [expect.any(Object)],
         meta: expect.any(Object),
       });
-  
+
       // advance 60 days
       await john.advanceTimestamp(SECONDS_IN_A_DAY.multipliedBy(60));
       await john.sync();
-  
+
       // Finalize the initial warp sync market and then another now that 60 days has passed and its relatve timestamp will include pruning
-      const hash = "bad";
-  
+      const hash = 'bad';
+
       let warpSyncMarket = await john.reportWarpSyncMarket(hash);
       await john.finalizeWarpSyncMarket(warpSyncMarket);
-  
+
       // Force the db to prune.
       for (let i = 0; i < 30; i++) {
         await provider.providerSend('evm_mine', []);
         await john.sync();
       }
-  
+
       await john.advanceTimestamp(SECONDS_IN_A_DAY.multipliedBy(3));
       warpSyncMarket = await john.reportWarpSyncMarket(hash);
       await john.finalizeWarpSyncMarket(warpSyncMarket);
-  
+
       // Force the db to prune.
       for (let i = 0; i < 30; i++) {
         await provider.providerSend('evm_mine', []);
         await john.sync();
       }
-  
+
       await expect(
         john.api.route('getMarkets', {
           universe: seed.addresses.Universe,
@@ -546,13 +544,17 @@ describe('Warp Sync markets', () => {
         markets: [],
         meta: expect.any(Object),
       });
-  
+
       // Confirm data was removed from rollup dbs.
-      await expect(john.db.MarketVolumeChangedRollup.toArray()).resolves.toEqual(
+      await expect(
+        john.db.MarketVolumeChangedRollup.toArray()
+      ).resolves.toEqual([]);
+      await expect(john.db.MarketOIChangedRollup.toArray()).resolves.toEqual(
         []
       );
-      await expect(john.db.MarketOIChangedRollup.toArray()).resolves.toEqual([]);
-      await expect(john.db.ShareTokenBalanceChangedRollup.toArray()).resolves.toEqual([]);
+      await expect(
+        john.db.ShareTokenBalanceChangedRollup.toArray()
+      ).resolves.toEqual([]);
     });
   });
 });

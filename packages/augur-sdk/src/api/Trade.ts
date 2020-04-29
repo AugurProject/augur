@@ -1,20 +1,26 @@
 import { BigNumber } from 'bignumber.js';
-import { convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, numTicksToTickSizeWithDisplayPrices } from '../utils';
+import {
+  convertDisplayAmountToOnChainAmount,
+  convertDisplayPriceToOnChainPrice,
+  numTicksToTickSizeWithDisplayPrices,
+} from '../utils';
 import { Augur } from './../Augur';
 import {
   OnChainTrade,
   NativePlaceTradeChainParams,
   NativePlaceTradeDisplayParams,
-  NativePlaceTradeParams
+  NativePlaceTradeParams,
 } from './OnChainTrade';
 import { ZeroX, ZeroXSimulateTradeData } from './ZeroX';
 import moment, { Moment } from 'moment';
 
 export interface TradeAPI {
-  useZeroX(): boolean
-  simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData>
-  simulateTradeGasLimit(params: NativePlaceTradeDisplayParams): Promise<BigNumber>
-  placeTrade(params: PlaceTradeDisplayParams): Promise<boolean> // true if trade was placed
+  useZeroX(): boolean;
+  simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData>;
+  simulateTradeGasLimit(
+    params: NativePlaceTradeDisplayParams
+  ): Promise<BigNumber>;
+  placeTrade(params: PlaceTradeDisplayParams): Promise<boolean>; // true if trade was placed
 }
 
 export interface SimulateTradeData extends ZeroXSimulateTradeData {
@@ -58,11 +64,27 @@ export class Trade implements TradeAPI {
     return this.placeOnChainTrade(onChainTradeParams);
   }
 
-  private getOnChainTradeParams(params: PlaceTradeDisplayParams): NativePlaceTradeChainParams {
-    const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
-    const onChainAmount = convertDisplayAmountToOnChainAmount(params.displayAmount, tickSize);
-    const onChainPrice = convertDisplayPriceToOnChainPrice(params.displayPrice, params.displayMinPrice, tickSize);
-    const onChainShares = convertDisplayAmountToOnChainAmount(params.displayShares, tickSize);
+  private getOnChainTradeParams(
+    params: PlaceTradeDisplayParams
+  ): NativePlaceTradeChainParams {
+    const tickSize = numTicksToTickSizeWithDisplayPrices(
+      params.numTicks,
+      params.displayMinPrice,
+      params.displayMaxPrice
+    );
+    const onChainAmount = convertDisplayAmountToOnChainAmount(
+      params.displayAmount,
+      tickSize
+    );
+    const onChainPrice = convertDisplayPriceToOnChainPrice(
+      params.displayPrice,
+      params.displayMinPrice,
+      tickSize
+    );
+    const onChainShares = convertDisplayAmountToOnChainAmount(
+      params.displayShares,
+      tickSize
+    );
     return Object.assign(params, {
       amount: onChainAmount,
       price: onChainPrice,
@@ -75,33 +97,37 @@ export class Trade implements TradeAPI {
       return this.zeroX.placeOnChainTrade({
         ...params,
         expirationTime: params.expirationTime || this.maxExpirationTime(),
-      })
+      });
     } else {
       console.log('Not using 0x');
       return this.onChain.placeOnChainTrade(params);
     }
   }
 
-  async simulateTrade(params: PlaceTradeDisplayParams): Promise<SimulateTradeData> {
+  async simulateTrade(
+    params: PlaceTradeDisplayParams
+  ): Promise<SimulateTradeData> {
     if (this.useZeroX()) {
       return this.zeroX.simulateTrade({
         ...params,
         expirationTime: params.expirationTime || this.maxExpirationTime(),
       });
     } else {
-      console.log("Not using 0x");
+      console.log('Not using 0x');
       return this.onChain.simulateTrade(params);
     }
   }
 
-  async simulateTradeGasLimit(params: PlaceTradeDisplayParams): Promise<BigNumber> {
+  async simulateTradeGasLimit(
+    params: PlaceTradeDisplayParams
+  ): Promise<BigNumber> {
     if (this.useZeroX()) {
       return this.zeroX.simulateTradeGasLimit({
         ...params,
         expirationTime: params.expirationTime || this.maxExpirationTime(),
       });
     } else {
-      console.log("Not using 0x");
+      console.log('Not using 0x');
       return this.onChain.simulateTradeGasLimit(params);
     }
   }

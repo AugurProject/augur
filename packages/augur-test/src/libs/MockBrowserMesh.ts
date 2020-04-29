@@ -1,81 +1,94 @@
-import { OrderInfo, WSClient, OrderEvent, AcceptedOrderInfo, SignedOrder } from '@0x/mesh-rpc-client';
-import { ValidationResults, GetOrdersResponse, Stats } from '@0x/mesh-browser-lite';
+import {
+  OrderInfo,
+  WSClient,
+  OrderEvent,
+  AcceptedOrderInfo,
+  SignedOrder,
+} from '@0x/mesh-rpc-client';
+import {
+  ValidationResults,
+  GetOrdersResponse,
+  Stats,
+} from '@0x/mesh-browser-lite';
 import { orderHashUtils } from '@0x/order-utils';
 
 export class MockBrowserMesh {
-    readonly meshClient: WSClient;
-    readonly otherBrowserMeshes: MockBrowserMesh[];
-    readonly orders: {[orderHash: string]: OrderInfo};
-    private errorCallback: (err: Error) => void = console.log;
-    private orderEventsCallback: (events: OrderEvent[]) => void;
+  readonly meshClient: WSClient;
+  readonly otherBrowserMeshes: MockBrowserMesh[];
+  readonly orders: { [orderHash: string]: OrderInfo };
+  private errorCallback: (err: Error) => void = console.log;
+  private orderEventsCallback: (events: OrderEvent[]) => void;
 
-    constructor(meshClient: WSClient) {
-        this.meshClient = meshClient;
-        this.otherBrowserMeshes = [];
-        this.orders = {};
-    }
+  constructor(meshClient: WSClient) {
+    this.meshClient = meshClient;
+    this.otherBrowserMeshes = [];
+    this.orders = {};
+  }
 
-    addOtherBrowserMeshToMockNetwork(browserMesh: MockBrowserMesh): void {
-        this.otherBrowserMeshes.push(browserMesh);
-    }
+  addOtherBrowserMeshToMockNetwork(browserMesh: MockBrowserMesh): void {
+    this.otherBrowserMeshes.push(browserMesh);
+  }
 
-    async startAsync(): Promise<void> {
-        return;
-    }
+  async startAsync(): Promise<void> {
+    return;
+  }
 
-    onError(handler: (err: Error) => void): void {
-        this.errorCallback = handler;
-    }
+  onError(handler: (err: Error) => void): void {
+    this.errorCallback = handler;
+  }
 
-    onOrderEvents(handler: (events: OrderEvent[]) => void): void {
-        this.orderEventsCallback = handler;
-    }
+  onOrderEvents(handler: (events: OrderEvent[]) => void): void {
+    this.orderEventsCallback = handler;
+  }
 
-    async addOrdersAsync(orders: SignedOrder[], broadcast: boolean = true): Promise<ValidationResults> {
-        const accepted = [];
-        const rejected = [];
-        try {
-            for (const order of orders) {
-                const orderHash = orderHashUtils.getOrderHashHex(order);
-                const storedOrder: AcceptedOrderInfo = {
-                    orderHash,
-                    signedOrder: order,
-                    fillableTakerAssetAmount: order.takerAssetAmount,
-                    isNew: true
-                }
-                this.orders[orderHash] = storedOrder;
-                accepted.push(storedOrder);
-            }
-            if (broadcast) this.broadcastOrders(orders);
-        } catch (err) {
-            if (this.errorCallback) {
-                this.errorCallback(err);
-            }
-        }
-        this.notifySubscribersOrderAdded(accepted);
-        return {
-            accepted,
-            rejected
-        }
+  async addOrdersAsync(
+    orders: SignedOrder[],
+    broadcast: boolean = true
+  ): Promise<ValidationResults> {
+    const accepted = [];
+    const rejected = [];
+    try {
+      for (const order of orders) {
+        const orderHash = orderHashUtils.getOrderHashHex(order);
+        const storedOrder: AcceptedOrderInfo = {
+          orderHash,
+          signedOrder: order,
+          fillableTakerAssetAmount: order.takerAssetAmount,
+          isNew: true,
+        };
+        this.orders[orderHash] = storedOrder;
+        accepted.push(storedOrder);
+      }
+      if (broadcast) this.broadcastOrders(orders);
+    } catch (err) {
+      if (this.errorCallback) {
+        this.errorCallback(err);
+      }
     }
+    this.notifySubscribersOrderAdded(accepted);
+    return {
+      accepted,
+      rejected,
+    };
+  }
 
-    async getOrdersAsync(): Promise<GetOrdersResponse> {
-      return {} as unknown as GetOrdersResponse;
-    }
-    async getStatsAsync(): Promise<Stats> {
-      return {} as unknown as Stats;
-    }
+  async getOrdersAsync(): Promise<GetOrdersResponse> {
+    return ({} as unknown) as GetOrdersResponse;
+  }
+  async getStatsAsync(): Promise<Stats> {
+    return ({} as unknown) as Stats;
+  }
 
-    broadcastOrders(orders: SignedOrder[]): void {
-        this.meshClient.addOrdersAsync(orders);
-        for (const browserMesh of this.otherBrowserMeshes) {
-            browserMesh.addOrdersAsync(orders, false);
-        }
+  broadcastOrders(orders: SignedOrder[]): void {
+    this.meshClient.addOrdersAsync(orders);
+    for (const browserMesh of this.otherBrowserMeshes) {
+      browserMesh.addOrdersAsync(orders, false);
     }
+  }
 
-    notifySubscribersOrderAdded(orders: OrderEvent[]): void {
-        if (this.orderEventsCallback) {
-            this.orderEventsCallback(orders);
-        }
+  notifySubscribersOrderAdded(orders: OrderEvent[]): void {
+    if (this.orderEventsCallback) {
+      this.orderEventsCallback(orders);
     }
+  }
 }

@@ -60,13 +60,14 @@ export function addWarpSyncScripts(flash: FlashSession) {
       {
         name: 'count',
         abbr: 'c',
-        description: 'Mine a certain number of blocks. Only works against ganache.',
+        description:
+          'Mine a certain number of blocks. Only works against ganache.',
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const count = Number(args.count);
       const user = await this.createUser(this.getAccount(), this.config);
-      for (let i = 1;i < count;i++) {
+      for (let i = 1; i < count; i++) {
         await user.advanceTimestamp(new BigNumber(10));
         console.log(`Advancing block ${i} of ${count}`);
       }

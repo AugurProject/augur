@@ -2,12 +2,20 @@ import { BigNumber } from 'bignumber.js';
 import { ContractAPI } from '..';
 import { ContractInterfaces } from '@augurproject/core';
 
-export async function dispute(user: ContractAPI, market: ContractInterfaces.Market, slow: boolean, rounds = 0): Promise<void> {
+export async function dispute(
+  user: ContractAPI,
+  market: ContractInterfaces.Market,
+  slow: boolean,
+  rounds = 0
+): Promise<void> {
   const numOutcomes = await market.getNumberOfOutcomes_();
   const numTicks = await market.getNumTicks_();
   const SOME_REP = new BigNumber(1e18).times(6e7);
 
-  const payoutNumerators = [numTicks, ...(new Array(numOutcomes.minus(1).toNumber()).fill(new BigNumber(0)))];
+  const payoutNumerators = [
+    numTicks,
+    ...new Array(numOutcomes.minus(1).toNumber()).fill(new BigNumber(0)),
+  ];
   const conflictNumerators = [...payoutNumerators].reverse();
 
   await user.faucetRep(SOME_REP);
@@ -30,7 +38,7 @@ export async function dispute(user: ContractAPI, market: ContractInterfaces.Mark
   // fill dispute bonds for X number of rounds
   if (rounds > 0) {
     let i = 0;
-    for(i; i < roundsLeft; i++) {
+    for (i; i < roundsLeft; i++) {
       console.log('round number', roundsLeft + i);
       let numerators = payoutNumerators;
       if (i % 2) numerators = conflictNumerators;

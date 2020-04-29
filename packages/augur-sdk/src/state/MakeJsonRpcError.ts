@@ -7,6 +7,11 @@ export enum JsonRpcErrorCode {
   ServerError = -32000,
 }
 
-export function MakeJsonRpcError(id: string, code: JsonRpcErrorCode, message: string, data: object | boolean): string {
-  return JSON.stringify({ id, jsonrpc: "2.0", error: { code, message, data } });
+export function MakeJsonRpcError(
+  id: string,
+  code: JsonRpcErrorCode,
+  message: string,
+  data: object | boolean
+): string {
+  return JSON.stringify({ id, jsonrpc: '2.0', error: { code, message, data } });
 }

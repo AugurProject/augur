@@ -7,7 +7,6 @@ import { SubscriptionEventName } from '../constants';
 import { MarketCreated, NewBlock } from '../events';
 import { startServer } from './create-api';
 
-
 const settings = require('@augurproject/sdk/src/state/settings.json');
 
 console.log('Starting web worker');
@@ -21,14 +20,14 @@ console.log('Starting web worker');
         http: settings.ethNodeURLs[4],
         rpcRetryCount: 5,
         rpcRetryInterval: 0,
-        rpcConcurrency: 40
+        rpcConcurrency: 40,
       },
       gsn: {
         enabled: true,
       },
       syncing: {
-        enabled: false
-      }
+        enabled: false,
+      },
     };
 
     const api = await startServer(config);
@@ -44,13 +43,15 @@ console.log('Starting web worker');
       (...args: MarketCreated[]): void => {
         console.log(args);
         augur.off(SubscriptionEventName.CompleteSetsPurchased);
-      });
+      }
+    );
 
     connector.on(
       SubscriptionEventName.NewBlock,
       (...args: NewBlock[]): void => {
         console.log(args);
-      });
+      }
+    );
 
     const markets = await augur.getMarkets({
       universe: '0x02149d40d255fceac54a3ee3899807b0539bad60',

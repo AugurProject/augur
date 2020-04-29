@@ -4,22 +4,25 @@ import { MarketCreated } from '../event-handlers';
 import { DB } from '../state/db/DB';
 
 /*
-* What needs to happen:
-* On bulks sync:
-* 1. On empty db we need to identify WarpSync markets and populate checkpoints
-* 2.
-* 2. On full db.
-* On warp sync:
-* 1.
-* */
+ * What needs to happen:
+ * On bulks sync:
+ * 1. On empty db we need to identify WarpSync markets and populate checkpoints
+ * 2.
+ * 2. On full db.
+ * On warp sync:
+ * 1.
+ * */
 
-type MarketWithEndTime = Pick<MarketCreated, 'blockNumber' | 'endTime' >;
+type MarketWithEndTime = Pick<MarketCreated, 'blockNumber' | 'endTime'>;
 
 export class Checkpoints {
   constructor(private provider: Provider) {}
 
-  async calculateBoundaryByMarkets(firstMarket: MarketWithEndTime, secondMarket: MarketWithEndTime) {
-    return
+  async calculateBoundaryByMarkets(
+    firstMarket: MarketWithEndTime,
+    secondMarket: MarketWithEndTime
+  ) {
+    return;
   }
 
   /**
@@ -34,10 +37,11 @@ export class Checkpoints {
     beginBlock?: Block,
     endBlock?: Block
   ): Promise<[Block, Block]> {
-    if(!beginBlock) beginBlock = await this.provider.getBlock(0);
-    if(!endBlock) endBlock = await this.provider.getBlock('latest');
+    if (!beginBlock) beginBlock = await this.provider.getBlock(0);
+    if (!endBlock) endBlock = await this.provider.getBlock('latest');
 
-    if(timestamp >= endBlock.timestamp || timestamp < beginBlock.timestamp) throw new Error('timestamp outside of provided block range');
+    if (timestamp >= endBlock.timestamp || timestamp < beginBlock.timestamp)
+      throw new Error('timestamp outside of provided block range');
 
     const middleBlockNumber =
       Math.floor((endBlock.number - beginBlock.number) / 2) + beginBlock.number;
@@ -58,7 +62,12 @@ export class Checkpoints {
     return [newBeginBlock, newEndBlock];
   }
 
-  compareTimestamp(timestamp: number, begin: Block, middle: Block, end: Block): [Block, Block] {
+  compareTimestamp(
+    timestamp: number,
+    begin: Block,
+    middle: Block,
+    end: Block
+  ): [Block, Block] {
     if (middle.timestamp <= timestamp) return [middle, end];
     if (timestamp < middle.timestamp) return [begin, middle];
 
@@ -67,9 +76,6 @@ export class Checkpoints {
   }
 
   isValidBlockRangeForTimeStamp(timestamp: number, begin: Block, end: Block) {
-    return (
-      begin.timestamp <= timestamp &&
-      end.timestamp > timestamp
-    );
+    return begin.timestamp <= timestamp && end.timestamp > timestamp;
   }
 }

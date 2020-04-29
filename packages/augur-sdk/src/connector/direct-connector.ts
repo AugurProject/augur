@@ -13,11 +13,9 @@ export class DirectConnector extends BaseConnector {
     this.db = db;
   }
 
-  async connect(config: SDKConfiguration, account?: string): Promise<void> {
-  }
+  async connect(config: SDKConfiguration, account?: string): Promise<void> {}
 
-  async disconnect(): Promise<void> {
-  }
+  async disconnect(): Promise<void> {}
 
   // bind API calls
   bindTo<R, P>(

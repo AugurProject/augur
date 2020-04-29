@@ -126,71 +126,91 @@ describe('State API :: Markets :: ', () => {
         await john.createReasonableYesNoMarket(),
         await john.reportAndFinalizeWarpSyncMarket(someHash),
         await john.reportAndFinalizeWarpSyncMarket(someHash),
-        await john.getWarpSyncMarket()
+        await john.getWarpSyncMarket(),
       ];
 
       await john.sync();
     });
 
     test('should be filterable using MarketDB getAllWarpSyncMarkets method', async () => {
-      console.log('expectedMarkets', JSON.stringify(expectedMarkets.map((m) => m.address)));
-      const expectedMarketAssertions = expectedMarkets.map((item, i) => expect.objectContaining({
-          market: item.address,
-          isWarpSync: (i !== 0)
-        })
-      ).slice(1);
+      console.log(
+        'expectedMarkets',
+        JSON.stringify(expectedMarkets.map(m => m.address))
+      );
+      const expectedMarketAssertions = expectedMarkets
+        .map((item, i) =>
+          expect.objectContaining({
+            market: item.address,
+            isWarpSync: i !== 0,
+          })
+        )
+        .slice(1);
 
-      await expect(john.db.marketDatabase.getAllWarpSyncMarkets()).resolves.toEqual(expectedMarketAssertions);
+      await expect(
+        john.db.marketDatabase.getAllWarpSyncMarkets()
+      ).resolves.toEqual(expectedMarketAssertions);
     });
 
     test('should tag warp sync markets', async () => {
       const universe = john.augur.contracts.universe;
-      const expectedMarketAssertions = expectedMarkets.map((item, i) => expect.objectContaining({
+      const expectedMarketAssertions = expectedMarkets.map((item, i) =>
+        expect.objectContaining({
           id: item.address,
-          isWarpSync: (i !== 0)
+          isWarpSync: i !== 0,
         })
       );
 
-      await expect(john.api.route('getMarkets', {
-        universe: universe.address,
-        includeWarpSyncMarkets: true,
-      })).resolves.toEqual({
+      await expect(
+        john.api.route('getMarkets', {
+          universe: universe.address,
+          includeWarpSyncMarkets: true,
+        })
+      ).resolves.toEqual({
         markets: expect.arrayContaining(expectedMarketAssertions),
-        meta: expect.any(Object)
+        meta: expect.any(Object),
       });
     });
 
     test('should be able to filter out warp sync markets', async () => {
       const universe = john.augur.contracts.universe;
       // We only care about the warpsync markets, hence the slice.
-      const expectedMarketAssertions = expectedMarkets.map((item, i) => expect.objectContaining({
-          id: item.address,
-          isWarpSync: (i !== 0)
-        })
-      ).slice(1);
+      const expectedMarketAssertions = expectedMarkets
+        .map((item, i) =>
+          expect.objectContaining({
+            id: item.address,
+            isWarpSync: i !== 0,
+          })
+        )
+        .slice(1);
 
       // Check the default value.
-      await expect(john.api.route('getMarkets', {
-        universe: universe.address,
-      })).resolves.toEqual({
+      await expect(
+        john.api.route('getMarkets', {
+          universe: universe.address,
+        })
+      ).resolves.toEqual({
         markets: expect.not.arrayContaining(expectedMarketAssertions),
-        meta: expect.any(Object)
+        meta: expect.any(Object),
       });
 
-      await expect(john.api.route('getMarkets', {
-        universe: universe.address,
-        includeWarpSyncMarkets: true,
-      })).resolves.toEqual({
+      await expect(
+        john.api.route('getMarkets', {
+          universe: universe.address,
+          includeWarpSyncMarkets: true,
+        })
+      ).resolves.toEqual({
         markets: expect.arrayContaining(expectedMarketAssertions),
-        meta: expect.any(Object)
+        meta: expect.any(Object),
       });
 
-      await expect(john.api.route('getMarkets', {
-        universe: universe.address,
-        includeWarpSyncMarkets: false,
-      })).resolves.not.toEqual({
+      await expect(
+        john.api.route('getMarkets', {
+          universe: universe.address,
+          includeWarpSyncMarkets: false,
+        })
+      ).resolves.not.toEqual({
         markets: expect.arrayContaining(expectedMarketAssertions),
-        meta: expect.any(Object)
+        meta: expect.any(Object),
       });
     });
   });
@@ -308,16 +328,8 @@ describe('State API :: Markets :: ', () => {
     beforeEach(async () => {
       const provider = await blockProvider.fork();
       const config = blockProvider.getConfig();
-      john = await TestContractAPI.userWrapper(
-        ACCOUNTS[0],
-        provider,
-        config
-      );
-      mary = await TestContractAPI.userWrapper(
-        ACCOUNTS[1],
-        provider,
-        config
-      );
+      john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, config);
+      mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, config);
       bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, config);
 
       await john.sync();

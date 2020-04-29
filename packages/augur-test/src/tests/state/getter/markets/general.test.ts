@@ -328,7 +328,11 @@ describe('State API :: General', () => {
       await sleep(300);
 
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([yesNoMarket1.address, yesNoMarket2.address, yesNoMarket3.address]);
+      await john.db.marketDatabase.syncOrderBooks([
+        yesNoMarket1.address,
+        yesNoMarket2.address,
+        yesNoMarket3.address,
+      ]);
 
       marketList = await john.api.route('getMarkets', {
         universe: config.addresses.Universe,

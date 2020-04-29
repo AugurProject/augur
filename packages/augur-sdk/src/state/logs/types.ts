@@ -25,9 +25,8 @@ export interface TimestampedLog extends Log {
   timestamp: LogTimestamp;
 }
 
-
 export interface MarketsUpdatedLog {
-  data: MarketData[]
+  data: MarketData[];
 }
 
 export interface CompleteSetsPurchasedLog extends TimestampedLog {
@@ -62,8 +61,7 @@ export interface DisputeCrowdsourcerCompletedLog extends Log {
   disputeRound: string;
 }
 
-export interface DisputeCrowdsourcerContributionLog
-  extends TimestampedLog {
+export interface DisputeCrowdsourcerContributionLog extends TimestampedLog {
   universe: Address;
   reporter: Address;
   market: Address;
@@ -247,7 +245,7 @@ export interface CurrentOrder extends ParsedOrderEventLog {
 }
 
 export interface CancelZeroXOrderLog extends Log {
-  universe: Address,
+  universe: Address;
   account: Address;
   market: Address;
   price: string;

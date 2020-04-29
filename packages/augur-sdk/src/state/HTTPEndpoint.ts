@@ -14,21 +14,32 @@ import { SDKConfiguration } from '@augurproject/artifacts';
 export function createApp(api: API): express.Application {
   const app = express();
 
-  app.use(helmet({
-    hsts: false,
-  }));
+  app.use(
+    helmet({
+      hsts: false,
+    })
+  );
 
-  app.use(bodyParser.json({
-    reviver: AddressFormatReviver,
-  }));
+  app.use(
+    bodyParser.json({
+      reviver: AddressFormatReviver,
+    })
+  );
 
   app.use(cors());
 
   // catch 404 and forward to error handler
-  app.use((err: { status?: number }, req: express.Request, _: express.Response, next: express.NextFunction) => {
-    err.status = 404;
-    next(err);
-  });
+  app.use(
+    (
+      err: { status?: number },
+      req: express.Request,
+      _: express.Response,
+      next: express.NextFunction
+    ) => {
+      err.status = 404;
+      next(err);
+    }
+  );
 
   app.post('*', cors(), async (req, res) => {
     try {
@@ -37,29 +48,41 @@ export function createApp(api: API): express.Application {
       res.send(MakeJsonRpcResponse(req.body.id, result || null));
     } catch (err) {
       res.status(500);
-      res.send(MakeJsonRpcError(req.body.id, JsonRpcErrorCode.InvalidParams, err.message, false));
+      res.send(
+        MakeJsonRpcError(
+          req.body.id,
+          JsonRpcErrorCode.InvalidParams,
+          err.message,
+          false
+        )
+      );
     }
   });
 
   return app;
 }
 
-export function runHttpServer(app: express.Application, config: SDKConfiguration): http.Server {
+export function runHttpServer(
+  app: express.Application,
+  config: SDKConfiguration
+): http.Server {
   const { httpPort: port } = config.server;
   return app.listen(port, () => {
     console.log(`HTTP Listening on ${port}`);
   });
 }
 
-export function runHttpsServer(app: express.Application, config: SDKConfiguration): https.Server {
+export function runHttpsServer(
+  app: express.Application,
+  config: SDKConfiguration
+): https.Server {
   const {
     certificateFile: cert,
     certificateKeyFile: key,
     httpsPort: port,
   } = config.server;
 
-  return https.createServer({cert, key}, app).listen(port, () => {
+  return https.createServer({ cert, key }, app).listen(port, () => {
     console.log(`HTTPS listening on ${port}`);
   });
 }
-

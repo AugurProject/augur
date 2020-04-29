@@ -23,7 +23,10 @@ export class DelayedSyncableDB extends BaseSyncableDB {
   ) {
     super(augur, db, networkId, eventName, dbName);
 
-    augur.events.once(SubscriptionEventName.BulkSyncComplete, this.onBulkSyncComplete.bind(this));
+    augur.events.once(
+      SubscriptionEventName.BulkSyncComplete,
+      this.onBulkSyncComplete.bind(this)
+    );
   }
 
   protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
@@ -42,23 +45,25 @@ export class DelayedSyncableDB extends BaseSyncableDB {
       this.dbName
     );
 
-    const result: Document = await this.db.dexieDB[this.eventName].where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
+    const result: Document = await this.db.dexieDB[this.eventName]
+      .where('blockNumber')
+      .aboveOrEqual(highestSyncedBlockNumber)
+      .toArray();
     const documentsById = _.groupBy(result, this.getIDValue.bind(this));
     const documents = _.flatMap(documentsById, documents => {
       return documents.reduce((val, doc) => {
-          if (val.blockNumber < doc.blockNumber || (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex)) {
-            return doc;
-          }
-          return val;
-        },
-        documents[0]
-      );
+        if (
+          val.blockNumber < doc.blockNumber ||
+          (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex)
+        ) {
+          return doc;
+        }
+        return val;
+      }, documents[0]);
     });
 
     await this.saveDocuments(documents);
 
     this.syncing = false;
   }
-
-
 }

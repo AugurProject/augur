@@ -1,10 +1,5 @@
 import { UniverseDetails } from '@augurproject/sdk/build/state/getter/Universe';
-import {
-  ACCOUNTS,
-  defaultSeedPath,
-  fork,
-  loadSeed,
-} from '@augurproject/tools';
+import { ACCOUNTS, defaultSeedPath, fork, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import {
   getPayoutNumerators,
@@ -16,7 +11,7 @@ import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { makeProvider } from '../../../libs';
 import { SDKConfiguration } from '@augurproject/artifacts';
-import { MarketInfo } from "@augurproject/sdk/build/state/getter/Markets";
+import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 
 describe('State API :: Universe :: ', () => {
   let john: TestContractAPI;
@@ -31,21 +26,9 @@ describe('State API :: Universe :: ', () => {
     baseProvider = await makeProvider(seed, ACCOUNTS);
     config = baseProvider.getConfig();
 
-    john = await TestContractAPI.userWrapper(
-      ACCOUNTS[0],
-      baseProvider,
-      config
-    );
-    mary = await TestContractAPI.userWrapper(
-      ACCOUNTS[1],
-      baseProvider,
-      config
-    );
-    bob = await TestContractAPI.userWrapper(
-      ACCOUNTS[2],
-      baseProvider,
-      config
-    );
+    john = await TestContractAPI.userWrapper(ACCOUNTS[0], baseProvider, config);
+    mary = await TestContractAPI.userWrapper(ACCOUNTS[1], baseProvider, config);
+    bob = await TestContractAPI.userWrapper(ACCOUNTS[2], baseProvider, config);
     await john.approve();
     await mary.approve();
     await bob.approve();
@@ -244,7 +227,9 @@ describe('State API :: Universe :: ', () => {
     const genesisUniverse = john.augur.contracts.universe;
 
     const legacyRep = new BigNumber(11000000).multipliedBy(10 ** 18);
-    let johnRep = await john.augur.contracts.reputationToken.balanceOf_(john.account.address);
+    let johnRep = await john.augur.contracts.reputationToken.balanceOf_(
+      john.account.address
+    );
     let maryRep = new BigNumber(0);
     const bobRep = new BigNumber(0);
     let totalRep = await john.augur.contracts.reputationToken.totalSupply_();

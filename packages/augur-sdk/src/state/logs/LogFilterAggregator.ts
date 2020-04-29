@@ -45,12 +45,12 @@ export interface LogFilterAggregatorInterface {
 
   listenForEvent(
     eventNames: string | string[],
-    onLogsAdded: LogCallbackType,
+    onLogsAdded: LogCallbackType
   ): void;
 
   unlistenForEvent(
     eventNames: string | string[],
-    onLogsAdded: LogCallbackType,
+    onLogsAdded: LogCallbackType
   ): void;
 
   onBlockRemoved(blockNumber: number): void;
@@ -67,7 +67,7 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
 
   static create(
     getEventTopics: (eventName: string) => string[],
-    parseLogs: (logs: Log[]) => ParsedLog[],
+    parseLogs: (logs: Log[]) => ParsedLog[]
   ) {
     return new LogFilterAggregator({
       getEventTopics,
@@ -88,16 +88,17 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
   }
 
   onLogsAdded = async (blockNumber: number, logs: ParsedLog[]) => {
-    const logCallbackPromises = this.logCallbackMetaData.map(({eventNames, onLogsAdded}) => {
-      const filteredLogs = logs.filter(log => eventNames.includes(log.name));
-      return onLogsAdded(blockNumber, filteredLogs);
-    });
+    const logCallbackPromises = this.logCallbackMetaData.map(
+      ({ eventNames, onLogsAdded }) => {
+        const filteredLogs = logs.filter(log => eventNames.includes(log.name));
+        return onLogsAdded(blockNumber, filteredLogs);
+      }
+    );
 
     // Assuming all db updates will be complete when these promises resolve.
     await Promise.all(logCallbackPromises);
 
-    const sortedLogs = logs
-      .sort((a, b) => b.logIndex - a.logIndex);
+    const sortedLogs = logs.sort((a, b) => b.logIndex - a.logIndex);
 
     // Fire this after all "filtered" log callbacks are processed.
     const allLogsCallbackMetaDataPromises = this.allLogsCallbackMetaData.map(
@@ -116,7 +117,7 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
 
   listenForEvent(
     eventNames: string | string[],
-    onLogsAdded: LogCallbackType,
+    onLogsAdded: LogCallbackType
   ): void {
     if (!Array.isArray(eventNames)) eventNames = [eventNames];
 
@@ -129,9 +130,9 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
 
   unlistenForEvent(
     eventNames: string | string[],
-    onLogsAdded: LogCallbackType,
+    onLogsAdded: LogCallbackType
   ) {
-    let events = []
+    let events = [];
 
     if (!Array.isArray(eventNames)) {
       events = [eventNames];
@@ -139,17 +140,25 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
       events = eventNames;
     }
 
-    this.logCallbackMetaData = this.logCallbackMetaData.filter(({eventNames: metaDataEventNames , onLogsAdded: metaDataOnLogsAdded }) => {
-      if(onLogsAdded !== metaDataOnLogsAdded) return true;
-      return events.length !== metaDataEventNames.length || !events.every((item, index) => item === metaDataEventNames[index])
-    });
+    this.logCallbackMetaData = this.logCallbackMetaData.filter(
+      ({
+        eventNames: metaDataEventNames,
+        onLogsAdded: metaDataOnLogsAdded,
+      }) => {
+        if (onLogsAdded !== metaDataOnLogsAdded) return true;
+        return (
+          events.length !== metaDataEventNames.length ||
+          !events.every((item, index) => item === metaDataEventNames[index])
+        );
+      }
+    );
   }
 
   onBlockRemoved = async (blockNumber: number): Promise<void> => {
     for (let i = 0; i < this.blockRemovalCallback.length; i++) {
       await this.blockRemovalCallback[i](blockNumber);
     }
-  }
+  };
 
   listenForBlockRemoved(onBlockRemoved: (blockNumber: number) => void): void {
     this.blockRemovalCallback.push(onBlockRemoved);

@@ -1,11 +1,11 @@
-import BigNumber from "bignumber.js";
-import { bignum } from "./bignum";
-import { prefixHex } from "./prefix-hex";
-import { FXP_ONE } from "./constants";
+import BigNumber from 'bignumber.js';
+import { bignum } from './bignum';
+import { prefixHex } from './prefix-hex';
+import { FXP_ONE } from './constants';
 
 export function unfix(n, encoding?) {
   let unfixed;
-  if (n && n !== "0x" && !n.error && !n.message) {
+  if (n && n !== '0x' && !n.error && !n.message) {
     if (encoding) encoding = encoding.toLowerCase();
     if (Array.isArray(n)) {
       let len = n.length;
@@ -20,11 +20,11 @@ export function unfix(n, encoding?) {
         unfixed = bignum(n).dividedBy(FXP_ONE);
       }
       if (unfixed && encoding) {
-        if (encoding === "hex") {
+        if (encoding === 'hex') {
           unfixed = prefixHex(unfixed.integerValue());
-        } else if (encoding === "string") {
+        } else if (encoding === 'string') {
           unfixed = unfixed.toFixed();
-        } else if (encoding === "number") {
+        } else if (encoding === 'number') {
           unfixed = unfixed.toNumber();
         }
       }
@@ -33,5 +33,3 @@ export function unfix(n, encoding?) {
   }
   return n;
 }
-
-

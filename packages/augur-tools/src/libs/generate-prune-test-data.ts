@@ -6,20 +6,15 @@ import { ContractAPI } from './contract-api';
 import { extractSeed, Seed } from './ganache';
 import { makeProviderWithDB } from './LocalAugur';
 
-export async function generatePruneTestData(config: SDKConfiguration, seed: Seed) {
+export async function generatePruneTestData(
+  config: SDKConfiguration,
+  seed: Seed
+) {
   const metadata = {};
   const [db, provider] = await makeProviderWithDB(seed, ACCOUNTS);
 
-  const john = await ContractAPI.userWrapper(
-    ACCOUNTS[0],
-    provider,
-    config
-  );
-  const mary = await ContractAPI.userWrapper(
-    ACCOUNTS[1],
-    provider,
-    config
-  );
+  const john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, config);
+  const mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, config);
 
   await john.faucetCash(new BigNumber(1000000000));
 
@@ -54,14 +49,12 @@ export async function generatePruneTestData(config: SDKConfiguration, seed: Seed
 
   await john.setTimestamp(marketEndTime.plus(SECONDS_IN_A_DAY));
 
-  const yesPayoutSet = [
-    new BigNumber(0),
-    new BigNumber(100),
-    new BigNumber(0),
-  ];
+  const yesPayoutSet = [new BigNumber(0), new BigNumber(100), new BigNumber(0)];
   await john.doInitialReport(market, yesPayoutSet);
 
-  const finalTimestamp = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY.multipliedBy(2))
+  const finalTimestamp = (await john.getTimestamp()).plus(
+    SECONDS_IN_A_DAY.multipliedBy(2)
+  );
 
   await john.setTimestamp(finalTimestamp);
 

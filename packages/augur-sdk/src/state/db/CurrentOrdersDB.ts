@@ -5,7 +5,6 @@ import { ParsedLog } from '@augurproject/types';
  * DB to store current order states
  */
 export class CurrentOrdersDatabase extends DerivedDB {
-
   protected processDoc(log: ParsedLog): ParsedLog {
     if (log['addressData']) {
       log['orderCreator'] = log['addressData'][0];

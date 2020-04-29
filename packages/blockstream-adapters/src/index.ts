@@ -1,7 +1,7 @@
-export { createAdapter, EthersProviderBlockStreamAdapter } from "./ethers";
-import { Block, FilterOptions, Log } from "ethereumjs-blockstream";
+export { createAdapter, EthersProviderBlockStreamAdapter } from './ethers';
+import { Block, FilterOptions, Log } from 'ethereumjs-blockstream';
 
-export type GetBlockByString = (hash: string) => Promise<Block | null>
+export type GetBlockByString = (hash: string) => Promise<Block | null>;
 
 export interface ExtendedLog extends Log {
   transactionIndex: number;
@@ -12,9 +12,14 @@ export interface ExtendedLog extends Log {
   topics: Array<string>;
 }
 
-export interface BlockAndLogStreamerDependencies<T extends Log, B extends Block> {
-  getBlockByNumber: GetBlockByString,
-  getBlockByHash: GetBlockByString,
-  getLogs: (filterOptions: FilterOptions) => Promise<T[]>,
-  startPollingForBlocks: (reconcileNewBlock:(block: B) => Promise<void>) => void;
+export interface BlockAndLogStreamerDependencies<
+  T extends Log,
+  B extends Block
+> {
+  getBlockByNumber: GetBlockByString;
+  getBlockByHash: GetBlockByString;
+  getLogs: (filterOptions: FilterOptions) => Promise<T[]>;
+  startPollingForBlocks: (
+    reconcileNewBlock: (block: B) => Promise<void>
+  ) => void;
 }

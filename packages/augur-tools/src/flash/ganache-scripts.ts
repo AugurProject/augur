@@ -5,13 +5,16 @@ import {
   hashContracts,
   writeSeeds,
   deployContracts,
-  startGanacheServer
+  startGanacheServer,
 } from '..';
 import { FlashArguments, FlashSession } from './flash';
 
 import * as ganache from 'ganache-core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { SDKConfiguration, Contracts as compilerOutput, } from '@augurproject/artifacts';
+import {
+  SDKConfiguration,
+  Contracts as compilerOutput,
+} from '@augurproject/artifacts';
 import * as fs from 'async-file';
 import { LogReplayer } from './replay-logs';
 import { LogReplayerV1 } from './replay-logs-v1';
@@ -39,7 +42,8 @@ export function addGanacheScripts(flash: FlashSession) {
 
   flash.addScript({
     name: 'create-basic-seed',
-    description: 'Creates a seed file of the ganache state after deploying Augur. Does not overwrite it if it exists.',
+    description:
+      'Creates a seed file of the ganache state after deploying Augur. Does not overwrite it if it exists.',
     ignoreNetwork: true,
     options: [
       {
@@ -52,8 +56,8 @@ export function addGanacheScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const name = args.name as string || 'default';
-      const filepath = args.filepath as string || defaultSeedPath;
+      const name = (args.name as string) || 'default';
+      const filepath = (args.filepath as string) || defaultSeedPath;
 
       if (await fs.exists(filepath)) {
         const seed: Seed = await loadSeed(filepath);
@@ -66,8 +70,16 @@ export function addGanacheScripts(flash: FlashSession) {
       console.log('Creating seed file.');
       const { provider, db } = await startGanacheServer(this.accounts);
 
-      const config = this.deriveConfig({ deploy: { normalTime: false, writeArtifacts: true }});
-      const { addresses } = await deployContracts(this.network, provider, this.getAccount(), compilerOutput, config)
+      const config = this.deriveConfig({
+        deploy: { normalTime: false, writeArtifacts: true },
+      });
+      const { addresses } = await deployContracts(
+        this.network,
+        provider,
+        this.getAccount(),
+        compilerOutput,
+        config
+      );
       config.addresses = addresses;
 
       await makeSeed(provider, db, config, name, filepath);
@@ -103,8 +115,16 @@ export function addGanacheScripts(flash: FlashSession) {
 
       // Build a local environment to replay to.
       const { provider, db } = await startGanacheServer(this.accounts);
-      const config = this.deriveConfig({ deploy: { normalTime: false, writeArtifacts: false }});
-      await deployContracts(this.network, provider, this.getAccount(), compilerOutput, config);
+      const config = this.deriveConfig({
+        deploy: { normalTime: false, writeArtifacts: false },
+      });
+      await deployContracts(
+        this.network,
+        provider,
+        this.getAccount(),
+        compilerOutput,
+        config
+      );
 
       // Replay the logs.
       const replayer = v1
@@ -148,7 +168,13 @@ export function addGanacheScripts(flash: FlashSession) {
   });
 }
 
-async function makeSeed(provider: EthersProvider, ganacheDb: MemDown, config: SDKConfiguration, name = 'default', filepath = defaultSeedPath) {
+async function makeSeed(
+  provider: EthersProvider,
+  ganacheDb: MemDown,
+  config: SDKConfiguration,
+  name = 'default',
+  filepath = defaultSeedPath
+) {
   const seed = await createSeed(provider, ganacheDb, config.addresses);
   const seeds = {};
   seeds[name] = seed;

@@ -4,7 +4,6 @@ import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../libs';
 
-
 /**
  * Adds 2 new blocks to DisputeCrowdsourcerCompleted DB and performs a rollback.
  * Queries before & after rollback to ensure blocks are removed successfully.
@@ -80,13 +79,11 @@ test('sync databases', async () => {
     originalHighestSyncedBlockNumbers[syncableDBName] + 2
   );
 
-
   await john.db.logFilters.onBlockRemoved(highestSyncedBlockNumber - 1);
   // Verify that newest 2 blocks were removed from SyncableDB
   result = await john.db.DisputeCrowdsourcerCompleted.toArray();
 
   expect(result).toEqual([]);
-
 
   expect(await john.db.syncStatus.getHighestSyncBlock(syncableDBName)).toBe(
     originalHighestSyncedBlockNumbers[syncableDBName]
@@ -106,7 +103,7 @@ test('rollback derived database', async () => {
     ACCOUNTS[0],
     provider,
     config,
-    johnConnector,
+    johnConnector
   );
   expect(john).toBeDefined();
 
@@ -114,7 +111,7 @@ test('rollback derived database', async () => {
 
   Object.defineProperty(john.db.marketDatabase, 'syncing', {
     get: jest.fn(() => false),
-    set: jest.fn()
+    set: jest.fn(),
   });
 
   await john.approve();
@@ -139,7 +136,10 @@ test('rollback derived database', async () => {
   await john.sync();
 
   // Confirm balance
-  let ptBalanceRecord = await john.db.TokenBalanceChangedRollup.get([john.account.address, curDisputeWindowAddress]);
+  let ptBalanceRecord = await john.db.TokenBalanceChangedRollup.get([
+    john.account.address,
+    curDisputeWindowAddress,
+  ]);
   let ptBalance = new BigNumber(ptBalanceRecord.balance);
   await expect(ptBalance).toEqual(amountParticipationTokens);
 
@@ -147,7 +147,10 @@ test('rollback derived database', async () => {
   await john.db.rollback(ptBalanceRecord.blockNumber);
 
   // Confirm nothing there
-  ptBalanceRecord = await john.db.TokenBalanceChangedRollup.get([john.account.address, curDisputeWindowAddress]);
+  ptBalanceRecord = await john.db.TokenBalanceChangedRollup.get([
+    john.account.address,
+    curDisputeWindowAddress,
+  ]);
   await expect(ptBalanceRecord).toBeFalsy();
 
   // Buy Pts again. Since we told the DB to rollback but in reality no log removal occured the balance will be 2x
@@ -158,7 +161,10 @@ test('rollback derived database', async () => {
 
   await john.sync();
 
-  ptBalanceRecord = await john.db.TokenBalanceChangedRollup.get([john.account.address, curDisputeWindowAddress]);
+  ptBalanceRecord = await john.db.TokenBalanceChangedRollup.get([
+    john.account.address,
+    curDisputeWindowAddress,
+  ]);
   ptBalance = new BigNumber(ptBalanceRecord.balance);
   await expect(ptBalance).toEqual(amountParticipationTokens.multipliedBy(2));
 
@@ -166,7 +172,10 @@ test('rollback derived database', async () => {
   await john.db.rollback(ptBalanceRecord.blockNumber);
 
   // Confirm first balance
-  ptBalanceRecord = await john.db.TokenBalanceChangedRollup.get([john.account.address, curDisputeWindowAddress]);
+  ptBalanceRecord = await john.db.TokenBalanceChangedRollup.get([
+    john.account.address,
+    curDisputeWindowAddress,
+  ]);
   ptBalance = new BigNumber(ptBalanceRecord.balance);
   await expect(ptBalance).toEqual(amountParticipationTokens);
 });

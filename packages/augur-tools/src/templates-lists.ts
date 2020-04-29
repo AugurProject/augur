@@ -1,5 +1,18 @@
 export const LIST_VALUES = {
-  MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  MONTHS: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ],
   YEARS: ['2020', '2021', '2022', '2023', '2024', '2025'],
   PRES_YEARS: ['2020', '2024', '2028'],
   SUMMER_OLYMPIC_YEARS: ['2021', '2024', '2028'],
@@ -17,11 +30,7 @@ export const LIST_VALUES = {
     'AFC Championship game',
     'NFC Championship game',
   ],
-  DRAFT_PICK_NUMBER: [
-    '1st',
-    '2nd',
-    '3rd',
-  ],
+  DRAFT_PICK_NUMBER: ['1st', '2nd', '3rd'],
   NFL_DRAFT_POSITIONS: [
     'Quarterback',
     'Wide Receiver',
@@ -576,10 +585,7 @@ export const LIST_VALUES = {
   OLYMPIC_LIST: ['World', 'Olympic'],
   OLYMPIC_LIST_MEDAL: ['Any', 'A gold'],
   OLYMPIC_MEDALS: ['Total', 'Gold', 'Silver', 'Bronze'],
-  MEDICAL_CASE_DEATH: [
-    'cases of',
-    'deaths from'
-  ],
+  MEDICAL_CASE_DEATH: ['cases of', 'deaths from'],
   MEDICAL_COUNTRIES_ONLY: [
     'China',
     'Italy',
@@ -3315,14 +3321,19 @@ export const FIN_EXCHANGES_CLOSING_OFFSETS = {
     offset: -4,
     hour: 16,
     minutes: 0,
-    timezone: 'America/New_York'
+    timezone: 'America/New_York',
   },
-  'Nasdaq (traded in USD)': { offset: -5, hour: 16, minutes: 0, timezone: 'America/New_York' },
+  'Nasdaq (traded in USD)': {
+    offset: -5,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
   'American Stock Exchange (traded in USD)': {
     offset: -4,
     hour: 16,
     minutes: 0,
-    timezone: 'America/New_York'
+    timezone: 'America/New_York',
   },
   'Tokyo Stock Exchange (traded in JPY)': {
     offset: 9,
@@ -3360,21 +3371,56 @@ export const FIN_EXCHANGES_CLOSING_OFFSETS = {
     minutes: 0,
     timezone: 'America/Toronto',
   },
-  'Euronext NV (traded in EUR)': { offset: 2, hour: 17, minutes: 30, timezone: 'Europe/Amsterdam' },
+  'Euronext NV (traded in EUR)': {
+    offset: 2,
+    hour: 17,
+    minutes: 30,
+    timezone: 'Europe/Amsterdam',
+  },
 };
 
 export const FIN_INDEXES_CLOSING_OFFSETS = {
-  'S&P 500 Index': { offset: -4, hour: 16, minutes: 0, timezone: 'America/New_York' },
-  'Dow Jones Industrial Average': { offset: -4, hour: 16, minutes: 0, timezone: 'America/New_York' },
-  'Nasdaq Composite': { offset: -4, hour: 16, minutes: 0, timezone: 'America/New_York' },
-  'Wilshire 5000': { offset: -4, hour: 16, minutes: 0, timezone: 'America/New_York' },
-  'Russell 1000': { offset: -4, hour: 16, minutes: 0, timezone: 'America/New_York' },
-  'NYSE Composite': { offset: -4, hour: 16, minutes: 0, timezone: 'America/New_York' },
+  'S&P 500 Index': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
+  'Dow Jones Industrial Average': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
+  'Nasdaq Composite': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
+  'Wilshire 5000': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
+  'Russell 1000': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
+  'NYSE Composite': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
   'FTSE 100': {
     offset: 1,
     hour: 16,
     minutes: 30,
-    timezone: 'Europe/London'
+    timezone: 'Europe/London',
   },
   DAX: {
     offset: 2,
@@ -3386,7 +3432,7 @@ export const FIN_INDEXES_CLOSING_OFFSETS = {
     offset: 8,
     hour: 15,
     minutes: 0,
-    timezone: 'Asia/Shanghai'
+    timezone: 'Asia/Shanghai',
   },
   'Hang Seng': {
     offset: 8,
@@ -3400,17 +3446,32 @@ export const FIN_INDEXES_CLOSING_OFFSETS = {
     minutes: 0,
     timezone: 'Asia/Tokyo',
   },
-  'S&P/TSX Composite': { offset: -4, hour: 16, minutes: 0, timezone: 'America/Toronto' },
+  'S&P/TSX Composite': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/Toronto',
+  },
   'CAC 40': { offset: 2, hour: 17, minutes: 30, timezone: 'Europe/Amsterdam' },
-  'All Ordinaries': { offset: 11, hour: 16, minutes: 12, timezone: 'Australia/Sydney' },
-  'BSE Sensex 30': { offset: 5.5, hour: 15, minutes: 30, timezone: 'Asia/Kolkata' },
+  'All Ordinaries': {
+    offset: 11,
+    hour: 16,
+    minutes: 12,
+    timezone: 'Australia/Sydney',
+  },
+  'BSE Sensex 30': {
+    offset: 5.5,
+    hour: 15,
+    minutes: 30,
+    timezone: 'Asia/Kolkata',
+  },
   'KOSPI Index': {
     offset: 9,
     hour: 15,
     minutes: 0,
     timezone: 'Asia/Seoul',
   },
-  VIX: { offset: -5, hour: 15, minutes: 15,  timezone: 'America/Chicago' },
+  VIX: { offset: -5, hour: 15, minutes: 15, timezone: 'America/Chicago' },
 };
 
 export const OLYMPIC_WINTER_SPORT_EVENTS = {

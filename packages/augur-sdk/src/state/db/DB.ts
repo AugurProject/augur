@@ -110,7 +110,11 @@ export class DB {
     { EventName: 'MarketMigrated', indexes: ['market'] },
     { EventName: 'MarketParticipantsDisavowed', indexes: ['market'] },
     { EventName: 'MarketTransferred', indexes: ['market'] },
-    { EventName: 'MarketVolumeChanged', indexes: ['market'], primaryKey: 'market' },
+    {
+      EventName: 'MarketVolumeChanged',
+      indexes: ['market'],
+      primaryKey: 'market',
+    },
     { EventName: 'MarketOIChanged', indexes: ['market'], primaryKey: 'market' },
     {
       EventName: 'OrderEvent',
@@ -161,7 +165,7 @@ export class DB {
     readonly logFilters: LogFilterAggregatorInterface,
     private augur: Augur,
     private networkId: number,
-    private enableZeroX: boolean,
+    private enableZeroX: boolean
   ) {
     logFilters.listenForBlockRemoved(this.rollback.bind(this));
   }
@@ -182,7 +186,13 @@ export class DB {
     enableZeroX = false
   ): Promise<DB> {
     const dbName = `augur-${networkId}`;
-    const dbController = new DB(new Dexie(dbName), logFilterAggregator, augur, networkId, enableZeroX);
+    const dbController = new DB(
+      new Dexie(dbName),
+      logFilterAggregator,
+      augur,
+      networkId,
+      enableZeroX
+    );
 
     return dbController.initializeDB();
   }
@@ -194,9 +204,7 @@ export class DB {
    * @param uploadBlockNumber
    * @return {Promise<void>}
    */
-  async initializeDB(
-    uploadBlockNumber = 0
-  ): Promise<DB> {
+  async initializeDB(uploadBlockNumber = 0): Promise<DB> {
     const schemas = this.generateSchemas();
 
     this.dexieDB.version(1).stores(schemas);
@@ -208,7 +216,9 @@ export class DB {
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
-      this.syncableDatabases[genericEventDBDescription.EventName] = new SyncableDB(
+      this.syncableDatabases[
+        genericEventDBDescription.EventName
+      ] = new SyncableDB(
         this.augur,
         this,
         this.networkId,
@@ -275,7 +285,7 @@ export class DB {
 
   // Remove databases and unregister event handlers.
   async delete() {
-    for(const db of Object.values(this.syncableDatabases)) {
+    for (const db of Object.values(this.syncableDatabases)) {
       await db.delete();
     }
 
@@ -293,7 +303,7 @@ export class DB {
     this.parsedOrderEventDatabase.delete();
     delete this.parsedOrderEventDatabase;
 
-    if(this.zeroXOrders) {
+    if (this.zeroXOrders) {
       this.zeroXOrders.delete();
       delete this.zeroXOrders;
     }
@@ -324,8 +334,10 @@ export class DB {
     schemas['CurrentOrders'] =
       'orderId,[market+open],[market+outcome+orderType],orderCreator,orderFiller,blockNumber';
     schemas['Dispute'] = '[market+payoutNumerators],market,blockNumber';
-    schemas['ParsedOrderEvents'] = '[blockNumber+logIndex],blockNumber,market,timestamp,orderId,[universe+eventType+timestamp],[market+eventType],eventType,orderCreator,orderFiller';
-    schemas['ZeroXOrders'] = 'orderHash,[market+outcome+orderType],orderCreator,blockNumber';
+    schemas['ParsedOrderEvents'] =
+      '[blockNumber+logIndex],blockNumber,market,timestamp,orderId,[universe+eventType+timestamp],[market+eventType],eventType,orderCreator,orderFiller';
+    schemas['ZeroXOrders'] =
+      'orderHash,[market+outcome+orderType],orderCreator,blockNumber';
     schemas['SyncStatus'] = 'eventName,blockNumber,syncing';
     schemas['Rollback'] = ',[tableName+rollbackBlockNumber]';
     schemas['WarpSync'] = '[begin.number+end.number],end.number';
@@ -342,11 +354,17 @@ export class DB {
     this.syncableDatabases[db.dbName] = db;
   }
 
-  registerEventListener(eventNames: string | string[], callback: LogCallbackType): void {
+  registerEventListener(
+    eventNames: string | string[],
+    callback: LogCallbackType
+  ): void {
     this.logFilters.listenForEvent(eventNames, callback);
   }
 
-  unregisterEventListener(eventNames: string | string[], callback: LogCallbackType): void {
+  unregisterEventListener(
+    eventNames: string | string[],
+    callback: LogCallbackType
+  ): void {
     this.logFilters.unlistenForEvent(eventNames, callback);
   }
 
@@ -359,8 +377,11 @@ export class DB {
   async getSyncStartingBlock(): Promise<number> {
     const highestSyncBlocks = [];
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
-      highestSyncBlocks.push(await this.syncStatus.getHighestSyncBlock(
-        genericEventDBDescription.EventName));
+      highestSyncBlocks.push(
+        await this.syncStatus.getHighestSyncBlock(
+          genericEventDBDescription.EventName
+        )
+      );
     }
 
     return Math.min(...highestSyncBlocks) + 1;
@@ -371,16 +392,17 @@ export class DB {
    */
   async sync(highestAvailableBlockNumber?: number): Promise<void> {
     const dbSyncPromises = [];
-    if(!highestAvailableBlockNumber) {
+    if (!highestAvailableBlockNumber) {
       highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
     }
 
-    for (const {EventName:dbName, primaryKey } of this.genericEventDBDescriptions) {
+    for (const { EventName: dbName, primaryKey } of this
+      .genericEventDBDescriptions) {
       if (primaryKey) {
         dbSyncPromises.push(
           this.syncableDatabases[`${dbName}Rollup`].sync(
-            highestAvailableBlockNumber,
-          ),
+            highestAvailableBlockNumber
+          )
         );
       }
     }
@@ -412,10 +434,16 @@ export class DB {
       .filter(({ indexes, primaryKey }) =>
         [...indexes, primaryKey].includes('market')
       )
-      .map(({ EventName }) => EventName)
+      .map(({ EventName }) => EventName);
 
     await Promise.all(
-      [...dbsToRemoveMarketsFrom, 'Markets', 'MarketVolumeChangedRollup', 'MarketOIChangedRollup', 'ShareTokenBalanceChangedRollup'].map(dbName =>
+      [
+        ...dbsToRemoveMarketsFrom,
+        'Markets',
+        'MarketVolumeChangedRollup',
+        'MarketOIChangedRollup',
+        'ShareTokenBalanceChangedRollup',
+      ].map(dbName =>
         this[dbName]
           .where('market')
           .anyOf(marketIdsToRemove)
@@ -434,13 +462,15 @@ export class DB {
     // Perform rollback on SyncableDBs & rollups
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
       const dbName = genericEventDBDescription.EventName;
-      dbRollbackPromises.push(this.syncableDatabases[dbName].rollback(blockNumber));
+      dbRollbackPromises.push(
+        this.syncableDatabases[dbName].rollback(blockNumber)
+      );
 
       if (genericEventDBDescription.primaryKey) {
         dbRollbackPromises.push(
-          this.syncableDatabases[`${genericEventDBDescription.EventName}Rollup`].rollback(
-            blockNumber,
-          ),
+          this.syncableDatabases[
+            `${genericEventDBDescription.EventName}Rollup`
+          ].rollback(blockNumber)
         );
       }
     }
@@ -449,11 +479,15 @@ export class DB {
     dbRollbackPromises.push(this.disputeDatabase.rollback(blockNumber));
     dbRollbackPromises.push(this.currentOrdersDatabase.rollback(blockNumber));
     dbRollbackPromises.push(this.marketDatabase.rollback(blockNumber));
-    dbRollbackPromises.push(this.parsedOrderEventDatabase.rollback(blockNumber));
+    dbRollbackPromises.push(
+      this.parsedOrderEventDatabase.rollback(blockNumber)
+    );
 
     // TODO Figure out a way to handle concurrent request limit of 40
-    await Promise.all(dbRollbackPromises).catch(error => { throw error; });
-  }
+    await Promise.all(dbRollbackPromises).catch(error => {
+      throw error;
+    });
+  };
 
   /**
    * Adds a new block to a SyncableDB/UserSyncableDB and updates MetaDB.
@@ -471,55 +505,181 @@ export class DB {
     try {
       await db.addNewBlock(blockLogs[0].blockNumber, blockLogs);
 
-      const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(dbName);
+      const highestSyncBlock = await this.syncStatus.getHighestSyncBlock(
+        dbName
+      );
       if (highestSyncBlock !== blockLogs[0].blockNumber) {
-        throw new Error('Highest sync block is ' + highestSyncBlock + '; newest block number is ' + blockLogs[0].blockNumber);
+        throw new Error(
+          'Highest sync block is ' +
+            highestSyncBlock +
+            '; newest block number is ' +
+            blockLogs[0].blockNumber
+        );
       }
     } catch (err) {
       throw err;
     }
   }
 
-  get CompleteSetsPurchased() { return this.dexieDB.table<CompleteSetsPurchasedLog>('CompleteSetsPurchased'); }
-  get CompleteSetsSold() { return this.dexieDB.table<CompleteSetsSoldLog>('CompleteSetsSold'); }
-  get DisputeCrowdsourcerContribution() { return this.dexieDB.table<DisputeCrowdsourcerContributionLog>('DisputeCrowdsourcerContribution'); }
-  get DisputeCrowdsourcerCompleted() { return this.dexieDB.table<DisputeCrowdsourcerCompletedLog>('DisputeCrowdsourcerCompleted'); }
-  get DisputeCrowdsourcerCreated() { return this.dexieDB.table<DisputeCrowdsourcerCreatedLog>('DisputeCrowdsourcerCreated'); }
-  get DisputeCrowdsourcerRedeemed() { return this.dexieDB.table<DisputeCrowdsourcerRedeemedLog>('DisputeCrowdsourcerRedeemed'); }
-  get DisputeWindowCreated() { return this.dexieDB.table<DisputeWindowCreatedLog>('DisputeWindowCreated'); }
-  get InitialReporterRedeemed() { return this.dexieDB.table<InitialReporterRedeemedLog>('InitialReporterRedeemed'); }
-  get InitialReportSubmitted() { return this.dexieDB.table<InitialReportSubmittedLog>('InitialReportSubmitted'); }
-  get InitialReporterTransferred() { return this.dexieDB.table<InitialReporterTransferredLog>('InitialReporterTransferred'); }
-  get MarketCreated() { return this.dexieDB.table<MarketCreatedLog>('MarketCreated'); }
-  get MarketFinalized() { return this.dexieDB.table<MarketFinalizedLog>('MarketFinalized'); }
-  get MarketMigrated() { return this.dexieDB.table<MarketMigratedLog>('MarketMigrated'); }
-  get MarketParticipantsDisavowed() { return this.dexieDB.table<MarketParticipantsDisavowedLog>('MarketParticipantsDisavowed'); }
-  get MarketTransferred() { return this.dexieDB.table<MarketTransferredLog>('MarketTransferred'); }
-  get MarketVolumeChanged() { return this.dexieDB.table<MarketVolumeChangedLog>('MarketVolumeChanged'); }
-  get MarketVolumeChangedRollup() { return this.dexieDB.table<MarketVolumeChangedLog>('MarketVolumeChangedRollup'); }
-  get MarketOIChanged() { return this.dexieDB.table<MarketOIChangedLog>('MarketOIChanged'); }
-  get MarketOIChangedRollup() { return this.dexieDB.table<MarketOIChangedLog>('MarketOIChangedRollup'); }
-  get OrderEvent() { return this.dexieDB.table<OrderEventLog>('OrderEvent'); }
-  get CancelZeroXOrder() { return this.dexieDB['CancelZeroXOrder'] as Dexie.Table<CancelZeroXOrderLog, any>; }
-  get ParticipationTokensRedeemed() { return this.dexieDB.table<ParticipationTokensRedeemedLog>('ParticipationTokensRedeemed'); }
-  get ProfitLossChanged() { return this.dexieDB.table<ProfitLossChangedLog>('ProfitLossChanged'); }
-  get ReportingParticipantDisavowed() { return this.dexieDB.table<ReportingParticipantDisavowedLog>('ReportingParticipantDisavowed'); }
-  get TimestampSet() { return this.dexieDB.table<TimestampSetLog>('TimestampSet'); }
-  get TokenBalanceChanged() { return this.dexieDB.table<TokenBalanceChangedLog>('TokenBalanceChanged'); }
-  get TokenBalanceChangedRollup() { return this.dexieDB.table<TokenBalanceChangedLog>('TokenBalanceChangedRollup'); }
-  get TokensMinted() { return this.dexieDB.table<TokensMinted>('TokensMinted'); }
-  get TokensTransferred() { return this.dexieDB.table<TokensTransferredLog>('TokensTransferred'); }
-  get TradingProceedsClaimed() { return this.dexieDB.table<TradingProceedsClaimedLog>('TradingProceedsClaimed'); }
-  get UniverseCreated() { return this.dexieDB.table<UniverseCreatedLog>('UniverseCreated'); }
-  get UniverseForked() { return this.dexieDB.table<UniverseForkedLog>('UniverseForked'); }
-  get TransferSingle() { return this.dexieDB.table<TransferSingleLog>('TransferSingle'); }
-  get TransferBatch() { return this.dexieDB.table<TransferBatchLog>('TransferBatch'); }
-  get ShareTokenBalanceChanged() { return this.dexieDB.table<ShareTokenBalanceChangedLog>('ShareTokenBalanceChanged'); }
-  get ShareTokenBalanceChangedRollup() { return this.dexieDB.table<ShareTokenBalanceChangedLog>('ShareTokenBalanceChangedRollup'); }
-  get Markets() { return this.dexieDB.table<MarketData>('Markets'); }
-  get ParsedOrderEvent() { return this.dexieDB.table<ParsedOrderEventLog>('ParsedOrderEvents'); }
-  get Dispute() { return this.dexieDB.table<DisputeDoc>('Dispute'); }
-  get CurrentOrders() { return this.dexieDB.table<CurrentOrder>('CurrentOrders'); }
-  get ZeroXOrders() { return this.dexieDB.table<StoredOrder>('ZeroXOrders'); }
-  get ReportingFeeChanged() { return this.dexieDB.table<ReportingFeeChangedLog>('ReportingFeeChanged') }
+  get CompleteSetsPurchased() {
+    return this.dexieDB.table<CompleteSetsPurchasedLog>(
+      'CompleteSetsPurchased'
+    );
+  }
+  get CompleteSetsSold() {
+    return this.dexieDB.table<CompleteSetsSoldLog>('CompleteSetsSold');
+  }
+  get DisputeCrowdsourcerContribution() {
+    return this.dexieDB.table<DisputeCrowdsourcerContributionLog>(
+      'DisputeCrowdsourcerContribution'
+    );
+  }
+  get DisputeCrowdsourcerCompleted() {
+    return this.dexieDB.table<DisputeCrowdsourcerCompletedLog>(
+      'DisputeCrowdsourcerCompleted'
+    );
+  }
+  get DisputeCrowdsourcerCreated() {
+    return this.dexieDB.table<DisputeCrowdsourcerCreatedLog>(
+      'DisputeCrowdsourcerCreated'
+    );
+  }
+  get DisputeCrowdsourcerRedeemed() {
+    return this.dexieDB.table<DisputeCrowdsourcerRedeemedLog>(
+      'DisputeCrowdsourcerRedeemed'
+    );
+  }
+  get DisputeWindowCreated() {
+    return this.dexieDB.table<DisputeWindowCreatedLog>('DisputeWindowCreated');
+  }
+  get InitialReporterRedeemed() {
+    return this.dexieDB.table<InitialReporterRedeemedLog>(
+      'InitialReporterRedeemed'
+    );
+  }
+  get InitialReportSubmitted() {
+    return this.dexieDB.table<InitialReportSubmittedLog>(
+      'InitialReportSubmitted'
+    );
+  }
+  get InitialReporterTransferred() {
+    return this.dexieDB.table<InitialReporterTransferredLog>(
+      'InitialReporterTransferred'
+    );
+  }
+  get MarketCreated() {
+    return this.dexieDB.table<MarketCreatedLog>('MarketCreated');
+  }
+  get MarketFinalized() {
+    return this.dexieDB.table<MarketFinalizedLog>('MarketFinalized');
+  }
+  get MarketMigrated() {
+    return this.dexieDB.table<MarketMigratedLog>('MarketMigrated');
+  }
+  get MarketParticipantsDisavowed() {
+    return this.dexieDB.table<MarketParticipantsDisavowedLog>(
+      'MarketParticipantsDisavowed'
+    );
+  }
+  get MarketTransferred() {
+    return this.dexieDB.table<MarketTransferredLog>('MarketTransferred');
+  }
+  get MarketVolumeChanged() {
+    return this.dexieDB.table<MarketVolumeChangedLog>('MarketVolumeChanged');
+  }
+  get MarketVolumeChangedRollup() {
+    return this.dexieDB.table<MarketVolumeChangedLog>(
+      'MarketVolumeChangedRollup'
+    );
+  }
+  get MarketOIChanged() {
+    return this.dexieDB.table<MarketOIChangedLog>('MarketOIChanged');
+  }
+  get MarketOIChangedRollup() {
+    return this.dexieDB.table<MarketOIChangedLog>('MarketOIChangedRollup');
+  }
+  get OrderEvent() {
+    return this.dexieDB.table<OrderEventLog>('OrderEvent');
+  }
+  get CancelZeroXOrder() {
+    return this.dexieDB['CancelZeroXOrder'] as Dexie.Table<
+      CancelZeroXOrderLog,
+      any
+    >;
+  }
+  get ParticipationTokensRedeemed() {
+    return this.dexieDB.table<ParticipationTokensRedeemedLog>(
+      'ParticipationTokensRedeemed'
+    );
+  }
+  get ProfitLossChanged() {
+    return this.dexieDB.table<ProfitLossChangedLog>('ProfitLossChanged');
+  }
+  get ReportingParticipantDisavowed() {
+    return this.dexieDB.table<ReportingParticipantDisavowedLog>(
+      'ReportingParticipantDisavowed'
+    );
+  }
+  get TimestampSet() {
+    return this.dexieDB.table<TimestampSetLog>('TimestampSet');
+  }
+  get TokenBalanceChanged() {
+    return this.dexieDB.table<TokenBalanceChangedLog>('TokenBalanceChanged');
+  }
+  get TokenBalanceChangedRollup() {
+    return this.dexieDB.table<TokenBalanceChangedLog>(
+      'TokenBalanceChangedRollup'
+    );
+  }
+  get TokensMinted() {
+    return this.dexieDB.table<TokensMinted>('TokensMinted');
+  }
+  get TokensTransferred() {
+    return this.dexieDB.table<TokensTransferredLog>('TokensTransferred');
+  }
+  get TradingProceedsClaimed() {
+    return this.dexieDB.table<TradingProceedsClaimedLog>(
+      'TradingProceedsClaimed'
+    );
+  }
+  get UniverseCreated() {
+    return this.dexieDB.table<UniverseCreatedLog>('UniverseCreated');
+  }
+  get UniverseForked() {
+    return this.dexieDB.table<UniverseForkedLog>('UniverseForked');
+  }
+  get TransferSingle() {
+    return this.dexieDB.table<TransferSingleLog>('TransferSingle');
+  }
+  get TransferBatch() {
+    return this.dexieDB.table<TransferBatchLog>('TransferBatch');
+  }
+  get ShareTokenBalanceChanged() {
+    return this.dexieDB.table<ShareTokenBalanceChangedLog>(
+      'ShareTokenBalanceChanged'
+    );
+  }
+  get ShareTokenBalanceChangedRollup() {
+    return this.dexieDB.table<ShareTokenBalanceChangedLog>(
+      'ShareTokenBalanceChangedRollup'
+    );
+  }
+  get Markets() {
+    return this.dexieDB.table<MarketData>('Markets');
+  }
+  get ParsedOrderEvent() {
+    return this.dexieDB.table<ParsedOrderEventLog>('ParsedOrderEvents');
+  }
+  get Dispute() {
+    return this.dexieDB.table<DisputeDoc>('Dispute');
+  }
+  get CurrentOrders() {
+    return this.dexieDB.table<CurrentOrder>('CurrentOrders');
+  }
+  get ZeroXOrders() {
+    return this.dexieDB.table<StoredOrder>('ZeroXOrders');
+  }
+  get ReportingFeeChanged() {
+    return this.dexieDB.table<ReportingFeeChangedLog>('ReportingFeeChanged');
+  }
 }

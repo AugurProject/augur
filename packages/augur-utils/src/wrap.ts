@@ -1,6 +1,10 @@
-import BigNumber from "bignumber.js";
-import { bignum } from "./bignum";
-import { INT256_MAX_VALUE, INT256_MIN_VALUE, UINT256_MAX_VALUE } from "./constants";
+import BigNumber from 'bignumber.js';
+import { bignum } from './bignum';
+import {
+  INT256_MAX_VALUE,
+  INT256_MIN_VALUE,
+  UINT256_MAX_VALUE,
+} from './constants';
 
 export function wrap(bn) {
   if (bn === undefined || bn === null) return bn;
@@ -12,5 +16,3 @@ export function wrap(bn) {
   }
   return bn;
 }
-
-

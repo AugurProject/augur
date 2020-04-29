@@ -1,7 +1,14 @@
-import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
+import {
+  cannedMarkets,
+  singleOutcomeAsks,
+  singleOutcomeBids,
+} from './data/canned-markets';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
-import { QUINTILLION, numTicksToTickSizeWithDisplayPrices } from '@augurproject/sdk';
+import {
+  QUINTILLION,
+  numTicksToTickSizeWithDisplayPrices,
+} from '@augurproject/sdk';
 import { ContractAPI } from '..';
 
 const MILLION = QUINTILLION.multipliedBy(1000000);
@@ -9,7 +16,7 @@ const MILLION = QUINTILLION.multipliedBy(1000000);
 export async function createYesNoZeroXOrders(
   user: ContractAPI,
   market: string,
-  skipFaucetApproval: boolean,
+  skipFaucetApproval: boolean
 ) {
   if (!skipFaucetApproval) {
     await user.faucetCashUpTo(MILLION, MILLION);
@@ -23,7 +30,15 @@ export async function createYesNoZeroXOrders(
   const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
   const orders = [];
   for (let a = 0; a < Object.keys(orderBook).length; a++) {
-    const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+    const outcome = Number(Object.keys(orderBook)[a]) as
+      | 0
+      | 1
+      | 2
+      | 3
+      | 4
+      | 5
+      | 6
+      | 7;
     const buySell = Object.values(orderBook)[a];
 
     const { buy, sell } = buySell;
@@ -76,7 +91,7 @@ export async function createCatZeroXOrders(
   user: ContractAPI,
   market: string,
   skipFaucetApproval: boolean,
-  numOutcomes: number,
+  numOutcomes: number
 ) {
   if (!skipFaucetApproval) {
     await user.faucetCashUpTo(MILLION, MILLION);
@@ -120,7 +135,15 @@ export async function createCatZeroXOrders(
   const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
   const orders = [];
   for (let a = 0; a < numOutcomes; a++) {
-    const outcome = Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+    const outcome = Number(Object.keys(orderBook)[a]) as
+      | 0
+      | 1
+      | 2
+      | 3
+      | 4
+      | 5
+      | 6
+      | 7;
     const buySell = Object.values(orderBook)[a];
 
     const { buy, sell } = buySell;
@@ -168,7 +191,6 @@ export async function createCatZeroXOrders(
   await user.placeZeroXOrders(orders).catch(console.error);
 }
 
-
 export async function createScalarZeroXOrders(
   user: ContractAPI,
   market: string,
@@ -176,7 +198,7 @@ export async function createScalarZeroXOrders(
   onInvalid: boolean,
   numTicks: BigNumber,
   minPrice: BigNumber,
-  maxPrice: BigNumber,
+  maxPrice: BigNumber
 ) {
   if (!skipFaucetApproval) {
     await user.faucetCashUpTo(MILLION, MILLION);
@@ -186,8 +208,12 @@ export async function createScalarZeroXOrders(
   const timestamp = await user.getTimestamp();
   const tradeGroupId = String(Date.now());
   const oneHundredDays = new BigNumber(8640000);
-  const tickSize = numTicksToTickSizeWithDisplayPrices(numTicks, minPrice, maxPrice);
-  const midPrice = maxPrice.minus((numTicks.dividedBy(2)).times(tickSize));
+  const tickSize = numTicksToTickSizeWithDisplayPrices(
+    numTicks,
+    minPrice,
+    maxPrice
+  );
+  const midPrice = maxPrice.minus(numTicks.dividedBy(2).times(tickSize));
 
   const orderBook = {
     2: {
@@ -206,7 +232,9 @@ export async function createScalarZeroXOrders(
   const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
   const orders = [];
   for (let a = 0; a < Object.keys(orderBook).length; a++) {
-    const outcome = !onInvalid ? Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 : 0;
+    const outcome = !onInvalid
+      ? (Number(Object.keys(orderBook)[a]) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7)
+      : 0;
     const buySell = Object.values(orderBook)[a];
 
     const { buy, sell } = buySell;

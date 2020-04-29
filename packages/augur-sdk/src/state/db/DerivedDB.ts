@@ -23,7 +23,7 @@ export class DerivedDB extends RollbackTable {
   // For preventing race conditions between log-processing events and other
   // events like controller:new:block, with the assumption that log processing
   // should happen first.
-  protected locks: {[name: string]: boolean} = {};
+  protected locks: { [name: string]: boolean } = {};
   protected readonly HANDLE_MERGE_EVENT_LOCK = 'handleMergeEvent';
 
   protected augur;
@@ -40,18 +40,27 @@ export class DerivedDB extends RollbackTable {
     this.stateDB = db;
     this.name = name;
 
-    augur.events.once(SubscriptionEventName.BulkSyncComplete, this.onBulkSyncComplete.bind(this));
+    augur.events.once(
+      SubscriptionEventName.BulkSyncComplete,
+      this.onBulkSyncComplete.bind(this)
+    );
 
     // Binding here because we need to use call the parent method.
     this.handleMergeEvent = this.handleMergeEvent.bind(this);
   }
 
   async delete() {
-    this.stateDB.unregisterEventListener(this.mergeEventNames, this.handleMergeEvent);
+    this.stateDB.unregisterEventListener(
+      this.mergeEventNames,
+      this.handleMergeEvent
+    );
   }
 
   async onBulkSyncComplete() {
-    this.stateDB.registerEventListener(this.mergeEventNames, this.handleMergeEvent);
+    this.stateDB.registerEventListener(
+      this.mergeEventNames,
+      this.handleMergeEvent
+    );
   }
 
   async sync(highestAvailableBlockNumber: number): Promise<void> {
@@ -77,7 +86,11 @@ export class DerivedDB extends RollbackTable {
         const resultsById = _.groupBy(result, this.getIDValue.bind(this));
         _.forEach(resultsById, (documents, documentId) => {
           const latestDoc = documents.reduce((val, doc) => {
-            if (val.blockNumber < doc.blockNumber || (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex)) {
+            if (
+              val.blockNumber < doc.blockNumber ||
+              (val.blockNumber === doc.blockNumber &&
+                val.logIndex < doc.logIndex)
+            ) {
               return doc;
             }
             return val;
@@ -104,12 +117,18 @@ export class DerivedDB extends RollbackTable {
     await this.syncStatus.updateSyncingToFalse(this.dbName);
   }
 
-  async getEvents(highestSyncedBlockNumber: number, eventName: string): Promise<BaseDocument[]> {
-    return await this.stateDB.dexieDB[eventName].where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
+  async getEvents(
+    highestSyncedBlockNumber: number,
+    eventName: string
+  ): Promise<BaseDocument[]> {
+    return await this.stateDB.dexieDB[eventName]
+      .where('blockNumber')
+      .aboveOrEqual(highestSyncedBlockNumber)
+      .toArray();
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
-  async handleMergeEvent (
+  async handleMergeEvent(
     blocknumber: number,
     logs: ParsedLog[],
     syncing = false
@@ -118,16 +137,21 @@ export class DerivedDB extends RollbackTable {
     if (logs.length > 0) {
       const documentsById = _.groupBy(logs, this.getIDValue.bind(this));
       documentsByIdByTopic = _.flatMap(documentsById, idDocuments => {
-        const mostRecentTopics = _.flatMap(_.groupBy(idDocuments, 'topics[0]'), documents => {
-          return documents.reduce((val, doc) => {
-              if (val.blockNumber < doc.blockNumber || (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex)) {
+        const mostRecentTopics = _.flatMap(
+          _.groupBy(idDocuments, 'topics[0]'),
+          documents => {
+            return documents.reduce((val, doc) => {
+              if (
+                val.blockNumber < doc.blockNumber ||
+                (val.blockNumber === doc.blockNumber &&
+                  val.logIndex < doc.logIndex)
+              ) {
                 return doc;
               }
               return val;
-            },
-            documents[0]
-          );
-        });
+            }, documents[0]);
+          }
+        );
 
         return _.map(mostRecentTopics, this.processDoc.bind(this));
       });
@@ -142,11 +166,15 @@ export class DerivedDB extends RollbackTable {
     );
     this.updatingHighestSyncBlock = false;
     if (logs.length > 0 && !this.syncing) {
-      this.augur.events.emitAfter(SubscriptionEventName.NewBlock, `DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
+      this.augur.events.emitAfter(
+        SubscriptionEventName.NewBlock,
+        `DerivedDB:updated:${this.name}`,
+        { data: documentsByIdByTopic }
+      );
     }
 
     return blocknumber;
-  };
+  }
 
   // No-op by default. Can be overriden to provide custom document processing before being upserted into the DB.
   protected processDoc(log: ParsedLog): ParsedLog {
@@ -157,14 +185,20 @@ export class DerivedDB extends RollbackTable {
     this.locks[name] = true;
   }
 
-  protected async waitOnLock(lock: string, maxTimeMS: number, periodMS: number): Promise<void> {
-    for (let i = 0; i < (maxTimeMS / periodMS); i++) {
+  protected async waitOnLock(
+    lock: string,
+    maxTimeMS: number,
+    periodMS: number
+  ): Promise<void> {
+    for (let i = 0; i < maxTimeMS / periodMS; i++) {
       if (!this.locks[lock]) {
         return;
       }
       await sleep(periodMS);
     }
-    throw Error(`timeout: lock ${lock} on ${this.name} DB did not release after ${maxTimeMS}ms`);
+    throw Error(
+      `timeout: lock ${lock} on ${this.name} DB did not release after ${maxTimeMS}ms`
+    );
   }
 
   protected clearLocks() {

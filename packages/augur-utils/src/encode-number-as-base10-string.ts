@@ -1,7 +1,5 @@
-import { bignum } from "./bignum";
+import { bignum } from './bignum';
 
 export function encodeNumberAsBase10String(n, isWrapped = false) {
-  return bignum(n, "string", isWrapped);
+  return bignum(n, 'string', isWrapped);
 }
-
-

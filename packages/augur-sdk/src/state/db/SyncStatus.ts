@@ -1,4 +1,4 @@
-import { AbstractTable } from "./AbstractTable";
+import { AbstractTable } from './AbstractTable';
 import { DB } from './DB';
 
 interface SyncDocument {
@@ -12,11 +12,15 @@ export class SyncStatus extends AbstractTable {
   readonly defaultStartSyncBlockNumber: number;
 
   constructor(networkId: number, defaultStartSyncBlockNumber: number, db: DB) {
-    super(networkId, "SyncStatus", db.dexieDB);
+    super(networkId, 'SyncStatus', db.dexieDB);
     this.defaultStartSyncBlockNumber = defaultStartSyncBlockNumber;
   }
 
-  async setHighestSyncBlock(eventName: string, blockNumber: number, syncing: boolean): Promise<void> {
+  async setHighestSyncBlock(
+    eventName: string,
+    blockNumber: number,
+    syncing: boolean
+  ): Promise<void> {
     await this.table.put({
       eventName,
       syncing,
@@ -30,7 +34,7 @@ export class SyncStatus extends AbstractTable {
   }
 
   async getLowestSyncingBlockForAllDBs(): Promise<number> {
-    const results = await this.table.toCollection().sortBy("blockNumber");
+    const results = await this.table.toCollection().sortBy('blockNumber');
 
     if (results.length > 0) {
       return (results[0] as any).blockNumber;

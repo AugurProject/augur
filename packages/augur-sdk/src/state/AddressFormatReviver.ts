@@ -2,8 +2,8 @@
 A reviver is a function that prescribes how the value originally produced by JSON.parse is transformed, before being returned.
 */
 
-import { formatEthereumAddress } from "@augurproject/utils";
-import { getAddress } from "ethers/utils/address";
+import { formatEthereumAddress } from '@augurproject/utils';
+import { getAddress } from 'ethers/utils/address';
 
 export interface StringToBoolMap {
   [key: string]: boolean;
@@ -41,10 +41,14 @@ function preCleanAddress(address: string) {
 
 export function AddressFormatReviver(key: string, value: any) {
   if (inputsExpectedAsAddress[key]) {
-    if (typeof value === "string") {
+    if (typeof value === 'string') {
       return formatEthereumAddress(preCleanAddress(value));
     } else if (Array.isArray(value)) {
-      return formatEthereumAddress((value).map((address) => typeof address === "string" ? preCleanAddress(address) : ""));
+      return formatEthereumAddress(
+        value.map(address =>
+          typeof address === 'string' ? preCleanAddress(address) : ''
+        )
+      );
     }
   }
 

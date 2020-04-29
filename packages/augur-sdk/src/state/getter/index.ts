@@ -7,14 +7,4 @@ import * as Status from './status';
 import * as Universe from './Universe';
 import * as Platform from './Platform';
 
-export {
-  API,
-  Accounts,
-  Markets,
-  Trading,
-  Universe,
-  Users,
-  Status,
-  Platform,
-};
-
+export { API, Accounts, Markets, Trading, Universe, Users, Status, Platform };

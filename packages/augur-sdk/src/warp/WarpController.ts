@@ -109,7 +109,8 @@ export class WarpController {
     // This is to simplify swapping out file retrieval mechanism.
     private _fileRetrievalFn: (ipfsPath: string) => Promise<any> = (
       ipfsPath: string
-    ) => fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`).then(item =>
+    ) =>
+      fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`).then(item =>
         item.json()
       )
   ) {
@@ -169,7 +170,9 @@ export class WarpController {
             mostRecentCheckpoint.end
           );
 
-          const newWarpSyncMarket = await this.augur.warpSync.getWarpSyncMarket(this.augur.contracts.universe.address);
+          const newWarpSyncMarket = await this.augur.warpSync.getWarpSyncMarket(
+            this.augur.contracts.universe.address
+          );
 
           await this.db.warpCheckpoints.createInitialCheckpoint(
             end,
@@ -195,7 +198,7 @@ export class WarpController {
       );
 
       // Market has finished and now we need to wait 30 blocks.
-      if((newBlock.number - newEndBlock.number) < 30) return;
+      if (newBlock.number - newEndBlock.number < 30) return;
 
       await this.db.prune(newEndBlock.timestamp);
       /*
@@ -239,9 +242,7 @@ export class WarpController {
     await this.db.initializeDB();
   }
 
-  async createCheckpoint(
-    endBlock: Block
-  ): Promise<IpfsInfo> {
+  async createCheckpoint(endBlock: Block): Promise<IpfsInfo> {
     const logs = [];
     for (const { databaseName } of databasesToSync) {
       // Awaiting here to reduce load on db.
@@ -303,9 +304,7 @@ export class WarpController {
       .then(JSON.parse);
   }
 
-  async getCheckpointFile(
-    ipfsRootHash: string,
-  ): Promise<CheckpointInterface> {
+  async getCheckpointFile(ipfsRootHash: string): Promise<CheckpointInterface> {
     return this.getFile(`${ipfsRootHash}/index`);
   }
 

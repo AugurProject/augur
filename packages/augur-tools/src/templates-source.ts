@@ -2836,8 +2836,8 @@ export const TEMPLATES = {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
                     },
                     {
-                      text: `If player is not selected "Over #.5" should be the winning outcome`
-                    }
+                      text: `If player is not selected "Over #.5" should be the winning outcome`,
+                    },
                   ],
                 },
               },
@@ -5678,8 +5678,8 @@ export const TEMPLATES = {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
                     },
                     {
-                      text: `If player is not selected "Over #.5" should be the winning outcome`
-                    }
+                      text: `If player is not selected "Over #.5" should be the winning outcome`,
+                    },
                   ],
                 },
               },

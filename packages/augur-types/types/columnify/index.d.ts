@@ -1,5 +1,8 @@
-declare module "columnify" {
-  declare function columnify(data: { [key: string]: any } | any[], options?: columnify.GlobalOptions): string;
+declare module 'columnify' {
+  declare function columnify(
+    data: { [key: string]: any } | any[],
+    options?: columnify.GlobalOptions
+  ): string;
 
   export interface Options {
     align?: string;
@@ -18,7 +21,7 @@ declare module "columnify" {
     columnSplitter?: string;
     config?: {
       [columnName: string]: Options;
-    }
+    };
   }
 
   export = columnify;

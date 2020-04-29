@@ -12,7 +12,10 @@ import { SDKConfiguration } from '@augurproject/artifacts';
 const outcome0 = new BigNumber(0);
 const outcome1 = new BigNumber(1);
 
-export async function generateWarpSyncTestData(config: SDKConfiguration, seed: Seed) {
+export async function generateWarpSyncTestData(
+  config: SDKConfiguration,
+  seed: Seed
+) {
   const { addresses, contractsHash } = seed;
   const metadata = {};
 
@@ -20,16 +23,8 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
 
   metadata['checkpoint1_start'] = 0;
 
-  const john = await ContractAPI.userWrapper(
-    ACCOUNTS[0],
-    provider,
-    config
-  );
-  const mary = await ContractAPI.userWrapper(
-    ACCOUNTS[1],
-    provider,
-    config
-  );
+  const john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, config);
+  const mary = await ContractAPI.userWrapper(ACCOUNTS[1], provider, config);
 
   await john.faucetCashUpTo(new BigNumber(1e18)); // faucet enough cash for the various fill orders
   await mary.faucetCashUpTo(new BigNumber(1e18)); // faucet enough cash for the various fill orders
@@ -41,12 +36,16 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
   await john.createReasonableYesNoMarket();
 
   const yesNoMarket = await john.createReasonableYesNoMarket();
-  const categoricalMarket = await john.createReasonableMarket(
-    [stringTo32ByteHex('A'), stringTo32ByteHex('B'), stringTo32ByteHex('C')]
-  );
+  const categoricalMarket = await john.createReasonableMarket([
+    stringTo32ByteHex('A'),
+    stringTo32ByteHex('B'),
+    stringTo32ByteHex('C'),
+  ]);
 
   // Move timestamp ahead 12 hours.
-  await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
+  await provider.provider.send('evm_increaseTime', [
+    SECONDS_IN_A_DAY.toNumber() / 2,
+  ]);
 
   // Place orders
   const numShares = new BigNumber(10000000000000);
@@ -76,7 +75,9 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
   metadata['checkpoint1_end'] = await provider.provider.getBlockNumber();
 
   // Move timestamp ahead 12 hours.
-  await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
+  await provider.provider.send('evm_increaseTime', [
+    SECONDS_IN_A_DAY.toNumber() / 2,
+  ]);
 
   await john.placeOrder(
     categoricalMarket.address,
@@ -116,7 +117,9 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
   await john.augur.warpSync.initializeUniverse(addresses.Universe);
 
   // Move timestamp ahead 12 hours.
-  await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
+  await provider.provider.send('evm_increaseTime', [
+    SECONDS_IN_A_DAY.toNumber() / 2,
+  ]);
 
   const categoricalOrderId0 = await john.getBestOrderId(
     ORDER_TYPES.BID,
@@ -128,36 +131,34 @@ export async function generateWarpSyncTestData(config: SDKConfiguration, seed: S
     categoricalMarket.address,
     outcome1
   );
-  await john.fillOrder(
-    yesNoOrderId0,
-    numShares.div(10).multipliedBy(2),
-    '42'
-  );
+  await john.fillOrder(yesNoOrderId0, numShares.div(10).multipliedBy(2), '42');
 
   metadata['checkpoint2_end'] = await provider.provider.getBlockNumber();
 
   // Move timestamp ahead 12 hours.
-  await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
-  await mary.fillOrder(
-    yesNoOrderId1,
-    numShares.div(10).multipliedBy(3),
-    '43'
-  );
+  await provider.provider.send('evm_increaseTime', [
+    SECONDS_IN_A_DAY.toNumber() / 2,
+  ]);
+  await mary.fillOrder(yesNoOrderId1, numShares.div(10).multipliedBy(3), '43');
 
   metadata['checkpoint3_start'] = await provider.provider.getBlockNumber();
 
   // Move timestamp ahead 12 hours.
-  await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
+  await provider.provider.send('evm_increaseTime', [
+    SECONDS_IN_A_DAY.toNumber() / 2,
+  ]);
   await mary.fillOrder(
     categoricalOrderId0,
     numShares.div(10).multipliedBy(2),
     '43'
   );
 
-  metadata['checkpoint3_end'] = await provider.provider.getBlockNumber()
+  metadata['checkpoint3_end'] = await provider.provider.getBlockNumber();
 
   // Move timestamp ahead 12 hours.
-  await provider.provider.send('evm_increaseTime', [SECONDS_IN_A_DAY.toNumber() / 2]);
+  await provider.provider.send('evm_increaseTime', [
+    SECONDS_IN_A_DAY.toNumber() / 2,
+  ]);
   await mary.fillOrder(
     categoricalOrderId1,
     numShares.div(10).multipliedBy(4),

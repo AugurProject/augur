@@ -9,7 +9,10 @@ export abstract class AbstractSyncStrategy {
   constructor(
     protected getLogs: (filter: Filter) => Promise<Log[]>,
     protected contractAddresses: string[],
-    protected onLogsAdded: (blockNumber: number, logs: ParsedLog[]) => Promise<void>
+    protected onLogsAdded: (
+      blockNumber: number,
+      logs: ParsedLog[]
+    ) => Promise<void>
   ) {}
 
   // Returns the block number of the last block synced

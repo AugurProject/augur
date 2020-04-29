@@ -119,7 +119,6 @@ describe('BlockstreamListener', () => {
       deps.blockAndLogStreamer,
       deps.listenForNewBlocks,
       parseLogs
-
     );
   });
 

@@ -4,8 +4,11 @@ import * as _ from 'lodash';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { Connectors } from '@augurproject/sdk';
 import { ACCOUNTS, TestContractAPI } from '@augurproject/tools';
-import { AllOrders, Order, } from '@augurproject/sdk/build/state/getter/OnChainTrading';
-import { stringTo32ByteHex, } from '@augurproject/tools/build/libs/Utils';
+import {
+  AllOrders,
+  Order,
+} from '@augurproject/sdk/build/state/getter/OnChainTrading';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { buildConfig, SDKConfiguration } from '@augurproject/artifacts';
 
 describe('3rd Party :: GSN :: ', () => {
@@ -41,7 +44,6 @@ describe('3rd Party :: GSN :: ', () => {
 
     john.setUseWallet(true);
     john.setUseRelay(true);
-
   }, 120000);
 
   test('State API :: GSN :: getOrders', async () => {
@@ -52,7 +54,7 @@ describe('3rd Party :: GSN :: ', () => {
       stringTo32ByteHex('A'),
       stringTo32ByteHex('B'),
     ]);
-    await expect(market.address).not.toEqual("");
+    await expect(market.address).not.toEqual('');
     await john.sync();
 
     // Faucet some REP and confirm the wallet recieves it
@@ -60,7 +62,9 @@ describe('3rd Party :: GSN :: ', () => {
     const repBalance = await john.getRepBalance(walletAddress);
     await john.faucetRep(repAmount);
     const newRepBalance = await john.getRepBalance(walletAddress);
-    await expect(newRepBalance.toFixed()).toBe(repBalance.plus(repAmount).toFixed());
+    await expect(newRepBalance.toFixed()).toBe(
+      repBalance.plus(repAmount).toFixed()
+    );
 
     // Give John enough cash to pay for the 0x order.
 
@@ -108,7 +112,9 @@ describe('3rd Party :: GSN :: ', () => {
 
     const walletBalance = await john.getEthBalance(walletAddress);
     const expectedWalletBalance = initialWalletBalance.plus(ethAmount);
-    await expect(walletBalance.toString()).toEqual(expectedWalletBalance.toString());
+    await expect(walletBalance.toString()).toEqual(
+      expectedWalletBalance.toString()
+    );
 
     // Have the wallet send its ETH to another account
     john.setUseWallet(true);

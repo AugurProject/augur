@@ -35,7 +35,11 @@ export abstract class AbstractTable {
   async allDocs(): Promise<any[]> {
     const results: any[] = [];
     const documentCount = await this.getDocumentCount();
-    for (let batchIdx = 0; batchIdx * ALL_DOCS_BATCH_SIZE <= documentCount; batchIdx++) {
+    for (
+      let batchIdx = 0;
+      batchIdx * ALL_DOCS_BATCH_SIZE <= documentCount;
+      batchIdx++
+    ) {
       const batchResults = await this.table
         .offset(batchIdx * ALL_DOCS_BATCH_SIZE)
         .limit(ALL_DOCS_BATCH_SIZE)
@@ -49,7 +53,9 @@ export abstract class AbstractTable {
     return this.table.count();
   }
 
-  protected async getDocument<Document>(id: string): Promise<Document | undefined> {
+  protected async getDocument<Document>(
+    id: string
+  ): Promise<Document | undefined> {
     return this.table.get(id);
   }
 
@@ -60,19 +66,28 @@ export abstract class AbstractTable {
     await this.table.bulkAdd(documents);
   }
 
-  protected async bulkPutDocuments(documents: BaseDocument[], documentIds?: any[]): Promise<void> {
+  protected async bulkPutDocuments(
+    documents: BaseDocument[],
+    documentIds?: any[]
+  ): Promise<void> {
     for (const document of documents) {
       delete document.constructor;
     }
     await this.table.bulkPut(documents);
   }
 
-  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
+  protected async bulkUpsertDocuments(
+    documents: BaseDocument[]
+  ): Promise<void> {
     const documentIds = _.map(documents, this.getIDValue.bind(this));
     const existingDocuments = await this.table.bulkGet(documentIds);
     let docIndex = 0;
     for (const existingDocument of existingDocuments) {
-      existingDocuments[docIndex] = Object.assign({}, existingDocument || {}, documents[docIndex]);
+      existingDocuments[docIndex] = Object.assign(
+        {},
+        existingDocument || {},
+        documents[docIndex]
+      );
       docIndex++;
     }
     await this.bulkPutDocuments(existingDocuments, documentIds);
@@ -82,7 +97,10 @@ export abstract class AbstractTable {
     return this.bulkUpsertDocuments(documents);
   }
 
-  protected async upsertDocument(documentID: ID, document: BaseDocument): Promise<void> {
+  protected async upsertDocument(
+    documentID: ID,
+    document: BaseDocument
+  ): Promise<void> {
     delete document.constructor;
     const result = await this.table.update(documentID, document);
 
@@ -104,5 +122,4 @@ export abstract class AbstractTable {
     }
     return id;
   }
-
 }

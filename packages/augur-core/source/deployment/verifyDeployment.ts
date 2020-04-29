@@ -12,19 +12,32 @@ export async function verifyDeployment() {
 
     const config = buildConfig('local');
     const provider = new ethers.providers.JsonRpcProvider(config.ethereum.http);
-    const signer = await EthersFastSubmitWallet.create(config.deploy.privateKey as string, provider);
-    const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);
+    const signer = await EthersFastSubmitWallet.create(
+        config.deploy.privateKey as string,
+        provider
+    );
+    const dependencies = new ContractDependenciesEthers(
+        provider,
+        signer,
+        signer.address
+    );
 
-    const error = await DeploymentVerifier.verifyDeployment(dependencies, provider, config);
+    const error = await DeploymentVerifier.verifyDeployment(
+        dependencies,
+        provider,
+        config
+    );
     if (error) {
         throw new Error(error);
     }
     console.log('Verification Succeeded!');
 }
 
-verifyDeployment().then(() => {
-    process.exitCode = 0;
-}).catch(error => {
-    console.log(error);
-    process.exitCode = 1;
-});
+verifyDeployment()
+    .then(() => {
+        process.exitCode = 0;
+    })
+    .catch(error => {
+        console.log(error);
+        process.exitCode = 1;
+    });

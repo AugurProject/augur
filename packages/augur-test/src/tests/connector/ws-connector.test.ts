@@ -32,7 +32,7 @@ jest.mock('websocket-as-promised', () => {
             resolve({
               result: {
                 markets: ['0xa223fFddee6e9eB50513Be1B3C5aE9159c7B3407'],
-              }
+              },
             });
           }
         });

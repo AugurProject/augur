@@ -1,11 +1,11 @@
-import BigNumber from "bignumber.js";
-import { isHex } from "./is-hex";
-import { prefixHex } from "./prefix-hex";
-import { wrap } from "./wrap";
+import BigNumber from 'bignumber.js';
+import { isHex } from './is-hex';
+import { prefixHex } from './prefix-hex';
+import { wrap } from './wrap';
 
-export function bignum(n, encoding="", isWrapped=false) {
+export function bignum(n, encoding = '', isWrapped = false) {
   let bn, len;
-  if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
+  if (n !== null && n !== undefined && n !== '0x' && !n.error && !n.message) {
     switch (n.constructor) {
       case BigNumber:
         bn = n;
@@ -41,11 +41,11 @@ export function bignum(n, encoding="", isWrapped=false) {
     if (bn !== undefined && bn !== null && BigNumber.isBigNumber(bn)) {
       if (isWrapped) bn = wrap(bn);
       if (encoding) {
-        if (encoding === "number") {
+        if (encoding === 'number') {
           bn = bn.toNumber();
-        } else if (encoding === "string") {
+        } else if (encoding === 'string') {
           bn = bn.toFixed();
-        } else if (encoding === "hex") {
+        } else if (encoding === 'hex') {
           bn = prefixHex(bn.integerValue(BigNumber.ROUND_FLOOR).toString(16));
         }
       }
@@ -54,5 +54,3 @@ export function bignum(n, encoding="", isWrapped=false) {
   }
   return n;
 }
-
-

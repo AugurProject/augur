@@ -24,13 +24,18 @@ export class SingleThreadConnector extends BaseConnector {
     this._api = null;
   }
 
-  bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
+  bindTo<R, P>(
+    f: (db: any, augur: any, params: P) => Promise<R>
+  ): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
       return this._api.route(f.name, params);
     };
   }
 
-  async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
+  async on(
+    eventName: SubscriptionEventName | string,
+    callback: Callback
+  ): Promise<void> {
     const wrappedCallack = this.callbackWrapper(eventName, callback);
     const id: string = this.events.subscribe(eventName, wrappedCallack);
     this.subscriptions[eventName] = { id, callback: wrappedCallack };
@@ -43,4 +48,4 @@ export class SingleThreadConnector extends BaseConnector {
       return this.events.unsubscribe(subscription.id);
     }
   }
- }
+}

@@ -1,11 +1,15 @@
-import BigNumber from "bignumber.js";
-import { bignum } from "./bignum";
-import { padLeft } from "./pad-left";
-import { prefixHex } from "./prefix-hex";
-import { BYTES_32, UINT256_MAX_VALUE } from "./constants";
+import BigNumber from 'bignumber.js';
+import { bignum } from './bignum';
+import { padLeft } from './pad-left';
+import { prefixHex } from './prefix-hex';
+import { BYTES_32, UINT256_MAX_VALUE } from './constants';
 
 export function unfork(forked, prefix = false) {
-  if (forked !== null && forked !== undefined && forked.constructor !== Object) {
+  if (
+    forked !== null &&
+    forked !== undefined &&
+    forked.constructor !== Object
+  ) {
     let unforked = bignum(forked);
     if (BigNumber.isBigNumber(unforked)) {
       let superforked = unforked.plus(UINT256_MAX_VALUE);
@@ -17,9 +21,11 @@ export function unfork(forked, prefix = false) {
       if (prefix) unforked = prefixHex(unforked);
       return unforked;
     }
-    throw new Error("@augurproject/utils.unfork failed (bad input): " + JSON.stringify(forked));
+    throw new Error(
+      '@augurproject/utils.unfork failed (bad input): ' + JSON.stringify(forked)
+    );
   }
-  throw new Error("@augurproject/utils.unfork failed (bad input): " + JSON.stringify(forked));
+  throw new Error(
+    '@augurproject/utils.unfork failed (bad input): ' + JSON.stringify(forked)
+  );
 }
-
-

@@ -1,4 +1,8 @@
-import { ContractAddresses, SDKConfiguration, RecursivePartial } from '@augurproject/artifacts';
+import {
+  ContractAddresses,
+  SDKConfiguration,
+  RecursivePartial,
+} from '@augurproject/artifacts';
 import { MemDown } from 'memdown';
 import { ethers } from 'ethers';
 import { createSeed } from './ganache';
@@ -12,7 +16,8 @@ export class TestEthersProvider extends EthersProvider {
     provider: ethers.providers.JsonRpcProvider,
     private db: MemDown,
     private accounts: Account[],
-    private contractAddresses: ContractAddresses) {
+    private contractAddresses: ContractAddresses
+  ) {
     super(provider, 5, 0, 40);
   }
 
@@ -28,7 +33,7 @@ export class TestEthersProvider extends EthersProvider {
   getConfig(overwrites?: RecursivePartial<SDKConfiguration>): SDKConfiguration {
     return buildConfig('test', {
       addresses: this.contractAddresses,
-      ...overwrites || {}
+      ...(overwrites || {}),
     });
   }
 }

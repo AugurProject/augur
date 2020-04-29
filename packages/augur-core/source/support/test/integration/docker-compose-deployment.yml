@@ -1,11 +1,11 @@
-version: "3.2"
+version: '3.2'
 services:
   clique-deploy:
     image: augurproject/augur-core:monorepo
     build:
       context: ../../../../../../
       dockerfile: packages/augur-core/source/support/Dockerfile
-    entrypoint: ["yarn", "test:integration"]
+    entrypoint: ['yarn', 'test:integration']
     environment:
       - ETHEREUM_HOST=clique.ethereum.nodes.augur.net
       - ETHEREUM_PORT=80
@@ -17,7 +17,7 @@ services:
     build:
       context: ../../../../../../
       dockerfile: packages/augur-core/source/support/Dockerfile
-    entrypoint: ["yarn", "test:integration"]
+    entrypoint: ['yarn', 'test:integration']
     environment:
       - ETHEREUM_HOST=aura.ethereum.nodes.augur.net
       - ETHEREUM_PORT=80
@@ -29,7 +29,7 @@ services:
     build:
       context: ../../../../../../
       dockerfile: packages/augur-core/source/support/Dockerfile
-    entrypoint: ["yarn", "test:integration"]
+    entrypoint: ['yarn', 'test:integration']
     environment:
       - ETHEREUM_HOST=instantseal.ethereum.nodes.augur.net
       - ETHEREUM_PORT=80

@@ -9,26 +9,25 @@ import * as _ from 'lodash';
 export const DEFAULT_RELAY_TIMEOUT_GRACE_SEC = 60 * 30;
 
 export interface Relay {
-  relayUrl: string,
-  transactionFee?: number
+  relayUrl: string;
+  transactionFee?: number;
   address?: string;
   score?: number;
   stake?: number;
   lastError?: any;
   unstakeDelay?: number;
-  RelayServerAddress?: string,
-  Ready?: boolean,
+  RelayServerAddress?: string;
+  Ready?: boolean;
   MinGasPrice?: number;
 }
 
 export interface RelayResponse {
-  RelayServerAddress: string,
-  Ready: boolean,
-  MinGasPrice: number,
+  RelayServerAddress: string;
+  Ready: boolean;
+  MinGasPrice: number;
 }
 
 export class ActiveRelayPinger {
-
   remainingRelays: Relay[];
   httpSend: HttpWrapper;
   pingedRelays: number;
@@ -37,7 +36,12 @@ export class ActiveRelayPinger {
   verbose: boolean;
   errors: string[];
 
-  constructor(filteredRelays: Relay[], httpSend: HttpWrapper, gasPrice: number, verbose: boolean) {
+  constructor(
+    filteredRelays: Relay[],
+    httpSend: HttpWrapper,
+    gasPrice: number,
+    verbose: boolean
+  ) {
     this.remainingRelays = filteredRelays.slice();
     this.httpSend = httpSend;
     this.pingedRelays = 0;
@@ -62,13 +66,23 @@ export class ActiveRelayPinger {
       try {
         let slice = this.remainingRelays.slice(0, bulkSize);
         if (this.verbose) {
-          console.log('nextRelay: find fastest relay from: ' + JSON.stringify(slice));
+          console.log(
+            'nextRelay: find fastest relay from: ' + JSON.stringify(slice)
+          );
         }
         firstRelayToRespond = await this.raceToSuccess(
-          slice.map(relay => this.getRelayAddressPing(relay.relayUrl, relay.transactionFee, this.gasPrice)),
+          slice.map(relay =>
+            this.getRelayAddressPing(
+              relay.relayUrl,
+              relay.transactionFee,
+              this.gasPrice
+            )
+          )
         );
         if (this.verbose) {
-          console.log('race finished with a champion: ' + firstRelayToRespond.relayUrl);
+          console.log(
+            'race finished with a champion: ' + firstRelayToRespond.relayUrl
+          );
         }
       } catch (e) {
         if (this.verbose) {
@@ -79,7 +93,9 @@ export class ActiveRelayPinger {
       }
     }
 
-    this.remainingRelays = this.remainingRelays.filter(a => a.relayUrl !== firstRelayToRespond.relayUrl);
+    this.remainingRelays = this.remainingRelays.filter(
+      a => a.relayUrl !== firstRelayToRespond.relayUrl
+    );
     this.pingedRelays++;
     return firstRelayToRespond;
   }
@@ -93,16 +109,25 @@ export class ActiveRelayPinger {
    *   MinGasPrice:   //minimum gas requirement by this relay.
    * }
    */
-  async getRelayAddressPing(relayUrl: string, transactionFee: number, gasPrice: number): Promise<Relay> {
+  async getRelayAddressPing(
+    relayUrl: string,
+    transactionFee: number,
+    gasPrice: number
+  ): Promise<Relay> {
     if (this.verbose) {
       console.log('getRelayAddressPing URL: ' + relayUrl);
     }
-    const relayResponse: RelayResponse = await this.httpSend.send(relayUrl + '/getaddr', {});
+    const relayResponse: RelayResponse = await this.httpSend.send(
+      relayUrl + '/getaddr',
+      {}
+    );
     if (!relayResponse.Ready) {
       throw new Error(`Relayer ${relayUrl} is not ready`);
     }
     if (relayResponse.MinGasPrice > gasPrice) {
-      throw new Error(`Relayer ${relayUrl} requires a minimum gas price of ${relayResponse.MinGasPrice} which is over this transaction gas price (${gasPrice})`);
+      throw new Error(
+        `Relayer ${relayUrl} requires a minimum gas price of ${relayResponse.MinGasPrice} which is over this transaction gas price (${gasPrice})`
+      );
     }
     //add extra attributes (relayUrl, transactionFee)
     return Object.assign(relayResponse, { relayUrl, transactionFee });
@@ -125,27 +150,27 @@ export class ActiveRelayPinger {
             if (++numRejected === promises.length) {
               reject('No response matched filter from any server: ' + err);
             }
-          }),
-      ),
+          })
+      )
     );
   }
 }
 
 export interface ServerHelperConfig {
-  verbose?: boolean,
-  minStake?: number,
-  minDelay?: number,
-  relayTimeoutGrace?: number,
-  relayFilter?: (relay: Relay) => boolean,
-  addScoreRandomness?: () => number,
-  calculateRelayScore?: (relay: Relay) => number,
+  verbose?: boolean;
+  minStake?: number;
+  minDelay?: number;
+  relayTimeoutGrace?: number;
+  relayFilter?: (relay: Relay) => boolean;
+  addScoreRandomness?: () => number;
+  calculateRelayScore?: (relay: Relay) => number;
 }
 
 export class ServerHelper {
   httpSend: HttpWrapper;
   verbose: boolean;
   isInitialized: boolean;
-  failedRelays: {[key:string]: Relay};
+  failedRelays: { [key: string]: Relay };
   filteredRelays: Relay[];
   relayTimeoutGrace: number;
   relayHubInstance: ethers.Contract;
@@ -157,8 +182,8 @@ export class ServerHelper {
 
   constructor(
     httpSend: HttpWrapper,
-    failedRelays: {[key:string]: Relay},
-    config: ServerHelperConfig,
+    failedRelays: { [key: string]: Relay },
+    config: ServerHelperConfig
   ) {
     const {
       verbose,
@@ -173,10 +198,11 @@ export class ServerHelper {
     this.httpSend = httpSend;
     this.verbose = verbose;
     this.failedRelays = failedRelays;
-    this.relayTimeoutGrace = relayTimeoutGrace || DEFAULT_RELAY_TIMEOUT_GRACE_SEC;
+    this.relayTimeoutGrace =
+      relayTimeoutGrace || DEFAULT_RELAY_TIMEOUT_GRACE_SEC;
     this.addScoreRandomness = addScoreRandomness || Math.random;
-    this.calculateRelayScore = calculateRelayScore || this.defaultCalculateRelayScore.bind(this);
-
+    this.calculateRelayScore =
+      calculateRelayScore || this.defaultCalculateRelayScore.bind(this);
 
     //default filter: either calculateRelayScore didn't set "score" field,
     // or if unstakeDelay is below min, or if stake is below min.
@@ -225,11 +251,18 @@ export class ServerHelper {
     }
     this.relayHubInstance = relayHubInstance;
     this.addedAndRemovedSignatures = [];
-    this.addedAndRemovedSignatures.push(this.relayHubInstance.interface.events['RelayAdded'].topic);
-    this.addedAndRemovedSignatures.push(this.relayHubInstance.interface.events['RelayRemoved'].topic);
+    this.addedAndRemovedSignatures.push(
+      this.relayHubInstance.interface.events['RelayAdded'].topic
+    );
+    this.addedAndRemovedSignatures.push(
+      this.relayHubInstance.interface.events['RelayRemoved'].topic
+    );
   }
 
-  async newActiveRelayPinger(fromBlock: number, gasPrice: number): Promise<ActiveRelayPinger> {
+  async newActiveRelayPinger(
+    fromBlock: number,
+    gasPrice: number
+  ): Promise<ActiveRelayPinger> {
     if (!this.relayHubInstance) {
       throw new Error('Must call setHub first!');
     }
@@ -237,10 +270,20 @@ export class ServerHelper {
       this.fromBlock = fromBlock;
       await this.fetchRelaysAdded();
     }
-    return this.createActiveRelayPinger(this.filteredRelays, this.httpSend, gasPrice, this.verbose);
+    return this.createActiveRelayPinger(
+      this.filteredRelays,
+      this.httpSend,
+      gasPrice,
+      this.verbose
+    );
   }
 
-  createActiveRelayPinger(filteredRelays: Relay[], httpSend: HttpWrapper, gasPrice: number, verbose: boolean): ActiveRelayPinger {
+  createActiveRelayPinger(
+    filteredRelays: Relay[],
+    httpSend: HttpWrapper,
+    gasPrice: number,
+    verbose: boolean
+  ): ActiveRelayPinger {
     return new ActiveRelayPinger(filteredRelays, httpSend, gasPrice, verbose);
   }
 
@@ -251,7 +294,9 @@ export class ServerHelper {
   async fetchRelaysAdded(): Promise<Relay[]> {
     const activeRelays = {};
     const fromBlock = this.fromBlock || 2;
-    console.log(`Getting RelayHub logs fromBlock: ${fromBlock} address: ${this.relayHubInstance.address} topics: ${this.addedAndRemovedSignatures}`);
+    console.log(
+      `Getting RelayHub logs fromBlock: ${fromBlock} address: ${this.relayHubInstance.address} topics: ${this.addedAndRemovedSignatures}`
+    );
     const addedAndRemovedEvents = await this.relayHubInstance.provider.getLogs({
       fromBlock: fromBlock,
       address: this.relayHubInstance.address,
@@ -259,7 +304,9 @@ export class ServerHelper {
     });
 
     if (this.verbose) {
-      console.log('fetchRelaysAdded: found ' + addedAndRemovedEvents.length + ' events');
+      console.log(
+        'fetchRelaysAdded: found ' + addedAndRemovedEvents.length + ' events'
+      );
     }
     //TODO: better filter RelayAdded, RelayRemoved events: otherwise, we'll be scanning all TransactionRelayed too...
     //since RelayAdded can't be called after RelayRemoved, its OK to scan first for add, and the remove all removed relays.
@@ -283,22 +330,30 @@ export class ServerHelper {
 
     const origRelays: Relay[] = Object.values(activeRelays);
     if (origRelays.length === 0) {
-      throw new Error(`No relayers registered in the requested hub at ${this.relayHubInstance.address}`);
+      throw new Error(
+        `No relayers registered in the requested hub at ${this.relayHubInstance.address}`
+      );
     }
 
-    const filteredRelays = origRelays.filter(this.relayFilter).sort(this.compareRelayScores.bind(this));
+    const filteredRelays = origRelays
+      .filter(this.relayFilter)
+      .sort(this.compareRelayScores.bind(this));
     if (filteredRelays.length == 0) {
       throw new Error(
         'No relayers elligible after filtering. Available relayers:\n' +
           origRelays.map(
             r =>
-              ` score=${r.score} txFee=${r.transactionFee} stake=${r.stake} unstakeDelay=${r.unstakeDelay} address=${r.address} url=${r.relayUrl}`,
-          ),
+              ` score=${r.score} txFee=${r.transactionFee} stake=${r.stake} unstakeDelay=${r.unstakeDelay} address=${r.address} url=${r.relayUrl}`
+          )
       );
     }
 
     if (this.verbose) {
-      console.log('fetchRelaysAdded: after filtering have ' + filteredRelays.length + ' active relays');
+      console.log(
+        'fetchRelaysAdded: after filtering have ' +
+          filteredRelays.length +
+          ' active relays'
+      );
     }
 
     this.filteredRelays = filteredRelays;

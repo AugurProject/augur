@@ -23,7 +23,7 @@ export interface TradeData {
   quantity: number;
   price: number;
   // scalar market
-  minPrice?: number
+  minPrice?: number;
   maxPrice?: number;
 }
 
@@ -51,16 +51,16 @@ export interface PLResultData {
 }
 
 export interface MakerTakerTrade extends TradeData {
-  market: ContractInterfaces.Market,
-  maker: TestContractAPI,
-  taker: TestContractAPI,
+  market: ContractInterfaces.Market;
+  maker: TestContractAPI;
+  taker: TestContractAPI;
 }
 export interface MakerTakerTradeData {
   timestamp: number;
-  trades: MakerTakerTrade[],
+  trades: MakerTakerTrade[];
   result: {
-    [address: string]: PLResultData,
-  }
+    [address: string]: PLResultData;
+  };
 }
 
 export const CHUNK_SIZE = 100000;
@@ -109,22 +109,10 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
   const { baseProvider } = allState;
 
   const provider = await baseProvider.fork();
-  const config = baseProvider.getConfig({gsn: {enabled: true}});
-  const john = await TestContractAPI.userWrapper(
-    ACCOUNTS[0],
-    provider,
-    config
-  );
-  const mary = await TestContractAPI.userWrapper(
-    ACCOUNTS[1],
-    provider,
-    config
-  );
-  const bob = await TestContractAPI.userWrapper(
-    ACCOUNTS[2],
-    provider,
-    config
-  );
+  const config = baseProvider.getConfig({ gsn: { enabled: true } });
+  const john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, config);
+  const mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, config);
+  const bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, config);
   const jasmine = await TestContractAPI.userWrapper(
     ACCOUNTS[3],
     provider,
@@ -194,8 +182,14 @@ export async function doTradeTakerView(
   minPrice: BigNumber = DEFAULT_MIN_PRICE,
   maxPrice: BigNumber = DEFAULT_DISPLAY_RANGE
 ): Promise<void> {
-  minPrice = typeof trade.minPrice !== 'undefined' ? new BigNumber(trade.minPrice) : minPrice;
-  maxPrice = typeof trade.maxPrice !== 'undefined' ? new BigNumber(trade.maxPrice) : maxPrice;
+  minPrice =
+    typeof trade.minPrice !== 'undefined'
+      ? new BigNumber(trade.minPrice)
+      : minPrice;
+  maxPrice =
+    typeof trade.maxPrice !== 'undefined'
+      ? new BigNumber(trade.maxPrice)
+      : maxPrice;
 
   const numTicks = await market.getNumTicks_();
   const price = new BigNumber(trade.price);

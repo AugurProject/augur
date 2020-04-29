@@ -1,16 +1,22 @@
 import { logger } from '@augurproject/logger';
 import { LoggerLevels } from '@augurproject/logger/build';
-import { Augur } from "../../Augur";
-import { DB } from "../db/DB";
-import { PathReporter } from "io-ts/lib/PathReporter";
-import { AddressFormatReviver } from "../../state/AddressFormatReviver";
+import { Augur } from '../../Augur';
+import { DB } from '../db/DB';
+import { PathReporter } from 'io-ts/lib/PathReporter';
+import { AddressFormatReviver } from '../../state/AddressFormatReviver';
 
-import * as t from "io-ts";
+import * as t from 'io-ts';
 
 export function Getter(alternateInterface?: string) {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor): void => {
+  return (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ): void => {
     if (!target || !target.name) {
-      throw new Error(`Getter function on ${target.constructor.name} must be declared public static`);
+      throw new Error(
+        `Getter function on ${target.constructor.name} must be declared public static`
+      );
     }
 
     if (alternateInterface) {
@@ -18,23 +24,38 @@ export function Getter(alternateInterface?: string) {
         throw new Error(`No params object for ${target.name} getter`);
       }
 
-      Router.Add(propertyKey, descriptor.value, Object(target)[alternateInterface]);
+      Router.Add(
+        propertyKey,
+        descriptor.value,
+        Object(target)[alternateInterface]
+      );
     } else {
-      if (!Object(target)[target.name + "Params"]) {
+      if (!Object(target)[target.name + 'Params']) {
         throw new Error(`No params object for ${target.name}Params getter`);
       }
 
-      Router.Add(propertyKey, descriptor.value, Object(target)[target.name + "Params"]);
+      Router.Add(
+        propertyKey,
+        descriptor.value,
+        Object(target)[target.name + 'Params']
+      );
     }
 
-    Object.defineProperty(Object(target)[propertyKey], 'name', { value: propertyKey, writable: false });
+    Object.defineProperty(Object(target)[propertyKey], 'name', {
+      value: propertyKey,
+      writable: false,
+    });
   };
 }
 
 type GetterFunction<T, TBigNumber> = (db: DB, params: T) => Promise<unknown>;
 
 export class Router {
-  static Add<T, R, TBigNumber>(name: string, getterFunction: GetterFunction<T, TBigNumber>, decodedParams: t.Validation<T>) {
+  static Add<T, R, TBigNumber>(
+    name: string,
+    getterFunction: GetterFunction<T, TBigNumber>,
+    decodedParams: t.Validation<T>
+  ) {
     Router.routings.set(name, { func: getterFunction, params: decodedParams });
   }
 
@@ -56,17 +77,22 @@ export class Router {
     }
 
     if (!getter.params) {
-      throw new Error("no params type for getter ${name}");
+      throw new Error('no params type for getter ${name}');
     }
 
     const decodedParams = getter.params.decode(params);
 
     if (!decodedParams.isRight()) {
-      throw new Error(`Invalid request object: ${PathReporter.report(decodedParams)}`);
+      throw new Error(
+        `Invalid request object: ${PathReporter.report(decodedParams)}`
+      );
     }
 
     for (const key in decodedParams.value) {
-      decodedParams.value[key] = AddressFormatReviver(key, decodedParams.value[key]);
+      decodedParams.value[key] = AddressFormatReviver(
+        key,
+        decodedParams.value[key]
+      );
     }
 
     const db = await this.db;
@@ -74,7 +100,7 @@ export class Router {
 
     logger.time(LoggerLevels.debug, timerName);
     const result = await getter.func(this.augur, db, decodedParams.value);
-    logger.timeEnd(LoggerLevels.debug, timerName)
+    logger.timeEnd(LoggerLevels.debug, timerName);
     return result;
   }
 }

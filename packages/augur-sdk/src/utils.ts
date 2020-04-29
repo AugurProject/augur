@@ -5,14 +5,14 @@ import {
   MarketType,
   MarketTypeName,
   YesNoOutcomes,
-  MarketData
+  MarketData,
 } from './state/logs/types';
 import { ZeroXOrders, OrderData } from './state/db/ZeroXOrders';
 
 export const QUINTILLION = new BigNumber(10).pow(18);
 
 export function padHex(hexString: string): string {
-  return `0x${hexString.substr(2).padStart(64, "0")}`;
+  return `0x${hexString.substr(2).padStart(64, '0')}`;
 }
 
 export function numTicksToTickSize(
@@ -128,7 +128,7 @@ export function logError(
 export interface PayoutNumeratorValue {
   malformed?: boolean;
   invalid?: boolean;
-  outcome: string|null;
+  outcome: string | null;
 }
 
 export function calculatePayoutNumeratorsValue(
@@ -183,7 +183,10 @@ export function calculatePayoutNumeratorsValue(
   }
 }
 
-export function getOutcomeValue(market: MarketData, payoutNumerators: string[]): PayoutNumeratorValue {
+export function getOutcomeValue(
+  market: MarketData,
+  payoutNumerators: string[]
+): PayoutNumeratorValue {
   const maxPrice = new BigNumber(market['prices'][1]);
   const minPrice = new BigNumber(market['prices'][0]);
   const numTicks = new BigNumber(market['numTicks']);
@@ -386,18 +389,27 @@ export function marketNameToType(marketTypeName: MarketTypeName): MarketType {
   }
 }
 
-const TRADE_INTERVAL_VALUE = new BigNumber(10**19);
-const MIN_TRADE_INTERVAL = new BigNumber(10**14);
+const TRADE_INTERVAL_VALUE = new BigNumber(10 ** 19);
+const MIN_TRADE_INTERVAL = new BigNumber(10 ** 14);
 
-export function getTradeInterval(minPrice: BigNumber, maxPrice: BigNumber, numTicks: BigNumber): BigNumber {
+export function getTradeInterval(
+  minPrice: BigNumber,
+  maxPrice: BigNumber,
+  numTicks: BigNumber
+): BigNumber {
   const displayRange = new BigNumber(maxPrice).minus(minPrice);
-  let displayAmount = TRADE_INTERVAL_VALUE.multipliedBy(10**18).div(displayRange);
+  let displayAmount = TRADE_INTERVAL_VALUE.multipliedBy(10 ** 18).div(
+    displayRange
+  );
   let displayInterval = MIN_TRADE_INTERVAL;
   while (displayInterval.lt(displayAmount)) {
-      displayInterval = displayInterval.multipliedBy(10);
+    displayInterval = displayInterval.multipliedBy(10);
   }
   displayAmount = displayInterval;
-  return displayInterval.multipliedBy(displayRange).div(numTicks).div(10**18);
+  return displayInterval
+    .multipliedBy(displayRange)
+    .div(numTicks)
+    .div(10 ** 18);
 }
 
 export function parseZeroXMakerAssetData(makerAssetData: string): OrderData {

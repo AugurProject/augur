@@ -1,13 +1,13 @@
-import BigNumber from "bignumber.js";
-import { bignum } from "./bignum";
-import { prefixHex } from "./prefix-hex";
-import { wrap } from "./wrap";
+import BigNumber from 'bignumber.js';
+import { bignum } from './bignum';
+import { prefixHex } from './prefix-hex';
+import { wrap } from './wrap';
 
-import { FXP_ONE } from "./constants";
+import { FXP_ONE } from './constants';
 
-export function fix(n, encoding?, isWrapped=false) {
+export function fix(n, encoding?, isWrapped = false) {
   let fixed;
-  if (n && n !== "0x" && !n.error && !n.message) {
+  if (n && n !== '0x' && !n.error && !n.message) {
     if (encoding && n.constructor === String) {
       encoding = encoding.toLowerCase();
     }
@@ -24,9 +24,9 @@ export function fix(n, encoding?, isWrapped=false) {
       fixed = n.multipliedBy(FXP_ONE).integerValue();
       if (isWrapped) fixed = wrap(fixed);
       if (encoding) {
-        if (encoding === "string") {
+        if (encoding === 'string') {
           fixed = fixed.toFixed();
-        } else if (encoding === "hex") {
+        } else if (encoding === 'hex') {
           if (BigNumber.isBigNumber(fixed)) {
             fixed = fixed.toString(16);
           }
@@ -38,5 +38,3 @@ export function fix(n, encoding?, isWrapped=false) {
   }
   return n;
 }
-
-

@@ -1,1 +1,1 @@
-export * from "./ContractDependenciesGSN";
+export * from './ContractDependenciesGSN';

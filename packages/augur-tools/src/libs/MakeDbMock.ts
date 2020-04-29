@@ -14,16 +14,18 @@ function* infiniteSequence(): IterableIterator<number> {
 }
 const iterator = infiniteSequence();
 
-export function makeDbMock(prefix:string = uuid.v4()) {
+export function makeDbMock(prefix: string = uuid.v4()) {
   const mockState = {
     db: undefined as Promise<DB>,
   };
 
   async function wipeDB(): Promise<void> {
     const db = await mockState.db;
-    await Promise.all(Object.values(db.dexieDB.tables).map((db) => {
-      return db.clear();
-    }));
+    await Promise.all(
+      Object.values(db.dexieDB.tables).map(db => {
+        return db.clear();
+      })
+    );
   }
 
   function makeBlockAndLogStreamerListener(): BlockAndLogStreamerListenerInterface {
@@ -47,18 +49,18 @@ export function makeDbMock(prefix:string = uuid.v4()) {
     makeDB: augur => {
       const logFilterAggregator = LogFilterAggregator.create(
         augur.contractEvents.getEventTopics,
-        augur.contractEvents.parseLogs,
+        augur.contractEvents.parseLogs
       );
 
       const db = DB.createAndInitializeDB(
         iterator.next().value,
         logFilterAggregator,
         augur,
-        !!augur.zeroX,
+        !!augur.zeroX
       );
       mockState.db = db;
 
       return db;
-    }
+    },
   };
 }

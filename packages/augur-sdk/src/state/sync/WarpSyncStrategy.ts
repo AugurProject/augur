@@ -16,25 +16,41 @@ export class WarpSyncStrategy {
     return this.warpSyncController.pinHashByGatewayUrl(url);
   }
 
-  async start(ipfsRootHash?: string, highestSyncedBlock?:Block): Promise<number | undefined> {
+  async start(
+    ipfsRootHash?: string,
+    highestSyncedBlock?: Block
+  ): Promise<number | undefined> {
     await this.warpSyncController.createInitialCheckpoint();
 
     // This is the warp hash for the value '0' which means there isn't yet a finalized hash.
-    if (ipfsRootHash && ipfsRootHash !== 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51') {
+    if (
+      ipfsRootHash &&
+      ipfsRootHash !== 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51'
+    ) {
       return this.loadCheckpoints(ipfsRootHash, highestSyncedBlock);
-    } else { // No hash, nothing more to do!
+    } else {
+      // No hash, nothing more to do!
       return undefined;
     }
   }
 
   // @TODO update to blow away db and reload from checkpoints.
-  async loadCheckpoints(ipfsRootHash: string, highestSyncedBlock?:Block): Promise<number | undefined> {
+  async loadCheckpoints(
+    ipfsRootHash: string,
+    highestSyncedBlock?: Block
+  ): Promise<number | undefined> {
     const mosteRecentWarpSync = await this.warpSyncController.getMostRecentWarpSync();
-    if(!mosteRecentWarpSync || (highestSyncedBlock.timestamp - mosteRecentWarpSync.end.timestamp) > BULKSYNC_HORIZON) {
+    if (
+      !mosteRecentWarpSync ||
+      highestSyncedBlock.timestamp - mosteRecentWarpSync.end.timestamp >
+        BULKSYNC_HORIZON
+    ) {
       // Blow it all away and refresh.
       await this.warpSyncController.destroyAndRecreateDB();
 
-      const { logs } = await this.warpSyncController.getCheckpointFile(ipfsRootHash);
+      const { logs } = await this.warpSyncController.getCheckpointFile(
+        ipfsRootHash
+      );
       return this.processFile(logs);
     }
 
@@ -42,8 +58,13 @@ export class WarpSyncStrategy {
   }
   async processFile(logs: Log[]): Promise<number | undefined> {
     const maxBlockNumber = _.maxBy<number>(_.map(logs, 'blockNumber'), item =>
-      Number(item));
-    const sortedLogs = _.orderBy(logs, ['blockNumber', 'logIndex'], ['asc', 'asc']);
+      Number(item)
+    );
+    const sortedLogs = _.orderBy(
+      logs,
+      ['blockNumber', 'logIndex'],
+      ['asc', 'asc']
+    );
 
     await this.onLogsAdded(maxBlockNumber, sortedLogs);
 

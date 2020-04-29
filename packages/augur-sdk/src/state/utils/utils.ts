@@ -5,7 +5,7 @@ export async function sleep(milliseconds: number): Promise<void> {
 export function toAscii(hex: string) {
   let str = ''; // eslint-disable-line
   let i = 0,
-      l = hex.length; // eslint-disable-line
+    l = hex.length; // eslint-disable-line
 
   if (hex.substring(0, 2) === '0x') {
     i = 2;

@@ -5,13 +5,19 @@ import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
 import { ContractInterfaces } from '@augurproject/core';
 
-export async function fork(user: ContractAPI, market: ContractInterfaces.Market): Promise<boolean> {
+export async function fork(
+  user: ContractAPI,
+  market: ContractInterfaces.Market
+): Promise<boolean> {
   const MAX_DISPUTES = 20;
   const SOME_REP = new BigNumber(1e18).times(10e2);
   const numOutcomes = await market.getNumberOfOutcomes_();
   const numTicks = await market.getNumTicks_();
 
-  const payoutNumerators = [numTicks, ...(new Array(numOutcomes.minus(1).toNumber()).fill(new BigNumber(0)))];
+  const payoutNumerators = [
+    numTicks,
+    ...new Array(numOutcomes.minus(1).toNumber()).fill(new BigNumber(0)),
+  ];
   const conflictNumerators = [...payoutNumerators].reverse();
 
   await user.faucetRep(SOME_REP);
@@ -29,7 +35,9 @@ export async function fork(user: ContractAPI, market: ContractInterfaces.Market)
       return true; // forked successfully!
     }
 
-    const disputeWindow = user.augur.contracts.disputeWindowFromAddress(await market.getDisputeWindow_());
+    const disputeWindow = user.augur.contracts.disputeWindowFromAddress(
+      await market.getDisputeWindow_()
+    );
     // Enter the dispute window.
     const disputeWindowStartTime = await disputeWindow.getStartTime_();
     await user.setTimestamp(disputeWindowStartTime.plus(1));
@@ -38,18 +46,19 @@ export async function fork(user: ContractAPI, market: ContractInterfaces.Market)
     const numerators = i % 2 === 0 ? conflictNumerators : payoutNumerators;
     await user.faucetRep(SOME_REP);
     await user.contribute(market, numerators, SOME_REP);
-    const remainingToFill = await user.getRemainingToFill(
-      market,
-      numerators
-    );
+    const remainingToFill = await user.getRemainingToFill(market, numerators);
     await user.faucetRep(remainingToFill);
-    if (remainingToFill.gt(0)) await user.contribute(market, numerators, remainingToFill);
+    if (remainingToFill.gt(0))
+      await user.contribute(market, numerators, remainingToFill);
   }
 
   return false; // failed to fork
 }
 
-export function getPayoutNumerators(market: MarketInfo, outcome: number|'invalid'): BigNumber[] {
+export function getPayoutNumerators(
+  market: MarketInfo,
+  outcome: number | 'invalid'
+): BigNumber[] {
   const isInvalid = outcome === 'invalid';
 
   return calculatePayoutNumeratorsArray(
@@ -58,14 +67,17 @@ export function getPayoutNumerators(market: MarketInfo, outcome: number|'invalid
     market.numTicks,
     market.numOutcomes,
     market.marketType,
-    isInvalid ? -1 : outcome as number,
+    isInvalid ? -1 : (outcome as number),
     isInvalid
   );
 }
 
 export function makeValidScalarOutcome(market: MarketInfo): number {
-  return Math.floor(new BigNumber(market.maxPrice)
-    .minus(market.minPrice)
-    .dividedBy(3)
-    .plus(market.minPrice).toNumber());
+  return Math.floor(
+    new BigNumber(market.maxPrice)
+      .minus(market.minPrice)
+      .dividedBy(3)
+      .plus(market.minPrice)
+      .toNumber()
+  );
 }

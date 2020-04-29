@@ -13,18 +13,20 @@ export function makeConnectorMock(json: object): Connectors.BaseConnector {
     }
 
     // bind API calls
-    bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
+    bindTo<R, P>(
+      f: (db: any, augur: any, params: P) => Promise<R>
+    ): (params: P) => Promise<R> {
       return async (params: P): Promise<R> => {
-
         return <R>(json as unknown);
       };
     }
 
-    async on(eventName: SubscriptionEventName | string, callback: Events.Callback): Promise<void> {
-    }
+    async on(
+      eventName: SubscriptionEventName | string,
+      callback: Events.Callback
+    ): Promise<void> {}
 
-    async off(eventName: SubscriptionEventName | string): Promise<any> {
-    }
+    async off(eventName: SubscriptionEventName | string): Promise<any> {}
   }
 
   return new MockConnector();

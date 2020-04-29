@@ -1,4 +1,10 @@
-import { TEMPLATES, CategoryTemplate, isTemplateMarket, ExtraInfoTemplate, Template } from '@augurproject/artifacts';
+import {
+  TEMPLATES,
+  CategoryTemplate,
+  isTemplateMarket,
+  ExtraInfoTemplate,
+  Template,
+} from '@augurproject/artifacts';
 import { stringTo32ByteHex } from '@augurproject/sdk';
 import { BigNumber } from 'ethers/utils';
 
@@ -56,4 +62,3 @@ export const validateMarketTemplate = (
     return `error: unknown, ${e}`;
   }
 };
-

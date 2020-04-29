@@ -11,15 +11,15 @@ export interface LoggerInterface {
 
   debug(...msg: string[]): void;
 
-  table(...tabularData: any[]): void
+  table(...tabularData: any[]): void;
 
-  time(label:string): void;
+  time(label: string): void;
 
-  timeEnd(label:string): void;
+  timeEnd(label: string): void;
 }
 
 export class Logger {
-  private _logLevel:LoggerLevels = LoggerLevels.info;
+  private _logLevel: LoggerLevels = LoggerLevels.info;
   private loggers: LoggerInterface[] = [];
 
   set logLevel(level: LoggerLevels) {
@@ -35,40 +35,40 @@ export class Logger {
   }
 
   error(...err: Array<string | Error>): void {
-    if(this._logLevel > LoggerLevels.error) return;
-    this.loggers.forEach((logger) => logger.error(...err));
+    if (this._logLevel > LoggerLevels.error) return;
+    this.loggers.forEach(logger => logger.error(...err));
   }
 
   warn(...msg: string[]): void {
-    if(this._logLevel > LoggerLevels.warn) return;
-    this.loggers.forEach((logger) => logger.warn(...msg));
+    if (this._logLevel > LoggerLevels.warn) return;
+    this.loggers.forEach(logger => logger.warn(...msg));
   }
 
   info(...msg: string[]): void {
-    if(this._logLevel > LoggerLevels.info) return;
-    this.loggers.forEach((logger) => logger.info(...msg));
+    if (this._logLevel > LoggerLevels.info) return;
+    this.loggers.forEach(logger => logger.info(...msg));
   }
 
   debug(...msg: string[]): void {
     console.log('debug', this._logLevel);
 
-    if(this._logLevel > LoggerLevels.debug) return;
-    this.loggers.forEach((logger) => logger.debug(...msg));
+    if (this._logLevel > LoggerLevels.debug) return;
+    this.loggers.forEach(logger => logger.debug(...msg));
   }
 
-  table(logLevel:LoggerLevels, ...tabularData: any[]) {
-    if(this._logLevel > logLevel) return;
-    this.loggers.forEach((logger) => logger.table(...tabularData))
+  table(logLevel: LoggerLevels, ...tabularData: any[]) {
+    if (this._logLevel > logLevel) return;
+    this.loggers.forEach(logger => logger.table(...tabularData));
   }
 
-  time(logLevel:LoggerLevels, label:string) {
-    if(this._logLevel > logLevel) return;
-    this.loggers.forEach((logger) => logger.time(label));
+  time(logLevel: LoggerLevels, label: string) {
+    if (this._logLevel > logLevel) return;
+    this.loggers.forEach(logger => logger.time(label));
   }
 
-  timeEnd(logLevel:LoggerLevels, label:string) {
-    if(this._logLevel > logLevel) return;
-    this.loggers.forEach((logger) => logger.timeEnd(label));
+  timeEnd(logLevel: LoggerLevels, label: string) {
+    if (this._logLevel > logLevel) return;
+    this.loggers.forEach(logger => logger.timeEnd(label));
   }
 
   clear(): void {

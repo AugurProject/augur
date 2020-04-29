@@ -1,5 +1,5 @@
 import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
-import { ContractCompiler } from "../libraries/ContractCompiler";
+import { ContractCompiler } from '../libraries/ContractCompiler';
 require('source-map-support').install();
 
 async function doWork(): Promise<void> {
@@ -8,9 +8,11 @@ async function doWork(): Promise<void> {
     await compiler.compileContracts();
 }
 
-doWork().then(() => {
-    process.exit();
-}).catch(error => {
-    console.log(error);
-    process.exit();
-});
+doWork()
+    .then(() => {
+        process.exit();
+    })
+    .catch(error => {
+        console.log(error);
+        process.exit();
+    });

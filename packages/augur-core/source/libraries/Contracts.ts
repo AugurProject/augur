@@ -9,7 +9,12 @@ export class ContractData {
     public readonly bytecode: Buffer;
     public address?: string;
 
-    public constructor(relativeFilePath: string, contractName: string, abi: Abi, bytecode: Buffer) {
+    public constructor(
+        relativeFilePath: string,
+        contractName: string,
+        abi: Abi,
+        bytecode: Buffer
+    ) {
         this.relativeFilePath = relativeFilePath;
         this.contractName = contractName;
         this.abi = abi;
@@ -23,10 +28,23 @@ export class Contracts implements Iterable<ContractData> {
     public constructor(compilerOutput: CompilerOutput) {
         console.log(`Processing ${_.size(compilerOutput.contracts)} contracts`);
         for (let relativeFilePath in compilerOutput.contracts) {
-            for (let contractName in compilerOutput.contracts[relativeFilePath]) {
+            for (let contractName in compilerOutput.contracts[
+                relativeFilePath
+            ]) {
                 console.log(`Processing contract: ${contractName}`);
-                const bytecode = Buffer.from(compilerOutput.contracts[relativeFilePath][contractName].evm.bytecode.object, 'hex');
-                const compiledContract = new ContractData(relativeFilePath, contractName, compilerOutput.contracts[relativeFilePath][contractName].abi, bytecode);
+                const bytecode = Buffer.from(
+                    compilerOutput.contracts[relativeFilePath][contractName].evm
+                        .bytecode.object,
+                    'hex'
+                );
+                const compiledContract = new ContractData(
+                    relativeFilePath,
+                    contractName,
+                    compilerOutput.contracts[relativeFilePath][
+                        contractName
+                    ].abi,
+                    bytecode
+                );
                 this.contracts.set(contractName, compiledContract);
             }
         }
@@ -34,15 +52,16 @@ export class Contracts implements Iterable<ContractData> {
 
     public has = (contractName: string): boolean => {
         return this.contracts.has(contractName);
-    }
+    };
 
     public get = (contractName: string): ContractData => {
-        if (!this.contracts.has(contractName)) throw new Error(`${contractName} does not exist.`);
+        if (!this.contracts.has(contractName))
+            throw new Error(`${contractName} does not exist.`);
         return this.contracts.get(contractName)!;
-    }
+    };
 
     [Symbol.iterator](): Iterator<ContractData> {
         const contracts = this.contracts.values();
-        return { next: contracts.next.bind(contracts) }
+        return { next: contracts.next.bind(contracts) };
     }
 }

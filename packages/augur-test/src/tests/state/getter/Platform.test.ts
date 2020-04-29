@@ -20,16 +20,8 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     const provider = await makeProvider(seed, ACCOUNTS);
     const config = provider.getConfig();
 
-    john = await TestContractAPI.userWrapper(
-      ACCOUNTS[0],
-      provider,
-      config
-    );
-    mary = await TestContractAPI.userWrapper(
-      ACCOUNTS[1],
-      provider,
-      config
-    );
+    john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, config);
+    mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, config);
 
     await john.approve();
     await mary.approve();
@@ -76,9 +68,7 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     await john.sellCompleteSets(yesNoMarket, numberOfCompleteSets);
 
     await john.sync();
-    const market = john.augur.contracts.marketFromAddress(
-      yesNoMarket.address
-    );
+    const market = john.augur.contracts.marketFromAddress(yesNoMarket.address);
     await fork(john, market);
     await john.sync();
 

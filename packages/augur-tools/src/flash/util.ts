@@ -7,7 +7,7 @@ export function waitForSigint(): Promise<void> {
   process.removeAllListeners('SIGHUP');
 
   process.stdin.resume();
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     process.prependListener('SIGINT', () => {
       resolve();
     });
@@ -26,7 +26,7 @@ export function awaitUserInput(question: string): Promise<void> {
     output: process.stdout,
   });
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     talker.question(question, () => {
       talker.close();
       resolve();
@@ -34,37 +34,57 @@ export function awaitUserInput(question: string): Promise<void> {
   });
 }
 
-export function waitForFunding(user: ContractAPI, count = 60*7, intervalMS = 1000): Promise<void> {
-  return waitFor(async (): Promise<boolean> => {
-    const balance = await user.getEthBalance();
-    return balance.gt(0);
-  }, count, intervalMS)
+export function waitForFunding(
+  user: ContractAPI,
+  count = 60 * 7,
+  intervalMS = 1000
+): Promise<void> {
+  return waitFor(
+    async (): Promise<boolean> => {
+      const balance = await user.getEthBalance();
+      return balance.gt(0);
+    },
+    count,
+    intervalMS
+  );
 }
 
-export function waitForSync(user: ContractAPI, count = 90, intervalMS = 1000): Promise<void> {
+export function waitForSync(
+  user: ContractAPI,
+  count = 90,
+  intervalMS = 1000
+): Promise<void> {
   let i = 1;
 
-  return waitFor(async (): Promise<boolean> => {
-    console.log(`Awaiting SDKReady #${i}/${count}`);
-    i++;
-    return user.augur.sdkReady;
-  }, count, intervalMS)
+  return waitFor(
+    async (): Promise<boolean> => {
+      console.log(`Awaiting SDKReady #${i}/${count}`);
+      i++;
+      return user.augur.sdkReady;
+    },
+    count,
+    intervalMS
+  );
 }
 
-export async function waitFor(fn: () => Promise<boolean>, count: number, intervalMS: number) {
+export async function waitFor(
+  fn: () => Promise<boolean>,
+  count: number,
+  intervalMS: number
+) {
   await new Promise(async (resolve, reject) => {
     for (let i = 0; i < count; i++) {
       if (await fn()) return resolve();
       await sleep(intervalMS);
     }
     reject();
-  })
+  });
 }
 
 export function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(resolve, ms);
-  })
+  });
 }
 
 export interface AddressFormatting {
@@ -72,7 +92,10 @@ export interface AddressFormatting {
   prefix?: boolean;
 }
 
-export function formatAddress(address: string, formatting: AddressFormatting): string {
+export function formatAddress(
+  address: string,
+  formatting: AddressFormatting
+): string {
   if (formatting.lower === true) {
     address = address.toLowerCase();
   }
@@ -84,7 +107,7 @@ export function formatAddress(address: string, formatting: AddressFormatting): s
     address = address.slice(2);
   }
 
-  return address
+  return address;
 }
 
 export function flatten<T>(listOfLists: T[][]): T[] {
@@ -96,7 +119,7 @@ export function randomSelect<T>(list: T[]): T {
   return list[index];
 }
 
-export function randomBoolean():boolean {
+export function randomBoolean(): boolean {
   return Math.random() > 0.5;
 }
 
@@ -108,19 +131,24 @@ export function cycle<T>(list: T[]): () => T {
     index++;
     if (index >= shallowCopy.length) index = 0;
     return nextItem;
-  }
+  };
 }
 
 export function range(start: number, end: number) {
-  if (start >= end) throw Error(`range start must be larger than end. start=${start}, end=${end}`);
+  if (start >= end)
+    throw Error(
+      `range start must be larger than end. start=${start}, end=${end}`
+    );
   const count = end - start;
-  return Array.from(new Array(count).keys()).map((n) => n + start)
-
+  return Array.from(new Array(count).keys()).map(n => n + start);
 }
 
 export type ReadiedPromise<T> = () => Promise<T>;
 
-export async function mapPromises<T>(readiedPromises: Array<ReadiedPromise<T>>, serial): Promise<T[]> {
+export async function mapPromises<T>(
+  readiedPromises: Array<ReadiedPromise<T>>,
+  serial
+): Promise<T[]> {
   if (serial) {
     const results = [];
     for (const promise of readiedPromises) {
@@ -128,16 +156,20 @@ export async function mapPromises<T>(readiedPromises: Array<ReadiedPromise<T>>, 
     }
     return results;
   } else {
-    return Promise.all(readiedPromises.map((promise) => promise()));
+    return Promise.all(readiedPromises.map(promise => promise()));
   }
 }
 
-export async function getOrCreateMarket(user: ContractAPI, marketId?: string|boolean, title?: string): Promise<string> {
+export async function getOrCreateMarket(
+  user: ContractAPI,
+  marketId?: string | boolean,
+  title?: string
+): Promise<string> {
   marketId = (marketId as string) || null;
   if (marketId === null) {
     const market = await user.createReasonableYesNoMarket(title);
     marketId = market.address;
     console.log(`Created market ${marketId}`);
   }
-  return marketId
+  return marketId;
 }

@@ -11,16 +11,8 @@ beforeAll(async () => {
   const provider = await makeProvider(seed, ACCOUNTS);
   const config = provider.getConfig();
 
-  john = await TestContractAPI.userWrapper(
-    ACCOUNTS[0],
-    provider,
-    config
-  );
-  mary = await TestContractAPI.userWrapper(
-    ACCOUNTS[1],
-    provider,
-    config
-  );
+  john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, config);
+  mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, config);
   await john.approve();
   await mary.approve();
 });

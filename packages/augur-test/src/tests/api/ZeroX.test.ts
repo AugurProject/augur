@@ -5,14 +5,17 @@ import { Connectors } from '@augurproject/sdk';
 import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
-import { NULL_ADDRESS, stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
+import {
+  NULL_ADDRESS,
+  stringTo32ByteHex,
+} from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
 import { makeProvider } from '../../libs';
 import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../libs/MockMeshServer';
-import { TestEthersProvider } from "@augurproject/tools/build/libs/TestEthersProvider";
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 
 describe('Augur API :: ZeroX :: ', () => {
   let john: TestContractAPI;

@@ -121,7 +121,7 @@ describe('State API :: Market Sorts', () => {
         expirationTime: expirationTimeInSeconds,
       });
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market.address])
+      await john.db.marketDatabase.syncOrderBooks([market.address]);
       marketData = await john.db.Markets.get(market.address);
 
       await expect(marketData.liquidity[10]).toEqual(
@@ -159,7 +159,7 @@ describe('State API :: Market Sorts', () => {
 
       // await john.simplePlaceOrder(market.address, ask, numShares, askPrice, outcomeA);
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market2.address])
+      await john.db.marketDatabase.syncOrderBooks([market2.address]);
       marketData = await john.db.Markets.get(market2.address);
       await expect(marketData.liquidity[10]).toEqual(
         '000000000000000000000000000000'
@@ -203,7 +203,7 @@ describe('State API :: Market Sorts', () => {
       await sleep(300);
 
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market2.address])
+      await john.db.marketDatabase.syncOrderBooks([market2.address]);
       marketData = await john.db.Markets.get(market2.address);
       await expect(marketData.liquidity[10]).toEqual(
         '000000000735000000000000000000'
@@ -231,7 +231,7 @@ describe('State API :: Market Sorts', () => {
 
       // The Invalid filter is still not hit because the bid would be unprofitable to take if the market were valid, so no one would take it even if the market was Valid
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market3.address])
+      await john.db.marketDatabase.syncOrderBooks([market3.address]);
       marketData = await john.db.Markets.get(market3.address);
       await expect(marketData.invalidFilter).toEqual(0);
 
@@ -248,7 +248,7 @@ describe('State API :: Market Sorts', () => {
 
       // The Invalid filter is now hit because this Bid would be profitable for a filler assuming the market were actually Valid
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market3.address])
+      await john.db.marketDatabase.syncOrderBooks([market3.address]);
       marketData = await john.db.Markets.get(market3.address);
       await expect(marketData.invalidFilter).toEqual(1);
 
@@ -282,7 +282,7 @@ describe('State API :: Market Sorts', () => {
 
       // Should ignore above bid and calculate zero liquidity
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market4.address])
+      await john.db.marketDatabase.syncOrderBooks([market4.address]);
       marketData = await john.db.Markets.get(market4.address);
       await expect(marketData.liquidity).toEqual({
         '10': '000000000000000000000000000000',
@@ -314,7 +314,7 @@ describe('State API :: Market Sorts', () => {
 
       // Should pass spread check and not be invalid
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market4.address])
+      await john.db.marketDatabase.syncOrderBooks([market4.address]);
       marketData = await john.db.Markets.get(market4.address);
       await expect(marketData.liquidity).toEqual({
         '10': '000000000580000000000000000000',
@@ -337,7 +337,7 @@ describe('State API :: Market Sorts', () => {
 
       // Invalid that had spread should be set as hasRecentlyDepletedLiquidity
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market4.address])
+      await john.db.marketDatabase.syncOrderBooks([market4.address]);
       marketData = await john.db.Markets.get(market4.address);
       await expect(marketData.invalidFilter).toEqual(1);
       await expect(marketData.hasRecentlyDepletedLiquidity).toEqual(true);

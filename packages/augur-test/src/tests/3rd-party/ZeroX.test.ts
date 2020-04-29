@@ -319,7 +319,6 @@ describe('3rd Party :: ZeroX :: ', () => {
         fillAmount.multipliedBy(fillPrice)
       );
       await expect(simulationData.sharesFilled).toEqual(fillAmount);
-
     }, 240000);
   });
 

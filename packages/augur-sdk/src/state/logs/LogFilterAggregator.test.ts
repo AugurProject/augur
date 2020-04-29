@@ -125,11 +125,14 @@ describe('LogFilterAggregator', () => {
 
       test('should filter logs passed to listeners', async () => {
         await logFilterAggregator.onLogsAdded(1234, sampleLogs);
-        expect(onNewLogCallback).toBeCalledWith(1234, expect.arrayContaining([
-          expect.objectContaining({
-            transactionHash: 'HASHONE',
-          }),
-        ]));
+        expect(onNewLogCallback).toBeCalledWith(
+          1234,
+          expect.arrayContaining([
+            expect.objectContaining({
+              transactionHash: 'HASHONE',
+            }),
+          ])
+        );
       });
 
       describe('unlistenForEvent', () => {
@@ -152,17 +155,20 @@ describe('LogFilterAggregator', () => {
 
       test('should filter logs passed to listeners', async () => {
         await logFilterAggregator.onLogsAdded(1234, sampleLogs);
-        expect(onNewLogCallback).toBeCalledWith(1234, expect.arrayContaining([
-          expect.objectContaining({
-            transactionHash: 'HASHFOUR',
-          }),
-          expect.objectContaining({
-            transactionHash: 'HASHTWO',
-          }),
-          expect.objectContaining({
-            transactionHash: 'HASHONE',
-          }),
-        ]));
+        expect(onNewLogCallback).toBeCalledWith(
+          1234,
+          expect.arrayContaining([
+            expect.objectContaining({
+              transactionHash: 'HASHFOUR',
+            }),
+            expect.objectContaining({
+              transactionHash: 'HASHTWO',
+            }),
+            expect.objectContaining({
+              transactionHash: 'HASHONE',
+            }),
+          ])
+        );
       });
 
       describe('unlistenForEvent', () => {
@@ -185,11 +191,14 @@ describe('LogFilterAggregator', () => {
         await logFilterAggregator.onLogsAdded(1234, sampleLogs);
 
         // This will only include the logs we have callbacks registered for.
-        expect(onNewLogCallback).toHaveBeenCalledWith(1234, expect.arrayContaining([
-          expect.objectContaining({
-            transactionHash: 'HASHONE',
-          }),
-        ]));
+        expect(onNewLogCallback).toHaveBeenCalledWith(
+          1234,
+          expect.arrayContaining([
+            expect.objectContaining({
+              transactionHash: 'HASHONE',
+            }),
+          ])
+        );
       });
 
       test('should pass logs to callback for multiple filters', async () => {
@@ -199,21 +208,29 @@ describe('LogFilterAggregator', () => {
 
         await logFilterAggregator.onLogsAdded(1234, sampleLogs);
 
-        expect(onNewLogCallback).toHaveBeenNthCalledWith(1, 1234, expect.arrayContaining([
-          expect.objectContaining({
-            transactionHash: 'HASHONE',
-          }),
-        ]));
+        expect(onNewLogCallback).toHaveBeenNthCalledWith(
+          1,
+          1234,
+          expect.arrayContaining([
+            expect.objectContaining({
+              transactionHash: 'HASHONE',
+            }),
+          ])
+        );
 
         // "Second filter"
-        expect(onNewLogCallback).toHaveBeenNthCalledWith(2, 1234, expect.arrayContaining([
-          expect.objectContaining({
-            transactionHash: 'HASHTWO',
-          }),
-          expect.objectContaining({
-            transactionHash: 'HASHFOUR',
-          }),
-        ]));
+        expect(onNewLogCallback).toHaveBeenNthCalledWith(
+          2,
+          1234,
+          expect.arrayContaining([
+            expect.objectContaining({
+              transactionHash: 'HASHTWO',
+            }),
+            expect.objectContaining({
+              transactionHash: 'HASHFOUR',
+            }),
+          ])
+        );
       });
     });
   });

@@ -7,8 +7,7 @@ import { orderFirehose } from './order-firehose';
 import { randomBoolean, randomSelect } from './util';
 
 abstract class Persona {
-  constructor(protected user: ContractAPI, protected augur: Augur) {
-  }
+  constructor(protected user: ContractAPI, protected augur: Augur) {}
 
   async trade(): Promise<void> {
     // Identify markets we want to trade.
@@ -21,12 +20,18 @@ abstract class Persona {
     });
 
     // Craft and submit trades.
-    for(const market of markets) {
-      await this.executeTrades(market, positions.tradingPositionsPerMarket[market.id])
+    for (const market of markets) {
+      await this.executeTrades(
+        market,
+        positions.tradingPositionsPerMarket[market.id]
+      );
     }
   }
 
-  abstract executeTrades(marketInfo:MarketInfo, positions: MarketTradingPosition);
+  abstract executeTrades(
+    marketInfo: MarketInfo,
+    positions: MarketTradingPosition
+  );
 
   /**
    * Query for markets we care about.
@@ -35,30 +40,32 @@ abstract class Persona {
 }
 
 class FirehosePersona extends Persona {
-  async executeTrades(marketInfo: MarketInfo, positions: MarketTradingPosition) {
+  async executeTrades(
+    marketInfo: MarketInfo,
+    positions: MarketTradingPosition
+  ) {
     const displayMaxPrice = new BigNumber(marketInfo.maxPrice);
     const displayMinPrice = new BigNumber(marketInfo.minPrice);
 
     // select outcome.
     const outcome = randomSelect(marketInfo.outcomes);
     await orderFirehose(
-      [marketInfo]
-      , [
-      outcome.id
-    ], 1,
+      [marketInfo],
+      [outcome.id],
+      1,
       20,
       1,
       10,
       (await this.user.getTimestamp()).plus(300),
       true,
       [this.user]
-      )
+    );
   }
 
   async marketsToTrade() {
     const universe = this.augur.contracts.universe.address;
 
-    const {markets = [] } = await this.augur.getMarkets({
+    const { markets = [] } = await this.augur.getMarkets({
       universe,
     });
 
@@ -70,27 +77,29 @@ class FirehosePersona extends Persona {
 class ChaosMonkey {
   private personas: Persona[] = [];
 
-  constructor(private augur:Augur, users: ContractAPI[]) {
-    for(const user of users) {
+  constructor(private augur: Augur, users: ContractAPI[]) {
+    for (const user of users) {
       // For now we will just Use the FirehosePersona. Need to figure how to add more.
       this.personas.push(new FirehosePersona(user, augur));
     }
   }
 
   async run() {
-    return this.personas.map((persona) => persona.trade())
+    return this.personas.map(persona => persona.trade());
   }
 }
 
-export const runChaosMonkey = async (augur: Augur, users:ContractAPI[] = []) => {
+export const runChaosMonkey = async (
+  augur: Augur,
+  users: ContractAPI[] = []
+) => {
   const chaosMonkey = new ChaosMonkey(augur, users);
   augur.events.on(SubscriptionEventName.NewBlock, async () => {
     const universe = augur.contracts.universe.address;
-    const {markets = [] } = await augur.getMarkets({
+    const { markets = [] } = await augur.getMarkets({
       universe,
     });
 
     chaosMonkey.run();
-
   });
 };

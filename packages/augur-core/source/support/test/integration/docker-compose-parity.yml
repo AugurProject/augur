@@ -1,18 +1,18 @@
-version: "3.2"
+version: '3.2'
 services:
   parity-dev-node:
     image: augurproject/dev-node-parity:latest
     ports:
-      - "47621:8180"
-      - "47622:8545"
-      - "47623:8546"
+      - '47621:8180'
+      - '47622:8545'
+      - '47623:8546'
   parity-integration-tests:
     build:
       context: ../../../../../../
       dockerfile: packages/augur-core/source/support/Dockerfile
       cache_from:
         - augurproject/augur-core:monorepo
-    entrypoint: [ "yarn", "test:integration" ]
+    entrypoint: ['yarn', 'test:integration']
     # uncomment the following 3 lines to enable debugging the tests
     # command: [ "--", "--debug=0.0.0.0:9229", "--inspect-brk" ]
     # ports:

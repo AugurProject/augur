@@ -2,20 +2,27 @@ import { ethers } from 'ethers';
 import { BigNumber } from 'bignumber.js';
 import { readFile } from 'async-file';
 import { CompilerOutput } from 'solc';
-import { Augur, AugurTrading, } from './ContractInterfaces';
+import { Augur, AugurTrading } from './ContractInterfaces';
 import { Contracts } from './Contracts';
-import { Dependencies, Contract, AbiFunction } from '../libraries/GenericContractInterfaces';
+import {
+    Dependencies,
+    Contract,
+    AbiFunction,
+} from '../libraries/GenericContractInterfaces';
 import { stringTo32ByteHex } from './HelperFunctions';
-import { REGISTERED_INTERNAL_CONTRACTS, TRADING_CONTRACTS, REGISTERED_EXTERNAL_CONTRACTS, INITIALIZED_CONTRACTS } from './constants';
+import {
+    REGISTERED_INTERNAL_CONTRACTS,
+    TRADING_CONTRACTS,
+    REGISTERED_EXTERNAL_CONTRACTS,
+    INITIALIZED_CONTRACTS,
+} from './constants';
 import { SDKConfiguration } from '@augurproject/artifacts';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const SUCCESS = '';
 
-const TEST_SUBSTITUTES = [
-    'ReputationTokenFactory',
-];
+const TEST_SUBSTITUTES = ['ReputationTokenFactory'];
 
 export class DeploymentVerifier {
     private readonly config: SDKConfiguration;
@@ -25,15 +32,34 @@ export class DeploymentVerifier {
     private readonly augur: Augur;
     private readonly augurTrading: AugurTrading;
 
-    static verifyDeployment = async (dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider, config: SDKConfiguration): Promise<string> => {
-        const compilerOutput = JSON.parse(await readFile(config.deploy.contractInputPath, 'utf8'));
-        const verifier = new DeploymentVerifier(config, dependencies, provider, compilerOutput);
+    static verifyDeployment = async (
+        dependencies: Dependencies<BigNumber>,
+        provider: ethers.providers.JsonRpcProvider,
+        config: SDKConfiguration
+    ): Promise<string> => {
+        const compilerOutput = JSON.parse(
+            await readFile(config.deploy.contractInputPath, 'utf8')
+        );
+        const verifier = new DeploymentVerifier(
+            config,
+            dependencies,
+            provider,
+            compilerOutput
+        );
         return verifier.doVerification();
     };
 
-    constructor(config: SDKConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider, compilerOutput: CompilerOutput) {
+    constructor(
+        config: SDKConfiguration,
+        dependencies: Dependencies<BigNumber>,
+        provider: ethers.providers.JsonRpcProvider,
+        compilerOutput: CompilerOutput
+    ) {
         this.augur = new Augur(dependencies, config.addresses.Augur);
-        this.augurTrading = new AugurTrading(dependencies, config.addresses.AugurTrading);
+        this.augurTrading = new AugurTrading(
+            dependencies,
+            config.addresses.AugurTrading
+        );
         this.config = config;
         this.dependencies = dependencies;
         this.provider = provider;
@@ -51,7 +77,7 @@ export class DeploymentVerifier {
         if (error) return error;
 
         error = await this.verifyInitializations();
-if (error) return error;
+        if (error) return error;
 
         error = await this.verifyAugurTradingInitialization();
 
@@ -63,8 +89,10 @@ if (error) return error;
         const augurUploader = await this.augur.uploader_();
         const augurTradingUploader = await this.augurTrading.uploader_();
 
-        if (augurUploader !== NULL_ADDRESS) return 'DEPLOYMENT NOT FINISHED FOR AUGUR';
-        if (augurTradingUploader !== NULL_ADDRESS) return 'DEPLOYMENT NOT FINISHED FOR AUGUR TRADING';
+        if (augurUploader !== NULL_ADDRESS)
+            return 'DEPLOYMENT NOT FINISHED FOR AUGUR';
+        if (augurTradingUploader !== NULL_ADDRESS)
+            return 'DEPLOYMENT NOT FINISHED FOR AUGUR TRADING';
         return SUCCESS;
     }
 
@@ -82,12 +110,18 @@ if (error) return error;
             const contractData = this.contracts.get(name);
             const expectedByteCode = contractData.bytecode.toString('hex');
             const registeredAddress = await this.getContractAddress(name);
-            if (registeredAddress === NULL_ADDRESS) return `CONTRACT ${name} NOT FOUND IN REGSISTRY`;
+            if (registeredAddress === NULL_ADDRESS)
+                return `CONTRACT ${name} NOT FOUND IN REGSISTRY`;
             const expectedAddress = this.config.addresses[name];
-            if (this.config.addresses[name] && registeredAddress !== expectedAddress) return `CONTRACT ${name} HAS DIFFERENT ADDRESS ${registeredAddress} THAN EXPECTED ${expectedAddress}`;
+            if (
+                this.config.addresses[name] &&
+                registeredAddress !== expectedAddress
+            )
+                return `CONTRACT ${name} HAS DIFFERENT ADDRESS ${registeredAddress} THAN EXPECTED ${expectedAddress}`;
             let actualByteCode = await this.provider.getCode(registeredAddress);
             actualByteCode = actualByteCode.slice(2);
-            if (!expectedByteCode.endsWith(actualByteCode)) return `CONTRACT ${name} HAS INCORRECT BYTECODE`;
+            if (!expectedByteCode.endsWith(actualByteCode))
+                return `CONTRACT ${name} HAS INCORRECT BYTECODE`;
         }
         return SUCCESS;
     }
@@ -98,12 +132,17 @@ if (error) return error;
             const expectedAddress = this.config.deploy.externalAddresses[name];
             // If an external address wasn't specified it means we're uploading a test version and this is verifying a test network, so don't bother verifying this
             if (!expectedAddress) {
-                console.warn(`SKIPPING VERIFICATION OF ${name} AS NO EXPECTED ADDRESS FOUND. SHOULD NOT HAPPEN IN PROD`);
+                console.warn(
+                    `SKIPPING VERIFICATION OF ${name} AS NO EXPECTED ADDRESS FOUND. SHOULD NOT HAPPEN IN PROD`
+                );
                 continue;
-            };
+            }
             const registeredName = this.nameToRegisteredName(name);
-            const registeredAddress = await this.getContractAddress(registeredName);
-            if (expectedAddress !== registeredAddress) return `CONTRACT ${name} HAS INCORRECT ADDRESS REGISTERED`;
+            const registeredAddress = await this.getContractAddress(
+                registeredName
+            );
+            if (expectedAddress !== registeredAddress)
+                return `CONTRACT ${name} HAS INCORRECT ADDRESS REGISTERED`;
         }
         return SUCCESS;
     }
@@ -119,15 +158,22 @@ if (error) return error;
     // Verify all initializable contracts are initialized
     async verifyInitializations(): Promise<string> {
         for (const name of INITIALIZED_CONTRACTS) {
-            const contract = new Initializable(this.dependencies, this.config.addresses[name]);
-            console.log(`Verifying initialization of ${name} at ${contract.address}`);
+            const contract = new Initializable(
+                this.dependencies,
+                this.config.addresses[name]
+            );
+            console.log(
+                `Verifying initialization of ${name} at ${contract.address}`
+            );
             const initialized = await contract.getInitialized_();
             if (!initialized) return `CONTRACT ${name} was not initialized`;
             const augurRef = await contract.augur_();
-            if (augurRef !== this.augur.address) return `CONTRACT ${name} HAD BAD AUGUR REF ${augurRef}`;
+            if (augurRef !== this.augur.address)
+                return `CONTRACT ${name} HAD BAD AUGUR REF ${augurRef}`;
             if (TRADING_CONTRACTS.includes(name)) {
                 const augurTradingRef = await contract.augurTrading_();
-                if (augurTradingRef !== this.augurTrading.address) return `CONTRACT ${name} HAD BAD AUGUR TRADING REF ${augurTradingRef}`;
+                if (augurTradingRef !== this.augurTrading.address)
+                    return `CONTRACT ${name} HAD BAD AUGUR TRADING REF ${augurTradingRef}`;
             }
         }
         return SUCCESS;
@@ -135,34 +181,69 @@ if (error) return error;
 
     async verifyAugurTradingInitialization(): Promise<string> {
         const augurTradingAugurAddress = await this.augurTrading.augur_();
-        if (augurTradingAugurAddress !== this.augur.address) return `AugurTrading has Augur at ${augurTradingAugurAddress}. Expected: ${this.augur.address}`;
+        if (augurTradingAugurAddress !== this.augur.address)
+            return `AugurTrading has Augur at ${augurTradingAugurAddress}. Expected: ${this.augur.address}`;
         return SUCCESS;
     }
 }
 
 export class Initializable extends Contract<BigNumber> {
     constructor(dependencies: Dependencies<BigNumber>, address: string) {
-		super(dependencies, address)
+        super(dependencies, address);
     }
 
-    getInitialized_ = async (options?: { sender?: string }): Promise<boolean> => {
-		options = options || {};
-		const abi: AbiFunction = {'constant':true,'inputs':[],'name':'getInitialized','outputs':[{'internalType':'bool','name':'','type':'bool'}],'payable':false,'stateMutability':'view','type':'function'};
-		const result = await this.localCall(abi, [], options.sender);
-		return result[0] as boolean
+    getInitialized_ = async (options?: {
+        sender?: string;
+    }): Promise<boolean> => {
+        options = options || {};
+        const abi: AbiFunction = {
+            constant: true,
+            inputs: [],
+            name: 'getInitialized',
+            outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+            payable: false,
+            stateMutability: 'view',
+            type: 'function',
+        };
+        const result = await this.localCall(abi, [], options.sender);
+        return result[0] as boolean;
     };
 
     augur_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {};
-		const abi: AbiFunction = {'constant':true,'inputs':[],'name':'augur','outputs':[{'internalType':'contract IAugur','name':'','type':'address'}],'payable':false,'stateMutability':'view','type':'function'};
-		const result = await this.localCall(abi, [], options.sender);
-		return result[0] as string
+        options = options || {};
+        const abi: AbiFunction = {
+            constant: true,
+            inputs: [],
+            name: 'augur',
+            outputs: [
+                { internalType: 'contract IAugur', name: '', type: 'address' },
+            ],
+            payable: false,
+            stateMutability: 'view',
+            type: 'function',
+        };
+        const result = await this.localCall(abi, [], options.sender);
+        return result[0] as string;
     };
 
     augurTrading_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {};
-		const abi: AbiFunction = {'constant':true,'inputs':[],'name':'augurTrading','outputs':[{'internalType':'contract IAugurTrading','name':'','type':'address'}],'payable':false,'stateMutability':'view','type':'function'};
-		const result = await this.localCall(abi, [], options.sender);
-		return result[0] as string
-	}
+        options = options || {};
+        const abi: AbiFunction = {
+            constant: true,
+            inputs: [],
+            name: 'augurTrading',
+            outputs: [
+                {
+                    internalType: 'contract IAugurTrading',
+                    name: '',
+                    type: 'address',
+                },
+            ],
+            payable: false,
+            stateMutability: 'view',
+            type: 'function',
+        };
+        const result = await this.localCall(abi, [], options.sender);
+        return result[0] as string;
+    };
 }

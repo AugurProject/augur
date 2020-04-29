@@ -19,8 +19,7 @@ import { makeDbMock } from '@augurproject/tools/build/libs/MakeDbMock';
 import * as IPFS from 'ipfs';
 
 const filterRetrievelFn = (ipfs: Promise<IPFS>) => async (ipfsPath: string) =>
-  (await ipfs)
-  .cat(ipfsPath);
+  (await ipfs).cat(ipfsPath);
 
 export class WarpTestContractApi extends TestContractAPI {
   warpController: WarpController;
@@ -32,11 +31,18 @@ export class WarpTestContractApi extends TestContractAPI {
     public account: Account,
     public db: DB,
     public config: SDKConfiguration,
-    ipfsServer: Promise<IPFS>,
+    ipfsServer: Promise<IPFS>
   ) {
     super(augur, provider, account, db, config);
 
-    this.warpController = new WarpController(db, augur, provider, config.uploadBlockNumber, ipfsServer, filterRetrievelFn(ipfsServer));
+    this.warpController = new WarpController(
+      db,
+      augur,
+      provider,
+      config.uploadBlockNumber,
+      ipfsServer,
+      filterRetrievelFn(ipfsServer)
+    );
 
     this.warpSyncStrategy = new WarpSyncStrategy(
       this.warpController,
@@ -51,7 +57,7 @@ export class WarpTestContractApi extends TestContractAPI {
     ipfsServer: Promise<IPFS>,
     connector: Connectors.BaseConnector = new EmptyConnector(),
     meshClient: WSClient = undefined,
-    meshBrowser: BrowserMesh = undefined,
+    meshBrowser: BrowserMesh = undefined
   ) {
     const signer = await makeSigner(account, provider);
     const dependencies = await makeGSNDependencies(
@@ -61,7 +67,7 @@ export class WarpTestContractApi extends TestContractAPI {
       config.addresses.EthExchange,
       config.addresses.WETH9,
       config.addresses.Cash,
-      account.address,
+      account.address
     );
 
     let zeroX = null;
@@ -75,7 +81,7 @@ export class WarpTestContractApi extends TestContractAPI {
       config,
       connector,
       zeroX,
-      true,
+      true
     );
     if (zeroX && meshBrowser) {
       zeroX.mesh = meshBrowser;
@@ -83,17 +89,28 @@ export class WarpTestContractApi extends TestContractAPI {
 
     const db = await makeDbMock().makeDB(augur);
 
-    return new WarpTestContractApi(augur, provider, account, db, config, ipfsServer);
+    return new WarpTestContractApi(
+      augur,
+      provider,
+      account,
+      db,
+      config,
+      ipfsServer
+    );
   }
 
   sync = async (highestBlockNumberToSync?: number) => {
-    const { number: blockNumber } = await this.provider.getBlock(highestBlockNumberToSync || 'latest');
-    if(this.needsToBulkSync) {
+    const { number: blockNumber } = await this.provider.getBlock(
+      highestBlockNumberToSync || 'latest'
+    );
+    if (this.needsToBulkSync) {
       const { warpSyncHash } = await this.getLastWarpSyncData();
 
       console.log('warpSyncHash', JSON.stringify(warpSyncHash));
 
-      const highestSyncedBlock = await this.warpSyncStrategy.start(warpSyncHash);
+      const highestSyncedBlock = await this.warpSyncStrategy.start(
+        warpSyncHash
+      );
       await this.bulkSyncStrategy.start(
         highestSyncedBlock || this.config.uploadBlockNumber,
         blockNumber
@@ -107,8 +124,8 @@ export class WarpTestContractApi extends TestContractAPI {
 
       this.needsToBulkSync = false;
     } else {
-      let highestSyncedBlock = (await this.db.getSyncStartingBlock());
-      while(highestSyncedBlock <= blockNumber) {
+      let highestSyncedBlock = await this.db.getSyncStartingBlock();
+      while (highestSyncedBlock <= blockNumber) {
         const block = await this.provider.getBlock(highestSyncedBlock);
         await this.blockAndLogStreamerSyncStrategy.onBlockAdded({
           ...block,

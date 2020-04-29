@@ -80,10 +80,11 @@ describe('WarpSync', () => {
   test('Warp Sync :: getWarpSyncHashFromPayout to Hash', async () => {
     const hashValue = 'Qme6s3PJJxqmCfgY7o5pK6sgSpem6ysgosYRuCSCNQ2X6t';
     const calculatedPayouts = await john.getPayoutFromWarpSyncHash(hashValue);
-    const warpSyncHash = await john.getWarpSyncHashFromPayout(calculatedPayouts);
+    const warpSyncHash = await john.getWarpSyncHashFromPayout(
+      calculatedPayouts
+    );
     await expect(warpSyncHash).toEqual(hashValue);
   });
-
 
   test('Warp Sync :: getPayoutFromWarpSyncHash', async () => {
     const warpSyncHash = 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKChD2';

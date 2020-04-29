@@ -2322,28 +2322,37 @@ export const data = [
   },
 ];
 
-export async function getLogs(filter: Filter):Promise<Log[]> {
-  let filteredLogs:Log[];
-  const maxBlock = Math.max(...data.map((d) => d.blockNumber));
-  const filterWithDefaults = Object.assign({
-    fromBlock: 'latest',
-    toBlock: 'latest',
-  }, filter);
+export async function getLogs(filter: Filter): Promise<Log[]> {
+  let filteredLogs: Log[];
+  const maxBlock = Math.max(...data.map(d => d.blockNumber));
+  const filterWithDefaults = Object.assign(
+    {
+      fromBlock: 'latest',
+      toBlock: 'latest',
+    },
+    filter
+  );
 
   //  If blockHash is present in the filter criteria, then neither fromBlock nor toBlock are allowed.
-  if(filterWithDefaults.blockhash) {
-    return data.filter((d) => d.blockHash === filter.blockhash);
+  if (filterWithDefaults.blockhash) {
+    return data.filter(d => d.blockHash === filter.blockhash);
   }
 
   // Intentionally not supporting "earliest" or "mined" tags here.
-  if(filterWithDefaults.toBlock) {
-    const targetBlock = (filterWithDefaults.toBlock === 'latest') ? maxBlock : filterWithDefaults.toBlock;
-    filteredLogs = data.filter((d) => d.blockNumber >= targetBlock);
+  if (filterWithDefaults.toBlock) {
+    const targetBlock =
+      filterWithDefaults.toBlock === 'latest'
+        ? maxBlock
+        : filterWithDefaults.toBlock;
+    filteredLogs = data.filter(d => d.blockNumber >= targetBlock);
   }
 
-  if(filterWithDefaults.fromBlock) {
-    const targetBlock = (filterWithDefaults.fromBlock === 'latest') ? maxBlock : filterWithDefaults.fromBlock;
-    filteredLogs = data.filter((d) => d.blockNumber <= targetBlock);
+  if (filterWithDefaults.fromBlock) {
+    const targetBlock =
+      filterWithDefaults.fromBlock === 'latest'
+        ? maxBlock
+        : filterWithDefaults.fromBlock;
+    filteredLogs = data.filter(d => d.blockNumber <= targetBlock);
   }
 
   return filteredLogs;

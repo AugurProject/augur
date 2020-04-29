@@ -34,21 +34,9 @@ describe('State API :: Markets :: ', () => {
     baseProvider = await makeProvider(seed, ACCOUNTS);
     const config = baseProvider.getConfig();
 
-    john = await TestContractAPI.userWrapper(
-      ACCOUNTS[0],
-      baseProvider,
-      config
-    );
-    mary = await TestContractAPI.userWrapper(
-      ACCOUNTS[1],
-      baseProvider,
-      config
-    );
-    bob = await TestContractAPI.userWrapper(
-      ACCOUNTS[2],
-      baseProvider,
-      config
-    );
+    john = await TestContractAPI.userWrapper(ACCOUNTS[0], baseProvider, config);
+    mary = await TestContractAPI.userWrapper(ACCOUNTS[1], baseProvider, config);
+    bob = await TestContractAPI.userWrapper(ACCOUNTS[2], baseProvider, config);
 
     await john.approve();
     await mary.approve();

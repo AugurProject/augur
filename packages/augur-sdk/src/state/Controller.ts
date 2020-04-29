@@ -19,29 +19,36 @@ export class Controller {
   constructor(
     private augur: Augur,
     private db: Promise<DB>,
-    private logFilterAggregator: LogFilterAggregatorInterface,
+    private logFilterAggregator: LogFilterAggregatorInterface
   ) {
     this.events = new Subscriptions(augur.events);
     this.logFilterAggregator.listenForAllEvents(this.allEvents);
-    this.logFilterAggregator.notifyNewBlockAfterLogsProcess(this.notifyNewBlockEvent.bind(this));
+    this.logFilterAggregator.notifyNewBlockAfterLogsProcess(
+      this.notifyNewBlockEvent.bind(this)
+    );
 
-    this.augur.events.on(SubscriptionEventName.OrderBooksSynced, ({marketIds}) => this.updateMarketsData(marketIds));
+    this.augur.events.on(
+      SubscriptionEventName.OrderBooksSynced,
+      ({ marketIds }) => this.updateMarketsData(marketIds)
+    );
 
-    db.then((dbObject) => {
-      logFilterAggregator.listenForBlockRemoved(
-        dbObject.rollback.bind(db)
-      );
+    db.then(dbObject => {
+      logFilterAggregator.listenForBlockRemoved(dbObject.rollback.bind(db));
     });
   }
 
   private updateMarketsData = async (marketIds: string[]) => {
-    const marketsInfo = await Markets.getMarketsInfo(this.augur, await this.db, {
-      marketIds
-    });
+    const marketsInfo = await Markets.getMarketsInfo(
+      this.augur,
+      await this.db,
+      {
+        marketIds,
+      }
+    );
 
     if (marketsInfo.length > 0) {
-      this.augur.events.emit(SubscriptionEventName.MarketsUpdated,  {
-        marketsInfo
+      this.augur.events.emit(SubscriptionEventName.MarketsUpdated, {
+        marketsInfo,
       });
     }
   };
@@ -58,12 +65,17 @@ export class Controller {
     const validMarketIds = marketIds.filter(m => m !== NULL_ADDRESS);
     const nullMarketLogs = allLogs.filter(l => l.market === NULL_ADDRESS);
 
-    if (validMarketIds.length > 0) this.updateMarketsData(validMarketIds as string[]);
+    if (validMarketIds.length > 0)
+      this.updateMarketsData(validMarketIds as string[]);
     // emit non market related logs
-    if (nullMarketLogs.length > 0) nullMarketLogs.forEach(l => this.augur.events.emit(l.name, {...l}));
-  }
+    if (nullMarketLogs.length > 0)
+      nullMarketLogs.forEach(l => this.augur.events.emit(l.name, { ...l }));
+  };
 
-  private notifyNewBlockEvent = async (blockNumber: number, logs: ParsedLog[]): Promise<void> => {
+  private notifyNewBlockEvent = async (
+    blockNumber: number,
+    logs: ParsedLog[]
+  ): Promise<void> => {
     let lowestBlock = await (await this
       .db).syncStatus.getLowestSyncingBlockForAllDBs();
 
@@ -76,8 +88,8 @@ export class Controller {
 
     const timestamp = await this.augur.getTimestamp();
 
-    let stats: ZeroXStats = {peers: 0, orders: 0};
-    if(this.augur.zeroX) {
+    let stats: ZeroXStats = { peers: 0, orders: 0 };
+    if (this.augur.zeroX) {
       stats = await this.augur.zeroX.getStats();
     }
 
@@ -89,7 +101,7 @@ export class Controller {
       percentSynced,
       timestamp: timestamp.toNumber(),
       logs,
-      ...stats
+      ...stats,
     });
   };
 

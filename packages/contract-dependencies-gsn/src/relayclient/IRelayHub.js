@@ -10,7 +10,10 @@ module.exports = [
   },
   {
     constant: false,
-    inputs: [{ name: 'transactionFee', type: 'uint256' }, { name: 'url', type: 'string' }],
+    inputs: [
+      { name: 'transactionFee', type: 'uint256' },
+      { name: 'url', type: 'string' },
+    ],
     name: 'registerRelay',
     outputs: [],
     payable: false,
@@ -32,7 +35,10 @@ module.exports = [
       { name: 'approvalData', type: 'bytes' },
     ],
     name: 'canRelay',
-    outputs: [{ name: 'status', type: 'uint256' }, { name: 'recipientContext', type: 'bytes' }],
+    outputs: [
+      { name: 'status', type: 'uint256' },
+      { name: 'recipientContext', type: 'bytes' },
+    ],
     payable: false,
     stateMutability: 'view',
     type: 'function',
@@ -57,7 +63,10 @@ module.exports = [
   },
   {
     constant: false,
-    inputs: [{ name: 'unsignedTx', type: 'bytes' }, { name: 'signature', type: 'bytes' }],
+    inputs: [
+      { name: 'unsignedTx', type: 'bytes' },
+      { name: 'signature', type: 'bytes' },
+    ],
     name: 'penalizeIllegalTransaction',
     outputs: [],
     payable: false,
@@ -154,7 +163,10 @@ module.exports = [
   },
   {
     constant: false,
-    inputs: [{ name: 'relayaddr', type: 'address' }, { name: 'unstakeDelay', type: 'uint256' }],
+    inputs: [
+      { name: 'relayaddr', type: 'address' },
+      { name: 'unstakeDelay', type: 'uint256' },
+    ],
     name: 'stake',
     outputs: [],
     payable: true,
@@ -213,7 +225,10 @@ module.exports = [
   },
   {
     anonymous: false,
-    inputs: [{ indexed: true, name: 'relay', type: 'address' }, { indexed: false, name: 'stake', type: 'uint256' }],
+    inputs: [
+      { indexed: true, name: 'relay', type: 'address' },
+      { indexed: false, name: 'stake', type: 'uint256' },
+    ],
     name: 'Unstaked',
     type: 'event',
   },
@@ -229,7 +244,10 @@ module.exports = [
   },
   {
     anonymous: false,
-    inputs: [{ indexed: true, name: 'dest', type: 'address' }, { indexed: false, name: 'amount', type: 'uint256' }],
+    inputs: [
+      { indexed: true, name: 'dest', type: 'address' },
+      { indexed: false, name: 'amount', type: 'uint256' },
+    ],
     name: 'Withdrawn',
     type: 'event',
   },

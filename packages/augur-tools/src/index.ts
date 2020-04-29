@@ -9,7 +9,7 @@ export {
   makeGSNDependencies,
 } from './libs/blockchain';
 import * as blockchain from './libs/blockchain';
-export * from './libs/Utils'
+export * from './libs/Utils';
 
 export { blockchain };
 
