@@ -991,7 +991,7 @@ export const errorIcon = (
 );
 
 export const Alerts = unseenCount => (
-  <svg width="34" height="24" viewBox="0 0 34 24">
+  <svg viewBox="0 0 34 24">
     <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g>
         <g
