@@ -25,37 +25,37 @@ interface StatsProps {
   stats: CoreStats;
 }
 
-export const Stats = ({isLogged, restoredAccount, stats}: StatsProps) => {
+export const Stats = ({ isLogged, restoredAccount, stats }: StatsProps) => {
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
 
   return (
     <>
-    {(isLogged || restoredAccount) && (
-      <div className={Styles.statsContainer}>
-        <div>
-          <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
-          <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
-          <LinearPropertyLabelUnderlineTooltip
-            {...totalFunds}
-            highlightAlternateBolded
-            id={'totalFunds'}
-            tipText={TOTAL_FUNDS_TOOLTIP}
-          />
+      {(isLogged || restoredAccount) && (
+        <div className={Styles.statsContainer}>
+          <div>
+            <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
+            <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
+            <LinearPropertyLabelUnderlineTooltip
+              {...totalFunds}
+              highlightAlternateBolded
+              id={'totalFunds'}
+              tipText={TOTAL_FUNDS_TOOLTIP}
+            />
+            <div>
+              <span>{realizedPL.label}</span>
+              <MovementLabel value={realizedPL.value} useFull />
+            </div>
+          </div>
           <div>
             <span>{realizedPL.label}</span>
             <MovementLabel value={realizedPL.value} useFull />
           </div>
         </div>
-        <div>
-          <span>{realizedPL.label}</span>
-          <MovementLabel value={realizedPL.value} useFull />
-        </div>
-      </div>
-    )}
+      )}
     </>
   );
-}
+};
 interface TopBarProps {
   alertsVisible: boolean;
   isLogged: boolean;
@@ -87,7 +87,11 @@ const TopBar: React.FC<TopBarProps> = ({
         </Link>
       </div>
 
-      <Stats isLogged={isLogged} stats={stats} restoredAccount={restoredAccount} />
+      <Stats
+        isLogged={isLogged}
+        stats={stats}
+        restoredAccount={restoredAccount}
+      />
       <div>
         {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
           <HelpResources />
@@ -98,8 +102,6 @@ const TopBar: React.FC<TopBarProps> = ({
         {!isLogged && !restoredAccount && (
           <PrimaryButton action={() => signupModal()} text={'Signup'} />
         )}
-
-        <ConnectAccount />
         {(isLogged || restoredAccount) && (
           <button
             className={classNames(Styles.alerts, {
@@ -113,6 +115,7 @@ const TopBar: React.FC<TopBarProps> = ({
             {unseenCount > 99 ? Alerts('99+') : Alerts(unseenCount)}
           </button>
         )}
+        <ConnectAccount />
       </div>
     </header>
   );
