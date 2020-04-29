@@ -186,7 +186,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   },
   gas: {
     price: 1e9,
-    limit: 75e5
+    limit: 95e5
   },
   deploy: {
     isProduction: false,
