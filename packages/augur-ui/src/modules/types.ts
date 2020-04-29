@@ -559,12 +559,6 @@ export interface Endpoints {
   ethereumNodeWS: string;
 }
 
-export interface Connection {
-  isConnected: boolean;
-  isReconnectionPaused: boolean;
-  canHotload: boolean;
-}
-
 export interface Category {
   categoryName: string;
   nonFinalizedOpenInterest: string;

@@ -15,8 +15,9 @@ export const selectInfoAlerts = selectAlertsByLevel(alertLevels.INFO);
 export const selectInfoAlertsAndSeenCount = createSelector(
   selectInfoAlerts,
   alerts => {
-    const { universe, connection } = store.getState() as AppState;
-    if (!connection.isConnected || !AppStatusState.get().isLogged)
+    const { universe } = store.getState() as AppState;
+    const { isLogged, isConnected } = AppStatusState.get();
+    if (!isConnected || !isLogged)
       return { unseenCount: 0, alerts: [] };
 
     let filteredAlerts = alerts;

@@ -26,7 +26,6 @@ import {
   addUpdateTransaction,
 } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
-import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import {
   CANCELORDER,
@@ -181,7 +180,7 @@ export const handleSDKReadyEvent = () => (
   augurSdk.subscribe(dispatch);
 
   // app is connected when subscribed to sdk
-  dispatch(updateConnectionStatus(true));
+  AppStatusActions.actions.setIsConnected(true);
   dispatch(loadAccountData());
   dispatch(loadUniverseForkingInfo());
   dispatch(getCategoryStats());

@@ -33,9 +33,7 @@ import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
-import { AppStatusActions } from 'modules/app/store/app-status';
 import { logout } from 'modules/auth/actions/logout';
-import { updateCanHotload } from 'modules/app/actions/update-connection';
 import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 import { getFingerprint } from 'utils/get-fingerprint';
@@ -51,6 +49,7 @@ import { getNetwork } from 'utils/get-network-name';
 import { buildConfig } from '@augurproject/artifacts';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { isGoogleBot } from 'utils/is-google-bot';
+import { AppStatusActions } from 'modules/app/store/app-status';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -267,7 +266,7 @@ export function connectAugur(
 
     // wire up start up events for sdk
     dispatch(listenForStartUpEvents(sdk));
-    dispatch(updateCanHotload(true));
+    AppStatusActions.actions.setCanHotload(true);
 
     await augurSdk.connect();
 

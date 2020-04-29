@@ -24,11 +24,11 @@ import { AppStatusState } from 'modules/app/store/app-status';
 const mapStateToProps = (state: AppState, { location }) => {
   const marketStats = selectMarketStats(state);
   const markets = selectMarkets(state);
-  const { isLogged, restoredAccount } = AppStatusState.get();
+  const { isLogged, restoredAccount, isConnected } = AppStatusState.get();
   return {
     categoryStats: state.categoryStats,
     categoryData: marketStats,
-    isConnected: state.connection.isConnected && state.universe.id != null,
+    isConnected: isConnected && state.universe.id != null,
     isLogged,
     restoredAccount,
     markets: markets.filter(market =>

@@ -31,12 +31,13 @@ const consoleLog = store => next => action => {
 const localStorageMiddleware = store => next => action => {
   next(action);
   const state = store.getState() as AppState;
+  const { isLogged, isConnected } = AppStatusState.get();
   if (
     !state ||
     !state.loginAccount ||
     !state.loginAccount.address ||
-    !AppStatusState.get().isLogged ||
-    !state.connection.isConnected
+    !isLogged ||
+    !isConnected
   ) {
     return;
   }
@@ -51,13 +52,11 @@ const localStorageMiddleware = store => next => action => {
     pendingQueue,
     drafts,
     env,
-    connection,
     loginAccount
   } = state;
   const windowApp: WindowApp = windowRef as WindowApp;
   if (windowApp.localStorage && windowApp.localStorage.setItem) {
     const { localStorage } = windowApp;
-    const { isConnected } = connection;
     const networkIdToUse: number = isConnected
       ? parseInt(getNetworkId(), 10)
       : 1;

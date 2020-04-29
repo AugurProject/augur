@@ -35,6 +35,7 @@ import {
 import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 import { updateLoginAccountSettings } from 'modules/markets-list/actions/update-login-account-settings';
 import { marketListViewed } from 'services/analytics/helpers';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const findMarketsInReportingState = (markets, reportingState) => {
   const reportingStates: String[] = organizeReportingStates(reportingState);
@@ -47,11 +48,11 @@ const mapStateToProps = (state: AppState, { location }) => {
     keywords,
     selectedTagNames,
   } = getSelectedTagsAndCategoriesFromLocation(location);
-
+  const { isConnected } = AppStatusState.get();
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
 
   return {
-    isConnected: state.connection.isConnected && state.universe.id != null,
+    isConnected: isConnected && state.universe.id != null,
     universe: (state.universe || {}).id,
     search: searchPhrase,
     markets,

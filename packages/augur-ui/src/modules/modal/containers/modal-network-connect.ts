@@ -15,14 +15,12 @@ interface StateProps {
     config: SDKConfiguration;
   };
   env: SDKConfiguration;
-  connection: string;
   isConnectedThroughWeb3: boolean;
 }
 
 const mapStateToProps = (state: StateProps) => ({
   modal: state.modal,
   env: state.env,
-  connection: state.connection,
   isConnectedThroughWeb3: isWeb3Transport(),
 });
 

@@ -15,6 +15,9 @@ export const Ox_STATUS = 'zeroXStatus';
 export const WALLET_STATUS = 'walletStatus';
 export const RESTORED_ACCOUNT = 'restoredAccount';
 export const IS_LOGGED = 'isLogged';
+export const IS_CONNECTED = 'isConnected';
+export const IS_RECONNECTION_PAUSED = 'isReconnectionPaused';
+export const CAN_HOTLOAD = 'canHotload';
 
 export const DEFAULT_APP_STATUS = {
   [THEME]: THEMES.TRADING,
@@ -32,6 +35,9 @@ export const DEFAULT_APP_STATUS = {
   [WALLET_STATUS]: null,
   [RESTORED_ACCOUNT]: false,
   [IS_LOGGED]: false,
+  [IS_CONNECTED]: false,
+  [IS_RECONNECTION_PAUSED]: false,
+  [CAN_HOTLOAD]: false,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -51,6 +57,9 @@ export const APP_STATUS_ACTIONS = {
   SET_WALLET_STATUS: 'SET_WALLET_STATUS',
   SET_RESTORED_ACCOUNT: 'SET_RESTORED_ACCOUNT',
   SET_IS_LOGGED: 'SET_IS_LOGGED',
+  SET_IS_CONNECTED: 'SET_IS_CONNECTED',
+  SET_IS_RECONNECTION_PAUSED: 'SET_IS_RECONNECTION_PAUSED',
+  SET_CAN_HOTLOAD: 'SET_CAN_HOTLOAD',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -70,4 +79,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setWalletStatus: walletStatus => {},
   setRestoredAccount: restoredAccount => {},
   setIsLogged: isLogged => {},
+  setIsConnected: isConnected => {},
+  setIsReconnectionPaused: isReconnectionPaused => {},
+  setCanHotload: canHotload => {},
 };

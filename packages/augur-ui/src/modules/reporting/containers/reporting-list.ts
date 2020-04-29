@@ -10,11 +10,14 @@ import { REPORTING_STATE } from 'modules/common/constants';
 import { selectReportingMarkets } from 'modules/markets/selectors/select-reporting-markets';
 import { AppStatusState } from 'modules/app/store/app-status';
 
-const mapStateToProps = (state, ownProps) => ({
-  isLogged: AppStatusState.get().isLogged,
-  isConnected: state.connection.isConnected,
-  markets: selectReportingMarkets(state, ownProps.reportingType)
-});
+const mapStateToProps = (state, ownProps) => {
+  const { isLogged, isConnected } = AppStatusState.get();
+  return ({
+    isLogged,
+    isConnected,
+    markets: selectReportingMarkets(state, ownProps.reportingType)
+  });
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   loadMarkets: (offset, limit, type, cb) => {
