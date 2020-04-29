@@ -11,6 +11,7 @@ import MarketsListFilters from '../components/inner-nav/markets-list-filters';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
+import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 
 const mapStateToProps = ({
   filterSortOptions,
@@ -51,6 +52,7 @@ const mapDispatchToProps = dispatch => ({
   updateLoginAccount: settings => {
     dispatch(updateLoginAccount({ settings }));
   },
+  updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -75,6 +77,7 @@ const mergeProps = (sP, dP, oP) => {
       dP.updateTemplateFilter(templateFilter);
       dP.updateLoginAccount(Object.assign({}, sP.settings, { templateFilter }));
     },
+    updateSelectedCategories: (category) => dP.updateSelectedCategories(category);
   };
 };
 

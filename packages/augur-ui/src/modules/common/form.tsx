@@ -23,7 +23,7 @@ import {
   LoadingEllipse,
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
-import { CUSTOM, SCALAR, ZERO } from 'modules/common/constants';
+import { CUSTOM, SCALAR, ZERO, CATEGORY_PARAM_NAME } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
 import { formatAttoRep, formatNumber } from 'utils/format-number';
@@ -38,8 +38,10 @@ import { SquareDropdown, NameValuePair } from 'modules/common/selection';
 import { getTimezones, UTC_Default } from 'utils/get-timezones';
 import noop from 'utils/noop';
 import { Getters } from '@augurproject/sdk';
-import { MarketData, DisputeInputtedValues, SortedGroup } from 'modules/types';
+import { MarketData, DisputeInputtedValues, SortedGroup, QueryEndpoints } from 'modules/types';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
+import parseQuery from 'modules/routes/helpers/parse-query';
+import makeQuery from 'modules/routes/helpers/make-query';
 
 interface CheckboxProps {
   id: string;
@@ -2270,6 +2272,8 @@ InputDropdown.defaultProps = {
 };
 
 export interface CategoryRowProps {
+  history: History;
+  location: Location;
   hasChildren?: boolean;
   handleClick?: Function;
   active?: boolean;
@@ -2280,6 +2284,8 @@ export interface CategoryRowProps {
 }
 
 export const CategoryRow = ({
+  history,
+  location,
   hasChildren = true,
   handleClick = noop,
   active = false,
@@ -2289,7 +2295,24 @@ export const CategoryRow = ({
   icon,
 }: CategoryRowProps) => (
   <div
-    onClick={() => handleClick()}
+    onClick={() => {
+      const selectedCategory: string = parseQuery(location.search)[
+        CATEGORY_PARAM_NAME
+      ];
+
+        const query: QueryEndpoints = {
+          [CATEGORY_PARAM_NAME]: selectedCategory ? [selectedCategory, category] : [category],
+        };
+
+        history.push({
+          pathname: 'markets',
+          search: makeQuery(query),
+        });
+
+
+        handleClick();
+      }
+    }
     className={classNames(Styles.CategoryRow, {
       [Styles.active]: active,
       [Styles.loading]: loading,

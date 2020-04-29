@@ -64,21 +64,6 @@ export default class CategoryFilters extends React.Component<
   }
 
   componentDidUpdate(prevProps: CategoryFiltersProps) {
-    const searchCategories = parseQuery(this.props.location.search)[
-      CATEGORY_PARAM_NAME
-    ];
-    const categories = searchCategories ? searchCategories.split(',') : []
-    if (JSON.stringify(prevProps && prevProps.categoryMetaData) !== JSON.stringify(this.props.categoryMetaData)) {
-      if (this.props.categoryMetaData && this.props.categoryMetaData.categories) {
-        const newCategory = this.lookupCategoryFromMeta(this.state.selectedCategory, this.props.categoryMetaData.categories);
-        this.setState({
-          currentCategories: newCategory ? newCategory.children : null,
-        });
-      }
-    } else if (categories.length === 0 && categories.length !== this.state.selectedCategories.length) {
-      // return this.gotoAllCategories();
-    }
-
     this.loadCategories(prevProps);
   }
 
@@ -135,6 +120,8 @@ export default class CategoryFilters extends React.Component<
         return (
           <div key={idx}>
             <CategoryRow
+              history={this.props.history}
+              location={this.props.location}
               category={item.category}
               icon={item.icon}
               loading={true}
@@ -146,6 +133,8 @@ export default class CategoryFilters extends React.Component<
       return (
         <div key={idx}>
           <CategoryRow
+            history={this.props.history}
+            location={this.props.location}
             category={item.category}
             icon={item.icon}
             count={item.count}
@@ -190,6 +179,8 @@ export default class CategoryFilters extends React.Component<
           })}
         <div className={Styles.SelectedCategory}>
           <CategoryRow
+            history={this.props.history}
+            location={this.props.location}
             category={this.state.selectedCategory}
             count={this.getCategoryCount(this.state.selectedCategory)}
             handleClick={() => null}
@@ -202,6 +193,8 @@ export default class CategoryFilters extends React.Component<
             return (
               <div key={idx}>
                 <CategoryRow
+                  history={this.props.history}
+                  location={this.props.location}
                   category={item.category}
                   count={item.count}
                   loading={this.props.isSearching}
@@ -229,6 +222,8 @@ export default class CategoryFilters extends React.Component<
       return (
         <div key={idx}>
           <CategoryRow
+            history={this.props.history}
+            location={this.props.location}
             category={item.category}
             count={item.count}
             loading={this.props.isSearching}
