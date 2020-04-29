@@ -31,7 +31,7 @@ const consoleLog = store => next => action => {
 const localStorageMiddleware = store => next => action => {
   next(action);
   const state = store.getState() as AppState;
-  const { isLogged, isConnected, env } = AppStatusState.get();
+  const { isLogged, isConnected, env, gasPriceInfo } = AppStatusState.get();
   if (
     !state ||
     !state.loginAccount ||
@@ -90,7 +90,7 @@ const localStorageMiddleware = store => next => action => {
         pendingQueue,
         drafts,
         gasPriceInfo: {
-          userDefinedGasPrice: state.gasPriceInfo.userDefinedGasPrice,
+          userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
         },
         selectedUniverse: {
           ...storedAccountData.selectedUniverse,

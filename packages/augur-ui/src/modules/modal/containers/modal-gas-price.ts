@@ -2,21 +2,24 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Gas } from 'modules/modal/gas';
 import { closeModal } from 'modules/modal/actions/close-modal';
-import { updateGasPriceInfo } from 'modules/app/actions/update-gas-price-info';
 import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { AppStatusActions, AppStatusState } from 'modules/app/store/app-status';
 
-const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
-  ...state.gasPriceInfo,
-});
+const mapStateToProps = (state: AppState) => {
+  const { gasPriceInfo } = AppStatusState.get();
+  return ({
+    modal: state.modal,
+    ...gasPriceInfo,
+  });
+}
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeAction: () => dispatch(closeModal()),
   saveAction: (userDefinedGasPrice: number, average: number) => {
-    dispatch(updateGasPriceInfo({ userDefinedGasPrice }));
+    AppStatusActions.actions.updateGasPriceInfo({ userDefinedGasPrice });
     dispatch(registerUserDefinedGasPriceFunction(userDefinedGasPrice, average));
     dispatch(closeModal());
   },

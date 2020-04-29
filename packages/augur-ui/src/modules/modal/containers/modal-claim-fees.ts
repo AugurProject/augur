@@ -36,13 +36,15 @@ import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { TRANSACTIONS } from 'modules/routes/constants/views';
 import { TXEventName } from '@augurproject/sdk/src';
 import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
+  const { gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatusState.get();
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   return {
     modal: state.modal,
     gasCost: CLAIM_FEES_GAS_COST.multipliedBy(gasPrice),
-    GsnEnabled: state.appStatus.gsnEnabled,
+    GsnEnabled,
     pendingQueue: state.pendingQueue || [],
     claimReportingFees: selectReportingWinningsByMarket(state),
     forkingInfo: state.universe.forkingInfo,

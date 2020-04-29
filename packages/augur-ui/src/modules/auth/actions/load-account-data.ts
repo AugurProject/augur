@@ -16,8 +16,8 @@ export const loadAccountData = (
   callback: NodeStyleCallback = logError
 ) => async (dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState) => {
-  const { loginAccount, universe, gasPriceInfo } = getState();
-  const { isLogged, isConnected } = AppStatusState.get();
+  const { loginAccount, universe } = getState();
+  const { isLogged, isConnected, gasPriceInfo } = AppStatusState.get();
   if (isConnected && isLogged) {
     const { mixedCaseAddress: address } = loginAccount;
     if (!address) return callback('account address required');

@@ -3,7 +3,6 @@ import sidebarStatus from 'modules/app/reducers/sidebar-status';
 import blockchain from 'modules/app/reducers/blockchain';
 import favorites from 'modules/markets/reducers/favorites';
 import filterSortOptions from 'modules/filter-sort/reducers/filter-sort-options';
-import gasPriceInfo from 'modules/app/reducers/gas-price-info';
 import loginAccount from 'modules/auth/reducers/login-account';
 import marketTradingHistory from 'modules/markets/reducers/market-trading-history';
 import marketInfos from 'modules/markets/reducers/market-infos';
@@ -58,7 +57,6 @@ export function createReducer() {
     blockchain,
     favorites,
     filterSortOptions,
-    gasPriceInfo,
     loginAccount,
     marketTradingHistory,
     marketInfos,
@@ -91,7 +89,6 @@ export interface AppStateInterface {
   config: SDKConfiguration;
   favorites: Favorite;
   filterSortOptions: FilterSortOptions;
-  gasPriceInfo: GasPriceInfo;
   loginAccount: LoginAccount;
   marketTradingHistory: Getters.Trading.MarketTradingHistory;
   marketInfos: MarketInfos;

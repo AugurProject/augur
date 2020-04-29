@@ -13,6 +13,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const {
     gsnEnabled: GsnEnabled,
     walletStatus: walletStatus,
+    gasPriceInfo,
   } = AppStatusState.get();
 
   const hasFunds = GsnEnabled
@@ -25,7 +26,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   }
   const sweepStatus = state.pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
   return {
-    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
+    gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,
     availableEth: createBigNumber(loginAccount.balances.eth),
     availableDai,
     hasFunds,

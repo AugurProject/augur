@@ -21,6 +21,7 @@ import {
   IS_RECONNECTION_PAUSED,
   CAN_HOTLOAD,
   ENV,
+  GAS_PRICE_INFO,
 } from 'modules/app/store/constants';
 
 const {
@@ -44,6 +45,7 @@ const {
   SET_IS_RECONNECTION_PAUSED,
   SET_CAN_HOTLOAD,
   SET_ENV,
+  UPDATE_GAS_PRICE_INFO,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -147,6 +149,13 @@ export function AppStatusReducer(state, action) {
       updatedState[ENV] = action.env;
       break;
     }
+    case UPDATE_GAS_PRICE_INFO: {
+      updatedState[GAS_PRICE_INFO] = {
+        ...updatedState[GAS_PRICE_INFO],
+        ...action.gasPriceInfo,
+      };
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -198,6 +207,8 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setCanHotload: canHotload =>
         dispatch({ type: SET_CAN_HOTLOAD, canHotload }),
       setEnv: env => dispatch({ type: SET_ENV, env }),
+      updateGasPriceInfo: gasPriceInfo =>
+        dispatch({ type: UPDATE_GAS_PRICE_INFO, gasPriceInfo }),
     },
   };
 };

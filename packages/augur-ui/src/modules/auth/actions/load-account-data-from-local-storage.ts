@@ -4,7 +4,6 @@ import { updateAlert } from 'modules/alerts/actions/alerts';
 import { loadPendingLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { loadPendingOrdersTransactions } from 'modules/orders/actions/pending-orders-management';
-import { updateGasPriceInfo } from 'modules/app/actions/update-gas-price-info';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { isNewFavoritesStyle } from 'modules/markets/helpers/favorites-processor';
 import { loadPendingQueue } from 'modules/pending-queue/actions/pending-queue-management';
@@ -26,6 +25,7 @@ import {
   MARKET_SHOW_INVALID,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
+import { AppStatusActions } from 'modules/app/store/app-status';
 
 export const loadAccountDataFromLocalStorage = (
   address: string
@@ -130,11 +130,9 @@ export const loadAccountDataFromLocalStorage = (
         dispatch(loadPendingQueue(pendingQueue));
       }
       if (gasPriceInfo && gasPriceInfo.userDefinedGasPrice) {
-        dispatch(
-          updateGasPriceInfo({
-            userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
-          })
-        );
+        AppStatusActions.actions.updateGasPriceInfo({
+          userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
+        });
       }
     }
   }
