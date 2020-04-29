@@ -1,4 +1,4 @@
-import { LoggerLevels } from '@augurproject/logger';
+import { LoggerLevels } from '@augurproject/utils';
 import path from 'path';
 import deepmerge from 'deepmerge';
 import requireAll from 'require-all';

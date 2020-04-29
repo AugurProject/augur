@@ -77,7 +77,7 @@ import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { updateAppStatus, WALLET_STATUS, Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
-import { logger } from '@augurproject/logger';
+import { logger } from '@augurproject/utils';
 
 const handleAlert = (
   log: any,

@@ -1,13 +1,12 @@
 import { SDKConfiguration, NetworkId } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
-import { logger } from '@augurproject/logger';
+import { logger, LoggerLevels } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { EthersSigner, TransactionStatus, TransactionStatusCallback } from 'contract-dependencies-ethers';
 import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
-import { LoggerLevels } from '../../augur-logger/build';
 import { ContractEvents } from './api/ContractEvents';
 import { Contracts } from './api/Contracts';
 import { HotLoading, DisputeWindow, GetDisputeWindowParams } from './api/HotLoading';

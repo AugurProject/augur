@@ -1,5 +1,5 @@
 import { NetworkId } from '@augurproject/artifacts';
-import { LoggerLevels } from '@augurproject/logger';
+import { LoggerLevels, logger } from '@augurproject/utils';
 import { Filter, Log, LogValues } from '@augurproject/types';
 import { Transaction } from 'contract-dependencies';
 import { EthersProvider as EProvider } from 'contract-dependencies-ethers';
@@ -7,7 +7,6 @@ import { ethers } from 'ethers';
 import { Abi } from 'ethereum';
 import * as _ from 'lodash';
 import { AsyncQueue, queue, retry } from 'async';
-import { logger } from '@augurproject/logger';
 import { isInstanceOfBigNumber, isInstanceOfArray, Counter } from './utils';
 import { JSONRPCRequestPayload, JSONRPCErrorCallback, JSONRPCResponsePayload } from 'ethereum-types';
 import { BigNumber } from "bignumber.js";

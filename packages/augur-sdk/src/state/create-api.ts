@@ -1,7 +1,6 @@
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { logger } from '@augurproject/logger';
-import { LoggerLevels } from '@augurproject/logger/build';
+import { logger, LoggerLevels } from '@augurproject/utils/build';
 import { BigNumber } from 'bignumber.js';
 import { EthersSigner } from 'contract-dependencies-ethers';
 import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
