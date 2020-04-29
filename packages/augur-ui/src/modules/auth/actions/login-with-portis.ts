@@ -86,7 +86,7 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
             })
           );
         } else {
-          const errorMessage = `There was an error while attempting to log in with Portis. Please try again, and if it is still not working checkout the help center for logging in.\n\n${
+          const errorMessage = `There was an error while attempting to log in with Portis. Please try again.\n\n${
             error.message
               ? `Error: ${JSON.stringify(error.message)}`
               : ''
