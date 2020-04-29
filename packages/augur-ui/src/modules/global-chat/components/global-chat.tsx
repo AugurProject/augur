@@ -11,14 +11,12 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 export interface GlobalChatProps {
   provider: any;
   whichChatPlugin: string;
-  theme: string;
   initialize3box: Function;
   initialized3box: Initialized3box;
-  isLogged: boolean;
 }
 
-export const GlobalChat = ({ provider, whichChatPlugin, isLogged, initialize3box, initialized3box }: GlobalChatProps) => {
-  const { theme } = useAppStatusStore();
+export const GlobalChat = ({ provider, whichChatPlugin, initialize3box, initialized3box }: GlobalChatProps) => {
+  const { theme, isLogged } = useAppStatusStore();
   const { activate, setActivate, address, box, isReady, profile } =
     whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box, theme);
 

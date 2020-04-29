@@ -16,6 +16,7 @@ import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { FavoritesButton } from 'modules/common/buttons';
 import Styles from 'modules/market/components/common/common.styles.less';
 import { SCALAR } from 'modules/common/constants';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface HeadingBarProps {
   market: MarketData;
@@ -24,7 +25,6 @@ interface HeadingBarProps {
   addToFavorites: Function;
   gotoFilter: Function;
   showCopied?: boolean;
-  isLogged?: boolean;
   isFavorite?: boolean;
   userAccount?: string;
   setShowCopied?: Function;
@@ -38,7 +38,6 @@ export const HeadingBar = ({
   addToFavorites,
   gotoFilter,
   showCopied,
-  isLogged,
   isFavorite,
   userAccount,
   setShowCopied,
@@ -53,6 +52,7 @@ export const HeadingBar = ({
     marketStatus,
     disputeInfo
   } = market;
+  const { isLogged } = useAppStatusStore();
   const isScalar = marketType === SCALAR;
 
   const process = arr =>

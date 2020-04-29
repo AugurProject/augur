@@ -14,18 +14,19 @@ import { NodeStyleCallback } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from 'modules/common/constants';
 import { isSameAddress } from 'utils/isSameAddress';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const disputeInfoStakes = market.disputeInfo && market.disputeInfo.stakes;
-  const marketId = ownProps.market ? ownProps.market.id : ownProps.marketId;
+  const { isLogged } = AppStatusState.get();
   return {
     currentTimestamp: selectCurrentTimestampInSeconds(state) || 0,
     market,
     isForking: !!state.universe.forkingInfo,
     isForkingMarket: state.universe.forkingInfo && state.universe.forkingInfo.forkingMarket === market.id,
-    isLogged: state.authStatus.isLogged && !state.universe.forkingInfo,
-    isLoggedIn: state.authStatus.isLogged,
+    isLogged: isLogged && !state.universe.forkingInfo,
+    isLoggedIn: isLogged,
     isDesignatedReporter: ownProps.preview
       ? market.designatedReporterType === DESIGNATED_REPORTER_SELF
       : isSameAddress(market.designatedReporter, state.loginAccount.address),

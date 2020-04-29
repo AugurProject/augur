@@ -3,8 +3,6 @@ import ConnectAccount from 'modules/auth/components/connect-account/connect-acco
 import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 
 const mapStateToProps = state => ({
-  isLogged: state.authStatus.isLogged,
-  restoredAccount: state.authStatus.restoredAccount,
   universeId: state.universe.id,
   userInfo: state.loginAccount.meta,
   balances: state.loginAccount.balances,

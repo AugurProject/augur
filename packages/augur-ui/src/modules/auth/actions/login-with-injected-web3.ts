@@ -12,12 +12,12 @@ import {
   SIGNIN_SIGN_WALLET,
   MODAL_LOADING,
 } from 'modules/common/constants';
-import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { augurSdk } from 'services/augursdk';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { logout } from 'modules/auth/actions/logout';
 import { AppState } from 'appStore';
+import { AppStatusActions } from 'modules/app/store/app-status';
 
 // MetaMask, dapper, Mobile wallets
 export const loginWithInjectedWeb3 = () => async (
@@ -30,7 +30,7 @@ export const loginWithInjectedWeb3 = () => async (
   };
   const success = async (account: string, refresh: boolean) => {
     if (!account) return failure('No Account');
-    if (refresh) dispatch(updateAuthStatus(IS_LOGGED, false));
+    if (refresh) AppStatusActions.actions.setIsLogged(false);
 
     dispatch(login(account));
 

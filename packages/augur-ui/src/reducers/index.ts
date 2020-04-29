@@ -1,6 +1,5 @@
 import accountPositions from 'modules/positions/reducers/account-positions';
 import sidebarStatus from 'modules/app/reducers/sidebar-status';
-import authStatus from 'modules/auth/reducers/auth-status';
 import blockchain from 'modules/app/reducers/blockchain';
 import connection from 'modules/app/reducers/connection';
 import env from 'modules/app/reducers/env';
@@ -30,7 +29,6 @@ import initialized3box from 'modules/global-chat/reducers/initialized-3box'
 import {
   LoginAccount,
   AccountPosition,
-  AuthStatus,
   Blockchain,
   Connection,
   Favorite,
@@ -60,7 +58,6 @@ export function createReducer() {
   return {
     accountPositions,
     alerts,
-    authStatus,
     blockchain,
     connection,
     env,
@@ -95,7 +92,6 @@ export function createReducer() {
 export interface AppStateInterface {
   accountPositions: AccountPosition;
   alerts: Alert[];
-  authStatus: AuthStatus;
   blockchain: Blockchain;
   connection: Connection;
   config: SDKConfiguration;

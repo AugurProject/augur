@@ -33,10 +33,7 @@ import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
-import {
-  updateAuthStatus,
-  RESTORED_ACCOUNT,
-} from 'modules/auth/actions/auth-status';
+import { AppStatusActions } from 'modules/app/store/app-status';
 import { logout } from 'modules/auth/actions/logout';
 import { updateCanHotload } from 'modules/app/actions/update-connection';
 import { Augur, Provider } from '@augurproject/sdk';
@@ -157,7 +154,7 @@ export function connectAugur(
           preloaded: true,
         },
       };
-      dispatch(updateAuthStatus(RESTORED_ACCOUNT, true));
+      AppStatusActions.actions.setRestoredAccount(true);
       dispatch(updateLoginAccount(accountObject));
     };
 

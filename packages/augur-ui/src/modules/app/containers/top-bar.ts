@@ -10,13 +10,10 @@ import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
 import { Action } from 'redux';
 
 const mapStateToProps = (state: AppState) => {
-  const { authStatus } = state;
   const { unseenCount } = selectInfoAlertsAndSeenCount(state);
   return {
     stats: selectCoreStats(state),
     unseenCount,
-    isLogged: authStatus.isLogged,
-    restoredAccount: authStatus.restoredAccount,
   };
 };
 

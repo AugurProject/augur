@@ -50,8 +50,6 @@ const mapStateToProps = (state: AppState) => {
     blockchain: state.blockchain,
     connection: state.connection,
     env: state.env,
-    isLogged: state.authStatus.isLogged,
-    restoredAccount: state.authStatus.restoredAccount,
     loginAccount,
     modal: state.modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),

@@ -21,8 +21,6 @@ import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface TopBarProps {
-  isLogged: boolean;
-  restoredAccount: boolean;
   stats: CoreStats;
   unseenCount: number;
   signupModal: Function;
@@ -30,14 +28,12 @@ interface TopBarProps {
 }
 
 const TopBar: React.FC<TopBarProps> = ({
-  isLogged,
-  restoredAccount,
   stats,
   unseenCount,
   signupModal,
   loginModal,
 }) => {
-  const { isMobile, isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
+  const { isLogged, restoredAccount, isMobile, isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
   return (
     <header className={Styles.TopBar}>

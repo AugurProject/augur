@@ -36,8 +36,6 @@ const mapStateToProps = (state: AppState) => {
     userDefinedGasPrice: userDefined,
     gasPriceSpeed,
     gasPriceTime,
-    isLogged: state.authStatus.isLogged,
-    restoredAccount: state.authStatus.restoredAccount,
     accountMeta:
       state.loginAccount &&
       state.loginAccount.meta,
@@ -47,7 +45,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  logout: (setGSNEnabled) => dispatch(logout(setGSNEnabled)),
+  logout: () => dispatch(logout()),
   gasModal: () => dispatch(updateModal({ type: MODAL_GAS_PRICE })),
   universeSelectorModal: () => dispatch(updateModal({ type: MODAL_UNIVERSE_SELECTOR })),
   showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),

@@ -37,7 +37,7 @@ const getMarketPath = id => {
 };
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { authStatus, loginAccount, accountPositions, userOpenOrders, blockchain, newMarket } = state;
+  const { loginAccount, accountPositions, userOpenOrders, blockchain, newMarket } = state;
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const {
@@ -51,13 +51,13 @@ const mapStateToProps = (state: AppState, ownProps) => {
   if (ownProps.initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
-
+  const { isLogged, restoredAccount } = AppStatusState.get();
   return {
     hasHistory,
     gasPrice: getGasPrice(state),
     hasFunds,
-    isLogged: authStatus.isLogged,
-    restoredAccount: authStatus.restoredAccount,
+    isLogged,
+    restoredAccount,
     GsnEnabled,
     currentTimestamp: blockchain.currentAugurTimestamp,
     availableDai,

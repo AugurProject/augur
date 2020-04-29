@@ -6,7 +6,6 @@ import { MODAL_DR_QUICK_GUIDE } from "modules/common/constants";
 import { AppState } from "appStore";
 
 const mapStateToProps = (state: AppState) => ({
-  showLoggedOut: !state.authStatus.isLogged,
 });
 
 const mapDispatchToProps = dispatch => ({

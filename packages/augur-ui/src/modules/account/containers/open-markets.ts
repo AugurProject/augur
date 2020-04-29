@@ -37,7 +37,6 @@ const mapStateToProps = (state: AppState) => {
   }));
 
   return {
-    isLogged: state.authStatus.isLogged,
     markets: marketsPick,
     marketsObj,
     totalPercentage: formatPercent(totalPercentage),

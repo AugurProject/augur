@@ -10,13 +10,14 @@ import { AppState } from 'appStore';
 import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 export const loadAccountData = (
   callback: NodeStyleCallback = logError
 ) => async (dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState) => {
-  const { loginAccount, universe, gasPriceInfo, connection, authStatus } = getState();
-  if (connection.isConnected && authStatus.isLogged) {
+  const { loginAccount, universe, gasPriceInfo, connection } = getState();
+  if (connection.isConnected && AppStatusState.get().isLogged) {
     const { mixedCaseAddress: address } = loginAccount;
     if (!address) return callback('account address required');
     const windowApp = windowRef as WindowApp;

@@ -1,33 +1,33 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Route, Redirect } from "react-router-dom";
+import React from 'react';
+import { Route, Redirect } from 'react-router-dom';
 
-import makePath from "modules/routes/helpers/make-path";
+import makePath from 'modules/routes/helpers/make-path';
 
-import { DEFAULT_VIEW } from "modules/routes/constants/views";
+import { DEFAULT_VIEW } from 'modules/routes/constants/views';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface AuthenticatedRouteProps {
   component: any;
-  isLogged: boolean;
-  restoredAccount: boolean;
 }
 
-const AuthenticatedRoute = ({ component: Component, isLogged, restoredAccount, ...rest }: AuthenticatedRouteProps) => (
-  <Route
-    {...rest}
-    render={(props) =>
-      isLogged || restoredAccount? (
-        <Component {...props} />
-      ) : (
-        <Redirect push to={makePath(DEFAULT_VIEW, false)} />
-      )
-    }
-  />
-);
+const AuthenticatedRoute = ({
+  component: Component,
+  ...rest
+}: AuthenticatedRouteProps) => {
+  const { isLogged, restoredAccount } = useAppStatusStore();
 
-const mapStateToProps = (state) => ({
-  isLogged: state.authStatus.isLogged,
-  restoredAccount: state.authStatus.restoredAccount,
-});
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        isLogged || restoredAccount ? (
+          <Component {...props} />
+        ) : (
+          <Redirect push to={makePath(DEFAULT_VIEW, false)} />
+        )
+      }
+    />
+  );
+};
 
-export default connect(mapStateToProps)(AuthenticatedRoute);
+export default AuthenticatedRoute;

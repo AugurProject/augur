@@ -15,6 +15,8 @@ import {
   REP_TO_DAI_RATE,
   Ox_STATUS,
   WALLET_STATUS,
+  RESTORED_ACCOUNT,
+  IS_LOGGED,
 } from 'modules/app/store/constants';
 
 const {
@@ -32,6 +34,8 @@ const {
   SET_REP_TO_DAI_RATE,
   SET_Ox_STATUS,
   SET_WALLET_STATUS,
+  SET_RESTORED_ACCOUNT,
+  SET_IS_LOGGED,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -111,6 +115,14 @@ export function AppStatusReducer(state, action) {
       updatedState[WALLET_STATUS] = action.walletStatus;
       break;
     }
+    case SET_RESTORED_ACCOUNT: {
+      updatedState[RESTORED_ACCOUNT] = action.restoredAccount;
+      break;
+    }
+    case SET_IS_LOGGED: {
+      updatedState[IS_LOGGED] = action.isLogged;
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -148,6 +160,8 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setRepToDaiRate: repToDaiRate => dispatch({ type: SET_REP_TO_DAI_RATE, repToDaiRate }),
       setOxStatus: OxStatus => dispatch({ type: SET_Ox_STATUS, OxStatus }),
       setWalletStatus: walletStatus => dispatch({ type: SET_WALLET_STATUS, walletStatus }),
+      setRestoredAccount: restoredAccount => dispatch({ type: SET_RESTORED_ACCOUNT, restoredAccount }),
+      setIsLogged: isLogged => dispatch({ type: SET_IS_LOGGED, isLogged }),
     },
   };
 };

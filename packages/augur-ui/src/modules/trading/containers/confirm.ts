@@ -9,7 +9,7 @@ import { removePendingTransaction } from 'modules/pending-queue/actions/pending-
 import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { authStatus, loginAccount, newMarket } = state;
+  const { loginAccount, newMarket } = state;
   const {
     gsnEnabled: GsnEnabled,
     walletStatus: walletStatus,
@@ -29,7 +29,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
     availableEth: createBigNumber(loginAccount.balances.eth),
     availableDai,
     hasFunds,
-    isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,
     GsnEnabled,
     walletStatus,

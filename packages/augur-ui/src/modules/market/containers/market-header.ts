@@ -35,7 +35,6 @@ const mapStateToProps = (state, ownProps) => {
     minPrice: market.minPriceBigNumber || ZERO,
     scalarDenomination: market.scalarDenomination,
     currentTime: (state.blockchain || {}).currentAugurTimestamp,
-    isLogged: state.authStatus.isLogged,
     isForking: state.universe.forkingInfo,
     market,
     isFavorite: !!state.favorites[ownProps.marketId],

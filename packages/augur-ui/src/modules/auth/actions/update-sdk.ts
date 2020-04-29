@@ -6,7 +6,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { loadAccountDataFromLocalStorage } from './load-account-data-from-local-storage';
-import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { NetworkId } from '@augurproject/artifacts';
@@ -30,7 +29,7 @@ export const updateSdk = (
 
   let newAccount = { ...loginAccount };
 
-  const { actions: { setGSNEnabled, setOxEnabled, setWalletStatus } } = AppStatusActions;
+  const { actions: { setGSNEnabled, setOxEnabled, setWalletStatus, setIsLogged } } = AppStatusActions;
 
   try {
     setOxEnabled(!!augurSdk.sdk.zeroX);
@@ -64,7 +63,7 @@ export const updateSdk = (
     );
 
     dispatch(updateLoginAccount(newAccount));
-    dispatch(updateAuthStatus(IS_LOGGED, true));
+    setIsLogged(true);
     dispatch(loadAccountData());
     dispatch(updateAssets());
   } catch (error) {

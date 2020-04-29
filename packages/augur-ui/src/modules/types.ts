@@ -588,11 +588,6 @@ export interface AppStatus {
   walletStatus: string;
 }
 
-export interface AuthStatus {
-  isLogged?: boolean;
-  restoredAccount?: boolean;
-}
-
 export interface AccountPositionAction {
   marketId: string;
   positionData: AccountPosition;

@@ -13,6 +13,8 @@ export const ETH_TO_DAI_RATE = 'ethToDaiRate';
 export const REP_TO_DAI_RATE = 'repToDaiRate';
 export const Ox_STATUS = 'zeroXStatus';
 export const WALLET_STATUS = 'walletStatus';
+export const RESTORED_ACCOUNT = 'restoredAccount';
+export const IS_LOGGED = 'isLogged';
 
 export const DEFAULT_APP_STATUS = {
   [THEME]: THEMES.TRADING,
@@ -28,6 +30,8 @@ export const DEFAULT_APP_STATUS = {
   [REP_TO_DAI_RATE]: null,
   [Ox_STATUS]: null,
   [WALLET_STATUS]: null,
+  [RESTORED_ACCOUNT]: false,
+  [IS_LOGGED]: false,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -45,6 +49,8 @@ export const APP_STATUS_ACTIONS = {
   SET_REP_TO_DAI_RATE: 'SET_REP_TO_DAI_RATE',
   SET_Ox_STATUS: 'SET_Ox_STATUS',
   SET_WALLET_STATUS: 'SET_WALLET_STATUS',
+  SET_RESTORED_ACCOUNT: 'SET_RESTORED_ACCOUNT',
+  SET_IS_LOGGED: 'SET_IS_LOGGED',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -62,4 +68,6 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setRepToDaiRate: repToDaiRate => {},
   setOxStatus: OxStatus => {},
   setWalletStatus: walletStatus => {},
+  setRestoredAccount: restoredAccount => {},
+  setIsLogged: isLogged => {},
 };

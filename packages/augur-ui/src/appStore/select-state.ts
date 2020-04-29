@@ -8,7 +8,6 @@ export const selectAccountPositionsState = (state: AppState) =>
   state.accountPositions;
 export const selectBlockchainState = (state: AppState) => state.blockchain;
 export const selectGasPriceInfo = (state: AppState) => state.gasPriceInfo;
-export const selectAuthStatus = (state: AppState) => state.authStatus;
 export const selectDisputeWindowStats = (state: AppState) =>
   state.universe.disputeWindow;
 export const selectLoginAccountState = (state: AppState): LoginAccount =>

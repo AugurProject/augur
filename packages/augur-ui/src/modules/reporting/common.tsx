@@ -64,6 +64,7 @@ import {
   displayGasInDai,
   getGasInDai,
 } from 'modules/app/actions/get-ethToDai-rate';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -992,20 +993,17 @@ export interface ReportingCardProps {
   disputingWindowEndTime: number;
   showReportingModal: Function;
   callback: Function;
-  isLogged: boolean;
   isForking: boolean;
 }
 
-export const ReportingCard = (props: ReportingCardProps) => {
-  const {
-    market,
-    currentAugurTimestamp,
-    showReportingModal,
-    isLogged,
-    isForking,
-  } = props;
-
+export const ReportingCard = ({
+  market,
+  currentAugurTimestamp,
+  showReportingModal,
+  isForking,
+}: ReportingCardProps) => {
   if (!market) return null;
+  const { isLogged } = useAppStatusStore();
 
   const { id, reportingState, disputeInfo, endTimeFormatted } = market;
 
@@ -1099,7 +1097,6 @@ const AllTimeProfitLoss = (props: AllTimeProfitLossProps) => (
 );
 
 interface UserRepDisplayProps {
-  isLoggedIn: boolean;
   repBalanceFormatted: FormattedNumber;
   repProfitLossPercentageFormatted: FormattedNumber;
   repProfitAmountFormatted: FormattedNumber;
@@ -1111,113 +1108,99 @@ interface UserRepDisplayProps {
   hasStakedRep: boolean;
 }
 
-export class UserRepDisplay extends Component<
-  UserRepDisplayProps,
-  UserRepDisplayState
-> {
-  state: UserRepDisplayState = {
-    toggle: false,
-  };
+export const UserRepDisplay = ({
+  repBalanceFormatted,
+  repProfitAmountFormatted,
+  repProfitLossPercentageFormatted,
+  openGetRepModal,
+  repTotalAmountStakedFormatted,
+  disputingAmountFormatted,
+  reportingAmountFormatted,
+  participationAmountFormatted,
+  hasStakedRep,
+}: UserRepDisplayProps) => {
+  const [toggle, setToggle] = useState(false);
+  const { isLogged } = useAppStatusStore();
+  return (
+    <div
+      className={classNames(Styles.UserRepDisplay, {
+        [Styles.HideForMobile]: toggle,
+      })}
+    >
+      <>
+        <div onClick={() => setToggle(!toggle)}>
+          <RepBalance alternate larger rep={repBalanceFormatted.formatted} />
+          <ChevronFlip
+            stroke="#fff"
+            filledInIcon
+            quick
+            pointDown={toggle}
+          />
+        </div>
+        <div>
+          <AllTimeProfitLoss
+            repProfitAmountFormatted={repProfitAmountFormatted}
+            repProfitLossPercentageFormatted={
+              repProfitLossPercentageFormatted
+            }
+          />
+          <PrimaryButton
+            action={openGetRepModal}
+            text={'Get REP'}
+            id="get-rep"
+          />
+        </div>
+        {!isLogged && (
+          <p>Connect a wallet to see your Available REP Balance</p>
+        )}
+        {isLogged && hasStakedRep && (
+          <>
+            <div />
+            <div>
+              <span>{MY_TOTOL_REP_STAKED}</span>
+              <SizableValueLabel
+                value={repTotalAmountStakedFormatted}
+                keyId={'rep-staked'}
+                showDenomination
+                showEmptyDash={false}
+                useFull
+                highlight
+                size={SizeTypes.LARGE}
+              />
+            </div>
+            <div>
+              <LinearPropertyLabel
+                key="Disputing"
+                label="Disputing"
+                value={disputingAmountFormatted}
+                showDenomination
+                useFull
+                useValueLabel
+              />
+              <LinearPropertyLabel
+                key="reporting"
+                label="Reporting"
+                value={reportingAmountFormatted}
+                showDenomination
+                useFull
+                useValueLabel
+              />
+              <LinearPropertyLabel
+                key="participation"
+                label="Participation Tokens"
+                value={participationAmountFormatted}
+                showDenomination
+                useFull
+                useValueLabel
+              />
+            </div>
+          </>
+        )}
+      </>
+    </div>
+  );
+};
 
-  toggle = () => {
-    this.setState({ toggle: !this.state.toggle });
-  };
-
-  render() {
-    const {
-      isLoggedIn,
-      repBalanceFormatted,
-      repProfitAmountFormatted,
-      repProfitLossPercentageFormatted,
-      openGetRepModal,
-      repTotalAmountStakedFormatted,
-      disputingAmountFormatted,
-      reportingAmountFormatted,
-      participationAmountFormatted,
-      hasStakedRep,
-    } = this.props;
-    const s = this.state;
-
-    return (
-      <div
-        className={classNames(Styles.UserRepDisplay, {
-          [Styles.HideForMobile]: s.toggle,
-        })}
-      >
-        <>
-          <div onClick={this.toggle}>
-            <RepBalance alternate larger rep={repBalanceFormatted.formatted} />
-            <ChevronFlip
-              stroke="#fff"
-              filledInIcon
-              quick
-              pointDown={s.toggle}
-            />
-          </div>
-          <div>
-            <AllTimeProfitLoss
-              repProfitAmountFormatted={repProfitAmountFormatted}
-              repProfitLossPercentageFormatted={
-                repProfitLossPercentageFormatted
-              }
-            />
-            <PrimaryButton
-              action={openGetRepModal}
-              text={'Get REP'}
-              id="get-rep"
-            />
-          </div>
-          {!isLoggedIn && (
-            <p>Connect a wallet to see your Available REP Balance</p>
-          )}
-          {isLoggedIn && hasStakedRep && (
-            <>
-              <div />
-              <div>
-                <span>{MY_TOTOL_REP_STAKED}</span>
-                <SizableValueLabel
-                  value={repTotalAmountStakedFormatted}
-                  keyId={'rep-staked'}
-                  showDenomination
-                  showEmptyDash={false}
-                  useFull
-                  highlight
-                  size={SizeTypes.LARGE}
-                />
-              </div>
-              <div>
-                <LinearPropertyLabel
-                  key="Disputing"
-                  label="Disputing"
-                  value={disputingAmountFormatted}
-                  showDenomination
-                  useFull
-                  useValueLabel
-                />
-                <LinearPropertyLabel
-                  key="reporting"
-                  label="Reporting"
-                  value={reportingAmountFormatted}
-                  showDenomination
-                  useFull
-                  useValueLabel
-                />
-                <LinearPropertyLabel
-                  key="participation"
-                  label="Participation Tokens"
-                  value={participationAmountFormatted}
-                  showDenomination
-                  useFull
-                  useValueLabel
-                />
-              </div>
-            </>
-          )}
-        </>
-      </div>
-    );
-  }
-}
 
 export interface ParticipationTokensViewProps {
   openModal: Function;
