@@ -33,11 +33,11 @@ export const MarketComments = ({
   isLogged,
 }: MarketCommentsProps) => {
   const { activate, setActivate, address, box, isReady, profile } =
-    whichCommentPlugin === '3box' && use3box(provider, initialize3box, initialized3box);
+    whichCommentPlugin === '3box' && use3box(provider, initialize3box, initialized3box, 'comments', initialized3box?.openComments);
 
   return isLogged ? (
     <section className={Styles.Comments}>
-      {whichCommentPlugin === '3box' && isReady && (
+      {whichCommentPlugin === '3box' && isReady ? (
         <ThreeBoxComments
           // required
           spaceName="augur"
@@ -51,8 +51,7 @@ export const MarketComments = ({
           currentUser3BoxProfile={profile}
           // useHovers={true}
         />
-      )}
-      {whichCommentPlugin === '3box' && !isReady && (
+      ) : (
         <SecondaryButton
           action={() => setActivate(true)}
           text={
