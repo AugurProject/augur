@@ -3685,115 +3685,115 @@ export const USA_HOLIDAYS = {
   [2020]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.MLK,
-      date: 1579478400,
+      date: 'Jan 20',
     },
     {
       holiday: HOLIDAYS.WASHINGTON,
-      date: 1581940800,
+      date: 'Feb 17'
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1586520000,
+      date: 'Apr 10',
     },
     {
       holiday: HOLIDAYS.MEMORIAL_DAY,
-      date: 1590408000,
+      date: 'May 25',
     },
     {
       holiday: HOLIDAYS.INDEPENDENCE_DAY,
-      date: 1591185600,
+      date: 'Jul 03',
     },
     {
       holiday: HOLIDAYS.LABOR_DAY,
-      date: 1599480000,
+      date: 'Sept 07',
     },
     {
       holiday: HOLIDAYS.THANKSGIVING,
-      date: 1606348800,
+      date: 'Nov 26',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1608854400,
+      date: 'Dec 25',
     },
   ],
   [2021]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1609459200,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.MLK,
-      date: 1610928000,
+      date: 'Jan 18',
     },
     {
       holiday: HOLIDAYS.WASHINGTON,
-      date: 1613390400,
+      date: 'Feb 15',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1618228800,
+      date: 'Apr 02',
     },
     {
       holiday: HOLIDAYS.MEMORIAL_DAY,
-      date: 1622462400,
+      date: 'May 31',
     },
     {
       holiday: HOLIDAYS.INDEPENDENCE_DAY,
-      date: 1622894400,
+      date: 'Jul 31',
     },
     {
       holiday: HOLIDAYS.LABOR_DAY,
-      date: 1630929600,
+      date: 'Sept 6',
     },
     {
       holiday: HOLIDAYS.THANKSGIVING,
-      date: 1637798400,
+      date: 'Nov 25',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1640304000,
+      date: 'Dec 24',
     },
   ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1640995200,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.MLK,
-      date: 1642377600,
+      date: 'Jan 17',
     },
     {
       holiday: HOLIDAYS.WASHINGTON,
-      date: 1645444800,
+      date: 'Feb 21',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1650024000,
+      date: 'Apr 15',
     },
     {
       holiday: HOLIDAYS.MEMORIAL_DAY,
-      date: 1653912000,
+      date: 'May 30',
     },
     {
       holiday: HOLIDAYS.INDEPENDENCE_DAY,
-      date: 1654344000,
+      date: 'Jul 04',
     },
     {
       holiday: HOLIDAYS.LABOR_DAY,
-      date: 1662379200,
+      date: 'Sept 05',
     },
     {
       holiday: HOLIDAYS.THANKSGIVING,
-      date: 1669248000,
+      date: 'Nov 24',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1672012800,
+      date: 'Dec 26',
     },
   ],
 };
