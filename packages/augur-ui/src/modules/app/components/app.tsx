@@ -100,6 +100,7 @@ interface AppProps {
   createFundedGsnWallet: Function;
   showCreateAccountButton: boolean;
   showMigrateRepButton: boolean;
+  whichChatPlugin: string;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -393,6 +394,7 @@ export default class AppView extends Component<AppProps> {
       showCreateAccountButton,
       showMigrateRepButton,
       stats,
+      whichChatPlugin,
     } = this.props;
     this.sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
@@ -480,6 +482,7 @@ export default class AppView extends Component<AppProps> {
                 updateModal={updateModal}
                 showCreateAccountButton={showCreateAccountButton}
                 createFundedGsnWallet={createFundedGsnWallet}
+                whichChatPlugin={whichChatPlugin}
               />
 
               {/* HIDDEN ON MOBILE */}

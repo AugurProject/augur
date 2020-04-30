@@ -27,7 +27,7 @@ const mapStateToProps = ({authStatus, loginAccount, env, initialized3box}, {numP
 };
 
 const mapDispatchToProps = dispatch => ({
-  initialize3box: (address, box, profile) => dispatch(initialize3box(address, box, profile)),
+  initialize3box: (address, box, profile, openComments) => dispatch(initialize3box(address, box, profile, openComments)),
 });
 
 const MarketCommentsContainer = connect(mapStateToProps, mapDispatchToProps)(MarketComments);
