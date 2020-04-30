@@ -27,7 +27,7 @@ export function runWsServer(api: API, app: express.Application, config: SDKConfi
 export function runWssServer(api: API, app: express.Application, config: SDKConfiguration): WebSocket.Server {
   const { wssPort: port } = config.server;
   const server = https.createServer(app).listen(port, () => {
-    console.log(`WS listening on ${port}`);
+    console.log(`WSS listening on ${port}`);
   });
 
   const wssServer = new WebSocket.Server({ server });
