@@ -11,6 +11,7 @@ const DEFAULT_STATE: MarketsList = {
   isSearching: true,
   meta: null,
   selectedCategories: [],
+  selectedCategory: null,
   marketCardFormat: null,
   isSearchInPlace: false
 };
@@ -34,6 +35,7 @@ export default function(
       return {
         ...marketsList,
         selectedCategories: data.categories,
+        selectedCategory: data.categories.length ? data.categories[data.categories.length - 1] : null,
       };
     case UPDATE_CARD_FORMAT:
       return {

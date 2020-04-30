@@ -77,7 +77,7 @@ const mergeProps = (sP, dP, oP) => {
       dP.updateTemplateFilter(templateFilter);
       dP.updateLoginAccount(Object.assign({}, sP.settings, { templateFilter }));
     },
-    updateSelectedCategories: (category) => dP.updateSelectedCategories(category);
+    updateSelectedCategories: (category) => dP.updateSelectedCategories(category),
   };
 };
 

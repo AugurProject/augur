@@ -483,6 +483,7 @@ export interface MarketsList {
     categories: object;
   };
   selectedCategories: string[];
+  selectedCategory: string;
   marketCardFormat: string;
   isSearchInPlace: boolean;
 }

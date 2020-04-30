@@ -92,7 +92,6 @@ export default class MarketsView extends Component<
 
     this.setPageNumber = this.setPageNumber.bind(this);
     this.updateLimit = this.updateLimit.bind(this);
-    this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this);
   }
 
   componentDidMount() {
@@ -187,7 +186,7 @@ export default class MarketsView extends Component<
     });
   }
 
-  updateFilteredMarkets() {
+  updateFilteredMarkets = () => {
     const {
       search,
       selectedCategories,

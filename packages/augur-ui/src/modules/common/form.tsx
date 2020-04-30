@@ -2273,7 +2273,6 @@ InputDropdown.defaultProps = {
 
 export interface CategoryRowProps {
   history: History;
-  location: Location;
   hasChildren?: boolean;
   handleClick?: Function;
   active?: boolean;
@@ -2285,7 +2284,6 @@ export interface CategoryRowProps {
 
 export const CategoryRow = ({
   history,
-  location,
   hasChildren = true,
   handleClick = noop,
   active = false,
@@ -2296,21 +2294,14 @@ export const CategoryRow = ({
 }: CategoryRowProps) => (
   <div
     onClick={() => {
-      const selectedCategory: string = parseQuery(location.search)[
-        CATEGORY_PARAM_NAME
-      ];
-
+      const categories = handleClick();
         const query: QueryEndpoints = {
-          [CATEGORY_PARAM_NAME]: selectedCategory ? [selectedCategory, category] : [category],
+          [CATEGORY_PARAM_NAME]: categories,
         };
-
         history.push({
           pathname: 'markets',
           search: makeQuery(query),
         });
-
-
-        handleClick();
       }
     }
     className={classNames(Styles.CategoryRow, {

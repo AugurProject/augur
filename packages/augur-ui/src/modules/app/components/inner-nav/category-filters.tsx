@@ -25,18 +25,14 @@ interface CategoryFiltersProps {
   categoryMetaData: CategoryMetaDataInterface;
   popularCategories: CategoryInterface[];
   allOtherCategories: CategoryInterface[];
-  updateSelectedCategories: Function;
-  updateMarketsListMeta: Function;
   selectedCategories: string[];
+  selectedCategory: string;
   history: History;
   location: Location;
 }
 
 interface CategoryFiltersState {
   showAllCategories: boolean;
-  selectedCategories: string[];
-  selectedCategory: string;
-  currentCategories: object;
 }
 
 export default class CategoryFilters extends React.Component<
@@ -46,45 +42,9 @@ export default class CategoryFilters extends React.Component<
   constructor(props) {
     super(props);
 
-    let newCategory = null;
-    if (props.categoryMetaData && props.categoryMetaData.categories && props.selectedCategories) {
-      newCategory = this.lookupCategoryFromMeta(props.selectedCategories[0], this.props.categoryMetaData.categories);
-    }
-
     this.state = {
       showAllCategories: false,
-      selectedCategories: props.selectedCategories,
-      selectedCategory: props.selectedCategories ? props.selectedCategories[0] : null,
-      currentCategories: newCategory ? newCategory.children : null,
     };
-  }
-
-  componentDidMount() {
-    this.loadCategories(null);
-  }
-
-  componentDidUpdate(prevProps: CategoryFiltersProps) {
-    this.loadCategories(prevProps);
-  }
-
-  loadCategories = (prevProps: CategoryFiltersProps) => {
-    const selectedCategory = parseQuery(this.props.location.search)[
-      CATEGORY_PARAM_NAME
-    ];
-    const oldSelectedCategory = parseQuery(prevProps && prevProps.location.search)[
-      CATEGORY_PARAM_NAME
-    ];
-
-    if (!selectedCategory) return;
-    const selected = selectedCategory.split(',');
-
-    const toSelect = selected[selected.length - 1];
-    const allOthers = selected.length === 1 ? [] : selected.slice(0, selected.length - 1);
-
-    if ((!this.props.isSearching && !this.state.selectedCategory && this.props.categoryMetaData && selectedCategory) ||
-       (selectedCategory && selectedCategory !== oldSelectedCategory)) {
-      this.getChildrenCategories(toSelect, allOthers, false);
-    }
   }
 
   render() {
@@ -95,7 +55,7 @@ export default class CategoryFilters extends React.Component<
       <div className={Styles.AllCategories}>
         <span>Categories</span>
         <div
-          onClick={() => this.gotoAllCategories()}
+          onClick={() => this.removeCategoryQuery()}
         >
           {MenuChevron} All categories
         </div>
@@ -121,8 +81,8 @@ export default class CategoryFilters extends React.Component<
           <div key={idx}>
             <CategoryRow
               history={this.props.history}
-              location={this.props.location}
               category={item.category}
+              handleClick={() => [item.category]}
               icon={item.icon}
               loading={true}
               count={null} />
@@ -134,12 +94,11 @@ export default class CategoryFilters extends React.Component<
         <div key={idx}>
           <CategoryRow
             history={this.props.history}
-            location={this.props.location}
             category={item.category}
             icon={item.icon}
             count={item.count}
             hasChildren={item.count > 0}
-            handleClick={() => this.getChildrenCategories(item.category, this.props.selectedCategories)}
+            handleClick={() => this.pathToChildCategory(item.category, this.props.selectedCategories)}
           />
         </div>
       );
@@ -165,7 +124,7 @@ export default class CategoryFilters extends React.Component<
     return (
       <div className={Styles.SelectedCategories}>
         {this.props.selectedCategories
-          .filter(categories => categories !== this.state.selectedCategory)
+          .filter(categories => categories !== this.props.selectedCategory)
           .map((category, idx) => {
             return (
               <div
@@ -180,26 +139,24 @@ export default class CategoryFilters extends React.Component<
         <div className={Styles.SelectedCategory}>
           <CategoryRow
             history={this.props.history}
-            location={this.props.location}
-            category={this.state.selectedCategory}
-            count={this.getCategoryCount(this.state.selectedCategory)}
-            handleClick={() => null}
+            category={this.props.selectedCategory}
+            count={this.getSelectedCategoryCount()}
+            handleClick={() => [this.props.selectedCategory]}
             active={true}
             loading={this.props.isSearching}
           />
         </div>
-        {this.state.selectedCategory &&
-          this.getSelectedCategories().map((item, idx) => {
+        {this.props.selectedCategory &&
+          this.getSelectedCategoryCategories().map((item, idx) => {
             return (
               <div key={idx}>
                 <CategoryRow
                   history={this.props.history}
-                  location={this.props.location}
                   category={item.category}
                   count={item.count}
                   loading={this.props.isSearching}
-                  handleClick={() => this.getChildrenCategories(item.category, this.props.selectedCategories)}
-                  hasChildren={this.hasChildren(item.category)}
+                  handleClick={() => this.pathToChildCategory(item.category, this.props.selectedCategories)}
+                  hasChildren={this.getCategoryChildrenCount([...this.props.selectedCategories, item.category]) > 0}
                 />
               </div>
             );
@@ -223,12 +180,11 @@ export default class CategoryFilters extends React.Component<
         <div key={idx}>
           <CategoryRow
             history={this.props.history}
-            location={this.props.location}
             category={item.category}
             count={item.count}
             loading={this.props.isSearching}
             hasChildren={item.count > 0}
-            handleClick={() => this.getChildrenCategories(item.category, this.props.selectedCategories)}
+            handleClick={() => this.pathToChildCategory(item.category, this.props.selectedCategories)}
           />
         </div>
       );
@@ -259,7 +215,7 @@ export default class CategoryFilters extends React.Component<
   }
 
 
-  removeCategoryQuery () {
+  removeCategoryQuery = () => {
     const { history, location } = this.props;
 
     let updatedSearch = parseQuery(location.search);
@@ -272,113 +228,54 @@ export default class CategoryFilters extends React.Component<
     });
   }
 
-  gotoAllCategories = () => {
-    if (this.props.isSearching) return null;
-
-    this.removeCategoryQuery();
-
-    this.props.updateSelectedCategories([]);
-    this.setState({
-      selectedCategories: [],
-      selectedCategory: null,
-      currentCategories: this.props.categoryMetaData.categories,
-    });
-  }
 
   gotoCategory(selectedCategory) {
-    if (this.props.isSearching) return null;
     const indexOfSelected = this.props.selectedCategories.indexOf(selectedCategory);
     const selectedCategories = this.props.selectedCategories.slice(0, indexOfSelected + 1);
 
-    const newCategory = this.lookupCategoryFromMeta(selectedCategory, this.props.categoryMetaData.categories);
-    this.props.updateSelectedCategories(selectedCategories);
-    this.setState({
-      selectedCategories,
-      selectedCategory,
-      currentCategories: newCategory.children,
+    const query: QueryEndpoints = {
+      [CATEGORY_PARAM_NAME]: selectedCategories,
+    };
+
+    this.props.history.push({
+      pathname: 'markets',
+      search: makeQuery(query),
     });
   }
 
-  lookupCategoryFromMeta(selectedCategory, categories) {
-    const indexOfSelected = this.props.selectedCategories.indexOf(selectedCategory);
+  getSelectedCategoryCategories() {
+    const { categoryMetaData, selectedCategories } = this.props;
+    const { categories } = categoryMetaData;
+    const childrenCategories = selectedCategories.reduce((p, cat) => p[cat] ? p[cat].children : p, categories);
 
-    let pathString = '';
-    // Used to walk the categories meta data object
-    // -> category: {
-    //   -> children: {
-    //     -> category
-    //       -> ...
-    for (let i = 0; i <= indexOfSelected; i++) {
-      const cat = this.props.selectedCategories[i];
-      pathString = pathString + `${ i > 0 ? '.children.' : ''}${cat}`;
-    }
-
-    return getValue(categories, pathString);
-  }
-
-  hasChildren(selectedCategory) {
-    const metaCategories = this.state.currentCategories;
-    const childrenCategories = metaCategories[selectedCategory] && metaCategories[selectedCategory].children;
-
-    if (childrenCategories) {
-      const metaCategoriesChildren = Object.keys(metaCategories[selectedCategory].children)
-        .filter(this.removeBlankCategories);
-
-      if (metaCategoriesChildren.length > 0) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  getCategoryCount(selectedCategory) {
-    const categoryCount = this.lookupCategoryFromMeta(selectedCategory, this.props.categoryMetaData.categories);
-    return categoryCount && categoryCount.count ? categoryCount.count : 0;
-  }
-
-  getChildrenCategories(selectedCategory, selectedCategories, hidden = true) {
-    if (this.props.isSearching && hidden) return null;
-
-
-    const metaCategories = this.props.categoryMetaData ? this.props.categoryMetaData.categories : selectedCategories;
-    const childrenCategories = metaCategories[selectedCategory] && metaCategories[selectedCategory].children;
-
-    const updateState = (currentCategories) => {
-      this.setState({
-        selectedCategories: selectedCategories.concat(selectedCategory),
-        selectedCategory,
-        currentCategories,
+    return Object.keys(childrenCategories)
+      .filter(this.removeBlankCategories)
+      .map(category => {
+        return {
+          category,
+          count: childrenCategories[category].count,
+          children: childrenCategories[category].children,
+        };
       });
-      this.props.updateSelectedCategories(selectedCategories.concat(selectedCategory));
-    };
-
-    if (childrenCategories) {
-      const metaCategoriesChildren = Object.keys(childrenCategories)
-        .filter(this.removeBlankCategories);
-
-      if (metaCategoriesChildren.length > 0) {
-        updateState(childrenCategories);
-        return;
-      }
-    }
-
-    updateState({});
   }
 
-  getSelectedCategories() {
-    if (this.state.currentCategories) {
-      const newCategories = Object.keys(this.state.currentCategories)
-        .filter(this.removeBlankCategories)
-        .map(category => {
-          return {
-            category,
-            count: this.state.currentCategories[category].count,
-            children: this.state.currentCategories[category].children,
-          };
-        });
-      return newCategories;
-    }
-    return [];
+  getCategoryChildrenCount(categories) {
+    const { categoryMetaData } = this.props;
+    if (!categoryMetaData || !categories || categories.length === 0) return [];
+    const { categories: metaCategories } = categoryMetaData;
+    const childrenCategories = categories.reduce((p, cat, index) => p[cat] ? index === categories.length - 1 ? p[cat] : p[cat].children : p, metaCategories);
+    return childrenCategories ? childrenCategories.count : 0;
+  }
+
+  getSelectedCategoryCount() {
+    const { selectedCategories } = this.props;
+    // selected category is the last category in selectedCategories
+    return this.getCategoryChildrenCount(selectedCategories);
+  }
+
+  pathToChildCategory(selectedCategory, selectedCategories, hidden = true) {
+    if (this.props.isSearching && hidden) return [];
+    return selectedCategories.concat(selectedCategory);
   }
 
   removeBlankCategories(category) {
