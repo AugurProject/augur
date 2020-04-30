@@ -484,7 +484,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         'No winner/Event cancelled',
       ],
       extraInfo: {
-        categories: [SPORTS, PGA, 'PGA Championship'],
+        categories: [SPORTS, GOLF, PGA],
         description: fillInQuestion(golfTemplate, golfInputValues),
         tags: [],
         longDescription: getLongDescription(golfTemplate),
