@@ -16,10 +16,9 @@ import { PrimaryButton } from 'modules/common/buttons';
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles.less';
 import { FilterSortOptions } from 'modules/types';
 import updateMultipleQueries from 'modules/routes/helpers/update-multiple-queries';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface BaseInnerNavPureProps {
-  mobileMenuState: number;
-  updateMobileMenuState: Function;
   selectedCategories: String[];
   filterSortOptions: FilterSortOptions;
   updateLoginAccount: Function;
@@ -34,8 +33,6 @@ interface BaseInnerNavPureProps {
 }
 
 const BaseInnerNavPure = ({
-  mobileMenuState,
-  updateMobileMenuState,
   selectedCategories,
   filterSortOptions,
   updateLoginAccount,
@@ -48,8 +45,10 @@ const BaseInnerNavPure = ({
   location,
   history,
 }: BaseInnerNavPureProps) => {
-  const showMainMenu = mobileMenuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN;
-
+  const {
+    mobileMenuState,
+    actions: { setMobileMenuState },
+  } = useAppStatusStore();
   const [originalSelectedCategories, setOriginalSelectedCategories] = useState(
     selectedCategories
   );
@@ -73,6 +72,7 @@ const BaseInnerNavPure = ({
   const sortProps = {
     setSortOptions,
   };
+  const showMainMenu = mobileMenuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN;
 
   const getFilters = (originalFilters = false) => {
     const filters = [
@@ -108,7 +108,7 @@ const BaseInnerNavPure = ({
   const applyFilters = () => {
     const changedFilters = getFilters();
 
-    updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+    setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
 
     if (changedFilters.length > 0) {
       updateMultipleQueries(changedFilters, location, history);
@@ -189,7 +189,7 @@ const BaseInnerNavPure = ({
                 updateMultipleQueries(getFilters(true), location, history);
               }
 
-              updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+              setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
             }}
           >
             {XIcon}

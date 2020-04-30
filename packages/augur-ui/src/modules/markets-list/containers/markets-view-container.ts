@@ -32,7 +32,6 @@ import {
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
-import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 import { updateLoginAccountSettings } from 'modules/markets-list/actions/update-login-account-settings';
 import { marketListViewed } from 'services/analytics/helpers';
 import { AppStatusState } from 'modules/app/store/app-status';
@@ -99,7 +98,6 @@ const mapDispatchToProps = (
     dispatch(updateFilterSortOptions(MARKET_FILTER, filterOption)),
   updateMarketsListCardFormat: format =>
     dispatch(updateMarketsListCardFormat(format)),
-  updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
   updateLoginAccountSettings: settings =>
     dispatch(updateLoginAccountSettings(settings)),
   setMarketsListSearchInPlace: isSearchInPlace =>

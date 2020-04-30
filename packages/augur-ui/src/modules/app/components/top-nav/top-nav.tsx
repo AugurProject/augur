@@ -20,12 +20,12 @@ import {
 import {
   CREATE_MARKET
 } from 'modules/routes/constants/views';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 
 interface TopNavProps {
   isLogged: boolean;
   menuData: NavMenuItem[];
-  currentBasePath: string;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
@@ -39,13 +39,13 @@ const SPREAD_INDEX = 3;
 const TopNav = ({
   isLogged,
   menuData,
-  currentBasePath,
   migrateV1Rep,
   createFundedGsnWallet,
   showMigrateRepButton = false,
   showCreateAccountButton = false,
   walletBalances,
 }: TopNavProps) => {
+  const { currentBasePath} = useAppStatusStore();
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
     return item.route === currentBasePath;

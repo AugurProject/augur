@@ -1,4 +1,5 @@
-import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_FAST, DEFAULT_FALLBACK_GAS_SAFELOW } from 'modules/common/constants';
+import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_FAST, DEFAULT_FALLBACK_GAS_SAFELOW, MOBILE_MENU_STATES } from 'modules/common/constants';
+import { MARKETS } from "modules/routes/constants/views";
 import { DEFAULT_SDK_CONFIGURATION, SDKConfiguration } from '@augurproject/artifacts';
 import { formatGasCostGwei } from 'utils/format-number';
 import { GasPriceInfo } from 'modules/types';
@@ -23,6 +24,8 @@ export const IS_RECONNECTION_PAUSED = 'isReconnectionPaused';
 export const CAN_HOTLOAD = 'canHotload';
 export const ENV = 'env';
 export const GAS_PRICE_INFO = 'gasPriceInfo';
+export const MOBILE_MENU_STATE = 'mobileMenuState';
+export const CURRENT_BASE_PATH = 'currentBasePath';
 
 const DEFAULT_ENV: SDKConfiguration = JSON.parse(JSON.stringify(DEFAULT_SDK_CONFIGURATION));
 const DEFAULT_GAS_PRICE_INFO: GasPriceInfo = {
@@ -53,6 +56,8 @@ export const DEFAULT_APP_STATUS = {
   [CAN_HOTLOAD]: false,
   [ENV]: DEFAULT_ENV,
   [GAS_PRICE_INFO]: DEFAULT_GAS_PRICE_INFO,
+  [MOBILE_MENU_STATE]: MOBILE_MENU_STATES.CLOSED,
+  [CURRENT_BASE_PATH]: MARKETS,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -77,6 +82,8 @@ export const APP_STATUS_ACTIONS = {
   SET_CAN_HOTLOAD: 'SET_CAN_HOTLOAD',
   SET_ENV: 'SET_ENV',
   UPDATE_GAS_PRICE_INFO: 'UPDATE_GAS_PRICE_INFO',
+  SET_MOBILE_MENU_STATE: 'SET_MOBILE_MENU_STATE',
+  SET_CURRENT_BASE_PATH: 'SET_CURRENT_BASE_PATH',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -101,4 +108,6 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setCanHotload: canHotload => {},
   setEnv: env => {},
   updateGasPriceInfo: gasPriceInfo => {},
+  setMobileMenuState: mobileMenuState => {},
+  setCurrentBasePath: currentBasePath => {},
 };

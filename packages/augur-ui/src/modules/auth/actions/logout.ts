@@ -2,7 +2,6 @@ import { clearLoginAccount } from 'modules/account/actions/login-account';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { windowRef } from 'utils/window-ref';
-import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 import { analytics } from 'services/analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { augurSdk } from 'services/augursdk';
@@ -12,7 +11,7 @@ import { AppStatusActions } from 'modules/app/store/app-status';
 
 export function logout() {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
-    const { actions: { setGSNEnabled, setWalletStatus }} = AppStatusActions;
+    const { actions: { setGSNEnabled, setWalletStatus, setMobileMenuState }} = AppStatusActions;
     const localStorageRef =
       typeof window !== 'undefined' && window.localStorage;
     if (localStorageRef && localStorageRef.removeItem) {
@@ -24,7 +23,7 @@ export function logout() {
     dispatch(clearLiquidityOrders());
 
     // Close Mobile Menu
-    dispatch(updateMobileMenuState(0));
+    setMobileMenuState(0);
 
     // Clean up web3 wallets
     if (windowRef.torus) {

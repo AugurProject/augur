@@ -5,7 +5,6 @@ import FilterSearch from 'modules/filter-sort/containers/filter-search';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import {
   CATEGORY_PARAM_NAME,
-  MOBILE_MENU_STATES,
 } from 'modules/common/constants';
 import MarketCardFormatSwitcher from 'modules/filter-sort/components/market-card-format-switcher';
 import Styles from 'modules/markets-list/components/markets-header.styles.less';
@@ -22,7 +21,6 @@ interface MarketsHeaderProps {
   search: string;
   marketCardFormat: string;
   updateMarketsListCardFormat: Function;
-  updateMobileMenuState: (mobileMenuState: number) => void;
 }
 
 const getHeaderTitleFromProps = (
@@ -53,7 +51,6 @@ const getHeaderTitleFromProps = (
 const MarketsHeader: React.FC<MarketsHeaderProps> = props => {
   const {
     isSearchingMarkets,
-    updateMobileMenuState,
     location,
     selectedCategory,
     search,

@@ -25,7 +25,6 @@ interface SideNavProps {
   defaultMobileClick: Function;
   isLogged: boolean;
   menuData: NavMenuItem[];
-  currentBasePath: string;
   logout: Function;
   showNav: boolean;
   showGlobalChat: Function;
@@ -39,7 +38,6 @@ const SideNav = ({
   defaultMobileClick,
   menuData,
   logout,
-  currentBasePath,
   showNav,
   showGlobalChat,
   migrateV1Rep,
@@ -47,6 +45,7 @@ const SideNav = ({
   updateModal,
 }: SideNavProps) => {
   const {
+    currentBasePath,
     isHelpMenuOpen,
     isConnectionTrayOpen,
     actions: { setIsHelpMenuOpen, setGSNEnabled },

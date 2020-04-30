@@ -22,6 +22,8 @@ import {
   CAN_HOTLOAD,
   ENV,
   GAS_PRICE_INFO,
+  MOBILE_MENU_STATE,
+  CURRENT_BASE_PATH,
 } from 'modules/app/store/constants';
 
 const {
@@ -46,6 +48,8 @@ const {
   SET_CAN_HOTLOAD,
   SET_ENV,
   UPDATE_GAS_PRICE_INFO,
+  SET_MOBILE_MENU_STATE,
+  SET_CURRENT_BASE_PATH,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -156,6 +160,14 @@ export function AppStatusReducer(state, action) {
       };
       break;
     }
+    case SET_CURRENT_BASE_PATH: {
+      updatedState[CURRENT_BASE_PATH] = action.currentBasePath;
+      break;
+    }
+    case SET_MOBILE_MENU_STATE: {
+      updatedState[MOBILE_MENU_STATE] = action.mobileMenuState;
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -209,6 +221,10 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setEnv: env => dispatch({ type: SET_ENV, env }),
       updateGasPriceInfo: gasPriceInfo =>
         dispatch({ type: UPDATE_GAS_PRICE_INFO, gasPriceInfo }),
+      setMobileMenuState: mobileMenuState =>
+        dispatch({ type: SET_MOBILE_MENU_STATE, mobileMenuState }),
+      setCurrentBasePath: currentBasePath =>
+        dispatch({ type: SET_CURRENT_BASE_PATH, currentBasePath }),
     },
   };
 };

@@ -78,15 +78,7 @@ interface AppProps {
   sdkEndpoint: string;
   useWeb3Transport: boolean;
   logout: Function;
-  sidebarStatus: {
-    mobileMenuState: number;
-    currentBasePath: string;
-  };
-  updateCurrentBasePath: Function;
-  updateCurrentInnerNavType: Function;
-  updateMobileMenuState: Function;
   updateIsAlertVisible: Function;
-  updateSidebarStatus: Function;
   toasts: any[];
   showGlobalChat: Function;
   migrateV1Rep: Function;
@@ -97,7 +89,7 @@ interface AppProps {
   showMigrateRepButton: boolean;
 }
 
-function renderMobileMenuButton(mobileMenuState, updateMobileMenuState, cbForMobileClick = () => {}) {
+function renderMobileMenuButton(mobileMenuState, setMobileMenuState, cbForMobileClick = () => {}) {
   let icon: any = null;
   if (mobileMenuState === MOBILE_MENU_STATES.CLOSED) {
     icon = <MobileNavHamburgerIcon />;
@@ -117,10 +109,10 @@ function renderMobileMenuButton(mobileMenuState, updateMobileMenuState, cbForMob
         cbForMobileClick();
         switch (mobileMenuState) {
           case MOBILE_MENU_STATES.CLOSED:
-            updateMobileMenuState(MOBILE_MENU_STATES.SIDEBAR_OPEN);
+            setMobileMenuState(MOBILE_MENU_STATES.SIDEBAR_OPEN);
             break;
           default:
-            updateMobileMenuState(mobileMenuState - 1);
+            setMobileMenuState(mobileMenuState - 1);
             break;
         }
       }}
@@ -129,14 +121,6 @@ function renderMobileMenuButton(mobileMenuState, updateMobileMenuState, cbForMob
     </button>
   );
 };
-
-function changeMenu(nextBasePath, updateCurrentInnerNavType, updateMobileMenuState) {
-  if (nextBasePath === MARKETS || nextBasePath === MY_POSITIONS) {
-    updateCurrentInnerNavType(MarketsInnerNavContainer);
-  } else {
-    updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
-  }
-}
 
 function checkIsMobile(setIsMobile) {
   // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
@@ -161,11 +145,7 @@ const AppView = ({
   initAugur,
   location: locationProp,
   updateModal,
-  updateCurrentBasePath,
   saveAffilateAddress,
-  updateMobileMenuState,
-  sidebarStatus: { currentBasePath, mobileMenuState },
-  updateSidebarStatus,
   blockchain: { currentAugurTimestamp },
   modal,
   toasts,
@@ -176,9 +156,8 @@ const AppView = ({
   showMigrateRepButton,
   logout,
   showGlobalChat,
-  updateCurrentInnerNavType,
 }:AppProps) => {
-  const { env, isLogged, isMobile, actions: { setIsMobile} } = useAppStatusStore();
+  const { mobileMenuState, env, isLogged, isMobile, actions: { setIsMobile, setMobileMenuState, setCurrentBasePath } } = useAppStatusStore();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
   const ModalShowing = Object.keys(modal).length !== 0;
@@ -272,10 +251,9 @@ const AppView = ({
   useEffect(() => {
     if (mobileMenuState !== MOBILE_MENU_STATES.CLOSED && !isMobile) {
       // make sure to close sidenav if we aren't in mobile view.
-      updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+      setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
-    updateCurrentBasePath(currentPath);
-    changeMenu(currentPath, updateCurrentInnerNavType, updateMobileMenuState);
+    setCurrentBasePath(currentPath);
     if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
       document.body.classList.add('App--noScroll');
     } else {
@@ -284,14 +262,12 @@ const AppView = ({
   }, [mobileMenuState, isMobile, currentPath])
 
   function mainSectionClickHandler(e: any, testSideNav = true) {
-    const stateUpdate: any = {};
     if (
       testSideNav &&
       isMobile &&
       mobileMenuState !== MOBILE_MENU_STATES.CLOSED
     ) {
-      stateUpdate.mobileMenuState = MOBILE_MENU_STATES.CLOSED;
-      updateSidebarStatus(stateUpdate);
+      setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
   };
 
@@ -338,13 +314,10 @@ const AppView = ({
             <TopBar />
           </section>
           <SideBarSection
-            mobileMenuState={mobileMenuState}
             renderMobileMenuButton={renderMobileMenuButton}
             mainSectionClickHandler={mainSectionClickHandler}
             navShowing={navShowing}
-            updateMobileMenuState={updateMobileMenuState}
             sideNavMenuData={sideNavMenuData}
-            currentBasePath={currentBasePath}
             logout={logout}
             showGlobalChat={showGlobalChat}
             migrateV1Rep={migrateV1Rep}
@@ -368,16 +341,11 @@ const AppView = ({
               <MarketsInnerNavContainer
                 location={location}
                 history={history}
-                mobileMenuState={mobileMenuState}
               />
             )}
-                <MyBetsProvider>
-
+            <MyBetsProvider>
              {currentPath === MY_POSITIONS && (
-              <MyBetsInnerNav
-                mobileMenuState={mobileMenuState}
-                updateMobileMenuState={updateMobileMenuState}
-              />
+              <MyBetsInnerNav />
             )}  
             {currentPath !== MARKETS && currentPath !== MY_POSITIONS &&
               <div className="no-nav-placehold" />
@@ -387,7 +355,6 @@ const AppView = ({
               ModalShowing={ModalShowing}
               navShowing={navShowing}
               currentPath={currentPath}
-              currentBasePath={currentBasePath}
               mainSectionClickHandler={mainSectionClickHandler}
             />
             </MyBetsProvider>
@@ -402,13 +369,10 @@ export default AppView;
 
 
 const SideBarSection = ({
-  mobileMenuState,
   renderMobileMenuButton,
   mainSectionClickHandler,
   navShowing,
-  updateMobileMenuState,
   sideNavMenuData,
-  currentBasePath,
   logout,
   showGlobalChat,
   migrateV1Rep,
@@ -418,7 +382,7 @@ const SideBarSection = ({
   showCreateAccountButton,
   createFundedGsnWallet,
 }) => {
-  const { isLogged, restoredAccount, theme, actions: { closeAppMenus } } = useAppStatusStore();
+  const { mobileMenuState, isLogged, restoredAccount, theme, actions: { closeAppMenus, setMobileMenuState } } = useAppStatusStore();
   sideNavMenuData[1].title =
       theme !== THEMES.TRADING ? 'My Account' : 'Account Summary';
   sideNavMenuData[2].title =
@@ -430,17 +394,15 @@ const SideBarSection = ({
       onClick={e => { mainSectionClickHandler(e, false); closeAppMenus(); }}
       role="presentation"
     >
-      <div>{renderMobileMenuButton(mobileMenuState, updateMobileMenuState, closeAppMenus)}</div>
-
+      <div>{renderMobileMenuButton(mobileMenuState, setMobileMenuState, closeAppMenus)}</div>
       {/* HIDDEN ON DESKTOP */}
       <SideNav
         showNav={navShowing}
         defaultMobileClick={() => {
-          updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+          setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
         }}
         isLogged={isLogged || restoredAccount}
         menuData={sideNavMenuData}
-        currentBasePath={currentBasePath}
         logout={() => logout()}
         showGlobalChat={() => showGlobalChat()}
         migrateV1Rep={migrateV1Rep}
@@ -450,12 +412,10 @@ const SideBarSection = ({
         showCreateAccountButton={showCreateAccountButton}
         createFundedGsnWallet={createFundedGsnWallet}
       />
-
       {/* HIDDEN ON MOBILE */}
       <TopNav
         isLogged={isLogged || restoredAccount}
         menuData={sideNavMenuData}
-        currentBasePath={currentBasePath}
         migrateV1Rep={migrateV1Rep}
         showMigrateRepButton={showMigrateRepButton}
         walletBalances={walletBalances}
@@ -472,11 +432,10 @@ const MainAppContent = ({
   ModalShowing,
   navShowing,
   currentPath,
-  currentBasePath,
   mainSectionClickHandler,
 }) => {
   const { isLogged, restoredAccount, actions: { closeAppMenus }} = useAppStatusStore();
-  const hideBetslip = !currentBasePath?.includes(MARKET);
+  const hideBetslip = !currentPath?.includes(MARKET);
   return (
     <section
     className={classNames(Styles.Content, {

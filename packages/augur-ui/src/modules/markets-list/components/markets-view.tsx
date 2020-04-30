@@ -51,7 +51,6 @@ interface MarketsViewProps {
   updateMarketsFilter: Function;
   updateMarketsListCardFormat: Function;
   marketCardFormat: string;
-  updateMobileMenuState: Function;
   updateLoginAccountSettings: Function;
   showInvalidMarketsBannerFeesOrLiquiditySpread: boolean;
   showInvalidMarketsBannerHideOrShow: boolean;
@@ -81,7 +80,6 @@ const MarketsView = ({
   updateMarketsListCardFormat,
   search = null,
   isConnected,
-  updateMobileMenuState,
   updateLoginAccountSettings,
   updateMarketsFilter,
   marketFilter,
@@ -249,7 +247,6 @@ const MarketsView = ({
             history={history}
             selectedCategory={selectedCategories}
             search={search}
-            updateMobileMenuState={updateMobileMenuState}
             marketCardFormat={marketCardFormat}
             updateMarketsListCardFormat={updateMarketsListCardFormat}
           />

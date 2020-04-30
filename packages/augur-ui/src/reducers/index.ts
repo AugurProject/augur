@@ -1,5 +1,4 @@
 import accountPositions from 'modules/positions/reducers/account-positions';
-import sidebarStatus from 'modules/app/reducers/sidebar-status';
 import blockchain from 'modules/app/reducers/blockchain';
 import favorites from 'modules/markets/reducers/favorites';
 import filterSortOptions from 'modules/filter-sort/reducers/filter-sort-options';
@@ -29,7 +28,6 @@ import {
   Blockchain,
   Favorite,
   FilterSortOptions,
-  GasPriceInfo,
   MarketInfos,
   NewMarket,
   Alert,
@@ -67,7 +65,6 @@ export function createReducer() {
     pendingOrders,
     pendingQueue,
     filledOrders,
-    sidebarStatus,
     universe,
     categoryStats,
     userOpenOrders,
@@ -99,7 +96,6 @@ export interface AppStateInterface {
   pendingOrders: PendingOrders;
   pendingQueue: PendingQueue;
   filledOrders: FilledOrders;
-  sidebarStatus: any;
   universe: Universe;
   categoryStats: Getters.Markets.CategoryStats;
   userOpenOrders: OpenOrders;

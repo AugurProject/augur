@@ -16,12 +16,6 @@ import { RewriteUrlParams } from "modules/app/hocs/rewrite-url-params";
 import { windowRef } from "utils/window-ref";
 import isGlobalWeb3 from "modules/auth/helpers/is-global-web3";
 import { logout } from "modules/auth/actions/logout";
-import {
-  updateCurrentBasePath,
-  updateCurrentInnerNavType,
-  updateMobileMenuState,
-  updateSidebarStatus
-} from "modules/app/actions/update-sidebar-status";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, WALLET_STATUS_VALUES, TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
 import { saveAffiliateAddress } from "modules/account/actions/login-account";
@@ -53,7 +47,6 @@ const mapStateToProps = (state: AppState) => {
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
     universe: state.universe,
     useWeb3Transport: isGlobalWeb3(),
-    sidebarStatus: state.sidebarStatus,
     walletBalances,
     showCreateAccountButton,
     showMigrateRepButton,
@@ -66,10 +59,6 @@ const mapDispatchToProps = dispatch => ({
   updateModal: modal => dispatch(updateModal(modal)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
   logout: () => dispatch(logout()),
-  updateCurrentBasePath: data => dispatch(updateCurrentBasePath(data)),
-  updateCurrentInnerNavType: data => dispatch(updateCurrentInnerNavType(data)),
-  updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
-  updateSidebarStatus: data => dispatch(updateSidebarStatus(data)),
   updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
   showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
   migrateV1Rep: () => dispatch(updateModal({ type: MODAL_MIGRATE_REP })),

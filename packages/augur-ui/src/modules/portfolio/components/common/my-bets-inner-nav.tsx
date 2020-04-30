@@ -16,17 +16,10 @@ import { RadioBarGroup } from 'modules/common/form';
 import { PillSelection } from 'modules/common/selection';
 import { SecondaryButton } from 'modules/common/buttons';
 import { useMyBetsStore } from 'modules/portfolio/store/my-bets';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
-interface MyBetsInnerNavProps {
-  mobileMenuState: number;
-  updateMobileMenuState: Function;
-}
-
-export const MyBetsInnerNav = ({
-  mobileMenuState,
-  updateMobileMenuState,
-}: MyBetsInnerNavProps) => {
-  const showMainMenu = mobileMenuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN;
+export const MyBetsInnerNav = () => {
+  const { mobileMenuState, actions: { setMobileMenuState } } = useAppStatusStore();
   const {
     viewBy,
     marketStatus,
@@ -75,6 +68,7 @@ export const MyBetsInnerNav = ({
     selectedMarketStateTypeLocal,
   } = state;
 
+  const showMainMenu = mobileMenuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN;
   const showEvents = MY_BETS_VIEW_BY[viewByLocal].label === EVENT;
 
   return (
@@ -88,7 +82,7 @@ export const MyBetsInnerNav = ({
           <span>Filters</span>
           <button
             onClick={() => {
-              updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+              setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
             }}
           >
             {XIcon}
@@ -159,7 +153,7 @@ export const MyBetsInnerNav = ({
               setBetDate(betDateLocal);
               setSelectedMarketStateType(selectedMarketStateTypeLocal);
             }
-            updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+            setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
           }}
         />
       </ul>

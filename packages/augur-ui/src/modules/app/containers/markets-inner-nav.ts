@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import BaseInnerNavPure from 'modules/app/components/inner-nav/base-inner-nav-pure';
-import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 import {
   updateMarketsListMeta,
   updateSelectedCategories,
@@ -28,7 +27,6 @@ const mapDispatchToProps = dispatch => ({
   updateLoginAccount: settings => dispatch(updateLoginAccount({ settings })),
   updateSelectedCategories: categories =>
     dispatch(updateSelectedCategories(categories)),
-  updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
   updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
   updateMarketsSortBy: sortBy =>
     dispatch(updateFilterSortOptions(MARKET_SORT, sortBy)),
