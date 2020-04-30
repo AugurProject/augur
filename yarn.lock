@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"3box-chatbox-react@0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/3box-chatbox-react/-/3box-chatbox-react-0.1.10.tgz#b72d1d96fde020c88a44efb4dd8ab0d138d748e8"
-  integrity sha512-HhL11s1EkmhSD7mCFu9S8EqjKvZ7+zcU3NakQVyn8+nDKw2Tya6L3w/kasL5o4iSE1dqOOjOZOQ365Wod+LRig==
+"3box-chatbox-react@0.1.11-beta.1":
+  version "0.1.11-beta.1"
+  resolved "https://registry.yarnpkg.com/3box-chatbox-react/-/3box-chatbox-react-0.1.11-beta.1.tgz#ce99ceb62e91be9736aa962d15666075480dd23e"
+  integrity sha512-eRF8U69Kw9cyrxkd6OKGUJ9hZcKIZyCxPhIJhrhqxpclicmR6E4fQqYUi299ee+OFCEH0wNDId4IWRnoR6FgRQ==
   dependencies:
     "3box" "^1.17.1"
     "3id-resolver" "0.0.6"
