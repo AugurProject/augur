@@ -33,7 +33,7 @@ export const MarketComments = ({
   isLogged,
 }: MarketCommentsProps) => {
   const { activate, setActivate, address, box, isReady, profile } =
-    whichCommentPlugin === '3box' && use3box(provider, initialize3box, initialized3box);
+    whichCommentPlugin === '3box' && use3box(provider, initialize3box, initialized3box, 'comments', initialized3box?.openComments);
 
   return isLogged ? (
     <section className={Styles.Comments}>

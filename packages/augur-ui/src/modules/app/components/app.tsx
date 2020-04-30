@@ -44,7 +44,10 @@ import {
 } from 'modules/types';
 import ForkingBanner from 'modules/reporting/containers/forking-banner';
 import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
-import { MARKET_ID_PARAM_NAME, AFFILIATE_NAME } from 'modules/routes/constants/param-names';
+import {
+  MARKET_ID_PARAM_NAME,
+  AFFILIATE_NAME,
+} from 'modules/routes/constants/param-names';
 import makePath from 'modules/routes/helpers/make-path';
 import { ExternalLinkText } from 'modules/common/buttons';
 import { HelmetTag } from 'modules/seo/helmet-tag';
@@ -97,6 +100,7 @@ interface AppProps {
   createFundedGsnWallet: Function;
   showCreateAccountButton: boolean;
   showMigrateRepButton: boolean;
+  whichChatPlugin: string;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -198,9 +202,8 @@ export default class AppView extends Component<AppProps> {
 
     const affiliate = parseLocation(location.href)[AFFILIATE_NAME];
     if (affiliate) {
-      this.props.saveAffilateAddress(affiliate)
+      this.props.saveAffilateAddress(affiliate);
     }
-
   }
 
   compomentWillUnmount() {
@@ -214,7 +217,7 @@ export default class AppView extends Component<AppProps> {
       universe,
       updateCurrentBasePath,
       updateMobileMenuState,
-      sidebarStatus
+      sidebarStatus,
     } = this.props;
     if (isMobile !== prevProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
@@ -242,7 +245,15 @@ export default class AppView extends Component<AppProps> {
 
   mainSectionClickHandler = (e: any, testSideNav = true) => {
     const stateUpdate: any = {};
-    const { isMobile, sidebarStatus, updateSidebarStatus, isConnectionTrayOpen, isHelpMenuOpen, updateConnectionTray, updateHelpMenuState } = this.props;
+    const {
+      isMobile,
+      sidebarStatus,
+      updateSidebarStatus,
+      isConnectionTrayOpen,
+      isHelpMenuOpen,
+      updateConnectionTray,
+      updateHelpMenuState,
+    } = this.props;
     let updateState = false;
 
     if (
@@ -349,7 +360,9 @@ export default class AppView extends Component<AppProps> {
     return (
       <button
         type="button"
-        className={Styles['SideBar__mobile-bars']}
+        className={classNames(Styles['SideBar__mobile-bars'], {
+          [Styles.Closed]: menuState === MOBILE_MENU_STATES.CLOSED,
+        })}
         onClick={() => this.mobileMenuButtonClick()}
       >
         {icon}
@@ -380,7 +393,8 @@ export default class AppView extends Component<AppProps> {
       createFundedGsnWallet,
       showCreateAccountButton,
       showMigrateRepButton,
-      stats
+      stats,
+      whichChatPlugin,
     } = this.props;
     this.sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
@@ -468,6 +482,7 @@ export default class AppView extends Component<AppProps> {
                 updateModal={updateModal}
                 showCreateAccountButton={showCreateAccountButton}
                 createFundedGsnWallet={createFundedGsnWallet}
+                whichChatPlugin={whichChatPlugin}
               />
 
               {/* HIDDEN ON MOBILE */}
