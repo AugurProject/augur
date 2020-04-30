@@ -521,14 +521,18 @@ export class ZeroX {
     try {
       if (this._mesh) {
         return this._mesh.addOrdersAsync(orders);
-      } else {
+      } else if (this._rpc) {
         return this._rpc.addOrdersAsync(orders);
+      } else {
+        throw Error('Unable to fetch orders from ZeroX - The mesh has not yet been initialized or there is an error, and no RPC server was specified.')
       }
     } catch (error) {
-      console.error('Retrying 0x addOrders:', error);
       if (this._mesh || this._rpc) {
+        console.error('Retrying 0x addOrders:', error);
         // Wait 5 seconds then retry.
         return setTimeout(this.addOrders(orders), 5000);
+      } else {
+        throw error;
       }
     }
   }
