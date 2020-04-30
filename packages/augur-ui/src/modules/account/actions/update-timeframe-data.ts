@@ -6,6 +6,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 export const updateTimeframeData = (
   options: { startTime: number },
@@ -14,7 +15,8 @@ export const updateTimeframeData = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ): Promise<void> => {
-  const { universe, loginAccount, blockchain } = getState();
+  const { universe, loginAccount } = getState();
+  const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
   if (loginAccount.address == null || universe.id == null)
     return callback(null);
 
@@ -24,7 +26,7 @@ export const updateTimeframeData = (
       universe: universe.id,
       account: loginAccount.address,
       startTime: options.startTime ? options.startTime : 0,
-      endTime: blockchain.currentAugurTimestamp
+      endTime: currentAugurTimestamp
     }
   );
 

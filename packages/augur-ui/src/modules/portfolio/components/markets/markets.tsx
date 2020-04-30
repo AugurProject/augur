@@ -57,7 +57,6 @@ function filterComp(input, market) {
 
 interface MyMarketsProps {
   myMarkets: MarketData[];
-  currentAugurTimestamp: number;
   disputingWindowEndTime: number;
   removePendingMarket: Function;
   retrySubmitMarket: Function;
@@ -69,7 +68,6 @@ interface MyMarketsProps {
 class MyMarkets extends Component<MyMarketsProps> {
   static defaultProps = {
     disputingWindowEndTime: 0,
-    currentAugurTimestamp: 0,
   };
 
   constructor(props) {
@@ -80,7 +78,7 @@ class MyMarkets extends Component<MyMarketsProps> {
   }
 
   renderRightContent(market) {
-    const { currentAugurTimestamp, disputingWindowEndTime } = this.props;
+    const { disputingWindowEndTime } = this.props;
 
     return (
       <>
@@ -88,7 +86,6 @@ class MyMarkets extends Component<MyMarketsProps> {
         {!market.pending && (
           <MarketProgress
             reportingState={market.reportingState}
-            currentTime={currentAugurTimestamp}
             endTimeFormatted={market.endTimeFormatted}
             reportingWindowEndTime={disputingWindowEndTime}
             alignRight

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { DisputingBondsView } from 'modules/reporting/common';
-import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
+import getGasPrice from 'modules/auth/selectors/get-gas-price';
 import { AppState } from 'appStore';
 import { GSN_WALLET_SEEN, MODAL_INITIALIZE_ACCOUNT } from 'modules/common/constants';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState) => {
     warpSyncHash: state.universe.warpSyncHash,
     userAvailableRep: state.loginAccount.balances && state.loginAccount.balances.rep,
     GsnEnabled: state.appStatus.gsnEnabled,
-    gasPrice: getGasPrice(state),
+    gasPrice: getGasPrice(),
     gsnUnavailable: isGSNUnavailable(state),
     gsnWalletInfoSeen,
   };

@@ -13,11 +13,11 @@ import { AppStatusState } from 'modules/app/store/app-status';
 
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount, newMarket, blockchain } = state;
-  const { gasPriceInfo } = AppStatusState.get();
+  const { loginAccount, newMarket } = state;
+  const { gasPriceInfo, blockchain: { currentAugurTimestamp: currentTimestamp }} = AppStatusState.get();
   return {
     newMarket: newMarket,
-    currentTimestamp: blockchain.currentAugurTimestamp,
+    currentTimestamp,
     address: loginAccount.address,
     gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,
     availableEthFormatted: formatEther(loginAccount.balances.eth),

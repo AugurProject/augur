@@ -15,7 +15,7 @@ import { augurSdk } from 'services/augursdk';
 import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { loginAccount, blockchain } = state;
+  const { loginAccount } = state;
 
   const getGasConfirmEstimate = async () => {
     const augur = augurSdk.get();
@@ -41,10 +41,10 @@ const mapStateToProps = (state: AppState, ownProps) => {
       ownProps.market.orderBook[selectedOutcomeId]
     );
   }
-
+  const { blockchain: { currentAugurTimestamp: currentTimestamp }} = AppStatusState.get();
   return {
     availableDai: totalTradingBalance(loginAccount),
-    currentTimestamp: blockchain.currentAugurTimestamp,
+    currentTimestamp,
     sortedOutcomes: selectSortedMarketOutcomes(
       ownProps.market.marketType,
       ownProps.market.outcomesFormatted

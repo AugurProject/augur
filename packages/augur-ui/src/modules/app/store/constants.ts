@@ -2,7 +2,8 @@ import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_F
 import { MARKETS } from "modules/routes/constants/views";
 import { DEFAULT_SDK_CONFIGURATION, SDKConfiguration } from '@augurproject/artifacts';
 import { formatGasCostGwei } from 'utils/format-number';
-import { GasPriceInfo } from 'modules/types';
+import { GasPriceInfo, Blockchain } from 'modules/types';
+import * as moment from '../../../../../../node_modules/moment/moment';
 
 export const THEME = 'theme';
 export const ODDS = 'oddsType';
@@ -26,6 +27,7 @@ export const ENV = 'env';
 export const GAS_PRICE_INFO = 'gasPriceInfo';
 export const MOBILE_MENU_STATE = 'mobileMenuState';
 export const CURRENT_BASE_PATH = 'currentBasePath';
+export const BLOCKCHAIN = 'blockchain';
 
 const DEFAULT_ENV: SDKConfiguration = JSON.parse(JSON.stringify(DEFAULT_SDK_CONFIGURATION));
 const DEFAULT_GAS_PRICE_INFO: GasPriceInfo = {
@@ -33,6 +35,14 @@ const DEFAULT_GAS_PRICE_INFO: GasPriceInfo = {
   average: formatGasCostGwei(DEFAULT_FALLBACK_GAS_AVERAGE, {}).value,
   fast: formatGasCostGwei(DEFAULT_FALLBACK_GAS_FAST, {}).value,
   safeLow: formatGasCostGwei(DEFAULT_FALLBACK_GAS_SAFELOW, {}).value,
+};
+
+const DEFAULT_BLOCKCHAIN: Blockchain = {
+  currentBlockNumber: 0,
+  currentAugurTimestamp: moment().unix(), // default to user's time until new block comes in
+  lastSyncedBlockNumber: 0,
+  blocksBehindCurrent: 0,
+  percentSynced: "0"
 };
 
 export const DEFAULT_APP_STATUS = {
@@ -58,6 +68,7 @@ export const DEFAULT_APP_STATUS = {
   [GAS_PRICE_INFO]: DEFAULT_GAS_PRICE_INFO,
   [MOBILE_MENU_STATE]: MOBILE_MENU_STATES.CLOSED,
   [CURRENT_BASE_PATH]: MARKETS,
+  [BLOCKCHAIN]: DEFAULT_BLOCKCHAIN,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -84,6 +95,7 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_GAS_PRICE_INFO: 'UPDATE_GAS_PRICE_INFO',
   SET_MOBILE_MENU_STATE: 'SET_MOBILE_MENU_STATE',
   SET_CURRENT_BASE_PATH: 'SET_CURRENT_BASE_PATH',
+  UPDATE_BLOCKCHAIN: 'UPDATE_BLOCKCHAIN',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -110,4 +122,5 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateGasPriceInfo: gasPriceInfo => {},
   setMobileMenuState: mobileMenuState => {},
   setCurrentBasePath: currentBasePath => {},
+  updateBlockchain: blockchain => {},
 };

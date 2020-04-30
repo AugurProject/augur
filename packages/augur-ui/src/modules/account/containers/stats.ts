@@ -4,12 +4,10 @@ import { AppState } from "appStore";
 import Stats from "modules/account/components/stats";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import { updateTimeframeData } from 'modules/account/actions/update-timeframe-data';
 
 const mapStateToProps = (state: AppState) => ({
   timeframeData: state.loginAccount.timeframeData,
-  currentAugurTimestamp: selectCurrentTimestampInSeconds(state),
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

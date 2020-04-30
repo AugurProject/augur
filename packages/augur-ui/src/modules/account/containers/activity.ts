@@ -2,8 +2,8 @@ import { connect } from "react-redux";
 import { formatDai } from "utils/format-number";
 import Activity from "modules/account/components/activity";
 import { updatePlatformTimeframeData } from "modules/account/actions/update-platform-timeframe-data";
-import { selectCurrentTimestampInSeconds } from "appStore/select-state";
 import { AppState } from "appStore";
+import { AppStatusState } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => {
   const value =
@@ -12,9 +12,10 @@ const mapStateToProps = (state: AppState) => {
       state.universe.timeframeData.openInterest) ||
     0;
   const openInterest = formatDai(value, { decimals: 2, removeComma: true });
+  const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
   return {
     openInterest,
-    currentAugurTimestamp: selectCurrentTimestampInSeconds(state),
+    currentAugurTimestamp,
   };
 };
 

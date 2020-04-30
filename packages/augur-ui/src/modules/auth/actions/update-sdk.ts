@@ -88,8 +88,8 @@ export const createFundedGsnWallet = () => async (
     await augurSdk.client.gsn.initializeWallet();
 
     setWalletStatus(WALLET_STATUS_VALUES.CREATED)
-
-    const timestamp = getState().blockchain.currentAugurTimestamp * 1000;
+    const { blockchain: { currentAugurTimestamp } } = AppStatusState.get();
+    const timestamp = currentAugurTimestamp * 1000;
     const alert = {
       name: CREATEAUGURWALLET,
       uniqueId: timestamp,

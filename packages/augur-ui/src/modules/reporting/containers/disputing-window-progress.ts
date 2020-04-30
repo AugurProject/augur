@@ -4,7 +4,6 @@ import { WindowProgress } from 'modules/common/progress';
 
 const mapStateToProps = state => ({
   disputeWindow: state.universe.disputeWindow,
-  currentTime: state.blockchain.currentAugurTimestamp
 });
 
 const mapDispatchToProps = dispatch => ({

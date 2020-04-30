@@ -16,7 +16,6 @@ const mapStateToProps = (state, ownProps) => {
   const {
     accountPositions: positions,
     universe,
-    blockchain,
     pendingLiquidityOrders,
     loginAccount,
     favorites,
@@ -30,7 +29,6 @@ const mapStateToProps = (state, ownProps) => {
     orderBook: orderBooks[marketId]?.orderBook,
     isForking: !!forkingInfo,
     pendingLiquidityOrders,
-    currentAugurTimestamp: blockchain.currentAugurTimestamp,
     disputingWindowEndTime: universe.disputeWindow?.endTime || 0,
     address: loginAccount.address,
     isFavorite: !!favorites[marketId],

@@ -4,14 +4,14 @@ import { Transactions } from "modules/modal/transactions";
 import { AppState } from "appStore";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
-import { NodeStyleCallback } from "modules/types";
 import { augurSdk } from "services/augursdk";
 import { Getters } from "@augurproject/sdk";
 import { Action } from "redux";
+import { AppStatusState } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
-  now: state.blockchain.currentAugurTimestamp,
+  now: AppStatusState.get().blockchain.currentAugurTimestamp,
   account: state.loginAccount.address,
   universe: state.universe.id,
 });

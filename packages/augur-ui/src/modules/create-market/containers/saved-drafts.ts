@@ -12,10 +12,11 @@ import {
 import { NewMarket } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO, ONE } from 'modules/common/constants';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = state => ({
   drafts: state.drafts,
-  currentTimestamp: getValue(state, 'blockchain.currentAugurTimestamp'),
+  currentTimestamp: AppStatusState.get().blockchain.currentAugurTimestamp,
   address: getValue(state, 'loginAccount.address'),
 });
 

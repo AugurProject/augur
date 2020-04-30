@@ -7,7 +7,6 @@ import {
   removeAllOrdersFromNewMarket
 } from "modules/markets/actions/update-new-market";
 import Form from "modules/create-market/components/form";
-import getValue from "utils/get-value";
 import {
   MODAL_DISCARD,
   MODAL_CREATE_MARKET,
@@ -21,16 +20,18 @@ import { NodeStyleCallback } from "modules/types";
 import { marketCreationStarted, marketCreationSaved } from "services/analytics/helpers";
 import { isGSNUnavailable } from "modules/app/selectors/is-gsn-unavailable";
 import getValueFromlocalStorage from "utils/get-local-storage-value";
+import { AppStatusState } from "modules/app/store/app-status";
 
 const mapStateToProps = state => {
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
+  const { gsnEnabled: GsnEnabled, blockchain: { currentAugurTimestamp: currentTimestamp } } = AppStatusState.get();
 
   return {
     newMarket: state.newMarket,
-    currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
+    currentTimestamp,
     drafts: state.drafts,
     needsApproval: state.loginAccount.allowance.lte(ZERO),
-    GsnEnabled: state.appStatus.gsnEnabled,
+    GsnEnabled,
     gsnUnavailable: isGSNUnavailable(state),
     gsnWalletInfoSeen,
   }

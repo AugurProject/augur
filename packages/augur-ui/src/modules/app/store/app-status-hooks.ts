@@ -24,6 +24,7 @@ import {
   GAS_PRICE_INFO,
   MOBILE_MENU_STATE,
   CURRENT_BASE_PATH,
+  BLOCKCHAIN,
 } from 'modules/app/store/constants';
 
 const {
@@ -50,6 +51,7 @@ const {
   UPDATE_GAS_PRICE_INFO,
   SET_MOBILE_MENU_STATE,
   SET_CURRENT_BASE_PATH,
+  UPDATE_BLOCKCHAIN,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -168,6 +170,10 @@ export function AppStatusReducer(state, action) {
       updatedState[MOBILE_MENU_STATE] = action.mobileMenuState;
       break;
     }
+    case UPDATE_BLOCKCHAIN: {
+      updatedState[BLOCKCHAIN] = { ...updatedState[BLOCKCHAIN], ...action.blockchain };
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -225,6 +231,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
         dispatch({ type: SET_MOBILE_MENU_STATE, mobileMenuState }),
       setCurrentBasePath: currentBasePath =>
         dispatch({ type: SET_CURRENT_BASE_PATH, currentBasePath }),
+      updateBlockchain: blockchain => dispatch({ type: UPDATE_BLOCKCHAIN, blockchain });
     },
   };
 };

@@ -11,7 +11,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
   return {
     isForking: universe.forkingInfo,
     isLogged: isLogged && !universe.forkingInfo,
-    currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     disputingWindowEndTime:
       (state.universe.disputeWindow && state.universe.disputeWindow.endTime) ||
       0,

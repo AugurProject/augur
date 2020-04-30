@@ -41,7 +41,6 @@ import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
 import {
   Universe,
-  Blockchain,
   LoginAccount,
   Notification,
   AccountBalances,
@@ -63,7 +62,6 @@ import { StatusErrorMessage } from 'modules/common/labels';
 
 interface AppProps {
   notifications: Notification[];
-  blockchain: Blockchain;
   config: SDKConfiguration;
   history: History;
   initAugur: Function;
@@ -146,7 +144,6 @@ const AppView = ({
   location: locationProp,
   updateModal,
   saveAffilateAddress,
-  blockchain: { currentAugurTimestamp },
   modal,
   toasts,
   migrateV1Rep,
@@ -157,7 +154,7 @@ const AppView = ({
   logout,
   showGlobalChat,
 }:AppProps) => {
-  const { mobileMenuState, env, isLogged, isMobile, actions: { setIsMobile, setMobileMenuState, setCurrentBasePath } } = useAppStatusStore();
+  const { blockchain: { currentAugurTimestamp }, mobileMenuState, env, isLogged, isMobile, actions: { setIsMobile, setMobileMenuState, setCurrentBasePath } } = useAppStatusStore();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
   const ModalShowing = Object.keys(modal).length !== 0;

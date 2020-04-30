@@ -205,9 +205,10 @@ export const loadUpcomingDesignatedReportingMarkets = (
   dispatch,
   getState
 ) => {
-  const { blockchain, loginAccount } = getState();
+  const { loginAccount } = getState();
+  const { blockchain: { currentAugurTimestamp } } = AppStatusState.get();
   const maxEndTime = getOneWeekInFutureTimestamp(
-    blockchain.currentAugurTimestamp
+    currentAugurTimestamp
   );
   const designatedReporter = loginAccount.address;
   if (!designatedReporter)

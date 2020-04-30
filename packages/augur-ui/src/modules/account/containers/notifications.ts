@@ -17,14 +17,15 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback, Notification } from 'modules/types';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 // TODO create state Interface
 const mapStateToProps = (state: AppState) => {
   const notifications = selectNotifications(state);
-
+  const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
   return {
     notifications,
-    currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
+    currentAugurTimestamp,
     disputingWindowEndTime: state.universe.disputeWindow && state.universe.disputeWindow.endTime || 0,
   };
 };

@@ -16,7 +16,6 @@ const mapStateToProps = (state: AppState) => {
   return {
     myMarkets: createdMarkets,
     outcomes: {}, // marketDisputeOutcomes() || {},
-    currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
     disputingWindowEndTime: state.universe.disputeWindow && state.universe.disputeWindow.endTime || 0,
   };
 };

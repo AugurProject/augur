@@ -1,5 +1,4 @@
 import accountPositions from 'modules/positions/reducers/account-positions';
-import blockchain from 'modules/app/reducers/blockchain';
 import favorites from 'modules/markets/reducers/favorites';
 import filterSortOptions from 'modules/filter-sort/reducers/filter-sort-options';
 import loginAccount from 'modules/auth/reducers/login-account';
@@ -25,7 +24,6 @@ import initialized3box from 'modules/global-chat/reducers/initialized-3box'
 import {
   LoginAccount,
   AccountPosition,
-  Blockchain,
   Favorite,
   FilterSortOptions,
   MarketInfos,
@@ -52,7 +50,6 @@ export function createReducer() {
   return {
     accountPositions,
     alerts,
-    blockchain,
     favorites,
     filterSortOptions,
     loginAccount,
@@ -82,7 +79,6 @@ export function createReducer() {
 export interface AppStateInterface {
   accountPositions: AccountPosition;
   alerts: Alert[];
-  blockchain: Blockchain;
   config: SDKConfiguration;
   favorites: Favorite;
   filterSortOptions: FilterSortOptions;

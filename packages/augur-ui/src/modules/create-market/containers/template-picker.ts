@@ -6,10 +6,11 @@ import {
   clearNewMarket
 } from "modules/markets/actions/update-new-market";
 import { TemplatePicker } from "modules/create-market/components/template-picker";
+import { AppStatusState } from "modules/app/store/app-status";
 
 const mapStateToProps = state => ({
   newMarket: state.newMarket,
-  currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
+  currentTimestamp: AppStatusState.get().blockchain.currentAugurTimestamp,
   address: getValue(state, "loginAccount.address"),
 });
 

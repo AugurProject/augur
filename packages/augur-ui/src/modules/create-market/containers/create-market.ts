@@ -7,22 +7,24 @@ import {
   updateNewMarket
 } from "modules/markets/actions/update-new-market";
 import CreateMarketView from "modules/create-market/components/create-market-view/create-market-view";
-import { selectCurrentTimestamp } from "appStore/select-state";
 import { estimateSubmitNewMarket } from "modules/markets/actions/estimate-submit-new-market";
 import getValue from "utils/get-value";
-import { getGasPrice } from "modules/auth/selectors/get-gas-price";
+import getGasPrice from "modules/auth/selectors/get-gas-price";
+import { AppStatusState } from "modules/app/store/app-status";
 
-const mapStateToProps = state => ({
-  categoryStats: state.categoryStats,
-  universe: state.universe,
-  availableEth: state.loginAccount.balances.eth,
-  availableRep: state.loginAccount.balances.rep,
-  meta: getValue(state, "loginAccount.meta"),
-  newMarket: state.newMarket,
-  currentTimestamp: selectCurrentTimestamp(state),
-  gasPrice: getGasPrice(state)
-});
-
+const mapStateToProps = state => {
+  const { blockchain: { currentAugurTimestamp } } = AppStatusState.get();
+  return ({
+    categoryStats: state.categoryStats,
+    universe: state.universe,
+    availableEth: state.loginAccount.balances.eth,
+    availableRep: state.loginAccount.balances.rep,
+    meta: getValue(state, "loginAccount.meta"),
+    newMarket: state.newMarket,
+    currentTimestamp: currentAugurTimestamp * 1000,
+    gasPrice: getGasPrice()
+  });
+};
 const mapDispatchToProps = dispatch => ({
   addOrderToNewMarket: data => dispatch(addOrderToNewMarket(data)),
   removeOrderFromNewMarket: data => dispatch(removeOrderFromNewMarket(data)),

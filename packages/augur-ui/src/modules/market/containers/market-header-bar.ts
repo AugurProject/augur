@@ -5,7 +5,6 @@ import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState, ownProps) => ({
-  currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
 });
 
 const mapDispatchToProps = dispatch => ({

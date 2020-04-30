@@ -42,6 +42,7 @@ import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { updateModal } from 'modules/modal/actions/update-modal';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
@@ -75,7 +76,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
   const { eventName, transaction, hash } = txStatus;
   if (transaction) {
     const methodCall = transaction.name.toUpperCase();
-    const { blockchain, loginAccount } = getState();
+    const { loginAccount } = getState();
 
     if (ADD_PENDING_QUEUE_METHOD_CALLS.includes(methodCall)) {
       dispatch(addUpdatePendingTransaction(methodCall, eventName, hash, { ...transaction }));
@@ -93,7 +94,8 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         title: 'We\'re having trouble processing transactions',
       }));
     }
-
+    const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
+    const timestamp = currentAugurTimestamp * 1000;
     if (eventName === TXEventName.Failure || eventName === TXEventName.RelayerDown) {
       const genHash = hash ? hash : generateTxParameterId(transaction.params);
 
@@ -103,7 +105,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           uniqueId: genHash,
           params: transaction.params,
           status: TXEventName.Failure,
-          timestamp: blockchain.currentAugurTimestamp * 1000,
+          timestamp,
           name: methodCall,
         })
       );
@@ -126,7 +128,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           updateAlert(hash, {
             params: transaction.params,
             status: TXEventName.Success,
-            timestamp: blockchain.currentAugurTimestamp * 1000,
+            timestamp,
             name: CREATEMARKET,
           })
         );
@@ -136,7 +138,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
             params: transaction.params,
             status: TXEventName.Success,
             toast: methodCall === PUBLICFILLORDER,
-            timestamp: blockchain.currentAugurTimestamp * 1000,
+            timestamp,
             name: methodCall,
           })
         );
@@ -181,7 +183,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
                 endTime,
               },
               status: eventName,
-              timestamp: blockchain.currentAugurTimestamp * 1000,
+              timestamp,
               name: methodCall,
             })
           );
@@ -198,7 +200,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           transaction.params,
           id,
           hash,
-          blockchain.currentAugurTimestamp * 1000,
+          timestamp,
           methodCall
         );
         // pending queue will be updated when created market event comes in.

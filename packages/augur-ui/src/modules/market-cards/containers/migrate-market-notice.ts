@@ -18,28 +18,29 @@ import { DismissableNotice } from 'modules/reporting/common';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { MarketReportClaimableContracts } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { universe, blockchain } = state;
+  const { universe } = state;
   const { forkingInfo } = universe;
   const isForking = !!forkingInfo;
   const marketId = ownProps.marketId;
   const market = selectMarket(marketId);
   const { reportingState, endTime } = market;
-
+  const { blockchain: { currentAugurTimestamp } } = AppStatusState.get();
   let show = isForking;
   let canMigrateMarkets = false;
   let hasReleaseRepOnThisMarket = false;
 
   const hasMarketEnded = dateHasPassed(
-    state.blockchain.currentAugurTimestamp * 1000,
+    currentAugurTimestamp * 1000,
     endTime
   );
 
   const hasForkPassed =
     isForking &&
     dateHasPassed(
-      blockchain.currentAugurTimestamp * 1000,
+      currentAugurTimestamp * 1000,
       forkingInfo.forkEndTime
     );
 

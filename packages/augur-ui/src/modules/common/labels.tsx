@@ -894,8 +894,7 @@ export const LiquidityDepletedLabel = ({
   );
 };
 
-export const MarketStatusLabel = (props: MarketStatusProps) => {
-  const { reportingState, mini, isWarpSync } = props;
+export const MarketStatusLabel = ({ reportingState, mini, isWarpSync }: MarketStatusProps) => {
   let open = false;
   let resolved = false;
   let reporting = false;

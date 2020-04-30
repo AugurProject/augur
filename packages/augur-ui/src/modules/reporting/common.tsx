@@ -989,7 +989,6 @@ interface UserRepDisplayState {
 
 export interface ReportingCardProps {
   market: MarketData;
-  currentAugurTimestamp: number;
   disputingWindowEndTime: number;
   showReportingModal: Function;
   callback: Function;
@@ -998,7 +997,6 @@ export interface ReportingCardProps {
 
 export const ReportingCard = ({
   market,
-  currentAugurTimestamp,
   showReportingModal,
   isForking,
 }: ReportingCardProps) => {
@@ -1026,14 +1024,12 @@ export const ReportingCard = ({
         reportingState={reportingState}
         disputeInfo={disputeInfo}
         endTimeFormatted={endTimeFormatted}
-        currentAugurTimestamp={currentAugurTimestamp}
         isWarpSync={market.isWarpSync}
       />
       <MarketTitle id={id} headerType={headerType} />
       {reportingState !== REPORTING_STATE.OPEN_REPORTING && (
         <MarketProgress
           reportingState={reportingState}
-          currentTime={currentAugurTimestamp}
           endTimeFormatted={endTimeFormatted}
           reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
         />

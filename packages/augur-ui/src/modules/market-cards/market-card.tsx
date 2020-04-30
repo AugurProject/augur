@@ -49,7 +49,6 @@ interface MarketCardProps {
   location: Location;
   toggleFavorite: Function;
   orderBook: any;
-  currentAugurTimestamp: number;
   disputingWindowEndTime: number;
   condensed?: boolean;
   expandedView?: boolean;
@@ -73,7 +72,6 @@ export const MarketCard = ({
   market,
   location,
   history,
-  currentAugurTimestamp,
   condensed,
   address,
   expandedView,
@@ -153,7 +151,6 @@ export const MarketCard = ({
       <>
         <TradingSideSection
           address={address}
-          currentAugurTimestamp={currentAugurTimestamp}
           market={market}
           condensed={condensed}
           hasPosition={hasPosition}
@@ -164,7 +161,6 @@ export const MarketCard = ({
           categoriesWithClick={getCategoriesWithClick(categories)}
           toggleFavorite={toggleFavorite}
           marketLinkCopied={marketLinkCopied}
-          currentAugurTimestamp={currentAugurTimestamp}
           isFavorite={isFavorite}
         />
         <MarketTitle id={id} headerType={headerType} />
@@ -234,7 +230,6 @@ export const MarketCard = ({
         <>
         <MarketProgress
           reportingState={reportingState}
-          currentTime={currentAugurTimestamp}
           endTimeFormatted={endTimeFormatted}
           reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
         />

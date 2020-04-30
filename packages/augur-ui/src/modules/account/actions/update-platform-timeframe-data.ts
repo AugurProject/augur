@@ -5,6 +5,7 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 export const updatePlatformTimeframeData = (
   options: any = {},
@@ -13,7 +14,8 @@ export const updatePlatformTimeframeData = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ): Promise<void> => {
-  const { universe, blockchain } = getState();
+  const { universe } = getState();
+  const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
   if (universe.id == null) return callback(null);
 
   const augur = augurSdk.get();
@@ -21,7 +23,7 @@ export const updatePlatformTimeframeData = (
     {
       universe: universe.id,
       startTime: options.startTime ? options.startTime : 0,
-      endTime: blockchain.currentAugurTimestamp,
+      endTime: currentAugurTimestamp,
     }
   );
 

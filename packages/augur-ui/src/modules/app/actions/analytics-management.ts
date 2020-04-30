@@ -1,8 +1,8 @@
 import { Analytics, Analytic } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import store, { AppState } from 'appStore';
 import { sendAnalytic } from 'services/analytics/helpers';
+import { AppStatusState } from '../store/app-status';
 
 export const ADD_ANALYTIC = 'ADD_ANALYTIC';
 export const REMOVE_ANALYTIC = 'REMOVE_ANALYTIC';
@@ -13,11 +13,11 @@ export const SEND_DELAY_SECONDS = 30;
 export const loadAnalytics = (analytics: Analytics, prevCurrentAugurTimestamp) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  const { blockchain } = store.getState() as AppState;
   if (prevCurrentAugurTimestamp === 0) {
     Object.keys(analytics).map(id => {
         const analytic = analytics[id];
-        if ((blockchain.currentAugurTimestamp - analytic.properties.addedTimestamp) > SEND_DELAY_SECONDS) {
+        const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
+        if ((currentAugurTimestamp - analytic.properties.addedTimestamp) > SEND_DELAY_SECONDS) {
           dispatch(sendAnalytic(analytic));
           dispatch(removeAnalytic(id));
         } else {

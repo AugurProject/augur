@@ -19,7 +19,6 @@ import { MarketInfos } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'appStore';
-import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
 import { Events, Logs, TXEventName, OrderEventType } from '@augurproject/sdk';
 import {
@@ -83,14 +82,15 @@ const handleAlert = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { blockchain } = getState();
+  const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
+  const timestamp = currentAugurTimestamp * 1000;
   try {
     dispatch(
       updateAlert(log.transactionHash, {
         params: log,
         toast: toast,
         status: TXEventName.Success,
-        timestamp: blockchain.currentAugurTimestamp * 1000,
+        timestamp,
         name,
       })
     );
@@ -190,22 +190,20 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { blockchain } = getState();
-  dispatch(
-    updateBlockchain({
-      currentBlockNumber: log.highestAvailableBlockNumber,
-      blocksBehindCurrent: log.blocksBehindCurrent,
-      lastSyncedBlockNumber: log.lastSyncedBlockNumber,
-      percentSynced: log.percentSynced,
-      currentAugurTimestamp: log.timestamp,
-    })
-  );
+  AppStatusActions.actions.updateBlockchain({
+    currentBlockNumber: log.highestAvailableBlockNumber,
+    blocksBehindCurrent: log.blocksBehindCurrent,
+    lastSyncedBlockNumber: log.lastSyncedBlockNumber,
+    percentSynced: log.percentSynced,
+    currentAugurTimestamp: log.timestamp,
+  });
   // update assets each block
-  if (AppStatusState.get().isLogged) {
+  const { isLogged, blockchain: { currentAugurTimestamp } } = AppStatusState.get();
+  if (isLogged) {
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());
     dispatch(
-      loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
+      loadAnalytics(getState().analytics, currentAugurTimestamp)
     );
     dispatch(findAndSetTransactionsTimeouts(log.highestAvailableBlockNumber));
   }
@@ -394,12 +392,13 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
     // TODO: do we need to remove stuff based on events?
     // if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
     //handleAlert(log, CANCELORDER, dispatch, getState);
-    const { blockchain } = getState();
+    const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
+    const timestamp = currentAugurTimestamp * 1000;
     if (AppStatusState.get().isLogged) {
       dispatch(
         updateAlert(log.orderId, {
           name: CANCELORDER,
-          timestamp: blockchain.currentAugurTimestamp * 1000,
+          timestamp,
           status: TXEventName.Success,
           params: { ...log },
         })
@@ -444,11 +443,12 @@ export const handleTradingProceedsClaimedLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    const { blockchain } = getState();
+    const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
+    const timestamp = currentAugurTimestamp * 1000;
     dispatch(
       updateAlert(log.market, {
         name: CLAIMTRADINGPROCEEDS,
-        timestamp: blockchain.currentAugurTimestamp * 1000,
+        timestamp,
         status: TXEventName.Success,
         params: { ...log },
       })
@@ -657,13 +657,15 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
         dispatch(loadUniverseDetails(universeId, userAddress));
     }
     if (log.tokenType === Logs.TokenType.ReputationToken && !isForking) {
+      const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
+      const timestamp = currentAugurTimestamp * 1000;
         dispatch(
           updateAlert(log.blockHash, {
             id: log.blockHash,
             uniqueId: log.blockHash,
             params: {...log},
             status: TXEventName.Success,
-            timestamp: getState().blockchain.currentAugurTimestamp * 1000,
+            timestamp,
             name: MIGRATE_FROM_LEG_REP_TOKEN,
             toast: true,
           }, false));

@@ -10,6 +10,7 @@ import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets
 import { selectMarket } from 'modules/markets/selectors/market';
 import { getInfo } from 'modules/alerts/actions/set-alert-text';
 import { TXEventName } from '@augurproject/sdk';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 export const page = (eventName, payload): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -26,12 +27,12 @@ export const track = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { blockchain } = getState();
+  const { blockchain: { currentAugurTimestamp: addedTimestamp }} = AppStatusState.get();
   const analytic = {
     eventName,
     payload: {
       ...payload,
-      addedTimestamp: blockchain.currentAugurTimestamp,
+      addedTimestamp,
     },
     type: type || ANALYTIC_EVENT_TYPES.TRACK,
   };

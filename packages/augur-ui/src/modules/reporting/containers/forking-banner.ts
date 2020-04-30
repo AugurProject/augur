@@ -14,9 +14,10 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { MarketReportClaimableContracts } from 'modules/types';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { universe, loginAccount, blockchain } = state;
+  const { universe, loginAccount } = state;
   const { forkingInfo } = universe;
   const isForking = !!forkingInfo;
   if (!isForking) return { show: false };
@@ -34,7 +35,7 @@ const mapStateToProps = (state: AppState) => {
   const hasRepBalance =
     market !== null && balances && createBigNumber(balances.rep).gt(ZERO);
   const releasableRep = selectReportingWinningsByMarket(state);
-
+  const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
   return {
     show: true,
     hasStakedRep,
@@ -42,7 +43,7 @@ const mapStateToProps = (state: AppState) => {
     market,
     releasableRep,
     forkTime: convertUnixToFormattedDate(forkingInfo.forkEndTime),
-    currentTime: convertUnixToFormattedDate(blockchain.currentAugurTimestamp),
+    currentTime: convertUnixToFormattedDate(currentAugurTimestamp),
     isForking: !forkingInfo.isForkingMarketFinalized,
   };
 };

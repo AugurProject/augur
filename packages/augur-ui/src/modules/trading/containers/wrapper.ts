@@ -10,7 +10,7 @@ import {
   GSN_WALLET_SEEN,
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
+import getGasPrice from 'modules/auth/selectors/get-gas-price';
 import {
   updateTradeCost,
   updateTradeShares,
@@ -37,36 +37,44 @@ const getMarketPath = id => {
 };
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { loginAccount, accountPositions, userOpenOrders, blockchain, newMarket } = state;
+  const {
+    loginAccount,
+    accountPositions,
+    userOpenOrders,
+    newMarket,
+  } = state;
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const {
     gsnEnabled: GsnEnabled,
+    isLogged,
+    restoredAccount,
+    blockchain: { currentAugurTimestamp: currentTimestamp },
   } = AppStatusState.get();
   const hasFunds = GsnEnabled
     ? !!loginAccount.balances.dai
     : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
 
-  let availableDai = totalTradingBalance(loginAccount)
+  let availableDai = totalTradingBalance(loginAccount);
   if (ownProps.initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
-  const { isLogged, restoredAccount } = AppStatusState.get();
   return {
     hasHistory,
-    gasPrice: getGasPrice(state),
+    gasPrice: getGasPrice(),
     hasFunds,
     isLogged,
     restoredAccount,
     GsnEnabled,
-    currentTimestamp: blockchain.currentAugurTimestamp,
+    currentTimestamp,
     availableDai,
     gsnUnavailable: isGSNUnavailable(state),
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  initializeGsnWallet: (customAction = null) => dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
+  initializeGsnWallet: (customAction = null) =>
+    dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
   handleFilledOnly: trade => null,
   updateTradeCost: (marketId, outcomeId, order, callback) =>
     dispatch(updateTradeCost({ marketId, outcomeId, ...order, callback })),
@@ -98,7 +106,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     marketId,
     outcomeId,
     tradeInProgress,
-    doNotCreateOrders,
+    doNotCreateOrders
   ) =>
     dispatch(
       placeMarketTrade({
@@ -108,7 +116,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         doNotCreateOrders,
       })
     ),
-    orderSubmitted: (type, marketId) => dispatch(orderSubmitted(type, marketId))
+  orderSubmitted: (type, marketId) => dispatch(orderSubmitted(type, marketId)),
 });
 
 const mergeProps = (sP, dP, oP) => {

@@ -11,7 +11,7 @@ import {
   MIGRATE_MARKET_GAS_ESTIMATE,
 } from 'modules/common/constants';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
-import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
+import getGasPrice from 'modules/auth/selectors/get-gas-price';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -19,7 +19,7 @@ const mapStateToProps = (state: AppState) => ({
   gasCost: formatGasCostToEther(
     MIGRATE_MARKET_GAS_ESTIMATE.toFixed(),
     { decimalsRounded: 4 },
-    getGasPrice(state)
+    getGasPrice()
   )
 });
 

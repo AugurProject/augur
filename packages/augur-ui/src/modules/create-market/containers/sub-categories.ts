@@ -6,11 +6,12 @@ import {
 } from "modules/markets/actions/update-new-market";
 import { SubCategories } from "modules/create-market/components/sub-categories";
 import { AppState } from "appStore";
+import { AppStatusState } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => ({
   categoryStats: state.categoryStats,
   newMarket: state.newMarket,
-  currentTimestamp: state.blockchain.currentAugurTimestamp,
+  currentTimestamp: AppStatusState.get().blockchain.currentAugurTimestamp,
   address: state.loginAccount.address,
 });
 

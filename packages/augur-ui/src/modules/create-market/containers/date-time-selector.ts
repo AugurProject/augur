@@ -5,10 +5,10 @@ import {
   clearNewMarket
 } from "modules/markets/actions/update-new-market";
 import { DateTimeSelector } from "modules/create-market/components/common";
-import getValue from "utils/get-value";
+import { AppStatusState } from "modules/app/store/app-status";
 
 const mapStateToProps = state => ({
-  currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
+  currentTimestamp: AppStatusState.get().blockchain.currentAugurTimestamp,
 });
 
 const mapDispatchToProps = dispatch => ({

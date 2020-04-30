@@ -6,7 +6,6 @@ import { CANCELORDER } from 'modules/common/constants';
 
 export const selectAccountPositionsState = (state: AppState) =>
   state.accountPositions;
-export const selectBlockchainState = (state: AppState) => state.blockchain;
 export const selectDisputeWindowStats = (state: AppState) =>
   state.universe.disputeWindow;
 export const selectLoginAccountState = (state: AppState): LoginAccount =>
@@ -43,16 +42,6 @@ export const selectFilledOrders = (state: AppState) => state.filledOrders;
 export const selectUserMarketOpenOrders = (state: AppState) =>
   state.userOpenOrders;
 export const selectPendingQueue = (state: AppState) => state.pendingQueue;
-
-export const selectCurrentTimestamp = createSelector(
-  selectBlockchainState,
-  blockchain => blockchain.currentAugurTimestamp * 1000
-);
-
-export const selectCurrentTimestampInSeconds = createSelector(
-  selectBlockchainState,
-  blockchain => blockchain.currentAugurTimestamp
-);
 
 export const selectLoginAccountAddress = createSelector(
   selectLoginAccountState,
