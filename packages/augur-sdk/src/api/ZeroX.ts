@@ -524,7 +524,7 @@ export class ZeroX {
       } else if (this._rpc) {
         return this._rpc.addOrdersAsync(orders);
       } else {
-        throw Error('0x rpc and browser mesh are undefined so orders cannot be created')
+        throw Error('Unable to fetch orders from ZeroX - The mesh has not yet been initialized or there is an error, and no RPC server was specified.')
       }
     } catch (error) {
       if (this._mesh || this._rpc) {
