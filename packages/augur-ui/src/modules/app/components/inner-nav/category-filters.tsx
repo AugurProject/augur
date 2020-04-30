@@ -248,7 +248,7 @@ export default class CategoryFilters extends React.Component<
     const { categories } = categoryMetaData;
     const childrenCategories = selectedCategories.reduce((p, cat) => p[cat] ? p[cat].children : p, categories);
 
-    return Object.keys(childrenCategories)
+    return childrenCategories ? Object.keys(childrenCategories)
       .filter(this.removeBlankCategories)
       .map(category => {
         return {
@@ -256,7 +256,7 @@ export default class CategoryFilters extends React.Component<
           count: childrenCategories[category].count,
           children: childrenCategories[category].children,
         };
-      });
+      }) : [];
   }
 
   getCategoryChildrenCount(categories) {
@@ -264,7 +264,7 @@ export default class CategoryFilters extends React.Component<
     if (!categoryMetaData || !categories || categories.length === 0) return [];
     const { categories: metaCategories } = categoryMetaData;
     const childrenCategories = categories.reduce((p, cat, index) => p[cat] ? index === categories.length - 1 ? p[cat] : p[cat].children : p, metaCategories);
-    return childrenCategories ? childrenCategories.count : 0;
+    return (childrenCategories && childrenCategories.count) ? childrenCategories.count : 0;
   }
 
   getSelectedCategoryCount() {
