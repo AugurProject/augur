@@ -231,7 +231,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
         dispatch({ type: SET_MOBILE_MENU_STATE, mobileMenuState }),
       setCurrentBasePath: currentBasePath =>
         dispatch({ type: SET_CURRENT_BASE_PATH, currentBasePath }),
-      updateBlockchain: blockchain => dispatch({ type: UPDATE_BLOCKCHAIN, blockchain });
+      updateBlockchain: blockchain => dispatch({ type: UPDATE_BLOCKCHAIN, blockchain }),
     },
   };
 };
