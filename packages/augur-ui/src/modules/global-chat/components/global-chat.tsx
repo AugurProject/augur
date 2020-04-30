@@ -28,7 +28,6 @@ export const GlobalChat = ({ provider, whichChatPlugin, isLogged, initialize3box
           // Required props for context A) & B)
           box={box}
           currentUserAddr={address}
-          ethereum={provider}
           // optional
           openOnMount
           mute

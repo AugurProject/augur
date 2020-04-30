@@ -97,7 +97,7 @@ export async function createClient(
   } else if (config.ethereum?.http) {
     ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
   } else {
-      throw Error('No ethereum http endpoint provided');
+    throw Error('No ethereum http endpoint provided');
   }
   if (!config.addresses) {
     throw Error('Config must include addresses');
@@ -125,11 +125,11 @@ export async function createClient(
     connector,
     zeroX,
     enableFlexSearch
-  );{}
+  );
 
   // Delay loading of the browser mesh until we're finished syncing
   client.events.once(SubscriptionEventName.BulkSyncComplete, () => {
-    if (config.zeroX?.mesh?.enabled && createBrowserMesh) {
+    if (!config?.sdk?.enabled && config.zeroX?.mesh?.enabled && createBrowserMesh) {
       // This function is passed in and takes care of assigning it to the
       // zeroX instance. This is largely due to the need to have special
       // casing for if the mesh dies and we want to restart it. This is

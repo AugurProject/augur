@@ -41,7 +41,6 @@ export const ModalGlobalChat = ({
             // Required props for context A) & B)
             box={box}
             currentUserAddr={address}
-            ethereum={provider}
             // optional
             mute
             popupChat={false}

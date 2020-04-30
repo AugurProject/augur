@@ -30,6 +30,7 @@ export const use3box = (provider, initialize3box, initialized3box, chatOrComment
     }
 
     let threeBoxInstance;
+    let threeIdConnectProvider;
     let addressFromProvider = (await provider.enable())[0];
     let publicProfile;
 
@@ -37,7 +38,8 @@ export const use3box = (provider, initialize3box, initialized3box, chatOrComment
       threeBoxInstance = initialized3box.box;
       publicProfile = initialized3box.profile;
     } else {
-      threeBoxInstance = await Box.create(provider);
+      threeIdConnectProvider = await Box.get3idConnectProvider();
+      threeBoxInstance = await Box.create(threeIdConnectProvider);
       publicProfile = await Box.getProfile(addressFromProvider);
     }
 
@@ -63,7 +65,6 @@ export const use3box = (provider, initialize3box, initialized3box, chatOrComment
     setIsReady(true);
 
     const commentsAlreadyOpened = chatOrComments === 'comments';
-    console.log('commentsAlreadyOpened', commentsAlreadyOpened)
     initialize3box(addressFromProvider, threeBoxInstance, publicProfile, commentsAlreadyOpened);
   };
 
