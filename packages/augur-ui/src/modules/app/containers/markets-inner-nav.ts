@@ -3,7 +3,6 @@ import { compose } from 'redux';
 import BaseInnerNavPure from 'modules/app/components/inner-nav/base-inner-nav-pure';
 import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 import {
-  updateMarketsListMeta,
   updateSelectedCategories,
 } from 'modules/markets-list/actions/update-markets-list';
 import {
@@ -29,7 +28,6 @@ const mapDispatchToProps = dispatch => ({
   updateSelectedCategories: categories =>
     dispatch(updateSelectedCategories(categories)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
-  updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
   updateMarketsSortBy: sortBy =>
     dispatch(updateFilterSortOptions(MARKET_SORT, sortBy)),
   updateMaxFee: maxFee =>

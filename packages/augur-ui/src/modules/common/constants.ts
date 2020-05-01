@@ -1230,39 +1230,52 @@ export const TRADING_TUTORIAL_OUTCOMES = [
 
 export const DISPUTING_GUIDE = {
   title: 'DISPUTING QUICK GUIDE',
-  content: [{
-    header: 'Disputing',
-    paragraphs: [
-      'After a market’s initial report, it will wait for the current dispute window to end before entering into the ‘Currently Disputing’ tab. This is the time for users to dispute a Tentative Outcome if thet believe the market has been reported on incorrectly. Markets awaiting their first or next dispute round can be seen in the ‘Awaiting Next Dispute Round’ tab. An exception to this is when markets have been selected for Fast Resolution.'
-    ]
-  }, {
-    header: 'How to dispute an outcome',
-    paragraphs: [
-      'A market has to have one of of its non-tentative outcomes bonds filled in order to successfully dispute the current tentative outcome. Choose a non-tentative outcome to either fill the bond completely using your own REP or contribute a smaller amount as part of a crowd sourced bond. If a bond for a non-tentative outcome is successfully filled then that outcome will become the new tentative outcome and the market waits for the next dispute round. This process can repeat itself until a Tentative Outcome is unsuccessfully disputed during a round. Each round the REP stake required to fill a dispute bond is increased.'
-    ]
-  }, {
-    header: 'How a market resolves',
-    paragraphs: [
-      'If a tentative outcome is not successfully disputed during a dispute round then the market resolves with the current tentative outcome becoming the winning outcome and the reporting phase for that market  is over.'
-    ]
-  }, {
-    header: 'The benefits of reporting',
-    paragraphs: [
-      'Users who correctly staked on the Winning Outcome get to take a share of the REP that was staked on the incorrect outcome(s). This means you can potentially earn 40% ROI by disputing (i.e staking) against liars and reporting the truth. This keeps the Augur oracle secure and ultimately the Augur platform working how it should.'
-    ]
-  }, {
-    header: 'Pre-filled Stake',
-    paragraphs: [
-      'Users can add extra support for a Tentative Winning Outcome by pre-staking REP that will be used to dispute in that outcome’s favor in the event that is no longer the Tentative Winning Outcome. Pre-filling can help accelerate a market’s resolution.',
-      'Pre-filled Stake yields ROI if and only if: ',
-      '1) the market resolves to the staked-on outcome and',
-      '2) the pre-stake ends up being used to dispute in that outcome’s favor',
-      'If the market resolves to the staked-on outcome but the pre-stake is not used, you will receive back the pre-stake but no ROI. If the market does not resolve to the staked-on outcome, you will lose the pre-stake.'
-    ]
-  }],
+  content: [
+    {
+      header: 'Disputing',
+      paragraphs: [
+        'After a market’s initial report, it will wait for the current dispute window to end before entering into the ‘Currently Disputing’ tab. This is the time for users to dispute a Tentative Outcome if thet believe the market has been reported on incorrectly. Markets awaiting their first or next dispute round can be seen in the ‘Awaiting Next Dispute Round’ tab. An exception to this is when markets have been selected for Fast Resolution.',
+      ],
+    },
+    {
+      header: 'How to dispute an outcome',
+      paragraphs: [
+        'A market has to have one of of its non-tentative outcomes bonds filled in order to successfully dispute the current tentative outcome. Choose a non-tentative outcome to either fill the bond completely using your own REP or contribute a smaller amount as part of a crowd sourced bond. If a bond for a non-tentative outcome is successfully filled then that outcome will become the new tentative outcome and the market waits for the next dispute round. This process can repeat itself until a Tentative Outcome is unsuccessfully disputed during a round. Each round the REP stake required to fill a dispute bond is increased.',
+      ],
+    },
+    {
+      header: 'How a market resolves',
+      paragraphs: [
+        'If a tentative outcome is not successfully disputed during a dispute round then the market resolves with the current tentative outcome becoming the winning outcome and the reporting phase for that market  is over.',
+      ],
+    },
+    {
+      header: 'The benefits of reporting',
+      paragraphs: [
+        'Users who correctly staked on the Winning Outcome get to take a share of the REP that was staked on the incorrect outcome(s). This means you can potentially earn 40% ROI by disputing (i.e staking) against liars and reporting the truth. This keeps the Augur oracle secure and ultimately the Augur platform working how it should.',
+      ],
+    },
+    {
+      header: 'Pre-filled Stake',
+      paragraphs: [
+        'Users can add extra support for a Tentative Winning Outcome by pre-staking REP that will be used to dispute in that outcome’s favor in the event that is no longer the Tentative Winning Outcome. Pre-filling can help accelerate a market’s resolution.',
+        'Pre-filled Stake yields ROI if and only if: ',
+        '1) the market resolves to the staked-on outcome and',
+        '2) the pre-stake ends up being used to dispute in that outcome’s favor',
+        'If the market resolves to the staked-on outcome but the pre-stake is not used, you will receive back the pre-stake but no ROI. If the market does not resolve to the staked-on outcome, you will lose the pre-stake.',
+      ],
+    },
+    {
+      header: 'Dispute Window',
+      paragraphs: [
+        'The dispute window is a week-long cycle. Reporting fees from settled shares are deposited into the next upcoming window.',
+        'At the end of the dispute window, those fees are allocated to REP holders who exchange their REP for participation tokens. When the disputing window ends, users can redeem their participation tokens for a proportional amount of the fees generated.'
+      ],
+    },
+  ],
   learnMoreButtonText: 'Learn more about disputing',
   learnMoreUrl: HELP_CENTER_DISPUTING_QUICK_GUIDE,
-  closeButtonText: 'Close'
+  closeButtonText: 'Close',
 };
 
 export const REPORTING_GUIDE = {

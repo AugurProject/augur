@@ -19,7 +19,6 @@ const mergeProps = (sP, dP, oP) => {
     startTime,
     endTime,
     title:"Current Dispute Window",
-    description:"A few lines of information explaing the purpose of the Dispute Window",
     countdownLabel:"Time Remaining in Window",
   };
 };
