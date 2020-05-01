@@ -3,9 +3,10 @@ import { withRouter } from "react-router-dom";
 import { Message } from "modules/modal/message";
 import isMetaMask from "modules/auth/helpers/is-meta-mask";
 import { AppState } from "appStore";
+import { AppStatusState } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
+  modal: AppStatusState.get().modal,
 });
 
 const mapDispatchToProps = () => ({});

@@ -1,16 +1,14 @@
 import { track, MODAL_CLOSED } from 'services/analytics/helpers';
 import { AppState } from 'appStore';
 import { Action } from 'redux';
-import { NodeStyleCallback } from "modules/types";
-import logError from "utils/log-error";
-import { ThunkAction, ThunkDispatch } from "redux-thunk";
-
+import { ThunkDispatch } from "redux-thunk";
+import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
 
 export const closeModal = () => (
   dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState
 ) => {
-  const { modal } = getState();
+  const { modal } = AppStatusState.get();
   if (modal.type) {
     dispatch(
       track(modal.type + ' - ' + MODAL_CLOSED, {
@@ -18,9 +16,5 @@ export const closeModal = () => (
       })
     );
   }
-  dispatch(close());
+  AppStatusActions.actions.closeModal();
 };
-
-export function close() {
-  return { type: CLOSE_MODAL };
-}

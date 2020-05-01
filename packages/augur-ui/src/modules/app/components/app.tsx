@@ -320,7 +320,6 @@ const AppView = ({
             migrateV1Rep={migrateV1Rep}
             showMigrateRepButton={showMigrateRepButton}
             walletBalances={walletBalances}
-            updateModal={updateModal}
             showCreateAccountButton={showCreateAccountButton}
             createFundedGsnWallet={createFundedGsnWallet}
           />
@@ -375,7 +374,6 @@ const SideBarSection = ({
   migrateV1Rep,
   showMigrateRepButton,
   walletBalances,
-  updateModal,
   showCreateAccountButton,
   createFundedGsnWallet,
 }) => {
@@ -405,7 +403,6 @@ const SideBarSection = ({
         migrateV1Rep={migrateV1Rep}
         showMigrateRepButton={showMigrateRepButton}
         walletBalances={walletBalances}
-        updateModal={updateModal}
         showCreateAccountButton={showCreateAccountButton}
         createFundedGsnWallet={createFundedGsnWallet}
       />
@@ -416,7 +413,6 @@ const SideBarSection = ({
         migrateV1Rep={migrateV1Rep}
         showMigrateRepButton={showMigrateRepButton}
         walletBalances={walletBalances}
-        updateModal={updateModal}
         showCreateAccountButton={showCreateAccountButton}
         createFundedGsnWallet={createFundedGsnWallet}
       />

@@ -21,6 +21,7 @@ import {
   TemplateInput,
   UserInputDateTime,
 } from '@augurproject/artifacts';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 export function submitNewMarket(
   market: NewMarket,
@@ -30,8 +31,8 @@ export function submitNewMarket(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { loginAccount, appStatus } = getState();
-
+    const { loginAccount } = getState();
+    const { gsnEnabled } = AppStatusState.get();
     market.orderBook = sortOrders(market.orderBook);
     market.endTime = market.endTimeFormatted.timestamp;
     market.designatedReporterAddress =
@@ -45,7 +46,7 @@ export function submitNewMarket(
 
 
     // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
-    if (!appStatus.gsnEnabled && loginAccount.allowance.lte(ZERO)) {
+    if (!gsnEnabled && loginAccount.allowance.lte(ZERO)) {
       await approveToTrade();
     }
 

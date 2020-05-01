@@ -30,7 +30,6 @@ interface SideNavProps {
   showGlobalChat: Function;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
-  updateModal: Function;
 }
 
 const SideNav = ({
@@ -42,13 +41,12 @@ const SideNav = ({
   showGlobalChat,
   migrateV1Rep,
   showMigrateRepButton,
-  updateModal,
 }: SideNavProps) => {
   const {
     currentBasePath,
     isHelpMenuOpen,
     isConnectionTrayOpen,
-    actions: { setIsHelpMenuOpen, setGSNEnabled },
+    actions: { setIsHelpMenuOpen, setGSNEnabled, setModal },
   } = useAppStatusStore();
 
   const accessFilteredMenu = menuData.filter(
@@ -77,7 +75,7 @@ const SideNav = ({
           <ul className={Styles.MainMenu}>
             {isLogged && (
               <SecondaryButton
-                action={() => updateModal({ type: MODAL_ADD_FUNDS })}
+                action={() => setModal({ type: MODAL_ADD_FUNDS })}
                 text="Add Funds"
                 icon={PlusCircleIcon}
               />

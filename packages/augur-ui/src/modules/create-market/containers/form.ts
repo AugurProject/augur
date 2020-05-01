@@ -15,12 +15,11 @@ import {
   MODAL_INITIALIZE_ACCOUNT
 } from "modules/common/constants";
 import { addDraft, updateDraft } from "modules/create-market/actions/update-drafts";
-import { updateModal } from "modules/modal/actions/update-modal";
 import { NodeStyleCallback } from "modules/types";
 import { marketCreationStarted, marketCreationSaved } from "services/analytics/helpers";
 import { isGSNUnavailable } from "modules/app/selectors/is-gsn-unavailable";
 import getValueFromlocalStorage from "utils/get-local-storage-value";
-import { AppStatusState } from "modules/app/store/app-status";
+import { AppStatusState, AppStatusActions } from "modules/app/store/app-status";
 
 const mapStateToProps = state => {
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
@@ -37,23 +36,25 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  initializeGsnWallet: (customAction = null) => dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
-  updateNewMarket: data => dispatch(updateNewMarket(data)),
-  removeAllOrdersFromNewMarket: () => dispatch(removeAllOrdersFromNewMarket()),
-  submitNewMarket: (data, cb) =>
-    dispatch(submitNewMarket(data, cb)),
-  addDraft: (key, data) => dispatch(addDraft(key, data)),
-  clearNewMarket: () => dispatch(clearNewMarket()),
-  updateDraft: (key, data) => dispatch(updateDraft(key, data)),
-  discardModal: (cb: NodeStyleCallback) =>
-    dispatch(updateModal({ type: MODAL_DISCARD, cb })),
-  openCreateMarketModal: (cb: NodeStyleCallback) =>
-    dispatch(updateModal({ type: MODAL_CREATE_MARKET, cb })),
-  marketCreationStarted: (templateName, isTemplate) => dispatch(marketCreationStarted(templateName, isTemplate)),
-  marketCreationSaved: (templateName, isTemplate) => dispatch(marketCreationSaved(templateName, isTemplate)),
-});
-
+const mapDispatchToProps = dispatch => {
+  const { setModal } = AppStatusActions.actions;
+  return ({
+    initializeGsnWallet: (customAction = null) => setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
+    updateNewMarket: data => dispatch(updateNewMarket(data)),
+    removeAllOrdersFromNewMarket: () => dispatch(removeAllOrdersFromNewMarket()),
+    submitNewMarket: (data, cb) =>
+      dispatch(submitNewMarket(data, cb)),
+    addDraft: (key, data) => dispatch(addDraft(key, data)),
+    clearNewMarket: () => dispatch(clearNewMarket()),
+    updateDraft: (key, data) => dispatch(updateDraft(key, data)),
+    discardModal: (cb: NodeStyleCallback) =>
+      setModal({ type: MODAL_DISCARD, cb }),
+    openCreateMarketModal: (cb: NodeStyleCallback) =>
+      setModal({ type: MODAL_CREATE_MARKET, cb }),
+    marketCreationStarted: (templateName, isTemplate) => dispatch(marketCreationStarted(templateName, isTemplate)),
+    marketCreationSaved: (templateName, isTemplate) => dispatch(marketCreationSaved(templateName, isTemplate)),
+  });
+}
 const FormContainer = withRouter(
   connect(
     mapStateToProps,

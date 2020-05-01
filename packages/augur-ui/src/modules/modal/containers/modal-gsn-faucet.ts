@@ -6,6 +6,7 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { fundGsnWallet } from 'modules/contracts/actions/contractCalls';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount } = state;
@@ -13,7 +14,7 @@ const mapStateToProps = (state: AppState) => {
   const signingWallet = meta.signer._address;
   const gsnWallet = address;
   return {
-    modal: state.modal,
+    modal: AppStatusState.get().modal,
     signingWallet,
     gsnWallet,
   };

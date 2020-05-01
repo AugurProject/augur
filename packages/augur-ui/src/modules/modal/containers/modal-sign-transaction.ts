@@ -6,6 +6,7 @@ import { MODAL_LEDGER, MODAL_TREZOR } from "modules/common/constants";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "appStore";
+import { AppStatusState } from "modules/app/store/app-status";
 
 const signerTypes = {
   [MODAL_LEDGER]: "Ledger",
@@ -13,7 +14,7 @@ const signerTypes = {
 };
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
+  modal: AppStatusState.get().modal,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

@@ -1,9 +1,8 @@
 import { connect } from 'react-redux';
 import { ReportingCard } from 'modules/reporting/common';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_REPORTING } from 'modules/common/constants';
 import { AppState } from 'appStore';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe } = state;
@@ -19,12 +18,10 @@ const mapStateToProps = (state: AppState, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   showReportingModal: () =>
-    dispatch(
-      updateModal({
-        type: MODAL_REPORTING,
-        market: ownProps.market,
-      })
-    ),
+    AppStatusActions.actions.setModal({
+      type: MODAL_REPORTING,
+      market: ownProps.market,
+    }),
 });
 
 const ReportingCardContainer = connect(

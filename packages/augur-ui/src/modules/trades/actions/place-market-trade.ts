@@ -20,8 +20,7 @@ import {
 } from 'modules/orders/actions/pending-orders-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import { updateModal } from 'modules/modal/actions/update-modal';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
 
 export const placeMarketTrade = ({
   marketId,
@@ -115,12 +114,11 @@ export const placeMarketTrade = ({
     tradeGroupId
   ).catch(err => {
     console.log(err);
-    dispatch(
-      updateModal({
-        type: MODAL_ERROR,
-        error: err.message ? err.message : JSON.stringify(err),
-      })
-    );
+    const { setModal } = AppStatusActions.actions;
+    setModal({
+      type: MODAL_ERROR,
+      error: err.message ? err.message : JSON.stringify(err),
+    });
     dispatch(
       updatePendingOrderStatus(
         tradeGroupId,

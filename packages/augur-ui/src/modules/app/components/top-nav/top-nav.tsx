@@ -29,7 +29,6 @@ interface TopNavProps {
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
-  updateModal: Function;
   showCreateAccountButton: boolean;
   createFundedGsnWallet: Function;
 }
@@ -45,7 +44,7 @@ const TopNav = ({
   showCreateAccountButton = false,
   walletBalances,
 }: TopNavProps) => {
-  const { currentBasePath} = useAppStatusStore();
+  const { currentBasePath } = useAppStatusStore();
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
     return item.route === currentBasePath;

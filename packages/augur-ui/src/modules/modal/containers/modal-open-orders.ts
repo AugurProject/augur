@@ -8,12 +8,14 @@ import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const market = selectMarket(state.modal.marketId);
-  const userOpenOrders = getUserOpenOrders(state.modal.marketId) || [];
+  const { modal } = AppStatusState.get();
+  const market = selectMarket(modal.marketId);
+  const userOpenOrders = getUserOpenOrders(modal.marketId) || [];
   return {
-    modal: state.modal,
+    modal,
     userOpenOrders,
     market,
     loginAccount: state.loginAccount,

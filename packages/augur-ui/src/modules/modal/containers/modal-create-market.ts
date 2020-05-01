@@ -8,9 +8,10 @@ import { Action } from "redux";
 import getValue from "utils/get-value";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import { NewMarket, NodeStyleCallback } from "modules/types";
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
+  modal: AppStatusState.get().modal,
   newMarket: state.newMarket,
   address: getValue(state, "loginAccount.address"),
 });

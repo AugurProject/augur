@@ -7,12 +7,14 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppStatusState } from 'modules/app/store/app-status';
 
-const mapStateToProps = (state: AppState) => ({
-  isLogged: AppStatusState.get().isLogged,
-  loginAccount: state.loginAccount,
-  modal: state.modal,
-});
-
+const mapStateToProps = (state: AppState) => {
+  const { isLogged, modal } = AppStatusState.get();
+  return ({
+    isLogged,
+    loginAccount: state.loginAccount,
+    modal,
+  });
+}
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
 });

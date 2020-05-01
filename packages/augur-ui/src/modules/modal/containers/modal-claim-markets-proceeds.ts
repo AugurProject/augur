@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { startClaimingMarketsProceeds, claimMarketsProceedsGas } from 'modules/positions/actions/claim-markets-proceeds';
-import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import {
   formatDai,
   formatEther,
@@ -27,9 +26,11 @@ import {
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { labelWithTooltip } from 'modules/common/label-with-tooltip';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const pendingQueue = state.pendingQueue || [];
+  const { modal, gsnEnabled, blockchain: { currentAugurTimestamp } } = AppStatusState.get();
   const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
     state
   );
@@ -69,7 +70,7 @@ const mapStateToProps = (state: AppState) => {
             },
             {
               label: 'Est. Transaction Fee',
-              value: state.appStatus.gsnEnabled
+              value: gsnEnabled
                 ? displayGasInDai(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE)
                 : formatEther(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE).formattedValue,
             },
@@ -81,9 +82,9 @@ const mapStateToProps = (state: AppState) => {
     );
   }
   return {
-    modal: state.modal,
+    modal,
     gasCost: CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE,
-    currentTimestamp: selectCurrentTimestampInSeconds(state),
+    currentTimestamp: currentAugurTimestamp,
     claimableMarkets,
     totalUnclaimedProfit:
       accountMarketClaimablePositions.totals.totalUnclaimedProfit,
@@ -91,7 +92,7 @@ const mapStateToProps = (state: AppState) => {
     accountMarketClaimablePositions.totals.totalUnclaimedProceeds,
     totalFees:
     accountMarketClaimablePositions.totals.totalFees,
-    GsnEnabled: state.appStatus.gsnEnabled,
+    GsnEnabled: gsnEnabled,
     account: state.loginAccount.address,
   };
 };

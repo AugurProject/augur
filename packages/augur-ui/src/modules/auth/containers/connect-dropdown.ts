@@ -1,13 +1,12 @@
 import { connect } from 'react-redux';
 import ConnectDropdown from 'modules/auth/components/connect-dropdown/connect-dropdown';
 import { logout } from 'modules/auth/actions/logout';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, GAS_TIME_LEFT_LABELS, MODAL_ADD_FUNDS, MODAL_UNIVERSE_SELECTOR } from 'modules/common/constants';
 import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
 import { FormattedNumber } from 'modules/types';
 import { AppState } from 'appStore';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const { fast, average, safeLow, userDefinedGasPrice } = AppStatusState.get().gasPriceInfo;
@@ -45,13 +44,15 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(logout()),
-  gasModal: () => dispatch(updateModal({ type: MODAL_GAS_PRICE })),
-  universeSelectorModal: () => dispatch(updateModal({ type: MODAL_UNIVERSE_SELECTOR })),
-  showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
-});
-
+const mapDispatchToProps = dispatch => {
+  const { setModal } = AppStatusActions.actions;
+  return ({
+    logout: () => dispatch(logout()),
+    gasModal: () => setModal({ type: MODAL_GAS_PRICE }),
+    universeSelectorModal: () => setModal({ type: MODAL_UNIVERSE_SELECTOR }),
+    showAddFundsModal: () => setModal({ type: MODAL_ADD_FUNDS }),
+  });
+}
 export default connect(
   mapStateToProps,
   mapDispatchToProps

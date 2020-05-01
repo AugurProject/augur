@@ -12,9 +12,10 @@ import {
 } from 'modules/common/constants';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import getGasPrice from 'modules/auth/selectors/get-gas-price';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
+  modal: AppStatusState.get().modal,
   // TODO: Replace MIGRATE_MARKET_GAS_ESTIMATE with call to `migrateMarketThroughOneFork` with `estimateGas` set to true
   gasCost: formatGasCostToEther(
     MIGRATE_MARKET_GAS_ESTIMATE.toFixed(),

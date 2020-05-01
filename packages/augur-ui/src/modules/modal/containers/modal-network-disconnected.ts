@@ -4,9 +4,10 @@ import ModalNetworkDisconnected from "modules/modal/components/modal-network-dis
 import { AppState } from "appStore";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { AppStatusState } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
+  modal: AppStatusState.get().modal,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});

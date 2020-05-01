@@ -9,9 +9,9 @@ import { Action } from 'redux';
 import { AppStatusActions, AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { gasPriceInfo } = AppStatusState.get();
+  const { gasPriceInfo, modal } = AppStatusState.get();
   return ({
-    modal: state.modal,
+    modal,
     ...gasPriceInfo,
   });
 }

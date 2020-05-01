@@ -36,6 +36,7 @@ import {
   ACCOUNT_TYPES,
   THEMES,
   CLOSED_SHORT,
+  MODAL_INVALID_MARKET_RULES,
 } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
@@ -711,10 +712,9 @@ export class HoverValueLabel extends React.Component<
 export const InvalidLabel = ({
   text,
   keyId,
-  openInvalidMarketRulesModal,
   tooltipPositioning,
 }: InvalidLabelProps) => {
-  const { theme } = useAppStatusStore();
+  const { theme, actions: { setModal }} = useAppStatusStore();
   const {
     explainerBlockTitle,
     explainerBlockSubtexts,
@@ -724,7 +724,7 @@ export const InvalidLabel = ({
   const openModal = event => {
     event.preventDefault();
     event.stopPropagation();
-    openInvalidMarketRulesModal();
+    setModal({ type: MODAL_INVALID_MARKET_RULES });
   };
 
   return (

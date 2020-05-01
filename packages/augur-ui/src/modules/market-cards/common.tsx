@@ -54,7 +54,6 @@ import {
 } from 'modules/types';
 import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
-import InvalidLabel from 'modules/common/containers/labels';
 import { ProcessingButton, BettingBackLayButton } from 'modules/common/buttons';
 import {
   CategoryTagTrail,
@@ -62,6 +61,7 @@ import {
   MarketTypeLabel,
   RedFlag,
   TemplateShield,
+  InvalidLabel,
 } from 'modules/common/labels';
 import Styles from 'modules/market-cards/common.styles.less';
 import { MarketCard } from 'modules/market-cards/market-card';

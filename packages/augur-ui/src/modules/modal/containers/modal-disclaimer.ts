@@ -6,9 +6,10 @@ import { DISCLAIMER_SEEN } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'appStore';
+import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
-  onApprove: state.modal.onApprove,
+  onApprove: AppStatusState.get().modal.onApprove,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

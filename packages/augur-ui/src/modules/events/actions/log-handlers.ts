@@ -61,7 +61,6 @@ import { loadUniverseDetails } from 'modules/universe/actions/load-universe-deta
 import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
@@ -162,7 +161,7 @@ export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
 ) => {
   console.log('TxFeeTooLow Transaction', txStatus.transaction.name);
   dispatch(addUpdateTransaction(txStatus));
-  dispatch(updateModal({ type: MODAL_GAS_PRICE, feeTooLow: true }));
+  AppStatusActions.actions.setModal({ type: MODAL_GAS_PRICE, feeTooLow: true });
 };
 
 export const handleZeroStatusUpdated = (status) => (

@@ -8,8 +8,8 @@ import {
   MODAL_MIGRATE_MARKET,
   MODAL_REPORTING,
 } from 'modules/common/constants';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { marketLinkCopied } from 'services/analytics/helpers';
+import { AppStatusActions } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state, ownProps) => {
   const { marketId } = ownProps.market;
@@ -23,7 +23,7 @@ const mapStateToProps = (state, ownProps) => {
   } = state;
   const hasStaked = hasStakeInMarket(state, marketId);
   const { forkingInfo } = universe;
-  
+
   return {
     hasPosition: !!positions[marketId],
     orderBook: orderBooks[marketId]?.orderBook,
@@ -34,37 +34,33 @@ const mapStateToProps = (state, ownProps) => {
     isFavorite: !!favorites[marketId],
     hasStaked,
     forkingMarket: forkingInfo?.forkingMarket,
-    forkingEndTime: forkingInfo?.forkEndTime
+    forkingEndTime: forkingInfo?.forkEndTime,
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
-  dispute: (selectedOutcome: string, isInvalid: boolean) =>
-    dispatch(
-      updateModal({
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { setModal } = AppStatusActions.actions;
+  return {
+    toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
+    dispute: (selectedOutcome: string, isInvalid: boolean) =>
+      setModal({
         type: MODAL_REPORTING,
         market: ownProps.market,
         selectedOutcome,
         isInvalid,
-      })
-    ),
-  migrateMarketModal: () =>
-    dispatch(
-      updateModal({
+      }),
+    migrateMarketModal: () =>
+      setModal({
         type: MODAL_MIGRATE_MARKET,
         market: ownProps.market,
-      })
-    ),
-  marketLinkCopied: (marketId, location) =>
-    dispatch(marketLinkCopied(marketId, location)),
-});
+      }),
+    marketLinkCopied: (marketId, location) =>
+      dispatch(marketLinkCopied(marketId, location)),
+  };
+};
 
 const MarketCardContainer = withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MarketCard)
+  connect(mapStateToProps, mapDispatchToProps)(MarketCard)
 );
 
 export default MarketCardContainer;

@@ -37,10 +37,10 @@ import { addPendingData } from 'modules/pending-queue/actions/pending-queue-mana
 import { AppStatusState } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatusState.get();
+  const { modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatusState.get();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   return {
-    modal: state.modal,
+    modal,
     gasCost: CLAIM_FEES_GAS_COST.multipliedBy(gasPrice),
     GsnEnabled,
     pendingQueue: state.pendingQueue || [],

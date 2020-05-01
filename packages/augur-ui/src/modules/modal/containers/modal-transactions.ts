@@ -9,13 +9,15 @@ import { Getters } from "@augurproject/sdk";
 import { Action } from "redux";
 import { AppStatusState } from "modules/app/store/app-status";
 
-const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
-  now: AppStatusState.get().blockchain.currentAugurTimestamp,
-  account: state.loginAccount.address,
-  universe: state.universe.id,
-});
-
+const mapStateToProps = (state: AppState) => {
+  const { modal, blockchain: { currentAugurTimestamp: now }} = AppStatusState.get();
+  return ({
+    modal,
+    now,
+    account: state.loginAccount.address,
+    universe: state.universe.id,
+  });
+}
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
 });

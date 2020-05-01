@@ -27,7 +27,9 @@ import {
   BLOCKCHAIN,
   CATEGORY_STATS,
   FILTER_SORT_OPTIONS,
+  MODAL,
 } from 'modules/app/store/constants';
+import { breakdown } from 'modules/modal/modal.styles.less';
 
 const {
   SET_THEME,
@@ -56,6 +58,8 @@ const {
   UPDATE_BLOCKCHAIN,
   SET_CATEGORY_STATS,
   UPDATE_FILTER_SORT_OPTIONS,
+  SET_MODAL,
+  CLOSE_MODAL,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -189,6 +193,14 @@ export function AppStatusReducer(state, action) {
       }
       break;
     }
+    case SET_MODAL: {
+      updatedState[MODAL] = action.modal;
+      break;
+    }
+    case CLOSE_MODAL: {
+      updatedState[MODAL] = {};
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -249,6 +261,8 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       updateBlockchain: blockchain => dispatch({ type: UPDATE_BLOCKCHAIN, blockchain }),
       setCategoryStats: categoryStats => dispatch({ type: SET_CATEGORY_STATS, categoryStats }),
       updateFilterSortOptions: filterSortOptions => dispatch({ type: UPDATE_FILTER_SORT_OPTIONS, filterSortOptions }),
+      setModal: modal => dispatch({ type: SET_MODAL, modal }),
+      closeModal: () => dispatch({ type: CLOSE_MODAL }),
     },
   };
 };

@@ -1,18 +1,18 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Onboarding } from 'modules/modal/onboarding';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { MODAL_BUY_DAI, HELP_CENTER_WHAT_IS_DAI } from 'modules/common/constants';
 import { OnboardingDollarDaiIcon } from 'modules/common/icons';
 import { AUGUR_USES_DAI, track } from 'services/analytics/helpers';
+import { AppStatusActions } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  buyDaiModal: () => dispatch(updateModal({ type: MODAL_BUY_DAI })),
+  buyDaiModal: () => AppStatusActions.actions.setModal({ type: MODAL_BUY_DAI }),
   track: (eventName, payload) => dispatch(track(eventName, payload))
 });
 

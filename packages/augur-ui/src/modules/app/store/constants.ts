@@ -31,6 +31,7 @@ export const CURRENT_BASE_PATH = 'currentBasePath';
 export const BLOCKCHAIN = 'blockchain';
 export const CATEGORY_STATS = 'categoryStats';
 export const FILTER_SORT_OPTIONS = 'filterSortOptions';
+export const MODAL = 'modal';
 
 const DEFAULT_ENV: SDKConfiguration = JSON.parse(JSON.stringify(DEFAULT_SDK_CONFIGURATION));
 const DEFAULT_GAS_PRICE_INFO: GasPriceInfo = {
@@ -89,6 +90,7 @@ export const DEFAULT_APP_STATUS = {
   [BLOCKCHAIN]: DEFAULT_BLOCKCHAIN,
   [CATEGORY_STATS]: {},
   [FILTER_SORT_OPTIONS]: DEFAULT_FILTER_SORT_OPTIONS,
+  [MODAL]: {},
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -118,6 +120,8 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_BLOCKCHAIN: 'UPDATE_BLOCKCHAIN',
   SET_CATEGORY_STATS: 'SET_CATEGORY_STATS',
   UPDATE_FILTER_SORT_OPTIONS: 'UPDATE_FILTER_SORT_OPTIONS',
+  SET_MODAL: 'SET_MODAL',
+  CLOSE_MODAL: 'CLOSE_MODAL',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -147,4 +151,6 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateBlockchain: blockchain => {},
   setCategoryStats: categoryStats => {},
   updateFilterSortOptions: filterSortOptions => {},
+  setModal: modal => {},
+  closeModal: () => {},
 };

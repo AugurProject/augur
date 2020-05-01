@@ -13,7 +13,6 @@ import {
   MODAL_LOADING,
 } from 'modules/common/constants';
 import { augurSdk } from 'services/augursdk';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { logout } from 'modules/auth/actions/logout';
 import { AppState } from 'appStore';
@@ -22,7 +21,7 @@ import { AppStatusActions } from 'modules/app/store/app-status';
 // MetaMask, dapper, Mobile wallets
 export const loginWithInjectedWeb3 = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState,
+  getState: () => AppState
 ) => {
   const failure = error => {
     dispatch(closeModal());
@@ -30,7 +29,8 @@ export const loginWithInjectedWeb3 = () => async (
   };
   const success = async (account: string, refresh: boolean) => {
     if (!account) return failure('No Account');
-    if (refresh) AppStatusActions.actions.setIsLogged(false);
+    const { setModal, setIsLogged } = AppStatusActions.actions;
+    if (refresh) setIsLogged(false);
 
     dispatch(login(account));
 
@@ -45,12 +45,10 @@ export const loginWithInjectedWeb3 = () => async (
             'web3 updated, network changed to',
             config.networkVersion
           );
-          dispatch(
-            updateModal({
-              type: MODAL_NETWORK_MISMATCH,
-              expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)],
-            })
-          );
+          setModal({
+            type: MODAL_NETWORK_MISMATCH,
+            expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)],
+          });
         }
       });
     }
@@ -63,14 +61,12 @@ export const loginWithInjectedWeb3 = () => async (
           const initWeb3 = async account => {
             const message = account ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
             const showMetaMaskHelper = account ? false : true;
-            dispatch(
-              updateModal({
-                type: MODAL_LOADING,
-                message,
-                showMetaMaskHelper,
-                callback: () => dispatch(closeModal()),
-              })
-            );
+            setModal({
+              type: MODAL_LOADING,
+              message,
+              showMetaMaskHelper,
+              callback: () => dispatch(closeModal()),
+            });
 
             await dispatch(loginWithInjectedWeb3());
           };
@@ -90,17 +86,16 @@ export const loginWithInjectedWeb3 = () => async (
     const request = await windowRef.ethereum.send('eth_requestAccounts');
     const address = request.result[0];
     success(address, false);
-  }
-  catch (err) {
+  } catch (err) {
     return windowRef.ethereum
-    .enable()
-    .then((resolve: string[]) => success(resolve[0], false), failure);
+      .enable()
+      .then((resolve: string[]) => success(resolve[0], false), failure);
   }
 };
 
 const login = (account: string) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState,
+  getState: () => AppState
 ) => {
   const provider = new Web3Provider(windowRef.web3.currentProvider);
   const networkId = windowRef.web3.currentProvider.networkVersion;

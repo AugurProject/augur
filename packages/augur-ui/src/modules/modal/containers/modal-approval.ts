@@ -6,9 +6,10 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { approveToTrade } from "modules/contracts/actions/contractCalls";
+import { AppStatusState } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
+  modal: AppStatusState.get().modal,
   account: state.loginAccount,
 });
 

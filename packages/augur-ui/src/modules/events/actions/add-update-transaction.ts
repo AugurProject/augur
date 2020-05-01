@@ -41,8 +41,7 @@ import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-management';
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
-import { updateModal } from 'modules/modal/actions/update-modal';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
 
 const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
@@ -85,14 +84,14 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 
-      dispatch(updateModal({
+      AppStatusActions.actions.setModal({
         type: MODAL_ERROR,
         error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
         showDiscordLink: false,
         showAddFundsHelp: !hasEth,
         walletType: loginAccount.meta.accountType,
         title: 'We\'re having trouble processing transactions',
-      }));
+      });
     }
     const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
     const timestamp = currentAugurTimestamp * 1000;
