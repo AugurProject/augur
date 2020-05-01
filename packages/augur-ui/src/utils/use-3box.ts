@@ -30,7 +30,6 @@ export const use3box = (provider, initialize3box, initialized3box, chatOrComment
     }
 
     let threeBoxInstance;
-    let threeIdConnectProvider;
     let addressFromProvider = (await provider.enable())[0];
     let publicProfile;
 
@@ -38,8 +37,7 @@ export const use3box = (provider, initialize3box, initialized3box, chatOrComment
       threeBoxInstance = initialized3box.box;
       publicProfile = initialized3box.profile;
     } else {
-      threeIdConnectProvider = await Box.get3idConnectProvider();
-      threeBoxInstance = await Box.create(threeIdConnectProvider);
+      threeBoxInstance = await Box.create(provider);
       publicProfile = await Box.getProfile(addressFromProvider);
     }
 
