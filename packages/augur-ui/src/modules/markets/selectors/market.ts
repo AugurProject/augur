@@ -39,7 +39,7 @@ const assembleMarket = createSelector(
   selectMarketsDataStateMarket,
   (marketData): MarketData => {
     const { blockchain: { currentAugurTimestamp } } = AppStatusState.get();
-    convertMarketInfoToMarketData(marketData, currentAugurTimestamp * 1000);
+    return convertMarketInfoToMarketData(marketData, currentAugurTimestamp * 1000);
   }
 );
 
