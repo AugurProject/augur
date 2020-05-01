@@ -19,15 +19,15 @@
 
     @media @breakpoint-mobile {
       padding: 0;
-      position: relative;
-    }
-
-    > button {
-      margin-right: @size-12;
+      max-width: 40%;
     }
 
     > button[class*="SecondaryButton"] {
-      margin-left: @size-24;
+      margin: 0 @size-16;
+    }
+
+    > button[class*="PrimaryButton"] {
+      margin-right: @size-16;
     }
   }
 
@@ -174,13 +174,13 @@
   padding: @size-16 @size-16 @size-16 @size-24;
   width: unset;
 
-  @media @breakpoint-mobile {
-    border-left: 1px solid @color-module-background;
-    padding: 0 0 0 @size-18;
+  > svg {
+    width: @size-34;
   }
 
-  @media @breakpoint-tablet {
-    padding: @size-8;
+  @media @breakpoint-mobile {
+    border-left: 1px solid @color-module-background;
+    padding: 0 @size-10 0 @size-18;
   }
 
   &:hover {

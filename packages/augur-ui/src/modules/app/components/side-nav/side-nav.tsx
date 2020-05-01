@@ -35,6 +35,7 @@ interface SideNavProps {
   createFundedGsnWallet: Function;
   restoredAccount: boolean;
   stats: CoreStats;
+  whichChatPlugin: string;
 }
 
 const SideNav = ({
@@ -56,7 +57,8 @@ const SideNav = ({
   showCreateAccountButton,
   createFundedGsnWallet,
   stats,
-  restoredAccount
+  restoredAccount,
+  whichChatPlugin,
 }: SideNavProps) => {
   useEffect(() => {
     if (isHelpMenuOpen) {
@@ -158,13 +160,15 @@ const SideNav = ({
           </ul>
 
           <footer>
-            <div className={Styles.GlobalChat}>
-              <SecondaryButton
-                action={showGlobalChat}
-                text='Global Chat'
-                icon={Chevron}
-              />
-            </div>
+            {isLogged && whichChatPlugin && (
+              <div className={Styles.GlobalChat}>
+                <SecondaryButton
+                  action={showGlobalChat}
+                  text='Global Chat'
+                  icon={Chevron}
+                />
+              </div>
+            )}
             {isLogged && (
               <div onClick={() => logout()}>Logout {LogoutIcon()}</div>
             )}

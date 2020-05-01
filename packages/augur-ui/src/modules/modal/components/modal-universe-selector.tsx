@@ -21,7 +21,7 @@ export const ModalUniverseSelector = ({
         <CloseButton action={() => closeAction()} />
         <h1>Augur Universe Picker</h1>
       </div>
-      <p>A few lines of copy explaining what Augur universes are.</p>
+      <p>A Universe in Augur is a collection of markets. Universes can have children and a parent.</p>
       <main>
         <UniverseCard
           universe={universeDetails}

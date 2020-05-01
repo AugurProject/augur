@@ -107,6 +107,8 @@ const loadOrderBook = _.throttle((dispatch, marketId) => dispatch(loadMarketOrde
 const loadUserOpenOrders = _.throttle(dispatch => dispatch(loadAccountOpenOrders()), MED_PRI_LOAD_REFRESH_MS, { leading: true });
 const throttleLoadMarketOrders = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
 const throttleLoadUserOpenOrders = () => dispatch => loadUserOpenOrders(dispatch);
+const BLOCKS_BEHIND_RELOAD_THRESHOLD = 60; // 60 blocks. 
+let blocksBehindTimer = null;
 
 const updateMarketOrderBook = (marketId: string) => (
   dispatch: ThunkDispatch<void, any, Action>
@@ -168,10 +170,11 @@ export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
   dispatch(updateModal({ type: MODAL_GAS_PRICE, feeTooLow: true }));
 };
 
-export const handleZeroStatusUpdated = (status) => (
+export const handleZeroStatusUpdated = (status, log = undefined) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  if (log && log.error && log.error.message.includes("too many blocks")) location.reload();
   dispatch(updateAppStatus(Ox_STATUS, status))
 }
 
@@ -193,7 +196,10 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { blockchain } = getState();
+  const { blockchain, env } = getState();
+  const blockTime = env.networkId === "1" ? 15000 : 2000;
+  if (blocksBehindTimer) clearTimeout(blocksBehindTimer);
+  blocksBehindTimer = setTimeout(function () {location.reload(); }, BLOCKS_BEHIND_RELOAD_THRESHOLD * blockTime);
   dispatch(
     updateBlockchain({
       currentBlockNumber: log.highestAvailableBlockNumber,

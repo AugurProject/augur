@@ -136,7 +136,7 @@
   background: @color-module-background;
   border: 1px solid @color-dark-grey;
   border-radius: @border-radius-default;
-  height: 214px;
+  height: @size-178;
   padding: @size-24;
   width: 100%;
   min-width: 344px;
@@ -194,7 +194,7 @@
 
     color: @color-secondary-text;
     text-align: center;
-    margin: auto;
+    margin-bottom: @size-12;
     text-transform: uppercase;
 
     &:first-of-type {
@@ -212,13 +212,6 @@
 
     color: @color-reporting;
     text-align: center;
-
-    &:first-of-type {
-      .text-12;
-
-      color: @color-secondary-text;
-      text-align: left;
-    }
 
     @media @breakpoint-max-desktop-min {
       .mono-9;

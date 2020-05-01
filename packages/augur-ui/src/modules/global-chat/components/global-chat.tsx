@@ -16,7 +16,7 @@ export interface GlobalChatProps {
 
 export const GlobalChat = ({ provider, whichChatPlugin, isLogged, initialize3box, initialized3box }: GlobalChatProps) => {
   const { activate, setActivate, address, box, isReady, profile } =
-    whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box);
+    whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box, 'chat');
 
   return isLogged ? (
     <div className={Styles.GlobalChat}>
@@ -28,8 +28,8 @@ export const GlobalChat = ({ provider, whichChatPlugin, isLogged, initialize3box
           // Required props for context A) & B)
           box={box}
           currentUserAddr={address}
-          ethereum={provider}
           // optional
+          openOnMount
           mute
           popupChat
           showEmoji

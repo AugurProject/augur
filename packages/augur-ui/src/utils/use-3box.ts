@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import Box from '3box';
 
-export const use3box = (provider, initialize3box, initialized3box) => {
-  const [activate, setActivate] = useState(false);
+export const use3box = (provider, initialize3box, initialized3box, chatOrComments, activatedFromStart = false) => {
+  const [activate, setActivate] = useState(activatedFromStart);
   const [address, setAddress] = useState();
   const [box, setBox] = useState({});
   const [isReady, setIsReady] = useState(false);
@@ -34,7 +34,6 @@ export const use3box = (provider, initialize3box, initialized3box) => {
     let publicProfile;
 
     if (addressFromProvider === initialized3box.address) {
-      console.log('#### already initialized 3box');
       threeBoxInstance = initialized3box.box;
       publicProfile = initialized3box.profile;
     } else {
@@ -63,7 +62,8 @@ export const use3box = (provider, initialize3box, initialized3box) => {
     setProfile(publicProfile);
     setIsReady(true);
 
-    initialize3box(addressFromProvider, threeBoxInstance, publicProfile);
+    const commentsAlreadyOpened = chatOrComments === 'comments';
+    initialize3box(addressFromProvider, threeBoxInstance, publicProfile, commentsAlreadyOpened);
   };
 
   return {
