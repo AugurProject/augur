@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { formatNumber } from 'utils/format-number';
-import { SYNC_BENIND, SYNC_PROCESSED } from 'modules/common/constants';
+import { SYNC_BEHIND, SYNC_PROCESSED } from 'modules/common/constants';
 import { LinearPropertyLabel } from 'modules/common/labels';
 
 import Styles from 'modules/account/components/status.styles.less';
@@ -20,7 +20,7 @@ const BlockStatus = ({
   <div className={Styles.BlockStatus}>
     <LinearPropertyLabel
       highlight
-      label={SYNC_BENIND}
+      label={SYNC_BEHIND}
       value={String(blocksBehind)}
     />
     <LinearPropertyLabel
