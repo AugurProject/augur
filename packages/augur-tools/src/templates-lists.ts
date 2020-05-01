@@ -3959,15 +3959,15 @@ export const GERMANY_HOLIDAYS = {
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 'Apr 10',
-    },
-    {
-      holiday: HOLIDAYS.LABOUR_DAY,
       date: 'Apr 13',
     },
     {
-      holiday: HOLIDAYS.WHITMONDAY,
+      holiday: HOLIDAYS.LABOUR_DAY,
       date: 'May 01',
+    },
+    {
+      holiday: HOLIDAYS.WHITMONDAY,
+      date: 'Jun 01',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS_EVE,
