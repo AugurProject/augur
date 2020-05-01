@@ -24,7 +24,6 @@ interface ModuleTabsProps {
 
 interface ModuleTabsState {
   selected?: number;
-  scrolling: boolean;
 }
 
 export default class ModuleTabs extends Component<
@@ -33,7 +32,6 @@ export default class ModuleTabs extends Component<
 > {
   state = {
     selected: this.props.selected,
-    scrolling: false,
   };
   prevOffset: number = 0;
 
@@ -41,24 +39,6 @@ export default class ModuleTabs extends Component<
     if (this.props.selected !== prevProps.selected) {
       this.setState({ selected: this.props.selected });
     }
-  }
-
-  componentDidMount() {
-    // only apply on scrollOver:
-    if (this.props.scrollOver) {
-      window.onscroll = () => {
-        // sometimes offset is 1 on mount
-        const currOffset = window.pageYOffset - 1;
-        let isScrolling = this.prevOffset < currOffset;
-        this.prevOffset = currOffset;
-        if (isScrolling !== this.state.scrolling)
-          this.setState({ scrolling: isScrolling });
-      };
-    }
-  }
-
-  componentWillUnmount() {
-    window.onscroll = null;
   }
 
   handleClick(e, index, onClickCallback) {
@@ -70,11 +50,10 @@ export default class ModuleTabs extends Component<
   }
 
   renderTabs() {
-    const { selected, scrolling } = this.state;
+    const { selected } = this.state;
     const {
       noBorder,
       fillWidth,
-      scrollOver,
       leftButton,
       fillForMobile,
       children,
@@ -124,10 +103,7 @@ export default class ModuleTabs extends Component<
 
     return (
       <div
-        className={classNames(Styles.Headers, {
-          [Styles.scrolling]: scrollOver && scrolling,
-        })}
-      >
+        className={classNames(Styles.Headers)}>
         {leftButton}
         <ul
           className={classNames({
