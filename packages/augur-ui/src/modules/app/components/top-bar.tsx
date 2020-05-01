@@ -66,6 +66,7 @@ interface TopBarProps {
   updateIsAlertVisible: Function;
   signupModal: Function;
   loginModal: Function;
+  helpModal: Function;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
@@ -78,6 +79,7 @@ const TopBar: React.FC<TopBarProps> = ({
   updateIsAlertVisible,
   signupModal,
   loginModal,
+  helpModal
 }) => {
   return (
     <header className={Styles.TopBar}>
@@ -94,7 +96,7 @@ const TopBar: React.FC<TopBarProps> = ({
       />
       <div>
         {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
-          <HelpResources />
+          <HelpResources isMobile={isMobile} helpModal={helpModal} />
         )}
         {!isLogged && !restoredAccount && (
           <SecondaryButton action={() => loginModal()} text={'Login'} />

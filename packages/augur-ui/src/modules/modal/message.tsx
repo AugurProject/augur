@@ -34,6 +34,8 @@ import {
 } from 'modules/common/labels';
 
 import Styles from 'modules/modal/modal.styles.less';
+import { HelpMenu } from 'modules/app/components/help-resources';
+import * as classNames from 'classnames';
 
 interface MessageProps {
   closeAction: Function;
@@ -57,6 +59,7 @@ interface MessageProps {
   showAddFundsHelp?: boolean;
   walletType?: string;
   showAddFundsModal?: Function;
+  showHelp?: Boolean;
 }
 
 export const Message = ({
@@ -81,8 +84,9 @@ export const Message = ({
   showAddFundsHelp = false,
   walletType,
   showAddFundsModal,
+  showHelp
 }: MessageProps) => (
-  <div className={Styles.Message}>
+  <div className={classNames(Styles.Message, {[Styles.Help]: showHelp})}>
     <Title title={title} closeAction={closeAction} />
     <main>
       {alertMessage && <AlertMessage {...alertMessage} />}
@@ -91,6 +95,7 @@ export const Message = ({
       {content && <Content content={content} />}
       {description && <Description description={description} />}
       {descriptionWithLink && <DescriptionWithLink {...descriptionWithLink} />}
+      {showHelp && <HelpMenu />}
       {showAddFundsHelp && <AddFundsHelp showAddFundsModal={showAddFundsModal} walletType={walletType} />}
       {showDiscordLink && <DiscordLink label='Please try again. If the issue persists please report it on ' /> }
       {subheader && <Subheader subheaderContent={subheader} />}

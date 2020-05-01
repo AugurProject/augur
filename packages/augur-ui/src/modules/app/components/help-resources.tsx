@@ -20,6 +20,8 @@ interface HelpResourcesProps {
   isHelpMenuOpen: boolean;
   updateHelpMenuState: Function;
   updateConnectionTray: Function;
+  isMobile: boolean;
+  helpModal: Function;
 }
 
 const HELP_LINKS = [
@@ -131,6 +133,8 @@ export const HelpResources = ({
   isHelpMenuOpen,
   updateHelpMenuState,
   updateConnectionTray,
+  isMobile,
+  helpModal
 }: HelpResourcesProps) => {
   useEffect(() => {
     if (isHelpMenuOpen) {
@@ -146,7 +150,7 @@ export const HelpResources = ({
       onClick={event => event.stopPropagation()}
     >
       <HelpIcon
-        updateHelpMenuState={updateHelpMenuState}
+        updateHelpMenuState={isMobile ? helpModal : updateHelpMenuState}
         isHelpMenuOpen={isHelpMenuOpen}
       />
       {isHelpMenuOpen && (

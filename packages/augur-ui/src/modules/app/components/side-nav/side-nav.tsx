@@ -12,7 +12,7 @@ import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import { SecondaryButton, ProcessingButton, PrimaryButton } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { helpIcon, Chevron, Dot } from 'modules/common/icons';
-import { MODAL_ADD_FUNDS, MIGRATE_FROM_LEG_REP_TOKEN, TRANSACTIONS, CREATEAUGURWALLET } from 'modules/common/constants';
+import { MODAL_ADD_FUNDS, MIGRATE_FROM_LEG_REP_TOKEN, TRANSACTIONS, CREATEAUGURWALLET, MODAL_HELP } from 'modules/common/constants';
 import { Stats } from '../top-bar';
 
 interface SideNavProps {
@@ -36,6 +36,7 @@ interface SideNavProps {
   restoredAccount: boolean;
   stats: CoreStats;
   whichChatPlugin: string;
+  isMobile: string;
 }
 
 const SideNav = ({
@@ -59,6 +60,7 @@ const SideNav = ({
   stats,
   restoredAccount,
   whichChatPlugin,
+  isMobile
 }: SideNavProps) => {
   useEffect(() => {
     if (isHelpMenuOpen) {
@@ -79,7 +81,13 @@ const SideNav = ({
         {isLogged && (
           <HelpIcon
             isHelpMenuOpen={isHelpMenuOpen}
-            updateHelpMenuState={updateHelpMenuState}
+            updateHelpMenuState={() => {
+              if (isMobile) {
+                updateModal({ type: MODAL_HELP });
+              } else {
+                updateHelpMenuState();
+              }
+            }}
           />
         )}
         <Stats isLogged={isLogged} stats={stats} restoredAccount={restoredAccount} />
