@@ -92,7 +92,6 @@ export default class MarketsView extends Component<
 
     this.setPageNumber = this.setPageNumber.bind(this);
     this.updateLimit = this.updateLimit.bind(this);
-    this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this);
   }
 
   componentDidMount() {
@@ -145,19 +144,27 @@ export default class MarketsView extends Component<
       );
     }
 
+    if (isConnected !== prevProps.isConnected && isConnected) {
+      return this.updateFilteredMarkets();
+    }
+
+    const filtersHaveChanged = this.haveFiltersChanged({
+      search,
+      marketFilter,
+      marketSort,
+      maxFee,
+      selectedCategories,
+      maxLiquiditySpread,
+      includeInvalidMarkets,
+      templateFilter,
+      prevProps,
+    });
+
     if (
-      isConnected !== prevProps.isConnected ||
-      isLogged !== prevProps.isLogged ||
+      isConnected && (
       marketsInReportingState.length !== prevProps.marketsInReportingState.length ||
-      (search !== prevProps.search ||
-        selectedCategories !== prevProps.selectedCategories ||
-        maxLiquiditySpread !== prevProps.maxLiquiditySpread ||
-        marketFilter !== prevProps.marketFilter ||
-        marketSort !== prevProps.marketSort ||
-        maxFee !== prevProps.maxFee ||
-        templateFilter !== prevProps.templateFilter ||
-        includeInvalidMarkets !== prevProps.includeInvalidMarkets)
-    ) {
+      filtersHaveChanged) || (isLogged !== prevProps.isLogged && filtersHaveChanged)
+      ) {
       this.setState(
         {
           offset: 1,
@@ -167,6 +174,26 @@ export default class MarketsView extends Component<
         }
       );
     }
+  }
+
+  haveFiltersChanged({
+    search,
+    marketFilter,
+    marketSort,
+    maxFee,
+    selectedCategories,
+    maxLiquiditySpread,
+    includeInvalidMarkets,
+    templateFilter,
+    prevProps}) {
+    return search !== prevProps.search
+      || String(selectedCategories) !== String(prevProps.selectedCategories)
+      || maxLiquiditySpread !== prevProps.maxLiquiditySpread
+      || marketFilter !== prevProps.marketFilter
+      || marketSort !== prevProps.marketSort
+      || maxFee !== prevProps.maxFee
+      || templateFilter !== prevProps.templateFilter
+      || includeInvalidMarkets !== prevProps.includeInvalidMarkets
   }
 
   updateLimit(limit) {
@@ -187,7 +214,7 @@ export default class MarketsView extends Component<
     });
   }
 
-  updateFilteredMarkets() {
+  updateFilteredMarkets = () => {
     const {
       search,
       selectedCategories,

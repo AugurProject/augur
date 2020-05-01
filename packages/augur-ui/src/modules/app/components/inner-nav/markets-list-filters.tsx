@@ -38,6 +38,7 @@ interface MarketsListFiltersProps {
   setTemplateOrCustomFilter: Function;
   settings: LoginAccountSettings;
   isMobile: boolean;
+  updateSelectedCategories: Function;
 }
 
 const MarketsListFilters = ({
@@ -58,6 +59,7 @@ const MarketsListFilters = ({
   setTemplateOrCustomFilter,
   settings,
   isMobile,
+  updateSelectedCategories,
 }: MarketsListFiltersProps) => {
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(location.search);
@@ -74,6 +76,8 @@ const MarketsListFilters = ({
     const newShowInvalid =
       filterOptionsFromQuery.showInvalid ||
       settings.showInvalid;
+    const categories =
+      filterOptionsFromQuery.category;
 
     if (newMaxFee && newMaxFee !== maxFee) {
       updateMaxFee(newMaxFee);
@@ -87,6 +91,9 @@ const MarketsListFilters = ({
     if (newShowInvalid && newShowInvalid !== includeInvalidMarkets) {
       updateShowInvalid(newShowInvalid);
     }
+    categories
+      ? updateSelectedCategories(categories.split(','))
+      : updateSelectedCategories([]);
   }, [location.search, settings]);
 
   const [showFilters, setShowFilters] = useState(false);

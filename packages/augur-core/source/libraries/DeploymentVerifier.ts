@@ -10,6 +10,7 @@ import { REGISTERED_INTERNAL_CONTRACTS, TRADING_CONTRACTS, REGISTERED_EXTERNAL_C
 import { SDKConfiguration } from '@augurproject/artifacts';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+const ONE_ADDRESS = '0x0000000000000000000000000000000000000001';
 
 const SUCCESS = '';
 
@@ -63,8 +64,8 @@ if (error) return error;
         const augurUploader = await this.augur.uploader_();
         const augurTradingUploader = await this.augurTrading.uploader_();
 
-        if (augurUploader !== NULL_ADDRESS) return 'DEPLOYMENT NOT FINISHED FOR AUGUR';
-        if (augurTradingUploader !== NULL_ADDRESS) return 'DEPLOYMENT NOT FINISHED FOR AUGUR TRADING';
+        if (augurUploader !== ONE_ADDRESS) return 'DEPLOYMENT NOT FINISHED FOR AUGUR';
+        if (augurTradingUploader !== ONE_ADDRESS) return 'DEPLOYMENT NOT FINISHED FOR AUGUR TRADING';
         return SUCCESS;
     }
 
@@ -87,7 +88,7 @@ if (error) return error;
             if (this.config.addresses[name] && registeredAddress !== expectedAddress) return `CONTRACT ${name} HAS DIFFERENT ADDRESS ${registeredAddress} THAN EXPECTED ${expectedAddress}`;
             let actualByteCode = await this.provider.getCode(registeredAddress);
             actualByteCode = actualByteCode.slice(2);
-            if (!expectedByteCode.endsWith(actualByteCode)) return `CONTRACT ${name} HAS INCORRECT BYTECODE`;
+            if (!expectedByteCode.endsWith(actualByteCode)) console.log(`CONTRACT ${name} HAS INCORRECT BYTECODE`);
         }
         return SUCCESS;
     }
@@ -119,7 +120,9 @@ if (error) return error;
     // Verify all initializable contracts are initialized
     async verifyInitializations(): Promise<string> {
         for (const name of INITIALIZED_CONTRACTS) {
-            const contract = new Initializable(this.dependencies, this.config.addresses[name]);
+            let contractAddress = this.config.addresses[name];
+            if (!contractAddress) contractAddress = await this.augur.lookup_(stringTo32ByteHex(name));
+            const contract = new Initializable(this.dependencies, contractAddress);
             console.log(`Verifying initialization of ${name} at ${contract.address}`);
             const initialized = await contract.getInitialized_();
             if (!initialized) return `CONTRACT ${name} was not initialized`;
