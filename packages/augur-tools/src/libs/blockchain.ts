@@ -27,7 +27,13 @@ export async function deployContracts(
   const signer = await makeSigner(account, provider);
   const dependencies = makeDependencies(account, provider, signer);
 
-  const contractDeployer = new ContractDeployer(config, dependencies, provider.provider, signer, compiledContracts);
+  const contractDeployer = new ContractDeployer(
+    config,
+    dependencies,
+    provider.provider,
+    signer,
+    compiledContracts
+  );
   const addresses = await contractDeployer.deploy(env);
 
   return { signer, dependencies, addresses };
@@ -37,12 +43,21 @@ export async function makeSigner(account: Account, provider: EthersProvider) {
   return EthersFastSubmitWallet.create(account.privateKey, provider);
 }
 
-export function makeDependencies(account: Account, provider: EthersProvider, signer: EthersFastSubmitWallet) {
+export function makeDependencies(
+  account: Account,
+  provider: EthersProvider,
+  signer: EthersFastSubmitWallet
+) {
   return new ContractDependenciesEthers(provider, signer, account.address);
 }
 
-export async function makeGSNDependencies(provider: EthersProvider, signer: EthersFastSubmitWallet, augurWalletRegistryAddress: string, ethExchangeAddress: string, wethAddress: string, cashAddress: string, address?: string): Promise<ContractDependenciesGSN> {
-  return ContractDependenciesGSN.create(provider, signer, augurWalletRegistryAddress, ethExchangeAddress, wethAddress, cashAddress, address);
+export async function makeGSNDependencies(
+  provider: EthersProvider,
+  signer: EthersFastSubmitWallet,
+  config: SDKConfiguration,
+  address?: string
+): Promise<ContractDependenciesGSN> {
+  return ContractDependenciesGSN.create(provider, signer, config, address);
 }
 
 export class HDWallet {
@@ -52,13 +67,17 @@ export class HDWallet {
   }
 
   generateAccounts(quantity: number, from = 0): Account[] {
-    return Array.from(new Array(quantity).keys()).map((i) => {
-      const hdAccount = this.node.derivePath(`m/${i+from}`)
-      return { initialBalance: 0, address: hdAccount.address, privateKey: hdAccount.privateKey };
-    })
+    return Array.from(new Array(quantity).keys()).map(i => {
+      const hdAccount = this.node.derivePath(`m/${i + from}`);
+      return {
+        initialBalance: 0,
+        address: hdAccount.address,
+        privateKey: hdAccount.privateKey,
+      };
+    });
   }
 
   static randomMnemonic(): string {
-    return Wallet.createRandom().mnemonic
+    return Wallet.createRandom().mnemonic;
   }
 }
