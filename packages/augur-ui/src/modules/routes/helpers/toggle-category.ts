@@ -9,9 +9,10 @@ const toggleCategory = (category, location, history) => () => {
   if (
     searchParams[CATEGORY_PARAM_NAME] == null ||
     !searchParams[CATEGORY_PARAM_NAME].length ||
-    searchParams[CATEGORY_PARAM_NAME] && searchParams[CATEGORY_PARAM_NAME] !== category
+    (searchParams[CATEGORY_PARAM_NAME] &&
+      searchParams[CATEGORY_PARAM_NAME] !== category && category)
   ) {
-    searchParams[CATEGORY_PARAM_NAME] = category;
+    searchParams[CATEGORY_PARAM_NAME] = category.split(',');
     searchParams = makeQuery(searchParams);
 
     return history.push({
