@@ -9,6 +9,7 @@ import { TXEventName } from '@augurproject/sdk';
 import { SubmitTextButton } from 'modules/common/buttons';
 
 import Styles from 'modules/portfolio/components/common/market-row.styles.less';
+import { MarketData } from 'modules/types';
 
 export interface TimeObject {
   formattedUtcShortDate: string;
@@ -17,23 +18,8 @@ export interface FormatObject {
   formatted: string;
 }
 
-export interface Market {
-  id: string;
-  description: string;
-  reportingState: string;
-  creationTime: number;
-  endTime: number;
-  volume: FormatObject;
-  openInterest: FormatObject;
-  marketStatus: string;
-  unsignedOrdersModal: Function;
-  passDefaultLiquiditySpread?: boolean;
-  hasPendingLiquidityOrders?: boolean;
-  isArchived?: boolean;
-}
-
 export interface MarketRowProps {
-  market: Market;
+  market: MarketData;
   showState: boolean;
   toggleContent: ReactNode;
   rightContent: ReactNode;

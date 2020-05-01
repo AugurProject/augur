@@ -162,7 +162,6 @@ export default class MarketsView extends Component<
 
     if (
       isConnected && (
-      marketsInReportingState.length !== prevProps.marketsInReportingState.length ||
       filtersHaveChanged) || (isLogged !== prevProps.isLogged && filtersHaveChanged)
       ) {
       this.setState(

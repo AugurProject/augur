@@ -103,14 +103,7 @@ export async function createClient(
     throw Error('Config must include addresses');
   }
 
-  const contractDependencies = await ContractDependenciesGSN.create(
-    ethersProvider,
-    signer,
-    config.addresses.AugurWalletRegistry,
-    config.addresses.EthExchange,
-    config.addresses.WETH9,
-    config.addresses.Cash,
-  );
+  const contractDependencies = await ContractDependenciesGSN.create(ethersProvider, signer, config);
 
   let zeroX: ZeroX = null;
   if (config.zeroX) {
