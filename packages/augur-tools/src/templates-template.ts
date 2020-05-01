@@ -523,15 +523,10 @@ export function tellOnHoliday(
     const holidayClosuresPerYear =
       holidayClosures && holidayClosures[inputYear];
     if (holidayClosuresPerYear) {
-      const offset = closing.inputTimeOffset[exchange.value].offset;
       const userTimestamp = moment.unix(Number(input.timestamp));
       holidayClosuresPerYear.forEach(holiday => {
-        const holidayDate = moment.unix(Number(holiday.date));
-        const adjustedHoliday = moment(holidayDate).add(
-          offset,
-          'hours'
-        );
-        const sameDay = userTimestamp.isSame(adjustedHoliday, 'day');
+        const holidayDate = moment(`${holiday.date} ${inputYear}`, 'MMM DD YYYY').startOf('day');
+        const sameDay = userTimestamp.isSame(holidayDate, 'day');
         if (sameDay) {
           holidayPresent = holiday;
         }
