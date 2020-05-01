@@ -20,7 +20,6 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface BaseInnerNavPureProps {
   selectedCategories: String[];
-  filterSortOptions: FilterSortOptions;
   updateLoginAccount: Function;
   updateMarketsSortBy: Function;
   updateMaxFee: Function;
@@ -34,7 +33,6 @@ interface BaseInnerNavPureProps {
 
 const BaseInnerNavPure = ({
   selectedCategories,
-  filterSortOptions,
   updateLoginAccount,
   updateMarketsSortBy,
   updateMaxFee,
@@ -46,6 +44,7 @@ const BaseInnerNavPure = ({
   history,
 }: BaseInnerNavPureProps) => {
   const {
+    filterSortOptions,
     mobileMenuState,
     actions: { setMobileMenuState },
   } = useAppStatusStore();

@@ -2,16 +2,18 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import FilterDropdown from 'modules/filter-sort/components/filter-dropdowns';
 import {
-  updateFilterSortOptions,
   MARKET_SORT,
-} from 'modules/filter-sort/actions/update-filter-sort-options';
+} from 'modules/app/store/constants';
+import { AppStatusActions, AppStatusState } from 'modules/app/store/app-status';
 
-const mapStateToProps = state => ({
-  defaultSort: state.filterSortOptions.marketSort,
-});
-
+const mapStateToProps = state => { 
+  const { filterSortOptions: { marketSort: defaultSort }} = AppStatusState.get();
+  return ({
+    defaultSort,
+  });
+};
 const mapDispatchToProps = dispatch => ({
-  updateSortOption: sortOption => dispatch(updateFilterSortOptions(MARKET_SORT, sortOption)),
+  updateSortOption: sortOption => AppStatusActions.actions.updateFilterSortOptions({ [MARKET_SORT]: sortOption }),
 });
 
 const FilterDropdownsContainer = withRouter(

@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import {
-  updateFilterSortOptions,
-  MARKET_SORT,
-} from 'modules/filter-sort/actions/update-filter-sort-options';
+import { MARKET_SORT } from 'modules/app/store/constants';
 import MarketsListSortBy from '../components/inner-nav/markets-list-sortBy';
+import { AppStatusState, AppStatusActions } from '../store/app-status';
 
-const mapStateToProps = (state) => {
-  const { marketSort } = state.filterSortOptions;
+const mapStateToProps = state => {
+  const {
+    filterSortOptions: { marketSort },
+  } = AppStatusState.get();
   return {
     marketSort,
     isSearching: state.marketsList.isSearching,
@@ -15,14 +15,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  updateMarketsSortBy: (sortBy) => dispatch(updateFilterSortOptions(MARKET_SORT, sortBy)),
+  updateMarketsSortBy: sortBy =>
+    AppStatusActions.actions.updateFilterSortOptions({ [MARKET_SORT]: sortBy }),
 });
 
 const MarketsListSortByContainer = compose(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )
+  connect(mapStateToProps, mapDispatchToProps)
 )(MarketsListSortBy);
 
 export default MarketsListSortByContainer;

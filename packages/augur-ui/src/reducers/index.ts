@@ -1,6 +1,5 @@
 import accountPositions from 'modules/positions/reducers/account-positions';
 import favorites from 'modules/markets/reducers/favorites';
-import filterSortOptions from 'modules/filter-sort/reducers/filter-sort-options';
 import loginAccount from 'modules/auth/reducers/login-account';
 import marketTradingHistory from 'modules/markets/reducers/market-trading-history';
 import marketInfos from 'modules/markets/reducers/market-infos';
@@ -24,7 +23,6 @@ import {
   LoginAccount,
   AccountPosition,
   Favorite,
-  FilterSortOptions,
   MarketInfos,
   NewMarket,
   Alert,
@@ -50,7 +48,6 @@ export function createReducer() {
     accountPositions,
     alerts,
     favorites,
-    filterSortOptions,
     loginAccount,
     marketTradingHistory,
     marketInfos,
@@ -79,7 +76,6 @@ export interface AppStateInterface {
   alerts: Alert[];
   config: SDKConfiguration;
   favorites: Favorite;
-  filterSortOptions: FilterSortOptions;
   loginAccount: LoginAccount;
   marketTradingHistory: Getters.Trading.MarketTradingHistory;
   marketInfos: MarketInfos;

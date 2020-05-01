@@ -6,40 +6,41 @@ import {
   updateSelectedCategories,
 } from 'modules/markets-list/actions/update-markets-list';
 import {
-  updateFilterSortOptions,
   MARKET_SORT,
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
   MARKET_SHOW_INVALID,
   TEMPLATE_FILTER,
-} from 'modules/filter-sort/actions/update-filter-sort-options';
+} from 'modules/app/store/constants';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
+import { AppStatusActions } from '../store/app-status';
 
-const mapStateToProps = ({ marketsList, filterSortOptions, loginAccount }) => {
+const mapStateToProps = ({ marketsList, loginAccount }) => {
   return {
     selectedCategories: marketsList.selectedCategories,
-    filterSortOptions: filterSortOptions,
     settings: loginAccount.settings,
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  updateLoginAccount: settings => dispatch(updateLoginAccount({ settings })),
-  updateSelectedCategories: categories =>
-    dispatch(updateSelectedCategories(categories)),
-  updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
-  updateMarketsSortBy: sortBy =>
-    dispatch(updateFilterSortOptions(MARKET_SORT, sortBy)),
-  updateMaxFee: maxFee =>
-    dispatch(updateFilterSortOptions(MARKET_MAX_FEES, maxFee)),
-  updateMaxSpread: maxLiquiditySpread =>
-    dispatch(updateFilterSortOptions(MARKET_MAX_SPREAD, maxLiquiditySpread)),
-  updateShowInvalid: showInvalid =>
-    dispatch(updateFilterSortOptions(MARKET_SHOW_INVALID, showInvalid)),
-  updateTemplateFilter: templateFilter =>
-    dispatch(updateFilterSortOptions(TEMPLATE_FILTER, templateFilter)),
-});
-
+const mapDispatchToProps = dispatch => {
+  const { actions: { updateFilterSortOptions } } = AppStatusActions;
+  return ({
+    updateLoginAccount: settings => dispatch(updateLoginAccount({ settings })),
+    updateSelectedCategories: categories =>
+      dispatch(updateSelectedCategories(categories)),
+    updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
+    updateMarketsSortBy: sortBy =>
+      updateFilterSortOptions({ [MARKET_SORT]: sortBy }),
+    updateMaxFee: maxFee =>
+      updateFilterSortOptions({ [MARKET_MAX_FEES]: maxFee }),
+    updateMaxSpread: maxLiquiditySpread =>
+      updateFilterSortOptions({ [MARKET_MAX_SPREAD]: maxLiquiditySpread }),
+    updateShowInvalid: showInvalid =>
+      updateFilterSortOptions({ [MARKET_SHOW_INVALID]: showInvalid }),
+    updateTemplateFilter: templateFilter =>
+      updateFilterSortOptions({ [TEMPLATE_FILTER]: templateFilter }),
+  });
+}
 const mergeProps = (sP, dP, oP) => {
   return {
     ...sP,

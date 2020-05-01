@@ -19,11 +19,10 @@ import {
   updateLoginAccount,
 } from 'modules/account/actions/login-account';
 import {
-  updateFilterSortOptions,
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
   MARKET_SHOW_INVALID,
-} from 'modules/filter-sort/actions/update-filter-sort-options';
+} from 'modules/app/store/constants';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
 import { AppStatusActions } from 'modules/app/store/app-status';
 
@@ -46,23 +45,24 @@ export const loadAccountDataFromLocalStorage = (
       const { settings } = storedAccountData;
 
       if (settings) {
-        dispatch(updateLoginAccount({ settings: { ...settings } }));
+        dispatch(updateLoginAccount({ settings }));
         const { maxFee, spread, showInvalid, templateFilter } = settings;
+        const { updateFilterSortOptions } = AppStatusActions.actions;
         if (maxFee) {
-          dispatch(updateFilterSortOptions(MARKET_MAX_FEES, settings.maxFee));
+          updateFilterSortOptions({ [MARKET_MAX_FEES]: settings.maxFee });
         }
         if (spread) {
-          dispatch(updateFilterSortOptions(MARKET_MAX_SPREAD, settings.spread));
+          updateFilterSortOptions({ [MARKET_MAX_SPREAD]: settings.spread });
         }
         if (showInvalid) {
-          dispatch(
-            updateFilterSortOptions(MARKET_SHOW_INVALID, settings.showInvalid)
-          );
+          updateFilterSortOptions({
+            [MARKET_SHOW_INVALID]: settings.showInvalid,
+          });
         }
         if (templateFilter) {
-          dispatch(
-            updateFilterSortOptions(TEMPLATE_FILTER, settings.templateFilter)
-          );
+          updateFilterSortOptions({
+            [TEMPLATE_FILTER]: settings.templateFilter,
+          });
         }
       }
 
@@ -105,7 +105,8 @@ export const loadAccountDataFromLocalStorage = (
             alerts.reduce((p, alert) => {
               const marketId =
                 alert.marketId ||
-                ((alert.params && alert.params.market) || alert.params._market);
+                (alert.params && alert.params.market) ||
+                alert.params._market;
               return marketId ? [...p, marketId] : p;
             }, [])
           )

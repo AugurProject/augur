@@ -87,7 +87,7 @@ const MarketsListFilters = ({
     if (newShowInvalid && newShowInvalid !== includeInvalidMarkets) {
       updateShowInvalid(newShowInvalid);
     }
-  }, [location.search, settings]);
+  }, [location.search, settings.maxFee, settings.spread, settings.templateFilter, settings.showInvalid]);
 
   const [showFilters, setShowFilters] = useState(false);
 
