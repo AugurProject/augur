@@ -95,7 +95,7 @@ export default class MarketHeader extends Component<
     super(props);
     this.state = {
       showReadMore: false,
-      showProperties: true,
+      showProperties: props.market.reportingState === REPORTING_STATE.PRE_REPORTING ? false : true,
       detailsHeight: 0,
       headerCollapsed: false,
       showCopied: false,
