@@ -6,7 +6,7 @@ import { updateModal } from "modules/modal/actions/update-modal";
 import { AppState } from "appStore";
 import { MODAL_UNSIGNED_ORDERS } from "modules/common/constants";
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch) => ({
   unsignedOrdersModal: (marketId: string, cb: Function) =>

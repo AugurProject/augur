@@ -130,6 +130,9 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   consensusFormatted: ConsensusFormatted | null;
   outcomesFormatted: OutcomeFormatted[];
   isTemplate: boolean;
+  pending?: boolean;
+  status?: string;
+  hasPendingLiquidityOrders?: boolean;
 }
 
 export interface ForkingInfo {
