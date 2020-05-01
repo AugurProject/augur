@@ -26,11 +26,10 @@ export class SyncableFlexSearch {
         async: true,
         cache: true,
         worker: false, // TODO: Check impact on performance before enabling worker option in FlexSearch
+        profile: "match",
         doc:
         {
           id: "market",
-          start: "start",
-          end: "end",
           field: [
             "market",
             "universe",
