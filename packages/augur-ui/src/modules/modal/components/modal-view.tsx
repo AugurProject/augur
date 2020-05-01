@@ -53,7 +53,7 @@ import ModalTutorialIntro from 'modules/modal/containers/modal-tutorial-intro';
 import ModalScalar from 'modules/modal/containers/modal-scalar';
 import ModalInvalidMarketRules from 'modules/modal/containers/modal-invalid-market-rules';
 import ModalInitializeAccounts from 'modules/modal/containers/modal-initialize-account';
-
+import ModalHelp from 'modules/modal/containers/modal-help';
 
 import * as TYPES from 'modules/common/constants';
 
@@ -150,6 +150,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalMigrateMarket {...modal} />;
     case TYPES.MODAL_LOGIN:
       return <ModalSignin {...props} isLogin />;
+    case TYPES.MODAL_HELP:
+      return <ModalHelp {...props} />;
     case TYPES.MODAL_SIGNUP:
       return <ModalSignin {...props} isLogin={false} />;
     case TYPES.MODAL_HARDWARE_WALLET:
