@@ -26,11 +26,13 @@ contract RepOracle is Initializable {
 
     uint256 constant public genesisInitialRepPriceinAttoCash = 7 * 10**18;
 
+    address public augur;
     address public cash;
     IUniswapV2Factory public uniswapFactory;
 
     function initialize(IAugur _augur) public beforeInitialized {
         endInitialization();
+        augur = address(_augur);
         cash = _augur.lookup("Cash");
         uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
     }

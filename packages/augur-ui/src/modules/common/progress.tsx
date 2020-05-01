@@ -329,7 +329,6 @@ export const WindowProgress = (props: WindowProgressProps) => {
     endTime,
     currentTime,
     title,
-    description,
     countdownLabel,
   } = props;
   const {
@@ -347,7 +346,6 @@ export const WindowProgress = (props: WindowProgressProps) => {
   return (
     <div className={Styles.WindowProgress}>
       <h4>{title}</h4>
-      <p>{description}</p>
       <TimeProgressBar {...props} />
       <ul>
         <li>{startLabel}</li>

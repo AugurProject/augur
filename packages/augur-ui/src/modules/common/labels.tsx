@@ -50,7 +50,6 @@ import { ExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
-import { Market } from 'modules/portfolio/components/common/market-row';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { AppState } from 'appStore';
 import { Ox_STATUS } from 'modules/app/actions/update-app-status';
@@ -872,7 +871,7 @@ export const MarketTypeLabel = ({
 };
 
 interface LiquidityDepletedLabelProps {
-  market: Market;
+  market: MarketData;
 }
 
 export const LiquidityDepletedLabel = ({

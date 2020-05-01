@@ -1512,6 +1512,10 @@ button.MaxDark {
         padding: @size-2 @size-4;
         min-height: unset;
         width: 80px;
+
+        &::placeholder {
+          .mono-9;
+        }
       }
     }
   }
@@ -1722,7 +1726,7 @@ button.MaxDark {
       width: 55px;
 
       > span {
-        .mono-9;
+        .mono-9-bold;
 
         text-transform: uppercase;
         color: @color-primary-text;
@@ -1730,6 +1734,14 @@ button.MaxDark {
 
       > svg {
         display: none;
+      }
+    }
+
+    &.Default {
+      > button > span {
+        .mono-9;
+
+        color: @color-secondary-text;
       }
     }
   }
@@ -1925,6 +1937,10 @@ div.error > div > div > div > div > input {
         min-width: unset;
         width: @size-34;
         height: unset;
+
+        &::placeholder {
+         .mono-9;
+        }
       }
 
       > div {

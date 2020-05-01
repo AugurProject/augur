@@ -37,7 +37,7 @@ const StartUpEvents = {
     () => handleZeroStatusUpdated(ZEROX_STATUSES.RESTARTING)
   ),
   [SubscriptionEventName.ZeroXStatusError]: wrapLogHandler(
-    () => handleZeroStatusUpdated(ZEROX_STATUSES.ERROR)
+    (log: any) => handleZeroStatusUpdated(ZEROX_STATUSES.ERROR, log)
   ),
   [SubscriptionEventName.ZeroXStatusSynced]: wrapLogHandler(
     () => handleZeroStatusUpdated(ZEROX_STATUSES.SYNCED)
