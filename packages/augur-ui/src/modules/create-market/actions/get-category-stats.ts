@@ -2,8 +2,7 @@ import { AppState } from 'appStore';
 import { ThunkAction } from 'redux-thunk';
 import { augurSdk } from 'services/augursdk';
 import { POPULAR_CATEGORIES } from 'modules/common/constants';
-import { updateCategoryStats } from 'modules/app/actions/update-stats';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
 
 export const getCategoryStats = (): ThunkAction<void, AppState, void, any> => async (
   dispatch,
@@ -19,5 +18,5 @@ export const getCategoryStats = (): ThunkAction<void, AppState, void, any> => as
     categories: POPULAR_CATEGORIES,
     universe: universe.id,
   });
-  dispatch(updateCategoryStats(categoryStats));
+  AppStatusActions.actions.setCategoryStats(categoryStats);
 };

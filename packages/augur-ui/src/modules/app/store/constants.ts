@@ -28,6 +28,7 @@ export const GAS_PRICE_INFO = 'gasPriceInfo';
 export const MOBILE_MENU_STATE = 'mobileMenuState';
 export const CURRENT_BASE_PATH = 'currentBasePath';
 export const BLOCKCHAIN = 'blockchain';
+export const CATEGORY_STATS = 'categoryStats';
 
 const DEFAULT_ENV: SDKConfiguration = JSON.parse(JSON.stringify(DEFAULT_SDK_CONFIGURATION));
 const DEFAULT_GAS_PRICE_INFO: GasPriceInfo = {
@@ -69,6 +70,7 @@ export const DEFAULT_APP_STATUS = {
   [MOBILE_MENU_STATE]: MOBILE_MENU_STATES.CLOSED,
   [CURRENT_BASE_PATH]: MARKETS,
   [BLOCKCHAIN]: DEFAULT_BLOCKCHAIN,
+  [CATEGORY_STATS]: {},
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -96,6 +98,7 @@ export const APP_STATUS_ACTIONS = {
   SET_MOBILE_MENU_STATE: 'SET_MOBILE_MENU_STATE',
   SET_CURRENT_BASE_PATH: 'SET_CURRENT_BASE_PATH',
   UPDATE_BLOCKCHAIN: 'UPDATE_BLOCKCHAIN',
+  SET_CATEGORY_STATS: 'SET_CATEGORY_STATS',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -123,4 +126,5 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setMobileMenuState: mobileMenuState => {},
   setCurrentBasePath: currentBasePath => {},
   updateBlockchain: blockchain => {},
+  setCategoryStats: categoryStats => {},
 };

@@ -25,6 +25,7 @@ import {
   MOBILE_MENU_STATE,
   CURRENT_BASE_PATH,
   BLOCKCHAIN,
+  CATEGORY_STATS,
 } from 'modules/app/store/constants';
 
 const {
@@ -52,6 +53,7 @@ const {
   SET_MOBILE_MENU_STATE,
   SET_CURRENT_BASE_PATH,
   UPDATE_BLOCKCHAIN,
+  SET_CATEGORY_STATS,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -174,6 +176,10 @@ export function AppStatusReducer(state, action) {
       updatedState[BLOCKCHAIN] = { ...updatedState[BLOCKCHAIN], ...action.blockchain };
       break;
     }
+    case SET_CATEGORY_STATS: {
+      updatedState[CATEGORY_STATS] = action.categoryStats;
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -232,6 +238,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setCurrentBasePath: currentBasePath =>
         dispatch({ type: SET_CURRENT_BASE_PATH, currentBasePath }),
       updateBlockchain: blockchain => dispatch({ type: UPDATE_BLOCKCHAIN, blockchain }),
+      setCategoryStats: categoryStats => dispatch({ type: SET_CATEGORY_STATS, categoryStats }),
     },
   };
 };
