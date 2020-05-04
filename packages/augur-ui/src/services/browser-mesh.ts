@@ -102,25 +102,29 @@ export async function createBrowserMesh(
       return await WebAssembly.instantiate(source, importObject);
     };
   }
-
-  zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarting, {});
-
   // NB: Remove this when we move to the version of 0x after 9.2.1
-  await loadMeshStreamingWithURLAsync("zerox.wasm");
 
-  const meshConfig = createBrowserMeshConfig(
-    config.ethereum.http,
-    web3Provider,
-    Number(config.networkId),
-    config.addresses,
-    config.zeroX.mesh.verbosity || 5,
-    config.zeroX.mesh.useBootstrapList,
-    config.zeroX.mesh.bootstrapList,
-  );
+  try {
+    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarting, {});
+    await loadMeshStreamingWithURLAsync("zerox.wasm");
 
-  const mesh = new Mesh(meshConfig);
-  mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
-  await mesh.startAsync();
-  zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarted, {});
-  zeroX.mesh = mesh;
+    const meshConfig = createBrowserMeshConfig(
+      config.ethereum.http,
+      web3Provider,
+      Number(config.networkId),
+      config.addresses,
+      config.zeroX.mesh.verbosity || 5,
+      config.zeroX.mesh.useBootstrapList,
+      config.zeroX.mesh.bootstrapList,
+    );
+
+    const mesh = new Mesh(meshConfig);
+    mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
+    await mesh.startAsync();
+    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarted, {});
+    zeroX.mesh = mesh;
+  } catch(error) {
+    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {error});
+    throw error;
+  }
 }
