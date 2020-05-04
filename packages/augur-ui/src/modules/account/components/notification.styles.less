@@ -209,3 +209,17 @@ div.DarkBackgroundMobile {
     }
   }
 }
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .NewTopLabel {
+    > span {
+      .text-10;
+
+      background: var(--color-positive-15);
+      color: var(--color-secondary-text);
+      border: @size-1 solid var(--color-positive);
+      padding: @size-4 @size-6;
+    }
+  }
+}
