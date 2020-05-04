@@ -231,7 +231,7 @@ const processingPendingQueue = (
             .filter(
               pendingItem =>
                 (pendingItem.status === TXEventName.AwaitingSigning || pendingItem.status === TXEventName.Pending) &&
-                thresholdBlockNumber >= pendingItem.blockNumber
+                pendingItem.blockNumber && thresholdBlockNumber >= pendingItem.blockNumber
             )
         ),
       [] as PendingItem[]
