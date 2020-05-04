@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 import {
   selectMarketInfosState,
   selectLoginAccountReportingState,
-  selectUniverseForkingState,
 } from 'appStore/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
