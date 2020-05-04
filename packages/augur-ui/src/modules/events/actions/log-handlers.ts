@@ -198,8 +198,8 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
 ) => {
   const { blockchain, env } = getState();
   const blockTime = env.networkId === "1" ? 15000 : 2000;
-  // if (blocksBehindTimer) clearTimeout(blocksBehindTimer);
-  // blocksBehindTimer = setTimeout(function () {location.reload(); }, BLOCKS_BEHIND_RELOAD_THRESHOLD * blockTime);
+  if (blocksBehindTimer) clearTimeout(blocksBehindTimer);
+  blocksBehindTimer = setTimeout(function () {location.reload(); }, BLOCKS_BEHIND_RELOAD_THRESHOLD * blockTime);
   dispatch(
     updateBlockchain({
       currentBlockNumber: log.highestAvailableBlockNumber,
