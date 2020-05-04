@@ -339,7 +339,7 @@ const AppView = ({
               />
             )}
             <MyBetsProvider>
-             {currentPath === MY_POSITIONS && (
+            {currentPath === MY_POSITIONS && (
               <MyBetsInnerNav />
             )}  
             {currentPath !== MARKETS && currentPath !== MY_POSITIONS &&
