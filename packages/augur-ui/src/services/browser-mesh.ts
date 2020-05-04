@@ -95,15 +95,6 @@ export async function createBrowserMesh(
     throw new Error(`Attempting to create browser mesh without it being enabled in config ${JSON.stringify(config)}`);
   }
 
-  // NB: Polyfill to support Safari, this can go away with the next browser-mesh release
-  if (!WebAssembly.instantiateStreaming) {
-    WebAssembly.instantiateStreaming = async (resp, importObject) => {
-      const source = await (await resp).arrayBuffer();
-      return await WebAssembly.instantiate(source, importObject);
-    };
-  }
-  // NB: Remove this when we move to the version of 0x after 9.2.1
-
   try {
     zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarting, {});
     await loadMeshStreamingWithURLAsync("zerox.wasm");

@@ -284,10 +284,10 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser-lite@9.2.1", "@0x/mesh-browser-lite@^9.2.1":
-  version "9.2.1"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser-lite/-/mesh-browser-lite-9.2.1.tgz#24e7cd93528ed4371ca25200f09ba8f5ef233185"
-  integrity sha512-cky7DpmoxM3MYAIg/LWgVfofHh1O4y2WrxetTyJ6+E4meB7sS2BynX2qNeLYXG32clylfjwn9y4LKdAtD/MohA==
+"@0x/mesh-browser-lite@9.3.0", "@0x/mesh-browser-lite@^9.3.0":
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser-lite/-/mesh-browser-lite-9.3.0.tgz#57890f155c99ab93a8862f504a58fd80a24ac2ad"
+  integrity sha512-waQRu5mGXwipjidaPjEcCmNzTpJJMfYDb3noDUBGvCfUq3qsqwo56TMhBCyYp5rKqHFd1wLepD+3ZJR7J1NMzQ==
   dependencies:
     "@0x/order-utils" "^10.2.0"
     "@0x/utils" "^5.4.0"
@@ -295,20 +295,20 @@
     browserfs "^1.4.3"
     ethereum-types "^3.0.0"
 
-"@0x/mesh-browser@9.2.1":
-  version "9.2.1"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.2.1.tgz#fba40d7ea66b4998bea3300aae385f08cf8203ef"
-  integrity sha512-fvGYnAOqgTdaeYZW0iIQqPb5nqH4PMzVLDsd7I4tI6hvzbRffHtLj841Fy+6Z/oxVo0tyg5b7W+nmoQ7OzTGkw==
+"@0x/mesh-browser@9.3.0":
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.3.0.tgz#d31bc2448c66d7dbc6ab9cb8edcf17f7c27a6528"
+  integrity sha512-No9qrx87u72loFELB7jnyS9rtilGcXZ06JL4koflTEYKWw19Q4eOpU5wf3yKuEqBs4pLmfcZXY+512v3YUhJoA==
   dependencies:
-    "@0x/mesh-browser-lite" "^9.2.1"
+    "@0x/mesh-browser-lite" "^9.3.0"
     base64-arraybuffer "^0.2.0"
     browserfs "^1.4.3"
     ethereum-types "^3.0.0"
 
-"@0x/mesh-rpc-client@9.2.1":
-  version "9.2.1"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-9.2.1.tgz#52540e2492e8c3a5c54127532e80f7ffb622fbea"
-  integrity sha512-VuAt8J1RpY4s2nCyfLIpPLTTLiYX0Wg0R7b+OT0B1p4JahrEcbfklHAyJM8YOT78wIllWeeTWDZ7/PL9EYPpTA==
+"@0x/mesh-rpc-client@9.3.0":
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-9.3.0.tgz#8508aa5199b31e9facd12be1c5533c8e3edbd264"
+  integrity sha512-RfRW3dZThYhq0SezeMQ52eKRDUoZL1tk2mJYdv72V8yIiROOvILmDu2weZ+6ET5HP3zVou2YAQDnHb1M7iPiAg==
   dependencies:
     "@0x/assert" "^3.0.6"
     "@0x/types" "^3.1.2"
