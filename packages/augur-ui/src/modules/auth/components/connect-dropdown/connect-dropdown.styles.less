@@ -11,7 +11,7 @@
     border: none;
     min-width: 100%;
     height: 100vh;
-    background-color: fade(@color-dark-grey, .9);
+    background-color: fade(@color-dark-grey, 90);
   }
 }
 
@@ -272,6 +272,10 @@
       }
     }
 
+  }
+
+  @media @breakpoint-mobile {
+    border-bottom: @size-1 solid @color-secondary-action-outline;
   }
 }
 
