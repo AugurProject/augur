@@ -235,11 +235,11 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         break;
       }
       case DOINITIALREPORT: {
-        hash && dispatch(updatePendingReportHash(transaction.params, hash));
+        hash && dispatch(updatePendingReportHash(transaction.params, hash, eventName));
         break;
       }
       case CONTRIBUTE: {
-        hash && dispatch(updatePendingDisputeHash(transaction.params, hash));
+        hash && dispatch(updatePendingDisputeHash(transaction.params, hash, eventName));
         break;
       }
 

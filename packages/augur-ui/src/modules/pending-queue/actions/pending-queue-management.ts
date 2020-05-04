@@ -94,7 +94,8 @@ const addPendingDataWithBlockNumber = (
 const updatePendingDataHash = (
   queueName: string,
   oldHash: string,
-  newHash: string
+  newHash: string,
+  status: string,
 ): BaseAction => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -108,6 +109,7 @@ const updatePendingDataHash = (
       oldHash,
       newHash,
       blockNumber,
+      status,
     },
   });
 };
@@ -171,19 +173,19 @@ const addPendingReportDispute = (
   dispatch(addPendingData(report.marketId, type, status, tempHash, payload));
 };
 
-export const updatePendingReportHash = (transaction, hash) => (
+export const updatePendingReportHash = (transaction, hash, status) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  dispatch(updatePendingReportDisputehash(transaction, SUBMIT_REPORT, hash));
+  dispatch(updatePendingReportDisputehash(transaction, SUBMIT_REPORT, hash, status));
 };
 
-export const updatePendingDisputeHash = (transaction, hash) => (
+export const updatePendingDisputeHash = (transaction, hash, status) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  dispatch(updatePendingReportDisputehash(transaction, SUBMIT_DISPUTE, hash));
+  dispatch(updatePendingReportDisputehash(transaction, SUBMIT_DISPUTE, hash, status));
 };
 
-const updatePendingReportDisputehash = (transaction, queueName, newHash) => (
+const updatePendingReportDisputehash = (transaction, queueName, newHash, status) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   const payoutnumerators = transaction._payoutNumerators.map(x => String(x));
@@ -191,7 +193,7 @@ const updatePendingReportDisputehash = (transaction, queueName, newHash) => (
   const tempHash = generateTxParameterIdFromString(
     `${String(payoutnumerators)}${queueName}${String(amount)}`
   );
-  dispatch(updatePendingDataHash(queueName, tempHash, newHash));
+  dispatch(updatePendingDataHash(queueName, tempHash, newHash, status));
 };
 
 interface PendingItem {
@@ -229,12 +231,13 @@ const processingPendingQueue = (
             .filter(
               pendingItem =>
                 (pendingItem.status === TXEventName.AwaitingSigning || pendingItem.status === TXEventName.Pending) &&
-                pendingItem.blockNumber <= thresholdBlockNumber
+                thresholdBlockNumber >= pendingItem.blockNumber
             )
         ),
       [] as PendingItem[]
     )
     .forEach(async queueItem => {
+      console.log(queueItem.blockNumber, 'threshold', thresholdBlockNumber);
       const confirmations = queueItem.hash
         ? await transactionConfirmations(queueItem.hash)
         : undefined;

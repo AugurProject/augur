@@ -43,14 +43,16 @@ export default function(pendingQueue: PendingQueue = deepClone<PendingQueue>(DEF
       };
     }
     case UPDATE_PENDING_DATA_BY_HASH: {
-      const { oldHash, newHash, queueName, blockNumber } = data;
+      const { oldHash, newHash, queueName, blockNumber, status } = data;
       let pending = pendingQueue;
       if (pendingQueue[queueName]) {
         const queue = pendingQueue[queueName];
         Object.keys(queue).forEach(o => {
-          if (queue[o].hash === oldHash) {
-            queue[o].hash = newHash;
-            queue[o].blockNumber = blockNumber;
+          const item = queue[o];
+          if (item.hash === oldHash || item.hash === newHash) {
+            item.hash = newHash;
+            item.blockNumber = blockNumber;
+            item.status = status;
           }
         });
       }

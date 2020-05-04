@@ -36,7 +36,6 @@ import {
   DOINITIALREPORT,
   PUBLICFILLORDER,
   PUBLICTRADE,
-  MODAL_ERROR,
   REDEEMSTAKE,
   CREATE_MARKET,
   MODAL_GAS_PRICE,
@@ -48,7 +47,6 @@ import {
   DISAVOWCROWDSOURCERS,
   MARKETMIGRATED,
   DOINITIALREPORTWARPSYNC,
-  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -475,7 +473,7 @@ export const handleInitialReportSubmittedLog = (
   if (userLogs.length > 0) {
     userLogs.map(log => {
       handleAlert(log, DOINITIALREPORT, false, dispatch, getState)
-      dispatch(addPendingData(log.market, SUBMIT_REPORT, TXEventName.Success, '0', undefined));
+      dispatch(removePendingData(log.market, SUBMIT_REPORT));
     });
     dispatch(loadAccountReportingHistory());
   }
