@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "3box": "1.18.1",
-    "3box-chatbox-react": "0.1.10",
+    "3box-chatbox-react": "0.1.11",
     "3box-comments-react": "2.0.3",
     "3id-blockchain-utils": "0.3.3",
     "@0x/order-utils": "8.4.0",

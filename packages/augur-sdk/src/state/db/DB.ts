@@ -101,7 +101,7 @@ export class DB {
       EventName: 'InitialReportSubmitted',
       indexes: ['timestamp', 'reporter', '[universe+reporter]', 'market'],
     },
-    { EventName: 'InitialReporterTransferred', indexes: ['market'] },
+    { EventName: 'InitialReporterTransferred', indexes: ['market', 'to'] },
     {
       EventName: 'MarketCreated',
       indexes: ['market', 'timestamp', '[universe+timestamp]'],
@@ -318,6 +318,9 @@ export class DB {
     this.parsedOrderEventDatabase.delete();
     delete this.parsedOrderEventDatabase;
 
+    this.dexieDB['Rollback'].delete();
+    delete this.dexieDB['Rollback'];
+
     if (this.zeroXOrders) {
       this.zeroXOrders.delete();
       delete this.zeroXOrders;
@@ -406,6 +409,8 @@ export class DB {
    * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
    */
   async sync(highestAvailableBlockNumber?: number): Promise<void> {
+    this.dexieDB['Rollback'].clear();
+
     const dbSyncPromises = [];
     if (!highestAvailableBlockNumber) {
       highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();

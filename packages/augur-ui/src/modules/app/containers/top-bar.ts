@@ -7,7 +7,7 @@ import { selectInfoAlertsAndSeenCount } from 'modules/alerts/selectors/alerts';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
+import { MODAL_LOGIN, MODAL_SIGNUP, MODAL_HELP } from 'modules/common/constants';
 import { Action } from 'redux';
 
 const mapStateToProps = (state: AppState) => {
@@ -27,6 +27,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   updateIsAlertVisible: (data: boolean) => dispatch(updateIsAlertVisible(data)),
   loginModal: () => dispatch(updateModal({ type: MODAL_LOGIN })),
   signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
+  helpModal: () => dispatch(updateModal({ type: MODAL_HELP })),
 });
 
 export default withRouter(

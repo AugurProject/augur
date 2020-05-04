@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"3box-chatbox-react@0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/3box-chatbox-react/-/3box-chatbox-react-0.1.10.tgz#b72d1d96fde020c88a44efb4dd8ab0d138d748e8"
-  integrity sha512-HhL11s1EkmhSD7mCFu9S8EqjKvZ7+zcU3NakQVyn8+nDKw2Tya6L3w/kasL5o4iSE1dqOOjOZOQ365Wod+LRig==
+"3box-chatbox-react@0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/3box-chatbox-react/-/3box-chatbox-react-0.1.11.tgz#1ccb402d4c3f2f12a87103bd3cdcf00d873628b3"
+  integrity sha512-dBQjToBtbqlBEiCMZ0sxZebvE4znxT/vupa/YoIIhB3I1jMF5QCD1kUUfCHE7GD2dAuLxCWqocZRmjSlOlw2iA==
   dependencies:
     "3box" "^1.17.1"
     "3id-resolver" "0.0.6"
@@ -11651,10 +11651,10 @@ flatten@^1.0.2:
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.3.tgz#c1283ac9f27b368abc1e36d1ff7b04501a30356b"
   integrity sha512-dVsPA/UwQ8+2uoFe5GHtiBMu48dWLTdsuEd7CKGlZlD78r1TTWBvDuFaFGKCo/ZfEr95Uk56vZoX86OsHkUeIg==
 
-flexsearch@0.6.30:
-  version "0.6.30"
-  resolved "https://registry.yarnpkg.com/flexsearch/-/flexsearch-0.6.30.tgz#d3f14389c9a4e5758b12290b3bafcd383cdc53de"
-  integrity sha512-zDBhMWbM65TsJJPBYoxV+MENufDylNtMz38e6MLTShwwuHeRNBxRYGAxR0DlwSkC4u+X2S8mlcdROWXMDleNwQ==
+flexsearch@0.6.32:
+  version "0.6.32"
+  resolved "https://registry.yarnpkg.com/flexsearch/-/flexsearch-0.6.32.tgz#1e20684d317af65baa445cdd9864a5f5b320f510"
+  integrity sha512-EF1BWkhwoeLtbIlDbY/vDSLBen/E5l/f1Vg7iX5CDymQCamcx1vhlc3tIZxIDplPjgi0jhG37c67idFbjg+v+Q==
 
 flow-stoplight@^1.0.0:
   version "1.0.0"

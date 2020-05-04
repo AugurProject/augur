@@ -231,7 +231,7 @@
 .SecondaryButton {
   .Button;
 
-  background: transparent;
+  background: @color-module-background;
   border: @size-1 solid @color-secondary-action-outline;
   color: @color-primary-text;
   max-height: @button-height-default;
@@ -242,15 +242,15 @@
   }
 
   &:hover:enabled {
-    background: fade(@color-primary-action, 5%);
+    background: lighten(@color-module-background, 5%);
   }
 
   &:focus:enabled {
-    background: fade(@color-primary-action, 10%);
+    background: lighten(@color-module-background, 10%);
   }
 
   &:active:enabled {
-    background: fade(@color-primary-action, 15%);
+    background: lighten(@color-module-background, 15%);
   }
 
   &.Small {

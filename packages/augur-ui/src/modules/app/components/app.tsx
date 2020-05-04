@@ -271,6 +271,7 @@ export default class AppView extends Component<AppProps> {
     }
 
     if (updateState) {
+      e.stopPropagation();
       updateSidebarStatus(stateUpdate);
     }
 
@@ -395,6 +396,7 @@ export default class AppView extends Component<AppProps> {
       showMigrateRepButton,
       stats,
       whichChatPlugin,
+      isMobile
     } = this.props;
     this.sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
@@ -457,6 +459,7 @@ export default class AppView extends Component<AppProps> {
 
               {/* HIDDEN ON DESKTOP */}
               <SideNav
+                isMobile={isMobile}
                 restoredAccount={restoredAccount}
                 stats={stats}
                 showNav={

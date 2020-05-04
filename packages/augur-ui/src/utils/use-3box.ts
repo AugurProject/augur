@@ -63,7 +63,6 @@ export const use3box = (provider, initialize3box, initialized3box, chatOrComment
     setIsReady(true);
 
     const commentsAlreadyOpened = chatOrComments === 'comments';
-    console.log('commentsAlreadyOpened', commentsAlreadyOpened)
     initialize3box(addressFromProvider, threeBoxInstance, publicProfile, commentsAlreadyOpened);
   };
 

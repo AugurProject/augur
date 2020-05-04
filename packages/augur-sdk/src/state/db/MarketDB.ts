@@ -119,7 +119,6 @@ export class MarketDB extends DerivedDB {
 
     const timestamp = (await this.augur.getTimestamp()).toNumber();
     await this.processTimestamp(timestamp, result);
-    await this.syncFTS();
     return result;
   }
 

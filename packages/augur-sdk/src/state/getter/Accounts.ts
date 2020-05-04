@@ -158,11 +158,14 @@ export class Accounts<TBigNumber> {
     params: t.TypeOf<typeof Accounts.getAccountRepStakeSummaryParams>
   ): Promise<AccountReportingHistory> {
 
-    // Note: we could created a derived DB to do the four lines below in one query. Its unlikely we'll need that though (at least anytime soon) since a single users reports wont scale too high
+    // Note: we could created a derived DB to do the six lines below in one query. Its unlikely we'll need that though (at least anytime soon) since a single users reports wont scale too high
+    const initialReportTransferredLogs = await db.InitialReporterTransferred.where('to').equalsIgnoreCase(params.account).and((log) => log.universe === params.universe).toArray();
+    const transferredReportMarkets = _.map(initialReportTransferredLogs, "market");
     const initialReportSubmittedLogs = await db.InitialReportSubmitted.where('reporter').equalsIgnoreCase(params.account).and((log) => log.universe === params.universe).toArray();
+    const transferredInitialReportLogs = await db.InitialReportSubmitted.where('market').anyOfIgnoreCase(transferredReportMarkets).and((log) => log.universe === params.universe).toArray();
     const initialReportRedeemedLogs = await db.InitialReporterRedeemed.where('reporter').equalsIgnoreCase(params.account).and((log) => log.universe === params.universe).toArray();
     const redeemedReports = _.keyBy(initialReportRedeemedLogs, 'market');
-    const unredeemedReports = _.filter(initialReportSubmittedLogs, (initialReport) => !redeemedReports[initialReport.market]);
+    const unredeemedReports = _.filter(initialReportSubmittedLogs.concat(transferredInitialReportLogs), (initialReport) => !redeemedReports[initialReport.market]);
 
     // get token balance of crowdsourcers
     const disputeCrowdsourcerTokens = await db.TokenBalanceChangedRollup.where('[universe+owner+tokenType]').equals([params.universe, params.account, 1]).and((log) => {

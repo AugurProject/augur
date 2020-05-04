@@ -130,6 +130,9 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   consensusFormatted: ConsensusFormatted | null;
   outcomesFormatted: OutcomeFormatted[];
   isTemplate: boolean;
+  pending?: boolean;
+  status?: string;
+  hasPendingLiquidityOrders?: boolean;
 }
 
 export interface ForkingInfo {
@@ -483,6 +486,7 @@ export interface MarketsList {
     categories: object;
   };
   selectedCategories: string[];
+  selectedCategory: string;
   marketCardFormat: string;
   isSearchInPlace: boolean;
 }

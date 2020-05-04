@@ -3641,15 +3641,19 @@ export const HOLIDAYS = {
   AUSTRALIA_DAY: 'Australia Day',
   ANZAC_DAY: 'Anzac Day',
   QUEENS_BIRTHDAY: 'Queens Birthday',
+  REPUBLIC_DAY: 'Republic Day',
   MANASHIVRATRI: 'Mahashivratri',
   HOLI: 'Holi (2nd day)',
   RAN_NAVM: 'Ram Navm',
   MAHAVIR_JAYANTI: 'Mahavir Jayanti',
   BABSAHEB: 'Dr. Babsaheb Ambedkar Jayanti',
+  ISLAMIC_NEW_YEAR: 'Islamic New Year',
   MAHARASHTRA: 'Maharashtra or May Day',
   RAMZAN: 'Ramzan-id (Id-ul-fitar)',
   EID_AL_ADHA: 'Eid al adha',
+  EID_AL_FITR: 'Eid Al fitr',
   GANESH_CHATURTHI: 'Ganesh Chaturthi',
+  DUSSEHRA: 'Dussehra',
   ASHURA: 'Ashura',
   MAHATMA: "Mahatma Gandhi's Birthday",
   DIWALI: 'Diwali (Bali Pratipada)',
@@ -3685,115 +3689,115 @@ export const USA_HOLIDAYS = {
   [2020]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.MLK,
-      date: 1579478400,
+      date: 'Jan 20',
     },
     {
       holiday: HOLIDAYS.WASHINGTON,
-      date: 1581940800,
+      date: 'Feb 17'
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1586520000,
+      date: 'Apr 10',
     },
     {
       holiday: HOLIDAYS.MEMORIAL_DAY,
-      date: 1590408000,
+      date: 'May 25',
     },
     {
       holiday: HOLIDAYS.INDEPENDENCE_DAY,
-      date: 1591185600,
+      date: 'Jul 03',
     },
     {
       holiday: HOLIDAYS.LABOR_DAY,
-      date: 1599480000,
+      date: 'Sept 07',
     },
     {
       holiday: HOLIDAYS.THANKSGIVING,
-      date: 1606348800,
+      date: 'Nov 26',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1608854400,
+      date: 'Dec 25',
     },
   ],
   [2021]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1609459200,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.MLK,
-      date: 1610928000,
+      date: 'Jan 18',
     },
     {
       holiday: HOLIDAYS.WASHINGTON,
-      date: 1613390400,
+      date: 'Feb 15',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1618228800,
+      date: 'Apr 02',
     },
     {
       holiday: HOLIDAYS.MEMORIAL_DAY,
-      date: 1622462400,
+      date: 'May 31',
     },
     {
       holiday: HOLIDAYS.INDEPENDENCE_DAY,
-      date: 1622894400,
+      date: 'Jul 5',
     },
     {
       holiday: HOLIDAYS.LABOR_DAY,
-      date: 1630929600,
+      date: 'Sept 6',
     },
     {
       holiday: HOLIDAYS.THANKSGIVING,
-      date: 1637798400,
+      date: 'Nov 25',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1640304000,
+      date: 'Dec 24',
     },
   ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1640995200,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.MLK,
-      date: 1642377600,
+      date: 'Jan 17',
     },
     {
       holiday: HOLIDAYS.WASHINGTON,
-      date: 1645444800,
+      date: 'Feb 21',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1650024000,
+      date: 'Apr 15',
     },
     {
       holiday: HOLIDAYS.MEMORIAL_DAY,
-      date: 1653912000,
+      date: 'May 30',
     },
     {
       holiday: HOLIDAYS.INDEPENDENCE_DAY,
-      date: 1654344000,
+      date: 'Jul 04',
     },
     {
       holiday: HOLIDAYS.LABOR_DAY,
-      date: 1662379200,
+      date: 'Sept 05',
     },
     {
       holiday: HOLIDAYS.THANKSGIVING,
-      date: 1669248000,
+      date: 'Nov 24',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1672012800,
+      date: 'Dec 26',
     },
   ],
 };
@@ -3802,41 +3806,45 @@ export const FRANCE_HOLIDAYS = {
   [2020]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1586520000,
+      date: 'Apr 10',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1586736000,
+      date: 'Apr 13',
     },
     {
       holiday: HOLIDAYS.LABOUR_DAY,
-      date: 1588291200,
+      date: 'May 01',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1588291200,
+      date: 'Dec 25',
     },
   ],
   [2021]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1609459200,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1618228800,
+      date: 'Apr 02',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1617580800,
+      date: 'Apr 05',
+    },
+    {
+      holiday: HOLIDAYS.CHRISTMAS_EVE,
+      date: 'Dec 24',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1640304000,
+      date: 'Dec 25',
     },
   ],
   [2022]: [],
@@ -3846,107 +3854,103 @@ export const ENGLAND_HOLIDAYS = {
   [2020]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1586520000,
+      date: 'Apr 10',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1586736000,
+      date: 'Apr 13',
     },
     {
       holiday: HOLIDAYS.EARLY_MAY_BANK_HOLIDAY,
-      date: 1588896000,
+      date: 'May 08',
     },
     {
       holiday: HOLIDAYS.LATE_MAY_BANK_HOLIDAY,
-      date: 1590364800,
+      date: 'May 25',
     },
     {
       holiday: HOLIDAYS.SUMMER_BANK_HOLIDAY,
-      date: 1590364800,
+      date: 'Aug 31',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1588291200,
+      date: 'Dec 25',
     },
     {
       holiday: HOLIDAYS.BOXING_DAY,
-      date: 1609113600,
+      date: 'Dec 28',
     },
   ],
   [2021]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1609459200,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1618228800,
+      date: 'Apr 02',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1617580800,
-    },
-    {
-      holiday: HOLIDAYS.CHRISTMAS,
-      date: 1640304000,
+      date: 'Apr 05',
     },
     {
       holiday: HOLIDAYS.EARLY_MAY_BANK_HOLIDAY,
-      date: 1620000000,
+      date: 'May 03',
     },
     {
       holiday: HOLIDAYS.LATE_MAY_BANK_HOLIDAY,
-      date: 1622419200,
+      date: 'May 31',
     },
     {
       holiday: HOLIDAYS.SUMMER_BANK_HOLIDAY,
-      date: 1630281600,
+      date: 'Aug 30',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1640563200,
+      date: 'Dec 27',
     },
     {
       holiday: HOLIDAYS.BOXING_DAY,
-      date: 1640649600,
+      date: 'Dec 28',
     },
   ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1641168000,
+      date: 'Jan 03',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1649980800,
+      date: 'Apr 15',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1650240000,
+      date: 'Apr 18',
     },
     {
       holiday: HOLIDAYS.EARLY_MAY_BANK_HOLIDAY,
-      date: 1651449600,
+      date: 'May 02',
     },
     {
       holiday: HOLIDAYS.LATE_MAY_BANK_HOLIDAY,
-      date: 1653868800,
+      date: 'May 30',
     },
     {
       holiday: HOLIDAYS.SUMMER_BANK_HOLIDAY,
-      date: 1661731200,
+      date: 'Aug 29',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1672012800,
+      date: 'Dec 26',
     },
     {
       holiday: HOLIDAYS.BOXING_DAY,
-      date: 1672012800,
+      date: 'Dec 27',
     },
   ],
 };
@@ -3955,91 +3959,91 @@ export const GERMANY_HOLIDAYS = {
   [2020]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1586520000,
+      date: 'Apr 10',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1586736000,
+      date: 'Apr 13',
     },
     {
       holiday: HOLIDAYS.LABOUR_DAY,
-      date: 1588291200,
+      date: 'May 01',
     },
     {
       holiday: HOLIDAYS.WHITMONDAY,
-      date: 1590969600,
+      date: 'Jun 01',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS_EVE,
-      date: 1608768000,
+      date: 'Dec 24',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1588291200,
+      date: 'Dec 25',
     },
     {
       holiday: HOLIDAYS.NEW_YEARS_EVE,
-      date: 1609372800,
+      date: 'Dec 31',
     },
   ],
   [2021]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1609459200,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1618228800,
+      date: 'Apr 02',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1617580800,
+      date: 'Apr 05',
     },
     {
       holiday: HOLIDAYS.WHITMONDAY,
-      date: 1621814400,
+      date: 'May 24',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS_EVE,
-      date: 1640304000,
+      date: 'Dec 24',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1588291200,
+      date: 'Dec 25',
     },
     {
       holiday: HOLIDAYS.NEW_YEARS_EVE,
-      date: 1640908800,
+      date: 'Dec 31',
     },
   ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1641168000,
+      date: 'Jan 03',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1649980800,
+      date: 'Apr 15',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1650240000,
+      date: 'Apr 18',
     },
     {
       holiday: HOLIDAYS.WHITMONDAY,
-      date: 1651795200,
+      date: 'Jun 06',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY,
-      date: 1667433600,
+      date: 'Oct 03',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1672012800,
+      date: 'Dec 26',
     },
   ],
 };
@@ -4048,163 +4052,163 @@ const HONG_KONG_HOLIDAYS = {
   [2020]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_3,
-      date: 1609070400,
+      date: 'Jan 27',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_4,
-      date: 1609156800,
+      date: 'Jan 28',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1588248000,
+      date: 'Apr 10',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1586736000,
+      date: 'Apr 13',
     },
     {
       holiday: HOLIDAYS.BUDDDHAS_BIRTHDAY,
-      date: 1588248000,
+      date: 'Apr 30',
     },
     {
       holiday: HOLIDAYS.LABOUR_DAY,
-      date: 1588334400,
+      date: 'May 01',
     },
     {
       holiday: HOLIDAYS.TUEN_NG_DAY,
-      date: 1593086400,
+      date: 'Jun 25',
     },
     {
       holiday: HOLIDAYS.SAR_ESTABLISHMENT_DAY,
-      date: 1593604800,
+      date: 'Jul 01',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY,
-      date: 1601553600,
+      date: 'Oct 1',
     },
     {
       holiday: HOLIDAYS.MID_AUTUMN_FESTIVAL,
-      date: 1601640000,
+      date: 'Oct 02',
     },
     {
       holiday: HOLIDAYS.CHUNG_YEUNG_DAY,
-      date: 1603713600,
+      date: 'Oct 26',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS_HOLIDAY,
-      date: 1588291200,
+      date: 'Dec 25',
     },
   ],
   [2021]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_1,
-      date: 1613131200,
+      date: 'Feb 12',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_4,
-      date: 1613390400,
+      date: 'Feb 15',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1586520000,
+      date: 'Apr 02',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1586736000,
+      date: 'Apr 05',
     },
     {
       holiday: HOLIDAYS.CHING_MING_FESTIVAL,
-      date: 1617710400,
+      date: 'Apr 06',
     },
     {
       holiday: HOLIDAYS.BUDDDHAS_BIRTHDAY,
-      date: 1621425600,
+      date: 'May 19',
     },
     {
       holiday: HOLIDAYS.TUEN_NG_DAY,
-      date: 1623672000,
+      date: 'Jun 14',
     },
     {
       holiday: HOLIDAYS.SAR_ESTABLISHMENT_DAY,
-      date: 1625140800,
+      date: 'Jul 01',
     },
     {
       holiday: HOLIDAYS.MID_AUTUMN_FESTIVAL,
-      date: 1632312000,
+      date: 'Sept 22',
     },
     {
       holiday: HOLIDAYS.CHUNG_YEUNG_DAY,
-      date: 1634212800,
+      date: 'Oct 14',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS_HOLIDAY,
-      date: 1640606400,
+      date: 'Dec 27',
     },
   ],
   [2022]: [
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_1,
-      date: 1643716800,
+      date: 'Feb 01',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_2,
-      date: 1643803200,
+      date: 'Feb 02',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_3,
-      date: 1643889600,
+      date: 'Feb 03',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1586520000,
+      date: 'Apr 15',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1586736000,
+      date: 'Apr 18',
     },
     {
       holiday: HOLIDAYS.CHING_MING_FESTIVAL,
-      date: 1649160000,
+      date: 'Apr 05',
     },
     {
       holiday: HOLIDAYS.BUDDDHAS_BIRTHDAY,
-      date: 1652097600,
+      date: 'May 09',
     },
     {
       holiday: HOLIDAYS.LABOUR_DAY,
-      date: 1651492800,
+      date: 'May 02',
     },
     {
       holiday: HOLIDAYS.TUEN_NG_DAY,
-      date: 1654257600,
+      date: 'Jun 03',
     },
     {
       holiday: HOLIDAYS.SAR_ESTABLISHMENT_DAY,
-      date: 1656676800,
+      date: 'Jul 03',
     },
     {
       holiday: HOLIDAYS.MID_AUTUMN_FESTIVAL,
-      date: 1662984000,
+      date: 'Sept 12',
     },
     {
       holiday: HOLIDAYS.CHUNG_YEUNG_DAY,
-      date: 1664884800,
+      date: 'Oct 04',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS_HOLIDAY,
-      date: 1672056000,
+      date: 'Dec 26',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS_HOLIDAY,
-      date: 1672142400,
+      date: 'Dec 27',
     },
   ],
 };
@@ -4213,183 +4217,187 @@ const CHINA_HOLIDAYS = {
   [2020]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.LUNAR_NY_EVE,
-      date: 1579867200,
+      date: 'Jan 24',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_3,
-      date: 1580126400,
+      date: 'Jan 27',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_4,
-      date: 1580212800,
+      date: 'Jan 28',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_5,
-      date: 1580299200,
+      date: 'Jan 29',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_6,
-      date: 1580385600,
+      date: 'Jan 30',
     },
     {
       holiday: HOLIDAYS.CHING_MING_FESTIVAL,
-      date: 1586174400,
+      date: 'Apr 06',
     },
     {
       holiday: HOLIDAYS.LABOUR_DAY_1,
-      date: 1588334400,
+      date: 'May 01',
     },
     {
       holiday: HOLIDAYS.LABOUR_DAY_HOLIDAY,
-      date: 1588593600,
+      date: 'May 04',
     },
     {
       holiday: HOLIDAYS.LABOUR_DAY_HOLIDAY_2,
-      date: 1588680000,
+      date: 'May 05',
     },
     {
       holiday: HOLIDAYS.DRAGON_BOAT_FESTIVAL,
-      date: 1593086400,
+      date: 'Jun 25',
     },
     {
       holiday: HOLIDAYS.DRAGON_BOAT_FESTIVAL,
-      date: 1593172800,
+      date: 'Jun 26',
     },
     {
       holiday: HOLIDAYS.MID_AUTUMN_FESTIVAL,
-      date: 1601553600,
+      date: 'Oct 01',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_2,
-      date: 1601640000,
+      date: 'Oct 02',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_5,
-      date: 1601899200,
+      date: 'Oct 05',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_6,
-      date: 1601985600,
+      date: 'Oct 06',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_7,
-      date: 1602072000,
+      date: 'Oct 07',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_8,
-      date: 1602158400,
+      date: 'Oct 08',
     },
   ],
   [2021]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.LUNAR_NY_EVE,
-      date: 1613044800,
+      date: 'Feb 11',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_1,
-      date: 1613131200,
+      date: 'Feb 12',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_4,
-      date: 1613390400,
+      date: 'Feb 15',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_5,
-      date: 1613476800,
+      date: 'Feb 16',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_6,
-      date: 1613563200,
+      date: 'Feb 17',
     },
     {
       holiday: HOLIDAYS.CHING_MING_FESTIVAL,
-      date: 1617624000,
+      date: 'Apr 05',
     },
     {
       holiday: HOLIDAYS.LABOUR_DAY_HOLIDAY,
-      date: 1620043200,
+      date: 'May 03',
     },
     {
       holiday: HOLIDAYS.DRAGON_BOAT_FESTIVAL,
-      date: 1632139200,
+      date: 'Jun 14',
     },
     {
       holiday: HOLIDAYS.MID_AUTUMN_FESTIVAL,
-      date: 1633089600,
+      date: 'Sept 20',
+    },
+    {
+      holiday: HOLIDAYS.NATIONAL_DAY,
+      date: 'Oct 01',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_4,
-      date: 1633348800,
+      date: 'Oct 04',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_5,
-      date: 1633435200,
+      date: 'Oct 05',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_6,
-      date: 1633521600,
+      date: 'Oct 06',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_7,
-      date: 1633608000,
+      date: 'Oct 07',
     },
   ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1641211200,
+      date: 'Jan 03',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_1,
-      date: 1643716800,
+      date: 'Feb 01',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_2,
-      date: 1643803200,
+      date: 'Feb 02',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_3,
-      date: 1643889600,
+      date: 'Feb 03',
     },
     {
       holiday: HOLIDAYS.LUNAR_NEW_YEAR_4,
-      date: 1643976000,
+      date: 'Feb 04',
     },
     {
       holiday: HOLIDAYS.CHING_MING_FESTIVAL,
-      date: 1649160000,
+      date: 'Apr 05',
     },
     {
       holiday: HOLIDAYS.DRAGON_BOAT_FESTIVAL,
-      date: 1654257600,
+      date: 'Jun 03',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_3,
-      date: 1664798400,
+      date: 'Oct 03',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_4,
-      date: 1664884800,
+      date: 'Oct 04',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_5,
-      date: 1664971200,
+      date: 'Oct 05',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_6,
-      date: 1665057600,
+      date: 'Oct 06',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY_7,
-      date: 1665144000,
+      date: 'Oct 07',
     },
   ],
 };
@@ -4398,95 +4406,95 @@ export const AUSTRALIA_HOLIDAYS = {
   [2020]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.AUSTRALIA_DAY,
-      date: 1580083200,
+      date: 'Jan 27',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1586476800,
+      date: 'Apr 10',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1586736000,
+      date: 'Apr 13',
     },
     {
       holiday: HOLIDAYS.QUEENS_BIRTHDAY,
-      date: 1591574400,
+      date: 'Jun 08',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1606262400,
+      date: 'Dec 25',
     },
     {
       holiday: HOLIDAYS.BOXING_DAY,
-      date: 1606521600,
+      date: 'Dec 28',
     },
   ],
   [2021]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.AUSTRALIA_DAY,
-      date: 1611619200,
+      date: 'Jan 26',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1617321600,
+      date: 'Apr 02',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1617580800,
+      date: 'Apr 05',
     },
     {
       holiday: HOLIDAYS.QUEENS_BIRTHDAY,
-      date: 1623628800,
+      date: 'Jun 14',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1637971200,
+      date: 'Dec 27',
     },
     {
       holiday: HOLIDAYS.BOXING_DAY,
-      date: 1638057600,
+      date: 'Dec 28',
     },
   ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1641168000,
+      date: 'Jan 03',
     },
     {
       holiday: HOLIDAYS.AUSTRALIA_DAY,
-      date: 1643155200,
+      date: 'Jan 26',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1649980800,
+      date: 'Apr 15',
     },
     {
       holiday: HOLIDAYS.EASTER_MONDAY,
-      date: 1650240000,
+      date: 'Apr 18',
     },
     {
       holiday: HOLIDAYS.ANZAC_DAY,
-      date: 1650844800,
+      date: 'Apr 25',
     },
     {
       holiday: HOLIDAYS.QUEENS_BIRTHDAY,
-      date: 1655078400,
+      date: 'Jun 13',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1672012800,
+      date: 'Dec 26',
     },
     {
       holiday: HOLIDAYS.BOXING_DAY,
-      date: 1672099200,
+      date: 'Dec 27',
     },
   ],
 };
@@ -4495,63 +4503,163 @@ export const INDIA_HOLIDAYS = {
   [2020]: [
     {
       holiday: HOLIDAYS.MANASHIVRATRI,
-      date: 1582243200,
+      date: 'Feb 21',
     },
     {
       holiday: HOLIDAYS.HOLI,
-      date: 1583798400,
+      date: 'Mar 10',
     },
     {
       holiday: HOLIDAYS.RAN_NAVM,
-      date: 1585785600,
+      date: 'Apr 02',
     },
     {
       holiday: HOLIDAYS.MAHAVIR_JAYANTI,
-      date: 1586131200,
+      date: 'Apr 06',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1586476800,
+      date: 'Apr 10',
     },
     {
       holiday: HOLIDAYS.BABSAHEB,
-      date: 1586822400,
+      date: 'Apr 14',
     },
     {
       holiday: HOLIDAYS.MAHARASHTRA,
-      date: 1588291200,
+      date: 'May 01',
     },
     {
       holiday: HOLIDAYS.RAMZAN,
-      date: 1590364800,
+      date: 'May 25',
     },
     {
       holiday: HOLIDAYS.EID_AL_ADHA,
-      date: 1593561600,
+      date: 'Jul 31',
     },
     {
       holiday: HOLIDAYS.GANESH_CHATURTHI,
-      date: 1595203200,
+      date: 'Aug 20',
     },
     {
       holiday: HOLIDAYS.ASHURA,
-      date: 1595894400,
+      date: 'Aug 28',
     },
     {
       holiday: HOLIDAYS.MAHATMA,
-      date: 1601596800,
+      date: 'Oct 02',
     },
     {
       holiday: HOLIDAYS.DIWALI,
-      date: 1605484800,
+      date: 'Nov 16',
     },
     {
       holiday: HOLIDAYS.GURU_NANAK_JAYANTI,
-      date: 1606694400,
+      date: 'Nov 30',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1606521600,
+      date: 'Dec 25',
+    },
+  ],
+  [2021]: [
+    {
+      holiday: HOLIDAYS.REPUBLIC_DAY,
+      date: 'Jan 26',
+    },
+    {
+      holiday: HOLIDAYS.MANASHIVRATRI,
+      date: 'Mar 11',
+    },
+    {
+      holiday: HOLIDAYS.HOLI,
+      date: 'Mar 29',
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 'Apr 02',
+    },
+    {
+      holiday: HOLIDAYS.MAHAVIR_JAYANTI,
+      date: 'Apr 14',
+    },
+    {
+      holiday: HOLIDAYS.RAN_NAVM,
+      date: 'Apr 21',
+    },
+    {
+      holiday: HOLIDAYS.EID_AL_FITR,
+      date: 'May 13',
+    },
+    {
+      holiday: HOLIDAYS.EID_AL_ADHA,
+      date: 'Jul 20',
+    },
+    {
+      holiday: HOLIDAYS.ASHURA,
+      date: 'Aug 19',
+    },
+    {
+      holiday: HOLIDAYS.GANESH_CHATURTHI,
+      date: 'Sep 10',
+    },
+    {
+      holiday: HOLIDAYS.DUSSEHRA,
+      date: 'Oct 15',
+    },
+    {
+      holiday: HOLIDAYS.DIWALI,
+      date: 'Nov 04',
+    },
+    {
+      holiday: HOLIDAYS.GURU_NANAK_JAYANTI,
+      date: 'Nov 19',
+    },
+  ],
+  [2022]: [
+    {
+      holiday: HOLIDAYS.REPUBLIC_DAY,
+      date: 'Jan 26',
+    },
+    {
+      holiday: HOLIDAYS.MANASHIVRATRI,
+      date: 'Mar 01',
+    },
+    {
+      holiday: HOLIDAYS.HOLI,
+      date: 'Mar 18',
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 'Apr 15',
+    },
+    {
+      holiday: HOLIDAYS.MAHAVIR_JAYANTI,
+      date: 'Apr 14',
+    },
+    {
+      holiday: HOLIDAYS.EID_AL_FITR,
+      date: 'May 02',
+    },
+    {
+      holiday: HOLIDAYS.ISLAMIC_NEW_YEAR,
+      date: 'Aug 09',
+    },
+    {
+      holiday: HOLIDAYS.INDEPENDENCE_DAY,
+      date: 'Aug 15',
+    },
+    {
+      holiday: HOLIDAYS.DUSSEHRA,
+      date: 'Oct 04',
+    },
+    {
+      holiday: HOLIDAYS.DIWALI,
+      date: 'Oct 25',
+    },
+    {
+      holiday: HOLIDAYS.GURU_NANAK_JAYANTI,
+      date: 'Nov 07',
     },
   ],
 };
@@ -4560,207 +4668,207 @@ export const JAPAN_HOLIDAYS = {
   [2020]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.MARKET_HOLIDAY,
-      date: 1577923200,
+      date: 'Jan 02',
     },
     {
       holiday: HOLIDAYS.MARKET_HOLIDAY,
-      date: 1578009600,
+      date: 'Jan 03',
     },
     {
       holiday: HOLIDAYS.OLD_AGE_DAY,
-      date: 1578873600,
+      date: 'Jan 13',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY,
-      date: 1581379200,
+      date: 'Feb 11',
     },
     {
       holiday: HOLIDAYS.EMPEROR_BDAY,
-      date: 1582502400,
+      date: 'Feb 24',
     },
     {
       holiday: HOLIDAYS.VERNAL_EQUINOX,
-      date: 1584662400,
+      date: 'Mar 20',
     },
     {
       holiday: HOLIDAYS.SHOWA_DAY,
-      date: 1588118400,
+      date: 'Apr 29',
     },
     {
       holiday: HOLIDAYS.GREENERY_DAY,
-      date: 1588550400,
+      date: 'May 04',
     },
     {
       holiday: HOLIDAYS.CHILDRENS_DAY,
-      date: 1588723200,
+      date: 'May 05',
     },
     {
       holiday: HOLIDAYS.CONSTITUTION_DAY,
-      date: 1595203200,
+      date: 'May 06',
     },
     {
       holiday: HOLIDAYS.MARINE_DAY,
-      date: 1592870400,
+      date: 'Jul 23',
     },
     {
       holiday: HOLIDAYS.SPORTS_DAY,
-      date: 1592956800,
+      date: 'Jul 24',
     },
     {
       holiday: HOLIDAYS.MOUNTAIN_DAY,
-      date: 1597017600,
+      date: 'Aug 10',
     },
     {
       holiday: HOLIDAYS.OLD_AGE_DAY,
-      date: 1600646400,
+      date: 'Sept 21',
     },
     {
       holiday: HOLIDAYS.AUTUMNAL_EQUINOX,
-      date: 1600732800,
+      date: 'Sept 22',
     },
     {
       holiday: HOLIDAYS.CULTURE_DAY,
-      date: 1604361600,
+      date: 'Nov 03',
     },
     {
       holiday: HOLIDAYS.WORKERS_DAY,
-      date: 1606089600,
+      date: 'Nov 23',
     },
     {
       holiday: HOLIDAYS.MARKET_HOLIDAY,
-      date: 1609372800,
+      date: 'Dec 31',
     },
   ],
   [2021]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1609459200,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.OLD_AGE_DAY,
-      date: 1610323200,
+      date: 'Jan 11',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY,
-      date: 1613001600,
+      date: 'Feb 11',
     },
     {
       holiday: HOLIDAYS.EMPEROR_BDAY,
-      date: 1614038400,
+      date: 'Feb 23',
     },
     {
       holiday: HOLIDAYS.SHOWA_DAY,
-      date: 1619654400,
+      date: 'Apr 29',
     },
     {
       holiday: HOLIDAYS.GREENERY_DAY,
-      date: 1620086400,
+      date: 'May 04',
     },
     {
       holiday: HOLIDAYS.CHILDRENS_DAY,
-      date: 1620172800,
+      date: 'May 05',
     },
     {
       holiday: HOLIDAYS.MARINE_DAY,
-      date: 1624060800,
+      date: 'Jul 19',
     },
     {
       holiday: HOLIDAYS.SPORTS_DAY,
-      date: 1633910400,
+      date: 'Oct 11',
     },
     {
       holiday: HOLIDAYS.MOUNTAIN_DAY,
-      date: 1628640000,
+      date: 'Aug 11',
     },
     {
       holiday: HOLIDAYS.OLD_AGE_DAY,
-      date: 1632096000,
+      date: 'Sept 20',
     },
     {
       holiday: HOLIDAYS.AUTUMNAL_EQUINOX,
-      date: 1632355200,
+      date: 'Sept 23',
     },
     {
       holiday: HOLIDAYS.CULTURE_DAY,
-      date: 1635897600,
+      date: 'Nov 03',
     },
     {
       holiday: HOLIDAYS.WORKERS_DAY,
-      date: 1637625600,
+      date: 'Nov 23',
     },
     {
       holiday: HOLIDAYS.MARKET_HOLIDAY,
-      date: 1640908800,
+      date: 'Dec 31',
     },
   ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1641168000,
+      date: 'Jan 03',
     },
     {
       holiday: HOLIDAYS.OLD_AGE_DAY,
-      date: 1641772800,
+      date: 'Jan 10',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY,
-      date: 1644537600,
+      date: 'Feb 11',
     },
     {
       holiday: HOLIDAYS.EMPEROR_BDAY,
-      date: 1645574400,
+      date: 'Feb 23',
     },
     {
       holiday: HOLIDAYS.VERNAL_EQUINOX,
-      date: 1647820800,
+      date: 'Mar 21',
     },
     {
       holiday: HOLIDAYS.SHOWA_DAY,
-      date: 1651622400,
+      date: 'Apr 29',
     },
     {
       holiday: HOLIDAYS.GREENERY_DAY,
-      date: 1590364800,
+      date: 'May 04',
     },
     {
       holiday: HOLIDAYS.CHILDRENS_DAY,
-      date: 1651708800,
+      date: 'May 05',
     },
     {
       holiday: HOLIDAYS.CONSTITUTION_DAY,
-      date: 1651536000,
+      date: 'May 03',
     },
     {
       holiday: HOLIDAYS.MARINE_DAY,
-      date: 1654214400,
+      date: 'Jul 18',
     },
     {
       holiday: HOLIDAYS.SPORTS_DAY,
-      date: 1601596800,
+      date: 'Oct 10',
     },
     {
       holiday: HOLIDAYS.MOUNTAIN_DAY,
-      date: 1665360000,
+      date: 'Aug 11',
     },
     {
       holiday: HOLIDAYS.OLD_AGE_DAY,
-      date: 1663545600,
+      date: 'Sept 19',
     },
     {
       holiday: HOLIDAYS.AUTUMNAL_EQUINOX,
-      date: 1663891200,
+      date: 'Sept 23',
     },
     {
       holiday: HOLIDAYS.CULTURE_DAY,
-      date: 1667433600,
+      date: 'Nov 03',
     },
     {
       holiday: HOLIDAYS.WORKERS_DAY,
-      date: 1669161600,
+      date: 'Nov 23',
     },
   ],
 };
@@ -4769,127 +4877,127 @@ export const CANADA_HOLIDAYS = {
   [2020]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.FAMILY_DAY,
-      date: 1581897600,
+      date: 'Feb 17',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1586476800,
+      date: 'Apr 10',
     },
     {
       holiday: HOLIDAYS.VICTORIA_DAY,
-      date: 1589760000,
+      date: 'May 18',
     },
     {
       holiday: HOLIDAYS.CANADA_DAY,
-      date: 1590969600,
+      date: 'Jul 01',
     },
     {
       holiday: HOLIDAYS.CIVIC_HOLIDAY,
-      date: 1596412800,
+      date: 'Aug 03',
     },
     {
       holiday: HOLIDAYS.LABOUR_DAY,
-      date: 1599436800,
+      date: 'Sept 07',
     },
     {
       holiday: HOLIDAYS.THANKSGIVING,
-      date: 1602460800,
+      date: 'Oct 12',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1608854400,
+      date: 'Dec 25',
     },
     {
       holiday: HOLIDAYS.BOXING_DAY,
-      date: 1609113600,
+      date: 'Dec 28',
     },
   ],
   [2021]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1609459200,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.FAMILY_DAY,
-      date: 1613347200,
+      date: 'Feb 15',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1617321600,
+      date: 'Apr 02',
     },
     {
       holiday: HOLIDAYS.VICTORIA_DAY,
-      date: 1621814400,
+      date: 'May 24',
     },
     {
       holiday: HOLIDAYS.CANADA_DAY,
-      date: 1622505600,
+      date: 'Jul 01',
     },
     {
       holiday: HOLIDAYS.CIVIC_HOLIDAY,
-      date: 1627862400,
+      date: 'Aug 02',
     },
     {
       holiday: HOLIDAYS.LABOUR_DAY,
-      date: 1630886400,
+      date: 'Sept 06',
     },
     {
       holiday: HOLIDAYS.THANKSGIVING,
-      date: 1633910400,
+      date: 'Oct 11',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1640563200,
+      date: 'Dec 27',
     },
     {
       holiday: HOLIDAYS.BOXING_DAY,
-      date: 1640649600,
+      date: 'Dec 28',
     },
   ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1641168000,
+      date: 'Jan 03',
     },
     {
       holiday: HOLIDAYS.FAMILY_DAY,
-      date: 1645401600,
+      date: 'Feb 21',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
-      date: 1649980800,
+      date: 'Apr 15',
     },
     {
       holiday: HOLIDAYS.VICTORIA_DAY,
-      date: 1653264000,
+      date: 'May 23',
     },
     {
       holiday: HOLIDAYS.CANADA_DAY,
-      date: 1654041600,
+      date: 'Jul 01',
     },
     {
       holiday: HOLIDAYS.CIVIC_HOLIDAY,
-      date: 1659312000,
+      date: 'Aug 01',
     },
     {
       holiday: HOLIDAYS.LABOUR_DAY,
-      date: 1662336000,
+      date: 'Sept 05',
     },
     {
       holiday: HOLIDAYS.THANKSGIVING,
-      date: 1665360000,
+      date: 'Oct 10',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1672012800,
+      date: 'Dec 26',
     },
     {
       holiday: HOLIDAYS.BOXING_DAY,
-      date: 1672099200,
+      date: 'Dec 27',
     },
   ],
 };
@@ -4898,163 +5006,163 @@ export const SOUTH_KOREA_HOLIDAYS = {
   [2020]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.KOREAN_NEW_YEAR,
-      date: 1579824000,
+      date: 'Jan 24',
     },
     {
       holiday: HOLIDAYS.MARKET_HOLIDAY,
-      date: 1580083200,
+      date: 'Jan 27',
     },
     {
       holiday: HOLIDAYS.VESAK_DAY,
-      date: 1588204800,
+      date: 'Apr 30',
     },
     {
       holiday: HOLIDAYS.LABOR_DAY,
-      date: 1588291200,
+      date: 'May 01',
     },
     {
       holiday: HOLIDAYS.CHILDRENS_DAY,
-      date: 1588636800,
+      date: 'May 05',
     },
     {
       holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
-      date: 1601424000,
+      date: 'Sept 30',
     },
     {
       holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
-      date: 1601510400,
+      date: 'Oct 01',
     },
     {
       holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
-      date: 1601596800,
+      date: 'Oct 02',
     },
     {
       holiday: HOLIDAYS.HANGUL_DAY,
-      date: 1602201600,
+      date: 'Oct 09',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1607731200,
+      date: 'Dec 25',
     },
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1609372800,
+      date: 'Dec 31',
     },
   ],
   [2021]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1609459200,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.KOREAN_NEW_YEAR,
-      date: 1613001600,
+      date: 'Feb 11',
     },
     {
       holiday: HOLIDAYS.KOREAN_NEW_YEAR,
-      date: 1613088000,
+      date: 'Feb 12',
     },
     {
       holiday: HOLIDAYS.INDEPENDENCE_DAY,
-      date: 1614556800,
+      date: 'Mar 01',
     },
     {
       holiday: HOLIDAYS.LABOR_DAY,
-      date: 1619827200,
+      date: 'May 01',
     },
     {
       holiday: HOLIDAYS.CHILDRENS_DAY,
-      date: 1620172800,
+      date: 'May 05',
     },
     {
       holiday: HOLIDAYS.BUDDDHAS_BIRTHDAY,
-      date: 1621382400,
+      date: 'May 19',
     },
     {
       holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
-      date: 1632096000,
+      date: 'Sept 20',
     },
     {
       holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
-      date: 1632182400,
+      date: 'Sept 21',
     },
     {
       holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
-      date: 1632268800,
+      date: 'Sept 22',
     },
     {
       holiday: HOLIDAYS.HANGUL_DAY,
-      date: 1633737600,
+      date: 'Oct 09',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1640390400,
+      date: 'Dec 25',
     },
   ],
   [2022]: [
     {
       holiday: HOLIDAYS.NEW_YEARS_DAY,
-      date: 1577836800,
+      date: 'Jan 01',
     },
     {
       holiday: HOLIDAYS.KOREAN_NEW_YEAR,
-      date: 1643587200,
+      date: 'Jan 31',
     },
     {
       holiday: HOLIDAYS.KOREAN_NEW_YEAR,
-      date: 1643673600,
+      date: 'Feb 01',
     },
     {
       holiday: HOLIDAYS.MARKET_HOLIDAY,
-      date: 1643760000,
+      date: 'Feb 02',
     },
     {
       holiday: HOLIDAYS.INDEPENDENCE_DAY,
-      date: 1646092800,
+      date: 'Mar 01',
     },
     {
       holiday: HOLIDAYS.LABOR_DAY,
-      date: 1651363200,
+      date: 'May 01',
     },
     {
       holiday: HOLIDAYS.CHILDRENS_DAY,
-      date: 1651708800,
+      date: 'May 05',
     },
     {
       holiday: HOLIDAYS.BUDDDHAS_BIRTHDAY,
-      date: 1651968000,
+      date: 'May 08',
     },
     {
       holiday: HOLIDAYS.MEMORIAL_DAY,
-      date: 1654473600,
+      date: 'Jun 06',
     },
     {
       holiday: HOLIDAYS.LIBERATION_DAY,
-      date: 1660521600,
+      date: 'Aug 15',
     },
     {
       holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
-      date: 1662681600,
+      date: 'Sept 09',
     },
     {
       holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
-      date: 1662768000,
+      date: 'Sept 10',
     },
     {
       holiday: HOLIDAYS.CHUSEOK_FESTIVAL,
-      date: 1662854400,
+      date: 'Sept 11',
     },
     {
       holiday: HOLIDAYS.HANGUL_DAY,
-      date: 1665273600,
+      date: 'Oct 09',
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 1671926400,
+      date: 'Dec 25',
     },
   ],
 };

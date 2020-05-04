@@ -39,10 +39,7 @@ export class TestContractAPI extends ContractAPI {
     const dependencies = await makeGSNDependencies(
       provider,
       signer,
-      config.addresses.AugurWalletRegistry,
-      config.addresses.EthExchange,
-      config.addresses.WETH9,
-      config.addresses.Cash,
+      config,
       account.address
     );
 
