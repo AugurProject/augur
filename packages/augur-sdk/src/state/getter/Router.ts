@@ -4,8 +4,14 @@ import { Augur } from "../../Augur";
 import { DB } from "../db/DB";
 import { PathReporter } from "io-ts/lib/PathReporter";
 import { AddressFormatReviver } from "../../state/AddressFormatReviver";
+import { AsyncQueue, queue } from 'async';
 
 import * as t from "io-ts";
+
+interface RequestQueueTask {
+  name: string;
+  params: any;
+}
 
 export function Getter(alternateInterface?: string) {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor): void => {
@@ -42,13 +48,31 @@ export class Router {
 
   private readonly augur: Augur;
   private readonly db: Promise<DB>;
+  private requestQueue: AsyncQueue<RequestQueueTask>;
 
   constructor(augur: Augur, db: Promise<DB>) {
     this.augur = augur;
     this.db = db;
+    this.requestQueue = queue(
+      async (task: RequestQueueTask) => {
+        return this.executeRoute(task.name, task.params);
+      },
+      10
+    );
   }
 
   async route(name: string, params: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.requestQueue.push({ name, params }, (err, results) => {
+        if (err) {
+          reject(err);
+        }
+          resolve(results);
+      });
+    });
+  }
+
+  async executeRoute(name: string, params: any): Promise<any> {
     const getter = Router.routings.get(name);
 
     if (!getter) {
