@@ -76,6 +76,9 @@ export class EthersProvider extends ethers.providers.BaseProvider
           { times, interval },
           async () => {
             if (item.message === 'send') {
+              if (typeof item.params.params === "undefined") {
+                item.params.params = [];
+              }
               const {method, params: [blocktag, includeHeaders]} = item.params;
               this.callCount.increment(method);
               if (method === 'eth_getBlockByNumber'

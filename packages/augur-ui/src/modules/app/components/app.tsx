@@ -271,7 +271,6 @@ export default class AppView extends Component<AppProps> {
     }
 
     if (updateState) {
-      e.stopPropagation();
       updateSidebarStatus(stateUpdate);
     }
 
