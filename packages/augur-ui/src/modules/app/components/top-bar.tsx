@@ -6,6 +6,7 @@ import {
   MovementLabel,
   LinearPropertyLabel,
   LinearPropertyLabelUnderlineTooltip,
+  StatusErrorMessage,
 } from 'modules/common/labels';
 import { CoreStats } from 'modules/types';
 import Styles from 'modules/app/components/top-bar.styles.less';
@@ -16,8 +17,6 @@ import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
 import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
-import { formatDai } from 'utils/format-number';
-import { createBigNumber } from 'utils/create-big-number';
 
 interface StatsProps {
   isLogged: boolean;
@@ -119,6 +118,7 @@ const TopBar: React.FC<TopBarProps> = ({
         )}
         <ConnectAccount />
       </div>
+      <StatusErrorMessage />
     </header>
   );
 };

@@ -632,7 +632,6 @@ export default class MarketView extends Component<
           {matches =>
             matches ? (
               <>
-                <StatusErrorMessage />
                 <ModuleTabs
                   selected={0}
                   fillWidth

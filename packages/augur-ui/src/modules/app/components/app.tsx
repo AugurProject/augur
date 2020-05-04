@@ -53,7 +53,6 @@ import { ExternalLinkText } from 'modules/common/buttons';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { SDKConfiguration } from '@augurproject/artifacts';
-import { StatusErrorMessage } from 'modules/common/labels';
 
 interface AppProps {
   notifications: Notification[];
@@ -98,7 +97,6 @@ interface AppProps {
   walletBalances: AccountBalances;
   saveAffilateAddress: Function;
   createFundedGsnWallet: Function;
-  showCreateAccountButton: boolean;
   showMigrateRepButton: boolean;
   whichChatPlugin: string;
 }
@@ -391,7 +389,6 @@ export default class AppView extends Component<AppProps> {
       updateHelpMenuState,
       notifications,
       createFundedGsnWallet,
-      showCreateAccountButton,
       showMigrateRepButton,
       stats,
       whichChatPlugin,
@@ -482,7 +479,6 @@ export default class AppView extends Component<AppProps> {
                 showMigrateRepButton={showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
-                showCreateAccountButton={showCreateAccountButton}
                 createFundedGsnWallet={createFundedGsnWallet}
                 whichChatPlugin={whichChatPlugin}
               />
@@ -496,8 +492,6 @@ export default class AppView extends Component<AppProps> {
                 showMigrateRepButton={showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
-                showCreateAccountButton={showCreateAccountButton}
-                createFundedGsnWallet={createFundedGsnWallet}
               />
             </section>
             <AlertsContainer
@@ -550,7 +544,6 @@ export default class AppView extends Component<AppProps> {
                 )}
 
                 <ForkingBanner />
-                <StatusErrorMessage />
                 <Routes isLogged={isLogged || restoredAccount} />
               </section>
             </section>
