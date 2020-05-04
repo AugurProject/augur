@@ -1,5 +1,5 @@
-
 import * as _ from 'lodash';
+import { logger, LoggerLevels } from '@augurproject/logger';
 import { AbstractTable, BaseDocument } from './AbstractTable';
 import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';
@@ -205,10 +205,11 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   async sync(): Promise<void> {
-    console.log('Syncing ZeroX Orders');
+    logger.info('Syncing ZeroX Orders');
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
+    let documents = [];
     if (orders?.length > 0) {
-      let documents = orders.filter(this.validateOrder, this).map(this.processOrder, this);
+      documents = orders.filter(this.validateOrder, this).map(this.processOrder, this);
       const marketIds: string[] = _.uniq(documents.map((d) => d.market));
       const markets = _.keyBy(await this.stateDB.Markets.where('market').anyOf(marketIds).toArray(), 'market');
       documents = documents.filter((d) => this.validateStoredOrder(d, markets));
@@ -219,20 +220,30 @@ export class ZeroXOrders extends AbstractTable {
       }
     }
     const chainId = Number(this.augur.config.networkId);
-    const ordersToAdd = _.map(_.values(this.pastOrders), (order) => {
-      const signedOrder = order.signedOrder;
+    const ordersToAdd = Object.values(this.pastOrders).map((order) => {
       return Object.assign({
         chainId,
         makerFeeAssetData: '0x',
         takerFeeAssetData: '0x',
-      }, signedOrder);
+      }, order.signedOrder);
     });
 
     if (ordersToAdd.length > 0) await this.augur.zeroX.addOrders(ordersToAdd);
     this.pastOrders = {};
 
-    console.log(`Synced ${orders.length } ZeroX Orders`);
     this.augur.events.emit(SubscriptionEventName.ZeroXStatusSynced, {});
+    setImmediate(() => {
+      logger.info(`Synced ${orders.length} Orders from ZeroX Peers`);
+      logger.debug("ZeroX Sync Summary: ")
+      logger.table(LoggerLevels.debug, [{
+        "Received from Mesh": orders.length,
+        "Valid orders from Mesh": documents.length,
+        "Cached Local Orders not Received": ordersToAdd.length
+      }]);
+
+      logger.debug("Orders Per Market")
+      logger.table(LoggerLevels.debug, _.countBy(documents, 'market'));
+    });
   }
 
   validateOrder(order: OrderInfo): boolean {
