@@ -15,15 +15,15 @@ export const updateTimeframeData = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ): Promise<void> => {
-  const { universe, loginAccount } = getState();
-  const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
-  if (loginAccount.address == null || universe.id == null)
+  const { loginAccount } = getState();
+  const { universe: { id }, blockchain: { currentAugurTimestamp }} = AppStatus.get();
+  if (loginAccount.address == null || id == null)
     return callback(null);
 
   const augur = augurSdk.get();
   const stats: Getters.Users.AccountTimeRangedStatsResult = await augur.getAccountTimeRangedStats(
     {
-      universe: universe.id,
+      universe: id,
       account: loginAccount.address,
       startTime: options.startTime ? options.startTime : 0,
       endTime: currentAugurTimestamp

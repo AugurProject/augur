@@ -7,7 +7,6 @@ import newMarket from 'modules/markets/reducers/new-market';
 import alerts from 'modules/alerts/reducers/alerts';
 import pendingLiquidityOrders from 'modules/orders/reducers/liquidity-orders';
 import analytics from 'modules/app/reducers/analytics';
-import universe from 'modules/universe/reducers/universe';
 import pendingOrders from 'modules/orders/reducers/pending-orders';
 import filledOrders from 'modules/orders/reducers/filled-orders';
 import readNotifications from 'modules/notifications/reducers/read-notifications';
@@ -30,7 +29,6 @@ import {
   PendingOrders,
   PendingQueue,
   FilledOrders,
-  Universe,
   OpenOrders,
   Drafts,
   MarketsList,
@@ -56,7 +54,6 @@ export function createReducer() {
     pendingOrders,
     pendingQueue,
     filledOrders,
-    universe,
     userOpenOrders,
     drafts,
     marketsList,
@@ -83,7 +80,6 @@ export interface AppStateInterface {
   pendingOrders: PendingOrders;
   pendingQueue: PendingQueue;
   filledOrders: FilledOrders;
-  universe: Universe;
   userOpenOrders: OpenOrders;
   drafts: Drafts;
   marketsList: MarketsList;

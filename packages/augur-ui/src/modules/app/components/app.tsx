@@ -138,7 +138,6 @@ const AppView = ({
   sdkEndpoint = null,
   useWeb3Transport = false,
   notifications,
-  universe: { forkEndTime, forkingInfo },
   history,
   initAugur,
   location: locationProp,
@@ -153,7 +152,7 @@ const AppView = ({
   logout,
   showGlobalChat,
 }:AppProps) => {
-  const { blockchain: { currentAugurTimestamp }, mobileMenuState, modal, env, isLogged, isMobile, actions: { setIsMobile, setMobileMenuState, setCurrentBasePath } } = useAppStatusStore();
+  const { universe: { forkEndTime, forkingInfo }, blockchain: { currentAugurTimestamp }, mobileMenuState, modal, env, isLogged, isMobile, actions: { setIsMobile, setMobileMenuState, setCurrentBasePath } } = useAppStatusStore();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
   const ModalShowing = Object.keys(modal).length !== 0;

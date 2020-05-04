@@ -8,15 +8,16 @@ import { CREATE_MARKET } from 'modules/common/constants';
 import { collectMarketCreatorFees } from 'modules/markets/actions/market-creator-fees-management';
 import { retrySubmitMarket } from 'modules/markets/actions/submit-new-market';
 import { AppState } from 'appStore';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const createdMarkets = selectAuthorOwnedMarkets(state);
-
+  const { universe: { disputeWindow } } = AppStatus.get();
   // getMyMarkets or it's equivalent will need a way of calculating the outstanding returns for a market and attaching it to each market object. Currently I've just added a key/value pair to the market objects im using below.
   return {
     myMarkets: createdMarkets,
     outcomes: {}, // marketDisputeOutcomes() || {},
-    disputingWindowEndTime: state.universe.disputeWindow && state.universe.disputeWindow.endTime || 0,
+    disputingWindowEndTime: disputeWindow?.endTime || 0,
   };
 };
 // TODO confirm with Tom whats up with this, getBalance Only

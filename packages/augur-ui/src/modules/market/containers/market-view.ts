@@ -45,8 +45,9 @@ import { Getters } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { universe, loginAccount, orderBooks } = state;
+  const { loginAccount, orderBooks } = state;
   const {
+    universe,
     modal,
     zeroXStatus: zeroXstatus,
     isConnected,

@@ -11,8 +11,7 @@ import { FormattedNumber } from 'modules/types';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { modal } = state;
-  const ethToDaiRate = AppStatus.get().ethToDaiRate.roundedValue;
+  const { modal, ethToDaiRate: { roundedValue: ethToDaiRate } } = AppStatus.get();
   const desiredSignerEthBalance = formatAttoEth(Number(DESIRED_SIGNER_ETH_BALANCE)).value;
   const reserveAmount: FormattedNumber = formatDai(ethToDaiRate.multipliedBy(desiredSignerEthBalance));
 
@@ -21,8 +20,6 @@ const mapStateToProps = (state: AppState) => {
     reserveAmount,
   }
 }
-
-
 
 const mapDispatchToProps = (dispatch: any) => ({
   closeModal: () => {

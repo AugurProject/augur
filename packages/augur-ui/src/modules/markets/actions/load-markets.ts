@@ -74,8 +74,7 @@ export const loadMarketsByFilter = (
   getState
 ) => {
   console.log('loadMarketsByFilter called', filterOptions);
-  const { universe } = getState();
-  const { isConnected } = AppStatus.get();
+  const { universe, isConnected } = AppStatus.get();
   if (!(universe && universe.id)) return;
 
   // Check to see if SDK is connected first
@@ -250,8 +249,7 @@ const loadReportingMarkets = (
   dispatch,
   getState
 ) => {
-  const { universe } = getState();
-  const { isConnected } = AppStatus.get();
+  const { universe, isConnected } = AppStatus.get();
   if (!isConnected) return cb(null, []);
   if (!(universe && universe.id)) return cb(null, []);
   let reportingState = null;

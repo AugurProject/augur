@@ -11,7 +11,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 export function logout() {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
-    const { actions: { setGSNEnabled, setWalletStatus, setMobileMenuState }} = AppStatus;
+    const { setIsLogged, setGSNEnabled, setWalletStatus, setMobileMenuState } = AppStatus.actions;
     const localStorageRef =
       typeof window !== 'undefined' && window.localStorage;
     if (localStorageRef && localStorageRef.removeItem) {
@@ -42,6 +42,7 @@ export function logout() {
     }
     setGSNEnabled(false);
     setWalletStatus(null);
+    setIsLogged(false);
 
 
     if (!isLocalHost()) {

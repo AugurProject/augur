@@ -1,9 +1,10 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { WindowProgress } from 'modules/common/progress';
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = state => ({
-  disputeWindow: state.universe.disputeWindow,
+  disputeWindow: AppStatus.get().universe.disputeWindow,
 });
 
 const mapDispatchToProps = dispatch => ({

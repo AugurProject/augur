@@ -49,6 +49,7 @@ const mapStateToProps = (state: AppState, { location }) => {
     selectedTagNames,
   } = getSelectedTagsAndCategoriesFromLocation(location);
   const {
+    universe: { id },
     isConnected,
     filterSortOptions: {
       maxFee,
@@ -62,8 +63,8 @@ const mapStateToProps = (state: AppState, { location }) => {
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
 
   return {
-    isConnected: isConnected && state.universe.id != null,
-    universe: (state.universe || {}).id,
+    isConnected: isConnected && id != null,
+    universe: id,
     search: searchPhrase,
     markets,
     marketsInReportingState: findMarketsInReportingState(markets, marketFilter),

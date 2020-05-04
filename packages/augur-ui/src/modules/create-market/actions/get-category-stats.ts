@@ -9,10 +9,10 @@ export const getCategoryStats = (): ThunkAction<void, AppState, void, any> => as
   getState
 ) => {
   const augur = augurSdk.get();
-  const { universe } = getState();
+  const { universe, isConnected } = AppStatus.get();
 
-  if (!(universe && universe.id)) return;
-  if (!AppStatus.get().isConnected) return;
+  if (!(universe?.id)) return;
+  if (!isConnected) return;
 
   const categoryStats = await augur.getCategoryStats({
     categories: POPULAR_CATEGORIES,

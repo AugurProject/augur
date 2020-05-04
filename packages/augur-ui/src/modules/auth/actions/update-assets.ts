@@ -21,12 +21,11 @@ export const updateAssets = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount, universe } = getState();
+  const { loginAccount } = getState();
   const { address, meta } = loginAccount;
   const nonSafeWallet = await meta.signer.getAddress();
 
   updateBalances(
-    universe.id,
     address,
     nonSafeWallet,
     dispatch,
@@ -41,12 +40,12 @@ export const updateAssets = (
 };
 
 function updateBalances(
-  universe: string,
   address: string,
   nonSafeWallet: string,
   dispatch: ThunkDispatch<void, any, Action>,
   callback: NodeStyleCallback
 ) {
+  const { universe: { id: universe }} = AppStatus.get();
   Promise.all([
     getRepBalance(universe, address),
     getDaiBalance(address),

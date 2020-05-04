@@ -1,16 +1,28 @@
 import { connect } from 'react-redux';
 import { ParticipationTokensView } from 'modules/reporting/common';
-import { MODAL_CLAIM_FEES, MODAL_PARTICIPATE, ZERO } from 'modules/common/constants';
-import { formatAttoDai, formatAttoRep, formatPercent, } from 'utils/format-number';
+import {
+  MODAL_CLAIM_FEES,
+  MODAL_PARTICIPATE,
+  ZERO,
+} from 'modules/common/constants';
+import {
+  formatAttoDai,
+  formatAttoRep,
+  formatPercent,
+} from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { isLogged } = AppStatus.get();
-  const { address, fees, purchased } =
-    state.universe && state.universe.disputeWindow;
-  const disablePurchaseButton = !!state.universe.forkingInfo;
+  const {
+    universe: {
+      forkingInfo,
+      disputeWindow: { address, fees, purchased },
+    },
+    isLogged,
+  } = AppStatus.get();
+  const disablePurchaseButton = !!forkingInfo;
   const { participationTokens } =
     state.loginAccount && state.loginAccount.reporting;
   const tokenAmount =
@@ -29,18 +41,21 @@ const mapStateToProps = (state: AppState) => {
       : 0
   );
   const pastParticipationTokensPurchased =
-    (participationTokens && createBigNumber(participationTokens.totalClaimable)) || ZERO;
+    (participationTokens &&
+      createBigNumber(participationTokens.totalClaimable)) ||
+    ZERO;
 
-  const participationTokensClaimableFees = participationTokens && participationTokens.contracts
-    ? participationTokens.contracts
-        .filter(c => c.isClaimable)
-        .map(c => c.amountFees)
-        .reduce((accumulator, currentValue) => {
-          const bigAccumulator = createBigNumber(accumulator) || ZERO;
-          const bigCurrentValue = createBigNumber(currentValue) || ZERO;
-          return bigCurrentValue.plus(bigAccumulator);
-        }, ZERO)
-    : ZERO;
+  const participationTokensClaimableFees =
+    participationTokens && participationTokens.contracts
+      ? participationTokens.contracts
+          .filter(c => c.isClaimable)
+          .map(c => c.amountFees)
+          .reduce((accumulator, currentValue) => {
+            const bigAccumulator = createBigNumber(accumulator) || ZERO;
+            const bigCurrentValue = createBigNumber(currentValue) || ZERO;
+            return bigCurrentValue.plus(bigAccumulator);
+          }, ZERO)
+      : ZERO;
 
   const hasRedeemable = isLogged && pastParticipationTokensPurchased.gt(ZERO);
 
@@ -49,8 +64,12 @@ const mapStateToProps = (state: AppState) => {
     purchasedParticipationTokens,
     tokensOwned: formatAttoRep(tokenAmount),
     percentageOfTotalFees,
-    pastParticipationTokensPurchased: formatAttoRep(pastParticipationTokensPurchased),
-    participationTokensClaimableFees: formatAttoDai(participationTokensClaimableFees),
+    pastParticipationTokensPurchased: formatAttoRep(
+      pastParticipationTokensPurchased
+    ),
+    participationTokensClaimableFees: formatAttoDai(
+      participationTokensClaimableFees
+    ),
     disablePurchaseButton,
     hasRedeemable,
   };
@@ -58,11 +77,12 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = dispatch => {
   const { setModal } = AppStatus.actions;
-  return ({
+  return {
     openModal: () => setModal({ type: MODAL_PARTICIPATE }),
-    openClaimParticipationTokensModal: () => setModal({type: MODAL_CLAIM_FEES, participationTokensOnly: true})
-  });
-}
+    openClaimParticipationTokensModal: () =>
+      setModal({ type: MODAL_CLAIM_FEES, participationTokensOnly: true }),
+  };
+};
 
 const ParticipationTokensViewContainer = connect(
   mapStateToProps,

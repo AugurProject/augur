@@ -16,8 +16,11 @@ import { selectReportingWinningsByMarket } from 'modules/positions/selectors/sel
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { universe, loginAccount } = state;
-  const { forkingInfo } = universe;
+  const { loginAccount } = state;
+  const {
+    universe: { forkingInfo },
+    blockchain: { currentAugurTimestamp },
+  } = AppStatus.get();
   const isForking = !!forkingInfo;
   if (!isForking) return { show: false };
 
@@ -34,9 +37,7 @@ const mapStateToProps = (state: AppState) => {
   const hasRepBalance =
     market !== null && balances && createBigNumber(balances.rep).gt(ZERO);
   const releasableRep = selectReportingWinningsByMarket(state);
-  const {
-    blockchain: { currentAugurTimestamp },
-  } = AppStatus.get();
+ 
   return {
     show: true,
     hasStakedRep,

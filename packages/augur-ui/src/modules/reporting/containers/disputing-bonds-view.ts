@@ -9,9 +9,9 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
-  const { gsnEnabled: GsnEnabled } = AppStatus.get();
+  const { universe: { warpSyncHash }, gsnEnabled: GsnEnabled } = AppStatus.get();
   return {
-    warpSyncHash: state.universe.warpSyncHash,
+    warpSyncHash,
     userAvailableRep: state.loginAccount.balances && state.loginAccount.balances.rep,
     GsnEnabled,
     gasPrice: getGasPrice(),

@@ -20,15 +20,14 @@ import { createBigNumber } from 'utils/create-big-number';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { universe } = state;
-  const { forkingInfo } = universe;
+  const {
+    universe: { forkingInfo, children },
+    blockchain: { currentAugurTimestamp },
+  } = AppStatus.get();
   const isForking = !!forkingInfo;
   const marketId = ownProps.marketId;
   const market = selectMarket(marketId);
   const { reportingState, endTime } = market;
-  const {
-    blockchain: { currentAugurTimestamp },
-  } = AppStatus.get();
   let show = isForking;
   let canMigrateMarkets = false;
   let hasReleaseRepOnThisMarket = false;
@@ -42,10 +41,10 @@ const mapStateToProps = (state: AppState, ownProps) => {
   if (
     isForking &&
     forkingInfo.winningChildUniverseId &&
-    universe.children &&
-    universe.children.length > 0
+    children &&
+    children.length > 0
   ) {
-    const winning = universe.children.find(
+    const winning = children.find(
       c => c.id === forkingInfo.winningChildUniverseId
     );
     if (createBigNumber(winning.usersRep || ZERO).gt(ZERO)) {

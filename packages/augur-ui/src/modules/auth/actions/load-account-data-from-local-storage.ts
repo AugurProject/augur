@@ -4,7 +4,6 @@ import { updateAlert } from 'modules/alerts/actions/alerts';
 import { loadPendingLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { loadPendingOrdersTransactions } from 'modules/orders/actions/pending-orders-management';
-import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { isNewFavoritesStyle } from 'modules/markets/helpers/favorites-processor';
 import { loadPendingQueue } from 'modules/pending-queue/actions/pending-queue-management';
 import { setSelectedUniverse } from './selected-universe-management';
@@ -33,7 +32,8 @@ export const loadAccountDataFromLocalStorage = (
   getState: () => AppState
 ) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-  const { universe } = getState();
+  const { universe } = AppStatus.get();
+  
   if (localStorageRef && localStorageRef.getItem && address) {
     const storedAccountData = JSON.parse(localStorageRef.getItem(address));
     if (storedAccountData) {
@@ -74,7 +74,6 @@ export const loadAccountDataFromLocalStorage = (
       if (selectedUniverseId) {
         if (universe.id !== selectedUniverseId) {
           AppStatus.actions.updateUniverse({ id: selectedUniverseId });
-          dispatch(updateUniverse({ id: selectedUniverseId }));
         }
       } else {
         // we have a no selectedUniveres for this account, default to default universe for this network.

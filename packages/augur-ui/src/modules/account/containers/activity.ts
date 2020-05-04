@@ -6,13 +6,9 @@ import { AppState } from "appStore";
 import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => {
-  const value =
-    (state.universe &&
-      state.universe.timeframeData &&
-      state.universe.timeframeData.openInterest) ||
-    0;
+  const { universe: { timeframeData }, blockchain: { currentAugurTimestamp }} = AppStatus.get();
+  const value = timeframeData?.openInterest || 0;
   const openInterest = formatDai(value, { decimals: 2, removeComma: true });
-  const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
   return {
     openInterest,
     currentAugurTimestamp,

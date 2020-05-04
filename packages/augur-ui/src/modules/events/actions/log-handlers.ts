@@ -68,7 +68,6 @@ import { removePendingDataByHash, addPendingData, removePendingData, removePendi
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
-import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
@@ -299,7 +298,7 @@ export const handleMarketMigratedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const universeId = getState().universe.id;
+  const { universe: { id: universeId }} = AppStatus.get();
   const userAddress = getState().loginAccount.address;
   if (log.originalUniverse === universeId) {
     dispatch(removeMarket(log.market));
@@ -315,7 +314,6 @@ export const handleWarpSyncHashUpdatedLog = (log: { hash: string}) => (
   getState: () => AppState
 ) => {
   if (log.hash) {
-    dispatch(updateUniverse({ warpSyncHash: log.hash }));
     AppStatus.actions.updateUniverse({ warpSyncHash: log.hash });
   }
 };
@@ -573,10 +571,10 @@ export const handleMarketFinalizedLog = (logs: Logs.MarketFinalizedLog[]) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { universe } = getState();
+  const { universe: { forkingInfo } } = AppStatus.get();
   logs.map(log => {
-    if (universe.forkingInfo) {
-      if (log.market === universe.forkingInfo.forkingMarket) {
+    if (forkingInfo) {
+      if (log.market === forkingInfo.forkingMarket) {
         dispatch(loadUniverseForkingInfo());
       }
     }
@@ -645,8 +643,8 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
   getState: () => AppState
 ) => {
   const userAddress = getState().loginAccount.address;
-  const isForking = !!getState().universe.forkingInfo;
-  const universeId = getState().universe.id;
+  const { universe: { id: universeId, forkingInfo }, blockchain: { currentAugurTimestamp } } = AppStatus.get();
+  const isForking = !!forkingInfo;
   let isParticipationTokens = !!logs.find(l => l.tokenType === Logs.TokenType.ParticipationToken);
   logs.filter(log => isSameAddress(log.target, userAddress)).map(log => {
     if (log.tokenType === Logs.TokenType.ParticipationToken) {
@@ -657,7 +655,6 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
         dispatch(loadUniverseDetails(universeId, userAddress));
     }
     if (log.tokenType === Logs.TokenType.ReputationToken && !isForking) {
-      const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
       const timestamp = currentAugurTimestamp * 1000;
         dispatch(
           updateAlert(log.blockHash, {

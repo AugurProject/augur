@@ -737,7 +737,7 @@ export const CategoryButtons = ({
   </div>
 );
 
-const FilterButtonComponent = ({ action = () => {}, disabled, title}: DefaultActionButtonProps) => {
+export const FilterButton = ({ action = () => {}, disabled, title}: DefaultActionButtonProps) => {
   const { actions: { setMobileMenuState } } = useAppStatusStore();
   return (
     <button
@@ -750,14 +750,6 @@ const FilterButtonComponent = ({ action = () => {}, disabled, title}: DefaultAct
     </button>
   );
 };
-
-const mapStateToPropsFilterButton = (state: AppState) => ({
-  timeframeData: state.universe.timeframeData,
-});
-
-export const FilterButton = connect(
-  mapStateToPropsFilterButton,
-)(FilterButtonComponent);
 
 export interface BettingBackLayButtonProps {
   title?: string;

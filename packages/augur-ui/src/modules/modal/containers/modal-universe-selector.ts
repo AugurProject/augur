@@ -8,10 +8,10 @@ import { Action } from 'redux';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const universe = state.universe;
+  const { universe: universeDetails, modal } = AppStatus.get();
   return {
-    modal: AppStatus.get().modal,
-    universeDetails: universe,
+    modal,
+    universeDetails,
   };
 };
 

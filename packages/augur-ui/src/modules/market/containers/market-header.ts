@@ -17,7 +17,7 @@ const mapStateToProps = (state, ownProps) => {
   const userAccount = state.loginAccount.address;
   const { reportingState, consensusFormatted: consensus } = market;
   let reportingBarShowing = false;
-  const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
+  const { universe: { forkingInfo }, blockchain: { currentAugurTimestamp } } = AppStatus.get();
 
   if (
     consensus ||
@@ -37,7 +37,7 @@ const mapStateToProps = (state, ownProps) => {
     minPrice: market.minPriceBigNumber || ZERO,
     scalarDenomination: market.scalarDenomination,
     currentTime: currentAugurTimestamp,
-    isForking: state.universe.forkingInfo,
+    isForking: forkingInfo,
     market,
     isFavorite: !!state.favorites[ownProps.marketId],
     currentAugurTimestamp,

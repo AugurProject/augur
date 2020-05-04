@@ -7,9 +7,9 @@ import { Action } from 'redux';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
+  const { universe: { id: universe }, blockchain: { currentAugurTimestamp }} = AppStatus.get();
   return {
-    universe: state.universe.id,
+    universe,
     currentAugurTimestamp
   };
 };

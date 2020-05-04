@@ -37,7 +37,7 @@ import { addPendingData } from 'modules/pending-queue/actions/pending-queue-mana
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatus.get();
+  const { universe: { forkingInfo }, modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatus.get();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   return {
     modal,
@@ -45,7 +45,7 @@ const mapStateToProps = (state: AppState) => {
     GsnEnabled,
     pendingQueue: state.pendingQueue || [],
     claimReportingFees: selectReportingWinningsByMarket(state),
-    forkingInfo: state.universe.forkingInfo,
+    forkingInfo,
   };
 };
 

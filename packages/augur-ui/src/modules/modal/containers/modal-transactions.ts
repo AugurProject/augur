@@ -10,12 +10,12 @@ import { Action } from "redux";
 import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => {
-  const { modal, blockchain: { currentAugurTimestamp: now }} = AppStatus.get();
+  const { universe: { id: universe }, modal, blockchain: { currentAugurTimestamp: now }} = AppStatus.get();
   return ({
     modal,
     now,
     account: state.loginAccount.address,
-    universe: state.universe.id,
+    universe,
   });
 }
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

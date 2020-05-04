@@ -13,10 +13,10 @@ import { selectAccountFunds } from 'modules/auth/selectors/login-account';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount, modal } = state;
+  const { loginAccount } = state;
 
   const { address, totalOpenOrdersFrozenFunds } = loginAccount;
-  const { gasPriceInfo } = AppStatus.get();
+  const { gasPriceInfo, modal } = AppStatus.get();
   const ethReserveAmount: FormattedNumber = getEthReserve(state);
   const balances = selectAccountFunds(state);
   const totalOpenOrderFundsFormatted: FormattedNumber = formatDai(totalOpenOrdersFrozenFunds || 0);

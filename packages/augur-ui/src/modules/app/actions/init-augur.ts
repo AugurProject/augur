@@ -3,7 +3,6 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
-import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import logError from 'utils/log-error';
 import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
@@ -244,7 +243,6 @@ export function connectAugur(
       ];
       universeId = !storedUniverseId ? universeId : storedUniverseId;
     }
-    dispatch(updateUniverse({ id: universeId }));
     AppStatus.actions.updateUniverse({ id: universeId });
     // If the network disconnected modal is being shown, but we are now
     // connected -- hide it.

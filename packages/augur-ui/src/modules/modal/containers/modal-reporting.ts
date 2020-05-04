@@ -11,18 +11,19 @@ import { addPendingData, removePendingData } from 'modules/pending-queue/actions
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { universe, modal, loginAccount } = state;
+  const { loginAccount } = state;
+  const { universe: { forkingInfo, warpSyncHash }, modal } = AppStatus.get();
   let { market } = ownProps;
-  market.isForking = state.universe.forkingInfo && state.universe.forkingInfo.forkingMarket === market.id;
-  const hasForked = !!state.universe.forkingInfo;
+  market.isForking = forkingInfo && forkingInfo.forkingMarket === market.id;
+  const hasForked = !!forkingInfo;
   const migrateRep =
-    hasForked && universe.forkingInfo.forkingMarket === market.id;
+    hasForked && forkingInfo.forkingMarket === market.id;
   const migrateMarket =
-    hasForked && !!universe.forkingInfo.winningChildUniverseId;
+    hasForked && !!forkingInfo.winningChildUniverseId;
 
   return {
-    warpSyncHash: universe.warpSyncHash,
-    modal: modal,
+    warpSyncHash,
+    modal,
     market,
     rep: formatRep(loginAccount.balances.rep).formatted,
     userAccount: loginAccount.address,

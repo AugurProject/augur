@@ -22,7 +22,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, pendingQueue } = state;
   const { balances } = loginAccount;
-  const { walletStatus, modal } = AppStatus.get();
+  const { universe, walletStatus, modal } = AppStatus.get();
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   const notifications = selectNotifications(state);
   const walletBalances = loginAccount.balances;
@@ -40,7 +40,7 @@ const mapStateToProps = (state: AppState) => {
     loginAccount,
     modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
-    universe: state.universe,
+    universe,
     useWeb3Transport: isGlobalWeb3(),
     walletBalances,
     showCreateAccountButton,

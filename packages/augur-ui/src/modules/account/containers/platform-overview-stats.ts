@@ -9,9 +9,9 @@ import { updatePlatformTimeframeData } from 'modules/account/actions/update-plat
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
+  const { universe: { timeframeData }, blockchain: { currentAugurTimestamp }} = AppStatus.get();
   return ({
-    timeframeData: state.universe.timeframeData,
+    timeframeData,
     currentAugurTimestamp,
   });
 };

@@ -23,7 +23,7 @@ const mapStateToProps = ({ marketsList, loginAccount }) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const { actions: { updateFilterSortOptions } } = AppStatus;
+  const { updateFilterSortOptions } = AppStatus.actions;
   return ({
     updateLoginAccount: settings => dispatch(updateLoginAccount({ settings })),
     updateSelectedCategories: categories =>

@@ -5,13 +5,12 @@ import { AppState } from 'appStore';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { universe } = state;
-  const { isLogged } = AppStatus.get();
+  const { universe: { disputeWindow, forkingInfo }, isLogged } = AppStatus.get();
   return {
-    isForking: universe.forkingInfo,
-    isLogged: isLogged && !universe.forkingInfo,
+    isForking: forkingInfo,
+    isLogged: isLogged && !forkingInfo,
     disputingWindowEndTime:
-      (state.universe.disputeWindow && state.universe.disputeWindow.endTime) ||
+      (disputeWindow?.endTime) ||
       0,
   };
 };

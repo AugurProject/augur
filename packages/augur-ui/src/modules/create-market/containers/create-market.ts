@@ -13,10 +13,10 @@ import getGasPrice from "modules/auth/selectors/get-gas-price";
 import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = state => {
-  const { categoryStats, blockchain: { currentAugurTimestamp } } = AppStatus.get();
+  const { universe, categoryStats, blockchain: { currentAugurTimestamp } } = AppStatus.get();
   return ({
     categoryStats,
-    universe: state.universe,
+    universe,
     availableEth: state.loginAccount.balances.eth,
     availableRep: state.loginAccount.balances.rep,
     meta: getValue(state, "loginAccount.meta"),

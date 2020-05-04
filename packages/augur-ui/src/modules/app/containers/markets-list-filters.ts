@@ -33,8 +33,8 @@ const mapStateToProps = ({ marketsList, loginAccount }: AppState) => {
 
 const mapDispatchToProps = dispatch => {
   const {
-    actions: { updateFilterSortOptions },
-  } = AppStatus;
+    updateFilterSortOptions
+  } = AppStatus.actions;
   return ({
     updateMaxFee: maxFee =>
       updateFilterSortOptions({ [MARKET_MAX_FEES]: maxFee }),

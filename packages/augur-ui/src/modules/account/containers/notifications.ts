@@ -22,13 +22,14 @@ import { AppStatus } from 'modules/app/store/app-status';
 const mapStateToProps = (state: AppState) => {
   const notifications = selectNotifications(state);
   const {
+    universe: { disputeWindow },
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
   return {
     notifications,
     currentAugurTimestamp,
     disputingWindowEndTime:
-      (state.universe.disputeWindow && state.universe.disputeWindow.endTime) ||
+      (disputeWindow?.endTime) ||
       0,
   };
 };

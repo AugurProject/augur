@@ -27,7 +27,7 @@ export const updateSdk = (
 
   let newAccount = { ...loginAccount };
   const { env } = AppStatus.get();
-  const { actions: { setModal, setGSNEnabled, setOxEnabled, setWalletStatus, setIsLogged } } = AppStatus;
+  const { setModal, setGSNEnabled, setOxEnabled, setWalletStatus, setIsLogged } = AppStatus.actions;
   const useGSN = env.gsn?.enabled;
 
   try {
@@ -78,7 +78,7 @@ export const createFundedGsnWallet = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { actions: { setWalletStatus } } = AppStatus;
+  const { setWalletStatus } = AppStatus.actions;
   try {
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending));
 

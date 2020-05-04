@@ -18,17 +18,18 @@ const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const disputeInfoStakes = market.disputeInfo && market.disputeInfo.stakes;
   const {
+    universe: { forkingInfo },
     isLogged,
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
   return {
     currentTimestamp: currentAugurTimestamp || 0,
     market,
-    isForking: !!state.universe.forkingInfo,
+    isForking: !!forkingInfo,
     isForkingMarket:
-      state.universe.forkingInfo &&
-      state.universe.forkingInfo.forkingMarket === market.id,
-    isLogged: isLogged && !state.universe.forkingInfo,
+      forkingInfo &&
+      forkingInfo.forkingMarket === market.id,
+    isLogged: isLogged && !forkingInfo,
     isLoggedIn: isLogged,
     isDesignatedReporter: ownProps.preview
       ? market.designatedReporterType === DESIGNATED_REPORTER_SELF

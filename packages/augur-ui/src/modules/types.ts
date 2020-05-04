@@ -141,6 +141,16 @@ export interface ForkingInfo {
   winningChildUniverseId?: string;
 }
 export interface Universe extends Getters.Universe.UniverseDetails {
+  outcomeName?: string;
+  creationTimestamp: number;
+  usersRep: string;
+  totalRepSupply: string;
+  totalOpenInterest: string;
+  numberOfMarkets: number;
+  warpSyncHash?: string;
+  children: null | Array<Getters.Universe.UniverseDetails>;
+  parentUniverseId: null | string;
+  id: null | string;
   disputeWindow: Getters.Universe.DisputeWindow;
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;

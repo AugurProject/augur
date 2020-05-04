@@ -15,21 +15,20 @@ const mapStateToProps = (state, ownProps) => {
   const { marketId } = ownProps.market;
   const {
     accountPositions: positions,
-    universe,
     pendingLiquidityOrders,
     loginAccount,
     favorites,
     orderBooks,
   } = state;
   const hasStaked = hasStakeInMarket(state, marketId);
-  const { forkingInfo } = universe;
+  const { universe: { forkingInfo, disputeWindow }} = AppStatus.get();
 
   return {
     hasPosition: !!positions[marketId],
     orderBook: orderBooks[marketId]?.orderBook,
     isForking: !!forkingInfo,
     pendingLiquidityOrders,
-    disputingWindowEndTime: universe.disputeWindow?.endTime || 0,
+    disputingWindowEndTime: disputeWindow?.endTime || 0,
     address: loginAccount.address,
     isFavorite: !!favorites[marketId],
     hasStaked,
