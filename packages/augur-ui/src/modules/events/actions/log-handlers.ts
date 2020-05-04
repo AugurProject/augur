@@ -107,7 +107,7 @@ const loadOrderBook = _.throttle((dispatch, marketId) => dispatch(loadMarketOrde
 const loadUserOpenOrders = _.throttle(dispatch => dispatch(loadAccountOpenOrders()), MED_PRI_LOAD_REFRESH_MS, { leading: true });
 const throttleLoadMarketOrders = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
 const throttleLoadUserOpenOrders = () => dispatch => loadUserOpenOrders(dispatch);
-const BLOCKS_BEHIND_RELOAD_THRESHOLD = 60; // 60 blocks. 
+const BLOCKS_BEHIND_RELOAD_THRESHOLD = 60; // 60 blocks.
 let blocksBehindTimer = null;
 
 const updateMarketOrderBook = (marketId: string) => (
@@ -198,8 +198,8 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
 ) => {
   const { blockchain, env } = getState();
   const blockTime = env.networkId === "1" ? 15000 : 2000;
-  if (blocksBehindTimer) clearTimeout(blocksBehindTimer);
-  blocksBehindTimer = setTimeout(function () {location.reload(); }, BLOCKS_BEHIND_RELOAD_THRESHOLD * blockTime);
+  // if (blocksBehindTimer) clearTimeout(blocksBehindTimer);
+  // blocksBehindTimer = setTimeout(function () {location.reload(); }, BLOCKS_BEHIND_RELOAD_THRESHOLD * blockTime);
   dispatch(
     updateBlockchain({
       currentBlockNumber: log.highestAvailableBlockNumber,

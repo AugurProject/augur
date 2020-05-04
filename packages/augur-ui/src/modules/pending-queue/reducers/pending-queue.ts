@@ -1,7 +1,8 @@
 import {
   ADD_PENDING_DATA,
   REMOVE_PENDING_DATA,
-  REMOVE_PENDING_DATA_BY_HASH
+  REMOVE_PENDING_DATA_BY_HASH,
+  UPDATE_PENDING_DATA_BY_HASH
 } from "modules/pending-queue/actions/pending-queue-management";
 import { PendingQueue, BaseAction } from "modules/types";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
@@ -33,9 +34,25 @@ export default function(pendingQueue: PendingQueue = deepClone<PendingQueue>(DEF
       if (pendingQueue[queueName]) {
         const queue = pendingQueue[queueName];
         pending[queueName] = Object.keys(queue).reduce(
-          (p, o) => (queue[o].hash !== hash ? {...p, [o]: queue[o]} : p),
+          (p, o) => (queue[o].hash !== hash ? { ...p, [o]: queue[o] } : p),
           {}
         );
+      }
+      return {
+        ...pending,
+      };
+    }
+    case UPDATE_PENDING_DATA_BY_HASH: {
+      const { oldHash, newHash, queueName, blockNumber } = data;
+      let pending = pendingQueue;
+      if (pendingQueue[queueName]) {
+        const queue = pendingQueue[queueName];
+        Object.keys(queue).forEach(o => {
+          if (queue[o].hash === oldHash) {
+            queue[o].hash = newHash;
+            queue[o].blockNumber = blockNumber;
+          }
+        });
       }
       return {
         ...pending,

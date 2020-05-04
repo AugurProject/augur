@@ -27,13 +27,15 @@ import {
   CLAIMMARKETSPROCEEDS,
   FORKANDREDEEM,
   FINALIZE,
+  DOINITIALREPORT,
+  CONTRIBUTE,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { Events, TXEventName, parseZeroXMakerAssetData } from '@augurproject/sdk';
 import {
-  addPendingData, addUpdatePendingTransaction, addCanceledOrder,
+  addPendingData, addUpdatePendingTransaction, addCanceledOrder, updatePendingReportHash, updatePendingDisputeHash,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
@@ -230,6 +232,14 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         const orders = transaction.params && transaction.params._orders || [];
         orders.map(order => dispatch(addCanceledOrder(order.orderId, eventName, hash)));
         orders.map(order => dispatch(addPendingData(parseZeroXMakerAssetData(order.makerAssetData).market, CANCELORDERS, eventName, hash)));
+        break;
+      }
+      case DOINITIALREPORT: {
+        hash && dispatch(updatePendingReportHash(transaction.params, hash));
+        break;
+      }
+      case CONTRIBUTE: {
+        hash && dispatch(updatePendingDisputeHash(transaction.params, hash));
         break;
       }
 
