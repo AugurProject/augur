@@ -316,6 +316,7 @@ export const handleWarpSyncHashUpdatedLog = (log: { hash: string}) => (
 ) => {
   if (log.hash) {
     dispatch(updateUniverse({ warpSyncHash: log.hash }));
+    AppStatus.actions.updateUniverse({ warpSyncHash: log.hash });
   }
 };
 

@@ -3,6 +3,7 @@ import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { AppState } from 'appStore';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const loadDisputeWindow = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -16,4 +17,5 @@ export const loadDisputeWindow = () => async (
   });
 
   dispatch(updateUniverse({ disputeWindow }));
+  AppStatus.actions.updateUniverse({ disputeWindow });
 };

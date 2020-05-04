@@ -13,6 +13,7 @@ import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { ForkingInfo } from 'modules/types';
 import { NULL_ADDRESS } from 'modules/common/constants';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export function loadUniverseForkingInfo(
   forkingMarketId?: string
@@ -45,6 +46,7 @@ export function loadUniverseForkingInfo(
       };
       dispatch(loadMarketsInfo([forkingMarket]));
       dispatch(updateUniverse({ forkingInfo }));
+      AppStatus.actions.updateUniverse({ forkingInfo });
     }
   };
 }

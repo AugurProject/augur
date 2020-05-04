@@ -32,6 +32,7 @@ export const switchUniverse = (
   dispatch(
     loadUniverseDetails(universeId, account, () => {
       dispatch(switchUniverseState());
+      AppStatus.actions.switchUniverse();
       dispatch(setSelectedUniverse(universeId));
       dispatch(loadUniverseForkingInfo());
       dispatch(loadDisputeWindow());

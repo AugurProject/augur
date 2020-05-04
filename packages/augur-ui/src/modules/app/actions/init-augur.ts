@@ -245,7 +245,7 @@ export function connectAugur(
       universeId = !storedUniverseId ? universeId : storedUniverseId;
     }
     dispatch(updateUniverse({ id: universeId }));
-
+    AppStatus.actions.updateUniverse({ id: universeId });
     // If the network disconnected modal is being shown, but we are now
     // connected -- hide it.
     if (modal?.type === MODAL_NETWORK_DISCONNECTED) {

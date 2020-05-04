@@ -26,7 +26,16 @@ export const updatePlatformTimeframeData = (
       endTime: currentAugurTimestamp,
     }
   );
-
+  AppStatus.actions.updateUniverse({
+    timeframeData: {
+      activeUsers: stats.activeUsers,
+      marketsCreated: stats.marketsCreated,
+      numberOfTrades: stats.numberOfTrades,
+      disputedMarkets: stats.disputedMarkets,
+      volume: stats.volume,
+      amountStaked: stats.amountStaked,
+    },
+  });
   dispatch(
     updateUniverse({
       timeframeData: {

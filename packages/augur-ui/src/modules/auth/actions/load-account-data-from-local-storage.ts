@@ -73,6 +73,7 @@ export const loadAccountDataFromLocalStorage = (
       const selectedUniverseId = selectedUniverse[networkId];
       if (selectedUniverseId) {
         if (universe.id !== selectedUniverseId) {
+          AppStatus.actions.updateUniverse({ id: selectedUniverseId });
           dispatch(updateUniverse({ id: selectedUniverseId }));
         }
       } else {

@@ -7,11 +7,6 @@ const AppStatusContext = createContext({
   actions: STUBBED_APP_STATUS_ACTIONS,
 });
 
-// export const AppStatus = {
-//   isReady: false,
-//   actions: STUBBED_APP_STATUS_ACTIONS,
-// };
-
 export const AppStatus = {
   actionsSet: false,
   get: () => ({ ...DEFAULT_APP_STATUS }),
@@ -20,11 +15,6 @@ export const AppStatus = {
 
 export const AppStatusProvider = ({ children }) => {
   const state = useAppStatus();
-  // if (!AppStatus.isReady) {
-  //   AppStatus.isReady = true;
-  //   AppStatus.actions = state.actions;
-  //   Object.freeze(AppStatus);
-  // }
   if (!AppStatus.actionsSet) {
     AppStatus.actions = state.actions;
     AppStatus.actionsSet = true;

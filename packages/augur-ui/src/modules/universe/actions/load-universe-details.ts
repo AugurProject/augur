@@ -2,6 +2,7 @@ import { augurSdk } from 'services/augursdk';
 import { ThunkAction } from 'redux-thunk';
 import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { getMaxMarketEndTime } from 'modules/contracts/actions/contractCalls';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const loadUniverseDetails = (
   universe: string,
@@ -15,5 +16,6 @@ export const loadUniverseDetails = (
   });
   const maxMarketEndTime = await getMaxMarketEndTime();
   dispatch(updateUniverse({ ...universeDetails, maxMarketEndTime }));
+  AppStatus.actions.updateUniverse({ ...universeDetails, maxMarketEndTime });
   if (callback) callback();
 };
