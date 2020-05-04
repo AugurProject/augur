@@ -118,7 +118,6 @@ const TopBar: React.FC<TopBarProps> = ({
         )}
         <ConnectAccount />
       </div>
-      <StatusErrorMessage />
     </header>
   );
 };
