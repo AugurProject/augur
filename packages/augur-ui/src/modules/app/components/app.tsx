@@ -144,7 +144,6 @@ const AppView = ({
   location: locationProp,
   updateModal,
   saveAffilateAddress,
-  modal,
   toasts,
   migrateV1Rep,
   walletBalances,
@@ -154,7 +153,7 @@ const AppView = ({
   logout,
   showGlobalChat,
 }:AppProps) => {
-  const { blockchain: { currentAugurTimestamp }, mobileMenuState, env, isLogged, isMobile, actions: { setIsMobile, setMobileMenuState, setCurrentBasePath } } = useAppStatusStore();
+  const { blockchain: { currentAugurTimestamp }, mobileMenuState, modal, env, isLogged, isMobile, actions: { setIsMobile, setMobileMenuState, setCurrentBasePath } } = useAppStatusStore();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
   const ModalShowing = Object.keys(modal).length !== 0;
