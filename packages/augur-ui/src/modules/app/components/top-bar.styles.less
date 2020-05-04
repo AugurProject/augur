@@ -6,35 +6,43 @@
   background: @color-dark-grey;
   display: flex;
   font-size: @size-14;
-  height: 100%;
-  justify-content: flex-end;
+  flex-flow: column;
 
-  // LOGIN/SIGNUP ACCOUNT / ALERTS
-  > div:last-of-type {
-    align-items: center;
+  > div:first-of-type {
     display: flex;
-    flex: 1;
-    justify-content: flex-end;
     height: 100%;
+    justify-content: flex-end;
+
+    // LOGIN/SIGNUP ACCOUNT / ALERTS
+    > div:nth-of-type(3) {
+      align-items: center;
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      height: 100%;
+
+      @media @breakpoint-mobile {
+        padding: 0;
+        max-width: 40%;
+      }
+
+      > button[class*="SecondaryButton"] {
+        margin: 0 @size-16;
+      }
+
+      > button[class*="PrimaryButton"] {
+        margin-right: @size-16;
+      }
+    }
 
     @media @breakpoint-mobile {
-      padding: 0;
-      max-width: 40%;
-    }
-
-    > button[class*="SecondaryButton"] {
-      margin: 0 @size-16;
-    }
-
-    > button[class*="PrimaryButton"] {
-      margin-right: @size-16;
+      > div[class*='statsContainer'] {
+        display: none;
+      }
     }
   }
-
-  @media @breakpoint-mobile {
-    > div[class*='statsContainer'] {
-      display: none;
-    }
+  > div:last-of-type {
+    width: 100%;
   }
 }
 
@@ -70,7 +78,7 @@
     @media @breakpoint-mobile {
       padding: 0;
     }
-    
+
     > span:first-of-type {
       display: flex;
       justify-content: center;

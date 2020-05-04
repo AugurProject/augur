@@ -82,42 +82,45 @@ const TopBar: React.FC<TopBarProps> = ({
 }) => {
   return (
     <header className={Styles.TopBar}>
-      <div className={Styles.Logo}>
-        <Link to={makePath(MARKETS)}>
-          <Logo />
-        </Link>
-      </div>
-
-      <Stats
-        isLogged={isLogged}
-        stats={stats}
-        restoredAccount={restoredAccount}
-      />
       <div>
-        {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
-          <HelpResources isMobile={isMobile} helpModal={helpModal} />
-        )}
-        {!isLogged && !restoredAccount && (
-          <SecondaryButton action={() => loginModal()} text={'Login'} />
-        )}
-        {!isLogged && !restoredAccount && (
-          <PrimaryButton action={() => signupModal()} text={'Signup'} />
-        )}
-        {(isLogged || restoredAccount) && (
-          <button
-            className={classNames(Styles.alerts, {
-              [Styles.alertsDark]: alertsVisible,
-            })}
-            onClick={() => {
-              updateIsAlertVisible(!alertsVisible);
-            }}
-            tabIndex={-1}
-          >
-            {unseenCount > 99 ? Alerts('99+') : Alerts(unseenCount)}
-          </button>
-        )}
-        <ConnectAccount />
+        <div className={Styles.Logo}>
+          <Link to={makePath(MARKETS)}>
+            <Logo />
+          </Link>
+        </div>
+
+        <Stats
+          isLogged={isLogged}
+          stats={stats}
+          restoredAccount={restoredAccount}
+        />
+        <div>
+          {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
+            <HelpResources isMobile={isMobile} helpModal={helpModal} />
+          )}
+          {!isLogged && !restoredAccount && (
+            <SecondaryButton action={() => loginModal()} text={'Login'} />
+          )}
+          {!isLogged && !restoredAccount && (
+            <PrimaryButton action={() => signupModal()} text={'Signup'} />
+          )}
+          {(isLogged || restoredAccount) && (
+            <button
+              className={classNames(Styles.alerts, {
+                [Styles.alertsDark]: alertsVisible,
+              })}
+              onClick={() => {
+                updateIsAlertVisible(!alertsVisible);
+              }}
+              tabIndex={-1}
+            >
+              {unseenCount > 99 ? Alerts('99+') : Alerts(unseenCount)}
+            </button>
+          )}
+          <ConnectAccount />
+        </div>
       </div>
+      <StatusErrorMessage />
     </header>
   );
 };

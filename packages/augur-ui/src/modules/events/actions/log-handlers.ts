@@ -36,7 +36,6 @@ import {
   DOINITIALREPORT,
   PUBLICFILLORDER,
   PUBLICTRADE,
-  MODAL_ERROR,
   REDEEMSTAKE,
   CREATE_MARKET,
   MODAL_GAS_PRICE,
@@ -48,7 +47,6 @@ import {
   DISAVOWCROWDSOURCERS,
   MARKETMIGRATED,
   DOINITIALREPORTWARPSYNC,
-  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -107,7 +105,7 @@ const loadOrderBook = _.throttle((dispatch, marketId) => dispatch(loadMarketOrde
 const loadUserOpenOrders = _.throttle(dispatch => dispatch(loadAccountOpenOrders()), MED_PRI_LOAD_REFRESH_MS, { leading: true });
 const throttleLoadMarketOrders = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
 const throttleLoadUserOpenOrders = () => dispatch => loadUserOpenOrders(dispatch);
-const BLOCKS_BEHIND_RELOAD_THRESHOLD = 60; // 60 blocks. 
+const BLOCKS_BEHIND_RELOAD_THRESHOLD = 60; // 60 blocks.
 let blocksBehindTimer = null;
 
 const updateMarketOrderBook = (marketId: string) => (
