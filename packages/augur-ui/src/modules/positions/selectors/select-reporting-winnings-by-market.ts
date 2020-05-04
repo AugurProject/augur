@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 import {
   selectMarketInfosState,
   selectLoginAccountReportingState,
-  selectUniverseForkingState,
 } from 'appStore/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
@@ -13,16 +12,16 @@ import {
   marketsReportingCollection,
 } from 'modules/types';
 import { formatAttoDai, formatAttoRep } from 'utils/format-number';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const selectReportingWinningsByMarket = createSelector(
   selectLoginAccountReportingState,
   selectMarketInfosState,
-  selectUniverseForkingState,
   (
     userReporting,
     marketInfos, // this is needed to trigger the selector if marketInfos changes
-    forkingInfo
   ): MarketReportClaimableContracts => {
+    const { universe: { forkingInfo } } = AppStatus.get();
     const releasingRep = !!forkingInfo;
     const forkingMarket = releasingRep && forkingInfo.forkingMarket;
     let claimableMarkets = {

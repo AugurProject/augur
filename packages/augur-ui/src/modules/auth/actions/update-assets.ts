@@ -13,7 +13,7 @@ import { formatAttoRep } from 'utils/format-number';
 import { addedDaiEvent } from 'services/analytics/helpers';
 import { createBigNumber } from 'utils/create-big-number';
 import { WALLET_STATUS_VALUES, TWO } from 'modules/common/constants';
-import { AppStatusActions, AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const updateAssets = (
   callback: NodeStyleCallback,
@@ -21,32 +21,31 @@ export const updateAssets = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount, universe } = getState();
+  const { loginAccount } = getState();
   const { address, meta } = loginAccount;
   const nonSafeWallet = await meta.signer.getAddress();
 
   updateBalances(
-    universe.id,
     address,
     nonSafeWallet,
     dispatch,
     (err, balances) => {
-      const { walletStatus } = AppStatusState.get();
+      const { walletStatus } = AppStatus.get();
       // TODO: set min amount of DAI, for testing need a real values
       if (createBigNumber(balances.dai).gt(TWO) && (walletStatus !== WALLET_STATUS_VALUES.CREATED)) {
-        AppStatusActions.actions.setWalletStatus(WALLET_STATUS_VALUES.FUNDED_NEED_CREATE);
+        AppStatus.actions.setWalletStatus(WALLET_STATUS_VALUES.FUNDED_NEED_CREATE);
       }
       if (callback) callback(balances);
     });
 };
 
 function updateBalances(
-  universe: string,
   address: string,
   nonSafeWallet: string,
   dispatch: ThunkDispatch<void, any, Action>,
   callback: NodeStyleCallback
 ) {
+  const { universe: { id: universe }} = AppStatus.get();
   Promise.all([
     getRepBalance(universe, address),
     getDaiBalance(address),

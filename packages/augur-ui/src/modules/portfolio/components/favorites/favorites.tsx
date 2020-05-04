@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import FilterBox from 'modules/portfolio/containers/filter-box';
 import { MarketProgress } from 'modules/common/progress';
@@ -43,14 +43,12 @@ function filterComp(input, market) {
 
 interface FavoritesProps {
   markets: Array<MarketData>;
-  currentAugurTimestamp: number;
   toggleFavorite: Function;
   toggle: Function;
 }
 
 const Favorites = ({
   markets,
-  currentAugurTimestamp,
   toggleFavorite,
   toggle,
 }: FavoritesProps) => {
@@ -66,7 +64,6 @@ const Favorites = ({
       <div className={Styles.MultiColumn}>
         <MarketProgress
           reportingState={market.reportingState}
-          currentTime={currentAugurTimestamp}
           endTimeFormatted={market.endTimeFormatted}
           reportingWindowEndTime={
             (market.disputeInfo &&

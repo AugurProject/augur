@@ -19,7 +19,6 @@ const mapStateToProps = (state) => {
 
   return {
     markets: filteredMarkets,
-    currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
   };
 };
 

@@ -6,11 +6,12 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { ADD_FUNDS, track } from 'services/analytics/helpers';
-import { createBigNumber } from 'utils/create-big-number';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
+  const { modal } = AppStatus.get();
   return {
-    modal: state.modal,
+    modal,
     loginAccount: state.loginAccount,
     isRelayDown: false, // TODO XXX Need to have some suitable status update for when relayer is down. No longer related to wallets
   }

@@ -2,27 +2,25 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
-  updateFilterSortOptions,
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
   MARKET_SHOW_INVALID,
-} from 'modules/filter-sort/actions/update-filter-sort-options';
+} from 'modules/app/store/constants';
 import MarketsListFilters from '../components/inner-nav/markets-list-filters';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
+import { AppStatus } from '../store/app-status';
 
-const mapStateToProps = ({
-  filterSortOptions,
-  marketsList,
-  loginAccount,
-}: AppState) => {
+const mapStateToProps = ({ marketsList, loginAccount }: AppState) => {
   const {
-    maxFee,
-    maxLiquiditySpread,
-    includeInvalidMarkets,
-    templateFilter,
-  } = filterSortOptions;
+    filterSortOptions: {
+      maxFee,
+      maxLiquiditySpread,
+      includeInvalidMarkets,
+      templateFilter,
+    },
+  } = AppStatus.get();
   return {
     maxFee,
     maxLiquiditySpread,
@@ -33,24 +31,24 @@ const mapStateToProps = ({
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  updateMaxFee: maxFee => {
-    dispatch(updateFilterSortOptions(MARKET_MAX_FEES, maxFee));
-  },
-  updateMaxSpread: maxLiquiditySpread => {
-    dispatch(updateFilterSortOptions(MARKET_MAX_SPREAD, maxLiquiditySpread));
-  },
-  updateShowInvalid: showInvalid => {
-    dispatch(updateFilterSortOptions(MARKET_SHOW_INVALID, showInvalid));
-  },
-  updateTemplateFilter: templateFilter => {
-    dispatch(updateFilterSortOptions(TEMPLATE_FILTER, templateFilter));
-  },
-  updateLoginAccount: settings => {
-    dispatch(updateLoginAccount({ settings }));
-  },
-});
-
+const mapDispatchToProps = dispatch => {
+  const {
+    updateFilterSortOptions
+  } = AppStatus.actions;
+  return ({
+    updateMaxFee: maxFee =>
+      updateFilterSortOptions({ [MARKET_MAX_FEES]: maxFee }),
+    updateMaxSpread: maxLiquiditySpread =>
+      updateFilterSortOptions({ [MARKET_MAX_SPREAD]: maxLiquiditySpread }),
+    updateShowInvalid: showInvalid =>
+      updateFilterSortOptions({ [MARKET_SHOW_INVALID]: showInvalid }),
+    updateTemplateFilter: templateFilter =>
+      updateFilterSortOptions({ [TEMPLATE_FILTER]: templateFilter }),
+    updateLoginAccount: settings => {
+      dispatch(updateLoginAccount({ settings }));
+    },
+  });
+}
 const mergeProps = (sP, dP, oP) => {
   return {
     ...sP,
@@ -77,13 +75,9 @@ const mergeProps = (sP, dP, oP) => {
 };
 
 const MarketsListFiltersContainer = withRouter(
-  compose(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps,
-      mergeProps
-    )
-  )(MarketsListFilters)
+  compose(connect(mapStateToProps, mapDispatchToProps, mergeProps))(
+    MarketsListFilters
+  )
 );
 
 export default MarketsListFiltersContainer;

@@ -19,7 +19,6 @@ import { MarketInfos } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'appStore';
-import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
 import { Events, Logs, TXEventName, OrderEventType } from '@augurproject/sdk';
 import {
@@ -62,7 +61,6 @@ import { loadUniverseDetails } from 'modules/universe/actions/load-universe-deta
 import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
@@ -70,11 +68,10 @@ import { removePendingDataByHash, addPendingData, removePendingData, removePendi
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
-import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
-import { AppStatusActions, AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const handleAlert = (
   log: any,
@@ -83,14 +80,15 @@ const handleAlert = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { blockchain } = getState();
+  const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
+  const timestamp = currentAugurTimestamp * 1000;
   try {
     dispatch(
       updateAlert(log.transactionHash, {
         params: log,
         toast: toast,
         status: TXEventName.Success,
-        timestamp: blockchain.currentAugurTimestamp * 1000,
+        timestamp,
         name,
       })
     );
@@ -135,7 +133,7 @@ export const handleTxSuccess = (txStatus: Events.TXStatus) => (
 ) => {
   console.log('TxSuccess Transaction', txStatus.transaction.name);
   // update wallet status on any TxSuccess
-  AppStatusActions.actions.setWalletStatus(WALLET_STATUS_VALUES.CREATED)
+  AppStatus.actions.setWalletStatus(WALLET_STATUS_VALUES.CREATED)
   dispatch(updateAssets());
   dispatch(addUpdateTransaction(txStatus));
 };
@@ -162,14 +160,14 @@ export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
 ) => {
   console.log('TxFeeTooLow Transaction', txStatus.transaction.name);
   dispatch(addUpdateTransaction(txStatus));
-  dispatch(updateModal({ type: MODAL_GAS_PRICE, feeTooLow: true }));
+  AppStatus.actions.setModal({ type: MODAL_GAS_PRICE, feeTooLow: true });
 };
 
 export const handleZeroStatusUpdated = (status) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  AppStatusActions.actions.setOxStatus(status);
+  AppStatus.actions.setOxStatus(status);
 }
 
 export const handleSDKReadyEvent = () => (
@@ -180,7 +178,7 @@ export const handleSDKReadyEvent = () => (
   augurSdk.subscribe(dispatch);
 
   // app is connected when subscribed to sdk
-  AppStatusActions.actions.setIsConnected(true);
+  AppStatus.actions.setIsConnected(true);
   dispatch(loadAccountData());
   dispatch(loadUniverseForkingInfo());
   dispatch(getCategoryStats());
@@ -190,22 +188,20 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { blockchain } = getState();
-  dispatch(
-    updateBlockchain({
-      currentBlockNumber: log.highestAvailableBlockNumber,
-      blocksBehindCurrent: log.blocksBehindCurrent,
-      lastSyncedBlockNumber: log.lastSyncedBlockNumber,
-      percentSynced: log.percentSynced,
-      currentAugurTimestamp: log.timestamp,
-    })
-  );
+  AppStatus.actions.updateBlockchain({
+    currentBlockNumber: log.highestAvailableBlockNumber,
+    blocksBehindCurrent: log.blocksBehindCurrent,
+    lastSyncedBlockNumber: log.lastSyncedBlockNumber,
+    percentSynced: log.percentSynced,
+    currentAugurTimestamp: log.timestamp,
+  });
   // update assets each block
-  if (AppStatusState.get().isLogged) {
+  const { isLogged, blockchain: { currentAugurTimestamp } } = AppStatus.get();
+  if (isLogged) {
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());
     dispatch(
-      loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
+      loadAnalytics(getState().analytics, currentAugurTimestamp)
     );
     dispatch(findAndSetTransactionsTimeouts(log.highestAvailableBlockNumber));
   }
@@ -302,7 +298,7 @@ export const handleMarketMigratedLog = (log: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const universeId = getState().universe.id;
+  const { universe: { id: universeId }} = AppStatus.get();
   const userAddress = getState().loginAccount.address;
   if (log.originalUniverse === universeId) {
     dispatch(removeMarket(log.market));
@@ -318,7 +314,7 @@ export const handleWarpSyncHashUpdatedLog = (log: { hash: string}) => (
   getState: () => AppState
 ) => {
   if (log.hash) {
-    dispatch(updateUniverse({ warpSyncHash: log.hash }));
+    AppStatus.actions.updateUniverse({ warpSyncHash: log.hash });
   }
 };
 
@@ -371,7 +367,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     log.orderCreator,
     loginAccount.mixedCaseAddress
   );
-  if (isUserDataUpdate && AppStatusState.get().isLogged) {
+  if (isUserDataUpdate && AppStatus.get().isLogged) {
     handleAlert(log, PUBLICTRADE, false, dispatch, getState);
     dispatch(throttleLoadUserOpenOrders());
     const pendingOrderId = constructPendingOrderid(log.amount, log.price, log.outcome, log.market)
@@ -394,12 +390,13 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
     // TODO: do we need to remove stuff based on events?
     // if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
     //handleAlert(log, CANCELORDER, dispatch, getState);
-    const { blockchain } = getState();
-    if (AppStatusState.get().isLogged) {
+    const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
+    const timestamp = currentAugurTimestamp * 1000;
+    if (AppStatus.get().isLogged) {
       dispatch(
         updateAlert(log.orderId, {
           name: CANCELORDER,
-          timestamp: blockchain.currentAugurTimestamp * 1000,
+          timestamp,
           status: TXEventName.Success,
           params: { ...log },
         })
@@ -415,7 +412,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
   getState: () => AppState
 ) => {
   const { loginAccount } = getState();
-  const { isLogged } = AppStatusState.get();
+  const { isLogged } = AppStatus.get();
   const marketId = log.market;
   const { address } = loginAccount;
   const isUserDataUpdate =
@@ -444,11 +441,12 @@ export const handleTradingProceedsClaimedLog = (
     getState().loginAccount.address
   );
   if (isUserDataUpdate) {
-    const { blockchain } = getState();
+    const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
+    const timestamp = currentAugurTimestamp * 1000;
     dispatch(
       updateAlert(log.market, {
         name: CLAIMTRADINGPROCEEDS,
-        timestamp: blockchain.currentAugurTimestamp * 1000,
+        timestamp,
         status: TXEventName.Success,
         params: { ...log },
       })
@@ -573,10 +571,10 @@ export const handleMarketFinalizedLog = (logs: Logs.MarketFinalizedLog[]) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { universe } = getState();
+  const { universe: { forkingInfo } } = AppStatus.get();
   logs.map(log => {
-    if (universe.forkingInfo) {
-      if (log.market === universe.forkingInfo.forkingMarket) {
+    if (forkingInfo) {
+      if (log.market === forkingInfo.forkingMarket) {
         dispatch(loadUniverseForkingInfo());
       }
     }
@@ -645,8 +643,8 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
   getState: () => AppState
 ) => {
   const userAddress = getState().loginAccount.address;
-  const isForking = !!getState().universe.forkingInfo;
-  const universeId = getState().universe.id;
+  const { universe: { id: universeId, forkingInfo }, blockchain: { currentAugurTimestamp } } = AppStatus.get();
+  const isForking = !!forkingInfo;
   let isParticipationTokens = !!logs.find(l => l.tokenType === Logs.TokenType.ParticipationToken);
   logs.filter(log => isSameAddress(log.target, userAddress)).map(log => {
     if (log.tokenType === Logs.TokenType.ParticipationToken) {
@@ -657,13 +655,14 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
         dispatch(loadUniverseDetails(universeId, userAddress));
     }
     if (log.tokenType === Logs.TokenType.ReputationToken && !isForking) {
+      const timestamp = currentAugurTimestamp * 1000;
         dispatch(
           updateAlert(log.blockHash, {
             id: log.blockHash,
             uniqueId: log.blockHash,
             params: {...log},
             status: TXEventName.Success,
-            timestamp: getState().blockchain.currentAugurTimestamp * 1000,
+            timestamp,
             name: MIGRATE_FROM_LEG_REP_TOKEN,
             toast: true,
           }, false));

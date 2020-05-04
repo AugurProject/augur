@@ -5,12 +5,13 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const universe = state.universe;
+  const { universe: universeDetails, modal } = AppStatus.get();
   return {
-    modal: state.modal,
-    universeDetails: universe,
+    modal,
+    universeDetails,
   };
 };
 

@@ -10,35 +10,45 @@ import { MARKETS } from 'modules/routes/constants/views';
 import { loadMarketsByFilter } from 'modules/markets/actions/load-markets';
 import { ALL_MARKETS } from 'modules/common/constants';
 import { setSelectedUniverse } from 'modules/auth/actions/selected-universe-management';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const switchUniverse = (
   universeId: string,
   history: History
 ): ThunkAction<any, any, any, any> => async (dispatch, getState) => {
-  const { loginAccount, filterSortOptions } = getState() as AppState;
+  const { loginAccount } = getState() as AppState;
   const account = loginAccount.address;
   history.push({
     pathname: makePath(MARKETS, null),
   });
+  const {
+    filterSortOptions: {
+      maxFee,
+      maxLiquiditySpread,
+      marketSort: sort,
+      marketFilter,
+    },
+  } = AppStatus.get();
   dispatch(
     loadUniverseDetails(universeId, account, () => {
       dispatch(switchUniverseState());
+      AppStatus.actions.switchUniverse();
       dispatch(setSelectedUniverse(universeId));
       dispatch(loadUniverseForkingInfo());
       dispatch(loadDisputeWindow());
       dispatch(loadAccountData());
 
       const filter = {
-        maxFee: filterSortOptions.maxFee,
-        maxLiquiditySpread: filterSortOptions.maxLiquiditySpread,
+        maxFee,
+        maxLiquiditySpread,
         includeInvalidMarkets: false,
-        sort: filterSortOptions.marketSort,
-        marketFilter: filterSortOptions.marketFilter,
+        sort,
+        marketFilter,
         categories: [],
         search: '',
         filter: ALL_MARKETS,
         limit: 10,
-        offset: 1
+        offset: 1,
       };
       // force `getMarkets` call to re-populate markets
       loadMarketsByFilter(filter);

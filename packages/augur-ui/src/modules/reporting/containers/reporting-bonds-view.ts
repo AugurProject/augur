@@ -7,25 +7,25 @@ import { AppState } from 'appStore';
 import { isSameAddress } from 'utils/isSameAddress';
 import getGasPrice from 'modules/auth/selectors/get-gas-price';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { universe, loginAccount } = state;
+  const { loginAccount } = state;
   const { market } = ownProps;
+  const { universe: { forkingInfo }, gsnEnabled: GsnEnabled } = AppStatus.get();
   const userAttoRep = createBigNumber(loginAccount.balances && loginAccount.balances.attoRep || ZERO);
-  const userFunds = state.appStatus.gsnEnabled ? createBigNumber(loginAccount.balances && loginAccount.balances.dai || ZERO) : createBigNumber(loginAccount.balances && loginAccount.balances.eth || ZERO);
-  const hasForked = !!state.universe.forkingInfo;
+  const userFunds = GsnEnabled ? createBigNumber(loginAccount.balances && loginAccount.balances.dai || ZERO) : createBigNumber(loginAccount.balances && loginAccount.balances.eth || ZERO);
+  const hasForked = !!forkingInfo;
   const migrateRep =
-    hasForked && universe.forkingInfo?.forkingMarket === market.id;
+    hasForked && forkingInfo?.forkingMarket === market.id;
   const migrateMarket =
-    hasForked && !!universe.forkingInfo.winningChildUniverseId;
+    hasForked && !!forkingInfo.winningChildUniverseId;
   const initialReport = !migrateMarket && !migrateRep;
   const openReporting = market.reportingState === REPORTING_STATE.OPEN_REPORTING;
-  const owesRep = migrateMarket ? migrateMarket : (!openReporting && !universe.forkingInfo?.forkingMarket === market.id && !isSameAddress(market.author, loginAccount.address));
+  const owesRep = migrateMarket ? migrateMarket : (!openReporting && !forkingInfo?.forkingMarket === market.id && !isSameAddress(market.author, loginAccount.address));
   const enoughRepBalance = owesRep ? userAttoRep.gte(createBigNumber(market.noShowBondAmount)) : true;
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
-
   return {
     userFunds,
     owesRep,
@@ -33,8 +33,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     migrateMarket,
     migrateRep,
     userAttoRep: convertAttoValueToDisplayValue(userAttoRep),
-    GsnEnabled: state.appStatus.gsnEnabled,
-    gasPrice: getGasPrice(state),
+    GsnEnabled,
+    gasPrice: getGasPrice(),
     openReporting,
     enoughRepBalance,
     gsnUnavailable: isGSNUnavailable(state),
@@ -43,7 +43,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  initializeGsnWallet: (customAction = null) => dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
+  initializeGsnWallet: (customAction = null) => AppStatus.actions.setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
 });
 
 const ReportingBondsViewContainer = connect(

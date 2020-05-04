@@ -17,18 +17,17 @@ import {
   updateMarketsListMeta,
 } from 'modules/markets-list/actions/update-markets-list';
 import { MODAL_SIGNUP, POPULAR_CATEGORIES } from 'modules/common/constants';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { selectMarketStats } from 'modules/markets-list/selectors/markets-list';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, { location }) => {
   const marketStats = selectMarketStats(state);
   const markets = selectMarkets(state);
-  const { isLogged, restoredAccount, isConnected } = AppStatusState.get();
+  const { universe: { id }, categoryStats, isLogged, restoredAccount, isConnected } = AppStatus.get();
   return {
-    categoryStats: state.categoryStats,
+    categoryStats,
     categoryData: marketStats,
-    isConnected: isConnected && state.universe.id != null,
+    isConnected: isConnected && id != null,
     isLogged,
     restoredAccount,
     markets: markets.filter(market =>
@@ -40,17 +39,20 @@ const mapStateToProps = (state: AppState, { location }) => {
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<void, AppState, Action>
-) => ({
-  signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
-  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
-  setLoadMarketsPending: isSearching =>
-    dispatch(setLoadMarketsPending(isSearching)),
-  updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
-  loadMarketsByFilter: (
-    filter: LoadMarketsFilterOptions,
-    cb: NodeStyleCallback
-  ) => dispatch(loadMarketsByFilter(filter, cb)),
-});
+) => {
+  const { setModal } = AppStatus.actions;
+  return ({
+    signupModal: () => setModal({ type: MODAL_SIGNUP }),
+    toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
+    setLoadMarketsPending: isSearching =>
+      dispatch(setLoadMarketsPending(isSearching)),
+    updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
+    loadMarketsByFilter: (
+      filter: LoadMarketsFilterOptions,
+      cb: NodeStyleCallback
+    ) => dispatch(loadMarketsByFilter(filter, cb)),
+  });
+};
 
 const Markets = withRouter(
   connect(

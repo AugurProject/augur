@@ -6,9 +6,10 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import getRep from "modules/account/actions/get-rep";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
+  modal: AppStatus.get().modal,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

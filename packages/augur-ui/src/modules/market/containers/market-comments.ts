@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { MarketComments } from 'modules/market/components/common/comments/market-comments';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { initialize3box } from 'modules/global-chat/actions/initialize-3box';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const DEFAULT_NUM_POSTS = 10;
 const COLOR_SCHEME = 'dark'; // this might change depending on themes
@@ -16,7 +16,7 @@ const mapStateToProps = ({ loginAccount, initialized3box}, {numPosts, colorSchem
     colorScheme: colorScheme || COLOR_SCHEME,
     networkId: getNetworkId(),
     numPosts: numPosts || DEFAULT_NUM_POSTS,
-    whichCommentPlugin: AppStatusState.get().env.plugins?.comments,
+    whichCommentPlugin: AppStatus.get().env.plugins?.comments,
   };
 
   return signer ? {

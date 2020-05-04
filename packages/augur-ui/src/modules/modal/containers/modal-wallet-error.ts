@@ -5,16 +5,16 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'appStore';
-import { updateModal } from '../actions/update-modal';
-import { MODAL_ADD_FUNDS, ETH } from 'modules/common/constants';
+import { MODAL_ADD_FUNDS } from 'modules/common/constants';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
+  modal: AppStatus.get().modal,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
+  showAddFundsModal: () => AppStatus.actions.setModal({ type: MODAL_ADD_FUNDS }),
 });
 
 const mergeProps = (sP, dP, oP) => {

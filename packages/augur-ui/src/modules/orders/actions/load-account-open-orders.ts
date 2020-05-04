@@ -4,15 +4,17 @@ import { augurSdk } from 'services/augursdk';
 import { AppState } from 'appStore';
 import { refreshUserOpenOrders } from 'modules/markets/actions/market-trading-history-management';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const loadAccountOpenOrders = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { universe, loginAccount } = getState();
+  const { loginAccount } = getState();
+  const { universe: { id: universe }} = AppStatus.get();
   const Augur = augurSdk.get();
   const userOpenOrders = await Augur.getUserOpenOrders({
-    universe: universe.id,
+    universe,
     account: loginAccount.mixedCaseAddress,
   });
   dispatch(refreshUserOpenOrders(userOpenOrders.orders));

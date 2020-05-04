@@ -7,7 +7,7 @@ import { LinearPropertyLabel } from 'modules/common/labels';
 import Styles from 'modules/account/components/status.styles.less';
 
 export interface BlockStatusProps {
-  blocksBehind: number;
+  blocksBehind: string | number;
   lastProcessedBlockBn: number;
   highestBlockBn: number;
 }

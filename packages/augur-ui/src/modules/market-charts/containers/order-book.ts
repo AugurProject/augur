@@ -2,17 +2,15 @@ import { connect } from "react-redux";
 import { isEmpty } from "utils/is-empty";
 import OrderBook from "modules/market-charts/components/order-book/order-book";
 import { selectMarket } from "modules/markets/selectors/market";
-import { selectCurrentTimestampInSeconds } from "appStore/select-state";
 import { ASKS, BIDS, SCALAR, INVALID_OUTCOME_ID } from "modules/common/constants";
 import { orderAndAssignCumulativeShares, calcOrderbookPercentages } from "modules/markets/helpers/order-and-assign-cumulative-shares";
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
 import { AppState } from "appStore";
-import { Ox_STATUS } from "modules/app/store/constants";
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { orderBooks } = state;
-  const zeroXStatus = AppStatusState.get()[Ox_STATUS];
+  const {zeroXStatus, blockchain: { currentAugurTimestamp }} = AppStatus.get();
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const orderBook = orderBooks && orderBooks[market.id] || { expirationTime: 0 };
   const selectedOutcomeId = (ownProps.selectedOutcomeId !== undefined && ownProps.selectedOutcomeId !== null) ? ownProps.selectedOutcomeId : market.defaultSelectedOutcomeId;
@@ -35,7 +33,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     expirationTime: ownProps.initialLiquidity || !!!orderBook ? 0 : orderBook.expirationTime,
     outcomeName: outcome && outcome.description,
     selectedOutcome: outcome,
-    currentTimeInSeconds: selectCurrentTimestampInSeconds(state),
+    currentTimeInSeconds: currentAugurTimestamp,
     orderBook: processedOrderbook,
     hasOrders:
       !isEmpty(processedOrderbook[BIDS]) ||

@@ -24,23 +24,23 @@ import {
 } from '../actions/update-markets-list';
 import {
   MAX_SPREAD_ALL_SPREADS,
-  MAX_FEE_100_PERCENT
+  MAX_FEE_100_PERCENT,
 } from 'modules/common/constants';
 import {
-  updateFilterSortOptions,
   MARKET_FILTER,
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
-} from 'modules/filter-sort/actions/update-filter-sort-options';
-import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
+} from 'modules/app/store/constants';
 import { updateLoginAccountSettings } from 'modules/markets-list/actions/update-login-account-settings';
 import { marketListViewed } from 'services/analytics/helpers';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const findMarketsInReportingState = (markets, reportingState) => {
   const reportingStates: String[] = organizeReportingStates(reportingState);
-  return markets.filter(market => reportingStates.find(state => state === market.reportingState))
-}
+  return markets.filter(market =>
+    reportingStates.find(state => state === market.reportingState)
+  );
+};
 
 const mapStateToProps = (state: AppState, { location }) => {
   const markets = selectMarkets(state);
@@ -48,95 +48,102 @@ const mapStateToProps = (state: AppState, { location }) => {
     keywords,
     selectedTagNames,
   } = getSelectedTagsAndCategoriesFromLocation(location);
-  const { isConnected } = AppStatusState.get();
+  const {
+    universe: { id },
+    isConnected,
+    filterSortOptions: {
+      maxFee,
+      marketFilter,
+      maxLiquiditySpread,
+      marketSort,
+      templateFilter,
+      includeInvalidMarkets,
+    },
+  } = AppStatus.get();
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
 
   return {
-    isConnected: isConnected && state.universe.id != null,
-    universe: (state.universe || {}).id,
+    isConnected: isConnected && id != null,
+    universe: id,
     search: searchPhrase,
     markets,
-    marketsInReportingState: findMarketsInReportingState(markets, state.filterSortOptions.marketFilter),
-    maxFee: state.filterSortOptions.maxFee,
-    maxLiquiditySpread: state.filterSortOptions.maxLiquiditySpread,
+    marketsInReportingState: findMarketsInReportingState(markets, marketFilter),
+    maxFee,
+    maxLiquiditySpread,
     isSearching: state.marketsList.isSearching,
     filteredOutCount: state.marketsList.meta
       ? state.marketsList.meta.filteredOutCount
       : 0,
-    includeInvalidMarkets: state.filterSortOptions.includeInvalidMarkets,
+    includeInvalidMarkets,
     selectedCategories: state.marketsList.selectedCategories,
-    marketSort: state.filterSortOptions.marketSort,
-    marketFilter: state.filterSortOptions.marketFilter,
+    marketSort,
+    marketFilter,
     marketCardFormat: state.marketsList.marketCardFormat,
     showInvalidMarketsBannerHideOrShow: (state.loginAccount.settings || {})
       .showInvalidMarketsBannerHideOrShow,
     showInvalidMarketsBannerFeesOrLiquiditySpread: (
       state.loginAccount.settings || {}
     ).showInvalidMarketsBannerFeesOrLiquiditySpread,
-    templateFilter: state.filterSortOptions.templateFilter,
+    templateFilter,
   };
 };
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<void, AppState, Action>
-) => ({
-  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
-  setLoadMarketsPending: isSearching =>
-    dispatch(setLoadMarketsPending(isSearching)),
-  updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
-  loadMarketsByFilter: (
-    filter: LoadMarketsFilterOptions,
-    cb: NodeStyleCallback
-  ) => dispatch(loadMarketsByFilter(filter, cb)),
-  loadMarketOrderBook: (marketId) => dispatch(loadMarketOrderBook(marketId)),
-  removeFeeFilter: () =>
-    dispatch(updateFilterSortOptions(MARKET_MAX_FEES, MAX_FEE_100_PERCENT)),
-  removeLiquiditySpreadFilter: () =>
-    dispatch(
-      updateFilterSortOptions(MARKET_MAX_SPREAD, MAX_SPREAD_ALL_SPREADS)
-    ),
-  updateMarketsFilter: filterOption =>
-    dispatch(updateFilterSortOptions(MARKET_FILTER, filterOption)),
-  updateMarketsListCardFormat: format =>
-    dispatch(updateMarketsListCardFormat(format)),
-  updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
-  updateLoginAccountSettings: settings =>
-    dispatch(updateLoginAccountSettings(settings)),
-  setMarketsListSearchInPlace: isSearchInPlace =>
-    dispatch(setMarketsListSearchInPlace(isSearchInPlace)),
-  marketListViewed: (
-    search,
-    selectedCategories,
-    maxLiquiditySpread,
-    marketFilter,
-    marketSort,
-    maxFee,
-    templateFilter,
-    includeInvalidMarkets,
-    resultCount,
-    pageNumber
-  ) =>
-    dispatch(
-      marketListViewed(
-        search,
-        selectedCategories,
-        maxLiquiditySpread,
-        marketFilter,
-        marketSort,
-        maxFee,
-        templateFilter,
-        includeInvalidMarkets,
-        resultCount,
-        pageNumber
-      )
-    ),
-});
-
+) => {
+  const { updateFilterSortOptions } = AppStatus.actions;
+  return ({
+    toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
+    setLoadMarketsPending: isSearching =>
+      dispatch(setLoadMarketsPending(isSearching)),
+    updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
+    loadMarketsByFilter: (
+      filter: LoadMarketsFilterOptions,
+      cb: NodeStyleCallback
+    ) => dispatch(loadMarketsByFilter(filter, cb)),
+    loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
+    removeFeeFilter: () =>
+      updateFilterSortOptions({ [MARKET_MAX_FEES]: MAX_FEE_100_PERCENT }),
+    removeLiquiditySpreadFilter: () =>
+      updateFilterSortOptions({ [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS }),
+    updateMarketsFilter: filterOption =>
+      updateFilterSortOptions({ [MARKET_FILTER]: filterOption }),
+    updateMarketsListCardFormat: format =>
+      dispatch(updateMarketsListCardFormat(format)),
+    updateLoginAccountSettings: settings =>
+      dispatch(updateLoginAccountSettings(settings)),
+    setMarketsListSearchInPlace: isSearchInPlace =>
+      dispatch(setMarketsListSearchInPlace(isSearchInPlace)),
+    marketListViewed: (
+      search,
+      selectedCategories,
+      maxLiquiditySpread,
+      marketFilter,
+      marketSort,
+      maxFee,
+      templateFilter,
+      includeInvalidMarkets,
+      resultCount,
+      pageNumber
+    ) =>
+      dispatch(
+        marketListViewed(
+          search,
+          selectedCategories,
+          maxLiquiditySpread,
+          marketFilter,
+          marketSort,
+          maxFee,
+          templateFilter,
+          includeInvalidMarkets,
+          resultCount,
+          pageNumber
+        )
+      ),
+  });
+}
 const Markets = withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MarketsView)
+  connect(mapStateToProps, mapDispatchToProps)(MarketsView)
 );
 
 export default Markets;

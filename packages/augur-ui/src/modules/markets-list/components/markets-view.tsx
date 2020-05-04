@@ -19,7 +19,7 @@ import {
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
-import LandingHero from 'modules/markets-list/containers/landing-hero';
+import { LandingHero } from 'modules/markets-list/components/landing-hero';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKETS_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import FilterSearch from 'modules/filter-sort/containers/filter-search';
@@ -51,7 +51,6 @@ interface MarketsViewProps {
   updateMarketsFilter: Function;
   updateMarketsListCardFormat: Function;
   marketCardFormat: string;
-  updateMobileMenuState: Function;
   updateLoginAccountSettings: Function;
   showInvalidMarketsBannerFeesOrLiquiditySpread: boolean;
   showInvalidMarketsBannerHideOrShow: boolean;
@@ -81,7 +80,6 @@ const MarketsView = ({
   updateMarketsListCardFormat,
   search = null,
   isConnected,
-  updateMobileMenuState,
   updateLoginAccountSettings,
   updateMarketsFilter,
   marketFilter,
@@ -249,7 +247,6 @@ const MarketsView = ({
             history={history}
             selectedCategory={selectedCategories}
             search={search}
-            updateMobileMenuState={updateMobileMenuState}
             marketCardFormat={marketCardFormat}
             updateMarketsListCardFormat={updateMarketsListCardFormat}
           />

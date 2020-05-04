@@ -7,11 +7,13 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { DISPUTING_GUIDE, REPORTING_GUIDE } from 'modules/common/constants';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
+  const { modal } = AppStatus.get();
   return {
-    modal: state.modal,
-    guide: state.modal.whichGuide === 'reporting' ? REPORTING_GUIDE : DISPUTING_GUIDE
+    modal,
+    guide: modal.whichGuide === 'reporting' ? REPORTING_GUIDE : DISPUTING_GUIDE
   };
 };
 

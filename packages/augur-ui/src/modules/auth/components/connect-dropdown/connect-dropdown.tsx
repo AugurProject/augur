@@ -158,18 +158,18 @@ const ConnectDropdown = ({
   const walletProviders = [
     {
       accountType: ACCOUNT_TYPES.PORTIS,
-      action: () => accountMeta.openWallet(),
-      disabled: !accountMeta.openWallet,
+      action: () => accountMeta?.openWallet(),
+      disabled: !accountMeta?.openWallet,
     },
     {
       accountType: ACCOUNT_TYPES.FORTMATIC,
-      action: () => accountMeta.openWallet(),
-      disabled: !accountMeta.openWallet,
+      action: () => accountMeta?.openWallet(),
+      disabled: !accountMeta?.openWallet,
     },
     {
       accountType: ACCOUNT_TYPES.TORUS,
-      action: () => accountMeta.openWallet(),
-      disabled: !accountMeta.openWallet,
+      action: () => accountMeta?.openWallet(),
+      disabled: !accountMeta?.openWallet,
     },
     {
       accountType: ACCOUNT_TYPES.WEB3WALLET,
@@ -218,14 +218,14 @@ const ConnectDropdown = ({
         </div>
 
         {walletProviders
-          .filter(wallet => wallet.accountType === accountMeta.accountType)
+          .filter(wallet => wallet.accountType === accountMeta?.accountType)
           .map((wallet, idx) => {
             return (
               <div
                 key={idx}
                 className={classNames(Styles.WalletProvider, {
                   [Styles.MetaMask]:
-                    wallet.accountType === ACCOUNT_TYPES.WEB3WALLET,
+                    wallet?.accountType === ACCOUNT_TYPES.WEB3WALLET,
                 })}
               >
                 <div>

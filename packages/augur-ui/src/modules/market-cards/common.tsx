@@ -54,7 +54,6 @@ import {
 } from 'modules/types';
 import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
-import InvalidLabel from 'modules/common/containers/labels';
 import { ProcessingButton, BettingBackLayButton } from 'modules/common/buttons';
 import {
   CategoryTagTrail,
@@ -62,6 +61,7 @@ import {
   MarketTypeLabel,
   RedFlag,
   TemplateShield,
+  InvalidLabel,
 } from 'modules/common/labels';
 import Styles from 'modules/market-cards/common.styles.less';
 import { MarketCard } from 'modules/market-cards/market-card';
@@ -1127,7 +1127,6 @@ export interface TopRowProps {
   categoriesWithClick: Array<{ label: string; onClick: Function }>;
   marketLinkCopied: Function;
   toggleFavorite: Function;
-  currentAugurTimestamp: number;
   isFavorite?: boolean;
 }
 
@@ -1136,7 +1135,6 @@ export const TopRow = ({
   categoriesWithClick,
   toggleFavorite,
   marketLinkCopied,
-  currentAugurTimestamp,
   isFavorite,
 }) => {
   useEffect(() => {
@@ -1197,7 +1195,6 @@ export const TopRow = ({
       ) : (
         <MarketProgress
           reportingState={reportingState}
-          currentTime={currentAugurTimestamp}
           endTimeFormatted={endTimeFormatted}
           reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
         />
@@ -1283,7 +1280,6 @@ export const InfoIcons = ({
 
 export interface TradingSideSectionProps {
   address: string;
-  currentAugurTimestamp: number;
   market: MarketData;
   condensed: boolean;
   hasPosition: boolean;
@@ -1292,7 +1288,6 @@ export interface TradingSideSectionProps {
 
 export const TradingSideSection = ({
   address,
-  currentAugurTimestamp,
   market,
   condensed,
   hasPosition,
@@ -1340,7 +1335,6 @@ export const TradingSideSection = ({
       </div>
       <MarketProgress
         reportingState={reportingState}
-        currentTime={currentAugurTimestamp}
         endTimeFormatted={endTimeFormatted}
         reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
       />

@@ -7,32 +7,22 @@ import App from "modules/app/components/app";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
 import { selectNotifications } from "modules/notifications/selectors/notification-state";
-import {
-  WALLET_STATUS,
-} from "modules/app/store/constants";
 import { initAugur } from "modules/app/actions/init-augur";
-import { updateModal } from "modules/modal/actions/update-modal";
 import { RewriteUrlParams } from "modules/app/hocs/rewrite-url-params";
 import { windowRef } from "utils/window-ref";
 import isGlobalWeb3 from "modules/auth/helpers/is-global-web3";
 import { logout } from "modules/auth/actions/logout";
-import {
-  updateCurrentBasePath,
-  updateCurrentInnerNavType,
-  updateMobileMenuState,
-  updateSidebarStatus
-} from "modules/app/actions/update-sidebar-status";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, WALLET_STATUS_VALUES, TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
 import { saveAffiliateAddress } from "modules/account/actions/login-account";
 import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
 import { AppState } from "appStore";
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, pendingQueue } = state;
   const { balances } = loginAccount;
-  const walletStatus = AppStatusState.get()[WALLET_STATUS];
+  const { universe, walletStatus, modal } = AppStatus.get();
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   const notifications = selectNotifications(state);
   const walletBalances = loginAccount.balances;
@@ -47,36 +37,32 @@ const mapStateToProps = (state: AppState) => {
 
   return {
     notifications,
-    blockchain: state.blockchain,
     loginAccount,
-    modal: state.modal,
+    modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
-    universe: state.universe,
+    universe,
     useWeb3Transport: isGlobalWeb3(),
-    sidebarStatus: state.sidebarStatus,
     walletBalances,
     showCreateAccountButton,
     showMigrateRepButton,
   }
 };
 
-const mapDispatchToProps = dispatch => ({
-  initAugur: (history, overrides, cb) =>
-    dispatch(initAugur(history, overrides, cb)),
-  updateModal: modal => dispatch(updateModal(modal)),
-  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
-  logout: () => dispatch(logout()),
-  updateCurrentBasePath: data => dispatch(updateCurrentBasePath(data)),
-  updateCurrentInnerNavType: data => dispatch(updateCurrentInnerNavType(data)),
-  updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
-  updateSidebarStatus: data => dispatch(updateSidebarStatus(data)),
-  updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
-  showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
-  migrateV1Rep: () => dispatch(updateModal({ type: MODAL_MIGRATE_REP })),
-  saveAffilateAddress: address => dispatch(saveAffiliateAddress(address)),
-  createFundedGsnWallet: () => dispatch(createFundedGsnWallet()),
-});
-
+const mapDispatchToProps = dispatch => {
+  const { setModal } = AppStatus.actions;
+  return ({
+    initAugur: (history, overrides, cb) =>
+      dispatch(initAugur(history, overrides, cb)),
+    updateModal: modal => setModal(modal),
+    finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
+    logout: () => dispatch(logout()),
+    updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
+    showGlobalChat: () => setModal({ type: MODAL_GLOBAL_CHAT }),
+    migrateV1Rep: () => setModal({ type: MODAL_MIGRATE_REP }),
+    saveAffilateAddress: address => dispatch(saveAffiliateAddress(address)),
+    createFundedGsnWallet: () => dispatch(createFundedGsnWallet()),
+  });
+}
 const AppContainer = compose(
   withRouter,
   RewriteUrlParams(windowRef),

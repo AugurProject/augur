@@ -10,16 +10,15 @@ import {
   HELP_CENTER_THIRD_PARTY_COOKIES,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
- export const loginWithPortis = (forceRegisterPage = false) => async (
+export const loginWithPortis = (forceRegisterPage = false) => async (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState,
+  getState: () => AppState
 ) => {
-  const networkId: string = AppStatusState.get().env.networkId;
+  const networkId: string = AppStatus.get().env.networkId;
   const portisNetwork = getNetwork(networkId);
   const localPortisNetwork = {
     nodeUrl: 'http://localhost:8545',
@@ -32,10 +31,14 @@ import { AppStatusState } from 'modules/app/store/app-status';
       // to conditionally load web3 into the DOM
       const Portis = require('@portis/web3');
       const Web3 = require('web3');
-      const portis = new Portis(PORTIS_API_KEY, portisNetwork === 'localhost' ? localPortisNetwork : portisNetwork, {
-        scope: ['email'],
-        registerPageByDefault: forceRegisterPage,
-      });
+      const portis = new Portis(
+        PORTIS_API_KEY,
+        portisNetwork === 'localhost' ? localPortisNetwork : portisNetwork,
+        {
+          scope: ['email'],
+          registerPageByDefault: forceRegisterPage,
+        }
+      );
 
       const web3 = new Web3(portis.provider);
       const provider = new PersonalSigningWeb3Provider(portis.provider);
@@ -62,29 +65,33 @@ import { AppStatusState } from 'modules/app/store/app-status';
       };
 
       portis.onLogin((account, email) => {
-          initPortis(portis, account, email);
+        initPortis(portis, account, email);
       });
 
       portis.onError(error => {
         document.querySelector('.por_portis-container').remove();
-
-        if (error.message && error.message.toLowerCase().indexOf('cookies') !== -1) {
-          dispatch(
-            updateModal({
-              type: MODAL_ERROR,
-              title: 'Cookies are disabled',
-              error: 'Please enable cookies in your browser to proceed with Portis.',
-              link: HELP_CENTER_THIRD_PARTY_COOKIES,
-              linkLabel: 'Learn more.'
-            })
-          );
+        const { setModal } = AppStatus.actions;
+        if (
+          error.message &&
+          error.message.toLowerCase().indexOf('cookies') !== -1
+        ) {
+          setModal({
+            type: MODAL_ERROR,
+            title: 'Cookies are disabled',
+            error:
+              'Please enable cookies in your browser to proceed with Portis.',
+            link: HELP_CENTER_THIRD_PARTY_COOKIES,
+            linkLabel: 'Learn more.',
+          });
         } else {
-          dispatch(
-            updateModal({
-              type: MODAL_ERROR,
-              error: JSON.stringify(error && error.message ? error.message : 'Sorry, something went wrong.'),
-            })
-          );
+          setModal({
+            type: MODAL_ERROR,
+            error: JSON.stringify(
+              error && error.message
+                ? error.message
+                : 'Sorry, something went wrong.'
+            ),
+          });
         }
       });
 
