@@ -3641,15 +3641,19 @@ export const HOLIDAYS = {
   AUSTRALIA_DAY: 'Australia Day',
   ANZAC_DAY: 'Anzac Day',
   QUEENS_BIRTHDAY: 'Queens Birthday',
+  REPUBLIC_DAY: 'Republic Day',
   MANASHIVRATRI: 'Mahashivratri',
   HOLI: 'Holi (2nd day)',
   RAN_NAVM: 'Ram Navm',
   MAHAVIR_JAYANTI: 'Mahavir Jayanti',
   BABSAHEB: 'Dr. Babsaheb Ambedkar Jayanti',
+  ISLAMIC_NEW_YEAR: 'Islamic New Year',
   MAHARASHTRA: 'Maharashtra or May Day',
   RAMZAN: 'Ramzan-id (Id-ul-fitar)',
   EID_AL_ADHA: 'Eid al adha',
+  EID_AL_FITR: 'Eid Al fitr',
   GANESH_CHATURTHI: 'Ganesh Chaturthi',
+  DUSSEHRA: 'Dussehra',
   ASHURA: 'Ashura',
   MAHATMA: "Mahatma Gandhi's Birthday",
   DIWALI: 'Diwali (Bali Pratipada)',
@@ -3743,7 +3747,7 @@ export const USA_HOLIDAYS = {
     },
     {
       holiday: HOLIDAYS.INDEPENDENCE_DAY,
-      date: 'Jul 31',
+      date: 'Jul 5',
     },
     {
       holiday: HOLIDAYS.LABOR_DAY,
@@ -3835,6 +3839,10 @@ export const FRANCE_HOLIDAYS = {
       date: 'Apr 05',
     },
     {
+      holiday: HOLIDAYS.CHRISTMAS_EVE,
+      date: 'Dec 24',
+    },
+    {
       holiday: HOLIDAYS.CHRISTMAS,
       date: 'Dec 25',
     },
@@ -3904,7 +3912,7 @@ export const ENGLAND_HOLIDAYS = {
     },
     {
       holiday: HOLIDAYS.CHRISTMAS,
-      date: 'Dec 25',
+      date: 'Dec 27',
     },
     {
       holiday: HOLIDAYS.BOXING_DAY,
@@ -4076,7 +4084,7 @@ const HONG_KONG_HOLIDAYS = {
     },
     {
       holiday: HOLIDAYS.SAR_ESTABLISHMENT_DAY,
-      date: 'Jun 01',
+      date: 'Jul 01',
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY,
@@ -4184,7 +4192,7 @@ const HONG_KONG_HOLIDAYS = {
     },
     {
       holiday: HOLIDAYS.SAR_ESTABLISHMENT_DAY,
-      date: 'Jun 03',
+      date: 'Jul 03',
     },
     {
       holiday: HOLIDAYS.MID_AUTUMN_FESTIVAL,
@@ -4486,7 +4494,7 @@ export const AUSTRALIA_HOLIDAYS = {
     },
     {
       holiday: HOLIDAYS.BOXING_DAY,
-      date: 'Dec 17',
+      date: 'Dec 27',
     },
   ],
 };
@@ -4552,6 +4560,106 @@ export const INDIA_HOLIDAYS = {
     {
       holiday: HOLIDAYS.CHRISTMAS,
       date: 'Dec 25',
+    },
+  ],
+  [2021]: [
+    {
+      holiday: HOLIDAYS.REPUBLIC_DAY,
+      date: 'Jan 26',
+    },
+    {
+      holiday: HOLIDAYS.MANASHIVRATRI,
+      date: 'Mar 11',
+    },
+    {
+      holiday: HOLIDAYS.HOLI,
+      date: 'Mar 29',
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 'Apr 02',
+    },
+    {
+      holiday: HOLIDAYS.MAHAVIR_JAYANTI,
+      date: 'Apr 14',
+    },
+    {
+      holiday: HOLIDAYS.RAN_NAVM,
+      date: 'Apr 21',
+    },
+    {
+      holiday: HOLIDAYS.EID_AL_FITR,
+      date: 'May 13',
+    },
+    {
+      holiday: HOLIDAYS.EID_AL_ADHA,
+      date: 'Jul 20',
+    },
+    {
+      holiday: HOLIDAYS.ASHURA,
+      date: 'Aug 19',
+    },
+    {
+      holiday: HOLIDAYS.GANESH_CHATURTHI,
+      date: 'Sep 10',
+    },
+    {
+      holiday: HOLIDAYS.DUSSEHRA,
+      date: 'Oct 15',
+    },
+    {
+      holiday: HOLIDAYS.DIWALI,
+      date: 'Nov 04',
+    },
+    {
+      holiday: HOLIDAYS.GURU_NANAK_JAYANTI,
+      date: 'Nov 19',
+    },
+  ],
+  [2022]: [
+    {
+      holiday: HOLIDAYS.REPUBLIC_DAY,
+      date: 'Jan 26',
+    },
+    {
+      holiday: HOLIDAYS.MANASHIVRATRI,
+      date: 'Mar 01',
+    },
+    {
+      holiday: HOLIDAYS.HOLI,
+      date: 'Mar 18',
+    },
+    {
+      holiday: HOLIDAYS.GOOD_FRIDAY,
+      date: 'Apr 15',
+    },
+    {
+      holiday: HOLIDAYS.MAHAVIR_JAYANTI,
+      date: 'Apr 14',
+    },
+    {
+      holiday: HOLIDAYS.EID_AL_FITR,
+      date: 'May 02',
+    },
+    {
+      holiday: HOLIDAYS.ISLAMIC_NEW_YEAR,
+      date: 'Aug 09',
+    },
+    {
+      holiday: HOLIDAYS.INDEPENDENCE_DAY,
+      date: 'Aug 15',
+    },
+    {
+      holiday: HOLIDAYS.DUSSEHRA,
+      date: 'Oct 04',
+    },
+    {
+      holiday: HOLIDAYS.DIWALI,
+      date: 'Oct 25',
+    },
+    {
+      holiday: HOLIDAYS.GURU_NANAK_JAYANTI,
+      date: 'Nov 07',
     },
   ],
 };
@@ -4724,7 +4832,7 @@ export const JAPAN_HOLIDAYS = {
     },
     {
       holiday: HOLIDAYS.GREENERY_DAY,
-      date: 'May =04',
+      date: 'May 04',
     },
     {
       holiday: HOLIDAYS.CHILDRENS_DAY,
