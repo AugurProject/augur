@@ -3,7 +3,7 @@ import { formatDai } from "utils/format-number";
 import Activity from "modules/account/components/activity";
 import { updatePlatformTimeframeData } from "modules/account/actions/update-platform-timeframe-data";
 import { AppState } from "appStore";
-import { AppStatusState } from "modules/app/store/app-status";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => {
   const value =
@@ -12,7 +12,7 @@ const mapStateToProps = (state: AppState) => {
       state.universe.timeframeData.openInterest) ||
     0;
   const openInterest = formatDai(value, { decimals: 2, removeComma: true });
-  const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
+  const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
   return {
     openInterest,
     currentAugurTimestamp,

@@ -14,7 +14,7 @@ import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET, SUCCESS } from 'm
 import { TXEventName } from '@augurproject/sdk';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { addAlert } from 'modules/alerts/actions/alerts';
-import { AppStatusActions, AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
@@ -26,8 +26,8 @@ export const updateSdk = (
   if (!augurSdk.sdk) return;
 
   let newAccount = { ...loginAccount };
-  const { env } = AppStatusState.get();
-  const { actions: { setModal, setGSNEnabled, setOxEnabled, setWalletStatus, setIsLogged } } = AppStatusActions;
+  const { env } = AppStatus.get();
+  const { actions: { setModal, setGSNEnabled, setOxEnabled, setWalletStatus, setIsLogged } } = AppStatus;
   const useGSN = env.gsn?.enabled;
 
   try {
@@ -78,14 +78,14 @@ export const createFundedGsnWallet = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { actions: { setWalletStatus } } = AppStatusActions;
+  const { actions: { setWalletStatus } } = AppStatus;
   try {
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending));
 
     await augurSdk.client.gsn.initializeWallet();
 
     setWalletStatus(WALLET_STATUS_VALUES.CREATED)
-    const { blockchain: { currentAugurTimestamp } } = AppStatusState.get();
+    const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
     const timestamp = currentAugurTimestamp * 1000;
     const alert = {
       name: CREATEAUGURWALLET,

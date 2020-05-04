@@ -10,14 +10,14 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { marketLinkCopied } from 'services/analytics/helpers';
 import { isSameAddress } from 'utils/isSameAddress';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const userAccount = state.loginAccount.address;
   const { reportingState, consensusFormatted: consensus } = market;
   let reportingBarShowing = false;
-  const { blockchain: { currentAugurTimestamp } } = AppStatusState.get();
+  const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
 
   if (
     consensus ||

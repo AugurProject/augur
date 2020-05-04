@@ -6,10 +6,10 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { ADD_FUNDS, track } from 'services/analytics/helpers';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { modal } = AppStatusState.get();
+  const { modal } = AppStatus.get();
   return {
     modal,
     loginAccount: state.loginAccount,

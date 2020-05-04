@@ -17,7 +17,7 @@ import { DismissableNotice } from 'modules/reporting/common';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { MarketReportClaimableContracts } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe } = state;
@@ -28,7 +28,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const { reportingState, endTime } = market;
   const {
     blockchain: { currentAugurTimestamp },
-  } = AppStatusState.get();
+  } = AppStatus.get();
   let show = isForking;
   let canMigrateMarkets = false;
   let hasReleaseRepOnThisMarket = false;
@@ -128,7 +128,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return {
     report: market =>
       setModal({

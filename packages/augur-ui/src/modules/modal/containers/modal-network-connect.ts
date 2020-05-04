@@ -6,7 +6,7 @@ import ModalNetworkConnect from 'modules/modal/components/modal-network-connect'
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { isWeb3Transport } from 'modules/contracts/actions/contractCalls';
 import { SDKConfiguration } from '@augurproject/artifacts';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 interface StateProps {
   modal: {
@@ -17,7 +17,7 @@ interface StateProps {
 }
 
 const mapStateToProps = (state: StateProps) => ({
-  modal: AppStatusState.get().modal,
+  modal: AppStatus.get().modal,
   isConnectedThroughWeb3: isWeb3Transport(),
 });
 

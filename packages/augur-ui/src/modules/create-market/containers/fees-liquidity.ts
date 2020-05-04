@@ -8,11 +8,11 @@ import {
 } from "modules/markets/actions/update-new-market";
 import FeesLiquidity from "modules/create-market/fees-liquidity";
 import getValue from "utils/get-value";
-import { AppStatusState } from "modules/app/store/app-status";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = state => ({
   newMarket: state.newMarket,
-  currentTimestamp: AppStatusState.get().blockchain.currentAugurTimestamp,
+  currentTimestamp: AppStatus.get().blockchain.currentAugurTimestamp,
   address: getValue(state, "loginAccount.address"),
 });
 

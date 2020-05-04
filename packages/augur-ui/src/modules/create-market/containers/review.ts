@@ -8,12 +8,12 @@ import { formatDai, formatRep, formatEther } from 'utils/format-number';
 import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { MODAL_ADD_FUNDS, DAI } from 'modules/common/constants';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, newMarket } = state;
-  const { gasPriceInfo, blockchain: { currentAugurTimestamp: currentTimestamp }} = AppStatusState.get();
+  const { gasPriceInfo, blockchain: { currentAugurTimestamp: currentTimestamp }} = AppStatus.get();
   return {
     newMarket: newMarket,
     currentTimestamp,
@@ -28,7 +28,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return ({
     showAddFundsModal: (fundType = DAI) => setModal({ type: MODAL_ADD_FUNDS, fundType }),
     updateNewMarket: data => dispatch(updateNewMarket(data)),

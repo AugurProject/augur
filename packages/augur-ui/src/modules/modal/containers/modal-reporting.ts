@@ -8,7 +8,7 @@ import { REPORTING_STATE, MODAL_ADD_FUNDS, REP } from 'modules/common/constants'
 import { formatRep } from 'utils/format-number';
 import { AppState } from 'appStore';
 import { addPendingData, removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe, modal, loginAccount } = state;
@@ -33,7 +33,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  getRepModal: () => AppStatusActions.actions.setModal({ type: MODAL_ADD_FUNDS, fundType: REP }),
+  getRepModal: () => AppStatus.actions.setModal({ type: MODAL_ADD_FUNDS, fundType: REP }),
   addPendingData: (pendingId, queueName, status,hash, info) => dispatch(addPendingData(pendingId, queueName, status,hash, info)),
   removePendingData: (pendingId, queueName) => dispatch(removePendingData(pendingId, queueName))
 });

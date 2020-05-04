@@ -1,8 +1,8 @@
-import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_FAST, DEFAULT_FALLBACK_GAS_SAFELOW, MOBILE_MENU_STATES, MARKET_OPEN, MARKET_SORT_PARAMS, MAX_FEE_02_PERCENT, MAX_SPREAD_ALL_SPREADS, DAY } from 'modules/common/constants';
+import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_FAST, DEFAULT_FALLBACK_GAS_SAFELOW, MOBILE_MENU_STATES, MARKET_OPEN, MARKET_SORT_PARAMS, MAX_FEE_02_PERCENT, MAX_SPREAD_ALL_SPREADS, DAY, ZERO } from 'modules/common/constants';
 import { MARKETS } from "modules/routes/constants/views";
 import { DEFAULT_SDK_CONFIGURATION, SDKConfiguration } from '@augurproject/artifacts';
 import { formatGasCostGwei } from 'utils/format-number';
-import { GasPriceInfo, Blockchain, FilterSortOptions, INVALID_OPTIONS } from 'modules/types';
+import { GasPriceInfo, Blockchain, FilterSortOptions, INVALID_OPTIONS, Universe } from 'modules/types';
 import * as moment from '../../../../../../node_modules/moment/moment';
 import { Getters } from '@augurproject/sdk/src';
 
@@ -32,6 +32,7 @@ export const BLOCKCHAIN = 'blockchain';
 export const CATEGORY_STATS = 'categoryStats';
 export const FILTER_SORT_OPTIONS = 'filterSortOptions';
 export const MODAL = 'modal';
+export const UNIVERSE = 'universe';
 
 const DEFAULT_ENV: SDKConfiguration = JSON.parse(JSON.stringify(DEFAULT_SDK_CONFIGURATION));
 const DEFAULT_GAS_PRICE_INFO: GasPriceInfo = {
@@ -46,6 +47,35 @@ const DEFAULT_BLOCKCHAIN: Blockchain = {
   lastSyncedBlockNumber: 0,
   blocksBehindCurrent: 0,
   percentSynced: "0"
+};
+const DEFAULT_UNIVERSE_STATE: Universe = {
+  children: null,
+  id: null,
+  creationTimestamp: 0,
+  parentUniverseId: null,
+  forkingInfo: null,
+  outcomeName: '',
+  usersRep: '0',
+  totalRepSupply: '0',
+  totalOpenInterest: '0',
+  numberOfMarkets: 0,
+  warpSyncHash: undefined,
+  disputeWindow: {
+    address: null,
+    startTime: 0,
+    endTime: 0,
+    purchased: '0',
+    fees: '0',
+  },
+  timeframeData: {
+    activeUsers: 0,
+    openInterest: ZERO,
+    marketsCreated: 0,
+    numberOfTrades: 0,
+    disputedMarkets: 0,
+    volume: ZERO,
+    amountStaked: ZERO,
+  }
 };
 export const MARKET_FILTER = 'marketFilter';
 export const MARKET_SORT = 'marketSort';
@@ -91,6 +121,7 @@ export const DEFAULT_APP_STATUS = {
   [CATEGORY_STATS]: {},
   [FILTER_SORT_OPTIONS]: DEFAULT_FILTER_SORT_OPTIONS,
   [MODAL]: {},
+  [UNIVERSE]: DEFAULT_UNIVERSE_STATE,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -122,6 +153,8 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_FILTER_SORT_OPTIONS: 'UPDATE_FILTER_SORT_OPTIONS',
   SET_MODAL: 'SET_MODAL',
   CLOSE_MODAL: 'CLOSE_MODAL',
+  UPDATE_UNIVERSE: 'UPDATE_UNIVERSE',
+  SWITCH_UNIVERSE: 'SWITCH_UNIVERSE',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -153,4 +186,6 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateFilterSortOptions: filterSortOptions => {},
   setModal: modal => {},
   closeModal: () => {},
+  updateUniverse: universe => {},
+  switchUniverse: () => {},
 };

@@ -42,7 +42,7 @@ import {
   clearOrderBook,
 } from 'modules/orders/actions/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe, loginAccount, orderBooks } = state;
@@ -52,7 +52,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     isConnected,
     canHotload,
     blockchain: { currentAugurTimestamp },
-  } = AppStatusState.get();
+  } = AppStatus.get();
   const queryId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const marketId = queryId === TRADING_TUTORIAL ? queryId : getAddress(queryId);
   const queryOutcomeId = parseQuery(ownProps.location.search)[
@@ -148,7 +148,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return {
     hotloadMarket: marketId => hotloadMarket(marketId),
     loadMarketsInfo: marketId => dispatch(loadMarketsInfo([marketId])),

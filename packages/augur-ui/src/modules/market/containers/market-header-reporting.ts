@@ -12,7 +12,7 @@ import { NodeStyleCallback } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from 'modules/common/constants';
 import { isSameAddress } from 'utils/isSameAddress';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
@@ -20,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
   const {
     isLogged,
     blockchain: { currentAugurTimestamp },
-  } = AppStatusState.get();
+  } = AppStatus.get();
   return {
     currentTimestamp: currentAugurTimestamp || 0,
     market,
@@ -50,7 +50,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return {
     finalizeMarket: (marketId, cb) =>
       dispatch(sendFinalizeMarket(marketId, cb)),

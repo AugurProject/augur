@@ -9,7 +9,7 @@ import {
   MODAL_REPORTING,
 } from 'modules/common/constants';
 import { marketLinkCopied } from 'services/analytics/helpers';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state, ownProps) => {
   const { marketId } = ownProps.market;
@@ -39,7 +39,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return {
     toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
     dispute: (selectedOutcome: string, isInvalid: boolean) =>

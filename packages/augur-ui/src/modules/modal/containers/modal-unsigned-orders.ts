@@ -24,10 +24,10 @@ import { Action } from 'redux';
 import { CreateLiquidityOrders } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatusState.get();
+  const { modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatus.get();
   const market = selectMarket(modal.marketId);
   let availableDai = totalTradingBalance(state.loginAccount);
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;

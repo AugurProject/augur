@@ -8,11 +8,11 @@ import { GSN_WALLET_SEEN } from 'modules/common/constants';
 import { DESIRED_SIGNER_ETH_BALANCE } from 'contract-dependencies-gsn/src/ContractDependenciesGSN';
 import { formatAttoEth, formatDai } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const { modal } = state;
-  const ethToDaiRate = AppStatusState.get().ethToDaiRate.roundedValue;
+  const ethToDaiRate = AppStatus.get().ethToDaiRate.roundedValue;
   const desiredSignerEthBalance = formatAttoEth(Number(DESIRED_SIGNER_ETH_BALANCE)).value;
   const reserveAmount: FormattedNumber = formatDai(ethToDaiRate.multipliedBy(desiredSignerEthBalance));
 

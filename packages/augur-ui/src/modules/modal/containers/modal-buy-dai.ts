@@ -9,12 +9,12 @@ import { Action } from 'redux';
 import { MODAL_ADD_FUNDS, MODAL_AUGUR_P2P, HELP_CENTER_ADD_FUNDS } from 'modules/common/constants';
 import { OnboardingPaymentIcon } from 'modules/common/icons';
 import { BUY_DAI, track } from 'services/analytics/helpers';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return ({
     closeModal: () => dispatch(closeModal()),
     addFunds: callback =>

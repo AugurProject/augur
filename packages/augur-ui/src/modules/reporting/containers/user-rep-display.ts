@@ -5,10 +5,10 @@ import {
 } from 'modules/account/selectors/select-reporting-balances';
 import { UserRepDisplay } from 'modules/reporting/common';
 import { MODAL_ADD_FUNDS, REP } from 'modules/common/constants';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = state => {
-  const isLoggedIn = AppStatusState.get().isLogged;
+  const isLoggedIn = AppStatus.get().isLogged;
   const repBalances = isLoggedIn
     ? selectReportingBalances(state)
     : selectDefaultReportingBalances();
@@ -19,7 +19,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   openGetRepModal: () =>
-    AppStatusActions.actions.setModal({ type: MODAL_ADD_FUNDS, fundType: REP }),
+    AppStatus.actions.setModal({ type: MODAL_ADD_FUNDS, fundType: REP }),
 });
 
 const ReportingReportingContainer = connect(

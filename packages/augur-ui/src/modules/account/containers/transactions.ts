@@ -16,7 +16,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls'
 import { createBigNumber } from 'utils/create-big-number';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount } = state;
@@ -40,7 +40,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return ({
     repFaucet: () => setModal({ type: MODAL_REP_FAUCET }),
     daiFaucet: () => setModal({ type: MODAL_DAI_FAUCET }),

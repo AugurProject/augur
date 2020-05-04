@@ -7,25 +7,31 @@ const AppStatusContext = createContext({
   actions: STUBBED_APP_STATUS_ACTIONS,
 });
 
-export const AppStatusActions = {
-  isReady: false,
-  actions: STUBBED_APP_STATUS_ACTIONS,
-};
+// export const AppStatus = {
+//   isReady: false,
+//   actions: STUBBED_APP_STATUS_ACTIONS,
+// };
 
-export const AppStatusState = {
+export const AppStatus = {
+  actionsSet: false,
   get: () => ({ ...DEFAULT_APP_STATUS }),
+  actions: STUBBED_APP_STATUS_ACTIONS,
 };
 
 export const AppStatusProvider = ({ children }) => {
   const state = useAppStatus();
-  if (!AppStatusActions.isReady) {
-    AppStatusActions.isReady = true;
-    AppStatusActions.actions = state.actions;
-    Object.freeze(AppStatusActions);
+  // if (!AppStatus.isReady) {
+  //   AppStatus.isReady = true;
+  //   AppStatus.actions = state.actions;
+  //   Object.freeze(AppStatus);
+  // }
+  if (!AppStatus.actionsSet) {
+    AppStatus.actions = state.actions;
+    AppStatus.actionsSet = true;
   }
   const readableState = { ...state };
   delete readableState.actions;
-  AppStatusState.get = () => readableState;
+  AppStatus.get = () => readableState;
   return (
     <AppStatusContext.Provider value={state}>
       {children}

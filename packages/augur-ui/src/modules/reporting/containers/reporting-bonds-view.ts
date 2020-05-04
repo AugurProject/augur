@@ -8,12 +8,12 @@ import { isSameAddress } from 'utils/isSameAddress';
 import getGasPrice from 'modules/auth/selectors/get-gas-price';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe, loginAccount } = state;
   const { market } = ownProps;
-  const { gsnEnabled: GsnEnabled } = AppStatusState.get();
+  const { gsnEnabled: GsnEnabled } = AppStatus.get();
   const userAttoRep = createBigNumber(loginAccount.balances && loginAccount.balances.attoRep || ZERO);
   const userFunds = GsnEnabled ? createBigNumber(loginAccount.balances && loginAccount.balances.dai || ZERO) : createBigNumber(loginAccount.balances && loginAccount.balances.eth || ZERO);
   const hasForked = !!state.universe.forkingInfo;
@@ -43,7 +43,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  initializeGsnWallet: (customAction = null) => AppStatusActions.actions.setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
+  initializeGsnWallet: (customAction = null) => AppStatus.actions.setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
 });
 
 const ReportingBondsViewContainer = connect(

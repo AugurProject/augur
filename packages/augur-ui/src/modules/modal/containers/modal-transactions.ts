@@ -7,10 +7,10 @@ import { ThunkDispatch } from "redux-thunk";
 import { augurSdk } from "services/augursdk";
 import { Getters } from "@augurproject/sdk";
 import { Action } from "redux";
-import { AppStatusState } from "modules/app/store/app-status";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => {
-  const { modal, blockchain: { currentAugurTimestamp: now }} = AppStatusState.get();
+  const { modal, blockchain: { currentAugurTimestamp: now }} = AppStatus.get();
   return ({
     modal,
     now,

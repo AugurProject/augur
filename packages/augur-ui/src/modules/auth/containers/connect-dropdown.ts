@@ -6,10 +6,10 @@ import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
 import { FormattedNumber } from 'modules/types';
 import { AppState } from 'appStore';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { fast, average, safeLow, userDefinedGasPrice } = AppStatusState.get().gasPriceInfo;
+  const { fast, average, safeLow, userDefinedGasPrice } = AppStatus.get().gasPriceInfo;
 
   const userDefined = userDefinedGasPrice || average || 0;
   let gasPriceSpeed = GAS_SPEED_LABELS.STANDARD;
@@ -45,7 +45,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return ({
     logout: () => dispatch(logout()),
     gasModal: () => setModal({ type: MODAL_GAS_PRICE }),

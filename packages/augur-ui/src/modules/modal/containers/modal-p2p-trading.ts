@@ -7,12 +7,12 @@ import { Action } from 'redux';
 import { MODAL_TEST_BET, HELP_CENTER_LEARN_ABOUT_ADDRESS } from 'modules/common/constants';
 import { P2pNetwork } from 'modules/common/icons';
 import { AUGUR_IS_P2P, track } from 'services/analytics/helpers';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  testBet: () => AppStatusActions.actions.setModal({ type: MODAL_TEST_BET }),
+  testBet: () => AppStatus.actions.setModal({ type: MODAL_TEST_BET }),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
 });
 

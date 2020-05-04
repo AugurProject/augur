@@ -6,15 +6,15 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'appStore';
 import { MODAL_ADD_FUNDS } from 'modules/common/constants';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
-  modal: AppStatusState.get().modal,
+  modal: AppStatus.get().modal,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  showAddFundsModal: () => AppStatusActions.actions.setModal({ type: MODAL_ADD_FUNDS }),
+  showAddFundsModal: () => AppStatus.actions.setModal({ type: MODAL_ADD_FUNDS }),
 });
 
 const mergeProps = (sP, dP, oP) => {

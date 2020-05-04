@@ -7,13 +7,13 @@ import { Action } from 'redux';
 import { MODAL_AUGUR_USES_DAI } from 'modules/common/constants';
 import { OnboardingCheckIcon } from 'modules/common/icons';
 import { ACCOUNT_CREATED, track } from 'services/analytics/helpers';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   augurUsesDaiModal: () =>
-    AppStatusActions.actions.setModal({ type: MODAL_AUGUR_USES_DAI }),
+    AppStatus.actions.setModal({ type: MODAL_AUGUR_USES_DAI }),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
 });
 

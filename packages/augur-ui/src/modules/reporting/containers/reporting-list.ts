@@ -8,10 +8,10 @@ import {
 } from 'modules/markets/actions/load-markets';
 import { REPORTING_STATE } from 'modules/common/constants';
 import { selectReportingMarkets } from 'modules/markets/selectors/select-reporting-markets';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state, ownProps) => {
-  const { isLogged, isConnected } = AppStatusState.get();
+  const { isLogged, isConnected } = AppStatus.get();
   return ({
     isLogged,
     isConnected,

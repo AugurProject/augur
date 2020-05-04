@@ -6,10 +6,10 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { updatePlatformTimeframeData } from 'modules/account/actions/update-platform-timeframe-data';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
+  const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
   return ({
     timeframeData: state.universe.timeframeData,
     currentAugurTimestamp,

@@ -5,7 +5,7 @@ import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { MODAL_INITIALIZE_ACCOUNT, CREATEAUGURWALLET, TRANSACTIONS } from 'modules/common/constants';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { loginAccount, newMarket } = state;
@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     gsnEnabled: GsnEnabled,
     walletStatus: walletStatus,
     gasPriceInfo,
-  } = AppStatusState.get();
+  } = AppStatus.get();
 
   const hasFunds = GsnEnabled
     ? !!loginAccount.balances.dai
@@ -37,7 +37,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  initializeGsnWallet: (customAction = null) => AppStatusActions.actions.setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
+  initializeGsnWallet: (customAction = null) => AppStatus.actions.setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
   updateWalletStatus: () => {
     dispatch(removePendingTransaction(CREATEAUGURWALLET));
   }

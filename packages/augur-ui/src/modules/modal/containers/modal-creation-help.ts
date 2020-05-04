@@ -7,10 +7,10 @@ import { Action } from "redux";
 import { approveToTrade } from "modules/contracts/actions/contractCalls";
 import { AppState } from "appStore";
 import { MARKET_CREATION_COPY } from "modules/create-market/constants";
-import { AppStatusState } from "modules/app/store/app-status";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => ({
-  modal: AppStatusState.get().modal,
+  modal: AppStatus.get().modal,
   account: state.loginAccount,
 });
 

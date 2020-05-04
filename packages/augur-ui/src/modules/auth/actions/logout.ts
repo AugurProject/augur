@@ -7,11 +7,11 @@ import { isLocalHost } from 'utils/is-localhost';
 import { augurSdk } from 'services/augursdk';
 import { clearLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export function logout() {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
-    const { actions: { setGSNEnabled, setWalletStatus, setMobileMenuState }} = AppStatusActions;
+    const { actions: { setGSNEnabled, setWalletStatus, setMobileMenuState }} = AppStatus;
     const localStorageRef =
       typeof window !== 'undefined' && window.localStorage;
     if (localStorageRef && localStorageRef.removeItem) {

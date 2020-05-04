@@ -3,7 +3,7 @@ import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets
 import { Favorite } from 'modules/types';
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'appStore';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const UPDATE_FAVORITES = 'UPDATE_FAVORITES';
 export const TOGGLE_FAVORITE = 'TOGGLE_FAVORITE';
@@ -39,7 +39,7 @@ export const toggleFavorite = (
   dispatch,
   getState
 ) => {
-  const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
+  const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
   dispatch(toggleFavoriteAction(marketId, currentAugurTimestamp));
 };
 

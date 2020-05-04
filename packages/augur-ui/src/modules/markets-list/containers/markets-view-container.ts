@@ -33,7 +33,7 @@ import {
 } from 'modules/app/store/constants';
 import { updateLoginAccountSettings } from 'modules/markets-list/actions/update-login-account-settings';
 import { marketListViewed } from 'services/analytics/helpers';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const findMarketsInReportingState = (markets, reportingState) => {
   const reportingStates: String[] = organizeReportingStates(reportingState);
@@ -58,7 +58,7 @@ const mapStateToProps = (state: AppState, { location }) => {
       templateFilter,
       includeInvalidMarkets,
     },
-  } = AppStatusState.get();
+  } = AppStatus.get();
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
 
   return {
@@ -90,7 +90,7 @@ const mapStateToProps = (state: AppState, { location }) => {
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<void, AppState, Action>
 ) => {
-  const { updateFilterSortOptions } = AppStatusActions.actions;
+  const { updateFilterSortOptions } = AppStatus.actions;
   return ({
     toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
     setLoadMarketsPending: isSearching =>

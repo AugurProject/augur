@@ -41,7 +41,7 @@ import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-management';
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
@@ -84,7 +84,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (await loginAccount.meta.signer.provider.getBalance(loginAccount.meta.signer._address)).gt(0);
 
-      AppStatusActions.actions.setModal({
+      AppStatus.actions.setModal({
         type: MODAL_ERROR,
         error: getRelayerDownErrorMessage(loginAccount.meta.accountType, hasEth),
         showDiscordLink: false,
@@ -93,7 +93,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         title: 'We\'re having trouble processing transactions',
       });
     }
-    const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
+    const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
     const timestamp = currentAugurTimestamp * 1000;
     if (eventName === TXEventName.Failure || eventName === TXEventName.RelayerDown) {
       const genHash = hash ? hash : generateTxParameterId(transaction.params);

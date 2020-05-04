@@ -21,7 +21,7 @@ import {
   TemplateInput,
   UserInputDateTime,
 } from '@augurproject/artifacts';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export function submitNewMarket(
   market: NewMarket,
@@ -32,7 +32,7 @@ export function submitNewMarket(
     getState: () => AppState
   ) => {
     const { loginAccount } = getState();
-    const { gsnEnabled } = AppStatusState.get();
+    const { gsnEnabled } = AppStatus.get();
     market.orderBook = sortOrders(market.orderBook);
     market.endTime = market.endTimeFormatted.timestamp;
     market.designatedReporterAddress =

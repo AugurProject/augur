@@ -13,7 +13,7 @@ import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketDa
 import { createSelector } from 'reselect';
 import { Getters } from '@augurproject/sdk';
 import { createBigNumber } from 'utils/create-big-number';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];
@@ -38,7 +38,7 @@ export const selectMarket = (marketId): MarketData | null => {
 const assembleMarket = createSelector(
   selectMarketsDataStateMarket,
   (marketData): MarketData => {
-    const { blockchain: { currentAugurTimestamp } } = AppStatusState.get();
+    const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
     return convertMarketInfoToMarketData(marketData, currentAugurTimestamp * 1000);
   }
 );

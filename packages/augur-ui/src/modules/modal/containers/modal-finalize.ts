@@ -9,10 +9,10 @@ import { AppState } from "appStore";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";
-import { AppStatusState } from "modules/app/store/app-status";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => {
-  const { modal } = AppStatusState.get();
+  const { modal } = AppStatus.get();
   const market = selectMarket(modal.marketId);
 
   return {

@@ -10,10 +10,10 @@ import CreateMarketView from "modules/create-market/components/create-market-vie
 import { estimateSubmitNewMarket } from "modules/markets/actions/estimate-submit-new-market";
 import getValue from "utils/get-value";
 import getGasPrice from "modules/auth/selectors/get-gas-price";
-import { AppStatusState } from "modules/app/store/app-status";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = state => {
-  const { categoryStats, blockchain: { currentAugurTimestamp } } = AppStatusState.get();
+  const { categoryStats, blockchain: { currentAugurTimestamp } } = AppStatus.get();
   return ({
     categoryStats,
     universe: state.universe,

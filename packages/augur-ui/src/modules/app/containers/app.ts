@@ -17,12 +17,12 @@ import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, WALLET_STATUS_VALUES, TRANSACTION
 import { saveAffiliateAddress } from "modules/account/actions/login-account";
 import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
 import { AppState } from "appStore";
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, pendingQueue } = state;
   const { balances } = loginAccount;
-  const { walletStatus, modal } = AppStatusState.get();
+  const { walletStatus, modal } = AppStatus.get();
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   const notifications = selectNotifications(state);
   const walletBalances = loginAccount.balances;
@@ -49,7 +49,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return ({
     initAugur: (history, overrides, cb) =>
       dispatch(initAugur(history, overrides, cb)),

@@ -7,7 +7,7 @@ import { Action } from "redux";
 import { TRANSACTIONS, CANCELORDER, TX_CHECK_BLOCKNUMBER_LIMIT } from "modules/common/constants";
 import { AppState } from "appStore";
 import { updatePendingOrderStatus } from "modules/orders/actions/pending-orders-management";
-import { AppStatusState } from "modules/app/store/app-status";
+import { AppStatus } from "modules/app/store/app-status";
 
 export const ADD_PENDING_DATA = "ADD_PENDING_DATA";
 export const REMOVE_PENDING_DATA = "REMOVE_PENDING_DATA";
@@ -75,7 +75,7 @@ const addPendingDataWithBlockNumber = (
   hash: string,
   info?: CreateMarketData | TransactionMetadata,
 ): BaseAction => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { blockchain: { currentBlockNumber: blockNumber } } = AppStatusState.get();
+  const { blockchain: { currentBlockNumber: blockNumber } } = AppStatus.get();
   dispatch({
     type: ADD_PENDING_DATA,
     data: {

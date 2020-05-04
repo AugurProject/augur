@@ -5,10 +5,10 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { getMarketAgeInDays } from "utils/format-date";
 import { AppState } from "appStore";
 import { ZERO } from "modules/common/constants";
-import { AppStatusState } from "modules/app/store/app-status";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState, ownProps: any) => {
-  const currentTimestamp = AppStatusState.get().blockchain.currentAugurTimestamp;
+  const currentTimestamp = AppStatus.get().blockchain.currentAugurTimestamp;
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const daysPassed =
     market &&

@@ -16,14 +16,14 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback, Notification } from 'modules/types';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 // TODO create state Interface
 const mapStateToProps = (state: AppState) => {
   const notifications = selectNotifications(state);
   const {
     blockchain: { currentAugurTimestamp },
-  } = AppStatusState.get();
+  } = AppStatus.get();
   return {
     notifications,
     currentAugurTimestamp,
@@ -34,7 +34,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return {
     updateReadNotifications: (notifications: Notification[]) =>
       dispatch(updateReadNotifications(notifications)),

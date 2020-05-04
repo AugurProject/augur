@@ -13,7 +13,7 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 import { Getters, TXEventName } from '@augurproject/sdk';
 import { setLiquidityOrderStatus } from 'modules/events/actions/liquidity-transactions';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
@@ -206,7 +206,7 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
 ) => {
   const { marketId, chunkOrders } = options;
   const { loginAccount, marketInfos, pendingLiquidityOrders } = getState();
-  const { gsnEnabled } = AppStatusState.get();
+  const { gsnEnabled } = AppStatus.get();
   // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
   if (!gsnEnabled && loginAccount.allowance.lte(ZERO)) await approveToTrade();
 

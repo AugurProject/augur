@@ -18,12 +18,12 @@ import {
 } from 'modules/markets-list/actions/update-markets-list';
 import { MODAL_SIGNUP, POPULAR_CATEGORIES } from 'modules/common/constants';
 import { selectMarketStats } from 'modules/markets-list/selectors/markets-list';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, { location }) => {
   const marketStats = selectMarketStats(state);
   const markets = selectMarkets(state);
-  const { categoryStats, isLogged, restoredAccount, isConnected } = AppStatusState.get();
+  const { categoryStats, isLogged, restoredAccount, isConnected } = AppStatus.get();
   return {
     categoryStats,
     categoryData: marketStats,
@@ -40,7 +40,7 @@ const mapStateToProps = (state: AppState, { location }) => {
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<void, AppState, Action>
 ) => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return ({
     signupModal: () => setModal({ type: MODAL_SIGNUP }),
     toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),

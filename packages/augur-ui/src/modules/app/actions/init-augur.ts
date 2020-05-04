@@ -47,7 +47,7 @@ import { getNetwork } from 'utils/get-network-name';
 import { buildConfig } from '@augurproject/artifacts';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { isGoogleBot } from 'utils/is-google-bot';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -55,7 +55,7 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   const loggedInUser = getLoggedInUserFromLocalStorage();
   const loggedInAccount = (loggedInUser && loggedInUser.address) || null;
   const loggedInAccountType = (loggedInUser && loggedInUser.type) || null;
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   const errorModal = () => {
     dispatch(logout());
     setModal({
@@ -98,8 +98,8 @@ function pollForNetwork(
   getState: () => AppState
 ) {
   setInterval(() => {
-    const { modal } = AppStatusState.get();
-    const { setModal } = AppStatusActions.actions;
+    const { modal } = AppStatus.get();
+    const { setModal } = AppStatus.actions;
     if (!process.env.ENABLE_MAINNET) {
       const isMainnet = checkIfMainnet();
       if (isMainnet && isEmpty(modal)) {
@@ -123,7 +123,7 @@ export function connectAugur(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { modal } = AppStatusState.get();
+    const { modal } = AppStatus.get();
     const { loginAccount } = getState();
     const windowApp = windowRef as WindowApp;
     const loggedInUser = getLoggedInUserFromLocalStorage();
@@ -147,7 +147,7 @@ export function connectAugur(
           preloaded: true,
         },
       };
-      AppStatusActions.actions.setRestoredAccount(true);
+      AppStatus.actions.setRestoredAccount(true);
       dispatch(updateLoginAccount(accountObject));
     };
 
@@ -219,7 +219,7 @@ export function connectAugur(
     } catch (e) {
       console.error(e);
       if (provider._network && config.networkId !== provider._network.chainId) {
-        const { setModal } = AppStatusActions.actions;
+        const { setModal } = AppStatus.actions;
         return setModal({
             type: MODAL_NETWORK_MISMATCH,
             expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
@@ -259,7 +259,7 @@ export function connectAugur(
 
     // wire up start up events for sdk
     dispatch(listenForStartUpEvents(sdk));
-    AppStatusActions.actions.setCanHotload(true);
+    AppStatus.actions.setCanHotload(true);
 
     await augurSdk.connect();
 
@@ -308,7 +308,7 @@ export function initAugur(
     );
     // cache fingerprint
     getFingerprint();
-    AppStatusActions.actions.setEnv(config);
+    AppStatus.actions.setEnv(config);
     tryToPersistStorage();
     connectAugur(history, config, true, callback)(dispatch, getState);
 

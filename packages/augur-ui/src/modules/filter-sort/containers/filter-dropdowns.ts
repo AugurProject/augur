@@ -4,16 +4,16 @@ import FilterDropdown from 'modules/filter-sort/components/filter-dropdowns';
 import {
   MARKET_SORT,
 } from 'modules/app/store/constants';
-import { AppStatusActions, AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = state => { 
-  const { filterSortOptions: { marketSort: defaultSort }} = AppStatusState.get();
+  const { filterSortOptions: { marketSort: defaultSort }} = AppStatus.get();
   return ({
     defaultSort,
   });
 };
 const mapDispatchToProps = dispatch => ({
-  updateSortOption: sortOption => AppStatusActions.actions.updateFilterSortOptions({ [MARKET_SORT]: sortOption }),
+  updateSortOption: sortOption => AppStatus.actions.updateFilterSortOptions({ [MARKET_SORT]: sortOption }),
 });
 
 const FilterDropdownsContainer = withRouter(

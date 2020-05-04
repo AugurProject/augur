@@ -16,7 +16,7 @@ import { augurSdk } from 'services/augursdk';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { logout } from 'modules/auth/actions/logout';
 import { AppState } from 'appStore';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 // MetaMask, dapper, Mobile wallets
 export const loginWithInjectedWeb3 = () => async (
@@ -29,7 +29,7 @@ export const loginWithInjectedWeb3 = () => async (
   };
   const success = async (account: string, refresh: boolean) => {
     if (!account) return failure('No Account');
-    const { setModal, setIsLogged } = AppStatusActions.actions;
+    const { setModal, setIsLogged } = AppStatus.actions;
     if (refresh) setIsLogged(false);
 
     dispatch(login(account));

@@ -28,8 +28,8 @@ import {
   CATEGORY_STATS,
   FILTER_SORT_OPTIONS,
   MODAL,
+  UNIVERSE,
 } from 'modules/app/store/constants';
-import { breakdown } from 'modules/modal/modal.styles.less';
 
 const {
   SET_THEME,
@@ -60,6 +60,8 @@ const {
   UPDATE_FILTER_SORT_OPTIONS,
   SET_MODAL,
   CLOSE_MODAL,
+  UPDATE_UNIVERSE,
+  SWITCH_UNIVERSE,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -201,6 +203,18 @@ export function AppStatusReducer(state, action) {
       updatedState[MODAL] = {};
       break;
     }
+    case UPDATE_UNIVERSE: {
+      updatedState[UNIVERSE] = {
+        ...updatedState[UNIVERSE],
+        ...action.universe,
+      };
+      break;
+    }
+    case SWITCH_UNIVERSE: {
+      delete updatedState[UNIVERSE].forkingInfo;
+      delete updatedState[UNIVERSE].disputeWindow;
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -263,6 +277,8 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       updateFilterSortOptions: filterSortOptions => dispatch({ type: UPDATE_FILTER_SORT_OPTIONS, filterSortOptions }),
       setModal: modal => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
+      updateUniverse: universe => dispatch({ type: UPDATE_UNIVERSE, universe }),
+      switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
     },
   };
 };

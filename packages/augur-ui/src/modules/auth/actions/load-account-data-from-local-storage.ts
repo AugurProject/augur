@@ -24,7 +24,7 @@ import {
   MARKET_SHOW_INVALID,
 } from 'modules/app/store/constants';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const loadAccountDataFromLocalStorage = (
   address: string
@@ -47,7 +47,7 @@ export const loadAccountDataFromLocalStorage = (
       if (settings) {
         dispatch(updateLoginAccount({ settings }));
         const { maxFee, spread, showInvalid, templateFilter } = settings;
-        const { updateFilterSortOptions } = AppStatusActions.actions;
+        const { updateFilterSortOptions } = AppStatus.actions;
         if (maxFee) {
           updateFilterSortOptions({ [MARKET_MAX_FEES]: settings.maxFee });
         }
@@ -131,7 +131,7 @@ export const loadAccountDataFromLocalStorage = (
         dispatch(loadPendingQueue(pendingQueue));
       }
       if (gasPriceInfo && gasPriceInfo.userDefinedGasPrice) {
-        AppStatusActions.actions.updateGasPriceInfo({
+        AppStatus.actions.updateGasPriceInfo({
           userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
         });
       }

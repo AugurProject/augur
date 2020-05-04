@@ -10,7 +10,7 @@ import MarketsListFilters from '../components/inner-nav/markets-list-filters';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
-import { AppStatusState, AppStatusActions } from '../store/app-status';
+import { AppStatus } from '../store/app-status';
 
 const mapStateToProps = ({ marketsList, loginAccount }: AppState) => {
   const {
@@ -20,7 +20,7 @@ const mapStateToProps = ({ marketsList, loginAccount }: AppState) => {
       includeInvalidMarkets,
       templateFilter,
     },
-  } = AppStatusState.get();
+  } = AppStatus.get();
   return {
     maxFee,
     maxLiquiditySpread,
@@ -34,7 +34,7 @@ const mapStateToProps = ({ marketsList, loginAccount }: AppState) => {
 const mapDispatchToProps = dispatch => {
   const {
     actions: { updateFilterSortOptions },
-  } = AppStatusActions;
+  } = AppStatus;
   return ({
     updateMaxFee: maxFee =>
       updateFilterSortOptions({ [MARKET_MAX_FEES]: maxFee }),

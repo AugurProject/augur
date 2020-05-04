@@ -4,10 +4,10 @@ import { MODAL_CLAIM_FEES, MODAL_PARTICIPATE, ZERO } from 'modules/common/consta
 import { formatAttoDai, formatAttoRep, formatPercent, } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { isLogged } = AppStatusState.get();
+  const { isLogged } = AppStatus.get();
   const { address, fees, purchased } =
     state.universe && state.universe.disputeWindow;
   const disablePurchaseButton = !!state.universe.forkingInfo;
@@ -57,7 +57,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return ({
     openModal: () => setModal({ type: MODAL_PARTICIPATE }),
     openClaimParticipationTokensModal: () => setModal({type: MODAL_CLAIM_FEES, participationTokensOnly: true})

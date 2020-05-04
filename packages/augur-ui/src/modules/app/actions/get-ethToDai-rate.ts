@@ -7,7 +7,7 @@ import logError from 'utils/log-error';
 import { formatDaiEstimate, formatAttoDai } from 'utils/format-number';
 import { augurSdk } from 'services/augursdk';
 import { BigNumber } from 'utils/create-big-number';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const getEthToDaiRate = (
   callback: NodeStyleCallback = logError
@@ -17,7 +17,7 @@ export const getEthToDaiRate = (
 ) => {
   const ethToDaiRate = getEthForDaiRate();
   if (ethToDaiRate) {
-    AppStatusActions.actions.setEthToDaiRate(formatAttoDai(ethToDaiRate));
+    AppStatus.actions.setEthToDaiRate(formatAttoDai(ethToDaiRate));
   }
 };
 

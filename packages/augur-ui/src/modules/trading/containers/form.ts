@@ -12,7 +12,7 @@ import { formatGasCost } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { GWEI_CONVERSION } from 'modules/common/constants';
 import { augurSdk } from 'services/augursdk';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { loginAccount } = state;
@@ -22,7 +22,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     const gasConfirmTime = await augur.getGasConfirmEstimate();
     return gasConfirmTime;
   };
-  const { gasPriceInfo } = AppStatusState.get();
+  const { gasPriceInfo } = AppStatus.get();
   const gasPriceInWei = formatGasCost(
     createBigNumber(gasPriceInfo.userDefinedGasPrice || 0).times(
       createBigNumber(GWEI_CONVERSION)
@@ -41,7 +41,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
       ownProps.market.orderBook[selectedOutcomeId]
     );
   }
-  const { blockchain: { currentAugurTimestamp: currentTimestamp }} = AppStatusState.get();
+  const { blockchain: { currentAugurTimestamp: currentTimestamp }} = AppStatus.get();
   return {
     availableDai: totalTradingBalance(loginAccount),
     currentTimestamp,

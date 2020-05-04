@@ -8,13 +8,13 @@ import { windowRef } from 'utils/window-ref';
 import { LoginAccount } from 'modules/types';
 import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const loginWithTorus = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const networkId: string = AppStatusState.get().env.networkId;
+  const networkId: string = AppStatus.get().env.networkId;
   const torusNetwork = getNetwork(networkId);
   let accountObject: Partial<LoginAccount> = {};
 

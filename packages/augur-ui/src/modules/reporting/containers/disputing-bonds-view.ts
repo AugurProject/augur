@@ -5,11 +5,11 @@ import { AppState } from 'appStore';
 import { GSN_WALLET_SEEN, MODAL_INITIALIZE_ACCOUNT } from 'modules/common/constants';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
-  const { gsnEnabled: GsnEnabled } = AppStatusState.get();
+  const { gsnEnabled: GsnEnabled } = AppStatus.get();
   return {
     warpSyncHash: state.universe.warpSyncHash,
     userAvailableRep: state.loginAccount.balances && state.loginAccount.balances.rep,
@@ -21,7 +21,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  initializeGsnWallet: (customAction = null) => AppStatusActions.actions.setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
+  initializeGsnWallet: (customAction = null) => AppStatus.actions.setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
 });
 
 const DisputingBondsViewContainer = connect(

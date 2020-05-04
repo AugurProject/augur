@@ -12,7 +12,7 @@ import {
   DEFAULT_FALLBACK_GAS_FAST,
 } from 'modules/common/constants';
 import { augurSdk } from 'services/augursdk';
-import { AppStatusActions } from '../store/app-status';
+import { AppStatus } from '../store/app-status';
 
 export function loadGasPriceInfo(
   callback: NodeStyleCallback = logError
@@ -27,7 +27,7 @@ export function loadGasPriceInfo(
 
     getGasPriceRanges(networkId, result => {
       console.log('gettingGasInfo', result);
-      AppStatusActions.actions.updateGasPriceInfo(result);
+      AppStatus.actions.updateGasPriceInfo(result);
     });
   };
 

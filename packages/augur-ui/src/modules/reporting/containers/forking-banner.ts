@@ -13,7 +13,7 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { MarketReportClaimableContracts } from 'modules/types';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const { universe, loginAccount } = state;
@@ -36,7 +36,7 @@ const mapStateToProps = (state: AppState) => {
   const releasableRep = selectReportingWinningsByMarket(state);
   const {
     blockchain: { currentAugurTimestamp },
-  } = AppStatusState.get();
+  } = AppStatus.get();
   return {
     show: true,
     hasStakedRep,
@@ -50,7 +50,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return {
     releaseReportingRep: (allRep: MarketReportClaimableContracts) =>
       setModal({

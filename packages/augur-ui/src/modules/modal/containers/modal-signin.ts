@@ -32,14 +32,14 @@ import {
   MetaMaskLogin,
 } from 'modules/common/icons';
 import { windowRef } from 'utils/window-ref';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
-  modal: AppStatusState.get().modal,
+  modal: AppStatus.get().modal,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
-  const { setModal } = AppStatusActions.actions;
+  const { setModal } = AppStatus.actions;
   return {
     closeModal: () => dispatch(closeModal()),
     loginModal: () => setModal({ type: MODAL_LOGIN }),

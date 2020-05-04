@@ -10,7 +10,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { TransactionMetadataParams } from 'contract-dependencies-ethers/src';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { AppState } from 'appStore';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const ADD_PENDING_ORDER = 'ADD_PENDING_ORDER';
 export const REMOVE_PENDING_ORDER = 'REMOVE_PENDING_ORDER';
@@ -35,7 +35,7 @@ export const updatePendingOrderStatus = (
 
 export const addPendingOrderWithBlockNumber = (pendingOrder: UIOrder, marketId: string) =>
 (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { blockchain: { currentBlockNumber } } = AppStatusState.get();
+  const { blockchain: { currentBlockNumber } } = AppStatus.get();
   pendingOrder.blockNumber = currentBlockNumber;
 
   dispatch({
@@ -53,7 +53,7 @@ const updatePendingOrderStatusWithBlockNumber = (
   status: string,
   hash: string,
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { blockchain: { currentBlockNumber } } = AppStatusState.get();
+  const { blockchain: { currentBlockNumber } } = AppStatus.get();
   const blockNumber = currentBlockNumber;
 
   dispatch({

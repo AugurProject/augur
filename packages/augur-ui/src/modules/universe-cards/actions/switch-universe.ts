@@ -10,7 +10,7 @@ import { MARKETS } from 'modules/routes/constants/views';
 import { loadMarketsByFilter } from 'modules/markets/actions/load-markets';
 import { ALL_MARKETS } from 'modules/common/constants';
 import { setSelectedUniverse } from 'modules/auth/actions/selected-universe-management';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const switchUniverse = (
   universeId: string,
@@ -28,7 +28,7 @@ export const switchUniverse = (
       marketSort: sort,
       marketFilter,
     },
-  } = AppStatusState.get();
+  } = AppStatus.get();
   dispatch(
     loadUniverseDetails(universeId, account, () => {
       dispatch(switchUniverseState());

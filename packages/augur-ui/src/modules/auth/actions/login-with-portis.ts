@@ -12,13 +12,13 @@ import {
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const loginWithPortis = (forceRegisterPage = false) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const networkId: string = AppStatusState.get().env.networkId;
+  const networkId: string = AppStatus.get().env.networkId;
   const portisNetwork = getNetwork(networkId);
   const localPortisNetwork = {
     nodeUrl: 'http://localhost:8545',
@@ -70,7 +70,7 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
 
       portis.onError(error => {
         document.querySelector('.por_portis-container').remove();
-        const { setModal } = AppStatusActions.actions;
+        const { setModal } = AppStatus.actions;
         if (
           error.message &&
           error.message.toLowerCase().indexOf('cookies') !== -1

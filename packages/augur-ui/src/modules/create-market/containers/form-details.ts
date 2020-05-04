@@ -8,7 +8,7 @@ import {
 import FormDetails from "modules/create-market/components/form-details";
 import getValue from "utils/get-value";
 import getGasPrice from "modules/auth/selectors/get-gas-price";
-import { AppStatusState } from "modules/app/store/app-status";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = state => ({
   universe: state.universe,
@@ -19,7 +19,7 @@ const mapStateToProps = state => ({
   categories: state.categories,
   gasPrice: getGasPrice(),
   address: getValue(state, "loginAccount.address"),
-  currentTimestamp: AppStatusState.get().blockchain.currentAugurTimestamp,
+  currentTimestamp: AppStatus.get().blockchain.currentAugurTimestamp,
 });
 
 const mapDispatchToProps = dispatch => ({

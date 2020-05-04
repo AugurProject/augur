@@ -6,10 +6,10 @@ import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/registe
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { AppStatusActions, AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { gasPriceInfo, modal } = AppStatusState.get();
+  const { gasPriceInfo, modal } = AppStatus.get();
   return ({
     modal,
     ...gasPriceInfo,
@@ -19,7 +19,7 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeAction: () => dispatch(closeModal()),
   saveAction: (userDefinedGasPrice: number, average: number) => {
-    AppStatusActions.actions.updateGasPriceInfo({ userDefinedGasPrice });
+    AppStatus.actions.updateGasPriceInfo({ userDefinedGasPrice });
     dispatch(registerUserDefinedGasPriceFunction(userDefinedGasPrice, average));
     dispatch(closeModal());
   },

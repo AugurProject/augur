@@ -20,7 +20,7 @@ import {
 } from 'modules/orders/actions/pending-orders-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import { AppStatusState, AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const placeMarketTrade = ({
   marketId,
@@ -38,7 +38,7 @@ export const placeMarketTrade = ({
     zeroXStatus,
     gsnEnabled,
     blockchain: { currentAugurTimestamp },
-  } = AppStatusState.get();
+  } = AppStatus.get();
   const autoFailOrder = zeroXStatus === ZEROX_STATUSES.ERROR;
   const market: Getters.Markets.MarketInfo = marketInfos[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
@@ -114,7 +114,7 @@ export const placeMarketTrade = ({
     tradeGroupId
   ).catch(err => {
     console.log(err);
-    const { setModal } = AppStatusActions.actions;
+    const { setModal } = AppStatus.actions;
     setModal({
       type: MODAL_ERROR,
       error: err.message ? err.message : JSON.stringify(err),

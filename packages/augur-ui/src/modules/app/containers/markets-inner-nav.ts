@@ -13,7 +13,7 @@ import {
   TEMPLATE_FILTER,
 } from 'modules/app/store/constants';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
-import { AppStatusActions } from '../store/app-status';
+import { AppStatus } from '../store/app-status';
 
 const mapStateToProps = ({ marketsList, loginAccount }) => {
   return {
@@ -23,7 +23,7 @@ const mapStateToProps = ({ marketsList, loginAccount }) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const { actions: { updateFilterSortOptions } } = AppStatusActions;
+  const { actions: { updateFilterSortOptions } } = AppStatus;
   return ({
     updateLoginAccount: settings => dispatch(updateLoginAccount({ settings })),
     updateSelectedCategories: categories =>

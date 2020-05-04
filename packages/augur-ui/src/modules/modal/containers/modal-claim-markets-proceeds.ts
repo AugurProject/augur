@@ -26,11 +26,11 @@ import {
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { labelWithTooltip } from 'modules/common/label-with-tooltip';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const pendingQueue = state.pendingQueue || [];
-  const { modal, gsnEnabled, blockchain: { currentAugurTimestamp } } = AppStatusState.get();
+  const { modal, gsnEnabled, blockchain: { currentAugurTimestamp } } = AppStatus.get();
   const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
     state
   );

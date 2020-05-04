@@ -3,13 +3,13 @@ import unpackTransactionParameters from "modules/transactions/helpers/unpack-tra
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { AppState } from "appStore";
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const constructRelayTransaction = (tx: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const { blockchain: { currentAugurTimestamp }} = AppStatusState.get();
+  const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
   const { hash, status } = tx;
   const unpackedParams = unpackTransactionParameters(tx);
   const timestamp =
