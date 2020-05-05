@@ -1041,8 +1041,15 @@ span.PendingLabel {
 .StatusErrorMessage {
   display: flex;
   justify-content: center;
-  background-color: @color-module-background-action-focus;
   padding: @size-5 0;
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 100;
+
+  @media @breakpoint-tablet {
+    margin-left: 100px;
+  }
 
   > span {
     .text-10-bold;

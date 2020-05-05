@@ -139,7 +139,7 @@ const TopNav = ({
           </div>
         )}
       </ul>
-      <StatusErrorMessage />
+      {/* <StatusErrorMessage /> */}
       <GlobalChat />
     </aside>
   );

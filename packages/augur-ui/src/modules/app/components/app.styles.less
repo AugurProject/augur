@@ -128,6 +128,14 @@ h6 {
   overflow-x: hidden;
   overflow-y: auto;
 
+  &.StatusErrorShowing {
+    margin-top: @size-10;
+
+    @media @breakpoint-mobile-tablet {
+      margin-top: @size-50;
+    }
+  }
+
   @media @breakpoint-mobile {
     height: fit-content;
     width: 100vw;

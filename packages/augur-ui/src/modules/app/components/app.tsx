@@ -30,6 +30,7 @@ import {
   MODAL_NETWORK_CONNECT,
   MOBILE_MENU_STATES,
   TRADING_TUTORIAL,
+  ZEROX_STATUSES,
 } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/app.styles.less';
@@ -53,6 +54,8 @@ import { ExternalLinkText } from 'modules/common/buttons';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { SDKConfiguration } from '@augurproject/artifacts';
+import { StatusErrorMessage } from 'modules/common/labels';
+import { Ox_STATUS } from '../actions/update-app-status';
 
 interface AppProps {
   notifications: Notification[];
@@ -392,7 +395,8 @@ export default class AppView extends Component<AppProps> {
       showMigrateRepButton,
       stats,
       whichChatPlugin,
-      isMobile
+      isMobile,
+      appStatus
     } = this.props;
     this.sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
@@ -401,6 +405,7 @@ export default class AppView extends Component<AppProps> {
     const onTradingTutorial =
       parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
 
+    const statusErrorShowing = appStatus[Ox_STATUS] === ZEROX_STATUSES.ERROR;
     return (
       <main>
         <HelmetTag {...APP_HEAD_TAGS} />
@@ -521,8 +526,10 @@ export default class AppView extends Component<AppProps> {
               ) : (
                 <div className="no-nav-placehold" />
               )}
+              <StatusErrorMessage />
               <section
                 className={classNames(Styles.Main__content, {
+                  [Styles.StatusErrorShowing]: statusErrorShowing,
                   [Styles.Tutorial]: onTradingTutorial,
                   [Styles.ModalShowing]: Object.keys(modal).length !== 0,
                   [Styles.SideNavOpen]:
