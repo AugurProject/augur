@@ -6,7 +6,6 @@ import {
   MovementLabel,
   LinearPropertyLabel,
   LinearPropertyLabelUnderlineTooltip,
-  StatusErrorMessage,
 } from 'modules/common/labels';
 import { CoreStats } from 'modules/types';
 import Styles from 'modules/app/components/top-bar.styles.less';
@@ -17,6 +16,8 @@ import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
 import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
+import { formatDai } from 'utils/format-number';
+import { createBigNumber } from 'utils/create-big-number';
 
 interface StatsProps {
   isLogged: boolean;
@@ -82,45 +83,42 @@ const TopBar: React.FC<TopBarProps> = ({
 }) => {
   return (
     <header className={Styles.TopBar}>
-      <div>
-        <div className={Styles.Logo}>
-          <Link to={makePath(MARKETS)}>
-            <Logo />
-          </Link>
-        </div>
-
-        <Stats
-          isLogged={isLogged}
-          stats={stats}
-          restoredAccount={restoredAccount}
-        />
-        <div>
-          {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
-            <HelpResources isMobile={isMobile} helpModal={helpModal} />
-          )}
-          {!isLogged && !restoredAccount && (
-            <SecondaryButton action={() => loginModal()} text={'Login'} />
-          )}
-          {!isLogged && !restoredAccount && (
-            <PrimaryButton action={() => signupModal()} text={'Signup'} />
-          )}
-          {(isLogged || restoredAccount) && (
-            <button
-              className={classNames(Styles.alerts, {
-                [Styles.alertsDark]: alertsVisible,
-              })}
-              onClick={() => {
-                updateIsAlertVisible(!alertsVisible);
-              }}
-              tabIndex={-1}
-            >
-              {unseenCount > 99 ? Alerts('99+') : Alerts(unseenCount)}
-            </button>
-          )}
-          <ConnectAccount />
-        </div>
+      <div className={Styles.Logo}>
+        <Link to={makePath(MARKETS)}>
+          <Logo />
+        </Link>
       </div>
-      <StatusErrorMessage />
+
+      <Stats
+        isLogged={isLogged}
+        stats={stats}
+        restoredAccount={restoredAccount}
+      />
+      <div>
+        {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
+          <HelpResources isMobile={isMobile} helpModal={helpModal} />
+        )}
+        {!isLogged && !restoredAccount && (
+          <SecondaryButton action={() => loginModal()} text={'Login'} />
+        )}
+        {!isLogged && !restoredAccount && (
+          <PrimaryButton action={() => signupModal()} text={'Signup'} />
+        )}
+        {(isLogged || restoredAccount) && (
+          <button
+            className={classNames(Styles.alerts, {
+              [Styles.alertsDark]: alertsVisible,
+            })}
+            onClick={() => {
+              updateIsAlertVisible(!alertsVisible);
+            }}
+            tabIndex={-1}
+          >
+            {unseenCount > 99 ? Alerts('99+') : Alerts(unseenCount)}
+          </button>
+        )}
+        <ConnectAccount />
+      </div>
     </header>
   );
 };

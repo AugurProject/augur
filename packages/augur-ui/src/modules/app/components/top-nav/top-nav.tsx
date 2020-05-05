@@ -20,26 +20,31 @@ import {
   CREATE_MARKET
 } from 'modules/routes/constants/views';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
-import { StatusErrorMessage } from 'modules/common/labels';
 
 interface TopNavProps {
   isLogged: boolean;
   menuData: NavMenuItem[];
   currentBasePath: string;
+  isDisabled?: boolean;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
   updateModal: Function;
+  showCreateAccountButton: boolean;
+  createFundedGsnWallet: Function;
 }
 
 const SPREAD_INDEX = 3;
 
 const TopNav = ({
   isLogged,
+  isDisabled = false,
   menuData,
   currentBasePath,
   migrateV1Rep,
+  createFundedGsnWallet,
   showMigrateRepButton = false,
+  showCreateAccountButton = false,
   walletBalances,
 }: TopNavProps) => {
   const isCurrentItem = item => {
@@ -139,7 +144,6 @@ const TopNav = ({
           </div>
         )}
       </ul>
-      <StatusErrorMessage />
       <GlobalChat />
     </aside>
   );
