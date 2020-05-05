@@ -371,7 +371,7 @@ export const handleBulkOrdersLog = (logs: any) =>
 };
 
 export const handleOrderLog = (log: any) =>
-(dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+(dispatch: ThunkDispatch<void, any, Action>) => {
   const type = log.eventType;
   switch (type) {
     case OrderEventType.Create:
