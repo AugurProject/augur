@@ -25,6 +25,7 @@ import {
   CREATE_MARKET,
   DISPUTING,
   REPORTING,
+  MARKET
 } from 'modules/routes/constants/views';
 import {
   MODAL_NETWORK_CONNECT,
@@ -499,6 +500,7 @@ export default class AppView extends Component<AppProps> {
                 updateModal={updateModal}
               />
             </section>
+            {!isMobile && <StatusErrorMessage />}
             <AlertsContainer
               alertsVisible={isLogged && sidebarStatus.isAlertsVisible}
               toggleAlerts={() => this.toggleAlerts()}
@@ -512,6 +514,8 @@ export default class AppView extends Component<AppProps> {
             <section
               className={classNames(Styles.Main__wrap, {
                 [Styles['Main__wrapMarkets']]: currentPath === MARKETS,
+                [Styles.StatusErrorShowing]: statusErrorShowing,
+                [Styles.StatusErrorShowingMarket]: statusErrorShowing && currentPath === MARKET,
                 [Styles['TopBarOpen']]:
                   sidebarStatus.mobileMenuState ===
                   MOBILE_MENU_STATES.SIDEBAR_OPEN,
@@ -526,10 +530,9 @@ export default class AppView extends Component<AppProps> {
               ) : (
                 <div className="no-nav-placehold" />
               )}
-              <StatusErrorMessage />
+              {isMobile && <StatusErrorMessage />}
               <section
                 className={classNames(Styles.Main__content, {
-                  [Styles.StatusErrorShowing]: statusErrorShowing,
                   [Styles.Tutorial]: onTradingTutorial,
                   [Styles.ModalShowing]: Object.keys(modal).length !== 0,
                   [Styles.SideNavOpen]:

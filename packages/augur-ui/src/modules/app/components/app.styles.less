@@ -105,6 +105,26 @@ h6 {
     display: block;
     height: fit-content;
     overflow-y: auto;
+
+    &.StatusErrorShowing {
+      > section {
+        padding-top: @size-42;
+      }
+    }
+    
+    &.StatusErrorShowingMarket {
+      top: @top-bar-height-mobile;
+
+      > section {
+        > div:last-of-type {
+          > div {
+            > div:first-of-type {
+              top: calc(~"@{top-bar-height-mobile} + 42px");
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -127,14 +147,6 @@ h6 {
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: auto;
-
-  &.StatusErrorShowing {
-    padding-top: @size-30;
-
-    @media @breakpoint-mobile-tablet {
-      padding-top: @size-60;
-    }
-  }
 
   @media @breakpoint-mobile {
     height: fit-content;
