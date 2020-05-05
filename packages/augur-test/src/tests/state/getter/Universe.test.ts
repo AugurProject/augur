@@ -75,6 +75,7 @@ describe('State API :: Universe :: ', () => {
       marketIds: [market.address],
     }))[0];
 
+    console.log(`GOD DAMNIT ONE XXX`);
     await fork(john, market);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
@@ -88,6 +89,7 @@ describe('State API :: Universe :: ', () => {
 
     await john.faucetRep(new BigNumber(1e21));
     await john.augur.contracts.universe.createChildUniverse(invalidNumerators);
+    console.log(`GOD DAMNIT`);
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
 
     await john.faucetRep(new BigNumber(1e21));

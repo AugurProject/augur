@@ -102,6 +102,8 @@ const loadOrderBook = _.throttle((dispatch, marketId) => dispatch(loadMarketOrde
 const loadUserOpenOrders = _.throttle(dispatch => dispatch(loadAccountOpenOrders()), MED_PRI_LOAD_REFRESH_MS, { leading: true });
 const throttleLoadMarketOrders = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
 const throttleLoadUserOpenOrders = () => dispatch => loadUserOpenOrders(dispatch);
+const BLOCKS_BEHIND_RELOAD_THRESHOLD = 60; // 60 blocks. 
+let blocksBehindTimer = null;
 
 const updateMarketOrderBook = (marketId: string) => (
   dispatch: ThunkDispatch<void, any, Action>
@@ -163,10 +165,11 @@ export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => (
   AppStatus.actions.setModal({ type: MODAL_GAS_PRICE, feeTooLow: true });
 };
 
-export const handleZeroStatusUpdated = (status) => (
+export const handleZeroStatusUpdated = (status, log = undefined) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  if (log && log.error && log.error.message.includes("too many blocks")) location.reload();
   AppStatus.actions.setOxStatus(status);
 }
 
@@ -188,6 +191,10 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  const { env, isLogged, blockchain: { currentAugurTimestamp } } = AppStatus.get();
+  const blockTime = env.networkId === "1" ? 15000 : 2000;
+  if (blocksBehindTimer) clearTimeout(blocksBehindTimer);
+  blocksBehindTimer = setTimeout(function () {location.reload(); }, BLOCKS_BEHIND_RELOAD_THRESHOLD * blockTime);
   AppStatus.actions.updateBlockchain({
     currentBlockNumber: log.highestAvailableBlockNumber,
     blocksBehindCurrent: log.blocksBehindCurrent,
@@ -196,7 +203,6 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
     currentAugurTimestamp: log.timestamp,
   });
   // update assets each block
-  const { isLogged, blockchain: { currentAugurTimestamp } } = AppStatus.get();
   if (isLogged) {
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());

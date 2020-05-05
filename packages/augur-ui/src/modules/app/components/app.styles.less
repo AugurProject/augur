@@ -209,12 +209,16 @@ h6 {
   left: 0;
   border-bottom: @size-1 solid var(--color-module-background);
   display: none;
-  height: @top-bar-height-mobile;
+  height: @side-bar-top-menu-height-mobile;
   outline: none;
   padding: @size-16;
   position: fixed;
   width: @size-50;
   z-index: @mask-modal;
+
+  &.Closed {
+    height: @top-bar-height-mobile;
+  }
 
   svg {
     height: 100%;

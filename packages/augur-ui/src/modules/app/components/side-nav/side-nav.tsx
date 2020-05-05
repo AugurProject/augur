@@ -6,9 +6,8 @@ import classNames from 'classnames';
 import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
-import ConnectAccount from 'modules/auth/containers/connect-account';
-import { LogoutIcon, PlusCircleIcon } from 'modules/common/icons';
-import { NavMenuItem } from 'modules/types';
+import { LogoutIcon } from 'modules/common/icons';
+import { NavMenuItem, AccountBalances, CoreStats } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
@@ -20,6 +19,7 @@ import {
   MIGRATE_FROM_LEG_REP_TOKEN,
   TRANSACTIONS,
 } from 'modules/common/constants';
+import { Stats } from '../top-bar';
 
 interface SideNavProps {
   defaultMobileClick: Function;
@@ -30,6 +30,8 @@ interface SideNavProps {
   showGlobalChat: Function;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
+  walletBalances: AccountBalances;
+  stats: CoreStats;
 }
 
 const SideNav = ({
@@ -41,14 +43,17 @@ const SideNav = ({
   showGlobalChat,
   migrateV1Rep,
   showMigrateRepButton,
+  stats,
 }: SideNavProps) => {
   const {
+    env,
+    restoredAccount,
     currentBasePath,
     isHelpMenuOpen,
     isConnectionTrayOpen,
     actions: { setIsHelpMenuOpen, setGSNEnabled, setModal },
   } = useAppStatusStore();
-
+  const whichChatPlugin = env.plugins?.chat;
   const accessFilteredMenu = menuData.filter(
     item => !(item.requireLogin && !isLogged)
   );
@@ -65,7 +70,11 @@ const SideNav = ({
             updateHelpMenuState={setIsHelpMenuOpen}
           />
         )}
-        <ConnectAccount />
+        <Stats
+          isLogged={isLogged}
+          stats={stats}
+          restoredAccount={restoredAccount}
+        />
       </div>
       <div className={Styles.Container}>
         <div>
@@ -77,7 +86,6 @@ const SideNav = ({
               <SecondaryButton
                 action={() => setModal({ type: MODAL_ADD_FUNDS })}
                 text="Add Funds"
-                icon={PlusCircleIcon}
               />
             )}
             {accessFilteredMenu.map((item, idx) => (
@@ -142,19 +150,20 @@ const SideNav = ({
               )}
             </div>
           </ul>
-
-          <footer>
-            <div className={Styles.GlobalChat}>
-              <SecondaryButton
-                action={showGlobalChat}
-                text="Global Chat"
-                icon={Chevron}
-              />
-            </div>
-            {isLogged && (
-              <button onClick={() => logout(setGSNEnabled)}>Logout {LogoutIcon}</button>
-            )}
-          </footer>
+          {isLogged && whichChatPlugin && (
+            <footer>
+              <div className={Styles.GlobalChat}>
+                <SecondaryButton
+                  action={showGlobalChat}
+                  text="Global Chat"
+                  icon={Chevron}
+                />
+              </div>
+              <button onClick={() => logout(setGSNEnabled)}>
+                Logout {LogoutIcon}
+              </button>
+            </footer>
+          )}
         </div>
       </div>
     </aside>

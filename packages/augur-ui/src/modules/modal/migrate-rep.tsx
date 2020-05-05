@@ -64,7 +64,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
           label={GsnEnabled ? 'Transaction Fee' : 'Gas Cost'}
           value={
             GsnEnabled
-              ? displayGasInDai(gasLimit.multipliedBy(gasPrice))
+              ? displayGasInDai(gasLimit)
               : gasEstimateInEth
           }
         />

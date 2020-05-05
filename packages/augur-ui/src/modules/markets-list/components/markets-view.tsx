@@ -1,4 +1,4 @@
-import React, { Component, useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import MarketsHeader from 'modules/markets-list/components/markets-header';
 import MarketsList from 'modules/markets-list/components/markets-list';
 import Styles from 'modules/markets-list/components/markets-view.styles.less';
@@ -59,15 +59,6 @@ interface MarketsViewProps {
   marketListViewed: Function;
   marketsInReportingState: MarketData[];
   loadMarketOrderBook: Function;
-}
-
-interface MarketsViewState {
-  filterSortedMarkets: string[];
-  marketCount: number;
-  limit: number;
-  offset: number;
-  showPagination: boolean;
-  selectedMarketCardType: number;
 }
 
 const MarketsView = ({

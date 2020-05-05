@@ -849,6 +849,25 @@ div.ButtonsRow:last-of-type {
   > div:last-of-type {
     padding-bottom: @size-24;
   }
+
+  &.Help {
+    > main {
+      padding: 0;
+      > div {
+        position: static;
+        border: 0;
+        width: 100%;
+  
+        > span:first-of-type {
+          display: none;
+        }
+
+        > span:nth-of-type(2) {
+          border-top: 0;
+        }
+      }
+    }
+  }
 }
 
 :root[theme='BETTING'],

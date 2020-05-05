@@ -9,10 +9,7 @@ export const STANDARD_PRIMARY_KEY = ["blockNumber", "logIndex"];
 
 export const DELETE_KEY = "DELETION_KEY_MARKER";
 
-// TODO The 'Rollback' DB should be cleared after every initial bulk sync
-
 const NUMBER_OF_BLOCKS_TO_KEEP = 10;
-
 
 export class RollbackTable extends AbstractTable {
 

@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import BaseInnerNavPure from 'modules/app/components/inner-nav/base-inner-nav-pure';
 import {
-  updateMarketsListMeta,
   updateSelectedCategories,
 } from 'modules/markets-list/actions/update-markets-list';
 import {

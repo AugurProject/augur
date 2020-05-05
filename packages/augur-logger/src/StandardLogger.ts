@@ -9,6 +9,10 @@ export class StandardLogger implements LoggerInterface {
     console.warn(...msg);
   }
 
+  log(...msg: string[]): void {
+    console.info(...msg);
+  }
+
   info(...msg: string[]): void {
     console.info(...msg);
   }

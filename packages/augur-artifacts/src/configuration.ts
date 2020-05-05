@@ -34,6 +34,9 @@ export interface SDKConfiguration {
     enabled?: boolean,
     autoReport?: boolean
   },
+  uniswap?: {
+    exchangeRateBufferMultiplier: number;
+  }
   gsn?: {
     enabled: boolean,
   },
@@ -186,7 +189,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   },
   gas: {
     price: 1e9,
-    limit: 75e5
+    limit: 95e5
   },
   deploy: {
     isProduction: false,
@@ -195,10 +198,14 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     privateKey: 'fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a',
     contractInputPath: path.join(__dirname, 'contracts.json'),
     writeArtifacts: true,
+    serial: true,
   },
   warpSync: {
     enabled: false,
     autoReport: false,
+  },
+  uniswap: {
+    exchangeRateBufferMultiplier: 1.05,
   },
   gsn: {
     enabled: true
@@ -338,7 +345,11 @@ export function isValidConfig(suspect: RecursivePartial<SDKConfiguration>): susp
     if (typeof suspect.sdk.enabled === 'undefined') return fail('sdk.enabled');
     if (suspect.sdk.enabled && typeof suspect.sdk.ws === 'undefined') return fail('sdk.ws');
   }
+  if (suspect.uniswap && typeof suspect.uniswap.exchangeRateBufferMultiplier === 'undefined') {
+    return fail('uniswap.exchangeRateBufferMultiplier');
+  }
   if (suspect.gsn && typeof suspect.gsn.enabled === 'undefined') return fail('gsn.enabled');
+
   if (suspect.zeroX) {
     if (suspect.zeroX.rpc) {
       if (typeof suspect.zeroX.rpc.enabled === 'undefined') return fail('zeroX.rpc.enabled');
@@ -416,6 +427,8 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   if (t(e.DEPLOY_SERIAL)) config = d(config, { deploy: { serial: bool(e.DEPLOY_SERIAL) }});
 
   if (t(e.GSN_ENABLED)) config = d(config, { gsn: { enabled: bool(e.GSN_ENABLED) }});
+
+  if (t(e.UNISWAP_EXCHANGE_RATE_BUFFER_MULTIPLIER)) config = d(config, { uniswap: { exchangeRateBufferMultiplier: Number(e.UNISWAP_EXCHANGE_RATE_BUFFER_MULTIPLIER) }});
 
   if (t(e.ZEROX_RPC_ENABLED)) config = d(config, { zeroX: { rpc: { enabled: bool(e.ZEROX_RPC_ENABLED) }}});
   if (t(e.ZEROX_RPC_WS)) config = d(config, { zeroX: { rpc: { ws: e.ZEROX_RPC_WS }}});

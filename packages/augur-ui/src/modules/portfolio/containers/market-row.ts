@@ -5,7 +5,7 @@ import MarketRow from 'modules/portfolio/components/common/market-row';
 import { MODAL_UNSIGNED_ORDERS } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = state => ({});
+const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = dispatch => ({
   unsignedOrdersModal: (marketId: string, cb: Function) =>

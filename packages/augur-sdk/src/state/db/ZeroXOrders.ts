@@ -1,5 +1,5 @@
-
 import * as _ from 'lodash';
+import { logger, LoggerLevels } from '@augurproject/logger';
 import { AbstractTable, BaseDocument } from './AbstractTable';
 import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';
@@ -108,7 +108,7 @@ export class ZeroXOrders extends AbstractTable {
   readonly cashAssetData: string;
   readonly shareAssetData: string;
   readonly takerAssetData: string;
-  private pastOrders: _.Dictionary<StoredOrder>;
+  private pastOrders: _.Dictionary<StoredOrder> = {};
 
   constructor(
     db: DB,
@@ -128,14 +128,8 @@ export class ZeroXOrders extends AbstractTable {
     this.takerAssetData = `0xa7cb5fb7000000000000000000000000${this.tradeTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
 
     this.subscribeToOrderEvents();
-
-    this.clearDBAndCacheOrders().then(() => {
-      if (augur.zeroX.isReady()) {
-        this.sync();
-      } else {
-        this.augur.events.once(SubscriptionEventName.ZeroXStatusReady, this.sync.bind(this));
-      }
-    });
+    this.clearDBAndCacheOrders();
+    this.augur.events.on(SubscriptionEventName.ZeroXStatusReady, this.clearDBAndCacheOrders.bind(this));
   }
 
   protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
@@ -149,8 +143,12 @@ export class ZeroXOrders extends AbstractTable {
 
   async clearDBAndCacheOrders(): Promise<void> {
     // Note: This does mean if a user reloads before syncing the old orders could be lost if they previous to that had not broadcast their orders completely somehow
-    this.pastOrders = _.keyBy(await this.allDocs(), 'orderHash');
+    this.pastOrders = Object.assign(this.pastOrders, _.keyBy(await this.allDocs(), 'orderHash'));
     await this.clearDB();
+
+    if (this.augur.zeroX.isReady()) {
+      this.sync();
+    }
   }
 
   subscribeToOrderEvents() {
@@ -207,10 +205,11 @@ export class ZeroXOrders extends AbstractTable {
   }
 
   async sync(): Promise<void> {
-    console.log('Syncing ZeroX Orders');
+    logger.info('Syncing ZeroX Orders');
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
+    let documents = [];
     if (orders?.length > 0) {
-      let documents = orders.filter(this.validateOrder, this).map(this.processOrder, this);
+      documents = orders.filter(this.validateOrder, this).map(this.processOrder, this);
       const marketIds: string[] = _.uniq(documents.map((d) => d.market));
       const markets = _.keyBy(await this.stateDB.Markets.where('market').anyOf(marketIds).toArray(), 'market');
       documents = documents.filter((d) => this.validateStoredOrder(d, markets));
@@ -221,18 +220,30 @@ export class ZeroXOrders extends AbstractTable {
       }
     }
     const chainId = Number(this.augur.config.networkId);
-    const ordersToAdd = _.map(_.values(this.pastOrders), (order) => {
-      const signedOrder = order.signedOrder;
+    const ordersToAdd = Object.values(this.pastOrders).map((order) => {
       return Object.assign({
         chainId,
         makerFeeAssetData: '0x',
         takerFeeAssetData: '0x',
-      }, signedOrder);
+      }, order.signedOrder);
     });
 
     if (ordersToAdd.length > 0) await this.augur.zeroX.addOrders(ordersToAdd);
-    console.log(`Synced ${orders.length } ZeroX Orders`);
+    this.pastOrders = {};
+
     this.augur.events.emit(SubscriptionEventName.ZeroXStatusSynced, {});
+    setImmediate(() => {
+      logger.info(`Synced ${orders.length} Orders from ZeroX Peers`);
+      logger.debug("ZeroX Sync Summary: ")
+      logger.table(LoggerLevels.debug, [{
+        "Received from Mesh": orders.length,
+        "Valid orders from Mesh": documents.length,
+        "Cached Local Orders not Received": ordersToAdd.length
+      }]);
+
+      logger.debug("Orders Per Market")
+      logger.table(LoggerLevels.debug, _.countBy(documents, 'market'));
+    });
   }
 
   validateOrder(order: OrderInfo): boolean {

@@ -20,11 +20,49 @@ import { OddsMenu } from 'modules/app/components/odds-menu';
 import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
+interface StatsProps {
+  isLogged: boolean;
+  restoredAccount: boolean;
+  stats: CoreStats;
+}
+
+export const Stats = ({ isLogged, restoredAccount, stats }: StatsProps) => {
+  if (!stats) return null;
+  const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
+
+  return (
+    <>
+      {(isLogged || restoredAccount) && (
+        <div className={Styles.statsContainer}>
+          <div>
+            <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
+            <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
+            <LinearPropertyLabelUnderlineTooltip
+              {...totalFunds}
+              highlightAlternateBolded
+              id={'totalFunds'}
+              tipText={TOTAL_FUNDS_TOOLTIP}
+            />
+            <div>
+              <span>{realizedPL.label}</span>
+              <MovementLabel value={realizedPL.value} useFull />
+            </div>
+          </div>
+          <div>
+            <span>{realizedPL.label}</span>
+            <MovementLabel value={realizedPL.value} useFull />
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 interface TopBarProps {
   stats: CoreStats;
   unseenCount: number;
   signupModal: Function;
   loginModal: Function;
+  helpModal: Function;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
@@ -32,6 +70,7 @@ const TopBar: React.FC<TopBarProps> = ({
   unseenCount,
   signupModal,
   loginModal,
+  helpModal
 }) => {
   const { isLogged, restoredAccount, isMobile, isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
@@ -74,8 +113,6 @@ const TopBar: React.FC<TopBarProps> = ({
         {!isLogged && !restoredAccount && (
           <PrimaryButton action={() => signupModal()} text={'Signup'} />
         )}
-
-        {!isMobile && <ConnectAccount />}
         {(isLogged || restoredAccount) && (
           <button
             className={classNames(Styles.alerts, {
@@ -90,6 +127,7 @@ const TopBar: React.FC<TopBarProps> = ({
             {Alerts(unseenCount)}
           </button>
         )}
+        <ConnectAccount />
       </div>
     </header>
   );

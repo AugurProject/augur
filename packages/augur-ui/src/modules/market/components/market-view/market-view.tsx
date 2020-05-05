@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import Media from 'react-media';
 
-import { FindReact } from 'utils/find-react';
 import MarketHeader from 'modules/market/containers/market-header';
 import MarketOrdersPositionsTable from 'modules/market/containers/market-orders-positions-table';
 import MarketOutcomesList from 'modules/market/containers/market-outcomes-list';
@@ -31,6 +30,7 @@ import {
   TRADING_TUTORIAL_OUTCOMES,
   TUTORIAL_OUTCOME,
   THEMES,
+  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -189,11 +189,12 @@ export default class MarketView extends Component<
       tradingTutorial,
       loadMarketOrderBook,
       preview,
+      zeroXstatus,
     } = this.props;
 
     this.tradingTutorialWidthCheck();
 
-    if (isConnected && !!marketId && !tradingTutorial && !preview) {
+    if (isConnected && !!marketId && !tradingTutorial && !preview && zeroXstatus === ZEROX_STATUSES.SYNCED) {
       loadMarketsInfo(marketId);
       loadMarketOrderBook(marketId);
       loadMarketTradingHistory(marketId);
@@ -225,6 +226,7 @@ export default class MarketView extends Component<
       loadMarketsInfo,
       loadMarketTradingHistory,
       marketType,
+      zeroXstatus,
     } = prevProps;
     if (
       this.props.outcomeId !== prevProps.outcomeId &&
@@ -254,7 +256,7 @@ export default class MarketView extends Component<
       return;
     }
 
-    if ((isConnected !== this.props.isConnected) && !!marketId && !tradingTutorial && !preview) {
+    if ((isConnected !== this.props.isConnected) && !!marketId && !tradingTutorial && !preview && zeroXstatus === ZEROX_STATUSES.SYNCED) {
       loadMarketOrderBook(marketId);
       loadMarketsInfo(marketId);
       loadMarketTradingHistory(marketId);
