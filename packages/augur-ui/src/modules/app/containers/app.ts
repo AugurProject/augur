@@ -18,6 +18,7 @@ import { saveAffiliateAddress } from "modules/account/actions/login-account";
 import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
 import { AppState } from "appStore";
 import { AppStatus } from 'modules/app/store/app-status';
+import { selectCoreStats } from "modules/account/selectors/core-stats";
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, pendingQueue } = state;
@@ -38,6 +39,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     notifications,
     loginAccount,
+    stats: selectCoreStats(state),
     modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
     universe,
@@ -45,6 +47,7 @@ const mapStateToProps = (state: AppState) => {
     walletBalances,
     showCreateAccountButton,
     showMigrateRepButton,
+    whichChatPlugin: state.env.plugins?.chat,
   }
 };
 

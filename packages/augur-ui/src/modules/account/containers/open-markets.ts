@@ -23,7 +23,7 @@ const mapStateToProps = (state: AppState) => {
   );
 
   const marketsObj = markets.reduce((obj: any, market: any) => {
-    obj[market.id] = market;
+    if (market) obj[market.id] = market;
     return obj;
   }, {});
 

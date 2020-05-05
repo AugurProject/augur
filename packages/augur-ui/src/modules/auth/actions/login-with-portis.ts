@@ -84,13 +84,14 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
             linkLabel: 'Learn more.',
           });
         } else {
+          const errorMessage = `There was an error while attempting to log in with Portis. Please try again.\n\n${
+            error.message
+              ? `Error: ${JSON.stringify(error.message)}`
+              : ''
+          }`;
           setModal({
             type: MODAL_ERROR,
-            error: JSON.stringify(
-              error && error.message
-                ? error.message
-                : 'Sorry, something went wrong.'
-            ),
+            error: errorMessage,
           });
         }
       });

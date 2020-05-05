@@ -54,7 +54,7 @@
     "ethereumjs-util": "6.1.0",
     "ethers": "4.0.37",
     "express": "4.17.1",
-    "flexsearch": "0.6.30",
+    "flexsearch": "0.6.32",
     "io-ts": "1.10.4",
     "ipfs": "0.40.0",
     "ipld-dag-pb": "0.18.1",

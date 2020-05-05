@@ -399,6 +399,10 @@ section[class*="OutcomesList"] {
 
     img[class="input_user"] {
       left: @size-8;
+
+      @media @breakpoint-mobile {
+        left: 0;
+      }
     }
 
     div[class="inputPicker"] {
@@ -525,6 +529,10 @@ section[class*="OutcomesList"] {
     div[class="reactions"] div[class="emoji-bar"] div[class*="emoji-item"] {
       background-color: transparent;
       color: var(--color-upvote);
+
+      &[class*="has_reacted"] {
+        background-color: var(--color-upvote-20);
+      }
     }
 
     div[class="comment_vote"] {

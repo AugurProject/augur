@@ -1,4 +1,3 @@
-import { createServer, SubscriptionEventName } from '@augurproject/sdk/build';
 import { runChaosMonkey } from './chaos-monkey';
 import { FlashSession, FlashArguments } from './flash';
 import { createCannedMarkets, createTemplatedMarkets } from './create-canned-markets-and-orders';
@@ -1967,6 +1966,18 @@ export function addScripts(flash: FlashSession) {
       } else {
         console.log(JSON.stringify(this.config?.addresses, null, 2))
       }
+    },
+  });
+
+  flash.addScript({
+    name: 'liquidity', // easy to rem for working locally
+    async call(this: FlashSession, args: FlashArguments) {
+      const attoEth = new BigNumber(10).times(_1_ETH);
+      const attoCash = new BigNumber(10000).times(_1_ETH);
+      const attoRep = new BigNumber(1000).times(_1_ETH);
+      const user = await this.createUser(this.getAccount(), this.config);
+      await user.addEthExchangeLiquidity(attoCash, attoEth);
+      await user.addTokenExchangeLiquidity(attoCash, attoRep);
     },
   });
 

@@ -4,12 +4,13 @@ import { ethers } from 'ethers';
 import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
 import { ContractDeployer } from '../libraries/ContractDeployer';
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
-import { environments } from '@augurproject/artifacts';
+import { buildConfig } from '@augurproject/artifacts';
 
 export async function deployToNetwork(networkName: string) {
-    const config = environments[networkName];
+    const config = buildConfig(networkName);
     const provider = new ethers.providers.JsonRpcProvider(config.ethereum.http);
-    const signer = await EthersFastSubmitWallet.create(config.deploy.privateKey as string, provider);
+    const privateKey = config.deploy.privateKey || process.env.ETHEREUM_PRIVATE_KEY;
+    const signer = await EthersFastSubmitWallet.create(privateKey as string, provider);
     const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);
     await ContractDeployer.deployToNetwork(networkName, config, dependencies, provider, signer);
 }

@@ -25,6 +25,7 @@ import {
 import {
   MAX_SPREAD_ALL_SPREADS,
   MAX_FEE_100_PERCENT,
+  MARKET_CARD_FORMATS
 } from 'modules/common/constants';
 import {
   MARKET_FILTER,
@@ -61,6 +62,11 @@ const mapStateToProps = (state: AppState, { location }) => {
     },
   } = AppStatus.get();
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
+  let marketCardFormat = state.marketsList.marketCardFormat
+    ? state.marketsList.marketCardFormat
+    : state.appStatus.isMobile
+    ? MARKET_CARD_FORMATS.COMPACT
+    : MARKET_CARD_FORMATS.CLASSIC;
 
   return {
     isConnected: isConnected && id != null,
@@ -78,7 +84,7 @@ const mapStateToProps = (state: AppState, { location }) => {
     selectedCategories: state.marketsList.selectedCategories,
     marketSort,
     marketFilter,
-    marketCardFormat: state.marketsList.marketCardFormat,
+    marketCardFormat,
     showInvalidMarketsBannerHideOrShow: (state.loginAccount.settings || {})
       .showInvalidMarketsBannerHideOrShow,
     showInvalidMarketsBannerFeesOrLiquiditySpread: (

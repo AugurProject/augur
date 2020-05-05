@@ -6,7 +6,6 @@ import { use3box } from 'utils/use-3box';
 import ChatBox from '3box-chatbox-react';
 import { SecondaryButton } from 'modules/common/buttons';
 import { Initialized3box } from 'modules/types';
-import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export interface ModalGlobalChatProps {
   closeModal: Function;
@@ -23,48 +22,45 @@ export const ModalGlobalChat = ({
   initialize3box,
   initialized3box,
 }: ModalGlobalChatProps) => {
-  const { isLogged } = useAppStatusStore();
   const { activate, setActivate, address, box, isReady, profile } =
-    whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box);
+    whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box, 'chat', true);
 
-  return isLogged ? (
+  return (
     <div className={Styles.ModalGlobalChat}>
-      {whichChatPlugin === '3box' && (
+      <div>
         <div>
-          <div>
-            <span>Global Chat</span>
-            <button onClick={() => closeModal()}>{Close}</button>
-          </div>
-          {whichChatPlugin === '3box' && isReady && (
-            <ChatBox
-              // required
-              spaceName="augur"
-              threadName="globalChat"
-              // Required props for context A) & B)
-              box={box}
-              currentUserAddr={address}
-              // optional
-              mute
-              popupChat={false}
-              showEmoji
-              colorTheme="#0E0E0F"
-              currentUser3BoxProfile={profile}
-              agentProfile={{
-                chatName: 'Global Chat',
-              }}
-            />
-          )}
-          {whichChatPlugin === '3box' && !isReady && (
-            <span>
-              <SecondaryButton
-                action={() => setActivate(true)}
-                text={activate ? 'Loading Global Chat...' : 'Global Chat'}
-                disabled={activate}
-              />
-            </span>
-          )}
+          <span>Global Chat</span>
+          <button onClick={() => closeModal()}>{Close}</button>
         </div>
-      )}
+        {whichChatPlugin === '3box' && isReady && (
+          <ChatBox
+            // required
+            spaceName="augur"
+            threadName="globalChat"
+            // Required props for context A) & B)
+            box={box}
+            currentUserAddr={address}
+            // optional
+            mute
+            popupChat={false}
+            showEmoji
+            colorTheme="#0E0E0F"
+            currentUser3BoxProfile={profile}
+            agentProfile={{
+              chatName: 'Global Chat',
+            }}
+          />
+        )}
+        {whichChatPlugin === '3box' && !isReady && (
+          <span>
+            <SecondaryButton
+              action={() => setActivate(true)}
+              text={activate ? 'Loading Global Chat...' : 'Global Chat'}
+              disabled={activate}
+            />
+          </span>
+        )}
+      </div>
     </div>
-  ) : null;
+  );
 };

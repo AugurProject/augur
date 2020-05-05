@@ -27,6 +27,7 @@ export const loginWithFortmatic = () => async (
 
       const accounts = await fm.user.login();
 
+      const userInfo = await fm.user.getUser();
       const account = toChecksumAddress(accounts[0]);
 
       const accountObject = {
@@ -37,7 +38,7 @@ export const loginWithFortmatic = () => async (
           signer: provider.getSigner(),
           openWallet: () => fm.user.settings(),
           accountType: ACCOUNT_TYPES.FORTMATIC,
-          email: null,
+          email: userInfo.email ? userInfo.email : null,
           profileImage: null,
           isWeb3: true,
         },

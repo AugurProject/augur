@@ -10,6 +10,8 @@
   @media @breakpoint-mobile {
     border: none;
     min-width: 100%;
+    height: 100vh;
+    background-color: var(--color-dark-grey-80);
   }
 }
 
@@ -64,7 +66,7 @@
   }
 
   @media @breakpoint-mobile {
-    background: var(--color-module-background);
+    background: var(--color-table-header);
   }
 
   > div:first-of-type {
@@ -372,6 +374,10 @@
     > svg {
       margin-right: @size-6;
     }
+  }
+
+  @media @breakpoint-mobile {
+    border-bottom: @size-1 solid var(--color-secondary-action-outline);
   }
 }
 

@@ -8,19 +8,36 @@ export interface Initialize3boxAction {
   data: object;
 }
 
-export const initialize3boxAction = (address, box, profile): Initialize3boxAction => ({
-  type: INITIALIZE_3BOX,
-  data: {
-    address,
-    box,
-    profile,
-  },
-});
+export const initialize3boxAction = (
+  address,
+  box,
+  profile,
+  openComments
+): Initialize3boxAction =>
+  openComments
+    ? {
+        type: INITIALIZE_3BOX,
+        data: {
+          address,
+          box,
+          profile,
+          openComments,
+        },
+      }
+    : {
+        type: INITIALIZE_3BOX,
+        data: {
+          address,
+          box,
+          profile,
+        },
+      };
 
 export const initialize3box = (
   address,
   box,
   profile,
+  openComments = false
 ): ThunkAction<void, AppState, void, Initialize3boxAction> => dispatch => {
-  dispatch(initialize3boxAction(address, box, profile));
+  dispatch(initialize3boxAction(address, box, profile, openComments));
 };

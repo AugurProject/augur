@@ -387,7 +387,7 @@ def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, ca
     assert augurWalletRegistry.getWallet(account) == walletAddress
     assert reputationToken.balanceOf(walletAddress) == initialRep + repAmount
     signerEthBalance = contractsFixture.ethBalance(account)
-    assert signerEthBalance == desiredSignerBalance
+    assert signerEthBalance >= desiredSignerBalance
 
     # Now we'll tests the method to extract all ETH & CASH funds, signer and wallet, out to a specified address
     walletCashBalance = cash.balanceOf(walletAddress)

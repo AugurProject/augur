@@ -5,7 +5,7 @@ import { selectCoreStats } from 'modules/account/selectors/core-stats';
 import { selectInfoAlertsAndSeenCount } from 'modules/alerts/selectors/alerts';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
-import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
+import { MODAL_LOGIN, MODAL_SIGNUP, MODAL_HELP } from 'modules/common/constants';
 import { Action } from 'redux';
 import { AppStatus } from 'modules/app/store/app-status';
 
@@ -22,6 +22,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
   return ({
     loginModal: () => setModal({ type: MODAL_LOGIN }),
     signupModal: () => setModal({ type: MODAL_SIGNUP }),
+    helpModal: () => setModal({ type: MODAL_HELP }),
   });
 };
 
