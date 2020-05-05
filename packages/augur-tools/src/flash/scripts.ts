@@ -535,6 +535,96 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'new-orders',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        required: true,
+        description: 'market to create zeroX orders on',
+      },
+      {
+        name: 'yesno',
+        abbr: 'y',
+        description: 'create yes no market, default if no options are added',
+        flag: true,
+      },
+      {
+        name: 'categorical',
+        abbr: 'c',
+        description: 'create categorical market',
+        flag: true,
+      },
+      {
+        name: 'scalar',
+        abbr: 's',
+        description: 'create scalar market',
+        flag: true,
+      },
+      {
+        name: 'numOutcomes',
+        abbr: 'o',
+        description: 'number of valid outcomes available in the market. max is 7',
+      },
+      {
+        name: 'maxPrice',
+        abbr: 'x',
+        description: 'max price',
+      },
+      {
+        name: 'minPrice',
+        abbr: 'p',
+        description: 'min price',
+      },
+      {
+        name: 'numTicks',
+        abbr: 't',
+        description: 'market numTicks',
+      },
+      {
+        name: 'onInvalid',
+        flag: true,
+        description: 'create zeroX orders on invalid outcome',
+      },
+      {
+        name: 'skipFaucetOrApproval',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const market = args.marketId as string;
+      const yesno = Boolean(args.yesno);
+      const cat = Boolean(args.categorical);
+      const scalar = Boolean(args.scalar);
+      const skipFaucetOrApproval = Boolean(args.skipFaucetOrApproval);
+      this.pushConfig({
+        zeroX: {
+          rpc: { enabled: true },
+          mesh: { enabled: false },
+        },
+      });
+      const user = await this.createUser(this.getAccount(), this.config);
+      if (yesno || !(cat && scalar)) {
+        await createYesNoZeroXOrders(user, market, skipFaucetOrApproval);
+      }
+      if (cat) {
+        const numOutcomes = Number(args.numOutcomes);
+        if (numOutcomes === undefined) throw new Error(`numOutcomes is required for categorical market`);
+        await createCatZeroXOrders(user, market, skipFaucetOrApproval, numOutcomes);
+      }
+      if (scalar) {
+        const onInvalid = Boolean(args.onInvalid);
+        const numTicks = new BigNumber(args.numTicks as string);
+        const maxPrice = new BigNumber(args.maxPrice as string);
+        const minPrice = new BigNumber(args.minPrice as string);
+        if (numTicks === undefined || maxPrice === undefined || minPrice === undefined) throw new Error(`numTicks, maxPrice and minPrice are required for scalar market`);
+        await createScalarZeroXOrders(user, market, skipFaucetOrApproval, onInvalid, numTicks, minPrice, maxPrice);
+      }
+    },
+  });
+
+  flash.addScript({
     name: 'create-yesno-zerox-orders',
     options: [
       {
