@@ -360,14 +360,30 @@ export const handleTokenBalanceChangedLog = (
   })
 };
 
-export const handleBulkOrdersLog = (logs: any) =>
-(dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  logger.info('Bulk Order Events', logs.length);
+export const handleBulkOrdersLog = (data: {
+  logs: Logs.ParsedOrderEventLog[];
+}) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  logger.info('Bulk Order Events', data?.logs?.length);
   const { appStatus } = getState();
   const { zeroXStatus } = appStatus;
+  const marketIds = [];
   if (zeroXStatus === ZEROX_STATUSES.SYNCED) {
-    logs.forEach(log => handleOrderLog(log));
+    data?.logs?.map(log => {
+      console.log(JSON.stringify(log));
+      handleOrderLog(log);
+      marketIds.push(log.market);
+    });
   }
+  Array.from(new Set([...marketIds])).map(marketId => {
+    if (isCurrentMarket(marketId)) {
+      dispatch(updateMarketOrderBook(marketId));
+      dispatch(loadMarketTradingHistory(marketId));
+      dispatch(checkUpdateUserPositions([marketId]));
+    }
+  });
 };
 
 export const handleOrderLog = (log: any) =>
@@ -403,8 +419,6 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     const pendingOrderId = constructPendingOrderid(log.amount, log.price, log.outcome, log.market)
     dispatch(removePendingOrder(pendingOrderId, log.market));
   }
-  dispatch(updateMarketOrderBook(log.market));
-  if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -433,7 +447,6 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
       dispatch(throttleLoadUserOpenOrders());
     }
   }
-  if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -455,11 +468,6 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     if (log.orderFiller) handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
-  if (isCurrentMarket(marketId)) {
-    dispatch(loadMarketTradingHistory(marketId));
-    dispatch(updateMarketOrderBook(marketId));
-  }
-  dispatch(checkUpdateUserPositions([marketId]));
 };
 
 export const handleTradingProceedsClaimedLog = (
