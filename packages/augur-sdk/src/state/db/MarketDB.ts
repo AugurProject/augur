@@ -347,9 +347,6 @@ export class MarketDB extends DerivedDB {
     };
   }
 
-
-
-
   private processMarketCreated = (log: ParsedLog): ParsedLog => {
     log['isWarpSync'] = log.marketCreator.toLowerCase() === this.augur.config.addresses.WarpSync.toLowerCase();
     log['reportingState'] = MarketReportingState.PreReporting;
@@ -460,7 +457,7 @@ export class MarketDB extends DerivedDB {
   };
 
   private async processTimestamp(timestamp: UnixTimestamp, blockNumber: number): Promise<void> {
-    await this.waitOnLock(this.HANDLE_MERGE_EVENT_LOCK, 2000, 50);
+    await this.waitOnLock(this.HANDLE_MERGE_EVENT_LOCK, 5000, 50);
 
     const eligibleMarketDocs = await this.table.where("reportingState").anyOfIgnoreCase([
       MarketReportingState.PreReporting,

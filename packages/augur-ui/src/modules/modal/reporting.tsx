@@ -61,6 +61,8 @@ interface ModalReportingProps {
   getRepModal: Function;
   addPendingData: Function;
   warpSyncHash?: string;
+  addPendingReport: Function;
+  addPendingDispute: Function;
 }
 
 interface ModalReportingState {
@@ -229,6 +231,8 @@ export default class ModalReporting extends Component<
       migrateRep,
       market,
       addPendingData,
+      addPendingReport,
+      addPendingDispute,
     } = this.props;
     const {
       marketId,
@@ -291,7 +295,7 @@ export default class ModalReporting extends Component<
       if (estimateGas) {
         return doInitialReport_estimaetGas(report);
       } else {
-        addPendingData(marketId, SUBMIT_REPORT, TXEventName.Pending, 0, {});
+        addPendingReport(report);
         doInitialReport(report).catch(err => {
           addPendingData(marketId, SUBMIT_REPORT, TXEventName.Failure, 0, {});
         });
@@ -323,7 +327,7 @@ export default class ModalReporting extends Component<
           return contribute_estimateGas(report);
         }
       } else {
-        addPendingData(marketId, SUBMIT_DISPUTE, TXEventName.Pending, 0, {
+        addPendingDispute(report, {
           matchingId: report.outcomeId,
         });
         (contributeToTentativeWinner

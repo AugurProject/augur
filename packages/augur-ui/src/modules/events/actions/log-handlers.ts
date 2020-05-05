@@ -473,7 +473,7 @@ export const handleInitialReportSubmittedLog = (
   if (userLogs.length > 0) {
     userLogs.map(log => {
       handleAlert(log, DOINITIALREPORT, false, dispatch, getState)
-      dispatch(addPendingData(log.market, SUBMIT_REPORT, TXEventName.Success, '0', undefined));
+      dispatch(removePendingData(log.market, SUBMIT_REPORT));
     });
     dispatch(loadAccountReportingHistory());
   }
