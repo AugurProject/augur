@@ -1,8 +1,8 @@
 import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_FAST, DEFAULT_FALLBACK_GAS_SAFELOW, MOBILE_MENU_STATES, MARKET_OPEN, MARKET_SORT_PARAMS, MAX_FEE_02_PERCENT, MAX_SPREAD_ALL_SPREADS, DAY, ZERO } from 'modules/common/constants';
 import { MARKETS } from "modules/routes/constants/views";
 import { DEFAULT_SDK_CONFIGURATION, SDKConfiguration } from '@augurproject/artifacts';
-import { formatGasCostGwei } from 'utils/format-number';
-import { GasPriceInfo, Blockchain, FilterSortOptions, INVALID_OPTIONS, Universe } from 'modules/types';
+import { formatGasCostGwei, formatAttoDai } from 'utils/format-number';
+import { GasPriceInfo, Blockchain, FilterSortOptions, INVALID_OPTIONS, Universe, LoginAccount } from 'modules/types';
 import * as moment from '../../../../../../node_modules/moment/moment';
 import { Getters } from '@augurproject/sdk/src';
 
@@ -33,6 +33,49 @@ export const CATEGORY_STATS = 'categoryStats';
 export const FILTER_SORT_OPTIONS = 'filterSortOptions';
 export const MODAL = 'modal';
 export const UNIVERSE = 'universe';
+export const LOGIN_ACCOUNT = 'loginAccount';
+
+const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
+  balances: {
+    eth: 0,
+    rep: 0,
+    dai: 0,
+    legacyRep: 0,
+    legacyRepNonSafe: 0,
+    attoRep: '0',
+    legacyAttoRep: '0',
+    ethNonSafe: 0,
+  },
+  reporting: {
+    profitLoss: ZERO,
+    profitAmount: ZERO,
+    reporting: null,
+    disputing: null,
+    participationTokens: null,
+  },
+  allowance: ZERO,
+  totalOpenOrdersFrozenFunds: '0',
+  allowanceFormatted: formatAttoDai(ZERO),
+  tradingPositionsTotal: {
+    unrealizedRevenue24hChangePercent: '0',
+  },
+  settings: {
+    showInvalidMarketsBannerFeesOrLiquiditySpread: true,
+    showInvalidMarketsBannerHideOrShow: true,
+    templateFilter: null,
+    maxFee: null,
+    spread: null,
+    showInvalid: null,
+  },
+  timeframeData: {
+    positions: 0,
+    numberOfTrades: 0,
+    marketsCreated: 0,
+    marketsTraded: 0,
+    successfulDisputes: 0,
+    redeemedPositions: 0,
+  }
+};
 
 const DEFAULT_ENV: SDKConfiguration = JSON.parse(JSON.stringify(DEFAULT_SDK_CONFIGURATION));
 const DEFAULT_GAS_PRICE_INFO: GasPriceInfo = {
@@ -122,6 +165,7 @@ export const DEFAULT_APP_STATUS = {
   [FILTER_SORT_OPTIONS]: DEFAULT_FILTER_SORT_OPTIONS,
   [MODAL]: {},
   [UNIVERSE]: DEFAULT_UNIVERSE_STATE,
+  [LOGIN_ACCOUNT]: DEFAULT_LOGIN_ACCOUNT_STATE,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -155,6 +199,7 @@ export const APP_STATUS_ACTIONS = {
   CLOSE_MODAL: 'CLOSE_MODAL',
   UPDATE_UNIVERSE: 'UPDATE_UNIVERSE',
   SWITCH_UNIVERSE: 'SWITCH_UNIVERSE',
+  UPDATE_LOGIN_ACCOUNT: 'UPDATE_LOGIN_ACCOUNT';
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -188,4 +233,5 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   closeModal: () => {},
   updateUniverse: universe => {},
   switchUniverse: () => {},
+  updateLoginAccount: loginAccount => {},
 };

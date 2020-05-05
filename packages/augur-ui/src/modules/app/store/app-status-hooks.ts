@@ -29,6 +29,7 @@ import {
   FILTER_SORT_OPTIONS,
   MODAL,
   UNIVERSE,
+  LOGIN_ACCOUNT,
 } from 'modules/app/store/constants';
 
 const {
@@ -62,6 +63,7 @@ const {
   CLOSE_MODAL,
   UPDATE_UNIVERSE,
   SWITCH_UNIVERSE,
+  UPDATE_LOGIN_ACCOUNT,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -213,6 +215,16 @@ export function AppStatusReducer(state, action) {
     case SWITCH_UNIVERSE: {
       delete updatedState[UNIVERSE].forkingInfo;
       delete updatedState[UNIVERSE].disputeWindow;
+      delete updatedState[LOGIN_ACCOUNT].reporting;
+      delete updatedState[LOGIN_ACCOUNT].allowance;
+      delete updatedState[LOGIN_ACCOUNT].tradingPositionsTotal;
+      break;
+    }
+    case UPDATE_LOGIN_ACCOUNT: {
+      updatedState[LOGIN_ACCOUNT] = {
+        ...updatedState[LOGIN_ACCOUNT],
+        ...action.loginAccount,
+      };
       break;
     }
     default:
@@ -279,6 +291,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
       updateUniverse: universe => dispatch({ type: UPDATE_UNIVERSE, universe }),
       switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
+      updateLoginAcccount: loginAccount => dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount }),
     },
   };
 };
