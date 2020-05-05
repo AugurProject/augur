@@ -11,9 +11,10 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { NULL_ADDRESS } from '@augurproject/sdk/src';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
+  modal: AppStatus.get().modal,
   address: state.loginAccount.mixedCaseAddress,
   networkId: getNetworkId(),
 });

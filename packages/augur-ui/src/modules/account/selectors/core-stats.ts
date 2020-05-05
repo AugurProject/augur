@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { formatDai, formatNone } from 'utils/format-number';
 import { selectAccountFunds } from 'modules/auth/selectors/login-account';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const selectOutcomeLastPrice = (
   marketOutcomeData: any,
@@ -36,7 +36,7 @@ export const selectCoreStats = createSelector(
       value: formatDai(accountFunds.totalRealizedPL, { removeComma: true }),
       useFull: true,
     };
-    if (!AppStatusState.get().isLogged) {
+    if (!AppStatus.get().isLogged) {
       availableFunds.value = formatNone();
       frozenFunds.value = formatNone();
       totalFunds.value = formatNone();

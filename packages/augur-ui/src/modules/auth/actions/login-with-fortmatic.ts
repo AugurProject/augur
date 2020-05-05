@@ -7,13 +7,13 @@ import { ACCOUNT_TYPES, FORTMATIC_API_KEY, FORTMATIC_API_TEST_KEY, NETWORK_IDS }
 import { windowRef } from 'utils/window-ref';
 import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const loginWithFortmatic = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const networkId: string = AppStatusState.get().env.networkId;
+  const networkId: string = AppStatus.get().env.networkId;
   const supportedNetwork = getNetwork(networkId);
 
   if (supportedNetwork) {
@@ -27,6 +27,7 @@ export const loginWithFortmatic = () => async (
 
       const accounts = await fm.user.login();
 
+      const userInfo = await fm.user.getUser();
       const account = toChecksumAddress(accounts[0]);
 
       const accountObject = {
@@ -37,7 +38,7 @@ export const loginWithFortmatic = () => async (
           signer: provider.getSigner(),
           openWallet: () => fm.user.settings(),
           accountType: ACCOUNT_TYPES.FORTMATIC,
-          email: null,
+          email: userInfo.email ? userInfo.email : null,
           profileImage: null,
           isWeb3: true,
         },

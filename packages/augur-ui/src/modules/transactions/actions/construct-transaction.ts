@@ -9,6 +9,7 @@ import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { FormattedNumber, DateFormattedObject } from "modules/types";
+import { AppStatus } from "modules/app/store/app-status";
 
 export interface TransactionObject {
   hash: any;
@@ -66,10 +67,11 @@ export const constructTransaction = (
     case "FeeWindowRedeemed":
     case "UniverseCreated":
     case "UniverseForked":
+      const { universe: { id: universe }} = AppStatus.get();
       return dispatch(
         loadReportingHistory({
           reporter: getState().loginAccount.address,
-          universe: getState().universe.id,
+          universe,
         }),
       );
     default:

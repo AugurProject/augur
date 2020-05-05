@@ -3,15 +3,15 @@ import { withRouter } from "react-router-dom";
 
 import Disputing from "modules/reporting/disputing";
 import { loadDisputeWindow } from "modules/auth/actions/load-dispute-window";
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_DR_QUICK_GUIDE } from 'modules/common/constants';
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
   loadDisputeWindow: () => dispatch(loadDisputeWindow()),
-  openDisputingModal: () => dispatch(updateModal({ type: MODAL_DR_QUICK_GUIDE, whichGuide: 'disputing' })),
+  openDisputingModal: () => AppStatus.actions.setModal({ type: MODAL_DR_QUICK_GUIDE, whichGuide: 'disputing' }),
 });
 
 const mergeProps = (sP, dP, oP) => {

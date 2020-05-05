@@ -3,7 +3,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { GWEI_CONVERSION } from 'modules/common/constants';
-import { AppStatusActions } from '../store/app-status';
+import { AppStatus } from '../store/app-status';
 
 export const registerUserDefinedGasPriceFunction = (
   userDefinedGasPrice: number,
@@ -14,7 +14,7 @@ export const registerUserDefinedGasPriceFunction = (
     userDefinedGasPrice || 1
   );
   Augur.dependencies.setGasPrice(gasPrice);
-  AppStatusActions.actions.updateGasPriceInfo({
+  AppStatus.actions.updateGasPriceInfo({
     userDefinedGasPrice: userDefinedGasPrice ? userDefinedGasPrice : average,
   });
 };

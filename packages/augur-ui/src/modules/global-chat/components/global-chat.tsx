@@ -18,7 +18,7 @@ export interface GlobalChatProps {
 export const GlobalChat = ({ provider, whichChatPlugin, initialize3box, initialized3box }: GlobalChatProps) => {
   const { theme, isLogged } = useAppStatusStore();
   const { activate, setActivate, address, box, isReady, profile } =
-    whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box, theme);
+    whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box, 'chat');
 
   return isLogged ? (
     <div className={Styles.GlobalChat}>
@@ -31,6 +31,7 @@ export const GlobalChat = ({ provider, whichChatPlugin, initialize3box, initiali
           box={box}
           currentUserAddr={address}
           // optional
+          openOnMount
           mute
           popupChat
           showEmoji

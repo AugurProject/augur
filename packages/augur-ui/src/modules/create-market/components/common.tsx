@@ -13,7 +13,7 @@ import {
 import { XIcon, AddIcon, helpIcon } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import Link from 'modules/create-market/containers/link';
+import Link from 'modules/create-market/link';
 import Styles from 'modules/create-market/components/common.styles.less';
 import {
   FormattedNumber,

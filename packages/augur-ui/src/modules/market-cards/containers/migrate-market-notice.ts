@@ -9,7 +9,6 @@ import {
   ZERO,
   MARKETMIGRATED,
 } from 'modules/common/constants';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { AppState } from 'appStore';
 import { dateHasPassed } from 'utils/format-date';
@@ -18,38 +17,34 @@ import { DismissableNotice } from 'modules/reporting/common';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { MarketReportClaimableContracts } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { universe, blockchain } = state;
-  const { forkingInfo } = universe;
+  const {
+    universe: { forkingInfo, children },
+    blockchain: { currentAugurTimestamp },
+  } = AppStatus.get();
   const isForking = !!forkingInfo;
   const marketId = ownProps.marketId;
   const market = selectMarket(marketId);
   const { reportingState, endTime } = market;
-
   let show = isForking;
   let canMigrateMarkets = false;
   let hasReleaseRepOnThisMarket = false;
 
-  const hasMarketEnded = dateHasPassed(
-    state.blockchain.currentAugurTimestamp * 1000,
-    endTime
-  );
+  const hasMarketEnded = dateHasPassed(currentAugurTimestamp * 1000, endTime);
 
   const hasForkPassed =
     isForking &&
-    dateHasPassed(
-      blockchain.currentAugurTimestamp * 1000,
-      forkingInfo.forkEndTime
-    );
+    dateHasPassed(currentAugurTimestamp * 1000, forkingInfo.forkEndTime);
 
   if (
     isForking &&
     forkingInfo.winningChildUniverseId &&
-    universe.children &&
-    universe.children.length > 0
+    children &&
+    children.length > 0
   ) {
-    const winning = universe.children.find(
+    const winning = children.find(
       c => c.id === forkingInfo.winningChildUniverseId
     );
     if (createBigNumber(winning.usersRep || ZERO).gt(ZERO)) {
@@ -58,8 +53,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   }
 
   const marketNeedsMigrating =
-    hasForkPassed &&
-    reportingState !== REPORTING_STATE.FINALIZED;
+    hasForkPassed && reportingState !== REPORTING_STATE.FINALIZED;
 
   const releasableRep = selectReportingWinningsByMarket(state);
   let hasReleaseRep = releasableRep.totalUnclaimedRep.gt(ZERO);
@@ -81,11 +75,12 @@ const mapStateToProps = (state: AppState, ownProps) => {
   let buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
   let queueName = '';
   let queueId = '';
-  
+
   if (marketNeedsMigrating && canMigrateMarkets) {
     title =
       'Fork has finalized. Please migrate this market to the new universe.';
-    description = 'This market will be migrated to the winning universe and will no longer be viewable in the current universe.';
+    description =
+      'This market will be migrated to the winning universe and will no longer be viewable in the current universe.';
     buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON;
     if (hasMarketEnded) {
       buttonText = 'Report and Migrate Market';
@@ -131,30 +126,26 @@ const mapStateToProps = (state: AppState, ownProps) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  report: market =>
-    dispatch(
-      updateModal({
+const mapDispatchToProps = dispatch => {
+  const { setModal } = AppStatus.actions;
+  return {
+    report: market =>
+      setModal({
         type: MODAL_REPORTING,
         market,
-      })
-    ),
-  migrate: market =>
-    dispatch(
-      updateModal({
+      }),
+    migrate: market =>
+      setModal({
         type: MODAL_MIGRATE_MARKET,
         market,
-      })
-    ),
-  releaseReportingRep: (allRep: MarketReportClaimableContracts) =>
-    dispatch(
-      updateModal({
+      }),
+    releaseReportingRep: (allRep: MarketReportClaimableContracts) =>
+      setModal({
         type: MODAL_CLAIM_FEES,
         ...allRep,
-      })
-    ),
-});
-
+      }),
+  };
+};
 const mergeProps = (sP, dP, oP) => {
   let action = null;
   action = sP.hasReleaseRep
@@ -176,11 +167,7 @@ const mergeProps = (sP, dP, oP) => {
 };
 
 const MigrateMarketNotice = withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(DismissableNotice)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(DismissableNotice)
 );
 
 export default MigrateMarketNotice;

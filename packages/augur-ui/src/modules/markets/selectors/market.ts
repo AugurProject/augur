@@ -7,12 +7,13 @@ import {
   ZERO,
 } from 'modules/common/constants';
 import store, { AppState } from 'appStore';
-import { selectMarketInfosState, selectCurrentTimestamp } from 'appStore/select-state';
+import { selectMarketInfosState } from 'appStore/select-state';
 import { MarketData, OutcomeFormatted } from 'modules/types';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 import { createSelector } from 'reselect';
 import { Getters } from '@augurproject/sdk';
 import { createBigNumber } from 'utils/create-big-number';
+import { AppStatus } from 'modules/app/store/app-status';
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];
@@ -36,8 +37,10 @@ export const selectMarket = (marketId): MarketData | null => {
 
 const assembleMarket = createSelector(
   selectMarketsDataStateMarket,
-  selectCurrentTimestamp,
-  (marketData, currentTimestamp): MarketData => convertMarketInfoToMarketData(marketData, currentTimestamp)
+  (marketData): MarketData => {
+    const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
+    return convertMarketInfoToMarketData(marketData, currentAugurTimestamp * 1000);
+  }
 );
 
 export const selectSortedMarketOutcomes = (marketType, outcomes: OutcomeFormatted[]) => {

@@ -8,6 +8,7 @@ import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { augurSdk } from "services/augursdk";
+import { AppStatus } from "modules/app/store/app-status";
 
 export const loadMarketsInfo = (
   marketIds: Array<string>,
@@ -23,7 +24,7 @@ export const loadMarketsInfo = (
   const marketInfoArray = await augur.getMarketsInfo({ marketIds });
   if (marketInfoArray == null || !marketInfoArray.length)
     return callback("no markets data received");
-  const universeId = getState().universe.id;
+  const { universe: { id: universeId }} = AppStatus.get();
   const marketInfos = marketInfoArray
     .filter(marketHasData => marketHasData)
     .reduce((p, marketData) => {

@@ -118,7 +118,7 @@ export default class MarketChartsPane extends Component<
             <ModuleTabs selected={preview ? 2 : 0} showToggle toggle={toggle}>
               <ModulePane label="Price History"
                   onClickCallback={() => {
-                    extendOutcomesList && toggle();
+                    extendOutcomesList && toggle && toggle();
                   }
                 }>
                 {!preview && (
@@ -130,7 +130,7 @@ export default class MarketChartsPane extends Component<
               </ModulePane>
               <ModulePane label="Candlesticks"
                 onClickCallback={() => {
-                    extendOutcomesList && toggle();
+                    extendOutcomesList && toggle && toggle();
                   }
                 }>
                 {!preview && (
@@ -145,7 +145,7 @@ export default class MarketChartsPane extends Component<
               </ModulePane>
               <ModulePane label="Market Depth"
                 onClickCallback={() => {
-                    extendOutcomesList && toggle();
+                    extendOutcomesList && toggle && toggle();
                   }
                 }>
                 <DepthChart

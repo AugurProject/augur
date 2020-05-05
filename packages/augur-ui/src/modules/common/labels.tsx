@@ -36,6 +36,7 @@ import {
   ACCOUNT_TYPES,
   THEMES,
   CLOSED_SHORT,
+  MODAL_INVALID_MARKET_RULES,
 } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
@@ -52,7 +53,6 @@ import { ExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
-import { Market } from 'modules/portfolio/components/common/market-row';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { AppState } from 'appStore';
 
@@ -711,10 +711,9 @@ export class HoverValueLabel extends React.Component<
 export const InvalidLabel = ({
   text,
   keyId,
-  openInvalidMarketRulesModal,
   tooltipPositioning,
 }: InvalidLabelProps) => {
-  const { theme } = useAppStatusStore();
+  const { theme, actions: { setModal }} = useAppStatusStore();
   const {
     explainerBlockTitle,
     explainerBlockSubtexts,
@@ -724,7 +723,7 @@ export const InvalidLabel = ({
   const openModal = event => {
     event.preventDefault();
     event.stopPropagation();
-    openInvalidMarketRulesModal();
+    setModal({ type: MODAL_INVALID_MARKET_RULES });
   };
 
   return (
@@ -862,7 +861,7 @@ export const MarketTypeLabel = ({
 };
 
 interface LiquidityDepletedLabelProps {
-  market: Market;
+  market: MarketData;
 }
 
 export const LiquidityDepletedLabel = ({
@@ -894,8 +893,7 @@ export const LiquidityDepletedLabel = ({
   );
 };
 
-export const MarketStatusLabel = (props: MarketStatusProps) => {
-  const { reportingState, mini, isWarpSync } = props;
+export const MarketStatusLabel = ({ reportingState, mini, isWarpSync }: MarketStatusProps) => {
   let open = false;
   let resolved = false;
   let reporting = false;

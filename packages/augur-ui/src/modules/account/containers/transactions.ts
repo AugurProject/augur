@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { Transactions } from 'modules/account/components/transactions';
 import {
   NETWORK_IDS,
@@ -17,6 +16,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls'
 import { createBigNumber } from 'utils/create-big-number';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount } = state;
@@ -39,17 +39,19 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  repFaucet: () => dispatch(updateModal({ type: MODAL_REP_FAUCET })),
-  daiFaucet: () => dispatch(updateModal({ type: MODAL_DAI_FAUCET })),
-  addFunds: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
-  transfer: () => dispatch(updateModal({ type: MODAL_TRANSFER })),
-  transactions: () => dispatch(updateModal({ type: MODAL_TRANSACTIONS })),
-  approval: () => dispatch(updateModal({ type: MODAL_ACCOUNT_APPROVAL })),
-  legacyRepFaucet: () => getLegacyRep(),
-  cashOut: () => dispatch(updateModal({ type: MODAL_CASHOUT })),
-});
-
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
+  const { setModal } = AppStatus.actions;
+  return ({
+    repFaucet: () => setModal({ type: MODAL_REP_FAUCET }),
+    daiFaucet: () => setModal({ type: MODAL_DAI_FAUCET }),
+    addFunds: () => setModal({ type: MODAL_ADD_FUNDS }),
+    transfer: () => setModal({ type: MODAL_TRANSFER }),
+    transactions: () => setModal({ type: MODAL_TRANSACTIONS }),
+    approval: () => setModal({ type: MODAL_ACCOUNT_APPROVAL }),
+    legacyRepFaucet: () => getLegacyRep(),
+    cashOut: () => setModal({ type: MODAL_CASHOUT }),
+  });
+};
 const TransactionsContainer = connect(
   mapStateToProps,
   mapDispatchToProps

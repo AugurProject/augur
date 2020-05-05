@@ -5,13 +5,13 @@ import { Action } from "redux";
 import { AppState } from "appStore";
 import { WindowApp } from "modules/types";
 import { augurSdk } from "services/augursdk";
-import { AppStatusState } from "modules/app/store/app-status";
+import { AppStatus } from "modules/app/store/app-status";
 
 export const setSelectedUniverse = (selectedUniverseId: string | null = null) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { env } = AppStatusState.get();
+  const { env } = AppStatus.get();
   const { loginAccount } = getState();
   const { address } = loginAccount;
   const networkId = getNetworkId();

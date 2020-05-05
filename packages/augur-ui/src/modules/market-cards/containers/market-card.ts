@@ -8,65 +8,58 @@ import {
   MODAL_MIGRATE_MARKET,
   MODAL_REPORTING,
 } from 'modules/common/constants';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { marketLinkCopied } from 'services/analytics/helpers';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state, ownProps) => {
   const { marketId } = ownProps.market;
   const {
     accountPositions: positions,
-    universe,
-    blockchain,
     pendingLiquidityOrders,
     loginAccount,
     favorites,
     orderBooks,
   } = state;
   const hasStaked = hasStakeInMarket(state, marketId);
-  const { forkingInfo } = universe;
-  
+  const { universe: { forkingInfo, disputeWindow }} = AppStatus.get();
+
   return {
     hasPosition: !!positions[marketId],
     orderBook: orderBooks[marketId]?.orderBook,
     isForking: !!forkingInfo,
     pendingLiquidityOrders,
-    currentAugurTimestamp: blockchain.currentAugurTimestamp,
-    disputingWindowEndTime: universe.disputeWindow?.endTime || 0,
+    disputingWindowEndTime: disputeWindow?.endTime || 0,
     address: loginAccount.address,
     isFavorite: !!favorites[marketId],
     hasStaked,
     forkingMarket: forkingInfo?.forkingMarket,
-    forkingEndTime: forkingInfo?.forkEndTime
+    forkingEndTime: forkingInfo?.forkEndTime,
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
-  dispute: (selectedOutcome: string, isInvalid: boolean) =>
-    dispatch(
-      updateModal({
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { setModal } = AppStatus.actions;
+  return {
+    toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
+    dispute: (selectedOutcome: string, isInvalid: boolean) =>
+      setModal({
         type: MODAL_REPORTING,
         market: ownProps.market,
         selectedOutcome,
         isInvalid,
-      })
-    ),
-  migrateMarketModal: () =>
-    dispatch(
-      updateModal({
+      }),
+    migrateMarketModal: () =>
+      setModal({
         type: MODAL_MIGRATE_MARKET,
         market: ownProps.market,
-      })
-    ),
-  marketLinkCopied: (marketId, location) =>
-    dispatch(marketLinkCopied(marketId, location)),
-});
+      }),
+    marketLinkCopied: (marketId, location) =>
+      dispatch(marketLinkCopied(marketId, location)),
+  };
+};
 
 const MarketCardContainer = withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MarketCard)
+  connect(mapStateToProps, mapDispatchToProps)(MarketCard)
 );
 
 export default MarketCardContainer;

@@ -6,6 +6,7 @@ const standardLogger = new StandardLogger();
 export enum LoggerLevels {
   debug,
   info,
+  log,
   warn,
   error,
 }

@@ -5,9 +5,9 @@ import { selectCoreStats } from 'modules/account/selectors/core-stats';
 import { selectInfoAlertsAndSeenCount } from 'modules/alerts/selectors/alerts';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
-import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
+import { MODAL_LOGIN, MODAL_SIGNUP, MODAL_HELP } from 'modules/common/constants';
 import { Action } from 'redux';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const { unseenCount } = selectInfoAlertsAndSeenCount(state);
@@ -17,10 +17,14 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  loginModal: () => dispatch(updateModal({ type: MODAL_LOGIN })),
-  signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
-});
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
+  const { setModal } = AppStatus.actions;
+  return ({
+    loginModal: () => setModal({ type: MODAL_LOGIN }),
+    signupModal: () => setModal({ type: MODAL_SIGNUP }),
+    helpModal: () => setModal({ type: MODAL_HELP }),
+  });
+};
 
 export default withRouter(
   connect(

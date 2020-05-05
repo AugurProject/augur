@@ -3,8 +3,6 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
-import { updateUniverse } from 'modules/universe/actions/update-universe';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import logError from 'utils/log-error';
 import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
@@ -48,7 +46,7 @@ import { getNetwork } from 'utils/get-network-name';
 import { buildConfig } from '@augurproject/artifacts';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { isGoogleBot } from 'utils/is-google-bot';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -56,28 +54,24 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   const loggedInUser = getLoggedInUserFromLocalStorage();
   const loggedInAccount = (loggedInUser && loggedInUser.address) || null;
   const loggedInAccountType = (loggedInUser && loggedInUser.type) || null;
-
+  const { setModal } = AppStatus.actions;
   const errorModal = () => {
     dispatch(logout());
-    dispatch(
-      updateModal({
+    setModal({
         type: MODAL_ERROR,
-      })
-    );
+      });
   };
   try {
     if (loggedInAccount) {
       if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
         if (!windowRef.ethereum.selectedAddress) {
           // show metamask signer
-          dispatch(
-            updateModal({
+          setModal({
               type: MODAL_LOADING,
               message: SIGNIN_SIGN_WALLET,
               showMetaMaskHelper: true,
               callback: () => dispatch(closeModal()),
-            })
-          );
+            });
         }
         await dispatch(loginWithInjectedWeb3());
       }
@@ -103,15 +97,14 @@ function pollForNetwork(
   getState: () => AppState
 ) {
   setInterval(() => {
-    const { modal } = getState();
+    const { modal } = AppStatus.get();
+    const { setModal } = AppStatus.actions;
     if (!process.env.ENABLE_MAINNET) {
       const isMainnet = checkIfMainnet();
       if (isMainnet && isEmpty(modal)) {
-        dispatch(
-          updateModal({
+        setModal({
             type: MODAL_NETWORK_DISABLED,
-          })
-        );
+          });
       } else if (!isMainnet && modal.type === MODAL_NETWORK_DISABLED) {
         dispatch(closeModal());
       }
@@ -129,7 +122,8 @@ export function connectAugur(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { modal, loginAccount } = getState();
+    const { modal } = AppStatus.get();
+    const { loginAccount } = getState();
     const windowApp = windowRef as WindowApp;
     const loggedInUser = getLoggedInUserFromLocalStorage();
     const loggedInAccount = loggedInUser && loggedInUser.address || null;
@@ -152,7 +146,7 @@ export function connectAugur(
           preloaded: true,
         },
       };
-      AppStatusActions.actions.setRestoredAccount(true);
+      AppStatus.actions.setRestoredAccount(true);
       dispatch(updateLoginAccount(accountObject));
     };
 
@@ -224,12 +218,11 @@ export function connectAugur(
     } catch (e) {
       console.error(e);
       if (provider._network && config.networkId !== provider._network.chainId) {
-        return dispatch(
-          updateModal({
+        const { setModal } = AppStatus.actions;
+        return setModal({
             type: MODAL_NETWORK_MISMATCH,
             expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
-          })
-        );
+          });
       } else {
         return callback('SDK could not be created', { config });
       }
@@ -250,8 +243,7 @@ export function connectAugur(
       ];
       universeId = !storedUniverseId ? universeId : storedUniverseId;
     }
-    dispatch(updateUniverse({ id: universeId }));
-
+    AppStatus.actions.updateUniverse({ id: universeId });
     // If the network disconnected modal is being shown, but we are now
     // connected -- hide it.
     if (modal?.type === MODAL_NETWORK_DISCONNECTED) {
@@ -265,7 +257,7 @@ export function connectAugur(
 
     // wire up start up events for sdk
     dispatch(listenForStartUpEvents(sdk));
-    AppStatusActions.actions.setCanHotload(true);
+    AppStatus.actions.setCanHotload(true);
 
     await augurSdk.connect();
 
@@ -314,7 +306,7 @@ export function initAugur(
     );
     // cache fingerprint
     getFingerprint();
-    AppStatusActions.actions.setEnv(config);
+    AppStatus.actions.setEnv(config);
     tryToPersistStorage();
     connectAugur(history, config, true, callback)(dispatch, getState);
 

@@ -208,7 +208,7 @@ export const TransferForm = ({
     formattedAmount = formatRep(amount || 0);
   }
   const gasEstimate = gsnEnabled
-    ? displayGasInDai(relayerGasCosts.multipliedBy(gasPrice))
+    ? displayGasInDai(relayerGasCosts)
     : fallBackGasCosts[currency.toLowerCase()];
 
   const buttons = [

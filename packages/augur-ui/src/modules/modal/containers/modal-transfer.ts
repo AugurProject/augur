@@ -14,13 +14,13 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount, modal } = state;
+  const { loginAccount } = state;
   const balances = loginAccount.balances;
   balances.dai = totalTradingBalance(loginAccount).toNumber();
-  const { gasPriceInfo } = AppStatusState.get();
+  const { modal, gasPriceInfo } = AppStatus.get();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   return {
   account: loginAccount.address,

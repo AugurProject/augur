@@ -15,7 +15,7 @@ import { processFavorites } from 'modules/markets/helpers/favorites-processor';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 // console log middleware
 const consoleLog = store => next => action => {
@@ -31,7 +31,7 @@ const consoleLog = store => next => action => {
 const localStorageMiddleware = store => next => action => {
   next(action);
   const state = store.getState() as AppState;
-  const { isLogged, isConnected, env, gasPriceInfo } = AppStatusState.get();
+  const { isLogged, isConnected, env, gasPriceInfo } = AppStatus.get();
   if (
     !state ||
     !state.loginAccount ||

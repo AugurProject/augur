@@ -7,8 +7,8 @@ import orderForMarketDepth from 'modules/markets/helpers/order-for-market-depth'
 import getOrderBookKeys from 'modules/markets/helpers/get-orderbook-keys';
 import getPrecision from 'utils/get-number-precision';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import { ASKS, BIDS, ZERO } from "modules/common/constants";
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.marketId ? selectMarket(ownProps.marketId) : ownProps.market;
@@ -32,7 +32,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     outcomeName: marketOutcome.description,
     selectedOutcome: marketOutcome,
-    currentTimeInSeconds: selectCurrentTimestampInSeconds(state),
+    currentTimeInSeconds: AppStatus.get().blockchain.currentAugurTimestamp,
     orderBook: cumulativeOrderBook,
     hasOrders:
       !isEmpty(cumulativeOrderBook[BIDS]) ||

@@ -9,8 +9,7 @@ import {
   MODAL_INITIALIZE_ACCOUNT,
   GSN_WALLET_SEEN,
 } from 'modules/common/constants';
-import { updateModal } from 'modules/modal/actions/update-modal';
-import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
+import getGasPrice from 'modules/auth/selectors/get-gas-price';
 import {
   updateTradeCost,
   updateTradeShares,
@@ -25,7 +24,7 @@ import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const getMarketPath = id => {
   return {
@@ -37,80 +36,80 @@ const getMarketPath = id => {
 };
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { loginAccount, accountPositions, userOpenOrders, blockchain, newMarket } = state;
+  const { loginAccount, accountPositions, userOpenOrders, newMarket } = state;
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const {
     gsnEnabled: GsnEnabled,
-  } = AppStatusState.get();
+    isLogged,
+    restoredAccount,
+    blockchain: { currentAugurTimestamp: currentTimestamp },
+  } = AppStatus.get();
   const hasFunds = GsnEnabled
     ? !!loginAccount.balances.dai
     : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
 
-  let availableDai = totalTradingBalance(loginAccount)
+  let availableDai = totalTradingBalance(loginAccount);
   if (ownProps.initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
-  const { isLogged, restoredAccount } = AppStatusState.get();
   return {
     hasHistory,
-    gasPrice: getGasPrice(state),
+    gasPrice: getGasPrice(),
     hasFunds,
     isLogged,
     restoredAccount,
     GsnEnabled,
-    currentTimestamp: blockchain.currentAugurTimestamp,
+    currentTimestamp,
     availableDai,
     gsnUnavailable: isGSNUnavailable(state),
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  initializeGsnWallet: (customAction = null) => dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
-  handleFilledOnly: trade => null,
-  updateTradeCost: (marketId, outcomeId, order, callback) =>
-    dispatch(updateTradeCost({ marketId, outcomeId, ...order, callback })),
-  updateTradeShares: (marketId, outcomeId, order, callback) =>
-    dispatch(updateTradeShares({ marketId, outcomeId, ...order, callback })),
-  disclaimerModal: modal =>
-    dispatch(
-      updateModal({
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { setModal } = AppStatus.actions;
+  return {
+    initializeGsnWallet: (customAction = null) =>
+      setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
+    handleFilledOnly: trade => null,
+    updateTradeCost: (marketId, outcomeId, order, callback) =>
+      dispatch(updateTradeCost({ marketId, outcomeId, ...order, callback })),
+    updateTradeShares: (marketId, outcomeId, order, callback) =>
+      dispatch(updateTradeShares({ marketId, outcomeId, ...order, callback })),
+    disclaimerModal: modal =>
+      setModal({
         type: MODAL_DISCLAIMER,
         ...modal,
-      })
-    ),
-  addFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
-  loginModal: () =>
-    dispatch(
-      updateModal({
+      }),
+    addFundsModal: () => setModal({ type: MODAL_ADD_FUNDS }),
+    loginModal: () =>
+      setModal({
         type: MODAL_LOGIN,
         pathName: getMarketPath(ownProps.market.id),
-      })
-    ),
-  signupModal: () =>
-    dispatch(
-      updateModal({
+      }),
+    signupModal: () =>
+      setModal({
         type: MODAL_SIGNUP,
         pathName: getMarketPath(ownProps.market.id),
-      })
-    ),
-  onSubmitPlaceTrade: (
-    marketId,
-    outcomeId,
-    tradeInProgress,
-    doNotCreateOrders,
-  ) =>
-    dispatch(
-      placeMarketTrade({
-        marketId,
-        outcomeId,
-        tradeInProgress,
-        doNotCreateOrders,
-      })
-    ),
-    orderSubmitted: (type, marketId) => dispatch(orderSubmitted(type, marketId))
-});
-
+      }),
+    onSubmitPlaceTrade: (
+      marketId,
+      outcomeId,
+      tradeInProgress,
+      doNotCreateOrders
+    ) =>
+      dispatch(
+        placeMarketTrade({
+          marketId,
+          outcomeId,
+          tradeInProgress,
+          doNotCreateOrders,
+        })
+      ),
+    orderSubmitted: (type, marketId) =>
+      dispatch(orderSubmitted(type, marketId)),
+  };
+};
 const mergeProps = (sP, dP, oP) => {
   const disclaimerSeen = getValueFromlocalStorage(DISCLAIMER_SEEN);
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);

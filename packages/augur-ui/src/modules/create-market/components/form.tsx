@@ -108,8 +108,6 @@ import {
 } from 'modules/routes/constants/param-names';
 import {
   TemplateInputType,
-  TimeOffset,
-  getTemplateExchangeClosingWithBuffer,
   ValidationType,
   TemplateInput,
   getTemplateWednesdayAfterOpeningDay,
@@ -210,7 +208,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       newMarket,
       discardModal,
       isTemplate,
-      clearNewMarket,
     } = this.props;
 
     const savedDraft = drafts[newMarket.uniqueId];

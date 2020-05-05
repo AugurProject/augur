@@ -134,7 +134,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     {
       label: 'transaction fee',
       value: GsnEnabled
-        ? displayGasInDai(gasLimit.multipliedBy(gasPrice))
+        ? displayGasInDai(gasLimit)
         : gasEstimateInEth,
       denomination: GsnEnabled ? 'DAI' : 'ETH',
       showDenomination: true,

@@ -10,12 +10,11 @@ import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { NetworkId } from '@augurproject/artifacts';
 import { AppState } from 'appStore';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET, SUCCESS } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { addAlert } from 'modules/alerts/actions/alerts';
-import { AppStatusActions, AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
@@ -27,8 +26,8 @@ export const updateSdk = (
   if (!augurSdk.sdk) return;
 
   let newAccount = { ...loginAccount };
-  const { env } = AppStatusState.get();
-  const { actions: { setGSNEnabled, setOxEnabled, setWalletStatus, setIsLogged } } = AppStatusActions;
+  const { env } = AppStatus.get();
+  const { setModal, setGSNEnabled, setOxEnabled, setWalletStatus, setIsLogged } = AppStatus.actions;
   const useGSN = env.gsn?.enabled;
 
   try {
@@ -68,12 +67,10 @@ export const updateSdk = (
     dispatch(updateAssets());
   } catch (error) {
     logError(error);
-    dispatch(
-      updateModal({
-        type: MODAL_ERROR,
-        error,
-      })
-    );
+    setModal({
+      type: MODAL_ERROR,
+      error,
+    });
   }
 };
 
@@ -81,15 +78,15 @@ export const createFundedGsnWallet = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { actions: { setWalletStatus } } = AppStatusActions;
+  const { setWalletStatus } = AppStatus.actions;
   try {
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending));
 
     await augurSdk.client.gsn.initializeWallet();
 
     setWalletStatus(WALLET_STATUS_VALUES.CREATED)
-
-    const timestamp = getState().blockchain.currentAugurTimestamp * 1000;
+    const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
+    const timestamp = currentAugurTimestamp * 1000;
     const alert = {
       name: CREATEAUGURWALLET,
       uniqueId: timestamp,

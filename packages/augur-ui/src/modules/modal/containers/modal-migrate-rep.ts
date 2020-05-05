@@ -8,12 +8,12 @@ import { Action } from 'redux';
 import convertV1ToV2, {
   convertV1ToV2Estimate,
 } from 'modules/account/actions/convert-v1-rep-to-v2';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatusState.get();
+  const { modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatus.get();
   return ({
-    modal: state.modal,
+    modal,
     loginAccount: state.loginAccount,
     GsnEnabled,
     gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,

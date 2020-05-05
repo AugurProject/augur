@@ -40,9 +40,7 @@ import { Link } from 'react-router-dom';
 
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { BET_STATUS } from 'modules/trading/store/constants';
-import { formatDai } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
-import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -739,30 +737,19 @@ export const CategoryButtons = ({
   </div>
 );
 
-const FilterButtonComponent = ({action, disabled, title}: DefaultActionButtonProps) => (
-  <button
-    onClick={e => action(e)}
-    className={Styles.FilterButton}
-    disabled={disabled}
-  >
-    {title || 'Categories & Filters'}
-    {Filter}
-  </button>
-);
-
-const mapStateToPropsFilterButton = (state: AppState) => ({
-  timeframeData: state.universe.timeframeData,
-});
-
-const mapDispatchToPropsFilterButton  = (dispatch) => ({
-  action: () =>
-    dispatch(updateMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)),
-});
-
-export const FilterButton = connect(
-  mapStateToPropsFilterButton,
-  mapDispatchToPropsFilterButton
-)(FilterButtonComponent);
+export const FilterButton = ({ action = () => {}, disabled, title}: DefaultActionButtonProps) => {
+  const { actions: { setMobileMenuState } } = useAppStatusStore();
+  return (
+    <button
+      onClick={() => setMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)}
+      className={Styles.FilterButton}
+      disabled={disabled}
+    >
+      {title || 'Categories & Filters'}
+      {Filter}
+    </button>
+  );
+};
 
 export interface BettingBackLayButtonProps {
   title?: string;

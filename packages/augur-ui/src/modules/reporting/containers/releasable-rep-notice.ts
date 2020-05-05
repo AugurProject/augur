@@ -7,11 +7,13 @@ import { AppState } from 'appStore';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { DismissableNotice } from 'modules/reporting/common';
 import { createBigNumber } from 'utils/create-big-number';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { universe, loginAccount } = state;
+  const { loginAccount } = state;
+  const { universe: { forkingInfo }} = AppStatus.get();
   let hasStakedRep = false;
-  const hasForked = !!universe.forkingInfo;
+  const hasForked = !!forkingInfo;
   let show = false;
   if (hasForked) {
     const { reporting } = loginAccount;

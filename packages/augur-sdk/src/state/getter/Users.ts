@@ -1232,25 +1232,7 @@ export class Users {
           'PL calculation in summary returning more thant two bucket'
         );
       }
-      const negativeStartProfit: MarketTradingPosition = {
-        timestamp: startProfit.timestamp,
-        realized: new BigNumber(startProfit.realized).toFixed(),
-        unrealized: new BigNumber(startProfit.unrealized).toFixed(),
-        unrealized24Hr: '0',
-        frozenFunds: '0',
-        marketId: '',
-        total: '0',
-        unrealizedCost: '0',
-        realizedCost: '0',
-        totalCost: '0',
-        realizedPercent: '0',
-        unrealizedPercent: '0',
-        unrealized24HrPercent: '0',
-        totalPercent: '0',
-        currentValue: '0',
-        userSharesBalances: {},
-      };
-      result[days] = sumTradingPositions([endProfit, negativeStartProfit]);
+      result[days] = endProfit;
     }
     return result;
   }

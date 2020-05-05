@@ -5,7 +5,7 @@ export interface LoggerInterface {
 
   warn(...msg: string[]): void;
 
-  info(...msg: string[]): void;
+  log(...msg: string[]): void;
 
   info(...msg: string[]): void;
 
@@ -44,14 +44,17 @@ export class Logger {
     this.loggers.forEach((logger) => logger.warn(...msg));
   }
 
+  log(...msg: string[]): void {
+    if(this._logLevel > LoggerLevels.log) return;
+    this.loggers.forEach((logger) => logger.log(...msg));
+  }
+
   info(...msg: string[]): void {
     if(this._logLevel > LoggerLevels.info) return;
     this.loggers.forEach((logger) => logger.info(...msg));
   }
 
   debug(...msg: string[]): void {
-    console.log('debug', this._logLevel);
-
     if(this._logLevel > LoggerLevels.debug) return;
     this.loggers.forEach((logger) => logger.debug(...msg));
   }

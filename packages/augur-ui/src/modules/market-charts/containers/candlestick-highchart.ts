@@ -1,10 +1,10 @@
 import { connect } from "react-redux";
 
-import { selectCurrentTimestampInSeconds } from "appStore/select-state";
 import CandlestickHighchart from "modules/market-charts/components/candlestick/candlestick-highchart";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state, ownProps) => ({
-  currentTimeInSeconds: selectCurrentTimestampInSeconds(state)
+  currentTimeInSeconds: AppStatus.get().blockchain.currentAugurTimestamp,
 });
 
 export default connect(mapStateToProps)(

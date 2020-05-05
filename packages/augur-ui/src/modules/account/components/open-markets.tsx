@@ -10,7 +10,9 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from "modules/account/components/open-markets.styles.less";
 
 function filterComp(input: any, market: any) {
-  return market && market.description ? market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0 : true;
+  return market && market.description
+    ? market.description.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    : true;
 }
 
 interface OpenMarketsProps {
@@ -25,7 +27,7 @@ const OpenMarkets = ({
   marketsObj,
   totalPercentage,
   toggle,
-}: OpenMarketProps) => {
+}: OpenMarketsProps) => {
   const { theme } = useAppStatusStore();
   let customClass = Styles.OpenMarkets;
   if (theme !== THEMES.TRADING && markets.length === 0) {
@@ -34,9 +36,10 @@ const OpenMarkets = ({
 
   function renderRows(market: Partial<MarketData>) {
     const positionValueChange =
-      marketsObj[market.id] &&
-      marketsObj[market.id].myPositionsSummary &&
-      marketsObj[market.id].myPositionsSummary.valueChange24Hr || formatNumber(0);
+      (marketsObj[market.id] &&
+        marketsObj[market.id].myPositionsSummary &&
+        marketsObj[market.id].myPositionsSummary.valueChange24Hr) ||
+      formatNumber(0);
     return (
       <MarketRow
         key={'position_' + market.id}
@@ -55,7 +58,8 @@ const OpenMarkets = ({
         }
         toggleContent={
           <div className={Styles.ExpandedContent}>
-            {marketsObj[market.id] && marketsObj[market.id].userPositions &&
+            {marketsObj[market.id] &&
+              marketsObj[market.id].userPositions &&
               marketsObj[market.id].userPositions.map((position: any) => (
                 <div key={position.outcomeId}>
                   <span>{position.outcomeName}</span>
@@ -73,7 +77,7 @@ const OpenMarkets = ({
         }
       />
     );
-  }
+  };
 
   return (
     <FilterSwitchBox

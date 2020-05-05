@@ -4,13 +4,12 @@ import OverviewChart from 'modules/account/components/overview-chart';
 import getProfitLoss from 'modules/positions/actions/get-profit-loss';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { blockchain } = state;
-  const { currentAugurTimestamp } = blockchain;
-
+  const { universe: { id: universe }, blockchain: { currentAugurTimestamp }} = AppStatus.get();
   return {
-    universe: state.universe.id,
+    universe,
     currentAugurTimestamp
   };
 };

@@ -130,6 +130,9 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   consensusFormatted: ConsensusFormatted | null;
   outcomesFormatted: OutcomeFormatted[];
   isTemplate: boolean;
+  pending?: boolean;
+  status?: string;
+  hasPendingLiquidityOrders?: boolean;
 }
 
 export interface ForkingInfo {
@@ -141,6 +144,16 @@ export interface ForkingInfo {
   winningChildUniverseId?: string;
 }
 export interface Universe extends Getters.Universe.UniverseDetails {
+  outcomeName?: string;
+  creationTimestamp: number;
+  usersRep: string;
+  totalRepSupply: string;
+  totalOpenInterest: string;
+  numberOfMarkets: number;
+  warpSyncHash?: string;
+  children: null | Array<Getters.Universe.UniverseDetails>;
+  parentUniverseId: null | string;
+  id: null | string;
   disputeWindow: Getters.Universe.DisputeWindow;
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;
@@ -483,6 +496,7 @@ export interface MarketsList {
     categories: object;
   };
   selectedCategories: string[];
+  selectedCategory: string;
   marketCardFormat: string;
   isSearchInPlace: boolean;
 }
@@ -832,4 +846,5 @@ export interface Initialized3box {
   address: string;
   box: any;
   profile: object;
+  openComments: boolean;
 }

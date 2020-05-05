@@ -1,9 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'appStore';
-import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
-  formatGasCostToEther,
   formatAttoRep,
   formatAttoDai,
   formatEther,
@@ -36,18 +34,18 @@ import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { TRANSACTIONS } from 'modules/routes/constants/views';
 import { TXEventName } from '@augurproject/sdk/src';
 import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatusState.get();
+  const { universe: { forkingInfo }, modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatus.get();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   return {
-    modal: state.modal,
+    modal,
     gasCost: CLAIM_FEES_GAS_COST.multipliedBy(gasPrice),
     GsnEnabled,
     pendingQueue: state.pendingQueue || [],
     claimReportingFees: selectReportingWinningsByMarket(state),
-    forkingInfo: state.universe.forkingInfo,
+    forkingInfo,
   };
 };
 

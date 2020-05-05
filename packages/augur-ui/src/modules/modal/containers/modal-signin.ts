@@ -5,7 +5,6 @@ import { AppState } from 'appStore';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { updateModal } from '../actions/update-modal';
 import isMetaMaskPresent from 'modules/auth/helpers/is-meta-mask';
 import {
   MODAL_LOGIN,
@@ -33,55 +32,67 @@ import {
   MetaMaskLogin,
 } from 'modules/common/icons';
 import { windowRef } from 'utils/window-ref';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
+  modal: AppStatus.get().modal,
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
-  loginModal: () => dispatch(updateModal({ type: MODAL_LOGIN })),
-  hardwareWalletModal: (isLogin) => dispatch(updateModal({ type: MODAL_HARDWARE_WALLET, isLogin })),
-  signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
-  accountCreatedModal: () =>
-    dispatch(updateModal({ type: MODAL_ACCOUNT_CREATED })),
-  loadingModal: (message, callback, showMetaMaskHelper = false) =>
-    dispatch(
-      updateModal({
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
+  const { setModal } = AppStatus.actions;
+  return {
+    closeModal: () => dispatch(closeModal()),
+    loginModal: () => setModal({ type: MODAL_LOGIN }),
+    hardwareWalletModal: isLogin =>
+      setModal({ type: MODAL_HARDWARE_WALLET, isLogin }),
+    signupModal: () => setModal({ type: MODAL_SIGNUP }),
+    accountCreatedModal: () => setModal({ type: MODAL_ACCOUNT_CREATED }),
+    loadingModal: (message, callback, showMetaMaskHelper = false) =>
+      setModal({
         type: MODAL_LOADING,
         message,
         showMetaMaskHelper,
         callback,
         showCloseAfterDelay: true,
-      })
-    ),
-  connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
-  connectPortis: (showRegister, ) =>
-    dispatch(loginWithPortis(showRegister)),
-  connectTorus: () =>
-    dispatch(loginWithTorus()),
-  connectFortmatic: () =>
-    dispatch(loginWithFortmatic()),
-  errorModal: (error, title = null, link = null, linkLabel = null) => dispatch(
-    updateModal({
-      type: MODAL_ERROR,
-      title,
-      error: error ? error : 'Sorry, please try again.',
-      link,
-      linkLabel
-    })
-  ),
-});
+      }),
+    connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
+    connectPortis: showRegister => dispatch(loginWithPortis(showRegister)),
+    connectTorus: () => dispatch(loginWithTorus()),
+    connectFortmatic: () => dispatch(loginWithFortmatic()),
+    errorModal: (error, title = null, link = null, linkLabel = null) =>
+      setModal({
+        type: MODAL_ERROR,
+        title,
+        error: error ? error : 'Sorry, please try again.',
+        link,
+        linkLabel,
+      }),
+  };
+};
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const LOGIN_OR_SIGNUP = oP.isLogin ? 'Login' : 'Signup';
 
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
-    if (error.message && error.message.toLowerCase().indexOf('cookies') !== -1) {
+
+    const isPortisCancelError = accountType === ACCOUNT_TYPES.PORTIS && error.message.indexOf('User denied login') !== -1;
+    const isFortmaticCancelError =  accountType === ACCOUNT_TYPES.FORTMATIC &&  error.message.indexOf('User denied account access') !== -1;
+    const isTorusExitCancelError = accountType === ACCOUNT_TYPES.TORUS &&  error.indexOf('user closed popup') !== -1;
+
+    // If the error we get back from the wallet SDK is "User denied access", aka Cancel/Close wallet window, we should just close the modal
+    if (isTorusExitCancelError || isPortisCancelError || isFortmaticCancelError) {
+      dP.closeModal();
+      return;
+    }
+    if (error?.message.toLowerCase().indexOf('cookies') !== -1) {
       dP.errorModal(`Please enable cookies in your browser to proceed with ${accountType}.`, 'Cookies are disabled', HELP_CENTER_THIRD_PARTY_COOKIES, 'Learn more.');
     } else {
-      dP.errorModal(error.message ? error.message : error ? JSON.stringify(error) : '');
+      dP.errorModal(
+        `There was an error while attempting to log in with ${accountType}. Please try again.\n\n${
+          error?.message ? `Error: ${JSON.stringify(error.message)}` : ''
+        }`
+      );
     }
   };
 
@@ -177,9 +188,5 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(SignIn)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(SignIn)
 );

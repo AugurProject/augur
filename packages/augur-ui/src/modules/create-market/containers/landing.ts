@@ -7,10 +7,11 @@ import {
 import Landing from "modules/create-market/landing";
 import getValue from "utils/get-value";
 import { marketCreationStarted } from "services/analytics/helpers";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = state => ({
   newMarket: state.newMarket,
-  currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
+  currentTimestamp: AppStatus.get().blockchain.currentAugurTimestamp,
   address: getValue(state, "loginAccount.address"),
 });
 

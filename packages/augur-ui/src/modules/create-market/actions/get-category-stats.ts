@@ -2,22 +2,21 @@ import { AppState } from 'appStore';
 import { ThunkAction } from 'redux-thunk';
 import { augurSdk } from 'services/augursdk';
 import { POPULAR_CATEGORIES } from 'modules/common/constants';
-import { updateCategoryStats } from 'modules/app/actions/update-stats';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const getCategoryStats = (): ThunkAction<void, AppState, void, any> => async (
   dispatch,
   getState
 ) => {
   const augur = augurSdk.get();
-  const { universe } = getState();
+  const { universe, isConnected } = AppStatus.get();
 
-  if (!(universe && universe.id)) return;
-  if (!AppStatusState.get().isConnected) return;
+  if (!(universe?.id)) return;
+  if (!isConnected) return;
 
   const categoryStats = await augur.getCategoryStats({
     categories: POPULAR_CATEGORIES,
     universe: universe.id,
   });
-  dispatch(updateCategoryStats(categoryStats));
+  AppStatus.actions.setCategoryStats(categoryStats);
 };
