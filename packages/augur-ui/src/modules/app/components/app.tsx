@@ -457,7 +457,7 @@ const MainAppContent = ({
     <BetslipProvider>
     <ForkingBanner />
     <Routes isLogged={isLogged || restoredAccount} />
-    {isLogged && <Betslip />}
+    <Betslip />
     <StatusErrorMessage />
     </BetslipProvider>
   </section>
