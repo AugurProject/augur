@@ -20,6 +20,9 @@
     "writeArtifacts": true,
     "serial": true
   },
+  "uniswap": {
+    "exchangeRateBufferMultiplier": 1.75
+  },
   "gsn": {
     "enabled": true
   },
