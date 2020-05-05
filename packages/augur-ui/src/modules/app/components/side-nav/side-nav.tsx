@@ -41,7 +41,6 @@ interface SideNavProps {
   updateHelpMenuState: Function;
   updateConnectionTray: Function;
   updateModal: Function;
-  showCreateAccountButton: boolean;
   createFundedGsnWallet: Function;
   restoredAccount: boolean;
   stats: CoreStats;
@@ -54,19 +53,15 @@ const SideNav = ({
   defaultMobileClick,
   menuData,
   isConnectionTrayOpen,
-  logout,
   currentBasePath,
   showNav,
   showGlobalChat,
   migrateV1Rep,
   showMigrateRepButton,
-  walletBalances,
   isHelpMenuOpen,
   updateHelpMenuState,
   updateConnectionTray,
   updateModal,
-  showCreateAccountButton,
-  createFundedGsnWallet,
   stats,
   restoredAccount,
   whichChatPlugin,

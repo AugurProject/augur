@@ -73,6 +73,7 @@ const mapStateToProps = (state: AppState) => {
     showCreateAccountButton,
     showMigrateRepButton,
     whichChatPlugin: state.env.plugins?.chat,
+    appStatus: state.appStatus,
   }
 };
 

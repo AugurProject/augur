@@ -25,26 +25,20 @@ interface TopNavProps {
   isLogged: boolean;
   menuData: NavMenuItem[];
   currentBasePath: string;
-  isDisabled?: boolean;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
   updateModal: Function;
-  showCreateAccountButton: boolean;
-  createFundedGsnWallet: Function;
 }
 
 const SPREAD_INDEX = 3;
 
 const TopNav = ({
   isLogged,
-  isDisabled = false,
   menuData,
   currentBasePath,
   migrateV1Rep,
-  createFundedGsnWallet,
   showMigrateRepButton = false,
-  showCreateAccountButton = false,
   walletBalances,
 }: TopNavProps) => {
   const isCurrentItem = item => {

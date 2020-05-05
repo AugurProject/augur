@@ -25,11 +25,13 @@ import {
   CREATE_MARKET,
   DISPUTING,
   REPORTING,
+  MARKET
 } from 'modules/routes/constants/views';
 import {
   MODAL_NETWORK_CONNECT,
   MOBILE_MENU_STATES,
   TRADING_TUTORIAL,
+  ZEROX_STATUSES,
 } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/app.styles.less';
@@ -54,6 +56,7 @@ import { HelmetTag } from 'modules/seo/helmet-tag';
 import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { StatusErrorMessage } from 'modules/common/labels';
+import { Ox_STATUS } from '../actions/update-app-status';
 
 interface AppProps {
   notifications: Notification[];
@@ -98,7 +101,6 @@ interface AppProps {
   walletBalances: AccountBalances;
   saveAffilateAddress: Function;
   createFundedGsnWallet: Function;
-  showCreateAccountButton: boolean;
   showMigrateRepButton: boolean;
   whichChatPlugin: string;
 }
@@ -391,11 +393,11 @@ export default class AppView extends Component<AppProps> {
       updateHelpMenuState,
       notifications,
       createFundedGsnWallet,
-      showCreateAccountButton,
       showMigrateRepButton,
       stats,
       whichChatPlugin,
-      isMobile
+      isMobile,
+      appStatus
     } = this.props;
     this.sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
@@ -404,6 +406,7 @@ export default class AppView extends Component<AppProps> {
     const onTradingTutorial =
       parseQuery(location.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
 
+    const statusErrorShowing = appStatus[Ox_STATUS] === ZEROX_STATUSES.ERROR;
     return (
       <main>
         <HelmetTag {...APP_HEAD_TAGS} />
@@ -482,7 +485,6 @@ export default class AppView extends Component<AppProps> {
                 showMigrateRepButton={showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
-                showCreateAccountButton={showCreateAccountButton}
                 createFundedGsnWallet={createFundedGsnWallet}
                 whichChatPlugin={whichChatPlugin}
               />
@@ -496,10 +498,9 @@ export default class AppView extends Component<AppProps> {
                 showMigrateRepButton={showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
-                showCreateAccountButton={showCreateAccountButton}
-                createFundedGsnWallet={createFundedGsnWallet}
               />
             </section>
+            {!isMobile && <StatusErrorMessage />}
             <AlertsContainer
               alertsVisible={isLogged && sidebarStatus.isAlertsVisible}
               toggleAlerts={() => this.toggleAlerts()}
@@ -513,6 +514,8 @@ export default class AppView extends Component<AppProps> {
             <section
               className={classNames(Styles.Main__wrap, {
                 [Styles['Main__wrapMarkets']]: currentPath === MARKETS,
+                [Styles.StatusErrorShowing]: statusErrorShowing,
+                [Styles.StatusErrorShowingMarket]: statusErrorShowing && currentPath === MARKET,
                 [Styles['TopBarOpen']]:
                   sidebarStatus.mobileMenuState ===
                   MOBILE_MENU_STATES.SIDEBAR_OPEN,
@@ -527,6 +530,7 @@ export default class AppView extends Component<AppProps> {
               ) : (
                 <div className="no-nav-placehold" />
               )}
+              {isMobile && <StatusErrorMessage />}
               <section
                 className={classNames(Styles.Main__content, {
                   [Styles.Tutorial]: onTradingTutorial,
@@ -550,7 +554,6 @@ export default class AppView extends Component<AppProps> {
                 )}
 
                 <ForkingBanner />
-                <StatusErrorMessage />
                 <Routes isLogged={isLogged || restoredAccount} />
               </section>
             </section>
