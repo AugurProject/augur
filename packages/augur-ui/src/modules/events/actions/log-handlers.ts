@@ -370,20 +370,19 @@ export const handleBulkOrdersLog = (data: {
   const { appStatus } = getState();
   const { zeroXStatus } = appStatus;
   const marketIds = [];
-  if (zeroXStatus === ZEROX_STATUSES.SYNCED) {
-    data?.logs?.map(log => {
-      console.log(JSON.stringify(log));
+  if (zeroXStatus === ZEROX_STATUSES.SYNCED && data?.logs?.length > 0) {
+    data.logs.map(log => {
       handleOrderLog(log);
       marketIds.push(log.market);
     });
+    Array.from(new Set([...marketIds])).map(marketId => {
+      if (isCurrentMarket(marketId)) {
+        dispatch(updateMarketOrderBook(marketId));
+        dispatch(loadMarketTradingHistory(marketId));
+        dispatch(checkUpdateUserPositions([marketId]));
+      }
+    });
   }
-  Array.from(new Set([...marketIds])).map(marketId => {
-    if (isCurrentMarket(marketId)) {
-      dispatch(updateMarketOrderBook(marketId));
-      dispatch(loadMarketTradingHistory(marketId));
-      dispatch(checkUpdateUserPositions([marketId]));
-    }
-  });
 };
 
 export const handleOrderLog = (log: any) =>
