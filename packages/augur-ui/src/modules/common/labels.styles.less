@@ -1046,9 +1046,15 @@ span.PendingLabel {
   left: 0;
   right: 0;
   z-index: 100;
+  margin-left: 250px;
+  margin-top: @size-10;
 
   @media @breakpoint-tablet {
     margin-left: 100px;
+  }
+
+  @media @breakpoint-mobile {
+    margin-left: 0;
   }
 
   > span {
