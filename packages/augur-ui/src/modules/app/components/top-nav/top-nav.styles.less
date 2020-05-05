@@ -9,7 +9,7 @@
     display: none;
   }
 
-  > ul {
+  > ul:first-of-type {
     display: flex;
     align-items: center;
     border-bottom: 1px solid @color-dark-grey;
@@ -128,6 +128,14 @@
       @media @breakpoint-mobile {
         display: none;
       }
+    }
+  }
+  > ul:last-of-type {
+    justify-items: center;
+    align-items: center;
+
+    @media @breakpoint-mobile {
+      display: none;
     }
   }
 }
