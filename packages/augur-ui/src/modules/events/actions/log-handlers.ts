@@ -47,6 +47,7 @@ import {
   DISAVOWCROWDSOURCERS,
   MARKETMIGRATED,
   DOINITIALREPORTWARPSYNC,
+  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -76,6 +77,7 @@ import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { updateAppStatus, WALLET_STATUS, Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
+import { logger } from '@augurproject/logger';
 
 const handleAlert = (
   log: any,
@@ -172,8 +174,14 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  if (log && log.error && log.error.message.includes("too many blocks")) location.reload();
+  if (log && log.error && log.error.message.includes("too many blocks")) {
+    console.error('too many blocks behind, reloading UI')
+    location.reload();
+  }
   dispatch(updateAppStatus(Ox_STATUS, status))
+  if (status === ZEROX_STATUSES.SYNCED && getState().authStatus.isLogged) {
+    dispatch(throttleLoadUserOpenOrders());
+  }
 }
 
 export const handleSDKReadyEvent = () => (
@@ -352,8 +360,18 @@ export const handleTokenBalanceChangedLog = (
   })
 };
 
+export const handleBulkOrdersLog = (logs: any) =>
+(dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  logger.info('Bulk Order Events', logs.length);
+  const { appStatus } = getState();
+  const { zeroXStatus } = appStatus;
+  if (zeroXStatus === ZEROX_STATUSES.SYNCED) {
+    logs.forEach(log => handleOrderLog(log));
+  }
+};
+
 export const handleOrderLog = (log: any) =>
-(dispatch: ThunkDispatch<void, any, Action>) => {
+(dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const type = log.eventType;
   switch (type) {
     case OrderEventType.Create:
@@ -366,6 +384,7 @@ export const handleOrderLog = (log: any) =>
     default:
       console.log(`Unknown order event type "${log.eventType}" for log`, log);
   }
+
   return null;
 };
 

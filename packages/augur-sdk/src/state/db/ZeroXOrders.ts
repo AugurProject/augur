@@ -165,7 +165,7 @@ export class ZeroXOrders extends AbstractTable {
 
   async handleOrderEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
-
+    const bulkOrderEvents = [];
     const filteredOrders = orderEvents.filter(this.validateOrder, this);
     let documents: StoredOrder[] = filteredOrders.map(this.processOrder, this);
 
@@ -180,6 +180,7 @@ export class ZeroXOrders extends AbstractTable {
       // Spread this once to avoid extra copies
       const event = {eventType: OrderEventType.Cancel, orderId: d.orderHash, ...d};
       this.augur.events.emit('OrderEvent', event);
+      bulkOrderEvents.push(event);
       this.augur.events.emit('DB:updated:ZeroXOrders', event);
     }
     documents = documents.filter((d: StoredOrder) => !canceledOrders[d.orderHash]);
@@ -200,8 +201,10 @@ export class ZeroXOrders extends AbstractTable {
       const eventType = filledOrders[d.orderHash] ? OrderEventType.Fill : OrderEventType.Create;
       const event = {eventType, orderId: d.orderHash,...d};
       this.augur.events.emit('OrderEvent', event);
+      bulkOrderEvents.push(event);
       this.augur.events.emit('DB:updated:ZeroXOrders', event);
     }
+    if (bulkOrderEvents.length > 0) this.augur.events.emit(SubscriptionEventName.BulkOrderEvent, bulkOrderEvents);
   }
 
   async sync(): Promise<void> {
