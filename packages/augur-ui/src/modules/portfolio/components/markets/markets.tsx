@@ -4,12 +4,14 @@ import classNames from 'classnames';
 import FilterBox from 'modules/portfolio/containers/filter-box';
 import { LinearPropertyLabel, PendingLabel } from 'modules/common/labels';
 import { MarketProgress } from 'modules/common/progress';
-import { END_TIME } from 'modules/common/constants';
+import { END_TIME, THEMES } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';
 import { CancelTextButton, SubmitTextButton } from 'modules/common/buttons';
 
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
+import favoriteStyles from 'modules/portfolio/components/favorites/favorites.styles.less';
 import { MarketData } from 'modules/types';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const sortByOptions = [
   {
@@ -151,10 +153,18 @@ class MyMarkets extends Component<MyMarketsProps> {
   render() {
     const { myMarkets, toggle, hide, extend } = this.props;
 
+    // const { theme } = useAppStatusStore();
+    // const isTrading = theme === THEMES.TRADING;
+    let customClass = favoriteStyles.Watchlist;
+    // if (!isTrading && myMarkets.length === 0) {
+    //   customClass = favoriteStyles.MarketsEmptyDisplay;
+    // }
+
     return (
       // @ts-ignore
       <FilterBox
         title="My Created Markets"
+        customClass={customClass}
         sortByOptions={sortByOptions}
         sortByStyles={{ minWidth: '10.8125rem' }}
         markets={myMarkets}
