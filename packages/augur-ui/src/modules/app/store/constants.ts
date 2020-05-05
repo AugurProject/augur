@@ -35,7 +35,7 @@ export const MODAL = 'modal';
 export const UNIVERSE = 'universe';
 export const LOGIN_ACCOUNT = 'loginAccount';
 
-const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
+export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
   balances: {
     eth: 0,
     rep: 0,
@@ -199,7 +199,7 @@ export const APP_STATUS_ACTIONS = {
   CLOSE_MODAL: 'CLOSE_MODAL',
   UPDATE_UNIVERSE: 'UPDATE_UNIVERSE',
   SWITCH_UNIVERSE: 'SWITCH_UNIVERSE',
-  UPDATE_LOGIN_ACCOUNT: 'UPDATE_LOGIN_ACCOUNT';
+  UPDATE_LOGIN_ACCOUNT: 'UPDATE_LOGIN_ACCOUNT',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -233,5 +233,5 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   closeModal: () => {},
   updateUniverse: universe => {},
   switchUniverse: () => {},
-  updateLoginAccount: loginAccount => {},
+  updateLoginAccount: (loginAccount, clear) => {},
 };

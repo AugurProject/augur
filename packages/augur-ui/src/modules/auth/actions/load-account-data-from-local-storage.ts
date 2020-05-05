@@ -46,6 +46,7 @@ export const loadAccountDataFromLocalStorage = (
 
       if (settings) {
         dispatch(updateLoginAccount({ settings }));
+        AppStatus.actions.updateLoginAccount({ settings });
         const { maxFee, spread, showInvalid, templateFilter } = settings;
         const { updateFilterSortOptions } = AppStatus.actions;
         if (maxFee) {

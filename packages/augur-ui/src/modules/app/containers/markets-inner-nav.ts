@@ -22,9 +22,12 @@ const mapStateToProps = ({ marketsList, loginAccount }) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const { updateFilterSortOptions } = AppStatus.actions;
+  const { updateFilterSortOptions, updateLoginAccount: AppStatusUpdateLoginAccount } = AppStatus.actions;
   return ({
-    updateLoginAccount: settings => dispatch(updateLoginAccount({ settings })),
+    updateLoginAccount: settings => {
+      dispatch(updateLoginAccount({ settings }));
+      AppStatusUpdateLoginAccount({ settings });
+    },
     updateSelectedCategories: categories =>
       dispatch(updateSelectedCategories(categories)),
     updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),

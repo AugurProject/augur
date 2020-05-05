@@ -11,17 +11,23 @@ export const loadAccountOpenOrders = () => async (
   getState: () => AppState
 ) => {
   const { loginAccount } = getState();
-  const { universe: { id: universe }} = AppStatus.get();
+  const {
+    universe: { id: universe },
+  } = AppStatus.get();
   const Augur = augurSdk.get();
   const userOpenOrders = await Augur.getUserOpenOrders({
     universe,
     account: loginAccount.mixedCaseAddress,
   });
   dispatch(refreshUserOpenOrders(userOpenOrders.orders));
-  if (userOpenOrders.totalOpenOrdersFrozenFunds)
+  if (userOpenOrders.totalOpenOrdersFrozenFunds) {
     dispatch(
       updateLoginAccount({
         totalOpenOrdersFrozenFunds: userOpenOrders.totalOpenOrdersFrozenFunds,
       })
     );
+    AppStatus.actions.updateLoginAccount({
+      totalOpenOrdersFrozenFunds: userOpenOrders.totalOpenOrdersFrozenFunds,
+    });
+  }
 };

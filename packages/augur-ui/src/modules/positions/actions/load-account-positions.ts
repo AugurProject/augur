@@ -38,7 +38,10 @@ export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void
 
   dispatch(updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory));
   if (positionsPlus.userPositions) dispatch(userPositionProcessing(positionsPlus.userPositions));
-  if (positionsPlus.userPositionTotals) dispatch(updateLoginAccount(positionsPlus.userPositionTotals));
+  if (positionsPlus.userPositionTotals) {
+    dispatch(updateLoginAccount(positionsPlus.userPositionTotals));
+    AppStatus.actions.updateLoginAccount(positionsPlus.userPositionTotals);
+  }
 };
 
 export const loadAccountOnChainFrozenFundsTotals = () => async (
@@ -51,6 +54,9 @@ export const loadAccountOnChainFrozenFundsTotals = () => async (
   const frozen = await Augur.getTotalOnChainFrozenFunds({
     account: loginAccount.mixedCaseAddress,
     universe,
+  });
+  AppStatus.actions.updateLoginAccount({ 
+    totalFrozenFunds: frozen.totalFrozenFunds,
   });
   dispatch(
     updateLoginAccount({

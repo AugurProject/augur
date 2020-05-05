@@ -64,6 +64,18 @@ function updateBalances(
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const legacyRepNonSafe = formatAttoRep(legacyAttoRepNonSafe).value;
     dispatch(addedDaiEvent(dai));
+    AppStatus.actions.updateLoginAccount({
+      balances: {
+        attoRep,
+        rep,
+        dai,
+        eth,
+        legacyAttoRep,
+        legacyRep,
+        legacyRepNonSafe,
+        ethNonSafe,
+      },
+    });
     dispatch(
       updateLoginAccount({
         balances: {

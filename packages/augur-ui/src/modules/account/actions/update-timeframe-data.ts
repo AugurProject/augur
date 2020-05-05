@@ -29,7 +29,16 @@ export const updateTimeframeData = (
       endTime: currentAugurTimestamp
     }
   );
-
+  AppStatus.actions.updateLoginAccount({
+    timeframeData: {
+      positions: stats.positions,
+      numberOfTrades: stats.numberOfTrades,
+      marketsTraded: stats.marketsTraded,
+      marketsCreated: stats.marketsCreated,
+      successfulDisputes: stats.successfulDisputes,
+      redeemedPositions: stats.redeemedPositions,
+    },
+  });
   dispatch(
     updateLoginAccount({
       timeframeData: {

@@ -34,7 +34,8 @@ const mapStateToProps = ({ marketsList, loginAccount }: AppState) => {
 
 const mapDispatchToProps = dispatch => {
   const {
-    updateFilterSortOptions
+    updateFilterSortOptions,
+    updateLoginAccount: AppStatusUpdateLoginAccount
   } = AppStatus.actions;
   return ({
     updateMaxFee: maxFee =>
@@ -47,6 +48,7 @@ const mapDispatchToProps = dispatch => {
       updateFilterSortOptions({ [TEMPLATE_FILTER]: templateFilter }),
     updateLoginAccount: settings => {
       dispatch(updateLoginAccount({ settings }));
+      AppStatusUpdateLoginAccount({ settings });
     },
     updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
   });

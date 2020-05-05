@@ -147,6 +147,7 @@ export function connectAugur(
         },
       };
       AppStatus.actions.setRestoredAccount(true);
+      AppStatus.actions.updateLoginAccount(accountObject);
       dispatch(updateLoginAccount(accountObject));
     };
 

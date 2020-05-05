@@ -62,6 +62,7 @@ export const updateSdk = (
     );
 
     dispatch(updateLoginAccount(newAccount));
+    AppStatus.actions.updateLoginAccount(newAccount);
     setIsLogged(true);
     dispatch(loadAccountData());
     dispatch(updateAssets());

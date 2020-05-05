@@ -33,7 +33,7 @@ export const loadAccountReportingHistory = () => async (
     dispatch(updateReadNotifications([{...notification, isImportant: true, isNew: true}]))
   }
   dispatch(updateLoginAccount({ reporting }));
-
+  AppStatus.actions.updateLoginAccount({ reporting });
   if (marketIds.length > 0) dispatch(loadMarketsInfoIfNotLoaded(marketIds));
 };
 

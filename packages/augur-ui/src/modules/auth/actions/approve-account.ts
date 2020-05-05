@@ -6,6 +6,7 @@ import { NodeStyleCallback } from 'modules/types';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 import { formatDai } from 'utils/format-number';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export function checkAccountAllowance(
   callback: NodeStyleCallback = logError
@@ -21,6 +22,10 @@ export function checkAccountAllowance(
     }
     const allowance = await getAllowance(loginAccount.address);
     callback(null, allowance);
+    AppStatus.actions.updateLoginAccount({
+      allowance,
+      allowanceFormatted: formatDai(allowance),
+    });
     dispatch(
       updateLoginAccount({
         allowance,

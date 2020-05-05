@@ -30,6 +30,7 @@ import {
   MODAL,
   UNIVERSE,
   LOGIN_ACCOUNT,
+  DEFAULT_LOGIN_ACCOUNT_STATE,
 } from 'modules/app/store/constants';
 
 const {
@@ -225,6 +226,9 @@ export function AppStatusReducer(state, action) {
         ...updatedState[LOGIN_ACCOUNT],
         ...action.loginAccount,
       };
+      if (action.clear) {
+        updatedState[LOGIN_ACCOUNT] ={ ...DEFAULT_LOGIN_ACCOUNT_STATE };
+      }
       break;
     }
     default:
@@ -291,7 +295,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
       updateUniverse: universe => dispatch({ type: UPDATE_UNIVERSE, universe }),
       switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
-      updateLoginAcccount: loginAccount => dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount }),
+      updateLoginAccount: (loginAccount, clear = false) => dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount, clear }),
     },
   };
 };
