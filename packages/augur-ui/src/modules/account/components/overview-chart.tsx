@@ -127,7 +127,7 @@ export default class OverviewChart extends React.Component<
       ]);
 
       if (this.container) {
-        const realizedPercentChange = createBigNumber(lastData.realizedPercent).minus(firstData.realizedPercent);
+        const realizedPercentChange = createBigNumber(lastData.realizedPercent).minus(firstData.realizedPercent).times(100);
         const realizedChange = createBigNumber(lastData.realized).minus(firstData.realized);
         this.setState({
           profitLossData,
