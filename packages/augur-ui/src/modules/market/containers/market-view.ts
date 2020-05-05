@@ -39,10 +39,10 @@ import {
 import { AppState } from 'appStore';
 import {
   loadMarketOrderBook,
-  clearOrderBook,
 } from 'modules/orders/actions/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
+import { useMarketsStore } from 'modules/markets/store/markets';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { loginAccount, orderBooks } = state;
@@ -150,11 +150,12 @@ const mapStateToProps = (state: AppState, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { setModal } = AppStatus.actions;
+ 
+  
   return {
     hotloadMarket: marketId => hotloadMarket(marketId),
     loadMarketsInfo: marketId => dispatch(loadMarketsInfo([marketId])),
     loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
-    clearOrderBook: () => dispatch(clearOrderBook()),
     updateModal: modal => setModal(modal),
     loadMarketTradingHistory: marketId =>
       dispatch(loadMarketTradingHistory(marketId)),

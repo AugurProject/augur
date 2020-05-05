@@ -93,7 +93,6 @@ interface MarketViewProps {
   account: string;
   orderBook?: Getters.Markets.OutcomeOrderBook | OutcomeTestTradingOrder;
   loadMarketOrderBook: Function;
-  clearOrderBook: Function;
   zeroXstatus: string;
   hasZeroXError: boolean;
 }

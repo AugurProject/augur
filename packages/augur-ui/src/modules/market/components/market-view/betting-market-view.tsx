@@ -16,6 +16,7 @@ import {
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { REPORTING_STATE } from 'modules/common/constants';
 import { OutcomeGroup } from 'modules/market-cards/common';
+import { useMarketsStore } from 'modules/markets/store/markets';
 
 interface BettingMarketViewProps {
   location: Location;
@@ -43,6 +44,11 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
   } = market;
 
   const { theme } = useAppStatusStore();
+  const {
+    orderBooks,
+  } = useMarketsStore();
+  
+  console.log(orderBooks)
 
   const inDispute =
     reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
