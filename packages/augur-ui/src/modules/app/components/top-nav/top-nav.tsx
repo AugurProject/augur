@@ -20,7 +20,6 @@ import {
   CREATE_MARKET
 } from 'modules/routes/constants/views';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
-import { StatusErrorMessage } from 'modules/common/labels';
 
 interface TopNavProps {
   isLogged: boolean;
@@ -139,7 +138,6 @@ const TopNav = ({
           </div>
         )}
       </ul>
-      {/* <StatusErrorMessage /> */}
       <GlobalChat />
     </aside>
   );
