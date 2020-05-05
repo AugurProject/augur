@@ -46,13 +46,14 @@ const SideNav = ({
   stats,
 }: SideNavProps) => {
   const {
+    env,
     restoredAccount,
     currentBasePath,
     isHelpMenuOpen,
     isConnectionTrayOpen,
     actions: { setIsHelpMenuOpen, setGSNEnabled, setModal },
   } = useAppStatusStore();
-
+  const whichChatPlugin = env.plugins?.chat;
   const accessFilteredMenu = menuData.filter(
     item => !(item.requireLogin && !isLogged)
   );
@@ -149,7 +150,7 @@ const SideNav = ({
               )}
             </div>
           </ul>
-          {isLogged && (
+          {isLogged && whichChatPlugin && (
             <footer>
               <div className={Styles.GlobalChat}>
                 <SecondaryButton

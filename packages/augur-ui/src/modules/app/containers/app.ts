@@ -47,7 +47,6 @@ const mapStateToProps = (state: AppState) => {
     walletBalances,
     showCreateAccountButton,
     showMigrateRepButton,
-    whichChatPlugin: state.env.plugins?.chat,
   }
 };
 

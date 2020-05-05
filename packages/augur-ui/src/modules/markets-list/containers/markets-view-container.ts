@@ -50,6 +50,7 @@ const mapStateToProps = (state: AppState, { location }) => {
     selectedTagNames,
   } = getSelectedTagsAndCategoriesFromLocation(location);
   const {
+    isMobile,
     universe: { id },
     isConnected,
     filterSortOptions: {
@@ -64,7 +65,7 @@ const mapStateToProps = (state: AppState, { location }) => {
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
   let marketCardFormat = state.marketsList.marketCardFormat
     ? state.marketsList.marketCardFormat
-    : state.appStatus.isMobile
+    : isMobile
     ? MARKET_CARD_FORMATS.COMPACT
     : MARKET_CARD_FORMATS.CLASSIC;
 
