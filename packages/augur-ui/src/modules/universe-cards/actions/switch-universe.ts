@@ -16,12 +16,11 @@ export const switchUniverse = (
   universeId: string,
   history: History
 ): ThunkAction<any, any, any, any> => async (dispatch, getState) => {
-  const { loginAccount } = getState() as AppState;
-  const account = loginAccount.address;
   history.push({
     pathname: makePath(MARKETS, null),
   });
   const {
+    loginAccount: { address: account },
     filterSortOptions: {
       maxFee,
       maxLiquiditySpread,

@@ -39,6 +39,7 @@ import { selectLoginAccountClaimablePositions } from 'modules/positions/selector
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { isSameAddress } from 'utils/isSameAddress';
+import { AppStatus } from 'modules/app/store/app-status';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -110,12 +111,12 @@ export const selectMarketsInDispute = createSelector(
   (markets, positions, address) => {
     const state = store.getState() as AppState;
     let marketIds = Object.keys(positions);
-    const { reporting } = state.loginAccount;
+    const { loginAccount: { reporting } } = AppStatus.get();
     if (reporting && reporting.disputing && reporting.disputing.contracts) {
       marketIds = Array.from(
         new Set([
           ...marketIds,
-          ...state.loginAccount.reporting.disputing.contracts.map(
+          ...reporting.disputing.contracts.map(
             obj => obj.marketId
           ),
         ])
@@ -125,7 +126,7 @@ export const selectMarketsInDispute = createSelector(
       marketIds = Array.from(
         new Set([
           ...marketIds,
-          ...state.loginAccount.reporting.reporting.contracts.map(
+          ...reporting.reporting.contracts.map(
             obj => obj.marketId
           ),
         ])

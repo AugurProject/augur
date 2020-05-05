@@ -13,13 +13,13 @@ export const loadAccountReportingHistory = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount, readNotifications } = getState();
-  const { universe } = AppStatus.get();
-  if (!loginAccount || !loginAccount.address) return;
+  const { readNotifications } = getState();
+  const { loginAccount: { address }, universe } = AppStatus.get();
+  if (!address) return;
   const Augur = augurSdk.get();
   const reporting = await Augur.getAccountRepStakeSummary({
     universe: universe.id,
-    account: loginAccount.address,
+    account: address,
   });
   // pull all markets from reporting, disputing.
   let marketIds = [];

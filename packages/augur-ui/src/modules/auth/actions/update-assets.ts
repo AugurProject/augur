@@ -21,8 +21,7 @@ export const updateAssets = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount } = getState();
-  const { address, meta } = loginAccount;
+  const { loginAccount: { address, meta } } = AppStatus.get();
   const nonSafeWallet = await meta.signer.getAddress();
 
   updateBalances(

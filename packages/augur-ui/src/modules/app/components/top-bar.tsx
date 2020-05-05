@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Alerts } from 'modules/common/icons';
-import ConnectAccount from 'modules/auth/containers/connect-account';
+import ConnectAccount from 'modules/auth/components/connect-account/connect-account';
 import {
   MovementLabel,
   LinearPropertyLabel,

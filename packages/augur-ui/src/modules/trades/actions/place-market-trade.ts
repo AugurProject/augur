@@ -32,9 +32,10 @@ export const placeMarketTrade = ({
   getState: () => AppState
 ) => {
   if (!marketId) return null;
-  const { marketInfos, loginAccount } = getState();
+  const { marketInfos } = getState();
   // numFills is 0 and zerox mesh client has error auto fail processing order label
   const {
+    loginAccount: { allowance }, 
     zeroXStatus,
     gsnEnabled,
     blockchain: { currentAugurTimestamp },
@@ -51,7 +52,7 @@ export const placeMarketTrade = ({
   let needsApproval = false;
 
   if (!gsnEnabled) {
-    needsApproval = createBigNumber(loginAccount.allowance).lt(
+    needsApproval = createBigNumber(allowance).lt(
       tradeInProgress.totalCost.value
     );
   }

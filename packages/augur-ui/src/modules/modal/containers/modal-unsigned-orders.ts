@@ -27,16 +27,16 @@ import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatus.get();
+  const { loginAccount, modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatus.get();
   const market = selectMarket(modal.marketId);
-  let availableDai = totalTradingBalance(state.loginAccount);
+  let availableDai = totalTradingBalance();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   return {
     modal,
     market,
     liquidity: state.pendingLiquidityOrders[market.transactionHash],
     gasPrice,
-    loginAccount: state.loginAccount,
+    loginAccount,
     GsnEnabled,
     availableDai
   };

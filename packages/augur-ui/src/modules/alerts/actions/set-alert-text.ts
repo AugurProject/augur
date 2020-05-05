@@ -56,6 +56,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
+import { AppStatus } from 'modules/app/store/app-status';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
@@ -243,7 +244,8 @@ export default function setAlertText(alert: any, callback: Function) {
             loadMarketsInfoIfNotLoaded([marketId], () => {
               const marketInfo = selectMarket(marketId);
               if (marketInfo === null) return;
-              const { loginAccount, userOpenOrders } = getState() as AppState;
+              const { userOpenOrders } = getState() as AppState;
+              const { loginAccount } = AppStatus.get();
               let originalQuantity = convertOnChainAmountToDisplayAmount(
                 createBigNumber(alert.params.amountFilled),
                 createBigNumber(marketInfo.tickSize)
@@ -291,7 +293,8 @@ export default function setAlertText(alert: any, callback: Function) {
             loadMarketsInfoIfNotLoaded([marketId], () => {
               const marketInfo = selectMarket(marketId);
               if (marketInfo === null) return;
-              const { loginAccount, userOpenOrders } = getState() as AppState;
+              const { userOpenOrders } = getState() as AppState;
+              const { loginAccount } = AppStatus.get();
               let originalQuantity = null;
               let updatedOrderType = alert.params.orderType;
               if (

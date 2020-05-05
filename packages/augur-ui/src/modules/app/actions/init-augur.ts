@@ -122,8 +122,7 @@ export function connectAugur(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { modal } = AppStatus.get();
-    const { loginAccount } = getState();
+    const { modal, loginAccount } = AppStatus.get();
     const windowApp = windowRef as WindowApp;
     const loggedInUser = getLoggedInUserFromLocalStorage();
     const loggedInAccount = loggedInUser && loggedInUser.address || null;

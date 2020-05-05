@@ -16,15 +16,13 @@ import { selectReportingWinningsByMarket } from 'modules/positions/selectors/sel
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount } = state;
   const {
+    loginAccount: { reporting, balances },
     universe: { forkingInfo },
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
   const isForking = !!forkingInfo;
   if (!isForking) return { show: false };
-
-  const { reporting, balances } = loginAccount;
   let hasStakedRep = false;
   if (reporting) {
     const stakes = selectReportingWinningsByMarket(state);

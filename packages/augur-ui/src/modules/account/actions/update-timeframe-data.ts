@@ -15,8 +15,7 @@ export const updateTimeframeData = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ): Promise<void> => {
-  const { loginAccount } = getState();
-  const { universe: { id }, blockchain: { currentAugurTimestamp }} = AppStatus.get();
+  const { loginAccount, universe: { id }, blockchain: { currentAugurTimestamp }} = AppStatus.get();
   if (loginAccount.address == null || id == null)
     return callback(null);
 

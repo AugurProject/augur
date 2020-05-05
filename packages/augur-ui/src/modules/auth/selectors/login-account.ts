@@ -8,6 +8,7 @@ import getValue from "utils/get-value";
 import { createBigNumber, BigNumber } from "utils/create-big-number";
 import { ZERO } from "modules/common/constants";
 import { LoginAccount } from "modules/types";
+import { AppStatus } from 'modules/app/store/app-status';
 
 export default function() {
   return selectLoginAccount(store.getState());
@@ -15,7 +16,8 @@ export default function() {
 
 export const selectLoginAccount = createSelector(
   selectLoginAccountState,
-  loginAccount => {
+  loginAccountState => {
+    const { loginAccount } = AppStatus.get();
     const genAccountProperties = generateDownloadAccountLink(
       loginAccount.address,
       loginAccount.keystore,
@@ -45,7 +47,8 @@ export const selectLoginAccount = createSelector(
 
 export const selectAccountFunds = createSelector(
   selectLoginAccount,
-  loginAccount => {
+  loginAccountState => {
+    const { loginAccount } = AppStatus.get();
     let totalAvailableTradingBalance = ZERO;
     let totalFrozenFunds = ZERO;
     let totalRealizedPL = ZERO;
@@ -80,7 +83,8 @@ export const selectAccountFunds = createSelector(
   }
 );
 
-export const totalTradingBalance = (loginAccount: LoginAccount): BigNumber => {
+export const totalTradingBalance = (): BigNumber => {
+  const { loginAccount } = AppStatus.get();
   return createBigNumber(loginAccount.balances.dai).minus(
     loginAccount.totalOpenOrdersFrozenFunds
   );

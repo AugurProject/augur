@@ -10,14 +10,14 @@ export const loadAccountOpenOrders = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount } = getState();
   const {
+    loginAccount: { mixedCaseAddress: account },
     universe: { id: universe },
   } = AppStatus.get();
   const Augur = augurSdk.get();
   const userOpenOrders = await Augur.getUserOpenOrders({
     universe,
-    account: loginAccount.mixedCaseAddress,
+    account,
   });
   dispatch(refreshUserOpenOrders(userOpenOrders.orders));
   if (userOpenOrders.totalOpenOrdersFrozenFunds) {

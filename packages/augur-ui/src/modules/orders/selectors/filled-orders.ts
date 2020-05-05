@@ -11,6 +11,7 @@ import createCachedSelector from "re-reselect";
 import { selectUserOpenOrders } from "modules/orders/selectors/user-open-orders";
 import { isSameAddress } from "utils/isSameAddress";
 import { formatDai } from "utils/format-number";
+import { AppStatus } from "modules/app/store/app-status";
 
 function findOrders(
   tradesCreatedOrFilledByThisAccount,
@@ -161,7 +162,8 @@ function selectMarketsDataStateMarket(state, marketId) {
 
 function selectMarketUserFilledHistoryState(state: AppState, marketId) {
   const filledOrders = selectFilledOrders(state);
-  const usersFilled = (filledOrders[state.loginAccount.address] || {})
+  const { loginAccount: address } = AppStatus.get();
+  const usersFilled = (filledOrders[address] || {})
   return usersFilled[marketId] || [];
 }
 

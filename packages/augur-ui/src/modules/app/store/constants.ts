@@ -200,6 +200,7 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_UNIVERSE: 'UPDATE_UNIVERSE',
   SWITCH_UNIVERSE: 'SWITCH_UNIVERSE',
   UPDATE_LOGIN_ACCOUNT: 'UPDATE_LOGIN_ACCOUNT',
+  CLEAR_LOGIN_ACCOUNT: 'CLEAR_LOGIN_ACCOUNT',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -233,5 +234,6 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   closeModal: () => {},
   updateUniverse: universe => {},
   switchUniverse: () => {},
-  updateLoginAccount: (loginAccount, clear) => {},
+  updateLoginAccount: loginAccount => {},
+  clearLoginAccount: () => {},
 };

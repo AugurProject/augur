@@ -8,28 +8,29 @@ import { removePendingTransaction } from 'modules/pending-queue/actions/pending-
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { loginAccount, newMarket } = state;
+  const { newMarket } = state;
   const {
+    loginAccount: { balances, allowance: allowanceBigNumber },
     gsnEnabled: GsnEnabled,
     walletStatus: walletStatus,
     gasPriceInfo,
   } = AppStatus.get();
 
   const hasFunds = GsnEnabled
-    ? !!loginAccount.balances.dai
-    : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
+    ? !!balances.dai
+    : !!balances.eth && !!balances.dai;
 
-  let availableDai = totalTradingBalance(loginAccount)
+  let availableDai = totalTradingBalance();
   if (ownProps.initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
   const sweepStatus = state.pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
   return {
     gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,
-    availableEth: createBigNumber(loginAccount.balances.eth),
+    availableEth: createBigNumber(balances.eth),
     availableDai,
     hasFunds,
-    allowanceBigNumber: loginAccount.allowance,
+    allowanceBigNumber,
     GsnEnabled,
     walletStatus,
     sweepStatus,

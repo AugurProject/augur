@@ -15,12 +15,12 @@ export function checkAccountAllowance(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { loginAccount } = getState();
-    if (!loginAccount.address) {
+    const { loginAccount: { address }} = AppStatus.get();
+    if (!address) {
       console.log('User not logged in, check that wallet is connected');
       return callback(null, '0');
     }
-    const allowance = await getAllowance(loginAccount.address);
+    const allowance = await getAllowance(address);
     callback(null, allowance);
     AppStatus.actions.updateLoginAccount({
       allowance,

@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import BaseInnerNavPure from 'modules/app/components/inner-nav/base-inner-nav-pure';
 import {
-  updateSelectedCategories,
+  updateSelectedCategories, updateMarketsListMeta,
 } from 'modules/markets-list/actions/update-markets-list';
 import {
   MARKET_SORT,
@@ -14,10 +14,10 @@ import {
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { AppStatus } from '../store/app-status';
 
-const mapStateToProps = ({ marketsList, loginAccount }) => {
+const mapStateToProps = ({ marketsList }) => {
   return {
     selectedCategories: marketsList.selectedCategories,
-    settings: loginAccount.settings,
+    settings: AppStatus.get().loginAccount.settings,
   };
 };
 

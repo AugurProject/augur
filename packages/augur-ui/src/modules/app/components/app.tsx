@@ -41,7 +41,6 @@ import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
 import {
   Universe,
-  LoginAccount,
   Notification,
   AccountBalances,
 } from 'modules/types';
@@ -66,7 +65,6 @@ interface AppProps {
   history: History;
   initAugur: Function;
   location: Location;
-  loginAccount: LoginAccount;
   modal: object;
   universe: Universe;
   updateModal: Function;

@@ -4,29 +4,40 @@ import ModalReporting from 'modules/modal/reporting';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { REPORTING_STATE, MODAL_ADD_FUNDS, REP } from 'modules/common/constants';
+import {
+  REPORTING_STATE,
+  MODAL_ADD_FUNDS,
+  REP,
+} from 'modules/common/constants';
 import { formatRep } from 'utils/format-number';
 import { AppState } from 'appStore';
-import { addPendingData, removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import {
+  addPendingData,
+  removePendingData,
+} from 'modules/pending-queue/actions/pending-queue-management';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { loginAccount } = state;
-  const { universe: { forkingInfo, warpSyncHash }, modal } = AppStatus.get();
+  const {
+    loginAccount: {
+      balances: { rep },
+      address: userAccount,
+    },
+    universe: { forkingInfo, warpSyncHash },
+    modal,
+  } = AppStatus.get();
   let { market } = ownProps;
   market.isForking = forkingInfo && forkingInfo.forkingMarket === market.id;
   const hasForked = !!forkingInfo;
-  const migrateRep =
-    hasForked && forkingInfo.forkingMarket === market.id;
-  const migrateMarket =
-    hasForked && !!forkingInfo.winningChildUniverseId;
+  const migrateRep = hasForked && forkingInfo.forkingMarket === market.id;
+  const migrateMarket = hasForked && !!forkingInfo.winningChildUniverseId;
 
   return {
     warpSyncHash,
     modal,
     market,
-    rep: formatRep(loginAccount.balances.rep).formatted,
-    userAccount: loginAccount.address,
+    rep: formatRep(rep).formatted,
+    userAccount,
     migrateRep,
     migrateMarket,
   };
@@ -34,9 +45,12 @@ const mapStateToProps = (state: AppState, ownProps) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  getRepModal: () => AppStatus.actions.setModal({ type: MODAL_ADD_FUNDS, fundType: REP }),
-  addPendingData: (pendingId, queueName, status,hash, info) => dispatch(addPendingData(pendingId, queueName, status,hash, info)),
-  removePendingData: (pendingId, queueName) => dispatch(removePendingData(pendingId, queueName))
+  getRepModal: () =>
+    AppStatus.actions.setModal({ type: MODAL_ADD_FUNDS, fundType: REP }),
+  addPendingData: (pendingId, queueName, status, hash, info) =>
+    dispatch(addPendingData(pendingId, queueName, status, hash, info)),
+  removePendingData: (pendingId, queueName) =>
+    dispatch(removePendingData(pendingId, queueName)),
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -71,9 +85,5 @@ const mergeProps = (sP, dP, oP) => {
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(ModalReporting)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(ModalReporting)
 );

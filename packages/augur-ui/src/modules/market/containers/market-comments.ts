@@ -8,7 +8,8 @@ const DEFAULT_NUM_POSTS = 10;
 const COLOR_SCHEME = 'dark'; // this might change depending on themes
 const THREE_BOX_ADMIN_ACCOUNT = '0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb';
 
-const mapStateToProps = ({ loginAccount, initialized3box}, {numPosts, colorScheme}) => {
+const mapStateToProps = ({ initialized3box}, {numPosts, colorScheme}) => {
+  const { loginAccount, env } = AppStatus.get();
   const signer = loginAccount.meta?.signer;
 
   const defaultCommentProps = {
@@ -16,7 +17,7 @@ const mapStateToProps = ({ loginAccount, initialized3box}, {numPosts, colorSchem
     colorScheme: colorScheme || COLOR_SCHEME,
     networkId: getNetworkId(),
     numPosts: numPosts || DEFAULT_NUM_POSTS,
-    whichCommentPlugin: AppStatus.get().env.plugins?.comments,
+    whichCommentPlugin: env.plugins?.comments,
   };
 
   return signer ? {

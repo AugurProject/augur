@@ -16,6 +16,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const {
+    loginAccount: { address: loginAccountAddress, meta: accountMeta, balances },
     universe: { parentUniverseId, outcomeName, forkingInfo },
     gasPriceInfo: { fast, average, safeLow, userDefinedGasPrice },
   } = AppStatus.get();
@@ -45,13 +46,13 @@ const mapStateToProps = (state: AppState) => {
         ? parentUniverseId
         : null,
     universeHasChildren: !!forkingInfo,
-    loginAccountAddress: state.loginAccount.address,
+    loginAccountAddress,
     averageGasPrice: average,
     userDefinedGasPrice: userDefined,
     gasPriceSpeed,
     gasPriceTime,
-    accountMeta: state.loginAccount?.meta,
-    balances: state.loginAccount?.balances,
+    accountMeta,
+    balances,
     reserveEthAmount,
   };
 };

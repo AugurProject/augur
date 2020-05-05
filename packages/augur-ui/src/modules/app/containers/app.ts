@@ -21,12 +21,11 @@ import { AppStatus } from 'modules/app/store/app-status';
 import { selectCoreStats } from "modules/account/selectors/core-stats";
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount, pendingQueue } = state;
-  const { balances } = loginAccount;
-  const { universe, walletStatus, modal } = AppStatus.get();
+  const { pendingQueue } = state;
+  const { universe, walletStatus, modal, loginAccount: { balances } } = AppStatus.get();
   const { alerts } = selectInfoAlertsAndSeenCount(state);
   const notifications = selectNotifications(state);
-  const walletBalances = loginAccount.balances;
+  const walletBalances = balances;
   const pending =
     pendingQueue[TRANSACTIONS] &&
     pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
@@ -38,7 +37,6 @@ const mapStateToProps = (state: AppState) => {
 
   return {
     notifications,
-    loginAccount,
     stats: selectCoreStats(state),
     modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),

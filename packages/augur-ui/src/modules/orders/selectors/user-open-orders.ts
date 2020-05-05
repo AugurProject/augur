@@ -24,6 +24,7 @@ import {
   selectPendingOrdersState,
 } from 'appStore/select-state';
 import { createSelector } from 'reselect';
+import { AppStatus } from 'modules/app/store/app-status';
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];
@@ -94,7 +95,7 @@ function selectUserOpenOrdersInternal(
   name,
   marketType
 ) {
-  const { loginAccount } = store.getState() as AppState;
+  const { loginAccount } = AppStatus.get();
   if (!loginAccount.address || userMarketOpenOrders == null) return [];
 
   return userOpenOrders(

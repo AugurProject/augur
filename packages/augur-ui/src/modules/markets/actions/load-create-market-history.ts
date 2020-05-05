@@ -11,13 +11,16 @@ export function loadCreateMarketHistory() {
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { loginAccount } = getState();
-    if (!loginAccount.address) return;
+    const {
+      loginAccount: { address: creator },
+      universe: { id: universe },
+    } = AppStatus.get();
+    if (!creator) return;
     const Augur = augurSdk.get();
-    const { universe: { id: universe }} = AppStatus.get();
+
     if (universe) {
       const marketList = await Augur.getMarkets({
-        creator: loginAccount.address,
+        creator,
         universe,
       });
       const marketInfos = keyMarketInfoCollectionByMarketId(marketList.markets);

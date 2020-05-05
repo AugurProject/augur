@@ -23,13 +23,13 @@ import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = state => {
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
-  const { gsnEnabled: GsnEnabled, blockchain: { currentAugurTimestamp: currentTimestamp } } = AppStatus.get();
+  const { loginAccount: { allowance }, gsnEnabled: GsnEnabled, blockchain: { currentAugurTimestamp: currentTimestamp } } = AppStatus.get();
 
   return {
     newMarket: state.newMarket,
     currentTimestamp,
     drafts: state.drafts,
-    needsApproval: state.loginAccount.allowance.lte(ZERO),
+    needsApproval: allowance.lte(ZERO),
     GsnEnabled,
     gsnUnavailable: isGSNUnavailable(state),
     gsnWalletInfoSeen,

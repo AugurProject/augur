@@ -15,6 +15,7 @@ import { updateSelectedCategories } from "modules/markets-list/actions/update-ma
 
 const mapStateToProps = ({ marketsList, loginAccount }: AppState) => {
   const {
+    loginAccount: { settings },
     filterSortOptions: {
       maxFee,
       maxLiquiditySpread,
@@ -28,7 +29,7 @@ const mapStateToProps = ({ marketsList, loginAccount }: AppState) => {
     includeInvalidMarkets,
     isSearching: marketsList.isSearching,
     allTemplateFilter: templateFilter,
-    settings: loginAccount.settings || {},
+    settings,
   };
 };
 

@@ -23,10 +23,8 @@ async function loadTransactions(
   dispatch: ThunkDispatch<void, any, Action>,
   appState: AppState
 ) {
-  const { loginAccount } = appState;
-  const { mixedCaseAddress } = loginAccount;
   dispatch(loadDisputeWindow()); // need to load dispute window for user to claim reporting fees
-  const { universe } = AppStatus.get();
+  const { loginAccount: { mixedCaseAddress }, universe } = AppStatus.get();
   const { updateLoginAccount: AppStatusUpdateLoginAccount } = AppStatus.actions;
   const Augur = augurSdk.get();
   const userData: Getters.Users.UserAccountDataResult = await Augur.getUserAccountData({universe: universe.id, account: mixedCaseAddress})

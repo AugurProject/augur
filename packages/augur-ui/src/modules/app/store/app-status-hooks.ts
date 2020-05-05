@@ -65,6 +65,7 @@ const {
   UPDATE_UNIVERSE,
   SWITCH_UNIVERSE,
   UPDATE_LOGIN_ACCOUNT,
+  CLEAR_LOGIN_ACCOUNT,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -226,9 +227,10 @@ export function AppStatusReducer(state, action) {
         ...updatedState[LOGIN_ACCOUNT],
         ...action.loginAccount,
       };
-      if (action.clear) {
-        updatedState[LOGIN_ACCOUNT] ={ ...DEFAULT_LOGIN_ACCOUNT_STATE };
-      }
+      break;
+    }
+    case CLEAR_LOGIN_ACCOUNT: {
+      updatedState[LOGIN_ACCOUNT] = {...DEFAULT_LOGIN_ACCOUNT_STATE};
       break;
     }
     default:
@@ -296,6 +298,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       updateUniverse: universe => dispatch({ type: UPDATE_UNIVERSE, universe }),
       switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
       updateLoginAccount: (loginAccount, clear = false) => dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount, clear }),
+      clearLoginAccount: () => dispatch({ type: CLEAR_LOGIN_ACCOUNT }),
     },
   };
 };

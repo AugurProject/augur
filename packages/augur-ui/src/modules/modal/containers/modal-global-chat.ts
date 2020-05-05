@@ -3,8 +3,10 @@ import { withRouter } from 'react-router-dom';
 import { ModalGlobalChat } from 'modules/modal/components/modal-global-chat';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { initialize3box } from 'modules/global-chat/actions/initialize-3box';
+import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = ({ loginAccount, env, modal, initialized3box}) => {
+const mapStateToProps = ({ initialized3box }) => {
+  const { loginAccount, env, modal } = AppStatus.get();
   const signer = loginAccount.meta?.signer;
 
   const defaultChatProps = {

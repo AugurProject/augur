@@ -69,10 +69,10 @@ export const addedDaiEvent = (dai: Number): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount } = getState();
+  const { loginAccount: { balances } } = AppStatus.get();
   if (
-    loginAccount.balances.dai &&
-    createBigNumber(loginAccount.balances.dai).gt(createBigNumber(dai))
+    balances.dai &&
+    createBigNumber(balances.dai).gt(createBigNumber(dai))
   ) {
     dispatch(track(ADDED_DAI, {}, null));
   }
@@ -97,14 +97,14 @@ export const sendFacebookShare = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { address } = getState().loginAccount;
+  const { loginAccount: { address: affiliate }} = AppStatus.get();
   dispatch(
     track(MARKET_SHARED, {
       source: MARKET_PAGE,
       service: 'facebook',
       marketId: marketAddress,
       marketDescription: marketDescription,
-      affiliate: address
+      affiliate,
     })
   );
 };
@@ -116,14 +116,14 @@ export const sendTwitterShare = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { address } = getState().loginAccount;
+  const { loginAccount: { address: affiliate }} = AppStatus.get();
   dispatch(
     track(MARKET_SHARED, {
       source: MARKET_PAGE,
       service: 'twitter',
       marketId: marketAddress,
       marketDescription: marketDescription,
-      affiliate: address
+      affiliate,
     })
   );
 };

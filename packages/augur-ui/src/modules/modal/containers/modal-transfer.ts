@@ -17,13 +17,11 @@ import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount } = state;
-  const balances = loginAccount.balances;
-  balances.dai = totalTradingBalance(loginAccount).toNumber();
-  const { modal, gasPriceInfo } = AppStatus.get();
+  const { loginAccount: { balances, address: account }, modal, gasPriceInfo } = AppStatus.get();
+  balances.dai = totalTradingBalance().toNumber();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   return {
-  account: loginAccount.address,
+  account,
   modal,
   balances,
   gasPrice,
