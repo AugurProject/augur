@@ -21,6 +21,9 @@
       "Exchange": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef"
     }
   },
+  "uniswap": {
+    "exchangeRateBufferMultiplier": 1.05
+  },
   "gsn": {
     "enabled": true
   },
