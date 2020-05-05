@@ -611,6 +611,7 @@ export const MODAL_SIGNUP = 'MODAL_SIGNUP';
 export const MODAL_LOADING = 'MODAL_LOADING';
 export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
 export const MODAL_ERROR = 'MODAL_ERROR';
+export const MODAL_HELP = 'MODAL_HELP';
 
 // transactions parameter names
 export const TX_ORDER_ID = 'orderId';
@@ -869,7 +870,7 @@ export const ZEROX_STATUSES = {
 }
 
 export const ZEROX_STATUSES_TOOLTIP = {
-  STARTING: 'Degrated Service',
+  STARTING: 'Degraded Service',
   READY: 'Degraded Service',
   SYNCED: 'Service Operational',
   STARTED: 'Degraded Service',
@@ -901,7 +902,7 @@ export const SYNC_MESSAGE_SYNCING =
   'Market data such as price and orderbooks may be out of date.';
 export const SYNC_MESSAGE_BLOCKSBEHIND =
   'Market data such as price and orderbooks may be considerably out of date.';
-export const SYNC_BENIND = 'Blocks behind';
+export const SYNC_BEHIND = 'Blocks behind';
 export const SYNC_PROCESSED = 'Blocks Processed';
 
 // Account Summary - Notifications
@@ -1335,10 +1336,17 @@ export const DISPUTING_GUIDE = {
         'If the market resolves to the staked-on outcome but the pre-stake is not used, you will receive back the pre-stake but no ROI. If the market does not resolve to the staked-on outcome, you will lose the pre-stake.',
       ],
     },
+    {
+      header: 'Dispute Window',
+      paragraphs: [
+        'The dispute window is a week-long cycle. Reporting fees from settled shares are deposited into the next upcoming window.',
+        'At the end of the dispute window, those fees are allocated to REP holders who exchange their REP for participation tokens. When the disputing window ends, users can redeem their participation tokens for a proportional amount of the fees generated.'
+      ],
+    },
   ],
   learnMoreButtonText: 'Learn more about disputing',
   learnMoreUrl: HELP_CENTER_DISPUTING_QUICK_GUIDE,
-  closeButtonText: 'Close'
+  closeButtonText: 'Close',
 };
 
 export const REPORTING_GUIDE = {

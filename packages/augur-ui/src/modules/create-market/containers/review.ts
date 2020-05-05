@@ -7,17 +7,18 @@ import { estimateSubmitNewMarket } from 'modules/markets/actions/estimate-submit
 import { formatDai, formatRep, formatEther } from 'utils/format-number';
 import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_ADD_FUNDS, DAI } from 'modules/common/constants';
+import { AppStatus } from 'modules/app/store/app-status';
 
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount, newMarket, blockchain } = state;
+  const { loginAccount, newMarket } = state;
+  const { gasPriceInfo, blockchain: { currentAugurTimestamp: currentTimestamp }} = AppStatus.get();
   return {
     newMarket: newMarket,
-    currentTimestamp: blockchain.currentAugurTimestamp,
+    currentTimestamp,
     address: loginAccount.address,
-    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
+    gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,
     availableEthFormatted: formatEther(loginAccount.balances.eth),
     availableRepFormatted: formatRep(loginAccount.balances.rep),
     availableDaiFormatted: formatDai(
@@ -26,13 +27,16 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  showAddFundsModal: (fundType = DAI) => dispatch(updateModal({ type: MODAL_ADD_FUNDS, fundType })),
-  updateNewMarket: data => dispatch(updateNewMarket(data)),
-  submitNewMarket: (data, cb) => dispatch(submitNewMarket(data, cb)),
-  estimateSubmitNewMarket: (data, callback) =>
-    estimateSubmitNewMarket(data, callback),
-});
+const mapDispatchToProps = dispatch => {
+  const { setModal } = AppStatus.actions;
+  return ({
+    showAddFundsModal: (fundType = DAI) => setModal({ type: MODAL_ADD_FUNDS, fundType }),
+    updateNewMarket: data => dispatch(updateNewMarket(data)),
+    submitNewMarket: (data, cb) => dispatch(submitNewMarket(data, cb)),
+    estimateSubmitNewMarket: (data, callback) =>
+      estimateSubmitNewMarket(data, callback),
+  });
+};
 
 const ReviewContainer = withRouter(
   connect(

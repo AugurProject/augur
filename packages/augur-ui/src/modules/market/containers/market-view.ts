@@ -1,9 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import MarketView from 'modules/market/components/market-view/market-view';
-import {
-  loadMarketsInfo
-} from "modules/markets/actions/load-markets-info";
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import {
   selectMarket,
   selectSortedMarketOutcomes,
@@ -27,8 +25,6 @@ import {
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { getAddress } from 'ethers/utils/address';
-import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 import { EMPTY_STATE } from 'modules/create-market/constants';
@@ -41,14 +37,23 @@ import {
   convertUnixToFormattedDate,
 } from 'utils/format-date';
 import { AppState } from 'appStore';
-import { loadMarketOrderBook, clearOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import {
+  loadMarketOrderBook,
+  clearOrderBook,
+} from 'modules/orders/actions/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
-import { Ox_STATUS } from 'modules/app/store/constants';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { connection, universe, modal, loginAccount, orderBooks } = state;
-  const zeroXstatus = AppStatusState.get()[Ox_STATUS];
+  const { loginAccount, orderBooks } = state;
+  const {
+    universe,
+    modal,
+    zeroXStatus: zeroXstatus,
+    isConnected,
+    canHotload,
+    blockchain: { currentAugurTimestamp },
+  } = AppStatus.get();
   const queryId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const marketId = queryId === TRADING_TUTORIAL ? queryId : getAddress(queryId);
   const queryOutcomeId = parseQuery(ownProps.location.search)[
@@ -86,16 +91,16 @@ const mapStateToProps = (state: AppState, ownProps) => {
 
   const scalarModalSeen =
     Boolean(modal.type) ||
-    windowRef &&
-    windowRef.localStorage &&
-    windowRef.localStorage.getItem(SCALAR_MODAL_SEEN) === 'true';
+    (windowRef &&
+      windowRef.localStorage &&
+      windowRef.localStorage.getItem(SCALAR_MODAL_SEEN) === 'true');
 
-    if (market === null) {
+  if (market === null) {
     return {
       tradingTutorial,
       isMarketLoading: true,
-      isConnected: connection.isConnected && universe.id != null,
-      canHotload: connection.canHotload,
+      isConnected: isConnected && universe.id != null,
+      canHotload,
       marketId,
       marketReviewSeen,
     };
@@ -113,10 +118,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const daysPassed =
     market &&
     market.creationTime &&
-    getMarketAgeInDays(
-      market.creationTime,
-      selectCurrentTimestampInSeconds(state)
-    );
+    getMarketAgeInDays(market.creationTime, currentAugurTimestamp);
 
   return {
     modalShowing: modal.type,
@@ -125,9 +127,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
     isMarketLoading: false,
     preview: tradingTutorial || ownProps.preview,
     tradingTutorial,
-    currentTimestamp: selectCurrentTimestampInSeconds(state),
+    currentTimestamp: currentAugurTimestamp,
     outcomes: market.outcomes || [],
-    isConnected: connection.isConnected && universe.id != null,
+    isConnected: isConnected && universe.id != null,
     marketType: market.marketType,
     description: market.description || '',
     market,
@@ -146,37 +148,33 @@ const mapStateToProps = (state: AppState, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  hotloadMarket: marketId => hotloadMarket(marketId),
-  loadMarketsInfo: marketId => dispatch(loadMarketsInfo([marketId])),
-  loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
-  clearOrderBook: () => dispatch(clearOrderBook()),
-  updateModal: modal => dispatch(updateModal(modal)),
-  loadMarketTradingHistory: marketId =>
-    dispatch(loadMarketTradingHistory(marketId)),
-  marketReviewModal: modal =>
-    dispatch(
-      updateModal({
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { setModal } = AppStatus.actions;
+  return {
+    hotloadMarket: marketId => hotloadMarket(marketId),
+    loadMarketsInfo: marketId => dispatch(loadMarketsInfo([marketId])),
+    loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
+    clearOrderBook: () => dispatch(clearOrderBook()),
+    updateModal: modal => setModal(modal),
+    loadMarketTradingHistory: marketId =>
+      dispatch(loadMarketTradingHistory(marketId)),
+    marketReviewModal: modal =>
+      setModal({
         type: MODAL_MARKET_REVIEW,
         ...modal,
-      })
-    ),
-  showMarketLoadingModal: () =>
-    dispatch(
-      updateModal({
+      }),
+    showMarketLoadingModal: () =>
+      setModal({
         type: MODAL_MARKET_LOADING,
-      })
-    ),
-  closeMarketLoadingModalOnly: (type: string) => type === MODAL_MARKET_LOADING && dispatch(closeModal()),
-  addAlert: alert => dispatch(addAlert(alert)),
-  removeAlert: (id: string, name: string) => dispatch(removeAlert(id, name)),
-});
-
+      }),
+    closeMarketLoadingModalOnly: (type: string) =>
+      type === MODAL_MARKET_LOADING && dispatch(closeModal()),
+    addAlert: alert => dispatch(addAlert(alert)),
+    removeAlert: (id: string, name: string) => dispatch(removeAlert(id, name)),
+  };
+};
 const Market = withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MarketView)
+  connect(mapStateToProps, mapDispatchToProps)(MarketView)
 );
 
 export default Market;

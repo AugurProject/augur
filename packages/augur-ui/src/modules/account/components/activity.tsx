@@ -6,13 +6,7 @@ import { LinearPropertyLabel } from 'modules/common/labels';
 import Styles from 'modules/account/components/activity.styles.less';
 
 export interface ActivityProps {
-  updatePlatformTimeframeData: Function;
-  currentAugurTimestamp: number;
   openInterest: string;
-}
-
-interface ActivityState {
-  selected: number;
 }
 
 const Activity = ({ openInterest }: ActivityProps) => {

@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { DateFormattedObject } from 'modules/types';
 import { REPORTING_STATE } from 'modules/common/constants';
 import { formatDate } from 'utils/format-date';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export interface CountdownProgressProps {
   time?: DateFormattedObject;
@@ -24,7 +25,6 @@ export interface TimeLabelProps {
 export interface TimeProgressBarProps {
   startTime: DateFormattedObject;
   endTime: DateFormattedObject;
-  currentTime: DateFormattedObject;
 }
 
 export interface MarketProgressProps {
@@ -154,16 +154,15 @@ const reportingStateToLabelTime = (
   return { label, time };
 };
 
-export const MarketProgress = (props: MarketProgressProps) => {
-  const {
-    reportingState,
-    endTimeFormatted,
-    reportingWindowEndTime,
-    customLabel,
-    alignRight,
-    forkingEndTime,
-    forkingMarket
-  } = props;
+export const MarketProgress = ({
+  reportingState,
+  endTimeFormatted,
+  reportingWindowEndTime,
+  customLabel,
+  alignRight,
+  forkingEndTime,
+  forkingMarket
+}: MarketProgressProps) => {
   const reportingEndTime = formatTime(reportingWindowEndTime);
   const { label, time } = reportingStateToLabelTime(
     reportingState,
@@ -277,8 +276,8 @@ export const TimeLabel = (props: TimeLabelProps) => {
   );
 };
 
-export const TimeProgressBar = (props: TimeProgressBarProps) => {
-  const { startTime, endTime, currentTime } = props;
+export const TimeProgressBar = ({ startTime, endTime }: TimeProgressBarProps) => {
+  const { blockchain: { currentAugurTimestamp: currentTime } } = useAppStatusStore();
   const { percentageDone, percentageToGo } = determineProgress(
     startTime,
     endTime,
@@ -317,21 +316,19 @@ const getWindowLabels = (
 export interface WindowProgressProps {
   startTime: DateFormattedObject | number;
   endTime: DateFormattedObject | number;
-  currentTime: DateFormattedObject | number;
   title: string;
   description: string;
   countdownLabel: string;
 }
 
-export const WindowProgress = (props: WindowProgressProps) => {
-  const {
-    startTime,
-    endTime,
-    currentTime,
-    title,
-    description,
-    countdownLabel,
-  } = props;
+export const WindowProgress = ({
+  startTime,
+  endTime,
+  title,
+  description,
+  countdownLabel,
+}: WindowProgressProps) => {
+  const { blockchain: { currentAugurTimestamp: currentTime }} = useAppStatusStore();
   const {
     formattedStartTime,
     formattedEndTime,
@@ -348,7 +345,7 @@ export const WindowProgress = (props: WindowProgressProps) => {
     <div className={Styles.WindowProgress}>
       <h4>{title}</h4>
       <p>{description}</p>
-      <TimeProgressBar {...props} />
+      <TimeProgressBar startTime={formattedStartTime} endTime={formattedEndTime} />
       <ul>
         <li>{startLabel}</li>
         {dayLabels.map(label => (

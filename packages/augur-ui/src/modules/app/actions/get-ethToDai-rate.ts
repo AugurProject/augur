@@ -7,7 +7,7 @@ import logError from 'utils/log-error';
 import { formatDaiEstimate, formatAttoDai } from 'utils/format-number';
 import { augurSdk } from 'services/augursdk';
 import { BigNumber } from 'utils/create-big-number';
-import { AppStatusActions } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const getEthToDaiRate = (
   callback: NodeStyleCallback = logError
@@ -17,7 +17,7 @@ export const getEthToDaiRate = (
 ) => {
   const ethToDaiRate = getEthForDaiRate();
   if (ethToDaiRate) {
-    AppStatusActions.actions.setEthToDaiRate(formatAttoDai(ethToDaiRate));
+    AppStatus.actions.setEthToDaiRate(formatAttoDai(ethToDaiRate));
   }
 };
 
@@ -26,14 +26,14 @@ export const ethToDai = (ethAmount: number, ethToDaiRate: BigNumber) => {
   return formatDaiEstimate(ethToDaiRate.times(ethAmount));
 };
 
-export const getGasInDai = (amount: BigNumber): FormattedNumber => {
+export const getGasInDai = (amount: BigNumber, manualGasPrice?: number): FormattedNumber => {
   const augur = augurSdk.get();
-  const gasInAttoDai = augur.convertGasEstimateToDaiCost(amount);
+  const gasInAttoDai = augur.convertGasEstimateToDaiCost(amount, manualGasPrice);
   return formatDaiEstimate(gasInAttoDai.dividedBy(10 ** 18));
 }
 
-export const displayGasInDai = (amount: BigNumber): string => {
-  const gasInDai = getGasInDai(amount);
+export const displayGasInDai = (amount: BigNumber, manualGasPrice?: number): string => {
+  const gasInDai = getGasInDai(amount, manualGasPrice);
   if (Number(gasInDai.roundedFormatted) === 0) {
     return '$0.01';
   }

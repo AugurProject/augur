@@ -17,8 +17,6 @@ import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface ConnectDropdownProps {
-  isLogged: boolean;
-  restoredAccount: boolean;
   logout: Function;
   accountMeta: {
     accountType: string;
@@ -41,8 +39,6 @@ interface ConnectDropdownProps {
 }
 
 const ConnectDropdown = ({
-  isLogged,
-  restoredAccount,
   userDefinedGasPrice,
   accountMeta,
   gasPriceSpeed,
@@ -60,13 +56,12 @@ const ConnectDropdown = ({
 }: ConnectDropdownProps) => {
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-  const { gsnEnabled, ethToDaiRate, actions: { setGSNEnabled }} = useAppStatusStore();
+  const { isLogged, restoredAccount, gsnEnabled, ethToDaiRate, actions: { setGSNEnabled }} = useAppStatusStore();
 
   let gasCostTrade;
 
   if (gsnEnabled && ethToDaiRate) {
-    const gasCost = NEW_ORDER_GAS_ESTIMATE.multipliedBy(userDefinedGasPrice);
-    gasCostTrade = displayGasInDai(gasCost);
+    gasCostTrade = displayGasInDai(NEW_ORDER_GAS_ESTIMATE, userDefinedGasPrice * 10**9);
   }
 
   if (!isLogged && !restoredAccount) return null;
@@ -162,18 +157,18 @@ const ConnectDropdown = ({
   const walletProviders = [
     {
       accountType: ACCOUNT_TYPES.PORTIS,
-      action: () => accountMeta.openWallet(),
-      disabled: !accountMeta.openWallet,
+      action: () => accountMeta?.openWallet(),
+      disabled: !accountMeta?.openWallet,
     },
     {
       accountType: ACCOUNT_TYPES.FORTMATIC,
-      action: () => accountMeta.openWallet(),
-      disabled: !accountMeta.openWallet,
+      action: () => accountMeta?.openWallet(),
+      disabled: !accountMeta?.openWallet,
     },
     {
       accountType: ACCOUNT_TYPES.TORUS,
-      action: () => accountMeta.openWallet(),
-      disabled: !accountMeta.openWallet,
+      action: () => accountMeta?.openWallet(),
+      disabled: !accountMeta?.openWallet,
     },
     {
       accountType: ACCOUNT_TYPES.WEB3WALLET,
@@ -196,6 +191,11 @@ const ConnectDropdown = ({
         <ModalMetaMaskFinder handleClick={() => setShowMetaMaskHelper(false)} />
       )}
       <div className={Styles.AccountInfo}>
+
+        <div className={Styles.MobileAddFunds}>
+          <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
+        </div>
+
         <div className={Styles.AddFunds}>
           <div>Your account</div>
           <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
@@ -217,19 +217,15 @@ const ConnectDropdown = ({
             </div>
           ))}
 
-        <div className={Styles.MobileAddFunds}>
-          <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
-        </div>
-
         {walletProviders
-          .filter(wallet => wallet.accountType === accountMeta.accountType)
+          .filter(wallet => wallet.accountType === accountMeta?.accountType)
           .map((wallet, idx) => {
             return (
               <div
                 key={idx}
                 className={classNames(Styles.WalletProvider, {
                   [Styles.MetaMask]:
-                    wallet.accountType === ACCOUNT_TYPES.WEB3WALLET,
+                    wallet?.accountType === ACCOUNT_TYPES.WEB3WALLET,
                 })}
               >
                 <div>

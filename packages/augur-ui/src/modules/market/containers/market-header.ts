@@ -10,12 +10,14 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { marketLinkCopied } from 'services/analytics/helpers';
 import { isSameAddress } from 'utils/isSameAddress';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const userAccount = state.loginAccount.address;
   const { reportingState, consensusFormatted: consensus } = market;
   let reportingBarShowing = false;
+  const { universe: { forkingInfo }, blockchain: { currentAugurTimestamp } } = AppStatus.get();
 
   if (
     consensus ||
@@ -34,12 +36,11 @@ const mapStateToProps = (state, ownProps) => {
     maxPrice: market.maxPriceBigNumber || ZERO,
     minPrice: market.minPriceBigNumber || ZERO,
     scalarDenomination: market.scalarDenomination,
-    currentTime: (state.blockchain || {}).currentAugurTimestamp,
-    isLogged: state.authStatus.isLogged,
-    isForking: state.universe.forkingInfo,
+    currentTime: currentAugurTimestamp,
+    isForking: forkingInfo,
     market,
     isFavorite: !!state.favorites[ownProps.marketId],
-    currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
+    currentAugurTimestamp,
     reportingBarShowing,
     preview: ownProps.preview,
     userAccount

@@ -39,7 +39,6 @@ interface MarketHeaderProps {
   market: MarketData;
   marketType: string;
   scalarDenomination: string;
-  isLogged: boolean;
   toggleFavorite: Function;
   isFavorite: boolean;
   history: History;
@@ -73,7 +72,6 @@ export default class MarketHeader extends Component<
     scalarDenomination: null,
     marketType: null,
     isFavorite: false,
-    isLogged: false,
     toggleFavorite: () => {},
   };
   detailsContainer: any;
@@ -85,7 +83,7 @@ export default class MarketHeader extends Component<
     super(props);
     this.state = {
       showReadMore: false,
-      showProperties: true,
+      showProperties: props.market.reportingState === REPORTING_STATE.PRE_REPORTING ? false : true,
       detailsHeight: 0,
       headerCollapsed: false,
       showCopied: false,
@@ -182,19 +180,16 @@ export default class MarketHeader extends Component<
       maxPrice,
       scalarDenomination,
       market,
-      isLogged,
       isFavorite,
       history,
       preview,
       reportingBarShowing,
-      toggleFavorite,
       showTutorialData,
       next,
       step,
       totalSteps,
       text,
       showTutorialDetails,
-      marketLinkCopied,
       userAccount,
     } = this.props;
     let { details } = this.props;
@@ -256,7 +251,6 @@ export default class MarketHeader extends Component<
                 history={history}
                 addToFavorites={this.addToFavorites}
                 gotoFilter={this.gotoFilter}
-                isLogged={isLogged}
                 isFavorite={isFavorite}
                 userAccount={userAccount}
                 showCopied={showCopied}

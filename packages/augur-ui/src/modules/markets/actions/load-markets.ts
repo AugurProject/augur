@@ -16,6 +16,7 @@ import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 import { updateReportingList } from 'modules/reporting/actions/update-reporting-list';
 import { LoadReportingMarketsOptions } from 'modules/types';
 import { Action } from 'redux';
+import { AppStatus } from 'modules/app/store/app-status';
 
 interface SortOptions {
   sortBy?: Getters.Markets.GetMarketsSortBy;
@@ -73,12 +74,12 @@ export const loadMarketsByFilter = (
   getState
 ) => {
   console.log('loadMarketsByFilter called', filterOptions);
-  const { universe, connection } = getState();
+  const { universe, isConnected } = AppStatus.get();
   if (!(universe && universe.id)) return;
 
   // Check to see if SDK is connected first
   // since URL parameters can trigger this action before the SDK is ready
-  if (!connection.isConnected) return;
+  if (!isConnected) return;
 
   const augur = augurSdk.get();
 
@@ -203,9 +204,10 @@ export const loadUpcomingDesignatedReportingMarkets = (
   dispatch,
   getState
 ) => {
-  const { blockchain, loginAccount } = getState();
+  const { loginAccount } = getState();
+  const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
   const maxEndTime = getOneWeekInFutureTimestamp(
-    blockchain.currentAugurTimestamp
+    currentAugurTimestamp
   );
   const designatedReporter = loginAccount.address;
   if (!designatedReporter)
@@ -247,8 +249,8 @@ const loadReportingMarkets = (
   dispatch,
   getState
 ) => {
-  const { universe, connection } = getState();
-  if (!connection.isConnected) return cb(null, []);
+  const { universe, isConnected } = AppStatus.get();
+  if (!isConnected) return cb(null, []);
   if (!(universe && universe.id)) return cb(null, []);
   let reportingState = null;
   if (filterOptions.reportingStates.length === 1) {

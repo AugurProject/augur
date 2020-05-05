@@ -4,9 +4,10 @@ import { MARKET_REVIEW_SEEN } from 'modules/common/constants';
 import { Message } from 'modules/modal/message';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
+  modal: AppStatus.get().modal,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({

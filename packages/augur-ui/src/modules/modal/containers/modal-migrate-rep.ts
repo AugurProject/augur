@@ -8,14 +8,18 @@ import { Action } from 'redux';
 import convertV1ToV2, {
   convertV1ToV2Estimate,
 } from 'modules/account/actions/convert-v1-rep-to-v2';
+import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
-  loginAccount: state.loginAccount,
-  GsnEnabled: state.appStatus.gsnEnabled,
-  gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
-  walletBalances: state.loginAccount.balances,
-});
+const mapStateToProps = (state: AppState) => {
+  const { modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatus.get();
+  return ({
+    modal,
+    loginAccount: state.loginAccount,
+    GsnEnabled,
+    gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,
+    walletBalances: state.loginAccount.balances,
+  });
+};
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),

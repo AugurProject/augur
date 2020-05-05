@@ -12,11 +12,12 @@ import { selectCancelingOrdersState } from 'appStore/select-state';
 import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { calcPercentageFromPrice } from 'utils/format-number';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const { COLUMN_TYPES } = constants;
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { blockchain, marketInfos} = state;
+  const { marketInfos} = state;
   const { openOrder, marketId }  = ownProps;
   const market = marketInfos[marketId];
   let usePercent = false;
@@ -27,9 +28,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
     const { outcomeId } = openOrder;
     usePercent = !!market && outcomeId === constants.INVALID_OUTCOME_ID && market.marketType === constants.SCALAR;
   }
-
+  const { blockchain: { currentAugurTimestamp: currentTimestamp }} = AppStatus.get();
   return {
-    currentTimestamp: blockchain.currentAugurTimestamp,
+    currentTimestamp,
     pendingOrderCancellations: selectCancelingOrdersState(state),
     usePercent,
     marketType,

@@ -4,6 +4,7 @@ import * as alertLevels from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import getValue from 'utils/get-value';
 import { SUCCESS, FAILURE } from 'modules/common/constants';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const selectAlertsByLevel = level => state =>
   state.alerts.filter(it => it.level === level);
@@ -14,8 +15,8 @@ export const selectInfoAlerts = selectAlertsByLevel(alertLevels.INFO);
 export const selectInfoAlertsAndSeenCount = createSelector(
   selectInfoAlerts,
   alerts => {
-    const { universe, connection, authStatus } = store.getState() as AppState;
-    if (!connection.isConnected || !authStatus.isLogged)
+    const { universe, isLogged, isConnected } = AppStatus.get();
+    if (!isConnected || !isLogged)
       return { unseenCount: 0, alerts: [] };
 
     let filteredAlerts = alerts;

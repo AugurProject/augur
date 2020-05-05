@@ -6,18 +6,18 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { updateModal } from '../actions/update-modal';
 import { MODAL_INITIALIZE_ACCOUNT, GSN_WALLET_SEEN } from 'modules/common/constants';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN) === "true" ? true : false;
-
+  const { modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatus.get();
   return {
-    modal: state.modal,
+    modal,
     rep: state.loginAccount.balances.rep,
-    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
+    gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,
     messages: [
       {
         key: 'quant',
@@ -25,14 +25,14 @@ const mapStateToProps = (state: AppState) => {
       },
     ],
     title: 'Buy Participation Tokens',
-    GsnEnabled: state.appStatus.gsnEnabled,
+    GsnEnabled,
     gsnUnavailable: isGSNUnavailable(state),
     gsnWalletInfoSeen,
   }
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  initializeGsnWallet: (customAction = null) => dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
+  initializeGsnWallet: (customAction = null) => AppStatus.actions.setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
   closeModal: () => dispatch(closeModal()),
   purchaseParticipationTokens: (amount, gasEstimate, callback) =>
     dispatch(purchaseParticipationTokens(amount, gasEstimate, callback)),

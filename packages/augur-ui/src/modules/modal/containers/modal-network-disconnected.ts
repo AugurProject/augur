@@ -1,19 +1,16 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import ModalNetworkDisconnected from "modules/modal/components/modal-network-disconnected";
-import { updateIsReconnectionPaused } from "modules/app/actions/update-connection";
 import { AppState } from "appStore";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
+  modal: AppStatus.get().modal,
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  updateIsReconnectionPaused: (isReconnectionPaused) =>
-    dispatch(updateIsReconnectionPaused(isReconnectionPaused)),
-});
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 export default withRouter(
   connect(

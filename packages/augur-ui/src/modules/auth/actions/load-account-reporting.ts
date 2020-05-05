@@ -7,12 +7,14 @@ import { NodeStyleCallback } from 'modules/types';
 import { NOTIFICATION_TYPES } from 'modules/common/constants';
 import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const loadAccountReportingHistory = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { universe, loginAccount, readNotifications } = getState();
+  const { loginAccount, readNotifications } = getState();
+  const { universe } = AppStatus.get();
   if (!loginAccount || !loginAccount.address) return;
   const Augur = augurSdk.get();
   const reporting = await Augur.getAccountRepStakeSummary({

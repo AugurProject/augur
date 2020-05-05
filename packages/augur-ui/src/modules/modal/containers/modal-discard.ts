@@ -6,11 +6,11 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { AppState } from "appStore";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { NodeStyleCallback } from "modules/types";
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => {
   return {
-    modal: state.modal,
+    modal: AppStatus.get().modal,
   };
 };
 

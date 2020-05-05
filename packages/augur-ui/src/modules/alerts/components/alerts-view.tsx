@@ -15,7 +15,6 @@ interface AlertsViewProps {
   updateExistingAlert: (alertId: string, alert: AlertType) => void;
   removeAlert: (alertId:string, alertName:string) => void;
   clearAlerts: () => void;
-  isLogged: boolean;
 }
 
 
@@ -24,9 +23,8 @@ const AlertsView: React.FC<AlertsViewProps> = ({
   updateExistingAlert,
   removeAlert,
   clearAlerts,
-  isLogged,
 })=>{
-  const { isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
+  const { isLogged, isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
   const alertsVisible = isLogged && isAlertsMenuOpen;
   useEffect(() =>{
     if (alertsVisible) {

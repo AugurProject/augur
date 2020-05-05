@@ -2,7 +2,6 @@ import moment from 'moment';
 import { DateFormattedObject, TimezoneDateObject, DateTimeComponents } from 'modules/types';
 import { createBigNumber } from './create-big-number';
 import { ZERO } from 'modules/common/constants';
-import { getMaxMarketEndTime } from 'modules/contracts/actions/contractCalls';
 
 const months = [
   'January',

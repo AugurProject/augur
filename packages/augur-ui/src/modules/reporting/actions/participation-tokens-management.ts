@@ -10,6 +10,7 @@ import {
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { BUYPARTICIPATIONTOKENS } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const purchaseParticipationTokens = (
   amount: string,
@@ -19,8 +20,7 @@ export const purchaseParticipationTokens = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { universe } = getState();
-  const universeId = universe.id;
+  const { universe: { id: universeId }} = AppStatus.get();
   if (!universeId) return callback('no universe provided');
   if (estimateGas) {
     const gas = await buyParticipationTokensEstimateGas(

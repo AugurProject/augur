@@ -8,10 +8,10 @@ import {
 } from 'utils/format-date';
 import {
   selectMarketInfosState,
-  selectCurrentTimestamp,
   selectMarketTradingHistoryState,
 } from 'appStore/select-state';
 import { selectPriceTimeSeries } from 'modules/markets/selectors/price-time-series';
+import { AppStatus } from 'modules/app/store/app-status';
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];
@@ -26,12 +26,11 @@ export default function(marketId) {
 }
 
 export const bucketedPriceTimeSeries = createCachedSelector(
-  selectCurrentTimestamp,
   selectMarketsDataStateMarket,
   selectMarketTradingHistoryStateMarket,
-  (currentTimestamp, marketData, marketTradeHistory) => {
+  (marketData, marketTradeHistory) => {
     if (marketData === null || !marketData.creationTime) return {};
-
+    const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
     const creationTime = convertUnixToFormattedDate(
       marketData.creationTime
     ).value.getTime();
@@ -44,7 +43,7 @@ export const bucketedPriceTimeSeries = createCachedSelector(
           marketTradeHistory
         ),
       })) || [];
-    const currentTime = currentTimestamp || Date.now();
+    const currentTime = (currentAugurTimestamp * 1000) || Date.now();
 
     return bucketedPriceTimeSeriesInternal(creationTime, currentTime, outcomes, marketData.minPrice);
   }

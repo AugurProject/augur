@@ -2,21 +2,19 @@ import React from 'react';
 import * as constants from 'modules/common/constants';
 import {
   MovementLabel,
-  PendingLabel,
   PositionTypeLabel,
   TextLabel,
   ValueLabel,
   CountdownLabel,
   RedFlag,
   TemplateShield,
+  InvalidLabel,
 } from 'modules/common/labels';
-import InvalidLabel from 'modules/common/containers/labels';
 import { CancelTextButton, CashoutButton } from 'modules/common/buttons';
 import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
 import { DateFormattedObject } from 'modules/types';
 import { TXEventName } from '@augurproject/sdk/src';
 import { XIcon } from 'modules/common/icons';
-import { MostLikelyInvalidMarketsTemplate } from 'modules/account/components/notifications-templates';
 
 const { COLUMN_TYPES } = constants;
 

@@ -29,7 +29,6 @@ export interface FilterBoxProps {
   renderToggleContent?: Function;
   filterLabel: string;
   sortByStyles?: object;
-  currentAugurTimestamp: number;
   renderRightContent?: Function;
   showPending?: Boolean;
   toggle: Function;
@@ -42,7 +41,6 @@ export interface FilterBoxProps {
 const FilterBox: React.FC<FilterBoxProps> = ({
   title,
   sortByOptions,
-  currentAugurTimestamp,
   bottomRightContent,
   noToggle,
   renderRightContent,
@@ -67,7 +65,7 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   const [filteredData, setFilteredData] = useState(data[ALL_MARKETS]);
   const [tabs, setTabs] = useState(createTabsInfo(data));
   const dataRef = useRef(null);
-  const { theme } = useAppStatusStore();
+  const { theme, blockchain: { currentAugurTimestamp } } = useAppStatusStore();
 
   useEffect(() => {
     applySearchAndSort();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Media from 'react-media';
 
 import MarketsInDispute from 'modules/reporting/containers/markets-in-dispute';
@@ -14,19 +14,19 @@ import Styles from 'modules/reporting/disputing.styles.less';
 import { ButtonActionType } from 'modules/types';
 import { DISPUTING_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface DisputingProps {
-  isConnected: boolean;
   loadDisputeWindow: () => void;
   openDisputingModal: ButtonActionType;
 }
 
 const Disputing: React.FC<DisputingProps> = ({
-  isConnected,
   loadDisputeWindow,
   openDisputingModal,
 }) => {
-  React.useEffect(() => {
+  const { isConnected } = useAppStatusStore();
+  useEffect(() => {
     if (isConnected) {
       loadDisputeWindow();
     }

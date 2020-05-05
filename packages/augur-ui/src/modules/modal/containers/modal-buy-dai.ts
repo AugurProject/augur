@@ -3,25 +3,27 @@ import { withRouter } from 'react-router-dom';
 
 import { Onboarding } from 'modules/modal/onboarding';
 import { closeModal } from 'modules/modal/actions/close-modal';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { MODAL_ADD_FUNDS, MODAL_AUGUR_P2P, HELP_CENTER_ADD_FUNDS } from 'modules/common/constants';
 import { OnboardingPaymentIcon } from 'modules/common/icons';
 import { BUY_DAI, track } from 'services/analytics/helpers';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({});
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
-  addFunds: callback =>
-    dispatch(updateModal({ type: MODAL_ADD_FUNDS, cb: callback })),
-  showAugurP2PModal: () =>
-    dispatch(updateModal({ type: MODAL_AUGUR_P2P })),
-  track: (eventName, payload) => dispatch(track(eventName, payload))
-});
-
+const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
+  const { setModal } = AppStatus.actions;
+  return ({
+    closeModal: () => dispatch(closeModal()),
+    addFunds: callback =>
+      setModal({ type: MODAL_ADD_FUNDS, cb: callback }),
+    showAugurP2PModal: () =>
+      setModal({ type: MODAL_AUGUR_P2P }),
+    track: (eventName, payload) => dispatch(track(eventName, payload))
+  });
+}
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: OnboardingPaymentIcon,
   largeHeader: 'Add Dai to your account',

@@ -45,12 +45,10 @@ className={classNames(Styles.MarketCard, {
 interface MarketCardProps {
   market: MarketData;
   theme: string;
-  isLogged?: boolean;
   history: History;
   location: Location;
   toggleFavorite: Function;
   orderBook: any;
-  currentAugurTimestamp: number;
   disputingWindowEndTime: number;
   condensed?: boolean;
   expandedView?: boolean;
@@ -74,8 +72,6 @@ export const MarketCard = ({
   market,
   location,
   history,
-  isLogged,
-  currentAugurTimestamp,
   condensed,
   address,
   expandedView,
@@ -90,7 +86,7 @@ export const MarketCard = ({
 }: MarketCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [showMore, setShowMore] = useState(false);
-  const { theme } = useAppStatusStore();
+  const { theme, isLogged } = useAppStatusStore();
   const {
     outcomesFormatted,
     marketType,
@@ -155,7 +151,6 @@ export const MarketCard = ({
       <>
         <TradingSideSection
           address={address}
-          currentAugurTimestamp={currentAugurTimestamp}
           market={market}
           condensed={condensed}
           hasPosition={hasPosition}
@@ -166,8 +161,6 @@ export const MarketCard = ({
           categoriesWithClick={getCategoriesWithClick(categories)}
           toggleFavorite={toggleFavorite}
           marketLinkCopied={marketLinkCopied}
-          currentAugurTimestamp={currentAugurTimestamp}
-          isLogged={isLogged}
           isFavorite={isFavorite}
         />
         <MarketTitle id={id} headerType={headerType} />
@@ -237,7 +230,6 @@ export const MarketCard = ({
         <>
         <MarketProgress
           reportingState={reportingState}
-          currentTime={currentAugurTimestamp}
           endTimeFormatted={endTimeFormatted}
           reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
         />

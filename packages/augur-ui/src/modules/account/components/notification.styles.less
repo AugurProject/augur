@@ -9,7 +9,7 @@
 
   > section {
     padding: @size-12 0;
-    border-bottom: 1px solid var(--color-dark-grey);
+    border-bottom: @size-1 solid var(--color-dark-grey);
 
     @media @breakpoint-mobile {
       border-bottom: 0;
@@ -34,7 +34,7 @@
 
   > span:last-of-type {
     min-height: @size-16;
-    min-width: 1.9375rem;
+    min-width: @size-31;
   }
 }
 
@@ -206,6 +206,131 @@ div.DarkBackgroundMobile {
   @media @breakpoint-mobile {
     > div:last-of-type {
       background: var(--color-dark-grey);
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .NotificationCard {
+    border-radius: 0;
+    border-bottom: @size-1 solid var(--color-dark-grey);
+    padding: 0 @size-12;
+
+    > section {
+      border-bottom: none;
+    }
+  }
+
+  .TitleBar {
+    > span[class*="PillLabel"] {
+      .text-8-semi-bold;
+
+      text-transform: uppercase;
+      background: var(--color-positive);
+      color: var(--color-module-background);
+      border: none;
+      border-radius: @size-1;
+      padding: @size-2;
+      height: @size-12;
+      min-height: unset;
+      min-width: unset;
+    }
+  }
+
+  .Importance {
+    > svg {
+      > circle {
+        fill: var(--color-resolved);
+        stroke: none;
+      }
+
+      > rect {
+        fill: var(--color-module-background);
+      }
+  
+      > path {
+        fill: var(--color-module-background);
+      }
+    }
+  }
+
+  .ImportantRed {
+    > svg {
+      > circle {
+        fill: var(--color-resolved);
+        stroke: none;
+      }
+
+      > rect {
+        fill: var(--color-module-background);
+      }
+  
+      > path {
+        fill: var(--color-module-background);
+      }
+    }
+  }
+
+  .Title {
+    color: var(--color-primary-text);
+  }
+
+  .Message {
+    color: var(--color-primary-text);
+
+    > span > span {
+      .text-12-semi-bold;
+    }
+  }
+
+  .MessageNew {
+    > span > span {
+      .text-12-semi-bold;
+    }
+
+    > div.BottomRow > div.Countdown > span > span:first-of-type {
+      color: var(--color-secondary-text);
+    }
+  }
+
+  .NotificationCard button {
+    height: @size-29;
+    padding: @size-8;
+    border: @size-1 solid var(--color-dark-text);
+  }
+
+  .Countdown {
+    margin: @size-4 0 auto;
+
+    > span {
+      flex-flow: row nowrap;
+
+      > span:first-of-type {
+        .mono-12;
+
+        text-transform: none;
+      }
+  
+      > span:last-of-type {
+        .mono-12-semi-bold;
+
+        color: var(--color-reporting);
+      }
+    }
+  }
+
+  .NewTopLabel {
+    > span {
+      .text-10;
+
+      text-transform: uppercase;
+      background: var(--color-positive-15);
+      color: var(--color-secondary-text);
+      border: @size-1 solid var(--color-positive);
+      padding: @size-4 @size-6;
+      max-height: unset;
+      height: @size-21;
     }
   }
 }

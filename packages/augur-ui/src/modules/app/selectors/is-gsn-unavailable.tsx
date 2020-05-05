@@ -1,15 +1,11 @@
 import { createSelector } from 'reselect';
 import { AppState } from 'appStore';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
-import { AppStatusState } from 'modules/app/store/app-status';
-
-export const selectAuthState = (state: AppState) => state.authStatus;
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const isGSNUnavailable = createSelector(
-  selectAuthState,
-  (authStatus): boolean => {
-    const { gsnEnabled, walletStatus } = AppStatusState.get();
-    const { isLogged } = authStatus;
+  (): boolean => {
+    const { gsnEnabled, walletStatus, isLogged } = AppStatus.get();
     const gsnUnavailable =
       gsnEnabled &&
       isLogged &&

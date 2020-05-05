@@ -15,6 +15,20 @@ import {
   REP_TO_DAI_RATE,
   Ox_STATUS,
   WALLET_STATUS,
+  RESTORED_ACCOUNT,
+  IS_LOGGED,
+  IS_CONNECTED,
+  IS_RECONNECTION_PAUSED,
+  CAN_HOTLOAD,
+  ENV,
+  GAS_PRICE_INFO,
+  MOBILE_MENU_STATE,
+  CURRENT_BASE_PATH,
+  BLOCKCHAIN,
+  CATEGORY_STATS,
+  FILTER_SORT_OPTIONS,
+  MODAL,
+  UNIVERSE,
 } from 'modules/app/store/constants';
 
 const {
@@ -32,6 +46,22 @@ const {
   SET_REP_TO_DAI_RATE,
   SET_Ox_STATUS,
   SET_WALLET_STATUS,
+  SET_RESTORED_ACCOUNT,
+  SET_IS_LOGGED,
+  SET_IS_CONNECTED,
+  SET_IS_RECONNECTION_PAUSED,
+  SET_CAN_HOTLOAD,
+  SET_ENV,
+  UPDATE_GAS_PRICE_INFO,
+  SET_MOBILE_MENU_STATE,
+  SET_CURRENT_BASE_PATH,
+  UPDATE_BLOCKCHAIN,
+  SET_CATEGORY_STATS,
+  UPDATE_FILTER_SORT_OPTIONS,
+  SET_MODAL,
+  CLOSE_MODAL,
+  UPDATE_UNIVERSE,
+  SWITCH_UNIVERSE,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -111,6 +141,80 @@ export function AppStatusReducer(state, action) {
       updatedState[WALLET_STATUS] = action.walletStatus;
       break;
     }
+    case SET_RESTORED_ACCOUNT: {
+      updatedState[RESTORED_ACCOUNT] = action.restoredAccount;
+      break;
+    }
+    case SET_IS_LOGGED: {
+      updatedState[IS_LOGGED] = action.isLogged;
+      break;
+    }
+    case SET_IS_CONNECTED: {
+      updatedState[IS_CONNECTED] = action.isConnected;
+      break;
+    }
+    case SET_IS_RECONNECTION_PAUSED: {
+      updatedState[IS_RECONNECTION_PAUSED] = action.isReconnectionPaused;
+      break;
+    }
+    case SET_CAN_HOTLOAD: {
+      updatedState[CAN_HOTLOAD] = action.canHotload;
+      break;
+    }
+    case SET_ENV: {
+      updatedState[ENV] = action.env;
+      break;
+    }
+    case UPDATE_GAS_PRICE_INFO: {
+      updatedState[GAS_PRICE_INFO] = {
+        ...updatedState[GAS_PRICE_INFO],
+        ...action.gasPriceInfo,
+      };
+      break;
+    }
+    case SET_CURRENT_BASE_PATH: {
+      updatedState[CURRENT_BASE_PATH] = action.currentBasePath;
+      break;
+    }
+    case SET_MOBILE_MENU_STATE: {
+      updatedState[MOBILE_MENU_STATE] = action.mobileMenuState;
+      break;
+    }
+    case UPDATE_BLOCKCHAIN: {
+      updatedState[BLOCKCHAIN] = { ...updatedState[BLOCKCHAIN], ...action.blockchain };
+      break;
+    }
+    case SET_CATEGORY_STATS: {
+      updatedState[CATEGORY_STATS] = action.categoryStats;
+      break;
+    }
+    case UPDATE_FILTER_SORT_OPTIONS: {
+      updatedState[FILTER_SORT_OPTIONS] = {
+        ...updatedState[FILTER_SORT_OPTIONS],
+        ...action.filterSortOptions,
+      }
+      break;
+    }
+    case SET_MODAL: {
+      updatedState[MODAL] = action.modal;
+      break;
+    }
+    case CLOSE_MODAL: {
+      updatedState[MODAL] = {};
+      break;
+    }
+    case UPDATE_UNIVERSE: {
+      updatedState[UNIVERSE] = {
+        ...updatedState[UNIVERSE],
+        ...action.universe,
+      };
+      break;
+    }
+    case SWITCH_UNIVERSE: {
+      delete updatedState[UNIVERSE].forkingInfo;
+      delete updatedState[UNIVERSE].disputeWindow;
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -143,11 +247,38 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
       setOxEnabled: isOxEnabled =>
         dispatch({ type: SET_Ox_ENABLED, isOxEnabled }),
-      setGSNEnabled: isGSNEnabled => dispatch({ type: SET_GSN_ENABLED, isGSNEnabled }),
-      setEthToDaiRate: ethToDaiRate => dispatch({ type: SET_ETH_TO_DAI_RATE, ethToDaiRate }),
-      setRepToDaiRate: repToDaiRate => dispatch({ type: SET_REP_TO_DAI_RATE, repToDaiRate }),
+      setGSNEnabled: isGSNEnabled =>
+        dispatch({ type: SET_GSN_ENABLED, isGSNEnabled }),
+      setEthToDaiRate: ethToDaiRate =>
+        dispatch({ type: SET_ETH_TO_DAI_RATE, ethToDaiRate }),
+      setRepToDaiRate: repToDaiRate =>
+        dispatch({ type: SET_REP_TO_DAI_RATE, repToDaiRate }),
       setOxStatus: OxStatus => dispatch({ type: SET_Ox_STATUS, OxStatus }),
-      setWalletStatus: walletStatus => dispatch({ type: SET_WALLET_STATUS, walletStatus }),
+      setWalletStatus: walletStatus =>
+        dispatch({ type: SET_WALLET_STATUS, walletStatus }),
+      setRestoredAccount: restoredAccount =>
+        dispatch({ type: SET_RESTORED_ACCOUNT, restoredAccount }),
+      setIsLogged: isLogged => dispatch({ type: SET_IS_LOGGED, isLogged }),
+      setIsConnected: isConnected =>
+        dispatch({ type: SET_IS_CONNECTED, isConnected }),
+      setIsReconnectionPaused: isReconnectionPaused =>
+        dispatch({ type: SET_IS_RECONNECTION_PAUSED, isReconnectionPaused }),
+      setCanHotload: canHotload =>
+        dispatch({ type: SET_CAN_HOTLOAD, canHotload }),
+      setEnv: env => dispatch({ type: SET_ENV, env }),
+      updateGasPriceInfo: gasPriceInfo =>
+        dispatch({ type: UPDATE_GAS_PRICE_INFO, gasPriceInfo }),
+      setMobileMenuState: mobileMenuState =>
+        dispatch({ type: SET_MOBILE_MENU_STATE, mobileMenuState }),
+      setCurrentBasePath: currentBasePath =>
+        dispatch({ type: SET_CURRENT_BASE_PATH, currentBasePath }),
+      updateBlockchain: blockchain => dispatch({ type: UPDATE_BLOCKCHAIN, blockchain }),
+      setCategoryStats: categoryStats => dispatch({ type: SET_CATEGORY_STATS, categoryStats }),
+      updateFilterSortOptions: filterSortOptions => dispatch({ type: UPDATE_FILTER_SORT_OPTIONS, filterSortOptions }),
+      setModal: modal => dispatch({ type: SET_MODAL, modal }),
+      closeModal: () => dispatch({ type: CLOSE_MODAL }),
+      updateUniverse: universe => dispatch({ type: UPDATE_UNIVERSE, universe }),
+      switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
     },
   };
 };

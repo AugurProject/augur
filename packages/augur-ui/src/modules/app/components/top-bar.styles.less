@@ -24,8 +24,8 @@
     height: 100%;
 
     @media @breakpoint-mobile {
-      flex: 0;
       padding: 0;
+      max-width: 40%;
     }
 
     > button > svg {
@@ -81,10 +81,9 @@
     padding: @size-6 @size-20;
 
     @media @breakpoint-mobile {
-      padding: @size-3 @size-3 @size-12;
+      padding: 0;
     }
-
-
+    
     > span:first-of-type {
       display: flex;
       justify-content: center;
@@ -210,6 +209,12 @@
 
       fill: var(--color-brand-secondary);
       font-size: @size-8; // special case.
+    }
+  }
+
+  &.Empty {
+    > svg {
+      margin-left: @size-16;
     }
   }
 

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import Box from '3box';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
-export const use3box = (provider, initialize3box, initialized3box, theme) => {
-  const [activate, setActivate] = useState(false);
+export const use3box = (provider, initialize3box, initialized3box, chatOrComments, activatedFromStart = false) => {
+  const { theme } = useAppStatusStore();
+  const [activate, setActivate] = useState(activatedFromStart);
   const [address, setAddress] = useState();
   const [box, setBox] = useState({});
   const [isReady, setIsReady] = useState(false);
@@ -34,7 +36,6 @@ export const use3box = (provider, initialize3box, initialized3box, theme) => {
     let publicProfile;
 
     if (addressFromProvider === initialized3box.address) {
-      console.log('#### already initialized 3box');
       threeBoxInstance = initialized3box.box;
       publicProfile = initialized3box.profile;
     } else {
@@ -63,7 +64,8 @@ export const use3box = (provider, initialize3box, initialized3box, theme) => {
     setProfile(publicProfile);
     setIsReady(true);
 
-    initialize3box(addressFromProvider, threeBoxInstance, publicProfile);
+    const commentsAlreadyOpened = chatOrComments === 'comments';
+    initialize3box(addressFromProvider, threeBoxInstance, publicProfile, commentsAlreadyOpened);
   };
 
   return {

@@ -4,11 +4,11 @@ import { LinearPropertyLabel } from 'modules/common/labels';
 import { formatNumber } from 'utils/format-number';
 import { PillSelection } from 'modules/common/selection';
 import Styles from 'modules/account/components/stats.styles.less';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export interface StatsProps {
   updateSelected: Function;
   properties: Array<any>;
-  currentAugurTimestamp: number;
   updateTimeframeData: Function;
   timeframe: number;
 }
@@ -25,9 +25,9 @@ const Stats = ({
   timeframe,
   properties,
   updateSelected,
-  currentAugurTimestamp,
   updateTimeframeData,
 }: StatsProps) => {
+  const { blockchain: { currentAugurTimestamp } } = useAppStatusStore();
   useEffect(() => {
     const period = TIMEFRAME_OPTIONS[timeframe].periodInterval;
     const startTime = period === 0 ? null : currentAugurTimestamp - period;

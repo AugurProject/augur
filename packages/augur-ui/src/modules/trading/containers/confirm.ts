@@ -3,17 +3,17 @@ import Confirm from 'modules/trading/components/confirm';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
-import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_INITIALIZE_ACCOUNT, CREATEAUGURWALLET, TRANSACTIONS } from 'modules/common/constants';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
-import { AppStatusState } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { authStatus, loginAccount, newMarket } = state;
+  const { loginAccount, newMarket } = state;
   const {
     gsnEnabled: GsnEnabled,
     walletStatus: walletStatus,
-  } = AppStatusState.get();
+    gasPriceInfo,
+  } = AppStatus.get();
 
   const hasFunds = GsnEnabled
     ? !!loginAccount.balances.dai
@@ -25,11 +25,10 @@ const mapStateToProps = (state: AppState, ownProps) => {
   }
   const sweepStatus = state.pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
   return {
-    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
+    gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,
     availableEth: createBigNumber(loginAccount.balances.eth),
     availableDai,
     hasFunds,
-    isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,
     GsnEnabled,
     walletStatus,
@@ -38,7 +37,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  initializeGsnWallet: (customAction = null) => dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
+  initializeGsnWallet: (customAction = null) => AppStatus.actions.setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
   updateWalletStatus: () => {
     dispatch(removePendingTransaction(CREATEAUGURWALLET));
   }

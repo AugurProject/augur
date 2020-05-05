@@ -1,6 +1,5 @@
 import logError from 'utils/log-error';
 import { formatGasCostGwei } from 'utils/format-number';
-import { updateGasPriceInfo } from 'modules/app/actions/update-gas-price-info';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { AppState } from 'appStore';
 import { DataCallback, NodeStyleCallback, GasPriceInfo } from 'modules/types';
@@ -13,6 +12,7 @@ import {
   DEFAULT_FALLBACK_GAS_FAST,
 } from 'modules/common/constants';
 import { augurSdk } from 'services/augursdk';
+import { AppStatus } from '../store/app-status';
 
 export function loadGasPriceInfo(
   callback: NodeStyleCallback = logError
@@ -26,14 +26,10 @@ export function loadGasPriceInfo(
     const networkId = getNetworkId();
 
     getGasPriceRanges(networkId, result => {
-      dispatch(
-        updateGasPriceInfo({
-          ...result,
-        })
-      );
+      console.log('gettingGasInfo', result);
+      AppStatus.actions.updateGasPriceInfo(result);
     });
   };
-}
 
 async function getGasPriceRanges(networkId: string, callback: DataCallback) {
   const defaultGasPrice = setDefaultGasInfo();

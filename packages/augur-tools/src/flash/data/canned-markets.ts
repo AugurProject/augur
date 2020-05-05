@@ -30,6 +30,7 @@ import {
   ETHEREUM,
   BASKETBALL,
   NBA,
+  NFL_DRAFT,
 } from '@augurproject/artifacts';
 
 interface AskBid {
@@ -461,6 +462,65 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
 
   markets.push(convertedMarkets[0]);
 
+  const draftTemplates = TEMPLATES[SPORTS].children[AMERICAN_FOOTBALL].children[NFL_DRAFT]
+  .templates as Template[];
+  const draftTemplate: Template = draftTemplates[1];
+  const draftExpDate = moment().add(4, 'weeks');
+  const draftEstTime = draftExpDate.unix();
+  const draftEndTime = draftExpDate.add(50, 'hours').unix();
+  const draftInputValues = [
+    '2020',
+    'Wide Receiver',
+    String(draftEstTime),
+  ];
+
+  const draftMarkets = massageMarkets([
+    {
+      marketType: 'categorical',
+      endTime: draftEndTime,
+      affiliateFeeDivisor: 0,
+      creatorFeeDecimal: '0.01',
+      outcomes: [
+        'Jonny B',
+        'Eric C',
+        'Mac D',
+        'Linny Q',
+        'Other (Field)'
+      ],
+      extraInfo: {
+        categories: [SPORTS, AMERICAN_FOOTBALL, NFL_DRAFT],
+        description: fillInQuestion(draftTemplate, draftInputValues),
+        tags: [],
+        longDescription: getLongDescription(draftTemplate),
+        template: {
+          hash: draftTemplate.hash,
+          question: draftTemplate.question,
+          inputs: getFilledInputs(draftTemplate, draftInputValues),
+        },
+      },
+      orderBook: {
+        1: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        2: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        3: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        4: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+      },
+    },
+  ]);
+
+  markets.push(draftMarkets[0]);
+
   const golfTemplates = TEMPLATES[SPORTS].children[GOLF].children[PGA]
     .templates as Template[];
   const golfTemplate: Template = golfTemplates[3];
@@ -484,7 +544,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         'No winner/Event cancelled',
       ],
       extraInfo: {
-        categories: [SPORTS, SPORTS, PGA],
+        categories: [SPORTS, GOLF, PGA],
         description: fillInQuestion(golfTemplate, golfInputValues),
         tags: [],
         longDescription: getLongDescription(golfTemplate),

@@ -10,7 +10,7 @@ import { buildConfig } from '@augurproject/artifacts';
 export async function verifyDeployment() {
     require('source-map-support').install();
 
-    const config = buildConfig('local');
+    const config = buildConfig('mainnet');
     const provider = new ethers.providers.JsonRpcProvider(config.ethereum.http);
     const signer = await EthersFastSubmitWallet.create(config.deploy.privateKey as string, provider);
     const dependencies = new ContractDependenciesEthers(provider, signer, signer.address);

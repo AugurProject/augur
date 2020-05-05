@@ -14,7 +14,6 @@ function pick(object, keys) {
 }
 
 const mapStateToProps = state => ({
-  currentAugurTimestamp: state.blockchain.currentAugurTimestamp,
 });
 
 const mapDispatchToProps = dispatch => ({});

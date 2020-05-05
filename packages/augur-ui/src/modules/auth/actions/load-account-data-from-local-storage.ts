@@ -4,8 +4,6 @@ import { updateAlert } from 'modules/alerts/actions/alerts';
 import { loadPendingLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { loadPendingOrdersTransactions } from 'modules/orders/actions/pending-orders-management';
-import { updateGasPriceInfo } from 'modules/app/actions/update-gas-price-info';
-import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { isNewFavoritesStyle } from 'modules/markets/helpers/favorites-processor';
 import { loadPendingQueue } from 'modules/pending-queue/actions/pending-queue-management';
 import { setSelectedUniverse } from './selected-universe-management';
@@ -20,12 +18,12 @@ import {
   updateLoginAccount,
 } from 'modules/account/actions/login-account';
 import {
-  updateFilterSortOptions,
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
   MARKET_SHOW_INVALID,
-} from 'modules/filter-sort/actions/update-filter-sort-options';
+} from 'modules/app/store/constants';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const loadAccountDataFromLocalStorage = (
   address: string
@@ -34,7 +32,8 @@ export const loadAccountDataFromLocalStorage = (
   getState: () => AppState
 ) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-  const { universe } = getState();
+  const { universe } = AppStatus.get();
+  
   if (localStorageRef && localStorageRef.getItem && address) {
     const storedAccountData = JSON.parse(localStorageRef.getItem(address));
     if (storedAccountData) {
@@ -46,23 +45,24 @@ export const loadAccountDataFromLocalStorage = (
       const { settings } = storedAccountData;
 
       if (settings) {
-        dispatch(updateLoginAccount({ settings: { ...settings } }));
+        dispatch(updateLoginAccount({ settings }));
         const { maxFee, spread, showInvalid, templateFilter } = settings;
+        const { updateFilterSortOptions } = AppStatus.actions;
         if (maxFee) {
-          dispatch(updateFilterSortOptions(MARKET_MAX_FEES, settings.maxFee));
+          updateFilterSortOptions({ [MARKET_MAX_FEES]: settings.maxFee });
         }
         if (spread) {
-          dispatch(updateFilterSortOptions(MARKET_MAX_SPREAD, settings.spread));
+          updateFilterSortOptions({ [MARKET_MAX_SPREAD]: settings.spread });
         }
         if (showInvalid) {
-          dispatch(
-            updateFilterSortOptions(MARKET_SHOW_INVALID, settings.showInvalid)
-          );
+          updateFilterSortOptions({
+            [MARKET_SHOW_INVALID]: settings.showInvalid,
+          });
         }
         if (templateFilter) {
-          dispatch(
-            updateFilterSortOptions(TEMPLATE_FILTER, settings.templateFilter)
-          );
+          updateFilterSortOptions({
+            [TEMPLATE_FILTER]: settings.templateFilter,
+          });
         }
       }
 
@@ -73,7 +73,7 @@ export const loadAccountDataFromLocalStorage = (
       const selectedUniverseId = selectedUniverse[networkId];
       if (selectedUniverseId) {
         if (universe.id !== selectedUniverseId) {
-          dispatch(updateUniverse({ id: selectedUniverseId }));
+          AppStatus.actions.updateUniverse({ id: selectedUniverseId });
         }
       } else {
         // we have a no selectedUniveres for this account, default to default universe for this network.
@@ -105,7 +105,8 @@ export const loadAccountDataFromLocalStorage = (
             alerts.reduce((p, alert) => {
               const marketId =
                 alert.marketId ||
-                ((alert.params && alert.params.market) || alert.params._market);
+                (alert.params && alert.params.market) ||
+                alert.params._market;
               return marketId ? [...p, marketId] : p;
             }, [])
           )
@@ -130,11 +131,9 @@ export const loadAccountDataFromLocalStorage = (
         dispatch(loadPendingQueue(pendingQueue));
       }
       if (gasPriceInfo && gasPriceInfo.userDefinedGasPrice) {
-        dispatch(
-          updateGasPriceInfo({
-            userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
-          })
-        );
+        AppStatus.actions.updateGasPriceInfo({
+          userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
+        });
       }
     }
   }

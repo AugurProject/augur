@@ -2,12 +2,11 @@ import React from 'react';
 
 import Styles from 'modules/markets-list/components/landing-hero.styles.less';
 import { PrimaryButton, ExternalLinkButton } from 'modules/common/buttons';
+import { MODAL_SIGNUP } from 'modules/common/constants';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
-export interface LandingHeroProps {
-  showSignup: Function;
-}
-
-export const LandingHero = (props: LandingHeroProps) => {
+export const LandingHero = () => {
+  const { actions: { setModal }} = useAppStatusStore();
   return (
     <section className={Styles.LandingHero}>
       <img src="images/BGImages.png" />
@@ -20,7 +19,7 @@ export const LandingHero = (props: LandingHeroProps) => {
         <div>
           <PrimaryButton
             text="Sign up to start trading"
-            action={props.showSignup}
+            action={() => setModal({ type: MODAL_SIGNUP })}
           />
           <ExternalLinkButton
             light

@@ -2,13 +2,14 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { GlobalChat } from 'modules/global-chat/components/global-chat.tsx';
 import { initialize3box } from 'modules/global-chat/actions/initialize-3box';
+import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = ({authStatus, loginAccount, env, initialized3box}) => {
+const mapStateToProps = ({ loginAccount, initialized3box }) => {
+  const { env } = AppStatus.get();
   const signer = loginAccount.meta?.signer;
 
   const defaultGlobalChatProps = {
     whichChatPlugin: env.plugins?.chat,
-    isLogged: authStatus.isLogged,
   };
 
   return signer ? {

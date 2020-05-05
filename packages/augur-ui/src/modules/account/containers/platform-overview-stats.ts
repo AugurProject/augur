@@ -5,13 +5,16 @@ import Stats from 'modules/account/components/stats';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import { updatePlatformTimeframeData } from 'modules/account/actions/update-platform-timeframe-data';
+import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = (state: AppState) => ({
-  timeframeData: state.universe.timeframeData,
-  currentAugurTimestamp: selectCurrentTimestampInSeconds(state),
-});
+const mapStateToProps = (state: AppState) => {
+  const { universe: { timeframeData }, blockchain: { currentAugurTimestamp }} = AppStatus.get();
+  return ({
+    timeframeData,
+    currentAugurTimestamp,
+  });
+};
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   updateTimeframeData: (options: any) =>

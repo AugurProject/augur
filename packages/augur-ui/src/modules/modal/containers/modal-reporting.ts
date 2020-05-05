@@ -7,22 +7,23 @@ import { Action } from 'redux';
 import { REPORTING_STATE, MODAL_ADD_FUNDS, REP } from 'modules/common/constants';
 import { formatRep } from 'utils/format-number';
 import { AppState } from 'appStore';
-import { updateModal } from '../actions/update-modal';
 import { addPendingData, removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { universe, modal, loginAccount } = state;
+  const { loginAccount } = state;
+  const { universe: { forkingInfo, warpSyncHash }, modal } = AppStatus.get();
   let { market } = ownProps;
-  market.isForking = state.universe.forkingInfo && state.universe.forkingInfo.forkingMarket === market.id;
-  const hasForked = !!state.universe.forkingInfo;
+  market.isForking = forkingInfo && forkingInfo.forkingMarket === market.id;
+  const hasForked = !!forkingInfo;
   const migrateRep =
-    hasForked && universe.forkingInfo.forkingMarket === market.id;
+    hasForked && forkingInfo.forkingMarket === market.id;
   const migrateMarket =
-    hasForked && !!universe.forkingInfo.winningChildUniverseId;
+    hasForked && !!forkingInfo.winningChildUniverseId;
 
   return {
-    warpSyncHash: universe.warpSyncHash,
-    modal: modal,
+    warpSyncHash,
+    modal,
     market,
     rep: formatRep(loginAccount.balances.rep).formatted,
     userAccount: loginAccount.address,
@@ -33,7 +34,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  getRepModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS, fundType: REP })),
+  getRepModal: () => AppStatus.actions.setModal({ type: MODAL_ADD_FUNDS, fundType: REP }),
   addPendingData: (pendingId, queueName, status,hash, info) => dispatch(addPendingData(pendingId, queueName, status,hash, info)),
   removePendingData: (pendingId, queueName) => dispatch(removePendingData(pendingId, queueName))
 });

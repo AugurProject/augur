@@ -8,10 +8,11 @@ import {
 } from 'modules/markets/actions/load-markets';
 import { disputingMarkets } from 'modules/markets/selectors/select-reporting-markets';
 import { AppState } from 'appStore';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
   disputingMarketsMeta: state.reportingListState,
-  isConnected: state.connection.isConnected,
+  isConnected: AppStatus.get().isConnected,
   userAddress: state.loginAccount.mixedCaseAddress,
   markets: disputingMarkets(state),
 });
