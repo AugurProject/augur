@@ -176,7 +176,6 @@ export default class OverviewChart extends React.Component<
             value={profitLossChange}
             useFull
           />
-          <h4></h4>
           {isLoading && (
             <PulseLoader
               color="#AFA7C1"
