@@ -1,0 +1,152 @@
+@import 'Colors';
+
+$directory-hover-color: rgb(64, 64, 64);
+$directory-link-color: rgba(128, 196, 255, 0.8);
+$directory-link-color2: rgba(196, 196, 196, 0.6);
+$directory-link-hover-color: rgba(136, 204, 255, 1);
+$directory-link-hover-color2: rgba(240, 240, 240, 0.9);
+
+.FileMessage {
+  display: flex;
+  flex: 1 0;
+  align-items: center;
+
+  font-weight: bold;
+  overflow: hidden;
+  box-sizing: content-box;
+
+  .content {
+    box-sizing: content-box;
+  }
+
+  .preview {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: 0.2em;
+    margin-right: 0.2em;
+
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+
+    background-color: rgba(0, 0, 0, 0.075);
+    border-left: 1px dotted rgba(255, 255, 255, 0.1);
+
+    overflow: hidden;
+    display: flex;
+    box-sizing: content-box;
+
+    img,
+    audio,
+    video {
+      max-height: 30em;
+      max-width: 100%;
+    }
+  }
+
+  .preview:hover {
+    border-left: 1px dotted rgba(224, 224, 224, 0.5);
+  }
+
+  .smallText {
+    font-size: 0.8em;
+    padding: 0;
+  }
+
+  pre {
+    margin: 0;
+    box-sizing: content-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    width: 100%;
+    white-space: pre-wrap;
+
+    .hljs {
+      background: none;
+    }
+  }
+
+  .download {
+    user-select: none;
+    visibility: hidden;
+    margin: 0;
+    font-size: 0.9em;
+    cursor: pointer;
+  }
+
+  .pin {
+    visibility: hidden;
+  }
+
+  .size {
+    visibility: hidden;
+    margin-left: 0.25em;
+    margin-right: 0.5em;
+  }
+
+  .name {
+    color: $directory-link-color;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  a {
+    user-select: none;
+    color: $directory-link-color;
+    text-decoration: none;
+    margin-right: 0.1em;
+    margin-left: 0.1em;
+  }
+
+  a:hover {
+    color: $directory-link-hover-color2;
+    text-decoration: none;
+  }
+}
+
+.FileMessage:hover {
+  color: $directory-link-hover-color2;
+
+  .download {
+    font-size: 0.8em;
+    visibility: visible;
+    background-color: rgb(44, 44, 44);
+    color: $directory-link-color2;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    margin-right: 0.2em;
+    border: 0px solid;
+    border-radius: 8px;
+  }
+
+  .download:hover {
+    background-color: rgba(128, 128, 128, 0.2);
+    color: $directory-link-hover-color2;
+  }
+
+  .name {
+    margin-right: 0.5em;
+    color: $directory-link-hover-color2;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .size {
+    visibility: visible;
+    font-size: 0.8em;
+    color: rgba(112, 180, 112, 1);
+    cursor: default;
+    margin-right: 0.75em;
+  }
+
+  a {
+    color: $directory-link-hover-color2;
+  }
+}
+
+.loading {
+  a {
+    color: rgba(240, 244, 240, 0.1);
+  }
+}

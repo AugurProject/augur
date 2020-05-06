@@ -32,8 +32,9 @@
 
     @media @breakpoint-mobile {
       border: none;
-      padding: @size-26;
-      max-height: @size-72;
+      max-height: @top-bar-height-mobile;
+      padding: @size-12;
+      align-items: center;
 
       &:hover {
         border: none;
@@ -216,7 +217,7 @@
   z-index: @above-all-content-above;
 
   @media @breakpoint-mobile {
-    max-height: @size-72;
-    max-width: @size-72;
+    max-height: @top-bar-height-mobile;
+    max-width: @top-bar-height-mobile;
   }
 }

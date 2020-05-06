@@ -5,24 +5,22 @@ import classNames from 'classnames';
 
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
-import { LogoutIcon } from 'modules/common/icons';
-import { NavMenuItem, AccountBalances, CoreStats } from 'modules/types';
+import { Dot, helpIcon } from 'modules/common/icons';
+import { AccountBalances, CoreStats, NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import {
-  SecondaryButton,
-  ProcessingButton,
-  PrimaryButton,
   ChatButton,
+  PrimaryButton,
+  ProcessingButton,
+  SecondaryButton,
 } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import { helpIcon, Chevron, Dot } from 'modules/common/icons';
 import {
-  MODAL_ADD_FUNDS,
   MIGRATE_FROM_LEG_REP_TOKEN,
-  TRANSACTIONS,
-  CREATEAUGURWALLET,
+  MODAL_ADD_FUNDS,
   MODAL_HELP,
+  TRANSACTIONS,
 } from 'modules/common/constants';
 import { Stats } from '../top-bar';
 
@@ -165,8 +163,8 @@ const SideNav = ({
               )}
             </div>
           </ul>
-          {isLogged && (
-            <footer>
+          <footer>
+            {isLogged && (
               <HelpIcon
                 isHelpMenuOpen={isHelpMenuOpen}
                 updateHelpMenuState={() => {
@@ -177,13 +175,11 @@ const SideNav = ({
                   }
                 }}
               />
-              {whichChatPlugin && (
-                <ChatButton
-                  action={showGlobalChat} 
-                />
+            )}
+            {((isLogged && whichChatPlugin) || whichChatPlugin === 'orbit') && (
+                <ChatButton action={showGlobalChat} />
               )}
-            </footer>
-          )}
+          </footer>
         </div>
       </div>
     </aside>

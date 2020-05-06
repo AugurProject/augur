@@ -16,7 +16,7 @@ import {
   XIcon,
   BackIcon,
   AlternateDaiLogoIcon,
-  Chevron,
+  Chevron, ThickChevron,
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
@@ -165,7 +165,7 @@ export const ChatButton = (props: DefaultButtonProps) => (
     className={classNames(Styles.ChatButton)}
     disabled={props.disabled}
   >
-    Global Chat {Chevron}
+    Global Chat {ThickChevron}
   </button>
 );
 
