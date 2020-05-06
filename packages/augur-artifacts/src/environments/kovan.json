@@ -21,7 +21,7 @@
     "serial": true
   },
   "uniswap": {
-    "exchangeRateBufferMultiplier": 1.75
+    "exchangeRateBufferMultiplier": 1.075
   },
   "gsn": {
     "enabled": true

@@ -205,8 +205,8 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     autoReport: false,
   },
   uniswap: {
-    // mainnet will be <= 1.05 but for dev we can get away with a wide spread
-    exchangeRateBufferMultiplier: 1.75,
+    // mainnet will be <= 1.005 but for dev we can get away with a wide spread
+    exchangeRateBufferMultiplier: 1.075,
   },
   gsn: {
     enabled: true
