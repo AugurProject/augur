@@ -4,9 +4,7 @@ name: Mirror Review Cards
 
 on:
   schedule:
-    cron:
-      # cron actions will not run more frequently than once every 5 minutes
-      - '*/5 * * * *'
+    - cron: '*/5 * * * *'
 jobs:
   mirror_design_review:
     runs-on: ubuntu-latest
