@@ -34,7 +34,6 @@ export interface UserTimeRangeData {
 interface OverviewChartState {
   profitLossData: number[][];
   profitLossChange: FormattedNumber | null;
-  profitLossValue: string | null;
   profitLossChangeHasValue: boolean;
   noTrades: boolean;
 }
@@ -47,7 +46,6 @@ export default class OverviewChart extends React.Component<
   state: OverviewChartState = {
     profitLossData: [],
     profitLossChange: null,
-    profitLossValue: null,
     profitLossChangeHasValue: false,
     noTrades: true,
   };
@@ -127,15 +125,13 @@ export default class OverviewChart extends React.Component<
       ]);
 
       if (this.container) {
-        const realizedPercentChange = createBigNumber(lastData.realizedPercent).minus(firstData.realizedPercent).times(100);
         const realizedChange = createBigNumber(lastData.realized).minus(firstData.realized);
         this.setState({
           profitLossData,
-          profitLossChange: formatPercent(realizedPercentChange || 0),
+          profitLossChange: formatDai(realizedChange || 0),
           profitLossChangeHasValue: !createBigNumber(lastData.realized || 0).eq(
             constants.ZERO
           ),
-          profitLossValue: String(formatDai(realizedChange, { removeComma: true }).full),
           noTrades: false,
         });
       }
@@ -148,7 +144,6 @@ export default class OverviewChart extends React.Component<
     const {
       profitLossData,
       profitLossChange,
-      profitLossValue,
       noTrades,
     } = this.state;
 
@@ -181,7 +176,6 @@ export default class OverviewChart extends React.Component<
             value={profitLossChange}
             useFull
           />
-          <h4>{profitLossValue}</h4>
           {isLoading && (
             <PulseLoader
               color="#AFA7C1"
