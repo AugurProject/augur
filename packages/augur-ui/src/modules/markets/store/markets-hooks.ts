@@ -15,15 +15,18 @@ export function MarketsReducer(state, action) {
         ...updatedState.orderBooks,
         [marketId]: orderBook,
       };
-      return updatedState;
+      break;
     }
     case CLEAR_ORDER_BOOK: {
       updatedState.orderBooks = DEFAULT_MARKETS_STATE.orderBooks;
-      return updatedState;
+      break;
     }
     default:
       throw new Error(`Error: ${action.type} not caught by Markets reducer`);
   }
+
+  window.markets = updatedState;
+  return updatedState;
 }
 
 export const useMarkets = (defaultState = MOCK_MARKETS_STATE) => {

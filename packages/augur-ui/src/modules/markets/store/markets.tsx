@@ -9,8 +9,22 @@ const MarketsContext = React.createContext({
   actions: STUBBED_MARKETS_ACTIONS,
 });
 
+export const Markets = {
+  actionsSet: false,
+  get: () => ({ ...DEFAULT_MARKETS_STATE }),
+  actions: STUBBED_MARKETS_ACTIONS,
+};
+
 export const MarketsProvider = ({ children }) => {
   const state = useMarkets();
+  
+  if (!Markets.actionsSet) {
+    Markets.actions = state.actions;
+    Markets.actionsSet = true;
+  }
+  const readableState = { ...state };
+  delete readableState.actions;
+  Markets.get = () => readableState;
 
   return (
     <MarketsContext.Provider value={state}>

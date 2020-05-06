@@ -4,7 +4,7 @@ export const MARKETS_ACTIONS = {
 };
 
 export const DEFAULT_MARKETS_STATE = {
-  orderbooks: {},
+  orderBooks: {},
 };
 
 export const STUBBED_MARKETS_ACTIONS = {
@@ -13,5 +13,5 @@ export const STUBBED_MARKETS_ACTIONS = {
 }
 
 export const MOCK_MARKETS_STATE = {
-  orderbooks: {},
+  orderBooks: {},
 };

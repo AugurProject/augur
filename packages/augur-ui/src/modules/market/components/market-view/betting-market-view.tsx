@@ -48,7 +48,7 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
     orderBooks,
   } = useMarketsStore();
   
-  console.log(orderBooks)
+  const orderBook = orderBooks[id]?.orderBook;
 
   const inDispute =
     reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
@@ -86,14 +86,14 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
         </div>
       </div>
       <OutcomeGroup
-        orderBook={null}
+        orderBook={orderBook}
         outcomes={outcomesFormatted}
         marketType={marketType}
         description={description}
         scalarDenomination={scalarDenomination}
         min={minPriceBigNumber}
         max={maxPriceBigNumber}
-        stakes={disputeInfo.stakes}
+        stakes={disputeInfo && disputeInfo.stakes}
         dispute={null}
         inDispute={inDispute}
         marketId={id}
