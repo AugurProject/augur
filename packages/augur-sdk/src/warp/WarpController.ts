@@ -109,9 +109,10 @@ export class WarpController {
     // This is to simplify swapping out file retrieval mechanism.
     private _fileRetrievalFn: (ipfsPath: string) => Promise<any> = (
       ipfsPath: string
-    ) => fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`).then(item =>
-        item.json()
-      )
+    ) =>
+      fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`)
+        .then(item => item.arrayBuffer())
+        .then(item => new Uint8Array(item))
   ) {
     this.checkpoints = new Checkpoints(provider);
     if (ipfs) {

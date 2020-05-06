@@ -13,6 +13,7 @@ import {
   SecondaryButton,
   ProcessingButton,
   PrimaryButton,
+  ChatButton,
 } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { helpIcon, Chevron, Dot } from 'modules/common/icons';
@@ -83,18 +84,6 @@ const SideNav = ({
       })}
     >
       <div>
-        {isLogged && (
-          <HelpIcon
-            isHelpMenuOpen={isHelpMenuOpen}
-            updateHelpMenuState={() => {
-              if (isMobile) {
-                updateModal({ type: MODAL_HELP });
-              } else {
-                updateHelpMenuState();
-              }
-            }}
-          />
-        )}
         <Stats
           isLogged={isLogged}
           stats={stats}
@@ -175,15 +164,23 @@ const SideNav = ({
               )}
             </div>
           </ul>
-          {isLogged && whichChatPlugin && (
+          {isLogged && (
             <footer>
-              <div className={Styles.GlobalChat}>
-                <SecondaryButton
-                  action={showGlobalChat}
-                  text="Global Chat"
-                  icon={Chevron}
+              <HelpIcon
+                isHelpMenuOpen={isHelpMenuOpen}
+                updateHelpMenuState={() => {
+                  if (isMobile) {
+                    updateModal({ type: MODAL_HELP });
+                  } else {
+                    updateHelpMenuState();
+                  }
+                }}
+              />
+              {whichChatPlugin && (
+                <ChatButton
+                  action={showGlobalChat} 
                 />
-              </div>
+              )}
             </footer>
           )}
         </div>
