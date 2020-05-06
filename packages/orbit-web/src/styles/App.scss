@@ -1,0 +1,90 @@
+@import 'Animations';
+@import 'Colors';
+@import 'AugurColors.scss';
+
+textarea,
+input {
+  outline: none;
+}
+
+::placeholder {
+  color: $placeholder-color;
+  font-style: italic;
+}
+
+.App {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform-style: preserve-3d;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+$channel-name-max-height: 5.5vmin;
+$channel-name-min-height: 1.5em;
+
+.view {
+  background-color: $orbit-page-background;
+  padding: 0;
+  margin: 0;
+}
+
+.icon {
+  width: 1em;
+  height: 1em;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35em;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+  color: $main-text-color;
+}
+
+.icon-active {
+  width: 1em;
+  height: 1em;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+  color: $main-text-color;
+  background-color: $main-color;
+  border-radius: 32px;
+}
+.icon-active:hover {
+  background-color: $main-color;
+  border-radius: 32px;
+}
+
+.icon:hover {
+  background-color: rgba(48, 48, 48, 1);
+  border-radius: 32px;
+}
+
+.icon:active {
+  background-color: $main-color;
+  border-radius: 32px;
+}
+
+.blurred {
+  filter: blur(2px);
+}
+
+.dimmed {
+  opacity: 0.5;
+}
+
+.hide {
+  display: none;
+}
+
+.none {
+  display: none;
+}

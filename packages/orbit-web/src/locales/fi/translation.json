@@ -1,0 +1,105 @@
+{
+  "channel": {
+    "beginningOf": "Kanavan #{{channel}} alku",
+    "showingLast": "Näytetään vain yksi kanavan #{{channel}} viesti",
+    "showingLast_plural": "Näytetään kanavan #{{channel}} viimeiset {{count}} viestiä",
+    "file": {
+      "download": "Lataa",
+      "previewLoading": "$t(loading)...",
+      "open": "Avaa",
+      "unableToDisplay": "Tiedostoa ei ole mahdollista näyttää",
+      "dropzone": {
+        "add": "Lisää tiedostoja kanavalle #{{channel}}"
+      }
+    },
+    "loadingHistory": "Ladataan historiaa...",
+    "loadMore": "Klikkaa tai rullaa ylös ladataksesi vanhempia viestejä",
+    "sendMessagePlaceholder": "Kirjoita viesti...",
+    "status": {
+      "users": "Online",
+      "users_plural": "Online"
+    }
+  },
+  "configuration": "Asetukset",
+  "controlPanel": {
+    "channels": "Kanavat",
+    "closeChannel": "Sulje",
+    "startJsIpfs": "Käynnistä js-ipfs"
+  },
+  "disclaimer": {
+    "alpha": {
+      "content": "Tämä on ohjelman alpha versio. Asiat muuttuvat ja menevät rikki \u2014 keskustelut häviävät. Käytä omalla vastuulla."
+    }
+  },
+  "joinChannel": {
+    "inputPlaceholder": "Liity kanavalle"
+  },
+  "login": {
+    "nickname": "Kirjoita nimi",
+    "orLoginWith": "Tai kirjaudu käyttäen",
+    "pressEnterToLogin": "Paina ENTER kirjautuaksesi"
+  },
+  "loading": "Ladataan",
+  "settings": {
+    "names": {
+      "themeName": "Teema",
+      "language": "Kieli",
+      "sidePanelPosition": "Sivupaneelin asemointi",
+      "colorifyUsernames": "Väritä käyttäjänimet",
+      "useEmojis": "Käytä hymiöitä",
+      "emojiSet": "Hymiö teema",
+      "useMonospaceFont": "Käytä monospace fonttia",
+      "useLargeMessage": "Käytä suuria viestejä",
+      "messageNotifications": "Ilmoitukset"
+    },
+    "descriptions": {},
+    "options": {
+      "themeName": {
+        "default": "Oletus",
+        "purple1": "Violetti 1",
+        "purple2": "Violetti 2",
+        "magenta": "Purppura",
+        "red": "Punainen",
+        "orange": "Oranssi",
+        "brown": "Ruskea",
+        "lime": "Lime",
+        "green": "Vihreä",
+        "cyan": "Syaani",
+        "blue1": "Sininen 1",
+        "blue2": "Sininen 2",
+        "grey": "Harmaa"
+      },
+      "language": {
+        "en": "English",
+        "fi": "Suomi",
+        "pt": "Portugali"
+      },
+      "sidePanelPosition": {
+        "left": "Vasemmalla",
+        "right": "Oikealla"
+      },
+      "emojiSet": {
+        "apple": "Apple",
+        "emojione": "Emojione",
+        "facebook": "Facebook",
+        "google": "Google",
+        "messenger": "Messenger",
+        "twitter": "Twitter"
+      },
+      "messageNotifications": {
+        "all": "Kaikki",
+        "mentions": "Vain maininnat",
+        "none": "Ei mitään"
+      }
+    }
+  },
+  "userProfile": {
+    "identityType": "Identiteetin tarjoaja",
+    "identityId": "Identiteetin tunniste",
+    "identityPublicKey": "Julkinen avain"
+  },
+  "version": "Versio",
+  "viewNames": {
+    "settings": "Asetukset"
+  }
+}

@@ -86,8 +86,7 @@
     "startWSS": true
   },
   "plugins": {
-    "chat": "3box",
-    "comments": "3box"
+    "chat": "orbit"
   },
   "syncing": {
     "enabled": true

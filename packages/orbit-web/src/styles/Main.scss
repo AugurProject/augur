@@ -1,0 +1,22 @@
+html,
+body {
+  font-family: 'Roboto';
+  font-weight: normal;
+  background: #222222;
+  color: white;
+  height: 100%;
+}
+
+h1 {
+  color: rgb(228, 228, 228);
+  font-weight: normal;
+  margin: auto;
+  font-size: 3em;
+  text-align: center;
+  padding: 0.5em;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
