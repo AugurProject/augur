@@ -63,14 +63,34 @@
 
     > div:last-of-type {
       min-height: @size-414;
-    }
-  }
 
-  .MarketsEmptyDisplay {
-    .Markets;
+      div[class*='RowContent'] {
+        > div > div {
+          > div > span > span[class*='ProgressLabel'] {
+            display: none;
+          }
 
-    > div:last-of-type {
-      min-height: @size-198;
+          > span > span {
+            flex-flow: row;
+
+            > span:first-of-type {
+              .text-12;
+              color: var(--color-secondary-text);
+              padding-right: @size-4;
+            }
+
+            > span:nth-of-type(2) {
+              .text-12-semi-bold;
+              color: var(--color-primary-text);
+              text-align: left;
+            }
+          }
+        }
+
+        > span {
+          display: none;
+        }
+      }
     }
   }
 }

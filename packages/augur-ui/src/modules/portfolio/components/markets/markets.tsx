@@ -9,7 +9,7 @@ import { TXEventName } from '@augurproject/sdk';
 import { CancelTextButton, SubmitTextButton } from 'modules/common/buttons';
 
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
-import favoriteStyles from 'modules/portfolio/components/favorites/favorites.styles.less';
+import marketStyles from 'modules/portfolio/components/markets/markets.styles.less';
 import { MarketData } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
@@ -153,18 +153,11 @@ class MyMarkets extends Component<MyMarketsProps> {
   render() {
     const { myMarkets, toggle, hide, extend } = this.props;
 
-    // const { theme } = useAppStatusStore();
-    // const isTrading = theme === THEMES.TRADING;
-    let customClass = favoriteStyles.Watchlist;
-    // if (!isTrading && myMarkets.length === 0) {
-    //   customClass = favoriteStyles.MarketsEmptyDisplay;
-    // }
-
     return (
       // @ts-ignore
       <FilterBox
         title="My Created Markets"
-        customClass={customClass}
+        customClass={marketStyles.Markets}
         sortByOptions={sortByOptions}
         sortByStyles={{ minWidth: '10.8125rem' }}
         markets={myMarkets}
