@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import MarketsView from 'modules/markets-list/components/markets-view';
-import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import { getSelectedTagsAndCategoriesFromLocation } from 'modules/markets/helpers/get-selected-tags-and-categories-from-location';
 import {
@@ -101,7 +100,6 @@ const mapDispatchToProps = (
 ) => {
   const { updateFilterSortOptions } = AppStatus.actions;
   return ({
-    toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
     setLoadMarketsPending: isSearching =>
       dispatch(setLoadMarketsPending(isSearching)),
     updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),

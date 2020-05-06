@@ -43,13 +43,11 @@ function filterComp(input, market) {
 
 interface FavoritesProps {
   markets: Array<MarketData>;
-  toggleFavorite: Function;
   toggle: Function;
 }
 
 const Favorites = ({
   markets,
-  toggleFavorite,
   toggle,
 }: FavoritesProps) => {
   const { theme } = useAppStatusStore();
@@ -74,8 +72,7 @@ const Favorites = ({
           alignRight
         />
         <FavoritesButton
-          action={() => toggleFavorite(market.id)}
-          isFavorite
+          marketId={market.id}
           hideText
           isSmall
         />

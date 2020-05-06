@@ -1,4 +1,3 @@
-import { loadFavoritesMarkets } from 'modules/markets/actions/update-favorites';
 import { loadDrafts } from 'modules/create-market/actions/update-drafts';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { loadPendingLiquidityOrders } from 'modules/orders/actions/liquidity-management';
@@ -20,7 +19,7 @@ import {
 } from 'modules/app/store/constants';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
-import isAddress from "modules/auth/helpers/is-address";
+import isAddress from 'modules/auth/helpers/is-address';
 
 export const loadAccountDataFromLocalStorage = (
   address: string
@@ -30,10 +29,17 @@ export const loadAccountDataFromLocalStorage = (
 ) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
   const { universe } = AppStatus.get();
-  
+
   if (localStorageRef && localStorageRef.getItem && address) {
     const storedAccountData = JSON.parse(localStorageRef.getItem(address));
     if (storedAccountData) {
+      const {
+        updateFilterSortOptions,
+        updateUniverse,
+        updateLoginAccount,
+        loadFavorites,
+        updateGasPriceInfo,
+      } = AppStatus.actions;
       const { selectedUniverse } = storedAccountData;
       const { favorites } = storedAccountData;
       const { readNotifications } = storedAccountData;
@@ -42,9 +48,8 @@ export const loadAccountDataFromLocalStorage = (
       const { settings } = storedAccountData;
 
       if (settings) {
-        AppStatus.actions.updateLoginAccount({ settings });
         const { maxFee, spread, showInvalid, templateFilter } = settings;
-        const { updateFilterSortOptions } = AppStatus.actions;
+        updateLoginAccount({ settings });
         if (maxFee) {
           updateFilterSortOptions({ [MARKET_MAX_FEES]: settings.maxFee });
         }
@@ -63,7 +68,8 @@ export const loadAccountDataFromLocalStorage = (
         }
       }
 
-      if (!!affiliate && isAddress(affiliate)) AppStatus.actions.updateLoginAccount({ affiliate });
+      if (!!affiliate && isAddress(affiliate))
+        updateLoginAccount({ affiliate });
 
       if (readNotifications) {
         dispatch(updateReadNotifications(readNotifications));
@@ -72,7 +78,7 @@ export const loadAccountDataFromLocalStorage = (
       const selectedUniverseId = selectedUniverse[networkId];
       if (selectedUniverseId) {
         if (universe.id !== selectedUniverseId) {
-          AppStatus.actions.updateUniverse({ id: selectedUniverseId });
+          updateUniverse({ id: selectedUniverseId });
         }
       } else {
         // we have a no selectedUniveres for this account, default to default universe for this network.
@@ -84,7 +90,7 @@ export const loadAccountDataFromLocalStorage = (
         favorites[networkId] &&
         favorites[networkId][universe.id]
       ) {
-        dispatch(loadFavoritesMarkets(favorites[networkId][universe.id]));
+        loadFavorites(favorites[networkId][universe.id]);
       }
       const {
         alerts,
@@ -129,7 +135,7 @@ export const loadAccountDataFromLocalStorage = (
         dispatch(loadPendingQueue(pendingQueue));
       }
       if (gasPriceInfo && gasPriceInfo.userDefinedGasPrice) {
-        AppStatus.actions.updateGasPriceInfo({
+        updateGasPriceInfo({
           userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
         });
       }

@@ -8,7 +8,7 @@ import {
   BETTING_BACK,
   THEMES,
   ZERO,
-  MOBILE_MENU_STATES
+  MOBILE_MENU_STATES,
 } from 'modules/common/constants';
 import {
   StarIcon,
@@ -96,11 +96,10 @@ export interface OrderButtonProps extends DefaultButtonProps {
 }
 
 export interface FavoritesButtonProps {
-  isFavorite: boolean;
   hideText?: boolean;
   isSmall?: boolean;
   text?: string;
-  action: Function;
+  marketId: string;
   disabled?: boolean;
   title?: string;
 }
@@ -156,7 +155,7 @@ export const PrimaryButton = ({
         onClick={e => action(e)}
         className={classNames(Styles.PrimaryButton, {
           [Styles.Confirmed]: confirmed,
-          [Styles.Failed]: failed
+          [Styles.Failed]: failed,
         })}
         disabled={disabled}
         title={title || text}
@@ -182,7 +181,7 @@ export const SecondaryButton = ({
     className={classNames(Styles.SecondaryButton, {
       [Styles.Small]: small,
       [Styles.Confirmed]: confirmed,
-      [Styles.Failed]: failed
+      [Styles.Failed]: failed,
     })}
     disabled={disabled}
     title={title || text}
@@ -225,17 +224,19 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           disabled={isDisabled}
         />
       )}
-      {!props.secondaryButton && !props.cancelButton && !props.submitTextButtton && (
-        <PrimaryButton
-          {...props}
-          confirmed={confirmed}
-          failed={failed}
-          icon={icon}
-          text={buttonText}
-          action={buttonAction}
-          disabled={isDisabled}
-        />
-      )}
+      {!props.secondaryButton &&
+        !props.cancelButton &&
+        !props.submitTextButtton && (
+          <PrimaryButton
+            {...props}
+            confirmed={confirmed}
+            failed={failed}
+            icon={icon}
+            text={buttonText}
+            action={buttonAction}
+            disabled={isDisabled}
+          />
+        )}
       {props.submitTextButtton && (
         <SubmitTextButton
           {...props}
@@ -272,8 +273,10 @@ const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
   let status = pendingData && pendingData.status;
   if (pendingData) {
     if (
-      (ownProps.matchingId !== undefined && String(pendingData.data?.matchingId) !== String(ownProps.matchingId)) ||
-      (ownProps.nonMatchingIds && ownProps.nonMatchingIds.length &&
+      (ownProps.matchingId !== undefined &&
+        String(pendingData.data?.matchingId) !== String(ownProps.matchingId)) ||
+      (ownProps.nonMatchingIds &&
+        ownProps.nonMatchingIds.length &&
         ownProps.nonMatchingIds.includes(pendingData.data.matchingId))
     ) {
       status = null;
@@ -369,17 +372,21 @@ export const OrderButton = (props: OrderButtonProps) => (
 );
 
 export const FavoritesButton = ({
-  isFavorite,
+  marketId,
   isSmall,
-  action,
   disabled,
   title,
   hideText,
 }: FavoritesButtonProps) => {
-  const { theme } = useAppStatusStore();
+  const {
+    theme,
+    favorites,
+    actions: { toggleFavorite },
+  } = useAppStatusStore();
+  const isFavorite = !!favorites[marketId];
   return (
     <button
-      onClick={e => action(e)}
+      onClick={e => toggleFavorite(marketId)}
       className={classNames(Styles.FavoriteButton, {
         [Styles.FavoriteButton_Favorite]: isFavorite,
         [Styles.FavoriteButton_small]: isSmall,
@@ -551,7 +558,7 @@ export const FundGSNWalletButton = (props: DefaultActionButtonProps) => (
     disabled={props.disabled}
     title={props.title ? props.title : 'Fund GSN Wallet'}
   >
-  <span>{props.title}</span>
+    <span>{props.title}</span>
   </button>
 );
 
@@ -644,10 +651,13 @@ interface CashoutButtonProps {
   outcome: Object;
 }
 
-export const CashoutButton = ({action, outcome: {amountWon, status}}: CashoutButtonProps) => {
+export const CashoutButton = ({
+  action,
+  outcome: { amountWon, status },
+}: CashoutButtonProps) => {
   let didWin = false;
   let loss = false;
-  let text = 'CASHOUT: $00.00'
+  let text = 'CASHOUT: $00.00';
   const won = createBigNumber(amountWon);
   if (!won.eq(ZERO)) {
     didWin = true;
@@ -655,11 +665,14 @@ export const CashoutButton = ({action, outcome: {amountWon, status}}: CashoutBut
       loss = true;
     }
     text = `${loss ? 'LOSS' : 'WIN'}: $${Math.abs(amountWon)}`;
-  } 
+  }
   return (
-    <button 
-      disabled={status === BET_STATUS.CLOSED} 
-      className={classNames(Styles.CashoutButton, {[Styles.Won]: didWin && !loss, [Styles.Loss]: loss})} 
+    <button
+      disabled={status === BET_STATUS.CLOSED}
+      className={classNames(Styles.CashoutButton, {
+        [Styles.Won]: didWin && !loss,
+        [Styles.Loss]: loss,
+      })}
       onClick={e => {
         action && action(e);
       }}
@@ -667,13 +680,22 @@ export const CashoutButton = ({action, outcome: {amountWon, status}}: CashoutBut
       {status === BET_STATUS.CLOSED ? 'Cashout not available' : text}
     </button>
   );
-}
+};
 
-export const ExternalLinkButton = ({light, condensedStyle, action, callback, customLink, label, URL, showNonLink}: ExternalLinkButtonProps) => (
+export const ExternalLinkButton = ({
+  light,
+  condensedStyle,
+  action,
+  callback,
+  customLink,
+  label,
+  URL,
+  showNonLink,
+}: ExternalLinkButtonProps) => (
   <button
     className={classNames(Styles.ExternalLinkButton, {
       [Styles.LightAlternate]: light,
-      [Styles.CondensedStyle]: condensedStyle
+      [Styles.CondensedStyle]: condensedStyle,
     })}
     onClick={e => {
       action && action(e);
@@ -737,8 +759,14 @@ export const CategoryButtons = ({
   </div>
 );
 
-export const FilterButton = ({ action = () => {}, disabled, title}: DefaultActionButtonProps) => {
-  const { actions: { setMobileMenuState } } = useAppStatusStore();
+export const FilterButton = ({
+  action = () => {},
+  disabled,
+  title,
+}: DefaultActionButtonProps) => {
+  const {
+    actions: { setMobileMenuState },
+  } = useAppStatusStore();
   return (
     <button
       onClick={() => setMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)}
@@ -772,7 +800,7 @@ export const BettingBackLayButton = ({
     onClick={e => action(e)}
     className={classNames(Styles.BettingButton, {
       [Styles.Back]: type === BETTING_BACK,
-      [Styles.Lay]: type === BETTING_LAY
+      [Styles.Lay]: type === BETTING_LAY,
     })}
     disabled={disabled}
     title={title || text}

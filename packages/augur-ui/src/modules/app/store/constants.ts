@@ -34,6 +34,7 @@ export const FILTER_SORT_OPTIONS = 'filterSortOptions';
 export const MODAL = 'modal';
 export const UNIVERSE = 'universe';
 export const LOGIN_ACCOUNT = 'loginAccount';
+export const FAVORITES = 'favorites';
 
 export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
   balances: {
@@ -166,6 +167,7 @@ export const DEFAULT_APP_STATUS = {
   [MODAL]: {},
   [UNIVERSE]: DEFAULT_UNIVERSE_STATE,
   [LOGIN_ACCOUNT]: DEFAULT_LOGIN_ACCOUNT_STATE,
+  [FAVORITES]: {},
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -201,6 +203,8 @@ export const APP_STATUS_ACTIONS = {
   SWITCH_UNIVERSE: 'SWITCH_UNIVERSE',
   UPDATE_LOGIN_ACCOUNT: 'UPDATE_LOGIN_ACCOUNT',
   CLEAR_LOGIN_ACCOUNT: 'CLEAR_LOGIN_ACCOUNT',
+  LOAD_FAVORITES: 'LOAD_FAVORITES',
+  TOGGLE_FAVORITE: 'TOGGLE_FAVORITE',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -236,4 +240,6 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   switchUniverse: () => {},
   updateLoginAccount: loginAccount => {},
   clearLoginAccount: () => {},
+  loadFavorites: favorites => {},
+  toggleFavorite: marketId => {},
 };

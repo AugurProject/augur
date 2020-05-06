@@ -33,7 +33,6 @@ interface MarketsViewProps {
   location: object;
   history: History;
   isConnected: boolean;
-  toggleFavorite: (...args: any[]) => any;
   loadMarketsByFilter: Function;
   search?: string;
   maxFee: string;
@@ -65,7 +64,6 @@ const MarketsView = ({
   history,
   location,
   markets,
-  toggleFavorite,
   marketCardFormat,
   selectedCategories,
   updateMarketsListCardFormat,
@@ -342,7 +340,6 @@ const MarketsView = ({
         marketCount={marketCount}
         location={location}
         history={history}
-        toggleFavorite={toggleFavorite}
         linkType={TYPE_TRADE}
         isMobile={isMobile}
         limit={limit}

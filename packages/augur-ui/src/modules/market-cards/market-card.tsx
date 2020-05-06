@@ -47,14 +47,12 @@ interface MarketCardProps {
   theme: string;
   history: History;
   location: Location;
-  toggleFavorite: Function;
   orderBook: any;
   disputingWindowEndTime: number;
   condensed?: boolean;
   expandedView?: boolean;
   address: string;
   loading?: boolean;
-  isFavorite?: boolean;
   hasPosition?: boolean;
   hasStaked?: boolean;
   dispute: Function;
@@ -76,12 +74,10 @@ export const MarketCard = ({
   address,
   expandedView,
   loading,
-  isFavorite,
   hasPosition,
   hasStaked,
   dispute,
   marketLinkCopied,
-  toggleFavorite,
   orderBook
 }: MarketCardProps) => {
   const [expanded, setExpanded] = useState(false);
@@ -159,9 +155,7 @@ export const MarketCard = ({
         <TopRow
           market={market}
           categoriesWithClick={getCategoriesWithClick(categories)}
-          toggleFavorite={toggleFavorite}
           marketLinkCopied={marketLinkCopied}
-          isFavorite={isFavorite}
         />
         <MarketTitle id={id} headerType={headerType} />
         {!condensed && !marketResolved ? (

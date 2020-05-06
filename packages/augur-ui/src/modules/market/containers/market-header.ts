@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import MarketHeader from 'modules/market/components/market-header/market-header';
 import { ZERO, REPORTING_STATE } from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { marketLinkCopied } from 'services/analytics/helpers';
 import { isSameAddress } from 'utils/isSameAddress';
 import { AppStatus } from 'modules/app/store/app-status';
@@ -39,7 +38,6 @@ const mapStateToProps = (state, ownProps) => {
     currentTime: currentAugurTimestamp,
     isForking: forkingInfo,
     market,
-    isFavorite: !!state.favorites[ownProps.marketId],
     currentAugurTimestamp,
     reportingBarShowing,
     preview: ownProps.preview,
@@ -48,7 +46,6 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
   marketLinkCopied: (marketId, location) =>
     dispatch(marketLinkCopied(marketId, location)),
 });

@@ -31,6 +31,7 @@ import {
   UNIVERSE,
   LOGIN_ACCOUNT,
   DEFAULT_LOGIN_ACCOUNT_STATE,
+  FAVORITES,
 } from 'modules/app/store/constants';
 
 const {
@@ -66,6 +67,8 @@ const {
   SWITCH_UNIVERSE,
   UPDATE_LOGIN_ACCOUNT,
   CLEAR_LOGIN_ACCOUNT,
+  LOAD_FAVORITES,
+  TOGGLE_FAVORITE,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -231,6 +234,25 @@ export function AppStatusReducer(state, action) {
     }
     case CLEAR_LOGIN_ACCOUNT: {
       updatedState[LOGIN_ACCOUNT] = {...DEFAULT_LOGIN_ACCOUNT_STATE};
+      updatedState[FAVORITES] = {};
+      break;
+    }
+    case LOAD_FAVORITES: {
+      updatedState[FAVORITES] = { ...action.favorites };
+      break;
+    }
+    case TOGGLE_FAVORITE: {
+      const { marketId } = action;
+      const { currentAugurTimestamp: timestamp } = updatedState[BLOCKCHAIN]; 
+      const newFavorites = {
+        ...updatedState[FAVORITES]
+      };
+      if (newFavorites[marketId]) {
+        delete newFavorites[marketId];
+      } else {
+        newFavorites[marketId] = timestamp;
+      }
+      updatedState[FAVORITES] = newFavorites;
       break;
     }
     default:
@@ -299,6 +321,8 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
       updateLoginAccount: (loginAccount, clear = false) => dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount, clear }),
       clearLoginAccount: () => dispatch({ type: CLEAR_LOGIN_ACCOUNT }),
+      loadFavorites: favorites => dispatch({ type: LOAD_FAVORITES, favorites }),
+      toggleFavorite: marketId => dispatch({ type: TOGGLE_FAVORITE, marketId }),
     },
   };
 };

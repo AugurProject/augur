@@ -1126,22 +1126,21 @@ export interface TopRowProps {
   market: MarketData;
   categoriesWithClick: Array<{ label: string; onClick: Function }>;
   marketLinkCopied: Function;
-  toggleFavorite: Function;
-  isFavorite?: boolean;
 }
 
 export const TopRow = ({
   market,
   categoriesWithClick,
-  toggleFavorite,
   marketLinkCopied,
-  isFavorite,
 }) => {
   useEffect(() => {
     const clipboardMarketId = new Clipboard('#copy_marketId');
     const clipboardAuthor = new Clipboard('#copy_author');
   }, [market.id, market.author]);
-  const { theme, isLogged } = useAppStatusStore();
+  const {
+    theme,
+    isLogged,
+  } = useAppStatusStore();
   const {
     settlementFeePercent,
     marketType,
@@ -1200,8 +1199,7 @@ export const TopRow = ({
         />
       )}
       <FavoritesButton
-        action={() => toggleFavorite(id)}
-        isFavorite={isFavorite}
+        marketId={id}
         hideText
         disabled={!isLogged}
       />

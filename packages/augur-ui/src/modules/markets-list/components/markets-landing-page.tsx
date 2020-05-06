@@ -17,7 +17,6 @@ interface MarketsViewProps {
   location: object;
   history: History;
   isConnected: boolean;
-  toggleFavorite: (...args: any[]) => any;
   loadMarketsByFilter: Function;
   isSearching: boolean;
   setLoadMarketsPending: Function;
@@ -99,7 +98,6 @@ export default class MarketsView extends Component<
       restoredAccount,
       location,
       markets,
-      toggleFavorite,
       signupModal,
       isSearching,
       categoryStats,
@@ -157,7 +155,6 @@ export default class MarketsView extends Component<
           filteredMarkets={this.state.filterSortedMarkets}
           location={location}
           history={history}
-          toggleFavorite={toggleFavorite}
           linkType={TYPE_TRADE}
           isSearchingMarkets={isSearching}
           marketCardFormat={MARKET_CARD_FORMATS.COMPACT}
