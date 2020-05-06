@@ -34,6 +34,7 @@ export enum SubscriptionEventName {
   MarketOIChanged = "MarketOIChanged",
   NewBlock = "NewBlock",
   OrderEvent = "OrderEvent",
+  BulkOrderEvent = "BulkOrderEvent",
   ParticipationTokensRedeemed = "ParticipationTokensRedeemed",
   ProfitLossChanged = "ProfitLossChanged",
   ReportingParticipantDisavowed = "ReportingParticipantDisavowed",

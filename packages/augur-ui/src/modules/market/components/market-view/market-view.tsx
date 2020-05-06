@@ -186,12 +186,11 @@ export default class MarketView extends Component<
       tradingTutorial,
       loadMarketOrderBook,
       preview,
-      zeroXstatus,
     } = this.props;
 
     this.tradingTutorialWidthCheck();
 
-    if (isConnected && !!marketId && !tradingTutorial && !preview && zeroXstatus === ZEROX_STATUSES.SYNCED) {
+    if (isConnected && !!marketId && !tradingTutorial && !preview) {
       loadMarketsInfo(marketId);
       loadMarketOrderBook(marketId);
       loadMarketTradingHistory(marketId);
@@ -219,7 +218,6 @@ export default class MarketView extends Component<
       updateModal,
       closeMarketLoadingModalOnly,
       preview,
-      zeroXstatus,
     } = prevProps;
     if (
       this.props.outcomeId !== prevProps.outcomeId &&
@@ -249,7 +247,7 @@ export default class MarketView extends Component<
       return;
     }
 
-    if ((isConnected !== this.props.isConnected) && !!marketId && !tradingTutorial && !preview && zeroXstatus === ZEROX_STATUSES.SYNCED) {
+    if ((isConnected !== this.props.isConnected) && !!marketId && !tradingTutorial && !preview) {
       this.props.loadMarketOrderBook(marketId);
       this.props.loadMarketsInfo(this.props.marketId);
       this.props.loadMarketTradingHistory(marketId);
