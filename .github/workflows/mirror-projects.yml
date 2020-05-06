@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: jonabc/linked-project-columns@v2
+    - uses: jonabc/linked-project-columns@v1.0.0
       with:
         source_column_id: MDEzOlByb2plY3RDb2x1bW45MDYyNzM5 #Trading/Design Review
         target_column_id: MDEzOlByb2plY3RDb2x1bW45MDcwNzA4 #Design/Design Review
