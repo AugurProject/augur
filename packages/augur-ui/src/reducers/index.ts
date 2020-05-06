@@ -1,6 +1,5 @@
 import accountPositions from 'modules/positions/reducers/account-positions';
 import favorites from 'modules/markets/reducers/favorites';
-import loginAccount from 'modules/auth/reducers/login-account';
 import marketTradingHistory from 'modules/markets/reducers/market-trading-history';
 import marketInfos from 'modules/markets/reducers/market-infos';
 import newMarket from 'modules/markets/reducers/new-market';
@@ -18,7 +17,6 @@ import reportingListState from 'modules/reporting/reducers/reporting-list-state'
 import orderBooks from 'modules/orders/reducers/order-books'
 import initialized3box from 'modules/global-chat/reducers/initialized-3box'
 import {
-  LoginAccount,
   AccountPosition,
   Favorite,
   MarketInfos,
@@ -45,7 +43,6 @@ export function createReducer() {
     accountPositions,
     alerts,
     favorites,
-    loginAccount,
     marketTradingHistory,
     marketInfos,
     newMarket,
@@ -71,7 +68,6 @@ export interface AppStateInterface {
   alerts: Alert[];
   config: SDKConfiguration;
   favorites: Favorite;
-  loginAccount: LoginAccount;
   marketTradingHistory: Getters.Trading.MarketTradingHistory;
   marketInfos: MarketInfos;
   newMarket: NewMarket;

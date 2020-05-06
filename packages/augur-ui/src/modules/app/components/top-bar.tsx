@@ -19,14 +19,12 @@ import { HelpResources } from 'modules/app/components/help-resources';
 import { OddsMenu } from 'modules/app/components/odds-menu';
 import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
+import { getCoreStats } from 'modules/auth/helpers/login-account';
 
-interface StatsProps {
-  isLogged: boolean;
-  restoredAccount: boolean;
-  stats: CoreStats;
-}
-
-export const Stats = ({ isLogged, restoredAccount, stats }: StatsProps) => {
+export const Stats = () => {
+  const { loginAccount, isLogged, restoredAccount } = useAppStatusStore();
+  const stats = getCoreStats(isLogged, loginAccount);
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
 
@@ -58,22 +56,20 @@ export const Stats = ({ isLogged, restoredAccount, stats }: StatsProps) => {
   );
 };
 interface TopBarProps {
-  stats: CoreStats;
   unseenCount: number;
-  signupModal: Function;
-  loginModal: Function;
-  helpModal: Function;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
-  stats,
   unseenCount,
-  signupModal,
-  loginModal,
-  helpModal
 }) => {
-  const { isLogged, restoredAccount, isMobile, isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
-  const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
+  const {
+    isLogged,
+    restoredAccount,
+    isMobile,
+    isAlertsMenuOpen,
+    actions: { setIsAlertsMenuOpen, setModal },
+  } = useAppStatusStore();
+  
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -83,35 +79,18 @@ const TopBar: React.FC<TopBarProps> = ({
       </div>
       <ThemeSwitch />
       {(isLogged || restoredAccount) && (
-        <div className={Styles.statsContainer}>
-          <div>
-            <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
-            <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
-            <LinearPropertyLabelUnderlineTooltip
-              {...totalFunds}
-              highlightAlternateBolded
-              id={'totalFunds'}
-              tipText={TOTAL_FUNDS_TOOLTIP}
-            />
-            <div>
-              <span>{realizedPL.label}</span>
-              <MovementLabel value={realizedPL.value} useFull />
-            </div>
-          </div>
-          <div>
-            <span>{realizedPL.label}</span>
-            <MovementLabel value={realizedPL.value} useFull />
-          </div>
-        </div>
+        <Stats />
       )}
       <div>
-        {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && <HelpResources />}
+        {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
+          <HelpResources />
+        )}
         <OddsMenu />
         {!isLogged && !restoredAccount && (
-          <SecondaryButton action={() => loginModal()} text={'Login'} />
+          <SecondaryButton action={() => setModal({ type: MODAL_LOGIN })} text={'Login'} />
         )}
         {!isLogged && !restoredAccount && (
-          <PrimaryButton action={() => signupModal()} text={'Signup'} />
+          <PrimaryButton action={() => setModal({ type: MODAL_SIGNUP })} text={'Signup'} />
         )}
         {(isLogged || restoredAccount) && (
           <button

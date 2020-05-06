@@ -1,9 +1,9 @@
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
+import { APP_STATUS_ACTIONS } from "modules/app/store/constants";
 import { Alert, BaseAction } from "modules/types";
 
 const DEFAULT_STATE: Array<Alert> = [];
-
+const { CLEAR_LOGIN_ACCOUNT } = APP_STATUS_ACTIONS;
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
 export const UPDATE_EXISTING_ALERT = 'UPDATE_EXISTING_ALERT';

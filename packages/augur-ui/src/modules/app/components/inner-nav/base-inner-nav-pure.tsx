@@ -45,7 +45,9 @@ const BaseInnerNavPure = ({
   const {
     filterSortOptions,
     mobileMenuState,
-    actions: { setMobileMenuState, updateLoginAccount: AppStatusUpdateLoginAccount },
+    actions: {
+      setMobileMenuState,
+    },
   } = useAppStatusStore();
   const [originalSelectedCategories, setOriginalSelectedCategories] = useState(
     selectedCategories
@@ -130,7 +132,6 @@ const BaseInnerNavPure = ({
             break;
         }
       });
-      AppStatusUpdateLoginAccount({ settings: newSettings });
       updateLoginAccount(newSettings);
     }
 

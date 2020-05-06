@@ -1,4 +1,3 @@
-import {updateLoginAccount} from 'modules/account/actions/login-account';
 import {AppState} from 'appStore';
 import {ThunkDispatch} from 'redux-thunk';
 import {Action} from 'redux';
@@ -16,14 +15,6 @@ export const updateLoginAccountSettings = (
         ...settings,
       }
     });
-    dispatch(
-      updateLoginAccount({
-        settings: {
-          ...loginAccount.settings,
-          ...settings
-        },
-      })
-    );
   } catch (e) {
     console.error('Could not update login account settings', e);
   }

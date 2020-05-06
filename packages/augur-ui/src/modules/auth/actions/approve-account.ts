@@ -1,5 +1,4 @@
 import logError from 'utils/log-error';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { getAllowance } from 'modules/contracts/actions/contractCalls';
 import { AppState } from 'appStore';
 import { NodeStyleCallback } from 'modules/types';
@@ -26,11 +25,5 @@ export function checkAccountAllowance(
       allowance,
       allowanceFormatted: formatDai(allowance),
     });
-    dispatch(
-      updateLoginAccount({
-        allowance,
-        allowanceFormatted: formatDai(allowance),
-      })
-    );
   };
 }

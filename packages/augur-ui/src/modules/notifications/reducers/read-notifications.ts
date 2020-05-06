@@ -2,9 +2,10 @@ import {
   UPDATE_READ_NOTIFICATIONS,
   UpdateReadNotificationsAction,
 } from "modules/notifications/actions/update-notifications";
-import { CLEAR_LOGIN_ACCOUNT, ClearLoginAccountAction } from "modules/account/actions/login-account";
+import { APP_STATUS_ACTIONS } from "modules/app/store/constants";
 import { RESET_STATE, ResetStateAction } from "modules/app/actions/reset-state";
 import { Notification } from "modules/types";
+const { CLEAR_LOGIN_ACCOUNT } = APP_STATUS_ACTIONS;
 
 const DEFAULT_STATE: Notification[] = [];
 
@@ -13,7 +14,6 @@ export default (
   action:
     | UpdateReadNotificationsAction
     | ResetStateAction
-    | ClearLoginAccountAction
 ): Notification[] => {
   switch (action.type) {
     case UPDATE_READ_NOTIFICATIONS: {

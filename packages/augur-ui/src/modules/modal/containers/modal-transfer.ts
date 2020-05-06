@@ -13,42 +13,46 @@ import {
 } from 'modules/auth/actions/transfer-funds';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount: { balances, address: account }, modal, gasPriceInfo } = AppStatus.get();
+  const {
+    loginAccount: { balances, address: account },
+    modal,
+    gasPriceInfo,
+  } = AppStatus.get();
   balances.dai = totalTradingBalance().toNumber();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   return {
-  account,
-  modal,
-  balances,
-  gasPrice,
-  fallBackGasCosts: {
-    eth: formatEtherEstimate(
-      formatGasCostToEther(
-        TRANSFER_ETH_GAS_COST,
-        { decimalsRounded: 4 },
-        gasPrice
-      )
-    ),
-    rep: formatEtherEstimate(
-      formatGasCostToEther(
-        TRANSFER_REP_GAS_COST,
-        { decimalsRounded: 4 },
-        gasPrice
-      )
-    ),
-    dai: formatEtherEstimate(
-      formatGasCostToEther(
-        TRANSFER_DAI_GAS_COST,
-        { decimalsRounded: 4 },
-        gasPrice
-      )
-    ),
-  },
-}
+    account,
+    modal,
+    balances,
+    gasPrice,
+    fallBackGasCosts: {
+      eth: formatEtherEstimate(
+        formatGasCostToEther(
+          TRANSFER_ETH_GAS_COST,
+          { decimalsRounded: 4 },
+          gasPrice
+        )
+      ),
+      rep: formatEtherEstimate(
+        formatGasCostToEther(
+          TRANSFER_REP_GAS_COST,
+          { decimalsRounded: 4 },
+          gasPrice
+        )
+      ),
+      dai: formatEtherEstimate(
+        formatGasCostToEther(
+          TRANSFER_DAI_GAS_COST,
+          { decimalsRounded: 4 },
+          gasPrice
+        )
+      ),
+    },
+  };
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -67,15 +71,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   account: sP.account,
   gasPrice: sP.gasPrice,
   closeAction: () => dP.closeModal(),
-  transferFundsGasEstimate: (amount: string, asset: string, to: string) => dP.transferFundsGasEstimate(amount, asset, to),
+  transferFundsGasEstimate: (amount: string, asset: string, to: string) =>
+    dP.transferFundsGasEstimate(amount, asset, to),
   transferFunds: (amount: string, asset: string, to: string) =>
     dP.transferFunds(amount, asset, to),
 });
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(TransferForm)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(TransferForm)
 );

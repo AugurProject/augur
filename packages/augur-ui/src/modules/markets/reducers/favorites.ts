@@ -2,9 +2,10 @@ import {
   UPDATE_FAVORITES,
   TOGGLE_FAVORITE
 } from "modules/markets/actions/update-favorites";
-import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
+import { APP_STATUS_ACTIONS } from "modules/app/store/constants";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { Favorite, BaseAction } from "modules/types";
+const { CLEAR_LOGIN_ACCOUNT } = APP_STATUS_ACTIONS;
 
 const DEFAULT_STATE = {};
 

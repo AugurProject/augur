@@ -1,5 +1,9 @@
 import { userPositionProcessing } from 'modules/positions/actions/load-account-positions';
-import { updateUserFilledOrders, bulkMarketTradingHistory, refreshUserOpenOrders } from 'modules/markets/actions/market-trading-history-management';
+import {
+  updateUserFilledOrders,
+  bulkMarketTradingHistory,
+  refreshUserOpenOrders,
+} from 'modules/markets/actions/market-trading-history-management';
 import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
@@ -8,7 +12,6 @@ import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
@@ -24,34 +27,36 @@ async function loadTransactions(
   appState: AppState
 ) {
   dispatch(loadDisputeWindow()); // need to load dispute window for user to claim reporting fees
-  const { loginAccount: { mixedCaseAddress }, universe } = AppStatus.get();
-  const { updateLoginAccount: AppStatusUpdateLoginAccount } = AppStatus.actions;
+  const {
+    loginAccount: { mixedCaseAddress },
+    universe,
+  } = AppStatus.get();
+  const { updateLoginAccount } = AppStatus.actions;
   const Augur = augurSdk.get();
-  const userData: Getters.Users.UserAccountDataResult = await Augur.getUserAccountData({universe: universe.id, account: mixedCaseAddress})
+  const userData: Getters.Users.UserAccountDataResult = await Augur.getUserAccountData(
+    { universe: universe.id, account: mixedCaseAddress }
+  );
   dispatch(updateUserFilledOrders(mixedCaseAddress, userData.userTradeHistory));
   dispatch(bulkMarketTradingHistory(userData.marketTradeHistory));
 
-  const marketsDataById = userData.marketsInfo.reduce((acc, marketData) => ({
-    [marketData.id]: marketData,
-    ...acc,
-  }), {});
+  const marketsDataById = userData.marketsInfo.reduce(
+    (acc, marketData) => ({
+      [marketData.id]: marketData,
+      ...acc,
+    }),
+    {}
+  );
 
   dispatch(updateMarketsData(marketsDataById));
-  dispatch(updateLoginAccount({ reporting: userData.userStakedRep }));
-  if (userData.userOpenOrders) dispatch(refreshUserOpenOrders(userData.userOpenOrders.orders));
-  if (userData.userPositions) dispatch(userPositionProcessing(userData.userPositions));
-  if (userData.userPositionTotals) dispatch(updateLoginAccount(userData.userPositionTotals));
-
   if (userData.userOpenOrders)
-    dispatch(
-      updateLoginAccount({
-        totalOpenOrdersFrozenFunds:
-          userData.userOpenOrders.totalOpenOrdersFrozenFunds,
-      })
-    );
-  AppStatusUpdateLoginAccount({
+    dispatch(refreshUserOpenOrders(userData.userOpenOrders.orders));
+  if (userData.userPositions)
+    dispatch(userPositionProcessing(userData.userPositions));
+
+  updateLoginAccount({
     reporting: userData.userStakedRep,
-    totalOpenOrdersFrozenFunds: userData.userOpenOrders.totalOpenOrdersFrozenFunds,
+    totalOpenOrdersFrozenFunds:
+      userData.userOpenOrders.totalOpenOrdersFrozenFunds,
     ...userData.userPositionTotals,
-  })
+  });
 }

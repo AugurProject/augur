@@ -1,8 +1,9 @@
 import { AccountPosition, BaseAction } from "modules/types";
 
 import { UPDATE_ACCOUNT_POSITIONS_DATA } from "modules/positions/actions/account-positions";
-import { CLEAR_LOGIN_ACCOUNT } from "modules/account/actions/login-account";
+import { APP_STATUS_ACTIONS } from "modules/app/store/constants";
 import { RESET_STATE } from "modules/app/actions/reset-state";
+const { CLEAR_LOGIN_ACCOUNT } = APP_STATUS_ACTIONS;
 
 const DEFAULT_STATE: AccountPosition = {};
 

@@ -1,7 +1,6 @@
 import logError from 'utils/log-error';
 import { augurSdk } from 'services/augursdk';
 import { LoginAccount } from 'modules/types';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { toChecksumAddress } from 'ethereumjs-util';
@@ -61,7 +60,6 @@ export const updateSdk = (
       useGSN
     );
 
-    dispatch(updateLoginAccount(newAccount));
     AppStatus.actions.updateLoginAccount(newAccount);
     setIsLogged(true);
     dispatch(loadAccountData());

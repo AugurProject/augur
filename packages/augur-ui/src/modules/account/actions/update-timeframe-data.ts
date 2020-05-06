@@ -1,4 +1,3 @@
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import logError from 'utils/log-error';
 import { NodeStyleCallback } from 'modules/types';
 import { AppState } from 'appStore';
@@ -38,16 +37,4 @@ export const updateTimeframeData = (
       redeemedPositions: stats.redeemedPositions,
     },
   });
-  dispatch(
-    updateLoginAccount({
-      timeframeData: {
-        positions: stats.positions,
-        numberOfTrades: stats.numberOfTrades,
-        marketsTraded: stats.marketsTraded,
-        marketsCreated: stats.marketsCreated,
-        successfulDisputes: stats.successfulDisputes,
-        redeemedPositions: stats.redeemedPositions,
-      },
-    })
-  );
 };

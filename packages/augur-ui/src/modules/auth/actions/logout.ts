@@ -1,4 +1,3 @@
-import { clearLoginAccount } from 'modules/account/actions/login-account';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { windowRef } from 'utils/window-ref';
@@ -19,7 +18,6 @@ export function logout() {
       localStorageRef.removeItem('airbitz.users');
       localStorageRef.removeItem('loggedInUser');
     }
-    dispatch(clearLoginAccount());
     AppStatus.actions.clearLoginAccount();
     dispatch(clearLiquidityOrders());
 

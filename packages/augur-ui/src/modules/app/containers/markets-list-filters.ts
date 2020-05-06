@@ -9,9 +9,8 @@ import {
 import MarketsListFilters from '../components/inner-nav/markets-list-filters';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
 import { AppState } from 'appStore';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { AppStatus } from '../store/app-status';
-import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
+import { updateSelectedCategories } from 'modules/markets-list/actions/update-markets-list';
 
 const mapStateToProps = ({ marketsList, loginAccount }: AppState) => {
   const {
@@ -36,9 +35,9 @@ const mapStateToProps = ({ marketsList, loginAccount }: AppState) => {
 const mapDispatchToProps = dispatch => {
   const {
     updateFilterSortOptions,
-    updateLoginAccount: AppStatusUpdateLoginAccount
+    updateLoginAccount,
   } = AppStatus.actions;
-  return ({
+  return {
     updateMaxFee: maxFee =>
       updateFilterSortOptions({ [MARKET_MAX_FEES]: maxFee }),
     updateMaxSpread: maxLiquiditySpread =>
@@ -47,13 +46,11 @@ const mapDispatchToProps = dispatch => {
       updateFilterSortOptions({ [MARKET_SHOW_INVALID]: showInvalid }),
     updateTemplateFilter: templateFilter =>
       updateFilterSortOptions({ [TEMPLATE_FILTER]: templateFilter }),
-    updateLoginAccount: settings => {
-      dispatch(updateLoginAccount({ settings }));
-      AppStatusUpdateLoginAccount({ settings });
-    },
-    updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
-  });
-}
+    updateLoginAccount: settings => updateLoginAccount({ settings }),
+    updateSelectedCategories: category =>
+      dispatch(updateSelectedCategories(category)),
+  };
+};
 const mergeProps = (sP, dP, oP) => {
   return {
     ...sP,
@@ -76,7 +73,7 @@ const mergeProps = (sP, dP, oP) => {
       dP.updateTemplateFilter(templateFilter);
       dP.updateLoginAccount(Object.assign({}, sP.settings, { templateFilter }));
     },
-    updateSelectedCategories: (category) => dP.updateSelectedCategories(category),
+    updateSelectedCategories: category => dP.updateSelectedCategories(category),
   };
 };
 

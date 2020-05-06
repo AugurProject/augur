@@ -14,16 +14,13 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import {
-  saveAffiliateAddress,
-  updateLoginAccount,
-} from 'modules/account/actions/login-account';
-import {
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
   MARKET_SHOW_INVALID,
 } from 'modules/app/store/constants';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
+import isAddress from "modules/auth/helpers/is-address";
 
 export const loadAccountDataFromLocalStorage = (
   address: string
@@ -45,7 +42,6 @@ export const loadAccountDataFromLocalStorage = (
       const { settings } = storedAccountData;
 
       if (settings) {
-        dispatch(updateLoginAccount({ settings }));
         AppStatus.actions.updateLoginAccount({ settings });
         const { maxFee, spread, showInvalid, templateFilter } = settings;
         const { updateFilterSortOptions } = AppStatus.actions;
@@ -66,6 +62,8 @@ export const loadAccountDataFromLocalStorage = (
           });
         }
       }
+
+      if (!!affiliate && isAddress(affiliate)) AppStatus.actions.updateLoginAccount({ affiliate });
 
       if (readNotifications) {
         dispatch(updateReadNotifications(readNotifications));
@@ -118,7 +116,6 @@ export const loadAccountDataFromLocalStorage = (
           })
         );
       }
-      if (affiliate) dispatch(saveAffiliateAddress(affiliate));
       if (pendingLiquidityOrders) {
         dispatch(loadPendingLiquidityOrders(pendingLiquidityOrders));
       }

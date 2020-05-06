@@ -10,19 +10,19 @@ import {
   withdrawAllFundsEstimateGas,
 } from 'modules/contracts/actions/contractCalls';
 import { FormattedNumber } from 'modules/types';
-import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
 import { formatDai } from 'utils/format-number';
-import { selectAccountFunds } from 'modules/auth/selectors/login-account';
+import { getAccountFunds, getEthReserve } from 'modules/auth/helpers/login-account';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const {
-    loginAccount: { address: account, totalOpenOrdersFrozenFunds },
+    loginAccount,
     gasPriceInfo,
     modal,
   } = AppStatus.get();
-  const ethReserveAmount: FormattedNumber = getEthReserve(state);
-  const balances = selectAccountFunds(state);
+  const { address: account, totalOpenOrdersFrozenFunds } = loginAccount;
+  const ethReserveAmount: FormattedNumber = getEthReserve();
+  const balances = getAccountFunds(loginAccount);
   const totalOpenOrderFundsFormatted: FormattedNumber = formatDai(
     totalOpenOrdersFrozenFunds || 0
   );

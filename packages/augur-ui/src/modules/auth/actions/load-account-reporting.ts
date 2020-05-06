@@ -2,7 +2,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { AppState } from 'appStore';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { NodeStyleCallback } from 'modules/types';
 import { NOTIFICATION_TYPES } from 'modules/common/constants';
 import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
@@ -32,7 +31,6 @@ export const loadAccountReportingHistory = () => async (
   if (notification) {
     dispatch(updateReadNotifications([{...notification, isImportant: true, isNew: true}]))
   }
-  dispatch(updateLoginAccount({ reporting }));
   AppStatus.actions.updateLoginAccount({ reporting });
   if (marketIds.length > 0) dispatch(loadMarketsInfoIfNotLoaded(marketIds));
 };

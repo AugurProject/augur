@@ -3,7 +3,6 @@ import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { AppState } from 'appStore';
 import { refreshUserOpenOrders } from 'modules/markets/actions/market-trading-history-management';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export const loadAccountOpenOrders = () => async (
@@ -21,11 +20,6 @@ export const loadAccountOpenOrders = () => async (
   });
   dispatch(refreshUserOpenOrders(userOpenOrders.orders));
   if (userOpenOrders.totalOpenOrdersFrozenFunds) {
-    dispatch(
-      updateLoginAccount({
-        totalOpenOrdersFrozenFunds: userOpenOrders.totalOpenOrdersFrozenFunds,
-      })
-    );
     AppStatus.actions.updateLoginAccount({
       totalOpenOrdersFrozenFunds: userOpenOrders.totalOpenOrdersFrozenFunds,
     });

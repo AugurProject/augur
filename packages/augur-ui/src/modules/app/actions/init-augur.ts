@@ -29,7 +29,6 @@ import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { logout } from 'modules/auth/actions/logout';
 import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
@@ -147,7 +146,6 @@ export function connectAugur(
       };
       AppStatus.actions.setRestoredAccount(true);
       AppStatus.actions.updateLoginAccount(accountObject);
-      dispatch(updateLoginAccount(accountObject));
     };
 
     if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {

@@ -6,7 +6,7 @@ import Review from 'modules/create-market/components/review';
 import { estimateSubmitNewMarket } from 'modules/markets/actions/estimate-submit-new-market';
 import { formatDai, formatRep, formatEther } from 'utils/format-number';
 import { AppState } from 'appStore';
-import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { MODAL_ADD_FUNDS, DAI } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 

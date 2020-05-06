@@ -1,4 +1,3 @@
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { AppState } from 'appStore';
 import { updateAccountPositionsData } from 'modules/positions/actions/account-positions';
 import {
@@ -38,7 +37,6 @@ export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void
   dispatch(updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory));
   if (positionsPlus.userPositions) dispatch(userPositionProcessing(positionsPlus.userPositions));
   if (positionsPlus.userPositionTotals) {
-    dispatch(updateLoginAccount(positionsPlus.userPositionTotals));
     AppStatus.actions.updateLoginAccount(positionsPlus.userPositionTotals);
   }
 };
@@ -56,11 +54,6 @@ export const loadAccountOnChainFrozenFundsTotals = () => async (
   AppStatus.actions.updateLoginAccount({ 
     totalFrozenFunds: frozen.totalFrozenFunds,
   });
-  dispatch(
-    updateLoginAccount({
-      totalFrozenFunds: frozen.totalFrozenFunds,
-    })
-  );
 };
 
 export const userPositionProcessing = (

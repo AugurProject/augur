@@ -1,5 +1,4 @@
 import { NodeStyleCallback } from 'modules/types';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import {
   getEthBalance,
   getDaiBalance,
@@ -75,20 +74,6 @@ function updateBalances(
         ethNonSafe,
       },
     });
-    dispatch(
-      updateLoginAccount({
-        balances: {
-          attoRep,
-          rep,
-          dai,
-          eth,
-          legacyAttoRep,
-          legacyRep,
-          legacyRepNonSafe,
-          ethNonSafe,
-        },
-      })
-    );
     return callback(null, { rep, dai, eth });
   });
 }

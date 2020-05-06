@@ -14,11 +14,10 @@ import isGlobalWeb3 from "modules/auth/helpers/is-global-web3";
 import { logout } from "modules/auth/actions/logout";
 import { updateSelectedCategories } from "modules/markets-list/actions/update-markets-list";
 import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, WALLET_STATUS_VALUES, TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
-import { saveAffiliateAddress } from "modules/account/actions/login-account";
 import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
 import { AppState } from "appStore";
 import { AppStatus } from 'modules/app/store/app-status';
-import { selectCoreStats } from "modules/account/selectors/core-stats";
+import isAddress from "modules/auth/helpers/is-address";
 
 const mapStateToProps = (state: AppState) => {
   const { pendingQueue } = state;
@@ -37,7 +36,6 @@ const mapStateToProps = (state: AppState) => {
 
   return {
     notifications,
-    stats: selectCoreStats(state),
     modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
     universe,
@@ -49,7 +47,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const { setModal } = AppStatus.actions;
+  const { setModal, updateLoginAccount } = AppStatus.actions;
   return ({
     initAugur: (history, overrides, cb) =>
       dispatch(initAugur(history, overrides, cb)),
@@ -59,7 +57,7 @@ const mapDispatchToProps = dispatch => {
     updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
     showGlobalChat: () => setModal({ type: MODAL_GLOBAL_CHAT }),
     migrateV1Rep: () => setModal({ type: MODAL_MIGRATE_REP }),
-    saveAffilateAddress: address => dispatch(saveAffiliateAddress(address)),
+    saveAffilateAddress: affiliate => isAddress(affiliate) ? updateLoginAccount({ affiliate }) : null,
     createFundedGsnWallet: () => dispatch(createFundedGsnWallet()),
   });
 }

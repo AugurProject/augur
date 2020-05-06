@@ -364,7 +364,9 @@ export const handleWarpSyncHashUpdatedLog = (log: { hash: string }) => (
 export const handleTokensTransferredLog = (
   logs: Logs.TokensTransferredLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { address } = getState().loginAccount;
+  const {
+    loginAccount: { address },
+  } = AppStatus.get();
   logs
     .filter(log => isSameAddress(log.from, address))
     .map(log => {
@@ -376,7 +378,9 @@ export const handleTokensTransferredLog = (
 export const handleTokenBalanceChangedLog = (
   logs: Logs.TokenBalanceChangedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { address } = getState().loginAccount;
+  const {
+    loginAccount: { address },
+  } = AppStatus.get();
   logs
     .filter(log => isSameAddress(log.owner, address))
     .map(log => {
@@ -672,8 +676,9 @@ export const handleDisputeCrowdsourcerCompletedLog = (
 export const handleDisputeCrowdsourcerContributionLog = (
   logs: Logs.DisputeCrowdsourcerContributionLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  const { loginAccount: { address } } = AppStatus.get();
   const userLogs = logs.filter(log =>
-    isSameAddress(log.reporter, getState().loginAccount.address)
+    isSameAddress(log.reporter, address)
   );
   if (userLogs.length > 0) {
     logs.map(log => {
@@ -688,8 +693,9 @@ export const handleDisputeCrowdsourcerContributionLog = (
 export const handleDisputeCrowdsourcerRedeemedLog = (
   logs: Logs.DisputeCrowdsourcerRedeemedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  const { loginAccount: { address } } = AppStatus.get();
   const userLogs = logs.filter(log =>
-    isSameAddress(log.reporter, getState().loginAccount.address)
+    isSameAddress(log.reporter, address)
   );
   if (userLogs.length > 0) {
     dispatch(loadAccountReportingHistory());
@@ -715,8 +721,8 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const userAddress = getState().loginAccount.address;
   const {
+    loginAccount: { address: userAddress },
     universe: { id: universeId, forkingInfo },
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();

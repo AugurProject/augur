@@ -74,7 +74,6 @@ interface AppProps {
   sdkEndpoint: string;
   useWeb3Transport: boolean;
   logout: Function;
-  stats: CoreStats;
   updateIsAlertVisible: Function;
   toasts: any[];
   showGlobalChat: Function;
@@ -151,7 +150,6 @@ const AppView = ({
   showMigrateRepButton,
   logout,
   showGlobalChat,
-  stats,
 }:AppProps) => {
   const { universe: { forkEndTime, forkingInfo }, blockchain: { currentAugurTimestamp }, mobileMenuState, modal, env, isLogged, isMobile, actions: { setIsMobile, setMobileMenuState, setCurrentBasePath } } = useAppStatusStore();
   const currentPath = parsePath(locationProp.pathname)[0];
@@ -313,7 +311,6 @@ const AppView = ({
             renderMobileMenuButton={renderMobileMenuButton}
             mainSectionClickHandler={mainSectionClickHandler}
             navShowing={navShowing}
-            stats={stats}
             sideNavMenuData={sideNavMenuData}
             logout={logout}
             showGlobalChat={showGlobalChat}
@@ -376,7 +373,6 @@ const SideBarSection = ({
   walletBalances,
   showCreateAccountButton,
   createFundedGsnWallet,
-  stats,
 }) => {
   const { mobileMenuState, isLogged, restoredAccount, theme, actions: { closeAppMenus, setMobileMenuState } } = useAppStatusStore();
   sideNavMenuData[1].title =
@@ -400,7 +396,6 @@ const SideBarSection = ({
         isLogged={isLogged || restoredAccount}
         menuData={sideNavMenuData}
         logout={() => logout()}
-        stats={stats}
         showGlobalChat={() => showGlobalChat()}
         migrateV1Rep={migrateV1Rep}
         showMigrateRepButton={showMigrateRepButton}
