@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import FilterBox from 'modules/portfolio/containers/filter-box';
 import { LinearPropertyLabel, PendingLabel } from 'modules/common/labels';
 import { MarketProgress } from 'modules/common/progress';
-import { END_TIME, THEMES } from 'modules/common/constants';
+import { END_TIME } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';
 import { CancelTextButton, SubmitTextButton } from 'modules/common/buttons';
 
