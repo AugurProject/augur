@@ -1,7 +1,6 @@
 import { loadDrafts } from 'modules/create-market/actions/update-drafts';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { loadPendingLiquidityOrders } from 'modules/orders/actions/liquidity-management';
-import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { loadPendingOrdersTransactions } from 'modules/orders/actions/pending-orders-management';
 import { isNewFavoritesStyle } from 'modules/markets/helpers/favorites-processor';
 import { loadPendingQueue } from 'modules/pending-queue/actions/pending-queue-management';
@@ -39,10 +38,11 @@ export const loadAccountDataFromLocalStorage = (
         updateLoginAccount,
         loadFavorites,
         updateGasPriceInfo,
+        updateNotifications,
       } = AppStatus.actions;
       const { selectedUniverse } = storedAccountData;
       const { favorites } = storedAccountData;
-      const { readNotifications } = storedAccountData;
+      const { notifiations } = storedAccountData;
       const { pendingQueue } = storedAccountData;
       const { affiliate } = storedAccountData;
       const { settings } = storedAccountData;
@@ -71,8 +71,8 @@ export const loadAccountDataFromLocalStorage = (
       if (!!affiliate && isAddress(affiliate))
         updateLoginAccount({ affiliate });
 
-      if (readNotifications) {
-        dispatch(updateReadNotifications(readNotifications));
+      if (notifiations) {
+        updateNotifications(notifiations);
       }
       const networkId = getNetworkId();
       const selectedUniverseId = selectedUniverse[networkId];

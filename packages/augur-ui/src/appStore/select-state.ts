@@ -26,8 +26,6 @@ export const selectMarketInfosState = (state: AppState): MarketInfos =>
   state.marketInfos;
 export const selectMarketsListsState = (state: AppState): MarketsList =>
   state.marketsList;
-export const selectReadNotificationState = (state: AppState) =>
-  state.readNotifications;
 export const selectPendingOrdersState = (state: AppState) =>
   state.pendingOrders;
 export const selectCancelingOrdersState = (state: AppState) =>

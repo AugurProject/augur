@@ -32,6 +32,7 @@ import {
   LOGIN_ACCOUNT,
   DEFAULT_LOGIN_ACCOUNT_STATE,
   FAVORITES,
+  NOTIFICATIONS,
 } from 'modules/app/store/constants';
 
 const {
@@ -69,6 +70,7 @@ const {
   CLEAR_LOGIN_ACCOUNT,
   LOAD_FAVORITES,
   TOGGLE_FAVORITE,
+  UPDATE_NOTIFICATIONS,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -235,6 +237,7 @@ export function AppStatusReducer(state, action) {
     case CLEAR_LOGIN_ACCOUNT: {
       updatedState[LOGIN_ACCOUNT] = {...DEFAULT_LOGIN_ACCOUNT_STATE};
       updatedState[FAVORITES] = {};
+      updatedState[NOTIFICATIONS] = [];
       break;
     }
     case LOAD_FAVORITES: {
@@ -255,6 +258,13 @@ export function AppStatusReducer(state, action) {
       updatedState[FAVORITES] = newFavorites;
       break;
     }
+    case UPDATE_NOTIFICATIONS: {
+      const notifications = updatedState[NOTIFICATIONS];
+      const ids = action.notifications.map(n => n.id);
+      const filtered = notifications.filter(n => !ids.includes(n.id))
+      updatedState[NOTIFICATIONS] = [...filtered, ...action.notifications];
+      break;
+    } 
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -323,6 +333,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       clearLoginAccount: () => dispatch({ type: CLEAR_LOGIN_ACCOUNT }),
       loadFavorites: favorites => dispatch({ type: LOAD_FAVORITES, favorites }),
       toggleFavorite: marketId => dispatch({ type: TOGGLE_FAVORITE, marketId }),
+      updateNotifications: notifications => dispatch({ type: UPDATE_NOTIFICATIONS, notifications }),
     },
   };
 };

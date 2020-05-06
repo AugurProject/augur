@@ -4,7 +4,6 @@ import { augurSdk } from 'services/augursdk';
 import { AppState } from 'appStore';
 import { NodeStyleCallback } from 'modules/types';
 import { NOTIFICATION_TYPES } from 'modules/common/constants';
-import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { AppStatus } from 'modules/app/store/app-status';
 
@@ -12,8 +11,8 @@ export const loadAccountReportingHistory = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { readNotifications } = getState();
-  const { loginAccount: { address }, universe } = AppStatus.get();
+  const { notifications, loginAccount: { address }, universe } = AppStatus.get();
+  const { updateLoginAccount, updateNotifications } = AppStatus.actions;
   if (!address) return;
   const Augur = augurSdk.get();
   const reporting = await Augur.getAccountRepStakeSummary({
@@ -27,11 +26,11 @@ export const loadAccountReportingHistory = () => async (
   if (reporting.disputing && reporting.disputing.contracts.length > 0)
     marketIds = reporting.disputing.contracts.map(c => c.marketId);
 
-  const notification = readNotifications.find(n => n.type === NOTIFICATION_TYPES.claimReportingFees);
+  const notification = notifications.find(n => n.type === NOTIFICATION_TYPES.claimReportingFees);
   if (notification) {
-    dispatch(updateReadNotifications([{...notification, isImportant: true, isNew: true}]))
+    updateNotifications([{...notification, isImportant: true, isNew: true}]);
   }
-  AppStatus.actions.updateLoginAccount({ reporting });
+  updateLoginAccount({ reporting });
   if (marketIds.length > 0) dispatch(loadMarketsInfoIfNotLoaded(marketIds));
 };
 

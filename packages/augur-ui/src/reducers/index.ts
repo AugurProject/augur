@@ -7,7 +7,6 @@ import pendingLiquidityOrders from 'modules/orders/reducers/liquidity-orders';
 import analytics from 'modules/app/reducers/analytics';
 import pendingOrders from 'modules/orders/reducers/pending-orders';
 import filledOrders from 'modules/orders/reducers/filled-orders';
-import readNotifications from 'modules/notifications/reducers/read-notifications';
 import pendingQueue from 'modules/pending-queue/reducers/pending-queue';
 import userOpenOrders from 'modules/orders/reducers/open-orders';
 import drafts from 'modules/create-market/reducers/drafts';
@@ -20,7 +19,6 @@ import {
   MarketInfos,
   NewMarket,
   Alert,
-  Notification,
   LiquidityOrders,
   PendingOrders,
   PendingQueue,
@@ -43,7 +41,6 @@ export function createReducer() {
     marketTradingHistory,
     marketInfos,
     newMarket,
-    readNotifications,
     pendingLiquidityOrders,
     pendingOrders,
     pendingQueue,
@@ -67,7 +64,6 @@ export interface AppStateInterface {
   marketTradingHistory: Getters.Trading.MarketTradingHistory;
   marketInfos: MarketInfos;
   newMarket: NewMarket;
-  readNotifications: Notification[];
   pendingLiquidityOrders: LiquidityOrders;
   pendingOrders: PendingOrders;
   pendingQueue: PendingQueue;

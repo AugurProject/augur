@@ -35,6 +35,7 @@ export const MODAL = 'modal';
 export const UNIVERSE = 'universe';
 export const LOGIN_ACCOUNT = 'loginAccount';
 export const FAVORITES = 'favorites';
+export const NOTIFICATIONS = 'notifications';
 
 export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
   balances: {
@@ -168,6 +169,7 @@ export const DEFAULT_APP_STATUS = {
   [UNIVERSE]: DEFAULT_UNIVERSE_STATE,
   [LOGIN_ACCOUNT]: DEFAULT_LOGIN_ACCOUNT_STATE,
   [FAVORITES]: {},
+  [NOTIFICATIONS]: [],
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -205,6 +207,7 @@ export const APP_STATUS_ACTIONS = {
   CLEAR_LOGIN_ACCOUNT: 'CLEAR_LOGIN_ACCOUNT',
   LOAD_FAVORITES: 'LOAD_FAVORITES',
   TOGGLE_FAVORITE: 'TOGGLE_FAVORITE',
+  UPDATE_NOTIFICATIONS: 'UPDATE_NOTIFICATIONS',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -242,4 +245,5 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   clearLoginAccount: () => {},
   loadFavorites: favorites => {},
   toggleFavorite: marketId => {},
+  updateNotifications: notificiations => {}
 };

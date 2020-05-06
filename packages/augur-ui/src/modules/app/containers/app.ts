@@ -6,7 +6,6 @@ import { withRouter } from "react-router-dom";
 import App from "modules/app/components/app";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
-import { selectNotifications } from "modules/notifications/selectors/notification-state";
 import { initAugur } from "modules/app/actions/init-augur";
 import { RewriteUrlParams } from "modules/app/hocs/rewrite-url-params";
 import { windowRef } from "utils/window-ref";
@@ -21,9 +20,8 @@ import isAddress from "modules/auth/helpers/is-address";
 
 const mapStateToProps = (state: AppState) => {
   const { pendingQueue } = state;
-  const { universe, walletStatus, modal, loginAccount: { balances } } = AppStatus.get();
+  const { notifications, universe, walletStatus, modal, loginAccount: { balances } } = AppStatus.get();
   const { alerts } = selectInfoAlertsAndSeenCount(state);
-  const notifications = selectNotifications(state);
   const walletBalances = balances;
   const pending =
     pendingQueue[TRANSACTIONS] &&

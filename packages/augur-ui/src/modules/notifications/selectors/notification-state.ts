@@ -5,7 +5,6 @@ import {
   selectLoginAccountAddress,
   selectMarketInfosState,
   selectPendingLiquidityOrders,
-  selectReadNotificationState,
   selectUserMarketOpenOrders
 } from 'appStore/select-state';
 import { MarketReportingState } from '@augurproject/sdk';
@@ -188,7 +187,6 @@ export const selectNotifications = createSelector(
   selectUnsignedOrders,
   selectMostLikelyInvalidMarkets,
   selectFinalizeMarkets,
-  selectReadNotificationState,
   (
     reportOnMarkets,
     resolvedMarketsOpenOrder,
@@ -197,8 +195,8 @@ export const selectNotifications = createSelector(
     unsignedOrders,
     mostLikelyInvalidMarkets,
     finalizeMarkets,
-    readNotifications,
   ): Notification[] => {
+    const { notifications: notificationsState } = AppStatus.get();
     // Generate non-unquie notifications
     const reportOnMarketsNotifications = generateCards(
       reportOnMarkets,
@@ -275,7 +273,7 @@ export const selectNotifications = createSelector(
     }
 
     // Update isNew status based on data stored on local state
-    const storedNotifications = readNotifications || null;
+    const storedNotifications = notificationsState || null;
     if (storedNotifications && storedNotifications.length) {
       notifications = notifications.map(notification => {
         const storedNotification = storedNotifications.find(
