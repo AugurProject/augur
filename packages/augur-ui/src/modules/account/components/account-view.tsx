@@ -6,6 +6,7 @@ import Notifications from 'modules/account/containers/notifications';
 import Transactions from 'modules/account/containers/transactions';
 import AugurStatus from 'modules/account/components/augur-status';
 import Favorites from 'modules/portfolio/containers/favorites';
+import MyMarkets from 'modules/portfolio/containers/my-markets';
 import OpenMarkets from 'modules/account/containers/open-markets';
 import Overview from 'modules/account/containers/overview';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
@@ -122,6 +123,7 @@ const AccountView = ({ newNotifications }: AccountViewProps) => {
               <AugurStatus hideHeader={false} />
               <Transactions />
               <Favorites />
+              <MyMarkets />
               <TermsAndConditions />
             </div>
           )
