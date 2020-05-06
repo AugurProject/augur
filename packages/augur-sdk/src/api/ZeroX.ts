@@ -302,11 +302,13 @@ export class ZeroX {
         await this.placeOnChainOrders([params]);
       } else {
         // We send this just to remove the pending order display
-        this.client.events.emit(SubscriptionEventName.OrderEvent, {
-          eventType: OrderEventType.Fill,
-          orderCreator: account,
-          ...params
-        });
+        this.client.events.emit(SubscriptionEventName.BulkOrderEvent, {
+          logs: [{
+              eventType: OrderEventType.Fill,
+              orderCreator: account,
+              ...params
+            }]
+          });
       }
       return false;
     }

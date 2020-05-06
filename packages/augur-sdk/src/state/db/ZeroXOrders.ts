@@ -277,8 +277,10 @@ export class ZeroXOrders extends AbstractTable {
     if (storedOrder.numberAmount.isEqualTo(0)) {
       console.log('Deleting filled order');
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder});
-      this.augur.events.emit('DB:updated:ZeroXOrders', {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder});
+      const event = {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder};
+      this.augur.events.emit('OrderEvent', event);
+      this.augur.events.emit(SubscriptionEventName.BulkOrderEvent, { logs: [event] });
+      this.augur.events.emit('DB:updated:ZeroXOrders', event);
       return false;
     }
     return true;

@@ -448,6 +448,21 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   }
 };
 
+const handleNewBlockFilledOrdersLog = logs => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
+  logs
+    .filter(l => l.eventType === OrderEventType.Fill)
+    .map(l => dispatch(handleOrderFilledLog(l)));
+  Array.from(new Set(logs.map(l => l.market))).map((marketId: string) => {
+    if (isCurrentMarket(marketId)) {
+      dispatch(updateMarketOrderBook(marketId));
+      dispatch(loadMarketTradingHistory(marketId));
+      dispatch(checkUpdateUserPositions([marketId]));
+    }
+  });
+};
+
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -627,7 +642,7 @@ export const handleDisputeCrowdsourcerCreatedLog = (
 
 export const handleDisputeCrowdsourcerCompletedLog = (
   logs: Logs.DisputeCrowdsourcerCompletedLog[]
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
 };
 
@@ -707,6 +722,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
 };
 
 const EventHandlers = {
+  [SubscriptionEventName.OrderEvent]: wrapLogHandler(handleNewBlockFilledOrdersLog),
   [SubscriptionEventName.TokensTransferred]: wrapLogHandler(handleTokensTransferredLog),
   [SubscriptionEventName.TokenBalanceChanged]: wrapLogHandler(handleTokenBalanceChangedLog),
   [SubscriptionEventName.TokensMinted]: wrapLogHandler(handleTokensMintedLog),
