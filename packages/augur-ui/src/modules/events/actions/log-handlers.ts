@@ -454,6 +454,13 @@ const handleNewBlockFilledOrdersLog = logs => (
   logs
     .filter(l => l.eventType === OrderEventType.Fill)
     .map(l => dispatch(handleOrderFilledLog(l)));
+  Array.from(new Set(logs.map(l => l.market))).map((marketId: string) => {
+    if (isCurrentMarket(marketId)) {
+      dispatch(updateMarketOrderBook(marketId));
+      dispatch(loadMarketTradingHistory(marketId));
+      dispatch(checkUpdateUserPositions([marketId]));
+    }
+  });
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
