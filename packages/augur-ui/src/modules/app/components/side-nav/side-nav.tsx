@@ -88,6 +88,7 @@ const SideNav = ({
           isLogged={isLogged}
           stats={stats}
           restoredAccount={restoredAccount}
+          isMobile={true}
         />
       </div>
       <div className={Styles.SideNav__container}>
