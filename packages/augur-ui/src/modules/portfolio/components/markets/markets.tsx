@@ -11,7 +11,6 @@ import { CancelTextButton, SubmitTextButton } from 'modules/common/buttons';
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import marketStyles from 'modules/portfolio/components/markets/markets.styles.less';
 import { MarketData } from 'modules/types';
-import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const sortByOptions = [
   {
