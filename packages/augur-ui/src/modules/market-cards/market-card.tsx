@@ -26,6 +26,7 @@ import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
 import { ThickChevron } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { useMarketsStore } from 'modules/markets/store/markets';
 
 const LoadingCard = () => (<div
 className={classNames(Styles.MarketCard, {
@@ -48,7 +49,6 @@ interface MarketCardProps {
   history: History;
   location: Location;
   toggleFavorite: Function;
-  orderBook: any;
   disputingWindowEndTime: number;
   condensed?: boolean;
   expandedView?: boolean;
@@ -82,11 +82,14 @@ export const MarketCard = ({
   dispute,
   marketLinkCopied,
   toggleFavorite,
-  orderBook
 }: MarketCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const { theme, isLogged } = useAppStatusStore();
+  const {
+    orderBooks,
+  } = useMarketsStore();
+  
   const {
     outcomesFormatted,
     marketType,
@@ -101,6 +104,7 @@ export const MarketCard = ({
     consensusFormatted,
     description,
   } = market;
+  const orderBook = orderBooks[id]?.orderBook;
 
   if (loading) {
     return <LoadingCard />;

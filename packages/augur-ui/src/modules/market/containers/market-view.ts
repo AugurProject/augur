@@ -45,7 +45,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { loginAccount, orderBooks } = state;
+  const { loginAccount } = state;
   const {
     universe,
     modal,
@@ -107,10 +107,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   }
 
   let orderBook: Getters.Markets.OutcomeOrderBook = null;
-  if (market && !tradingTutorial && !ownProps.preview) {
-    orderBook = (orderBooks[marketId] || {}).orderBook;
-  }
-
+ 
   if (market && (tradingTutorial || ownProps.preview)) {
     orderBook = market.orderBook;
   }

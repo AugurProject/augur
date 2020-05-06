@@ -12,7 +12,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const { orderBooks } = state;
   const {zeroXStatus, blockchain: { currentAugurTimestamp }} = AppStatus.get();
   const market = ownProps.market || selectMarket(ownProps.marketId);
-  const orderBook = orderBooks && orderBooks[market.id] || { expirationTime: 0 };
   const selectedOutcomeId = (ownProps.selectedOutcomeId !== undefined && ownProps.selectedOutcomeId !== null) ? ownProps.selectedOutcomeId : market.defaultSelectedOutcomeId;
   const outcomeOrderBook = ownProps.orderBook || {};
   const usePercent = market.marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID;
@@ -30,7 +29,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   }
 
   return {
-    expirationTime: ownProps.initialLiquidity || !!!orderBook ? 0 : orderBook.expirationTime,
+    expirationTime: ownProps.initialLiquidity || !!!ownProps.orderBook ? 0 : ownProps.orderBook.expirationTime,
     outcomeName: outcome && outcome.description,
     selectedOutcome: outcome,
     currentTimeInSeconds: currentAugurTimestamp,
