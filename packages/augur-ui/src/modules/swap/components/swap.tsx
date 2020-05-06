@@ -29,6 +29,7 @@ import {
 
 import Styles from 'modules/swap/components/index.styles.less';
 import { ProcessingButton } from 'modules/common/buttons';
+import { SDKConfiguration } from '@augurproject/artifacts';
 
 interface SwapProps {
   balances: AccountBalances;
@@ -36,6 +37,7 @@ interface SwapProps {
   fromToken: string;
   ETH_RATE: BigNumber;
   REP_RATE: BigNumber;
+  config: SDKConfiguration,
 }
 
 export const Swap = ({
@@ -44,6 +46,7 @@ export const Swap = ({
   toToken,
   ETH_RATE,
   REP_RATE,
+  config,
 }: SwapProps) => {
 
   const hasEth = createBigNumber(balances.eth).gt(ZERO);
@@ -81,19 +84,20 @@ export const Swap = ({
   const makeTrade = async () => {
     const input = inputAmount;
     const output = createBigNumber(outputAmount.value);
+    const exchangeRateBufferMultiplier = config.uniswap?.exchangeRateBufferMultiplier || 1.005;
 
     try {
       if (fromTokenType === DAI) {
-        await uniswapDaiForRep(input, output);
+        await uniswapDaiForRep(input, output, exchangeRateBufferMultiplier);
         clearForm();
       } else if (fromTokenType === REP) {
-        await uniswapRepForDai(input, output);
+        await uniswapRepForDai(input, output, exchangeRateBufferMultiplier);
         clearForm();
       } else if (fromTokenType === ETH) {
         if (toToken === DAI) {
-          await uniswapEthForDai(input, output);
+          await uniswapEthForDai(input, output, exchangeRateBufferMultiplier);
         } else if (toToken === REP) {
-          await uniswapEthForRep(input, output);
+          await uniswapEthForRep(input, output, exchangeRateBufferMultiplier);
         }
         clearForm();
       }
@@ -109,13 +113,13 @@ export const Swap = ({
     setErrorMessage('');
     if (fromToken === REP) {
       if (fromTokenType === REP) {
-        hasEth ? setFromTokenType(ETH) : REP;
+        setFromTokenType(hasEth ? ETH : REP);
       } else {
         setFromTokenType(REP);
       }
     } else if (fromToken === DAI) {
       if (fromTokenType === DAI) {
-        hasEth ? setFromTokenType(ETH) : DAI;
+        setFromTokenType(hasEth ? ETH : DAI);
       } else {
         setFromTokenType(DAI);
       }

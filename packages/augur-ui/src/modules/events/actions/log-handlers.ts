@@ -36,7 +36,6 @@ import {
   DOINITIALREPORT,
   PUBLICFILLORDER,
   PUBLICTRADE,
-  MODAL_ERROR,
   REDEEMSTAKE,
   CREATE_MARKET,
   MODAL_GAS_PRICE,
@@ -78,6 +77,7 @@ import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { updateAppStatus, WALLET_STATUS, Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
+import { logger } from '@augurproject/logger';
 
 const handleAlert = (
   log: any,
@@ -107,7 +107,7 @@ const loadOrderBook = _.throttle((dispatch, marketId) => dispatch(loadMarketOrde
 const loadUserOpenOrders = _.throttle(dispatch => dispatch(loadAccountOpenOrders()), MED_PRI_LOAD_REFRESH_MS, { leading: true });
 const throttleLoadMarketOrders = (marketId) => dispatch => loadOrderBook(dispatch, marketId);
 const throttleLoadUserOpenOrders = () => dispatch => loadUserOpenOrders(dispatch);
-const BLOCKS_BEHIND_RELOAD_THRESHOLD = 60; // 60 blocks. 
+const BLOCKS_BEHIND_RELOAD_THRESHOLD = 60; // 60 blocks.
 let blocksBehindTimer = null;
 
 const updateMarketOrderBook = (marketId: string) => (
@@ -174,8 +174,14 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  if (log && log.error && log.error.message.includes("too many blocks")) location.reload();
+  if (log && log.error && log.error.message.includes("too many blocks")) {
+    console.error('too many blocks behind, reloading UI')
+    location.reload();
+  }
   dispatch(updateAppStatus(Ox_STATUS, status))
+  if (status === ZEROX_STATUSES.SYNCED && getState().authStatus.isLogged) {
+    dispatch(throttleLoadUserOpenOrders());
+  }
 }
 
 export const handleSDKReadyEvent = () => (
@@ -354,6 +360,31 @@ export const handleTokenBalanceChangedLog = (
   })
 };
 
+export const handleBulkOrdersLog = (data: {
+  logs: Logs.ParsedOrderEventLog[];
+}) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
+  logger.info('Bulk Order Events', data?.logs?.length);
+  const { appStatus } = getState();
+  const { zeroXStatus } = appStatus;
+  const marketIds = [];
+  if (zeroXStatus === ZEROX_STATUSES.SYNCED && data?.logs?.length > 0) {
+    data.logs.map(log => {
+      dispatch(handleOrderLog(log));
+      marketIds.push(log.market);
+    });
+    Array.from(new Set([...marketIds])).map(marketId => {
+      if (isCurrentMarket(marketId)) {
+        dispatch(updateMarketOrderBook(marketId));
+        dispatch(loadMarketTradingHistory(marketId));
+        dispatch(checkUpdateUserPositions([marketId]));
+      }
+    });
+  }
+};
+
 export const handleOrderLog = (log: any) =>
 (dispatch: ThunkDispatch<void, any, Action>) => {
   const type = log.eventType;
@@ -368,6 +399,7 @@ export const handleOrderLog = (log: any) =>
     default:
       console.log(`Unknown order event type "${log.eventType}" for log`, log);
   }
+
   return null;
 };
 
@@ -386,8 +418,6 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     const pendingOrderId = constructPendingOrderid(log.amount, log.price, log.outcome, log.market)
     dispatch(removePendingOrder(pendingOrderId, log.market));
   }
-  dispatch(updateMarketOrderBook(log.market));
-  if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -416,7 +446,6 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
       dispatch(throttleLoadUserOpenOrders());
     }
   }
-  if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -438,11 +467,6 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
     if (log.orderFiller) handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
-  if (isCurrentMarket(marketId)) {
-    dispatch(loadMarketTradingHistory(marketId));
-    dispatch(updateMarketOrderBook(marketId));
-  }
-  dispatch(checkUpdateUserPositions([marketId]));
 };
 
 export const handleTradingProceedsClaimedLog = (
@@ -475,7 +499,7 @@ export const handleInitialReportSubmittedLog = (
   if (userLogs.length > 0) {
     userLogs.map(log => {
       handleAlert(log, DOINITIALREPORT, false, dispatch, getState)
-      dispatch(addPendingData(log.market, SUBMIT_REPORT, TXEventName.Success, '0', undefined));
+      dispatch(removePendingData(log.market, SUBMIT_REPORT));
     });
     dispatch(loadAccountReportingHistory());
   }

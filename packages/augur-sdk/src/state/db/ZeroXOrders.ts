@@ -165,7 +165,7 @@ export class ZeroXOrders extends AbstractTable {
 
   async handleOrderEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
-
+    const bulkOrderEvents = [];
     const filteredOrders = orderEvents.filter(this.validateOrder, this);
     let documents: StoredOrder[] = filteredOrders.map(this.processOrder, this);
 
@@ -180,6 +180,7 @@ export class ZeroXOrders extends AbstractTable {
       // Spread this once to avoid extra copies
       const event = {eventType: OrderEventType.Cancel, orderId: d.orderHash, ...d};
       this.augur.events.emit('OrderEvent', event);
+      bulkOrderEvents.push(event);
       this.augur.events.emit('DB:updated:ZeroXOrders', event);
     }
     documents = documents.filter((d: StoredOrder) => !canceledOrders[d.orderHash]);
@@ -200,13 +201,16 @@ export class ZeroXOrders extends AbstractTable {
       const eventType = filledOrders[d.orderHash] ? OrderEventType.Fill : OrderEventType.Create;
       const event = {eventType, orderId: d.orderHash,...d};
       this.augur.events.emit('OrderEvent', event);
+      bulkOrderEvents.push(event);
       this.augur.events.emit('DB:updated:ZeroXOrders', event);
     }
+    if (bulkOrderEvents.length > 0) this.augur.events.emit(SubscriptionEventName.BulkOrderEvent, { logs: bulkOrderEvents });
   }
 
   async sync(): Promise<void> {
     logger.info('Syncing ZeroX Orders');
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
+    let bulkOrderEvents = [];
     let documents = [];
     if (orders?.length > 0) {
       documents = orders.filter(this.validateOrder, this).map(this.processOrder, this);
@@ -216,7 +220,9 @@ export class ZeroXOrders extends AbstractTable {
       documents.forEach((doc) => delete this.pastOrders[doc.orderHash])
       await this.saveDocuments(documents);
       for (const d of documents) {
-        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
+        const event = {eventType: OrderEventType.Create, ...d};
+        bulkOrderEvents.push(event);
+        this.augur.events.emit('OrderEvent', event);
       }
     }
     const chainId = Number(this.augur.config.networkId);
@@ -228,10 +234,15 @@ export class ZeroXOrders extends AbstractTable {
       }, order.signedOrder);
     });
 
-    if (ordersToAdd.length > 0) await this.augur.zeroX.addOrders(ordersToAdd);
+    if (ordersToAdd.length > 0) {
+      await this.augur.zeroX.addOrders(ordersToAdd);
+      bulkOrderEvents = [...bulkOrderEvents, ...ordersToAdd];
+    }
     this.pastOrders = {};
 
     this.augur.events.emit(SubscriptionEventName.ZeroXStatusSynced, {});
+    if (bulkOrderEvents.length > 0) this.augur.events.emit(SubscriptionEventName.BulkOrderEvent, { logs: bulkOrderEvents });
+
     setImmediate(() => {
       logger.info(`Synced ${orders.length} Orders from ZeroX Peers`);
       logger.debug("ZeroX Sync Summary: ")

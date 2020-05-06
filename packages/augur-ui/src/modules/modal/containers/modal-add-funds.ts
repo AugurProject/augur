@@ -19,6 +19,7 @@ const mapStateToProps = (state: AppState) => {
     loginAccount: state.loginAccount,
     ETH_RATE,
     REP_RATE,
+    config: state.env,
     isRelayDown: false, // TODO XXX Need to have some suitable status update for when relayer is down. No longer related to wallets
   }
 };

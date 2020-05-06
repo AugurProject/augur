@@ -50,7 +50,6 @@
 
       // ConnectAccount
       > div:nth-of-type(2) {
-
         > div:first-of-type {
           display: flex;
           justify-content: flex-end;
@@ -61,7 +60,6 @@
 
     &.showNav {
       left: 0;
-
     }
   }
 }
@@ -198,58 +196,18 @@
     display: flex;
     height: @top-bar-height-mobile;
     justify-content: flex-start;
-    padding: 0 @size-16;
+    padding: 0 @size-18 @size-16;
     position: fixed;
     width: calc(100% - @size-52);
-    border-top: @size-1 solid @color-dark-grey;
 
-    > div:last-of-type {
-      .mono-10-semi-bold;
-
-      display: flex;
-      color: @color-primary-text;
-      cursor: pointer;
-      text-transform: uppercase;
-      order: 1;
-      padding: @size-4;
-
-      > svg {
-        width: @size-10;
-        height: @size-10;
-        fill: @color-primary-text;
-        margin-left: 0;
+    > div {
+      > span {
+        padding: 0;
       }
     }
 
-    > .GlobalChat {
-      border: 0;
+    > button {
       margin-left: auto;
-      order: 2;
-
-      // Closed global chat window
-      > button {
-        .mono-10-semi-bold;
-
-        padding: @size-4;
-        align-items: center;
-        color: @color-primary-text;
-        background: @color-secondary-action;
-        display: flex;
-        flex-direction: row-reverse;
-        text-transform: uppercase;
-
-        > svg {
-          fill: @color-primary-text;
-          margin: @size-2 0 @size-2 @size-4;
-          transform: rotate(180deg);
-          width: @size-7;
-          height: @size-7;
-
-          path {
-            fill: @color-primary-text;
-          }
-        }
-      }
     }
   }
 }

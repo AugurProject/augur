@@ -8,7 +8,6 @@ import {
   LinearPropertyLabelUnderlineTooltip,
 } from 'modules/common/labels';
 import { CoreStats } from 'modules/types';
-import Styles from 'modules/app/components/top-bar.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
@@ -16,16 +15,17 @@ import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
 import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
-import { formatDai } from 'utils/format-number';
-import { createBigNumber } from 'utils/create-big-number';
+
+import Styles from 'modules/app/components/top-bar.styles.less';
 
 interface StatsProps {
   isLogged: boolean;
   restoredAccount: boolean;
   stats: CoreStats;
+  isMobile?: boolean;
 }
 
-export const Stats = ({ isLogged, restoredAccount, stats }: StatsProps) => {
+export const Stats = ({ isLogged, restoredAccount, stats, isMobile = false }: StatsProps) => {
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
 
@@ -39,7 +39,7 @@ export const Stats = ({ isLogged, restoredAccount, stats }: StatsProps) => {
             <LinearPropertyLabelUnderlineTooltip
               {...totalFunds}
               highlightAlternateBolded
-              id={'totalFunds'}
+              id={isMobile ? 'totalFundsMobile' : 'totalFunds'}
               tipText={TOTAL_FUNDS_TOOLTIP}
             />
             <div>

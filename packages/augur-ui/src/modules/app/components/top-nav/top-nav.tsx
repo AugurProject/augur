@@ -9,42 +9,39 @@ import {
   ExternalLinkText,
   ProcessingButton,
 } from 'modules/common/buttons';
-import GlobalChat from 'modules/global-chat/containers/global-chat';
+import GlobalChat from 'modules/global-chat/containers/global-chat' ;
 import { NavMenuItem, AccountBalances } from 'modules/types';
 import { helpIcon, Dot } from 'modules/common/icons';
 import {
   TRANSACTIONS,
   MIGRATE_FROM_LEG_REP_TOKEN,
+  TOTAL_FUNDS_TOOLTIP,
 } from 'modules/common/constants';
 import {
   CREATE_MARKET
 } from 'modules/routes/constants/views';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
+import { LinearPropertyLabelUnderlineTooltip } from 'modules/common/labels';
+import { formatNumber } from 'utils/format-number';
 
 interface TopNavProps {
   isLogged: boolean;
   menuData: NavMenuItem[];
   currentBasePath: string;
-  isDisabled?: boolean;
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
   updateModal: Function;
-  showCreateAccountButton: boolean;
-  createFundedGsnWallet: Function;
 }
 
 const SPREAD_INDEX = 3;
 
 const TopNav = ({
   isLogged,
-  isDisabled = false,
   menuData,
   currentBasePath,
   migrateV1Rep,
-  createFundedGsnWallet,
   showMigrateRepButton = false,
-  showCreateAccountButton = false,
   walletBalances,
 }: TopNavProps) => {
   const isCurrentItem = item => {
@@ -79,6 +76,16 @@ const TopNav = ({
               {index === SPREAD_INDEX && (
                 <li key='fill-space' className={Styles.FillSpace} />
               )}
+
+              <div className={Styles.ToolTip}>
+                <LinearPropertyLabelUnderlineTooltip
+                  {...(formatNumber(0))}
+                  highlightAlternateBolded
+                  id={'totalFunds'}
+                  tipText={TOTAL_FUNDS_TOOLTIP}
+                />
+              </div>
+
               {index === SPREAD_INDEX && showMigrateRepButton && (
                 <li key='migrate-rep-button'>
                   <div className={Styles.MigrateRep}>
@@ -134,6 +141,7 @@ const TopNav = ({
             </Fragment>
           );
         })}
+
         {!isLogged && (
           <div className={Styles.BettingUI}>
             <ExternalLinkText

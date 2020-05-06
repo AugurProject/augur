@@ -5,11 +5,12 @@ import classNames from 'classnames';
 
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
-import { Dot, helpIcon, ThickChevron } from 'modules/common/icons';
+import { Dot, helpIcon } from 'modules/common/icons';
 import { AccountBalances, CoreStats, NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import {
+  ChatButton,
   PrimaryButton,
   ProcessingButton,
   SecondaryButton,
@@ -39,7 +40,6 @@ interface SideNavProps {
   updateHelpMenuState: Function;
   updateConnectionTray: Function;
   updateModal: Function;
-  showCreateAccountButton: boolean;
   createFundedGsnWallet: Function;
   restoredAccount: boolean;
   stats: CoreStats;
@@ -52,19 +52,15 @@ const SideNav = ({
   defaultMobileClick,
   menuData,
   isConnectionTrayOpen,
-  logout,
   currentBasePath,
   showNav,
   showGlobalChat,
   migrateV1Rep,
   showMigrateRepButton,
-  walletBalances,
   isHelpMenuOpen,
   updateHelpMenuState,
   updateConnectionTray,
   updateModal,
-  showCreateAccountButton,
-  createFundedGsnWallet,
   stats,
   restoredAccount,
   whichChatPlugin,
@@ -86,22 +82,11 @@ const SideNav = ({
       })}
     >
       <div>
-        {isLogged && (
-          <HelpIcon
-            isHelpMenuOpen={isHelpMenuOpen}
-            updateHelpMenuState={() => {
-              if (isMobile) {
-                updateModal({ type: MODAL_HELP });
-              } else {
-                updateHelpMenuState();
-              }
-            }}
-          />
-        )}
         <Stats
           isLogged={isLogged}
           stats={stats}
           restoredAccount={restoredAccount}
+          isMobile={true}
         />
       </div>
       <div className={Styles.SideNav__container}>
@@ -178,18 +163,23 @@ const SideNav = ({
               )}
             </div>
           </ul>
-          {(isLogged && whichChatPlugin) ||
-            (whichChatPlugin === 'orbit' && (
-              <footer>
-                <div className={Styles.GlobalChat}>
-                  <SecondaryButton
-                    action={showGlobalChat}
-                    text="Global Chat"
-                    icon={ThickChevron}
-                  />
-                </div>
-              </footer>
-            ))}
+          <footer>
+            {isLogged && (
+              <HelpIcon
+                isHelpMenuOpen={isHelpMenuOpen}
+                updateHelpMenuState={() => {
+                  if (isMobile) {
+                    updateModal({ type: MODAL_HELP });
+                  } else {
+                    updateHelpMenuState();
+                  }
+                }}
+              />
+            )}
+            {((isLogged && whichChatPlugin) || whichChatPlugin === 'orbit') && (
+                <ChatButton action={showGlobalChat} />
+              )}
+          </footer>
         </div>
       </div>
     </aside>

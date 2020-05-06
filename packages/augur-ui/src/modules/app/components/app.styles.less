@@ -105,6 +105,26 @@ h6 {
     display: block;
     height: fit-content;
     overflow-y: auto;
+
+    &.StatusErrorShowing {
+      > section {
+        padding-top: @size-42;
+      }
+    }
+    
+    &.StatusErrorShowingMarket {
+      top: @top-bar-height-mobile;
+
+      > section {
+        > div:last-of-type {
+          > div {
+            > div:first-of-type {
+              top: calc(~"@{top-bar-height-mobile} + 42px");
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -135,6 +155,10 @@ h6 {
 
     &.SideNavOpen {
       opacity: 0.1;
+
+      > section {
+        pointer-events: none;
+      }
     }
   }
 
