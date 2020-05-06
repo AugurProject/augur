@@ -372,7 +372,7 @@ export const handleBulkOrdersLog = (data: {
   const marketIds = [];
   if (zeroXStatus === ZEROX_STATUSES.SYNCED && data?.logs?.length > 0) {
     data.logs.map(log => {
-      handleOrderLog(log);
+      dispatch(handleOrderLog(log));
       marketIds.push(log.market);
     });
     Array.from(new Set([...marketIds])).map(marketId => {
