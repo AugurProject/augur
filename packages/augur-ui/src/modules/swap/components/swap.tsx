@@ -84,7 +84,7 @@ export const Swap = ({
   const makeTrade = async () => {
     const input = inputAmount;
     const output = createBigNumber(outputAmount.value);
-    const exchangeRateBufferMultiplier = config.uniswap?.exchangeRateBufferMultiplier || 1.05;
+    const exchangeRateBufferMultiplier = config.uniswap?.exchangeRateBufferMultiplier || 1.005;
 
     try {
       if (fromTokenType === DAI) {

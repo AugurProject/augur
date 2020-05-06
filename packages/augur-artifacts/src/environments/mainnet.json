@@ -22,7 +22,7 @@
     }
   },
   "uniswap": {
-    "exchangeRateBufferMultiplier": 1.05
+    "exchangeRateBufferMultiplier": 1.005
   },
   "gsn": {
     "enabled": true
