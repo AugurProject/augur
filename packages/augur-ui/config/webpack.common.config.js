@@ -14,7 +14,8 @@ const PATHS = {
   TEST: path.resolve(__dirname, "../test"),
   WASM: path.resolve(__dirname, "../../../node_modules/@0x/mesh-browser/wasm"),
   ROOT_UI: path.resolve(__dirname, "../"),
-  SITEMAP: path.resolve(__dirname, "../src/modules/sitemap")
+  SITEMAP: path.resolve(__dirname, "../src/modules/sitemap"),
+  ORBIT: path.resolve(__dirname, "../../orbit-web")
 };
 
 module.exports = {
@@ -190,6 +191,10 @@ module.exports = {
       {
         from: path.resolve(PATHS.APP, "robots.txt"),
         to: PATHS.BUILD
+      },
+      {
+        from: path.resolve(PATHS.ORBIT, "dist"),
+        to: path.resolve(PATHS.BUILD, "chat")
       },
     ]),
     new HtmlWebpackPlugin({

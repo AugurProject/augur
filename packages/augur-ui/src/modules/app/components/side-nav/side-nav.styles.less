@@ -208,24 +208,21 @@
 
       display: flex;
       color: @color-primary-text;
-      background: @color-secondary-action;
       cursor: pointer;
       text-transform: uppercase;
       order: 1;
-      border: @size-1 solid @color-secondary-action-outline;
-      border-radius: @border-radius-default;
       padding: @size-4;
 
       > svg {
         width: @size-10;
         height: @size-10;
         fill: @color-primary-text;
-        margin-left: 0px !important;
+        margin-left: 0;
       }
     }
 
     > .GlobalChat {
-      background: @color-dark-grey;
+      border: 0;
       margin-left: auto;
       order: 2;
 
@@ -238,16 +235,15 @@
         color: @color-primary-text;
         background: @color-secondary-action;
         display: flex;
-        flex-direction: row;
+        flex-direction: row-reverse;
         text-transform: uppercase;
 
         > svg {
           fill: @color-primary-text;
-          margin-left: @size-4;
-          margin-bottom: @size-2;
+          margin: @size-2 0 @size-2 @size-4;
           transform: rotate(180deg);
-          width: @size-10;
-          height: @size-10;
+          width: @size-7;
+          height: @size-7;
 
           path {
             fill: @color-primary-text;

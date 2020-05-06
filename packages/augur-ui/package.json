@@ -15,9 +15,10 @@
   "scripts": {
     "clean": "rm -rf build; rm -rf node_modules",
     "nuke": "yarn clean; rm yarn.lock; rm package-lock.json",
-    "dev": "yarn dev:ui",
+    "dev": "yarn dev:orbit && yarn dev:ui",
+    "dev:orbit": "yarn workspace orbit-web build",
     "dev:ui": "node scripts/dev.js",
-    "build": "NODE_OPTIONS='--max-old-space-size=6144' webpack",
+    "build": "yarn workspace orbit-web build && NODE_OPTIONS='--max-old-space-size=6144' webpack",
     "start": "node server.js",
     "__": "",
     "integration:headless": "AUGUR_URL='http://localhost:8080/' jest --runInBand --detectOpenHandles --forceExit",
