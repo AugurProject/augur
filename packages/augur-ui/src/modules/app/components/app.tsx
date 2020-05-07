@@ -238,7 +238,10 @@ export default class AppView extends Component<AppProps> {
       }
     }
 
-    if (sidebarStatus.mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
+    if (
+      sidebarStatus.mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN ||
+      sidebarStatus.mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN
+    ) {
       document.body.classList.add('App--noScroll');
     } else {
       document.body.classList.remove('App--noScroll');
