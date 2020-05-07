@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import classNames from 'classnames';
+import React, { useEffect, useState } from 'react';
 
+import classNames from 'classnames';
 import ModalSignTransaction from 'modules/modal/containers/modal-sign-transaction';
 import ModalReporting from 'modules/modal/containers/modal-reporting';
 import ModalConfirm from 'modules/modal/components/modal-confirm';
@@ -194,60 +194,75 @@ interface ModalViewProps {
   };
   closeModal: Function;
   trackModalViewed: Function;
+  history: History;
 }
 
-export default class ModalView extends Component<ModalViewProps> {
-  constructor(props) {
-    super(props);
-
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-  }
-
-  componentDidMount() {
-    const { closeModal, modal, trackModalViewed } = this.props;
-    window.onpopstate = () => {
-      closeModal();
-    };
-
-    window.addEventListener('keydown', this.handleKeyDown);
-
-    trackModalViewed(modal.type, {
-      modal: modal.type,
-      from: window.location.href
-    })
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
-
-  handleKeyDown(e) {
-    const { modal, closeModal } = this.props;
-
+const ModalView = ({
+  modal,
+  closeModal,
+  trackModalViewed,
+  history,
+}: ModalViewProps) => {
+  const [locationKeys, setLocationKeys] = useState([]);
+  const handleKeyDown = e => {
     if (e.keyCode === ESCAPE_KEYCODE) {
       if (modal && modal.cb) {
         modal.cb();
       }
       closeModal();
     }
-  }
+  };
 
-  render() {
-    const { closeModal, modal } = this.props;
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
 
-    const Modal = selectModal(modal.type, this.props, closeModal, modal);
+    trackModalViewed(modal.type, {
+      modal: modal.type,
+      from: window.location.href,
+    });
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
-    return (
-      <section className={Styles.ModalView}>
-        <div
-          className={classNames({
-            [`${Styles['ModalView__content--taller']}`]:
-              modal.type === TYPES.MODAL_DISCLAIMER
-          })}
-        >
-          {Modal}
-        </div>
-      </section>
-    );
-  }
-}
+
+  useEffect(() => {
+    return history.listen(location => {
+      if (history.action === 'PUSH') {
+        setLocationKeys([location.key]);
+      }
+
+      if (history.action === 'POP') {
+        if (locationKeys[1] === location.key) {
+          setLocationKeys(([_, ...keys]) => keys);
+
+          closeModal();
+        } else {
+          setLocationKeys(keys => [location.key, ...keys]);
+
+          closeModal();
+        }
+      }
+    });
+  }, [locationKeys]);
+
+  const Modal = selectModal(
+    modal.type,
+    { modal, closeModal, trackModalViewed },
+    closeModal,
+    modal
+  );
+
+  return (
+    <section className={Styles.ModalView}>
+      <div
+        className={classNames({
+          [`${Styles['ModalView__content--taller']}`]:
+            modal.type === TYPES.MODAL_DISCLAIMER,
+        })}
+      >
+        {Modal}
+      </div>
+    </section>
+  );
+};
+
+export default ModalView;
