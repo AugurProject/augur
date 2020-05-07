@@ -97,6 +97,7 @@ export interface SomeState {
   mary: TestContractAPI;
   bob: TestContractAPI;
   jasmine: TestContractAPI;
+  fred: TestContractAPI;
 }
 
 export async function _beforeAll(): Promise<AllState> {
@@ -118,17 +119,20 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
     provider,
     config
   );
+  const fred = await TestContractAPI.userWrapper(ACCOUNTS[4], provider, config);
 
   await john.approve();
   await mary.approve();
   await bob.approve();
   await jasmine.approve();
+  await fred.approve();
 
   return {
     john,
     mary,
     bob,
     jasmine,
+    fred,
   };
 }
 
