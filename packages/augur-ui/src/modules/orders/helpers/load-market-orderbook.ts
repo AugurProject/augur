@@ -4,14 +4,12 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { AppState } from 'appStore';
-import { Getters } from '@augurproject/sdk';
-import { useMarketsStore, Markets } from 'modules/markets/store/markets';
+import { Markets } from 'modules/markets/store/markets';
 
 export const loadMarketOrderBook = (
   marketId: string,
   callback: NodeStyleCallback = logError
 ) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   if (marketId == null) {
