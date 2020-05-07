@@ -519,7 +519,7 @@ describe('State API :: Users :: ', () => {
       // Have Acct C buy 100 shares at 0.6
       //
       // Acct A (0.6-0.4) *100 = $20
-      // Acct B Unrealized s/b (avg cost of b’s short position is 0.5)..... (0..5-0.6)*100 = -10
+      // Acct B Unrealized s/b (avg cost of b’s short position is 0.5)..... (0..5-0.6)*200 = -20
       // Acct C Unrealized s/b (0.6-0.6) * 100 = 0
 
       const [anyone, A, B, C, D] = [john, mary, bob, jasmine, fred];
