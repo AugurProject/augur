@@ -140,6 +140,7 @@ export function updateAlert(
         );
       }
       if (foundAlert) {
+        AppStatus.actions.removeAlert(alert.uniqueId, alert.name);
         dispatch(removeAlert(alert.uniqueId, alert.name));
         dispatch(
           addAlert({
@@ -153,8 +154,19 @@ export function updateAlert(
             },
           })
         );
+        AppStatus.actions.updateAlert({
+          ...foundAlert,
+          ...alert,
+          name: foundAlert.name !== '' ? foundAlert.name : alert.name,
+          params: {
+            ...foundAlert.params,
+            ...alert.params,
+            repReceived: alert.params.repReceived && foundAlert.params.repReceived && createBigNumber(alert.params.repReceived).plus(createBigNumber(foundAlert.params.repReceived))
+          },
+        });
       } else {
         dispatch(addAlert(alert));
+        AppStatus.actions.updateAlert(alert);
       }
     }
   };
@@ -162,6 +174,7 @@ export function updateAlert(
 // We clear by 'alert level'.
 // This will not surface in the UI just yet.
 export function clearAlerts(alertLevel = INFO) {
+  AppStatus.actions.clearAlerts(alertLevel);
   return {
     type: CLEAR_ALERTS,
     data: {
