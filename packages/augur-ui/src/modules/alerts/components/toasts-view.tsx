@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 
 import Alert from 'modules/alerts/components/alert';
 
@@ -13,38 +13,36 @@ interface ToastsViewProps {
   onTradingTutorial?: boolean;
 }
 
-export default class ToastsView extends Component<ToastsViewProps, {}> {
-
-  componentDidMount() {
-    this.timeout = setInterval(() => {
-      const newToast = { 
-        name: this.props.toasts[0].name, 
+const ToastsView = ({
+  toasts,
+  removeAlert,
+  toggleAlerts,
+  updateExistingAlert,
+  onTradingTutorial,
+}: ToastsViewProps) => {
+  useEffect(() => {
+    const Timeout = setInterval(() => {
+      const newToast = {
+        name: toasts[0].name,
         toast: false,
       };
-      this.props.updateExistingAlert(this.props.toasts[0].uniqueId, newToast);
+      updateExistingAlert(toasts[0].uniqueId, newToast);
     }, 2000);
-  }
+    return () => clearInterval(Timeout);
+  });
+  const toast = toasts[0];
+  if (!toast) return null;
+  return (
+    <div className={classNames(Styles.ToastsView, {[Styles.MoveDown]: onTradingTutorial})}>
+      <Alert
+        key={`${toast.id}-${toast.title}`}
+        removeAlert={() => removeAlert(toast.uniqueId, toast.name)}
+        toggleAlerts={toggleAlerts}
+        showToast={true}
+        {...toast}
+      />
+    </div>
+  );
+};
 
-  componentWillUnmount() {
-    clearInterval(this.timeout);
-  }
-
-  render() {
-    const { removeAlert, toggleAlerts, toasts, onTradingTutorial } = this.props;
-
-    const toast = toasts[0];
-    if (!toast) return null;
-
-    return (
-      <div className={classNames(Styles.ToastsView, {[Styles.MoveDown]: onTradingTutorial})}>
-        <Alert
-          key={`${toast.id}-${toast.title}`}
-          removeAlert={() => removeAlert(toast.uniqueId, toast.name)}
-          toggleAlerts={toggleAlerts}
-          showToast={true}
-          {...toast}
-        />
-      </div>
-    );
-  }
-}
+export default ToastsView;

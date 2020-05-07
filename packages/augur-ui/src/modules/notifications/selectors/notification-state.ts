@@ -23,7 +23,6 @@ import {
   SIGN_SEND_ORDERS,
   ZERO,
   REDEEMSTAKE,
-  BATCHCANCELORDERS,
   SUBMIT_DISPUTE,
   TRANSACTIONS,
   SUBMIT_REPORT,
@@ -74,7 +73,8 @@ export const selectMostLikelyInvalidMarkets = createSelector(
 export const selectReportOnMarkets = createSelector(
   selectMarkets,
   selectLoginAccountAddress,
-  (markets, address) => {
+  (markets) => {
+    const { loginAccount: { address } } = AppStatus.get();
     if (markets.length > 0) {
       return markets
         .filter(
@@ -106,9 +106,8 @@ export const selectFinalizeMarkets = createSelector(
 export const selectMarketsInDispute = createSelector(
   selectMarketInfosState,
   selectAccountPositionsState,
-  selectLoginAccountAddress,
-  (markets, positions, address) => {
-    const state = store.getState() as AppState;
+  (markets, positions, ) => {
+    const { loginAccount: { address }} = AppStatus.get();
     let marketIds = Object.keys(positions);
     const { loginAccount: { reporting } } = AppStatus.get();
     if (reporting && reporting.disputing && reporting.disputing.contracts) {

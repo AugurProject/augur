@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 
-import store from 'appStore';
 import {
   selectAccountPositionsState,
   selectMarketInfosState,

@@ -33,6 +33,7 @@ import {
   DEFAULT_LOGIN_ACCOUNT_STATE,
   FAVORITES,
   NOTIFICATIONS,
+  ALERTS,
 } from 'modules/app/store/constants';
 
 const {
@@ -71,6 +72,9 @@ const {
   LOAD_FAVORITES,
   TOGGLE_FAVORITE,
   UPDATE_NOTIFICATIONS,
+  UPDATE_ALERT,
+  REMOVE_ALERT,
+  CLEAR_ALERTS,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -238,6 +242,7 @@ export function AppStatusReducer(state, action) {
       updatedState[LOGIN_ACCOUNT] = {...DEFAULT_LOGIN_ACCOUNT_STATE};
       updatedState[FAVORITES] = {};
       updatedState[NOTIFICATIONS] = [];
+      updatedState[ALERTS] = [];
       break;
     }
     case LOAD_FAVORITES: {
@@ -264,7 +269,34 @@ export function AppStatusReducer(state, action) {
       const filtered = notifications.filter(n => !ids.includes(n.id))
       updatedState[NOTIFICATIONS] = [...filtered, ...action.notifications];
       break;
-    } 
+    }
+    case UPDATE_ALERT: {
+      const { alert: newAlert } = action;
+      if (!newAlert.name || newAlert.name === "") {
+        break;
+      }
+      let updatedAlerts = updatedState[ALERTS].map((alert, i) => {
+        if (alert.uniqueId !== newAlert.id || newAlert.name.toUpperCase() !== alert.name.toUpperCase()) {
+          return alert;
+        }
+
+        return Object.assign(alert, newAlert);
+      });
+      if (!updatedAlerts.find(alert => alert.name.toUpperCase() === newAlert.name)) {
+        // make sure we add a new alert if it's new.
+        updatedAlerts = [...updatedAlerts, newAlert];
+      }
+      updatedState[ALERTS] = updatedAlerts;
+      break;
+    }
+    case REMOVE_ALERT: {
+      updatedState[ALERTS] = updatedState[ALERTS].filter((alert, i) => alert.uniqueId !== action.id || action.name.toUpperCase() !== alert.name.toUpperCase())
+      break;
+    }
+    case CLEAR_ALERTS: {
+      updatedState[ALERTS] = updatedState[ALERTS].filter(it => it.level !== action.level);
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -334,6 +366,9 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       loadFavorites: favorites => dispatch({ type: LOAD_FAVORITES, favorites }),
       toggleFavorite: marketId => dispatch({ type: TOGGLE_FAVORITE, marketId }),
       updateNotifications: notifications => dispatch({ type: UPDATE_NOTIFICATIONS, notifications }),
+      updateAlert: alert => dispatch({ type: UPDATE_ALERT, alert }),
+      removeAlert: (id, name) => dispatch({ type: REMOVE_ALERT, id, name }),
+      clearAlerts: level => dispatch({ type: CLEAR_ALERTS, level }),
     },
   };
 };

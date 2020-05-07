@@ -14,6 +14,7 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
@@ -23,7 +24,7 @@ export const CLEAR_ALERTS = 'CLEAR_ALERTS';
 export function addAlert(alert: any) {
   return (dispatch: ThunkDispatch<void, any, Action>) => {
     if (alert != null) {
-      const { universe } = store.getState() as AppState;
+      const { universe } = AppStatus.get();
       const callback = (alert: any) => {
         const fullAlert = {
           type: ADD_ALERT,
