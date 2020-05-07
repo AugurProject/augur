@@ -7,16 +7,17 @@ import { Properties } from 'modules/common/row-column';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { calcPercentageFromPrice } from 'utils/format-number';
+import { Markets } from 'modules/markets/store/markets';
 
 const { COLUMN_TYPES, SHORT, BUY, SELL } = constants;
 
-const mapStateToProps = (state: AppState) => ({
-  marketInfos: state.marketInfos,
-});
+const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
+  const { marketInfos } = Markets.get();
+
   const {
     position,
     showPercent,
@@ -28,7 +29,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   let lastPrice = position.lastPrice;
   let purchasePrice = position.purchasePrice;
 
-  const market = sP.marketInfos[position.marketId];
+  const market = marketInfos[position.marketId];
   const usePercent = position.outcomeId === constants.INVALID_OUTCOME_ID && market.marketType === constants.SCALAR;
   if (usePercent) {
     const lastPricePercent = calcPercentageFromPrice(
