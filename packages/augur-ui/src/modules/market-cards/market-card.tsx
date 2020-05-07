@@ -167,21 +167,12 @@ export const MarketCard = ({
         {!condensed && !marketResolved ? (
           <>
             <OutcomeGroup
-              outcomes={outcomesFormatted}
-              marketType={marketType}
-              description={description}
-              scalarDenomination={scalarDenomination}
-              min={minPriceBigNumber}
-              max={maxPriceBigNumber}
               expanded={expandedView ? true : expanded}
-              stakes={disputeInfo.stakes}
               dispute={dispute}
-              inDispute={inDispute}
               showOutcomeNumber={showOutcomeNumber}
               canDispute={canDispute}
               canSupport={canSupport}
-              marketId={id}
-              isWarpSync={market.isWarpSync}
+              market={market}
             />
             {expandedOptionShowing && (
               <button onClick={() => setExpanded(!expanded)}>

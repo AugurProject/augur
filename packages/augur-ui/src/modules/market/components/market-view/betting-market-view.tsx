@@ -25,25 +25,12 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
   const marketId = getAddress(queryId);
   const market = selectMarket(marketId);
   const {
-    description,
     endTimeFormatted,
     settlementFeePercent,
-    settlementFee,
-    details,
     creationTimeFormatted,
-    outcomesFormatted,
-    marketType,
-    scalarDenomination,
-    minPriceBigNumber,
-    maxPriceBigNumber,
-    disputeInfo,
-    id,
-    reportingState,
+    description, 
+    details
   } = market;
-
-  const inDispute =
-    reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
-    reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
 
   return (
     <div className={Styles.BettingMarketView}>
@@ -77,18 +64,8 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
         </div>
       </div>
       <OutcomeGroup
-        // orderBook={orderBook}
-        outcomes={outcomesFormatted}
-        marketType={marketType}
-        description={description}
-        scalarDenomination={scalarDenomination}
-        min={minPriceBigNumber}
-        max={maxPriceBigNumber}
-        stakes={disputeInfo && disputeInfo.stakes}
-        dispute={null}
-        inDispute={inDispute}
-        marketId={id}
-        // theme={theme}
+        market={market}
+        canDispute={false}
       />
       <div>
         <Subheaders
