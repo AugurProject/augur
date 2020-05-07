@@ -329,14 +329,7 @@ export class RelayClient {
     try {
       await this.provider.provider.sendTransaction(raw_tx);
     } catch (err) {
-      // This is what we want to be the case
-      if (err.responseText?.includes("known transaction")) {
-        return;
-      }
-      if (err.responseText?.includes("Transaction with the same hash was already imported")) {
-        return;
-      }
-      throw err;
+      console.log(`Broadcast of GSN TX received: ${JSON.stringify(err)}`);
     }
   }
 
