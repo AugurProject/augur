@@ -74,6 +74,7 @@ import {
   dateGreater,
   isValidFee,
   checkForUserInputFilled,
+  isCheckWholeNumber,
 } from 'modules/common/validations';
 import {
   buildformattedDate,
@@ -174,6 +175,7 @@ interface Validations {
   checkUserInputFilled?: Boolean;
   checkFee?: Boolean;
   checkForAddress?: Boolean;
+  checkWholeNumber?: Boolean;
 }
 
 const draftError = 'ENTER A MARKET QUESTION';
@@ -507,6 +509,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkForAddress,
       checkFee,
       checkUserInputFilled,
+      checkWholeNumber,
     } = validationsObj;
 
     const checkValidations = [
@@ -536,6 +539,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkUserInputFilled
         ? checkForUserInputFilled(value, newMarket.endTimeFormatted, currentTimestamp)
         : '',
+      checkWholeNumber ? isCheckWholeNumber(value) : '',
     ];
 
     if (label === END_TIME) {
