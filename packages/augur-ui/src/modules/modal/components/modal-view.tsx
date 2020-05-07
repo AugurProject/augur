@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom'
+
 import classNames from 'classnames';
 import ModalSignTransaction from 'modules/modal/containers/modal-sign-transaction';
 import ModalReporting from 'modules/modal/containers/modal-reporting';
