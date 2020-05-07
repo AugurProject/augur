@@ -35,6 +35,7 @@ import {
   NOTIFICATIONS,
   ALERTS,
 } from 'modules/app/store/constants';
+import { ADD_ALERT } from 'modules/alerts/actions/alerts';
 
 const {
   SET_THEME,
@@ -72,6 +73,7 @@ const {
   LOAD_FAVORITES,
   TOGGLE_FAVORITE,
   UPDATE_NOTIFICATIONS,
+  ADD_ALERT,
   UPDATE_ALERT,
   REMOVE_ALERT,
   CLEAR_ALERTS,
@@ -270,22 +272,23 @@ export function AppStatusReducer(state, action) {
       updatedState[NOTIFICATIONS] = [...filtered, ...action.notifications];
       break;
     }
-    case UPDATE_ALERT: {
+    case ADD_ALERT: {
       const { alert: newAlert } = action;
       if (!newAlert.name || newAlert.name === "") {
         break;
       }
+      updatedState[ALERTS] = [...updatedState[ALERTS], newAlert]
+      break;
+    }
+    case UPDATE_ALERT: {
+      const { alert: newAlert, id } = action;
       let updatedAlerts = updatedState[ALERTS].map((alert, i) => {
-        if (alert.uniqueId !== newAlert.id || newAlert.name.toUpperCase() !== alert.name.toUpperCase()) {
+        if (alert.uniqueId !== id || newAlert.name.toUpperCase() !== alert.name.toUpperCase()) {
           return alert;
         }
 
         return Object.assign(alert, newAlert);
       });
-      if (!updatedAlerts.find(alert => alert.name.toUpperCase() === newAlert.name)) {
-        // make sure we add a new alert if it's new.
-        updatedAlerts = [...updatedAlerts, newAlert];
-      }
       updatedState[ALERTS] = updatedAlerts;
       break;
     }
@@ -366,7 +369,8 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       loadFavorites: favorites => dispatch({ type: LOAD_FAVORITES, favorites }),
       toggleFavorite: marketId => dispatch({ type: TOGGLE_FAVORITE, marketId }),
       updateNotifications: notifications => dispatch({ type: UPDATE_NOTIFICATIONS, notifications }),
-      updateAlert: alert => dispatch({ type: UPDATE_ALERT, alert }),
+      addAlert: alert => dispatch({ type: ADD_ALERT, alert }),
+      updateAlert: (id, alert) => dispatch({ type: UPDATE_ALERT, alert, id }),
       removeAlert: (id, name) => dispatch({ type: REMOVE_ALERT, id, name }),
       clearAlerts: level => dispatch({ type: CLEAR_ALERTS, level }),
     },

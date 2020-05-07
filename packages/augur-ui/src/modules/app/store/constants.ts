@@ -211,6 +211,7 @@ export const APP_STATUS_ACTIONS = {
   LOAD_FAVORITES: 'LOAD_FAVORITES',
   TOGGLE_FAVORITE: 'TOGGLE_FAVORITE',
   UPDATE_NOTIFICATIONS: 'UPDATE_NOTIFICATIONS',
+  ADD_ALERT: 'ADD_ALERT',
   UPDATE_ALERT: 'UPDATE_ALERT',
   REMOVE_ALERT: 'REMOVE_ALERT',
   CLEAR_ALERTS: 'CLEAR_ALERTS',
@@ -252,7 +253,8 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   loadFavorites: favorites => {},
   toggleFavorite: marketId => {},
   updateNotifications: notificiations => {},
-  updateAlert: alert => {},
+  addAlert: alert => {},
+  updateAlert: (id, alert) => {},
   removeAlert: (id, name) => {},
   clearAlerts: level => {},
 };

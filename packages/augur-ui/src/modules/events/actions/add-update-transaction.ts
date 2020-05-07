@@ -126,7 +126,14 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       eventName === TXEventName.RelayerDown
     ) {
       const genHash = hash ? hash : generateTxParameterId(transaction.params);
-
+      AppState.actions.addAlert({
+        id: genHash,
+        uniqueId: genHash,
+        params: transaction.params,
+        status: TXEventName.Failure,
+        timestamp,
+        name: methodCall,
+      });
       dispatch(
         addAlert({
           id: genHash,
@@ -151,6 +158,12 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         methodCall === CREATEYESNOMARKET ||
         methodCall === CREATESCALARMARKET
       ) {
+        AppState.actions.updateAlert(hash, {
+          params: transaction.params,
+          status: TXEventName.Success,
+          timestamp,
+          name: CREATEMARKET,
+        });
         dispatch(
           updateAlert(hash, {
             params: transaction.params,
@@ -160,6 +173,13 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           })
         );
       } else {
+        AppState.actions.updateAlert(hash, {
+          params: transaction.params,
+          status: TXEventName.Success,
+          toast: methodCall === PUBLICFILLORDER,
+          timestamp,
+          name: methodCall,
+        });
         dispatch(
           updateAlert(hash, {
             params: transaction.params,
@@ -222,6 +242,19 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           const genHash = hash
             ? hash
             : generateTxParameterId(transaction.params);
+          AppStatus.actions.updateAlert(genHash, {
+            id: genHash,
+            uniqueId: genHash,
+            params: {
+              ...transaction.params,
+              marketId: 1,
+              startTime,
+              endTime,
+            },
+            status: eventName,
+            timestamp,
+            name: methodCall,
+          });
           dispatch(
             updateAlert(genHash, {
               id: genHash,

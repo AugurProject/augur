@@ -154,7 +154,7 @@ export function updateAlert(
             },
           })
         );
-        AppStatus.actions.updateAlert({
+        AppStatus.actions.addAlert({
           ...foundAlert,
           ...alert,
           name: foundAlert.name !== '' ? foundAlert.name : alert.name,
@@ -166,7 +166,7 @@ export function updateAlert(
         });
       } else {
         dispatch(addAlert(alert));
-        AppStatus.actions.updateAlert(alert);
+        AppStatus.actions.addAlert(alert);
       }
     }
   };

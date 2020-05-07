@@ -238,7 +238,6 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   dispatch(getRepToDaiRate());
 
   if (log.logs && log.logs.length > 0) {
-    console.log(log.logs);
     const eventLogs = log.logs.reduce(
       (p, l) => ({ ...p, [l.name]: p[l.name] ? [...p[l.name], l] : [l] }),
       {}

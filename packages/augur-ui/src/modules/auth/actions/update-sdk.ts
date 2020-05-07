@@ -77,7 +77,7 @@ export const createFundedGsnWallet = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { setWalletStatus } = AppStatus.actions;
+  const { setWalletStatu, addAlert: AppStatusAddAlert } = AppStatus.actions;
   try {
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending));
 
@@ -100,6 +100,7 @@ export const createFundedGsnWallet = () => async (
       }
     }
     dispatch(addAlert(alert));
+    AppStatusAddAlert(alert);
   } catch (e) {
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Failure));
     setWalletStatus(WALLET_STATUS_VALUES.FUNDED_NEED_CREATE)
