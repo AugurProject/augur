@@ -25,11 +25,13 @@ import {
   uniswapDaiForRep,
   uniswapEthForDai,
   uniswapEthForRep,
+  checkSetApprovalAmount,
 } from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/swap/components/index.styles.less';
 import { ProcessingButton } from 'modules/common/buttons';
 import { SDKConfiguration } from '@augurproject/artifacts';
+import { augurSdk } from 'services/augursdk';
 
 interface SwapProps {
   balances: AccountBalances;
@@ -38,6 +40,7 @@ interface SwapProps {
   ETH_RATE: BigNumber;
   REP_RATE: BigNumber;
   config: SDKConfiguration,
+  address: string;
 }
 
 export const Swap = ({
@@ -47,6 +50,7 @@ export const Swap = ({
   ETH_RATE,
   REP_RATE,
   config,
+  address,
 }: SwapProps) => {
 
   const hasEth = createBigNumber(balances.eth).gt(ZERO);
@@ -82,18 +86,23 @@ export const Swap = ({
   };
 
   const makeTrade = async () => {
+    const { contracts } = augurSdk.get();
+
     const input = inputAmount;
     const output = createBigNumber(outputAmount.value);
     const exchangeRateBufferMultiplier = config.uniswap?.exchangeRateBufferMultiplier || 1.005;
 
     try {
       if (fromTokenType === DAI) {
+        await checkSetApprovalAmount(address, contracts.cash);
         await uniswapDaiForRep(input, output, exchangeRateBufferMultiplier);
         clearForm();
       } else if (fromTokenType === REP) {
+        await checkSetApprovalAmount(address, contracts.reputationToken);
         await uniswapRepForDai(input, output, exchangeRateBufferMultiplier);
         clearForm();
       } else if (fromTokenType === ETH) {
+        await checkSetApprovalAmount(address, contracts.weth);
         if (toToken === DAI) {
           await uniswapEthForDai(input, output, exchangeRateBufferMultiplier);
         } else if (toToken === REP) {

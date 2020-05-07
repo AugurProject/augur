@@ -238,6 +238,7 @@ export const AddFunds = ({
 
               {swapSelected && (
                 <Swap
+                  address={loginAccount.address}
                   balances={loginAccount.balances}
                   toToken={fundTypeToUse === REP ? REP : DAI}
                   fromToken={fundTypeToUse === REP ? DAI : REP}
