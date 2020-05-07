@@ -13,10 +13,8 @@ import {
   BetsIcon,
   PositionIcon,
 } from 'modules/common/icons';
-import { useAppStatusStore } from 'modules/app/store/app-status';
 import { REPORTING_STATE } from 'modules/common/constants';
 import { OutcomeGroup } from 'modules/market-cards/common';
-import { useMarketsStore } from 'modules/markets/store/markets';
 
 interface BettingMarketViewProps {
   location: Location;
@@ -42,13 +40,6 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
     id,
     reportingState,
   } = market;
-
-  const { theme } = useAppStatusStore();
-  const {
-    orderBooks,
-  } = useMarketsStore();
-  
-  const orderBook = orderBooks[id]?.orderBook;
 
   const inDispute =
     reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
@@ -86,7 +77,7 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
         </div>
       </div>
       <OutcomeGroup
-        orderBook={orderBook}
+        // orderBook={orderBook}
         outcomes={outcomesFormatted}
         marketType={marketType}
         description={description}
@@ -97,7 +88,7 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
         dispute={null}
         inDispute={inDispute}
         marketId={id}
-        theme={theme}
+        // theme={theme}
       />
       <div>
         <Subheaders

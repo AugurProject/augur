@@ -39,7 +39,7 @@ import {
 import { AppState } from 'appStore';
 import {
   loadMarketOrderBook,
-} from 'modules/orders/actions/load-market-orderbook';
+} from 'modules/orders/helpers/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';

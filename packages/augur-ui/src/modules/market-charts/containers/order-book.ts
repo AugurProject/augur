@@ -4,7 +4,7 @@ import OrderBook from "modules/market-charts/components/order-book/order-book";
 import { selectMarket } from "modules/markets/selectors/market";
 import { ASKS, BIDS, SCALAR, INVALID_OUTCOME_ID } from "modules/common/constants";
 import { orderAndAssignCumulativeShares, calcOrderbookPercentages } from "modules/markets/helpers/order-and-assign-cumulative-shares";
-import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 import { AppState } from "appStore";
 import { AppStatus } from 'modules/app/store/app-status';
 

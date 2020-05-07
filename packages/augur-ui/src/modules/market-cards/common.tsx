@@ -73,6 +73,8 @@ import { useBetslipStore } from 'modules/trading/store/betslip';
 import { MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
+import { useMarketsStore } from 'modules/markets/store/markets';
+import { id } from '../../../../../node_modules/ethers/utils/hash';
 
 export interface PercentProps {
   percent: number;
@@ -799,7 +801,6 @@ export const SportsOutcome = ({
 )
 
 export interface OutcomeGroupProps {
-  orderBook: any;
   outcomes: OutcomeFormatted[];
   expanded?: Boolean;
   marketType: string;
@@ -820,7 +821,6 @@ export interface OutcomeGroupProps {
 }
 
 export const OutcomeGroup = ({
-  orderBook,
   outcomes,
   expanded,
   marketType,
@@ -839,6 +839,11 @@ export const OutcomeGroup = ({
   forkingMarket,
 }: OutcomeGroupProps) => {
   const { theme } = useAppStatusStore();
+  const {
+    orderBooks,
+  } = useMarketsStore();
+  const orderBook = orderBooks[marketId]?.orderBook;
+
   if (theme === THEMES.SPORTS) {
     return <MultiMarketTable orderBook={orderBook} outcomes={outcomes} min={min} max={max} description={description} />;
   }

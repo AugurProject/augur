@@ -26,7 +26,6 @@ import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
 import { ThickChevron } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { useMarketsStore } from 'modules/markets/store/markets';
 
 const LoadingCard = () => (<div
 className={classNames(Styles.MarketCard, {
@@ -86,9 +85,7 @@ export const MarketCard = ({
   const [expanded, setExpanded] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const { theme, isLogged } = useAppStatusStore();
-  const {
-    orderBooks,
-  } = useMarketsStore();
+  
   
   const {
     outcomesFormatted,
@@ -104,7 +101,6 @@ export const MarketCard = ({
     consensusFormatted,
     description,
   } = market;
-  const orderBook = orderBooks[id]?.orderBook;
 
   if (loading) {
     return <LoadingCard />;
@@ -171,7 +167,6 @@ export const MarketCard = ({
         {!condensed && !marketResolved ? (
           <>
             <OutcomeGroup
-              orderBook={orderBook}
               outcomes={outcomesFormatted}
               marketType={marketType}
               description={description}
@@ -187,7 +182,6 @@ export const MarketCard = ({
               canSupport={canSupport}
               marketId={id}
               isWarpSync={market.isWarpSync}
-              theme={theme}
             />
             {expandedOptionShowing && (
               <button onClick={() => setExpanded(!expanded)}>
