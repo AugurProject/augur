@@ -58,12 +58,13 @@ describe('State API :: Users :: ', () => {
       // Invalid							                                                        $0.00	      $0.00
       // 								                                                                          -$23.00
       const market = await createCategoricalMarket(john, {
-        description: 'NBA (Point Spread): Chicago Bulls to win by more than 2.5 points over the Cleveland Cavaliers?',
+        description:
+          'NBA (Point Spread): Chicago Bulls to win by more than 2.5 points over the Cleveland Cavaliers?',
         outcomes: ['Chicago Bulls', 'Cleveland Cavaliers', 'No Winner'],
       });
       const [maker, taker] = [mary, bob];
 
-      await trade(john, 0, [
+      await mkTrade(john, 0, [
         {
           market,
           maker,
@@ -124,12 +125,13 @@ describe('State API :: Users :: ', () => {
       // Invalid					                                           	$0.00	      $0.00
       // 					                                                		            -$90.00
       const market = await createCategoricalMarket(john, {
-        description: 'Week 1: Which NFL Team will win: San Francisco 49ers vs. New Orleans Saints?',
+        description:
+          'Week 1: Which NFL Team will win: San Francisco 49ers vs. New Orleans Saints?',
         outcomes: ['SF 49ers', 'NO Saints', 'Tie/No Winner'],
       });
       const [maker, taker] = [mary, bob];
 
-      await trade(john, 0, [
+      await mkTrade(john, 0, [
         {
           market,
           maker,
@@ -181,11 +183,16 @@ describe('State API :: Users :: ', () => {
       // 					                                                           	      	$8.00
       const market = await createCategoricalMarket(john, {
         description: 'Who will win best actor in the 2020 Academy Awards?',
-        outcomes: ['Joaquin Phoenix', 'Leonardo DiCaprio', 'Jonathon Pryce', 'Other(field)'],
+        outcomes: [
+          'Joaquin Phoenix',
+          'Leonardo DiCaprio',
+          'Jonathon Pryce',
+          'Other(field)',
+        ],
       });
       const [maker, taker] = [mary, bob];
 
-      await trade(john, 0, [
+      await mkTrade(john, 0, [
         {
           market,
           maker,
@@ -252,7 +259,7 @@ describe('State API :: Users :: ', () => {
       });
       const [maker, taker] = [mary, bob];
 
-      await trade(john, 0, [
+      await mkTrade(john, 0, [
         {
           market,
           maker,
@@ -321,12 +328,13 @@ describe('State API :: Users :: ', () => {
       // Invalid						                                            $0.00	      $0.00
       // 							                                                             -$110.00
       const market = await createCategoricalMarket(john, {
-        description: 'Week 5: Which NFL Team will win: Los Angeles Chargers vs. Denver Broncos?',
+        description:
+          'Week 5: Which NFL Team will win: Los Angeles Chargers vs. Denver Broncos?',
         outcomes: ['LA Chargers', 'Denver Broncos', 'Tie/No Winner'],
       });
       const [maker, taker] = [mary, bob];
 
-      await trade(john, 0, [
+      await mkTrade(john, 0, [
         {
           market,
           maker,
@@ -386,12 +394,20 @@ describe('State API :: Users :: ', () => {
       // Other(field)						                                      $0.00	      $0.00
       // Invalid							                                                    -$43.00
       const market = await createCategoricalMarket(john, {
-        description: "Men's Singles Tennis: Which player will win the 2020 BNP Paribas Open?",
-        outcomes: ['Agassi', 'Federer', 'Sampres', 'Becker', 'Mcenroe', 'Other(field)'],
+        description:
+          "Men's Singles Tennis: Which player will win the 2020 BNP Paribas Open?",
+        outcomes: [
+          'Agassi',
+          'Federer',
+          'Sampres',
+          'Becker',
+          'Mcenroe',
+          'Other(field)',
+        ],
       });
       const [maker, taker] = [mary, bob];
 
-      await trade(john, 0, [
+      await mkTrade(john, 0, [
         {
           market,
           maker,
@@ -463,7 +479,7 @@ describe('State API :: Users :: ', () => {
       });
       const [maker, taker] = [mary, bob];
 
-      await trade(john, 0, [
+      await mkTrade(john, 0, [
         {
           market,
           maker,
@@ -523,45 +539,33 @@ describe('State API :: Users :: ', () => {
       // Acct C Unrealized s/b (0.6-0.6) * 100 = 0
 
       const [anyone, A, B, C, D] = [john, mary, bob, jasmine, fred];
-      console.log(`A: ${A.account.address}`);
-      console.log(`B: ${B.account.address}`);
-      console.log(`C: ${C.account.address}`);
-      console.log(`D: ${D.account.address}`);
-      console.log(`anyone: ${anyone.account.address}`);
-
       const market = await createYesNoMarket(anyone, {});
 
-      await trade(anyone, 0, [
-        {
-          market,
-          maker: A,
-          taker: B,
-          direction: SHORT,
-          outcome: 2,
-          quantity: 100,
-          price: 0.4,
-        },
-      ]);
+      await trade({
+        market,
+        buyer: A,
+        seller: B,
+        outcome: 2,
+        quantity: 100,
+        price: 0.4,
+      });
       await anyone.advanceTimestamp(HOUR);
-      await verifyThirtyDayPL(john, {
+      await verifyThirtyDayPL(anyone, {
         [A.account.address]: defaultPL,
         [B.account.address]: defaultPL,
         [C.account.address]: defaultPL,
       });
 
-      await trade(anyone, 0, [
-        {
-          market,
-          maker: B,
-          taker: C,
-          direction: SHORT,
-          outcome: 2,
-          quantity: 100,
-          price: 0.6,
-        },
-      ]);
+      await trade({
+        market,
+        buyer: C,
+        seller: B,
+        outcome: 2,
+        quantity: 100,
+        price: 0.6,
+      });
       await anyone.advanceTimestamp(HOUR);
-      await verifyThirtyDayPL(john, {
+      await verifyThirtyDayPL(anyone, {
         [A.account.address]: {
           unrealizedPL: 20,
           unrealizedPercent: 0.5,
@@ -569,10 +573,10 @@ describe('State API :: Users :: ', () => {
           realizedPercent: 0,
         },
         [B.account.address]: {
-          unrealizedPL: 0,
-          unrealizedPercent: 0,
-          realizedPL: -20,
-          realizedPercent: -0.3333,
+          unrealizedPL: -20,
+          unrealizedPercent: -0.2,
+          realizedPL: 0,
+          realizedPercent: 0,
         },
         [C.account.address]: {
           unrealizedPL: 0,
@@ -585,17 +589,47 @@ describe('State API :: Users :: ', () => {
   });
 });
 
+interface DirectedTrade {
+  market: Market;
+  buyer: TestContractAPI;
+  seller: TestContractAPI;
+  outcome: number;
+  quantity: number;
+  price: number;
+  // scalar market only
+  minPrice?: number;
+  maxPrice?: number;
+}
+
 // Note that this is doing on-chain/native trades, not 0x trades.
-async function trade(user: TestContractAPI, timeDelta: number, trades: MakerTakerTrade[]): Promise<void> {
+async function trade(trade_: DirectedTrade): Promise<void> {
+  const tradeData = directedTradeToTradeData(trade_);
+  await doTradeTakerView(trade_.buyer, trade_.seller, tradeData, trade_.market);
+}
+
+// Note that this is doing on-chain/native trades, not 0x trades.
+async function mkTrade(
+  user: TestContractAPI,
+  timeDelta: number,
+  trades: MakerTakerTrade[]
+): Promise<void> {
   await user.advanceTimestamp(timeDelta);
 
   for (const trade_ of trades) {
     const tradeData = makerTakerTradeToTradeData(trade_);
-    await doTradeTakerView(trade_.maker, trade_.taker, tradeData, trade_.market);
+    await doTradeTakerView(
+      trade_.maker,
+      trade_.taker,
+      tradeData,
+      trade_.market
+    );
   }
 }
 
-async function verifyThirtyDayPL(user: TestContractAPI, result: { [address: string]: PLResultData }) {
+async function verifyThirtyDayPL(
+  user: TestContractAPI,
+  result: { [address: string]: PLResultData }
+) {
   await user.sync();
   for (const address of _.keys(result)) {
     const plResult = result[address];
@@ -603,14 +637,35 @@ async function verifyThirtyDayPL(user: TestContractAPI, result: { [address: stri
       universe: user.augur.contracts.universe.address,
       account: address,
     });
-    console.log(`${address}, ${JSON.stringify(profitLossSummary, null, 2)}`);
+    console.log(
+      `DEBUG P/L: ${address}, ${JSON.stringify(profitLossSummary, null, 2)}`
+    ); // TODO remove
 
     const thirtyDayPLSummary = profitLossSummary[THIRTY];
-    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(plResult.realizedPL);
-    await expect(Number.parseFloat(thirtyDayPLSummary.realizedPercent)).toEqual(plResult.realizedPercent);
-    await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(plResult.unrealizedPL);
-    await expect(Number.parseFloat(thirtyDayPLSummary.unrealizedPercent)).toEqual(plResult.unrealizedPercent);
+    await expect(Number.parseFloat(thirtyDayPLSummary.realized)).toEqual(
+      plResult.realizedPL
+    );
+    await expect(Number.parseFloat(thirtyDayPLSummary.realizedPercent)).toEqual(
+      plResult.realizedPercent
+    );
+    await expect(Number.parseFloat(thirtyDayPLSummary.unrealized)).toEqual(
+      plResult.unrealizedPL
+    );
+    await expect(
+      Number.parseFloat(thirtyDayPLSummary.unrealizedPercent)
+    ).toEqual(plResult.unrealizedPercent);
   }
+}
+
+function directedTradeToTradeData({
+  outcome,
+  quantity,
+  price,
+  minPrice,
+  maxPrice,
+}: DirectedTrade): TradeData {
+  const direction = SHORT; // assumes call like doTradeTakerView(buyer, seller, ...)
+  return { direction, outcome, quantity, price, minPrice, maxPrice };
 }
 
 function makerTakerTradeToTradeData(trade: MakerTakerTrade): TradeData {
@@ -630,9 +685,13 @@ async function verifyCash(
   const actualBalances: Balances = {};
   for (const address in balances) {
     const balance = balances[address];
-    const reportingFee = reportingFeeDivisor ? balance / reportingFeeDivisor : 0;
+    const reportingFee = reportingFeeDivisor
+      ? balance / reportingFeeDivisor
+      : 0;
     const marketFee = marketFeeDivisor ? balance / marketFeeDivisor : 0;
-    const expectedBalance = feeAdjustment ? balance - reportingFee - marketFee : balance;
+    const expectedBalance = feeAdjustment
+      ? balance - reportingFee - marketFee
+      : balance;
     const actualBalance = (await user.getCashBalance(address)).toNumber();
     expect(actualBalance).toEqual(expectedBalance);
     actualBalances[address] = actualBalance;
@@ -748,7 +807,7 @@ async function createScalarMarket(
       feePerCashInAttoCash: new BigNumber(marketFee),
       affiliateFeeDivisor: new BigNumber(affiliateFee),
       designatedReporter: designatedReporter || user.account.address,
-      prices: prices.map((p) => new BigNumber(p)),
+      prices: prices.map(p => new BigNumber(p)),
       numTicks: new BigNumber(numTicks),
       extraInfo: JSON.stringify({
         categories,
@@ -776,13 +835,20 @@ async function report(user: TestContractAPI, market: Market, outcome: number) {
   await user.doInitialReport(market, outcomeList);
 }
 
-async function reportScalar(user: TestContractAPI, market: Market, outcome: number | 'invalid') {
+async function reportScalar(
+  user: TestContractAPI,
+  market: Market,
+  outcome: number | 'invalid'
+) {
   const endTime = await market.getEndTime_();
   await user.setTimestamp(endTime.plus(1));
 
   const numTicks = await market.getNumTicks_();
   const other = numTicks.minus(outcome);
-  const outcomeList = outcome === 'invalid' ? [numTicks, ZERO, ZERO] : [ZERO, new BigNumber(outcome), other];
+  const outcomeList =
+    outcome === 'invalid'
+      ? [numTicks, ZERO, ZERO]
+      : [ZERO, new BigNumber(outcome), other];
   await user.doInitialReport(market, outcomeList);
 }
 

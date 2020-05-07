@@ -4,7 +4,12 @@ import {
   convertDisplayPriceToOnChainPrice,
   numTicksToTickSize,
 } from '@augurproject/sdk';
-import { ACCOUNTS, ContractAPI, defaultSeedPath, loadSeed } from '@augurproject/tools';
+import {
+  ACCOUNTS,
+  ContractAPI,
+  defaultSeedPath,
+  loadSeed,
+} from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
@@ -109,7 +114,11 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
   const john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, config);
   const mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, config);
   const bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, config);
-  const jasmine = await TestContractAPI.userWrapper(ACCOUNTS[3], provider, config);
+  const jasmine = await TestContractAPI.userWrapper(
+    ACCOUNTS[3],
+    provider,
+    config
+  );
   const fred = await TestContractAPI.userWrapper(ACCOUNTS[4], provider, config);
 
   await john.approve();
@@ -142,20 +151,29 @@ export async function processTrades(
     await user0.sync();
     await user1.sync();
 
-    const { tradingPositions } = await user0.api.route('getUserTradingPositions', {
-      universe,
-      account: user1.account.address,
-      marketId: market.address,
-    });
+    const { tradingPositions } = await user0.api.route(
+      'getUserTradingPositions',
+      {
+        universe,
+        account: user1.account.address,
+        marketId: market.address,
+      }
+    );
 
-    const tradingPosition = _.find(tradingPositions, (position) => {
+    const tradingPosition = _.find(tradingPositions, position => {
       return position.outcome === trade.outcome;
     });
 
-    await expect(tradingPosition.netPosition).toEqual(trade.position.toString());
-    await expect(tradingPosition.averagePrice).toEqual(trade.avgPrice.toString());
+    await expect(tradingPosition.netPosition).toEqual(
+      trade.position.toString()
+    );
+    await expect(tradingPosition.averagePrice).toEqual(
+      trade.avgPrice.toString()
+    );
     await expect(tradingPosition.realized).toEqual(trade.realizedPL.toString());
-    await expect(tradingPosition.frozenFunds).toEqual(trade.frozenFunds.toString());
+    await expect(tradingPosition.frozenFunds).toEqual(
+      trade.frozenFunds.toString()
+    );
   }
 }
 
@@ -168,15 +186,32 @@ export async function doTradeTakerView(
   minPrice: BigNumber = DEFAULT_MIN_PRICE,
   maxPrice: BigNumber = DEFAULT_DISPLAY_RANGE
 ): Promise<void> {
-  minPrice = typeof trade.minPrice !== 'undefined' ? new BigNumber(trade.minPrice) : minPrice;
-  maxPrice = typeof trade.maxPrice !== 'undefined' ? new BigNumber(trade.maxPrice) : maxPrice;
+  minPrice =
+    typeof trade.minPrice !== 'undefined'
+      ? new BigNumber(trade.minPrice)
+      : minPrice;
+  maxPrice =
+    typeof trade.maxPrice !== 'undefined'
+      ? new BigNumber(trade.maxPrice)
+      : maxPrice;
 
   const numTicks = await market.getNumTicks_();
   const price = new BigNumber(trade.price);
-  const tickSize = numTicksToTickSize(numTicks, minPrice.multipliedBy(10 ** 18), maxPrice.multipliedBy(10 ** 18));
-  const quantity = convertDisplayAmountToOnChainAmount(new BigNumber(trade.quantity), tickSize);
+  const tickSize = numTicksToTickSize(
+    numTicks,
+    minPrice.multipliedBy(10 ** 18),
+    maxPrice.multipliedBy(10 ** 18)
+  );
+  const quantity = convertDisplayAmountToOnChainAmount(
+    new BigNumber(trade.quantity),
+    tickSize
+  );
 
-  const onChainLongPrice = convertDisplayPriceToOnChainPrice(price, minPrice, tickSize);
+  const onChainLongPrice = convertDisplayPriceToOnChainPrice(
+    price,
+    minPrice,
+    tickSize
+  );
   const onChainShortPrice = numTicks.minus(onChainLongPrice);
   const direction = trade.direction === SHORT ? BID : ASK;
   const longCost = quantity.multipliedBy(onChainLongPrice);
