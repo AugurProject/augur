@@ -62,7 +62,7 @@ import { getCategoryStats } from 'modules/create-market/actions/get-category-sta
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import * as _ from 'lodash';
-import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import { removePendingDataByHash, addPendingData, removePendingData, removePendingTransaction, findAndSetTransactionsTimeouts } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder, constructPendingOrderid } from 'modules/orders/actions/pending-orders-management';

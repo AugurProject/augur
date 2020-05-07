@@ -4,31 +4,12 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { AppState } from 'appStore';
-import { Getters } from '@augurproject/sdk';
-
-export const UPDATE_ORDER_BOOK = 'UPDATE_ORDER_BOOK';
-export const CLEAR_ORDER_BOOK = 'CLEAR_ORDER_BOOK';
-
-export const updateOrderBook = (
-  marketId: string,
-  orderBook: Getters.Markets.MarketOrderBook
-) => ({
-  type: UPDATE_ORDER_BOOK,
-  data: {
-    marketId,
-    orderBook,
-  },
-});
-
-export const clearOrderBook = () => ({
-  type: CLEAR_ORDER_BOOK,
-});
+import { Markets } from 'modules/markets/store/markets';
 
 export const loadMarketOrderBook = (
   marketId: string,
   callback: NodeStyleCallback = logError
 ) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   if (marketId == null) {
@@ -42,6 +23,6 @@ export const loadMarketOrderBook = (
     : { marketId };
   const Augur = augurSdk.get();
   const marketOrderBook = await Augur.getMarketOrderBook(params);
-  dispatch(updateOrderBook(marketId, marketOrderBook));
+  Markets.actions.updateOrderBook(marketId, marketOrderBook);
   callback(null, marketOrderBook);
 };

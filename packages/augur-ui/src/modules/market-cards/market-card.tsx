@@ -48,7 +48,6 @@ interface MarketCardProps {
   history: History;
   location: Location;
   toggleFavorite: Function;
-  orderBook: any;
   disputingWindowEndTime: number;
   condensed?: boolean;
   expandedView?: boolean;
@@ -82,11 +81,12 @@ export const MarketCard = ({
   dispute,
   marketLinkCopied,
   toggleFavorite,
-  orderBook
 }: MarketCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const { theme, isLogged } = useAppStatusStore();
+  
+  
   const {
     outcomesFormatted,
     marketType,
@@ -167,23 +167,12 @@ export const MarketCard = ({
         {!condensed && !marketResolved ? (
           <>
             <OutcomeGroup
-              orderBook={orderBook}
-              outcomes={outcomesFormatted}
-              marketType={marketType}
-              description={description}
-              scalarDenomination={scalarDenomination}
-              min={minPriceBigNumber}
-              max={maxPriceBigNumber}
               expanded={expandedView ? true : expanded}
-              stakes={disputeInfo.stakes}
               dispute={dispute}
-              inDispute={inDispute}
               showOutcomeNumber={showOutcomeNumber}
               canDispute={canDispute}
               canSupport={canSupport}
-              marketId={id}
-              isWarpSync={market.isWarpSync}
-              theme={theme}
+              market={market}
             />
             {expandedOptionShowing && (
               <button onClick={() => setExpanded(!expanded)}>
