@@ -12,7 +12,7 @@ jobs:
     - uses: konradpabjan/move-labeled-or-milestoned-issue@v2.0
       with:
         action-token: "${{ secrets.GITHUB_TOKEN }}"
-        project-url: "https://github.com/AugurProject/augur/projects/10"
+        project-url: "https://github.com/AugurProject/augur/projects/7"
         column-name: "To do"
         label-name: "project/website"
         columns-to-ignore: "*"
@@ -22,7 +22,7 @@ jobs:
     - uses: konradpabjan/move-labeled-or-milestoned-issue@v2.0
       with:
         action-token: "${{ secrets.GITHUB_TOKEN }}"
-        project-url: "https://github.com/AugurProject/augur/projects/7"
+        project-url: "https://github.com/AugurProject/augur/projects/10"
         column-name: "To do"
         label-name: "area/design"
         columns-to-ignore: "*" 
