@@ -5,14 +5,8 @@ export const buildSearchString = (keywords, tags) => {
     { find: "details:", replace: "longDescription:" }
   ];
 
-  let keywordSearch =
+  const keywordSearch =
     keywords && keywords.length > MIN_KEYWORDS_LENGTH ? keywords : undefined;
-  if (
-    keywordSearch &&
-    (!keywordSearch.endsWith(" ") && !keywordSearch.endsWith('"'))
-  ) {
-    keywordSearch += "*";
-  }
 
   const terms = [];
   tags.forEach(i => {

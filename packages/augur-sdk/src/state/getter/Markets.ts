@@ -531,7 +531,7 @@ export class Markets {
       params.userPortfolioAddress;
     let useCreator = false;
 
-    if (params.search || params.categories) {
+    if (params.search || (params.categories && params.categories.length > 0)) {
       const marketsFTSResults = await getMarketsSearchResults(
         params.universe,
         params.search || '',
@@ -1574,7 +1574,7 @@ async function getMarketsSearchResults(
 ): Promise<Array<SearchResults<MarketFields>>> {
   const whereObj = { universe };
   for (let i = 0; i < categories.length; i++) {
-    whereObj['category' + (i + 1)] = categories[i];
+    whereObj[`category${i + 1}`] = categories[i];
   }
   if (query) {
     return augur.syncableFlexSearch.search(query, { where: whereObj });
