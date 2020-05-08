@@ -25,9 +25,9 @@ export const DESIRED_SIGNER_ETH_BALANCE = `0x${new BigNumber(
 
 const OVEREAD_RELAY_GAS = 500000;
 const UNISWAP_MAX_GAS_COST = 150000;
-const REFRESH_INTERVAL_MS = 15000; // 15 seconds
-const GAS_PRICE_MULTIPLIER = 1.2;
-const GAS_COST_MULTIPLIER = 1.2;
+const REFRESH_INTERVAL_MS = 10000; // 10 seconds
+const GAS_PRICE_MULTIPLIER = 1.1;
+const GAS_COST_MULTIPLIER = 1.1;
 
 const GSN_RELAY_CALL_STATUS = {
   0: 'OK', // The transaction was successfully relayed and execution successful - never included in the event
@@ -67,6 +67,8 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   relayGasPrice: BigNumber;
   ethToDaiRate: BigNumber;
   signerAccountETHBalance: BigNumber;
+
+  refreshValuesTimeout = null;
 
   _currentNonce = -1;
 
@@ -147,6 +149,16 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     return deps;
   }
 
+  async manualRefreshValues(): Promise<void> {
+    if (this.refreshValuesTimeout) clearTimeout(this.refreshValuesTimeout);
+    this.refreshValues();
+  }
+
+  setSigner(signer: EthersSigner) {
+    this.signer = signer;
+    this.manualRefreshValues();
+  }
+
   async refreshValues(): Promise<void> {
     // Refresh Relay Gas price
     // We bypass the Provider wrapper here and directly get the eth rpc api gas price since we do not want overrides.
@@ -184,7 +196,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
       this.signerAccountETHBalance = new BigNumber(0);
     }
 
-    setTimeout(this.refreshValues.bind(this), REFRESH_INTERVAL_MS);
+    this.refreshValuesTimeout = setTimeout(this.refreshValues.bind(this), REFRESH_INTERVAL_MS);
   }
 
   setUseWallet(useWallet: boolean): void {
@@ -361,14 +373,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
       return super.sendTransaction(tx, txMetadata);
     }
 
-    // We take the previous gas estimate which assumes a direct signer to wallet tx and add both the relayhub overhead and the uniswap funding cost
-    tx.gasLimit = new ethers.utils.BigNumber(
-      gasLimit
-        .plus(OVEREAD_RELAY_GAS)
-        .plus(UNISWAP_MAX_GAS_COST)
-        .decimalPlaces(0)
-        .toString()
-    );
+    tx.gasLimit = new ethers.utils.BigNumber(gasLimit.decimalPlaces(0).toString());
 
     const relayTransaction = await this.signTransaction(tx, txMetadata);
 
@@ -485,9 +490,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     let ethCost = gasEstimate.multipliedBy(this.relayGasPrice);
     ethCost = ethCost.multipliedBy((100 + this.relayClient.config.txFee) / 100);
     let cashCost = ethCost.multipliedBy(this.ethToDaiRate).div(10 ** 18);
-    cashCost = cashCost.multipliedBy(
-      this.config.uniswap.exchangeRateBufferMultiplier
-    );
+    cashCost = cashCost.multipliedBy(this.config.uniswap.exchangeRateBufferMultiplier);
     return cashCost.decimalPlaces(0);
   }
 
@@ -505,9 +508,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
     if (!this.useRelay || this.signerAccountETHBalance.gt(ethCost.toString())) {
       let cashCost = ethCost.multipliedBy(this.ethToDaiRate).div(10 ** 18);
-      cashCost = cashCost.multipliedBy(
-        this.config.uniswap.exchangeRateBufferMultiplier
-      );
+      cashCost = cashCost.multipliedBy(this.config.uniswap.exchangeRateBufferMultiplier);
       return cashCost.decimalPlaces(0);
     }
 

@@ -373,7 +373,7 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   set signer(signer: EthersSigner)  {
-    this.dependencies.signer = signer;
+    this.dependencies.setSigner(signer);
   };
 
   getTradingHistory = (
