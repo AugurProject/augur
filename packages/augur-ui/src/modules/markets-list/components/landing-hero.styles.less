@@ -4,14 +4,13 @@
   position: relative;
   display: flex;
   margin-top: @size-28;
-  padding: @size-40 72px;
-  background: @color-dark-grey;
+  background-color: @color-dark-grey;
   border-radius: @border-radius-default;
-  height: 324px;
-
-  @media all and (min-width: @step-2-2) and (max-width: @step-2-0) {
-    padding-right: 0;
-  }
+  height: 304px;
+  background-image: url('../../../assets/images/hero-background.png');
+  background-position: 85% center;
+  background-size: contain;
+  background-repeat: no-repeat;
 
   > img {
     position: absolute;
@@ -25,19 +24,15 @@
   }
 
   > div:first-of-type {
-    z-index: @default-z-index;
-    margin-right: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     flex: 1;
-
-    @media @breakpoint-min-desktop-min {
-      margin-right: 120px;
-    }
+    max-width: 340px;
+    margin: @size-40 0 @size-48 @size-48;
 
     > h1 {
-      .text-36-bold;
+      .text-30-bold;
 
       color: @color-primary-text;
       margin-bottom: 0;
@@ -48,33 +43,63 @@
 
       line-height: 140%;
       color: @color-primary-text;
-      margin: @size-20 0;
+      margin: @size-16 0 @size-28;
     }
 
     > div {
       > button:last-of-type {
-        margin-left: @size-24;
+        margin-left: @size-18;
+        background-color: transparent;
+        border: 0;
       }
     }
   }
 
   > div:last-of-type {
-    z-index: @default-z-index;
-    display: flex;
+    display: grid;
+    grid-gap: 54px;
+    grid-template-columns: 1fr 1fr;
+    margin-left: auto;
+    margin-right: 14%;
 
-    > img {
-      height: 270px;
+    > img:first-of-type {
+      max-width: 152px;
+      align-self: flex-end;
+      padding-bottom: @size-31;
+    }
+
+    > img:nth-of-type(2) {
+      max-width: 92px;
+      align-self: flex-start;
+      padding-top: @size-17;
+    }
+
+    > img:last-of-type {
+      display: none;
     }
   }
 
   @media @breakpoint-mobile-tablet {
+    background-size: cover;
+
+    > div:first-of-type {
+      z-index: 1;
+    }
+
+    > div:last-of-type {
+      margin-right: 0;
+      position: absolute;
+      right: 3%;
+      height: 100%;
+      grid-gap: @size-20;
+    }
+  }
+
+  @media (max-width: @step-2-15) {
+    background-image: none;
+    margin-top: @size-10;
     height: 100%;
     padding: @size-24 @size-16;
-
-    > img {
-      height: 100%;
-      width: fit-content;
-    }
 
     > div:first-of-type {
       align-items: center;
@@ -105,7 +130,7 @@
 
         > button:first-of-type {
           margin: auto;
-          max-width: 156px;
+          max-width: 100%;
           width: 100%;
         }
 
@@ -117,16 +142,42 @@
     }
 
     > div:last-of-type {
-      display: none;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0 @size-78;
+
+      > img:first-of-type {
+        align-self: flex-end;
+        padding-bottom: @size-31;
+        opacity: 0.4;
+        filter: blur(1px);
+      }
+
+      > img:nth-of-type(2) {
+        justify-self: flex-end;
+        padding-top: @size-17;
+        opacity: 0.4;
+        filter: blur(1px);
+      }
+
+      > img:last-of-type {
+        display: block;
+        position: absolute;
+        bottom: -@size-5;
+        right: 20%;
+      }
     }
   }
 
   @media @breakpoint-mobile {
-    margin-top: @size-10;
+    > div:last-of-type {
+      padding: 0 0 0 @size-8;
 
-    > div:first-of-type {
-      > div > button:first-of-type {
-        max-width: 100%;
+      > img:last-of-type {
+        right: @size-23;
       }
     }
   }
