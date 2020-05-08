@@ -30,7 +30,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   linkContent: [
     {
       content:
-        'Buy Dai ($) directly or transfer Dai ($) to your Augur account address to start placing bets.',
+        'Buy Dai ($) directly or transfer Dai ($) to your User account address to start placing bets.',
     },
     {
       content: 'LEARN MORE',
