@@ -9,15 +9,21 @@
       name="description"
       content="Augur is a decentralized oracle and prediction market protocol built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly."
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://unpkg.com/ipfs/dist/index.min.js"></script>
     <script>
+      const loadingFailedMsg = 'Loading failed. Please refresh.';
+      const ipfsErrorMsg = `Loading Failed. Please refer to <a href="https://github.com/AugurProject/augur/releases">https://github.com/AugurProject/augur/releases</a>.`;
+
       function addErrorMessage(message) {
         const messageNode = document.createElement('p');
         messageNode.innerHTML = message;
         document.getElementsByClassName('errors')[0].append(messageNode);
-        document.getElementsByClassName(
-          'loading-augur'
-        )[0].children[0].textContent = 'Request to load Augur via IPFS failed';
+        const loadingAnimation = document.querySelector('.spinner');
+        loadingAnimation.style.display = 'none';
       }
 
       (async function() {
@@ -25,7 +31,7 @@
         const pageData = await fetch(window.location.href);
 
         if (!pageData.ok) {
-          return addErrorMessage(pageData.statusText);
+          return addErrorMessage(loadingFailedMsg);
         } else {
           await node.add(await pageData.text());
         }
@@ -44,12 +50,11 @@
           githubData = await githubData.json();
 
           if (githubData.length === 0) {
-            return addErrorMessage(
-              'It appears that Augur has no releases. You can check that on our <a href="https://github.com/AugurProject/augur/releases">GitHub Releases</a>.'
-            );
+            // Augur has no releases
+            return addErrorMessage(ipfsErrorMsg);
           }
         } catch (e) {
-          return addErrorMessage(e.message);
+          return addErrorMessage(ipfsErrorMsg);
         }
 
         const ipfsAsset = githubData[0].assets.find(
@@ -57,9 +62,8 @@
         );
 
         if (!ipfsAsset) {
-          return addErrorMessage(
-            `We couldn't find the IPFS hash. Check our <a href="https://github.com/AugurProject/augur/tags">GitHub Tags</a> for an asset with ".ipfs" extension. ${ipfsAsset}`
-          );
+          // No IPFS hash found
+          return addErrorMessage(ipfsErrorMsg);
         } else {
           ipfsHash = ipfsAsset.name.substring(0, ipfsAsset.name.length - 5);
         }
@@ -72,7 +76,7 @@
           const augurData = await fetch(augurUrl);
 
           if (!augurData.ok) {
-            return addErrorMessage(augurData.statusText);
+            return addErrorMessage(ipfsErrorMsg);
           }
 
           const el = document.createElement('html');
@@ -87,30 +91,98 @@
             document.head.appendChild(ns);
           });
         } catch (e) {
-          return addErrorMessage(e.message);
+          return addErrorMessage(loadingFailedMsg);
         }
       })().then(res => {});
     </script>
     <base href="" />
     <style>
       /* http://meyerweb.com/eric/tools/css/reset/
-         v2.0 | 20110126
-         License: none (public domain)
-      */
+       v2.0 | 20110126
+       License: none (public domain)
+    */
 
-      html, body, div, span, applet, object, iframe,
-      h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-      a, abbr, acronym, address, big, cite, code,
-      del, dfn, em, img, ins, kbd, q, s, samp,
-      small, strike, strong, sub, sup, tt, var,
-      b, u, i, center,
-      dl, dt, dd, ol, ul, li,
-      fieldset, form, label, legend,
-      table, caption, tbody, tfoot, thead, tr, th, td,
-      article, aside, canvas, details, embed,
-      figure, figcaption, footer, header, hgroup,
-      menu, nav, output, ruby, section, summary,
-      time, mark, audio, video {
+      html,
+      body,
+      div,
+      span,
+      applet,
+      object,
+      iframe,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      p,
+      blockquote,
+      pre,
+      a,
+      abbr,
+      acronym,
+      address,
+      big,
+      cite,
+      code,
+      del,
+      dfn,
+      em,
+      img,
+      ins,
+      kbd,
+      q,
+      s,
+      samp,
+      small,
+      strike,
+      strong,
+      sub,
+      sup,
+      tt,
+      var,
+      b,
+      u,
+      i,
+      center,
+      dl,
+      dt,
+      dd,
+      ol,
+      ul,
+      li,
+      fieldset,
+      form,
+      label,
+      legend,
+      table,
+      caption,
+      tbody,
+      tfoot,
+      thead,
+      tr,
+      th,
+      td,
+      article,
+      aside,
+      canvas,
+      details,
+      embed,
+      figure,
+      figcaption,
+      footer,
+      header,
+      hgroup,
+      menu,
+      nav,
+      output,
+      ruby,
+      section,
+      summary,
+      time,
+      mark,
+      audio,
+      video {
         margin: 0;
         padding: 0;
         border: 0;
@@ -119,27 +191,46 @@
         vertical-align: baseline;
       }
       /* HTML5 display-role reset for older browsers */
-      article, aside, details, figcaption, figure,
-      footer, header, hgroup, menu, nav, section {
+      article,
+      aside,
+      details,
+      figcaption,
+      figure,
+      footer,
+      header,
+      hgroup,
+      menu,
+      nav,
+      section {
         display: block;
       }
       body {
         line-height: 1;
       }
-      ol, ul {
+      ol,
+      ul {
         list-style: none;
       }
-      blockquote, q {
+      blockquote,
+      q {
         quotes: none;
       }
-      blockquote:before, blockquote:after,
-      q:before, q:after {
+      blockquote:before,
+      blockquote:after,
+      q:before,
+      q:after {
         content: '';
         content: none;
       }
       table {
         border-collapse: collapse;
         border-spacing: 0;
+      }
+
+      body {
+        background-color: #2e2e2f;
+        color: #d7dde0;
+        font-family: 'Inter', sans-serif;
       }
 
       .loading-augur {
@@ -153,24 +244,79 @@
       }
 
       .loading-augur > h1 {
-        font-size: 1.5em;
-        font-weight: bold;
-        margin: 0 auto 16px;
+        color: #fff;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 auto 30px;
       }
 
       .loading-augur > .errors {
-        color: red;
+        font-size: 14px;
+        font-weight: 500;
       }
 
       .loading-augur > .errors > p {
         margin: 0 auto 5px;
       }
+
+      .loading-augur > .errors > p > a {
+        color: #d7dde0;
+        font-weight: 700;
+      }
+
+      /* Loader */
+
+      .spinner {
+        margin: 0 auto;
+        width: 70px;
+        text-align: center;
+      }
+
+      .spinner > div {
+        width: 8px;
+        height: 8px;
+        background-color: #2AE7A8;
+
+        border-radius: 100%;
+        display: inline-block;
+        -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+        animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+      }
+
+      .spinner .bounce1 {
+        -webkit-animation-delay: -0.32s;
+        animation-delay: -0.32s;
+      }
+
+      .spinner .bounce2 {
+        -webkit-animation-delay: -0.16s;
+        animation-delay: -0.16s;
+      }
+
+      @-webkit-keyframes sk-bouncedelay {
+        0%, 80%, 100% { -webkit-transform: scale(0) }
+        40% { -webkit-transform: scale(1.0) }
+      }
+
+      @keyframes sk-bouncedelay {
+        0%, 80%, 100% {
+          -webkit-transform: scale(0);
+          transform: scale(0);
+        } 40% {
+            -webkit-transform: scale(1.0);
+            transform: scale(1.0);
+          }
+      }
     </style>
   </head>
-
   <body>
     <div class="loading-augur">
-      <h1>Loading Augur</h1>
+      <h1>/\ augur</h1>
+      <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
       <div class="errors"></div>
     </div>
   </body>
