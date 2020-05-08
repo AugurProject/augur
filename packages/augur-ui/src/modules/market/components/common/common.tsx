@@ -12,7 +12,6 @@ import { TemplateShield } from 'modules/common/labels';
 import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 import { marketLinkCopied, MARKET_PAGE } from 'services/analytics/helpers';
-import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { FavoritesButton } from 'modules/common/buttons';
 import Styles from 'modules/market/components/common/common.styles.less';
 import { SCALAR } from 'modules/common/constants';
@@ -22,10 +21,8 @@ interface HeadingBarProps {
   market: MarketData;
   history: History;
   expandedDetails?: boolean;
-  addToFavorites: Function;
   gotoFilter: Function;
   showCopied?: boolean;
-  isFavorite?: boolean;
   userAccount?: string;
   setShowCopied?: Function;
   showReportingLabel?: boolean;
@@ -35,10 +32,8 @@ export const HeadingBar = ({
   market,
   expandedDetails,
   history,
-  addToFavorites,
   gotoFilter,
   showCopied,
-  isFavorite,
   userAccount,
   setShowCopied,
   showReportingLabel,
@@ -103,10 +98,9 @@ export const HeadingBar = ({
         {CopyAlternateIcon}
         {showCopied && <div>Copied</div>}
       </div>
-      {toggleFavorite && (
+      {isLogged && (
         <FavoritesButton
-          action={() => addToFavorites()}
-          isFavorite={isFavorite}
+          marketId={id}
           hideText
           disabled={!isLogged}
         />

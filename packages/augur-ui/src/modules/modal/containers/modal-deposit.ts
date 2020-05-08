@@ -13,12 +13,14 @@ import { augurSdk } from 'services/augursdk';
 import { NULL_ADDRESS } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = (state: AppState) => ({
-  modal: AppStatus.get().modal,
-  address: state.loginAccount.mixedCaseAddress,
-  networkId: getNetworkId(),
-});
-
+const mapStateToProps = (state: AppState) => {
+  const { modal, loginAccount: { mixedCaseAddress: address }} = AppStatus.get();
+  return ({
+    modal,
+    address,
+    networkId: getNetworkId(),
+  });
+}
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   openZeroExInstant: async () => {

@@ -11,14 +11,14 @@ import { Action } from 'redux';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { modal } = AppStatus.get();
+  const { loginAccount, modal } = AppStatus.get();
   const market = selectMarket(modal.marketId);
   const userOpenOrders = getUserOpenOrders(modal.marketId) || [];
   return {
     modal,
     userOpenOrders,
     market,
-    loginAccount: state.loginAccount,
+    loginAccount,
   };
 };
 

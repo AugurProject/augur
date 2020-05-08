@@ -1,29 +1,36 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import {
   addOrderToNewMarket,
   removeOrderFromNewMarket,
-  updateNewMarket
-} from "modules/markets/actions/update-new-market";
-import FormDetails from "modules/create-market/components/form-details";
-import getValue from "utils/get-value";
-import getGasPrice from "modules/auth/selectors/get-gas-price";
-import { AppStatus } from "modules/app/store/app-status";
+  updateNewMarket,
+} from 'modules/markets/actions/update-new-market';
+import FormDetails from 'modules/create-market/components/form-details';
+import getGasPrice from 'modules/auth/selectors/get-gas-price';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = state => {
-  const { universe, blockchain: { currentAugurTimestamp: currentTimestamp }} = AppStatus.get();
-  return ({
+  const {
+    loginAccount: {
+      address,
+      meta,
+      balances: { eth: availableEth, rep: availableRep },
+    },
     universe,
-    availableEth: state.loginAccount.balances.eth,
-    availableRep: state.loginAccount.balances.rep,
-    meta: getValue(state, "loginAccount.meta"),
+    blockchain: { currentAugurTimestamp: currentTimestamp },
+  } = AppStatus.get();
+  return {
+    universe,
+    availableEth,
+    availableRep,
+    meta,
     newMarket: state.newMarket,
     categories: state.categories,
     gasPrice: getGasPrice(),
-    address: getValue(state, "loginAccount.address"),
+    address,
     currentTimestamp,
-  });
-}
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   addOrderToNewMarket: data => dispatch(addOrderToNewMarket(data)),
@@ -32,10 +39,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const FormDetailsContainer = withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(FormDetails)
+  connect(mapStateToProps, mapDispatchToProps)(FormDetails)
 );
 
 export default FormDetailsContainer;

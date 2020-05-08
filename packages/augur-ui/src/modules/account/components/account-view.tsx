@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Media from 'react-media';
 
 import TermsAndConditions from 'modules/app/components/terms-and-conditions';
-import Notifications from 'modules/account/containers/notifications';
+import Notifications from 'modules/account/components/notifications';
 import Transactions from 'modules/account/containers/transactions';
 import AugurStatus from 'modules/account/components/augur-status';
 import Favorites from 'modules/portfolio/containers/favorites';
@@ -23,18 +23,15 @@ import { ACCOUNT_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
-export interface AccountViewProps {
-  newNotifications?: boolean;
-}
-
-const AccountView = ({ newNotifications }: AccountViewProps) => {
+const AccountView = () => {
   const [state, setState] = useState({
     extendNotifications: false,
     extendActiveMarkets: false,
     extendWatchlist: false,
     extendTransactions: false,
   });
-  const { theme } = useAppStatusStore();
+  const { theme, notifications } = useAppStatusStore();
+  const newNotifications = notifications.filter(item => item.isNew).length > 0;
 
   const {
     extendActiveMarkets,

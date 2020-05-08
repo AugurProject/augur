@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { MarketCard } from 'modules/market-cards/market-card';
-import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { hasStakeInMarket } from 'modules/account/selectors/has-stake-in-market';
 import {
   MODAL_MIGRATE_MARKET,
@@ -16,19 +15,16 @@ const mapStateToProps = (state, ownProps) => {
   const {
     accountPositions: positions,
     pendingLiquidityOrders,
-    loginAccount,
-    favorites,
   } = state;
   const hasStaked = hasStakeInMarket(state, marketId);
-  const { universe: { forkingInfo, disputeWindow }} = AppStatus.get();
+  const { loginAccount: { address }, universe: { forkingInfo, disputeWindow }} = AppStatus.get();
 
   return {
     hasPosition: !!positions[marketId],
     isForking: !!forkingInfo,
     pendingLiquidityOrders,
     disputingWindowEndTime: disputeWindow?.endTime || 0,
-    address: loginAccount.address,
-    isFavorite: !!favorites[marketId],
+    address,
     hasStaked,
     forkingMarket: forkingInfo?.forkingMarket,
     forkingEndTime: forkingInfo?.forkEndTime,
@@ -38,7 +34,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { setModal } = AppStatus.actions;
   return {
-    toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
     dispute: (selectedOutcome: string, isInvalid: boolean) =>
       setModal({
         type: MODAL_REPORTING,

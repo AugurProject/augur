@@ -5,6 +5,7 @@ import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { AppState } from 'appStore';
 import { Markets } from 'modules/markets/store/markets';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const loadMarketOrderBook = (
   marketId: string,
@@ -16,11 +17,11 @@ export const loadMarketOrderBook = (
   if (marketId == null) {
     return callback('must specify market ID');
   }
-  const { loginAccount } = getState();
+  const { loginAccount: { address: account } } = AppStatus.get();
   const augur = augurSdk.get();
   const expirationCutoffSeconds = await augur.getGasConfirmEstimate();
-  let params = loginAccount.address
-    ? { marketId, account: loginAccount.address, expirationCutoffSeconds }
+  let params = account
+    ? { marketId, account, expirationCutoffSeconds }
     : { marketId };
   const Augur = augurSdk.get();
   const marketOrderBook = await Augur.getMarketOrderBook(params);

@@ -29,7 +29,13 @@ import {
   FILTER_SORT_OPTIONS,
   MODAL,
   UNIVERSE,
+  LOGIN_ACCOUNT,
+  DEFAULT_LOGIN_ACCOUNT_STATE,
+  FAVORITES,
+  NOTIFICATIONS,
+  ALERTS,
 } from 'modules/app/store/constants';
+import { ADD_ALERT } from 'modules/alerts/actions/alerts';
 
 const {
   SET_THEME,
@@ -62,6 +68,15 @@ const {
   CLOSE_MODAL,
   UPDATE_UNIVERSE,
   SWITCH_UNIVERSE,
+  UPDATE_LOGIN_ACCOUNT,
+  CLEAR_LOGIN_ACCOUNT,
+  LOAD_FAVORITES,
+  TOGGLE_FAVORITE,
+  UPDATE_NOTIFICATIONS,
+  ADD_ALERT,
+  UPDATE_ALERT,
+  REMOVE_ALERT,
+  CLEAR_ALERTS,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -213,6 +228,76 @@ export function AppStatusReducer(state, action) {
     case SWITCH_UNIVERSE: {
       delete updatedState[UNIVERSE].forkingInfo;
       delete updatedState[UNIVERSE].disputeWindow;
+      delete updatedState[LOGIN_ACCOUNT].reporting;
+      delete updatedState[LOGIN_ACCOUNT].allowance;
+      delete updatedState[LOGIN_ACCOUNT].tradingPositionsTotal;
+      break;
+    }
+    case UPDATE_LOGIN_ACCOUNT: {
+      updatedState[LOGIN_ACCOUNT] = {
+        ...updatedState[LOGIN_ACCOUNT],
+        ...action.loginAccount,
+      };
+      break;
+    }
+    case CLEAR_LOGIN_ACCOUNT: {
+      updatedState[LOGIN_ACCOUNT] = {...DEFAULT_LOGIN_ACCOUNT_STATE};
+      updatedState[FAVORITES] = {};
+      updatedState[NOTIFICATIONS] = [];
+      updatedState[ALERTS] = [];
+      break;
+    }
+    case LOAD_FAVORITES: {
+      updatedState[FAVORITES] = { ...action.favorites };
+      break;
+    }
+    case TOGGLE_FAVORITE: {
+      const { marketId } = action;
+      const { currentAugurTimestamp: timestamp } = updatedState[BLOCKCHAIN]; 
+      const newFavorites = {
+        ...updatedState[FAVORITES]
+      };
+      if (newFavorites[marketId]) {
+        delete newFavorites[marketId];
+      } else {
+        newFavorites[marketId] = timestamp;
+      }
+      updatedState[FAVORITES] = newFavorites;
+      break;
+    }
+    case UPDATE_NOTIFICATIONS: {
+      const notifications = updatedState[NOTIFICATIONS];
+      const ids = action.notifications.map(n => n.id);
+      const filtered = notifications.filter(n => !ids.includes(n.id))
+      updatedState[NOTIFICATIONS] = [...filtered, ...action.notifications];
+      break;
+    }
+    case ADD_ALERT: {
+      const { alert: newAlert } = action;
+      if (!newAlert.name || newAlert.name === "") {
+        break;
+      }
+      updatedState[ALERTS] = [...updatedState[ALERTS], newAlert]
+      break;
+    }
+    case UPDATE_ALERT: {
+      const { alert: newAlert, id } = action;
+      let updatedAlerts = updatedState[ALERTS].map((alert, i) => {
+        if (alert.uniqueId !== id || newAlert.name.toUpperCase() !== alert.name.toUpperCase()) {
+          return alert;
+        }
+
+        return Object.assign(alert, newAlert);
+      });
+      updatedState[ALERTS] = updatedAlerts;
+      break;
+    }
+    case REMOVE_ALERT: {
+      updatedState[ALERTS] = updatedState[ALERTS].filter((alert, i) => alert.uniqueId !== action.id || action.name.toUpperCase() !== alert.name.toUpperCase())
+      break;
+    }
+    case CLEAR_ALERTS: {
+      updatedState[ALERTS] = updatedState[ALERTS].filter(it => it.level !== action.level);
       break;
     }
     default:
@@ -279,6 +364,15 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
       updateUniverse: universe => dispatch({ type: UPDATE_UNIVERSE, universe }),
       switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
+      updateLoginAccount: (loginAccount, clear = false) => dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount, clear }),
+      clearLoginAccount: () => dispatch({ type: CLEAR_LOGIN_ACCOUNT }),
+      loadFavorites: favorites => dispatch({ type: LOAD_FAVORITES, favorites }),
+      toggleFavorite: marketId => dispatch({ type: TOGGLE_FAVORITE, marketId }),
+      updateNotifications: notifications => dispatch({ type: UPDATE_NOTIFICATIONS, notifications }),
+      addAlert: alert => dispatch({ type: ADD_ALERT, alert }),
+      updateAlert: (id, alert) => dispatch({ type: UPDATE_ALERT, alert, id }),
+      removeAlert: (id, name) => dispatch({ type: REMOVE_ALERT, id, name }),
+      clearAlerts: level => dispatch({ type: CLEAR_ALERTS, level }),
     },
   };
 };

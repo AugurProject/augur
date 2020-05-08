@@ -18,6 +18,7 @@ const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const disputeInfoStakes = market.disputeInfo && market.disputeInfo.stakes;
   const {
+    loginAccount: { address },
     universe: { forkingInfo },
     isLogged,
     blockchain: { currentAugurTimestamp },
@@ -33,7 +34,7 @@ const mapStateToProps = (state, ownProps) => {
     isLoggedIn: isLogged,
     isDesignatedReporter: ownProps.preview
       ? market.designatedReporterType === DESIGNATED_REPORTER_SELF
-      : isSameAddress(market.designatedReporter, state.loginAccount.address),
+      : isSameAddress(market.designatedReporter, address),
     tentativeWinner:
       (disputeInfoStakes &&
         disputeInfoStakes.find(stake => stake.tentativeWinning)) ||

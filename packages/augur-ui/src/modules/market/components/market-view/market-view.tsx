@@ -60,6 +60,8 @@ import { Getters } from '@augurproject/sdk';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { StatusErrorMessage } from 'modules/common/labels';
+import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
+import { BettingMarketView } from './betting-market-view';
 import { useMarketsStore } from 'modules/markets/store/markets';
 
 interface MarketViewProps {
@@ -87,7 +89,6 @@ interface MarketViewProps {
   hotloadMarket: Function;
   canHotload: boolean;
   modalShowing?: string;
-  removeAlert: Function;
   outcomeId?: number;
   account: string;
   orderBook?: Getters.Markets.OutcomeOrderBook | OutcomeTestTradingOrder;
@@ -421,7 +422,7 @@ export default class MarketView extends Component<
   };
 
   next = () => {
-    const { market, updateModal, addAlert, removeAlert } = this.props;
+    const { market, updateModal, addAlert } = this.props;
     const {
       tutorialStep,
       selectedOrderProperties,
@@ -460,7 +461,7 @@ export default class MarketView extends Component<
         },
       });
     } else if (tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS) {
-      removeAlert(TRADING_TUTORIAL, PUBLICFILLORDER);
+      AppStatus.actions.removeAlert(TRADING_TUTORIAL, PUBLICFILLORDER);
     } else if (tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS) {
       updateModal({
         type: MODAL_TUTORIAL_OUTRO,

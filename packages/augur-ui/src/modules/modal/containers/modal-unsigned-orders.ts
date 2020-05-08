@@ -9,46 +9,45 @@ import {
   sendLiquidityOrder,
   startOrderSending,
 } from 'modules/orders/actions/liquidity-management';
-import {
-  NEW_ORDER_GAS_ESTIMATE,
-  ZERO,
-} from 'modules/common/constants';
+import { NEW_ORDER_GAS_ESTIMATE, ZERO } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
-import {
-  formatDai,
-  formatGasCostToEther,
-} from 'utils/format-number';
+import { formatDai, formatGasCostToEther } from 'utils/format-number';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { CreateLiquidityOrders } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
-import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatus.get();
+  const {
+    loginAccount,
+    modal,
+    gsnEnabled: GsnEnabled,
+    gasPriceInfo,
+  } = AppStatus.get();
   const market = selectMarket(modal.marketId);
-  let availableDai = totalTradingBalance(state.loginAccount);
+  let availableDai = totalTradingBalance();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   return {
     modal,
     market,
     liquidity: state.pendingLiquidityOrders[market.transactionHash],
     gasPrice,
-    loginAccount: state.loginAccount,
+    loginAccount,
     GsnEnabled,
-    availableDai
+    availableDai,
   };
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  startOrderSending: (options: CreateLiquidityOrders) => dispatch(startOrderSending(options)),
+  startOrderSending: (options: CreateLiquidityOrders) =>
+    dispatch(startOrderSending(options)),
   clearMarketLiquidityOrders: (marketId: string) =>
     dispatch(clearMarketLiquidityOrders(marketId)),
-  removeLiquidityOrder: (data) =>
-    dispatch(removeLiquidityOrder(data)),
+  removeLiquidityOrder: data => dispatch(removeLiquidityOrder(data)),
   sendLiquidityOrder: (data: object) => dispatch(sendLiquidityOrder(data)),
 });
 
@@ -66,12 +65,14 @@ const mergeProps = (sP, dP, oP) => {
   });
 
   const gasCost = sP.GsnEnabled
-  ? NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).multipliedBy(sP.gasPrice)
-  : formatGasCostToEther(
-    NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).toFixed(),
-    { decimalsRounded: 4 },
-    sP.gasPrice
-  );
+    ? NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).multipliedBy(
+        sP.gasPrice
+      )
+    : formatGasCostToEther(
+        NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).toFixed(),
+        { decimalsRounded: 4 },
+        sP.gasPrice
+      );
 
   const bnAllowance = createBigNumber(sP.loginAccount.allowance, 10);
   const needsApproval = bnAllowance.lte(ZERO);
@@ -135,7 +136,7 @@ const mergeProps = (sP, dP, oP) => {
       {
         disabled: insufficientFunds,
         text: 'Submit All',
-        action: (chunkOrders) => dP.startOrderSending({ marketId, chunkOrders }),
+        action: chunkOrders => dP.startOrderSending({ marketId, chunkOrders }),
       },
       // Temporarily removed because there is no confirmation, the button just cancels everything on a single click
       // {
@@ -159,9 +160,5 @@ const mergeProps = (sP, dP, oP) => {
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(UnsignedOrders)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(UnsignedOrders)
 );

@@ -30,7 +30,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const pendingQueue = state.pendingQueue || [];
-  const { modal, gsnEnabled, blockchain: { currentAugurTimestamp } } = AppStatus.get();
+  const { loginAccount: { address }, modal, gsnEnabled, blockchain: { currentAugurTimestamp } } = AppStatus.get();
   const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
     state
   );
@@ -93,7 +93,7 @@ const mapStateToProps = (state: AppState) => {
     totalFees:
     accountMarketClaimablePositions.totals.totalFees,
     GsnEnabled: gsnEnabled,
-    account: state.loginAccount.address,
+    account: address,
   };
 };
 
