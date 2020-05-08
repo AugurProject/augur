@@ -35,6 +35,7 @@ more-itertools==7.2.0     # via pytest
 multiaddr==0.0.8          # via ipfshttpclient
 mypy-extensions==0.4.1    # via py-ecc, py-evm
 netaddr==0.7.19           # via multiaddr
+numpy==1.18.3             # via -r requirements.in
 packaging==19.2           # via pytest
 parsimonious==0.8.1       # via eth-abi
 pluggy==0.13.0            # via pytest
