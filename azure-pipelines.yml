@@ -134,7 +134,7 @@ jobs:
           testRunner: JUnit
           testResultsFiles: '**/junit.xml'
 
-  - job: Build UI
+  - job: BuildUI
     dependsOn:
       - BuildYarnDepFolder
       - PreFlightCheck
