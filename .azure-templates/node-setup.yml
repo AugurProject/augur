@@ -2,7 +2,7 @@ steps:
   - checkout: self
   - task: NodeTool@0
     inputs:
-      versionSpec: $(node_version)
+      versionSpec: 10.16.x
   - task: Cache@2
     inputs:
       key: yarn | $(Agent.OS) | yarn.lock
