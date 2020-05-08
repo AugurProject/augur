@@ -4,25 +4,23 @@ import Blockies from 'react-blockies';
 
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
 import ChevronFlip from 'modules/common/chevron-flip';
-import { LoginAccount } from 'modules/types';
 import { formatDai } from 'utils/format-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/auth/components/connect-account/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 
-interface ConnectAccountProps {
-  userInfo: LoginAccount['meta'];
-  balances: LoginAccount['balances'];
-}
-
-const ConnectAccount = ({
-  userInfo,
-  balances,
-}:ConnectAccountProps) => {
+const ConnectAccount = () => {
   const connectAccount = useRef(null);
   const connectDropdown = useRef(null);
-  const { mobileMenuState, isLogged, restoredAccount, isConnectionTrayOpen, actions: { setIsConnectionTrayOpen, setMobileMenuState }} = useAppStatusStore();
-  if (!isLogged && !restoredAccount || !userInfo) return null;
+  const {
+    loginAccount: { meta: userInfo, balances },
+    mobileMenuState,
+    isLogged,
+    restoredAccount,
+    isConnectionTrayOpen,
+    actions: { setIsConnectionTrayOpen, setMobileMenuState },
+  } = useAppStatusStore();
+  if ((!isLogged && !restoredAccount) || !userInfo) return null;
 
   function toggleDropdown(cb?: Function) {
     if (mobileMenuState <= 0) {
@@ -34,17 +32,13 @@ const ConnectAccount = ({
 
   return (
     <div
-      onClick={(event) => event.stopPropagation()}
+      onClick={event => event.stopPropagation()}
       className={classNames(Styles.ConnectAccount, {
         [Styles.selected]: isConnectionTrayOpen,
       })}
       ref={connectAccount}
     >
-      <div
-        onClick={() => toggleDropdown()}
-        role='button'
-        tabIndex={-1}
-      >
+      <div onClick={() => toggleDropdown()} role="button" tabIndex={-1}>
         <div>
           <div className={Styles.AccountInfo}>
             {userInfo.profileImage ? (
@@ -55,9 +49,7 @@ const ConnectAccount = ({
             <div>
               <div>Account</div>
               <div>
-                {userInfo.email
-                  ? userInfo.email
-                  : userInfo.accountType}
+                {userInfo.email ? userInfo.email : userInfo.accountType}
               </div>
               <span>{formatDai(balances.dai).full}</span>
             </div>
@@ -65,7 +57,7 @@ const ConnectAccount = ({
           <span>
             <ChevronFlip
               pointDown={isConnectionTrayOpen}
-              stroke='#fff'
+              stroke="#fff"
               filledInIcon
               quick
             />

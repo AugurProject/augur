@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import MarketsLandingPage from 'modules/markets-list/components/markets-landing-page';
-import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import {
   loadMarketsByFilter,
@@ -43,14 +42,13 @@ const mapDispatchToProps = (
   const { setModal } = AppStatus.actions;
   return ({
     signupModal: () => setModal({ type: MODAL_SIGNUP }),
-    toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
     setLoadMarketsPending: isSearching =>
       dispatch(setLoadMarketsPending(isSearching)),
     updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
     loadMarketsByFilter: (
       filter: LoadMarketsFilterOptions,
       cb: NodeStyleCallback
-    ) => dispatch(loadMarketsByFilter(filter, cb)),
+    ) => loadMarketsByFilter(filter, cb),
   });
 };
 

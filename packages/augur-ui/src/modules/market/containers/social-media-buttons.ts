@@ -5,9 +5,10 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { SocialMediaButtons } from '../components/common/social-media-buttons';
 import { sendFacebookShare, sendTwitterShare } from 'services/analytics/helpers';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
-    address: state.loginAccount.address,
+    address: AppStatus.get().loginAccount.address,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

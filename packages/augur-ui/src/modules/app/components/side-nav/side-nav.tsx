@@ -31,7 +31,6 @@ interface SideNavProps {
   migrateV1Rep: Function;
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
-  stats: CoreStats;
 }
 
 const SideNav = ({
@@ -43,11 +42,9 @@ const SideNav = ({
   showGlobalChat,
   migrateV1Rep,
   showMigrateRepButton,
-  stats,
 }: SideNavProps) => {
   const {
     env,
-    restoredAccount,
     currentBasePath,
     isHelpMenuOpen,
     isConnectionTrayOpen,
@@ -70,11 +67,7 @@ const SideNav = ({
             updateHelpMenuState={setIsHelpMenuOpen}
           />
         )}
-        <Stats
-          isLogged={isLogged}
-          stats={stats}
-          restoredAccount={restoredAccount}
-        />
+        <Stats />
       </div>
       <div className={Styles.Container}>
         <div>

@@ -3,28 +3,26 @@ import { LoginAccount, MarketsList, AccountBalances, ReportingListState } from '
 import { AppState } from 'appStore';
 import { Getters } from '@augurproject/sdk/build';
 import { CANCELORDER } from 'modules/common/constants';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const selectAccountPositionsState = (state: AppState) =>
   state.accountPositions;
 export const selectDisputeWindowStats = (state: AppState) =>
   state.universe.disputeWindow;
 export const selectLoginAccountState = (state: AppState): LoginAccount =>
-  state.loginAccount;
+AppStatus.get().loginAccount;
 export const selectLoginAccountReportingState = (
   state: AppState
-): Getters.Accounts.AccountReportingHistory => state.loginAccount.reporting;
+): Getters.Accounts.AccountReportingHistory => AppStatus.get().loginAccount.reporting;
 export const selectReportingListState = (
   state: AppState
 ): ReportingListState => state.reportingListState;
 export const selectLoginAccountBalancesState = (
   state: AppState
-): AccountBalances => state.loginAccount.balances;
-export const selectLoginAccountTotalsState = (state: AppState) =>
-  state.loginAccount.tradingPositionsTotal;
+): AccountBalances => AppStatus.get().loginAccount.balances;
+export const selectLoginAccountTotalsState = (state: AppState) => AppStatus.get().loginAccount.tradingPositionsTotal;
 export const selectMarketsListsState = (state: AppState): MarketsList =>
   state.marketsList;
-export const selectReadNotificationState = (state: AppState) =>
-  state.readNotifications;
 export const selectPendingOrdersState = (state: AppState) =>
   state.pendingOrders;
 export const selectCancelingOrdersState = (state: AppState) =>
@@ -40,5 +38,5 @@ export const selectPendingQueue = (state: AppState) => state.pendingQueue;
 
 export const selectLoginAccountAddress = createSelector(
   selectLoginAccountState,
-  loginAccount => loginAccount.mixedCaseAddress
+  loginAccount => AppStatus.get().loginAccount.mixedCaseAddress
 );

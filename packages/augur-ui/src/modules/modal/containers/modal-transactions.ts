@@ -10,11 +10,11 @@ import { Action } from "redux";
 import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => {
-  const { universe: { id: universe }, modal, blockchain: { currentAugurTimestamp: now }} = AppStatus.get();
+  const { loginAccount: { address: account }, universe: { id: universe }, modal, blockchain: { currentAugurTimestamp: now }} = AppStatus.get();
   return ({
     modal,
     now,
-    account: state.loginAccount.address,
+    account,
     universe,
   });
 }

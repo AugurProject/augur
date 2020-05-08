@@ -31,27 +31,22 @@ const consoleLog = store => next => action => {
 const localStorageMiddleware = store => next => action => {
   next(action);
   const state = store.getState() as AppState;
-  const { isLogged, isConnected, env, gasPriceInfo } = AppStatus.get();
+  const { alerts, notifications, favorites, loginAccount, isLogged, isConnected, env, gasPriceInfo } = AppStatus.get();
   if (
     !state ||
-    !state.loginAccount ||
-    !state.loginAccount.address ||
+    !loginAccount?.address ||
     !isLogged ||
     !isConnected
   ) {
     return;
   }
-  const { address, affiliate } = state.loginAccount;
+  const { address, affiliate } = loginAccount;
   const {
     pendingLiquidityOrders,
     analytics,
-    favorites,
-    alerts,
-    readNotifications,
     pendingOrders,
     pendingQueue,
     drafts,
-    loginAccount
   } = state;
   const windowApp: WindowApp = windowRef as WindowApp;
   if (windowApp.localStorage && windowApp.localStorage.setItem) {
@@ -85,7 +80,7 @@ const localStorageMiddleware = store => next => action => {
         analytics,
         favorites: processedFavorites,
         alerts,
-        readNotifications,
+        notifications,
         pendingOrders,
         pendingQueue,
         drafts,

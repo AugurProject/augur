@@ -7,7 +7,7 @@ import {
   orderAmountEntered,
 } from 'services/analytics/helpers';
 import { AppState } from 'appStore';
-import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { formatGasCost } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { GWEI_CONVERSION } from 'modules/common/constants';
@@ -15,8 +15,6 @@ import { augurSdk } from 'services/augursdk';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { loginAccount } = state;
-
   const getGasConfirmEstimate = async () => {
     const augur = augurSdk.get();
     const gasConfirmTime = await augur.getGasConfirmEstimate();
@@ -41,9 +39,11 @@ const mapStateToProps = (state: AppState, ownProps) => {
       ownProps.market.orderBook[selectedOutcomeId]
     );
   }
-  const { blockchain: { currentAugurTimestamp: currentTimestamp }} = AppStatus.get();
+  const {
+    blockchain: { currentAugurTimestamp: currentTimestamp },
+  } = AppStatus.get();
   return {
-    availableDai: totalTradingBalance(loginAccount),
+    availableDai: totalTradingBalance(),
     currentTimestamp,
     sortedOutcomes: selectSortedMarketOutcomes(
       ownProps.market.marketType,

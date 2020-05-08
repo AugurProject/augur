@@ -5,16 +5,18 @@ import { AppState } from "appStore";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import getValue from "utils/get-value";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import { NewMarket, NodeStyleCallback } from "modules/types";
 import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = (state: AppState) => ({
-  modal: AppStatus.get().modal,
-  newMarket: state.newMarket,
-  address: getValue(state, "loginAccount.address"),
-});
+const mapStateToProps = (state: AppState) => {
+  const { modal, loginAccount: { address } } = AppStatus.get();
+  return ({
+    modal,
+    newMarket: state.newMarket,
+    address,
+  });
+}
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),

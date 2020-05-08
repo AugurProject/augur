@@ -206,8 +206,8 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
   getState: () => AppState
 ) => {
   const { marketId, chunkOrders } = options;
-  const { loginAccount, marketInfos, pendingLiquidityOrders } = getState();
-  const { gsnEnabled } = AppStatus.get();
+  const { marketInfos, pendingLiquidityOrders } = getState();
+  const { loginAccount, gsnEnabled } = AppStatus.get();
   // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
   if (!gsnEnabled && loginAccount.allowance.lte(ZERO)) await approveToTrade();
 

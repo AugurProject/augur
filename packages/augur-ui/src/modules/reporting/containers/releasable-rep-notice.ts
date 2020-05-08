@@ -10,13 +10,11 @@ import { createBigNumber } from 'utils/create-big-number';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount } = state;
-  const { universe: { forkingInfo }} = AppStatus.get();
+  const { loginAccount: { reporting }, universe: { forkingInfo }} = AppStatus.get();
   let hasStakedRep = false;
   const hasForked = !!forkingInfo;
   let show = false;
   if (hasForked) {
-    const { reporting } = loginAccount;
     if (reporting) {
       if (
         (reporting.reporting &&

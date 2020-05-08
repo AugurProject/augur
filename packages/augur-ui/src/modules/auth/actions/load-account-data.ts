@@ -16,20 +16,17 @@ export const loadAccountData = (
   callback: NodeStyleCallback = logError
 ) => async (dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState) => {
-  const { loginAccount } = getState();
-  const { universe, isLogged, isConnected, gasPriceInfo } = AppStatus.get();
+  const { loginAccount: { meta, mixedCaseAddress: address } , universe, isLogged, isConnected, gasPriceInfo } = AppStatus.get();
   if (isConnected && isLogged) {
-    const { mixedCaseAddress: address } = loginAccount;
     if (!address) return callback('account address required');
     const windowApp = windowRef as WindowApp;
     if (
       windowApp &&
       windowApp.localStorage.setItem &&
-      loginAccount &&
-      loginAccount.meta
+      meta
     ) {
       const loggedInUser = {
-        accountType: loginAccount.meta.accountType,
+        accountType: meta.accountType,
         address
       };
       windowApp.localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
