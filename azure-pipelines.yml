@@ -85,9 +85,8 @@ jobs:
     steps:
       - task: Cache@2
         inputs:
-          key: yarn | $(agent.os) | yarn.lock
+          key: yarn | yarn.lock
           restoreKeys: |
-            yarn | $(agent.os)
             yarn
           path: $(YARN_CACHE_FOLDER)
         displayName: Cache Yarn packages
@@ -135,10 +134,9 @@ jobs:
           versionSpec: $(node_version)
       - task: Cache@2
         inputs:
-          key: yarn | $(agent.os) | yarn.lock
+          key: yarn | yarn.lock
           path: $(YARN_CACHE_FOLDER)
           restoreKeys: |
-            yarn | $(agent.os)
             yarn
           displayName: Cache Yarn packages
 
@@ -217,10 +215,9 @@ jobs:
         displayName: install solc
       - task: Cache@2
         inputs:
-          key: yarn | $(agent.os) | yarn.lock
+          key: yarn | yarn.lock
           path: $(YARN_CACHE_FOLDER)
           restoreKeys: |
-            yarn | $(agent.os)
             yarn
           displayName: Cache Yarn packages
       - script: yarn --frozen-lockfile
@@ -333,10 +330,9 @@ jobs:
           versionSpec: $(PRIMARY_NODE_VERSION)
       - task: Cache@2
         inputs:
-          key: yarn | $(agent.os) | yarn.lock
+          key: yarn | yarn.lock
           path: $(YARN_CACHE_FOLDER)
           restoreKeys: |
-            yarn | $(agent.os)
             yarn
         displayName: Cache Yarn packages
       - script: yarn --frozen-lockfile
@@ -421,10 +417,9 @@ jobs:
           versionSpec: $(PRIMARY_NODE_VERSION)
       - task: Cache@2
         inputs:
-          key: yarn | $(agent.os) | yarn.lock
+          key: yarn | yarn.lock
           path: $(YARN_CACHE_FOLDER)
           restoreKeys: |
-            yarn | $(agent.os)
             yarn
           displayName: Cache Yarn packages
       - script: yarn --frozen-lockfile
@@ -484,10 +479,9 @@ jobs:
           versionSpec: $(PRIMARY_NODE_VERSION)
       - task: Cache@2
         inputs:
-          key: yarn | $(agent.os) | yarn.lock
+          key: yarn | yarn.lock
           path: $(YARN_CACHE_FOLDER)
           restoreKeys: |
-            yarn | $(agent.os)
             yarn
           displayName: Cache Yarn packages
       - script: yarn --frozen-lockfile
@@ -522,10 +516,9 @@ jobs:
           versionSpec: $(PRIMARY_NODE_VERSION)
       - task: Cache@2
         inputs:
-          key: yarn | $(agent.os) | yarn.lock
+          key: yarn | yarn.lock
           path: $(YARN_CACHE_FOLDER)
           restoreKeys: |
-            yarn | $(agent.os)
             yarn
           displayName: Cache Yarn packages
       - script: yarn --frozen-lockfile
@@ -603,10 +596,9 @@ jobs:
     steps:
       - task: Cache@2
         inputs:
-          key: yarn | $(agent.os) | yarn.lock
+          key: yarn | yarn.lock
           path: $(YARN_CACHE_FOLDER)
           restoreKeys: |
-            yarn | $(agent.os)
             yarn
           displayName: Cache Yarn packages
       - script: yarn --frozen-lockfile
@@ -652,10 +644,9 @@ jobs:
     steps:
       - task: Cache@2
         inputs:
-          key: yarn | $(agent.os) | yarn.lock
+          key: yarn | yarn.lock
           path: $(YARN_CACHE_FOLDER)
           restoreKeys: |
-            yarn | $(agent.os)
             yarn
           displayName: Cache Yarn packages
       - script: yarn --frozen-lockfile
@@ -707,10 +698,9 @@ jobs:
           versionSpec: $(PRIMARY_NODE_VERSION)
       - task: Cache@2
         inputs:
-          key: yarn | $(agent.os) | yarn.lock
+          key: yarn | yarn.lock
           path: $(YARN_CACHE_FOLDER)
           restoreKeys: |
-            yarn | $(agent.os)
             yarn
           displayName: Cache Yarn packages
       - script: yarn --frozen-lockfile
