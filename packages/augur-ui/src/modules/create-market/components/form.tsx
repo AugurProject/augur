@@ -44,6 +44,7 @@ import {
   NON_EXISTENT,
   ZERO,
   ONE,
+  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
@@ -138,6 +139,7 @@ interface FormProps {
   gsnUnavailable: boolean;
   gsnWalletInfoSeen: boolean;
   initializeGsnWallet: Function;
+  walletStatus: string;
 }
 
 interface FormState {
@@ -753,6 +755,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       gsnUnavailable,
       gsnWalletInfoSeen,
       initializeGsnWallet,
+      walletStatus,
     } = this.props;
     const { contentPages, categoryStats } = this.state;
 
@@ -771,6 +774,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       useBullets,
     } = contentPages[currentStep];
 
+    const disableCreate = walletStatus !== WALLET_STATUS_VALUES.CREATED || this.state.disableCreate;
     let savedDraft = drafts[uniqueId];
     if (savedDraft) savedDraft.validations = [];
     let comparableNewMarket = deepClone<NewMarket>(newMarket);
@@ -945,7 +949,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                   {secondButton === CREATE && (
                     <PrimaryButton
                       text="Create"
-                      disabled={this.state.disableCreate}
+                      disabled={disableCreate}
                       action={() => {
                         gsnUnavailable && !gsnWalletInfoSeen
                         ? initializeGsnWallet(() => setTimeout(() => {
