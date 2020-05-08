@@ -3,12 +3,12 @@ import { createSelector } from 'reselect';
 import store from 'appStore';
 import {
   selectAccountPositionsState,
-  selectMarketInfosState,
 } from 'appStore/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from 'modules/common/constants';
 import { MarketClaimablePositions } from 'modules/types';
+import { Markets } from 'modules/markets/store/markets';
 
 export const selectLoginAccountClaimablePositions = (
   state
@@ -19,11 +19,12 @@ export const selectLoginAccountClaimablePositions = (
 // need to add marketInfos in case positions load before markets
 const getLoginAccountPositionsMarkets = createSelector(
   selectAccountPositionsState,
-  selectMarketInfosState,
-  (positions, markets) => {
+  (positions) => {
+    const { marketInfos } = Markets.get();
+
     return Object.keys(positions).reduce(
       (p, marketId) => {
-        if (!Object.keys(markets).includes(marketId)) return p;
+        if (!Object.keys(marketInfos).includes(marketId)) return p;
         const marketPosition = positions[marketId];
         if (
           createBigNumber(

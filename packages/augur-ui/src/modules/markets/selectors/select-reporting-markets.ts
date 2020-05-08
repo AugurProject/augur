@@ -1,19 +1,19 @@
 import { createSelector } from 'reselect';
 import {
-  selectMarketInfosState,
   selectReportingListState,
 } from 'appStore/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { REPORTING_STATE } from 'modules/common/constants';
+import { Markets } from '../store/markets';
 
 export const disputingMarkets = state => selectDisputingMarkets(state);
 
 // marketInfos is used to trigger selector when ever market info object change
 // needed to keep UI refreshed via log-handlers
 const selectDisputingMarkets = createSelector(
-  selectMarketInfosState,
   selectReportingListState,
-  (marketInfos, reportingListState) => {
+  (reportingListState) => {
+    const { marketInfos } = Markets.get();
     return {
       [REPORTING_STATE.CROWDSOURCING_DISPUTE]:
         (
@@ -35,9 +35,8 @@ const selectReportingStateMarketIds = (state, reportingState) =>
 // marketInfos is used to trigger selector when ever market info object change
 // needed to keep UI refreshed via log-handlers
 export const selectReportingMarkets = createSelector(
-  selectMarketInfosState,
   selectReportingStateMarketIds,
-  (marketInfos, specificReportingList) =>
+  (specificReportingList) =>
     ((specificReportingList || {}).marketIds || []).map(
       id => selectMarket(id) || []
     )

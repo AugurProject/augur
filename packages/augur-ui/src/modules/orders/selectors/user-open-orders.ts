@@ -18,15 +18,16 @@ import { convertUnixToFormattedDate, convertSaltToFormattedDate } from 'utils/fo
 import { formatNone, formatShares, formatDai, formatMarketShares } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import {
-  selectMarketInfosState,
   selectUserMarketOpenOrders,
   selectCancelingOrdersState,
   selectPendingOrdersState,
 } from 'appStore/select-state';
 import { createSelector } from 'reselect';
+import { Markets } from 'modules/markets/store/markets';
 
-function selectMarketsDataStateMarket(state, marketId) {
-  return selectMarketInfosState(state)[marketId];
+function selectMarketsDataStateMarket(marketId) {
+  const { marketInfos } = Markets.get();
+  return marketInfos[marketId];
 }
 
 function selectUserMarketOpenOrdersMarket(state, marketId) {

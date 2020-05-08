@@ -2,7 +2,6 @@ import accountPositions from 'modules/positions/reducers/account-positions';
 import favorites from 'modules/markets/reducers/favorites';
 import loginAccount from 'modules/auth/reducers/login-account';
 import marketTradingHistory from 'modules/markets/reducers/market-trading-history';
-import marketInfos from 'modules/markets/reducers/market-infos';
 import newMarket from 'modules/markets/reducers/new-market';
 import alerts from 'modules/alerts/reducers/alerts';
 import pendingLiquidityOrders from 'modules/orders/reducers/liquidity-orders';
@@ -20,7 +19,6 @@ import {
   LoginAccount,
   AccountPosition,
   Favorite,
-  MarketInfos,
   NewMarket,
   Alert,
   Notification,
@@ -45,7 +43,6 @@ export function createReducer() {
     favorites,
     loginAccount,
     marketTradingHistory,
-    marketInfos,
     newMarket,
     readNotifications,
     pendingLiquidityOrders,
@@ -70,7 +67,6 @@ export interface AppStateInterface {
   favorites: Favorite;
   loginAccount: LoginAccount;
   marketTradingHistory: Getters.Trading.MarketTradingHistory;
-  marketInfos: MarketInfos;
   newMarket: NewMarket;
   readNotifications: Notification[];
   pendingLiquidityOrders: LiquidityOrders;

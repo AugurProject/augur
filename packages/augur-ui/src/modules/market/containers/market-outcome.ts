@@ -6,9 +6,12 @@ import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-
 import Row from 'modules/common/row';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import { calcPercentageFromPrice, formatBlank } from 'utils/format-number';
+import { Markets } from 'modules/markets/store/markets';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { marketInfos, newMarket } = state;
+  const { marketInfos } = Markets.get();
+
+  const { newMarket } = state;
   const market = marketInfos[ownProps.marketId] ? marketInfos[ownProps.marketId] : newMarket ? newMarket : null;
   // default values for create market preview
   const minPrice = market ? market.minPrice : 0;

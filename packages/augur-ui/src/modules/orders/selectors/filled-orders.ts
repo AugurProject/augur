@@ -3,7 +3,6 @@ import { createBigNumber } from "utils/create-big-number";
 import { BUY, SELL, ZERO } from "modules/common/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import {
-  selectMarketInfosState,
   selectLoginAccountAddress,
   selectFilledOrders,
 } from "appStore/select-state";
@@ -11,6 +10,7 @@ import createCachedSelector from "re-reselect";
 import { selectUserOpenOrders } from "modules/orders/selectors/user-open-orders";
 import { isSameAddress } from "utils/isSameAddress";
 import { formatDai } from "utils/format-number";
+import { Markets } from "modules/markets/store/markets";
 
 function findOrders(
   tradesCreatedOrFilledByThisAccount,
@@ -155,8 +155,9 @@ function findOrders(
   return orders;
 }
 
-function selectMarketsDataStateMarket(state, marketId) {
-  return selectMarketInfosState(state)[marketId];
+function selectMarketsDataStateMarket(marketId) {
+  const { marketInfos } = Markets.get();
+  return marketInfos[marketId];
 }
 
 function selectMarketUserFilledHistoryState(state: AppState, marketId) {
