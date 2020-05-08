@@ -87,11 +87,10 @@ jobs:
         inputs:
           key: yarn | $(agent.os) | yarn.lock
           restoreKeys: |
-            yarn | "$(agent.os)"
+            yarn | $(agent.os)
             yarn
           path: $(YARN_CACHE_FOLDER)
         displayName: Cache Yarn packages
-
       - script: yarn --frozen-lockfile
 
   - job: TestAndLint
