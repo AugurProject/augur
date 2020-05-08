@@ -32,7 +32,6 @@ export const updateAssets = (
     dispatch,
     (err, balances) => {
       let status = appStatus[WALLET_STATUS];
-      // TODO: set min amount of DAI, for testing need a real values
       if (createBigNumber(balances.dai).gt(TWENTY_FIVE) && (status !== WALLET_STATUS_VALUES.CREATED)) {
         dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE));
       }

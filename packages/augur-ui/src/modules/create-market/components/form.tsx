@@ -146,7 +146,6 @@ interface FormState {
   blockShown: Boolean;
   contentPages: any[];
   templateFormStarts: number;
-  categoryStats: Getters.Markets.CategoryStats;
   disableCreate: boolean;
 }
 
@@ -196,7 +195,6 @@ export default class Form extends React.Component<FormProps, FormState> {
         : TEMPLATE_CONTENT_PAGES
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
-    categoryStats: null,
     disableCreate: false,
   };
 
@@ -757,7 +755,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       initializeGsnWallet,
       walletStatus,
     } = this.props;
-    const { contentPages, categoryStats } = this.state;
+    const { contentPages } = this.state;
 
     const { currentStep, validations, uniqueId, marketType } = newMarket;
 
