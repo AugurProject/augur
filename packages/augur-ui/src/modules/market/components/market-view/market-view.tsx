@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interaction */
 
-import React, { Component, useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import Media from 'react-media';
 
@@ -60,28 +60,23 @@ import { Getters } from '@augurproject/sdk';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { StatusErrorMessage } from 'modules/common/labels';
-import { useMarketsStore } from 'modules/markets/store/markets';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
   closeMarketLoadingModalOnly: Function;
   market: MarketData;
   marketId: string;
-  marketReviewSeen: boolean;
   scalarModalSeen: boolean;
-  marketReviewModal: Function;
   currentTimestamp: number;
   isConnected: boolean;
   loadMarketsInfo: Function;
   loadMarketTradingHistory: Function;
   description: string;
   marketType: string;
-  outcomes: OutcomeFormatted[];
   updateModal: Function;
   history: History;
   showMarketLoadingModal: Function;
   preview?: boolean;
-  sortedOutcomes: OutcomeFormatted[];
   tradingTutorial?: boolean;
   addAlert: Function;
   hotloadMarket: Function;
@@ -89,7 +84,6 @@ interface MarketViewProps {
   modalShowing?: string;
   removeAlert: Function;
   outcomeId?: number;
-  account: string;
   orderBook?: Getters.Markets.OutcomeOrderBook | OutcomeTestTradingOrder;
   loadMarketOrderBook: Function;
   zeroXstatus: string;
@@ -117,21 +111,17 @@ const MarketView = ({
   closeMarketLoadingModalOnly,
   market,
   marketId,
-  marketReviewSeen,
   scalarModalSeen,
-  marketReviewModal,
   currentTimestamp,
   isConnected,
   loadMarketsInfo,
   loadMarketTradingHistory,
   description,
   marketType,
-  outcomes,
   updateModal,
   history,
   showMarketLoadingModal,
   preview,
-  sortedOutcomes,
   tradingTutorial,
   addAlert,
   hotloadMarket,
@@ -139,7 +129,6 @@ const MarketView = ({
   modalShowing,
   removeAlert,
   outcomeId,
-  account,
   orderBook,
   loadMarketOrderBook,
   zeroXstatus,
@@ -189,101 +178,106 @@ const MarketView = ({
 
   const prevProps = useRef();
 
-  // useEffect(() => { // inital mount, state setting
-  //   tradingTutorialWidthCheck();
-  //   if (
-  //     isConnected &&
-  //     !!marketId &&
-  //     !tradingTutorial &&
-  //     !preview &&
-  //     zeroXstatus === ZEROX_STATUSES.SYNCED
-  //   ) {
-  //     loadMarketsInfo(marketId);
-  //     loadMarketOrderBook(marketId);
-  //     loadMarketTradingHistory(marketId);
-  //   }
-  // }, []);
+  useEffect(() => {
+    // inital mount, state setting
+    tradingTutorialWidthCheck();
+    if (
+      isConnected &&
+      !!marketId &&
+      !tradingTutorial &&
+      !preview &&
+      zeroXstatus === ZEROX_STATUSES.SYNCED
+    ) {
+      loadMarketsInfo(marketId);
+      loadMarketOrderBook(marketId);
+      loadMarketTradingHistory(marketId);
+    }
+  }, []);
 
-  // useEffect(() => { // componentDidMount
-  //   if (!preview && !hasZeroXError) {
-  //     node && node.scrollIntoView();
-  //     window.scrollTo(0, 1);
-  //   }
-  //   if (isMarketLoading) {
-  //     showMarketLoadingModal();
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (!preview && !hasZeroXError) {
+      window.scrollTo(0, 1);
+    }
+    if (isMarketLoading) {
+      showMarketLoadingModal();
+    }
+  }, []);
 
-  // useEffect(() => { //componentDidUpdate
-  //   if (
-  //     outcomeId !== prevProps.outcomeId &&
-  //     outcomeId !== null
-  //   ) {
-  //     setState({
-  //       ...state,
-  //       selectedOutcomeId: outcomeId
-  //     });
-  //   }
+  useEffect(() => {
+    prevProps.current = state;
+  }, [tradingTutorial, outcomeId, isConnected]);
 
-  //   if (tradingTutorial) {
-  //     if (
-  //       !introShowing &&
-  //       tutorialStep === TRADING_TUTORIAL_STEPS.INTRO_MODAL
-  //     ) {
-  //       updateModal({
-  //         type: MODAL_TUTORIAL_INTRO,
-  //         next: next,
-  //       });
-  //       setState({
-  //         ...state,
-  //         introShowing: true,
-  //         selectedOrderProperties: {
-  //           ...(tradingTutorial !== prevProps.tradingTutorial
-  //             ? DEFAULT_ORDER_PROPERTIES
-  //             : selectedOrderProperties),
-  //         },
-  //       });
-  //     }
-  //     return;
-  //   }
+  useEffect(() => {
+    if (outcomeId !== prevProps.current.outcomeId && outcomeId !== null) {
+      setState({
+        ...state,
+        selectedOutcomeId: outcomeId,
+      });
+    }
 
-  //   if (
-  //     prevProps.isConnected !== isConnected &&
-  //     !!marketId &&
-  //     !tradingTutorial &&
-  //     !preview &&
-  //     zeroXstatus === ZEROX_STATUSES.SYNCED
-  //   ) {
-  //     loadMarketOrderBook(marketId);
-  //     loadMarketsInfo(marketId);
-  //     loadMarketTradingHistory(marketId);
-  //   }
-  //   if (!isMarketLoading) {
-  //     if (closeMarketLoadingModalOnly)
-  //       closeMarketLoadingModalOnly(modalShowing);
-  //   }
+    if (tradingTutorial) {
+      if (
+        !introShowing &&
+        tutorialStep === TRADING_TUTORIAL_STEPS.INTRO_MODAL
+      ) {
+        updateModal({
+          type: MODAL_TUTORIAL_INTRO,
+          next: next,
+        });
+        setState({
+          ...state,
+          introShowing: true,
+          selectedOrderProperties: {
+            ...(tradingTutorial !== prevProps.current.tradingTutorial
+              ? DEFAULT_ORDER_PROPERTIES
+              : selectedOrderProperties),
+          },
+        });
+      }
+      return;
+    }
 
-  //   if (
-  //     !prevProps.tradingTutorial &&
-  //     !scalarModalSeen &&
-  //     marketType === SCALAR &&
-  //     !hasShownScalarModal
-  //   ) {
-  //     updateModal({
-  //       type: MODAL_SCALAR_MARKET,
-  //       cb: () => setState({
-  //         ...state,
-  //         hasShownScalarModal: true
-  //       })
-  //     });
-  //   }
-  // }, []);
+    if (
+      prevProps.current.isConnected !== isConnected &&
+      !!marketId &&
+      !tradingTutorial &&
+      !preview &&
+      zeroXstatus === ZEROX_STATUSES.SYNCED
+    ) {
+      loadMarketOrderBook(marketId);
+      loadMarketsInfo(marketId);
+      loadMarketTradingHistory(marketId);
+    }
+    if (!isMarketLoading) {
+      if (closeMarketLoadingModalOnly)
+        closeMarketLoadingModalOnly(modalShowing);
+    }
 
-  // useEffect(() => {
-  //   prevProps.tradingTutorial = tradingTutorial;
-  //   prevProps.outcomeId = outcomeId;
-  //   prevProps.isConnected = isConnected;
-  // });
+    if (
+      !prevProps.current.tradingTutorial &&
+      !scalarModalSeen &&
+      marketType === SCALAR &&
+      !hasShownScalarModal
+    ) {
+      updateModal({
+        type: MODAL_SCALAR_MARKET,
+        cb: () =>
+          setState({
+            ...state,
+            hasShownScalarModal: true,
+          }),
+      });
+    }
+  }, [
+    isMarketLoading,
+    introShowing,
+    preview,
+    tradingTutorial,
+    outcomeId,
+    isConnected,
+    scalarModalSeen,
+    hasShownScalarModal,
+  ]);
 
   function findType() {
     if (market) {
@@ -305,13 +299,6 @@ const MarketView = ({
       // Don't show tradingTutorial on mobile,
       // redirect to markets when we enter tablet breakpoints
       history.push({ pathname: makePath(MARKETS) });
-    }
-  }
-
-  // don't show the market disclaimer when user shows up. TODO: Design to figure out when to show
-  function showMarketDisclaimer() {
-    if (!marketReviewSeen && marketReviewModal) {
-      marketReviewModal();
     }
   }
 
@@ -352,12 +339,12 @@ const MarketView = ({
       if (keepOrder) {
         return setState({
           ...state,
-          selectedOutcomeId,
+          selectedOutcomeId: selectedOutcomeIdPassed,
         });
       }
       setState({
         ...state,
-        selectedOutcomeId,
+        selectedOutcomeId: selectedOutcomeIdPassed,
         selectedOrderProperties: {
           ...DEFAULT_ORDER_PROPERTIES,
         },
