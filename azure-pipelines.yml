@@ -80,7 +80,21 @@ jobs:
     pool:
       vmImage: 'ubuntu-18.04'
     steps:
-      - template: .azure-templates/node-setup.yml
+      - task: NodeTool@0
+        inputs:
+          versionSpec: 10.16.x
+      - task: Cache@2
+        inputs:
+          key: yarn | $(Agent.OS) | yarn.lock
+          path: $(Pipeline.Workspace)/.yarn
+          restoreKeys: |
+            yarn | $(Agent.OS)
+            yarn
+          displayName: Cache Yarn packages
+          cacheHitVar: CACHE_RESTORED
+
+      - script: yarn --frozen-lockfile
+        condition: ne(variables.CACHE_RESTORED, 'true')
 
   - job: TestAndLint
     dependsOn:
