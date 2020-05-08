@@ -85,16 +85,7 @@ jobs:
     variables:
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     steps:
-      - task: Cache@2
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          restoreKeys: |
-            yarn | "$(Agent.OS)"
-            yarn
-          path: $(YARN_CACHE_FOLDER)
-        displayName: Cache Yarn packages
-
-      - script: yarn --frozen-lockfile
+      - template: .azure-templates/node-setup.yml
 
   - job: TestAndLint
     dependsOn:
@@ -114,7 +105,6 @@ jobs:
       JOB_TRIGGER_TEST: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_TEST']]
       FAKE_TIME: false
       PRODUCTION: false
-      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     pool: 'Default'
     strategy:
       matrix:
@@ -132,26 +122,7 @@ jobs:
           TEST_ARGS: --testPathPattern 'Universe.test.ts'
     timeoutInMinutes: 120
     steps:
-      - checkout: self
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(node_version)
-      - task: Cache@2
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-          restoreKeys: |
-            yarn | $(Agent.OS)
-            yarn
-          displayName: Cache Yarn packages
-
-      - script: yarn --frozen-lockfile
-      - bash: |
-          set -euo pipefail
-          yarn build
-        displayName: yarn build
-        env:
-          NODE_OPTIONS: "--max_old_space_size=6144"
+      - template: .azure-templates/node-setup.yml
       - bash: |
           set -euo pipefail
           export ETHEREUM_NETWORK=kovan
