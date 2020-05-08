@@ -1,4 +1,5 @@
 import React, { Component, useState } from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import {
@@ -16,6 +17,10 @@ import {
   TRANSACTIONS,
   REDEEMSTAKE,
   HELP_CENTER_PARTICIPATION_TOKENS,
+  CREATEAUGURWALLET,
+  MODAL_INITIALIZE_ACCOUNT,
+  WARNING,
+  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -64,6 +69,10 @@ import {
   displayGasInDai,
   getGasInDai,
 } from 'modules/app/actions/get-ethToDai-rate';
+import { AppState } from 'appStore/index';
+import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
+import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
+import { updateModal } from 'modules/modal/actions/update-modal';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -117,6 +126,70 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
     </>
   );
 };
+
+
+const mapStateToPropsActivateWalletButton = (state: AppState) => {
+  const { gsnEnabled, walletStatus } = state.appStatus;
+
+  return {
+    gsnUnavailable: isGSNUnavailable(state),
+    gsnEnabled,
+    walletStatus,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  initializeGsnWallet: () => dispatch(updateModal({ type: MODAL_INITIALIZE_ACCOUNT })),
+  updateWalletStatus: () => {
+    dispatch(removePendingTransaction(CREATEAUGURWALLET));
+  }
+});
+
+const mergeProps = (sP, dP, oP) => {
+  let showMessage = sP.gsnUnavailable;
+  let buttonAction = dP.initializeGsnWallet;
+  if (sP.walletStatus === WALLET_STATUS_VALUES.CREATED) {
+    buttonAction = dP.updateWalletStatus;
+  }
+  if (
+    sP.walletStatus !== WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
+    sP.walletStatus !== WALLET_STATUS_VALUES.CREATED
+  ) {
+    showMessage = false;
+  }
+  return {
+    ...sP,
+    ...dP,
+    buttonAction,
+    showMessage,
+  };
+};
+
+const ActivateWalletButtonCmp = ({ showMessage, buttonAction }) => (
+  <>
+    {showMessage && (
+      <div className={classNames(Styles.ActivateWalletButton)}>
+        <DismissableNotice
+          show
+          title={'Account Activation'}
+          buttonText={'Activate Account'}
+          buttonAction={buttonAction}
+          queueName={TRANSACTIONS}
+          queueId={CREATEAUGURWALLET}
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
+          description={`Activation of your account is needed`}
+        />
+      </div>
+    )}
+  </>
+);
+
+export const ActivateWalletButton = connect(
+  mapStateToPropsActivateWalletButton,
+  mapDispatchToProps,
+  mergeProps,
+)(ActivateWalletButtonCmp);
+
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;

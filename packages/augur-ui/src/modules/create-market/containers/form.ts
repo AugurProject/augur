@@ -21,6 +21,7 @@ import { NodeStyleCallback } from "modules/types";
 import { marketCreationStarted, marketCreationSaved } from "services/analytics/helpers";
 import { isGSNUnavailable } from "modules/app/selectors/is-gsn-unavailable";
 import getValueFromlocalStorage from "utils/get-local-storage-value";
+import { WALLET_STATUS } from "modules/app/actions/update-app-status";
 
 const mapStateToProps = state => {
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
@@ -33,6 +34,7 @@ const mapStateToProps = state => {
     GsnEnabled: state.appStatus.gsnEnabled,
     gsnUnavailable: isGSNUnavailable(state),
     gsnWalletInfoSeen,
+    walletStatus: state.appStatus[WALLET_STATUS],
   }
 }
 

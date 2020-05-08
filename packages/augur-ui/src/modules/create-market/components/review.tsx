@@ -38,6 +38,7 @@ import { NewMarket, FormattedNumber } from 'modules/types';
 import Styles from 'modules/create-market/components/review.styles.less';
 import { buildResolutionDetails } from 'modules/create-market/get-template';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { ActivateWalletButton } from 'modules/reporting/common';
 
 interface ReviewProps {
   newMarket: NewMarket;
@@ -370,6 +371,7 @@ export default class Review extends React.Component<
             totalRep={s.designatedReportNoShowReputationBond}
             GsnEnabled={GsnEnabled}
           />
+          <ActivateWalletButton />
         </div>
       </div>
     );
