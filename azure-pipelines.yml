@@ -76,29 +76,8 @@ jobs:
         displayName: check git for changes
         name: setVars
 
-  - job: BuildYarnDepFolder
-    pool:
-      vmImage: 'ubuntu-18.04'
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: 10.16.x
-      - task: Cache@2
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(Pipeline.Workspace)/.yarn
-          restoreKeys: |
-            yarn | $(Agent.OS)
-            yarn
-          displayName: Cache Yarn packages
-          cacheHitVar: CACHE_RESTORED
-
-      - script: yarn --frozen-lockfile
-        condition: ne(variables.CACHE_RESTORED, 'true')
-
   - job: TestAndLint
     dependsOn:
-      - BuildYarnDepFolder
       - PreFlightCheck
     condition: |
       and
@@ -151,7 +130,6 @@ jobs:
     pool:
       vmImage: 'ubuntu-18.04'
     dependsOn:
-      - BuildYarnDepFolder
       - PreFlightCheck
     variables:
       JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
@@ -175,7 +153,6 @@ jobs:
 
   - job: ContractSanityCheck
     dependsOn:
-      - BuildYarnDepFolder
       - PreFlightCheck
     condition: |
       and
@@ -237,7 +214,6 @@ jobs:
 
   - job: DockerGethDev
     dependsOn:
-      - BuildYarnDepFolder
       - PreFlightCheck
     pool:
       vmImage: 'ubuntu-18.04'
