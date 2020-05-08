@@ -36,9 +36,9 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  title: 'Initialize Account',
+  title: 'Activate Account',
   description: [
-    `Augur is a peer-to-peer system, and certain actions require paying a small fee to other users of the system. The cost of these fees will be included in the total fees displayed when taking that action. Trades, Creating Markets, and Reporting on the market outcome are examples of such actions.\n Augur will reserve $${sP.reserveAmount.formattedValue} of your funds in order to pay these fees, but your total balance can be cashed out at any time. To see the total amount reserved for fees, click on the Account menu.\n Until the account is initialized you will be unable to place an order.`,
+    `Augur is a peer-to-peer system, and certain actions require paying a small fee to other users of the system. The cost of these fees will be included in the total fees displayed when taking that action. Trades, Creating Markets, and Reporting on the market outcome are examples of such actions.\n Augur will reserve $${sP.reserveAmount.formattedValue} of your funds in order to pay these fees, but your total balance can be cashed out at any time. To see the total amount reserved for fees, click on the Account menu.\n Until the account is activated you will be unable to place an order.`,
   ],
   buttons: sP.modal.customAction
     ? [
@@ -54,7 +54,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       ]
     : [
         {
-          text: 'Initialize Account',
+          text: 'Activate Account',
           action: () => {
             dP.closeModal();
             dP.createFundedGsnWallet();
