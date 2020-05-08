@@ -11,11 +11,9 @@
   }
 
   > div {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+    display: block;
     overflow: overlay;
-    max-height: 50vh;
+    max-height: calc(50vh + @size-52);
 
     > span {
       .mono-10-medium;
@@ -37,13 +35,19 @@
   }
 }
 
-@supports (-moz-appearance:none) {    
-  .Container {   
+@supports (-moz-appearance:none) {
+  .TradeHistory {
+    > div {
+      overflow-y: auto;
+    }
+  }
+
+  .Container {
     > main {
-      // firefox doesn't support overlay. need auto     
-      overflow-y: auto; 
-    }    
-  } 
+      // firefox doesn't support overlay. need auto
+      overflow-y: auto;
+    }
+  }
 }
 
 .TradeHistoryTable {
