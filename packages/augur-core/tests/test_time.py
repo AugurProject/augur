@@ -28,7 +28,7 @@ def test_default_controlled_time(localFixture, augur, time):
 
 def test_real_time(localFixture, augur):
     # Let's test a real Time provider implementation
-    time = localFixture.uploadAndAddToAugur("../source/contracts/Time.sol", lookupKey="RealTime")
+    time = localFixture.uploadAndAddToAugur("../src/contracts/Time.sol", lookupKey="RealTime")
 
     # We can verify that it is the augur version of time
     assert augur.lookup("RealTime") == time.address
