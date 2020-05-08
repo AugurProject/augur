@@ -180,9 +180,6 @@
     "webpack-merge": "4.2.2",
     "worker-plugin": "3.2.0"
   },
-  "resolutions": {
-    "**/sha3": "2.0.1"
-  },
   "eslint": {
     "plugins": [
       "react-hooks"

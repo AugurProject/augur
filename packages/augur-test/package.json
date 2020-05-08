@@ -47,9 +47,5 @@
     "supertest": "4.0.2",
     "ts-node": "8.4.1",
     "tsconfig-paths": "3.9.0"
-  },
-  "resolutions": {
-    "**/sha3": "2.0.1",
-    "**/memdown": "4.1.0"
   }
 }
