@@ -7,7 +7,6 @@ import {
   LinearPropertyLabel,
   LinearPropertyLabelUnderlineTooltip,
 } from 'modules/common/labels';
-import { CoreStats } from 'modules/types';
 import Styles from 'modules/app/components/top-bar.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
@@ -21,6 +20,7 @@ import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
 import { getCoreStats } from 'modules/auth/helpers/login-account';
+import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 
 export const Stats = () => {
   const { loginAccount, isLogged, restoredAccount } = useAppStatusStore();
@@ -55,13 +55,9 @@ export const Stats = () => {
     </>
   );
 };
-interface TopBarProps {
-  unseenCount: number;
-}
 
-const TopBar: React.FC<TopBarProps> = ({
-  unseenCount,
-}) => {
+
+const TopBar = () => {
   const {
     isLogged,
     restoredAccount,
@@ -69,6 +65,7 @@ const TopBar: React.FC<TopBarProps> = ({
     isAlertsMenuOpen,
     actions: { setIsAlertsMenuOpen, setModal },
   } = useAppStatusStore();
+  const { unseenCount } = getInfoAlertsAndSeenCount();
   
   return (
     <header className={Styles.TopBar}>

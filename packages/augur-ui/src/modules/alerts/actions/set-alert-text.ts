@@ -61,7 +61,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
-export function getInfo(params: any, status: string, marketInfo: MarketData) {
+function getInfo(params: any, status: string, marketInfo: MarketData) {
   const outcome = new BigNumber(params.outcome || params._outcome).toString();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
   let orderType =
@@ -106,14 +106,14 @@ export default function setAlertText(alert: any, callback: Function) {
     getState: () => AppState
   ): void => {
     if (!alert || isEmpty(alert)) {
-      return dispatch(callback(alert));
+      return callback(alert);
     }
     if (!callback) {
       throw new Error('Callback function is not set');
     }
 
     if (!alert.params || !alert.name) {
-      return dispatch(callback(alert));
+      return callback(alert);
     }
 
     const marketId = alert.params.marketId || alert.params.market;
@@ -504,6 +504,6 @@ export default function setAlertText(alert: any, callback: Function) {
       alert.title = 'Failed transaction';
     }
 
-    return dispatch(callback(alert));
+    return callback(alert);
   };
 }

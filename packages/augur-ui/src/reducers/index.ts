@@ -2,7 +2,6 @@ import accountPositions from 'modules/positions/reducers/account-positions';
 import marketTradingHistory from 'modules/markets/reducers/market-trading-history';
 import marketInfos from 'modules/markets/reducers/market-infos';
 import newMarket from 'modules/markets/reducers/new-market';
-import alerts from 'modules/alerts/reducers/alerts';
 import pendingLiquidityOrders from 'modules/orders/reducers/liquidity-orders';
 import analytics from 'modules/app/reducers/analytics';
 import pendingOrders from 'modules/orders/reducers/pending-orders';
@@ -18,7 +17,6 @@ import {
   AccountPosition,
   MarketInfos,
   NewMarket,
-  Alert,
   LiquidityOrders,
   PendingOrders,
   PendingQueue,
@@ -37,7 +35,6 @@ import { SDKConfiguration } from '@augurproject/artifacts';
 export function createReducer() {
   return {
     accountPositions,
-    alerts,
     marketTradingHistory,
     marketInfos,
     newMarket,
@@ -59,7 +56,6 @@ export function createReducer() {
 // keeping with reducers for easier maintenance.
 export interface AppStateInterface {
   accountPositions: AccountPosition;
-  alerts: Alert[];
   config: SDKConfiguration;
   marketTradingHistory: Getters.Trading.MarketTradingHistory;
   marketInfos: MarketInfos;

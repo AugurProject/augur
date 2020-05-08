@@ -30,7 +30,7 @@ import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import { NewMarket } from 'modules/types';
 import deepClone from 'utils/deep-clone';
-import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
+import { addAlert } from 'modules/alerts/actions/alerts';
 import { hotloadMarket } from 'modules/markets/actions/load-markets';
 import {
   getMarketAgeInDays,
@@ -171,7 +171,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     closeMarketLoadingModalOnly: (type: string) =>
       type === MODAL_MARKET_LOADING && dispatch(closeModal()),
     addAlert: alert => dispatch(addAlert(alert)),
-    removeAlert: (id: string, name: string) => dispatch(removeAlert(id, name)),
   };
 };
 const Market = withRouter(

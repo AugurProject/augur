@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 
 import App from "modules/app/components/app";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
-import { selectInfoAlertsAndSeenCount } from "modules/alerts/selectors/alerts";
+import { getInfoAlertsAndSeenCount } from "modules/alerts/helpers/alerts";
 import { initAugur } from "modules/app/actions/init-augur";
 import { RewriteUrlParams } from "modules/app/hocs/rewrite-url-params";
 import { windowRef } from "utils/window-ref";
@@ -21,7 +21,6 @@ import isAddress from "modules/auth/helpers/is-address";
 const mapStateToProps = (state: AppState) => {
   const { pendingQueue } = state;
   const { notifications, universe, walletStatus, modal, loginAccount: { balances } } = AppStatus.get();
-  const { alerts } = selectInfoAlertsAndSeenCount(state);
   const walletBalances = balances;
   const pending =
     pendingQueue[TRANSACTIONS] &&
@@ -35,7 +34,6 @@ const mapStateToProps = (state: AppState) => {
   return {
     notifications,
     modal,
-    toasts: alerts.filter(alert => alert.toast && !alert.seen),
     universe,
     useWeb3Transport: isGlobalWeb3(),
     walletBalances,
