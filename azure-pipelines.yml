@@ -80,16 +80,13 @@ jobs:
   - job: BuildYarnDepFolder
     pool:
       vmImage: 'ubuntu-18.04'
-    dependsOn:
-      - PreFlightCheck
-    variables:
-      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     steps:
       - template: .azure-templates/node-setup.yml
 
   - job: TestAndLint
     dependsOn:
       - BuildYarnDepFolder
+      - PreFlightCheck
     condition: |
       and
       (
@@ -156,7 +153,6 @@ jobs:
   - job: ContractSanityCheck
     dependsOn:
       - TestAndLint
-      - BuildYarnDepFolder
     condition: |
       and
       (
@@ -165,17 +161,12 @@ jobs:
       )
     pool:
       vmImage: 'ubuntu-18.04'
-    variables:
-      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     timeoutInMinutes: 120
     steps:
-      - checkout: self
+      - template: .azure-templates/node-setup.yml
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
       - bash: |
           set -euo pipefail
           python3 -m venv venv && \
@@ -189,18 +180,8 @@ jobs:
           md5sum -c solc.md5 && \
           sudo chmod a+x /usr/local/bin/solc
         displayName: install solc
-      - task: Cache@2
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-          restoreKeys: |
-            yarn | $(Agent.OS)
-            yarn
-          displayName: Cache Yarn packages
-      - script: yarn --frozen-lockfile
       - bash: |
           set -euo pipefail
-          yarn build
           source venv/bin/activate
           yarn workspace @augurproject/core build
         displayName: compile contracts
@@ -233,6 +214,7 @@ jobs:
   - job: DockerGethDev
     dependsOn:
       - BuildYarnDepFolder
+      - PreFlightCheck
     pool:
       vmImage: 'ubuntu-18.04'
     condition: |
@@ -295,25 +277,11 @@ jobs:
         #  TESTS: integration:parity
         security_mithril:
           TESTS: security:mythril
-    variables:
-      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     steps:
-      - checkout: self
+      - template: .azure-templates/node-setup.yml
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: Cache@2
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-          restoreKeys: |
-            yarn | $(Agent.OS)
-            yarn
-        displayName: Cache Yarn packages
-      - script: yarn --frozen-lockfile
       - bash: |
           set -exuo pipefail
           echo "$(SOLC_MD5) */usr/local/bin/solc" > solc.md5 && \
@@ -355,7 +323,6 @@ jobs:
 
   - job: Docker_populated_geth_images
     dependsOn:
-      - BuildYarnDepFolder
       - TestAugurCore
       - TestAndLint
       - ContractSanityCheck
@@ -384,24 +351,11 @@ jobs:
           NETWORK_ID: 103
           FAKE_TIME: false
     variables:
-      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
       ZEROX_RPC_ENABLED: false
       ZEROX_MESH_ENABLED: false
       GSN_ENABLED: false
     steps:
-      - checkout: self
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: Cache@2
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-          restoreKeys: |
-            yarn | $(Agent.OS)
-            yarn
-          displayName: Cache Yarn packages
-      - script: yarn --frozen-lockfile
+      - template: .azure-templates/node-setup.yml
       - script: |
           set -exuo pipefail
           export DOCKER_BUILDKIT=1
@@ -430,7 +384,6 @@ jobs:
   - job: test_3rd_party_integrations
     dependsOn:
       - Docker_populated_geth_images
-      - BuildYarnDepFolder
       - TestAugurCore
       - TestAndLint
       - ContractSanityCheck
@@ -449,22 +402,8 @@ jobs:
       )
     pool:
       vmImage: 'ubuntu-18.04'
-    variables:
-      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     steps:
-      - checkout: self
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: Cache@2
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-          restoreKeys: |
-            yarn | $(Agent.OS)
-            yarn
-          displayName: Cache Yarn packages
-      - script: yarn --frozen-lockfile
+      - template: .azure-templates/node-setup.yml
       - bash: |
           set -exuo pipefail
           yarn docker:all --detach
@@ -491,18 +430,7 @@ jobs:
     pool:
       vmImage: 'ubuntu-18.04'
     steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: Cache@2
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-          restoreKeys: |
-            yarn | $(Agent.OS)
-            yarn
-          displayName: Cache Yarn packages
-      - script: yarn --frozen-lockfile
+      - template: .azure-templates/node-setup.yml
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
@@ -575,15 +503,7 @@ jobs:
     pool:
       vmImage: 'ubuntu-18.04'
     steps:
-      - task: Cache@2
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-          restoreKeys: |
-            yarn | $(Agent.OS)
-            yarn
-          displayName: Cache Yarn packages
-      - script: yarn --frozen-lockfile
+      - template: .azure-templates/node-setup.yml
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
@@ -624,15 +544,7 @@ jobs:
     pool:
       vmImage: 'ubuntu-18.04'
     steps:
-      - task: Cache@2
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-          restoreKeys: |
-            yarn | $(Agent.OS)
-            yarn
-          displayName: Cache Yarn packages
-      - script: yarn --frozen-lockfile
+      - template: .azure-templates/node-setup.yml
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
@@ -675,19 +587,7 @@ jobs:
     pool:
       vmImage: 'ubuntu-18.04'
     steps:
-      - checkout: self
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: Cache@2
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-          restoreKeys: |
-            yarn | $(Agent.OS)
-            yarn
-          displayName: Cache Yarn packages
-      - script: yarn --frozen-lockfile
+      - template: .azure-templates/node-setup.yml
       - bash: |
           set -euo pipefail
           yarn build
