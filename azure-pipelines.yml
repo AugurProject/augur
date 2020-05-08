@@ -76,9 +76,26 @@ jobs:
         displayName: check git for changes
         name: setVars
 
-  - job: TestAndLint
+  - job: BuildYarnDepFolder
     dependsOn:
       - PreFlightCheck
+    variables:
+      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+    steps:
+      - task: Cache@2
+        inputs:
+          key: yarn | $(Agent.OS) | yarn.lock
+          restoreKeys: |
+            yarn | "$(Agent.OS)"
+            yarn
+          path: $(YARN_CACHE_FOLDER)
+        displayName: Cache Yarn packages
+
+      - script: yarn --frozen-lockfile
+
+  - job: TestAndLint
+    dependsOn:
+      - BuildYarnDepFolder
     condition: |
       and
       (
@@ -116,20 +133,16 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(node_version)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+      - task: Cache@2
         inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn clean
-          yarn install --frozen-lockfile
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+          key: yarn | $(Agent.OS) | yarn.lock
+          path: $(YARN_CACHE_FOLDER)
+          restoreKeys: |
+            yarn | $(Agent.OS)
+            yarn
+          displayName: Cache Yarn packages
+
+      - script: yarn --frozen-lockfile
       - bash: |
           set -euo pipefail
           yarn build
@@ -169,7 +182,7 @@ jobs:
   - job: ContractSanityCheck
     dependsOn:
       - TestAndLint
-      - PreFlightCheck
+      - BuildYarnDepFolder
     condition: |
       and
       (
@@ -202,19 +215,15 @@ jobs:
           md5sum -c solc.md5 && \
           sudo chmod a+x /usr/local/bin/solc
         displayName: install solc
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+      - task: Cache@2
         inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+          key: yarn | $(Agent.OS) | yarn.lock
+          path: $(YARN_CACHE_FOLDER)
+          restoreKeys: |
+            yarn | $(Agent.OS)
+            yarn
+          displayName: Cache Yarn packages
+      - script: yarn --frozen-lockfile
       - bash: |
           set -euo pipefail
           yarn build
@@ -249,7 +258,7 @@ jobs:
 
   - job: DockerGethDev
     dependsOn:
-      - PreFlightCheck
+      - BuildYarnDepFolder
     pool:
       vmImage: 'Ubuntu 16.04'
     condition: |
@@ -322,20 +331,15 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+      - task: Cache@2
         inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-          yarn build
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+          key: yarn | $(Agent.OS) | yarn.lock
+          path: $(YARN_CACHE_FOLDER)
+          restoreKeys: |
+            yarn | $(Agent.OS)
+            yarn
+        displayName: Cache Yarn packages
+      - script: yarn --frozen-lockfile
       - bash: |
           set -exuo pipefail
           echo "$(SOLC_MD5) */usr/local/bin/solc" > solc.md5 && \
@@ -377,7 +381,7 @@ jobs:
 
   - job: Docker_populated_geth_images
     dependsOn:
-      - PreFlightCheck
+      - BuildYarnDepFolder
       - TestAugurCore
       - TestAndLint
       - ContractSanityCheck
@@ -415,20 +419,15 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+      - task: Cache@2
         inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-          yarn build
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+          key: yarn | $(Agent.OS) | yarn.lock
+          path: $(YARN_CACHE_FOLDER)
+          restoreKeys: |
+            yarn | $(Agent.OS)
+            yarn
+          displayName: Cache Yarn packages
+      - script: yarn --frozen-lockfile
       - script: |
           set -exuo pipefail
           export DOCKER_BUILDKIT=1
@@ -457,7 +456,7 @@ jobs:
   - job: test_3rd_party_integrations
     dependsOn:
       - Docker_populated_geth_images
-      - PreFlightCheck
+      - BuildYarnDepFolder
       - TestAugurCore
       - TestAndLint
       - ContractSanityCheck
@@ -483,20 +482,15 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+      - task: Cache@2
         inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-          yarn build
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+          key: yarn | $(Agent.OS) | yarn.lock
+          path: $(YARN_CACHE_FOLDER)
+          restoreKeys: |
+            yarn | $(Agent.OS)
+            yarn
+          displayName: Cache Yarn packages
+      - script: yarn --frozen-lockfile
       - bash: |
           set -exuo pipefail
           yarn docker:all --detach
@@ -526,19 +520,15 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+      - task: Cache@2
         inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+          key: yarn | $(Agent.OS) | yarn.lock
+          path: $(YARN_CACHE_FOLDER)
+          restoreKeys: |
+            yarn | $(Agent.OS)
+            yarn
+          displayName: Cache Yarn packages
+      - script: yarn --frozen-lockfile
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
@@ -611,19 +601,15 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+      - task: Cache@2
         inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+          key: yarn | $(Agent.OS) | yarn.lock
+          path: $(YARN_CACHE_FOLDER)
+          restoreKeys: |
+            yarn | $(Agent.OS)
+            yarn
+          displayName: Cache Yarn packages
+      - script: yarn --frozen-lockfile
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
@@ -664,19 +650,15 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+      - task: Cache@2
         inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+          key: yarn | $(Agent.OS) | yarn.lock
+          path: $(YARN_CACHE_FOLDER)
+          restoreKeys: |
+            yarn | $(Agent.OS)
+            yarn
+          displayName: Cache Yarn packages
+      - script: yarn --frozen-lockfile
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
@@ -723,19 +705,15 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
+      - task: Cache@2
         inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+          key: yarn | $(Agent.OS) | yarn.lock
+          path: $(YARN_CACHE_FOLDER)
+          restoreKeys: |
+            yarn | $(Agent.OS)
+            yarn
+          displayName: Cache Yarn packages
+      - script: yarn --frozen-lockfile
       - bash: |
           set -euo pipefail
           yarn build
