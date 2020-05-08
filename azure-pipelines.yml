@@ -1,4 +1,5 @@
 variables:
+  System.Debug: true
   DOCKER_CI_BUILD_TAG: monorepo.$(Build.BuildID)
   CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
   CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
@@ -20,7 +21,7 @@ jobs:
   - job: PreFlightCheck
     displayName: 'Pre-Flight Check'
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: 'ubuntu-18.04'
     steps:
       - checkout: self
       - bash: |
@@ -190,7 +191,7 @@ jobs:
         eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
       )
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: 'ubuntu-18.04'
     variables:
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     timeoutInMinutes: 120
@@ -260,7 +261,7 @@ jobs:
     dependsOn:
       - BuildYarnDepFolder
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: 'ubuntu-18.04'
     condition: |
       and
       (
@@ -302,7 +303,7 @@ jobs:
         in(dependencies.DockerGethDev.result, 'Succeeded', 'Skipped')
       )
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: 'ubuntu-18.04'
     timeoutInMinutes: 120
     strategy:
       maxParallel: 5
@@ -474,7 +475,7 @@ jobs:
         not(eq(variables['Build.sourceBranch'], 'refs/tags'))
       )
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: 'ubuntu-18.04'
     variables:
       YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     steps:
@@ -515,7 +516,7 @@ jobs:
           eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: 'ubuntu-18.04'
     steps:
       - task: NodeTool@0
         inputs:
@@ -599,7 +600,7 @@ jobs:
           eq(variables['Build.SourceBranch'], 'refs/heads/demo')
       )
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: 'ubuntu-18.04'
     steps:
       - task: Cache@2
         inputs:
@@ -648,7 +649,7 @@ jobs:
           eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: 'ubuntu-18.04'
     steps:
       - task: Cache@2
         inputs:
@@ -699,7 +700,7 @@ jobs:
         startsWith(variables['build.sourceBranch'], 'refs/heads/release')
       )
     pool:
-      vmImage: 'Ubuntu-16.04'
+      vmImage: 'ubuntu-18.04'
     steps:
       - checkout: self
       - task: NodeTool@0
