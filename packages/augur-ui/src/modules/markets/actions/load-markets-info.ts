@@ -12,7 +12,10 @@ import { Markets } from "../store/markets";
 export const loadMarketsInfo = (
   marketIds: Array<string>,
   callback: NodeStyleCallback = logError
-): ThunkAction<any, any, any, any> => async () => {
+): ThunkAction<any, any, any, any> => async (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
   if (!marketIds || marketIds === undefined || marketIds.length === 0) {
     return callback(null, []);
   }
@@ -42,12 +45,15 @@ export const loadMarketsInfo = (
 export const loadMarketsInfoIfNotLoaded = (
   marketIds: string[],
   callback: NodeStyleCallback = logError
-): ThunkAction<any, any, any, any> => {
+): ThunkAction<any, any, any, any> => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
   const { marketInfos } = Markets.get();
   const marketIdsToLoad = marketIds.filter(
     (marketId: string) => !isMarketLoaded(marketId, marketInfos)
   );
 
   if (marketIdsToLoad.length === 0) return callback(null);
-  loadMarketsInfo(marketIdsToLoad, callback);
+  dispatch(loadMarketsInfo(marketIdsToLoad, callback));
 };
