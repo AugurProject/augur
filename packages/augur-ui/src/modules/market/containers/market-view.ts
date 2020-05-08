@@ -42,7 +42,7 @@ import {
 } from 'modules/orders/helpers/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
-import { useMarketsStore } from 'modules/markets/store/markets';
+import { Markets } from 'modules/markets/store/markets';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { loginAccount } = state;
@@ -110,6 +110,11 @@ const mapStateToProps = (state: AppState, ownProps) => {
  
   if (market && (tradingTutorial || ownProps.preview)) {
     orderBook = market.orderBook;
+  }
+
+  if (market && !tradingTutorial && !ownProps.preview) {
+    const { orderBooks } = Markets.get();
+    orderBook = (orderBooks[marketId] || {}).orderBook;
   }
 
   const daysPassed =

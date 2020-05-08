@@ -265,7 +265,7 @@ export const handleMarketCreatedLog = (logs: any) => (
     if (log.removed) {
       Markets.actions.removeMarket(log.markett);
     } else {
-      dispatch(loadMarketsInfo([log.market], (err, marketInfos) => {
+      loadMarketsInfo([log.market], (err, marketInfos) => {
         if (err) return console.error(err);
         Object.keys(marketInfos).map(id => {
           const market = marketInfos[id]
@@ -277,7 +277,7 @@ export const handleMarketCreatedLog = (logs: any) => (
             dispatch(marketCreationCreated(market, log.extraInfo));
           }
         })
-      }));
+      });
     }
   });
   if (userLogs.length > 0) {
@@ -307,7 +307,7 @@ export const handleMarketMigratedLog = (log: any) => (
     Markets.actions.removeMarket(log.markett);
     dispatch(addPendingData(log.market, MARKETMIGRATED, TXEventName.Success, '0', undefined));
   } else {
-    dispatch(loadMarketsInfo([log.market]));
+    loadMarketsInfo([log.market]);
   }
   dispatch(loadUniverseDetails(universeId, userAddress));
 };
@@ -549,7 +549,7 @@ export const handleMarketParticipantsDisavowedLog = (logs: any) => (
   marketIds.map(marketId => {
     dispatch(addPendingData(marketId, DISAVOWCROWDSOURCERS, TXEventName.Success, "0"));
   })
-  dispatch(loadMarketsInfo(marketIds));
+  loadMarketsInfo(marketIds);
 };
 
 export const handleMarketTransferredLog = (logs: any) => (
@@ -557,7 +557,7 @@ export const handleMarketTransferredLog = (logs: any) => (
   getState: () => AppState
 ) => {
   const marketIds = logs.map(log => log.market);
-  dispatch(loadMarketsInfo(marketIds));
+  loadMarketsInfo(marketIds);
 };
 
 export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (

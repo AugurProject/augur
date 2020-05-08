@@ -7,9 +7,10 @@ import { orderAndAssignCumulativeShares, calcOrderbookPercentages } from "module
 import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 import { AppState } from "appStore";
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from "modules/markets/store/markets-hooks";
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { orderBooks } = state;
+  const { orderBooks } = Markets.get();
   const {zeroXStatus, blockchain: { currentAugurTimestamp }} = AppStatus.get();
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const selectedOutcomeId = (ownProps.selectedOutcomeId !== undefined && ownProps.selectedOutcomeId !== null) ? ownProps.selectedOutcomeId : market.defaultSelectedOutcomeId;

@@ -42,7 +42,7 @@ export function loadUniverseForkingInfo(
         isForkingMarketFinalized,
         winningChildUniverseId,
       };
-      dispatch(loadMarketsInfo([forkingMarket]));
+      loadMarketsInfo([forkingMarket]);
       AppStatus.actions.updateUniverse({ forkingInfo });
     }
   };
