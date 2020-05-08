@@ -1,4 +1,3 @@
-import { clearLoginAccount } from 'modules/account/actions/login-account';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { windowRef } from 'utils/window-ref';
@@ -11,7 +10,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 export function logout() {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
-    const { setIsLogged, setGSNEnabled, setWalletStatus, setMobileMenuState } = AppStatus.actions;
+    const { setRestoredAccount, setIsLogged, setGSNEnabled, setWalletStatus, setMobileMenuState } = AppStatus.actions;
     const localStorageRef =
       typeof window !== 'undefined' && window.localStorage;
     if (localStorageRef && localStorageRef.removeItem) {
@@ -19,7 +18,7 @@ export function logout() {
       localStorageRef.removeItem('airbitz.users');
       localStorageRef.removeItem('loggedInUser');
     }
-    dispatch(clearLoginAccount());
+    AppStatus.actions.clearLoginAccount();
     dispatch(clearLiquidityOrders());
 
     // Close Mobile Menu
@@ -43,7 +42,7 @@ export function logout() {
     setGSNEnabled(false);
     setWalletStatus(null);
     setIsLogged(false);
-
+    setRestoredAccount(false);
 
     if (!isLocalHost()) {
       analytics.reset();

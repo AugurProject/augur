@@ -9,12 +9,17 @@ import { fundGsnWallet } from 'modules/contracts/actions/contractCalls';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount } = state;
-  const { meta, address } = loginAccount;
-  const signingWallet = meta.signer._address;
-  const gsnWallet = address;
+  const {
+    loginAccount: {
+      meta: {
+        signer: { _address: signingWallet },
+      },
+      address: gsnWallet,
+    },
+    modal,
+  } = AppStatus.get();
   return {
-    modal: AppStatus.get().modal,
+    modal,
     signingWallet,
     gsnWallet,
   };
@@ -47,9 +52,5 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
 });
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(Message)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(Message)
 );

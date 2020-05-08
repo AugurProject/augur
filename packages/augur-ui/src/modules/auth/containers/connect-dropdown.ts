@@ -11,11 +11,12 @@ import {
 import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
 import { FormattedNumber } from 'modules/types';
 import { AppState } from 'appStore';
-import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
+import { getEthReserve } from 'modules/auth/helpers/login-account';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const {
+    loginAccount: { address: loginAccountAddress, meta: accountMeta, balances },
     universe: { parentUniverseId, outcomeName, forkingInfo },
     gasPriceInfo: { fast, average, safeLow, userDefinedGasPrice },
   } = AppStatus.get();
@@ -34,7 +35,7 @@ const mapStateToProps = (state: AppState) => {
     gasPriceSpeed = GAS_SPEED_LABELS.SLOW;
   }
 
-  const reserveEthAmount: FormattedNumber = getEthReserve(state);
+  const reserveEthAmount: FormattedNumber = getEthReserve();
 
   return {
     universeOutcomeName: outcomeName
@@ -45,13 +46,13 @@ const mapStateToProps = (state: AppState) => {
         ? parentUniverseId
         : null,
     universeHasChildren: !!forkingInfo,
-    loginAccountAddress: state.loginAccount.address,
+    loginAccountAddress,
     averageGasPrice: average,
     userDefinedGasPrice: userDefined,
     gasPriceSpeed,
     gasPriceTime,
-    accountMeta: state.loginAccount?.meta,
-    balances: state.loginAccount?.balances,
+    accountMeta,
+    balances,
     reserveEthAmount,
   };
 };

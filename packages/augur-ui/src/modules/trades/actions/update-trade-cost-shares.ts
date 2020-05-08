@@ -13,6 +13,7 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 import { Getters, SimulateTradeData } from '@augurproject/sdk';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
+import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
@@ -33,9 +34,9 @@ export function updateTradeCost({
       return callback('side or numShare or limitPrice is not provided');
     }
 
-    const { accountPositions, loginAccount } = getState();
+    const { accountPositions } = getState();
+    const { loginAccount: { address } } = AppStatus.get();
     const { marketInfos } = Markets.get();
-
     dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
     const newTradeDetails = {
@@ -53,7 +54,7 @@ export function updateTradeCost({
       marketId,
       outcomeId,
       accountPositions,
-      loginAccount.address,
+      address,
       callback
     );
   };
@@ -75,9 +76,9 @@ export function updateTradeShares({
       return callback('side or numShare or limitPrice is not provided');
     }
 
-    const { accountPositions, loginAccount } = getState();
+    const { accountPositions } = getState();
+    const { loginAccount: { address } } = AppStatus.get();
     const { marketInfos } = Markets.get();
-
     dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
     const newTradeDetails: any = {
@@ -125,7 +126,7 @@ export function updateTradeShares({
       marketId,
       outcomeId,
       accountPositions,
-      loginAccount.address,
+      address,
       callback
     );
   };

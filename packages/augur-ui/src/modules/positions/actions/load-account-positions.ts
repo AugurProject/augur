@@ -1,4 +1,3 @@
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { AppState } from 'appStore';
 import { updateAccountPositionsData } from 'modules/positions/actions/account-positions';
 import {
@@ -28,35 +27,33 @@ export const checkUpdateUserPositions = (marketIds: string[]) => (
 
 export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState) => {
-  const { universe: { id: universe }} = AppStatus.get();
-  const { mixedCaseAddress } = loginAccount;
+  const { loginAccount: { mixedCaseAddress }, universe: { id: universe }} = AppStatus.get();
   const Augur = augurSdk.get();
   const positionsPlus: Getters.Users.UserPositionsPlusResult = await Augur.getUserPositionsPlus({
-    account: loginAccount.mixedCaseAddress,
+    account: mixedCaseAddress,
     universe,
   });
 
   dispatch(updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory));
   if (positionsPlus.userPositions) dispatch(userPositionProcessing(positionsPlus.userPositions));
-  if (positionsPlus.userPositionTotals) dispatch(updateLoginAccount(positionsPlus.userPositionTotals));
+  if (positionsPlus.userPositionTotals) {
+    AppStatus.actions.updateLoginAccount(positionsPlus.userPositionTotals);
+  }
 };
 
 export const loadAccountOnChainFrozenFundsTotals = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount } = getState();
-  const { universe: { id: universe }} = AppStatus.get();
+  const { loginAccount, universe: { id: universe }} = AppStatus.get();
   const Augur = augurSdk.get();
   const frozen = await Augur.getTotalOnChainFrozenFunds({
     account: loginAccount.mixedCaseAddress,
     universe,
   });
-  dispatch(
-    updateLoginAccount({
-      totalFrozenFunds: frozen.totalFrozenFunds,
-    })
-  );
+  AppStatus.actions.updateLoginAccount({ 
+    totalFrozenFunds: frozen.totalFrozenFunds,
+  });
 };
 
 export const userPositionProcessing = (

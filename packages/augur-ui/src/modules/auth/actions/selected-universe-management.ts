@@ -11,9 +11,7 @@ export const setSelectedUniverse = (selectedUniverseId: string | null = null) =>
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { env } = AppStatus.get();
-  const { loginAccount } = getState();
-  const { address } = loginAccount;
+  const { env, loginAccount: { address } } = AppStatus.get();
   const networkId = getNetworkId();
   const Augur = augurSdk.get();
   const defaultUniverseId =

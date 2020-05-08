@@ -11,14 +11,19 @@ import convertV1ToV2, {
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { modal, gsnEnabled: GsnEnabled, gasPriceInfo } = AppStatus.get();
-  return ({
+  const {
+    loginAccount,
     modal,
-    loginAccount: state.loginAccount,
+    gsnEnabled: GsnEnabled,
+    gasPriceInfo,
+  } = AppStatus.get();
+  return {
+    modal,
+    loginAccount,
     GsnEnabled,
     gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,
-    walletBalances: state.loginAccount.balances,
-  });
+    walletBalances: loginAccount.balances,
+  };
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -41,9 +46,5 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(MigrateRep)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(MigrateRep)
 );

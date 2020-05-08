@@ -31,22 +31,23 @@ export function submitNewMarket(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { loginAccount } = getState();
-    const { gsnEnabled } = AppStatus.get();
+    const {
+      loginAccount: { address, allowance },
+      gsnEnabled,
+    } = AppStatus.get();
     market.orderBook = sortOrders(market.orderBook);
     market.endTime = market.endTimeFormatted.timestamp;
     market.designatedReporterAddress =
       market.designatedReporterAddress === ''
-        ? loginAccount.address
+        ? address
         : market.designatedReporterAddress;
 
     const hasOrders = market.orderBook && Object.keys(market.orderBook).length;
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
     const hashId = getConstructedMarketId(market);
 
-
     // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
-    if (!gsnEnabled && loginAccount.allowance.lte(ZERO)) {
+    if (!gsnEnabled && allowance.lte(ZERO)) {
       await approveToTrade();
     }
 

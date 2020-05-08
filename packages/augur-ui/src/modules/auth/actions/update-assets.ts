@@ -1,5 +1,4 @@
 import { NodeStyleCallback } from 'modules/types';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import {
   getEthBalance,
   getDaiBalance,
@@ -21,8 +20,7 @@ export const updateAssets = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount } = getState();
-  const { address, meta } = loginAccount;
+  const { loginAccount: { address, meta } } = AppStatus.get();
   const nonSafeWallet = await meta.signer.getAddress();
 
   updateBalances(
@@ -64,20 +62,18 @@ function updateBalances(
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const legacyRepNonSafe = formatAttoRep(legacyAttoRepNonSafe).value;
     dispatch(addedDaiEvent(dai));
-    dispatch(
-      updateLoginAccount({
-        balances: {
-          attoRep,
-          rep,
-          dai,
-          eth,
-          legacyAttoRep,
-          legacyRep,
-          legacyRepNonSafe,
-          ethNonSafe,
-        },
-      })
-    );
+    AppStatus.actions.updateLoginAccount({
+      balances: {
+        attoRep,
+        rep,
+        dai,
+        eth,
+        legacyAttoRep,
+        legacyRep,
+        legacyRepNonSafe,
+        ethNonSafe,
+      },
+    });
     return callback(null, { rep, dai, eth });
   });
 }
