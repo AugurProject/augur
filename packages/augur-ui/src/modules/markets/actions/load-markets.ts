@@ -156,7 +156,7 @@ export const loadMarketsByFilter = (
     delete params.maxLiquiditySpread;
 
   const marketList = await augur.getMarkets({ ...params });
-  dispatch(addUpdateMarketInfos(marketList.markets));
+  addUpdateMarketInfos(marketList.markets);
   cb(null, marketList);
 };
 
@@ -271,7 +271,7 @@ const loadReportingMarkets = (
   const marketList: Getters.Markets.MarketList = await augur.getMarkets({
     ...params,
   });
-  dispatch(addUpdateMarketInfos(marketList.markets));
+  addUpdateMarketInfos(marketList.markets);
   if (reportingState) {
     const marketIds = marketList.markets.map(m => m.id);
     dispatch(

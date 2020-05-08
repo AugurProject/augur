@@ -9,7 +9,7 @@ import {
   LoadMarketsFilterOptions,
   organizeReportingStates,
 } from 'modules/markets/actions/load-markets';
-import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 import { buildSearchString } from 'modules/markets/selectors/build-search-string';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';

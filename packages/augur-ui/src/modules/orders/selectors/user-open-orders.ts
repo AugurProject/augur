@@ -15,19 +15,20 @@ import {
   TXEventName
 } from '@augurproject/sdk';
 import { convertUnixToFormattedDate, convertSaltToFormattedDate } from 'utils/format-date';
-import { formatNone, formatShares, formatDai, formatMarketShares } from 'utils/format-number';
+import { formatNone, formatDai, formatMarketShares } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import {
-  selectMarketInfosState,
   selectUserMarketOpenOrders,
   selectCancelingOrdersState,
   selectPendingOrdersState,
 } from 'appStore/select-state';
 import { createSelector } from 'reselect';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
-function selectMarketsDataStateMarket(state, marketId) {
-  return selectMarketInfosState(state)[marketId];
+function selectMarketsDataStateMarket(marketId) {
+  const { marketInfos } = Markets.get();
+  return marketInfos[marketId];
 }
 
 function selectUserMarketOpenOrdersMarket(state, marketId) {

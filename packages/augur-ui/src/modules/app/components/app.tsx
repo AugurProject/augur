@@ -54,6 +54,7 @@ import { SDKConfiguration } from '@augurproject/artifacts';
 import { MyBetsInnerNav } from 'modules/portfolio/components/common/my-bets-inner-nav';
 import { MyBetsProvider } from 'modules/portfolio/store/my-bets';
 import { StatusErrorMessage } from 'modules/common/labels';
+import { MarketsProvider } from 'modules/markets/store/markets';
 
 interface AppProps {
   notifications: Notification[];
@@ -464,10 +465,12 @@ const MainAppContent = ({
         </div>
       )}
       <BetslipProvider>
-        <ForkingBanner />
-        <Routes isLogged={isLogged || restoredAccount} />
-        <Betslip />
-        <StatusErrorMessage />
+        <MarketsProvider>
+          <ForkingBanner />
+          <Routes isLogged={isLogged || restoredAccount} />
+          <Betslip />
+          <StatusErrorMessage />
+        </MarketsProvider>
       </BetslipProvider>
     </section>
   );

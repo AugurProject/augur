@@ -1,6 +1,5 @@
 import accountPositions from 'modules/positions/reducers/account-positions';
 import marketTradingHistory from 'modules/markets/reducers/market-trading-history';
-import marketInfos from 'modules/markets/reducers/market-infos';
 import newMarket from 'modules/markets/reducers/new-market';
 import pendingLiquidityOrders from 'modules/orders/reducers/liquidity-orders';
 import analytics from 'modules/app/reducers/analytics';
@@ -11,11 +10,9 @@ import userOpenOrders from 'modules/orders/reducers/open-orders';
 import drafts from 'modules/create-market/reducers/drafts';
 import marketsList from 'modules/markets-list/reducers/markets-list';
 import reportingListState from 'modules/reporting/reducers/reporting-list-state';
-import orderBooks from 'modules/orders/reducers/order-books'
 import initialized3box from 'modules/global-chat/reducers/initialized-3box'
 import {
   AccountPosition,
-  MarketInfos,
   NewMarket,
   LiquidityOrders,
   PendingOrders,
@@ -26,7 +23,6 @@ import {
   MarketsList,
   ReportingListState,
   Analytics,
-  OrderBooks,
   Initialized3box
 } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
@@ -36,7 +32,6 @@ export function createReducer() {
   return {
     accountPositions,
     marketTradingHistory,
-    marketInfos,
     newMarket,
     pendingLiquidityOrders,
     pendingOrders,
@@ -47,7 +42,6 @@ export function createReducer() {
     marketsList,
     reportingListState,
     analytics,
-    orderBooks,
     initialized3box
   };
 }
@@ -58,7 +52,6 @@ export interface AppStateInterface {
   accountPositions: AccountPosition;
   config: SDKConfiguration;
   marketTradingHistory: Getters.Trading.MarketTradingHistory;
-  marketInfos: MarketInfos;
   newMarket: NewMarket;
   pendingLiquidityOrders: LiquidityOrders;
   pendingOrders: PendingOrders;
@@ -69,6 +62,5 @@ export interface AppStateInterface {
   marketsList: MarketsList;
   reportingListState: ReportingListState;
   analytics: Analytics;
-  orderBooks: OrderBooks;
   initialized3box: Initialized3box;
 }

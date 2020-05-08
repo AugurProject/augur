@@ -1,7 +1,5 @@
 import { isMarketLoaded } from "modules/markets/helpers/is-market-loaded";
-import {
-  updateMarketsData
-} from "modules/markets/actions/update-markets-data";
+
 import logError from "utils/log-error";
 import { AppState } from "appStore";
 import { Action } from "redux";
@@ -9,14 +7,12 @@ import { NodeStyleCallback } from "modules/types";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { augurSdk } from "services/augursdk";
 import { AppStatus } from "modules/app/store/app-status";
+import { Markets } from "../store/markets";
 
 export const loadMarketsInfo = (
   marketIds: Array<string>,
   callback: NodeStyleCallback = logError
-): ThunkAction<any, any, any, any> => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+): ThunkAction<any, any, any, any> => async () => {
   if (!marketIds || marketIds === undefined || marketIds.length === 0) {
     return callback(null, []);
   }
@@ -39,22 +35,19 @@ export const loadMarketsInfo = (
   if (!Object.keys(marketInfos).length)
     return callback("no marketIds in collection");
 
-  dispatch(updateMarketsData(marketInfos));
+  Markets.actions.updateMarketsData(marketInfos);
   callback(null, marketInfos);
 };
 
 export const loadMarketsInfoIfNotLoaded = (
   marketIds: string[],
   callback: NodeStyleCallback = logError
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const { marketInfos } = getState();
+): ThunkAction<any, any, any, any> => {
+  const { marketInfos } = Markets.get();
   const marketIdsToLoad = marketIds.filter(
     (marketId: string) => !isMarketLoaded(marketId, marketInfos)
   );
 
   if (marketIdsToLoad.length === 0) return callback(null);
-  dispatch(loadMarketsInfo(marketIdsToLoad, callback));
+  loadMarketsInfo(marketIdsToLoad, callback);
 };

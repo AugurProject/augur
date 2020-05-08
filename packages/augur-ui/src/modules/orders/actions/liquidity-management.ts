@@ -14,6 +14,7 @@ import {
 import { Getters, TXEventName } from '@augurproject/sdk';
 import { setLiquidityOrderStatus } from 'modules/events/actions/liquidity-transactions';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
@@ -153,7 +154,7 @@ export const sendLiquidityOrder = (options: any) => async (
   getState: () => AppState
 ) => {
   const { order, bnAllowance, marketId } = options;
-  const { marketInfos } = getState();
+  const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
   const isZeroX = options.zeroXEnabled;
   const { orderEstimate } = order;

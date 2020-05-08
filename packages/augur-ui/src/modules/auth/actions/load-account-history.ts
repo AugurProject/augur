@@ -11,8 +11,8 @@ import { AppState } from 'appStore';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
-import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
 export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
@@ -47,7 +47,7 @@ async function loadTransactions(
     {}
   );
 
-  dispatch(updateMarketsData(marketsDataById));
+  Markets.actions.updateMarketsData(marketsDataById);
   if (userData.userOpenOrders)
     dispatch(refreshUserOpenOrders(userData.userOpenOrders.orders));
   if (userData.userPositions)

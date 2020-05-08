@@ -5,10 +5,6 @@ import {
   loadAccountOnChainFrozenFundsTotals,
   checkUpdateUserPositions,
 } from 'modules/positions/actions/load-account-positions';
-import {
-  removeMarket,
-  updateMarketsData,
-} from 'modules/markets/actions/update-markets-data';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 import { updateAssets } from 'modules/auth/actions/update-assets';
@@ -58,7 +54,7 @@ import { getCategoryStats } from 'modules/create-market/actions/get-category-sta
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import * as _ from 'lodash';
-import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import {
   removePendingDataByHash,
@@ -77,6 +73,7 @@ import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
 const handleAlert = (
   log: any,
@@ -273,7 +270,7 @@ export const handleMarketsUpdatedLog = ({
     marketsDataById[market.id] = market;
   }
   const marketIds = Object.keys(marketsDataById);
-  dispatch(updateMarketsData(marketsDataById));
+  Markets.actions.updateMarketsData(marketsDataById);
   if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
   if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
 };
@@ -290,7 +287,7 @@ export const handleMarketCreatedLog = (logs: any) => (
   );
   userLogs.map(log => {
     if (log.removed) {
-      dispatch(removeMarket(log.market));
+      Markets.actions.removeMarket(log.markett);
     } else {
       dispatch(
         loadMarketsInfo([log.market], (err, marketInfos) => {
@@ -335,16 +332,8 @@ export const handleMarketMigratedLog = (log: any) => (
     universe: { id: universeId },
   } = AppStatus.get();
   if (log.originalUniverse === universeId) {
-    dispatch(removeMarket(log.market));
-    dispatch(
-      addPendingData(
-        log.market,
-        MARKETMIGRATED,
-        TXEventName.Success,
-        '0',
-        undefined
-      )
-    );
+    Markets.actions.removeMarket(log.markett);
+    dispatch(addPendingData(log.market, MARKETMIGRATED, TXEventName.Success, '0', undefined));
   } else {
     dispatch(loadMarketsInfo([log.market]));
   }

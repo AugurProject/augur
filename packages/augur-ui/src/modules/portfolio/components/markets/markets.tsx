@@ -9,6 +9,7 @@ import { TXEventName } from '@augurproject/sdk';
 import { CancelTextButton, SubmitTextButton } from 'modules/common/buttons';
 
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
+import marketStyles from 'modules/portfolio/components/markets/markets.styles.less';
 import { MarketData } from 'modules/types';
 
 const sortByOptions = [
@@ -155,6 +156,7 @@ class MyMarkets extends Component<MyMarketsProps> {
       // @ts-ignore
       <FilterBox
         title="My Created Markets"
+        customClass={marketStyles.Markets}
         sortByOptions={sortByOptions}
         sortByStyles={{ minWidth: '10.8125rem' }}
         markets={myMarkets}

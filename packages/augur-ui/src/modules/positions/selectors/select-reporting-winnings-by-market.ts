@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import {
-  selectMarketInfosState,
   selectLoginAccountReportingState,
 } from 'appStore/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
@@ -16,10 +15,8 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 export const selectReportingWinningsByMarket = createSelector(
   selectLoginAccountReportingState,
-  selectMarketInfosState,
   (
     userReporting,
-    marketInfos, // this is needed to trigger the selector if marketInfos changes
   ): MarketReportClaimableContracts => {
     const { universe: { forkingInfo } } = AppStatus.get();
     const releasingRep = !!forkingInfo;

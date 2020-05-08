@@ -3,7 +3,6 @@ import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import {
   selectAccountPositionsState,
   selectLoginAccountAddress,
-  selectMarketInfosState,
   selectPendingLiquidityOrders,
   selectUserMarketOpenOrders
 } from 'appStore/select-state';
@@ -38,6 +37,7 @@ import { selectReportingWinningsByMarket } from 'modules/positions/selectors/sel
 import { selectMarket } from 'modules/markets/selectors/market';
 import { isSameAddress } from 'utils/isSameAddress';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -89,25 +89,24 @@ export const selectReportOnMarkets = createSelector(
 );
 
 // Tell user they can get REP if they finalize warp sync market
-export const selectFinalizeMarkets = createSelector(
-  selectMarketInfosState,
-  marketInfos => {
-    const marketId = Object.keys(marketInfos).filter(
-      id => marketInfos[id].reportingState === REPORTING_STATE.AWAITING_FINALIZATION && marketInfos[id].isWarpSync
-    );
-    if (marketId.length > 0) {
-      return marketId.map(id => selectMarket(id)).map(getRequiredMarketData);
-    }
-    return [];
+export const selectFinalizeMarkets = () => {
+  const { marketInfos } = Markets.get();
+
+  const marketId = Object.keys(marketInfos).filter(
+    id => marketInfos[id].reportingState === REPORTING_STATE.AWAITING_FINALIZATION && marketInfos[id].isWarpSync
+  );
+  if (marketId.length > 0) {
+    return marketId.map(id => selectMarket(id)).map(getRequiredMarketData);
   }
-);
+  return [];
+};
 
 // Get all markets in dispute, for market creators and user with positions in disputed markets
 export const selectMarketsInDispute = createSelector(
-  selectMarketInfosState,
   selectAccountPositionsState,
-  (markets, positions, ) => {
+  (positions) => {
     const { loginAccount: { address }} = AppStatus.get();
+    const { marketInfos } = Markets.get();
     let marketIds = Object.keys(positions);
     const { loginAccount: { reporting } } = AppStatus.get();
     if (reporting && reporting.disputing && reporting.disputing.contracts) {
@@ -133,7 +132,7 @@ export const selectMarketsInDispute = createSelector(
     marketIds = Array.from(
       new Set([
         ...marketIds,
-        ...Object.keys(markets).filter(id => markets[id].author === address),
+        ...Object.keys(marketInfos).filter(id => marketInfos[id].author === address),
       ])
     );
     if (marketIds.length > 0) {

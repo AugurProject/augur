@@ -62,6 +62,7 @@ import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { StatusErrorMessage } from 'modules/common/labels';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import { BettingMarketView } from './betting-market-view';
+import { useMarketsStore } from 'modules/markets/store/markets';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -92,7 +93,6 @@ interface MarketViewProps {
   account: string;
   orderBook?: Getters.Markets.OutcomeOrderBook | OutcomeTestTradingOrder;
   loadMarketOrderBook: Function;
-  clearOrderBook: Function;
   zeroXstatus: string;
   hasZeroXError: boolean;
 }
@@ -193,7 +193,13 @@ export default class MarketView extends Component<
 
     this.tradingTutorialWidthCheck();
 
-    if (isConnected && !!marketId && !tradingTutorial && !preview && zeroXstatus === ZEROX_STATUSES.SYNCED) {
+    if (
+      isConnected &&
+      !!marketId &&
+      !tradingTutorial &&
+      !preview &&
+      zeroXstatus === ZEROX_STATUSES.SYNCED
+    ) {
       loadMarketsInfo(marketId);
       loadMarketOrderBook(marketId);
       loadMarketTradingHistory(marketId);
@@ -255,13 +261,20 @@ export default class MarketView extends Component<
       return;
     }
 
-    if ((isConnected !== this.props.isConnected) && !!marketId && !tradingTutorial && !preview && zeroXstatus === ZEROX_STATUSES.SYNCED) {
+    if (
+      isConnected !== this.props.isConnected &&
+      !!marketId &&
+      !tradingTutorial &&
+      !preview &&
+      zeroXstatus === ZEROX_STATUSES.SYNCED
+    ) {
       loadMarketOrderBook(marketId);
       loadMarketsInfo(marketId);
       loadMarketTradingHistory(marketId);
     }
     if (!this.props.isMarketLoading) {
-      if (closeMarketLoadingModalOnly) closeMarketLoadingModalOnly(this.props.modalShowing);
+      if (closeMarketLoadingModalOnly)
+        closeMarketLoadingModalOnly(this.props.modalShowing);
     }
 
     if (
@@ -339,7 +352,7 @@ export default class MarketView extends Component<
   updateSelectedOutcome(selectedOutcomeId, keepOrder) {
     if (selectedOutcomeId !== this.state.selectedOutcomeId) {
       if (keepOrder) {
-        return this.setState({selectedOutcomeId});
+        return this.setState({ selectedOutcomeId });
       }
       this.setState({
         selectedOutcomeId,
@@ -473,9 +486,9 @@ export default class MarketView extends Component<
       tradingTutorial,
       hotloadMarket,
       canHotload,
-      orderBook,
       zeroXstatus,
     } = this.props;
+    let { orderBook } = this.props;
     const {
       selectedOutcomeId,
       extendOrderBook,
@@ -487,6 +500,7 @@ export default class MarketView extends Component<
       tutorialError,
       pane,
     } = this.state;
+
     if (isMarketLoading) {
       if (canHotload && !tradingTutorial) hotloadMarket(marketId);
       return (
@@ -498,7 +512,6 @@ export default class MarketView extends Component<
         />
       );
     }
-
 
     let outcomeOrderBook = this.EmptyOrderBook;
     const orderbookLoading = !orderBook;

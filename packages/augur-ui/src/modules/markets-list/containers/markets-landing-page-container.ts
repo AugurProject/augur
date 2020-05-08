@@ -48,7 +48,7 @@ const mapDispatchToProps = (
     loadMarketsByFilter: (
       filter: LoadMarketsFilterOptions,
       cb: NodeStyleCallback
-    ) => dispatch(loadMarketsByFilter(filter, cb)),
+    ) => loadMarketsByFilter(filter, cb),
   });
 };
 

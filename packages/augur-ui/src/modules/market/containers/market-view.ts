@@ -39,13 +39,11 @@ import {
 import { AppState } from 'appStore';
 import {
   loadMarketOrderBook,
-  clearOrderBook,
-} from 'modules/orders/actions/load-market-orderbook';
+} from 'modules/orders/helpers/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { orderBooks } = state;
   const {
     loginAccount,
     universe,
@@ -108,10 +106,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   }
 
   let orderBook: Getters.Markets.OutcomeOrderBook = null;
-  if (market && !tradingTutorial && !ownProps.preview) {
-    orderBook = (orderBooks[marketId] || {}).orderBook;
-  }
-
+ 
   if (market && (tradingTutorial || ownProps.preview)) {
     orderBook = market.orderBook;
   }
@@ -150,12 +145,11 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { setModal } = AppStatus.actions;
+  const { setModal } = AppStatus.actions; 
   return {
     hotloadMarket: marketId => hotloadMarket(marketId),
-    loadMarketsInfo: marketId => dispatch(loadMarketsInfo([marketId])),
+    loadMarketsInfo: marketId => loadMarketsInfo([marketId]),
     loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
-    clearOrderBook: () => dispatch(clearOrderBook()),
     updateModal: modal => setModal(modal),
     loadMarketTradingHistory: marketId =>
       dispatch(loadMarketTradingHistory(marketId)),
