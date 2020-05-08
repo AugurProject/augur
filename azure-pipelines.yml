@@ -149,6 +149,8 @@ jobs:
           testResultsFiles: '**/junit.xml'
 
   - job: BuildUI
+    pool:
+      vmImage: 'ubuntu-18.04'
     dependsOn:
       - BuildYarnDepFolder
       - PreFlightCheck
