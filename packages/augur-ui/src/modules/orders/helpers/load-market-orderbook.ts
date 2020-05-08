@@ -11,6 +11,7 @@ export const loadMarketOrderBook = (
   marketId: string,
   callback: NodeStyleCallback = logError
 ) => async (
+  dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   if (marketId == null) {

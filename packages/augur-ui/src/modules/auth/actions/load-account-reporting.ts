@@ -31,7 +31,7 @@ export const loadAccountReportingHistory = () => async (
     updateNotifications([{...notification, isImportant: true, isNew: true}]);
   }
   updateLoginAccount({ reporting });
-  if (marketIds.length > 0) dispatch(loadMarketsInfoIfNotLoaded(marketIds));
+  if (marketIds.length > 0) loadMarketsInfoIfNotLoaded(marketIds);
 };
 
 export const loadAccountCurrentDisputeHistory = async (

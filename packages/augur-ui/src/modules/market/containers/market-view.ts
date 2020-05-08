@@ -111,6 +111,11 @@ const mapStateToProps = (state: AppState, ownProps) => {
     orderBook = market.orderBook;
   }
 
+  if (market && !tradingTutorial && !ownProps.preview) {
+    const { orderBooks } = Markets.get();
+    orderBook = (orderBooks[marketId] || {}).orderBook;
+  }
+
   const daysPassed =
     market &&
     market.creationTime &&
