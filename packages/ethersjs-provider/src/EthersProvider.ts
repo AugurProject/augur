@@ -52,6 +52,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   }
 
   private _mostRecentLatestBlockHeaders: Promise<any> | null;
+  private _callCache = new Map<any, Promise<any>>();
   private callCount = new Counter();
 
   printOutAndClearCallCount = () => {
@@ -67,7 +68,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   ) {
     super(provider.getNetwork());
     setInterval(this.printOutAndClearCallCount, 60000);
-    this.on('block', (blockNumber) => this._mostRecentLatestBlockHeaders = null);
+    this.on('block', this.onNewBlock.bind(this));
     this.provider = provider;
     this.performQueue = queue(
       (item: PerformQueueTask, callback: (err: Error, results: any) => void) => {
@@ -75,6 +76,15 @@ export class EthersProvider extends ethers.providers.BaseProvider
         retry(
           { times, interval },
           async () => {
+            let result: Promise<any>;
+            const itemString = JSON.stringify(item);
+            if ((item.message === "call" ||
+                 item.message === "getBalance"
+                ) &&
+                process.env.NODE_ENV !== 'test' &&
+                this._callCache.has(itemString)) {
+              return this._callCache.get(itemString);
+            }
             if (item.message === 'send') {
               if (typeof item.params.params === "undefined") {
                 item.params.params = [];
@@ -89,11 +99,12 @@ export class EthersProvider extends ethers.providers.BaseProvider
               ) {
                 if (!_this._mostRecentLatestBlockHeaders) {
                   _this._mostRecentLatestBlockHeaders = _this.providerSend(item.params.method, item.params.params);
+                } else {
+                  this.callCount.decrement(method);
                 }
                 return _this._mostRecentLatestBlockHeaders;
               }
-
-              return _this.providerSend(item.params.method, item.params.params);
+              result = _this.providerSend(item.params.method, item.params.params);
             } else {
               const { blockTag, includeTransactions } = item.params;
               this.callCount.increment(item.message);
@@ -105,17 +116,30 @@ export class EthersProvider extends ethers.providers.BaseProvider
               ) {
                 if (!_this._mostRecentLatestBlockHeaders) {
                   _this._mostRecentLatestBlockHeaders = _this.providerPerform(item.message, item.params);
+                } else {
+                  this.callCount.decrement(item.message);
                 }
                 return _this._mostRecentLatestBlockHeaders;
-              }
-              return _this.providerPerform(item.message, item.params);
+              } 
+              result = _this.providerPerform(item.message, item.params);
             }
+            if ((item.message === "call" ||
+                item.message === "getBalance") &&
+                process.env.NODE_ENV !== 'test') {
+              this._callCache.set(itemString, result);
+            }
+            return result;
           },
           callback
         );
       },
       concurrency
     );
+  }
+
+  onNewBlock(blockNumber: number): void {
+    this._mostRecentLatestBlockHeaders = null;
+    this._callCache = new Map<any, Promise<any>>();
   }
 
   async providerSend(method: string, params: any): Promise<any> {
