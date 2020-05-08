@@ -1,5 +1,4 @@
 variables:
-  System.Debug: true
   DOCKER_CI_BUILD_TAG: monorepo.$(Build.BuildID)
   CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
   CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
@@ -121,6 +120,27 @@ jobs:
     steps:
       - template: .azure-templates/node-setup.yml
       - bash: |
+          rm /tmp/seed.json
+          set -euo pipefail
+          free -m
+          yarn test $(TEST_ARGS) --verbose --ci --reporters=default --reporters=jest-junit
+        displayName: yarn test
+        condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+      - task: PublishTestResults@2
+        condition: succeededOrFailed()
+        inputs:
+          testRunner: JUnit
+          testResultsFiles: '**/junit.xml'
+
+  - job: Build UI
+    dependsOn:
+      - BuildYarnDepFolder
+      - PreFlightCheck
+    steps:
+      - template: .azure-templates/node-setup.yml
+      - bash: |
           set -euo pipefail
           export ETHEREUM_NETWORK=kovan
           ( cd packages/orbit-web && ./node_modules/.bin/webpack)
@@ -135,20 +155,6 @@ jobs:
           bash <(curl -s https://peek.run/ci)
         displayName: feature peek
         condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
-      - bash: |
-          rm /tmp/seed.json
-          set -euo pipefail
-          free -m
-          yarn test $(TEST_ARGS) --verbose --ci --reporters=default --reporters=jest-junit
-        displayName: yarn test
-        condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
-        env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
-      - task: PublishTestResults@2
-        condition: succeededOrFailed()
-        inputs:
-          testRunner: JUnit
-          testResultsFiles: '**/junit.xml'
 
   - job: ContractSanityCheck
     dependsOn:
