@@ -261,5 +261,7 @@ export async function writeSeedFile(
   seedFile: SeedFile,
   filePath: string
 ): Promise<void> {
+  // @TODO make this recursive.
+  await fs.mkdir(path.dirname(filePath));
   await fs.writeFile(path.resolve(filePath), JSON.stringify(seedFile));
 }

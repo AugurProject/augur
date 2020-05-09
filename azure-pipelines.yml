@@ -6,6 +6,8 @@ variables:
   GETH_VERSION: v1.9.9
   SOLC_VERSION: v0.5.15
   SOLC_MD5: 884dbc8c8ed01cc34799a6ffab11bc3a
+  VM_IMAGE: 'ubuntu-18.04'
+  YARN_REGISTRY: https://pkgs.dev.azure.com/augurproject/_packaging/npmPackages/npm/registry/
 
 trigger:
   batch: false
@@ -20,7 +22,7 @@ jobs:
   - job: PreFlightCheck
     displayName: 'Pre-Flight Check'
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: $(VM_IMAGE)
     steps:
       - checkout: self
       - bash: |
@@ -85,16 +87,12 @@ jobs:
         succeeded(),
         not(eq(variables['Build.sourceBranch'], 'refs/heads/master')),
         not(eq(variables['Build.sourceBranch'], 'refs/heads/demo')),
-        not(eq(variables['Build.sourceBranch'], 'refs/tags'))
+        not(eq(variables['Build.sourceBranch'], 'refs/tags')),
+        eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK'], 'true')
       )
     variables:
-      JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
-      JOB_TRIGGER_SDK: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK']]
-      JOB_TRIGGER_CORE: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE']]
-      JOB_TRIGGER_TEST: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_TEST']]
       FAKE_TIME: false
       PRODUCTION: false
-      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     pool: 'Default'
     strategy:
       matrix:
@@ -112,30 +110,32 @@ jobs:
           TEST_ARGS: --testPathPattern 'Universe.test.ts'
     timeoutInMinutes: 120
     steps:
-      - checkout: self
-      - task: NodeTool@0
+      - template: .azure-templates/node-setup.yml
+      - task: Cache@2
         inputs:
-          versionSpec: $(node_version)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn clean
-          yarn install --frozen-lockfile
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - bash: |
-          set -euo pipefail
-          yarn build
-        displayName: yarn build
+          key: 'contract | "$(Agent.OS)" | packages/augur-artifacts/src/contracts.json'
+          path: /tmp/augur
+        displayName: Cache seed file
+      - script: yarn test $(TEST_ARGS) --verbose --ci --reporters=default --reporters=jest-junit
+        displayName: yarn test
         env:
-          NODE_OPTIONS: "--max_old_space_size=6144"
+          NODE_OPTIONS: "--max_old_space_size=4096"
+      - task: PublishTestResults@2
+        condition: succeededOrFailed()
+        inputs:
+          testRunner: JUnit
+          testResultsFiles: '**/junit.xml'
+
+  - job: BuildUI
+    pool:
+      vmImage: $(VM_IMAGE)
+    dependsOn:
+      - PreFlightCheck
+    variables:
+      JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
+    condition:  eq(variables['JOB_TRIGGER_UI'], 'true')
+    steps:
+      - template: .azure-templates/node-setup.yml
       - bash: |
           set -euo pipefail
           export ETHEREUM_NETWORK=kovan
@@ -145,30 +145,14 @@ jobs:
         displayName: ui build
         env:
           NODE_OPTIONS: "--max_old_space_size=6144"
-        condition:  eq(variables['JOB_TRIGGER_UI'], 'true')
       - bash: |
           set -euo pipefail
           bash <(curl -s https://peek.run/ci)
         displayName: feature peek
-        condition:  and(eq(variables['JOB_TRIGGER_UI'], 'true'), eq(variables['Build.Reason'], 'PullRequest'))
-      - bash: |
-          rm /tmp/seed.json
-          set -euo pipefail
-          free -m
-          yarn test $(TEST_ARGS) --verbose --ci --reporters=default --reporters=jest-junit
-        displayName: yarn test
-        condition:  eq(variables['JOB_TRIGGER_TEST'], 'true')
-        env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
-      - task: PublishTestResults@2
-        condition: succeededOrFailed()
-        inputs:
-          testRunner: JUnit
-          testResultsFiles: '**/junit.xml'
+        condition:  eq(variables['Build.Reason'], 'PullRequest')
 
   - job: ContractSanityCheck
     dependsOn:
-      - TestAndLint
       - PreFlightCheck
     condition: |
       and
@@ -177,18 +161,13 @@ jobs:
         eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_CORE'], 'true')
       )
     pool:
-      vmImage: 'Ubuntu 16.04'
-    variables:
-      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+      vmImage: $(VM_IMAGE)
     timeoutInMinutes: 120
     steps:
-      - checkout: self
+      - template: .azure-templates/node-setup.yml
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
       - bash: |
           set -euo pipefail
           python3 -m venv venv && \
@@ -202,22 +181,8 @@ jobs:
           md5sum -c solc.md5 && \
           sudo chmod a+x /usr/local/bin/solc
         displayName: install solc
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
       - bash: |
           set -euo pipefail
-          yarn build
           source venv/bin/activate
           yarn workspace @augurproject/core build
         displayName: compile contracts
@@ -251,7 +216,7 @@ jobs:
     dependsOn:
       - PreFlightCheck
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: $(VM_IMAGE)
     condition: |
       and
       (
@@ -293,7 +258,7 @@ jobs:
         in(dependencies.DockerGethDev.result, 'Succeeded', 'Skipped')
       )
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: $(VM_IMAGE)
     timeoutInMinutes: 120
     strategy:
       maxParallel: 5
@@ -312,30 +277,11 @@ jobs:
         #  TESTS: integration:parity
         security_mithril:
           TESTS: security:mythril
-    variables:
-      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
     steps:
-      - checkout: self
+      - template: .azure-templates/node-setup.yml
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-          yarn build
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
       - bash: |
           set -exuo pipefail
           echo "$(SOLC_MD5) */usr/local/bin/solc" > solc.md5 && \
@@ -406,29 +352,11 @@ jobs:
           NETWORK_ID: 103
           FAKE_TIME: false
     variables:
-      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
       ZEROX_RPC_ENABLED: false
       ZEROX_MESH_ENABLED: false
       GSN_ENABLED: false
     steps:
-      - checkout: self
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-          yarn build
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+      - template: .azure-templates/node-setup.yml
       - script: |
           set -exuo pipefail
           export DOCKER_BUILDKIT=1
@@ -475,28 +403,9 @@ jobs:
         not(eq(variables['Build.sourceBranch'], 'refs/tags'))
       )
     pool:
-      vmImage: 'Ubuntu 16.04'
-    variables:
-      YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+      vmImage: $(VM_IMAGE)
     steps:
-      - checkout: self
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-          yarn build
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+      - template: .azure-templates/node-setup.yml
       - bash: |
           set -exuo pipefail
           yarn docker:all --detach
@@ -521,24 +430,9 @@ jobs:
           eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: $(VM_IMAGE)
     steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+      - template: .azure-templates/node-setup.yml
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
@@ -609,21 +503,9 @@ jobs:
           eq(variables['Build.SourceBranch'], 'refs/heads/demo')
       )
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: $(VM_IMAGE)
     steps:
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+      - template: .azure-templates/node-setup.yml
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
@@ -662,21 +544,9 @@ jobs:
           eq(variables['Build.SourceBranch'], 'refs/heads/master')
       )
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: $(VM_IMAGE)
     steps:
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+      - template: .azure-templates/node-setup.yml
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.6'
@@ -717,25 +587,9 @@ jobs:
         startsWith(variables['build.sourceBranch'], 'refs/heads/release')
       )
     pool:
-      vmImage: 'Ubuntu-16.04'
+      vmImage: $(VM_IMAGE)
     steps:
-      - checkout: self
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(PRIMARY_NODE_VERSION)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreCacheV1.RestoreCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
-      - script: |
-          yarn install --frozen-lockfile
-        displayName: Install Dependencies
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
-        inputs:
-          keyfile: '**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock'
-          targetfolder: '**/node_modules, !**/node_modules/**/node_modules'
-          vstsFeed: npmPackages
+      - template: .azure-templates/node-setup.yml
       - bash: |
           set -euo pipefail
           yarn build
