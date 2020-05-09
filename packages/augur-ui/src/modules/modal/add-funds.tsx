@@ -94,7 +94,7 @@ export const AddFunds = ({
   };
 
   const accountLabel =
-    isRelayDown && fundType === DAI ? `[${accountMeta.accountType}]` : 'Augur';
+    isRelayDown && fundType === DAI ? `[${accountMeta.accountType}]` : 'User';
   const fundTypeToUse = isRelayDown && fundType === DAI ? ETH : fundType;
   const fundTypeLabel =
     fundTypeToUse === ETH ? 'ETH' : fundTypeToUse === DAI ? 'Dai ($)' : 'REP';
