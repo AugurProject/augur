@@ -48,6 +48,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
       ownProps.market.outcomesFormatted
     ),
     Ox_ENABLED,
+    endTime: ownProps.market.endTime,
     gasPrice: gasPriceInWei,
     orderBook: outcomeOrderBook,
     getGasConfirmEstimate
