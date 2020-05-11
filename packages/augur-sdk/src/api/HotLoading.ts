@@ -69,8 +69,13 @@ export class HotLoading {
     const fillorder = this.augur.config.addresses.FillOrder;
     const orders = this.augur.config.addresses.Orders;
 
-    const marketData = await this.augur.contracts.hotLoading.getMarketData_(augur, params.market, fillorder, orders);
-
+    let marketData = null;
+    try {
+      marketData = await this.augur.contracts.hotLoading.getMarketData_(augur, params.market, fillorder, orders);
+    } catch(e) {
+      console.error('Can not hotload market', e);
+    }
+    if (!marketData) return null;
     const extraInfoString = marketData[0];
     const author = marketData[1];
     const outcomes = marketData[3];

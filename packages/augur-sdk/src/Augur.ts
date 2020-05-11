@@ -19,6 +19,7 @@ import {
   DisputeWindow,
   GetDisputeWindowParams,
   HotLoading,
+  HotLoadMarketInfo,
 } from './api/HotLoading';
 import { Liquidity } from './api/Liquidity';
 import {
@@ -521,7 +522,7 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(ZeroXOrdersGetters.getZeroXOrder)(params)
   };
 
-  async hotloadMarket(marketId: string) {
+  async hotloadMarket(marketId: string): Promise<HotLoadMarketInfo> {
     return this.hotLoading.getMarketDataParams({ market: marketId });
   }
 
