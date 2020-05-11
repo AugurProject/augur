@@ -23,7 +23,7 @@ import {
 } from './OnChainTrade';
 import { SubscriptionEventName, OrderEventType } from '../constants';
 import { BigNumber as BN} from 'ethers/utils';
-
+import * as Comlink from 'comlink';
 
 export enum Verbosity {
   Panic = 0,
@@ -181,16 +181,6 @@ export class ZeroX {
     }
 
     this._mesh = mesh;
-
-    if (!this._mesh) return;
-
-    this._mesh.onOrderEvents((orderEvents: OrderEvent[]) => {
-      if (this.client && orderEvents.length > 0) {
-        this.client.events.emit('ZeroX:Mesh:OrderEvent', orderEvents);
-      }
-    });
-
-    if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXStatusReady, {});
   }
 
   private _client: Augur;
