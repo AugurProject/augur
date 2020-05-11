@@ -42,6 +42,7 @@ import {
 } from 'modules/orders/helpers/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets-hooks';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const {
