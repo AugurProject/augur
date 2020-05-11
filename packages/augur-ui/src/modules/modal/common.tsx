@@ -384,14 +384,15 @@ export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => 
 interface StepperProps {
   currentStep: number,
   maxSteps: number,
+  changeCurrentStep?: Function;
 }
 
-export const Stepper = ({ currentStep, maxSteps }: StepperProps) => (
+export const Stepper = ({ currentStep, maxSteps, changeCurrentStep = null }: StepperProps) => (
   <div className={Styles.Stepper}>
   {[...Array(maxSteps).keys()]
     .map(key => key + 1)
     .map((step, idx) => (
-    <span key={idx} className={currentStep === step ? Styles.Current : null}></span>
+    <span onClick={() => changeCurrentStep && changeCurrentStep(step)} key={idx} className={currentStep === step ? Styles.Current : null}></span>
   ))}
 </div>
 )
