@@ -23,8 +23,6 @@ export const selectLoginAccountBalancesState = (
 export const selectLoginAccountTotalsState = (state: AppState) => AppStatus.get().loginAccount.tradingPositionsTotal;
 export const selectMarketsListsState = (state: AppState): MarketsList =>
   state.marketsList;
-export const selectPendingOrdersState = (state: AppState) =>
-  state.pendingOrders;
 export const selectCancelingOrdersState = (state: AppState) =>
   (state.pendingQueue && state.pendingQueue[CANCELORDER]) || [];
 export const selectMarketTradingHistoryState = (state: AppState) =>

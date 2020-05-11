@@ -34,6 +34,7 @@ import {
   FAVORITES,
   NOTIFICATIONS,
   ALERTS,
+  PENDING_ORDERS,
 } from 'modules/app/store/constants';
 import { ADD_ALERT } from 'modules/alerts/actions/alerts';
 
@@ -77,6 +78,8 @@ const {
   UPDATE_ALERT,
   REMOVE_ALERT,
   CLEAR_ALERTS,
+  UPDATE_PENDING_ORDER,
+  REMOVE_PENDING_ORDER,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -196,7 +199,10 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_BLOCKCHAIN: {
-      updatedState[BLOCKCHAIN] = { ...updatedState[BLOCKCHAIN], ...action.blockchain };
+      updatedState[BLOCKCHAIN] = {
+        ...updatedState[BLOCKCHAIN],
+        ...action.blockchain,
+      };
       break;
     }
     case SET_CATEGORY_STATS: {
@@ -207,7 +213,7 @@ export function AppStatusReducer(state, action) {
       updatedState[FILTER_SORT_OPTIONS] = {
         ...updatedState[FILTER_SORT_OPTIONS],
         ...action.filterSortOptions,
-      }
+      };
       break;
     }
     case SET_MODAL: {
@@ -241,7 +247,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case CLEAR_LOGIN_ACCOUNT: {
-      updatedState[LOGIN_ACCOUNT] = {...DEFAULT_LOGIN_ACCOUNT_STATE};
+      updatedState[LOGIN_ACCOUNT] = { ...DEFAULT_LOGIN_ACCOUNT_STATE };
       updatedState[FAVORITES] = {};
       updatedState[NOTIFICATIONS] = [];
       updatedState[ALERTS] = [];
@@ -253,9 +259,9 @@ export function AppStatusReducer(state, action) {
     }
     case TOGGLE_FAVORITE: {
       const { marketId } = action;
-      const { currentAugurTimestamp: timestamp } = updatedState[BLOCKCHAIN]; 
+      const { currentAugurTimestamp: timestamp } = updatedState[BLOCKCHAIN];
       const newFavorites = {
-        ...updatedState[FAVORITES]
+        ...updatedState[FAVORITES],
       };
       if (newFavorites[marketId]) {
         delete newFavorites[marketId];
@@ -268,22 +274,25 @@ export function AppStatusReducer(state, action) {
     case UPDATE_NOTIFICATIONS: {
       const notifications = updatedState[NOTIFICATIONS];
       const ids = action.notifications.map(n => n.id);
-      const filtered = notifications.filter(n => !ids.includes(n.id))
+      const filtered = notifications.filter(n => !ids.includes(n.id));
       updatedState[NOTIFICATIONS] = [...filtered, ...action.notifications];
       break;
     }
     case ADD_ALERT: {
       const { alert: newAlert } = action;
-      if (!newAlert.name || newAlert.name === "") {
+      if (!newAlert.name || newAlert.name === '') {
         break;
       }
-      updatedState[ALERTS] = [...updatedState[ALERTS], newAlert]
+      updatedState[ALERTS] = [...updatedState[ALERTS], newAlert];
       break;
     }
     case UPDATE_ALERT: {
       const { alert: newAlert, id } = action;
       let updatedAlerts = updatedState[ALERTS].map((alert, i) => {
-        if (alert.uniqueId !== id || newAlert.name.toUpperCase() !== alert.name.toUpperCase()) {
+        if (
+          alert.uniqueId !== id ||
+          newAlert.name.toUpperCase() !== alert.name.toUpperCase()
+        ) {
           return alert;
         }
 
@@ -293,11 +302,63 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case REMOVE_ALERT: {
-      updatedState[ALERTS] = updatedState[ALERTS].filter((alert, i) => alert.uniqueId !== action.id || action.name.toUpperCase() !== alert.name.toUpperCase())
+      updatedState[ALERTS] = updatedState[ALERTS].filter(
+        (alert, i) =>
+          alert.uniqueId !== action.id ||
+          action.name.toUpperCase() !== alert.name.toUpperCase()
+      );
       break;
     }
     case CLEAR_ALERTS: {
-      updatedState[ALERTS] = updatedState[ALERTS].filter(it => it.level !== action.level);
+      updatedState[ALERTS] = updatedState[ALERTS].filter(
+        it => it.level !== action.level
+      );
+      break;
+    }
+    case UPDATE_PENDING_ORDER: {
+      console.log('updating pending orders', action, updatedState[PENDING_ORDERS]);
+      let marketOrders = updatedState[PENDING_ORDERS][action.marketId];
+      if (!marketOrders) {
+        marketOrders = [];
+      }
+      let index = -1;
+      let currentOrder = marketOrders.find((order, ind) => {
+        if (order?.id === action?.order?.id) {
+          index = ind;
+          return true
+        }
+        return false;
+      });
+      if (!currentOrder) {
+        console.log('currentOrder not existing', action.order);
+        currentOrder = { ...action.order };
+        if (currentOrder.id) {
+          marketOrders.push(currentOrder);
+        }
+      } else {
+        console.log('currentOrderExists', currentOrder, action.order);
+        marketOrders[index] = {
+          ...currentOrder,
+          ...action.order
+        };
+      }
+      if (marketOrders.length === 0) {
+        delete updatedState[PENDING_ORDERS][action.marketId];
+      } else {
+        updatedState[PENDING_ORDERS][action.marketId] = marketOrders;
+      }
+      break;
+    }
+    case REMOVE_PENDING_ORDER: {
+      let orders = updatedState[PENDING_ORDERS][action.marketId] || [];
+      orders = orders.filter(obj => obj.id !== action.orderId);
+      if (orders.length > 0) {
+        return {
+          ...updatedState[PENDING_ORDERS],
+          [action.marketId]: orders,
+        };
+      }
+      delete updatedState[PENDING_ORDERS][action.marketId];
       break;
     }
     default:
@@ -357,22 +418,31 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
         dispatch({ type: SET_MOBILE_MENU_STATE, mobileMenuState }),
       setCurrentBasePath: currentBasePath =>
         dispatch({ type: SET_CURRENT_BASE_PATH, currentBasePath }),
-      updateBlockchain: blockchain => dispatch({ type: UPDATE_BLOCKCHAIN, blockchain }),
-      setCategoryStats: categoryStats => dispatch({ type: SET_CATEGORY_STATS, categoryStats }),
-      updateFilterSortOptions: filterSortOptions => dispatch({ type: UPDATE_FILTER_SORT_OPTIONS, filterSortOptions }),
+      updateBlockchain: blockchain =>
+        dispatch({ type: UPDATE_BLOCKCHAIN, blockchain }),
+      setCategoryStats: categoryStats =>
+        dispatch({ type: SET_CATEGORY_STATS, categoryStats }),
+      updateFilterSortOptions: filterSortOptions =>
+        dispatch({ type: UPDATE_FILTER_SORT_OPTIONS, filterSortOptions }),
       setModal: modal => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
       updateUniverse: universe => dispatch({ type: UPDATE_UNIVERSE, universe }),
       switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
-      updateLoginAccount: (loginAccount, clear = false) => dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount, clear }),
+      updateLoginAccount: (loginAccount, clear = false) =>
+        dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount, clear }),
       clearLoginAccount: () => dispatch({ type: CLEAR_LOGIN_ACCOUNT }),
       loadFavorites: favorites => dispatch({ type: LOAD_FAVORITES, favorites }),
       toggleFavorite: marketId => dispatch({ type: TOGGLE_FAVORITE, marketId }),
-      updateNotifications: notifications => dispatch({ type: UPDATE_NOTIFICATIONS, notifications }),
+      updateNotifications: notifications =>
+        dispatch({ type: UPDATE_NOTIFICATIONS, notifications }),
       addAlert: alert => dispatch({ type: ADD_ALERT, alert }),
       updateAlert: (id, alert) => dispatch({ type: UPDATE_ALERT, alert, id }),
       removeAlert: (id, name) => dispatch({ type: REMOVE_ALERT, id, name }),
       clearAlerts: level => dispatch({ type: CLEAR_ALERTS, level }),
+      updatePendingOrder: (marketId, order) =>
+        dispatch({ type: UPDATE_PENDING_ORDER, marketId, order }),
+      removePendingOrder: (marketId, orderId) =>
+        dispatch({ type: REMOVE_PENDING_ORDER, marketId, orderId }),
     },
   };
 };

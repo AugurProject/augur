@@ -123,7 +123,8 @@ interface PendingItem {
 }
 
 export const findAndSetTransactionsTimeouts = (blockNumber: number) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { pendingQueue, pendingOrders } = getState();
+  const { pendingQueue } = getState();
+  const { pendingOrders } = AppStatus.get();
   const thresholdBlockNumber = blockNumber - TX_CHECK_BLOCKNUMBER_LIMIT;
 
   dispatch(processingPendingQueue(thresholdBlockNumber, pendingQueue));

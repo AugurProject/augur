@@ -31,7 +31,7 @@ const consoleLog = store => next => action => {
 const localStorageMiddleware = store => next => action => {
   next(action);
   const state = store.getState() as AppState;
-  const { alerts, notifications, favorites, loginAccount, isLogged, isConnected, env, gasPriceInfo } = AppStatus.get();
+  const { alerts, notifications, favorites, loginAccount, isLogged, isConnected, env, gasPriceInfo, pendingOrders } = AppStatus.get();
   if (
     !state ||
     !loginAccount?.address ||
@@ -44,7 +44,6 @@ const localStorageMiddleware = store => next => action => {
   const {
     pendingLiquidityOrders,
     analytics,
-    pendingOrders,
     pendingQueue,
     drafts,
   } = state;

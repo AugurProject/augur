@@ -5,7 +5,6 @@ import { formatGasCostGwei, formatAttoDai } from 'utils/format-number';
 import { GasPriceInfo, Blockchain, FilterSortOptions, INVALID_OPTIONS, Universe, LoginAccount } from 'modules/types';
 import * as moment from '../../../../../../node_modules/moment/moment';
 import { Getters } from '@augurproject/sdk/src';
-import { id } from '../../../../../../node_modules/ethers/utils/hash';
 
 export const THEME = 'theme';
 export const ODDS = 'oddsType';
@@ -38,6 +37,7 @@ export const LOGIN_ACCOUNT = 'loginAccount';
 export const FAVORITES = 'favorites';
 export const NOTIFICATIONS = 'notifications';
 export const ALERTS = 'alerts';
+export const PENDING_ORDERS = 'pendingOrders';
 
 export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
   balances: {
@@ -173,6 +173,7 @@ export const DEFAULT_APP_STATUS = {
   [FAVORITES]: {},
   [NOTIFICATIONS]: [],
   [ALERTS]: [],
+  [PENDING_ORDERS]: {},
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -215,6 +216,8 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_ALERT: 'UPDATE_ALERT',
   REMOVE_ALERT: 'REMOVE_ALERT',
   CLEAR_ALERTS: 'CLEAR_ALERTS',
+  UPDATE_PENDING_ORDER: 'UPDATE_PENDING_ORDER',
+  REMOVE_PENDING_ORDER: 'REMOVE_PENDING_ORDER',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -257,4 +260,6 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateAlert: (id, alert) => {},
   removeAlert: (id, name) => {},
   clearAlerts: level => {},
+  updatePendingOrder: (marketId, order) => {},
+  removePendingOrder: (marketId, orderId) => {},
 };

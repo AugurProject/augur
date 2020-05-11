@@ -36,7 +36,8 @@ function selectUserMarketOpenOrdersMarket(state, marketId) {
 }
 
 function selectPendingOrdersStateMarket(state, marketId) {
-  const pending = selectPendingOrdersState(state)[marketId];
+  const { pendingOrders } = AppStatus.get();
+  const pending = pendingOrders[marketId];
   return !!pending ? [...pending] : pending;
 }
 
