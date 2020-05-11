@@ -84,15 +84,9 @@ describe('Augur API :: ZeroX :: ', () => {
         stringTo32ByteHex('B'),
       ]);
 
-      console.log('1-checkpoint-1');
-
       await john.sync();
 
-      console.log('2-checkpoint-2');
-
       await mary.sync();
-
-      console.log('3-checkpoint-3');
 
       // Place an order
       const expirationTime = new BigNumber(new Date().valueOf()).plus(10000);

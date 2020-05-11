@@ -1,26 +1,30 @@
 export function showIndexedDbSize() {
-  "use strict";
+  'use strict';
 
   function openDatabases(...dbnames) {
     console.log('dbnames', dbnames);
-    return Promise.all(dbnames.map(dbname =>
-      (new Promise(function(resolve, reject) {
-        var request = window.indexedDB.open(dbname);
-        request.onsuccess = function(event) {
-          const db = event.target.result;
-          resolve(db);
-        };
-      })).then(async db => {
-        var PromiseArray = [];
-        console.log('total:', db.objectStoreNames.length);
-        for (var i = 0; i < db.objectStoreNames.length; i++) {
-          PromiseArray.push(await getObjectStoreData(db, db.objectStoreNames[i], i));
-        }
-        console.log('done', JSON.stringify(PromiseArray));
+    return Promise.all(
+      dbnames.map(dbname =>
+        new Promise(function(resolve, reject) {
+          var request = window.indexedDB.open(dbname);
+          request.onsuccess = function(event) {
+            const db = event.target.result;
+            resolve(db);
+          };
+        }).then(async db => {
+          var PromiseArray = [];
+          console.log('total:', db.objectStoreNames.length);
+          for (var i = 0; i < db.objectStoreNames.length; i++) {
+            PromiseArray.push(
+              await getObjectStoreData(db, db.objectStoreNames[i], i)
+            );
+          }
+          console.log('done', JSON.stringify(PromiseArray));
 
-        return PromiseArray;
-      })
-    )).then((amount) => {
+          return PromiseArray;
+        })
+      )
+    ).then(amount => {
       return [].concat(...amount);
     });
   }
@@ -35,9 +39,9 @@ export function showIndexedDbSize() {
         var szMBytes = (szBytes / 1024 / 1024).toFixed(2);
 
         resolve({
-          "Store Name": storename,
+          'Store Name': storename,
           Items: items.length,
-          Size: szMBytes + "MB (" + szBytes + " bytes)"
+          Size: szMBytes + 'MB (' + szBytes + ' bytes)',
         });
       };
       var cursorRequest = store.openCursor();
@@ -64,16 +68,15 @@ export function showIndexedDbSize() {
   }
 
   function process(storesizes) {
-    console.log('process-checkpoint-1');
     console.table(storesizes);
   }
 
   openDatabases(
-    "./data",
-    "data/blocks",
-    "data/datastore",
-    "data/keys",
-    "0x-mesh-db",
-    "augur-42"
+    './data',
+    'data/blocks',
+    'data/datastore',
+    'data/keys',
+    '0x-mesh-db',
+    'augur-42'
   ).then(process);
 }
