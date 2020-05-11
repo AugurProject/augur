@@ -29,7 +29,6 @@ import {
   TUTORIAL_PRICE,
   TRADING_TUTORIAL_OUTCOMES,
   TUTORIAL_OUTCOME,
-  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -58,7 +57,6 @@ import { formatOrderBook } from 'modules/create-market/helpers/format-order-book
 import { Getters } from '@augurproject/sdk';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
-import { StatusErrorMessage } from 'modules/common/labels';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -93,6 +91,8 @@ interface MarketViewProps {
   clearOrderBook: Function;
   zeroXstatus: string;
   hasZeroXError: boolean;
+  marketNotFound: boolean;
+  showMarketNotFound: Function;
 }
 
 export interface DefaultOrderPropertiesMap {
@@ -203,9 +203,12 @@ export default class MarketView extends Component<
       window.scrollTo(0, 1);
     }
 
-    const { isMarketLoading, showMarketLoadingModal } = this.props;
+    const { isMarketLoading, showMarketLoadingModal, marketNotFound, showMarketNotFound, history } = this.props;
 
-    if (isMarketLoading) {
+    if (marketNotFound) {
+      console.log('showMarketNotFound');
+      showMarketNotFound(history);
+    } else if (isMarketLoading) {
       showMarketLoadingModal();
     }
   }
@@ -485,7 +488,7 @@ export default class MarketView extends Component<
       pane,
     } = this.state;
     if (isMarketLoading) {
-      if (canHotload && !tradingTutorial) hotloadMarket(marketId);
+      if (canHotload && !tradingTutorial && marketId) hotloadMarket(marketId);
       return (
         <div
           ref={node => {

@@ -54,6 +54,7 @@ import ModalScalar from 'modules/modal/containers/modal-scalar';
 import ModalInvalidMarketRules from 'modules/modal/containers/modal-invalid-market-rules';
 import ModalInitializeAccounts from 'modules/modal/containers/modal-initialize-account';
 import ModalHelp from 'modules/modal/containers/modal-help';
+import ModalMarketNotFound from 'modules/modal/containers/modal-market-not-found';
 
 import * as TYPES from 'modules/common/constants';
 
@@ -144,6 +145,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalDisclaimer {...modal} />;
     case TYPES.MODAL_MARKET_LOADING:
       return <ModalMarketLoading />;
+    case TYPES.MODAL_MARKET_NOT_FOUND:
+      return <ModalMarketNotFound />;
     case TYPES.MODAL_DR_QUICK_GUIDE:
       return <ModalDrQuickGuide />;
     case TYPES.MODAL_MIGRATE_MARKET:
