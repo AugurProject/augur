@@ -1,5 +1,5 @@
 import { Log, ParsedLog } from '@augurproject/types';
-import { ExtendedLog } from 'blockstream-adapters';
+import { ExtendedLog } from '../../lib/blockstream-adapters';
 import { Block } from 'ethereumjs-blockstream';
 import {
   BlockAndLogStreamerInterface,
@@ -119,7 +119,6 @@ describe('BlockstreamListener', () => {
       deps.blockAndLogStreamer,
       deps.listenForNewBlocks,
       parseLogs
-
     );
   });
 

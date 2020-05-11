@@ -2,18 +2,15 @@ import { CompilerOutput } from 'solc';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersFastSubmitWallet } from '@augurproject/core';
 import { ContractAddresses } from '@augurproject/artifacts';
-import { ContractDependenciesEthers } from 'contract-dependencies-ethers';
+import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import { ContractDeployer } from '@augurproject/core';
 import { HDNode } from 'ethers/utils';
 import { Wallet } from 'ethers';
 
 import { Account } from '../constants';
-import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { SDKConfiguration } from '@augurproject/artifacts';
 
 export interface UsefulContractObjects {
-  signer: EthersFastSubmitWallet;
-  dependencies: ContractDependenciesEthers;
   addresses: ContractAddresses;
 }
 
@@ -36,7 +33,7 @@ export async function deployContracts(
   );
   const addresses = await contractDeployer.deploy(env);
 
-  return { signer, dependencies, addresses };
+  return { addresses };
 }
 
 export async function makeSigner(account: Account, provider: EthersProvider) {
@@ -49,15 +46,6 @@ export function makeDependencies(
   signer: EthersFastSubmitWallet
 ) {
   return new ContractDependenciesEthers(provider, signer, account.address);
-}
-
-export async function makeGSNDependencies(
-  provider: EthersProvider,
-  signer: EthersFastSubmitWallet,
-  config: SDKConfiguration,
-  address?: string
-): Promise<ContractDependenciesGSN> {
-  return ContractDependenciesGSN.create(provider, signer, config, address);
 }
 
 export class HDWallet {

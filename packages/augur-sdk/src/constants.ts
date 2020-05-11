@@ -207,3 +207,6 @@ export enum OrderEventType {
 export const orderTypes = ['0x00', '0x01'];
 
 export const defaultReportingFeeDivisor = new BigNumber(10000);
+export const DESIRED_SIGNER_ETH_BALANCE = `0x${new BigNumber(
+  0.04 * 10 ** 18
+).toString(16)}`; // .04 ETH

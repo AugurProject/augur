@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { logger, LoggerLevels } from '@augurproject/logger';
+import { logger, LoggerLevels } from '@augurproject/utils';
 import { AbstractTable, BaseDocument } from './AbstractTable';
 import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';

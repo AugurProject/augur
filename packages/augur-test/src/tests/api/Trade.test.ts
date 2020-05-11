@@ -1,8 +1,12 @@
-import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
-import { TestContractAPI } from '@augurproject/tools';
-import { BigNumber } from 'bignumber.js';
-import { makeProvider } from '../../libs';
 import { SDKConfiguration } from '@augurproject/artifacts';
+import {
+  ACCOUNTS,
+  defaultSeedPath,
+  loadSeed,
+  TestContractAPI,
+} from '@augurproject/tools';
+import { BigNumber } from 'bignumber.js';
+import { disableZeroX, makeProvider } from '../../libs';
 
 let john: TestContractAPI;
 let mary: TestContractAPI;
@@ -11,18 +15,10 @@ let config: SDKConfiguration;
 beforeAll(async () => {
   const seed = await loadSeed(defaultSeedPath);
   const provider = await makeProvider(seed, ACCOUNTS);
-  config = provider.getConfig();
+  config = disableZeroX(provider.getConfig());
 
-  john = await TestContractAPI.userWrapper(
-    ACCOUNTS[0],
-    provider,
-    config
-  );
-  mary = await TestContractAPI.userWrapper(
-    ACCOUNTS[1],
-    provider,
-    config
-  );
+  john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, config);
+  mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, config);
   await john.approve();
   await mary.approve();
 });

@@ -11,9 +11,6 @@
   ],
   "references": [
     {
-      "path": "../ethersjs-provider"
-    },
-    {
       "path": "../augur-core"
     },
     {
@@ -27,9 +24,6 @@
     },
     {
       "path": "../augur-tools"
-    },
-    {
-      "path": "../contract-dependencies-gsn"
-    },
+    }
   ]
 }

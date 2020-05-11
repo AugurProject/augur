@@ -36,8 +36,6 @@ describe('Syncing', () => {
       oldDeployProvider,
       oldDeployProvider.getConfig(),
       undefined,
-      undefined,
-      undefined,
       dbPrefix
     );
 
@@ -50,8 +48,6 @@ describe('Syncing', () => {
       ACCOUNTS[0],
       newDeployProvider,
       newDeployProvider.getConfig(),
-      undefined,
-      undefined,
       undefined,
       dbPrefix
     );
