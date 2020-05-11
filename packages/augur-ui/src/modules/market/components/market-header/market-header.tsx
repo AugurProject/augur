@@ -241,7 +241,7 @@ export default class MarketHeader extends Component<
     const expandedDetails = detailsTooLong && showReadMore;
     const containerStyle = notExpandedHeight
       ? {
-          minHeight: `${notExpandedHeight}px`,
+          height: `${notExpandedHeight}px`,
         }
       : {};
     return (
