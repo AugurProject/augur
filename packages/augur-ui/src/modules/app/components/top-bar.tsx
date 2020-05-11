@@ -1,13 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Alerts } from 'modules/common/icons';
-import ConnectAccount from 'modules/auth/containers/connect-account';
+import ConnectAccount from 'modules/auth/components/connect-account/connect-account';
 import {
   MovementLabel,
   LinearPropertyLabel,
   LinearPropertyLabelUnderlineTooltip,
 } from 'modules/common/labels';
-import { CoreStats } from 'modules/types';
 import Styles from 'modules/app/components/top-bar.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
@@ -19,14 +18,13 @@ import { HelpResources } from 'modules/app/components/help-resources';
 import { OddsMenu } from 'modules/app/components/odds-menu';
 import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
+import { getCoreStats } from 'modules/auth/helpers/login-account';
+import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 
-interface StatsProps {
-  isLogged: boolean;
-  restoredAccount: boolean;
-  stats: CoreStats;
-}
-
-export const Stats = ({ isLogged, restoredAccount, stats }: StatsProps) => {
+export const Stats = () => {
+  const { loginAccount, isLogged, restoredAccount } = useAppStatusStore();
+  const stats = getCoreStats(isLogged, loginAccount);
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
 
@@ -57,23 +55,18 @@ export const Stats = ({ isLogged, restoredAccount, stats }: StatsProps) => {
     </>
   );
 };
-interface TopBarProps {
-  stats: CoreStats;
-  unseenCount: number;
-  signupModal: Function;
-  loginModal: Function;
-  helpModal: Function;
-}
 
-const TopBar: React.FC<TopBarProps> = ({
-  stats,
-  unseenCount,
-  signupModal,
-  loginModal,
-  helpModal
-}) => {
-  const { isLogged, restoredAccount, isMobile, isAlertsMenuOpen, actions: { setIsAlertsMenuOpen } } = useAppStatusStore();
-  const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
+
+const TopBar = () => {
+  const {
+    isLogged,
+    restoredAccount,
+    isMobile,
+    isAlertsMenuOpen,
+    actions: { setIsAlertsMenuOpen, setModal },
+  } = useAppStatusStore();
+  const { unseenCount } = getInfoAlertsAndSeenCount();
+  
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -83,35 +76,18 @@ const TopBar: React.FC<TopBarProps> = ({
       </div>
       <ThemeSwitch />
       {(isLogged || restoredAccount) && (
-        <div className={Styles.statsContainer}>
-          <div>
-            <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
-            <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
-            <LinearPropertyLabelUnderlineTooltip
-              {...totalFunds}
-              highlightAlternateBolded
-              id={'totalFunds'}
-              tipText={TOTAL_FUNDS_TOOLTIP}
-            />
-            <div>
-              <span>{realizedPL.label}</span>
-              <MovementLabel value={realizedPL.value} useFull />
-            </div>
-          </div>
-          <div>
-            <span>{realizedPL.label}</span>
-            <MovementLabel value={realizedPL.value} useFull />
-          </div>
-        </div>
+        <Stats />
       )}
       <div>
-        {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && <HelpResources />}
+        {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
+          <HelpResources />
+        )}
         <OddsMenu />
         {!isLogged && !restoredAccount && (
-          <SecondaryButton action={() => loginModal()} text={'Login'} />
+          <SecondaryButton action={() => setModal({ type: MODAL_LOGIN })} text={'Login'} />
         )}
         {!isLogged && !restoredAccount && (
-          <PrimaryButton action={() => signupModal()} text={'Signup'} />
+          <PrimaryButton action={() => setModal({ type: MODAL_SIGNUP })} text={'Signup'} />
         )}
         {(isLogged || restoredAccount) && (
           <button

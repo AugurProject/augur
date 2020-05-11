@@ -1,4 +1,3 @@
-import store, { AppState } from 'appStore';
 import setAlertText from 'modules/alerts/actions/set-alert-text';
 import {
   CLAIMTRADINGPROCEEDS,
@@ -13,8 +12,12 @@ import {
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
-
+import { createBigNumber } from 'utils/create-big-number';
+import { AppStatus } from 'modules/app/store/app-status';
+import {
+  createUniqueOrderId,
+  createAlternateUniqueOrderId,
+} from 'modules/alerts/helpers/alerts';
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
 export const UPDATE_EXISTING_ALERT = 'UPDATE_EXISTING_ALERT';
@@ -23,22 +26,15 @@ export const CLEAR_ALERTS = 'CLEAR_ALERTS';
 export function addAlert(alert: any) {
   return (dispatch: ThunkDispatch<void, any, Action>) => {
     if (alert != null) {
-      const { universe } = store.getState() as AppState;
-      const callback = (alert: any) => {
-        const fullAlert = {
-          type: ADD_ALERT,
-          data: {
-            alert: {
-              seen: false,
-              level: INFO,
-              networkId: getNetworkId(),
-              universe: universe.id,
-              ...alert,
-            },
-          },
-        };
-        return fullAlert;
-      };
+      const { universe } = AppStatus.get();
+      const callback = alertUpdated =>
+        AppStatus.actions.addAlert({
+          seen: false,
+          level: INFO,
+          networkId: getNetworkId(),
+          universe: universe.id,
+          ...alertUpdated,
+        });
       try {
         dispatch(setAlertText(alert, callback));
       } catch (error) {
@@ -48,49 +44,16 @@ export function addAlert(alert: any) {
   };
 }
 
-export function removeAlert(id: string, name: string) {
-  return {
-    type: REMOVE_ALERT,
-    data: { id, name },
-  };
-}
-
 export function updateExistingAlert(id, alert) {
   return (dispatch, getState) => {
-    const callback = alert => {
-      const fullAlert = {
-        type: UPDATE_EXISTING_ALERT,
-        data: {
-          id,
-          alert,
-        },
-      };
-      return fullAlert;
-    };
+    const callback = alertUpdated =>
+      AppStatus.actions.updateAlert(id, alertUpdated);
     try {
       return dispatch(setAlertText(alert, callback));
     } catch (error) {
       return callback(error, null);
     }
   };
-}
-
-function createUniqueOrderId(alert) {
-  const price = alert.params._price
-    ? alert.params._price.toString()
-    : new BigNumber(alert.params.price).toString();
-  const outcome = alert.params._outcome
-    ? alert.params._outcome.toString()
-    : new BigNumber(alert.params.outcome).toString();
-  const direction = alert.params._direction
-    ? alert.params._direction.toString()
-    : alert.params.orderType;
-
-  return `${alert.id}_${price}_${outcome}_${direction}`;
-}
-
-function createAlternateUniqueOrderId(alert) {
-  return `${alert.id}_${alert.params.logIndex}`;
 }
 
 export function updateAlert(
@@ -100,11 +63,13 @@ export function updateAlert(
 ) {
   return (dispatch: ThunkDispatch<void, any, Action>): void => {
     if (alert) {
-      const { alerts, loginAccount } = store.getState() as AppState;
+      const { alerts } = AppStatus.get();
       const alertName = alert.name.toUpperCase();
       alert.id = id;
       alert.uniqueId =
-        alertName === PUBLICTRADE || alertName === PUBLICFILLORDER ? createUniqueOrderId(alert) : id;
+        alertName === PUBLICTRADE || alertName === PUBLICFILLORDER
+          ? createUniqueOrderId(alert)
+          : id;
 
       if (alertName === CLAIMTRADINGPROCEEDS) {
         alert.uniqueId = createAlternateUniqueOrderId(alert);
@@ -139,7 +104,7 @@ export function updateAlert(
         );
       }
       if (foundAlert) {
-        dispatch(removeAlert(alert.uniqueId, alert.name));
+        AppStatus.actions.removeAlert(alert.uniqueId, alert.name);
         dispatch(
           addAlert({
             ...foundAlert,
@@ -148,7 +113,12 @@ export function updateAlert(
             params: {
               ...foundAlert.params,
               ...alert.params,
-              repReceived: alert.params.repReceived && foundAlert.params.repReceived && createBigNumber(alert.params.repReceived).plus(createBigNumber(foundAlert.params.repReceived))
+              repReceived:
+                alert.params.repReceived &&
+                foundAlert.params.repReceived &&
+                createBigNumber(alert.params.repReceived).plus(
+                  createBigNumber(foundAlert.params.repReceived)
+                ),
             },
           })
         );
@@ -156,15 +126,5 @@ export function updateAlert(
         dispatch(addAlert(alert));
       }
     }
-  };
-}
-// We clear by 'alert level'.
-// This will not surface in the UI just yet.
-export function clearAlerts(alertLevel = INFO) {
-  return {
-    type: CLEAR_ALERTS,
-    data: {
-      level: alertLevel,
-    },
   };
 }

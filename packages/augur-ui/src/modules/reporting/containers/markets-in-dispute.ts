@@ -10,12 +10,18 @@ import { disputingMarkets } from 'modules/markets/selectors/select-reporting-mar
 import { AppState } from 'appStore';
 import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = (state: AppState) => ({
-  disputingMarketsMeta: state.reportingListState,
-  isConnected: AppStatus.get().isConnected,
-  userAddress: state.loginAccount.mixedCaseAddress,
-  markets: disputingMarkets(state),
-});
+const mapStateToProps = (state: AppState) => {
+  const {
+    loginAccount: { mixedCaseAddress: userAddress },
+    isConnected,
+  } = AppStatus.get();
+  return {
+    disputingMarketsMeta: state.reportingListState,
+    isConnected,
+    userAddress,
+    markets: disputingMarkets(state),
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   loadCurrentlyDisputingMarkets: (params, cb) =>
@@ -33,11 +39,7 @@ const mergeProps = (sP, dP, oP) => {
 };
 
 const Reporting = withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(MarketsInDispute)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(MarketsInDispute)
 );
 
 export default Reporting;

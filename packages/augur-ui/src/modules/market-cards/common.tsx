@@ -73,6 +73,8 @@ import { useBetslipStore } from 'modules/trading/store/betslip';
 import { MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
+import { useMarketsStore } from 'modules/markets/store/markets';
+import { id } from '../../../../../node_modules/ethers/utils/hash';
 
 export interface PercentProps {
   percent: number;
@@ -799,59 +801,62 @@ export const SportsOutcome = ({
 )
 
 export interface OutcomeGroupProps {
-  orderBook: any;
-  outcomes: OutcomeFormatted[];
+  market: MarketData;
   expanded?: Boolean;
-  marketType: string;
-  description: string;
-  scalarDenomination?: string;
-  min?: BigNumber;
-  max?: BigNumber;
-  stakes: Getters.Markets.StakeDetails[];
   dispute?: Function;
-  inDispute?: boolean;
   showOutcomeNumber: number;
   canDispute: boolean;
   canSupport: boolean;
-  marketId: string;
-  isWarpSync?: boolean;
-  theme: string;
   forkingMarket?: boolean;
 }
 
 export const OutcomeGroup = ({
-  orderBook,
-  outcomes,
   expanded,
-  marketType,
-  description,
-  scalarDenomination,
-  min,
-  max,
-  stakes,
   dispute,
-  inDispute,
   showOutcomeNumber,
   canDispute,
   canSupport,
-  marketId,
-  isWarpSync,
+  market,
   forkingMarket,
 }: OutcomeGroupProps) => {
+  
+  const {
+    description,
+    outcomesFormatted,
+    marketType,
+    scalarDenomination,
+    minPriceBigNumber,
+    maxPriceBigNumber,
+    disputeInfo,
+    id,
+    reportingState,
+    creationTimeFormatted,
+    isWarpSync
+  } = market;
+
+  const inDispute =
+    reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
+    reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
+  const stakes = disputeInfo?.stakes;
   const { theme } = useAppStatusStore();
+  const {
+    orderBooks,
+  } = useMarketsStore();
+  const orderBook = orderBooks[id]?.orderBook;
+
   if (theme === THEMES.SPORTS) {
-    return <MultiMarketTable orderBook={orderBook} outcomes={outcomes} min={min} max={max} description={description} />;
+    return <MultiMarketTable orderBook={orderBook} outcomes={outcomesFormatted} min={minPriceBigNumber} max={maxPriceBigNumber} description={description} />;
   }
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     marketType,
-    outcomes,
+    outcomesFormatted,
     stakes,
     isWarpSync
   );
   const isScalar = marketType === SCALAR;
   const isTrading = theme === THEMES.TRADING;
   let disputingOutcomes = sortedStakeOutcomes;
-  let outcomesCopy = outcomes.slice(0);
+  let outcomesCopy = outcomesFormatted.slice(0);
   const removedInvalid = outcomesCopy.splice(0, 1)[0];
 
   if (inDispute) {
@@ -863,7 +868,7 @@ export const OutcomeGroup = ({
       disputingOutcomes.splice(showOutcomeNumber, showOutcomeNumber + 1);
     }
   } else {
-    if (!expanded && outcomes.length > showOutcomeNumber) {
+    if (!expanded && outcomesFormatted.length > showOutcomeNumber) {
       outcomesCopy.splice(showOutcomeNumber - 1, 0);
     } else if (marketType === YES_NO) {
       outcomesCopy.reverse().splice(outcomesCopy.length, 0);
@@ -886,15 +891,15 @@ export const OutcomeGroup = ({
       {isScalar && !inDispute && (
         <>
           <ScalarOutcome
-            min={min}
-            max={max}
+            min={minPriceBigNumber}
+            max={maxPriceBigNumber}
             lastPrice={
-              outcomes[SCALAR_UP_ID].price
-                ? formatNumber(outcomes[SCALAR_UP_ID].price)
+              outcomesFormatted[SCALAR_UP_ID].price
+                ? formatNumber(outcomesFormatted[SCALAR_UP_ID].price)
                 : null
             }
             scalarDenomination={scalarDenomination}
-            marketId={marketId}
+            marketId={id}
             outcomeId={String(SCALAR_UP_ID)}
           />
           {isTrading && (
@@ -905,10 +910,10 @@ export const OutcomeGroup = ({
               }
               invalid
               index={0}
-              min={min}
-              max={max}
+              min={minPriceBigNumber}
+              max={maxPriceBigNumber}
               isScalar={isScalar}
-              marketId={marketId}
+              marketId={id}
               outcomeId={String(INVALID_OUTCOME_ID)}
               isTrading={isTrading}
             />
@@ -924,7 +929,7 @@ export const OutcomeGroup = ({
             !!stakes.find(
               stake => parseFloat(stake.outcome) === outcome.id
             ) ? (
-              <Fragment key={marketId + outcome.id + index}>
+              <Fragment key={id + outcome.id + index}>
                 {marketType === SCALAR &&
                   index === 1 &&
                   expanded && (
@@ -932,13 +937,13 @@ export const OutcomeGroup = ({
                       denomination={scalarDenomination}
                       dispute={dispute}
                       canDispute={canDispute}
-                      marketId={marketId}
+                      marketId={id}
                       otherOutcomes={outcomesShow.map(o => String(o.id))}
                     />
                   )}
                 <DisputeOutcome
                   key={outcome.id}
-                  marketId={marketId}
+                  marketId={id}
                   description={outcome.description}
                   invalid={outcome.isInvalid}
                   index={index > 2 ? index : index + 1}
@@ -960,10 +965,10 @@ export const OutcomeGroup = ({
                 lastPricePercent={outcome.lastPricePercent}
                 invalid={outcome.isInvalid}
                 index={index > 2 ? index : index + 1}
-                min={min}
-                max={max}
+                min={minPriceBigNumber}
+                max={maxPriceBigNumber}
                 isScalar={isScalar}
-                marketId={marketId}
+                marketId={id}
                 outcomeId={String(outcome.id)}
                 isTrading={isTrading}
               />
@@ -974,7 +979,7 @@ export const OutcomeGroup = ({
           denomination={scalarDenomination}
           dispute={dispute}
           canDispute={canDispute}
-          marketId={marketId}
+          marketId={id}
           otherOutcomes={outcomesShow.map(o => String(o.id))}
         />
       )}
@@ -1126,22 +1131,21 @@ export interface TopRowProps {
   market: MarketData;
   categoriesWithClick: Array<{ label: string; onClick: Function }>;
   marketLinkCopied: Function;
-  toggleFavorite: Function;
-  isFavorite?: boolean;
 }
 
 export const TopRow = ({
   market,
   categoriesWithClick,
-  toggleFavorite,
   marketLinkCopied,
-  isFavorite,
 }) => {
   useEffect(() => {
     const clipboardMarketId = new Clipboard('#copy_marketId');
     const clipboardAuthor = new Clipboard('#copy_author');
   }, [market.id, market.author]);
-  const { theme, isLogged } = useAppStatusStore();
+  const {
+    theme,
+    isLogged,
+  } = useAppStatusStore();
   const {
     settlementFeePercent,
     marketType,
@@ -1200,8 +1204,7 @@ export const TopRow = ({
         />
       )}
       <FavoritesButton
-        action={() => toggleFavorite(id)}
-        isFavorite={isFavorite}
+        marketId={id}
         hideText
         disabled={!isLogged}
       />

@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import MarketsView from 'modules/markets-list/components/markets-view';
-import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import { getSelectedTagsAndCategoriesFromLocation } from 'modules/markets/helpers/get-selected-tags-and-categories-from-location';
 import {
@@ -10,7 +9,7 @@ import {
   LoadMarketsFilterOptions,
   organizeReportingStates,
 } from 'modules/markets/actions/load-markets';
-import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 import { buildSearchString } from 'modules/markets/selectors/build-search-string';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
@@ -50,6 +49,7 @@ const mapStateToProps = (state: AppState, { location }) => {
     selectedTagNames,
   } = getSelectedTagsAndCategoriesFromLocation(location);
   const {
+    loginAccount: { settings },
     isMobile,
     universe: { id },
     isConnected,
@@ -86,10 +86,10 @@ const mapStateToProps = (state: AppState, { location }) => {
     marketSort,
     marketFilter,
     marketCardFormat,
-    showInvalidMarketsBannerHideOrShow: (state.loginAccount.settings || {})
+    showInvalidMarketsBannerHideOrShow: (settings)
       .showInvalidMarketsBannerHideOrShow,
     showInvalidMarketsBannerFeesOrLiquiditySpread: (
-      state.loginAccount.settings || {}
+      settings
     ).showInvalidMarketsBannerFeesOrLiquiditySpread,
     templateFilter,
   };
@@ -100,7 +100,6 @@ const mapDispatchToProps = (
 ) => {
   const { updateFilterSortOptions } = AppStatus.actions;
   return ({
-    toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
     setLoadMarketsPending: isSearching =>
       dispatch(setLoadMarketsPending(isSearching)),
     updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),

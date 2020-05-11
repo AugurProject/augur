@@ -64,8 +64,6 @@ const ConnectDropdown = ({
     gasCostTrade = displayGasInDai(NEW_ORDER_GAS_ESTIMATE, userDefinedGasPrice * 10**9);
   }
 
-  if (!isLogged && !restoredAccount) return null;
-
   let timeoutId = null;
   const referralLink = `${window.location.origin}?${AFFILIATE_NAME}=${loginAccountAddress}`;
 
@@ -83,6 +81,8 @@ const ConnectDropdown = ({
       clearTimeout(timeoutId);
     };
   }, []);
+
+  if (!isLogged && !restoredAccount) return null;
 
   const renderToolTip = (id: string, content: JSX.Element) => (
     <span>

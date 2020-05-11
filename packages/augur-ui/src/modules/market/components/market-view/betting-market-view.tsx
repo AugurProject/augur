@@ -8,7 +8,13 @@ import { HeadingBar, InfoTicket } from '../common/common';
 import { PropertyLabel, TimeLabel } from 'modules/common/labels';
 import { formatPercent, formatDai } from 'utils/format-number';
 import { Subheaders } from 'modules/reporting/common';
-import { StarIconSportsBetting, BetsIcon, PositionIcon } from 'modules/common/icons';
+import {
+  StarIconSportsBetting,
+  BetsIcon,
+  PositionIcon,
+} from 'modules/common/icons';
+import { REPORTING_STATE } from 'modules/common/constants';
+import { OutcomeGroup } from 'modules/market-cards/common';
 
 interface BettingMarketViewProps {
   location: Location;
@@ -19,12 +25,11 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
   const marketId = getAddress(queryId);
   const market = selectMarket(marketId);
   const {
-    description,
     endTimeFormatted,
     settlementFeePercent,
-    settlementFee,
-    details,
-    creationTimeFormatted
+    creationTimeFormatted,
+    description, 
+    details
   } = market;
 
   return (
@@ -58,26 +63,39 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
           />
         </div>
       </div>
+      <OutcomeGroup
+        market={market}
+        canDispute={false}
+      />
       <div>
-          <Subheaders
-            header="creation date"
-            subheader={creationTimeFormatted.formattedUtc}
-          />
-          <Subheaders
-            header="event expiration date"
-            subheader={endTimeFormatted.formattedUtc}
-            info
-            tooltipText="event expiration date"
-          />
-          <Subheaders
-            header="resolution rules"
-            subheader={details}
-          />
+        <Subheaders
+          header="creation date"
+          subheader={creationTimeFormatted.formattedUtc}
+        />
+        <Subheaders
+          header="event expiration date"
+          subheader={endTimeFormatted.formattedUtc}
+          info
+          tooltipText="event expiration date"
+        />
+        <Subheaders header="resolution rules" subheader={details} />
       </div>
       <div>
-        <InfoTicket icon={StarIconSportsBetting} value='43' subheader='People tagged this market as favorite' />
-        <InfoTicket icon={BetsIcon} value='148' subheader='Bets were placed on this market' />
-        <InfoTicket icon={PositionIcon} value='$146.54' subheader='Is the amount traded on this market' />
+        <InfoTicket
+          icon={StarIconSportsBetting}
+          value="43"
+          subheader="People tagged this market as favorite"
+        />
+        <InfoTicket
+          icon={BetsIcon}
+          value="148"
+          subheader="Bets were placed on this market"
+        />
+        <InfoTicket
+          icon={PositionIcon}
+          value="$146.54"
+          subheader="Is the amount traded on this market"
+        />
       </div>
     </div>
   );

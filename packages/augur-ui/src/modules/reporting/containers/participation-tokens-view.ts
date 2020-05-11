@@ -16,6 +16,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
   const {
+    loginAccount: { reporting: { participationTokens } },
     universe: {
       forkingInfo,
       disputeWindow: { address, fees, purchased },
@@ -23,8 +24,6 @@ const mapStateToProps = (state: AppState) => {
     isLogged,
   } = AppStatus.get();
   const disablePurchaseButton = !!forkingInfo;
-  const { participationTokens } =
-    state.loginAccount && state.loginAccount.reporting;
   const tokenAmount =
     (address &&
       participationTokens &&

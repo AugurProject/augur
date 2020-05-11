@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import { Close } from 'modules/common/icons';
@@ -23,72 +23,70 @@ interface AlertProps {
   status: string;
 }
 
-export default class Alert extends Component<AlertProps, {}> {
-  render() {
-    const {
-      id,
-      details,
-      description,
-      removeAlert,
-      seen,
-      timestampInMilliseconds,
-      title,
-      noShow,
-      showToast,
-      status
-    } = this.props;
+const Alert = ({
+  id,
+  details,
+  description,
+  removeAlert,
+  seen,
+  timestampInMilliseconds,
+  title,
+  noShow,
+  showToast,
+  status
+}: AlertProps) => {
+  if (!title || title === '') return null;
 
-    if (!title || title === '') return null;
-
-    if (noShow) return null;
-    return (
-      <article
-        className={classNames(Styles.Alert, {
-          [Styles.Seen]: seen,
-          [Styles.Failure]: status === FAILURE
-        })}
-      >
-        <div>
-          <div className={Styles.Row}>
-            <div className={Styles.Status}>{title}</div>
-            <button
-              className={Styles.Close}
-              onClick={e => {
-                removeAlert();
-              }}
-            >
-              {Close}
-            </button>
-          </div>
-          <div className={Styles.Row}>
-            <span className={Styles.Title}>{description}</span>
-          </div>
-          {description && description !== '' && (
-            <div className={Styles.Row}>
-              <span className={Styles.Description}>{details}</span>
-            </div>
-          )}
-          <div className={Styles.Row}>
-            {!showToast && (
-              <>
-                <span className={Styles.Timestamp}>
-                  {
-                    convertUnixToFormattedDate(timestampInMilliseconds / 1000)
-                      .formattedLocalShortWithUtcOffset
-                  }
-                </span>
-                <span className={Styles.EtherLink}>
-                  {id && <ViewTransactionDetailsButton
-                    light
-                    transactionHash={id}
-                    label="view etherscan"
-                  />}
-                </span>
-              </>
-            )}
-          </div>
+  if (noShow) return null;
+  return (
+    <article
+      className={classNames(Styles.Alert, {
+        [Styles.Seen]: seen,
+        [Styles.Failure]: status === FAILURE
+      })}
+    >
+      <div>
+        <div className={Styles.Row}>
+          <div className={Styles.Status}>{title}</div>
+          <button
+            className={Styles.Close}
+            onClick={e => {
+              removeAlert();
+            }}
+          >
+            {Close}
+          </button>
         </div>
-      </article>
-    );
-  }
+        <div className={Styles.Row}>
+          <span className={Styles.Title}>{description}</span>
+        </div>
+        {description && description !== '' && (
+          <div className={Styles.Row}>
+            <span className={Styles.Description}>{details}</span>
+          </div>
+        )}
+        <div className={Styles.Row}>
+          {!showToast && (
+            <>
+              <span className={Styles.Timestamp}>
+                {
+                  convertUnixToFormattedDate(timestampInMilliseconds / 1000)
+                    .formattedLocalShortWithUtcOffset
+                }
+              </span>
+              <span className={Styles.EtherLink}>
+                {id && <ViewTransactionDetailsButton
+                  light
+                  transactionHash={id}
+                  label="view etherscan"
+                />}
+              </span>
+            </>
+          )}
+        </div>
+      </div>
+    </article>
+  );
 }
+
+export default Alert;

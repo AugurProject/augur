@@ -3,6 +3,7 @@ import { compose } from 'redux';
 import BaseInnerNavPure from 'modules/app/components/inner-nav/base-inner-nav-pure';
 import {
   updateSelectedCategories,
+  updateMarketsListMeta,
 } from 'modules/markets-list/actions/update-markets-list';
 import {
   MARKET_SORT,
@@ -11,20 +12,22 @@ import {
   MARKET_SHOW_INVALID,
   TEMPLATE_FILTER,
 } from 'modules/app/store/constants';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { AppStatus } from '../store/app-status';
 
-const mapStateToProps = ({ marketsList, loginAccount }) => {
+const mapStateToProps = ({ marketsList }) => {
   return {
     selectedCategories: marketsList.selectedCategories,
-    settings: loginAccount.settings,
+    settings: AppStatus.get().loginAccount.settings,
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  const { updateFilterSortOptions } = AppStatus.actions;
-  return ({
-    updateLoginAccount: settings => dispatch(updateLoginAccount({ settings })),
+  const {
+    updateFilterSortOptions,
+    updateLoginAccount,
+  } = AppStatus.actions;
+  return {
+    updateLoginAccount: settings => updateLoginAccount({ settings }),
     updateSelectedCategories: categories =>
       dispatch(updateSelectedCategories(categories)),
     updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
@@ -38,23 +41,20 @@ const mapDispatchToProps = dispatch => {
       updateFilterSortOptions({ [MARKET_SHOW_INVALID]: showInvalid }),
     updateTemplateFilter: templateFilter =>
       updateFilterSortOptions({ [TEMPLATE_FILTER]: templateFilter }),
-  });
-}
+  };
+};
 const mergeProps = (sP, dP, oP) => {
   return {
     ...sP,
     ...dP,
     ...oP,
-    updateLoginAccount: settings => dP.updateLoginAccount(Object.assign({}, sP.settings, settings)),
-  }
+    updateLoginAccount: settings =>
+      dP.updateLoginAccount(Object.assign({}, sP.settings, settings)),
+  };
 };
 
 const MarketsInnerNavContainer = compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)
 )(BaseInnerNavPure);
 
 export default MarketsInnerNavContainer;

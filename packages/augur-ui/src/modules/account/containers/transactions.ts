@@ -19,8 +19,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount } = state;
-  const { meta, balances } = loginAccount;
+  const { loginAccount: { meta, balances } } = AppStatus.get();
   const signingWallet = meta.signer?._address;
   const networkId = getNetworkId();
   const showFaucets = networkId !== NETWORK_IDS.Mainnet;

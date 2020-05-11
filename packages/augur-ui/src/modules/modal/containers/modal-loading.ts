@@ -8,10 +8,10 @@ import { Action } from 'redux';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { isLogged, modal } = AppStatus.get();
+  const { isLogged, modal, loginAccount } = AppStatus.get();
   return ({
     isLogged,
-    loginAccount: state.loginAccount,
+    loginAccount,
     modal,
   });
 }

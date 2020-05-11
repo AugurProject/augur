@@ -9,10 +9,13 @@ import { AppState } from "appStore";
 import { MARKET_CREATION_COPY } from "modules/create-market/constants";
 import { AppStatus } from "modules/app/store/app-status";
 
-const mapStateToProps = (state: AppState) => ({
-  modal: AppStatus.get().modal,
-  account: state.loginAccount,
-});
+const mapStateToProps = (state: AppState) => {
+  const { modal, loginAccount: account } = AppStatus.get();
+  return ({
+    modal,
+    account,
+  });
+};
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),

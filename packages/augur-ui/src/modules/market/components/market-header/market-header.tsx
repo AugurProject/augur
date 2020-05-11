@@ -7,7 +7,7 @@ import {
   LeftChevron,
 } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
-import MarketHeaderBar from 'modules/market/containers/market-header-bar';
+import { MarketHeaderBar } from 'modules/market/components/market-header/market-header-bar';
 import { BigNumber } from 'bignumber.js';
 import Styles from 'modules/market/components/market-header/market-header.styles.less';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
@@ -39,8 +39,6 @@ interface MarketHeaderProps {
   market: MarketData;
   marketType: string;
   scalarDenomination: string;
-  toggleFavorite: Function;
-  isFavorite: boolean;
   history: History;
   preview?: boolean;
   reportingBarShowing: boolean;
@@ -71,8 +69,6 @@ export default class MarketHeader extends Component<
   static defaultProps = {
     scalarDenomination: null,
     marketType: null,
-    isFavorite: false,
-    toggleFavorite: () => {},
   };
   detailsContainer: any;
   clipboardMarketId: any = new Clipboard('#copy_marketURL');
@@ -94,7 +90,6 @@ export default class MarketHeader extends Component<
     this.gotoFilter = this.gotoFilter.bind(this);
     this.toggleReadMore = this.toggleReadMore.bind(this);
     this.updateDetailsHeight = this.updateDetailsHeight.bind(this);
-    this.addToFavorites = this.addToFavorites.bind(this);
     this.toggleShowProperties = this.toggleShowProperties.bind(this);
   }
 
@@ -150,11 +145,6 @@ export default class MarketHeader extends Component<
     this.setState({ showProperties: !this.state.showProperties });
   }
 
-  addToFavorites() {
-    const { market, toggleFavorite } = this.props;
-    toggleFavorite(market.id);
-  }
-
   gotoFilter(type, value) {
     const { history } = this.props;
     const query: QueryEndpoints =
@@ -180,7 +170,6 @@ export default class MarketHeader extends Component<
       maxPrice,
       scalarDenomination,
       market,
-      isFavorite,
       history,
       preview,
       reportingBarShowing,
@@ -249,9 +238,7 @@ export default class MarketHeader extends Component<
                 market={market}
                 expandedDetails={expandedDetails}
                 history={history}
-                addToFavorites={this.addToFavorites}
                 gotoFilter={this.gotoFilter}
-                isFavorite={isFavorite}
                 userAccount={userAccount}
                 showCopied={showCopied}
                 setShowCopied={() =>

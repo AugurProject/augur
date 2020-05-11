@@ -13,11 +13,12 @@ import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { calcPercentageFromPrice } from 'utils/format-number';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
 const { COLUMN_TYPES } = constants;
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { marketInfos} = state;
+  const { marketInfos } = Markets.get();
   const { openOrder, marketId }  = ownProps;
   const market = marketInfos[marketId];
   let usePercent = false;

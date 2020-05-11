@@ -3,9 +3,7 @@ import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import {
   selectAccountPositionsState,
   selectLoginAccountAddress,
-  selectMarketInfosState,
   selectPendingLiquidityOrders,
-  selectReadNotificationState,
   selectUserMarketOpenOrders
 } from 'appStore/select-state';
 import { MarketReportingState } from '@augurproject/sdk';
@@ -24,7 +22,6 @@ import {
   SIGN_SEND_ORDERS,
   ZERO,
   REDEEMSTAKE,
-  BATCHCANCELORDERS,
   SUBMIT_DISPUTE,
   TRANSACTIONS,
   SUBMIT_REPORT,
@@ -39,6 +36,8 @@ import { selectLoginAccountClaimablePositions } from 'modules/positions/selector
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { isSameAddress } from 'utils/isSameAddress';
+import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -74,7 +73,8 @@ export const selectMostLikelyInvalidMarkets = createSelector(
 export const selectReportOnMarkets = createSelector(
   selectMarkets,
   selectLoginAccountAddress,
-  (markets, address) => {
+  (markets) => {
+    const { loginAccount: { address } } = AppStatus.get();
     if (markets.length > 0) {
       return markets
         .filter(
@@ -89,33 +89,31 @@ export const selectReportOnMarkets = createSelector(
 );
 
 // Tell user they can get REP if they finalize warp sync market
-export const selectFinalizeMarkets = createSelector(
-  selectMarketInfosState,
-  marketInfos => {
-    const marketId = Object.keys(marketInfos).filter(
-      id => marketInfos[id].reportingState === REPORTING_STATE.AWAITING_FINALIZATION && marketInfos[id].isWarpSync
-    );
-    if (marketId.length > 0) {
-      return marketId.map(id => selectMarket(id)).map(getRequiredMarketData);
-    }
-    return [];
+export const selectFinalizeMarkets = () => {
+  const { marketInfos } = Markets.get();
+
+  const marketId = Object.keys(marketInfos).filter(
+    id => marketInfos[id].reportingState === REPORTING_STATE.AWAITING_FINALIZATION && marketInfos[id].isWarpSync
+  );
+  if (marketId.length > 0) {
+    return marketId.map(id => selectMarket(id)).map(getRequiredMarketData);
   }
-);
+  return [];
+};
 
 // Get all markets in dispute, for market creators and user with positions in disputed markets
 export const selectMarketsInDispute = createSelector(
-  selectMarketInfosState,
   selectAccountPositionsState,
-  selectLoginAccountAddress,
-  (markets, positions, address) => {
-    const state = store.getState() as AppState;
+  (positions) => {
+    const { loginAccount: { address }} = AppStatus.get();
+    const { marketInfos } = Markets.get();
     let marketIds = Object.keys(positions);
-    const { reporting } = state.loginAccount;
+    const { loginAccount: { reporting } } = AppStatus.get();
     if (reporting && reporting.disputing && reporting.disputing.contracts) {
       marketIds = Array.from(
         new Set([
           ...marketIds,
-          ...state.loginAccount.reporting.disputing.contracts.map(
+          ...reporting.disputing.contracts.map(
             obj => obj.marketId
           ),
         ])
@@ -125,7 +123,7 @@ export const selectMarketsInDispute = createSelector(
       marketIds = Array.from(
         new Set([
           ...marketIds,
-          ...state.loginAccount.reporting.reporting.contracts.map(
+          ...reporting.reporting.contracts.map(
             obj => obj.marketId
           ),
         ])
@@ -134,7 +132,7 @@ export const selectMarketsInDispute = createSelector(
     marketIds = Array.from(
       new Set([
         ...marketIds,
-        ...Object.keys(markets).filter(id => markets[id].author === address),
+        ...Object.keys(marketInfos).filter(id => marketInfos[id].author === address),
       ])
     );
     if (marketIds.length > 0) {
@@ -187,7 +185,6 @@ export const selectNotifications = createSelector(
   selectUnsignedOrders,
   selectMostLikelyInvalidMarkets,
   selectFinalizeMarkets,
-  selectReadNotificationState,
   (
     reportOnMarkets,
     resolvedMarketsOpenOrder,
@@ -196,8 +193,8 @@ export const selectNotifications = createSelector(
     unsignedOrders,
     mostLikelyInvalidMarkets,
     finalizeMarkets,
-    readNotifications,
   ): Notification[] => {
+    const { notifications: notificationsState } = AppStatus.get();
     // Generate non-unquie notifications
     const reportOnMarketsNotifications = generateCards(
       reportOnMarkets,
@@ -274,7 +271,7 @@ export const selectNotifications = createSelector(
     }
 
     // Update isNew status based on data stored on local state
-    const storedNotifications = readNotifications || null;
+    const storedNotifications = notificationsState || null;
     if (storedNotifications && storedNotifications.length) {
       notifications = notifications.map(notification => {
         const storedNotification = storedNotifications.find(

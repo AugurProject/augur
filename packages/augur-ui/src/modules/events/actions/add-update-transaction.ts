@@ -87,8 +87,8 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
 ) => {
   const { eventName, transaction, hash } = txStatus;
   if (transaction) {
+    const { loginAccount: { meta } } = AppStatus.get();
     const methodCall = transaction.name.toUpperCase();
-    const { loginAccount } = getState();
 
     if (ADD_PENDING_QUEUE_METHOD_CALLS.includes(methodCall)) {
       dispatch(
@@ -100,20 +100,20 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
 
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (
-        await loginAccount.meta.signer.provider.getBalance(
-          loginAccount.meta.signer._address
+        await meta.signer.provider.getBalance(
+          meta.signer._address
         )
       ).gt(0);
 
       AppStatus.actions.setModal({
         type: MODAL_ERROR,
         error: getRelayerDownErrorMessage(
-          loginAccount.meta.accountType,
+          meta.accountType,
           hasEth
         ),
         showDiscordLink: false,
         showAddFundsHelp: !hasEth,
-        walletType: loginAccount.meta.accountType,
+        walletType: meta.accountType,
         title: "We're having trouble processing transactions",
       });
     }
@@ -126,7 +126,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       eventName === TXEventName.RelayerDown
     ) {
       const genHash = hash ? hash : generateTxParameterId(transaction.params);
-
       dispatch(
         addAlert({
           id: genHash,

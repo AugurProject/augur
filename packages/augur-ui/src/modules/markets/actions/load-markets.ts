@@ -11,7 +11,10 @@ import * as _ from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'appStore';
 import { Getters, MarketReportingState } from '@augurproject/sdk';
-import { addUpdateMarketInfos, UpdateMarketsAction, } from 'modules/markets/actions/update-markets-data';
+import {
+  addUpdateMarketInfos,
+  UpdateMarketsAction,
+} from 'modules/markets/actions/update-markets-data';
 import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 import { updateReportingList } from 'modules/reporting/actions/update-reporting-list';
 import { LoadReportingMarketsOptions } from 'modules/types';
@@ -36,7 +39,7 @@ export interface LoadMarketsFilterOptions {
   templateFilter?: string;
 }
 
-export const organizeReportingStates = (reportingState) => {
+export const organizeReportingStates = reportingState => {
   let reportingStates: string[] = [];
   switch (reportingState) {
     case MARKET_REPORTING: {
@@ -64,7 +67,7 @@ export const organizeReportingStates = (reportingState) => {
   }
 
   return reportingStates;
-}
+};
 
 export const loadMarketsByFilter = (
   filterOptions: LoadMarketsFilterOptions,
@@ -83,7 +86,9 @@ export const loadMarketsByFilter = (
 
   const augur = augurSdk.get();
 
-  const reportingStates: string[] = organizeReportingStates(filterOptions.filter);
+  const reportingStates: string[] = organizeReportingStates(
+    filterOptions.filter
+  );
   const sort: SortOptions = {};
   switch (filterOptions.sort) {
     case MARKET_SORT_PARAMS.RECENTLY_TRADED: {
@@ -151,17 +156,14 @@ export const loadMarketsByFilter = (
     delete params.maxLiquiditySpread;
 
   const marketList = await augur.getMarkets({ ...params });
-  dispatch(addUpdateMarketInfos(marketList.markets));
+  addUpdateMarketInfos(marketList.markets);
   cb(null, marketList);
 };
 
 export const loadNextWindowDisputingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, Action> => async (
-  dispatch,
-  getState
-) => {
+): ThunkAction<void, AppState, void, Action> => async (dispatch, getState) => {
   const params = {
     reportingStates: [MarketReportingState.AwaitingNextWindow],
     ...filterOptions,
@@ -172,10 +174,7 @@ export const loadNextWindowDisputingMarkets = (
 export const loadCurrentlyDisputingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, Action> => async (
-  dispatch,
-  getState
-) => {
+): ThunkAction<void, AppState, void, Action> => async (dispatch, getState) => {
   const params = {
     reportingStates: [MarketReportingState.CrowdsourcingDispute],
     ...filterOptions,
@@ -204,12 +203,11 @@ export const loadUpcomingDesignatedReportingMarkets = (
   dispatch,
   getState
 ) => {
-  const { loginAccount } = getState();
-  const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
-  const maxEndTime = getOneWeekInFutureTimestamp(
-    currentAugurTimestamp
-  );
-  const designatedReporter = loginAccount.address;
+  const {
+    loginAccount: { address: designatedReporter },
+    blockchain: { currentAugurTimestamp },
+  } = AppStatus.get();
+  const maxEndTime = getOneWeekInFutureTimestamp(currentAugurTimestamp);
   if (!designatedReporter)
     return cb(null, { markets: [], meta: { marketCount: 0 } });
 
@@ -229,8 +227,9 @@ export const loadDesignatedReportingMarkets = (
   dispatch,
   getState
 ) => {
-  const { loginAccount } = getState();
-  const designatedReporter = loginAccount.address;
+  const {
+    loginAccount: { address: designatedReporter },
+  } = AppStatus.get();
   if (!designatedReporter)
     return cb(null, { markets: [], meta: { marketCount: 0 } });
 
@@ -245,10 +244,7 @@ export const loadDesignatedReportingMarkets = (
 const loadReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, Action> => async (
-  dispatch,
-  getState
-) => {
+): ThunkAction<void, AppState, void, Action> => async (dispatch, getState) => {
   const { universe, isConnected } = AppStatus.get();
   if (!isConnected) return cb(null, []);
   if (!(universe && universe.id)) return cb(null, []);
@@ -275,20 +271,26 @@ const loadReportingMarkets = (
   const marketList: Getters.Markets.MarketList = await augur.getMarkets({
     ...params,
   });
-  dispatch(addUpdateMarketInfos(marketList.markets));
+  addUpdateMarketInfos(marketList.markets);
   if (reportingState) {
     const marketIds = marketList.markets.map(m => m.id);
-    dispatch(updateReportingList(reportingState, marketIds, filterOptions, false));
+    dispatch(
+      updateReportingList(reportingState, marketIds, filterOptions, false)
+    );
   }
   if (cb) cb(null, marketList);
 };
 
-const hotLoadMarket = _.throttle(marketId => {
-  const augur = augurSdk.get();
-  augur.hotloadMarket(marketId);
-  console.log('Hot Loading Market', marketId);
-}, 1000, { leading: true });
+const hotLoadMarket = _.throttle(
+  marketId => {
+    const augur = augurSdk.get();
+    augur.hotloadMarket(marketId);
+    console.log('Hot Loading Market', marketId);
+  },
+  1000,
+  { leading: true }
+);
 
-export const hotloadMarket = (marketId) => {
+export const hotloadMarket = marketId => {
   hotLoadMarket(marketId);
-}
+};

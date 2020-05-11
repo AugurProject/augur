@@ -7,27 +7,29 @@ import {
   ZERO,
 } from 'modules/common/constants';
 import store, { AppState } from 'appStore';
-import { selectMarketInfosState } from 'appStore/select-state';
 import { MarketData, OutcomeFormatted } from 'modules/types';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 import { createSelector } from 'reselect';
 import { Getters } from '@augurproject/sdk';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from '../store/markets';
 
 function selectMarketsDataStateMarket(state, marketId) {
-  return selectMarketInfosState(state)[marketId];
+  const { marketInfos } = Markets.get();
+  return marketInfos[marketId];
 }
 
 export const selectMarket = (marketId): MarketData | null => {
   const state = store.getState() as AppState;
-  const marketInfo = selectMarketInfosState(state);
+  const { marketInfos } = Markets.get();
+
 
   if (
     !marketId ||
-    !marketInfo ||
-    !marketInfo[marketId] ||
-    !marketInfo[marketId].id
+    !marketInfos ||
+    !marketInfos[marketId] ||
+    !marketInfos[marketId].id
   ) {
     return null;
   }

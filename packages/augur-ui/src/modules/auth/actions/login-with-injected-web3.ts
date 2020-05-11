@@ -56,7 +56,7 @@ export const loginWithInjectedWeb3 = () => async (
     // Listen for MetaMask account switch
     if (windowRef.ethereum && windowRef.ethereum.on) {
       windowRef.ethereum.on('accountsChanged', async accounts => {
-        const loginAccount = getState().loginAccount;
+        const { loginAccount } = AppStatus.get();
         if (loginAccount.address) {
           const initWeb3 = async account => {
             const message = account ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;

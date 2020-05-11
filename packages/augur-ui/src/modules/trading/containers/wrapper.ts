@@ -21,7 +21,7 @@ import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { orderSubmitted } from 'services/analytics/helpers';
 import { AppState } from 'appStore';
-import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
 import { AppStatus } from 'modules/app/store/app-status';
@@ -36,20 +36,21 @@ const getMarketPath = id => {
 };
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { loginAccount, accountPositions, userOpenOrders, newMarket } = state;
+  const { accountPositions, userOpenOrders, newMarket } = state;
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const {
+    loginAccount: {
+      balances: { dai, eth },
+    },
     gsnEnabled: GsnEnabled,
     isLogged,
     restoredAccount,
     blockchain: { currentAugurTimestamp: currentTimestamp },
   } = AppStatus.get();
-  const hasFunds = GsnEnabled
-    ? !!loginAccount.balances.dai
-    : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
+  const hasFunds = GsnEnabled ? !!dai : !!eth && !!dai;
 
-  let availableDai = totalTradingBalance(loginAccount);
+  let availableDai = totalTradingBalance();
   if (ownProps.initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
