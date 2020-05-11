@@ -1,0 +1,49 @@
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.EmojiPicker {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  position: absolute;
+  padding: 4px;
+  margin: 0 12px 0 5px;
+  list-style: none;
+  background-color: #404040;
+  border: 1px solid #1c1c1c;
+
+  > * {
+    display: flex;
+    padding: 1px;
+  }
+
+  > *:hover {
+    padding: 0;
+    // background-color: #5c5c5c;
+    border: 1px solid #363636;
+  }
+
+  .selected {
+    padding: 0;
+    background-color: #5c5c5c;
+    border: 1px solid #363636;
+  }
+}
+
+.fadeUpAnimation {
+  animation: fadeInUp;
+  animation-duration: 0.1s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}

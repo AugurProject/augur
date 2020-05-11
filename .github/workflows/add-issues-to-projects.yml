@@ -1,0 +1,28 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Add Issues to Projects
+
+on:
+  issues:
+    types: [labeled]
+jobs:
+  Add_To_Website_Project:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: konradpabjan/move-labeled-or-milestoned-issue@v2.0
+      with:
+        action-token: "${{ secrets.GITHUB_TOKEN }}"
+        project-url: "https://github.com/AugurProject/augur/projects/7"
+        column-name: "To do"
+        label-name: "project/website"
+        columns-to-ignore: "*"
+  Add_To_Design_Project:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: konradpabjan/move-labeled-or-milestoned-issue@v2.0
+      with:
+        action-token: "${{ secrets.GITHUB_TOKEN }}"
+        project-url: "https://github.com/AugurProject/augur/projects/10"
+        column-name: "To do"
+        label-name: "area/design"
+        columns-to-ignore: "*" 

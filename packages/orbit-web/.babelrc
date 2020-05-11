@@ -1,0 +1,24 @@
+{
+  "presets": ["@babel/preset-env", "@babel/preset-react"],
+  "plugins": [
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-transform-async-to-generator",
+    "@babel/plugin-transform-flow-strip-types",
+    "@babel/plugin-syntax-flow",
+    [
+      "@babel/plugin-proposal-object-rest-spread",
+      {
+        "loose": true
+      }
+    ],
+    [
+      "@babel/plugin-transform-spread",
+      {
+        "loose": true
+      }
+    ],
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true }],
+    "react-hot-loader/babel"
+  ]
+}

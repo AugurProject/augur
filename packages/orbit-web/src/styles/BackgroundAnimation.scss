@@ -1,0 +1,35 @@
+@import 'Animations';
+
+.BackgroundAnimation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+
+  .transparent {
+    opacity: 0.75;
+  }
+
+  .Rings {
+    position: absolute;
+  }
+
+  .Planets {
+    opacity: 1.0;
+    position: absolute;
+  }
+
+  .circle {
+    transform-style: preserve-3d;
+    transform: translate3D(0, 0, 0);
+    animation: fadeIn;
+    animation-duration: .2s;
+    animation-fill-mode: both;
+    animation-timing-function: linear;
+  }
+}

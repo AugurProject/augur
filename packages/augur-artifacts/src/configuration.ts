@@ -1,4 +1,4 @@
-import { LoggerLevels } from '@augurproject/logger';
+import { LoggerLevels } from '@augurproject/utils';
 import path from 'path';
 import deepmerge from 'deepmerge';
 import requireAll from 'require-all';
@@ -205,7 +205,8 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     autoReport: false,
   },
   uniswap: {
-    exchangeRateBufferMultiplier: 1.05,
+    // mainnet will be <= 1.005 but for dev we can get away with a wide spread
+    exchangeRateBufferMultiplier: 1.075,
   },
   gsn: {
     enabled: true

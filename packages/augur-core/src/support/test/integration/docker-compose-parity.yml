@@ -1,0 +1,25 @@
+version: "3.2"
+services:
+  parity-dev-node:
+    image: augurproject/dev-node-parity:latest
+    ports:
+      - "47621:8180"
+      - "47622:8545"
+      - "47623:8546"
+  parity-integration-tests:
+    build:
+      context: ../../../../../../
+      dockerfile: packages/augur-core/src/support/Dockerfile
+      cache_from:
+        - augurproject/augur-core:monorepo
+    entrypoint: [ "yarn", "test:integration" ]
+    # uncomment the following 3 lines to enable debugging the tests
+    # command: [ "--", "--debug=0.0.0.0:9229", "--inspect-brk" ]
+    # ports:
+    #   - "9229:9229"
+    environment:
+      - ETHEREUM_HTTP=http://parity-dev-node:8545
+      - ETHEREUM_GAS_PRICE_IN_NANOETH=1
+      - ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a
+    links:
+      - parity-dev-node

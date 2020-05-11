@@ -12,9 +12,9 @@ import {
   CREATE_MARKET_FORM_PARAM_NAME,
 } from './routes/constants/param-names';
 import { AnyAction } from 'redux';
-import { EthersSigner } from 'contract-dependencies-ethers/build/ContractDependenciesEthers';
+import { EthersSigner } from 'augur-contract-dependencies-ethers/build/ContractDependenciesEthers';
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
-import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
+import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { BigNumber } from 'utils/create-big-number';
 import { Template } from '@augurproject/artifacts';
 
@@ -223,7 +223,8 @@ export interface PendingOrders {
   [marketId: string]: UIOrder[];
 }
 
-export interface QuantityOrderBookOrder extends Getters.Markets.MarketOrderBookOrder {
+export interface QuantityOrderBookOrder
+  extends Getters.Markets.MarketOrderBookOrder {
   quantityScale: number;
   percent: number;
   mySize: string;
@@ -388,9 +389,7 @@ export interface DateTimeComponents {
 export interface NewMarket {
   uniqueId: string;
   isValid: boolean;
-  validations:
-    | NewMarketPropertiesValidations
-    | NewMarketPropertyValidations;
+  validations: NewMarketPropertiesValidations | NewMarketPropertyValidations;
   currentStep: number;
   type: string;
   outcomes: string[];
@@ -432,7 +431,7 @@ export interface NewMarket {
 export interface LinkContent {
   content: string;
   link?: string;
-};
+}
 
 export interface Draft {
   uniqueId: string;
@@ -440,7 +439,8 @@ export interface Draft {
   updated: number;
   isValid: boolean;
   validations:
-  NewMarketPropertiesValidations[] | NewMarketPropertyValidations[]
+    | NewMarketPropertiesValidations[]
+    | NewMarketPropertyValidations[];
   currentStep: number;
   type: string;
   outcomes: string[];
@@ -762,10 +762,10 @@ export interface PriceTimeSeriesData {
 export interface MarketClaimablePositions {
   markets: MarketData[];
   totals: {
-    totalUnclaimedProfit: BigNumber,
-    totalUnclaimedProceeds: BigNumber,
-    totalFees: BigNumber,
-  }
+    totalUnclaimedProfit: BigNumber;
+    totalUnclaimedProceeds: BigNumber;
+    totalFees: BigNumber;
+  };
   positions: {
     [marketId: string]: {
       unclaimedProfit: string;
@@ -776,8 +776,8 @@ export interface MarketClaimablePositions {
 }
 
 export interface ClaimReportingOptions {
-  reportingParticipants: string[],
-  disputeWindows: string[],
+  reportingParticipants: string[];
+  disputeWindows: string[];
   estimateGas?: boolean;
   disavowed?: boolean;
   isForkingMarket?: boolean;

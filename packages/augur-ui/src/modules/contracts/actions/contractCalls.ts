@@ -45,7 +45,6 @@ import { formatBytes32String } from 'ethers/utils';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import { ExtraInfoTemplate } from '@augurproject/artifacts';
 import { getFingerprint } from 'utils/get-fingerprint';
-import { EXCHANGE_RATE_BUFFER_MULTIPLIER } from 'contract-dependencies-gsn/src/ContractDependenciesGSN';
 
 export function isWeb3Transport(): boolean {
   return augurSdk.isWeb3Transport;
@@ -349,17 +348,28 @@ export async function addLiquidityRepDai(dai: BigNumber, rep: BigNumber): Promis
   uniswap.addLiquidity(contracts.reputationToken.address, contracts.cash.address, repAmount, cashAmount, new BigNumber(0), new BigNumber(0));
 }
 
-export async function uniswapDaiForRep(dai: BigNumber, rep: BigNumber): Promise<void> {
+export async function checkSetApprovalAmount(account, contract): Promise<void> {
+  const { contracts } = augurSdk.get();
+  try {
+    const APPROVAL_AMOUNT = new BigNumber(2**255);
+    const currentAllowance = await contract.allowance_(account, contracts.uniswap.address);
+    if (currentAllowance.toNumber() <= 0) {
+      await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
+    }
+  }
+  catch(error) {
+    throw error;
+  }
+}
+
+export async function uniswapDaiForRep(dai: BigNumber, rep: BigNumber, tradeSpread: number): Promise<void> {
   const { contracts, uniswap } = augurSdk.get();
 
   const exactDai = dai.multipliedBy(10**18);
-  const networkId = getNetworkId();
-  const isMainnet = networkId === NETWORK_IDS.Mainnet;
-  const TRADE_SPREAD = isMainnet ? EXCHANGE_RATE_BUFFER_MULTIPLIER : 1.75;
-  const minRep = rep.minus(rep.multipliedBy(TRADE_SPREAD - 1)).multipliedBy(10**18);
+  const minRep = rep.minus(rep.multipliedBy(createBigNumber(tradeSpread).minus(1))).multipliedBy(10**18);
 
   try {
-    await uniswap.swapExactTokensForTokens(contracts.cash.address, contracts.reputationToken.address, exactDai, minRep);
+    await uniswap.swapExactTokensForTokens(contracts.cash.address, contracts.reputationToken.address, exactDai, createBigNumber(minRep.toNumber()));
   }
   catch(error) {
     console.error('uniswapDaiForRep', error);
@@ -367,17 +377,14 @@ export async function uniswapDaiForRep(dai: BigNumber, rep: BigNumber): Promise<
   }
 }
 
-export async function uniswapRepForDai(rep: BigNumber, dai: BigNumber): Promise<void> {
+export async function uniswapRepForDai(rep: BigNumber, dai: BigNumber, tradeSpread: number): Promise<void> {
   const { contracts, uniswap } = augurSdk.get();
 
   const exactRep = rep.multipliedBy(10**18);
-  const networkId = getNetworkId();
-  const isMainnet = networkId === NETWORK_IDS.Mainnet;
-  const TRADE_SPREAD = isMainnet ? EXCHANGE_RATE_BUFFER_MULTIPLIER : 1.75;
-  const minDai = dai.minus(dai.multipliedBy(TRADE_SPREAD - 1)).multipliedBy(10**18);
+  const minDai = dai.minus(dai.multipliedBy(createBigNumber(tradeSpread).minus(1))).multipliedBy(10**18);
 
   try {
-    await uniswap.swapExactTokensForTokens(contracts.reputationToken.address, contracts.cash.address, exactRep, minDai);
+    await uniswap.swapExactTokensForTokens(contracts.reputationToken.address, contracts.cash.address, exactRep, createBigNumber(minDai.toNumber()));
   }
   catch(error) {
     console.error('uniswapRepForDai', error);
@@ -386,10 +393,10 @@ export async function uniswapRepForDai(rep: BigNumber, dai: BigNumber): Promise<
 }
 
 
-export async function uniswapEthForDai(eth: BigNumber, dai: BigNumber): Promise<void> {
+export async function uniswapEthForDai(eth: BigNumber, dai: BigNumber, exchangeRateBufferMultiplier: number): Promise<void> {
   const { contracts, uniswap } = augurSdk.get();
   const exactDai = dai.multipliedBy(10**18);
-  const maxEth = eth.multipliedBy(10**18).multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER);
+  const maxEth = eth.multipliedBy(10**18).multipliedBy(exchangeRateBufferMultiplier);
 
   try {
     await uniswap.swapETHForExactTokens(contracts.cash.address, exactDai, maxEth);
@@ -400,10 +407,10 @@ export async function uniswapEthForDai(eth: BigNumber, dai: BigNumber): Promise<
   }
 }
 
-export async function uniswapEthForRep(eth: BigNumber, rep: BigNumber): Promise<void> {
+export async function uniswapEthForRep(eth: BigNumber, rep: BigNumber, exchangeRateBufferMultiplier: number): Promise<void> {
   const { contracts, uniswap } = augurSdk.get();
   const exactRep = rep.multipliedBy(10**18);
-  const maxEth = eth.multipliedBy(10**18).multipliedBy(EXCHANGE_RATE_BUFFER_MULTIPLIER);
+  const maxEth = eth.multipliedBy(10**18).multipliedBy(exchangeRateBufferMultiplier);
 
   try {
     await uniswap.swapETHForExactTokens(contracts.reputationToken.address, exactRep, maxEth);

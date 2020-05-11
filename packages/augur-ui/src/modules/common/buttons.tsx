@@ -26,6 +26,7 @@ import {
   XIcon,
   BackIcon,
   AlternateDaiLogoIcon,
+  Chevron, ThickChevron,
 } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import classNames from 'classnames';
@@ -187,6 +188,16 @@ export const SecondaryButton = ({
     title={title || text}
   >
     {text} {icon}
+  </button>
+);
+
+export const ChatButton = ({ action, disabled }: DefaultButtonProps) => (
+  <button
+    onClick={e => action(e)}
+    className={classNames(Styles.ChatButton)}
+    disabled={disabled}
+  >
+    Global Chat {ThickChevron}
   </button>
 );
 

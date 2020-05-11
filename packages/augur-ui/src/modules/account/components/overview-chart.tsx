@@ -5,7 +5,7 @@ import { PulseLoader } from 'react-spinners';
 import ProfitLossChart from 'modules/account/components/profit-loss-chart';
 import { MovementLabel } from 'modules/common/labels';
 import Styles from 'modules/account/components/overview-chart.styles.less';
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatPercent } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 
@@ -34,7 +34,6 @@ export interface UserTimeRangeData {
 interface OverviewChartState {
   profitLossData: number[][];
   profitLossChange: FormattedNumber | null;
-  profitLossValue: string | null;
   profitLossChangeHasValue: boolean;
   noTrades: boolean;
 }
@@ -47,7 +46,6 @@ export default class OverviewChart extends React.Component<
   state: OverviewChartState = {
     profitLossData: [],
     profitLossChange: null,
-    profitLossValue: null,
     profitLossChangeHasValue: false,
     noTrades: true,
   };
@@ -93,6 +91,11 @@ export default class OverviewChart extends React.Component<
         currentAugurTimestamp
       );
 
+      const firstData =
+        data.length > 0
+          ? data[0]
+          : { realized: 0, realizedPercent: 0 };
+
       const lastData =
         data.length > 0
           ? data[data.length - 1]
@@ -122,13 +125,13 @@ export default class OverviewChart extends React.Component<
       ]);
 
       if (this.container) {
+        const realizedChange = createBigNumber(lastData.realized).minus(firstData.realized);
         this.setState({
           profitLossData,
-          profitLossChange: formatDai(lastData.realized || 0),
+          profitLossChange: formatDai(realizedChange || 0),
           profitLossChangeHasValue: !createBigNumber(lastData.realized || 0).eq(
             constants.ZERO
           ),
-          profitLossValue: String(formatDai(lastData.realized, { removeComma: true }).full),
           noTrades: false,
         });
       }
@@ -141,7 +144,6 @@ export default class OverviewChart extends React.Component<
     const {
       profitLossData,
       profitLossChange,
-      profitLossValue,
       noTrades,
     } = this.state;
 
@@ -174,7 +176,6 @@ export default class OverviewChart extends React.Component<
             value={profitLossChange}
             useFull
           />
-          <h4>{profitLossValue}</h4>
           {isLoading && (
             <PulseLoader
               color="#AFA7C1"

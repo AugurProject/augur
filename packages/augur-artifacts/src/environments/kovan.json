@@ -20,6 +20,9 @@
     "writeArtifacts": true,
     "serial": true
   },
+  "uniswap": {
+    "exchangeRateBufferMultiplier": 1.075
+  },
   "gsn": {
     "enabled": true
   },
@@ -83,8 +86,7 @@
     "startWSS": true
   },
   "plugins": {
-    "chat": "3box",
-    "comments": "3box"
+    "chat": "orbit"
   },
   "syncing": {
     "enabled": true

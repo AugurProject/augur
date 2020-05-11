@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { logger, LoggerLevels } from '@augurproject/logger';
+import { logger, LoggerLevels } from '@augurproject/utils';
 import { AbstractTable, BaseDocument } from './AbstractTable';
 import { SyncStatus } from './SyncStatus';
 import { Augur } from '../../Augur';
@@ -144,7 +144,6 @@ export class ZeroXOrders extends AbstractTable {
   async clearDBAndCacheOrders(): Promise<void> {
     // Note: This does mean if a user reloads before syncing the old orders could be lost if they previous to that had not broadcast their orders completely somehow
     this.pastOrders = Object.assign(this.pastOrders, _.keyBy(await this.allDocs(), 'orderHash'));
-    await this.clearDB();
 
     if (this.augur.zeroX.isReady()) {
       this.sync();
@@ -165,7 +164,7 @@ export class ZeroXOrders extends AbstractTable {
 
   async handleOrderEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
-
+    const bulkOrderEvents = [];
     const filteredOrders = orderEvents.filter(this.validateOrder, this);
     let documents: StoredOrder[] = filteredOrders.map(this.processOrder, this);
 
@@ -180,6 +179,7 @@ export class ZeroXOrders extends AbstractTable {
       // Spread this once to avoid extra copies
       const event = {eventType: OrderEventType.Cancel, orderId: d.orderHash, ...d};
       this.augur.events.emit('OrderEvent', event);
+      bulkOrderEvents.push(event);
       this.augur.events.emit('DB:updated:ZeroXOrders', event);
     }
     documents = documents.filter((d: StoredOrder) => !canceledOrders[d.orderHash]);
@@ -200,13 +200,16 @@ export class ZeroXOrders extends AbstractTable {
       const eventType = filledOrders[d.orderHash] ? OrderEventType.Fill : OrderEventType.Create;
       const event = {eventType, orderId: d.orderHash,...d};
       this.augur.events.emit('OrderEvent', event);
+      bulkOrderEvents.push(event);
       this.augur.events.emit('DB:updated:ZeroXOrders', event);
     }
+    if (bulkOrderEvents.length > 0) this.augur.events.emit(SubscriptionEventName.BulkOrderEvent, { logs: bulkOrderEvents });
   }
 
   async sync(): Promise<void> {
     logger.info('Syncing ZeroX Orders');
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
+    let bulkOrderEvents = [];
     let documents = [];
     if (orders?.length > 0) {
       documents = orders.filter(this.validateOrder, this).map(this.processOrder, this);
@@ -216,7 +219,9 @@ export class ZeroXOrders extends AbstractTable {
       documents.forEach((doc) => delete this.pastOrders[doc.orderHash])
       await this.saveDocuments(documents);
       for (const d of documents) {
-        this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Create, ...d});
+        const event = {eventType: OrderEventType.Create, ...d};
+        bulkOrderEvents.push(event);
+        this.augur.events.emit('OrderEvent', event);
       }
     }
     const chainId = Number(this.augur.config.networkId);
@@ -228,10 +233,15 @@ export class ZeroXOrders extends AbstractTable {
       }, order.signedOrder);
     });
 
-    if (ordersToAdd.length > 0) await this.augur.zeroX.addOrders(ordersToAdd);
+    if (ordersToAdd.length > 0) {
+      await this.augur.zeroX.addOrders(ordersToAdd);
+      bulkOrderEvents = [...bulkOrderEvents, ...ordersToAdd];
+    }
     this.pastOrders = {};
 
     this.augur.events.emit(SubscriptionEventName.ZeroXStatusSynced, {});
+    if (bulkOrderEvents.length > 0) this.augur.events.emit(SubscriptionEventName.BulkOrderEvent, { logs: bulkOrderEvents });
+
     setImmediate(() => {
       logger.info(`Synced ${orders.length} Orders from ZeroX Peers`);
       logger.debug("ZeroX Sync Summary: ")
@@ -266,8 +276,10 @@ export class ZeroXOrders extends AbstractTable {
     if (storedOrder.numberAmount.isEqualTo(0)) {
       console.log('Deleting filled order');
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
-      this.augur.events.emit('OrderEvent', {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder});
-      this.augur.events.emit('DB:updated:ZeroXOrders', {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder});
+      const event = {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder};
+      this.augur.events.emit('OrderEvent', event);
+      this.augur.events.emit(SubscriptionEventName.BulkOrderEvent, { logs: [event] });
+      this.augur.events.emit('DB:updated:ZeroXOrders', event);
       return false;
     }
     return true;

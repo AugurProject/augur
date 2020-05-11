@@ -132,6 +132,14 @@ export function checkAddress(value) {
   return '';
 }
 
+export function isCheckWholeNumber(value) {
+  let message = ''
+  if (moreThanDecimals(value, 0)) {
+    message = 'Value must be a whole number';
+  }
+  return message;
+}
+
 export function checkOutcomesArray(value) {
   const validOutcomes = value.filter(
     outcome => outcome && outcome.trim() !== ''
