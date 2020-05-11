@@ -23,6 +23,7 @@ interface OnboardingProps {
   mediumHeader?: string;
   linkContent?: LinkContent[];
   currentStep?: number;
+  changeCurrentStep?: Function;
   icon: React.ReactNode;
   condensed?: boolean;
   analyticsEvent?: Function;
@@ -37,7 +38,8 @@ export const Onboarding = ({
   currentStep,
   icon,
   condensed,
-  analyticsEvent
+  analyticsEvent,
+  changeCurrentStep,
 }: OnboardingProps) => {
   useEffect(() => {
     analyticsEvent && analyticsEvent();
@@ -53,7 +55,7 @@ export const Onboarding = ({
       </main>
       <div>
         {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
-        {currentStep && <Stepper currentStep={currentStep} maxSteps={ONBOARDING_MAX_STEPS} /> }
+        {currentStep && <Stepper changeCurrentStep={changeCurrentStep} currentStep={currentStep} maxSteps={ONBOARDING_MAX_STEPS} /> }
       </div>
     </div>
   );
