@@ -1,4 +1,3 @@
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import logError from 'utils/log-error';
 import { NodeStyleCallback } from 'modules/types';
 import { AppState } from 'appStore';
@@ -15,8 +14,7 @@ export const updateTimeframeData = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ): Promise<void> => {
-  const { loginAccount } = getState();
-  const { universe: { id }, blockchain: { currentAugurTimestamp }} = AppStatus.get();
+  const { loginAccount, universe: { id }, blockchain: { currentAugurTimestamp }} = AppStatus.get();
   if (loginAccount.address == null || id == null)
     return callback(null);
 
@@ -29,17 +27,14 @@ export const updateTimeframeData = (
       endTime: currentAugurTimestamp
     }
   );
-
-  dispatch(
-    updateLoginAccount({
-      timeframeData: {
-        positions: stats.positions,
-        numberOfTrades: stats.numberOfTrades,
-        marketsTraded: stats.marketsTraded,
-        marketsCreated: stats.marketsCreated,
-        successfulDisputes: stats.successfulDisputes,
-        redeemedPositions: stats.redeemedPositions,
-      },
-    })
-  );
+  AppStatus.actions.updateLoginAccount({
+    timeframeData: {
+      positions: stats.positions,
+      numberOfTrades: stats.numberOfTrades,
+      marketsTraded: stats.marketsTraded,
+      marketsCreated: stats.marketsCreated,
+      successfulDisputes: stats.successfulDisputes,
+      redeemedPositions: stats.redeemedPositions,
+    },
+  });
 };

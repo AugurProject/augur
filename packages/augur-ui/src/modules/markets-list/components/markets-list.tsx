@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { Pagination } from 'modules/common/pagination';
 import NullStateMessage from 'modules/common/null-state-message';
 import { TYPE_TRADE, MARKET_CARD_FORMATS } from 'modules/common/constants';
@@ -17,7 +16,6 @@ interface MarketsListProps {
   markets: MarketData[];
   filteredMarkets: string[];
   location: object;
-  toggleFavorite: Function;
   linkType?: string;
   pendingLiquidityOrders?: object;
   showDisputingCard?: boolean;

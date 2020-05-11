@@ -9,10 +9,10 @@ import { ADD_FUNDS, track } from 'services/analytics/helpers';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { modal } = AppStatus.get();
+  const { loginAccount, modal } = AppStatus.get();
   return {
     modal,
-    loginAccount: state.loginAccount,
+    loginAccount,
     isRelayDown: false, // TODO XXX Need to have some suitable status update for when relayer is down. No longer related to wallets
   }
 };

@@ -5,9 +5,10 @@ import Stats from "modules/account/components/stats";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { updateTimeframeData } from 'modules/account/actions/update-timeframe-data';
+import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = (state: AppState) => ({
-  timeframeData: state.loginAccount.timeframeData,
+  timeframeData: AppStatus.get().loginAccount.timeframeData,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

@@ -14,7 +14,6 @@ import CategoryFilters from 'modules/app/containers/category-filters';
 import { PrimaryButton } from 'modules/common/buttons';
 
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles.less';
-import { FilterSortOptions } from 'modules/types';
 import updateMultipleQueries from 'modules/routes/helpers/update-multiple-queries';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
@@ -46,7 +45,9 @@ const BaseInnerNavPure = ({
   const {
     filterSortOptions,
     mobileMenuState,
-    actions: { setMobileMenuState },
+    actions: {
+      setMobileMenuState,
+    },
   } = useAppStatusStore();
   const [originalSelectedCategories, setOriginalSelectedCategories] = useState(
     selectedCategories
@@ -131,7 +132,6 @@ const BaseInnerNavPure = ({
             break;
         }
       });
-
       updateLoginAccount(newSettings);
     }
 

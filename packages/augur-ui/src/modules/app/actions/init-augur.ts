@@ -29,7 +29,6 @@ import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { logout } from 'modules/auth/actions/logout';
 import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
@@ -122,8 +121,7 @@ export function connectAugur(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { modal } = AppStatus.get();
-    const { loginAccount } = getState();
+    const { modal, loginAccount } = AppStatus.get();
     const windowApp = windowRef as WindowApp;
     const loggedInUser = getLoggedInUserFromLocalStorage();
     const loggedInAccount = loggedInUser && loggedInUser.address || null;
@@ -147,7 +145,7 @@ export function connectAugur(
         },
       };
       AppStatus.actions.setRestoredAccount(true);
-      dispatch(updateLoginAccount(accountObject));
+      AppStatus.actions.updateLoginAccount(accountObject);
     };
 
     if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {

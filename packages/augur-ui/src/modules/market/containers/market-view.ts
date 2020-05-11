@@ -30,7 +30,7 @@ import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import { NewMarket } from 'modules/types';
 import deepClone from 'utils/deep-clone';
-import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
+import { addAlert } from 'modules/alerts/actions/alerts';
 import { hotloadMarket } from 'modules/markets/actions/load-markets';
 import {
   getMarketAgeInDays,
@@ -39,14 +39,13 @@ import {
 import { AppState } from 'appStore';
 import {
   loadMarketOrderBook,
-  clearOrderBook,
-} from 'modules/orders/actions/load-market-orderbook';
+} from 'modules/orders/helpers/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { loginAccount, orderBooks } = state;
   const {
+    loginAccount,
     universe,
     modal,
     zeroXStatus: zeroXstatus,
@@ -107,12 +106,14 @@ const mapStateToProps = (state: AppState, ownProps) => {
   }
 
   let orderBook: Getters.Markets.OutcomeOrderBook = null;
-  if (market && !tradingTutorial && !ownProps.preview) {
-    orderBook = (orderBooks[marketId] || {}).orderBook;
-  }
-
+ 
   if (market && (tradingTutorial || ownProps.preview)) {
     orderBook = market.orderBook;
+  }
+
+  if (market && !tradingTutorial && !ownProps.preview) {
+    const { orderBooks } = Markets.get();
+    orderBook = (orderBooks[marketId] || {}).orderBook;
   }
 
   const daysPassed =
@@ -149,12 +150,11 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { setModal } = AppStatus.actions;
+  const { setModal } = AppStatus.actions; 
   return {
     hotloadMarket: marketId => hotloadMarket(marketId),
-    loadMarketsInfo: marketId => dispatch(loadMarketsInfo([marketId])),
+    loadMarketsInfo: marketId => loadMarketsInfo([marketId]),
     loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
-    clearOrderBook: () => dispatch(clearOrderBook()),
     updateModal: modal => setModal(modal),
     loadMarketTradingHistory: marketId =>
       dispatch(loadMarketTradingHistory(marketId)),
@@ -170,7 +170,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     closeMarketLoadingModalOnly: (type: string) =>
       type === MODAL_MARKET_LOADING && dispatch(closeModal()),
     addAlert: alert => dispatch(addAlert(alert)),
-    removeAlert: (id: string, name: string) => dispatch(removeAlert(id, name)),
   };
 };
 const Market = withRouter(

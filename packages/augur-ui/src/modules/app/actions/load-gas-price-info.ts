@@ -21,7 +21,7 @@ export function loadGasPriceInfo(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    const { loginAccount } = getState();
+    const { loginAccount } = AppStatus.get();
     if (!loginAccount.address) return callback(null);
     const networkId = getNetworkId();
 

@@ -1,8 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Notifications from 'modules/account/components/notifications';
-import { selectNotifications } from 'modules/notifications/selectors/notification-state';
-import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { AppState } from 'appStore';
 import {
@@ -20,8 +18,8 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 // TODO create state Interface
 const mapStateToProps = (state: AppState) => {
-  const notifications = selectNotifications(state);
   const {
+    notifications,
     universe: { disputeWindow },
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
@@ -35,10 +33,11 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
-  const { setModal } = AppStatus.actions;
+  const { setModal, updateNotifications } = AppStatus.actions;
   return {
-    updateReadNotifications: (notifications: Notification[]) =>
-      dispatch(updateReadNotifications(notifications)),
+    updateReadNotifications: (notifications: Notification[]) => {
+      updateNotifications(notifications);
+    },
     claimMarketsProceeds: (marketIds: string[], cb: NodeStyleCallback) =>
       setModal({ type: MODAL_CLAIM_MARKETS_PROCEEDS, marketIds, cb }),
     claimReportingFees: (reportingFees: any, cb: NodeStyleCallback) =>

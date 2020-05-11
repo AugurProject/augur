@@ -1,8 +1,6 @@
-import { loadFavoritesMarkets } from 'modules/markets/actions/update-favorites';
 import { loadDrafts } from 'modules/create-market/actions/update-drafts';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { loadPendingLiquidityOrders } from 'modules/orders/actions/liquidity-management';
-import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { loadPendingOrdersTransactions } from 'modules/orders/actions/pending-orders-management';
 import { isNewFavoritesStyle } from 'modules/markets/helpers/favorites-processor';
 import { loadPendingQueue } from 'modules/pending-queue/actions/pending-queue-management';
@@ -14,16 +12,13 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import {
-  saveAffiliateAddress,
-  updateLoginAccount,
-} from 'modules/account/actions/login-account';
-import {
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
   MARKET_SHOW_INVALID,
 } from 'modules/app/store/constants';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
+import isAddress from 'modules/auth/helpers/is-address';
 
 export const loadAccountDataFromLocalStorage = (
   address: string
@@ -33,21 +28,28 @@ export const loadAccountDataFromLocalStorage = (
 ) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
   const { universe } = AppStatus.get();
-  
+
   if (localStorageRef && localStorageRef.getItem && address) {
     const storedAccountData = JSON.parse(localStorageRef.getItem(address));
     if (storedAccountData) {
+      const {
+        updateFilterSortOptions,
+        updateUniverse,
+        updateLoginAccount,
+        loadFavorites,
+        updateGasPriceInfo,
+        updateNotifications,
+      } = AppStatus.actions;
       const { selectedUniverse } = storedAccountData;
       const { favorites } = storedAccountData;
-      const { readNotifications } = storedAccountData;
+      const { notifiations } = storedAccountData;
       const { pendingQueue } = storedAccountData;
       const { affiliate } = storedAccountData;
       const { settings } = storedAccountData;
 
       if (settings) {
-        dispatch(updateLoginAccount({ settings }));
         const { maxFee, spread, showInvalid, templateFilter } = settings;
-        const { updateFilterSortOptions } = AppStatus.actions;
+        updateLoginAccount({ settings });
         if (maxFee) {
           updateFilterSortOptions({ [MARKET_MAX_FEES]: settings.maxFee });
         }
@@ -66,14 +68,17 @@ export const loadAccountDataFromLocalStorage = (
         }
       }
 
-      if (readNotifications) {
-        dispatch(updateReadNotifications(readNotifications));
+      if (!!affiliate && isAddress(affiliate))
+        updateLoginAccount({ affiliate });
+
+      if (notifiations) {
+        updateNotifications(notifiations);
       }
       const networkId = getNetworkId();
       const selectedUniverseId = selectedUniverse[networkId];
       if (selectedUniverseId) {
         if (universe.id !== selectedUniverseId) {
-          AppStatus.actions.updateUniverse({ id: selectedUniverseId });
+          updateUniverse({ id: selectedUniverseId });
         }
       } else {
         // we have a no selectedUniveres for this account, default to default universe for this network.
@@ -85,7 +90,7 @@ export const loadAccountDataFromLocalStorage = (
         favorites[networkId] &&
         favorites[networkId][universe.id]
       ) {
-        dispatch(loadFavoritesMarkets(favorites[networkId][universe.id]));
+        loadFavorites(favorites[networkId][universe.id]);
       }
       const {
         alerts,
@@ -117,7 +122,6 @@ export const loadAccountDataFromLocalStorage = (
           })
         );
       }
-      if (affiliate) dispatch(saveAffiliateAddress(affiliate));
       if (pendingLiquidityOrders) {
         dispatch(loadPendingLiquidityOrders(pendingLiquidityOrders));
       }
@@ -131,7 +135,7 @@ export const loadAccountDataFromLocalStorage = (
         dispatch(loadPendingQueue(pendingQueue));
       }
       if (gasPriceInfo && gasPriceInfo.userDefinedGasPrice) {
-        AppStatus.actions.updateGasPriceInfo({
+        updateGasPriceInfo({
           userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
         });
       }

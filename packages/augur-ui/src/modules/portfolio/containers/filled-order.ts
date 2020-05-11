@@ -11,14 +11,15 @@ import {
 import Row from 'modules/common/row';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { Markets } from 'modules/markets/store/markets';
 
-const mapStateToProps = (state: AppState) => ({
-  marketInfos: state.marketInfos
-});
+const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
+  const { marketInfos } = Markets.get();
+
   const filledOrder = oP.filledOrder;
   const orderQuantity = formatMarketShares(filledOrder.marketType, filledOrder.amount);
   let orderPrice = formatDai(filledOrder.price, { roundDown: true});
@@ -27,7 +28,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const originalQuantity = formatMarketShares(filledOrder.marketType, filledOrder.originalQuantity);
   const usePercent = filledOrder.outcome === INVALID_OUTCOME_NAME && filledOrder.marketType === SCALAR;
   if (usePercent) {
-    const market = sP.marketInfos[filledOrder.marketId];
+    const market = marketInfos[filledOrder.marketId];
     const orderPricePercent = calcPercentageFromPrice(
       String(orderPrice.value),
       market.minPrice,
