@@ -50,13 +50,13 @@ import { TutorialPopUp } from '../common/tutorial-pop-up';
 import { formatShares, formatDai } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { createBigNumber } from 'utils/create-big-number';
-import { TXEventName } from '@augurproject/sdk/src';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
-import { Getters } from '@augurproject/sdk';
+import { Getters, HotLoadMarketInfo, TXEventName } from '@augurproject/sdk';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { hotloadMarket } from 'modules/markets/actions/load-markets';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -112,6 +112,7 @@ interface MarketViewState {
   introShowing: boolean;
   tutorialError: string;
   hasShownScalarModal: boolean;
+  hotPromise: Promise<HotLoadMarketInfo>;
 }
 
 export default class MarketView extends Component<
@@ -158,6 +159,7 @@ export default class MarketView extends Component<
           : undefined,
       fixedPrecision: 4,
       tutorialError: '',
+      hotPromise: null,
       selectedOutcomeProperties: {
         1: {
           ...this.DEFAULT_ORDER_PROPERTIES,
@@ -206,7 +208,6 @@ export default class MarketView extends Component<
     const { isMarketLoading, showMarketLoadingModal, marketNotFound, showMarketNotFound, history } = this.props;
 
     if (marketNotFound) {
-      console.log('showMarketNotFound');
       showMarketNotFound(history);
     } else if (isMarketLoading) {
       showMarketLoadingModal();
@@ -475,6 +476,7 @@ export default class MarketView extends Component<
       canHotload,
       orderBook,
       zeroXstatus,
+      showMarketNotFound,
     } = this.props;
     const {
       selectedOutcomeId,
@@ -486,9 +488,15 @@ export default class MarketView extends Component<
       tutorialStep,
       tutorialError,
       pane,
+      hotPromise,
     } = this.state;
     if (isMarketLoading) {
-      if (canHotload && !tradingTutorial && marketId) hotloadMarket(marketId);
+      if (canHotload && !tradingTutorial && marketId && !hotPromise) {
+        const newHotPromise = hotloadMarket(marketId).then(market => {
+          if (!market) showMarketNotFound(history);
+        });
+        this.setState({ hotPromise: newHotPromise });
+      }
       return (
         <div
           ref={node => {
