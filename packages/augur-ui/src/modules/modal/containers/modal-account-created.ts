@@ -8,12 +8,14 @@ import { MODAL_AUGUR_USES_DAI } from 'modules/common/constants';
 import { updateModal } from '../actions/update-modal';
 import { OnboardingCheckIcon } from 'modules/common/icons';
 import { ACCOUNT_CREATED, track } from 'services/analytics/helpers';
+import { getOnboardingStep } from './modal-p2p-trading';
 
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   augurUsesDaiModal: () => dispatch(updateModal({ type: MODAL_AUGUR_USES_DAI })),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
+  gotoOnboardingStep: (step) => dispatch(updateModal({ type: getOnboardingStep(step) })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -22,6 +24,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   largeHeader: 'Account created ',
   smallHeader: 'You’re almost ready to start betting!',
   currentStep: 1,
+  changeCurrentStep: (step) => {
+    dP.gotoOnboardingStep(step);
+  },
   buttons: [
     {
       text: 'Continue',

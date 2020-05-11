@@ -24,7 +24,7 @@ import { LogReplayerV1 } from './replay-logs-v1';
 import { MemDown } from 'memdown';
 import { sleep } from './util';
 
-export const defaultSeedPath = '/tmp/seed.json';
+export const defaultSeedPath = '/tmp/augur/seed.json';
 
 export function addGanacheScripts(flash: FlashSession) {
   flash.addScript({

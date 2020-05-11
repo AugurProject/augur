@@ -11,9 +11,6 @@
   ],
   "references": [
     {
-      "path": "../blockstream-adapters"
-    },
-    {
       "path": "../augur-utils"
     },
     {
@@ -26,6 +23,9 @@
       "path": "../augur-types"
     },
     {
-      "path": "../contract-dependencies-gsn"
+      "path": "../augur-contract-dependencies-ethers"
+    },
+    {
+      "path": "../ethersjs-provider"
     }]
 }

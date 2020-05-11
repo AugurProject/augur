@@ -8,7 +8,7 @@ import {
   createClient,
   NULL_ADDRESS
 } from '@augurproject/sdk';
-import { EthersSigner } from 'contract-dependencies-ethers';
+import { EthersSigner } from '@augurproject/contract-dependencies-ethers';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { JsonRpcProvider } from 'ethers/providers';
 import {

@@ -5,24 +5,30 @@ import {
   BrowserMesh,
   Connectors,
   MarketReportingState,
+  ZeroX,
 } from '@augurproject/sdk';
 import {
   GetMarketsSortBy,
   MarketList,
 } from '@augurproject/sdk/build/state/getter/Markets';
-import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
-import { TestContractAPI } from '@augurproject/tools';
+import {
+  ACCOUNTS,
+  defaultSeedPath,
+  loadSeed,
+  TestContractAPI,
+} from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import {
   NULL_ADDRESS,
   stringTo32ByteHex,
 } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
+import { SupportedProvider } from 'ethereum-types';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
 import { makeProvider } from '../../../../libs';
 import { MockBrowserMesh } from '../../../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../../../libs/MockMeshServer';
-import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 
 describe('State API :: General', () => {
   let john: TestContractAPI;
@@ -57,9 +63,7 @@ describe('State API :: General', () => {
         ACCOUNTS[0],
         provider,
         config,
-        johnConnector,
-        meshClient,
-        johnBrowserMesh
+        johnConnector
       );
       expect(john).toBeDefined();
 
@@ -72,9 +76,7 @@ describe('State API :: General', () => {
         ACCOUNTS[1],
         provider,
         config,
-        maryConnector,
-        meshClient,
-        maryBrowserMesh
+        maryConnector
       );
       maryConnector.initialize(mary.augur, mary.db);
       await mary.approve();
@@ -328,7 +330,11 @@ describe('State API :: General', () => {
       await sleep(300);
 
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([yesNoMarket1.address, yesNoMarket2.address, yesNoMarket3.address]);
+      await john.db.marketDatabase.syncOrderBooks([
+        yesNoMarket1.address,
+        yesNoMarket2.address,
+        yesNoMarket3.address,
+      ]);
 
       marketList = await john.api.route('getMarkets', {
         universe: config.addresses.Universe,

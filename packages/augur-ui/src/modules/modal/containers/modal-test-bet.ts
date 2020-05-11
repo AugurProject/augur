@@ -15,6 +15,8 @@ import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { TestBet } from 'modules/modal/common';
 import { track, START_TEST_TRADE, DO_A_TEST_BET, SKIPPED_TEST_TRADE } from 'services/analytics/helpers';
+import { updateModal } from '../actions/update-modal';
+import { getOnboardingStep } from './modal-p2p-trading';
 
 const mapStateToProps = (state: AppState) => ({
   isTablet: window.innerWidth <= 1280
@@ -23,6 +25,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
+  gotoOnboardingStep: (step) => dispatch(updateModal({ type: getOnboardingStep(step) })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -30,6 +33,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   analyticsEvent: () => dP.track(DO_A_TEST_BET, {}),
   largeHeader: sP.isTablet ? 'Learn how to bet on Augur' : 'Lastly, run a test bet!',
   currentStep: 5,
+  changeCurrentStep: (step) => {
+    dP.gotoOnboardingStep(step);
+  },
   linkContent: [
     {
       content:

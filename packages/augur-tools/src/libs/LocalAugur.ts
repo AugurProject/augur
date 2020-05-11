@@ -1,9 +1,9 @@
-import { Augur, EmptyConnector } from '@augurproject/sdk';
-import { makeGSNDependencies, makeSigner } from './blockchain';
+import { buildConfig } from '@augurproject/artifacts';
+import { Augur, createClient, EmptyConnector } from '@augurproject/sdk';
+import { Account } from '../constants';
+import { makeSigner } from './blockchain';
 import { createDbFromSeed, makeGanacheProvider, Seed } from './ganache';
 import { TestEthersProvider } from './TestEthersProvider';
-import { Account } from '../constants';
-import { buildConfig } from '@augurproject/artifacts';
 
 export async function makeProviderWithDB(
   seed: Seed,
@@ -40,19 +40,8 @@ export async function makeTestAugur(
 ): Promise<Augur> {
   const provider = await makeProvider(seed, accounts);
   const signer = await makeSigner(accounts[0], provider);
+
   const config = buildConfig('local', { addresses: seed.addresses });
-  const dependencies = await makeGSNDependencies(
-    provider,
-    signer,
-    config,
-    accounts[0].address
-  );
-  return Augur.create(
-    provider,
-    dependencies,
-    config,
-    new EmptyConnector(),
-    null,
-    true
-  );
+
+  return createClient(config, new EmptyConnector(), signer, provider, true);
 }

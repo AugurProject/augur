@@ -22,7 +22,7 @@ import { AppState } from 'appStore';
 // MetaMask, dapper, Mobile wallets
 export const loginWithInjectedWeb3 = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState,
+  getState: () => AppState
 ) => {
   const failure = error => {
     dispatch(closeModal());
@@ -35,10 +35,8 @@ export const loginWithInjectedWeb3 = () => async (
     dispatch(login(account));
 
     const web3 = windowRef.web3;
-    if (
-      web3.currentProvider.publicConfigStore &&
-      web3.currentProvider.publicConfigStore.on
-    ) {
+
+    if (web3.currentProvider?.publicConfigStore?.on) {
       web3.currentProvider.publicConfigStore.on('update', config => {
         if (augurSdk.networkId !== config.networkVersion) {
           console.log(
@@ -56,7 +54,7 @@ export const loginWithInjectedWeb3 = () => async (
     }
 
     // Listen for MetaMask account switch
-    if (windowRef.ethereum && windowRef.ethereum.on) {
+    if (windowRef.ethereum?.on) {
       windowRef.ethereum.on('accountsChanged', async accounts => {
         const loginAccount = getState().loginAccount;
         if (loginAccount.address) {
@@ -90,20 +88,19 @@ export const loginWithInjectedWeb3 = () => async (
     const request = await windowRef.ethereum.send('eth_requestAccounts');
     const address = request.result[0];
     success(address, false);
-  }
-  catch (err) {
+  } catch (err) {
     return windowRef.ethereum
-    .enable()
-    .then((resolve: string[]) => success(resolve[0], false), failure);
+      .enable()
+      .then((resolve: string[]) => success(resolve[0], false), failure);
   }
 };
 
 const login = (account: string) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState,
+  getState: () => AppState
 ) => {
   const useGSN = getState().env['gsn']?.enabled;
-  const provider = new Web3Provider(windowRef.web3.currentProvider);
+  const provider = getWeb3Provider(windowRef);
   const networkId = windowRef.web3.currentProvider.networkVersion;
   const address = toChecksumAddress(account);
   const accountObject = {
@@ -121,3 +118,8 @@ const login = (account: string) => (
   };
   dispatch(updateSdk(accountObject, networkId, useGSN));
 };
+
+
+export const getWeb3Provider = (windowRef) => {
+  return new Web3Provider('ethereum' in window ? windowRef.ethereum : windowRef.web3.currentProvider);
+}

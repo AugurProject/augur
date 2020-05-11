@@ -1,10 +1,14 @@
-import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
-import { TestContractAPI } from '@augurproject/tools';
-import { BigNumber } from 'bignumber.js';
 import {
   TransactionMetadata,
   TransactionStatus,
-} from 'contract-dependencies-ethers';
+} from '@augurproject/contract-dependencies-ethers';
+import {
+  ACCOUNTS,
+  defaultSeedPath,
+  loadSeed,
+  TestContractAPI,
+} from '@augurproject/tools';
+import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../libs';
 
 let john: TestContractAPI;
