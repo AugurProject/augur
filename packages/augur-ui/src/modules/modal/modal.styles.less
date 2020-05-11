@@ -273,6 +273,7 @@ div.Onboarding {
   > span {
     background: var(--color-inactive-text);
     border-radius: 50%;
+    cursor: pointer;
     height: @size-8;
     margin-right: @size-10;
     width: @size-8;
@@ -857,7 +858,7 @@ div.ButtonsRow:last-of-type {
         position: static;
         border: 0;
         width: 100%;
-  
+
         > span:first-of-type {
           display: none;
         }
@@ -3320,7 +3321,91 @@ div.ButtonsRow:last-of-type {
   }
 }
 
-.ModalGlobalChat {
+.ModalOrbitChat {
+  background: var(--color-dark-grey);
+  bottom: @size-4;
+  position: fixed;
+  right: @size-22;
+  z-index: @mask-modal;
+
+  // Closed global chat window
+  > button {
+    .mono-9-bold;
+
+    align-items: center;
+    background: var(--color-module-background);
+    color: var(--color-primary-text);
+    display: flex;
+    flex-direction: row-reverse;
+    text-transform: uppercase;
+
+    > svg {
+      fill: var(--color-primary-text);
+      height: @size-12;
+      margin-left: @size-8;
+      transform: rotate(180deg);
+      width: @size-12;
+    }
+  }
+
+  // Open global chat window
+  > div {
+    background-color: var(--color-module-background);
+    border: 1px solid var(--color-dark-grey);
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100vw;
+
+    // Header section
+    > div:first-of-type {
+      align-items: center;
+      background-color: var(--color-dark-grey);
+      border-bottom: 1px solid var(--color-dark-grey);
+      display: flex;
+      flex-direction: row;
+      padding: @size-14 @size-16;
+
+      > span {
+        color: var(--color-primary-text);
+        text-transform: uppercase;
+      }
+
+      > span:first-of-type {
+        .mono-12-bold;
+      }
+
+      > span:nth-of-type(2) {
+        .mono-9;
+
+        background: var(--color-open-15);
+        border-radius: 0.1875rem;
+        color: var(--color-open);
+        padding: 0 1px;
+      }
+
+      > button {
+        margin: 2px 2px 0 auto;
+
+        > svg {
+          height: @size-12;
+          fill: var(--color-primary-text);
+          margin: 0;
+          width: @size-12;
+        }
+      }
+    }
+
+    iframe {
+      border: 0;
+      height: calc(100% - 48px);
+      width: 100%;
+    }
+  }
+}
+
+.ModalThreeBoxChat {
   background: var(--color-dark-grey);
   position: fixed;
   bottom: 0;
@@ -3358,7 +3443,6 @@ div.ButtonsRow:last-of-type {
     height: 100%;
     width: 100%;
 
-    // Header section
     > div:first-of-type {
       align-items: center;
       background-color: var(--color-dark-grey);

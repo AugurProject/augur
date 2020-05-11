@@ -2,7 +2,6 @@ import {
   handleMarketMigratedLog,
   handleMarketsUpdatedLog,
   handleNewBlockLog,
-  handleOrderLog,
   handleTradingProceedsClaimedLog,
   handleTxAwaitingSigning,
   handleTxFailure,
@@ -15,6 +14,7 @@ import {
   handleReportingStateChanged,
   handleWarpSyncHashUpdatedLog,
   handleZeroStatusUpdated,
+  handleBulkOrdersLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
@@ -41,7 +41,8 @@ const StartUpEvents = {
   ),
   [SubscriptionEventName.ZeroXStatusSynced]: wrapLogHandler(
     () => handleZeroStatusUpdated(ZEROX_STATUSES.SYNCED)
-  )
+  ),
+  [SubscriptionEventName.BulkOrderEvent]: wrapLogHandler(handleBulkOrdersLog),
 };
 
 const EVENTS = {
@@ -49,7 +50,6 @@ const EVENTS = {
   [SubscriptionEventName.MarketMigrated]: wrapLogHandler(
     handleMarketMigratedLog
   ),
-  [SubscriptionEventName.OrderEvent]: wrapLogHandler(handleOrderLog),
   [SubscriptionEventName.TradingProceedsClaimed]: wrapLogHandler(
     handleTradingProceedsClaimedLog
   ),

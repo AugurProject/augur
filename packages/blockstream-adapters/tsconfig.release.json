@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "exclude": [
-    "src/**/*.test.ts"
-  ],
-  "references": [{
-    "path": "../augur-types/tsconfig.release.json"
-  }]
-}

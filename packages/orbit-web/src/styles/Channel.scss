@@ -1,0 +1,336 @@
+@import 'Animations';
+@import 'Colors';
+@import 'AugurColors';
+
+$controls-height-desktop: 2.8rem;
+$controls-height-mobile: 5rem;
+// Breakpoints should use height instead of width because it's based on the iframe's window instead of browser's window
+$breakpoint-mobile: "all and (min-height: 16.01rem)";
+
+.ChannelView {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  color: #fff;
+  overflow: hidden;
+}
+
+.Channel {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: $orbit-page-background;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
+
+  .center {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .active {
+    background-color: $main-color;
+    &:hover {
+      background-color: $main-color-highligth;
+    }
+  }
+}
+
+.newMessagesBar {
+  position: absolute;
+  bottom: 2.75em;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0.2em;
+
+  font-weight: bold;
+  background-color: rgba(32, 32, 32, 0.8);
+  cursor: s-resize;
+
+  .newMessagesNumber {
+    color: $second-color;
+    padding: 0em 0.5em;
+  }
+}
+
+.ChannelOptions {
+  position: absolute;
+  bottom: 2.75em;
+  right: 0;
+  padding: 1.2em 1.2em;
+  margin: 0.5em 0.5em;
+  margin-right: 1em;
+  max-width: 30em;
+  color: $main-text-color;
+  background-color: rgb(26, 26, 26);
+  display: flex;
+  flex-direction: row;
+
+  .row {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 55%;
+    max-width: 55%;
+    margin-right: 1em;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex: 1;
+    margin-left: 1vw;
+  }
+
+  input[type='text'] {
+    font-size: 0.8em;
+    width: 100%;
+  }
+
+  input[type='submit'] {
+    margin-top: 0.2em;
+    font-size: 0.8em;
+    align-self: flex-end;
+  }
+
+  .headerText {
+    font-size: 0.8em;
+    margin-bottom: 0.5em;
+    color: $main-text-color;
+  }
+
+  .instructionText {
+    font-size: 0.8em;
+    display: flex;
+    color: $placeholder-color;
+    font-style: italic;
+  }
+}
+
+input[type='button'],
+.channelOptionsButton {
+  border-top: 1px solid $bar-border-color;
+  border-bottom: 1px solid $bar-border-color;
+  min-width: 2em;
+  margin-left: 0em;
+  margin-right: 0em;
+  height: 100%;
+  margin-top: 0em;
+  margin-bottom: 0.5em;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+  font-size: 1em;
+}
+
+input[type='button'],
+.addFilesButton {
+  display: block;
+  border-top: 1px solid $bar-border-color;
+  border-bottom: 1px solid $bar-border-color;
+  min-width: 2em;
+  height: 100%;
+  margin-left: 0em;
+  margin-right: 0em;
+  margin-top: 0em;
+  margin-bottom: 0em;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.Controls {
+  background-color: $bar-background-color;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+  max-height: $controls-height-desktop;
+  min-height: $controls-height-desktop;
+  padding: 0.1875rem; // 3px
+  color: rgb(128, 128, 128);
+
+  @media #{$breakpoint-mobile} {
+    max-height: $controls-height-mobile;
+    min-height: $controls-height-mobile;
+  }
+
+  .replyto {
+    min-width: 5vw;
+    max-width: 30vw;
+    justify-content: flex-start;
+    overflow: hidden;
+    white-space: pre;
+    font-size: 0.8em;
+    font-style: italic;
+    margin-right: 0.2em;
+  }
+}
+
+.ChannelStatus {
+  margin-left: 0.5em;
+
+  color: $orbit-color-secondary-text;
+  font-family: 'Roboto Mono', sans-serif;
+  font-size: 0.5625rem; // 9px
+  font-weight: normal;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+
+  padding: 0.5em 1em;
+  border-radius: 16px;
+  letter-spacing: 1px;
+
+  > div:first-of-type {
+    margin-bottom: 4px;
+  }
+}
+
+.Messages {
+  position: relative;
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+  background-color: $orbit-page-background;
+
+  flex: 1 1 auto;
+
+  .dateSeparator {
+    display: flex;
+    justify-content: flex-start;
+    margin: 10px 0 10px 0;
+    font-size: 0.5625rem; // 9px
+    color: $orbit-color-secondary-text;
+    cursor: default;
+    text-transform: uppercase;
+  }
+
+  .firstMessage {
+    display: flex;
+    justify-content: center;
+    color: $orbit-color-secondary-text;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 0.7em;
+    padding: 0.8em;
+    user-select: none;
+    cursor: default;
+
+    &.loadMore {
+      cursor: pointer;
+    }
+  }
+
+  &.size-normal {
+    .dateSeparator {
+      font-size: 0.7em;
+      margin-left: 0.3em;
+    }
+  }
+
+  &.size-large {
+    .dateSeparator {
+      font-size: 0.8em;
+      margin-left: 0.8em;
+    }
+  }
+
+  &.font-normal {
+    .dateSeparator {
+      font-weight: bold;
+      padding-bottom: 0.2em;
+    }
+  }
+
+  &.font-monospace {
+    .dateSeparator {
+      font-family: 'Roboto Mono';
+      font-weight: normal;
+      padding-bottom: 0.4em;
+    }
+  }
+
+  &:focus,
+  :focus {
+    outline: none;
+  }
+
+  .unreadIndicator {
+    position: absolute;
+    bottom: 0;
+    height: 1px;
+    width: 100%;
+    background: $second-color;
+    opacity: 0.5;
+  }
+
+  .progressBar {
+    position: absolute;
+    top: 0;
+    height: 1px;
+    width: 100%;
+    background: $main-color;
+    opacity: 0.5;
+
+    &:before {
+      content: '';
+      position: absolute;
+      background-color: $main-color-highligth;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      will-change: left, right;
+      animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+    }
+    &:after {
+      content: '';
+      position: absolute;
+      background-color: $main-color-highligth;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      will-change: left, right;
+      animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+      animation-delay: 1.15s;
+    }
+  }
+
+  .MessageList {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+
+    max-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.controlsAnimation-appear {
+  animation: fadeInUp;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}
+
+.messagesAnimation-enter {
+  animation-name: fadeIn;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-in;
+}

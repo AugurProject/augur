@@ -9,7 +9,6 @@ export const LandingHero = () => {
   const { actions: { setModal }} = useAppStatusStore();
   return (
     <section className={Styles.LandingHero}>
-      <img src="images/BGImages.png" />
       <div>
         <h1>The world’s most accessible, no-limit betting platform</h1>
         <span>
@@ -29,7 +28,9 @@ export const LandingHero = () => {
         </div>
       </div>
       <div>
-        <img src="images/Hero_cards.png" />
+        <img src="images/hero-primary.png" />
+        <img src="images/hero-secondary.png" />
+        <img src="images/hero-bitcoin.png" />
       </div>
     </section>
   );

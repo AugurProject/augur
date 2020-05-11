@@ -38,10 +38,8 @@
   "dependencies": {
     "@augurproject/artifacts": "2.0.0-alpha.2",
     "@augurproject/core": "2.0.0-alpha.2",
-    "@augurproject/ethersjs-provider": "2.0.0-alpha.2",
     "@augurproject/sdk": "2.0.0-alpha.2",
     "@openzeppelin/gsn-helpers": "0.2.3",
-    "blockstream-adapters": "2.0.0-alpha.2",
     "commander": "4.1.0",
     "deepmerge": "4.2.2",
     "ethereumjs-blockstream": "7.0.0",
@@ -51,6 +49,7 @@
     "ethjs-provider-http": "0.1.6",
     "ethjs-query": "0.3.8",
     "ethjs-signer": "0.1.1",
+    "ganache-core": "2.9.1",
     "lodash": "4.17.15",
     "options-parser": "0.4.0",
     "tsyringe": "3.2.0"

@@ -1,0 +1,12 @@
+{
+  "themeName": "default",
+  "language": "en",
+  "sidePanelPosition": "left",
+  "colorifyUsernames": true,
+  "useEmojis": true,
+  "emojiSet": "emojione",
+  "useMonospaceFont": false,
+  "useLargeMessage": false,
+  "messageNotifications": "mentions",
+  "appVersion": ""
+}

@@ -15,10 +15,7 @@
       "path": "../augur-artifacts"
     },
     {
-      "path": "../contract-dependencies"
-    },
-    {
-      "path": "../contract-dependencies-ethers"
+      "path": "../augur-contract-dependencies-ethers"
     }
   ]
 }

@@ -7901,8 +7901,8 @@ export const TEMPLATES = {
     templates: [
       {
         marketType: YES_NO,
-        question: `Will there be [0] or more total confirmed [1] Coronavirus (Covid-19) in [2] by [3] according to https://www.worldometers.info/coronavirus/country?`,
-        example: `Will there be 3000000 or more total confirmed cases of Coronavirus (Covid-19) in the world by July 15, 2020 according to https://www.worldometers.info/coronavirus/country?`,
+        question: `Will there be [0] or more total confirmed [1] Coronavirus (Covid-19) in [2] by [3] according to https://www.worldometers.info/coronavirus/?`,
+        example: `Will there be 3000000 or more total confirmed cases of Coronavirus (Covid-19) in the world by July 15, 2020 according to https://www.worldometers.info/coronavirus/?`,
         inputs: [
           {
             id: 0,

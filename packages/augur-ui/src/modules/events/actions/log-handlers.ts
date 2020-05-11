@@ -37,6 +37,7 @@ import {
   DISAVOWCROWDSOURCERS,
   MARKETMIGRATED,
   DOINITIALREPORTWARPSYNC,
+  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -74,6 +75,7 @@ import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
+import { logger } from '@augurproject/utils';
 
 const handleAlert = (
   log: any,
@@ -183,9 +185,15 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  if (log && log.error && log.error.message.includes('too many blocks'))
+  if (log && log.error && log.error.message.includes('too many blocks')) {
+    console.error('too many blocks behind, reloading UI');
     location.reload();
+  }
+  const { isLogged } = AppStatus.get();
   AppStatus.actions.setOxStatus(status);
+  if (status === ZEROX_STATUSES.SYNCED && isLogged) {
+    dispatch(throttleLoadUserOpenOrders());
+  }
 };
 
 export const handleSDKReadyEvent = () => (
@@ -379,9 +387,32 @@ export const handleTokenBalanceChangedLog = (
     });
 };
 
-export const handleOrderLog = (log: any) => (
-  dispatch: ThunkDispatch<void, any, Action>
+export const handleBulkOrdersLog = (data: {
+  logs: Logs.ParsedOrderEventLog[];
+}) => (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
 ) => {
+  logger.info('Bulk Order Events', data?.logs?.length);
+  const { zeroXStatus } = AppStatus.get();
+  const marketIds = [];
+  if (zeroXStatus === ZEROX_STATUSES.SYNCED && data?.logs?.length > 0) {
+    data.logs.map(log => {
+      dispatch(handleOrderLog(log));
+      marketIds.push(log.market);
+    });
+    Array.from(new Set([...marketIds])).map(marketId => {
+      if (isCurrentMarket(marketId)) {
+        dispatch(updateMarketOrderBook(marketId));
+        dispatch(loadMarketTradingHistory(marketId));
+        dispatch(checkUpdateUserPositions([marketId]));
+      }
+    });
+  }
+};
+
+export const handleOrderLog = (log: any) =>
+(dispatch: ThunkDispatch<void, any, Action>) => {
   const type = log.eventType;
   switch (type) {
     case OrderEventType.Create:
@@ -394,6 +425,7 @@ export const handleOrderLog = (log: any) => (
     default:
       console.log(`Unknown order event type "${log.eventType}" for log`, log);
   }
+
   return null;
 };
 
@@ -416,8 +448,6 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     );
     dispatch(removePendingOrder(pendingOrderId, log.market));
   }
-  dispatch(updateMarketOrderBook(log.market));
-  if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
 };
 
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -448,7 +478,21 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
       dispatch(throttleLoadUserOpenOrders());
     }
   }
-  if (isCurrentMarket(log.market)) dispatch(updateMarketOrderBook(log.market));
+};
+
+const handleNewBlockFilledOrdersLog = logs => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
+  logs
+    .filter(l => l.eventType === OrderEventType.Fill)
+    .map(l => dispatch(handleOrderFilledLog(l)));
+  Array.from(new Set(logs.map(l => l.market))).map((marketId: string) => {
+    if (isCurrentMarket(marketId)) {
+      dispatch(updateMarketOrderBook(marketId));
+      dispatch(loadMarketTradingHistory(marketId));
+      dispatch(checkUpdateUserPositions([marketId]));
+    }
+  });
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -472,11 +516,6 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
       handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
     dispatch(removePendingOrder(log.tradeGroupId, marketId));
   }
-  if (isCurrentMarket(marketId)) {
-    dispatch(loadMarketTradingHistory(marketId));
-    dispatch(updateMarketOrderBook(marketId));
-  }
-  dispatch(checkUpdateUserPositions([marketId]));
 };
 
 export const handleTradingProceedsClaimedLog = (
@@ -510,16 +549,8 @@ export const handleInitialReportSubmittedLog = (
   const userLogs = logs.filter(log => isSameAddress(log.reporter, address));
   if (userLogs.length > 0) {
     userLogs.map(log => {
-      handleAlert(log, DOINITIALREPORT, false, dispatch, getState);
-      dispatch(
-        addPendingData(
-          log.market,
-          SUBMIT_REPORT,
-          TXEventName.Success,
-          '0',
-          undefined
-        )
-      );
+      handleAlert(log, DOINITIALREPORT, false, dispatch, getState)
+      dispatch(removePendingData(log.market, SUBMIT_REPORT));
     });
     dispatch(loadAccountReportingHistory());
   }
@@ -657,7 +688,7 @@ export const handleDisputeCrowdsourcerCreatedLog = (
 
 export const handleDisputeCrowdsourcerCompletedLog = (
   logs: Logs.DisputeCrowdsourcerCompletedLog[]
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => (dispatch: ThunkDispatch<void, any, Action>) => {
   if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
 };
 
@@ -752,12 +783,9 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
 };
 
 const EventHandlers = {
-  [SubscriptionEventName.TokensTransferred]: wrapLogHandler(
-    handleTokensTransferredLog
-  ),
-  [SubscriptionEventName.TokenBalanceChanged]: wrapLogHandler(
-    handleTokenBalanceChangedLog
-  ),
+  [SubscriptionEventName.OrderEvent]: wrapLogHandler(handleNewBlockFilledOrdersLog),
+  [SubscriptionEventName.TokensTransferred]: wrapLogHandler(handleTokensTransferredLog),
+  [SubscriptionEventName.TokenBalanceChanged]: wrapLogHandler(handleTokenBalanceChangedLog),
   [SubscriptionEventName.TokensMinted]: wrapLogHandler(handleTokensMintedLog),
   [SubscriptionEventName.ProfitLossChanged]: wrapLogHandler(
     handleProfitLossChangedLog

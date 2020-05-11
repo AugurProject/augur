@@ -1,16 +1,20 @@
 import { WSClient } from '@0x/mesh-rpc-client';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { BrowserMesh, Connectors } from '@augurproject/sdk';
-import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
-import { TestContractAPI } from '@augurproject/tools';
+import {
+  ACCOUNTS,
+  defaultSeedPath,
+  loadSeed,
+  TestContractAPI,
+} from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { makeProvider } from '../../../libs';
 import { MockBrowserMesh } from '../../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../../libs/MockMeshServer';
-import { SDKConfiguration } from '@augurproject/artifacts';
-import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 
 describe('State API :: Market Sorts', () => {
   let john: TestContractAPI;
@@ -42,10 +46,11 @@ describe('State API :: Market Sorts', () => {
         ACCOUNTS[0],
         provider,
         config,
-        johnConnector,
-        meshClient,
-        meshBrowser
+        johnConnector
       );
+      john.augur.zeroX.mesh = meshBrowser;
+      john.augur.zeroX.rpc = meshClient;
+
       expect(john).toBeDefined();
 
       johnConnector.initialize(john.augur, john.db);
@@ -121,7 +126,7 @@ describe('State API :: Market Sorts', () => {
         expirationTime: expirationTimeInSeconds,
       });
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market.address])
+      await john.db.marketDatabase.syncOrderBooks([market.address]);
       marketData = await john.db.Markets.get(market.address);
 
       await expect(marketData.liquidity[10]).toEqual(
@@ -159,7 +164,7 @@ describe('State API :: Market Sorts', () => {
 
       // await john.simplePlaceOrder(market.address, ask, numShares, askPrice, outcomeA);
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market2.address])
+      await john.db.marketDatabase.syncOrderBooks([market2.address]);
       marketData = await john.db.Markets.get(market2.address);
       await expect(marketData.liquidity[10]).toEqual(
         '000000000000000000000000000000'
@@ -203,7 +208,7 @@ describe('State API :: Market Sorts', () => {
       await sleep(300);
 
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market2.address])
+      await john.db.marketDatabase.syncOrderBooks([market2.address]);
       marketData = await john.db.Markets.get(market2.address);
       await expect(marketData.liquidity[10]).toEqual(
         '000000000735000000000000000000'
@@ -231,7 +236,7 @@ describe('State API :: Market Sorts', () => {
 
       // The Invalid filter is still not hit because the bid would be unprofitable to take if the market were valid, so no one would take it even if the market was Valid
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market3.address])
+      await john.db.marketDatabase.syncOrderBooks([market3.address]);
       marketData = await john.db.Markets.get(market3.address);
       await expect(marketData.invalidFilter).toEqual(0);
 
@@ -248,7 +253,7 @@ describe('State API :: Market Sorts', () => {
 
       // The Invalid filter is now hit because this Bid would be profitable for a filler assuming the market were actually Valid
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market3.address])
+      await john.db.marketDatabase.syncOrderBooks([market3.address]);
       marketData = await john.db.Markets.get(market3.address);
       await expect(marketData.invalidFilter).toEqual(1);
 
@@ -282,7 +287,7 @@ describe('State API :: Market Sorts', () => {
 
       // Should ignore above bid and calculate zero liquidity
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market4.address])
+      await john.db.marketDatabase.syncOrderBooks([market4.address]);
       marketData = await john.db.Markets.get(market4.address);
       await expect(marketData.liquidity).toEqual({
         '10': '000000000000000000000000000000',
@@ -314,7 +319,7 @@ describe('State API :: Market Sorts', () => {
 
       // Should pass spread check and not be invalid
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market4.address])
+      await john.db.marketDatabase.syncOrderBooks([market4.address]);
       marketData = await john.db.Markets.get(market4.address);
       await expect(marketData.liquidity).toEqual({
         '10': '000000000580000000000000000000',
@@ -337,7 +342,7 @@ describe('State API :: Market Sorts', () => {
 
       // Invalid that had spread should be set as hasRecentlyDepletedLiquidity
       await john.sync();
-      await john.db.marketDatabase.syncOrderBooks([market4.address])
+      await john.db.marketDatabase.syncOrderBooks([market4.address]);
       marketData = await john.db.Markets.get(market4.address);
       await expect(marketData.invalidFilter).toEqual(1);
       await expect(marketData.hasRecentlyDepletedLiquidity).toEqual(true);

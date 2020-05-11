@@ -554,6 +554,8 @@ export const VALIDATION_ATTRIBUTES = {
     readableName: 'Affiliate fee',
     checkBetween: true,
     checkFilledNumber: true,
+    checkPositive: true,
+    checkWholeNumber: true,
     min: 0,
     max: 100,
   },

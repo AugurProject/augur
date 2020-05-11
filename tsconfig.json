@@ -3,12 +3,6 @@
   "include": [],
   "references": [
     {
-      "path": "./packages/augur-logger"
-    },
-    {
-      "path": "./packages/ethersjs-provider"
-    },
-    {
       "path": "./packages/augur-core"
     },
     {
@@ -18,19 +12,13 @@
       "path": "./packages/augur-sdk"
     },
     {
+      "path": "./packages/ethersjs-provider"
+    },
+    {
       "path": "./packages/augur-artifacts"
     },
     {
-      "path": "./packages/contract-dependencies"
-    },
-    {
-      "path": "./packages/contract-dependencies-ethers"
-    },
-    {
-      "path": "./packages/contract-dependencies-gsn"
-    },
-    {
-      "path": "./packages/blockstream-adapters"
+      "path": "./packages/augur-contract-dependencies-ethers"
     },
     {
       "path": "./packages/augur-test"

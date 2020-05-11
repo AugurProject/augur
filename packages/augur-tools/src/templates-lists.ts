@@ -3747,11 +3747,11 @@ export const USA_HOLIDAYS = {
     },
     {
       holiday: HOLIDAYS.INDEPENDENCE_DAY,
-      date: 'Jul 5',
+      date: 'Jul 05',
     },
     {
       holiday: HOLIDAYS.LABOR_DAY,
-      date: 'Sept 6',
+      date: 'Sept 06',
     },
     {
       holiday: HOLIDAYS.THANKSGIVING,
@@ -4088,7 +4088,7 @@ const HONG_KONG_HOLIDAYS = {
     },
     {
       holiday: HOLIDAYS.NATIONAL_DAY,
-      date: 'Oct 1',
+      date: 'Oct 01',
     },
     {
       holiday: HOLIDAYS.MID_AUTUMN_FESTIVAL,

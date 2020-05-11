@@ -6,8 +6,8 @@ import classNames from 'classnames';
 import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
-import { LogoutIcon } from 'modules/common/icons';
-import { NavMenuItem, AccountBalances, CoreStats } from 'modules/types';
+import { Dot, helpIcon } from 'modules/common/icons';
+import { AccountBalances, CoreStats, NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
@@ -15,7 +15,6 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { helpIcon, Chevron, Dot } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import {
-  MODAL_ADD_FUNDS,
   MIGRATE_FROM_LEG_REP_TOKEN,
   TRANSACTIONS,
 } from 'modules/common/constants';

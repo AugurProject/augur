@@ -8,15 +8,10 @@ import Dexie from 'dexie';
 export interface MarketFields {
   market: string;
   universe: string;
-  marketCreator: string;
   category1: string;
   category2: string;
   category3: string;
-  description: string;
-  longDescription: string;
-  _scalarDenomination: string;
-  start: Date;
-  end: Date;
+  content: string;
 }
 export class SyncableFlexSearch {
   private flexSearchIndex: Index<MarketFields>;
@@ -30,24 +25,35 @@ export class SyncableFlexSearch {
         doc:
         {
           id: "market",
-          field: [
-            "market",
-            "universe",
-            "marketCreator",
-            "category1",
-            "category2",
-            "category3",
-            "description",
-            "longDescription",
-            "_scalarDenomination",
-          ],
+          field: {
+            market: {
+              encode: "fast",
+            },
+            universe: {
+              encode: "fast",
+            },
+            category1: {
+              encode: "fast",
+            },
+            category2: {
+              encode: "fast",
+            },
+            category3: {
+              encode: "fast",
+            },
+            content: {
+              encode: "extra",
+              tokenize: "reverse",
+              threshold: 7,
+            },
+          },
         },
       }
     );
   }
 
   async search(query: string, options?: SearchOptions): Promise<Array<SearchResults<MarketFields>>> {
-    return this.flexSearchIndex.search(query, options);
+    return this.flexSearchIndex.search({ query, ...options });
   }
 
   async where(whereObj: {[key: string]: string}): Promise<Array<SearchResults<MarketFields>>> {
@@ -62,6 +68,7 @@ export class SyncableFlexSearch {
       let description = "";
       let longDescription = "";
       let _scalarDenomination = "";
+      let outcomes = "";
 
       // Handle extraInfo
       const info = marketCreatedDoc.extraInfo;
@@ -76,19 +83,17 @@ export class SyncableFlexSearch {
         longDescription = info.longDescription ? info.longDescription : "";
         _scalarDenomination = info._scalarDenomination ? info._scalarDenomination : "";
       }
-
+      if (marketCreatedDoc.outcomes) {
+        outcomes = marketCreatedDoc.outcomes.join(" ");
+      }
+      const content = [outcomes, description, longDescription, _scalarDenomination, marketCreatedDoc.marketCreator].join(' ');
       await this.flexSearchIndex.add({
         market: marketCreatedDoc.market,
         universe: marketCreatedDoc.universe,
-        marketCreator: marketCreatedDoc.marketCreator,
         category1,
         category2,
         category3,
-        description,
-        longDescription,
-        _scalarDenomination,
-        start: new Date(),
-        end: new Date(),
+        content,
       });
     }
   }

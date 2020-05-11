@@ -6,6 +6,7 @@ import { use3box } from 'utils/use-3box';
 import ChatBox from '3box-chatbox-react';
 import { SecondaryButton } from 'modules/common/buttons';
 import { Initialized3box } from 'modules/types';
+import classNames from 'classnames';
 
 export interface ModalGlobalChatProps {
   closeModal: Function;
@@ -26,12 +27,18 @@ export const ModalGlobalChat = ({
     whichChatPlugin === '3box' && use3box(provider, initialize3box, initialized3box, 'chat', true);
 
   return (
-    <div className={Styles.ModalGlobalChat}>
+    <div className={classNames({
+      [Styles.ModalThreeBoxChat]: whichChatPlugin === '3box',
+      [Styles.ModalOrbitChat]: whichChatPlugin === 'orbit',
+    })}>
       <div>
         <div>
           <span>Global Chat</span>
           <button onClick={() => closeModal()}>{Close}</button>
         </div>
+        {whichChatPlugin === 'orbit' && (
+          <iframe src='./chat/index.html#/channel/augur' />
+        )}
         {whichChatPlugin === '3box' && isReady && (
           <ChatBox
             // required

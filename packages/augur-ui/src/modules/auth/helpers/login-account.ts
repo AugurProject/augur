@@ -4,7 +4,7 @@ import { formatRep, formatDai, formatEther, formatNone, formatAttoEth } from 'ut
 import { ZERO } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from "utils/create-big-number";
 import { AppStatus } from 'modules/app/store/app-status';
-import { DESIRED_SIGNER_ETH_BALANCE } from 'contract-dependencies-gsn/src/ContractDependenciesGSN';
+import { DESIRED_SIGNER_ETH_BALANCE } from '@augurproject/sdk';
 
 export const getLoginAccountFormatted = loginAccount => {
   const genAccountProperties = generateDownloadAccountLink(

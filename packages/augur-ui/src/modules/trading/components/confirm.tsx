@@ -262,7 +262,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    // Show when GSN wallet initialization is successful
+    // Show when GSN wallet activation is successful
     if (walletStatus === WALLET_STATUS_VALUES.CREATED && sweepStatus === TXEventName.Success && !tradingTutorial && numFills === 0) {
       messages = {
         header: 'Confirmed',
@@ -274,14 +274,14 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         }
       };
     }
-    // Show if OpenOrder and GSN wallet still needs to be initialized
+    // Show if OpenOrder and GSN wallet still needs to be activated
     else if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && !tradingTutorial && numFills === 0) {
       messages = {
         header: '',
         type: WARNING,
-        message: 'Initialization of your account is needed',
+        message: 'Activation of your account is needed',
         button: {
-          text: 'Initialize Account',
+          text: 'Activate Account',
           action: () => initializeGsnWallet(),
         },
       };

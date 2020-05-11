@@ -21,6 +21,9 @@
       "Exchange": "0x61935cbdd02287b511119ddb11aeb42f1593b7ef"
     }
   },
+  "uniswap": {
+    "exchangeRateBufferMultiplier": 1.005
+  },
   "gsn": {
     "enabled": true
   },
@@ -65,7 +68,6 @@
     "ZeroXTrade": "0xF6e791393480eD275Cb1729b99C7806EBFc194C0"
   },
   "plugins": {
-    "chat": "3box",
-    "comments": "3box"
+    "chat": "orbit"
   }
 }

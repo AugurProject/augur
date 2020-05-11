@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { AppState } from 'appStore';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 

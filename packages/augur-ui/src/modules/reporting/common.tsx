@@ -1,4 +1,5 @@
 import React, { Component, useState } from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import {
@@ -16,6 +17,10 @@ import {
   TRANSACTIONS,
   REDEEMSTAKE,
   HELP_CENTER_PARTICIPATION_TOKENS,
+  CREATEAUGURWALLET,
+  MODAL_INITIALIZE_ACCOUNT,
+  WARNING,
+  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -51,8 +56,7 @@ import { ExclamationCircle, InfoIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
 import FormStyles from 'modules/common/form.styles.less';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import ButtonStyles from 'modules/common/buttons.styles.less';
-import Styles, { userRepDisplay } from 'modules/reporting/common.styles.less';
+import Styles from 'modules/reporting/common.styles.less';
 import {
   convertDisplayValuetoAttoValue,
   convertAttoValueToDisplayValue,
@@ -64,7 +68,9 @@ import {
   displayGasInDai,
   getGasInDai,
 } from 'modules/app/actions/get-ethToDai-rate';
-import { useAppStatusStore } from 'modules/app/store/app-status';
+import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
+import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
+import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -118,6 +124,69 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
     </>
   );
 };
+
+
+const mapStateToPropsActivateWalletButton = () => {
+  const { gsnEnabled, walletStatus } = AppStatus.get();
+  return {
+    gsnUnavailable: isGSNUnavailable(),
+    gsnEnabled,
+    walletStatus,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  initializeGsnWallet: () => dispatch(AppStatus.actions.setModal({ type: MODAL_INITIALIZE_ACCOUNT })),
+  updateWalletStatus: () => {
+    dispatch(removePendingTransaction(CREATEAUGURWALLET));
+  }
+});
+
+const mergeProps = (sP, dP, oP) => {
+  let showMessage = sP.gsnUnavailable;
+  let buttonAction = dP.initializeGsnWallet;
+  if (sP.walletStatus === WALLET_STATUS_VALUES.CREATED) {
+    buttonAction = dP.updateWalletStatus;
+  }
+  if (
+    sP.walletStatus !== WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
+    sP.walletStatus !== WALLET_STATUS_VALUES.CREATED
+  ) {
+    showMessage = false;
+  }
+  return {
+    ...sP,
+    ...dP,
+    buttonAction,
+    showMessage,
+  };
+};
+
+const ActivateWalletButtonCmp = ({ showMessage, buttonAction }) => (
+  <>
+    {showMessage && (
+      <div className={classNames(Styles.ActivateWalletButton)}>
+        <DismissableNotice
+          show
+          title={'Account Activation'}
+          buttonText={'Activate Account'}
+          buttonAction={buttonAction}
+          queueName={TRANSACTIONS}
+          queueId={CREATEAUGURWALLET}
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
+          description={`Activation of your account is needed`}
+        />
+      </div>
+    )}
+  </>
+);
+
+export const ActivateWalletButton = connect(
+  mapStateToPropsActivateWalletButton,
+  mapDispatchToProps,
+  mergeProps,
+)(ActivateWalletButtonCmp);
+
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
