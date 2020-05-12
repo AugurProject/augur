@@ -88,17 +88,17 @@ const addPendingDataWithBlockNumber = (
     info,
     blockNumber,
   });
-  dispatch({
-    type: ADD_PENDING_DATA,
-    data: {
-      pendingId,
-      queueName,
-      status,
-      hash,
-      info,
-      blockNumber,
-    },
-  });
+  // dispatch({
+  //   type: ADD_PENDING_DATA,
+  //   data: {
+  //     pendingId,
+  //     queueName,
+  //     status,
+  //     hash,
+  //     info,
+  //     blockNumber,
+  //   },
+  // });
 };
 
 const updatePendingDataHash = (
@@ -118,38 +118,38 @@ const updatePendingDataHash = (
     blockNumber,
     status,
   });
-  dispatch({
-    type: UPDATE_PENDING_DATA_BY_HASH,
-    data: {
-      queueName,
-      oldHash,
-      newHash,
-      blockNumber,
-      status,
-    },
-  });
+  // dispatch({
+  //   type: UPDATE_PENDING_DATA_BY_HASH,
+  //   data: {
+  //     queueName,
+  //     oldHash,
+  //     newHash,
+  //     blockNumber,
+  //     status,
+  //   },
+  // });
 };
 
 export const removePendingData = (
   pendingId: string,
   queueName: string,
-): BaseAction => {
+) => {
   AppStatus.actions.removePendingData({ pendingId, queueName, hash: undefined });
-  return ({
-    type: REMOVE_PENDING_DATA,
-    data: { pendingId, queueName },
-  });
+  // return ({
+  //   type: REMOVE_PENDING_DATA,
+  //   data: { pendingId, queueName },
+  // });
 }
 
 export const removePendingDataByHash = (
   hash: string,
   queueName: string,
-): BaseAction => {
+) => {
   AppStatus.actions.removePendingData({ pendingId: undefined, hash, queueName });
-  return ({
-    type: REMOVE_PENDING_DATA_BY_HASH,
-    data: { hash, queueName },
-  });
+  // return ({
+  //   type: REMOVE_PENDING_DATA_BY_HASH,
+  //   data: { hash, queueName },
+  // });
 }
 
 export const addCanceledOrder = (orderId: string, status: string, hash: string) => (dispatch: ThunkDispatch<void, any, Action>) => {
