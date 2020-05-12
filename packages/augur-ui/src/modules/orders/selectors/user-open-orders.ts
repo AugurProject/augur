@@ -24,6 +24,7 @@ import {
 } from 'appStore/select-state';
 import { createSelector } from 'reselect';
 import { AppStatus } from 'modules/app/store/app-status';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 import { Markets } from 'modules/markets/store/markets';
 
 function selectMarketsDataStateMarket(marketId) {
@@ -36,7 +37,7 @@ function selectUserMarketOpenOrdersMarket(state, marketId) {
 }
 
 function selectPendingOrdersStateMarket(state, marketId) {
-  const { pendingOrders } = AppStatus.get();
+  const { pendingOrders } = PendingOrders.get();
   const pending = pendingOrders[marketId];
   return !!pending ? [...pending] : pending;
 }

@@ -15,6 +15,7 @@ import { Getters, TXEventName } from '@augurproject/sdk';
 import { setLiquidityOrderStatus } from 'modules/events/actions/liquidity-transactions';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
@@ -63,35 +64,48 @@ export const loadPendingLiquidityOrders = (
 
 export const loadBulkPendingLiquidityOrders = (
   pendingLiquidityOrders: Getters.Markets.OutcomeOrderBook
-) => ({
-  type: LOAD_PENDING_LIQUIDITY_ORDERS,
-  data: { pendingLiquidityOrders },
-});
+) => {
+  PendingOrders.actions.loadLiquidity(pendingLiquidityOrders);
+  return {
+    type: LOAD_PENDING_LIQUIDITY_ORDERS,
+    data: { pendingLiquidityOrders },
+  };
+};
 
-export const clearLiquidityOrders = () => ({
-  type: CLEAR_LIQUIDITY_ORDER,
-});
+export const clearLiquidityOrders = () => {
+  PendingOrders.actions.clearLiquidity();
+  return {
+    type: CLEAR_LIQUIDITY_ORDER,
+  };
+};
 
-export const addMarketLiquidityOrders = ({ liquidityOrders, txParamHash }) => ({
-  type: ADD_MARKET_LIQUIDITY_ORDERS,
-  data: {
-    liquidityOrders,
-    txParamHash,
-  },
-});
-
-export const updateLiqTransactionParamHash = ({ txParamHash, txHash }) => ({
-  type: UPDATE_TX_PARAM_HASH_TX_HASH,
-  data: {
-    txParamHash,
-    txHash,
-  },
-});
-
-export const clearMarketLiquidityOrders = (marketId: string) => ({
-  type: CLEAR_ALL_MARKET_ORDERS,
-  data: { txParamHash: marketId },
-});
+export const addMarketLiquidityOrders = ({ liquidityOrders, txParamHash }) => {
+  PendingOrders.actions.addLiquidity({ liquidityOrders, txParamHash });
+  return {
+    type: ADD_MARKET_LIQUIDITY_ORDERS,
+    data: {
+      liquidityOrders,
+      txParamHash,
+    },
+  };
+};
+export const updateLiqTransactionParamHash = ({ txParamHash, txHash }) => {
+  PendingOrders.actions.updateLiquidityHash({ txParamHash, txHash });
+  return {
+    type: UPDATE_TX_PARAM_HASH_TX_HASH,
+    data: {
+      txParamHash,
+      txHash,
+    },
+  };
+};
+export const clearMarketLiquidityOrders = (marketId: string) => {
+  PendingOrders.actions.clearAllMarketLiquidity({ txParamHash: marketId });
+  return {
+    type: CLEAR_ALL_MARKET_ORDERS,
+    data: { txParamHash: marketId },
+  };
+};
 
 export const updateLiquidityOrderStatus = ({
   txParamHash,
@@ -99,56 +113,86 @@ export const updateLiquidityOrderStatus = ({
   type,
   price,
   eventName,
-}) => ({
-  type: UPDATE_LIQUIDITY_ORDER_STATUS,
-  data: {
+}) => {
+  PendingOrders.actions.updateLiquidityStatus({
     txParamHash,
     outcomeId,
     type,
     price,
     eventName,
-  },
-});
+  });
+  return {
+    type: UPDATE_LIQUIDITY_ORDER_STATUS,
+    data: {
+      txParamHash,
+      outcomeId,
+      type,
+      price,
+      eventName,
+    },
+  };
+};
 
 export const deleteSuccessfulLiquidityOrder = ({
   txParamHash,
   outcomeId,
   type,
   price,
-}) => ({
-  type: DELETE_SUCCESSFUL_LIQUIDITY_ORDER,
-  data: {
+}) => {
+  PendingOrders.actions.updateSuccessfulLiquidity({
     txParamHash,
     outcomeId,
     type,
     price,
-  },
-});
+  });
+  return {
+    type: DELETE_SUCCESSFUL_LIQUIDITY_ORDER,
+    data: {
+      txParamHash,
+      outcomeId,
+      type,
+      price,
+    },
+  };
+};
 
 export const updateLiquidityOrder = ({
   order,
   updates,
   marketId,
   outcomeId,
-}) => ({
-  type: UPDATE_LIQUIDITY_ORDER,
-  data: {
+}) => {
+  PendingOrders.actions.updateLiquidity({
     order,
     updates,
     txParamHash: marketId,
     outcomeId,
-  },
-});
-
+  });
+  return {
+    type: UPDATE_LIQUIDITY_ORDER,
+    data: {
+      order,
+      updates,
+      txParamHash: marketId,
+      outcomeId,
+    },
+  };
+};
 export const removeLiquidityOrder = ({
   transactionHash,
   outcomeId,
   orderId,
-}) => ({
-  type: REMOVE_LIQUIDITY_ORDER,
-  data: { txParamHash: transactionHash, outcomeId, orderId },
-});
-
+}) => {
+  PendingOrders.actions.removeLiquidity({
+    txParamHash: transactionHash,
+    outcomeId,
+    orderId,
+  });
+  return {
+    type: REMOVE_LIQUIDITY_ORDER,
+    data: { txParamHash: transactionHash, outcomeId, orderId },
+  };
+};
 export const sendLiquidityOrder = (options: any) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -167,7 +211,7 @@ export const sendLiquidityOrder = (options: any) => async (
         orderType: order.type,
         eventName: TXEventName.Pending,
       },
-      market,
+      market
     )
   );
 
@@ -254,7 +298,7 @@ const createZeroXLiquidityOrders = async (
             orderType: o.type,
             eventName: TXEventName.Pending,
           },
-          market,
+          market
         )
       );
     }
@@ -293,7 +337,7 @@ const createZeroXLiquidityOrders = async (
                 orderType: o.type,
                 eventName: TXEventName.Failure,
               },
-              market,
+              market
             )
           );
         });

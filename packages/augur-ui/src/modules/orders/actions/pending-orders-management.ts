@@ -10,6 +10,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { AppState } from 'appStore';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export const ADD_PENDING_ORDER = 'ADD_PENDING_ORDER';
@@ -20,7 +21,7 @@ export const addPendingOrder = (pendingOrder: UIOrder, marketId: string) =>
   addPendingOrderWithBlockNumber(pendingOrder, marketId);
 
 export const removePendingOrder = (id: string, marketId: string) => {
-  AppStatus.actions.removePendingOrder(marketId, id);
+  PendingOrders.actions.removePendingOrder(marketId, id);
   return ({
     type: REMOVE_PENDING_ORDER,
     data: { id, marketId },
@@ -41,7 +42,7 @@ export const addPendingOrderWithBlockNumber = (
     blockchain: { currentBlockNumber },
   } = AppStatus.get();
   pendingOrder.blockNumber = currentBlockNumber;
-  AppStatus.actions.updatePendingOrder(marketId, pendingOrder);
+  PendingOrders.actions.updatePendingOrder(marketId, pendingOrder);
   dispatch({
     type: ADD_PENDING_ORDER,
     data: {
@@ -61,7 +62,7 @@ const updatePendingOrderStatusWithBlockNumber = (
     blockchain: { currentBlockNumber },
   } = AppStatus.get();
   const blockNumber = currentBlockNumber;
-  AppStatus.actions.updatePendingOrder(marketId, {
+  PendingOrders.actions.updatePendingOrder(marketId, {
     id,
     status,
     hash,

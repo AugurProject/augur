@@ -34,9 +34,8 @@ import {
   FAVORITES,
   NOTIFICATIONS,
   ALERTS,
-  PENDING_ORDERS,
+  PENDING_QUEUE,
 } from 'modules/app/store/constants';
-import { ADD_ALERT } from 'modules/alerts/actions/alerts';
 
 const {
   SET_THEME,
@@ -78,8 +77,9 @@ const {
   UPDATE_ALERT,
   REMOVE_ALERT,
   CLEAR_ALERTS,
-  UPDATE_PENDING_ORDER,
-  REMOVE_PENDING_ORDER,
+  ADD_PENDING_DATA,
+  REMOVE_PENDING_DATA,
+  UPDATE_PENDING_DATA_BY_HASH,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -237,6 +237,7 @@ export function AppStatusReducer(state, action) {
       delete updatedState[LOGIN_ACCOUNT].reporting;
       delete updatedState[LOGIN_ACCOUNT].allowance;
       delete updatedState[LOGIN_ACCOUNT].tradingPositionsTotal;
+      updatedState[PENDING_QUEUE] = {};
       break;
     }
     case UPDATE_LOGIN_ACCOUNT: {
@@ -315,50 +316,63 @@ export function AppStatusReducer(state, action) {
       );
       break;
     }
-    case UPDATE_PENDING_ORDER: {
-      console.log('updating pending orders', action, updatedState[PENDING_ORDERS]);
-      let marketOrders = updatedState[PENDING_ORDERS][action.marketId];
-      if (!marketOrders) {
-        marketOrders = [];
-      }
-      let index = -1;
-      let currentOrder = marketOrders.find((order, ind) => {
-        if (order?.id === action?.order?.id) {
-          index = ind;
-          return true
+    case ADD_PENDING_DATA: {
+      const { pendingId, queueName, status, blockNumber, hash, info } = action;
+      updatedState[PENDING_QUEUE] = {
+        ...updatedState[PENDING_QUEUE],
+        [queueName]: {
+          ...updatedState[PENDING_QUEUE][queueName],
+          [pendingId]: {
+            status,
+            data: info,
+            hash,
+            blockNumber,
+          },
         }
-        return false;
-      });
-      if (!currentOrder) {
-        console.log('currentOrder not existing', action.order);
-        currentOrder = { ...action.order };
-        if (currentOrder.id) {
-          marketOrders.push(currentOrder);
-        }
-      } else {
-        console.log('currentOrderExists', currentOrder, action.order);
-        marketOrders[index] = {
-          ...currentOrder,
-          ...action.order
+      };
+      break;
+    }
+    case UPDATE_PENDING_DATA_BY_HASH: {
+      const { oldHash, newHash, queueName, blockNumber, status } = action;
+      if (updatedState[PENDING_QUEUE][queueName]) {
+        const queue = updatedState[PENDING_QUEUE][queueName];
+        Object.keys(queue).forEach(o => {
+          const item = queue[o];
+          if (item.hash === oldHash || item.hash === newHash) {
+            item.hash = newHash;
+            item.blockNumber = blockNumber;
+            item.status = status;
+          }
+        });
+        updatedState[PENDING_QUEUE][queueName] = {
+          ...updatedState[PENDING_QUEUE][queueName],
+          ...queue,
         };
-      }
-      if (marketOrders.length === 0) {
-        delete updatedState[PENDING_ORDERS][action.marketId];
-      } else {
-        updatedState[PENDING_ORDERS][action.marketId] = marketOrders;
       }
       break;
     }
-    case REMOVE_PENDING_ORDER: {
-      let orders = updatedState[PENDING_ORDERS][action.marketId] || [];
-      orders = orders.filter(obj => obj.id !== action.orderId);
-      if (orders.length > 0) {
-        return {
-          ...updatedState[PENDING_ORDERS],
-          [action.marketId]: orders,
-        };
+    case REMOVE_PENDING_DATA: {
+      const { pendingId, queueName, hash } = action;
+      if (updatedState[PENDING_QUEUE][queueName]) {
+        if (hash) {
+          // remove by hash
+          const queue = updatedState[PENDING_QUEUE][queueName];
+          updatedState[PENDING_QUEUE][queueName] = Object.keys(queue).reduce(
+            (p, o) => (queue[o].hash !== hash ? { ...p, [o]: queue[o] } : p),
+            {}
+          );
+        }
+       
+        if (pendingId && updatedState[PENDING_QUEUE][queueName][pendingId]) {
+          // remove by pendingId
+          delete updatedState[PENDING_QUEUE][queueName][pendingId];
+        }
+
+        if (Object.keys(updatedState[PENDING_QUEUE][queueName]).length === 0) {
+          // remove queue name if it's empty:
+          delete updatedState[PENDING_QUEUE][queueName];
+        }
       }
-      delete updatedState[PENDING_ORDERS][action.marketId];
       break;
     }
     default:
@@ -439,10 +453,22 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       updateAlert: (id, alert) => dispatch({ type: UPDATE_ALERT, alert, id }),
       removeAlert: (id, name) => dispatch({ type: REMOVE_ALERT, id, name }),
       clearAlerts: level => dispatch({ type: CLEAR_ALERTS, level }),
-      updatePendingOrder: (marketId, order) =>
-        dispatch({ type: UPDATE_PENDING_ORDER, marketId, order }),
-      removePendingOrder: (marketId, orderId) =>
-        dispatch({ type: REMOVE_PENDING_ORDER, marketId, orderId }),
+      addPendingData: ({
+        pendingId,
+        queueName,
+        status,
+        blockNumber,
+        hash,
+        info,
+      }) => dispatch({ type: ADD_PENDING_DATA, pendingId, queueName, status, blockNumber, hash, info }),
+      addPendingDataByHash: ({
+        oldHash,
+        newHash,
+        queueName,
+        blockNumber,
+        status,
+      }) => dispatch({ type: UPDATE_PENDING_DATA_BY_HASH, oldHash, newHash, status, blockNumber, queueName }),
+      removePendingData: ({ pendingId, queueName, hash }) => dispatch({ type: REMOVE_PENDING_DATA, pendingId, queueName, hash }),
     },
   };
 };

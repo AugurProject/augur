@@ -36,7 +36,6 @@ import {
   MOBILE_MENU_STATES,
   TRADING_TUTORIAL,
   THEMES,
-  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
@@ -56,7 +55,7 @@ import { MyBetsInnerNav } from 'modules/portfolio/components/common/my-bets-inne
 import { MyBetsProvider } from 'modules/portfolio/store/my-bets';
 import { StatusErrorMessage } from 'modules/common/labels';
 import { MarketsProvider } from 'modules/markets/store/markets';
-import { Ox_STATUS } from '../actions/update-app-status';
+import { PendingOrdersProvider } from '../store/pending-orders';
 
 interface AppProps {
   notifications: Notification[];
@@ -341,13 +340,15 @@ const AppView = ({
               {currentPath !== MARKETS && currentPath !== MY_POSITIONS && (
                 <div className="no-nav-placehold" />
               )}
-              <MainAppContent
-                onTradingTutorial={onTradingTutorial}
-                ModalShowing={ModalShowing}
-                navShowing={navShowing}
-                currentPath={currentPath}
-                mainSectionClickHandler={mainSectionClickHandler}
-              />
+              <PendingOrdersProvider>
+                <MainAppContent
+                  onTradingTutorial={onTradingTutorial}
+                  ModalShowing={ModalShowing}
+                  navShowing={navShowing}
+                  currentPath={currentPath}
+                  mainSectionClickHandler={mainSectionClickHandler}
+                />
+              </PendingOrdersProvider>
             </MyBetsProvider>
           </section>
         </section>

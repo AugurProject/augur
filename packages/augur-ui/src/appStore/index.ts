@@ -16,6 +16,7 @@ import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { AppStatus } from 'modules/app/store/app-status';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 
 // console log middleware
 const consoleLog = store => next => action => {
@@ -31,7 +32,8 @@ const consoleLog = store => next => action => {
 const localStorageMiddleware = store => next => action => {
   next(action);
   const state = store.getState() as AppState;
-  const { alerts, notifications, favorites, loginAccount, isLogged, isConnected, env, gasPriceInfo, pendingOrders } = AppStatus.get();
+  const { alerts, notifications, favorites, loginAccount, isLogged, isConnected, env, gasPriceInfo, pendingQueue } = AppStatus.get();
+  const { pendingOrders, pendingLiquidityOrders } = PendingOrders.get();
   if (
     !state ||
     !loginAccount?.address ||
@@ -42,9 +44,7 @@ const localStorageMiddleware = store => next => action => {
   }
   const { address, affiliate } = loginAccount;
   const {
-    pendingLiquidityOrders,
     analytics,
-    pendingQueue,
     drafts,
   } = state;
   const windowApp: WindowApp = windowRef as WindowApp;
