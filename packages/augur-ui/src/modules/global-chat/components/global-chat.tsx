@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-
+import React, { lazy, Suspense, useState } from 'react';
 import Styles from 'modules/global-chat/components/global-chat.styles.less';
 import { SecondaryButton } from 'modules/common/buttons';
 import { Initialized3box } from 'modules/types';
 import { Close, ThickChevron } from 'modules/common/icons';
 import classNames from 'classnames';
-import ThreeBoxChat from 'modules/global-chat/components/three-box-chat';
+
+const ThreeBoxChat = lazy(() =>
+  import('modules/global-chat/components/three-box-chat')
+);
 
 export interface GlobalChatProps {
   provider: any;
@@ -52,11 +54,15 @@ export const GlobalChat = ({
         </div>
       )}
       {isLogged && whichChatPlugin === '3box' && (
-        <ThreeBoxChat
-          provider={provider}
-          initialize3box={initialize3box}
-          initialized3box={initialized3box}
-        />
+        <Suspense fallback={null}>
+          <ThreeBoxChat
+            provider={provider}
+            initialize3box={initialize3box}
+            initialized3box={initialized3box}
+            openOnMount
+            popupChat
+          />
+        </Suspense>
       )}
     </div>
   );

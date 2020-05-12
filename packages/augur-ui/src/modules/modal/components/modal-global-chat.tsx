@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Close } from 'modules/common/icons';
-
 import Styles from 'modules/modal/modal.styles.less';
 import { Initialized3box } from 'modules/types';
 import classNames from 'classnames';
-import ThreeBoxChat from 'modules/global-chat/components/three-box-chat';
+
+const ThreeBoxChat = lazy(() =>
+  import('modules/global-chat/components/three-box-chat')
+);
 
 export interface ModalGlobalChatProps {
   closeModal: Function;
@@ -37,11 +39,14 @@ export const ModalGlobalChat = ({
         <iframe src="./chat/index.html#/channel/augur" />
       )}
       {whichChatPlugin === '3box' && (
-        <ThreeBoxChat
-          provider={provider}
-          initialize3box={initialize3box}
-          initialized3box={initialized3box}
-        />
+        <Suspense fallback={null}>
+          <ThreeBoxChat
+            provider={provider}
+            initialize3box={initialize3box}
+            initialized3box={initialized3box}
+            activatedFromStart
+          />
+        </Suspense>
       )}
     </div>
   </div>

@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { FacebookComments } from 'modules/market/components/common/comments/facebook-comments';
-
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { Initialized3box } from 'modules/types';
-import ThreeBoxComments from 'modules/market/components/common/comments/three-box-comments';
+
+const ThreeBoxComments = lazy(() =>
+  import('modules/market/components/common/comments/three-box-comments')
+);
 
 interface MarketCommentsProps {
   adminEthAddr: string;
@@ -33,14 +35,16 @@ export const MarketComments = ({
   return isLogged ? (
     <section className={Styles.Comments}>
       {whichCommentPlugin === '3box' && (
-        <ThreeBoxComments
-          // required
-          adminEthAddr={adminEthAddr}
-          provider={provider}
-          initialize3box={initialize3box}
-          initialized3box={initialized3box}
-          marketId={marketId}
-        />
+        <Suspense fallback={null}>
+          <ThreeBoxComments
+            // required
+            adminEthAddr={adminEthAddr}
+            provider={provider}
+            initialize3box={initialize3box}
+            initialized3box={initialized3box}
+            marketId={marketId}
+          />
+        </Suspense>
       )}
       {whichCommentPlugin === 'facebook' && (
         <FacebookComments

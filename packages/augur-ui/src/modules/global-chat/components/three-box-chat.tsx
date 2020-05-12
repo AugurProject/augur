@@ -2,13 +2,31 @@ import React from 'react';
 import ChatBox from '3box-chatbox-react';
 import { use3box } from 'utils/use-3box';
 import { SecondaryButton } from 'modules/common/buttons';
+import { Initialized3box } from 'modules/types';
 
-const ThreeBoxChat = ({ provider, initialize3box, initialized3box }) => {
+interface ThreeBoxChatProps {
+  provider: any;
+  initialize3box: Function;
+  initialized3box: Initialized3box;
+  openOnMount?: boolean;
+  popupChat?: boolean;
+  activatedFromStart?: boolean;
+}
+
+const ThreeBoxChat = ({
+  provider,
+  initialize3box,
+  initialized3box,
+  openOnMount,
+  popupChat,
+  activatedFromStart
+}: ThreeBoxChatProps) => {
   const { activate, setActivate, address, box, isReady, profile } = use3box(
     provider,
     initialize3box,
     initialized3box,
-    'chat'
+    'chat',
+    activatedFromStart
   );
 
   return isReady ? (
@@ -20,11 +38,10 @@ const ThreeBoxChat = ({ provider, initialize3box, initialized3box }) => {
       box={box}
       currentUserAddr={address}
       // optional
-      openOnMount
+      openOnMount={openOnMount}
+      popupChat={popupChat}
       mute
-      popupChat
       showEmoji
-      colorTheme="#0E0E0F"
       currentUser3BoxProfile={profile}
       agentProfile={{
         chatName: 'Global Chat',
