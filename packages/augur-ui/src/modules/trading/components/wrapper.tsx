@@ -9,13 +9,10 @@ import {
   SCALAR,
   BUY,
   SELL,
-  UPPER_FIXED_PRECISION_BOUND,
-  INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import Styles from 'modules/trading/components/wrapper.styles.less';
 import { OrderButton, PrimaryButton } from 'modules/common/buttons';
 import {
-  formatShares,
   formatGasCostToEther,
   formatNumber,
   formatMarketShares,
@@ -25,7 +22,7 @@ import { MarketData, OutcomeFormatted } from 'modules/types';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { formatDai } from 'utils/format-number';
 import { Moment } from 'moment';
-import { getDaysRemaining, getOrderExpirationTime as calcOrderExpirationTime } from 'utils/format-date';
+import { calcOrderExpirationTime } from 'utils/format-date';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
