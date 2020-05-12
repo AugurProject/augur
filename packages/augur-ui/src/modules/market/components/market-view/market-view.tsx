@@ -156,11 +156,6 @@ const MarketView = ({
         : undefined,
     fixedPrecision: 4,
     tutorialError: '',
-    selectedOutcomeProperties: {
-      1: {
-        ...DEFAULT_ORDER_PROPERTIES,
-      },
-    },
   });
 
   const {
@@ -173,7 +168,6 @@ const MarketView = ({
     tutorialStep,
     tutorialError,
     pane,
-    selectedOutcomeProperties,
     introShowing,
     hasShownScalarModal,
   } = state;
@@ -251,8 +245,7 @@ const MarketView = ({
       loadMarketTradingHistory(marketId);
     }
     if (!isMarketLoading) {
-      if (closeMarketLoadingModalOnly)
-        closeMarketLoadingModalOnly(modalShowing);
+      if (closeMarketLoadingModalOnly) closeMarketLoadingModalOnly(modalShowing);
     }
 
     if (
@@ -344,6 +337,7 @@ const MarketView = ({
           selectedOutcomeId: selectedOutcomeIdPassed,
         });
       }
+
       setState({
         ...state,
         selectedOutcomeId: selectedOutcomeIdPassed,
@@ -351,16 +345,6 @@ const MarketView = ({
           ...DEFAULT_ORDER_PROPERTIES,
         },
       });
-
-      if (!selectedOutcomeProperties[selectedOutcomeId]) {
-        selectedOutcomeProperties[selectedOutcomeId] = {
-          ...DEFAULT_ORDER_PROPERTIES,
-        };
-        setState({
-          ...state,
-          selectedOutcomeProperties,
-        });
-      }
     }
   }
 

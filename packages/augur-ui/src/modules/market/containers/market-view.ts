@@ -42,7 +42,8 @@ import {
 } from 'modules/orders/helpers/load-market-orderbook';
 import { Getters } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
-import { Markets } from 'modules/markets/store/markets-hooks';
+import { Markets } from 'modules/markets/store/markets';
+import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const {
@@ -80,7 +81,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
       orderBook: TUTORIAL_ORDER_BOOK,
     };
   } else {
-    market = ownProps.market || selectMarket(marketId);
+    const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
+    const { marketInfos } = Markets.get();
+    market = ownProps.market || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);;
   }
 
   const marketReviewSeen =
@@ -95,7 +98,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
       windowRef.localStorage &&
       windowRef.localStorage.getItem(SCALAR_MODAL_SEEN) === 'true');
 
-  if (market === null) {
+  if (!market) {
     return {
       tradingTutorial,
       isMarketLoading: true,
