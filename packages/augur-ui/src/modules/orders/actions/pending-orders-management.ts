@@ -35,8 +35,8 @@ export const addPendingOrderWithBlockNumber = (
   pendingOrder: UIOrder,
   marketId: string
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { blockchain } = getState();
-  pendingOrder.blockNumber = blockchain.currentBlockNumber;
+  const { blockchain: { currentBlockNumber }} = AppStatus.get();
+  pendingOrder.blockNumber = currentBlockNumber;
 
   dispatch({
     type: ADD_PENDING_ORDER,
