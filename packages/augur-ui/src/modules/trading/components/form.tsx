@@ -70,6 +70,17 @@ const advancedDropdownOptions = [
   },
 ];
 
+const liqAdvancedDropdownOptions = [
+  {
+    label: 'Order expiration',
+    value: ADVANCED_OPTIONS.EXPIRATION,
+  },
+  {
+    label: 'Good till cancelled',
+    value: ADVANCED_OPTIONS.GOOD_TILL,
+  },
+];
+
 interface FromProps {
   market: MarketData;
   marketType: string;
@@ -859,7 +870,7 @@ class Form extends Component<FromProps, FormState> {
     const isScalar: boolean = marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
     const defaultOutcome = selectedOutcome !== null ? selectedOutcome.id : 2;
-    const advancedOptions = advancedDropdownOptions;
+    const advancedOptions = initialLiquidity ? liqAdvancedDropdownOptions : advancedDropdownOptions;
     const showLimitPriceInput =
       (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
 
@@ -1205,7 +1216,7 @@ class Form extends Component<FromProps, FormState> {
                       onChange={value => {
                         const fastForwardTime = this.state.fastForwardTime
                           ? this.state.fastForwardTime
-                          : 0;
+                          : getDaysRemaining(this.props.endTime, this.props.currentTimestamp);
                         this.updateAndValidate(
                           this.INPUT_TYPES.EXPIRATION_DATE,
                           moment

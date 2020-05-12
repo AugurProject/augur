@@ -639,7 +639,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             />
           )}
         <div>{actionButton}</div>
-        {showTip && (
+        {showTip && !initialLiquidity && (
           <div>
             <span>TIP:</span> If you think an outcome won't occur, you can sell
             shares that you don't own.
