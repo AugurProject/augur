@@ -35,10 +35,8 @@ export const loginWithInjectedWeb3 = () => async (
     dispatch(login(account));
 
     const web3 = windowRef.web3;
-    if (
-      web3.currentProvider.publicConfigStore &&
-      web3.currentProvider.publicConfigStore.on
-    ) {
+
+    if (web3.currentProvider?.publicConfigStore?.on) {
       web3.currentProvider.publicConfigStore.on('update', config => {
         if (augurSdk.networkId !== config.networkVersion) {
           console.log(
@@ -54,7 +52,7 @@ export const loginWithInjectedWeb3 = () => async (
     }
 
     // Listen for MetaMask account switch
-    if (windowRef.ethereum && windowRef.ethereum.on) {
+    if (windowRef.ethereum?.on) {
       windowRef.ethereum.on('accountsChanged', async accounts => {
         const { loginAccount } = AppStatus.get();
         if (loginAccount.address) {
@@ -97,7 +95,7 @@ const login = (account: string) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const provider = new Web3Provider(windowRef.web3.currentProvider);
+  const provider = getWeb3Provider(windowRef);
   const networkId = windowRef.web3.currentProvider.networkVersion;
   const address = toChecksumAddress(account);
   const accountObject = {
@@ -115,3 +113,8 @@ const login = (account: string) => (
   };
   dispatch(updateSdk(accountObject, networkId));
 };
+
+
+export const getWeb3Provider = (windowRef) => {
+  return new Web3Provider('ethereum' in window ? windowRef.ethereum : windowRef.web3.currentProvider);
+}

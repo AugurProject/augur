@@ -38,6 +38,7 @@ import Styles from 'modules/create-market/components/review.styles.less';
 import { buildResolutionDetails } from 'modules/create-market/get-template';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { ActivateWalletButton } from 'modules/reporting/common';
 
 interface ReviewProps {
   newMarket: NewMarket;
@@ -285,10 +286,10 @@ const Review = ({
           totalRep={designatedReportNoShowReputationBond}
           GsnEnabled={gsnEnabled}
         />
+        <ActivateWalletButton />
       </div>
     </div>
   );
 };
 
 export default Review;
-

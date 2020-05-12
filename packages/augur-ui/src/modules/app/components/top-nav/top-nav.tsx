@@ -9,19 +9,22 @@ import {
   ExternalLinkText,
   ProcessingButton,
 } from 'modules/common/buttons';
-import GlobalChat from 'modules/global-chat/containers/global-chat';
+import GlobalChat from 'modules/global-chat/containers/global-chat' ;
 import { NavMenuItem, AccountBalances } from 'modules/types';
 import { helpIcon, Dot } from 'modules/common/icons';
 import {
   TRANSACTIONS,
   MIGRATE_FROM_LEG_REP_TOKEN,
-  CREATEAUGURWALLET
+  CREATEAUGURWALLET,
+  TOTAL_FUNDS_TOOLTIP,
 } from 'modules/common/constants';
 import {
   CREATE_MARKET
 } from 'modules/routes/constants/views';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
+import { LinearPropertyLabelUnderlineTooltip } from 'modules/common/labels';
+import { formatNumber } from 'utils/format-number';
 
 interface TopNavProps {
   isLogged: boolean;
@@ -39,10 +42,10 @@ const TopNav = ({
   isLogged,
   menuData,
   migrateV1Rep,
-  createFundedGsnWallet,
   showMigrateRepButton = false,
-  showCreateAccountButton = false,
   walletBalances,
+  showCreateAccountButton,
+  createFundedGsnWallet,
 }: TopNavProps) => {
   const { currentBasePath } = useAppStatusStore();
   const isCurrentItem = item => {
@@ -77,6 +80,16 @@ const TopNav = ({
               {index === SPREAD_INDEX && (
                 <li key='fill-space' className={Styles.FillSpace} />
               )}
+
+              <div className={Styles.ToolTip}>
+                <LinearPropertyLabelUnderlineTooltip
+                  {...(formatNumber(0))}
+                  highlightAlternateBolded
+                  id={'totalFunds'}
+                  tipText={TOTAL_FUNDS_TOOLTIP}
+                />
+              </div>
+
               {index === SPREAD_INDEX && showMigrateRepButton && (
                 <li className={Styles.MigrateRepItem} key='migrate-rep-button'>
                   <div className={Styles.MigrateRep}>
@@ -109,7 +122,7 @@ const TopNav = ({
                       <p>
                         {
                           walletBalances.legacyRep > 0
-                            ? 'You have V1 REP in your Augur account address. Migrate it to V2 REP to use it in Augur V2.'
+                            ? 'You have V1 REP in your User account address. Migrate it to V2 REP to use it in Augur V2.'
                             : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'
                         }
                       </p>
@@ -167,6 +180,7 @@ const TopNav = ({
             </ Fragment>
           );
         })}
+
         {!isLogged && (
           <div className={Styles.BettingUI}>
             <ExternalLinkText

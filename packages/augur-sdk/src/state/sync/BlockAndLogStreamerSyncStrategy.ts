@@ -1,19 +1,19 @@
-import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { Filter, Log, ParsedLog } from '@augurproject/types';
 import {
   EthersProviderBlockStreamAdapter,
   ExtendedLog,
-} from 'blockstream-adapters';
+} from '../../lib/blockstream-adapters';
 import {
   Block,
   BlockAndLogStreamer,
   Log as BlockStreamLog,
 } from 'ethereumjs-blockstream';
 import * as _ from 'lodash';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { LogFilterAggregatorInterface } from '../logs/LogFilterAggregator';
 import { AbstractSyncStrategy } from './AbstractSyncStrategy';
 import { SyncStrategy } from './index';
-import { BigNumber } from 'bignumber.js'
+import { BigNumber } from 'bignumber.js';
 
 // This matches the JSON-rpc spec.
 export interface ExtendedFilter {
@@ -64,7 +64,7 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
     private listenForNewBlocks: (
       callback: (block: Block) => Promise<void>
     ) => void,
-    protected parseLogs:(logs: Log[]) => ParsedLog[],
+    protected parseLogs: (logs: Log[]) => ParsedLog[],
     private blockWindowWidth = 5
   ) {
     super(getLogs, contractAddresses, onLogsAdded);
@@ -75,7 +75,7 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
     provider: EthersProvider,
     contractAddresses: string[],
     logFilterAggregator: LogFilterAggregatorInterface,
-    parseLogs:(logs: Log[]) => ParsedLog[],
+    parseLogs: (logs: Log[]) => ParsedLog[]
   ) {
     const {
       getLogs,
@@ -96,7 +96,7 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
       logFilterAggregator.onLogsAdded,
       blockAndLogStreamer,
       startPollingForBlocks,
-      parseLogs,
+      parseLogs
     );
   }
 
@@ -111,7 +111,7 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
     const wrapper = (callback: (blockNumber: number) => void) => (
       block: Block
     ) => {
-      const blockNumber: number = (new BigNumber(block.number)).toNumber();
+      const blockNumber: number = new BigNumber(block.number).toNumber();
       callback(blockNumber);
     };
     this.blockAndLogStreamer.subscribeToOnBlockRemoved(wrapper(callback));
@@ -135,7 +135,7 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
     this.currentSuspectBlocks.push(block);
 
     const suspectBlockNumbers = this.currentSuspectBlocks.map(b => {
-      return (new BigNumber(b.number)).toNumber();
+      return new BigNumber(b.number).toNumber();
     });
 
     // getAugurContractAddresses
@@ -153,7 +153,8 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
     const maxBlockNumberReturned = Math.max(...blocksReturned);
     const maxBlockIndex = Math.max(
       this.currentSuspectBlocks.findIndex(
-        block => (new BigNumber(block.number)).toNumber() === maxBlockNumberReturned
+        block =>
+          new BigNumber(block.number).toNumber() === maxBlockNumberReturned
       ),
       this.currentSuspectBlocks.length - this.blockWindowWidth
     );
@@ -165,10 +166,10 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
 
     for (let i = 0; i < blocksToEmit.length; i++) {
       const currentBlock = blocksToEmit[i];
-      const currentBlockNumber = (new BigNumber(currentBlock.number)).toNumber();
+      const currentBlockNumber = new BigNumber(currentBlock.number).toNumber();
 
       const logsToEmit = logs.filter(
-        log => currentBlockNumber === (new BigNumber(log.blockNumber)).toNumber()
+        log => currentBlockNumber === new BigNumber(log.blockNumber).toNumber()
       );
 
       await this.onLogsAdded(currentBlockNumber, this.parseLogs(logsToEmit));

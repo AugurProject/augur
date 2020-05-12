@@ -19,10 +19,11 @@ import {
   ZeroXPlaceTradeDisplayParams,
   ZeroXSimulateTradeData,
 } from '@augurproject/sdk';
+import { createClient } from '@augurproject/sdk/build';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { Account } from '../constants';
-import { makeGSNDependencies, makeSigner } from './blockchain';
+import { makeSigner } from './blockchain';
 import { SDKConfiguration } from '@augurproject/artifacts';
 import moment from 'moment';
 
@@ -35,34 +36,11 @@ export class ContractAPI {
     account: Account,
     provider: EthersProvider,
     config: SDKConfiguration,
-    connector: Connectors.BaseConnector = new EmptyConnector(),
-    meshClient: WSClient = undefined,
-    meshBrowser: BrowserMesh = undefined
+    connector: Connectors.BaseConnector = new EmptyConnector()
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = await makeGSNDependencies(
-      provider,
-      signer,
-      config,
-      account.address
-    );
+    const augur = await createClient(config, connector, signer, provider, true);
 
-    let zeroX = null;
-    if (meshClient || meshBrowser) {
-      zeroX = new ZeroX();
-      zeroX.rpc = meshClient;
-    }
-    const augur = await Augur.create(
-      provider,
-      dependencies,
-      config,
-      connector,
-      zeroX,
-      true
-    );
-    if (zeroX && meshBrowser) {
-      zeroX.mesh = meshBrowser;
-    }
     return new ContractAPI(augur, provider, account);
   }
 
@@ -70,22 +48,14 @@ export class ContractAPI {
     accounts: Account[],
     provider: EthersProvider,
     config: SDKConfiguration,
-    connector: Connectors.BaseConnector = new EmptyConnector(),
-    meshClient: WSClient = undefined,
-    meshBrowser: BrowserMesh = undefined
+    connector: Connectors.BaseConnector = new EmptyConnector()
   ): Promise<ContractAPI[]> {
     return Promise.all(
       accounts.map(account =>
-        ContractAPI.userWrapper(
-          account,
-          provider,
-          config,
-          connector,
-          meshClient,
-          meshBrowser
-        )
+        ContractAPI.userWrapper(account, provider, config, connector)
       )
-    );
+        )
+      ;
   }
 
   constructor(

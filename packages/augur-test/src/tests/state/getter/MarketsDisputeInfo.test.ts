@@ -24,7 +24,7 @@ const yesPayoutSet = [new BigNumber(0), new BigNumber(0), new BigNumber(100)];
 describe('State API :: Markets :: ', () => {
   let john: TestContractAPI;
   let mary: TestContractAPI;
-  let bob: ContractAPI;
+  let bob: TestContractAPI;
 
   let baseProvider: TestEthersProvider;
   const markets = {};
@@ -34,21 +34,9 @@ describe('State API :: Markets :: ', () => {
     baseProvider = await makeProvider(seed, ACCOUNTS);
     const config = baseProvider.getConfig();
 
-    john = await TestContractAPI.userWrapper(
-      ACCOUNTS[0],
-      baseProvider,
-      config
-    );
-    mary = await TestContractAPI.userWrapper(
-      ACCOUNTS[1],
-      baseProvider,
-      config
-    );
-    bob = await TestContractAPI.userWrapper(
-      ACCOUNTS[2],
-      baseProvider,
-      config
-    );
+    john = await TestContractAPI.userWrapper(ACCOUNTS[0], baseProvider, config);
+    mary = await TestContractAPI.userWrapper(ACCOUNTS[1], baseProvider, config);
+    bob = await TestContractAPI.userWrapper(ACCOUNTS[2], baseProvider, config);
 
     await john.approve();
     await mary.approve();

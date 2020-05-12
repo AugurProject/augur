@@ -3,16 +3,20 @@ import { SDKConfiguration } from '@augurproject/artifacts';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { Connectors } from '@augurproject/sdk';
 import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
-import { TestContractAPI } from '@augurproject/tools';
-import { NULL_ADDRESS, stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
+import {
+  ACCOUNTS,
+  defaultSeedPath,
+  loadSeed,
+  TestContractAPI,
+} from '@augurproject/tools';
+import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
-import { makeProvider } from '../../libs';
+import { enableZeroX, makeProvider } from '../../libs';
 import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../libs/MockMeshServer';
-import { TestEthersProvider } from "@augurproject/tools/build/libs/TestEthersProvider";
 
 describe('Augur API :: ZeroX :: ', () => {
   let john: TestContractAPI;
@@ -29,7 +33,7 @@ describe('Augur API :: ZeroX :: ', () => {
 
     const seed = await loadSeed(defaultSeedPath);
     provider = await makeProvider(seed, ACCOUNTS);
-    config = provider.getConfig();
+    config = enableZeroX(provider.getConfig());
   });
 
   afterAll(() => {
@@ -45,10 +49,12 @@ describe('Augur API :: ZeroX :: ', () => {
         ACCOUNTS[0],
         provider,
         config,
-        johnConnector,
-        meshClient,
-        johnBrowserMesh
+        johnConnector
       );
+
+      john.augur.zeroX.mesh = johnBrowserMesh;
+      john.augur.zeroX.rpc = meshClient;
+
       johnConnector.initialize(john.augur, john.db);
       await john.approve();
 
@@ -58,11 +64,13 @@ describe('Augur API :: ZeroX :: ', () => {
         ACCOUNTS[1],
         provider,
         config,
-        maryConnector,
-        meshClient,
-        maryBrowserMesh
+        maryConnector
       );
+      mary.augur.zeroX.mesh = maryBrowserMesh;
+      mary.augur.zeroX.rpc = meshClient;
+
       maryConnector.initialize(mary.augur, mary.db);
+
       await mary.approve();
 
       maryBrowserMesh.addOtherBrowserMeshToMockNetwork(johnBrowserMesh);
@@ -77,6 +85,7 @@ describe('Augur API :: ZeroX :: ', () => {
       ]);
 
       await john.sync();
+
       await mary.sync();
 
       // Place an order

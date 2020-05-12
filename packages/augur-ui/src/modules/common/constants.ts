@@ -56,7 +56,7 @@ export const ODDS_TYPE = {
 export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;
-export const TX_CHECK_BLOCKNUMBER_LIMIT = 10;
+export const TX_CHECK_BLOCKNUMBER_LIMIT = 15;
 export const UNIVERSE_ID = '0xf69b5';
 // network id to names map
 export const NETWORK_NAMES = {
@@ -750,6 +750,7 @@ export const ZERO = createBigNumber(0);
 export const ONE = createBigNumber(1, 10);
 export const TWO = createBigNumber(2, 10);
 export const TEN = createBigNumber(10, 10);
+export const TWENTY_FIVE = createBigNumber(25, 10);
 export const FIFTY = createBigNumber(50, 10);
 export const HUNDRED = createBigNumber(100, 10);
 export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);

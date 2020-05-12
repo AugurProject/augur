@@ -30,9 +30,9 @@ export async function setupUsers(accounts: Account[], ethSource: ContractAPI, fu
 
 export async function setupUser(account: Account, ethSource: ContractAPI, funding: BigNumber, baseConfig: SDKConfiguration): Promise<ContractAPI> {
   console.log(`Setting up account ${account.address}`);
-  const { config, zeroX } = setupPerfConfigAndZeroX(baseConfig);
+  const { config } = setupPerfConfigAndZeroX(baseConfig);
   await ethSource.augur.sendETH(account.address, funding);
-  const user = await ContractAPI.userWrapper(account, ethSource.provider, config, undefined, zeroX);
+  const user = await ContractAPI.userWrapper(account, ethSource.provider, config);
   await waitForFunding(user)
 
   if (config.flash?.useGSN) {
@@ -61,8 +61,7 @@ export function setupPerfConfigAndZeroX(config: SDKConfiguration, syncSDK = fals
     zeroX: { rpc: { enabled: true }, mesh: { enabled: false }},
     flash: { useGSN: false, syncSDK },
   }));
-  const zeroX = new WSClient(config.zeroX.rpc.ws);
-  return { config, zeroX };
+  return { config };
 }
 
 export async function setupMarkets(makers: ContractAPI[], serial=false): Promise<Market[]> {

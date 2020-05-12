@@ -27,6 +27,8 @@ import {
   CLAIMMARKETSPROCEEDS,
   FORKANDREDEEM,
   FINALIZE,
+  DOINITIALREPORT,
+  CONTRIBUTE,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -40,9 +42,11 @@ import {
   addPendingData,
   addUpdatePendingTransaction,
   addCanceledOrder,
+  updatePendingReportHash,
+  updatePendingDisputeHash,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
+import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-management';
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
@@ -298,6 +302,20 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
             )
           )
         );
+        break;
+      }
+      case DOINITIALREPORT: {
+        hash &&
+          dispatch(
+            updatePendingReportHash(transaction.params, hash, eventName)
+          );
+        break;
+      }
+      case CONTRIBUTE: {
+        hash &&
+          dispatch(
+            updatePendingDisputeHash(transaction.params, hash, eventName)
+          );
         break;
       }
 

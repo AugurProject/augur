@@ -1,6 +1,15 @@
-import { Config, ContractAddresses as ZeroXContractAddresses, Mesh, loadMeshStreamingWithURLAsync } from '@0x/mesh-browser-lite';
-import { NetworkId, SDKConfiguration, ContractAddresses } from '@augurproject/artifacts';
-import { ZeroX, SubscriptionEventName } from '@augurproject/sdk';
+import {
+  Config,
+  ContractAddresses as ZeroXContractAddresses,
+  loadMeshStreamingWithURLAsync,
+  Mesh,
+} from '@0x/mesh-browser-lite';
+import {
+  ContractAddresses,
+  NetworkId,
+  SDKConfiguration,
+} from '@augurproject/artifacts';
+import { SubscriptionEventName, ZeroX } from '@augurproject/sdk';
 
 type BrowserMeshErrorFunction = (err: Error, mesh: Mesh) => void;
 /**
@@ -95,18 +104,13 @@ export async function createBrowserMesh(
     throw new Error(`Attempting to create browser mesh without it being enabled in config ${JSON.stringify(config)}`);
   }
 
-  // NB: Polyfill to support Safari, this can go away with the next browser-mesh release
-  if (!WebAssembly.instantiateStreaming) {
-    WebAssembly.instantiateStreaming = async (resp, importObject) => {
-      const source = await (await resp).arrayBuffer();
-      return await WebAssembly.instantiate(source, importObject);
-    };
-  }
-  // NB: Remove this when we move to the version of 0x after 9.2.1
-
   try {
+    const zeroXTimerLabel = 'ZeroX Wasm load duration: ';
+    const newMeshTimerLabel = 'new Mesh() startup duration: ';
+
     zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarting, {});
-    await loadMeshStreamingWithURLAsync("zerox.wasm");
+    console.time(zeroXTimerLabel);
+    await loadMeshStreamingWithURLAsync('zerox.wasm');
 
     const meshConfig = createBrowserMeshConfig(
       config.ethereum.http,
@@ -118,7 +122,19 @@ export async function createBrowserMesh(
       config.zeroX.mesh.bootstrapList,
     );
 
+    console.time(newMeshTimerLabel);
     const mesh = new Mesh(meshConfig);
+
+    const cb = () => {
+      console.timeEnd(zeroXTimerLabel);
+      console.timeEnd(newMeshTimerLabel);
+
+      // Only want to get this once and `once` doesn't seem to be working.
+      zeroX.client.events.off(SubscriptionEventName.ZeroXStatusSynced, cb);
+    }
+
+    zeroX.client.events.on(SubscriptionEventName.ZeroXStatusSynced, cb);
+
     mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
     await mesh.startAsync();
     zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarted, {});

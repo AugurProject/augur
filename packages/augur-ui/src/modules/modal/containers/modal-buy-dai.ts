@@ -10,6 +10,7 @@ import { MODAL_ADD_FUNDS, MODAL_AUGUR_P2P, HELP_CENTER_ADD_FUNDS } from 'modules
 import { OnboardingPaymentIcon } from 'modules/common/icons';
 import { BUY_DAI, track } from 'services/analytics/helpers';
 import { AppStatus } from 'modules/app/store/app-status';
+import { getOnboardingStep } from './modal-p2p-trading';
 
 const mapStateToProps = (state: AppState) => ({});
 
@@ -21,18 +22,22 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
       setModal({ type: MODAL_ADD_FUNDS, cb: callback }),
     showAugurP2PModal: () =>
       setModal({ type: MODAL_AUGUR_P2P }),
-    track: (eventName, payload) => dispatch(track(eventName, payload))
+    track: (eventName, payload) => dispatch(track(eventName, payload)),
+    gotoOnboardingStep: step => setModal({ type: getOnboardingStep(step) }),
   });
 }
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: OnboardingPaymentIcon,
   largeHeader: 'Add Dai to your account',
   currentStep: 3,
+  changeCurrentStep: (step) => {
+    dP.gotoOnboardingStep(step);
+  },
   analyticsEvent: () => dP.track(BUY_DAI, {}),
   linkContent: [
     {
       content:
-        'Buy Dai ($) directly or transfer Dai ($) to your Augur account address to start placing bets.',
+        'Buy Dai ($) directly or transfer Dai ($) to your User account address to start placing bets.',
     },
     {
       content: 'LEARN MORE',

@@ -1,10 +1,7 @@
 import { SDKConfiguration } from '@augurproject/artifacts';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { logger } from '@augurproject/logger';
-import { LoggerLevels } from '@augurproject/logger/build';
+import { EthersSigner } from '@augurproject/contract-dependencies-ethers';
+import { logger, LoggerLevels } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
-import { EthersSigner } from 'contract-dependencies-ethers';
-import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
 import { SupportedProvider } from 'ethereum-types';
 import { JsonRpcProvider } from 'ethers/providers';
 import { ContractEvents } from '../api/ContractEvents';
@@ -12,6 +9,8 @@ import { ZeroX } from '../api/ZeroX';
 import { Augur } from '../Augur';
 import { BaseConnector, EmptyConnector } from '../connector';
 import { SubscriptionEventName } from '../constants';
+import { ContractDependenciesGSN } from '../lib/contract-deps';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { WarpController } from '../warp/WarpController';
 import { Controller } from './Controller';
 import { DB } from './db/DB';
@@ -37,7 +36,6 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
       client.contractEvents.parseLogs,
     );
 
-    let endWarpSyncBlockNumber = await (await db).getSyncStartingBlock() || uploadBlockNumber;
     if (config.warpSync && config.warpSync.enabled) {
       const currentBlock = await provider.getBlock('latest');
       const warpController = new WarpController((await db), client, provider,
@@ -48,7 +46,7 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
       const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
         client.contracts.universe.address);
 
-      endWarpSyncBlockNumber = await warpSyncStrategy.start(warpSyncHash, currentBlock) || endWarpSyncBlockNumber;
+      await warpSyncStrategy.start(warpSyncHash, currentBlock);
 
       client.events.once(SubscriptionEventName.SDKReady, () => {
         // Check on each new block to see if we need to generate a checkpoint.
@@ -59,7 +57,7 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
       });
     }
 
-    const staringSyncBlock = endWarpSyncBlockNumber;
+    const staringSyncBlock =  await (await db).getSyncStartingBlock() || uploadBlockNumber;
     const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
 
     const derivedSyncLabel = 'Syncing rollup and derived DBs';

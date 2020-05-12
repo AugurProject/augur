@@ -114,6 +114,7 @@ export class DerivedDB extends RollbackTable {
     logs: ParsedLog[],
     syncing = false
   ): Promise<number> {
+    await this.waitOnLock(this.HANDLE_MERGE_EVENT_LOCK, 5000, 50);
     let documentsByIdByTopic = null;
     if (logs.length > 0) {
       const documentsById = _.groupBy(logs, this.getIDValue.bind(this));

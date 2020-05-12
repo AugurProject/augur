@@ -36,6 +36,7 @@ import {
   MOBILE_MENU_STATES,
   TRADING_TUTORIAL,
   THEMES,
+  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
@@ -55,6 +56,7 @@ import { MyBetsInnerNav } from 'modules/portfolio/components/common/my-bets-inne
 import { MyBetsProvider } from 'modules/portfolio/store/my-bets';
 import { StatusErrorMessage } from 'modules/common/labels';
 import { MarketsProvider } from 'modules/markets/store/markets';
+import { Ox_STATUS } from '../actions/update-app-status';
 
 interface AppProps {
   notifications: Notification[];
@@ -78,7 +80,6 @@ interface AppProps {
   walletBalances: AccountBalances;
   saveAffilateAddress: Function;
   createFundedGsnWallet: Function;
-  showCreateAccountButton: boolean;
   showMigrateRepButton: boolean;
   whichChatPlugin: string;
 }

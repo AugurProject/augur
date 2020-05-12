@@ -23,7 +23,7 @@ import { getCoreStats } from 'modules/auth/helpers/login-account';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 
 export const Stats = () => {
-  const { loginAccount, isLogged, restoredAccount } = useAppStatusStore();
+  const { isMobile, loginAccount, isLogged, restoredAccount } = useAppStatusStore();
   const stats = getCoreStats(isLogged, loginAccount);
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
@@ -38,7 +38,7 @@ export const Stats = () => {
             <LinearPropertyLabelUnderlineTooltip
               {...totalFunds}
               highlightAlternateBolded
-              id={'totalFunds'}
+              id={isMobile ? 'totalFundsMobile' : 'totalFunds'}
               tipText={TOTAL_FUNDS_TOOLTIP}
             />
             <div>

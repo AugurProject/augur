@@ -78,10 +78,13 @@ export default class FeesLiquidity extends React.Component<
     const fee = this.state.reportingFeePercent.value
     let creatorFee = value;
     if (!isNaN(value)) {
-      creatorFee = value - fee;
+      creatorFee = Number(value) - fee;
       this.setState({ creatorFeePercent: formatPercent(creatorFee < 0 ? 0 : creatorFee) });
     }
-    this.props.onChange("settlementFee", creatorFee);
+    value === "0" ?
+      this.props.onChange("settlementFee", 0)
+    :
+      this.props.onChange("settlementFee", creatorFee)
   }
 
   updateSelectedOrderProperties = (selectedOrderProperties) => {

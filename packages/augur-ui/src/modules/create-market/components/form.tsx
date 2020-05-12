@@ -44,6 +44,7 @@ import {
   NON_EXISTENT,
   ZERO,
   ONE,
+  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
@@ -74,6 +75,7 @@ import {
   dateGreater,
   isValidFee,
   checkForUserInputFilled,
+  isCheckWholeNumber,
 } from 'modules/common/validations';
 import {
   buildformattedDate,
@@ -135,13 +137,13 @@ interface FormProps {
   gsnUnavailable: boolean;
   gsnWalletInfoSeen: boolean;
   initializeGsnWallet: Function;
+  walletStatus: string;
 }
 
 interface FormState {
   blockShown: Boolean;
   contentPages: any[];
   templateFormStarts: number;
-  categoryStats: Getters.Markets.CategoryStats;
   disableCreate: boolean;
 }
 
@@ -172,6 +174,7 @@ interface Validations {
   checkUserInputFilled?: Boolean;
   checkFee?: Boolean;
   checkForAddress?: Boolean;
+  checkWholeNumber?: Boolean;
 }
 
 const draftError = 'ENTER A MARKET QUESTION';
@@ -190,7 +193,6 @@ export default class Form extends React.Component<FormProps, FormState> {
         : TEMPLATE_CONTENT_PAGES
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
-    categoryStats: null,
     disableCreate: false,
   };
 
@@ -504,6 +506,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkForAddress,
       checkFee,
       checkUserInputFilled,
+      checkWholeNumber,
     } = validationsObj;
 
     const checkValidations = [
@@ -533,6 +536,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkUserInputFilled
         ? checkForUserInputFilled(value, newMarket.endTimeFormatted, currentTimestamp)
         : '',
+      checkWholeNumber ? isCheckWholeNumber(value) : '',
     ];
 
     if (label === END_TIME) {
@@ -746,8 +750,9 @@ export default class Form extends React.Component<FormProps, FormState> {
       gsnUnavailable,
       gsnWalletInfoSeen,
       initializeGsnWallet,
+      walletStatus,
     } = this.props;
-    const { contentPages, categoryStats } = this.state;
+    const { contentPages } = this.state;
 
     const { currentStep, validations, uniqueId, marketType } = newMarket;
 
@@ -764,6 +769,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       useBullets,
     } = contentPages[currentStep];
 
+    const disableCreate = walletStatus !== WALLET_STATUS_VALUES.CREATED || this.state.disableCreate;
     let savedDraft = drafts[uniqueId];
     if (savedDraft) savedDraft.validations = [];
     let comparableNewMarket = deepClone<NewMarket>(newMarket);
@@ -938,7 +944,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                   {secondButton === CREATE && (
                     <PrimaryButton
                       text="Create"
-                      disabled={this.state.disableCreate}
+                      disabled={disableCreate}
                       action={() => {
                         gsnUnavailable && !gsnWalletInfoSeen
                         ? initializeGsnWallet(() => setTimeout(() => {

@@ -1,6 +1,4 @@
-import {
-  getNetworkId,
-} from 'modules/contracts/actions/contractCalls';
+import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
 import { closeModal } from 'modules/modal/actions/close-modal';
@@ -24,7 +22,7 @@ import { Action } from 'redux';
 import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
-import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
+import { loginWithInjectedWeb3, getWeb3Provider } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
@@ -124,8 +122,8 @@ export function connectAugur(
     const { modal, loginAccount } = AppStatus.get();
     const windowApp = windowRef as WindowApp;
     const loggedInUser = getLoggedInUserFromLocalStorage();
-    const loggedInAccount = loggedInUser && loggedInUser.address || null;
-    const loggedInAccountType = loggedInUser && loggedInUser.type || null;
+    const loggedInAccount = (loggedInUser && loggedInUser.address) || null;
+    const loggedInAccountType = (loggedInUser && loggedInUser.type) || null;
 
     // Preload Account
     const preloadAccount = accountType => {
@@ -171,7 +169,7 @@ export function connectAugur(
       // Unless DEV, use the provider on window if it exists, otherwise use torus provider
       if (windowRef.web3) {
         // Use window provider
-        provider = new Web3Provider(windowRef.web3.currentProvider);
+        provider = getWeb3Provider(windowRef);
       } else {
         // Use torus provider
 
@@ -179,7 +177,9 @@ export function connectAugur(
         // to conditionally load web3 into the DOM.
         //
         // Note: This also creates a split point in webpack
-        const {default: Torus} = await import(/* webpackChunkName: "torus" */ '@toruslabs/torus-embed');
+        const { default: Torus } = await import(
+          /* webpackChunkName: "torus" */ '@toruslabs/torus-embed'
+        );
         const torus = new Torus({});
 
         const host = getNetwork(networkId);
@@ -195,19 +195,20 @@ export function connectAugur(
         }
         provider = new Web3Provider(torus.provider);
       }
-    }
-    else {
+    } else {
       // In DEV, use local ethereum node
       provider = new JsonRpcProvider(config.ethereum.http);
     }
 
     // Disable mesh/gsn for googleBot
     if (isGoogleBot()) {
-      config = validConfigOrDie(mergeConfig(config, {
-        zeroX: { mesh: { enabled: false }},
-        gsn: { enabled: false },
-        useWarpSync: false,
-      }));
+      config = validConfigOrDie(
+        mergeConfig(config, {
+          zeroX: { mesh: { enabled: false } },
+          gsn: { enabled: false },
+          useWarpSync: false,
+        })
+      );
     }
 
     let sdk: Augur<Provider> = null;
@@ -226,7 +227,8 @@ export function connectAugur(
       }
     }
 
-    let universeId = config.addresses?.Universe || sdk.contracts.universe.address;
+    let universeId =
+      config.addresses?.Universe || sdk.contracts.universe.address;
     if (
       windowApp.localStorage &&
       windowApp.localStorage.getItem &&
@@ -274,7 +276,7 @@ export function initAugur(
   history: History,
   {
     ethereumNodeHttp,
-    ethereumNodeWs, /* unused */
+    ethereumNodeWs /* unused */,
     sdkEndpoint,
     useWeb3Transport,
   }: initAugurParams,
@@ -299,8 +301,8 @@ export function initAugur(
 
     console.log(
       '******** CONFIGURATION ***********\n' +
-      serializeConfig(config) +
-      '\n**********************************'
+        serializeConfig(config) +
+        '\n**********************************'
     );
     // cache fingerprint
     getFingerprint();

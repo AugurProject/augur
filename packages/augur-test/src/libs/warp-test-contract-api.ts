@@ -1,20 +1,17 @@
-import { WSClient } from '@0x/mesh-rpc-client';
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
   Augur,
-  BrowserMesh,
   Connectors,
+  createClient,
   EmptyConnector,
   SubscriptionEventName,
-  ZeroX,
 } from '@augurproject/sdk';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { WarpSyncStrategy } from '@augurproject/sdk/build/state/sync/WarpSyncStrategy';
 import { WarpController } from '@augurproject/sdk/build/warp/WarpController';
-import { TestContractAPI } from '@augurproject/tools';
-import { Account } from '@augurproject/tools';
-import { makeGSNDependencies, makeSigner } from '@augurproject/tools/build';
+import { Account, TestContractAPI } from '@augurproject/tools';
+import { makeSigner } from '@augurproject/tools';
 import { makeDbMock } from '@augurproject/tools/build/libs/MakeDbMock';
 import * as IPFS from 'ipfs';
 
@@ -55,39 +52,21 @@ export class WarpTestContractApi extends TestContractAPI {
     provider: EthersProvider,
     config: SDKConfiguration,
     ipfsServer: Promise<IPFS>,
-    connector: Connectors.BaseConnector = new EmptyConnector(),
-    meshClient: WSClient = undefined,
-    meshBrowser: BrowserMesh = undefined
+    connector: Connectors.BaseConnector = new EmptyConnector()
   ) {
     const signer = await makeSigner(account, provider);
-    const dependencies = await makeGSNDependencies(
-      provider,
-      signer,
-      config,
-      account.address
-    );
-
-    let zeroX = null;
-    if (meshClient || meshBrowser) {
-      zeroX = new ZeroX();
-      zeroX.rpc = meshClient;
-    }
-    const augur = await Augur.create(
-      provider,
-      dependencies,
+    const client = await createClient(
       config,
       connector,
-      zeroX,
+      signer,
+      provider,
       true
     );
-    if (zeroX && meshBrowser) {
-      zeroX.mesh = meshBrowser;
-    }
 
-    const db = await makeDbMock().makeDB(augur);
+    const db = await makeDbMock().makeDB(client);
 
     return new WarpTestContractApi(
-      augur,
+      client,
       provider,
       account,
       db,

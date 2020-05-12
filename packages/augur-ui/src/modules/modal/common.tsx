@@ -374,14 +374,15 @@ export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => 
 interface StepperProps {
   currentStep: number,
   maxSteps: number,
+  changeCurrentStep?: Function;
 }
 
-export const Stepper = ({ currentStep, maxSteps }: StepperProps) => (
+export const Stepper = ({ currentStep, maxSteps, changeCurrentStep = null }: StepperProps) => (
   <div className={Styles.Stepper}>
   {[...Array(maxSteps).keys()]
     .map(key => key + 1)
     .map((step, idx) => (
-    <span key={idx} className={currentStep === step ? Styles.Current : null}></span>
+    <span onClick={() => changeCurrentStep && changeCurrentStep(step)} key={idx} className={currentStep === step ? Styles.Current : null}></span>
   ))}
 </div>
 )
@@ -580,7 +581,7 @@ export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <p>Need help?</p>
     <div>
-      <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your Augur account address.</span>
+      <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your User account address.</span>
       <ExternalLinkButton URL={HELP_CENTER_ADD_FUNDS} label='Learn More' />
     </div>
   </div>
@@ -775,7 +776,7 @@ export const CreditCard = ({
       ].includes(accountMeta.accountType) && (
         <div>
           Buy {fundTypeLabel} with our secure payments partner,{' '}
-          {accountMeta.accountType}. Funds will appear in your Augur account
+          {accountMeta.accountType}. Funds will appear in your User account
           when payment finalizes.
         </div>
       )}

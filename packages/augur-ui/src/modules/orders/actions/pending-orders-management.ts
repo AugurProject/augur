@@ -7,7 +7,7 @@ import {
   convertDisplayPriceToOnChainPrice,
 } from '@augurproject/sdk';
 import { createBigNumber } from 'utils/create-big-number';
-import { TransactionMetadataParams } from 'contract-dependencies-ethers/src';
+import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { AppState } from 'appStore';
 import { AppStatus } from 'modules/app/store/app-status';

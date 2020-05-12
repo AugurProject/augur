@@ -491,8 +491,8 @@ export default function setAlertText(alert: any, callback: Function) {
         const amount = formatRep(
           convertAttoValueToDisplayValue(createBigNumber(alert.params.amount))
         );
-        alert.title = 'REP migrated from V1 to V2';
-        alert.description = `You have migrated ${amount.formatted} V1 REP to V2 REP`;
+        alert.title = 'REP transferred to your address';
+        alert.description = `You have received ${amount.formatted} REP`;
         break;
       default: {
         break;
