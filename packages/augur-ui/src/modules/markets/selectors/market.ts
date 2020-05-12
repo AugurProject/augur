@@ -9,21 +9,14 @@ import {
 import store, { AppState } from 'appStore';
 import { MarketData, OutcomeFormatted } from 'modules/types';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
-import { createSelector } from 'reselect';
 import { Getters } from '@augurproject/sdk';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from '../store/markets';
 
-function selectMarketsDataStateMarket(state, marketId) {
-  const { marketInfos } = Markets.get();
-  return marketInfos[marketId];
-}
-
 export const selectMarket = (marketId): MarketData | null => {
-  const state = store.getState() as AppState;
   const { marketInfos } = Markets.get();
-
+  const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
 
   if (
     !marketId ||
@@ -34,16 +27,8 @@ export const selectMarket = (marketId): MarketData | null => {
     return null;
   }
 
-  return assembleMarket(state, marketId);
+  return convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
 };
-
-const assembleMarket = createSelector(
-  selectMarketsDataStateMarket,
-  (marketData): MarketData => {
-    const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
-    return convertMarketInfoToMarketData(marketData, currentAugurTimestamp * 1000);
-  }
-);
 
 export const selectSortedMarketOutcomes = (marketType, outcomes: OutcomeFormatted[]) => {
   const sortedOutcomes = [...outcomes];

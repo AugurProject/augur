@@ -251,8 +251,7 @@ const MarketView = ({
       loadMarketTradingHistory(marketId);
     }
     if (!isMarketLoading) {
-      if (closeMarketLoadingModalOnly)
-        closeMarketLoadingModalOnly(modalShowing);
+      if (closeMarketLoadingModalOnly) closeMarketLoadingModalOnly(modalShowing);
     }
 
     if (
