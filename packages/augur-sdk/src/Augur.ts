@@ -1,26 +1,53 @@
-import { SDKConfiguration, NetworkId } from '@augurproject/artifacts';
+import { NetworkId, SDKConfiguration } from '@augurproject/artifacts';
+import {
+  EthersSigner,
+  TransactionStatus,
+  TransactionStatusCallback,
+} from '@augurproject/contract-dependencies-ethers';
 import { ContractInterfaces } from '@augurproject/core';
-import { logger } from '@augurproject/logger';
+import { logger, LoggerLevels } from '@augurproject/utils';
+import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
-import { EthersSigner, TransactionStatus, TransactionStatusCallback } from 'contract-dependencies-ethers';
-import { ContractDependenciesGSN } from 'contract-dependencies-gsn';
+
 import { TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
-import { LoggerLevels } from '../../augur-logger/build';
 import { ContractEvents } from './api/ContractEvents';
 import { Contracts } from './api/Contracts';
-import { HotLoading, DisputeWindow, GetDisputeWindowParams } from './api/HotLoading';
+import { GSN } from './api/GSN';
+import {
+  DisputeWindow,
+  GetDisputeWindowParams,
+  HotLoading,
+  HotLoadMarketInfo,
+} from './api/HotLoading';
 import { Liquidity } from './api/Liquidity';
-import { CreateYesNoMarketParams, CreateCategoricalMarketParams, CreateScalarMarketParams, Market } from './api/Market';
+import {
+  CreateCategoricalMarketParams,
+  CreateScalarMarketParams,
+  CreateYesNoMarketParams,
+  Market,
+} from './api/Market';
 import { OnChainTrade } from './api/OnChainTrade';
 import { PlaceTradeDisplayParams, SimulateTradeData, Trade } from './api/Trade';
+import { Uniswap } from './api/Uniswap';
+import { WarpSync } from './api/WarpSync';
 import { ZeroX } from './api/ZeroX';
-import { BaseConnector, EmptyConnector, SingleThreadConnector } from './connector';
-import { isSubscriptionEventName, SubscriptionEventName, TXEventName, NULL_ADDRESS } from './constants';
+import {
+  BaseConnector,
+  EmptyConnector,
+  SingleThreadConnector,
+} from './connector';
+import {
+  isSubscriptionEventName,
+  NULL_ADDRESS,
+  SubscriptionEventName,
+  TXEventName,
+} from './constants';
 import { Provider } from './ethereum/Provider';
 import { TXStatus } from './event-handlers';
 import { augurEmitter, Callback, TXStatusCallback } from './events';
+import { ContractDependenciesGSN } from './lib/contract-deps';
 import { SyncableFlexSearch } from './state/db/SyncableFlexSearch';
 import { Accounts } from './state/getter/Accounts';
 import { Liquidity as LiquidityGetter } from './state/getter/Liquidity';
@@ -32,12 +59,7 @@ import { Universe } from './state/getter/Universe';
 import { Users } from './state/getter/Users';
 import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
-import { WarpSync } from './api/WarpSync';
 import { Subscriptions } from './subscriptions';
-import axios from 'axios';
-import { GSN } from './api/GSN';
-import { Uniswap } from './api/Uniswap';
-
 
 export class Augur<TProvider extends Provider = Provider> {
   syncableFlexSearch: SyncableFlexSearch;
@@ -500,7 +522,7 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(ZeroXOrdersGetters.getZeroXOrder)(params)
   };
 
-  async hotloadMarket(marketId: string) {
+  async hotloadMarket(marketId: string): Promise<HotLoadMarketInfo> {
     return this.hotLoading.getMarketDataParams({ market: marketId });
   }
 

@@ -1,4 +1,4 @@
-import { TransactionMetadataParams } from 'contract-dependencies-ethers/build';
+import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { NewMarket } from 'modules/types';
 import {
   CreateYesNoMarketParams,
@@ -29,7 +29,9 @@ export function constructMarketParams(
   );
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee || 0);
-  const marketEndTime = new BigNumber(newMarket.endTime ? newMarket.endTime : newMarket.endTimeFormatted.timestamp);
+  const marketEndTime = new BigNumber(
+    newMarket.endTime ? newMarket.endTime : newMarket.endTimeFormatted.timestamp
+  );
   const extraInfo = JSON.stringify({
     categories: newMarket.categories,
     description: newMarket.description,
@@ -83,18 +85,14 @@ export function constructMarketParams(
   }
 }
 
-export function getConstructedMarketId(
-  newMarket: NewMarket
-): string {
+export function getConstructedMarketId(newMarket: NewMarket): string {
   const params: TransactionMetadataParams = {
     description: newMarket.description,
   };
   return generateTxParameterId(params);
 }
 
-export function getDeconstructedMarketId(
-  marketParameters
-): string {
+export function getDeconstructedMarketId(marketParameters): string {
   const extraInfo = JSON.parse(marketParameters._extraInfo);
 
   const params: TransactionMetadataParams = {

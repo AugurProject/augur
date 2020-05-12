@@ -1,6 +1,6 @@
-import { TransactionMetadata } from "contract-dependencies-ethers/build";
-import { TXEventName } from "./constants";
-import { ParsedLog } from "@augurproject/types/types";
+import { TXEventName } from './constants';
+import { ParsedLog } from '@augurproject/types/types';
+import { TransactionMetadata } from '@augurproject/contract-dependencies-ethers';
 
 type Address = string;
 type Bytes32 = string;
@@ -268,7 +268,8 @@ export interface ReportingFeeChanged extends FormattedEventLog {
 }
 export interface TradingProceedsClaimed extends FormattedEventLog {
   universe: Address;
-  shareToken; Address;
+  shareToken;
+  Address;
   sender: Address;
   market: Address;
   outcome: string;
@@ -297,4 +298,35 @@ export interface TXStatus {
   reason?: string;
 }
 
-export type SubscriptionType = MarketCreated | InitialReportSubmitted | DisputeCrowdsourcerCreated | DisputeCrowdsourcerContribution | DisputeCrowdsourcerCompleted | InitialReporterRedeemed | DisputeCrowdsourcerRedeemed | ReportingParticipantDisavowed | MarketParticipantsDisavowed | MarketFinalized | MarketMigrated | UniverseForked | UniverseCreated | OrderEvent | CompleteSetsPurchased | CompleteSetsSold | TradingProceedsClaimed | TokensTransferred | TokensMinted | TokensBurned | TokenBalanceChanged | DisputeWindowCreated | InitialReporterTransferred | MarketTransferred | MarketVolumeChanged | MarketOIChanged | ProfitLossChanged | ParticipationTokensRedeemed | TimestampSet | NewBlock | TXStatus;
+export type SubscriptionType =
+  | MarketCreated
+  | InitialReportSubmitted
+  | DisputeCrowdsourcerCreated
+  | DisputeCrowdsourcerContribution
+  | DisputeCrowdsourcerCompleted
+  | InitialReporterRedeemed
+  | DisputeCrowdsourcerRedeemed
+  | ReportingParticipantDisavowed
+  | MarketParticipantsDisavowed
+  | MarketFinalized
+  | MarketMigrated
+  | UniverseForked
+  | UniverseCreated
+  | OrderEvent
+  | CompleteSetsPurchased
+  | CompleteSetsSold
+  | TradingProceedsClaimed
+  | TokensTransferred
+  | TokensMinted
+  | TokensBurned
+  | TokenBalanceChanged
+  | DisputeWindowCreated
+  | InitialReporterTransferred
+  | MarketTransferred
+  | MarketVolumeChanged
+  | MarketOIChanged
+  | ProfitLossChanged
+  | ParticipationTokensRedeemed
+  | TimestampSet
+  | NewBlock
+  | TXStatus;

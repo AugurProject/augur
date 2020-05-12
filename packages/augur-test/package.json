@@ -31,7 +31,6 @@
   "dependencies": {
     "@augurproject/artifacts": "2.0.0-alpha.2",
     "@augurproject/core": "2.0.0-alpha.2",
-    "@augurproject/ethersjs-provider": "2.0.0-alpha.2",
     "@augurproject/sdk": "2.0.0-alpha.2",
     "@augurproject/tools": "2.0.0-alpha.2",
     "ethereumjs-util": "6.1.0",
@@ -45,7 +44,6 @@
     "@types/supertest": "2.0.8",
     "ganache-core": "2.9.1",
     "ipfsd-ctl": "3.0.0",
-    "puppeteer": "1.20.0",
     "supertest": "4.0.2",
     "ts-node": "8.4.1",
     "tsconfig-paths": "3.9.0"

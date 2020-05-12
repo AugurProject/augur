@@ -2287,12 +2287,12 @@ export function addScripts(flash: FlashSession) {
       const traderCount = Number(args.traders || 200);
       const zeroxBatchSize = Number(args.zeroxBatchSize || 25);
       const expiration = new BigNumber(args.expiration as string || 60*60);
-      const { config, zeroX } = setupPerfConfigAndZeroX(this.config, true);
+      const { config } = setupPerfConfigAndZeroX(this.config, true);
       const ethSource = await this.createUser(this.getAccount(), config);
       const accountCreator = new AccountCreator(BASE_MNEMONIC);
       const traderAccounts = accountCreator.traders(traderCount);
       const makerAccounts = accountCreator.marketMakers(makerCount);
-      const traders = await ContractAPI.wrapUsers(traderAccounts, ethSource.provider, config, undefined, zeroX);
+      const traders = await ContractAPI.wrapUsers(traderAccounts, ethSource.provider, config);
 
       await waitForSync(ethSource);
       const markets = await getAllMarkets(ethSource, makerAccounts);
@@ -2346,13 +2346,13 @@ export function addScripts(flash: FlashSession) {
       const waitTimeForZeroX = Number(args.waitTimeFor0x) || 90000;
       const outcomes = JSON.parse(args.outcomes as string || '[1,2]');
 
-      const { config, zeroX } = setupPerfConfigAndZeroX(this.config, true);
+      const { config } = setupPerfConfigAndZeroX(this.config, true);
       const ethSource = await this.createUser(this.getAccount(), config);
       const accountCreator = new AccountCreator(BASE_MNEMONIC);
       const traderAccounts = accountCreator.traders(traderCount);
       const makerAccounts = accountCreator.marketMakers(makerCount);
       const connector = ethSource.augur.connector
-      const traders = await ContractAPI.wrapUsers(traderAccounts, ethSource.provider, config, connector, zeroX);
+      const traders = await ContractAPI.wrapUsers(traderAccounts, ethSource.provider, config, connector);
 
       await waitForSync(ethSource);
       console.log('Waiting for 0x orders to arrive');
