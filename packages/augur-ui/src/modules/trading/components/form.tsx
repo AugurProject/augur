@@ -30,17 +30,15 @@ import {
 } from '@augurproject/sdk';
 import {
   CancelTextButton,
-  TextButtonFlip,
   SecondaryButton,
 } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
-import { convertUnixToFormattedDate, getDaysRemaining } from 'utils/format-date';
+import { convertUnixToFormattedDate, calcOrderExpirationDaysRemaining } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import { calcPercentageFromPrice, calcPriceFromPercentage } from 'utils/format-number';
 import Media from 'react-media';
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10 ** 17);
-const DEFAULT_EXPIRATION_DAYS = 0;
 
 enum ADVANCED_OPTIONS {
   GOOD_TILL = '0',
@@ -190,7 +188,7 @@ class Form extends Component<FromProps, FormState> {
       lastInputModified: '',
       errorCount: 0,
       advancedOption: advancedDropdownOptions[0].value,
-      fastForwardTime: getDaysRemaining(this.props.endTime, this.props.currentTimestamp),
+      fastForwardTime: calcOrderExpirationDaysRemaining(this.props.endTime, this.props.currentTimestamp),
       expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
       percentage: '',
       confirmationTimeEstimation: 0,
@@ -793,7 +791,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.EXPIRATION_DATE]: null,
       [this.INPUT_TYPES.SELECTED_NAV]: selectedNav,
       [this.INPUT_TYPES.EST_DAI]: '',
-      fastForwardTime: getDaysRemaining(this.props.endTime, this.props.currentTimestamp),
+      fastForwardTime: calcOrderExpirationDaysRemaining(this.props.endTime, this.props.currentTimestamp),
       expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
       advancedOption: advancedDropdownOptions[0],
       errors: {
@@ -1148,13 +1146,7 @@ class Form extends Component<FromProps, FormState> {
                 onChange={value => {
                   const timestamp =
                     value === ADVANCED_OPTIONS.EXPIRATION
-                      ? moment
-                          .unix(currentTimestamp)
-                          .add(
-                            DEFAULT_EXPIRATION_DAYS,
-                            EXPIRATION_DATE_OPTIONS.DAYS
-                          )
-                          .unix()
+                      ? calcOrderExpirationDaysRemaining(this.props.endTime, this.props.currentTimestamp)
                       : null;
                   this.updateAndValidate(
                     this.INPUT_TYPES.EXPIRATION_DATE,
@@ -1166,7 +1158,7 @@ class Form extends Component<FromProps, FormState> {
                   });
                   this.setState({
                     advancedOption: value,
-                    fastForwardTime: getDaysRemaining(this.props.endTime, this.props.currentTimestamp),
+                    fastForwardTime: calcOrderExpirationDaysRemaining(this.props.endTime, this.props.currentTimestamp),
                     expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
                   });
                 }}
@@ -1216,7 +1208,7 @@ class Form extends Component<FromProps, FormState> {
                       onChange={value => {
                         const fastForwardTime = this.state.fastForwardTime
                           ? this.state.fastForwardTime
-                          : getDaysRemaining(this.props.endTime, this.props.currentTimestamp);
+                          : calcOrderExpirationDaysRemaining(this.props.endTime, this.props.currentTimestamp);
                         this.updateAndValidate(
                           this.INPUT_TYPES.EXPIRATION_DATE,
                           moment

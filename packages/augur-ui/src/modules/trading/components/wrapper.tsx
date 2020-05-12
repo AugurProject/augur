@@ -25,6 +25,7 @@ import { MarketData, OutcomeFormatted } from 'modules/types';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { formatDai } from 'utils/format-number';
 import { Moment } from 'moment';
+import { getDaysRemaining, getOrderExpirationTime as calcOrderExpirationTime } from 'utils/format-date';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
@@ -63,6 +64,7 @@ interface WrapperProps {
   availableDai: number;
   gsnUnavailable: boolean;
   initializeGsnWallet: Function;
+  endTime: number;
 }
 
 interface WrapperState {
@@ -220,7 +222,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   clearOrderForm(wholeForm = true) {
     const trade = Wrapper.getDefaultTrade(this.props);
     const expirationDate =
-      this.props.selectedOrderProperties.expirationDate || null;
+      this.props.selectedOrderProperties.expirationDate || calcOrderExpirationTime(this.props.endTime, this.props.currentTimestamp);
     const updatedState: any = wholeForm
       ? {
           orderPrice: '',

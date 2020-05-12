@@ -43,6 +43,7 @@ export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;
 export const TX_CHECK_BLOCKNUMBER_LIMIT = 15;
+export const DAYS_AFTER_END_TIME_ORDER_EXPIRATION = 7;
 export const UNIVERSE_ID = '0xf69b5';
 // network id to names map
 export const NETWORK_NAMES = {
