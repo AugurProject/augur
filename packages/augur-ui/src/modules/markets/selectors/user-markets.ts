@@ -2,7 +2,6 @@ import { createSelector } from "reselect";
 import {
   selectLoginAccountAddress,
   selectMarketTradingHistoryState,
-  selectPendingQueue,
   selectPendingLiquidityOrders
 } from "appStore/select-state";
 import { CREATE_MARKET, ZERO } from 'modules/common/constants';
@@ -11,15 +10,16 @@ import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-
 import { isSameAddress } from "utils/isSameAddress";
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { formatDate } from "utils/format-date";
+import { AppStatus } from "modules/app/store/app-status";
 
 export const selectAuthorOwnedMarkets = createSelector(
   selectAllMarkets,
-  selectPendingQueue,
   selectPendingLiquidityOrders,
   selectMarketTradingHistoryState,
   selectLoginAccountAddress,
-  (allMarkets, pendingQueue, pendingLiquidityOrders, marketTradingHistory, authorId) => {
+  (allMarkets, pendingLiquidityOrders, marketTradingHistory, authorId) => {
     if (!allMarkets || !authorId) return null;
+    const { pendingQueue } = AppStatus.get();
     let filteredMarkets = allMarkets.filter(
       market => isSameAddress(market.author, authorId)
     );

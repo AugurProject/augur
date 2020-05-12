@@ -20,7 +20,6 @@ import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import {
   selectUserMarketOpenOrders,
   selectCancelingOrdersState,
-  selectPendingOrdersState,
 } from 'appStore/select-state';
 import { createSelector } from 'reselect';
 import { AppStatus } from 'modules/app/store/app-status';

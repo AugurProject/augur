@@ -24,7 +24,7 @@ export const selectLoginAccountTotalsState = (state: AppState) => AppStatus.get(
 export const selectMarketsListsState = (state: AppState): MarketsList =>
   state.marketsList;
 export const selectCancelingOrdersState = (state: AppState) =>
-  (state.pendingQueue && state.pendingQueue[CANCELORDER]) || [];
+  AppStatus.get().pendingQueue[CANCELORDER] || [];
 export const selectMarketTradingHistoryState = (state: AppState) =>
   state.marketTradingHistory;
 export const selectPendingLiquidityOrders = (state: AppState) =>
@@ -32,7 +32,6 @@ export const selectPendingLiquidityOrders = (state: AppState) =>
 export const selectFilledOrders = (state: AppState) => state.filledOrders;
 export const selectUserMarketOpenOrders = (state: AppState) =>
   state.userOpenOrders;
-export const selectPendingQueue = (state: AppState) => state.pendingQueue;
 
 export const selectLoginAccountAddress = createSelector(
   selectLoginAccountState,
