@@ -33,7 +33,7 @@ import {
   SecondaryButton,
 } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
-import { convertUnixToFormattedDate, calcOrderExpirationDaysRemaining } from 'utils/format-date';
+import { convertUnixToFormattedDate, calcOrderExpirationDaysRemaining, calcOrderExpirationTime } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import { calcPercentageFromPrice, calcPriceFromPercentage } from 'utils/format-number';
 import Media from 'react-media';
@@ -196,7 +196,7 @@ class Form extends Component<FromProps, FormState> {
 
     this.updateAndValidate(
       this.INPUT_TYPES.EXPIRATION_DATE,
-      this.props.endTime,
+      calcOrderExpirationTime(this.props.endTime, this.props.currentTimestamp),
     );
 
     this.changeOutcomeDropdown = this.changeOutcomeDropdown.bind(this);
