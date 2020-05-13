@@ -79,7 +79,7 @@ import {
 } from 'utils/format-date';
 import { Getters } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
-import { Markets } from 'modules/markets/store/markets';
+import { Markets, useMarketsStore } from 'modules/markets/store/markets';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 
 interface MarketViewProps {
@@ -135,6 +135,7 @@ const MarketView = ({
     canHotload,
     blockchain: { currentAugurTimestamp },
   } = useAppStatusStore();
+  const { marketInfos, orderBooks, actions: { updateOrderBook } } = useMarketsStore();
 
   const node = useRef(null);
 
@@ -171,7 +172,6 @@ const MarketView = ({
       orderBook: TUTORIAL_ORDER_BOOK,
     };
   } else {
-    const { marketInfos } = Markets.get();
     market = defaultMarket || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);;
   }
   if (market) {
@@ -180,7 +180,6 @@ const MarketView = ({
     }
   
     if (market && !tradingTutorial && !isPreview) {
-      const { orderBooks } = Markets.get();
       orderBook = (orderBooks[marketId] || {}).orderBook;
     }
   
@@ -263,7 +262,7 @@ const MarketView = ({
       zeroXstatus === ZEROX_STATUSES.SYNCED
     ) {
       loadMarketsInfo(marketId);
-      loadMarketOrderBook(marketId);
+      updateOrderBook(marketId, null, loadMarketOrderBook(marketId));
       loadMarketTradingHistory(marketId);
     }
 
@@ -315,7 +314,7 @@ const MarketView = ({
       !preview &&
       zeroXstatus === ZEROX_STATUSES.SYNCED
     ) {
-      loadMarketOrderBook(marketId);
+      updateOrderBook(marketId, null, loadMarketOrderBook(marketId));
       loadMarketsInfo(marketId);
       loadMarketTradingHistory(marketId);
     }

@@ -14,6 +14,7 @@ import {
   loadMarketOrderBook,
 } from 'modules/orders/helpers/load-market-orderbook';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
 const mapStateToProps = () => ({});
 

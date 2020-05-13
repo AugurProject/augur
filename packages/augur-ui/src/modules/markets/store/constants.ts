@@ -11,7 +11,7 @@ export const DEFAULT_MARKETS_STATE = {
 };
 
 export const STUBBED_MARKETS_ACTIONS = {
-  updateOrderBook: (marketId, orderBook) => {},
+  updateOrderBook: (marketId, orderBook, payload) => {},
   clearOrderBook: () => {},
   updateMarketsData: (marketInfos) => {},
   removeMarket: (marketId) => {},

@@ -13,6 +13,7 @@ import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
+import { MARKETS_ACTIONS } from 'modules/markets/store/constants';
 
 export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
