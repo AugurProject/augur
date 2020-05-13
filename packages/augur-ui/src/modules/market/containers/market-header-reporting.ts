@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { MarketHeaderReporting } from 'modules/market/components/market-header/market-header-reporting';
 import { sendFinalizeMarket } from 'modules/markets/actions/finalize-market';
-import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import {
   MODAL_CLAIM_MARKETS_PROCEEDS,
@@ -20,7 +19,6 @@ const mapStateToProps = (state, ownProps) => {
   const disputeInfoStakes = market.disputeInfo && market.disputeInfo.stakes;
   const marketId = ownProps.market ? ownProps.market.id : ownProps.marketId;
   return {
-    currentTimestamp: selectCurrentTimestampInSeconds(state) || 0,
     market,
     isForking: !!state.universe.forkingInfo,
     isForkingMarket: state.universe.forkingInfo && state.universe.forkingInfo.forkingMarket === market.id,
@@ -31,10 +29,10 @@ const mapStateToProps = (state, ownProps) => {
       : isSameAddress(market.designatedReporter, state.loginAccount.address),
     tentativeWinner: disputeInfoStakes && disputeInfoStakes.find(stake => stake.tentativeWinning) || {},
     canClaimProceeds:
-      state.accountPositions[ownProps.marketId] &&
-      state.accountPositions[ownProps.marketId].tradingPositionsPerMarket &&
+      state.accountPositions[marketId] &&
+      state.accountPositions[marketId].tradingPositionsPerMarket &&
       createBigNumber(
-        state.accountPositions[ownProps.marketId].tradingPositionsPerMarket
+        state.accountPositions[marketId].tradingPositionsPerMarket
           .unclaimedProceeds
       ).gt(ZERO)
         ? true

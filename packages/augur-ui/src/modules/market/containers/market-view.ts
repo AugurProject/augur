@@ -24,6 +24,7 @@ import {
   TUTORIAL_TRADING_HISTORY,
   SCALAR_MODAL_SEEN,
   ZEROX_STATUSES,
+  MODAL_MARKET_NOT_FOUND,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { getAddress } from 'ethers/utils/address';
@@ -49,7 +50,15 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const { connection, universe, modal, loginAccount, orderBooks, appStatus } = state;
   const zeroXstatus = appStatus[Ox_STATUS];
   const queryId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
-  const marketId = queryId === TRADING_TUTORIAL ? queryId : getAddress(queryId);
+  let marketId = null;
+  let marketNotFound = false;
+  try {
+    marketId = queryId === TRADING_TUTORIAL ? queryId : getAddress(queryId);
+  } catch (e) {
+    console.error('MarketId is not a valid ethereum address');
+    marketNotFound = true;
+  }
+
   const queryOutcomeId = parseQuery(ownProps.location.search)[
     OUTCOME_ID_PARAM_NAME
   ];
@@ -97,6 +106,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
       canHotload: connection.canHotload,
       marketId,
       marketReviewSeen,
+      marketNotFound,
     };
   }
 
@@ -164,6 +174,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(
       updateModal({
         type: MODAL_MARKET_LOADING,
+      })
+    ),
+  showMarketNotFound: (history) =>
+    dispatch(
+      updateModal({
+        type: MODAL_MARKET_NOT_FOUND,
+        history,
       })
     ),
   closeMarketLoadingModalOnly: (type: string) => type === MODAL_MARKET_LOADING && dispatch(closeModal()),

@@ -29,7 +29,6 @@ import {
   TUTORIAL_PRICE,
   TRADING_TUTORIAL_OUTCOMES,
   TUTORIAL_OUTCOME,
-  ZEROX_STATUSES,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -51,14 +50,13 @@ import { TutorialPopUp } from '../common/tutorial-pop-up';
 import { formatShares, formatDai } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { createBigNumber } from 'utils/create-big-number';
-import { TXEventName } from '@augurproject/sdk/src';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
-import { Getters } from '@augurproject/sdk';
+import { Getters, HotLoadMarketInfo, TXEventName } from '@augurproject/sdk';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
-import { StatusErrorMessage } from 'modules/common/labels';
+import { hotloadMarket } from 'modules/markets/actions/load-markets';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -93,6 +91,8 @@ interface MarketViewProps {
   clearOrderBook: Function;
   zeroXstatus: string;
   hasZeroXError: boolean;
+  marketNotFound: boolean;
+  showMarketNotFound: Function;
 }
 
 export interface DefaultOrderPropertiesMap {
@@ -112,6 +112,7 @@ interface MarketViewState {
   introShowing: boolean;
   tutorialError: string;
   hasShownScalarModal: boolean;
+  hotPromise: Promise<HotLoadMarketInfo>;
 }
 
 export default class MarketView extends Component<
@@ -158,6 +159,7 @@ export default class MarketView extends Component<
           : undefined,
       fixedPrecision: 4,
       tutorialError: '',
+      hotPromise: null,
       selectedOutcomeProperties: {
         1: {
           ...this.DEFAULT_ORDER_PROPERTIES,
@@ -203,9 +205,11 @@ export default class MarketView extends Component<
       window.scrollTo(0, 1);
     }
 
-    const { isMarketLoading, showMarketLoadingModal } = this.props;
+    const { isMarketLoading, showMarketLoadingModal, marketNotFound, showMarketNotFound, history } = this.props;
 
-    if (isMarketLoading) {
+    if (marketNotFound) {
+      showMarketNotFound(history);
+    } else if (isMarketLoading) {
       showMarketLoadingModal();
     }
   }
@@ -472,6 +476,7 @@ export default class MarketView extends Component<
       canHotload,
       orderBook,
       zeroXstatus,
+      showMarketNotFound,
     } = this.props;
     const {
       selectedOutcomeId,
@@ -483,9 +488,15 @@ export default class MarketView extends Component<
       tutorialStep,
       tutorialError,
       pane,
+      hotPromise,
     } = this.state;
     if (isMarketLoading) {
-      if (canHotload && !tradingTutorial) hotloadMarket(marketId);
+      if (canHotload && !tradingTutorial && marketId && !hotPromise) {
+        const newHotPromise = hotloadMarket(marketId).then(market => {
+          if (!market) showMarketNotFound(history);
+        });
+        this.setState({ hotPromise: newHotPromise });
+      }
       return (
         <div
           ref={node => {

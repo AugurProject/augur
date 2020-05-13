@@ -281,11 +281,11 @@ const loadReportingMarkets = (
 };
 
 const hotLoadMarket = _.throttle(marketId => {
-  const augur = augurSdk.get();
-  augur.hotloadMarket(marketId);
   console.log('Hot Loading Market', marketId);
+  const augur = augurSdk.get();
+  return augur.hotloadMarket(marketId);
 }, 1000, { leading: true });
 
 export const hotloadMarket = (marketId) => {
-  hotLoadMarket(marketId);
+  return hotLoadMarket(marketId);
 }

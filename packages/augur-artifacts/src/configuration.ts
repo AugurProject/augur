@@ -39,6 +39,8 @@ export interface SDKConfiguration {
   }
   gsn?: {
     enabled: boolean,
+    minDaiForSignerETHBalanceInDAI?: number,
+    desiredSignerBalanceInETH?: number,
   },
   zeroX?: {
     rpc?: {
@@ -209,7 +211,9 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     exchangeRateBufferMultiplier: 1.075,
   },
   gsn: {
-    enabled: true
+    enabled: true,
+    minDaiForSignerETHBalanceInDAI: 40,
+    desiredSignerBalanceInETH: .04,
   },
   zeroX: {
     rpc: {
