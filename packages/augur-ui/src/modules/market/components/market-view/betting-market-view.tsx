@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { getAddress } from 'ethers/utils/address';
@@ -13,8 +13,9 @@ import {
   BetsIcon,
   PositionIcon,
 } from 'modules/common/icons';
-import { REPORTING_STATE } from 'modules/common/constants';
+import { REPORTING_STATE, MODAL_MARKET_LOADING } from 'modules/common/constants';
 import { OutcomeGroup } from 'modules/market-cards/common';
+import { AppStatus } from 'modules/app/store/app-status';
 
 interface BettingMarketViewProps {
   location: Location;
@@ -24,6 +25,11 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
   const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];
   const marketId = getAddress(queryId);
   const market = selectMarket(marketId);
+
+  if (!market) {
+    return <div/>;
+  }
+
   const {
     endTimeFormatted,
     settlementFeePercent,
@@ -78,7 +84,7 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
           info
           tooltipText="event expiration date"
         />
-        <Subheaders header="resolution rules" subheader={details} />
+        {details?.length > 0 && <Subheaders header="resolution rules" subheader={details} />}
       </div>
       <div>
         <InfoTicket
