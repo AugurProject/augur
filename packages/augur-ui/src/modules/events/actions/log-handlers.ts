@@ -76,6 +76,7 @@ import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 import { logger } from '@augurproject/utils';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 
 const handleAlert = (
   log: any,
@@ -446,7 +447,10 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
       log.outcome,
       log.market
     );
-    dispatch(removePendingOrder(pendingOrderId, log.market));
+    const { pendingOrders } = PendingOrders.get();
+    if (pendingOrders[pendingOrderId]) {
+      dispatch(removePendingOrder(pendingOrderId, log.market));
+    }
   }
 };
 

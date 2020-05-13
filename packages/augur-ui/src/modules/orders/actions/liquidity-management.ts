@@ -152,20 +152,22 @@ const createZeroXLiquidityOrders = async (
     // set all orders to pending before processing them.
     for (i; i < orders.length; i++) {
       const o: LiquidityOrder = orders[i];
-      const properties = processLiquidityOrder(
-        {
-          outcomeId: o.outcomeId,
-          orderPrice: createBigNumber(o.price).toString(),
-          orderType: o.type,
+      if (o.status !== TXEventName.Pending) {
+        const properties = processLiquidityOrder(
+          {
+            outcomeId: o.outcomeId,
+            orderPrice: createBigNumber(o.price).toString(),
+            orderType: o.type,
+            eventName: TXEventName.Pending,
+          },
+          market
+        );
+        PendingOrders.actions.updateLiquidityStatus({
+          txParamHash: properties.transactionHash,
+          ...properties,
           eventName: TXEventName.Pending,
-        },
-        market
-      );
-      PendingOrders.actions.updateLiquidityStatus({
-        txParamHash: properties.transactionHash,
-        ...properties,
-        eventName: TXEventName.Pending,
-      });
+        });
+      }
     }
     for (i = 0; i < orders.length; i++) {
       const o: LiquidityOrder = orders[i];
