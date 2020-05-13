@@ -1,8 +1,9 @@
 import moment from 'moment';
 import { DateFormattedObject, TimezoneDateObject, DateTimeComponents } from 'modules/types';
 import { createBigNumber } from './create-big-number';
-import { ZERO } from 'modules/common/constants';
+import { ZERO, DAYS_AFTER_END_TIME_ORDER_EXPIRATION } from 'modules/common/constants';
 import { getMaxMarketEndTime } from 'modules/contracts/actions/contractCalls';
+import { number } from 'prop-types';
 
 const months = [
   'January',
@@ -379,4 +380,23 @@ export function getDurationBetween(timestamp1, timestamp2) {
   const timestamp1Moment = moment.unix(timestamp1);
   const timestamp2Moment = moment.unix(timestamp2);
   return moment.duration(timestamp1Moment.diff(timestamp2Moment));
+}
+
+export function calcOrderExpirationTime(endTime: number, currentTime: number) {
+  // one week in the future if market endTime has already passed
+  if (endTime < currentTime)
+    return moment
+      .unix(currentTime)
+      .add(DAYS_AFTER_END_TIME_ORDER_EXPIRATION, 'days')
+      .unix();
+  return endTime;
+}
+
+export function calcOrderExpirationDaysRemaining(
+  endTime: number,
+  currentTime: number
+) {
+  const remaining = getDaysRemaining(endTime, currentTime);
+  if (remaining <= 0) return DAYS_AFTER_END_TIME_ORDER_EXPIRATION;
+  return remaining;
 }
