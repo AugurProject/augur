@@ -154,7 +154,6 @@ const MarketView = ({
         : market
         ? market.defaultSelectedOutcomeId
         : undefined,
-    fixedPrecision: 4,
     tutorialError: '',
   });
 
@@ -471,8 +470,8 @@ const MarketView = ({
     selectedOutcomeId === null || selectedOutcomeId === undefined
       ? market && market.defaultSelectedOutcomeId
       : selectedOutcomeId;
-  if (orderBook && orderBook[outcomeId]) {
-    outcomeOrderBook = orderBook[outcomeId];
+  if (orderBook && orderBook[outcomeIdSet]) {
+    outcomeOrderBook = orderBook[outcomeIdSet];
   }
 
   if (preview && !tradingTutorial) {
