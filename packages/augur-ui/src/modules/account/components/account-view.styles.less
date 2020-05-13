@@ -154,7 +154,7 @@
     grid-auto-rows: @size-160 @size-10 auto;
     grid-gap: @size-24;
     grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
-    grid-template-rows: none;
+    grid-template-rows: auto;
     min-height: unset;
     width: 100%;
 
@@ -229,14 +229,15 @@
     > div:nth-of-type(3) {
       grid-column: ~"2/3";
       grid-row: ~"2/11";
-      min-height: @size-820;
-      max-height: @size-820;
+      min-height: @size-775;
+      max-height: @size-775;
     }
 
     > div:nth-of-type(4) {
       grid-column: ~"2/3";
       grid-row: ~"11/24";
-      min-height: @size-550;
+      min-height: @size-540;
+      max-height: @size-540;
     }
 
     > div:nth-of-type(5) {
