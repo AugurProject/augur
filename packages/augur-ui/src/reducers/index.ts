@@ -1,7 +1,6 @@
 import accountPositions from 'modules/positions/reducers/account-positions';
 import marketTradingHistory from 'modules/markets/reducers/market-trading-history';
 import newMarket from 'modules/markets/reducers/new-market';
-import pendingLiquidityOrders from 'modules/orders/reducers/liquidity-orders';
 import analytics from 'modules/app/reducers/analytics';
 import filledOrders from 'modules/orders/reducers/filled-orders';
 import userOpenOrders from 'modules/orders/reducers/open-orders';
@@ -12,7 +11,6 @@ import initialized3box from 'modules/global-chat/reducers/initialized-3box'
 import {
   AccountPosition,
   NewMarket,
-  LiquidityOrders,
   FilledOrders,
   OpenOrders,
   Drafts,
@@ -29,7 +27,6 @@ export function createReducer() {
     accountPositions,
     marketTradingHistory,
     newMarket,
-    pendingLiquidityOrders,
     filledOrders,
     userOpenOrders,
     drafts,
@@ -47,7 +44,6 @@ export interface AppStateInterface {
   config: SDKConfiguration;
   marketTradingHistory: Getters.Trading.MarketTradingHistory;
   newMarket: NewMarket;
-  pendingLiquidityOrders: LiquidityOrders;
   filledOrders: FilledOrders;
   userOpenOrders: OpenOrders;
   drafts: Drafts;

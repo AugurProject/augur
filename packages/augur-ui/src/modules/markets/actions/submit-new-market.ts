@@ -1,7 +1,6 @@
 import { ZERO } from 'modules/common/constants';
 import noop from 'utils/noop';
 import { sortOrders } from 'modules/orders/helpers/liquidity';
-import { addMarketLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 import { AppState } from 'appStore';
 import { NodeStyleCallback, NewMarket, CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -22,6 +21,7 @@ import {
   UserInputDateTime,
 } from '@augurproject/artifacts';
 import { AppStatus } from 'modules/app/store/app-status';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 
 export function submitNewMarket(
   market: NewMarket,
@@ -52,12 +52,10 @@ export function submitNewMarket(
     }
 
     if (!!hasOrders) {
-      dispatch(
-        addMarketLiquidityOrders({
-          txParamHash: hashId,
-          liquidityOrders: sortOrderBook,
-        })
-      );
+      PendingOrders.actions.addLiquidity({
+        txParamHash: hashId,
+        liquidityOrders: sortOrderBook,
+      });
     }
     let extraInfoTemplate = null;
     if (market.template) {
@@ -139,12 +137,10 @@ export function retrySubmitMarket(
     const txParamHash = getDeconstructedMarketId(market.txParams);
 
     if (hasOrders) {
-      dispatch(
-        addMarketLiquidityOrders({
-          txParamHash,
-          liquidityOrders: sortOrderBook,
-        })
-      );
+      PendingOrders.actions.addLiquidity({
+        txParamHash,
+        liquidityOrders: sortOrderBook,
+      });
     }
     let err = null;
     try {

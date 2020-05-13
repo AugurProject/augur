@@ -4,8 +4,6 @@ import { UnsignedOrders } from 'modules/modal/unsigned-orders';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import {
-  clearMarketLiquidityOrders,
-  removeLiquidityOrder,
   sendLiquidityOrder,
   startOrderSending,
 } from 'modules/orders/actions/liquidity-management';
@@ -47,9 +45,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   startOrderSending: (options: CreateLiquidityOrders) =>
     dispatch(startOrderSending(options)),
-  clearMarketLiquidityOrders: (marketId: string) =>
-    dispatch(clearMarketLiquidityOrders(marketId)),
-  removeLiquidityOrder: data => dispatch(removeLiquidityOrder(data)),
+  clearMarketLiquidityOrders: (txParamHash: string) =>
+    PendingOrders.actions.clearAllMarketLiquidity({ txParamHash }),
+  removeLiquidityOrder: data => PendingOrders.actions.removeLiquidity(data),
   sendLiquidityOrder: (data: object) => dispatch(sendLiquidityOrder(data)),
 });
 
