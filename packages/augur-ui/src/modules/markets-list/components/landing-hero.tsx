@@ -13,8 +13,7 @@ export const LandingHero = ({showSignup}: LandingHeroProps) => {
       <div>
         <h1>The world’s most accessible, no-limit betting exchange</h1>
         <span>
-          Bet how much you want, from anywhere in the world, on sports,
-          politics, finance and more.
+          Bet how much you want, on sports, finance, world events and more.
         </span>
         <div>
           <PrimaryButton
