@@ -49,12 +49,14 @@ describe('3rd Party :: ZeroX :: ', () => {
   describe('with gsn', () => {
     beforeAll(async () => {
       const johnConnector = new Connectors.DirectConnector();
+
       john = await TestContractAPI.userWrapper(
         ACCOUNTS[0],
         providerJohn,
         config,
-        johnConnector
+        johnConnector,
       );
+      john.augur.zeroX.rpc = meshClient;
       johnConnector.initialize(john.augur, john.db);
 
       await john.approve();
@@ -69,6 +71,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         config,
         maryConnector
       );
+      mary.augur.zeroX.rpc = meshClient;
       maryConnector.initialize(mary.augur, await mary.db);
 
       await mary.approve();
@@ -237,6 +240,7 @@ describe('3rd Party :: ZeroX :: ', () => {
 
       await expect(johnShares.toNumber()).toEqual(10 ** 18);
       await expect(maryShares.toNumber()).toEqual(10 ** 18);
+
     }, 240000);
 
     test('Trade :: simulateTrade', async () => {
@@ -327,6 +331,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         config,
         connectorJohn
       );
+      john.augur.zeroX.rpc = meshClient;
       connectorJohn.initialize(john.augur, john.db);
       await john.approve();
     }, 120000);
