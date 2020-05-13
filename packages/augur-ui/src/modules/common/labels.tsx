@@ -1473,7 +1473,7 @@ export const InitializeWalletModalNotice = connect(
 
 const mapStateToPropsEthReserve = (state: AppState, ownProps) => {
   const gasLimit = ownProps.gasLimit;
-  const aboveCutoff = createBigNumber(state.loginAccount.balances.dai).isGreaterThan(createBigNumber(state.env.config.gsn.minDaiForSignerETHBalanceInDAI * 10**18))
+  const aboveCutoff = createBigNumber(state.loginAccount.balances.dai).isGreaterThan(createBigNumber(state.env.gsn.minDaiForSignerETHBalanceInDAI * 10**18))
   if (!aboveCutoff) {
     return {
       show: false
