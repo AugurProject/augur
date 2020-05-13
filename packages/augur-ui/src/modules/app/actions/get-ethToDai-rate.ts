@@ -24,7 +24,7 @@ export const getEthToDaiRate = (
   }
 };
 
-export const ethToDai = (ethAmount: number, ethToDaiRate: BigNumber) => {
+export const ethToDai = (ethAmount: number, ethToDaiRate: BigNumber): FormattedNumber => {
   if (!ethToDaiRate) return formatDaiEstimate(0);
   return formatDaiEstimate(ethToDaiRate.times(ethAmount));
 };
