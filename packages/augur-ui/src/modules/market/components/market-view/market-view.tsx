@@ -175,11 +175,10 @@ const MarketView = ({
     market = defaultMarket || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);;
   }
   if (market) {
-    if (market && (tradingTutorial || isPreview)) {
+    if (tradingTutorial || isPreview) {
       orderBook = market.orderBook;
     }
-  
-    if (market && !tradingTutorial && !isPreview) {
+    if (!tradingTutorial && !isPreview) {
       orderBook = (orderBooks[marketId] || {}).orderBook;
     }
   
@@ -221,10 +220,7 @@ const MarketView = ({
   const isConnected = connected && universe.id != null;
 
   const scalarModalSeen =
-    Boolean(modal.type) ||
-    (windowRef &&
-      windowRef.localStorage &&
-      windowRef.localStorage.getItem(SCALAR_MODAL_SEEN) === 'true');
+    Boolean(modal.type) || windowRef?.localStorage?.getItem(SCALAR_MODAL_SEEN) === 'true';
 
   const {
     selectedOutcomeId,
