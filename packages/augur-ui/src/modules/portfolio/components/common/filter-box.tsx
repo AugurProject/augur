@@ -137,7 +137,9 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   return (
     <QuadBox
       title={title}
-      leftContent={<div className={Styles.Count}>{filteredData.length}</div>}
+      leftContent={filteredData.length > 0 &&
+        <div className={Styles.Count}>{filteredData.length}</div>
+      }
       customClass={customClass}
       switchHeaders={true}
       showFilterSearch={true}

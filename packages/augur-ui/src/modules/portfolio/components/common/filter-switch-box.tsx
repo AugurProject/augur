@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import { NameValuePair, Market } from 'modules/portfolio/types';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
+import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
 
 export interface MarketsByReportingState {
   [type: string]: Array<Market>;
@@ -113,6 +114,9 @@ export default class FilterSwitchBox extends React.Component<
     return (
       <QuadBox
         title={title}
+        leftContent={filteredData.length > 0 &&
+          <div className={Styles.Count}>{filteredData.length}</div>
+        }
         showFilterSearch={showFilterSearch}
         search={search}
         customClass={customClass}
