@@ -133,7 +133,7 @@ jobs:
       - PreFlightCheck
     variables:
       JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
-    condition:  eq(variables['JOB_TRIGGER_UI'], 'true')
+    condition:  eq(variables['Build.Reason'], 'PullRequest')
     steps:
       - template: .azure-templates/node-setup.yml
       - bash: |
@@ -149,7 +149,6 @@ jobs:
           set -euo pipefail
           bash <(curl -s https://peek.run/ci)
         displayName: feature peek
-        condition:  eq(variables['Build.Reason'], 'PullRequest')
 
   - job: ContractSanityCheck
     dependsOn:
