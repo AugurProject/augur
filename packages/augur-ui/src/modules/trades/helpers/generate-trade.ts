@@ -7,6 +7,8 @@ import {
   calculateTotalOrderValue,
 } from "modules/trades/helpers/calc-order-profit-loss-percents";
 import * as constants from "modules/common/constants";
+import { MAX_FILLS_PER_TX } from '@augurproject/sdk';
+
 
 export const generateTrade = memoize(
   (market, outcomeTradeInProgress) => {
@@ -88,7 +90,7 @@ export const generateTrade = memoize(
       sharesFilled: formatMarketShares(marketType, sharesFilled),
       selfTrade: !!outcomeTradeInProgress.selfTrade,
       numFills: outcomeTradeInProgress.numFills ? outcomeTradeInProgress.numFills.toNumber() : 0,
-      loopLimit: outcomeTradeInProgress.loopLimit ? outcomeTradeInProgress.loopLimit.toNumber() : 0,
+      loopLimit: outcomeTradeInProgress.loopLimit ? outcomeTradeInProgress.loopLimit.toNumber() : MAX_FILLS_PER_TX.toNumber(),
       totalOrderValue: totalOrderValue
         ? formatDaiValue(totalOrderValue)
         : null,
