@@ -19,6 +19,7 @@ import { CreateLiquidityOrders } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { AppStatus } from 'modules/app/store/app-status';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 
 const mapStateToProps = (state: AppState) => {
   const {
@@ -27,13 +28,14 @@ const mapStateToProps = (state: AppState) => {
     gsnEnabled: GsnEnabled,
     gasPriceInfo,
   } = AppStatus.get();
+  const { pendingLiquidityOrders } = PendingOrders.get();
   const market = selectMarket(modal.marketId);
   let availableDai = totalTradingBalance();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   return {
     modal,
     market,
-    liquidity: state.pendingLiquidityOrders[market.transactionHash],
+    liquidity: pendingLiquidityOrders[market.transactionHash],
     gasPrice,
     loginAccount,
     GsnEnabled,
@@ -136,7 +138,7 @@ const mergeProps = (sP, dP, oP) => {
       {
         disabled: insufficientFunds,
         text: 'Submit All',
-        action: chunkOrders => dP.startOrderSending({ marketId, chunkOrders }),
+        action: () => dP.startOrderSending({ marketId }),
       },
       // Temporarily removed because there is no confirmation, the button just cancels everything on a single click
       // {

@@ -55,7 +55,6 @@ import { MyBetsInnerNav } from 'modules/portfolio/components/common/my-bets-inne
 import { MyBetsProvider } from 'modules/portfolio/store/my-bets';
 import { StatusErrorMessage } from 'modules/common/labels';
 import { MarketsProvider } from 'modules/markets/store/markets';
-import { PendingOrdersProvider } from '../store/pending-orders';
 
 interface AppProps {
   notifications: Notification[];
@@ -340,15 +339,13 @@ const AppView = ({
               {currentPath !== MARKETS && currentPath !== MY_POSITIONS && (
                 <div className="no-nav-placehold" />
               )}
-              <PendingOrdersProvider>
-                <MainAppContent
-                  onTradingTutorial={onTradingTutorial}
-                  ModalShowing={ModalShowing}
-                  navShowing={navShowing}
-                  currentPath={currentPath}
-                  mainSectionClickHandler={mainSectionClickHandler}
-                />
-              </PendingOrdersProvider>
+              <MainAppContent
+                onTradingTutorial={onTradingTutorial}
+                ModalShowing={ModalShowing}
+                navShowing={navShowing}
+                currentPath={currentPath}
+                mainSectionClickHandler={mainSectionClickHandler}
+              />
             </MyBetsProvider>
           </section>
         </section>

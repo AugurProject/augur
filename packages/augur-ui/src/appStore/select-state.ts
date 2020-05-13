@@ -4,6 +4,7 @@ import { AppState } from 'appStore';
 import { Getters } from '@augurproject/sdk/build';
 import { CANCELORDER } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 
 export const selectAccountPositionsState = (state: AppState) =>
   state.accountPositions;
@@ -28,7 +29,7 @@ export const selectCancelingOrdersState = (state: AppState) =>
 export const selectMarketTradingHistoryState = (state: AppState) =>
   state.marketTradingHistory;
 export const selectPendingLiquidityOrders = (state: AppState) =>
-  state.pendingLiquidityOrders;
+  PendingOrders.get().pendingLiquidityOrders;
 export const selectFilledOrders = (state: AppState) => state.filledOrders;
 export const selectUserMarketOpenOrders = (state: AppState) =>
   state.userOpenOrders;

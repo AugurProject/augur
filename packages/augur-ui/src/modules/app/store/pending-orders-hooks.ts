@@ -205,7 +205,6 @@ export function PendingOrdersReducer(state, action) {
     default:
       throw new Error(`Error: ${action.type} not caught by Pending reducer.`);
   }
-  console.log('pendingOrdersReducer Update:', action.type, updatedState);
   window.pendingOrders = updatedState;
   return updatedState;
 }

@@ -7,6 +7,7 @@ import MainErrorBoundary from 'modules/app/components/main-error-boundary';
 
 import store from 'appStore';
 import { WindowApp } from 'modules/types';
+import { PendingOrdersProvider } from 'modules/app/store/pending-orders';
 
 console.log(`
   *******************************************
@@ -27,13 +28,15 @@ console.log(`
 function render(Root) {
   ReactDOM.render(
     <AppStatusProvider>
-      <Provider store={store}>
-        <HashRouter hashType="hashbang">
-          <MainErrorBoundary>
-            <Root />
-          </MainErrorBoundary>
-        </HashRouter>
-      </Provider>
+      <PendingOrdersProvider>
+        <Provider store={store}>
+          <HashRouter hashType="hashbang">
+            <MainErrorBoundary>
+              <Root />
+            </MainErrorBoundary>
+          </HashRouter>
+        </Provider>
+      </PendingOrdersProvider>
     </AppStatusProvider>,
     document.getElementById('app')
   );

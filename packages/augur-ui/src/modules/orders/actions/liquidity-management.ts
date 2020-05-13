@@ -245,13 +245,14 @@ const sendOrder = async options => {
   orderCB();
 };
 
-export const startOrderSending = (options: CreateLiquidityOrders) => async (
+export const startOrderSending = ({ marketId }: CreateLiquidityOrders) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { marketId, chunkOrders } = options;
-  const { marketInfos, pendingLiquidityOrders } = getState();
-  const { loginAccount, gsnEnabled } = AppStatus.get();
+  const { marketInfos } = Markets.get();
+  const { pendingLiquidityOrders } = PendingOrders.get();
+  const { loginAccount, gsnEnabled, zeroXEnabled } = AppStatus.get();
+  const chunkOrders = !zeroXEnabled;
   // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
   if (!gsnEnabled && loginAccount.allowance.lte(ZERO)) await approveToTrade();
 

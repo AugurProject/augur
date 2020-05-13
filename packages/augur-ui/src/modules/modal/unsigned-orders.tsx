@@ -153,7 +153,6 @@ export const UnsignedOrders = ({
   const submitAllTxCount = !zeroXEnabled ? Math.ceil(
     numberOfTransactions / MAX_BULK_ORDER_COUNT
   ) : numberOfTransactions;
-  buttons[0].action = () => buttons[0].action(!zeroXEnabled);
   return (
     <div className={Styles.Orders}>
       <Title title={title} closeAction={closeAction} />
