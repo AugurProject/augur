@@ -17,13 +17,13 @@
     .text-10;
 
     color: var(--color-secondary-text);
-    margin-right: 0.25rem;
+    margin-right: @size-4;
     white-space: nowrap;
   }
 
   > svg {
-    height: 1rem;
-    width: 1rem;
+    height: @size-16;
+    width: @size-16;
 
     > g {
       fill: var(--color-primary-text);
@@ -35,7 +35,7 @@
     border: 0;
     color: var(--color-primary-text);
     display: none;
-    line-height: 1rem;
+    line-height: @size-16;
     padding: 0;
 
     &:focus {
@@ -69,7 +69,7 @@
 
 .isFocused {
   background: var(--color-module-background);
-  border: 1px solid var(--color-secondary-action-outline);
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
   width: 100%;
   margin-left: 0;
@@ -104,7 +104,7 @@
     .SearchBar {
       flex: 1;
       justify-content: flex-end;
-      padding-right: 6px;
+      padding-right: @size-6;
       width: 100%;
 
       > div {
@@ -112,7 +112,7 @@
 
         color: var(--color-secondary-text);
         display: flex;
-        margin-right: 0.5rem;
+        margin-right: @size-8;
       }
     }
 
@@ -131,7 +131,7 @@
 
     .ContainerFocused {
       > button {
-        padding-right: 1rem;
+        padding-right: @size-16;
       }
     }
   }
@@ -139,5 +139,13 @@
   @media @breakpoint-mobile {
     padding: @size-8 @size-12;
     margin-left: 0;
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .isFocused {
+    max-width: @size-178;
+    margin-left: auto;
   }
 }
