@@ -271,6 +271,12 @@ export default class MarketView extends Component<
         cb: () => this.setState({ hasShownScalarModal: true }),
       });
     }
+
+    const { marketNotFound, showMarketNotFound, history } = this.props;
+
+    if (marketNotFound !== prevProps.marketNotFound && marketNotFound) {
+      showMarketNotFound(history);
+    }
   }
 
   componentWillUnmount() {
