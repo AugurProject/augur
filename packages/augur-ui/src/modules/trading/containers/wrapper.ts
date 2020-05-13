@@ -61,6 +61,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     currentTimestamp: blockchain.currentAugurTimestamp,
     availableDai,
     gsnUnavailable: isGSNUnavailable(state),
+    endTime: ownProps.initialLiquidity ? newMarket.setEndTime : ownProps.market.endTime,
   };
 };
 
