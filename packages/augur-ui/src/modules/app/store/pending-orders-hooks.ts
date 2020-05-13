@@ -189,20 +189,23 @@ export function PendingOrdersReducer(state, action) {
       break;
     }
     case REMOVE_PENDING_ORDER: {
-      let orders = updatedState[PENDING_ORDERS][action.marketId] || [];
-      orders = orders.filter(obj => obj.id !== action.orderId);
-      if (orders.length > 0) {
-        return {
+      let orders = updatedState[PENDING_ORDERS][action.marketId];
+      if (orders) {
+        orders = orders.filter(obj => obj.id !== action.orderId);
+        updatedState[PENDING_ORDERS] = {
           ...updatedState[PENDING_ORDERS],
           [action.marketId]: orders,
         };
+        if (orders.length === 0) {
+          delete updatedState[PENDING_ORDERS][action.marketId];
+        }
       }
-      delete updatedState[PENDING_ORDERS][action.marketId];
       break;
     }
     default:
       throw new Error(`Error: ${action.type} not caught by Pending reducer.`);
   }
+  console.log('pendingOrdersReducer Update:', action.type, updatedState);
   window.pendingOrders = updatedState;
   return updatedState;
 }

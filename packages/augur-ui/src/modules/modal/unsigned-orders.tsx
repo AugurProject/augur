@@ -147,6 +147,7 @@ export const UnsignedOrders = ({
   buttons,
   marketTitle,
   header,
+  description,
 }: UnsignedOrdersProps) => {
   const { zeroXEnabled } = useAppStatusStore();
   const submitAllTxCount = !zeroXEnabled ? Math.ceil(
