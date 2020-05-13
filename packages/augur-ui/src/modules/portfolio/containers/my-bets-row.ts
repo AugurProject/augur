@@ -11,7 +11,7 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 
 const { COLUMN_TYPES } = constants;
 
-const mapStateToProps = (state: AppState, ownProps) => {};
+const mapStateToProps = (state: AppState, ownProps) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 

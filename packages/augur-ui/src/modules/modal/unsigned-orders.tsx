@@ -25,7 +25,6 @@ import { LiquidityOrder } from "modules/types";
 import { TXEventName } from "@augurproject/sdk";
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from "modules/reporting/common";
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { zero } from "modules/market-cards/common.styles.less";
 
 interface UnsignedOrdersProps {
   closeAction: Function;
@@ -147,12 +146,12 @@ export const UnsignedOrders = ({
   buttons,
   marketTitle,
   header,
+  description,
 }: UnsignedOrdersProps) => {
   const { zeroXEnabled } = useAppStatusStore();
   const submitAllTxCount = !zeroXEnabled ? Math.ceil(
     numberOfTransactions / MAX_BULK_ORDER_COUNT
   ) : numberOfTransactions;
-  buttons[0].action = () => buttons[0].action(!zeroXEnabled);
   return (
     <div className={Styles.Orders}>
       <Title title={title} closeAction={closeAction} />
@@ -171,7 +170,7 @@ export const UnsignedOrders = ({
         {outcomes && (
           <section>
             {outcomes.map((outcome: string) =>
-              liquidity[outcome].map((order: LiquidityOrder) =>
+              (liquidity[outcome] || []).map((order: LiquidityOrder) =>
                 orderRow(order, {
                   removeLiquidityOrder,
                   sendLiquidityOrder,

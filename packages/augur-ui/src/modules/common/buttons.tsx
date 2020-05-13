@@ -28,7 +28,7 @@ import {
   AlternateDaiLogoIcon,
   Chevron, ThickChevron,
 } from 'modules/common/icons';
-import { useAppStatusStore } from 'modules/app/store/app-status';
+import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
@@ -274,7 +274,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
 };
 
 const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
-  const { pendingQueue } = state;
+  const { pendingQueue } = AppStatus.get();
   let disabled = false;
 
   const pendingData =

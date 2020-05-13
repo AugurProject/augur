@@ -29,8 +29,7 @@ import { labelWithTooltip } from 'modules/common/label-with-tooltip';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const pendingQueue = state.pendingQueue || [];
-  const { loginAccount: { address }, modal, gsnEnabled, blockchain: { currentAugurTimestamp } } = AppStatus.get();
+  const { pendingQueue = [], loginAccount: { address }, modal, gsnEnabled, blockchain: { currentAugurTimestamp } } = AppStatus.get();
   const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
     state
   );
