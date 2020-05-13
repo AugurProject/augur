@@ -510,7 +510,7 @@ const processMultiMarketTableData = (orderBook, outcomes, min, max, addBet, desc
         volume: '$540.50',
       },
     };
-    if (orderBook[outcome.id]) {
+    if (orderBook[outcome.id] && orderBook[outcome.id][ASKS] && orderBook[outcome.id][ASKS][0]) {
       const book = orderBook[outcome.id];
       const { price, amount } = book[ASKS][0];
       const odds = convertToOdds({

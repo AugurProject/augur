@@ -830,7 +830,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                   newMarket.marketType,
                   newMarket.outcomesFormatted
                 )}
-                market={{
+                defaultMarket={{
                   ...newMarket,
                   creationTimeFormatted: convertUnixToFormattedDate(
                     currentTimestamp
@@ -847,7 +847,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                       )
                     : newMarket.detailsText,
                 }}
-                preview
+                isPreview
                 orderBook={newMarket.orderBook}
               />
             </span>
