@@ -179,6 +179,24 @@
 
             text-transform: capitalize;
           }
+
+          > div:last-of-type {
+            div[class*='isFocused'] {
+              max-width: @size-178;
+              margin-left: auto;
+              border: @size-1 solid var(--color-dark-text);
+
+              > input {
+                .text-14;
+
+                color: var(--color-primary-text);
+              }
+
+              > button > svg > path {
+                stroke: var(--color-primary-text);
+              }
+            }
+          }
         }
       }
 
