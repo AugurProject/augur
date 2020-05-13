@@ -30,17 +30,15 @@ import {
 } from '@augurproject/sdk';
 import {
   CancelTextButton,
-  TextButtonFlip,
   SecondaryButton,
 } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
-import { convertUnixToFormattedDate } from 'utils/format-date';
+import { convertUnixToFormattedDate, calcOrderExpirationDaysRemaining, calcOrderExpirationTime } from 'utils/format-date';
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import { calcPercentageFromPrice, calcPriceFromPercentage } from 'utils/format-number';
 import Media from 'react-media';
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10 ** 17);
-const DEFAULT_EXPIRATION_DAYS = 0;
 
 enum ADVANCED_OPTIONS {
   GOOD_TILL = '0',
@@ -57,16 +55,27 @@ enum EXPIRATION_DATE_OPTIONS {
 
 const advancedDropdownOptions = [
   {
+    label: 'Order expiration',
+    value: ADVANCED_OPTIONS.EXPIRATION,
+  },
+  {
     label: 'Good till cancelled',
     value: ADVANCED_OPTIONS.GOOD_TILL,
   },
+  {
+    label: 'Fill only',
+    value: ADVANCED_OPTIONS.FILL,
+  },
+];
+
+const liqAdvancedDropdownOptions = [
   {
     label: 'Order expiration',
     value: ADVANCED_OPTIONS.EXPIRATION,
   },
   {
-    label: 'Fill only',
-    value: ADVANCED_OPTIONS.FILL,
+    label: 'Good till cancelled',
+    value: ADVANCED_OPTIONS.GOOD_TILL,
   },
 ];
 
@@ -102,6 +111,7 @@ interface FromProps {
   orderAmountEntered: Function;
   gasPrice: number;
   getGasConfirmEstimate: Function;
+  endTime: number;
 }
 
 interface TestResults {
@@ -116,7 +126,6 @@ interface FormState {
   [item: string]: string;
   errors: object;
   errorCount: number;
-  showAdvanced: boolean;
   advancedOption: string;
   fastForwardTime: number;
   expirationDateOption: string;
@@ -178,13 +187,17 @@ class Form extends Component<FromProps, FormState> {
       isOrderValid: this.orderValidation(startState).isOrderValid,
       lastInputModified: '',
       errorCount: 0,
-      showAdvanced: false,
       advancedOption: advancedDropdownOptions[0].value,
-      fastForwardTime: DEFAULT_EXPIRATION_DAYS,
+      fastForwardTime: calcOrderExpirationDaysRemaining(this.props.endTime, this.props.currentTimestamp),
       expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
       percentage: '',
       confirmationTimeEstimation: 0,
     };
+
+    this.updateAndValidate(
+      this.INPUT_TYPES.EXPIRATION_DATE,
+      calcOrderExpirationTime(this.props.endTime, this.props.currentTimestamp),
+    );
 
     this.changeOutcomeDropdown = this.changeOutcomeDropdown.bind(this);
     this.updateTestProperty = this.updateTestProperty.bind(this);
@@ -778,10 +791,9 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.EXPIRATION_DATE]: null,
       [this.INPUT_TYPES.SELECTED_NAV]: selectedNav,
       [this.INPUT_TYPES.EST_DAI]: '',
-      fastForwardTime: DEFAULT_EXPIRATION_DAYS,
+      fastForwardTime: calcOrderExpirationDaysRemaining(this.props.endTime, this.props.currentTimestamp),
       expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
-      showAdvanced: false,
-      advancedOption: ADVANCED_OPTIONS.GOOD_TILL,
+      advancedOption: advancedDropdownOptions[0],
       errors: {
         [this.INPUT_TYPES.MULTIPLE_QUANTITY]: [],
         [this.INPUT_TYPES.QUANTITY]: [],
@@ -856,10 +868,7 @@ class Form extends Component<FromProps, FormState> {
     const isScalar: boolean = marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
     const defaultOutcome = selectedOutcome !== null ? selectedOutcome.id : 2;
-    let advancedOptions = advancedDropdownOptions;
-    if (!Ox_ENABLED) {
-      advancedOptions = [advancedOptions[0], advancedOptions[2]];
-    }
+    const advancedOptions = initialLiquidity ? liqAdvancedDropdownOptions : advancedDropdownOptions;
     const showLimitPriceInput =
       (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
 
@@ -1125,23 +1134,6 @@ class Form extends Component<FromProps, FormState> {
               </span>
             </label>
           </li>
-          {!initialLiquidity && (
-            <li>
-              <TextButtonFlip
-                text="Advanced"
-                action={() => {
-                  this.setState({
-                    advancedOption: ADVANCED_OPTIONS.GOOD_TILL,
-                    fastForwardTime: DEFAULT_EXPIRATION_DAYS,
-                    expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
-                    showAdvanced: !s.showAdvanced,
-                  });
-                }}
-                pointDown={s.showAdvanced}
-              />
-            </li>
-          )}
-          {s.showAdvanced && (
             <li
               className={classNames(Styles.AdvancedShown, {
                 [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EXPIRATION_DATE]
@@ -1154,13 +1146,7 @@ class Form extends Component<FromProps, FormState> {
                 onChange={value => {
                   const timestamp =
                     value === ADVANCED_OPTIONS.EXPIRATION
-                      ? moment
-                          .unix(currentTimestamp)
-                          .add(
-                            DEFAULT_EXPIRATION_DAYS,
-                            EXPIRATION_DATE_OPTIONS.DAYS
-                          )
-                          .unix()
+                      ? calcOrderExpirationDaysRemaining(this.props.endTime, this.props.currentTimestamp)
                       : null;
                   this.updateAndValidate(
                     this.INPUT_TYPES.EXPIRATION_DATE,
@@ -1172,12 +1158,12 @@ class Form extends Component<FromProps, FormState> {
                   });
                   this.setState({
                     advancedOption: value,
-                    fastForwardTime: DEFAULT_EXPIRATION_DAYS,
+                    fastForwardTime: calcOrderExpirationDaysRemaining(this.props.endTime, this.props.currentTimestamp),
                     expirationDateOption: EXPIRATION_DATE_OPTIONS.DAYS,
                   });
                 }}
               />
-              {s.advancedOption === '1' && (
+              {s.advancedOption === ADVANCED_OPTIONS.EXPIRATION && (
                 <>
                   <div>
                     {s.expirationDateOption !==
@@ -1222,7 +1208,7 @@ class Form extends Component<FromProps, FormState> {
                       onChange={value => {
                         const fastForwardTime = this.state.fastForwardTime
                           ? this.state.fastForwardTime
-                          : 0;
+                          : calcOrderExpirationDaysRemaining(this.props.endTime, this.props.currentTimestamp);
                         this.updateAndValidate(
                           this.INPUT_TYPES.EXPIRATION_DATE,
                           moment
@@ -1276,7 +1262,6 @@ class Form extends Component<FromProps, FormState> {
                 })}
               ></span>
             </li>
-          )}
         </ul>
         {s.errors[this.INPUT_TYPES.MULTIPLE_QUANTITY].length > 0 && (
           <div className={Styles.ErrorContainer}>
