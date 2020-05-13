@@ -3,15 +3,16 @@ import { createBigNumber } from 'utils/create-big-number';
 import { selectLoginAccount } from './login-account';
 import { formatAttoEth, formatEther } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
-import { DESIRED_SIGNER_ETH_BALANCE } from '@augurproject/sdk';
+import { selectEnvState } from 'appStore/select-state';
 
 export const getEthReserve = createSelector(
   selectLoginAccount,
-  loginAccount => {
+  selectEnvState,
+  (loginAccount, env) => {
     const { balances } = loginAccount;
     const ethNonSafeBN = createBigNumber(balances.ethNonSafe);
     let desiredSignerEthBalance = createBigNumber(
-      formatAttoEth(Number(DESIRED_SIGNER_ETH_BALANCE)).value
+      formatAttoEth(env.gsn.desiredSignerBalanceInETH * 10**18).value
     );
     if (ethNonSafeBN.lt(desiredSignerEthBalance))
       desiredSignerEthBalance = ethNonSafeBN;
