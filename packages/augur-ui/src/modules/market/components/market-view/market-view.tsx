@@ -29,8 +29,10 @@ import {
   TUTORIAL_PRICE,
   TRADING_TUTORIAL_OUTCOMES,
   TUTORIAL_OUTCOME,
-  THEMES,
   ZEROX_STATUSES,
+  TUTORIAL_TRADING_HISTORY,
+  TUTORIAL_ORDER_BOOK,
+  SCALAR_MODAL_SEEN,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -40,11 +42,9 @@ import { LeftChevron } from 'modules/common/icons';
 import { SMALL_MOBILE } from 'modules/common/constants';
 import {
   MarketData,
-  OutcomeFormatted,
   DefaultOrderProperties,
   IndividualOutcomeOrderBook,
   TestTradingOrder,
-  OutcomeTestTradingOrder,
 } from 'modules/types';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
@@ -56,40 +56,45 @@ import { TXEventName } from '@augurproject/sdk/src';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
-import { Getters } from '@augurproject/sdk';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { StatusErrorMessage } from 'modules/common/labels';
-import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
-import { BettingMarketView } from './betting-market-view';
-import { useMarketsStore } from 'modules/markets/store/markets';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import {
+  selectSortedMarketOutcomes,
+} from 'modules/markets/selectors/market';
+import parseQuery from 'modules/routes/helpers/parse-query';
+import {
+  MARKET_ID_PARAM_NAME,
+  OUTCOME_ID_PARAM_NAME,
+} from 'modules/routes/constants/param-names';
+import { windowRef } from 'utils/window-ref';
+import { getAddress } from 'ethers/utils/address';
+import { EMPTY_STATE } from 'modules/create-market/constants';
+import { NewMarket } from 'modules/types';
+import deepClone from 'utils/deep-clone';
+import { hotloadMarket } from 'modules/markets/actions/load-markets';
+import {
+  getMarketAgeInDays,
+} from 'utils/format-date';
+import { Getters } from '@augurproject/sdk/src';
+import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
+import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 
 interface MarketViewProps {
-  isMarketLoading: boolean;
   closeMarketLoadingModalOnly: Function;
-  market: MarketData;
-  marketId: string;
-  scalarModalSeen: boolean;
-  currentTimestamp: number;
-  isConnected: boolean;
   loadMarketsInfo: Function;
   loadMarketTradingHistory: Function;
-  description: string;
-  marketType: string;
   updateModal: Function;
   history: History;
   showMarketLoadingModal: Function;
-  preview?: boolean;
-  tradingTutorial?: boolean;
   addAlert: Function;
   hotloadMarket: Function;
-  canHotload: boolean;
-  modalShowing?: string;
-  outcomeId?: number;
-  orderBook?: Getters.Markets.OutcomeOrderBook | OutcomeTestTradingOrder;
   loadMarketOrderBook: Function;
-  zeroXstatus: string;
-  hasZeroXError: boolean;
+  location: Location;
+  defaultMarket: MarketData;
+  isPreview?: boolean;
 }
 
 export interface DefaultOrderPropertiesMap {
@@ -109,34 +114,91 @@ const EmptyOrderBook: IndividualOutcomeOrderBook = {
 };
 
 const MarketView = ({
-  isMarketLoading,
   closeMarketLoadingModalOnly,
-  market,
-  marketId,
-  scalarModalSeen,
-  currentTimestamp,
-  isConnected,
   loadMarketsInfo,
   loadMarketTradingHistory,
-  description,
-  marketType,
   updateModal,
   history,
   showMarketLoadingModal,
-  preview,
-  tradingTutorial,
   addAlert,
-  hotloadMarket,
-  canHotload,
-  modalShowing,
-  removeAlert,
-  outcomeId,
-  orderBook,
   loadMarketOrderBook,
-  zeroXstatus,
-  hasZeroXError,
+  location,
+  defaultMarket,
+  isPreview
 }: MarketViewProps) => {
+  const {
+    loginAccount,
+    universe,
+    modal,
+    zeroXStatus: zeroXstatus,
+    isConnected: connected,
+    canHotload,
+    blockchain: { currentAugurTimestamp },
+  } = useAppStatusStore();
+
   const node = useRef(null);
+
+  const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];
+  const marketId = queryId === TRADING_TUTORIAL ? queryId : getAddress(queryId);
+  const queryOutcomeId = parseQuery(location.search)[
+    OUTCOME_ID_PARAM_NAME
+  ];
+  const outcomeId = queryOutcomeId ? parseInt(queryOutcomeId) : null;
+  let market = null;
+  let daysPassed = null;
+  let modalShowing = null;
+  let preview = null;
+  let sortedOutcomes = null;
+  let account = null;
+  let hasZeroXError = null;
+  let orderBook: Getters.Markets.OutcomeOrderBook = null;
+
+  const tradingTutorial = marketId === TRADING_TUTORIAL;
+  if (tradingTutorial) {
+    // TODO move trading tutorial market state to constants
+    market = {
+      ...deepClone<NewMarket>(EMPTY_STATE),
+      id: TRADING_TUTORIAL,
+      description:
+        'Which NFL team will win: Los Angeles Rams vs New England Patriots Scheduled start time: October 27, 2019 1:00 PM ET',
+      numOutcomes: 4,
+      defaultSelectedOutcomeId: 1,
+      marketType: CATEGORICAL,
+      endTimeFormatted: convertUnixToFormattedDate(1668452763),
+      creationTimeFormatted: convertUnixToFormattedDate(1573585563),
+      outcomesFormatted: TRADING_TUTORIAL_OUTCOMES,
+      groupedTradeHistory: TUTORIAL_TRADING_HISTORY,
+      orderBook: TUTORIAL_ORDER_BOOK,
+    };
+  } else {
+    const { marketInfos } = Markets.get();
+    market = defaultMarket || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);;
+  }
+  if (market) {
+    if (tradingTutorial || isPreview) {
+      orderBook = market.orderBook;
+    }
+  
+    if (!tradingTutorial && !isPreview) {
+      const { orderBooks } = Markets.get();
+      orderBook = (orderBooks[marketId] || {}).orderBook;
+    }
+  
+    daysPassed =
+      market &&
+      market.creationTime &&
+      getMarketAgeInDays(market.creationTime, currentAugurTimestamp);
+    
+    modalShowing = modal.type;
+    preview = tradingTutorial || isPreview;
+    sortedOutcomes = selectSortedMarketOutcomes(
+          market.marketType,
+          market.outcomesFormatted
+        );
+    account = loginAccount.address;
+    hasZeroXError = zeroXstatus === ZEROX_STATUSES.ERROR;
+  }
+
   const cat5 = findType();
   const [state, setState] = useState({
     pane: null,
@@ -156,6 +218,11 @@ const MarketView = ({
         : undefined,
     tutorialError: '',
   });
+  
+  const isConnected = connected && universe.id != null;
+
+  const scalarModalSeen =
+    Boolean(modal.type) || windowRef?.localStorage?.getItem(SCALAR_MODAL_SEEN) === 'true';
 
   const {
     selectedOutcomeId,
@@ -174,6 +241,15 @@ const MarketView = ({
   const prevProps = useRef();
 
   useEffect(() => {
+    if (!preview && !hasZeroXError) {
+      window.scrollTo(0, 1);
+    }
+    if (!market) {
+      showMarketLoadingModal();
+    }
+  }, []);
+
+  useEffect(() => {
     // inital mount, state setting
     tradingTutorialWidthCheck();
     if (
@@ -187,19 +263,16 @@ const MarketView = ({
       loadMarketOrderBook(marketId);
       loadMarketTradingHistory(marketId);
     }
-  }, []);
 
-  useEffect(() => {
-    if (!preview && !hasZeroXError) {
-      window.scrollTo(0, 1);
-    }
-    if (isMarketLoading) {
-      showMarketLoadingModal();
+    return () => {
+      closeMarketLoadingModalOnly && closeMarketLoadingModalOnly(modalShowing);
     }
   }, []);
 
   useEffect(() => {
-    prevProps.current = state;
+    prevProps.current = {
+      tradingTutorial, outcomeId, isConnected
+    };
   }, [tradingTutorial, outcomeId, isConnected]);
 
   useEffect(() => {
@@ -243,14 +316,14 @@ const MarketView = ({
       loadMarketsInfo(marketId);
       loadMarketTradingHistory(marketId);
     }
-    if (!isMarketLoading) {
-      if (closeMarketLoadingModalOnly) closeMarketLoadingModalOnly(modalShowing);
+    if (market && closeMarketLoadingModalOnly) {
+      closeMarketLoadingModalOnly(modalShowing);
     }
 
     if (
       !prevProps.current.tradingTutorial &&
       !scalarModalSeen &&
-      marketType === SCALAR &&
+      market && market.marketType === SCALAR &&
       !hasShownScalarModal
     ) {
       updateModal({
@@ -263,7 +336,7 @@ const MarketView = ({
       });
     }
   }, [
-    isMarketLoading,
+    market,
     introShowing,
     preview,
     tradingTutorial,
@@ -275,7 +348,7 @@ const MarketView = ({
 
   function findType() {
     if (market) {
-      const { numOutcomes } = market;
+      const { numOutcomes, marketType } = market;
 
       if (marketType === CATEGORICAL && numOutcomes > 4) {
         return true;
@@ -459,7 +532,7 @@ const MarketView = ({
     }
   }
 
-  if (isMarketLoading) {
+  if (!market) {
     if (canHotload && !tradingTutorial) hotloadMarket(marketId);
     return <div ref={node} className={Styles.MarketView} />;
   }
@@ -513,7 +586,7 @@ const MarketView = ({
         type: BUY,
         price: createBigNumber(TUTORIAL_PRICE),
         outcome: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
-        timestamp: convertUnixToFormattedDate(currentTimestamp),
+        timestamp: convertUnixToFormattedDate(currentAugurTimestamp),
         trades: [
           {
             amount: createBigNumber(TUTORIAL_QUANTITY),
@@ -523,7 +596,7 @@ const MarketView = ({
             type: BUY,
             price: createBigNumber(TUTORIAL_PRICE),
             outcome: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
-            timestamp: convertUnixToFormattedDate(currentTimestamp),
+            timestamp: convertUnixToFormattedDate(currentAugurTimestamp),
             transactionHash: '0xerjejfsdk',
           },
         ],
@@ -568,6 +641,10 @@ const MarketView = ({
     const newOrderBook = orders.filter(order => !order.disappear);
     outcomeOrderBook = formatOrderBook(newOrderBook);
   }
+
+  const {
+    description,
+  } = market;
 
   return (
     <div
@@ -718,7 +795,7 @@ const MarketView = ({
                       market={preview && market}
                       isArchived={market.isArchived}
                       selectedOutcomeId={outcomeIdSet}
-                      currentTimestamp={currentTimestamp}
+                      currentTimestamp={currentAugurTimestamp}
                       updateSelectedOrderProperties={
                         updateSelectedOrderProperties
                       }

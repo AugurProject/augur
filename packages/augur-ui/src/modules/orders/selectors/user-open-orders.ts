@@ -26,11 +26,6 @@ import { AppStatus } from 'modules/app/store/app-status';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 import { Markets } from 'modules/markets/store/markets';
 
-function selectMarketsDataStateMarket(marketId) {
-  const { marketInfos } = Markets.get();
-  return marketInfos[marketId];
-}
-
 function selectUserMarketOpenOrdersMarket(state, marketId) {
   return selectUserMarketOpenOrders(state)[marketId];
 }
@@ -47,12 +42,16 @@ export default function(marketId) {
   return selectUserOpenOrders(store.getState() as AppState, marketId);
 }
 
+const getmarketId = (state, marketId) => marketId;
+
 export const selectUserOpenOrders = createSelector(
-  selectMarketsDataStateMarket,
   selectUserMarketOpenOrdersMarket,
   selectCancelingOrdersState,
-  selectPendingOrdersStateMarket,
-  (market, userMarketOpenOrders, orderCancellation, pendingOrders) => {
+  selectPendingOrdersStateMarket, 
+  getmarketId,
+  (userMarketOpenOrders, orderCancellation, pendingOrders, marketId) => {
+    const { marketInfos } = Markets.get();
+    const market = marketInfos[marketId];
     if (!market) return [];
     let userOpenOrders =
       market.outcomes
