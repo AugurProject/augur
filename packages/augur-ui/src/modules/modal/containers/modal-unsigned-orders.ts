@@ -4,8 +4,6 @@ import { UnsignedOrders } from 'modules/modal/unsigned-orders';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import {
-  clearMarketLiquidityOrders,
-  removeLiquidityOrder,
   sendLiquidityOrder,
   startOrderSending,
 } from 'modules/orders/actions/liquidity-management';
@@ -19,6 +17,7 @@ import { CreateLiquidityOrders } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { AppStatus } from 'modules/app/store/app-status';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 
 const mapStateToProps = (state: AppState) => {
   const {
@@ -27,13 +26,14 @@ const mapStateToProps = (state: AppState) => {
     gsnEnabled: GsnEnabled,
     gasPriceInfo,
   } = AppStatus.get();
+  const { pendingLiquidityOrders } = PendingOrders.get();
   const market = selectMarket(modal.marketId);
   let availableDai = totalTradingBalance();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   return {
     modal,
     market,
-    liquidity: state.pendingLiquidityOrders[market.transactionHash],
+    liquidity: pendingLiquidityOrders[market.transactionHash],
     gasPrice,
     loginAccount,
     GsnEnabled,
@@ -45,9 +45,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   startOrderSending: (options: CreateLiquidityOrders) =>
     dispatch(startOrderSending(options)),
-  clearMarketLiquidityOrders: (marketId: string) =>
-    dispatch(clearMarketLiquidityOrders(marketId)),
-  removeLiquidityOrder: data => dispatch(removeLiquidityOrder(data)),
+  clearMarketLiquidityOrders: (txParamHash: string) =>
+    PendingOrders.actions.clearAllMarketLiquidity({ txParamHash }),
+  removeLiquidityOrder: data => PendingOrders.actions.removeLiquidity(data),
   sendLiquidityOrder: (data: object) => dispatch(sendLiquidityOrder(data)),
 });
 
@@ -136,7 +136,7 @@ const mergeProps = (sP, dP, oP) => {
       {
         disabled: insufficientFunds,
         text: 'Submit All',
-        action: chunkOrders => dP.startOrderSending({ marketId, chunkOrders }),
+        action: () => dP.startOrderSending({ marketId }),
       },
       // Temporarily removed because there is no confirmation, the button just cancels everything on a single click
       // {

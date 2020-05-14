@@ -3,7 +3,6 @@ import { selectMarket } from "modules/markets/selectors/market";
 import {
   selectMarketTradingHistoryState,
   selectCancelingOrdersState,
-  selectPendingOrdersState,
   selectLoginAccountAddress,
   selectAccountPositionsState
 } from "appStore/select-state";
@@ -19,13 +18,11 @@ export const selectMarkets = createSelector(
   selectMarketTradingHistoryState,
   selectCancelingOrdersState,
   selectLoginAccountAddress,
-  selectPendingOrdersState,
   selectAccountPositionsState,
   (
     marketPriceHistory,
     orderCancellation,
     accountAddress,
-    pendingOrders,
     accountPositions
   ): Array<MarketData> => {
     const { marketInfos } = Markets.get();

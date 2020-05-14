@@ -10,6 +10,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { AppState } from 'appStore';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export const ADD_PENDING_ORDER = 'ADD_PENDING_ORDER';
@@ -19,11 +20,13 @@ export const UPDATE_PENDING_ORDER = 'UPDATE_PENDING_ORDER';
 export const addPendingOrder = (pendingOrder: UIOrder, marketId: string) =>
   addPendingOrderWithBlockNumber(pendingOrder, marketId);
 
-export const removePendingOrder = (id: string, marketId: string) => ({
-  type: REMOVE_PENDING_ORDER,
-  data: { id, marketId },
-});
-
+export const removePendingOrder = (id: string, marketId: string) => {
+  PendingOrders.actions.removePendingOrder(marketId, id);
+  return ({
+    type: REMOVE_PENDING_ORDER,
+    data: { id, marketId },
+  });
+}
 export const updatePendingOrderStatus = (
   id: string,
   marketId: string,
@@ -35,9 +38,11 @@ export const addPendingOrderWithBlockNumber = (
   pendingOrder: UIOrder,
   marketId: string
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { blockchain } = getState();
-  pendingOrder.blockNumber = blockchain.currentBlockNumber;
-
+  const {
+    blockchain: { currentBlockNumber },
+  } = AppStatus.get();
+  pendingOrder.blockNumber = currentBlockNumber;
+  PendingOrders.actions.updatePendingOrder(marketId, pendingOrder);
   dispatch({
     type: ADD_PENDING_ORDER,
     data: {
@@ -53,9 +58,16 @@ const updatePendingOrderStatusWithBlockNumber = (
   status: string,
   hash: string
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { blockchain: { currentBlockNumber } } = AppStatus.get();
+  const {
+    blockchain: { currentBlockNumber },
+  } = AppStatus.get();
   const blockNumber = currentBlockNumber;
-
+  PendingOrders.actions.updatePendingOrder(marketId, {
+    id,
+    status,
+    hash,
+    blockNumber,
+  });
   dispatch({
     type: UPDATE_PENDING_ORDER,
     data: { id, marketId, status, hash, blockNumber },
