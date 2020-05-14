@@ -1226,7 +1226,7 @@ class Form extends Component<FromProps, FormState> {
                       {s[this.INPUT_TYPES.EXPIRATION_DATE] &&
                         convertUnixToFormattedDate(
                           Number(s[this.INPUT_TYPES.EXPIRATION_DATE])
-                        ).formattedLocalShortWithUtcOffset}
+                        ).formattedLocalShortDateTimeWithTimezone}
                     </span>
                   )}
                   {s.expirationDateOption ===
