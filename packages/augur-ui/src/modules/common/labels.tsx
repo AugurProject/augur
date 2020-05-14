@@ -1363,7 +1363,6 @@ export const LinearPropertyLabelUnderlineTooltip = ({
   </div>
 );
 
-
 export const LinearPropertyViewTransaction = (
   props: LinearPropertyLabelViewTransactionProps
 ) => (
