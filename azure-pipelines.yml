@@ -145,10 +145,6 @@ jobs:
         displayName: ui build
         env:
           NODE_OPTIONS: "--max_old_space_size=6144"
-      - bash: |
-          set -euo pipefail
-          bash <(curl -s https://peek.run/ci)
-        displayName: feature peek
 
   - job: ContractSanityCheck
     dependsOn:
