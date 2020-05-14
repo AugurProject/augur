@@ -34,6 +34,7 @@ import { saveAffiliateAddress } from "modules/account/actions/login-account";
 import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
 import { AppState } from "appStore";
 import { selectCoreStats } from "modules/account/selectors/core-stats";
+import { getEthReserveInDai } from "modules/auth/selectors/get-eth-reserve";
 
 const mapStateToProps = (state: AppState) => {
   const { appStatus, loginAccount, pendingQueue } = state;
@@ -50,6 +51,7 @@ const mapStateToProps = (state: AppState) => {
     walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
   const showMigrateRepButton =
     !!balances.legacyRep || !!balances.legacyRepNonSafe || !!pending;
+  const ethReserveInDai = getEthReserveInDai(state);
 
   return {
     notifications,
@@ -74,6 +76,7 @@ const mapStateToProps = (state: AppState) => {
     showMigrateRepButton,
     whichChatPlugin: state.env.plugins?.chat,
     appStatus: state.appStatus,
+    ethReserveInDai
   }
 };
 

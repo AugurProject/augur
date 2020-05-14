@@ -175,7 +175,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       logo: EthIcon,
       value: reserveEthAmount.formattedValue,
       subValue: ethReserveInDai,
-      disabled: GsnEnabled ? balances.ethNonSafe === 0 : false,
+      disabled: GsnEnabled ? (balances.ethNonSafe || 0) === 0 : false,
     },
   ];
 

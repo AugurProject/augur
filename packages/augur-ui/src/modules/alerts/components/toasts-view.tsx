@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
 import Alert from 'modules/alerts/components/alert';
-
+import { Alert as AlertType } from 'modules/types';
 import Styles from 'modules/alerts/components/toasts-view.styles.less';
 import classNames from 'classnames';
 
 interface ToastsViewProps {
-  toasts: Array<any>;
+  toasts: AlertType[];
   removeAlert: Function;
   toggleAlerts: Function;
   updateExistingAlert: Function;
@@ -14,11 +14,12 @@ interface ToastsViewProps {
 }
 
 export default class ToastsView extends Component<ToastsViewProps, {}> {
+  timeout: NodeJS.Timeout;
 
   componentDidMount() {
     this.timeout = setInterval(() => {
-      const newToast = { 
-        name: this.props.toasts[0].name, 
+      const newToast = {
+        name: this.props.toasts[0].name,
         toast: false,
       };
       this.props.updateExistingAlert(this.props.toasts[0].uniqueId, newToast);
@@ -42,6 +43,7 @@ export default class ToastsView extends Component<ToastsViewProps, {}> {
           removeAlert={() => removeAlert(toast.uniqueId, toast.name)}
           toggleAlerts={toggleAlerts}
           showToast={true}
+          timestampInMilliseconds={toast.timestamp}
           {...toast}
         />
       </div>
