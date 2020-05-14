@@ -61,9 +61,6 @@ export const selectAccountFunds = createSelector(
       totalFrozenFunds = createBigNumber(loginAccount.totalFrozenFunds).plus(
         totalOpenOrderFunds
       );
-      if (totalFrozenFunds.lt(0)) {
-        totalFrozenFunds = createBigNumber(0);
-      }
     }
 
     if (loginAccount.totalRealizedPL) {
