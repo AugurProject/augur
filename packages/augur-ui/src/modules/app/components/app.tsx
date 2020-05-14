@@ -220,6 +220,7 @@ export default class AppView extends Component<AppProps> {
       updateCurrentBasePath,
       updateMobileMenuState,
       sidebarStatus,
+      modal
     } = this.props;
     if (isMobile !== prevProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
@@ -240,7 +241,8 @@ export default class AppView extends Component<AppProps> {
 
     if (
       sidebarStatus.mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN ||
-      sidebarStatus.mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN
+      sidebarStatus.mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN ||
+      Object.keys(modal).length !== 0
     ) {
       document.body.classList.add('App--noScroll');
     } else {
