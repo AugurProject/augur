@@ -48,7 +48,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
+  loadMarketOrderBook: marketId => Markets.actions.updateOrderBook(marketId, null, loadMarketOrderBook(marketId)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {

@@ -8,6 +8,7 @@ import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { augurSdk } from "services/augursdk";
 import { AppStatus } from "modules/app/store/app-status";
 import { Markets } from "../store/markets";
+import { MARKETS_ACTIONS } from "../store/constants";
 
 export const loadMarketsInfo = (
   marketIds: Array<string>,
@@ -39,6 +40,7 @@ export const loadMarketsInfo = (
     return callback("no marketIds in collection");
 
   Markets.actions.updateMarketsData(marketInfos);
+
   callback(null, marketInfos);
 };
 

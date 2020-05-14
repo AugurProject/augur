@@ -10,10 +10,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 export const loadMarketOrderBook = (
   marketId: string,
   callback: NodeStyleCallback = logError
-) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+) => async () => {
   if (marketId == null) {
     return callback('must specify market ID');
   }
@@ -25,6 +22,6 @@ export const loadMarketOrderBook = (
     : { marketId };
   const Augur = augurSdk.get();
   const marketOrderBook = await Augur.getMarketOrderBook(params);
-  Markets.actions.updateOrderBook(marketId, marketOrderBook);
   callback(null, marketOrderBook);
+  return {orderBook: marketOrderBook};
 };
