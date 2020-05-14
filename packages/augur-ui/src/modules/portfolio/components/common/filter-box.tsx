@@ -11,6 +11,7 @@ import { createTabsInfo } from 'modules/portfolio/helpers/create-tabs-info';
 import { THEMES } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
+import { StarIcon } from 'modules/common/icons';
 
 export interface MarketsByReportingState {
   [type: string]: Array<Market>;
@@ -187,6 +188,7 @@ const FilterBox: React.FC<FilterBoxProps> = ({
               selectedTab={''}
               filterLabel={filterLabel}
               search={search}
+              icon={StarIcon}
             />
           )}
           <div className={Styles.MarketBox}>

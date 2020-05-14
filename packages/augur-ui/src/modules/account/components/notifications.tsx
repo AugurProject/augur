@@ -42,6 +42,7 @@ import {
   MODAL_FINALIZE_MARKET,
 } from 'modules/common/constants';
 
+import { MessagesIcon } from 'modules/common/icons';
 import Styles from 'modules/account/components/notification.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
@@ -378,6 +379,7 @@ const Notifications = ({ toggle }: NotificationsProps) => {
             selectedTab=""
             filterLabel={NOTIFICATIONS_LABEL}
             search=""
+            icon={MessagesIcon}
           />
         ) : (
           rows

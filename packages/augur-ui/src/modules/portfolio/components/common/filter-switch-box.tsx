@@ -4,6 +4,7 @@ import QuadBox from 'modules/portfolio/components/common/quad-box';
 import { NameValuePair, Market } from 'modules/portfolio/types';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
+import { ActiveMarketsIcon } from 'modules/common/icons';
 
 export interface MarketsByReportingState {
   [type: string]: Array<Market>;
@@ -138,6 +139,7 @@ export default class FilterSwitchBox extends React.Component<
                 selectedTab=""
                 filterLabel={filterLabel}
                 search={search}
+                icon={ActiveMarketsIcon}
               />
             )}
             {filteredData.length > 0 &&

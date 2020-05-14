@@ -6,18 +6,33 @@ export interface EmptyDisplayProps {
   filterLabel: string;
   selectedTab: string;
   search: string;
+  icon?: any;
 }
 
-const EmptyDisplay = (props: EmptyDisplayProps) => {
-  let emptyTitle = `No ${
-    props.selectedTab
-  } ${props.filterLabel.toLowerCase()}`;
+const EmptyDisplay = ({
+  filterLabel,
+  selectedTab,
+  search,
+  icon,
+}: EmptyDisplayProps) => {
+  let emptyTitle = `No ${selectedTab} ${filterLabel.toLowerCase()}`;
 
-  if (props.search !== "" && props.search !== undefined) {
-    emptyTitle = `No results found for '${props.search}'`;
+  let emptyText = `You don't have any ${
+    selectedTab.toLowerCase()
+  } ${filterLabel.toLowerCase()} yet!`;
+
+  if (search !== "" && search !== undefined) {
+    emptyTitle = `No results found for '${search}'`;
   }
 
-  return <div className={Styles.EmptyDisplay}>{emptyTitle}</div>;
+  console.log('EmptyDisplay', icon);
+
+  return (
+    <div className={Styles.EmptyDisplay}>
+      <span>{icon}</span>
+      <span>{emptyTitle}</span>
+      <span>{emptyText}</span>
+    </div>);
 };
 
 export default EmptyDisplay;
