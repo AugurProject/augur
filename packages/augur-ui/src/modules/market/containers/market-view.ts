@@ -10,19 +10,15 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import { hotloadMarket } from 'modules/markets/actions/load-markets';
-import {
-  loadMarketOrderBook,
-} from 'modules/orders/helpers/load-market-orderbook';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   const { setModal } = AppStatus.actions; 
   return {
     hotloadMarket: marketId => hotloadMarket(marketId),
     loadMarketsInfo: marketId => loadMarketsInfo([marketId]),
-    loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
     updateModal: modal => setModal(modal),
     loadMarketTradingHistory: marketId =>
       dispatch(loadMarketTradingHistory(marketId)),

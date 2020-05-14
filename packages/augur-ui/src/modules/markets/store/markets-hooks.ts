@@ -1,6 +1,7 @@
 import { useReducer } from 'react';
 import { MARKETS_ACTIONS, MOCK_MARKETS_STATE, DEFAULT_MARKETS_STATE, STUBBED_MARKETS_ACTIONS } from 'modules/markets/store/constants';
 import immutableDelete from "immutable-delete";
+import { actionButtons } from 'modules/modal/components/common/common.styles.less';
 
 const {
   UPDATE_ORDER_BOOK,
@@ -33,10 +34,12 @@ export function MarketsReducer(state, action) {
   switch (action.type) {
     case UPDATE_ORDER_BOOK: {
       const { marketId, orderBook } = action;
-      updatedState.orderBooks = {
-        ...updatedState.orderBooks,
-        [marketId]: orderBook,
-      };
+        if (orderBook || action.payload?.orderBook) {
+          updatedState.orderBooks = {
+          ...updatedState.orderBooks,
+          [marketId]: orderBook || action.payload?.orderBook,
+        };
+      }
       break;
     }
     case CLEAR_ORDER_BOOK: {
@@ -60,15 +63,39 @@ export function MarketsReducer(state, action) {
   return updatedState;
 }
 
+const isAsync = obj => {
+  return (
+    !!obj &&
+    (typeof obj === "object" || typeof obj === "function") &&
+    obj.constructor.name === 'AsyncFunction'
+  );
+}
+
+const middleware = (dispatch, action) => {
+  if (isAsync(action.payload)) {
+    (async () => {
+      const v = await action.payload();
+      dispatch({ ...action, payload: v });
+    })();
+  } else {
+    dispatch({...action});
+  }
+};
+
+export const dispatchMiddleware = (dispatch) => (action) => middleware(dispatch, action);
+
 export const useMarkets = (defaultState = MOCK_MARKETS_STATE) => {
   const [state, dispatch] = useReducer(MarketsReducer, defaultState);
+  
+  const newDispatch = dispatchMiddleware(dispatch);
+
   return {
-    ...state,
-    actions: {
-      updateOrderBook: (marketId, orderBook) => dispatch({ type: UPDATE_ORDER_BOOK, marketId, orderBook }),
-      clearOrderBook: () => dispatch({ type: CLEAR_ORDER_BOOK }),
-      updateMarketsData: (marketInfos) => dispatch({ type: UPDATE_MARKETS_DATA, marketInfos }),
-      removeMarket: (marketId) => dispatch({ type: REMOVE_MARKET, marketId }),
-    },
-  };
+      ...state,
+      actions: {
+        updateOrderBook: (marketId, orderBook, payload) => newDispatch({ type: UPDATE_ORDER_BOOK, marketId, orderBook, payload}),
+        clearOrderBook: () => dispatch({ type: CLEAR_ORDER_BOOK }),
+        updateMarketsData: (marketInfos) => dispatch({ type: UPDATE_MARKETS_DATA, marketInfos }),
+        removeMarket: (marketId) => dispatch({ type: REMOVE_MARKET, marketId }),
+      },
+    };
 };
