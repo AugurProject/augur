@@ -19,7 +19,7 @@ import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 import { LoadReportingMarketsOptions } from 'modules/types';
 import { Action } from 'redux';
 import { AppStatus } from 'modules/app/store/app-status';
-import { Markets } from '../store/markets-hooks';
+import { Markets } from '../store/markets';
 
 interface SortOptions {
   sortBy?: Getters.Markets.GetMarketsSortBy;

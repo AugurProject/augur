@@ -6,7 +6,7 @@ import {
   loadDesignatedReportingMarkets,
   loadNextWindowDisputingMarkets,
 } from 'modules/markets/actions/load-markets';
-import { Markets } from 'modules/markets/store/markets-hooks';
+import { Markets } from 'modules/markets/store/markets';
 
 const loadPerReportingState = {
   disputing: {

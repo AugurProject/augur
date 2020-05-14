@@ -170,7 +170,7 @@ const MarketView = ({
       orderBook: TUTORIAL_ORDER_BOOK,
     };
   } else {
-    market = defaultMarket || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);;
+    market = defaultMarket || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
   }
   if (market) {
     if (tradingTutorial || isPreview) {

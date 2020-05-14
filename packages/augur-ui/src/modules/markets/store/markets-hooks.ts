@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { MARKETS_ACTIONS, MOCK_MARKETS_STATE, DEFAULT_MARKETS_STATE, STUBBED_MARKETS_ACTIONS } from 'modules/markets/store/constants';
+import { MARKETS_ACTIONS, MOCK_MARKETS_STATE, DEFAULT_MARKETS_STATE } from 'modules/markets/store/constants';
 import immutableDelete from "immutable-delete";
 
 const {
@@ -23,12 +23,6 @@ function processMarketsData(newMarketsData, existingMarketsData) {
     return p;
   }, {});
 }
-
-export const Markets = {
-  actionsSet: false,
-  get: () => ({ ...DEFAULT_MARKETS_STATE }),
-  actions: STUBBED_MARKETS_ACTIONS,
-};
 
 export function MarketsReducer(state, action) {
   const updatedState = { ...state };

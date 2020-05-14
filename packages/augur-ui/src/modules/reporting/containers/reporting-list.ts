@@ -12,10 +12,11 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state, ownProps) => {
   const { isLogged, isConnected } = AppStatus.get();
+  const markets = selectReportingMarkets(ownProps.reportingType);
   return ({
     isLogged,
     isConnected,
-    markets: selectReportingMarkets(state, ownProps.reportingType)
+    markets
   });
 }
 

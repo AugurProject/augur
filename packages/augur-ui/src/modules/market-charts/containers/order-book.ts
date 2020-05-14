@@ -7,7 +7,7 @@ import { orderAndAssignCumulativeShares, calcOrderbookPercentages } from "module
 import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 import { AppState } from "appStore";
 import { AppStatus } from 'modules/app/store/app-status';
-import { Markets } from "modules/markets/store/markets-hooks";
+import { Markets } from "modules/markets/store/markets";
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { orderBooks } = Markets.get();
