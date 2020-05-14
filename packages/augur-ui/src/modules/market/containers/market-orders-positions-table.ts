@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import MarketOrdersPositionsTable from 'modules/market/components/market-orders-positions-table/market-orders-positions-table';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
-import { selectUserFilledOrders } from 'modules/orders/selectors/filled-orders';
+import { findUserFilledOrders } from 'modules/orders/selectors/filled-orders';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 import { TXEventName } from '@augurproject/sdk/src/constants';
 import { addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
@@ -13,7 +13,7 @@ const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   let openOrders = getUserOpenOrders(market.id);
   let filledOrders = market.id
-    ? selectUserFilledOrders(state, market.id)
+    ? findUserFilledOrders(market.id)
     : [];
   const hasPending = Boolean(openOrders.find(order => order.pending));
 

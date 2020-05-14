@@ -30,9 +30,8 @@ export const selectMarketTradingHistoryState = (state: AppState) =>
   state.marketTradingHistory;
 export const selectPendingLiquidityOrders = (state: AppState) =>
   PendingOrders.get().pendingLiquidityOrders;
-export const selectFilledOrders = (state: AppState) => state.filledOrders;
 export const selectUserMarketOpenOrders = (state: AppState) =>
-  state.userOpenOrders;
+  AppStatus.get().userOpenOrders;
 
 export const selectLoginAccountAddress = createSelector(
   selectLoginAccountState,

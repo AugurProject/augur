@@ -8,7 +8,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
-import { updateUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export const checkUpdateUserPositions = (marketIds: string[]) => (
@@ -28,16 +27,17 @@ export const checkUpdateUserPositions = (marketIds: string[]) => (
 export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState) => {
   const { loginAccount: { mixedCaseAddress }, universe: { id: universe }} = AppStatus.get();
+  const { updateLoginAccount, updateUserFilledOrders } =  AppStatus.actions;
   const Augur = augurSdk.get();
   const positionsPlus: Getters.Users.UserPositionsPlusResult = await Augur.getUserPositionsPlus({
     account: mixedCaseAddress,
     universe,
   });
 
-  dispatch(updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory));
+  updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory);
   if (positionsPlus.userPositions) dispatch(userPositionProcessing(positionsPlus.userPositions));
   if (positionsPlus.userPositionTotals) {
-    AppStatus.actions.updateLoginAccount(positionsPlus.userPositionTotals);
+    updateLoginAccount(positionsPlus.userPositionTotals);
   }
 };
 

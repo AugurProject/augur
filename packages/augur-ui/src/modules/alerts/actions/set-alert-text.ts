@@ -244,8 +244,7 @@ export default function setAlertText(alert: any, callback: Function) {
             loadMarketsInfoIfNotLoaded([marketId], () => {
               const marketInfo = selectMarket(marketId);
               if (marketInfo === null) return;
-              const { userOpenOrders } = getState() as AppState;
-              const { loginAccount } = AppStatus.get();
+              const { loginAccount, userOpenOrders } = AppStatus.get();
               let originalQuantity = convertOnChainAmountToDisplayAmount(
                 createBigNumber(alert.params.amountFilled),
                 createBigNumber(marketInfo.tickSize)
@@ -293,8 +292,7 @@ export default function setAlertText(alert: any, callback: Function) {
             loadMarketsInfoIfNotLoaded([marketId], () => {
               const marketInfo = selectMarket(marketId);
               if (marketInfo === null) return;
-              const { userOpenOrders } = getState() as AppState;
-              const { loginAccount } = AppStatus.get();
+              const { loginAccount, userOpenOrders } = AppStatus.get();
               let originalQuantity = null;
               let updatedOrderType = alert.params.orderType;
               if (

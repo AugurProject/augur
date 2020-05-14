@@ -35,6 +35,8 @@ import {
   NOTIFICATIONS,
   ALERTS,
   PENDING_QUEUE,
+  USER_OPEN_ORDERS,
+  FILLED_ORDERS,
 } from 'modules/app/store/constants';
 
 const {
@@ -80,6 +82,8 @@ const {
   ADD_PENDING_DATA,
   REMOVE_PENDING_DATA,
   UPDATE_PENDING_DATA_BY_HASH,
+  REFRESH_USER_OPEN_ORDERS,
+  UPDATE_USER_FILLED_ORDERS,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -237,7 +241,6 @@ export function AppStatusReducer(state, action) {
       delete updatedState[LOGIN_ACCOUNT].reporting;
       delete updatedState[LOGIN_ACCOUNT].allowance;
       delete updatedState[LOGIN_ACCOUNT].tradingPositionsTotal;
-      updatedState[PENDING_QUEUE] = {};
       break;
     }
     case UPDATE_LOGIN_ACCOUNT: {
@@ -252,6 +255,8 @@ export function AppStatusReducer(state, action) {
       updatedState[FAVORITES] = {};
       updatedState[NOTIFICATIONS] = [];
       updatedState[ALERTS] = [];
+      updatedState[PENDING_QUEUE] = {};
+      updatedState[USER_OPEN_ORDERS] = {};
       break;
     }
     case LOAD_FAVORITES: {
@@ -328,7 +333,7 @@ export function AppStatusReducer(state, action) {
             hash,
             blockNumber,
           },
-        }
+        },
       };
       break;
     }
@@ -362,7 +367,7 @@ export function AppStatusReducer(state, action) {
             {}
           );
         }
-       
+
         if (pendingId && updatedState[PENDING_QUEUE][queueName][pendingId]) {
           // remove by pendingId
           delete updatedState[PENDING_QUEUE][queueName][pendingId];
@@ -373,6 +378,17 @@ export function AppStatusReducer(state, action) {
           delete updatedState[PENDING_QUEUE][queueName];
         }
       }
+      break;
+    }
+    case REFRESH_USER_OPEN_ORDERS: {
+      updatedState[USER_OPEN_ORDERS] = { ...action.userOpenOrders };
+      break;
+    }
+    case UPDATE_USER_FILLED_ORDERS: {
+      updatedState[FILLED_ORDERS] = {
+        ...updatedState[FILLED_ORDERS],
+        [action.account]: { ...action.userFilledOrders },
+      };
       break;
     }
     default:
@@ -460,15 +476,41 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
         blockNumber,
         hash,
         info,
-      }) => dispatch({ type: ADD_PENDING_DATA, pendingId, queueName, status, blockNumber, hash, info }),
+      }) =>
+        dispatch({
+          type: ADD_PENDING_DATA,
+          pendingId,
+          queueName,
+          status,
+          blockNumber,
+          hash,
+          info,
+        }),
       addPendingDataByHash: ({
         oldHash,
         newHash,
         queueName,
         blockNumber,
         status,
-      }) => dispatch({ type: UPDATE_PENDING_DATA_BY_HASH, oldHash, newHash, status, blockNumber, queueName }),
-      removePendingData: ({ pendingId, queueName, hash }) => dispatch({ type: REMOVE_PENDING_DATA, pendingId, queueName, hash }),
+      }) =>
+        dispatch({
+          type: UPDATE_PENDING_DATA_BY_HASH,
+          oldHash,
+          newHash,
+          status,
+          blockNumber,
+          queueName,
+        }),
+      removePendingData: ({ pendingId, queueName, hash }) =>
+        dispatch({ type: REMOVE_PENDING_DATA, pendingId, queueName, hash }),
+      refreshUserOpenOrders: userOpenOrders =>
+        dispatch({ type: REFRESH_USER_OPEN_ORDERS, userOpenOrders }),
+      updateUserFilledOrders: (account, userFilledOrders) =>
+        dispatch({
+          type: UPDATE_USER_FILLED_ORDERS,
+          account,
+          userFilledOrders,
+        }),
     },
   };
 };

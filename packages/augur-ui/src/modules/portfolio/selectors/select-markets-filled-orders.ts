@@ -1,24 +1,23 @@
 import { createSelector } from 'reselect';
 import store from 'appStore';
 import * as constants from 'modules/common/constants';
-import {
-  selectLoginAccountAddress,
-  selectFilledOrders,
-} from 'appStore/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
 import getUserFilledOrders from 'modules/orders/selectors/filled-orders';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 import getMarketsPositionsRecentlyTraded from 'modules/portfolio/selectors/select-markets-positions-recently-traded';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export default function() {
   return marketsFilledOrders(store.getState());
 }
 
 export const marketsFilledOrders = createSelector(
-  selectLoginAccountAddress,
-  selectFilledOrders,
   getMarketsPositionsRecentlyTraded,
-  (loginAccountAddress, filledOrders, timestamps) => {
+  timestamps => {
+    const {
+      filledOrders,
+      loginAccount: { mixedCaseAddress: loginAccountAddress },
+    } = AppStatus.get();
     const marketIds = filterMarketIds(
       filledOrders[loginAccountAddress] || [],
       [] // marketReportState.resolved

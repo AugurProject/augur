@@ -36,10 +36,9 @@ const getMarketPath = id => {
 };
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { accountPositions, userOpenOrders, newMarket } = state;
-  const marketId = ownProps.market.id;
-  const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
+  const { accountPositions, newMarket } = state;
   const {
+    userOpenOrders,
     loginAccount: {
       balances: { dai, eth },
     },
@@ -48,6 +47,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     restoredAccount,
     blockchain: { currentAugurTimestamp: currentTimestamp },
   } = AppStatus.get();
+  const marketId = ownProps.market.id;
+  const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const hasFunds = GsnEnabled ? !!dai : !!eth && !!dai;
 
   let availableDai = totalTradingBalance();
