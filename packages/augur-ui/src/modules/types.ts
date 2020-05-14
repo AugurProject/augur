@@ -219,7 +219,7 @@ export interface PendingQueue {
     };
   };
 }
-export interface PendingOrders {
+export interface PendingOrdersType {
   [marketId: string]: UIOrder[];
 }
 

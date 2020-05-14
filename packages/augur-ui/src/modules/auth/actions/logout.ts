@@ -4,9 +4,9 @@ import { windowRef } from 'utils/window-ref';
 import { analytics } from 'services/analytics';
 import { isLocalHost } from 'utils/is-localhost';
 import { augurSdk } from 'services/augursdk';
-import { clearLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 
 import { AppStatus } from 'modules/app/store/app-status';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 
 export function logout() {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
@@ -19,7 +19,7 @@ export function logout() {
       localStorageRef.removeItem('loggedInUser');
     }
     AppStatus.actions.clearLoginAccount();
-    dispatch(clearLiquidityOrders());
+    PendingOrders.actions.clearLiquidity();
 
     // Close Mobile Menu
     setMobileMenuState(0);

@@ -19,8 +19,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 import isAddress from "modules/auth/helpers/is-address";
 
 const mapStateToProps = (state: AppState) => {
-  const { pendingQueue } = state;
-  const { notifications, universe, walletStatus, modal, loginAccount: { balances } } = AppStatus.get();
+  const { pendingQueue, notifications, universe, walletStatus, modal, loginAccount: { balances } } = AppStatus.get();
   const walletBalances = balances;
   const pending =
     pendingQueue[TRANSACTIONS] &&

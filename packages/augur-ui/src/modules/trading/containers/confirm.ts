@@ -14,6 +14,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 const mapStateToProps = (state: AppState, ownProps) => {
   const { newMarket } = state;
   const {
+    pendingQueue,
     loginAccount: { balances, allowance: allowanceBigNumber },
     gsnEnabled: GsnEnabled,
     walletStatus: walletStatus,
@@ -29,7 +30,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
   const sweepStatus =
-    state.pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
+    pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
   return {
     gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,
     availableEth: createBigNumber(balances.eth),

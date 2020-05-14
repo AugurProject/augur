@@ -5,7 +5,6 @@ import { formatGasCostGwei, formatAttoDai } from 'utils/format-number';
 import { GasPriceInfo, Blockchain, FilterSortOptions, INVALID_OPTIONS, Universe, LoginAccount } from 'modules/types';
 import * as moment from '../../../../../../node_modules/moment/moment';
 import { Getters } from '@augurproject/sdk/src';
-import { id } from '../../../../../../node_modules/ethers/utils/hash';
 
 export const THEME = 'theme';
 export const ODDS = 'oddsType';
@@ -38,6 +37,42 @@ export const LOGIN_ACCOUNT = 'loginAccount';
 export const FAVORITES = 'favorites';
 export const NOTIFICATIONS = 'notifications';
 export const ALERTS = 'alerts';
+export const PENDING_ORDERS = 'pendingOrders';
+export const PENDING_LIQUIDITY_ORDERS = 'pendingLiquidityOrders';
+export const PENDING_QUEUE = 'pendingQueue';
+
+export const DEFAULT_PENDING_ORDERS = {
+  [PENDING_ORDERS]: {},
+  [PENDING_LIQUIDITY_ORDERS]: {},
+}
+
+export const STUBBED_PENDING_ORDERS_ACTIONS = {
+  addLiquidity: ({ liquidityOrders, txParamHash }) => {},
+  updateLiquidity: ({ order, updates, txParamHash, outcomeId }) => {},
+  removeLiquidity: ({ txParamHash, outcomeId, orderId }) => {},
+  clearLiquidity: () => {},
+  loadLiquidity: (pendingLiquidityOrders) => {},
+  clearAllMarketLiquidity: ({ txParamHash }) => {},
+  updateLiquidityHash: ({ txParamHash, txHash }) => {},
+  updateLiquidityStatus: ({ txParamHash, outcomeId, type, price, eventName }) => {},
+  updateSuccessfulLiquidity: ({ txParamHash, outcomeId, type, price }) => {},
+  updatePendingOrder: (marketId, order) => {},
+  removePendingOrder: (marketId, orderId) => {},
+};
+
+export const PENDING_ORDERS_ACTIONS = {
+  UPDATE_PENDING_ORDER: 'UPDATE_PENDING_ORDER',
+  REMOVE_PENDING_ORDER: 'REMOVE_PENDING_ORDER',
+  UPDATE_LIQUIDITY_ORDER: 'UPDATE_LIQUIDITY_ORDER',
+  ADD_MARKET_LIQUIDITY_ORDERS: 'ADD_MARKET_LIQUIDITY_ORDERS',
+  REMOVE_LIQUIDITY_ORDER: 'REMOVE_LIQUIDITY_ORDER',
+  CLEAR_LIQUIDITY_ORDERS: 'CLEAR_LIQUIDITY_ORDERS',
+  LOAD_PENDING_LIQUIDITY_ORDERS: 'LOAD_PENDING_LIQUIDITY_ORDERS',
+  CLEAR_ALL_MARKET_ORDERS: 'CLEAR_ALL_MARKET_ORDERS',
+  UPDATE_TX_PARAM_HASH_TX_HASH: 'UPDATE_TX_PARAM_HASH_TX_HASH',
+  UPDATE_LIQUIDITY_ORDER_STATUS: 'UPDATE_LIQUIDITY_ORDER_STATUS',
+  DELETE_SUCCESSFUL_LIQUIDITY_ORDER: 'DELETE_SUCCESSFUL_LIQUIDITY_ORDER',
+};
 
 export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
   balances: {
@@ -173,6 +208,7 @@ export const DEFAULT_APP_STATUS = {
   [FAVORITES]: {},
   [NOTIFICATIONS]: [],
   [ALERTS]: [],
+  [PENDING_QUEUE]: {},
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -215,6 +251,9 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_ALERT: 'UPDATE_ALERT',
   REMOVE_ALERT: 'REMOVE_ALERT',
   CLEAR_ALERTS: 'CLEAR_ALERTS',
+  ADD_PENDING_DATA: 'ADD_PENDING_DATA',
+  UPDATE_PENDING_DATA_BY_HASH: 'UPDATE_PENDING_DATA_BY_HASH',
+  REMOVE_PENDING_DATA: 'REMOVE_PENDING_DATA',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -257,4 +296,20 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateAlert: (id, alert) => {},
   removeAlert: (id, name) => {},
   clearAlerts: level => {},
+  addPendingData: ({
+    pendingId,
+    queueName,
+    status,
+    blockNumber,
+    hash,
+    info,
+  }) => {},
+  addPendingDataByHash: ({
+    oldHash,
+    newHash,
+    queueName,
+    blockNumber,
+    status,
+  }) => {},
+  removePendingData: ({ hash, queueName, pendingId }) => {},
 };

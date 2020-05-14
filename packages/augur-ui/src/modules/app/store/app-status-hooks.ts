@@ -34,8 +34,8 @@ import {
   FAVORITES,
   NOTIFICATIONS,
   ALERTS,
+  PENDING_QUEUE,
 } from 'modules/app/store/constants';
-import { ADD_ALERT } from 'modules/alerts/actions/alerts';
 
 const {
   SET_THEME,
@@ -77,6 +77,9 @@ const {
   UPDATE_ALERT,
   REMOVE_ALERT,
   CLEAR_ALERTS,
+  ADD_PENDING_DATA,
+  REMOVE_PENDING_DATA,
+  UPDATE_PENDING_DATA_BY_HASH,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -196,7 +199,10 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_BLOCKCHAIN: {
-      updatedState[BLOCKCHAIN] = { ...updatedState[BLOCKCHAIN], ...action.blockchain };
+      updatedState[BLOCKCHAIN] = {
+        ...updatedState[BLOCKCHAIN],
+        ...action.blockchain,
+      };
       break;
     }
     case SET_CATEGORY_STATS: {
@@ -207,7 +213,7 @@ export function AppStatusReducer(state, action) {
       updatedState[FILTER_SORT_OPTIONS] = {
         ...updatedState[FILTER_SORT_OPTIONS],
         ...action.filterSortOptions,
-      }
+      };
       break;
     }
     case SET_MODAL: {
@@ -231,6 +237,7 @@ export function AppStatusReducer(state, action) {
       delete updatedState[LOGIN_ACCOUNT].reporting;
       delete updatedState[LOGIN_ACCOUNT].allowance;
       delete updatedState[LOGIN_ACCOUNT].tradingPositionsTotal;
+      updatedState[PENDING_QUEUE] = {};
       break;
     }
     case UPDATE_LOGIN_ACCOUNT: {
@@ -241,7 +248,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case CLEAR_LOGIN_ACCOUNT: {
-      updatedState[LOGIN_ACCOUNT] = {...DEFAULT_LOGIN_ACCOUNT_STATE};
+      updatedState[LOGIN_ACCOUNT] = { ...DEFAULT_LOGIN_ACCOUNT_STATE };
       updatedState[FAVORITES] = {};
       updatedState[NOTIFICATIONS] = [];
       updatedState[ALERTS] = [];
@@ -253,9 +260,9 @@ export function AppStatusReducer(state, action) {
     }
     case TOGGLE_FAVORITE: {
       const { marketId } = action;
-      const { currentAugurTimestamp: timestamp } = updatedState[BLOCKCHAIN]; 
+      const { currentAugurTimestamp: timestamp } = updatedState[BLOCKCHAIN];
       const newFavorites = {
-        ...updatedState[FAVORITES]
+        ...updatedState[FAVORITES],
       };
       if (newFavorites[marketId]) {
         delete newFavorites[marketId];
@@ -268,22 +275,25 @@ export function AppStatusReducer(state, action) {
     case UPDATE_NOTIFICATIONS: {
       const notifications = updatedState[NOTIFICATIONS];
       const ids = action.notifications.map(n => n.id);
-      const filtered = notifications.filter(n => !ids.includes(n.id))
+      const filtered = notifications.filter(n => !ids.includes(n.id));
       updatedState[NOTIFICATIONS] = [...filtered, ...action.notifications];
       break;
     }
     case ADD_ALERT: {
       const { alert: newAlert } = action;
-      if (!newAlert.name || newAlert.name === "") {
+      if (!newAlert.name || newAlert.name === '') {
         break;
       }
-      updatedState[ALERTS] = [...updatedState[ALERTS], newAlert]
+      updatedState[ALERTS] = [...updatedState[ALERTS], newAlert];
       break;
     }
     case UPDATE_ALERT: {
       const { alert: newAlert, id } = action;
       let updatedAlerts = updatedState[ALERTS].map((alert, i) => {
-        if (alert.uniqueId !== id || newAlert.name.toUpperCase() !== alert.name.toUpperCase()) {
+        if (
+          alert.uniqueId !== id ||
+          newAlert.name.toUpperCase() !== alert.name.toUpperCase()
+        ) {
           return alert;
         }
 
@@ -293,11 +303,76 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case REMOVE_ALERT: {
-      updatedState[ALERTS] = updatedState[ALERTS].filter((alert, i) => alert.uniqueId !== action.id || action.name.toUpperCase() !== alert.name.toUpperCase())
+      updatedState[ALERTS] = updatedState[ALERTS].filter(
+        (alert, i) =>
+          alert.uniqueId !== action.id ||
+          action.name.toUpperCase() !== alert.name.toUpperCase()
+      );
       break;
     }
     case CLEAR_ALERTS: {
-      updatedState[ALERTS] = updatedState[ALERTS].filter(it => it.level !== action.level);
+      updatedState[ALERTS] = updatedState[ALERTS].filter(
+        it => it.level !== action.level
+      );
+      break;
+    }
+    case ADD_PENDING_DATA: {
+      const { pendingId, queueName, status, blockNumber, hash, info } = action;
+      updatedState[PENDING_QUEUE] = {
+        ...updatedState[PENDING_QUEUE],
+        [queueName]: {
+          ...updatedState[PENDING_QUEUE][queueName],
+          [pendingId]: {
+            status,
+            data: info,
+            hash,
+            blockNumber,
+          },
+        }
+      };
+      break;
+    }
+    case UPDATE_PENDING_DATA_BY_HASH: {
+      const { oldHash, newHash, queueName, blockNumber, status } = action;
+      if (updatedState[PENDING_QUEUE][queueName]) {
+        const queue = updatedState[PENDING_QUEUE][queueName];
+        Object.keys(queue).forEach(o => {
+          const item = queue[o];
+          if (item.hash === oldHash || item.hash === newHash) {
+            item.hash = newHash;
+            item.blockNumber = blockNumber;
+            item.status = status;
+          }
+        });
+        updatedState[PENDING_QUEUE][queueName] = {
+          ...updatedState[PENDING_QUEUE][queueName],
+          ...queue,
+        };
+      }
+      break;
+    }
+    case REMOVE_PENDING_DATA: {
+      const { pendingId, queueName, hash } = action;
+      if (updatedState[PENDING_QUEUE][queueName]) {
+        if (hash) {
+          // remove by hash
+          const queue = updatedState[PENDING_QUEUE][queueName];
+          updatedState[PENDING_QUEUE][queueName] = Object.keys(queue).reduce(
+            (p, o) => (queue[o].hash !== hash ? { ...p, [o]: queue[o] } : p),
+            {}
+          );
+        }
+       
+        if (pendingId && updatedState[PENDING_QUEUE][queueName][pendingId]) {
+          // remove by pendingId
+          delete updatedState[PENDING_QUEUE][queueName][pendingId];
+        }
+
+        if (Object.keys(updatedState[PENDING_QUEUE][queueName]).length === 0) {
+          // remove queue name if it's empty:
+          delete updatedState[PENDING_QUEUE][queueName];
+        }
+      }
       break;
     }
     default:
@@ -357,22 +432,43 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
         dispatch({ type: SET_MOBILE_MENU_STATE, mobileMenuState }),
       setCurrentBasePath: currentBasePath =>
         dispatch({ type: SET_CURRENT_BASE_PATH, currentBasePath }),
-      updateBlockchain: blockchain => dispatch({ type: UPDATE_BLOCKCHAIN, blockchain }),
-      setCategoryStats: categoryStats => dispatch({ type: SET_CATEGORY_STATS, categoryStats }),
-      updateFilterSortOptions: filterSortOptions => dispatch({ type: UPDATE_FILTER_SORT_OPTIONS, filterSortOptions }),
+      updateBlockchain: blockchain =>
+        dispatch({ type: UPDATE_BLOCKCHAIN, blockchain }),
+      setCategoryStats: categoryStats =>
+        dispatch({ type: SET_CATEGORY_STATS, categoryStats }),
+      updateFilterSortOptions: filterSortOptions =>
+        dispatch({ type: UPDATE_FILTER_SORT_OPTIONS, filterSortOptions }),
       setModal: modal => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
       updateUniverse: universe => dispatch({ type: UPDATE_UNIVERSE, universe }),
       switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
-      updateLoginAccount: (loginAccount, clear = false) => dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount, clear }),
+      updateLoginAccount: (loginAccount, clear = false) =>
+        dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount, clear }),
       clearLoginAccount: () => dispatch({ type: CLEAR_LOGIN_ACCOUNT }),
       loadFavorites: favorites => dispatch({ type: LOAD_FAVORITES, favorites }),
       toggleFavorite: marketId => dispatch({ type: TOGGLE_FAVORITE, marketId }),
-      updateNotifications: notifications => dispatch({ type: UPDATE_NOTIFICATIONS, notifications }),
+      updateNotifications: notifications =>
+        dispatch({ type: UPDATE_NOTIFICATIONS, notifications }),
       addAlert: alert => dispatch({ type: ADD_ALERT, alert }),
       updateAlert: (id, alert) => dispatch({ type: UPDATE_ALERT, alert, id }),
       removeAlert: (id, name) => dispatch({ type: REMOVE_ALERT, id, name }),
       clearAlerts: level => dispatch({ type: CLEAR_ALERTS, level }),
+      addPendingData: ({
+        pendingId,
+        queueName,
+        status,
+        blockNumber,
+        hash,
+        info,
+      }) => dispatch({ type: ADD_PENDING_DATA, pendingId, queueName, status, blockNumber, hash, info }),
+      addPendingDataByHash: ({
+        oldHash,
+        newHash,
+        queueName,
+        blockNumber,
+        status,
+      }) => dispatch({ type: UPDATE_PENDING_DATA_BY_HASH, oldHash, newHash, status, blockNumber, queueName }),
+      removePendingData: ({ pendingId, queueName, hash }) => dispatch({ type: REMOVE_PENDING_DATA, pendingId, queueName, hash }),
     },
   };
 };

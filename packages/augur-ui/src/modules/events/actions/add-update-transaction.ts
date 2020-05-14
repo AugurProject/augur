@@ -48,10 +48,10 @@ import {
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
-import { updateLiqTransactionParamHash } from 'modules/orders/actions/liquidity-management';
 import { addAlert, updateAlert } from 'modules/alerts/actions/alerts';
 import { getDeconstructedMarketId } from 'modules/create-market/helpers/construct-market-params';
 import { AppStatus } from 'modules/app/store/app-status';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 
 const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
@@ -260,17 +260,13 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         if (eventName !== TXEventName.Success)
           dispatch(addPendingData(id, CREATE_MARKET, eventName, hash, data));
         if (hash)
-          dispatch(
-            updateLiqTransactionParamHash({ txParamHash: id, txHash: hash })
-          );
+          PendingOrders.actions.updateLiquidityHash({ txParamHash: id, txHash: hash });
         if (
           (hash && eventName === TXEventName.Failure) ||
           eventName === TXEventName.RelayerDown
         ) {
           // if tx fails, revert hash to generated tx id, for retry
-          dispatch(
-            updateLiqTransactionParamHash({ txParamHash: hash, txHash: id })
-          );
+          PendingOrders.actions.updateLiquidityHash({ txParamHash: hash, txHash: id });
         }
         break;
       }

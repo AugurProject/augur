@@ -3,7 +3,6 @@ import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import {
   selectAccountPositionsState,
   selectLoginAccountAddress,
-  selectPendingLiquidityOrders,
   selectUserMarketOpenOrders
 } from 'appStore/select-state';
 import { MarketReportingState } from '@augurproject/sdk';
@@ -38,6 +37,7 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { isSameAddress } from 'utils/isSameAddress';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 
 // Get all the users CLOSED markets with OPEN ORDERS
 export const selectResolvedMarketsOpenOrders = createSelector(
@@ -163,9 +163,9 @@ export const selectUsersReportingFees: MarketReportClaimableContracts = selectRe
 
 // Get all unsigned orders from localStorage
 export const selectUnsignedOrders = createSelector(
-  selectPendingLiquidityOrders,
   selectMarkets,
-  (pendingLiquidityOrders, markets) => {
+  (markets) => {
+    const { pendingLiquidityOrders } = PendingOrders.get();
     if (pendingLiquidityOrders) {
       return Object.keys(pendingLiquidityOrders)
         .map(id => markets.find(market => market.transactionHash === id))

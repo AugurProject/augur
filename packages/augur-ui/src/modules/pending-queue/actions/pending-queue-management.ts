@@ -1,4 +1,4 @@
-import { BaseAction, CreateMarketData, PendingOrders, PendingQueue } from "modules/types";
+import { BaseAction, CreateMarketData, PendingOrdersType, PendingQueue } from "modules/types";
 import { TransactionMetadata } from "contract-dependencies-ethers/build";
 import { isTransactionConfirmed, transactionConfirmations, doReportDisputeAddStake } from 'modules/contracts/actions/contractCalls';
 import { TXEventName } from '@augurproject/sdk';
@@ -11,6 +11,7 @@ import { AppStatus } from "modules/app/store/app-status";
 
 import { generateTxParameterIdFromString } from 'utils/generate-tx-parameter-id';
 import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
+import { PendingOrders } from "modules/app/store/pending-orders";
 export const ADD_PENDING_DATA = "ADD_PENDING_DATA";
 export const REMOVE_PENDING_DATA = "REMOVE_PENDING_DATA";
 export const REMOVE_PENDING_DATA_BY_HASH = 'REMOVE_PENDING_DATA_BY_HASH';
@@ -79,17 +80,25 @@ const addPendingDataWithBlockNumber = (
   info?: CreateMarketData | TransactionMetadata,
 ): BaseAction => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
   const { blockchain: { currentBlockNumber: blockNumber } } = AppStatus.get();
-  dispatch({
-    type: ADD_PENDING_DATA,
-    data: {
-      pendingId,
-      queueName,
-      status,
-      hash,
-      info,
-      blockNumber,
-    },
+  AppStatus.actions.addPendingData({
+    pendingId,
+    queueName,
+    status,
+    hash,
+    info,
+    blockNumber,
   });
+  // dispatch({
+  //   type: ADD_PENDING_DATA,
+  //   data: {
+  //     pendingId,
+  //     queueName,
+  //     status,
+  //     hash,
+  //     info,
+  //     blockNumber,
+  //   },
+  // });
 };
 
 const updatePendingDataHash = (
@@ -102,33 +111,46 @@ const updatePendingDataHash = (
   getState: () => AppState
 ) => {
   const { blockchain: { currentBlockNumber: blockNumber }} = AppStatus.get();
-  dispatch({
-    type: UPDATE_PENDING_DATA_BY_HASH,
-    data: {
-      queueName,
-      oldHash,
-      newHash,
-      blockNumber,
-      status,
-    },
+  AppStatus.actions.addPendingDataByHash({
+    queueName,
+    oldHash,
+    newHash,
+    blockNumber,
+    status,
   });
+  // dispatch({
+  //   type: UPDATE_PENDING_DATA_BY_HASH,
+  //   data: {
+  //     queueName,
+  //     oldHash,
+  //     newHash,
+  //     blockNumber,
+  //     status,
+  //   },
+  // });
 };
 
 export const removePendingData = (
   pendingId: string,
   queueName: string,
-): BaseAction => ({
-  type: REMOVE_PENDING_DATA,
-  data: { pendingId, queueName },
-});
+) => {
+  AppStatus.actions.removePendingData({ pendingId, queueName, hash: undefined });
+  // return ({
+  //   type: REMOVE_PENDING_DATA,
+  //   data: { pendingId, queueName },
+  // });
+}
 
 export const removePendingDataByHash = (
   hash: string,
   queueName: string,
-): BaseAction => ({
-  type: REMOVE_PENDING_DATA_BY_HASH,
-  data: { hash, queueName },
-});
+) => {
+  AppStatus.actions.removePendingData({ pendingId: undefined, hash, queueName });
+  // return ({
+  //   type: REMOVE_PENDING_DATA_BY_HASH,
+  //   data: { hash, queueName },
+  // });
+}
 
 export const addCanceledOrder = (orderId: string, status: string, hash: string) => (dispatch: ThunkDispatch<void, any, Action>) => {
   dispatch(addPendingData(orderId, CANCELORDER, status, hash));
@@ -207,7 +229,8 @@ interface PendingItem {
 }
 
 export const findAndSetTransactionsTimeouts = (blockNumber: number) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { pendingQueue, pendingOrders } = getState();
+  const { pendingQueue } = AppStatus.get();
+  const { pendingOrders } = PendingOrders.get();
   const thresholdBlockNumber = blockNumber - TX_CHECK_BLOCKNUMBER_LIMIT;
 
   dispatch(processingPendingQueue(thresholdBlockNumber, pendingQueue));
@@ -267,7 +290,7 @@ const processingPendingQueue = (
 
 const processingPendingOrders = (
   thresholdBlockNumber: number,
-  pendingOrders: PendingOrders
+  pendingOrders: PendingOrdersType
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   Object.keys(pendingOrders).map(marketId => {
     pendingOrders[marketId]

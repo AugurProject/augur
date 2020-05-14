@@ -3,17 +3,17 @@ import {
   REMOVE_PENDING_ORDER,
   UPDATE_PENDING_ORDER,
 } from 'modules/orders/actions/pending-orders-management';
-import { PendingOrders, BaseAction } from 'modules/types';
+import { PendingOrdersType, BaseAction } from 'modules/types';
 import { RESET_STATE } from 'modules/app/actions/reset-state';
 import { APP_STATUS_ACTIONS } from 'modules/app/store/constants';
 const { CLEAR_LOGIN_ACCOUNT } = APP_STATUS_ACTIONS;
 
-const DEFAULT_STATE: PendingOrders = {};
+const DEFAULT_STATE: PendingOrdersType = {};
 
 export default function(
-  pendingOrders: PendingOrders = DEFAULT_STATE,
+  pendingOrders: PendingOrdersType = DEFAULT_STATE,
   { type, data }: BaseAction
-): PendingOrders {
+): PendingOrdersType {
   switch (type) {
     case ADD_PENDING_ORDER: {
       const { pendingOrder, marketId } = data;
