@@ -2,7 +2,6 @@ import logError from 'utils/log-error';
 import {
   NodeStyleCallback,
 } from 'modules/types';
-import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
@@ -19,30 +18,6 @@ export function bulkMarketTradingHistory(
     type: BULK_MARKET_TRADING_HISTORY,
     data: {
       keyedMarketTradingHistory,
-    },
-  };
-}
-
-export function updateUserFilledOrders(
-  account: string,
-  userFilledOrders: Getters.Trading.MarketTradingHistory
-) {
-  return {
-    type: UPDATE_USER_FILLED_ORDERS,
-    data: {
-      account,
-      userFilledOrders,
-    },
-  };
-}
-
-export function refreshUserOpenOrders(
-  openOrders: Getters.Trading.Orders
-) {
-  return {
-    type: REFRESH_USER_OPEN_ORDERS,
-    data: {
-      openOrders,
     },
   };
 }

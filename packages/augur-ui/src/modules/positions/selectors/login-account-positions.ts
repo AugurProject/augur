@@ -14,7 +14,7 @@ export default function() {
   const marketsWithPositions = markets.map(market => ({
     ...market,
     userPositions: selectUserMarketPositions(store.getState(), market.id),
-    myPositionsSummary: selectMarketPositionsSummary(store.getState(), market.id)
+    myPositionsSummary: selectMarketPositionsSummary(market.id)
   }));
 
   return {

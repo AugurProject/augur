@@ -1,5 +1,4 @@
 import { AppState } from 'appStore';
-import { updateAccountPositionsData } from 'modules/positions/actions/account-positions';
 import {
   AccountPositionAction,
   AccountPosition,
@@ -8,14 +7,13 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
-import { updateUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export const checkUpdateUserPositions = (marketIds: string[]) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { accountPositions } = getState();
+  const { accountPositions } = AppStatus.get();
   const posMarketIds = Object.keys(accountPositions);
   let included = false;
   posMarketIds.map(m => {
@@ -28,16 +26,17 @@ export const checkUpdateUserPositions = (marketIds: string[]) => (
 export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState) => {
   const { loginAccount: { mixedCaseAddress }, universe: { id: universe }} = AppStatus.get();
+  const { updateLoginAccount, updateUserFilledOrders } =  AppStatus.actions;
   const Augur = augurSdk.get();
   const positionsPlus: Getters.Users.UserPositionsPlusResult = await Augur.getUserPositionsPlus({
     account: mixedCaseAddress,
     universe,
   });
 
-  dispatch(updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory));
-  if (positionsPlus.userPositions) dispatch(userPositionProcessing(positionsPlus.userPositions));
+  updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory);
+  if (positionsPlus.userPositions) userPositionProcessing(positionsPlus.userPositions);
   if (positionsPlus.userPositionTotals) {
-    AppStatus.actions.updateLoginAccount(positionsPlus.userPositionTotals);
+    updateLoginAccount(positionsPlus.userPositionTotals);
   }
 };
 
@@ -58,8 +57,6 @@ export const loadAccountOnChainFrozenFundsTotals = () => async (
 
 export const userPositionProcessing = (
   positions: Getters.Users.UserTradingPositions,
-) => (
-  dispatch: ThunkDispatch<void, any, Action>,
 ) => {
   if (!positions || !positions.tradingPositions) {
     return;
@@ -114,6 +111,6 @@ export const userPositionProcessing = (
       marketId,
       positionData: marketPositionData,
     };
-    dispatch(updateAccountPositionsData(positionData));
+    AppStatus.actions.updateAccountPositions(positionData);
   });
 };

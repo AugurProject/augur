@@ -447,7 +447,8 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
       log.market
     );
     const { pendingOrders } = PendingOrders.get();
-    if (pendingOrders[pendingOrderId]) {
+    const marketPendingOrders = pendingOrders[log.market];
+    if (marketPendingOrders?.find(pending => pending.id === pendingOrderId)) {
       dispatch(removePendingOrder(pendingOrderId, log.market));
     }
   }
