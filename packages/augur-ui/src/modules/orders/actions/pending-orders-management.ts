@@ -22,10 +22,6 @@ export const addPendingOrder = (pendingOrder: UIOrder, marketId: string) =>
 
 export const removePendingOrder = (id: string, marketId: string) => {
   PendingOrders.actions.removePendingOrder(marketId, id);
-  return ({
-    type: REMOVE_PENDING_ORDER,
-    data: { id, marketId },
-  });
 }
 export const updatePendingOrderStatus = (
   id: string,
@@ -43,13 +39,6 @@ export const addPendingOrderWithBlockNumber = (
   } = AppStatus.get();
   pendingOrder.blockNumber = currentBlockNumber;
   PendingOrders.actions.updatePendingOrder(marketId, pendingOrder);
-  dispatch({
-    type: ADD_PENDING_ORDER,
-    data: {
-      pendingOrder,
-      marketId,
-    },
-  });
 };
 
 const updatePendingOrderStatusWithBlockNumber = (
@@ -67,10 +56,6 @@ const updatePendingOrderStatusWithBlockNumber = (
     status,
     hash,
     blockNumber,
-  });
-  dispatch({
-    type: UPDATE_PENDING_ORDER,
-    data: { id, marketId, status, hash, blockNumber },
   });
 };
 

@@ -121,6 +121,7 @@ export const placeMarketTrade = ({
       type: MODAL_ERROR,
       error: err.message ? err.message : JSON.stringify(err),
     });
+    console.log('placeTradeCatch failure');
     dispatch(
       updatePendingOrderStatus(
         tradeGroupId,

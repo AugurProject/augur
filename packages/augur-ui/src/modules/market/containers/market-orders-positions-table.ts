@@ -11,7 +11,7 @@ import { addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-ma
 
 const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
-  let openOrders = getUserOpenOrders(market.id) || [];
+  let openOrders = getUserOpenOrders(market.id);
   let filledOrders = market.id
     ? selectUserFilledOrders(state, market.id)
     : [];

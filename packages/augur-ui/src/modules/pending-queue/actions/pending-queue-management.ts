@@ -293,6 +293,7 @@ const processingPendingOrders = (
   pendingOrders: PendingOrdersType
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   Object.keys(pendingOrders).map(marketId => {
+    console.log('processingPendingOrders', pendingOrders[marketId]);
     pendingOrders[marketId]
       .filter(
         order =>

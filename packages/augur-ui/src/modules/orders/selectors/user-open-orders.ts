@@ -17,6 +17,7 @@ import {
 import { convertUnixToFormattedDate, convertSaltToFormattedDate } from 'utils/format-date';
 import { formatNone, formatDai, formatMarketShares } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
+import { CANCELORDER } from 'modules/common/constants';
 import {
   selectUserMarketOpenOrders,
   selectCancelingOrdersState,
@@ -38,16 +39,62 @@ function selectPendingOrdersStateMarket(state, marketId) {
 
 export default function(marketId) {
   if (!marketId) return [];
-
-  return selectUserOpenOrders(store.getState() as AppState, marketId);
+  return findUserOpenOrders(marketId);
+  // return selectUserOpenOrders(store.getState() as AppState, marketId);
 }
 
 const getmarketId = (state, marketId) => marketId;
 
+export const findUserOpenOrders = (marketId) => {
+  const { userOpenOrders: stateUserOpenOrders } = store.getState();
+  const { marketInfos } = Markets.get();
+  const { pendingQueue } = AppStatus.get();
+  const { pendingOrders: allMarketsPendingOrders } = PendingOrders.get();
+  const userMarketOpenOrders = stateUserOpenOrders[marketId];
+  const pendingOrders = allMarketsPendingOrders[marketId];
+  const orderCancellation = pendingQueue[CANCELORDER];
+  const market = marketInfos[marketId];
+  if (!market) return [];
+  let userOpenOrders =
+    market.outcomes
+      .map(outcome =>
+        selectUserOpenOrdersInternal(
+          market.id,
+          outcome.id,
+          userMarketOpenOrders,
+          orderCancellation,
+          market.description,
+          outcome.description,
+          market.marketType
+        )
+      )
+      .filter(collection => collection.length !== 0)
+      .flat() || [];
+
+  // formatting and add pending orders
+  if (pendingOrders && pendingOrders.length > 0) {
+    const formatted = pendingOrders.map(o => {
+      if (!userOpenOrders.find(order => o.id === order.id)) {
+        return ({
+          ...o,
+          unmatchedShares: formatMarketShares(market.marketType, o.amount),
+          avgPrice: formatDai(o.fullPrecisionPrice),
+          tokensEscrowed: formatDai(0, {zeroStyled: true}),
+          sharesEscrowed: formatMarketShares(market.marketType, 0, { zeroStyled: true }),
+          pending: !!o.status, // TODO: can show status of transaction in the future
+          status: o.status,
+        });
+      }
+    });
+    userOpenOrders = formatted.concat(userOpenOrders);
+  }
+  return userOpenOrders || [];
+};
+
 export const selectUserOpenOrders = createSelector(
   selectUserMarketOpenOrdersMarket,
   selectCancelingOrdersState,
-  selectPendingOrdersStateMarket, 
+  selectPendingOrdersStateMarket,
   getmarketId,
   (userMarketOpenOrders, orderCancellation, pendingOrders, marketId) => {
     const { marketInfos } = Markets.get();
@@ -82,7 +129,6 @@ export const selectUserOpenOrders = createSelector(
       }))
       userOpenOrders = formatted.concat(userOpenOrders);
     }
-
     return userOpenOrders || [];
   }
 );
