@@ -37,6 +37,7 @@ import {
   PENDING_QUEUE,
   USER_OPEN_ORDERS,
   FILLED_ORDERS,
+  ACCOUNT_POSITIONS,
 } from 'modules/app/store/constants';
 
 const {
@@ -84,6 +85,7 @@ const {
   UPDATE_PENDING_DATA_BY_HASH,
   REFRESH_USER_OPEN_ORDERS,
   UPDATE_USER_FILLED_ORDERS,
+  UPDATE_ACCOUNT_POSITIONS_DATA,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -257,6 +259,7 @@ export function AppStatusReducer(state, action) {
       updatedState[ALERTS] = [];
       updatedState[PENDING_QUEUE] = {};
       updatedState[USER_OPEN_ORDERS] = {};
+      updatedState[ACCOUNT_POSITIONS] = {};
       break;
     }
     case LOAD_FAVORITES: {
@@ -391,6 +394,24 @@ export function AppStatusReducer(state, action) {
       };
       break;
     }
+    case UPDATE_ACCOUNT_POSITIONS_DATA: {
+      const { positionData, marketId } = action;
+      if (positionData) {
+        if (marketId) {
+          updatedState[ACCOUNT_POSITIONS] = {
+            ...updatedState[ACCOUNT_POSITIONS],
+            [marketId]: {
+              ...positionData[marketId],
+            },
+          };
+        }
+        updatedState[ACCOUNT_POSITIONS] = {
+          ...updatedState[ACCOUNT_POSITIONS],
+          ...positionData,
+        };
+      }
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -510,6 +531,12 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
           type: UPDATE_USER_FILLED_ORDERS,
           account,
           userFilledOrders,
+        }),
+      updateAccountPositions: ({ positionData, marketId }) =>
+        dispatch({
+          type: UPDATE_ACCOUNT_POSITIONS_DATA,
+          positionData,
+          marketId,
         }),
     },
   };

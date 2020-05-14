@@ -1,4 +1,3 @@
-import accountPositions from 'modules/positions/reducers/account-positions';
 import marketTradingHistory from 'modules/markets/reducers/market-trading-history';
 import newMarket from 'modules/markets/reducers/new-market';
 import analytics from 'modules/app/reducers/analytics';
@@ -7,7 +6,6 @@ import marketsList from 'modules/markets-list/reducers/markets-list';
 import reportingListState from 'modules/reporting/reducers/reporting-list-state';
 import initialized3box from 'modules/global-chat/reducers/initialized-3box'
 import {
-  AccountPosition,
   NewMarket,
   Drafts,
   MarketsList,
@@ -20,7 +18,6 @@ import { SDKConfiguration } from '@augurproject/artifacts';
 
 export function createReducer() {
   return {
-    accountPositions,
     marketTradingHistory,
     newMarket,
     drafts,
@@ -34,7 +31,6 @@ export function createReducer() {
 // TODO: couldn't use concreat type form `createReducer` so hardcoding structure here
 // keeping with reducers for easier maintenance.
 export interface AppStateInterface {
-  accountPositions: AccountPosition;
   config: SDKConfiguration;
   marketTradingHistory: Getters.Trading.MarketTradingHistory;
   newMarket: NewMarket;

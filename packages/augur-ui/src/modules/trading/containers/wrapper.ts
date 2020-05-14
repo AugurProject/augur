@@ -36,8 +36,9 @@ const getMarketPath = id => {
 };
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { accountPositions, newMarket } = state;
+  const { newMarket } = state;
   const {
+    accountPositions,
     userOpenOrders,
     loginAccount: {
       balances: { dai, eth },

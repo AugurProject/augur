@@ -49,7 +49,7 @@ async function loadTransactions(
   if (userData.userOpenOrders)
     refreshUserOpenOrders(userData.userOpenOrders.orders);
   if (userData.userPositions)
-    dispatch(userPositionProcessing(userData.userPositions));
+    userPositionProcessing(userData.userPositions);
 
   updateLoginAccount({
     reporting: userData.userStakedRep,

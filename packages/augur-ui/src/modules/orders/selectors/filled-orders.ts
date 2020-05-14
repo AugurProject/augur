@@ -161,7 +161,7 @@ export const findUserFilledOrders = (marketId) => {
   const { marketInfos } = Markets.get();
   const marketInfo = marketInfos[marketId];
   const openOrders = findUserOpenOrders(marketId);
-  const userFilledOrders = filledOrders[address];
+  const userFilledOrders = filledOrders[address] || [];
   const filledMarketOrders = userFilledOrders[marketId];
   if (
     !filledMarketOrders ||

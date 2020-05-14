@@ -1,5 +1,4 @@
 import { AppState } from 'appStore';
-import { updateAccountPositionsData } from 'modules/positions/actions/account-positions';
 import {
   AccountPositionAction,
   AccountPosition,
@@ -14,7 +13,7 @@ export const checkUpdateUserPositions = (marketIds: string[]) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { accountPositions } = getState();
+  const { accountPositions } = AppStatus.get();
   const posMarketIds = Object.keys(accountPositions);
   let included = false;
   posMarketIds.map(m => {
@@ -35,7 +34,7 @@ export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void
   });
 
   updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory);
-  if (positionsPlus.userPositions) dispatch(userPositionProcessing(positionsPlus.userPositions));
+  if (positionsPlus.userPositions) userPositionProcessing(positionsPlus.userPositions);
   if (positionsPlus.userPositionTotals) {
     updateLoginAccount(positionsPlus.userPositionTotals);
   }
@@ -58,8 +57,6 @@ export const loadAccountOnChainFrozenFundsTotals = () => async (
 
 export const userPositionProcessing = (
   positions: Getters.Users.UserTradingPositions,
-) => (
-  dispatch: ThunkDispatch<void, any, Action>,
 ) => {
   if (!positions || !positions.tradingPositions) {
     return;
@@ -114,6 +111,6 @@ export const userPositionProcessing = (
       marketId,
       positionData: marketPositionData,
     };
-    dispatch(updateAccountPositionsData(positionData));
+    AppStatus.actions.updateAccountPositions(positionData);
   });
 };

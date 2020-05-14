@@ -7,7 +7,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 
 export const selectAccountPositionsState = (state: AppState) =>
-  state.accountPositions;
+  AppStatus.get().accountPositions;
 export const selectDisputeWindowStats = (state: AppState) =>
   state.universe.disputeWindow;
 export const selectLoginAccountState = (state: AppState): LoginAccount =>

@@ -9,15 +9,13 @@ import {
 } from 'modules/common/constants';
 import { marketLinkCopied } from 'services/analytics/helpers';
 import { AppStatus } from 'modules/app/store/app-status';
+import { PendingOrders } from 'modules/app/store/pending-orders';
 
 const mapStateToProps = (state, ownProps) => {
   const { marketId } = ownProps.market;
-  const {
-    accountPositions: positions,
-    pendingLiquidityOrders,
-  } = state;
+  const { pendingLiquidityOrders } = PendingOrders.get();
   const hasStaked = hasStakeInMarket(state, marketId);
-  const { loginAccount: { address }, universe: { forkingInfo, disputeWindow }} = AppStatus.get();
+  const { accountPositions: positions, loginAccount: { address }, universe: { forkingInfo, disputeWindow }} = AppStatus.get();
 
   return {
     hasPosition: !!positions[marketId],
