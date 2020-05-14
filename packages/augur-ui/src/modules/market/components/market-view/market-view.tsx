@@ -215,7 +215,7 @@ const MarketView = ({
         : undefined,
     tutorialError: '',
   });
-  
+
   const isConnected = connected && universe.id != null;
 
   const scalarModalSeen =
@@ -235,6 +235,11 @@ const MarketView = ({
     hasShownScalarModal,
   } = state;
 
+  let outcomeIdSet =
+    selectedOutcomeId === null || selectedOutcomeId === undefined
+      ? market && market.defaultSelectedOutcomeId
+      : selectedOutcomeId;
+  
   const prevProps = useRef();
 
   useEffect(() => {
@@ -273,6 +278,13 @@ const MarketView = ({
   }, [tradingTutorial, outcomeId, isConnected]);
 
   useEffect(() => {
+    outcomeIdSet = selectedOutcomeId === null || selectedOutcomeId === undefined
+    ? market && market.defaultSelectedOutcomeId
+    : selectedOutcomeId;
+  }, [selectedOutcomeId]);
+
+  useEffect(() => {
+    
     if (outcomeId !== prevProps.current.outcomeId && outcomeId !== null) {
       setState({
         ...state,
@@ -536,10 +548,6 @@ const MarketView = ({
 
   let outcomeOrderBook = EmptyOrderBook;
   const orderbookLoading = !orderBook;
-  let outcomeIdSet =
-    selectedOutcomeId === null || selectedOutcomeId === undefined
-      ? market && market.defaultSelectedOutcomeId
-      : selectedOutcomeId;
   if (orderBook && orderBook[outcomeIdSet]) {
     outcomeOrderBook = orderBook[outcomeIdSet];
   }
