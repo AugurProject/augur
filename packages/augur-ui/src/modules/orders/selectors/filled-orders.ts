@@ -1,13 +1,7 @@
-import store, { AppState } from "appStore";
 import { createBigNumber } from "utils/create-big-number";
 import { BUY, SELL, ZERO } from "modules/common/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
-import {
-  selectLoginAccountAddress,
-  selectFilledOrders,
-} from "appStore/select-state";
-import createCachedSelector from "re-reselect";
-import { selectUserOpenOrders } from "modules/orders/selectors/user-open-orders";
+import { findUserOpenOrders } from "modules/orders/selectors/user-open-orders";
 import { isSameAddress } from "utils/isSameAddress";
 import { formatDai } from "utils/format-number";
 import { AppStatus } from "modules/app/store/app-status";
@@ -156,48 +150,36 @@ function findOrders(
   return orders;
 }
 
-function selectMarketsDataStateMarket(marketId) {
-  const { marketInfos } = Markets.get();
-  return marketInfos[marketId];
-}
-
-function selectMarketUserFilledHistoryState(state: AppState, marketId) {
-  const filledOrders = selectFilledOrders(state);
-  const { loginAccount: address } = AppStatus.get();
-  const usersFilled = (filledOrders[address] || {})
-  return usersFilled[marketId] || [];
-}
 
 export default function(marketId) {
   if (!marketId) return [];
-  return selectUserFilledOrders(store.getState(), marketId);
+  return findUserFilledOrders(marketId);
 }
 
-export const selectUserFilledOrders = createCachedSelector(
-  selectLoginAccountAddress,
-  selectMarketsDataStateMarket,
-  selectUserOpenOrders,
-  selectMarketUserFilledHistoryState,
-  (accountId, marketInfos, openOrders, filledMarketOrders) => {
-    if (
-      !filledMarketOrders ||
-      filledMarketOrders.length < 1 ||
-      marketInfos === undefined
-    ) {
-      return [];
-    }
+export const findUserFilledOrders = (marketId) => {
+  const { loginAccount: { address, mixedCaseAddress: accountId }, filledOrders } = AppStatus.get();
+  const { marketInfos } = Markets.get();
+  const marketInfo = marketInfos[marketId];
+  const openOrders = findUserOpenOrders(marketId);
+  const userFilledOrders = filledOrders[address] || [];
+  const filledMarketOrders = userFilledOrders[marketId];
+  if (
+    !filledMarketOrders ||
+    filledMarketOrders.length < 1 ||
+    marketInfo === undefined
+  ) {
+    return [];
+  }
 
-    const orders = findOrders(
-      filledMarketOrders,
-      accountId,
-      marketInfos,
-      openOrders,
-    );
-    orders
-      .sort((a, b) => b.logIndex - a.logIndex)
-      .sort((a, b) => b.timestamp.timestamp - a.timestamp.timestamp);
+  const orders = findOrders(
+    filledMarketOrders,
+    accountId,
+    marketInfo,
+    openOrders,
+  );
+  orders
+    .sort((a, b) => b.logIndex - a.logIndex)
+    .sort((a, b) => b.timestamp.timestamp - a.timestamp.timestamp);
 
-    return orders || [];
-  },
-)((state, marketId) => marketId);
-
+  return orders || [];
+}

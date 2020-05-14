@@ -76,6 +76,7 @@ import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 import { logger } from '@augurproject/utils';
+import { MARKETS_ACTIONS } from 'modules/markets/store/constants';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 
 const handleAlert = (
@@ -106,7 +107,7 @@ const handleAlert = (
 const HIGH_PRI_REFRESH_MS = 1000;
 const MED_PRI_LOAD_REFRESH_MS = 2000;
 const loadOrderBook = _.throttle(
-  (dispatch, marketId) => dispatch(loadMarketOrderBook(marketId)),
+  (marketId) => Markets.actions.updateOrderBook(marketId, null, loadMarketOrderBook(marketId)),
   HIGH_PRI_REFRESH_MS,
   { leading: true }
 );
@@ -115,18 +116,15 @@ const loadUserOpenOrders = _.throttle(
   MED_PRI_LOAD_REFRESH_MS,
   { leading: true }
 );
-const throttleLoadMarketOrders = marketId => dispatch =>
-  loadOrderBook(dispatch, marketId);
+const throttleLoadMarketOrders = marketId => loadOrderBook(marketId);
 const throttleLoadUserOpenOrders = () => dispatch =>
   loadUserOpenOrders(dispatch);
 const BLOCKS_BEHIND_RELOAD_THRESHOLD = 60; // 60 blocks.
 let blocksBehindTimer = null;
 
-const updateMarketOrderBook = (marketId: string) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
+const updateMarketOrderBook = (marketId: string) => {
   if (isCurrentMarket(marketId)) {
-    dispatch(throttleLoadMarketOrders(marketId));
+    throttleLoadMarketOrders(marketId);
   }
 };
 
@@ -280,6 +278,7 @@ export const handleMarketsUpdatedLog = ({
   }
   const marketIds = Object.keys(marketsDataById);
   Markets.actions.updateMarketsData(marketsDataById);
+
   if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
   if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
 };
@@ -404,7 +403,7 @@ export const handleBulkOrdersLog = (data: {
     });
     Array.from(new Set([...marketIds])).map(marketId => {
       if (isCurrentMarket(marketId)) {
-        dispatch(updateMarketOrderBook(marketId));
+        updateMarketOrderBook(marketId);
         dispatch(loadMarketTradingHistory(marketId));
         dispatch(checkUpdateUserPositions([marketId]));
       }
@@ -448,7 +447,8 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
       log.market
     );
     const { pendingOrders } = PendingOrders.get();
-    if (pendingOrders[pendingOrderId]) {
+    const marketPendingOrders = pendingOrders[log.market];
+    if (marketPendingOrders?.find(pending => pending.id === pendingOrderId)) {
       dispatch(removePendingOrder(pendingOrderId, log.market));
     }
   }
@@ -492,7 +492,7 @@ const handleNewBlockFilledOrdersLog = logs => (
     .map(l => dispatch(handleOrderFilledLog(l)));
   Array.from(new Set(logs.map(l => l.market))).map((marketId: string) => {
     if (isCurrentMarket(marketId)) {
-      dispatch(updateMarketOrderBook(marketId));
+      updateMarketOrderBook(marketId);
       dispatch(loadMarketTradingHistory(marketId));
       dispatch(checkUpdateUserPositions([marketId]));
     }

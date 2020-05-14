@@ -18,6 +18,7 @@ const mapStateToProps = (state, ownProps) => {
   const market = ownProps.market || selectMarket(ownProps.marketId);
   const disputeInfoStakes = market.disputeInfo && market.disputeInfo.stakes;
   const {
+    accountPositions,
     loginAccount: { address },
     universe: { forkingInfo },
     isLogged,
@@ -40,10 +41,10 @@ const mapStateToProps = (state, ownProps) => {
         disputeInfoStakes.find(stake => stake.tentativeWinning)) ||
       {},
     canClaimProceeds:
-      state.accountPositions[ownProps.marketId] &&
-      state.accountPositions[ownProps.marketId].tradingPositionsPerMarket &&
+      accountPositions[ownProps.marketId] &&
+      accountPositions[ownProps.marketId].tradingPositionsPerMarket &&
       createBigNumber(
-        state.accountPositions[ownProps.marketId].tradingPositionsPerMarket
+        accountPositions[ownProps.marketId].tradingPositionsPerMarket
           .unclaimedProceeds
       ).gt(ZERO)
         ? true

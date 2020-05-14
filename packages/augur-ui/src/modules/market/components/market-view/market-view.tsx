@@ -79,8 +79,9 @@ import {
 } from 'utils/format-date';
 import { Getters } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
-import { Markets } from 'modules/markets/store/markets';
+import { Markets, useMarketsStore } from 'modules/markets/store/markets';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
+import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 
 interface MarketViewProps {
   closeMarketLoadingModalOnly: Function;
@@ -91,7 +92,6 @@ interface MarketViewProps {
   showMarketLoadingModal: Function;
   addAlert: Function;
   hotloadMarket: Function;
-  loadMarketOrderBook: Function;
   location: Location;
   defaultMarket: MarketData;
   isPreview?: boolean;
@@ -121,7 +121,6 @@ const MarketView = ({
   history,
   showMarketLoadingModal,
   addAlert,
-  loadMarketOrderBook,
   location,
   defaultMarket,
   isPreview
@@ -135,6 +134,7 @@ const MarketView = ({
     canHotload,
     blockchain: { currentAugurTimestamp },
   } = useAppStatusStore();
+  const { marketInfos, orderBooks, actions: { updateOrderBook } } = useMarketsStore();
 
   const node = useRef(null);
 
@@ -171,16 +171,13 @@ const MarketView = ({
       orderBook: TUTORIAL_ORDER_BOOK,
     };
   } else {
-    const { marketInfos } = Markets.get();
     market = defaultMarket || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);;
   }
   if (market) {
     if (tradingTutorial || isPreview) {
       orderBook = market.orderBook;
     }
-  
     if (!tradingTutorial && !isPreview) {
-      const { orderBooks } = Markets.get();
       orderBook = (orderBooks[marketId] || {}).orderBook;
     }
   
@@ -218,7 +215,7 @@ const MarketView = ({
         : undefined,
     tutorialError: '',
   });
-  
+
   const isConnected = connected && universe.id != null;
 
   const scalarModalSeen =
@@ -238,6 +235,11 @@ const MarketView = ({
     hasShownScalarModal,
   } = state;
 
+  let outcomeIdSet =
+    selectedOutcomeId === null || selectedOutcomeId === undefined
+      ? market && market.defaultSelectedOutcomeId
+      : selectedOutcomeId;
+  
   const prevProps = useRef();
 
   useEffect(() => {
@@ -260,7 +262,7 @@ const MarketView = ({
       zeroXstatus === ZEROX_STATUSES.SYNCED
     ) {
       loadMarketsInfo(marketId);
-      loadMarketOrderBook(marketId);
+      updateOrderBook(marketId, null, loadMarketOrderBook(marketId));
       loadMarketTradingHistory(marketId);
     }
 
@@ -276,6 +278,13 @@ const MarketView = ({
   }, [tradingTutorial, outcomeId, isConnected]);
 
   useEffect(() => {
+    outcomeIdSet = selectedOutcomeId === null || selectedOutcomeId === undefined
+    ? market && market.defaultSelectedOutcomeId
+    : selectedOutcomeId;
+  }, [selectedOutcomeId]);
+
+  useEffect(() => {
+    
     if (outcomeId !== prevProps.current.outcomeId && outcomeId !== null) {
       setState({
         ...state,
@@ -312,7 +321,7 @@ const MarketView = ({
       !preview &&
       zeroXstatus === ZEROX_STATUSES.SYNCED
     ) {
-      loadMarketOrderBook(marketId);
+      updateOrderBook(marketId, null, loadMarketOrderBook(marketId));
       loadMarketsInfo(marketId);
       loadMarketTradingHistory(marketId);
     }
@@ -539,10 +548,6 @@ const MarketView = ({
 
   let outcomeOrderBook = EmptyOrderBook;
   const orderbookLoading = !orderBook;
-  let outcomeIdSet =
-    selectedOutcomeId === null || selectedOutcomeId === undefined
-      ? market && market.defaultSelectedOutcomeId
-      : selectedOutcomeId;
   if (orderBook && orderBook[outcomeIdSet]) {
     outcomeOrderBook = orderBook[outcomeIdSet];
   }
