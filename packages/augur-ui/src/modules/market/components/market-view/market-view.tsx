@@ -81,6 +81,7 @@ import { Getters } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets, useMarketsStore } from 'modules/markets/store/markets';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
+import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 
 interface MarketViewProps {
   closeMarketLoadingModalOnly: Function;
@@ -91,7 +92,6 @@ interface MarketViewProps {
   showMarketLoadingModal: Function;
   addAlert: Function;
   hotloadMarket: Function;
-  loadMarketOrderBook: Function;
   location: Location;
   defaultMarket: MarketData;
   isPreview?: boolean;
@@ -121,7 +121,6 @@ const MarketView = ({
   history,
   showMarketLoadingModal,
   addAlert,
-  loadMarketOrderBook,
   location,
   defaultMarket,
   isPreview

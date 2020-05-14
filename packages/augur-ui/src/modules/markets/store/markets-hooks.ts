@@ -74,19 +74,20 @@ export const useMarkets = (defaultState = MOCK_MARKETS_STATE) => {
     );
   }
 
+  const middleware = (action) => {
+    if (isAsync(action.payload)) {
+      (async () => {
+        const v = await action.payload();
+        dispatch({ ...action, payload: v });
+      })();
+    } else {
+      dispatch({...action});
+    }
+  };
   return {
       ...state,
       actions: {
-        updateOrderBook: (marketId, orderBook, payload) => {
-          if (isAsync(payload)) {
-            (async () => {
-              const v = await payload();
-              dispatch({ type: UPDATE_ORDER_BOOK, marketId, orderBook, payload: v });
-            })();
-          } else {
-            dispatch({ type: UPDATE_ORDER_BOOK, marketId, orderBook});
-          }
-        },
+        updateOrderBook: (marketId, orderBook, payload) => middleware({ type: UPDATE_ORDER_BOOK, marketId, orderBook, payload}),
         clearOrderBook: () => dispatch({ type: CLEAR_ORDER_BOOK }),
         updateMarketsData: (marketInfos) => dispatch({ type: UPDATE_MARKETS_DATA, marketInfos }),
         removeMarket: (marketId) => dispatch({ type: REMOVE_MARKET, marketId }),
