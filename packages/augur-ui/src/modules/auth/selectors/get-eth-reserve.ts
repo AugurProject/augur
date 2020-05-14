@@ -8,7 +8,7 @@ import { selectEnvState } from 'appStore/select-state';
 export const getEthReserve = createSelector(
   selectLoginAccount,
   selectEnvState,
-  (loginAccount, env) => {
+  (loginAccount, env): FormattedNumber => {
     const { balances } = loginAccount;
     const ethNonSafeBN = createBigNumber(balances.ethNonSafe);
     let desiredSignerEthBalance = createBigNumber(

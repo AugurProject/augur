@@ -33,7 +33,7 @@ import {
   formatShares,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { LinearPropertyLabel } from 'modules/common/labels';
+import { LinearPropertyLabel, EthReserveNotice } from 'modules/common/labels';
 import { Trade } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
 import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
@@ -506,6 +506,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             )}
           </div>
         )}
+        <EthReserveNotice gasLimit={gasLimit} />
       </section>
     );
   }
