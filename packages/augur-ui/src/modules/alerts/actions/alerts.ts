@@ -18,17 +18,18 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
+import { Alert } from 'modules/types';
 
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
 export const UPDATE_EXISTING_ALERT = 'UPDATE_EXISTING_ALERT';
 export const CLEAR_ALERTS = 'CLEAR_ALERTS';
 
-export function addAlert(alert: any) {
+export function addAlert(alert: Partial<Alert>) {
   return (dispatch: ThunkDispatch<void, any, Action>) => {
     if (alert != null) {
       const { universe } = store.getState() as AppState;
-      const callback = (alert: any) => {
+      const callback = (alert: Alert) => {
         const fullAlert = {
           type: ADD_ALERT,
           data: {
@@ -206,10 +207,11 @@ export const addEthIncreaseAlert = (
       createBigNumber(attoEthToDaiRate.div(10 ** 18) || 0)
     );
     const timestamp = getState().blockchain.currentAugurTimestamp * 1000;
+    console.log('adding eth reserve increase alert');
     dispatch(
       addAlert({
         name: ETH_RESERVE_INCREASE,
-        uniqueId: timestamp,
+        uniqueId: String(timestamp),
         toast: true,
         description: `Your ETH balance has increased by $${amount.formatted} DAI`,
         title: 'ETH reserves replenished',

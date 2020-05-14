@@ -39,6 +39,7 @@ export interface TextObject {
 export interface Alert {
   id: string;
   uniqueId: string;
+  toast: boolean;
   title: string;
   name: string;
   description: string;
