@@ -9,23 +9,50 @@ import { HoverValueLabel, DataArchivedLabel } from 'modules/common/labels';
 import OrderHeader from 'modules/market-charts/components/order-header/order-header';
 
 import Styles from 'modules/market/components/market-trade-history/market-trade-history.styles.less';
+import { useMarketsStore } from 'modules/markets/store/markets';
+import { marketTradingPriceTimeSeries } from 'modules/markets/selectors/market-trading-price-time-series';
+import { createBigNumber } from 'utils/create-big-number';
 
 interface MarketTradeHistoryProps {
-  groupedTradeHistoryVolume: object;
-  groupedTradeHistory: object;
+  marketId: string;
+  tradingTutorial?: boolean;
   toggle: Function;
   hide: boolean;
   marketType: string;
   isArchived?: boolean;
+  initialGroupedTradeHistory?: object
+  outcome?: string;
 }
 const MarketTradeHistory = ({
-  groupedTradeHistory,
-  groupedTradeHistoryVolume,
+  marketId,
+  tradingTutorial,
   toggle,
   hide,
   marketType,
   isArchived,
+  initialGroupedTradeHistory,
+  outcome
 }: MarketTradeHistoryProps) => {
+  const { marketTradingHistory } = useMarketsStore();
+  let groupedTradeHistory = {};
+  const groupedTradeHistoryVolume = {};
+  const tradeHistory = marketTradingHistory[marketId] || [];
+
+  if (tradeHistory.length > 0 || tradingTutorial) {
+    groupedTradeHistory = tradingTutorial
+      ? initialGroupedTradeHistory
+      : marketTradingPriceTimeSeries(tradeHistory, outcome);
+
+    Object.keys(groupedTradeHistory).forEach(key => {
+      groupedTradeHistoryVolume[key] = groupedTradeHistory[key].reduce(
+        (p, item) =>
+          createBigNumber(p)
+            .plus(createBigNumber(item.amount))
+            .toFixed(4),
+        '0'
+      );
+    });
+  }
   const isScalar = marketType === SCALAR;
 
   return (

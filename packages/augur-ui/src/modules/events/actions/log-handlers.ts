@@ -76,7 +76,6 @@ import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 import { logger } from '@augurproject/utils';
-import { MARKETS_ACTIONS } from 'modules/markets/store/constants';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 
 const handleAlert = (
@@ -404,7 +403,7 @@ export const handleBulkOrdersLog = (data: {
     Array.from(new Set([...marketIds])).map(marketId => {
       if (isCurrentMarket(marketId)) {
         updateMarketOrderBook(marketId);
-        dispatch(loadMarketTradingHistory(marketId));
+        Markets.actions.bulkMarketTradingHistory(null, loadMarketTradingHistory(marketId));
         dispatch(checkUpdateUserPositions([marketId]));
       }
     });
@@ -493,7 +492,7 @@ const handleNewBlockFilledOrdersLog = logs => (
   Array.from(new Set(logs.map(l => l.market))).map((marketId: string) => {
     if (isCurrentMarket(marketId)) {
       updateMarketOrderBook(marketId);
-      dispatch(loadMarketTradingHistory(marketId));
+      Markets.actions.bulkMarketTradingHistory(null, loadMarketTradingHistory(marketId));
       dispatch(checkUpdateUserPositions([marketId]));
     }
   });

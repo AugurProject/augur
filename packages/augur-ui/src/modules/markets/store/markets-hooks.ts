@@ -1,14 +1,14 @@
 import { useReducer } from 'react';
 import { MARKETS_ACTIONS, MOCK_MARKETS_STATE, DEFAULT_MARKETS_STATE, STUBBED_MARKETS_ACTIONS } from 'modules/markets/store/constants';
 import immutableDelete from "immutable-delete";
-import { actionButtons } from 'modules/modal/components/common/common.styles.less';
 
 const {
   UPDATE_ORDER_BOOK,
   CLEAR_ORDER_BOOK,
   UPDATE_MARKETS_DATA,
   REMOVE_MARKET,
-  BULK_MARKET_TRADING_HISTORY
+  BULK_MARKET_TRADING_HISTORY,
+  UPDATE_REPORTING_LIST
 } = MARKETS_ACTIONS;
 
 function processMarketsData(newMarketsData, existingMarketsData) {
@@ -57,10 +57,21 @@ export function MarketsReducer(state, action) {
       updatedState.marketInfos = immutableDelete(updatedState.marketInfos, action.marketId);
       break;
     case BULK_MARKET_TRADING_HISTORY:
-      updatedState.marketTradeHistory = {
-        ...updatedState.marketTradeHistory,
-        ...action.keyedMarketTradingHistory
+      updatedState.marketTradingHistory = {
+        ...updatedState.marketTradingHistory,
+        ...action.keyedMarketTradingHistory || action.payload.keyedMarketTradingHistory
       };
+      break;
+    case UPDATE_REPORTING_LIST: 
+        const { reportingState, marketIds, params, isLoading } = action;
+        updatedState.reportingListState = {
+          ...updatedState.reportingListState,
+          [reportingState]: {
+            marketIds,
+            params,
+            isLoading,
+          }
+        };
       break;
     default:
       throw new Error(`Error: ${action.type} not caught by Markets reducer`);
@@ -103,6 +114,8 @@ export const useMarkets = (defaultState = MOCK_MARKETS_STATE) => {
         clearOrderBook: () => dispatch({ type: CLEAR_ORDER_BOOK }),
         updateMarketsData: (marketInfos) => dispatch({ type: UPDATE_MARKETS_DATA, marketInfos }),
         removeMarket: (marketId) => dispatch({ type: REMOVE_MARKET, marketId }),
+        bulkMarketTradingHistory: (keyedMarketTradingHistory, payload) => newDispatch({ type: BULK_MARKET_TRADING_HISTORY, keyedMarketTradingHistory, payload}),
+        updateReportingList: (reportingState, marketIds, params, isLoading) => dispatch({type: UPDATE_REPORTING_LIST, reportingState, marketIds, params, isLoading})
       },
     };
 };

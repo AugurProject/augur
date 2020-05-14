@@ -2,12 +2,12 @@ import { connect } from "react-redux";
 
 import OutcomeTradingIndicator from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator";
 import { selectMarketOutcomeTradingIndicator } from "modules/markets/selectors/select-market-outcome-trading-indicator";
+import { Markets } from "modules/markets/store/markets";
 
 const mapStateToProps = (state, ownProps) => {
-  const { marketTradingHistory } = state;
   return {
     tradingIndicator: selectMarketOutcomeTradingIndicator(
-      marketTradingHistory,
+      Markets.get().marketTradingHistory,
       ownProps.outcome
     ),
     location: ownProps.location,
