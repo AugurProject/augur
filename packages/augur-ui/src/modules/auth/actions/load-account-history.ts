@@ -1,7 +1,4 @@
 import { userPositionProcessing } from 'modules/positions/actions/load-account-positions';
-import {
-  bulkMarketTradingHistory,
-} from 'modules/markets/actions/market-trading-history-management';
 import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
@@ -35,7 +32,7 @@ async function loadTransactions(
     { universe: universe.id, account: mixedCaseAddress }
   );
   updateUserFilledOrders(mixedCaseAddress, userData.userTradeHistory);
-  dispatch(bulkMarketTradingHistory(userData.marketTradeHistory));
+  Markets.actions.bulkMarketTradingHistory(userData.userTradeHistory, null);
 
   const marketsDataById = userData.marketsInfo.reduce(
     (acc, marketData) => ({

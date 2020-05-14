@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { getAddress } from 'ethers/utils/address';
@@ -13,9 +13,7 @@ import {
   BetsIcon,
   PositionIcon,
 } from 'modules/common/icons';
-import { REPORTING_STATE, MODAL_MARKET_LOADING } from 'modules/common/constants';
 import { OutcomeGroup } from 'modules/market-cards/common';
-import { AppStatus } from 'modules/app/store/app-status';
 
 interface BettingMarketViewProps {
   location: Location;
