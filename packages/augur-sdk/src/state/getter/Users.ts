@@ -1063,7 +1063,6 @@ export class Users {
       params.account!,
       profitLossOrders
     );
-    console.log('profitLossByMarketAndOutcome', JSON.stringify(profitLossByMarketAndOutcome, null, 2))
 
     const orders = await db.ParsedOrderEvent.where('[universe+eventType+timestamp]')
       .between(
@@ -1077,8 +1076,6 @@ export class Users {
       db,
       orders
     );
-    console.log('orders', JSON.stringify(orders, null, 2))
-    console.log('ordersFilledResultsByMarketAndOutcome', JSON.stringify(ordersFilledResultsByMarketAndOutcome, null, 2))
 
     const marketIds = _.keys(profitLossByMarketAndOutcome);
 
@@ -1110,10 +1107,6 @@ export class Users {
         return _.keyBy(marketShares, 'outcome');
       }
     );
-    console.log('shareTokenBalances', JSON.stringify(shareTokenBalances, null, 2))
-    console.log('shareTokenBalancesByMarket', JSON.stringify(shareTokenBalancesByMarket, null, 2))
-    console.log('shareTokenBalancesByMarketAndOutcome', JSON.stringify(shareTokenBalancesByMarketAndOutcome, null, 2))
-    console.log('ignoreAwaitingAndFinalizedMarkets', ignoreAwaitingAndFinalizedMarkets)
 
     if (ignoreAwaitingAndFinalizedMarkets) {
       profitLossByMarketAndOutcome = _.reduce(Object.keys(profitLossByMarketAndOutcome), (filteredMarkets, marketId) => {
@@ -1136,7 +1129,6 @@ export class Users {
             profitLossByOutcome,
             (outcomePLValues, outcome) => {
               const latestOutcomePLValue = getLastDocBeforeTimestamp<ProfitLossChangedLog>(outcomePLValues, bucketTimestamp);
-              console.log('latestOutcomePLValue', latestOutcomePLValue)
               // if market not traded in timeframe use last pl avg price
               let lastPrice = null;
               if (latestOutcomePLValue) {
@@ -1217,7 +1209,6 @@ export class Users {
     const endTime = params.endTime || now.toNumber();
 
     for (const days of [ONE_DAY, DAYS_IN_MONTH]) {
-      console.log('DAY', days)
       const periodInterval = days * 60 * 60 * 24;
       const startTime = endTime - periodInterval;
 
