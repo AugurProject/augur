@@ -14,6 +14,7 @@ import { addedDaiEvent } from 'services/analytics/helpers';
 import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { createBigNumber } from 'utils/create-big-number';
 import { WALLET_STATUS_VALUES, TWENTY_FIVE } from 'modules/common/constants';
+import { addEthIncreaseAlert } from 'modules/alerts/actions/alerts';
 
 export const updateAssets = (
   callback: NodeStyleCallback,
@@ -29,6 +30,7 @@ export const updateAssets = (
     universe.id,
     address,
     nonSafeWallet,
+    loginAccount.balances.ethNonSafe,
     dispatch,
     (err, balances) => {
       let status = appStatus[WALLET_STATUS];
@@ -43,6 +45,7 @@ function updateBalances(
   universe: string,
   address: string,
   nonSafeWallet: string,
+  ethNonSafeBalance: string,
   dispatch: ThunkDispatch<void, any, Action>,
   callback: NodeStyleCallback
 ) {
@@ -64,6 +67,7 @@ function updateBalances(
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const legacyRepNonSafe = formatAttoRep(legacyAttoRepNonSafe).value;
     dispatch(addedDaiEvent(dai));
+    dispatch(addEthIncreaseAlert(dai, ethNonSafeBalance, ethNonSafe));
     dispatch(
       updateLoginAccount({
         balances: {

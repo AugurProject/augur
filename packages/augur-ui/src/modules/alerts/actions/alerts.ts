@@ -9,11 +9,15 @@ import {
   PUBLICTRADE,
   REDEEMSTAKE,
   ZERO,
+  SUCCESS,
+  ETH_RESERVE_INCREASE,
+  NULL_ADDRESS,
 } from 'modules/common/constants';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
+import { getNetworkId, getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
@@ -168,3 +172,54 @@ export function clearAlerts(alertLevel = INFO) {
     },
   };
 }
+
+export const addEthIncreaseAlert = (
+  daiBalance: string,
+  oldEthBalance: string,
+  newEthBalance: string
+) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+  // eth balances hasn't be initialized to signing wallets eth balance
+  if (oldEthBalance === null) return null;
+
+  const daiCutoff = getState().env.gsn.minDaiForSignerETHBalanceInDAI;
+  // user dai balance too low to have ETH reserve
+  if (createBigNumber(daiBalance).lt(daiCutoff)) return null;
+
+  const maxEthReserve = createBigNumber(
+    getState().env.gsn.desiredSignerBalanceInETH
+  );
+  const aboveCutoff = createBigNumber(oldEthBalance).isGreaterThan(
+    createBigNumber(maxEthReserve)
+  );
+  // user already has ETH reserve topped off
+  if (aboveCutoff) return null;
+
+  // ETH increase can only be up to max ETH reserve
+  const toppedOffValue = BigNumber.min(maxEthReserve, newEthBalance);
+  const increase = createBigNumber(toppedOffValue).minus(
+    createBigNumber(oldEthBalance)
+  );
+  if (increase.gt(0)) {
+    const attoEthToDaiRate: BigNumber = getEthForDaiRate();
+    const amount = ethToDai(
+      increase,
+      createBigNumber(attoEthToDaiRate.div(10 ** 18) || 0)
+    );
+    const timestamp = getState().blockchain.currentAugurTimestamp * 1000;
+    dispatch(
+      addAlert({
+        name: ETH_RESERVE_INCREASE,
+        uniqueId: timestamp,
+        toast: true,
+        description: `Your ETH balance has increased by $${amount.formatted} DAI`,
+        title: 'ETH reserves replenished',
+        status: SUCCESS,
+        timestamp,
+        params: {
+          marketId: NULL_ADDRESS,
+        },
+      })
+    );
+  }
+  return null;
+};

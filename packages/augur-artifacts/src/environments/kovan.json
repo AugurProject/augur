@@ -33,7 +33,7 @@
     },
     "mesh": {
       "verbosity": 1,
-      "enabled": true,
+      "enabled": false,
       "useBootstrapList": true,
       "bootstrapList": []
     }

@@ -10,7 +10,7 @@ export const getEthReserve = createSelector(
   selectEnvState,
   (loginAccount, env): FormattedNumber => {
     const { balances } = loginAccount;
-    const ethNonSafeBN = createBigNumber(balances.ethNonSafe);
+    const ethNonSafeBN = createBigNumber(balances.ethNonSafe || 0);
     let desiredSignerEthBalance = createBigNumber(
       formatAttoEth(env.gsn.desiredSignerBalanceInETH * 10**18).value
     );
