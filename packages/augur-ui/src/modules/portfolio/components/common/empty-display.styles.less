@@ -21,6 +21,10 @@
   > span:nth-of-type(3) {
     display: none;
   }
+
+  > span:nth-of-type(4) {
+    display: none;
+  }
 }
 
 :root[theme='BETTING'],
@@ -51,13 +55,18 @@
     }
 
     > span:nth-of-type(2) {
+      display: none;
+    }
+
+    > span:nth-of-type(3) {
       .text-16-bold;
 
+      display: initial;
       color: var(--color-primary-text);
       margin-top: @size-16;
     }
 
-    > span:nth-of-type(3) {
+    > span:nth-of-type(4) {
       .text-14;
 
       display: initial;

@@ -188,6 +188,7 @@ const FilterBox: React.FC<FilterBoxProps> = ({
               selectedTab={''}
               filterLabel={filterLabel}
               search={search}
+              title={title}
               icon={StarIcon}
             />
           )}

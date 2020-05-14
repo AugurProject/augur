@@ -379,6 +379,7 @@ const Notifications = ({ toggle }: NotificationsProps) => {
             selectedTab=""
             filterLabel={NOTIFICATIONS_LABEL}
             search=""
+            title={NOTIFICATIONS_TITLE}
             icon={MessagesIcon}
           />
         ) : (

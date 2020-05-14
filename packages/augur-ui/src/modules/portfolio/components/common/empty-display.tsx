@@ -6,6 +6,7 @@ export interface EmptyDisplayProps {
   filterLabel: string;
   selectedTab: string;
   search: string;
+  title: string;
   icon?: any;
 }
 
@@ -13,24 +14,26 @@ const EmptyDisplay = ({
   filterLabel,
   selectedTab,
   search,
+  title,
   icon,
 }: EmptyDisplayProps) => {
-  let emptyTitle = `No ${selectedTab} ${filterLabel.toLowerCase()}`;
+  let tradingEmptyTitle = `No ${selectedTab} ${filterLabel.toLowerCase()}`;
+  let notTradingEmptyTitle = `No ${title}`;
 
   let emptyText = `You don't have any ${
     selectedTab.toLowerCase()
   } ${filterLabel.toLowerCase()} yet!`;
 
   if (search !== "" && search !== undefined) {
-    emptyTitle = `No results found for '${search}'`;
+    tradingEmptyTitle = `No results found for '${search}'`;
+    notTradingEmptyTitle = `No results found for '${search}'`;
   }
-
-  console.log('EmptyDisplay', icon);
 
   return (
     <div className={Styles.EmptyDisplay}>
       <span>{icon}</span>
-      <span>{emptyTitle}</span>
+      <span>{tradingEmptyTitle}</span>
+      <span>{notTradingEmptyTitle}</span>
       <span>{emptyText}</span>
     </div>);
 };

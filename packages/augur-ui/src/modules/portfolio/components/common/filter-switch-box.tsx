@@ -139,6 +139,7 @@ export default class FilterSwitchBox extends React.Component<
                 selectedTab=""
                 filterLabel={filterLabel}
                 search={search}
+                title={title}
                 icon={ActiveMarketsIcon}
               />
             )}
