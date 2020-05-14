@@ -6,7 +6,8 @@ const {
   UPDATE_ORDER_BOOK,
   CLEAR_ORDER_BOOK,
   UPDATE_MARKETS_DATA,
-  REMOVE_MARKET
+  REMOVE_MARKET,
+  BULK_MARKET_TRADING_HISTORY
 } = MARKETS_ACTIONS;
 
 function processMarketsData(newMarketsData, existingMarketsData) {
@@ -51,6 +52,12 @@ export function MarketsReducer(state, action) {
       break;
     case REMOVE_MARKET:
       updatedState.marketInfos = immutableDelete(updatedState.marketInfos, action.marketId);
+      break;
+    case BULK_MARKET_TRADING_HISTORY:
+      updatedState.marketTradeHistory = {
+        ...updatedState.marketTradeHistory,
+        ...action.keyedMarketTradingHistory
+      };
       break;
     default:
       throw new Error(`Error: ${action.type} not caught by Markets reducer`);
