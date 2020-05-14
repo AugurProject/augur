@@ -63,31 +63,36 @@ export function MarketsReducer(state, action) {
   return updatedState;
 }
 
+const isAsync = obj => {
+  return (
+    !!obj &&
+    (typeof obj === "object" || typeof obj === "function") &&
+    obj.constructor.name === 'AsyncFunction'
+  );
+}
+
+const middleware = (dispatch, action) => {
+  if (isAsync(action.payload)) {
+    (async () => {
+      const v = await action.payload();
+      dispatch({ ...action, payload: v });
+    })();
+  } else {
+    dispatch({...action});
+  }
+};
+
+export const dispatchMiddleware = (dispatch) => (action) => middleware(dispatch, action);
+
 export const useMarkets = (defaultState = MOCK_MARKETS_STATE) => {
   const [state, dispatch] = useReducer(MarketsReducer, defaultState);
   
-  const isAsync = obj => {
-    return (
-      !!obj &&
-      (typeof obj === "object" || typeof obj === "function") &&
-      obj.constructor.name === 'AsyncFunction'
-    );
-  }
+  const newDispatch = dispatchMiddleware(dispatch);
 
-  const middleware = (action) => {
-    if (isAsync(action.payload)) {
-      (async () => {
-        const v = await action.payload();
-        dispatch({ ...action, payload: v });
-      })();
-    } else {
-      dispatch({...action});
-    }
-  };
   return {
       ...state,
       actions: {
-        updateOrderBook: (marketId, orderBook, payload) => middleware({ type: UPDATE_ORDER_BOOK, marketId, orderBook, payload}),
+        updateOrderBook: (marketId, orderBook, payload) => newDispatch({ type: UPDATE_ORDER_BOOK, marketId, orderBook, payload}),
         clearOrderBook: () => dispatch({ type: CLEAR_ORDER_BOOK }),
         updateMarketsData: (marketInfos) => dispatch({ type: UPDATE_MARKETS_DATA, marketInfos }),
         removeMarket: (marketId) => dispatch({ type: REMOVE_MARKET, marketId }),
