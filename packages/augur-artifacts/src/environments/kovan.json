@@ -32,7 +32,7 @@
       "ws": "wss://v2.augur.net/0x-ws"
     },
     "mesh": {
-      "verbosity": 1,
+      "verbosity": 5,
       "enabled": true,
       "useBootstrapList": true,
       "bootstrapList": []

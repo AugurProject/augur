@@ -870,9 +870,6 @@ async function verifyThirtyDayPL(
       universe: user.augur.contracts.universe.address,
       account: address,
     });
-    console.log(
-      `DEBUG P/L: ${address}, ${JSON.stringify(profitLossSummary, null, 2)}`
-    ); // TODO remove
 
     const thirtyDayPLSummary = profitLossSummary[THIRTY];
     if (typeof plResult.realizedPL !== 'undefined') {
