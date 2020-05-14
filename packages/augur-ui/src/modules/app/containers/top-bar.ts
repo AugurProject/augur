@@ -9,10 +9,13 @@ import { ThunkDispatch } from 'redux-thunk';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_LOGIN, MODAL_SIGNUP, MODAL_HELP } from 'modules/common/constants';
 import { Action } from 'redux';
+import { getEthReserveInDai } from 'modules/auth/selectors/get-eth-reserve';
 
 const mapStateToProps = (state: AppState) => {
   const { sidebarStatus, authStatus, appStatus } = state;
   const { unseenCount } = selectInfoAlertsAndSeenCount(state);
+  const ethReserveInDai = getEthReserveInDai(state);
+
   return {
     stats: selectCoreStats(state),
     unseenCount,
@@ -20,6 +23,7 @@ const mapStateToProps = (state: AppState) => {
     isLogged: authStatus.isLogged,
     restoredAccount: authStatus.restoredAccount,
     alertsVisible: authStatus.isLogged && sidebarStatus.isAlertsVisible,
+    ethReserveInDai,
   };
 };
 

@@ -10,7 +10,7 @@ import {
   ProcessingButton,
 } from 'modules/common/buttons';
 import GlobalChat from 'modules/global-chat/containers/global-chat' ;
-import { NavMenuItem, AccountBalances } from 'modules/types';
+import { NavMenuItem, AccountBalances, FormattedNumber } from 'modules/types';
 import { helpIcon, Dot } from 'modules/common/icons';
 import {
   TRANSACTIONS,
@@ -32,6 +32,7 @@ interface TopNavProps {
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
   updateModal: Function;
+  ethReserveInDai: FormattedNumber;
 }
 
 const SPREAD_INDEX = 3;
@@ -43,6 +44,7 @@ const TopNav = ({
   migrateV1Rep,
   showMigrateRepButton = false,
   walletBalances,
+  ethReserveInDai,
 }: TopNavProps) => {
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
@@ -82,7 +84,7 @@ const TopNav = ({
                   {...(formatNumber(0))}
                   highlightAlternateBolded
                   id={'totalFunds'}
-                  tipText={TOTAL_FUNDS_TOOLTIP}
+                  tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
                 />
               </div>
 

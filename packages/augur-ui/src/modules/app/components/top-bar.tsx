@@ -7,7 +7,7 @@ import {
   LinearPropertyLabel,
   LinearPropertyLabelUnderlineTooltip,
 } from 'modules/common/labels';
-import { CoreStats } from 'modules/types';
+import { CoreStats, FormattedNumber } from 'modules/types';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
@@ -23,9 +23,10 @@ interface StatsProps {
   restoredAccount: boolean;
   stats: CoreStats;
   isMobile?: boolean;
+  ethReserveInDai: FormattedNumber;
 }
 
-export const Stats = ({ isLogged, restoredAccount, stats, isMobile = false }: StatsProps) => {
+export const Stats = ({ ethReserveInDai, isLogged, restoredAccount, stats, isMobile = false }: StatsProps) => {
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
 
@@ -40,7 +41,7 @@ export const Stats = ({ isLogged, restoredAccount, stats, isMobile = false }: St
               {...totalFunds}
               highlightAlternateBolded
               id={isMobile ? 'totalFundsMobile' : 'totalFunds'}
-              tipText={TOTAL_FUNDS_TOOLTIP}
+              tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
             />
             <div>
               <span>{realizedPL.label}</span>
@@ -67,6 +68,7 @@ interface TopBarProps {
   signupModal: Function;
   loginModal: Function;
   helpModal: Function;
+  ethReserveInDai: FormattedNumber;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
@@ -79,7 +81,8 @@ const TopBar: React.FC<TopBarProps> = ({
   updateIsAlertVisible,
   signupModal,
   loginModal,
-  helpModal
+  helpModal,
+  ethReserveInDai
 }) => {
   return (
     <header className={Styles.TopBar}>
@@ -93,6 +96,7 @@ const TopBar: React.FC<TopBarProps> = ({
         isLogged={isLogged}
         stats={stats}
         restoredAccount={restoredAccount}
+        ethReserveInDai={ethReserveInDai}
       />
       <div>
         {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (

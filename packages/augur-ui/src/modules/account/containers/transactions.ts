@@ -27,13 +27,13 @@ const mapStateToProps = (state: AppState) => {
 
   const localLabel = networkId !== NETWORK_IDS.Kovan ? 'Use flash to transfer ETH to address' : null;
   const targetAddress = signingWallet;
-  const signingWalletNoEth = createBigNumber(balances.ethNonSafe).lte(ZERO);
+  const signingWalletNoEth = createBigNumber(balances.ethNonSafe || 0).lte(ZERO);
 
   return {
     isMainnet: networkId === NETWORK_IDS.Mainnet,
     showFaucets,
     targetAddress,
-    signingEth: balances.ethNonSafe,
+    signingEth: balances.ethNonSafe || 0,
     signingWalletNoEth,
     localLabel
   };

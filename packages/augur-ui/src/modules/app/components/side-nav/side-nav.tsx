@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
 import { Dot, helpIcon } from 'modules/common/icons';
-import { AccountBalances, CoreStats, NavMenuItem } from 'modules/types';
+import { AccountBalances, CoreStats, NavMenuItem, FormattedNumber } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
 import {
@@ -45,6 +45,7 @@ interface SideNavProps {
   stats: CoreStats;
   whichChatPlugin: string;
   isMobile: string;
+  ethReserveInDai: FormattedNumber;
 }
 
 const SideNav = ({
@@ -65,6 +66,7 @@ const SideNav = ({
   restoredAccount,
   whichChatPlugin,
   isMobile,
+  ethReserveInDai,
 }: SideNavProps) => {
   useEffect(() => {
     if (isHelpMenuOpen) {
@@ -87,6 +89,7 @@ const SideNav = ({
           stats={stats}
           restoredAccount={restoredAccount}
           isMobile={true}
+          ethReserveInDai={ethReserveInDai}
         />
       </div>
       <div className={Styles.SideNav__container}>

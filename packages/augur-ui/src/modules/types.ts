@@ -39,6 +39,7 @@ export interface TextObject {
 export interface Alert {
   id: string;
   uniqueId: string;
+  toast: boolean;
   title: string;
   name: string;
   description: string;
@@ -638,7 +639,7 @@ export interface AccountBalances {
   legacyRepNonSafe: number;
   attoRep: string;
   legacyAttoRep: string;
-  ethNonSafe: number;
+  ethNonSafe?: number;
 }
 
 export interface LoginAccountMeta {

@@ -47,7 +47,8 @@ export const selectUserMarketOpenOrders = (state: AppState) =>
 export const selectPendingQueue = (state: AppState) => state.pendingQueue;
 export const selectEnvState = (state: AppState) =>
   state.env;
-
+  export const selectAppStatus = (state: AppState) =>
+  state.appStatus;
 export const selectCurrentTimestamp = createSelector(
   selectBlockchainState,
   blockchain => blockchain.currentAugurTimestamp * 1000

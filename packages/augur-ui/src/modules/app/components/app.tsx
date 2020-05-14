@@ -43,6 +43,8 @@ import {
   Notification,
   AccountBalances,
   CoreStats,
+  FormattedNumber,
+  AppStatus,
 } from 'modules/types';
 import ForkingBanner from 'modules/reporting/containers/forking-banner';
 import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
@@ -103,6 +105,8 @@ interface AppProps {
   createFundedGsnWallet: Function;
   showMigrateRepButton: boolean;
   whichChatPlugin: string;
+  appStatus: AppStatus;
+  ethReserveInDai: FormattedNumber;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -402,7 +406,8 @@ export default class AppView extends Component<AppProps> {
       stats,
       whichChatPlugin,
       isMobile,
-      appStatus
+      appStatus,
+      ethReserveInDai,
     } = this.props;
     this.sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
@@ -492,6 +497,7 @@ export default class AppView extends Component<AppProps> {
                 updateModal={updateModal}
                 createFundedGsnWallet={createFundedGsnWallet}
                 whichChatPlugin={whichChatPlugin}
+                ethReserveInDai={ethReserveInDai}
               />
 
               {/* HIDDEN ON MOBILE */}
@@ -503,6 +509,7 @@ export default class AppView extends Component<AppProps> {
                 showMigrateRepButton={showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
+                ethReserveInDai={ethReserveInDai}
               />
             </section>
             {!isMobile && <StatusErrorMessage />}
