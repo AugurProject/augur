@@ -7,16 +7,13 @@ import {
   loadDesignatedReportingMarkets,
 } from 'modules/markets/actions/load-markets';
 import { REPORTING_STATE } from 'modules/common/constants';
-import { selectReportingMarkets } from 'modules/markets/selectors/select-reporting-markets';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state, ownProps) => {
   const { isLogged, isConnected } = AppStatus.get();
-  const markets = selectReportingMarkets(ownProps.reportingType);
   return ({
     isLogged,
     isConnected,
-    markets
   });
 }
 
