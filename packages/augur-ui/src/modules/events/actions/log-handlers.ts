@@ -391,13 +391,14 @@ export const handleBulkOrdersLog = (data: {
       dispatch(handleOrderLog(log));
       marketIds.push(log.market);
     });
-    Array.from(new Set([...marketIds])).map(marketId => {
+    const unqMarketIds = Array.from(new Set([...marketIds]));
+    unqMarketIds.map(marketId => {
       if (isCurrentMarket(marketId)) {
         dispatch(updateMarketOrderBook(marketId));
         dispatch(loadMarketTradingHistory(marketId));
-        dispatch(checkUpdateUserPositions([marketId]));
       }
     });
+    dispatch(checkUpdateUserPositions(unqMarketIds));
   }
 };
 
@@ -470,13 +471,14 @@ const handleNewBlockFilledOrdersLog = logs => (
   logs
     .filter(l => l.eventType === OrderEventType.Fill)
     .map(l => dispatch(handleOrderFilledLog(l)));
-  Array.from(new Set(logs.map(l => l.market))).map((marketId: string) => {
+  const unqMarketIds: string[] = Array.from(new Set(logs.map(l => l.market)));
+  unqMarketIds.map((marketId: string) => {
     if (isCurrentMarket(marketId)) {
       dispatch(updateMarketOrderBook(marketId));
       dispatch(loadMarketTradingHistory(marketId));
-      dispatch(checkUpdateUserPositions([marketId]));
     }
   });
+  dispatch(checkUpdateUserPositions(unqMarketIds));
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
