@@ -9,6 +9,7 @@ import {
 } from './state/logs/types';
 import { ZeroXOrders, OrderData } from './state/db/ZeroXOrders';
 
+export const ZERO = new BigNumber(0);
 export const QUINTILLION = new BigNumber(10).pow(18);
 
 export function padHex(hexString: string): string {
