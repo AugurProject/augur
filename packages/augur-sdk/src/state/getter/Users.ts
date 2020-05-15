@@ -979,6 +979,7 @@ export class Users {
       })
       .toArray();
 
+
     const profitLossResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
       await getProfitLossRecordsByMarketAndOutcome(
         db,
@@ -987,9 +988,13 @@ export class Users {
       )
     );
 
-    const allProfitLossResults = _.flatten(
-      _.values(_.mapValues(profitLossResultsByMarketAndOutcome, _.values))
-    );
+    const profitLossResultsByMarket = _.mapValues(profitLossResultsByMarketAndOutcome, _.values);
+
+    const allProfitLossResults = _.flatten(_.values(profitLossResultsByMarket));
+
+    const totalProfitLossByMarket = _.mapValues(profitLossResultsByMarket, (ffs) => {
+      return _.reduce(ffs, (accumulator, ff) => accumulator.plus(ff.frozenFunds), ZERO)
+    });
 
     const shareTokenBalances = await db.ShareTokenBalanceChangedRollup.where(
       '[universe+account]'
@@ -1007,14 +1012,13 @@ export class Users {
     // if winning position value is less than frozen funds, market position is complete loss
     // if complete loss then ignore profit loss in frozen funds
     const fullTotalLossMarketsPositions = await getFullMarketPositionLoss(db, allProfitLossResults, shareTokenBalancesByMarketAndOutcome);
-    const frozenFunds = _.reduce(
-      allProfitLossResults,
-      (value, tradingPosition) => {
-        if (fullTotalLossMarketsPositions.includes(tradingPosition.market)) return value;
-        return value.plus(BigNumber.max(tradingPosition.frozenFunds, ZERO));
-      },
-      ZERO
-    ).dividedBy(QUINTILLION);
+
+    const frozenFunds = Object.keys(fullTotalLossMarketsPositions)
+      .map(market => totalProfitLossByMarket[market])
+      .filter(ff => ff.gt(ZERO))
+      .reduce((accum, ff) => accum.plus(ff), ZERO)
+      .dividedBy(QUINTILLION);
+
     // includes validity bonds for market creations
     const ownedMarketsResponse = await db.Markets.where('marketCreator')
       .equals(params.account)
@@ -1025,7 +1029,7 @@ export class Users {
       ownedMarkets
     );
 
-    const totalFrozenFunds = (totalValidityBonds.plus(frozenFunds)).dividedBy(QUINTILLION).toFixed();
+    const totalFrozenFunds = totalValidityBonds.plus(frozenFunds).dividedBy(QUINTILLION).toFixed();
     return { totalFrozenFunds };
   };
 
