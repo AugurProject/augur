@@ -10,7 +10,7 @@ import { NodeStyleCallback, FormattedNumber } from 'modules/types';
 import logError from 'utils/log-error';
 import { formatDaiEstimate, formatAttoDai } from 'utils/format-number';
 import { augurSdk } from 'services/augursdk';
-import { BigNumber } from 'utils/create-big-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 
 export const getEthToDaiRate = (
   callback: NodeStyleCallback = logError
@@ -22,6 +22,11 @@ export const getEthToDaiRate = (
   if (ethToDaiRate) {
     dispatch(updateAppStatus(ETH_TO_DAI_RATE, formatAttoDai(ethToDaiRate)));
   }
+};
+
+export const ethToDaiFromAttoRate = (ethAmount: number): FormattedNumber => {
+  const attoEthToDaiRate: BigNumber = getEthForDaiRate();
+  return ethToDai(createBigNumber(ethAmount), attoEthToDaiRate.div(10 ** 18));
 };
 
 export const ethToDai = (ethAmount: number, ethToDaiRate: BigNumber): FormattedNumber => {
