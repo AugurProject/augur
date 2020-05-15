@@ -1013,7 +1013,7 @@ export class Users {
     // if complete loss then ignore profit loss in frozen funds
     const fullTotalLossMarketsPositions = await getFullMarketPositionLoss(db, allProfitLossResults, shareTokenBalancesByMarketAndOutcome);
 
-    const frozenFunds = Object.keys(fullTotalLossMarketsPositions)
+    const frozenFunds = fullTotalLossMarketsPositions
       .map(market => totalProfitLossByMarket[market])
       .filter(ff => ff.gt(ZERO))
       .reduce((accum, ff) => accum.plus(ff), ZERO)
