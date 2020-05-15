@@ -38,7 +38,9 @@ import {
   USER_OPEN_ORDERS,
   FILLED_ORDERS,
   ACCOUNT_POSITIONS,
+  ANALTICS,
 } from 'modules/app/store/constants';
+import { REMOVE_ANALYTIC } from '../actions/analytics-management';
 
 const {
   SET_THEME,
@@ -86,6 +88,8 @@ const {
   REFRESH_USER_OPEN_ORDERS,
   UPDATE_USER_FILLED_ORDERS,
   UPDATE_ACCOUNT_POSITIONS_DATA,
+  ADD_ANALYTIC,
+  REMOVE_ANALYTIC,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -538,6 +542,8 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
           positionData,
           marketId,
         }),
+      addAnalytic: (id, analytic) => dispatch({ TYPE: ADD_ANALYTIC, id, analytic }),
+      removeAnalytic: id => dispatch({ TYPE: REMOVE_ANALYTIC, id }),
     },
   };
 };

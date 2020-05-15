@@ -37,14 +37,11 @@ export const track = (
     type: type || ANALYTIC_EVENT_TYPES.TRACK,
   };
 
-  dispatch(sendAnalytic(analytic));
+  sendAnalytic(analytic);
 };
 
 export const sendAnalytic = (
   analytic: Analytic
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
   try {
     if (!isLocalHost()) {

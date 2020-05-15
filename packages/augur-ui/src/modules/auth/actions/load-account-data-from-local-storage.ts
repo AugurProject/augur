@@ -126,7 +126,7 @@ export const loadAccountDataFromLocalStorage = (
         dispatch(loadPendingLiquidityOrders(pendingLiquidityOrders));
       }
       if (analytics) {
-        dispatch(loadAnalytics(analytics, 0));
+        loadAnalytics(analytics, 0);
       }
       if (pendingOrders && Object.keys(pendingOrders).length > 0) {
         dispatch(loadPendingOrdersTransactions(pendingOrders));

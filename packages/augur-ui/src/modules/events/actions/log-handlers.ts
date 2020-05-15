@@ -213,6 +213,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   getState: () => AppState
 ) => {
   const {
+    analytics,
     env,
     isLogged,
     blockchain: { currentAugurTimestamp },
@@ -233,7 +234,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   if (isLogged) {
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());
-    dispatch(loadAnalytics(getState().analytics, currentAugurTimestamp));
+    loadAnalytics(analytics, currentAugurTimestamp);
     dispatch(findAndSetTransactionsTimeouts(log.highestAvailableBlockNumber));
   }
   // update ETH/REP rate and gasPrice each block

@@ -8,11 +8,11 @@ export const CLOSE_MODAL = 'CLOSE_MODAL';
 export const closeModal = () => (
   dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState
 ) => {
-  const { modal } = AppStatus.get();
-  if (modal.type) {
+  const { modal: { type: modal } } = AppStatus.get();
+  if (modal) {
     dispatch(
-      track(modal.type + ' - ' + MODAL_CLOSED, {
-        modal: modal.type,
+      track(`${modal} - ${MODAL_CLOSED}`, {
+        modal: modal,
       })
     );
   }

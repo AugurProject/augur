@@ -43,6 +43,11 @@ export const PENDING_QUEUE = 'pendingQueue';
 export const USER_OPEN_ORDERS = 'userOpenOrders';
 export const FILLED_ORDERS = 'filledOrders';
 export const ACCOUNT_POSITIONS = 'accountPositions';
+export const ANALTICS = 'analytics';
+export const DRAFTS = 'drafts';
+export const INITIALIZED_3BOX = 'initialized3box';
+export const NEW_MARKET = 'newMarket';
+export const MARKETS_LIST = 'marketsList';
 
 export const DEFAULT_PENDING_ORDERS = {
   [PENDING_ORDERS]: {},
@@ -215,6 +220,10 @@ export const DEFAULT_APP_STATUS = {
   [USER_OPEN_ORDERS]: {},
   [FILLED_ORDERS]: {},
   [ACCOUNT_POSITIONS]: {},
+  [ANALTICS]: {},
+  [DRAFTS]: {},
+  // [NEW_MARKET]: {},
+  // [MARKETS_LIST]: {},
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -263,6 +272,8 @@ export const APP_STATUS_ACTIONS = {
   REFRESH_USER_OPEN_ORDERS: 'REFRESH_USER_OPEN_ORDERS',
   UPDATE_USER_FILLED_ORDERS: 'UPDATE_USER_FILLED_ORDERS',
   UPDATE_ACCOUNT_POSITIONS_DATA: 'UPDATE_ACCOUNT_POSITIONS_DATA',
+  ADD_ANALYTIC: 'ADD_ANALYTIC',
+  REMOVE_ANALYTIC: 'REMOVE_ANALYTIC',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -324,4 +335,6 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   refreshUserOpenOrders: (userOpenOrders) => {},
   updateUserFilledOrders: (account, userFilledOrders) => {},
   updateAccountPositions: ({ positionData, marketId }) => {},
+  addAnalytic: (id, analytic) => {},
+  removeAnalytic: (id) => {},
 };
