@@ -6,7 +6,7 @@ import {
   loadCurrentlyDisputingMarkets,
   loadNextWindowDisputingMarkets,
 } from 'modules/markets/actions/load-markets';
-import { disputingMarkets } from 'modules/markets/selectors/select-reporting-markets';
+import { selectDisputingMarkets } from 'modules/markets/selectors/select-reporting-markets';
 import { AppState } from 'appStore';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
@@ -20,7 +20,7 @@ const mapStateToProps = (state: AppState) => {
     disputingMarketsMeta: Markets.get().reportingListState,
     isConnected,
     userAddress,
-    markets: disputingMarkets(state),
+    markets: selectDisputingMarkets(Markets.get().reportingListState),
   };
 };
 
