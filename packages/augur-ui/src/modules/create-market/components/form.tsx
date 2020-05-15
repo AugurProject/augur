@@ -32,7 +32,6 @@ import {
   TEMPLATE_PICKER,
   TEMPLATE_INPUTS,
   TEMPLATE,
-  ExchangeClosingMessage,
   MovieWednesdayAfterOpeningMessage,
 } from 'modules/create-market/constants';
 import {
@@ -52,7 +51,7 @@ import {
   ExplainerBlock,
   ContentBlock,
 } from 'modules/create-market/components/common';
-import { NewMarket, Drafts, OutcomeFormatted } from 'modules/types';
+import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
@@ -80,7 +79,6 @@ import {
 import {
   buildformattedDate,
   convertUnixToFormattedDate,
-  timestampComponents,
 } from 'utils/format-date';
 import TemplatePicker from 'modules/create-market/containers/template-picker';
 
@@ -96,7 +94,6 @@ import {
 } from 'modules/create-market/get-template';
 import deepClone from 'utils/deep-clone';
 
-import { Getters } from '@augurproject/sdk';
 import {
   TEMPLATE_CONTENT_PAGES,
   NO_CAT_TEMPLATE_CONTENT_PAGES,
@@ -120,9 +117,8 @@ interface FormProps {
   updateNewMarket: (newMarketData: NewMarket) => void;
   address: string;
   updatePage: (page: string) => void;
-  addDraft: Function;
+  addUpdateDraft: Function;
   drafts: Drafts;
-  updateDraft: Function;
   clearNewMarket: () => void;
   removeAllOrdersFromNewMarket: () => void;
   discardModal: Function;
@@ -423,12 +419,11 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   saveDraft = () => {
     const {
-      addDraft,
+      addUpdateDraft,
       currentTimestamp,
       newMarket,
       updateNewMarket,
       drafts,
-      updateDraft,
       isTemplate,
       marketCreationSaved,
     } = this.props;
@@ -439,7 +434,6 @@ export default class Form extends React.Component<FormProps, FormState> {
     }
 
     const currentStep = isTemplate ? this.state.templateFormStarts : 0;
-
     if (newMarket.uniqueId && drafts[newMarket.uniqueId]) {
       // update draft
       const updatedDate = currentTimestamp;
@@ -448,7 +442,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         currentStep,
         updated: updatedDate,
       };
-      updateDraft(newMarket.uniqueId, draftMarket);
+      addUpdateDraft(newMarket.uniqueId, draftMarket);
       updateNewMarket({
         updated: updatedDate,
       });
@@ -464,7 +458,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         updated: createdDate,
       };
 
-      addDraft(key, draftMarket);
+      addUpdateDraft(key, draftMarket);
       updateNewMarket({
         uniqueId: key,
         created: createdDate,

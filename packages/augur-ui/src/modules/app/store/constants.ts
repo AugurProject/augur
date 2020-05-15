@@ -43,7 +43,7 @@ export const PENDING_QUEUE = 'pendingQueue';
 export const USER_OPEN_ORDERS = 'userOpenOrders';
 export const FILLED_ORDERS = 'filledOrders';
 export const ACCOUNT_POSITIONS = 'accountPositions';
-export const ANALTICS = 'analytics';
+export const ANALYTICS = 'analytics';
 export const DRAFTS = 'drafts';
 export const INITIALIZED_3BOX = 'initialized3box';
 export const NEW_MARKET = 'newMarket';
@@ -220,7 +220,7 @@ export const DEFAULT_APP_STATUS = {
   [USER_OPEN_ORDERS]: {},
   [FILLED_ORDERS]: {},
   [ACCOUNT_POSITIONS]: {},
-  [ANALTICS]: {},
+  [ANALYTICS]: {},
   [DRAFTS]: {},
   // [NEW_MARKET]: {},
   // [MARKETS_LIST]: {},
@@ -274,6 +274,9 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_ACCOUNT_POSITIONS_DATA: 'UPDATE_ACCOUNT_POSITIONS_DATA',
   ADD_ANALYTIC: 'ADD_ANALYTIC',
   REMOVE_ANALYTIC: 'REMOVE_ANALYTIC',
+  ADD_UPDATE_DRAFT: 'ADD_UPDATE_DRAFT',
+  REMOVE_DRAFT: 'REMOVE_DRAFT',
+  LOAD_DRAFTS: 'LOAD_DRAFTS',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -337,4 +340,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateAccountPositions: ({ positionData, marketId }) => {},
   addAnalytic: (id, analytic) => {},
   removeAnalytic: (id) => {},
+  addUpdateDraft: (key, draft) => {},
+  removeDraft: (key) => {},
+  loadDrafts: drafts => {},
 };

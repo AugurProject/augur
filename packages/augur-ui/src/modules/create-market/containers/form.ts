@@ -14,7 +14,6 @@ import {
   GSN_WALLET_SEEN,
   MODAL_INITIALIZE_ACCOUNT
 } from "modules/common/constants";
-import { addDraft, updateDraft } from "modules/create-market/actions/update-drafts";
 import { NodeStyleCallback } from "modules/types";
 import { marketCreationStarted, marketCreationSaved } from "services/analytics/helpers";
 import { isGSNUnavailable } from "modules/app/selectors/is-gsn-unavailable";
@@ -23,12 +22,12 @@ import { AppStatus } from "modules/app/store/app-status";
 
 const mapStateToProps = state => {
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
-  const { loginAccount: { allowance }, gsnEnabled: GsnEnabled, blockchain: { currentAugurTimestamp: currentTimestamp }, walletStatus } = AppStatus.get();
+  const { drafts, loginAccount: { allowance }, gsnEnabled: GsnEnabled, blockchain: { currentAugurTimestamp: currentTimestamp }, walletStatus } = AppStatus.get();
 
   return {
     newMarket: state.newMarket,
     currentTimestamp,
-    drafts: state.drafts,
+    drafts,
     needsApproval: allowance.lte(ZERO),
     GsnEnabled,
     gsnUnavailable: isGSNUnavailable(state),
@@ -38,16 +37,15 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => {
-  const { setModal } = AppStatus.actions;
+  const { setModal, addUpdateDraft } = AppStatus.actions;
   return ({
     initializeGsnWallet: (customAction = null) => setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
     updateNewMarket: data => dispatch(updateNewMarket(data)),
     removeAllOrdersFromNewMarket: () => dispatch(removeAllOrdersFromNewMarket()),
     submitNewMarket: (data, cb) =>
       dispatch(submitNewMarket(data, cb)),
-    addDraft: (key, data) => dispatch(addDraft(key, data)),
+    addUpdateDraft: (key, data) => addUpdateDraft(key, data),
     clearNewMarket: () => dispatch(clearNewMarket()),
-    updateDraft: (key, data) => dispatch(updateDraft(key, data)),
     discardModal: (cb: NodeStyleCallback) =>
       setModal({ type: MODAL_DISCARD, cb }),
     openCreateMarketModal: (cb: NodeStyleCallback) =>

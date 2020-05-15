@@ -38,9 +38,9 @@ import {
   USER_OPEN_ORDERS,
   FILLED_ORDERS,
   ACCOUNT_POSITIONS,
-  ANALTICS,
+  ANALYTICS,
+  DRAFTS,
 } from 'modules/app/store/constants';
-import { REMOVE_ANALYTIC } from '../actions/analytics-management';
 
 const {
   SET_THEME,
@@ -90,6 +90,9 @@ const {
   UPDATE_ACCOUNT_POSITIONS_DATA,
   ADD_ANALYTIC,
   REMOVE_ANALYTIC,
+  ADD_UPDATE_DRAFT,
+  REMOVE_DRAFT,
+  LOAD_DRAFTS,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -416,6 +419,32 @@ export function AppStatusReducer(state, action) {
       }
       break;
     }
+    case ADD_ANALYTIC: {
+      updatedState[ANALYTICS] = {
+        ...updatedState[ANALYTICS],
+        [action.id]: action.analytic
+      };
+      break;
+    }
+    case REMOVE_ANALYTIC: {
+      delete updatedState[ANALYTICS][action.id];
+      break;
+    }
+    case ADD_UPDATE_DRAFT: {
+      updatedState[DRAFTS] = {
+        ...updatedState[DRAFTS],
+        [action.key]: action.draft,
+      };
+      break;
+    }
+    case REMOVE_DRAFT: {
+      delete updatedState[DRAFTS][action.key];
+      break;
+    }
+    case LOAD_DRAFTS: {
+      updatedState[DRAFTS] = action.drafts;
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
@@ -542,8 +571,11 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
           positionData,
           marketId,
         }),
-      addAnalytic: (id, analytic) => dispatch({ TYPE: ADD_ANALYTIC, id, analytic }),
-      removeAnalytic: id => dispatch({ TYPE: REMOVE_ANALYTIC, id }),
+      addAnalytic: (id, analytic) => dispatch({ type: ADD_ANALYTIC, id, analytic }),
+      removeAnalytic: id => dispatch({ type: REMOVE_ANALYTIC, id }),
+      addUpdateDraft: (key, draft) => dispatch({ type: ADD_UPDATE_DRAFT, key, draft }),
+      removeDraft: key => dispatch({ type: REMOVE_DRAFT, key }),
+      loadDrafts: drafts => dispatch({ type: LOAD_DRAFTS, drafts }),
     },
   };
 };
