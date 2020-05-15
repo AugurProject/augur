@@ -9,7 +9,6 @@ import {
   sendLiquidityOrder,
   startOrderSending,
 } from 'modules/orders/actions/liquidity-management';
-import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
 import {
   MAX_BULK_ORDER_COUNT,
   NEW_ORDER_GAS_ESTIMATE,
@@ -18,7 +17,6 @@ import {
 import { createBigNumber } from 'utils/create-big-number';
 import {
   formatDai,
-  formatEther,
   formatGasCostToEther,
 } from 'utils/format-number';
 import { AppState } from 'appStore';
@@ -26,7 +24,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { CreateLiquidityOrders } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
-import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 
 const mapStateToProps = (state: AppState) => {
