@@ -16,10 +16,10 @@ import {
   UpdateMarketsAction,
 } from 'modules/markets/actions/update-markets-data';
 import { getOneWeekInFutureTimestamp } from 'utils/format-date';
-import { updateReportingList } from 'modules/reporting/actions/update-reporting-list';
 import { LoadReportingMarketsOptions } from 'modules/types';
 import { Action } from 'redux';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from '../store/markets';
 
 interface SortOptions {
   sortBy?: Getters.Markets.GetMarketsSortBy;
@@ -244,14 +244,14 @@ export const loadDesignatedReportingMarkets = (
 const loadReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, Action> => async (dispatch, getState) => {
+): ThunkAction<void, AppState, void, Action> => async () => {
   const { universe, isConnected } = AppStatus.get();
   if (!isConnected) return cb(null, []);
   if (!(universe && universe.id)) return cb(null, []);
   let reportingState = null;
   if (filterOptions.reportingStates.length === 1) {
     reportingState = filterOptions.reportingStates[0];
-    dispatch(updateReportingList(reportingState, [], filterOptions, true));
+    Markets.actions.updateReportingList(reportingState, [], filterOptions, true);
   }
   const params = {
     sortBy: Getters.Markets.GetMarketsSortBy.endTime,
@@ -274,9 +274,7 @@ const loadReportingMarkets = (
   addUpdateMarketInfos(marketList.markets);
   if (reportingState) {
     const marketIds = marketList.markets.map(m => m.id);
-    dispatch(
-      updateReportingList(reportingState, marketIds, filterOptions, false)
-    );
+    Markets.actions.updateReportingList(reportingState, marketIds, filterOptions, false);
   }
   if (cb) cb(null, marketList);
 };

@@ -9,6 +9,7 @@ import {
 import { disputingMarkets } from 'modules/markets/selectors/select-reporting-markets';
 import { AppState } from 'appStore';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
 const mapStateToProps = (state: AppState) => {
   const {
@@ -16,7 +17,7 @@ const mapStateToProps = (state: AppState) => {
     isConnected,
   } = AppStatus.get();
   return {
-    disputingMarketsMeta: state.reportingListState,
+    disputingMarketsMeta: Markets.get().reportingListState,
     isConnected,
     userAddress,
     markets: disputingMarkets(state),

@@ -1,21 +1,12 @@
-import accountPositions from 'modules/positions/reducers/account-positions';
-import marketTradingHistory from 'modules/markets/reducers/market-trading-history';
 import newMarket from 'modules/markets/reducers/new-market';
 import analytics from 'modules/app/reducers/analytics';
-import filledOrders from 'modules/orders/reducers/filled-orders';
-import userOpenOrders from 'modules/orders/reducers/open-orders';
 import drafts from 'modules/create-market/reducers/drafts';
 import marketsList from 'modules/markets-list/reducers/markets-list';
-import reportingListState from 'modules/reporting/reducers/reporting-list-state';
 import initialized3box from 'modules/global-chat/reducers/initialized-3box'
 import {
-  AccountPosition,
   NewMarket,
-  FilledOrders,
-  OpenOrders,
   Drafts,
   MarketsList,
-  ReportingListState,
   Analytics,
   Initialized3box
 } from 'modules/types';
@@ -24,14 +15,9 @@ import { SDKConfiguration } from '@augurproject/artifacts';
 
 export function createReducer() {
   return {
-    accountPositions,
-    marketTradingHistory,
     newMarket,
-    filledOrders,
-    userOpenOrders,
     drafts,
     marketsList,
-    reportingListState,
     analytics,
     initialized3box
   };
@@ -40,15 +26,10 @@ export function createReducer() {
 // TODO: couldn't use concreat type form `createReducer` so hardcoding structure here
 // keeping with reducers for easier maintenance.
 export interface AppStateInterface {
-  accountPositions: AccountPosition;
   config: SDKConfiguration;
-  marketTradingHistory: Getters.Trading.MarketTradingHistory;
   newMarket: NewMarket;
-  filledOrders: FilledOrders;
-  userOpenOrders: OpenOrders;
   drafts: Drafts;
   marketsList: MarketsList;
-  reportingListState: ReportingListState;
   analytics: Analytics;
   initialized3box: Initialized3box;
 }

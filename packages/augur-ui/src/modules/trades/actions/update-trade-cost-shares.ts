@@ -34,8 +34,7 @@ export function updateTradeCost({
       return callback('side or numShare or limitPrice is not provided');
     }
 
-    const { accountPositions } = getState();
-    const { loginAccount: { address } } = AppStatus.get();
+    const { accountPositions, loginAccount: { address } } = AppStatus.get();
     const { marketInfos } = Markets.get();
     dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
@@ -76,8 +75,7 @@ export function updateTradeShares({
       return callback('side or numShare or limitPrice is not provided');
     }
 
-    const { accountPositions } = getState();
-    const { loginAccount: { address } } = AppStatus.get();
+    const { accountPositions, loginAccount: { address } } = AppStatus.get();
     const { marketInfos } = Markets.get();
     dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];

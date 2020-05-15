@@ -1,9 +1,4 @@
 import { userPositionProcessing } from 'modules/positions/actions/load-account-positions';
-import {
-  updateUserFilledOrders,
-  bulkMarketTradingHistory,
-  refreshUserOpenOrders,
-} from 'modules/markets/actions/market-trading-history-management';
 import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
@@ -31,13 +26,13 @@ async function loadTransactions(
     loginAccount: { mixedCaseAddress },
     universe,
   } = AppStatus.get();
-  const { updateLoginAccount } = AppStatus.actions;
+  const { updateLoginAccount, refreshUserOpenOrders, updateUserFilledOrders } = AppStatus.actions;
   const Augur = augurSdk.get();
   const userData: Getters.Users.UserAccountDataResult = await Augur.getUserAccountData(
     { universe: universe.id, account: mixedCaseAddress }
   );
-  dispatch(updateUserFilledOrders(mixedCaseAddress, userData.userTradeHistory));
-  dispatch(bulkMarketTradingHistory(userData.marketTradeHistory));
+  updateUserFilledOrders(mixedCaseAddress, userData.userTradeHistory);
+  Markets.actions.bulkMarketTradingHistory(userData.userTradeHistory, null);
 
   const marketsDataById = userData.marketsInfo.reduce(
     (acc, marketData) => ({
@@ -49,9 +44,9 @@ async function loadTransactions(
 
   Markets.actions.updateMarketsData(marketsDataById);
   if (userData.userOpenOrders)
-    dispatch(refreshUserOpenOrders(userData.userOpenOrders.orders));
+    refreshUserOpenOrders(userData.userOpenOrders.orders);
   if (userData.userPositions)
-    dispatch(userPositionProcessing(userData.userPositions));
+    userPositionProcessing(userData.userPositions);
 
   updateLoginAccount({
     reporting: userData.userStakedRep,
