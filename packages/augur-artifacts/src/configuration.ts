@@ -86,6 +86,8 @@ export interface SDKConfiguration {
   },
   // In the JSON configs an integer will need to be used.
   logLevel?: LoggerLevels,
+  showReloadModal?: boolean,
+  averageBlocktime?: number,
 };
 
 export interface ContractAddresses {
@@ -248,6 +250,8 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   },
   uploadBlockNumber: 0,
   logLevel: LoggerLevels.warn,
+  showReloadModal: true,
+  averageBlocktime: 2000
 };
 
 export function isDevNetworkId(id: NetworkId): boolean {

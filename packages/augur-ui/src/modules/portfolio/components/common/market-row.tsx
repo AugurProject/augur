@@ -51,11 +51,11 @@ const MarketRow = ({
         className={classNames({
           [Styles.Show]: showState,
           [Styles.Pending]:
-            market.pending ||
+            market?.pending ||
             (showPending && market.hasPendingLiquidityOrders),
         })}
       >
-        {showState && !market.pending && (
+        {showState && !market?.pending && (
           <div>
             {market.isTemplate && <TemplateShield market={market} />}
             <Archived market={market} />

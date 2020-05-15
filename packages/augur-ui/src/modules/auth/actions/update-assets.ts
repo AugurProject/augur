@@ -17,14 +17,14 @@ import { WALLET_STATUS_VALUES, FIVE } from 'modules/common/constants';
 import { addEthIncreaseAlert } from 'modules/alerts/actions/alerts';
 
 export const updateAssets = (
-  callback: NodeStyleCallback,
+  callback?: NodeStyleCallback,
 ): ThunkAction<any, any, any, any> => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const { loginAccount, universe, appStatus } = getState();
   const { address, meta } = loginAccount;
-  const nonSafeWallet = await meta.signer.getAddress();
+  const nonSafeWallet = await meta.signer?.getAddress();
 
   updateBalances(
     universe.id,
