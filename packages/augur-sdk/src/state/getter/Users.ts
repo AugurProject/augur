@@ -1017,8 +1017,12 @@ export class Users {
       ownedMarkets
     );
 
-    const totalFrozenFunds = totalValidityBonds.plus(frozenFunds).dividedBy(QUINTILLION).toFixed();
-    return { totalFrozenFunds };
+    return {
+      totalFrozenFunds: totalValidityBonds
+      .plus(frozenFunds)
+      .dividedBy(QUINTILLION)
+      .toFixed(),
+    };
   };
 
   @Getter('getProfitLossParams')
