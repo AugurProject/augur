@@ -1,49 +1,29 @@
 import React, { useState } from 'react';
 import Styles from 'modules/app/components/inner-nav/category-filters.styles.less';
+import { useHistory, useLocation } from 'react-router';
 import { MenuChevron, SearchIcon } from 'modules/common/icons';
 import { CategoryRow } from 'modules/common/form';
-import getValue from 'utils/get-value';
 import { CATEGORIES_MAX, CATEGORY_PARAM_NAME } from 'modules/common/constants';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { QueryEndpoints } from 'modules/types';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { selectPopularCategories, selectAllOtherCategories } from 'modules/markets-list/selectors/markets-list';
 
-interface CategoryInterface {
-  category: string;
-  icon?: React.ReactNode;
-  count: number;
-  children: object;
-}
-
-interface CategoryMetaDataInterface {
-  marketCount: number;
-  filteredOutCount: number;
-  categories: CategoryInterface[];
-}
-
-interface CategoryFiltersProps {
-  isSearching: boolean;
-  categoryMetaData: CategoryMetaDataInterface;
-  popularCategories: CategoryInterface[];
-  allOtherCategories: CategoryInterface[];
-  selectedCategories: string[];
-  selectedCategory: string;
-  history: History;
-  location: Location;
-}
-
-const CategoryFilters = ({
-  isSearching,
-  categoryMetaData,
-  popularCategories,
-  allOtherCategories,
-  selectedCategories,
-  selectedCategory,
-  history,
-  location,
-}: CategoryFiltersProps) => {
+const CategoryFilters = () => {
+  const history = useHistory();
+  const location = useLocation();
+  const {
+    marketsList: {
+      isSearching,
+      meta: categoryMetaData,
+      selectedCategories,
+      selectedCategory,
+    },
+  } = useAppStatusStore();
+  const popularCategories = selectPopularCategories();
+  const allOtherCategories = selectAllOtherCategories();
   const [showAllCategories, setShowAllCategories] = useState(false);
-
   const removeCategoryQuery = () => {
     let updatedSearch = parseQuery(location.search);
     delete updatedSearch[CATEGORY_PARAM_NAME];

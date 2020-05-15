@@ -40,21 +40,17 @@ interface MarketsViewProps {
   isSearching: boolean;
   includeInvalidMarkets: string;
   marketSort: string;
-  setLoadMarketsPending: Function;
-  updateMarketsListMeta: Function;
   selectedCategories: string[];
   removeLiquiditySpreadFilter: Function;
   removeFeeFilter: Function;
   filteredOutCount: number;
   marketFilter: string;
   updateMarketsFilter: Function;
-  updateMarketsListCardFormat: Function;
   marketCardFormat: string;
   updateLoginAccountSettings: Function;
   showInvalidMarketsBannerFeesOrLiquiditySpread: boolean;
   showInvalidMarketsBannerHideOrShow: boolean;
   templateFilter: string;
-  setMarketsListSearchInPlace: Function;
   marketListViewed: Function;
   marketsInReportingState: MarketData[];
   loadMarketOrderBook: Function;
@@ -66,7 +62,6 @@ const MarketsView = ({
   markets,
   marketCardFormat,
   selectedCategories,
-  updateMarketsListCardFormat,
   search = null,
   isConnected,
   updateLoginAccountSettings,
@@ -82,12 +77,9 @@ const MarketsView = ({
   removeLiquiditySpreadFilter,
   includeInvalidMarkets,
   filteredOutCount,
-  setLoadMarketsPending,
-  setMarketsListSearchInPlace,
   loadMarketsByFilter,
   templateFilter,
   loadMarketOrderBook,
-  updateMarketsListMeta,
   marketListViewed,
   marketsInReportingState,
 }: MarketsViewProps) => {
@@ -100,7 +92,7 @@ const MarketsView = ({
     showPagination: false,
     selectedMarketCardType: 0,
   });
-  const { isLogged, restoredAccount, theme, isMobile } = useAppStatusStore();
+  const { isLogged, restoredAccount, theme, actions: { updateMarketsList } } = useAppStatusStore();
 
   useEffect(() => {
     if (state.offset !== 1) {
@@ -158,9 +150,10 @@ const MarketsView = ({
   function updateFilteredMarkets() {
     window.scrollTo(0, 1);
 
-    setLoadMarketsPending(true);
-    setMarketsListSearchInPlace(Boolean(search));
-
+    updateMarketsList({
+      isSearching: true,
+      isSearchInPlace: Boolean(search)
+    });
     loadMarketsByFilter(
       {
         categories: selectedCategories ? selectedCategories : [],
@@ -190,8 +183,7 @@ const MarketsView = ({
           filterSortedMarkets.forEach(marketId =>
             loadMarketOrderBook(marketId)
           );
-          updateMarketsListMeta(result.meta);
-          setLoadMarketsPending(false);
+          updateMarketsList({ isSearching: false, meta: result.meta });
         }
       }
     );
@@ -236,8 +228,6 @@ const MarketsView = ({
             history={history}
             selectedCategory={selectedCategories}
             search={search}
-            marketCardFormat={marketCardFormat}
-            updateMarketsListCardFormat={updateMarketsListCardFormat}
           />
 
           <section
@@ -252,10 +242,7 @@ const MarketsView = ({
               marketFilter={marketFilter}
             />
 
-            <MarketCardFormatSwitcher
-              marketCardFormat={marketCardFormat}
-              updateMarketsListCardFormat={updateMarketsListCardFormat}
-            />
+            <MarketCardFormatSwitcher />
             <FilterDropDowns />
           </section>
         </>
@@ -341,7 +328,6 @@ const MarketsView = ({
         location={location}
         history={history}
         linkType={TYPE_TRADE}
-        isMobile={isMobile}
         limit={limit}
         updateLimit={updateLimit}
         offset={offset}

@@ -1,9 +1,7 @@
 import newMarket from 'modules/markets/reducers/new-market';
-import marketsList from 'modules/markets-list/reducers/markets-list';
 import initialized3box from 'modules/global-chat/reducers/initialized-3box'
 import {
   NewMarket,
-  MarketsList,
   Initialized3box
 } from 'modules/types';
 import { SDKConfiguration } from '@augurproject/artifacts';
@@ -11,7 +9,6 @@ import { SDKConfiguration } from '@augurproject/artifacts';
 export function createReducer() {
   return {
     newMarket,
-    marketsList,
     initialized3box
   };
 }
@@ -21,6 +18,5 @@ export function createReducer() {
 export interface AppStateInterface {
   config: SDKConfiguration;
   newMarket: NewMarket;
-  marketsList: MarketsList;
   initialized3box: Initialized3box;
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { Location, History } from 'history';
 import FilterSearch from 'modules/filter-sort/containers/filter-search';
@@ -20,7 +20,6 @@ interface MarketsHeaderProps {
   selectedCategory: string[];
   search: string;
   marketCardFormat: string;
-  updateMarketsListCardFormat: Function;
 }
 
 const getHeaderTitleFromProps = (
@@ -48,20 +47,17 @@ const getHeaderTitleFromProps = (
   return "Popular markets";
 };
 
-const MarketsHeader: React.FC<MarketsHeaderProps> = props => {
-  const {
-    isSearchingMarkets,
-    location,
-    selectedCategory,
-    search,
-    marketCardFormat,
-    updateMarketsListCardFormat
-  } = props;
-  const [headerTitle, setHeaderTitle] = React.useState(
+const MarketsHeader: React.FC<MarketsHeaderProps> = ({
+  isSearchingMarkets,
+  location,
+  selectedCategory,
+  search,
+}) => {
+  const [headerTitle, setHeaderTitle] = useState(
     getHeaderTitleFromProps(search, location, selectedCategory)
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const nextHeaderTitle = getHeaderTitleFromProps(
       search,
       location,
@@ -85,10 +81,7 @@ const MarketsHeader: React.FC<MarketsHeaderProps> = props => {
       <div>
         <h2>{headerTitle}</h2>
         <FilterSearch isSearchingMarkets={isSearchingMarkets} />
-        <MarketCardFormatSwitcher
-          marketCardFormat={marketCardFormat}
-          updateMarketsListCardFormat={updateMarketsListCardFormat}
-        />
+        <MarketCardFormatSwitcher />
         <FilterDropDowns />
       </div>
     </article>

@@ -31,8 +31,7 @@ const consoleLog = store => next => action => {
 // local storage middleware
 const localStorageMiddleware = store => next => action => {
   next(action);
-  const state = store.getState() as AppState;
-  const { analytics, alerts, notifications, favorites, loginAccount, isLogged, isConnected, env, gasPriceInfo, pendingQueue } = AppStatus.get();
+  const { drafts, analytics, alerts, notifications, favorites, loginAccount, isLogged, isConnected, env, gasPriceInfo, pendingQueue } = AppStatus.get();
   const { pendingOrders, pendingLiquidityOrders } = PendingOrders.get();
   if (
     !loginAccount?.address ||
@@ -42,9 +41,6 @@ const localStorageMiddleware = store => next => action => {
     return;
   }
   const { address, affiliate } = loginAccount;
-  const {
-    drafts,
-  } = state;
   const windowApp: WindowApp = windowRef as WindowApp;
   if (windowApp.localStorage && windowApp.localStorage.setItem) {
     const { localStorage } = windowApp;

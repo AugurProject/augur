@@ -2,9 +2,10 @@ import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_F
 import { MARKETS } from "modules/routes/constants/views";
 import { DEFAULT_SDK_CONFIGURATION, SDKConfiguration } from '@augurproject/artifacts';
 import { formatGasCostGwei, formatAttoDai } from 'utils/format-number';
-import { GasPriceInfo, Blockchain, FilterSortOptions, INVALID_OPTIONS, Universe, LoginAccount } from 'modules/types';
+import { GasPriceInfo, Blockchain, FilterSortOptions, INVALID_OPTIONS, Universe, LoginAccount, MarketsList } from 'modules/types';
 import * as moment from '../../../../../../node_modules/moment/moment';
 import { Getters } from '@augurproject/sdk/src';
+import { EMPTY_STATE } from 'modules/create-market/constants';
 
 export const THEME = 'theme';
 export const ODDS = 'oddsType';
@@ -184,6 +185,15 @@ const DEFAULT_FILTER_SORT_OPTIONS: FilterSortOptions = {
   [TEMPLATE_FILTER]: Getters.Markets.TemplateFilters.templateOnly,
 };
 
+const DEFAULT_MARKETS_LIST_STATE: MarketsList = {
+  isSearching: true,
+  meta: null,
+  selectedCategories: [],
+  selectedCategory: null,
+  marketCardFormat: null,
+  isSearchInPlace: false
+};
+
 export const DEFAULT_APP_STATUS = {
   [THEME]: THEMES.TRADING,
   [ODDS]: ODDS_TYPE.DECIMAL,
@@ -222,8 +232,8 @@ export const DEFAULT_APP_STATUS = {
   [ACCOUNT_POSITIONS]: {},
   [ANALYTICS]: {},
   [DRAFTS]: {},
-  // [NEW_MARKET]: {},
-  // [MARKETS_LIST]: {},
+  [NEW_MARKET]: { ...EMPTY_STATE },
+  [MARKETS_LIST]: DEFAULT_MARKETS_LIST_STATE,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -277,6 +287,12 @@ export const APP_STATUS_ACTIONS = {
   ADD_UPDATE_DRAFT: 'ADD_UPDATE_DRAFT',
   REMOVE_DRAFT: 'REMOVE_DRAFT',
   LOAD_DRAFTS: 'LOAD_DRAFTS',
+  ADD_ORDER_TO_NEW_MARKET: "ADD_ORDER_TO_NEW_MARKET",
+  REMOVE_ORDER_FROM_NEW_MARKET: "REMOVE_ORDER_FROM_NEW_MARKET",
+  REMOVE_ALL_ORDER_FROM_NEW_MARKET: "REMOVE_ALL_ORDER_FROM_NEW_MARKET",
+  UPDATE_NEW_MARKET: "UPDATE_NEW_MARKET",
+  CLEAR_NEW_MARKET: "CLEAR_NEW_MARKET",
+  UPDATE_MARKETS_LIST: 'UPDATE_MARKETS_LIST',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -343,4 +359,10 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   addUpdateDraft: (key, draft) => {},
   removeDraft: (key) => {},
   loadDrafts: drafts => {},
+  addOrderToNewMarket: (order) => {},
+  removeOrderFromNewMarket: (order) => {},
+  updateNewMarket: (newMarketData) => {},
+  removeAllOrdersFromNewMarket: () => {},
+  clearNewMarket: () => {},
+  updateMarketsList: data => {},
 };

@@ -11,18 +11,21 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback } from 'modules/types';
-import {
-  setLoadMarketsPending,
-  updateMarketsListMeta,
-} from 'modules/markets-list/actions/update-markets-list';
 import { MODAL_SIGNUP, POPULAR_CATEGORIES } from 'modules/common/constants';
 import { selectMarketStats } from 'modules/markets-list/selectors/markets-list';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, { location }) => {
-  const marketStats = selectMarketStats(state);
+  const marketStats = selectMarketStats();
   const markets = selectMarkets(state);
-  const { universe: { id }, categoryStats, isLogged, restoredAccount, isConnected } = AppStatus.get();
+  const {
+    marketsList: { isSearching },
+    universe: { id },
+    categoryStats,
+    isLogged,
+    restoredAccount,
+    isConnected,
+  } = AppStatus.get();
   return {
     categoryStats,
     categoryData: marketStats,
@@ -32,7 +35,7 @@ const mapStateToProps = (state: AppState, { location }) => {
     markets: markets.filter(market =>
       POPULAR_CATEGORIES.includes(market.categories[0])
     ),
-    isSearching: state.marketsList.isSearching,
+    isSearching,
   };
 };
 
@@ -40,23 +43,17 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<void, AppState, Action>
 ) => {
   const { setModal } = AppStatus.actions;
-  return ({
+  return {
     signupModal: () => setModal({ type: MODAL_SIGNUP }),
-    setLoadMarketsPending: isSearching =>
-      dispatch(setLoadMarketsPending(isSearching)),
-    updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
     loadMarketsByFilter: (
       filter: LoadMarketsFilterOptions,
       cb: NodeStyleCallback
     ) => loadMarketsByFilter(filter, cb),
-  });
+  };
 };
 
 const Markets = withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MarketsLandingPage)
+  connect(mapStateToProps, mapDispatchToProps)(MarketsLandingPage)
 );
 
 export default Markets;

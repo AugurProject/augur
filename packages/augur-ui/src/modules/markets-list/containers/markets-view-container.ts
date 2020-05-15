@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import MarketsView from 'modules/markets-list/components/markets-view';
-import { selectMarkets } from 'modules/markets/selectors/markets-all';
+import { getMarkets } from 'modules/markets/selectors/markets-all';
 import { getSelectedTagsAndCategoriesFromLocation } from 'modules/markets/helpers/get-selected-tags-and-categories-from-location';
 import {
   loadMarketsByFilter,
@@ -16,15 +16,9 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback } from 'modules/types';
 import {
-  setLoadMarketsPending,
-  updateMarketsListMeta,
-  updateMarketsListCardFormat,
-  setMarketsListSearchInPlace,
-} from '../actions/update-markets-list';
-import {
   MAX_SPREAD_ALL_SPREADS,
   MAX_FEE_100_PERCENT,
-  MARKET_CARD_FORMATS
+  MARKET_CARD_FORMATS,
 } from 'modules/common/constants';
 import {
   MARKET_FILTER,
@@ -43,12 +37,13 @@ const findMarketsInReportingState = (markets, reportingState) => {
 };
 
 const mapStateToProps = (state: AppState, { location }) => {
-  const markets = selectMarkets(state);
+  const markets = getMarkets();
   const {
     keywords,
     selectedTagNames,
   } = getSelectedTagsAndCategoriesFromLocation(location);
   const {
+    marketsList: { marketCardFormat, isSearching, meta, selectedCategories },
     loginAccount: { settings },
     isMobile,
     universe: { id },
@@ -63,8 +58,8 @@ const mapStateToProps = (state: AppState, { location }) => {
     },
   } = AppStatus.get();
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
-  let marketCardFormat = state.marketsList.marketCardFormat
-    ? state.marketsList.marketCardFormat
+  const autoSetupMarketCardFormat = marketCardFormat
+    ? marketCardFormat
     : isMobile
     ? MARKET_CARD_FORMATS.COMPACT
     : MARKET_CARD_FORMATS.CLASSIC;
@@ -77,20 +72,17 @@ const mapStateToProps = (state: AppState, { location }) => {
     marketsInReportingState: findMarketsInReportingState(markets, marketFilter),
     maxFee,
     maxLiquiditySpread,
-    isSearching: state.marketsList.isSearching,
-    filteredOutCount: state.marketsList.meta
-      ? state.marketsList.meta.filteredOutCount
-      : 0,
+    isSearching,
+    filteredOutCount: meta ? meta.filteredOutCount : 0,
     includeInvalidMarkets,
-    selectedCategories: state.marketsList.selectedCategories,
+    selectedCategories,
     marketSort,
     marketFilter,
-    marketCardFormat,
-    showInvalidMarketsBannerHideOrShow: (settings)
-      .showInvalidMarketsBannerHideOrShow,
-    showInvalidMarketsBannerFeesOrLiquiditySpread: (
-      settings
-    ).showInvalidMarketsBannerFeesOrLiquiditySpread,
+    marketCardFormat: autoSetupMarketCardFormat,
+    showInvalidMarketsBannerHideOrShow:
+      settings.showInvalidMarketsBannerHideOrShow,
+    showInvalidMarketsBannerFeesOrLiquiditySpread:
+      settings.showInvalidMarketsBannerFeesOrLiquiditySpread,
     templateFilter,
   };
 };
@@ -99,10 +91,7 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<void, AppState, Action>
 ) => {
   const { updateFilterSortOptions } = AppStatus.actions;
-  return ({
-    setLoadMarketsPending: isSearching =>
-      dispatch(setLoadMarketsPending(isSearching)),
-    updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
+  return {
     loadMarketsByFilter: (
       filter: LoadMarketsFilterOptions,
       cb: NodeStyleCallback
@@ -114,12 +103,8 @@ const mapDispatchToProps = (
       updateFilterSortOptions({ [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS }),
     updateMarketsFilter: filterOption =>
       updateFilterSortOptions({ [MARKET_FILTER]: filterOption }),
-    updateMarketsListCardFormat: format =>
-      dispatch(updateMarketsListCardFormat(format)),
     updateLoginAccountSettings: settings =>
       dispatch(updateLoginAccountSettings(settings)),
-    setMarketsListSearchInPlace: isSearchInPlace =>
-      dispatch(setMarketsListSearchInPlace(isSearchInPlace)),
     marketListViewed: (
       search,
       selectedCategories,
@@ -146,8 +131,8 @@ const mapDispatchToProps = (
           pageNumber
         )
       ),
-  });
-}
+  };
+};
 const Markets = withRouter(
   connect(mapStateToProps, mapDispatchToProps)(MarketsView)
 );
