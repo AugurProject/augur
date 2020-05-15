@@ -21,16 +21,17 @@ let john: TestContractAPI;
 beforeAll(async () => {
   const seed = await loadSeed(defaultSeedPath);
   provider = await makeProvider(seed, ACCOUNTS);
+  connector = new SingleThreadConnector();
 
   john = await TestContractAPI.userWrapper(
     ACCOUNTS[0],
     provider,
-    provider.getConfig()
+    provider.getConfig(),
+    connector
   );
 
   await john.approve();
 
-  connector = new SingleThreadConnector();
   console.log('Connector connecting');
   const config: SDKConfiguration = {
     networkId: await provider.getNetworkId(),
@@ -45,25 +46,22 @@ beforeAll(async () => {
     },
   };
   connector.client = john.augur;
+
+  // No need to sync. This starts the 'sync' process we use in prod.
   await connector.connect(config);
-  await john.sync();
 });
 
 test('SingleThreadConnector :: Should route correctly and handle events, extraInfo', async done => {
-  await connector.on(
+  connector.on(
     SubscriptionEventName.DBMarketCreatedEvent,
     async (event: any): Promise<void> => {
-      console.log(
-        'SubscriptionEventName.DBMarketCreatedEvent',
-        SubscriptionEventName.DBMarketCreatedEvent
-      );
+      connector.off(SubscriptionEventName.DBMarketCreatedEvent);
+
       const marketIds = _.map(event.data, 'market');
       const getMarketsInfo = connector.bindTo(Markets.getMarketsInfo);
       const marketList = await getMarketsInfo({
         marketIds,
       });
-
-      console.log('marketList', JSON.stringify(marketList));
 
       expect(marketList[0].categories[0]).toEqual(
         'yesNo category 1'.toLowerCase()
@@ -75,7 +73,6 @@ test('SingleThreadConnector :: Should route correctly and handle events, extraIn
       expect(marketList[0].details).toEqual('yesNo longDescription 1');
       expect(marketList[0].id).toEqual(yesNoMarket1.address);
 
-      await connector.off(SubscriptionEventName.DBMarketCreatedEvent);
       expect(connector.subscriptions).toEqual({});
       done();
     }
@@ -89,7 +86,4 @@ test('SingleThreadConnector :: Should route correctly and handle events, extraIn
     extraInfo:
       '{"categories": ["yesNo category 1", "yesNo category 2"], "description": "yesNo description 1", "longDescription": "yesNo longDescription 1"}',
   });
-
-  await john.sync();
-  john.augur.events.emit(SubscriptionEventName.NewBlock, {});
 });

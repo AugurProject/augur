@@ -27,7 +27,7 @@ import { MarketReportingState, OrderEventType, INIT_REPORTING_FEE_DIVISOR } from
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
-import { QUINTILLION } from '../../utils';
+import { ZERO, QUINTILLION } from '../../utils';
 import {
   OnChainTrading,
   MarketTradingHistory,
@@ -424,7 +424,7 @@ export class Users {
       sharesEscrowed: string; // Shares
     */
     const markets = await getMarkets(Object.keys(orders), db, false);
-    let totalCost = new BigNumber(0);
+    let totalCost = ZERO;
     Object.keys(orders).forEach(marketId => {
       const market = markets[marketId];
       const marketPositions = positions[marketId];
@@ -937,7 +937,7 @@ export class Users {
       (value, tradingPosition) => {
         return value.plus(tradingPosition.frozenFunds);
       },
-      new BigNumber(0)
+      ZERO
     ).div(QUINTILLION);
 
     const universe = params.universe
@@ -1011,9 +1011,9 @@ export class Users {
       allProfitLossResults,
       (value, tradingPosition) => {
         if (fullTotalLossMarketsPositions.includes(tradingPosition.market)) return value;
-        return value.plus(tradingPosition.frozenFunds);
+        return value.plus(BigNumber.max(tradingPosition.frozenFunds, ZERO));
       },
-      new BigNumber(0)
+      ZERO
     ).dividedBy(QUINTILLION);
     // includes validity bonds for market creations
     const ownedMarketsResponse = await db.Markets.where('marketCreator')
@@ -1045,7 +1045,7 @@ export class Users {
     const startTime = params.startTime!;
     const endTime = params.endTime || now.toNumber();
     const periodInterval =
-      params.periodInterval === undefined
+      typeof params.periodInterval === 'undefined'
         ? Math.ceil((endTime - startTime) / DEFAULT_NUMBER_OF_BUCKETS)
         : params.periodInterval;
 
@@ -1128,9 +1128,7 @@ export class Users {
           return _.mapValues(
             profitLossByOutcome,
             (outcomePLValues, outcome) => {
-              const latestOutcomePLValue = getLastDocBeforeTimestamp<
-                ProfitLossChangedLog
-              >(outcomePLValues, bucketTimestamp);
+              const latestOutcomePLValue = getLastDocBeforeTimestamp<ProfitLossChangedLog>(outcomePLValues, bucketTimestamp);
               // if market not traded in timeframe use last pl avg price
               let lastPrice = null;
               if (latestOutcomePLValue) {
@@ -1165,7 +1163,7 @@ export class Users {
                   currentValue: '0',
                 };
               }
-              let outcomeValue = new BigNumber(marketDoc.prices[0]);
+              let outcomeValue: BigNumber;
               if (finalized) {
                 outcomeValue = new BigNumber(
                   marketFinalizedByMarket[marketId].winningPayoutNumerators[
@@ -1475,7 +1473,6 @@ function addEscrowedAmountsDecrementShares(
   market: MarketData,
   userSharesBalances: { [outcome: string]: string }
 ) {
-  const ZERO = new BigNumber(0);
   let cost = ZERO;
   const maxPrice = new BigNumber(market.prices[1]);
   const minPrice = new BigNumber(market.prices[0]);
@@ -1548,7 +1545,7 @@ function getTradingPositionFromProfitLossFrame(
   const onChainAvgPrice = new BigNumber(profitLossFrame.avgPrice).div(10**18);
   const onChainRealizedProfit = new BigNumber(profitLossFrame.realizedProfit).div(10**18);
   const onChainRealizedCost = new BigNumber(profitLossFrame.realizedCost).div(10**18);
-  let onChainRawPosition = new BigNumber(0);
+  let onChainRawPosition = ZERO;
   if (
     shareTokenBalancesByMarketAndOutcome &&
     shareTokenBalancesByMarketAndOutcome[marketDoc.market] &&
@@ -1615,7 +1612,7 @@ function getTradingPositionFromProfitLossFrame(
       onChainNetPosition.isNegative()
         ? avgPrice.minus(last24HrTradePrice)
         : last24HrTradePrice.minus(avgPrice)
-    ) : new BigNumber(0);
+    ) : ZERO;
 
   const shortPrice = maxPrice.dividedBy(10 ** 18).minus(lastTradePrice);
   const currentValue = netPosition
@@ -1629,21 +1626,21 @@ function getTradingPositionFromProfitLossFrame(
   if (finalized) {
     realizedCost = unrealizedCost.plus(realizedCost);
     realizedProfit = realizedProfit.plus(unrealized);
-    unrealized = new BigNumber(0);
-    unrealized24Hr = new BigNumber(0);
-    unrealizedCost = new BigNumber(0);
-    avgPrice = onChainNetPosition.eq(0) ? new BigNumber(0) : avgPrice;
+    unrealized = ZERO;
+    unrealized24Hr = ZERO;
+    unrealizedCost = ZERO;
+    avgPrice = onChainNetPosition.eq(0) ? ZERO : avgPrice;
   }
 
-  const unrealized24HrPercent = unrealizedCost.isZero() ? new BigNumber(0) : unrealized24Hr.dividedBy(unrealizedCost);
-  const unrealizedPercent = unrealizedCost.isZero() ? new BigNumber(0) : unrealized.dividedBy(unrealizedCost);
+  const unrealized24HrPercent = unrealizedCost.isZero() ? ZERO : unrealized24Hr.dividedBy(unrealizedCost);
+  const unrealizedPercent = unrealizedCost.isZero() ? ZERO : unrealized.dividedBy(unrealizedCost);
 
   const totalPercent = realizedProfit
     .plus(unrealized)
     .dividedBy(realizedCost.plus(unrealizedCost));
 
   const realizedPercent = realizedCost.isZero()
-    ? new BigNumber(0)
+    ? ZERO
     : realizedProfit.dividedBy(realizedCost.abs());
 
   return {
@@ -1729,7 +1726,7 @@ async function getFullMarketPositionLoss(
         payoutNumerators, (sum, outcome, index) => {
           const balance = new BigNumber(outcomeBalance[`0x0${index}`]?.balance || 0);
           return sum.plus(balance.times(outcome));
-        }, new BigNumber(0));
+        }, ZERO);
       return totalPositionValue.gt(0)
         ? result
         : [...result, marketId];
