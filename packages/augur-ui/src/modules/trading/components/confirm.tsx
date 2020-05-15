@@ -31,12 +31,13 @@ import {
 import {
   formatGasCostToEther,
   formatShares,
+  formatNumber,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel, EthReserveNotice } from 'modules/common/labels';
 import { Trade } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
-import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { getGasInDai, ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
 import { TXEventName } from '@augurproject/sdk/src';
 
 interface MessageButton {
@@ -168,14 +169,14 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let needsApproval = false;
     let messages: Message | null = null;
 
-    const gasCost = gasLimit
+    const gasCostInEth = gasLimit
       ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
 
-    let gasCostDai = null;
+    let gasCostDai = 0;
 
     if (GsnEnabled) {
-      gasCostDai = getGasInDai(gasCost);
+      gasCostDai = ethToDaiFromAttoRate(gasCostInEth).value;
     }
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
@@ -238,12 +239,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !tradingTutorial &&
       !GsnEnabled &&
       totalCost &&
-      createBigNumber(gasCost).gte(createBigNumber(availableEth))
+      createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))
     ) {
       messages = {
         header: 'Insufficient ETH',
         type: ERROR,
-        message: `You do not have enough funds to place this order. ${gasCost} ETH required for gas.`,
+        message: `You do not have enough funds to place this order. ${gasCostInEth} ETH required for gas.`,
       };
     }
 
@@ -331,14 +332,14 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       .minus(createBigNumber(minPrice))
       .abs();
 
-    let gasCostDai = null;
+    let gasCostDai = formatNumber(0);
 
-    const gasCost = gasLimit
+    const gasCostInEth = gasLimit
     ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
     : ZERO;
 
     if (GsnEnabled) {
-      gasCostDai = getGasInDai(gasCost);
+      gasCostDai = ethToDaiFromAttoRate(gasCostInEth);
     }
 
     const limitPricePercentage = (side === BUY
@@ -399,7 +400,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               value={orderShareTradingFee}
               showDenomination={true}
             />
-            {gasCostDai && gasCostDai.roundedValue.gt(0) > 0 && (
+            {gasCostDai.roundedValue.gt(0) > 0 &&
+              numFills > 0 && (
               <LinearPropertyLabel
                 label="Est. TX Fee"
                 value={gasCostDai}
@@ -465,8 +467,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               value={potentialDaiLoss}
               showDenomination={true}
             />
-            {gasCostDai &&
-              gasCostDai.roundedValue.gt(0) > 0 &&
+            {gasCostDai.roundedValue.gt(0) > 0 &&
               numFills > 0 && (
                 <LinearPropertyLabel
                   label="Est. TX Fee"
