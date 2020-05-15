@@ -18,7 +18,7 @@ import {
 import { isEmpty } from 'utils/is-empty';
 import { analytics } from './analytics';
 import { isLocalHost } from 'utils/is-localhost';
-import { createBrowserMesh } from './browser-mesh';
+import { createBrowserMesh, createBrowserMeshWorker } from './browser-mesh';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { BigNumber } from 'utils/create-big-number';
 
@@ -66,7 +66,7 @@ export class SDK {
       this.connector = new Connectors.SingleThreadConnector();
     }
 
-    this.client = await createClient(this.config, this.connector, signer, ethersProvider, enableFlexSearch, createBrowserMesh);
+    this.client = await createClient(this.config, this.connector, signer, ethersProvider, enableFlexSearch, createBrowserMeshWorker);
 
     this.client.dependencies.setReferralAddress(affiliate);
     this.client.dependencies.setFingerprint(getFingerprint());
