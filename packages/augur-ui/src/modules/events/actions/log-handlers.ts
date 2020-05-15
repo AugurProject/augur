@@ -48,6 +48,7 @@ import {
   MARKETMIGRATED,
   DOINITIALREPORTWARPSYNC,
   ZEROX_STATUSES,
+  MODAL_ERROR,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -174,9 +175,16 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  const { env } = getState();
   if (log && log.error && log.error.message.includes("too many blocks")) {
     console.error('too many blocks behind, reloading UI')
-    location.reload();
+    env.showReloadModal ?
+      dispatch(updateModal({
+        type: MODAL_ERROR,
+        error: '(Orders) Too many blocks behind, please refresh',
+        title: 'Currently Far Behind to get Orders',
+      }))
+    : location.reload();
   }
   dispatch(updateAppStatus(Ox_STATUS, status))
   if (status === ZEROX_STATUSES.SYNCED && getState().authStatus.isLogged) {
@@ -203,9 +211,17 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   getState: () => AppState
 ) => {
   const { blockchain, env } = getState();
-  const blockTime = env.networkId === "1" ? 15000 : 2000;
+  const blockTime = env.averageBlocktime;
   if (blocksBehindTimer) clearTimeout(blocksBehindTimer);
-  blocksBehindTimer = setTimeout(function () {location.reload(); }, BLOCKS_BEHIND_RELOAD_THRESHOLD * blockTime);
+  blocksBehindTimer = setTimeout(function () {
+    env.showReloadModal ?
+    dispatch(updateModal({
+      type: MODAL_ERROR,
+      error: '(Synching) Too many blocks behind, please refresh',
+      title: 'Currently Far Behind in Syncing',
+    }))
+    : location.reload();
+  }, BLOCKS_BEHIND_RELOAD_THRESHOLD * blockTime);
   dispatch(
     updateBlockchain({
       currentBlockNumber: log.highestAvailableBlockNumber,
@@ -375,13 +391,14 @@ export const handleBulkOrdersLog = (data: {
       dispatch(handleOrderLog(log));
       marketIds.push(log.market);
     });
-    Array.from(new Set([...marketIds])).map(marketId => {
+    const unqMarketIds = Array.from(new Set([...marketIds]));
+    unqMarketIds.map(marketId => {
       if (isCurrentMarket(marketId)) {
         dispatch(updateMarketOrderBook(marketId));
         dispatch(loadMarketTradingHistory(marketId));
-        dispatch(checkUpdateUserPositions([marketId]));
       }
     });
+    dispatch(checkUpdateUserPositions(unqMarketIds));
   }
 };
 
@@ -454,13 +471,14 @@ const handleNewBlockFilledOrdersLog = logs => (
   logs
     .filter(l => l.eventType === OrderEventType.Fill)
     .map(l => dispatch(handleOrderFilledLog(l)));
-  Array.from(new Set(logs.map(l => l.market))).map((marketId: string) => {
+  const unqMarketIds: string[] = Array.from(new Set(logs.map(l => l.market)));
+  unqMarketIds.map((marketId: string) => {
     if (isCurrentMarket(marketId)) {
       dispatch(updateMarketOrderBook(marketId));
       dispatch(loadMarketTradingHistory(marketId));
-      dispatch(checkUpdateUserPositions([marketId]));
     }
   });
+  dispatch(checkUpdateUserPositions(unqMarketIds));
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
