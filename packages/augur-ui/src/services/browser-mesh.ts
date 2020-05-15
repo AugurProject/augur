@@ -124,15 +124,22 @@ export async function createBrowserMeshWorker(
     await loadMesh();
     const mesh = await new MeshWorker(meshConfig);
 
-    await mesh.startAsync();
-    await mesh.onOrderEvents(Comlink.proxy((orderEvents: OrderEvent[]) => {
-      if (zeroX.client.client && orderEvents.length > 0) {
-        zeroX.client.client.events.emit('ZeroX:Mesh:OrderEvent', orderEvents);
+    const wrappedMesh = new Proxy(mesh, {
+      get(target: any, prop: any): any {
+        if(prop === "onOrderEvents") {
+          return new Proxy(target[prop], {
+            apply(target: any, thisArg: any, argArray = []): any {
+              const [cb, ...rest] = argArray;
+              return target(Comlink.proxy(cb), ...rest);
+            }
+          });
+        }
+        return target[prop];
       }
-    }));
+    })
 
-    zeroX.mesh = mesh;
-    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusReady, {});
+    await mesh.startAsync();
+    zeroX.mesh = wrappedMesh;
   } catch(error) {
     zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {error});
 
@@ -182,13 +189,6 @@ export async function createBrowserMesh(
 
     mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
     await mesh.startAsync();
-    await mesh.onOrderEvents((orderEvents: OrderEvent[]) => {
-      if (zeroX.client.client && orderEvents.length > 0) {
-        zeroX.client.client.events.emit('ZeroX:Mesh:OrderEvent', orderEvents);
-      }
-    });
-
-    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusReady, {});
     zeroX.mesh = mesh;
   } catch(error) {
     zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {error});
