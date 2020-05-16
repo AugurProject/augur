@@ -1,9 +1,6 @@
 @import (reference) "~assets/styles/shared";
 
 // Used in Betting UI
-.FilterSearch {
-  display: flex;
-}
 
 .Tooltip {
   margin: @size-4 0 0 @size-16;
@@ -12,21 +9,25 @@
 
 .Search {
   .text-16;
-  height: @size-44;
 
+  position: relative;
+  height: @size-44;
   align-items: center;
   background: @color-dark-grey;
   border: @size-1 solid @color-secondary-action;
   box-sizing: border-box;
   border-radius: @border-radius-default;
   color: @color-secondary-text;
-  display: flex;
+  display: grid;
+  grid-template-columns: @size-14 1fr;
+  grid-gap: @size-20;
   padding: 0;
   transition: min-width @animation-speed-normal @animation-default-type;
   width: 100%;
 
   @media @breakpoint-mobile {
     .text-12;
+
     height: @size-32;
     padding: 0;
     border: @size-1 solid @color-dark-grey;
@@ -47,13 +48,13 @@
     line-height: normal;
     padding: 0;
     height: @size-20;
-    margin: @size-8 0 @size-10 @size-10;
+    margin: @size-8 0 @size-10 0;
     text-overflow: ellipsis;
 
     @media @breakpoint-mobile {
       .text-12;
       height: @size-15;
-      margin: @size-6 0 @size-7 @size-10;
+      margin: @size-6 0 @size-7 0;
     }
 
     &::placeholder {
@@ -73,12 +74,23 @@
     }
   }
 
-  // Close button
-  > button {
-    margin-right: @size-12;
+  // Loading
+  > div {
+    position: absolute;
+    right: @size-12;
 
     @media @breakpoint-mobile {
-      margin-right: @size-6;
+      right: @size-6;
+    }
+  }
+
+  // Close button
+  > button {
+    position: absolute;
+    right: @size-12;
+
+    @media @breakpoint-mobile {
+      right: @size-6;
     }
 
     > svg {
@@ -88,6 +100,17 @@
       @media @breakpoint-mobile {
         margin-top: @size-2;
       }
+    }
+  }
+}
+
+.LoadingBesidesCloseButton {
+  > div {
+    position: absolute;
+    right: @size-32;
+
+    @media @breakpoint-mobile {
+      right: @size-26;
     }
   }
 }
