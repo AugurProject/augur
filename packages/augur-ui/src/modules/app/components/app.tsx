@@ -438,18 +438,21 @@ export default class AppView extends Component<AppProps> {
             })}
           >
             {onTradingTutorial && (
-              <section className={Styles.TutorialBanner}>
-                <span>Test market</span>
-                <button
-                  onClick={() =>
-                    history.push({
-                      pathname: makePath(MARKETS),
-                    })
-                  }
-                >
-                  {XIcon}
-                </button>
-              </section>
+              <>
+                <section className={Styles.TutorialBanner}>
+                  <span>Test market</span>
+                  <button
+                    onClick={() =>
+                      history.push({
+                        pathname: makePath(MARKETS),
+                      })
+                    }
+                  >
+                    {XIcon}
+                  </button>
+                </section>
+                <section className={Styles.TopBarOverlay} />
+              </>
             )}
             <section
               className={classNames(Styles.TopBar, Styles.TopBar__floatAbove, {
