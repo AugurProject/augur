@@ -86,7 +86,6 @@ function updateBalances(
       JSON.stringify(currentBalances) !==
       JSON.stringify(balances)
     ) {
-      console.log('hello', currentBalances, balances);
       AppStatus.actions.updateLoginAccount({
         balances,
       });
