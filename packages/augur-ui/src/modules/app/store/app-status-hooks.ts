@@ -625,6 +625,7 @@ export function AppStatusReducer(state, action) {
         `Error: ${action.type} not caught by App Status reducer.`
       );
   }
+  console.log(action.type, updatedState, action);
   window.appStatus = updatedState;
   return updatedState;
 }
@@ -687,8 +688,8 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
       updateUniverse: universe => dispatch({ type: UPDATE_UNIVERSE, universe }),
       switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
-      updateLoginAccount: (loginAccount, clear = false) =>
-        dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount, clear }),
+      updateLoginAccount: (loginAccount) =>
+        dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount }),
       clearLoginAccount: () => dispatch({ type: CLEAR_LOGIN_ACCOUNT }),
       loadFavorites: favorites => dispatch({ type: LOAD_FAVORITES, favorites }),
       toggleFavorite: marketId => dispatch({ type: TOGGLE_FAVORITE, marketId }),

@@ -187,8 +187,8 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
     console.error('too many blocks behind, reloading UI');
     location.reload();
   }
-  const { isLogged } = AppStatus.get();
-  AppStatus.actions.setOxStatus(status);
+  const { isLogged, zeroXStatus } = AppStatus.get();
+  if (zeroXStatus !== status) AppStatus.actions.setOxStatus(status);
   if (status === ZEROX_STATUSES.SYNCED && isLogged) {
     dispatch(throttleLoadUserOpenOrders());
   }
