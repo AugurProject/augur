@@ -127,29 +127,12 @@ const MarketsInDispute = ({
     sortBy,
   } = state;
 
-  const prev = useRef();
-
   useEffect(() => {
     if (isConnected) loadMarkets();
   }, []);
 
   useEffect(() => {
-    if (
-      isConnected !== prev?.current?.isConnected ||
-      filterByMyPortfolio !== prev?.current?.filterByMyPortfolio ||
-      sortBy !== prev?.current?.sortBy ||
-      search !== prev?.current?.search ||
-      offset !== prev?.current?.offset ||
-      selectedTab !== prev?.current?.selectedTab
-    ) {
-      loadMarkets();
-    }
-    if (
-      JSON.stringify(disputingMarketsMeta) !==
-      JSON.stringify(prev?.current?.disputingMarketsMeta)
-    ) {
-      getFilteredDataMarkets(markets, disputingMarketsMeta);
-    }
+    loadMarkets();
   }, [
     isConnected,
     filterByMyPortfolio,
@@ -157,26 +140,11 @@ const MarketsInDispute = ({
     search,
     offset,
     selectedTab,
-    disputingMarketsMeta,
   ]);
 
   useEffect(() => {
-    prev.current = {
-      isConnected,
-      filterByMyPortfolio,
-      sortBy,
-      search,
-      offset,
-      selectedTab,
-      disputingMarketsMeta,
-    };
+    getFilteredDataMarkets(markets, disputingMarketsMeta);
   }, [
-    isConnected,
-    filterByMyPortfolio,
-    sortBy,
-    search,
-    offset,
-    selectedTab,
     disputingMarketsMeta,
   ]);
 
