@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { Tab } from 'modules/portfolio/types';
@@ -14,7 +14,6 @@ import { LoadingMarketCard } from 'modules/market-cards/common';
 import { Pagination } from 'modules/common/pagination';
 import { REPORTING_STATE, SMALL_MOBILE } from 'modules/common/constants';
 import Media from 'react-media';
-import { useEffect } from 'react';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { selectDisputingMarkets } from 'modules/markets/selectors/select-reporting-markets';
 import { useAppStatusStore } from 'modules/app/store/app-status';
