@@ -30,7 +30,6 @@ const defaultTabs = {
   [TAB_AWAITING]: [],
 };
 const DEFAULT_PAGINATION = {
-  limit: ITEMS_PER_SECTION,
   offset: DEFAULT_PAGE,
   isLoadingMarkets: true,
   filteredData: defaultTabs,
@@ -40,27 +39,9 @@ interface DisputingMarkets {
   [reportingState: string]: MarketData[];
 }
 
-interface FilteredData {
-  [TAB_CURRENT]: MarketData[];
-  [TAB_AWAITING]: MarketData[];
-}
 interface MarketsInDisputeProps {
   loadCurrentlyDisputingMarkets: Function;
   loadNextWindowDisputingMarkets: Function;
-}
-
-interface MarketsInDisputeState {
-  search: string;
-  selectedTab: string;
-  tabs: Tab[];
-  filteredData: FilteredData;
-  sortBy: string;
-  offset: number;
-  limit: number;
-  showPagination: boolean;
-  marketCount: number;
-  isLoadingMarkets: boolean;
-  filterByMyPortfolio: boolean;
 }
 
 const sortByOptions = [
@@ -91,37 +72,18 @@ const MarketsInDispute = ({
     search: '',
     selectedTab: TAB_CURRENT,
     sortBy: sortByOptions[0].value,
-    tabs: [
-      {
-        key: TAB_CURRENT,
-        label: 'Currently Disputing',
-        num: 0,
-      },
-      {
-        key: TAB_AWAITING,
-        label: 'Awaiting Next Dispute',
-        num: 0,
-      },
-    ],
     filteredData: defaultTabs,
     isLoadingMarkets: true,
-    marketCount: 0,
-    showPagination: false,
     offset: DEFAULT_PAGE,
-    limit: ITEMS_PER_SECTION,
     filterByMyPortfolio: false,
   });
 
   const {
     selectedTab,
-    tabs,
     search,
     filterByMyPortfolio,
     isLoadingMarkets,
-    showPagination,
     offset,
-    limit,
-    marketCount,
     filteredData,
     sortBy,
   } = state;
@@ -132,20 +94,11 @@ const MarketsInDispute = ({
 
   useEffect(() => {
     loadMarkets();
-  }, [
-    isConnected,
-    filterByMyPortfolio,
-    sortBy,
-    search,
-    offset,
-    selectedTab,
-  ]);
+  }, [isConnected, filterByMyPortfolio, sortBy, search, offset, selectedTab]);
 
   useEffect(() => {
-    getFilteredDataMarkets(markets, disputingMarketsMeta);
-  }, [
-    disputingMarketsMeta,
-  ]);
+    getFilteredDataMarkets(disputingMarketsMeta);
+  }, [disputingMarketsMeta]);
 
   function toggleOnlyMyPortfolio() {
     setState({
@@ -159,12 +112,6 @@ const MarketsInDispute = ({
     getLoadMarketsMethods().map(loader => loader.method(filterOptions));
   }
 
-  function setTabCounts(tabs, tabName, marketCount) {
-    const index = tabName === TAB_CURRENT ? 0 : 1;
-    tabs[index].num = marketCount;
-    return tabs;
-  }
-
   function getLoadMarketsMethods() {
     return [
       { method: loadCurrentlyDisputingMarkets, tabName: TAB_CURRENT },
@@ -174,7 +121,7 @@ const MarketsInDispute = ({
 
   function getLoadMarketsFiltersOptions() {
     let filterOptions = {
-      limit,
+      limit: ITEMS_PER_SECTION,
       offset,
       sortBy,
       search,
@@ -216,10 +163,7 @@ const MarketsInDispute = ({
     });
   }
 
-  function getFilteredDataMarkets(
-    markets: DisputingMarkets,
-    disputingMarketsMeta: ReportingListState
-  ) {
+  function getFilteredDataMarkets(disputingMarketsMeta: ReportingListState) {
     const currentIsLoading =
       disputingMarketsMeta[REPORTING_STATE.CROWDSOURCING_DISPUTE]?.isLoading;
     const awaitingIsLoading =
@@ -228,28 +172,27 @@ const MarketsInDispute = ({
       [TAB_CURRENT]: markets[REPORTING_STATE.CROWDSOURCING_DISPUTE],
       [TAB_AWAITING]: markets[REPORTING_STATE.AWAITING_NEXT_WINDOW],
     };
-    let newTabs = setTabCounts(
-      tabs,
-      TAB_CURRENT,
-      markets[REPORTING_STATE.CROWDSOURCING_DISPUTE].length
-    );
-    newTabs = setTabCounts(
-      tabs,
-      TAB_AWAITING,
-      markets[REPORTING_STATE.AWAITING_NEXT_WINDOW].length
-    );
-    const marketCount = filteredData[selectedTab].length;
-    const showPagination = marketCount > limit;
+
     setState({
       ...state,
       filteredData,
-      tabs: newTabs,
       isLoadingMarkets:
         selectedTab === TAB_CURRENT ? currentIsLoading : awaitingIsLoading,
-      showPagination,
-      marketCount,
     });
   }
+
+  const tabs = [
+    {
+      key: TAB_CURRENT,
+      label: 'Currently Disputing',
+      num: markets[REPORTING_STATE.CROWDSOURCING_DISPUTE].length,
+    },
+    {
+      key: TAB_AWAITING,
+      label: 'Awaiting Next Dispute',
+      num: markets[REPORTING_STATE.AWAITING_NEXT_WINDOW].length,
+    },
+  ];
 
   const { label } = tabs.find(tab => tab.key === selectedTab);
   const checkBox = {
@@ -258,6 +201,8 @@ const MarketsInDispute = ({
     didCheck: filterByMyPortfolio,
   };
 
+  const marketCount = filteredData[selectedTab].length;
+  const showPagination = filteredData[selectedTab].length > ITEMS_PER_SECTION;
   return (
     <div className={Styles.MarketsInDispute}>
       <Media query={SMALL_MOBILE}>
@@ -336,7 +281,7 @@ const MarketsInDispute = ({
                 <Pagination
                   page={offset}
                   itemCount={marketCount}
-                  itemsPerPage={limit}
+                  itemsPerPage={ITEMS_PER_SECTION}
                   action={setOffset}
                   updateLimit={null}
                 />
