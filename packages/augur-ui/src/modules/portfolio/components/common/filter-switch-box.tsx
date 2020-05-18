@@ -29,6 +29,7 @@ export interface FilterBoxProps {
   hide?:boolean;
   customClass?: string;
   showHeaderOnMobile?: boolean;
+  bottomContent?: ReactNode;
 }
 
 interface FilterBoxState {
@@ -107,7 +108,8 @@ export default class FilterSwitchBox extends React.Component<
       extend,
       hide,
       customClass,
-      showHeaderOnMobile
+      showHeaderOnMobile,
+      bottomContent,
     } = this.props;
 
     const { search, filteredData } = this.state;
@@ -132,6 +134,7 @@ export default class FilterSwitchBox extends React.Component<
         extend={extend}
         hide={hide}
         showHeaderOnMobile={showHeaderOnMobile}
+        bottomContent={bottomContent}
         content={
           <>
             {filteredData.length === 0 && (

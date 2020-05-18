@@ -37,6 +37,7 @@ export interface FilterBoxProps {
   extend: boolean;
   customClass?: string;
   showLiquidityDepleted?: boolean;
+  bottomContent?: ReactNode;
 }
 
 const FilterBox: React.FC<FilterBoxProps> = ({
@@ -57,6 +58,7 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   data,
   customClass,
   showLiquidityDepleted,
+  bottomContent,
 }) => {
   const [search, setSearch] = useState('');
   const [selectedTab, setSelectedTab] = useState(ALL_MARKETS);
@@ -181,6 +183,7 @@ const FilterBox: React.FC<FilterBoxProps> = ({
           </div>
         )
       }
+      bottomContent={bottomContent}
       content={
         <>
           {filteredData.length === 0 && (

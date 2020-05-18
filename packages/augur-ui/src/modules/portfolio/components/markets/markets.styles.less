@@ -89,4 +89,33 @@
       }
     }
   }
+
+  .BottomContent {
+    border-top: @size-1 solid var(--color-dark-grey);
+    display: flex;
+    flex-direction: row-reverse;
+
+    > a > button {
+      .mono-10-semi-bold;
+
+      border: none;
+      text-transform: uppercase;
+
+      > svg {
+        margin-right: @size-8;
+
+        > path {
+          fill: var(--color-primary-text);
+        }
+      }
+
+      &:not(:disabled):hover,
+      &:not(:disabled):focus,
+      &:not(:disabled):focus:hover,
+      &:not(:disabled):active {
+        color: var(--color-primary-text);
+        background: var(--color-secondary-action);
+      }
+    }
+  }
 }

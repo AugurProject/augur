@@ -1,7 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import classNames from 'classnames';
-
+import { Link } from 'react-router-dom';
+import {
+  CREATE_MARKET
+} from 'modules/routes/constants/views';
+import makePath from 'modules/routes/helpers/make-path';
 import FilterBox from 'modules/portfolio/containers/filter-box';
+import { SecondaryButton } from 'modules/common/buttons';
+import { THEMES } from 'modules/common/constants';
+import { AddIcon } from 'modules/common/icons';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import { LinearPropertyLabel, PendingLabel } from 'modules/common/labels';
 import { MarketProgress } from 'modules/common/progress';
 import { END_TIME } from 'modules/common/constants';
@@ -66,21 +74,18 @@ interface MyMarketsProps {
   extend: boolean;
 }
 
-class MyMarkets extends Component<MyMarketsProps> {
-  static defaultProps = {
-    disputingWindowEndTime: 0,
-  };
+const MyMarkets = ({
+  myMarkets,
+  disputingWindowEndTime,
+  removePendingMarket,
+  retrySubmitMarket,
+  toggle,
+  hide,
+  extend, 
+}: MyMarketsProps) => {
+  const { theme } = useAppStatusStore();
 
-  constructor(props) {
-    super(props);
-
-    this.renderRightContent = this.renderRightContent.bind(this);
-    this.renderToggleContent = this.renderToggleContent.bind(this);
-  }
-
-  renderRightContent(market) {
-    const { disputingWindowEndTime } = this.props;
-
+  function renderRightContent(market) {
     return (
       <>
         {market.pending && <PendingLabel status={market.status} />}
@@ -96,7 +101,7 @@ class MyMarkets extends Component<MyMarketsProps> {
     );
   }
 
-  renderToggleContent(market) {
+  function renderToggleContent(market) {
     return (
       <div
         className={classNames(Styles.InfoParent, {
@@ -133,12 +138,12 @@ class MyMarkets extends Component<MyMarketsProps> {
               <div>
                 <SubmitTextButton
                   text={'submit again'}
-                  action={() => this.props.retrySubmitMarket(market)}
+                  action={() => retrySubmitMarket(market)}
                 />
                 <CancelTextButton
                   text={'cancel'}
                   action={() =>
-                    this.props.removePendingMarket(market.pendingId)
+                    removePendingMarket(market.pendingId)
                   }
                 />
               </div>
@@ -149,38 +154,50 @@ class MyMarkets extends Component<MyMarketsProps> {
     );
   }
 
-  render() {
-    const { myMarkets, toggle, hide, extend } = this.props;
+  return (
+    // @ts-ignore
+    <FilterBox
+      title="My Created Markets"
+      customClass={marketStyles.Markets}
+      sortByOptions={sortByOptions}
+      sortByStyles={{ minWidth: '10.8125rem' }}
+      markets={myMarkets}
+      filterComp={filterComp}
+      renderRightContent={renderRightContent}
+      renderToggleContent={renderToggleContent}
+      filterLabel="markets"
+      showPending
+      toggle={toggle}
+      hide={hide}
+      extend={extend}
+      showLiquidityDepleted
+      pickVariables={[
+        'id',
+        'description',
+        'reportingState',
+        'recentlyTraded',
+        'recentlyDepleted',
+        'creationTime',
+        'endTime',
+      ]}
+      bottomContent={(myMarkets.length !== 0 && theme !== THEMES.TRADING) && (
+          <div className={marketStyles.BottomContent}>
+            <Link to={makePath(CREATE_MARKET)}>
+              <SecondaryButton
+                text={'Create Market'}
+                action={() => null}
+                icon={AddIcon}
+              />
+            </Link>
+          </div>
+        )
+      }
+    />
+  );
+};
 
-    return (
-      // @ts-ignore
-      <FilterBox
-        title="My Created Markets"
-        customClass={marketStyles.Markets}
-        sortByOptions={sortByOptions}
-        sortByStyles={{ minWidth: '10.8125rem' }}
-        markets={myMarkets}
-        filterComp={filterComp}
-        renderRightContent={this.renderRightContent}
-        renderToggleContent={this.renderToggleContent}
-        filterLabel="markets"
-        showPending
-        toggle={toggle}
-        hide={hide}
-        extend={extend}
-        showLiquidityDepleted
-        pickVariables={[
-          'id',
-          'description',
-          'reportingState',
-          'recentlyTraded',
-          'recentlyDepleted',
-          'creationTime',
-          'endTime',
-        ]}
-      />
-    );
-  }
+MyMarkets.defaultProps = {
+  disputingWindowEndTime: 0
 }
 
 export default MyMarkets;
