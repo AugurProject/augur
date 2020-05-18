@@ -330,6 +330,7 @@ export default class MarketsInDispute extends Component<
                   selectedTab={label}
                   filterLabel={''}
                   search={search}
+                  title="Markets In Dispute"
                 />
               )}
               {isLoadingMarkets &&
