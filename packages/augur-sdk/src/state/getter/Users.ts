@@ -247,7 +247,6 @@ export class Users {
     userTradeHistory = await OnChainTrading.getTradingHistory(augur, db, {
       account: params.account,
       universe: params.universe,
-      filterFinalized: true,
     });
 
     const userCreateMarketIds = _.map(marketList.markets, 'id');
@@ -359,7 +358,6 @@ export class Users {
     const userTradeHistory = await OnChainTrading.getTradingHistory(augur, db, {
       account: params.account,
       universe: params.universe,
-      filterFinalized: true,
     });
 
     const userPositions = await Users.getUserTradingPositions(augur, db, {
