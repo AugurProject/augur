@@ -8,12 +8,9 @@ import { Markets } from '../store/markets';
 import { AppStatus } from 'modules/app/store/app-status';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 
-export const disputingMarkets = state => selectDisputingMarkets(state);
-
 // marketInfos is used to trigger selector when ever market info object change
 // needed to keep UI refreshed via log-handlers
-const selectDisputingMarkets = state => {
-  const { reportingListState } = Markets.get();
+export const selectDisputingMarkets = (reportingListState) => {
 
   return {
     [REPORTING_STATE.CROWDSOURCING_DISPUTE]:
@@ -28,10 +25,3 @@ const selectDisputingMarkets = state => {
       ).map(id => selectMarket(id)) || [],
   };
 };
-
-export const selectReportingMarkets = (reportingState) => {
-  const { reportingListState } = Markets.get();
-  return ((reportingListState[reportingState] || {}).marketIds || []).map(
-    id => selectMarket(id) || []
-  )
-}

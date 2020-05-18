@@ -8,11 +8,12 @@ import { Pagination } from 'modules/common/pagination';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { MarketReportingState } from '@augurproject/sdk/build';
+import { Markets } from 'modules/markets/store/markets';
+import { selectMarket } from 'modules/markets/selectors/market';
 
 const ITEMS_PER_SECTION = 5;
 const NUM_LOADING_CARDS = 2;
 export interface ReportingListProps {
-  markets: MarketData[];
   title: string;
   showLoggedOut?: boolean;
   loggedOutMessage?: string;
@@ -140,7 +141,12 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
   };
 
   render() {
-    const { markets } = this.props;
+    const { reportingType } = this.props;
+    const { reportingListState } = Markets.get();
+    const markets = ((reportingListState[reportingType] || {}).marketIds || []).map(
+      id => selectMarket(id) || []
+    );
+
     const {
       isLoadingMarkets,
       showPagination,
@@ -152,8 +158,8 @@ export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
     return (
       <>
         <ReportingList
-          markets={markets}
           {...this.props}
+          markets={markets}
           isLoadingMarkets={isLoadingMarkets}
         />
         {showPagination && (
