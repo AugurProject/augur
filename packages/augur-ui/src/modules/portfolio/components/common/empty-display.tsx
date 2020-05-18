@@ -7,6 +7,8 @@ export interface EmptyDisplayProps {
   selectedTab: string;
   search: string;
   title: string;
+  emptyTitle?: string;
+  emptyText?: string;
   icon?: any;
   button?: ReactNode
 }
@@ -16,19 +18,23 @@ const EmptyDisplay = ({
   selectedTab,
   search,
   title,
+  emptyTitle,
+  emptyText,
   icon,
   button
 }: EmptyDisplayProps) => {
   let tradingEmptyTitle = `No ${selectedTab} ${filterLabel.toLowerCase()}`;
   let notTradingEmptyTitle = `No ${title}`;
 
-  let emptyText = `You don't have any ${
+  let defaultEmptyText = `You don't have any ${
     selectedTab.toLowerCase()
   } ${filterLabel.toLowerCase()} yet!`;
 
   if (search !== "" && search !== undefined) {
     tradingEmptyTitle = `No results found for '${search}'`;
     notTradingEmptyTitle = `No results found for '${search}'`;
+  } else if (emptyTitle) {
+    notTradingEmptyTitle = emptyTitle;
   }
 
   return (
@@ -36,7 +42,7 @@ const EmptyDisplay = ({
       <span>{icon}</span>
       <span>{tradingEmptyTitle}</span>
       <span>{notTradingEmptyTitle}</span>
-      <span>{emptyText}</span>
+      <span>{emptyText ? emptyText : defaultEmptyText}</span>
       {button ? button : null}
     </div>);
 };

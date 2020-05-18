@@ -4,7 +4,6 @@ import QuadBox from 'modules/portfolio/components/common/quad-box';
 import { NameValuePair, Market } from 'modules/portfolio/types';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
-import { ActiveMarketsIcon } from 'modules/common/icons';
 
 export interface MarketsByReportingState {
   [type: string]: Array<Market>;
@@ -30,6 +29,10 @@ export interface FilterBoxProps {
   customClass?: string;
   showHeaderOnMobile?: boolean;
   bottomContent?: ReactNode;
+  emptyDisplayTitle?: string,
+  emptyDisplayText?: string,
+  emptyDisplayIcon: any;
+  emptyDisplayButton?: ReactNode;
 }
 
 interface FilterBoxState {
@@ -110,6 +113,10 @@ export default class FilterSwitchBox extends React.Component<
       customClass,
       showHeaderOnMobile,
       bottomContent,
+      emptyDisplayTitle,
+      emptyDisplayText,
+      emptyDisplayIcon,
+      emptyDisplayButton,
     } = this.props;
 
     const { search, filteredData } = this.state;
@@ -143,7 +150,10 @@ export default class FilterSwitchBox extends React.Component<
                 filterLabel={filterLabel}
                 search={search}
                 title={title}
-                icon={ActiveMarketsIcon}
+                emptyTitle={emptyDisplayTitle}
+                emptyText={emptyDisplayText}
+                icon={emptyDisplayIcon}
+                button={emptyDisplayButton}
               />
             )}
             {filteredData.length > 0 &&

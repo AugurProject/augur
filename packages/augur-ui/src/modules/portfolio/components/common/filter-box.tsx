@@ -38,6 +38,8 @@ export interface FilterBoxProps {
   customClass?: string;
   showLiquidityDepleted?: boolean;
   bottomContent?: ReactNode;
+  emptyDisplayTitle?: string,
+  emptyDisplayText?: string,
   emptyDisplayIcon: any;
   emptyDisplayButton?: ReactNode;
 }
@@ -61,6 +63,8 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   customClass,
   showLiquidityDepleted,
   bottomContent,
+  emptyDisplayTitle,
+  emptyDisplayText,
   emptyDisplayIcon,
   emptyDisplayButton,
 }) => {
@@ -196,6 +200,8 @@ const FilterBox: React.FC<FilterBoxProps> = ({
               filterLabel={filterLabel}
               search={search}
               title={title}
+              emptyTitle={emptyDisplayTitle}
+              emptyText={emptyDisplayText}
               icon={emptyDisplayIcon}
               button={emptyDisplayButton}
             />

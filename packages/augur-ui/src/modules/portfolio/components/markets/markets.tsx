@@ -194,6 +194,8 @@ const MyMarkets = ({
           </div>
         )
       }
+      emptyDisplayTitle={isTrading ? null : "You didn't create any market yet"}
+      emptyDisplayText={isTrading ? null : "Create your first market now!"}
       emptyDisplayIcon={CreatedMarketsIcon}
       emptyDisplayButton={
         <Link to={makePath(CREATE_MARKET)}>
