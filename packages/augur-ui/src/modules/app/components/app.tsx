@@ -80,6 +80,8 @@ interface AppProps {
   createFundedGsnWallet: Function;
   showMigrateRepButton: boolean;
   whichChatPlugin: string;
+  appStatus: AppStatus;
+  ethReserveInDai: FormattedNumber;
 }
 
 function renderMobileMenuButton(

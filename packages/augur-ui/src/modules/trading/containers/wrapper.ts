@@ -66,6 +66,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     currentTimestamp,
     availableDai,
     gsnUnavailable: isGSNUnavailable(state),
+    endTime: ownProps.initialLiquidity ? newMarket.setEndTime : ownProps.market.endTime,
   };
 };
 

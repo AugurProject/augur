@@ -3443,6 +3443,13 @@ div.ButtonsRow:last-of-type {
     height: 100%;
     width: 100%;
 
+    > button {
+      position: absolute;
+      top: calc(50% + 25px);
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
     > div:first-of-type {
       align-items: center;
       background-color: var(--color-dark-grey);

@@ -488,7 +488,7 @@ export class Markets {
     if (
       (await db.UniverseCreated.where('childUniverse')
         .equals(params.universe)
-        .count()) !== 1
+        .count()) === 0
     ) {
       throw new Error('Unknown universe: ' + params.universe);
     }

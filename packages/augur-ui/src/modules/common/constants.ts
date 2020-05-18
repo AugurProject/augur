@@ -57,6 +57,7 @@ export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;
 export const TX_CHECK_BLOCKNUMBER_LIMIT = 15;
+export const DAYS_AFTER_END_TIME_ORDER_EXPIRATION = 7;
 export const UNIVERSE_ID = '0xf69b5';
 // network id to names map
 export const NETWORK_NAMES = {
@@ -603,6 +604,7 @@ export const MARKET_REVIEW_SEEN = 'marketReviewSeen';
 export const MODAL_MARKET_REVIEW = 'MODAL_MARKET_REVIEW';
 export const MODAL_OPEN_ORDERS = 'MODAL_OPEN_ORDERS';
 export const MODAL_MARKET_LOADING = 'MODAL_MARKET_LOADING';
+export const MODAL_MARKET_NOT_FOUND = 'MODAL_MARKET_NOT_FOUND';
 export const MODAL_DR_QUICK_GUIDE = 'MODAL_DR_QUICK_GUIDE';
 export const MODAL_MIGRATE_MARKET = 'MODAL_MIGRATE_MARKET';
 export const MODAL_LOGIN = 'MODAL_LOGIN';
@@ -714,7 +716,7 @@ export const WITHDRAWALLFUNDSASDAI = 'WITHDRAWALLFUNDSASDAI';
 export const SWAPEXACTTOKENSFORTOKENS = 'SWAPEXACTTOKENSFORTOKENS'
 export const SWAPETHFOREXACTTOKENS = 'SWAPETHFOREXACTTOKENS'
 export const ADDLIQUIDITY = 'ADDLIQUIDITY';
-
+export const ETH_RESERVE_INCREASE = 'ETH_RESERVE_INCREASE';
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
 export const ORDER_BOOK_CHART = 'ORDER_BOOK_CHART';
@@ -749,6 +751,7 @@ export const NEGATIVE_ONE = createBigNumber(-1, 10);
 export const ZERO = createBigNumber(0);
 export const ONE = createBigNumber(1, 10);
 export const TWO = createBigNumber(2, 10);
+export const FIVE = createBigNumber(5, 10);
 export const TEN = createBigNumber(10, 10);
 export const TWENTY_FIVE = createBigNumber(25, 10);
 export const FIFTY = createBigNumber(50, 10);

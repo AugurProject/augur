@@ -94,6 +94,16 @@ h6 {
   }
 }
 
+.TopBarOverlay {
+  position: fixed;
+  top: @tutorial-banner-height;
+  left: 0;
+  width: 100%;
+  height: calc(@top-bar-height + @top-nav-height);
+  background-color: transparent;
+  z-index: @mask-modal;
+}
+
 .Wrap {
   display: grid;
   overflow: hidden;
@@ -111,7 +121,7 @@ h6 {
         padding-top: @size-42;
       }
     }
-    
+
     &.StatusErrorShowingMarket {
       top: @top-bar-height-mobile;
 

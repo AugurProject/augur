@@ -3,7 +3,7 @@
 @supports (-moz-appearance:none) {
   .TradingForm > ul > li.AdvancedShown > div:first-of-type > div:first-of-type {
     width: unset;
-  } 
+  }
 }
 
 .TradingForm {
@@ -82,7 +82,7 @@
 
         > button {
           .mono-10-bold;
-          
+
           min-height: @size-22;
           padding: @size-3 @size-6;
 
@@ -153,6 +153,7 @@
         grid-gap: @size-8 @size-4;
         grid-template-columns: repeat(2, auto) 1fr;
         grid-template-rows: auto;
+        width: 100%;
 
         > span {
           .mono-10-medium;
@@ -203,12 +204,12 @@
 
           // Day input
           > div[class*="TextInput"] {
-          
+
             > div > input {
               .mono-12;
-    
-              min-width: @size-36;
-              width: @size-36;
+
+              min-width: @size-44;
+              width: @size-44;
               height: @size-24;
               margin-right: @size-4;
               padding: 0 @size-8;
@@ -226,7 +227,7 @@
 
           > div[class*="Normal"] {
             height: @size-24;
-  
+
             > button > span {
               padding: @size-5 @size-8 @size-5 0;
             }
@@ -268,7 +269,7 @@
                     border: @size-1 solid var(--color-secondary-action-outline);
                   }
                 }
-              } 
+              }
             }
 
             // Select Time
@@ -353,7 +354,7 @@
         }
 
         &.Liquidity {
-          margin-left: 0;
+          margin: @size-4 0 @size-12 0;
 
           > svg {
             height: @size-12;

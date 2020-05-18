@@ -706,6 +706,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       }
       updateNewMarket({
         endTimeFormatted,
+        endTime: endTimeFormatted.timestamp,
         setEndTime,
         hour,
         minute,

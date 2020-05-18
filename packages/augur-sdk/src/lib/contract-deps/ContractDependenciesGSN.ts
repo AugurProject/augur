@@ -12,7 +12,6 @@ import { AsyncQueue, queue } from 'async';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 import { formatBytes32String } from 'ethers/utils';
-import { DESIRED_SIGNER_ETH_BALANCE } from '../../constants';
 import { PreparedTransaction, RelayClient } from './relayclient';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -58,6 +57,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   relayHub: ethers.Contract;
   augurWalletRegistry: ethers.Contract;
   ethExchange: ethers.Contract;
+  cash: ethers.Contract;
   referralAddress: string = NULL_ADDRESS;
   fingerprint: string = formatBytes32String('');
   maxExchangeRate: BigNumber;
@@ -65,6 +65,8 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   relayGasPrice: BigNumber;
   ethToDaiRate: BigNumber;
   signerAccountETHBalance: BigNumber;
+  desiredSignerETHBalance: string;
+  walletDaiBalance: BigNumber;
 
   refreshValuesTimeout = null;
 
@@ -106,6 +108,9 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     address?: string
   ) {
     super(provider, signer, address);
+    this.desiredSignerETHBalance = `0x${new BigNumber(
+      config.gsn.desiredSignerBalanceInETH * 10 ** 18
+    ).toString(16)}`;
     this.relayClient = new RelayClient(this.provider, {
       verbose: false,
       allowedRelayNonceGap: 10,
@@ -123,6 +128,11 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     this.ethExchange = new ethers.Contract(
       this.config.addresses.EthExchange,
       abi['UniswapV2Exchange'],
+      provider
+    );
+    this.cash = new ethers.Contract(
+      this.config.addresses.Cash,
+      abi['Cash'],
       provider
     );
   }
@@ -154,6 +164,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
   setSigner(signer: EthersSigner) {
     this.signer = signer;
+    this.walletAddress = null;
     this.manualRefreshValues();
   }
 
@@ -185,10 +196,15 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
 
     // Refresh signer account ETH balance if possible
     if (this.signer) {
+      const signerAddress = await this.signer.getAddress();
       this.signerAccountETHBalance = new BigNumber(
-        await (await this.provider.getBalance(
-          await this.signer.getAddress()
-        )).toString()
+        await (await this.provider.getBalance(signerAddress)).toString()
+      );
+      if (this.walletAddress === null) {
+        this.walletAddress = await this.augurWalletRegistry.getCreate2WalletAddress(signerAddress);
+      }
+      this.walletDaiBalance = new BigNumber(
+        await (await this.cash.balanceOf(this.walletAddress)).toString()
       );
     } else {
       this.signerAccountETHBalance = new BigNumber(0);
@@ -362,7 +378,6 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     // Just use normal signing/sending if the signer has sufficient ETH or if we're not using the relay
     const gasPrice = await this.provider.getGasPrice();
     const ethCost = paymentData.gasCost.multipliedBy(gasPrice.toString());
-    console.log('ETH Cost', String(ethCost.dividedBy(10 ** 18)));
     if (!this.useRelay || signerEthBalance.gt(ethCost.toString())) {
       tx.gasPrice = gasPrice;
       tx.gasLimit = new ethers.utils.BigNumber(
@@ -414,6 +429,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   ): Transaction<ethers.utils.BigNumber> {
     payment = payment || new ethers.utils.BigNumber(0); // For gas estimates we use a payment of 0 dai as no payment is required
     const maxExchangeRate = `0x${this.maxExchangeRate}`;
+    const desiredSignerETHBalance = this.walletDaiBalance.isGreaterThan(this.config.gsn.minDaiForSignerETHBalanceInDAI * 10**18) ? this.desiredSignerETHBalance : "0x00";
     const data = this.augurWalletRegistry.interface.functions[
       'executeWalletTransaction'
     ].encode([
@@ -423,7 +439,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
       payment,
       this.referralAddress,
       this.fingerprint,
-      DESIRED_SIGNER_ETH_BALANCE,
+      desiredSignerETHBalance,
       maxExchangeRate,
       revertOnFailure,
     ]);
