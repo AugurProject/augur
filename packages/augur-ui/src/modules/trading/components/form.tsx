@@ -170,7 +170,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.QUANTITY]: props.orderQuantity,
       [this.INPUT_TYPES.PRICE]: props.orderPrice,
       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: props.doNotCreateOrders,
-      [this.INPUT_TYPES.EXPIRATION_DATE]: props.expirationDate,
+      [this.INPUT_TYPES.EXPIRATION_DATE]: props.expirationDate || calcOrderExpirationTime(props.endTime, props.currentTimestamp),
       [this.INPUT_TYPES.SELECTED_NAV]: props.selectedNav,
       [this.INPUT_TYPES.EST_DAI]: props.orderDaiEstimate,
       errors: {
@@ -208,7 +208,6 @@ class Form extends Component<FromProps, FormState> {
     this.updateTestProperty(this.INPUT_TYPES.QUANTITY, this.props);
     this.updateTestProperty(this.INPUT_TYPES.PRICE, this.props);
     this.updateTestProperty(this.INPUT_TYPES.EST_DAI, this.props);
-    this.updateTestProperty(this.INPUT_TYPES.EXPIRATION_DATE, this.props);
 
     if (
       this.props[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS] !==
