@@ -15,6 +15,7 @@ import { MarketProgress } from 'modules/common/progress';
 import { END_TIME } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';
 import { CancelTextButton, SubmitTextButton } from 'modules/common/buttons';
+import { CreatedMarketsIcon } from 'modules/common/icons';
 
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import marketStyles from 'modules/portfolio/components/markets/markets.styles.less';
@@ -192,6 +193,15 @@ const MyMarkets = ({
             </Link>
           </div>
         )
+      }
+      emptyDisplayIcon={CreatedMarketsIcon}
+      emptyDisplayButton={
+        <Link to={makePath(CREATE_MARKET)}>
+          <SecondaryButton
+            text={'Create Market'}
+            action={() => setTheme(THEMES.TRADING)}
+          />
+        </Link>
       }
     />
   );

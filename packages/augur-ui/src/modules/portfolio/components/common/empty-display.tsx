@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import Styles from "modules/portfolio/components/common/empty-display.styles.less";
 
@@ -8,6 +8,7 @@ export interface EmptyDisplayProps {
   search: string;
   title: string;
   icon?: any;
+  button?: ReactNode
 }
 
 const EmptyDisplay = ({
@@ -16,6 +17,7 @@ const EmptyDisplay = ({
   search,
   title,
   icon,
+  button
 }: EmptyDisplayProps) => {
   let tradingEmptyTitle = `No ${selectedTab} ${filterLabel.toLowerCase()}`;
   let notTradingEmptyTitle = `No ${title}`;
@@ -35,6 +37,7 @@ const EmptyDisplay = ({
       <span>{tradingEmptyTitle}</span>
       <span>{notTradingEmptyTitle}</span>
       <span>{emptyText}</span>
+      {button ? button : null}
     </div>);
 };
 

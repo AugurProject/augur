@@ -38,6 +38,8 @@ export interface FilterBoxProps {
   customClass?: string;
   showLiquidityDepleted?: boolean;
   bottomContent?: ReactNode;
+  emptyDisplayIcon: any;
+  emptyDisplayButton?: ReactNode;
 }
 
 const FilterBox: React.FC<FilterBoxProps> = ({
@@ -59,6 +61,8 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   customClass,
   showLiquidityDepleted,
   bottomContent,
+  emptyDisplayIcon,
+  emptyDisplayButton,
 }) => {
   const [search, setSearch] = useState('');
   const [selectedTab, setSelectedTab] = useState(ALL_MARKETS);
@@ -192,7 +196,8 @@ const FilterBox: React.FC<FilterBoxProps> = ({
               filterLabel={filterLabel}
               search={search}
               title={title}
-              icon={StarIcon}
+              icon={emptyDisplayIcon}
+              button={emptyDisplayButton}
             />
           )}
           <div className={Styles.MarketBox}>
@@ -221,5 +226,9 @@ const FilterBox: React.FC<FilterBoxProps> = ({
     />
   );
 };
+
+FilterBox.defaultProps = {
+  emptyDisplayIcon: StarIcon
+}
 
 export default FilterBox;
