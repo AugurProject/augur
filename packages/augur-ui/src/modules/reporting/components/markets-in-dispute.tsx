@@ -90,10 +90,6 @@ const MarketsInDispute = ({
 
   useEffect(() => {
     if (isConnected) loadMarkets();
-  }, []);
-
-  useEffect(() => {
-    loadMarkets();
   }, [isConnected, filterByMyPortfolio, sortBy, search, offset, selectedTab]);
 
   useEffect(() => {
