@@ -83,7 +83,7 @@ const MyMarkets = ({
   hide,
   extend, 
 }: MyMarketsProps) => {
-  const { theme } = useAppStatusStore();
+  const { theme, actions: { setTheme } } = useAppStatusStore();
   const isTrading = theme === THEMES.TRADING;
 
   function renderRightContent(market) {
@@ -186,7 +186,7 @@ const MyMarkets = ({
             <Link to={makePath(CREATE_MARKET)}>
               <SecondaryButton
                 text={'Create Market'}
-                action={() => null}
+                action={() => setTheme(THEMES.TRADING)}
                 icon={AddIcon}
               />
             </Link>
