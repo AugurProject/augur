@@ -84,6 +84,7 @@ const MyMarkets = ({
   extend, 
 }: MyMarketsProps) => {
   const { theme } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
 
   function renderRightContent(market) {
     return (
@@ -160,7 +161,7 @@ const MyMarkets = ({
       title="My Created Markets"
       customClass={marketStyles.Markets}
       sortByOptions={sortByOptions}
-      sortByStyles={{ minWidth: '10.8125rem' }}
+      sortByStyles={isTrading ? { minWidth: '10.8125rem' } : {}}
       markets={myMarkets}
       filterComp={filterComp}
       renderRightContent={renderRightContent}
@@ -180,7 +181,7 @@ const MyMarkets = ({
         'creationTime',
         'endTime',
       ]}
-      bottomContent={(myMarkets.length !== 0 && theme !== THEMES.TRADING) && (
+      bottomContent={(myMarkets.length !== 0 && !isTrading) && (
           <div className={marketStyles.BottomContent}>
             <Link to={makePath(CREATE_MARKET)}>
               <SecondaryButton
