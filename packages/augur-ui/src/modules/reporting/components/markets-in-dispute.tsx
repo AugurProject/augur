@@ -1,4 +1,4 @@
-import React, { Component, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { Tab } from 'modules/portfolio/types';
@@ -10,7 +10,6 @@ import PaginationStyles from 'modules/common/pagination.styles.less';
 import Styles from 'modules/reporting/components/markets-in-dispute.styles.less';
 
 import { MarketData, ReportingListState } from 'modules/types';
-import { Getters } from '@augurproject/sdk/src';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { Pagination } from 'modules/common/pagination';
 import { REPORTING_STATE, SMALL_MOBILE } from 'modules/common/constants';
@@ -18,6 +17,7 @@ import Media from 'react-media';
 import { useEffect } from 'react';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { selectDisputingMarkets } from 'modules/markets/selectors/select-reporting-markets';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const ITEMS_PER_SECTION = 10;
 const NUM_LOADING_CARDS = 5;
@@ -46,8 +46,6 @@ interface FilteredData {
   [TAB_AWAITING]: MarketData[];
 }
 interface MarketsInDisputeProps {
-  isConnected: boolean;
-  userAddress: string;
   loadCurrentlyDisputingMarkets: Function;
   loadNextWindowDisputingMarkets: Function;
 }
@@ -78,12 +76,14 @@ const sortByOptions = [
 ];
 
 const MarketsInDispute = ({
-  isConnected,
-  userAddress,
   loadCurrentlyDisputingMarkets,
   loadNextWindowDisputingMarkets,
 }: MarketsInDisputeProps) => {
   const { reportingListState } = useMarketsStore();
+  const {
+    loginAccount: { mixedCaseAddress: userAddress },
+    isConnected,
+  } = useAppStatusStore();
 
   const disputingMarketsMeta = reportingListState;
   const markets = selectDisputingMarkets(reportingListState);
@@ -134,15 +134,22 @@ const MarketsInDispute = ({
   }, []);
 
   useEffect(() => {
-    prev.current = {
-      isConnected,
-      filterByMyPortfolio,
-      sortBy,
-      search,
-      offset,
-      selectedTab,
-      disputingMarketsMeta,
-    };
+    if (
+      isConnected !== prev?.current?.isConnected ||
+      filterByMyPortfolio !== prev?.current?.filterByMyPortfolio ||
+      sortBy !== prev?.current?.sortBy ||
+      search !== prev?.current?.search ||
+      offset !== prev?.current?.offset ||
+      selectedTab !== prev?.current?.selectedTab
+    ) {
+      loadMarkets();
+    }
+    if (
+      JSON.stringify(disputingMarketsMeta) !==
+      JSON.stringify(prev?.current?.disputingMarketsMeta)
+    ) {
+      getFilteredDataMarkets(markets, disputingMarketsMeta);
+    }
   }, [
     isConnected,
     filterByMyPortfolio,
@@ -154,22 +161,15 @@ const MarketsInDispute = ({
   ]);
 
   useEffect(() => {
-    if (
-      isConnected !== prev.current.isConnected ||
-      filterByMyPortfolio !== prev.current.filterByMyPortfolio ||
-      sortBy !== prev.current.sortBy ||
-      search !== prev.current.search ||
-      offset !== prev.current.offset ||
-      selectedTab !== prev.current.selectedTab
-    ) {
-      loadMarkets();
-    }
-    if (
-      JSON.stringify(disputingMarketsMeta) !==
-      JSON.stringify(prev.current.disputingMarketsMeta)
-    ) {
-      getFilteredDataMarkets(markets, disputingMarketsMeta);
-    }
+    prev.current = {
+      isConnected,
+      filterByMyPortfolio,
+      sortBy,
+      search,
+      offset,
+      selectedTab,
+      disputingMarketsMeta,
+    };
   }, [
     isConnected,
     filterByMyPortfolio,
@@ -254,9 +254,9 @@ const MarketsInDispute = ({
     disputingMarketsMeta: ReportingListState
   ) {
     const currentIsLoading =
-      disputingMarketsMeta[REPORTING_STATE.CROWDSOURCING_DISPUTE].isLoading;
+      disputingMarketsMeta[REPORTING_STATE.CROWDSOURCING_DISPUTE]?.isLoading;
     const awaitingIsLoading =
-      disputingMarketsMeta[REPORTING_STATE.AWAITING_NEXT_WINDOW].isLoading;
+      disputingMarketsMeta[REPORTING_STATE.AWAITING_NEXT_WINDOW]?.isLoading;
     const filteredData = {
       [TAB_CURRENT]: markets[REPORTING_STATE.CROWDSOURCING_DISPUTE],
       [TAB_AWAITING]: markets[REPORTING_STATE.AWAITING_NEXT_WINDOW],
@@ -277,7 +277,8 @@ const MarketsInDispute = ({
       ...state,
       filteredData,
       tabs: newTabs,
-      isLoadingMarkets: selectedTab === TAB_CURRENT ? currentIsLoading : awaitingIsLoading,
+      isLoadingMarkets:
+        selectedTab === TAB_CURRENT ? currentIsLoading : awaitingIsLoading,
       showPagination,
       marketCount,
     });

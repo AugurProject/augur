@@ -7,18 +7,8 @@ import {
   loadNextWindowDisputingMarkets,
 } from 'modules/markets/actions/load-markets';
 import { AppState } from 'appStore';
-import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = (state: AppState) => {
-  const {
-    loginAccount: { mixedCaseAddress: userAddress },
-    isConnected,
-  } = AppStatus.get();
-  return {
-    isConnected,
-    userAddress,
-  };
-};
+const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = dispatch => ({
   loadCurrentlyDisputingMarkets: (params, cb) =>
