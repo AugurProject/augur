@@ -1,29 +1,27 @@
 @import (reference) '~assets/styles/shared';
 
 .DismissableNotice {
-  padding: @size-16 0 0;
   align-items: center;
   background: var(--color-dismissable-notice-background);
   border: 1px solid var(--color-outcome-two);
   border-left-width: @size-4;
-  border-radius: @border-radius-rounded;
+  border-radius: @border-radius-default;
   display: flex;
   justify-content: flex-start;
   line-height: @size-12;
-  padding: @size-8 @size-16;
+  padding: @size-8 @size-9 @size-8 @size-6;
   width: 100%;
 
   > div > div:first-of-type {
-    .mono-10-bold;
+    .text-11-semi-bold;
 
     color: var(--color-secondary-action);
     display: flex;
     line-height: @size-12;
-    text-transform: uppercase;
   }
 
-  > div > div:last-of-type {
-    .text-11;
+  > div > div:nth-of-type(2) {
+    .text-11-medium;
 
     display: flex;
     line-height: @size-13;
@@ -33,7 +31,7 @@
   > span:first-of-type {
     align-items: flex-end;
     display: flex;
-    margin: 0 @size-16 0 0;
+    margin: 0 @size-6 0 0;
 
     svg {
       height: @size-16;
@@ -44,6 +42,7 @@
     circle {
       fill: var(--color-dismissable-notice-background);
       stroke: var(--color-outcome-two);
+      stroke-width: 1.34px;
     }
   }
 
@@ -61,13 +60,17 @@
 
   > .close {
     background-color: transparent;
-    height: @size-10;
     line-height: @size-10;
-    width: @size-10;
     margin-left: @size-10;
 
-    > svg > path {
-      stroke: var(--color-module-background);
+    > svg {
+      width: @size-10;
+      height: @size-10;
+
+      > path {
+        stroke: var(--color-module-background);
+        stroke-width: 1.34px;
+      }
     }
   }
 }

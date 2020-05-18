@@ -5,21 +5,30 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
 import { GSN_WALLET_SEEN } from 'modules/common/constants';
-import { DESIRED_SIGNER_ETH_BALANCE } from '@augurproject/sdk';
 import { formatAttoEth, formatDai } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { modal, ethToDaiRate: { roundedValue: ethToDaiRate } } = AppStatus.get();
-  const desiredSignerEthBalance = formatAttoEth(Number(DESIRED_SIGNER_ETH_BALANCE)).value;
-  const reserveAmount: FormattedNumber = formatDai(ethToDaiRate.multipliedBy(desiredSignerEthBalance));
+  const {
+    modal,
+    env: {
+      gsn: { desiredSignerBalanceInETH },
+    },
+    ethToDaiRate: { roundedValue: ethToDaiRate },
+  } = AppStatus.get();
+  const desiredSignerEthBalance = formatAttoEth(
+    desiredSignerBalanceInETH * 10 ** 18
+  ).value;
+  const reserveAmount: FormattedNumber = formatDai(
+    ethToDaiRate.multipliedBy(desiredSignerEthBalance)
+  );
 
   return {
     modal,
     reserveAmount,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch: any) => ({
   closeModal: () => {
@@ -69,9 +78,5 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
 });
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(Message)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(Message)
 );

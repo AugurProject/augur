@@ -1176,6 +1176,11 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No winner/Event Cancelled`,
+                  },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
@@ -1186,7 +1191,7 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
                     },
                     {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No'`,
+                      text: `If a Tournament or Event is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'`,
                     },
                   ],
                 },
@@ -1240,7 +1245,7 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner/Not Played`,
+                    placeholder: `No winner/Event Cancelled`,
                   },
                   {
                     id: 7,
@@ -1252,10 +1257,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No Winner/Not Played'`,
+                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No winner/Event Cancelled'`,
                     },
                     {
-                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Winner/Not Played'`,
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No winner/Event Cancelled'`,
                     },
                     {
                       text: `If a player is disqualified or withdraws during the set named in the market question, the player moving forward to the next round should be declared the winner`,
@@ -1317,7 +1322,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner/Not Played`,
+                    placeholder: `No winner/Not Played`,
                   },
                   {
                     id: 8,
@@ -1339,10 +1344,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the match is not played for any reason the market should resolve as 'No Winner/Not Played"`,
+                      text: `If the match is not played for any reason the market should resolve as 'No winner/Not Played'`,
                     },
                     {
-                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Winner/Not Played'`,
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No winner/Not Played'`,
                     },
                     {
                       text: `If the match is started and a player is disqualified or withdraws for any reason, and a player/team moves forward or is declared the winner, the final results should be based off of when the match was stopped.`,
@@ -1390,7 +1395,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No winner/Not Played`,
                   },
                   {
                     id: 6,
@@ -1405,13 +1410,13 @@ export const TEMPLATES = {
                       text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
                     },
                     {
-                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No Winner'.`,
+                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No winner/Not Played'.`,
                     },
                     {
-                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No Winner'.`,
+                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No winner/Not Played'.`,
                     },
                     {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No winner/Not Played'`,
                     },
                   ],
                 },
@@ -1499,6 +1504,11 @@ export const TEMPLATES = {
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
+                  {
+                    id: 4,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No winner/Event Cancelled`,
+                  },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
@@ -1512,7 +1522,7 @@ export const TEMPLATES = {
                       text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid.'`,
                     },
                     {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No'`,
+                      text: `If a Tournament or Event is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'`,
                     },
                   ],
                 },
@@ -1563,7 +1573,7 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner/Not Played`,
+                    placeholder: `No winner/Not Played`,
                   },
                   {
                     id: 7,
@@ -1575,10 +1585,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No Winner/Not Played'`,
+                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No winner/Not Played'`,
                     },
                     {
-                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Winner/Not Played'`,
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No winner/Not Played'`,
                     },
                     {
                       text: `If a team is disqualified or withdraws during the set named in the market question, the team moving forward to the next round should be declared the winner`,
@@ -1643,7 +1653,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner/Not Played`,
+                    placeholder: `No winner/Not Played`,
                   },
                   {
                     id: 8,
@@ -1665,10 +1675,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the match is not played for any reason the market should resolve as 'No Winner/Not Played"`,
+                      text: `If the match is not played for any reason the market should resolve as 'No winner/Not Played'`,
                     },
                     {
-                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Winner/Not Played'`,
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No winner/Not Played'`,
                     },
                     {
                       text: `If the match is started and a player is disqualified or withdraws for any reason, and a player/team moves forward or is declared the winner, the final results should be based off of when the match was stopped.`,
@@ -1719,7 +1729,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No winner/Not Played`,
                   },
                 ],
                 resolutionRules: {
@@ -1728,16 +1738,16 @@ export const TEMPLATES = {
                       text: `If either pairing is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
                     },
                     {
-                      text: `If either pairing fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No Winner'.`,
+                      text: `If either pairing fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No winner/Not Played'.`,
                     },
                     {
-                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No Winner'.`,
+                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No winner/Not Played'.`,
                     },
                     {
                       text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner/Not Played'`,
                     },
                   ],
                 },

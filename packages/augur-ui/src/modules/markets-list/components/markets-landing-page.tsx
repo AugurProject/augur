@@ -114,7 +114,7 @@ export default class MarketsView extends Component<
           <title>Markets</title>
         </Helmet>
 
-        <div>The world’s most accessible, no-limit betting platform.</div>
+        <div>The world’s most accessible, no-limit betting exchange.</div>
 
         {!isLogged && !restoredAccount ? (
           <div>

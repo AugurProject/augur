@@ -9,6 +9,6 @@ export const getRepToDaiRate = (): ThunkAction<any, any, any, any> => async (
 ) => {
   const repToDaiRate = await getRepRate();
   if (repToDaiRate) {
-    AppStatus.setRepToDaiRate(formatDai(repToDaiRate));
+    AppStatus.actions.setRepToDaiRate(formatDai(repToDaiRate));
   }
 };

@@ -162,6 +162,7 @@ export default function setAlertText(alert: any, callback: Function) {
             alert.details = `$${
               formatAttoDai(amount, { zeroStyled: false }).formatted
             } claimed`;
+            alert.id = alert.params.transactionHash
           })
         );
         break;

@@ -38,6 +38,7 @@ import {
   MARKETMIGRATED,
   DOINITIALREPORTWARPSYNC,
   ZEROX_STATUSES,
+  MODAL_ERROR,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -183,11 +184,15 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  const { isLogged, env: { showReloadModal } } = AppStatus.get();  
   if (log && log.error && log.error.message.includes('too many blocks')) {
     console.error('too many blocks behind, reloading UI');
-    location.reload();
+    showReloadModal ? AppStatus.actions.setModal({
+      type: MODAL_ERROR,
+      error: '(Orders) Too many blocks behind, please refresh',
+      title: 'Currently Far Behind to get Orders',
+    }) : location.reload();
   }
-  const { isLogged } = AppStatus.get();
   AppStatus.actions.setOxStatus(status);
   if (status === ZEROX_STATUSES.SYNCED && isLogged) {
     dispatch(throttleLoadUserOpenOrders());
@@ -213,14 +218,20 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   getState: () => AppState
 ) => {
   const {
-    env,
+    env: { averageBlocktime, showReloadModal },
     isLogged,
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
-  const blockTime = env.networkId === '1' ? 15000 : 2000;
+  const blockTime = averageBlocktime;
   if (blocksBehindTimer) clearTimeout(blocksBehindTimer);
   blocksBehindTimer = setTimeout(function() {
-    location.reload();
+    showReloadModal ?
+    AppStatus.actions.setModal({
+      type: MODAL_ERROR,
+      error: '(Synching) Too many blocks behind, please refresh',
+      title: 'Currently Far Behind in Syncing',
+    })
+    : location.reload();
   }, BLOCKS_BEHIND_RELOAD_THRESHOLD * blockTime);
   AppStatus.actions.updateBlockchain({
     currentBlockNumber: log.highestAvailableBlockNumber,
@@ -400,13 +411,15 @@ export const handleBulkOrdersLog = (data: {
       dispatch(handleOrderLog(log));
       marketIds.push(log.market);
     });
-    Array.from(new Set([...marketIds])).map(marketId => {
+    const unqMarketIds = Array.from(new Set([...marketIds]));
+    unqMarketIds.map(marketId => {
       if (isCurrentMarket(marketId)) {
         updateMarketOrderBook(marketId);
         Markets.actions.bulkMarketTradingHistory(null, loadMarketTradingHistory(marketId));
         dispatch(checkUpdateUserPositions([marketId]));
       }
     });
+    dispatch(checkUpdateUserPositions(unqMarketIds));
   }
 };
 
@@ -453,33 +466,26 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
   }
 };
 
+const handleOrderCanceledLogs = logs => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => logs.map(log => dispatch(handleOrderCanceledLog(log)));
+
+
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
   const {
     loginAccount: { mixedCaseAddress },
+    isLogged,
   } = AppStatus.get();
   const isUserDataUpdate = isSameAddress(log.orderCreator, mixedCaseAddress);
-  if (isUserDataUpdate) {
-    // TODO: do we need to remove stuff based on events?
-    // if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
-    //handleAlert(log, CANCELORDER, dispatch, getState);
-    const {
-      blockchain: { currentAugurTimestamp },
-    } = AppStatus.get();
-    const timestamp = currentAugurTimestamp * 1000;
-    if (AppStatus.get().isLogged) {
-      dispatch(
-        updateAlert(log.orderId, {
-          name: CANCELORDER,
-          timestamp,
-          status: TXEventName.Success,
-          params: { ...log },
-        })
-      );
-      dispatch(throttleLoadUserOpenOrders());
-    }
+  const isUserDataAccount = isSameAddress(
+    log.account,
+    mixedCaseAddress
+  );
+  if (isLogged && (isUserDataUpdate || isUserDataAccount)) {
+    dispatch(throttleLoadUserOpenOrders());
   }
 };
 
@@ -489,13 +495,15 @@ const handleNewBlockFilledOrdersLog = logs => (
   logs
     .filter(l => l.eventType === OrderEventType.Fill)
     .map(l => dispatch(handleOrderFilledLog(l)));
-  Array.from(new Set(logs.map(l => l.market))).map((marketId: string) => {
+  const unqMarketIds: string[] = Array.from(new Set(logs.map(l => l.market)));
+  unqMarketIds.map((marketId: string) => {
     if (isCurrentMarket(marketId)) {
       updateMarketOrderBook(marketId);
       Markets.actions.bulkMarketTradingHistory(null, loadMarketTradingHistory(marketId));
       dispatch(checkUpdateUserPositions([marketId]));
     }
   });
+  dispatch(checkUpdateUserPositions(unqMarketIds));
 };
 
 export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => (
@@ -787,6 +795,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
 
 const EventHandlers = {
   [SubscriptionEventName.OrderEvent]: wrapLogHandler(handleNewBlockFilledOrdersLog),
+  [SubscriptionEventName.CancelZeroXOrder]: wrapLogHandler(handleOrderCanceledLogs),
   [SubscriptionEventName.TokensTransferred]: wrapLogHandler(handleTokensTransferredLog),
   [SubscriptionEventName.TokenBalanceChanged]: wrapLogHandler(handleTokenBalanceChangedLog),
   [SubscriptionEventName.TokensMinted]: wrapLogHandler(handleTokensMintedLog),

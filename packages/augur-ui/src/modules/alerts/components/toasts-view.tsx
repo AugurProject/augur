@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import Alert from 'modules/alerts/components/alert';
-
+import { Alert as AlertType } from 'modules/types';
 import Styles from 'modules/alerts/components/toasts-view.styles.less';
 import classNames from 'classnames';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -39,9 +39,10 @@ const ToastsView = ({
     <div className={classNames(Styles.ToastsView, {[Styles.MoveDown]: onTradingTutorial})}>
       <Alert
         key={`${toast.id}-${toast.title}`}
-        removeAlert={() => { console.log('removeAlertClicked', toast.name, toast.uniqueId); removeAlert(toast.uniqueId, toast.name); }}
+        removeAlert={() => removeAlert(toast.uniqueId, toast.name)}
         toggleAlerts={toggleAlerts}
         showToast={true}
+        timestampInMilliseconds={toast.timestamp}
         {...toast}
       />
     </div>

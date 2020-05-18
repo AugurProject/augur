@@ -591,7 +591,6 @@ div.LinearPropertyViewTransaction {
   color: var(--color-primary-text);
   line-height: @size-11;
   padding: 0 @size-2;
-  position: relative;
   border-radius: @border-radius-default;
   text-transform: uppercase;
   width: max-content;
@@ -1336,5 +1335,13 @@ span.PendingLabel {
         fill: var(--color-error);
       }
     }
+  }
+}
+
+.EthReserveNotice {
+  margin: @size-8 @size-12;
+
+  > div {
+    padding: @size-5;
   }
 }

@@ -309,30 +309,34 @@ export class MarketDB extends DerivedDB {
     return data;
   }
 
-  // A Market is marked as True in the invalidFilter if the best bid for Invalid on the book would not be profitable to take were the market Valid
+  // A Market is marked as True in the invalidFilter if the any bid for Invalid on the book would be profitable to take were the market Valid
   async recalcInvalidFilter(orderbook: OrderBook, marketData: MarketData, feeMultiplier: BigNumber, estimatedTradeGasCostInAttoDai: BigNumber, estimatedClaimGasCostInAttoDai: BigNumber): Promise<number> {
     if (orderbook[INVALID_OUTCOME].bids.length < 1) return 0;
-
-    const bestBid = orderbook[INVALID_OUTCOME].bids[0];
-
-    const bestBidAmount = new BigNumber(bestBid.amount);
-    const bestBidPrice = new BigNumber(bestBid.price);
-    const numTicks = new BigNumber(marketData.numTicks);
 
     let timeTillMarketFinalizesInSeconds = new BigNumber(marketData.endTime).minus((new Date).getTime()/1000);
     if (timeTillMarketFinalizesInSeconds.lt(0)) timeTillMarketFinalizesInSeconds = new BigNumber(0);
     const timeTillMarketFinalizesInYears = timeTillMarketFinalizesInSeconds.div(SECONDS_IN_A_YEAR);
 
-    let validRevenue = bestBidAmount.multipliedBy(numTicks);
-    validRevenue = validRevenue.multipliedBy(feeMultiplier);
-    validRevenue = validRevenue.multipliedBy((EULERS_NUMBER ** timeTillMarketFinalizesInYears.multipliedBy(-.15).precision(14).toNumber()).toPrecision(14));
-    validRevenue = validRevenue.minus(estimatedTradeGasCostInAttoDai).minus(estimatedClaimGasCostInAttoDai);
+    const numTicks = new BigNumber(marketData.numTicks);
 
-    const validCost = bestBidAmount.multipliedBy(numTicks.minus(bestBidPrice));
+    let baseRevenue = numTicks.multipliedBy(feeMultiplier);
+    baseRevenue = baseRevenue.multipliedBy((EULERS_NUMBER ** timeTillMarketFinalizesInYears.multipliedBy(-.15).precision(14).toNumber()).toPrecision(14));
 
-    const validProfit = validRevenue.minus(validCost);
+    let baseCost = estimatedTradeGasCostInAttoDai.plus(estimatedClaimGasCostInAttoDai);
 
-    return validProfit.gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI) ? 1 : 0;
+    for (const order of orderbook[INVALID_OUTCOME].bids) {
+      const bidAmount = new BigNumber(order.amount);
+      const bidPrice = new BigNumber(order.price);
+  
+      const validRevenue = bidAmount.multipliedBy(baseRevenue);
+      const validCost = baseCost.plus(bidAmount.multipliedBy(numTicks.minus(bidPrice)));
+  
+      if ((validRevenue.minus(validCost)).gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI)) {
+        return 1;
+      }
+    }
+
+    return 0;
   }
 
   protected processDoc(log: ParsedLog): ParsedLog {

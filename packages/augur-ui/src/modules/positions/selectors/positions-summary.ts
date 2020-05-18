@@ -63,7 +63,7 @@ export const positionSummary = memoize(
       outcomeId,
       type,
       quantity: formatMarketShares(marketType, quantity),
-      purchasePrice: formatDai(avgPrice),
+      purchasePrice: formatDai(avgPrice, { decimals: 3, decimalsRounded: 3 }),
       realizedNet: formatDai(realized),
       unrealizedNet: formatDai(unrealized),
       unrealized24Hr: formatDai(unrealized24),

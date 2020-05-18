@@ -1,12 +1,12 @@
-import React from 'react';
-import ThreeBoxComments from '3box-comments-react';
+import React, { lazy, Suspense } from 'react';
 import { FacebookComments } from 'modules/market/components/common/comments/facebook-comments';
-
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
-import { use3box } from 'utils/use-3box';
-import { SecondaryButton } from 'modules/common/buttons';
 import { Initialized3box } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+
+const ThreeBoxComments = lazy(() =>
+  import('modules/market/components/common/comments/three-box-comments')
+);
 
 interface MarketCommentsProps {
   adminEthAddr: string;
@@ -32,34 +32,20 @@ export const MarketComments = ({
   initialized3box,
 }: MarketCommentsProps) => {
   const { isLogged } = useAppStatusStore();
-  const { activate, setActivate, address, box, isReady, profile } =
-    whichCommentPlugin === '3box' && use3box(provider, initialize3box, initialized3box, 'comments', initialized3box?.openComments);
 
   return isLogged ? (
     <section className={Styles.Comments}>
-      {whichCommentPlugin === '3box' && isReady && (
-        <ThreeBoxComments
-          // required
-          spaceName="augur"
-          threadName={marketId}
-          adminEthAddr={adminEthAddr}
-          // Required props for context A) & B)
-          box={box}
-          currentUserAddr={address}
-          // optional
-          showCommentCount={numPosts}
-          currentUser3BoxProfile={profile}
-          // useHovers={true}
-        />
-      )}
-      {whichCommentPlugin === '3box' && !isReady && (
-        <SecondaryButton
-          action={() => setActivate(true)}
-          text={
-            activate ? 'Loading comments...' : 'Click here to activate comments'
-          }
-          disabled={activate}
-        />
+      {whichCommentPlugin === '3box' && (
+        <Suspense fallback={null}>
+          <ThreeBoxComments
+            // required
+            adminEthAddr={adminEthAddr}
+            provider={provider}
+            initialize3box={initialize3box}
+            initialized3box={initialized3box}
+            marketId={marketId}
+          />
+        </Suspense>
       )}
       {whichCommentPlugin === 'facebook' && (
         <FacebookComments

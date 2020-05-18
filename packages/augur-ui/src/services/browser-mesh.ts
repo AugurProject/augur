@@ -4,14 +4,17 @@ import {
   loadMeshStreamingWithURLAsync,
   Mesh,
 } from '@0x/mesh-browser-lite';
+import { OrderEvent } from '@0x/mesh-rpc-client';
 import {
   ContractAddresses,
   NetworkId,
   SDKConfiguration,
 } from '@augurproject/artifacts';
 import { SubscriptionEventName, ZeroX } from '@augurproject/sdk';
+import * as Comlink from 'comlink';
+import { SupportedProvider } from 'ethereum-types';
+import './MeshTransferHandler';
 
-type BrowserMeshErrorFunction = (err: Error, mesh: Mesh) => void;
 /**
  * @forceIgnoreCustomAddresses: bool - Pass if you're attempting to restart a
  * browser mesh that has crashed. ZeroX will error if the custom addresses
@@ -56,7 +59,7 @@ function createBrowserMeshConfig(
   meshConfig.customOrderFilter = {
     properties: {
       makerAssetData: {
-          pattern: `.*${contractAddresses.ZeroXTrade.slice(2).toLowerCase()}.*`
+        pattern: `.*${contractAddresses.ZeroXTrade.slice(2).toLowerCase()}.*`
       }
     }
   };
@@ -93,6 +96,55 @@ function createBrowserMeshRestartFunction(
       zeroX.mesh = mesh;
     })
   };
+}
+
+export async function createBrowserMeshWorker(
+  config: SDKConfiguration,
+  web3Provider: SupportedProvider,
+  zeroX: ZeroX
+) {
+  if (!config.zeroX?.mesh?.enabled) {
+    throw new Error(`Attempting to create browser mesh without it being enabled in config ${JSON.stringify(config)}`);
+  }
+
+  try {
+    const meshConfig = createBrowserMeshConfig(
+      config.ethereum.http,
+      undefined,
+      Number(config.networkId),
+      config.addresses,
+      config.zeroX.mesh.verbosity || 5,
+      config.zeroX.mesh.useBootstrapList,
+      config.zeroX.mesh.bootstrapList,
+    );
+
+    const meshWorker = new Worker('./MeshWorker', {type:'module'} );
+
+    const {Mesh: MeshWorker, loadMesh} = Comlink.wrap(meshWorker);
+    await loadMesh();
+    const mesh = await new MeshWorker(meshConfig);
+
+    const wrappedMesh = new Proxy(mesh, {
+      get(target: any, prop: any): any {
+        if(prop === "onOrderEvents") {
+          return new Proxy(target[prop], {
+            apply(target: any, thisArg: any, argArray = []): any {
+              const [cb, ...rest] = argArray;
+              return target(Comlink.proxy(cb), ...rest);
+            }
+          });
+        }
+        return target[prop];
+      }
+    })
+
+    await mesh.startAsync();
+    zeroX.mesh = wrappedMesh;
+  } catch(error) {
+    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {error});
+
+    throw error;
+  }
 }
 
 export async function createBrowserMesh(
@@ -137,7 +189,6 @@ export async function createBrowserMesh(
 
     mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
     await mesh.startAsync();
-    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarted, {});
     zeroX.mesh = mesh;
   } catch(error) {
     zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {error});

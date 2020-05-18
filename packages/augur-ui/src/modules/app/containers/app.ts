@@ -5,7 +5,6 @@ import { withRouter } from "react-router-dom";
 
 import App from "modules/app/components/app";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
-import { getInfoAlertsAndSeenCount } from "modules/alerts/helpers/alerts";
 import { initAugur } from "modules/app/actions/init-augur";
 import { RewriteUrlParams } from "modules/app/hocs/rewrite-url-params";
 import { windowRef } from "utils/window-ref";
