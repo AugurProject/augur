@@ -6,11 +6,12 @@ import Row from 'modules/common/row';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { removeOrderFromNewMarket } from 'modules/markets/actions/update-new-market';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const { COLUMN_TYPES } = constants;
 
 const mapStateToProps = (state: AppState) => ({
-  newMarket: state.newMarket,
+  newMarket: AppStatus.get().newMarket,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

@@ -11,6 +11,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = state => {
   const {
+    newMarket,
     loginAccount: {
       address,
       meta,
@@ -24,8 +25,7 @@ const mapStateToProps = state => {
     availableEth,
     availableRep,
     meta,
-    newMarket: state.newMarket,
-    categories: state.categories,
+    newMarket,
     gasPrice: getGasPrice(),
     address,
     currentTimestamp,

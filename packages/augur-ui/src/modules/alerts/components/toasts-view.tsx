@@ -39,7 +39,7 @@ const ToastsView = ({
     <div className={classNames(Styles.ToastsView, {[Styles.MoveDown]: onTradingTutorial})}>
       <Alert
         key={`${toast.id}-${toast.title}`}
-        removeAlert={() => { console.log('removeAlertClicked', toast.name, toast.uniqueId); removeAlert(toast.uniqueId, toast.name); }}
+        removeAlert={() => removeAlert(toast.uniqueId, toast.name)}
         toggleAlerts={toggleAlerts}
         showToast={true}
         {...toast}

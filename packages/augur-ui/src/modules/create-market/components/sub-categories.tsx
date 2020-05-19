@@ -28,7 +28,7 @@ export const SubCategories = ({
   const { navCategories } = newMarket;
   const cats = getTemplateRadioCards(
     {
-      primary: newMarket.navCategories[0],
+      primary: navCategories[0],
       secondary: '',
       tertiary: '',
     },

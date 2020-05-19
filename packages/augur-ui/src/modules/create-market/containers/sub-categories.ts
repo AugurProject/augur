@@ -11,12 +11,13 @@ import { AppStatus } from 'modules/app/store/app-status';
 const mapStateToProps = (state: AppState) => {
   const {
     loginAccount: { address },
+    newMarket,
     categoryStats,
     blockchain: { currentAugurTimestamp: currentTimestamp },
   } = AppStatus.get();
   return {
     categoryStats,
-    newMarket: state.newMarket,
+    newMarket,
     currentTimestamp,
     address,
   };

@@ -11,8 +11,8 @@ import { MODAL_ADD_FUNDS, DAI } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { newMarket } = state;
   const {
+    newMarket,
     loginAccount: {
       address,
       balances: { eth, rep },
@@ -21,7 +21,7 @@ const mapStateToProps = (state: AppState) => {
     blockchain: { currentAugurTimestamp: currentTimestamp },
   } = AppStatus.get();
   return {
-    newMarket: newMarket,
+    newMarket,
     currentTimestamp,
     address,
     gasPrice: gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average,

@@ -17,6 +17,7 @@ const mapStateToProps = state => {
       balances: { eth: availableEth, rep: availableRep },
       meta,
     },
+    newMarket,
     universe,
     categoryStats,
     blockchain: { currentAugurTimestamp },
@@ -27,7 +28,7 @@ const mapStateToProps = state => {
     availableEth,
     availableRep,
     meta,
-    newMarket: state.newMarket,
+    newMarket,
     currentTimestamp: currentAugurTimestamp * 1000,
     gasPrice: getGasPrice(),
   };

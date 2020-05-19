@@ -12,9 +12,10 @@ const mapStateToProps = state => {
   const {
     loginAccount: { address },
     blockchain: { currentAugurTimestamp: currentTimestamp },
+    newMarket,
   } = AppStatus.get();
   return {
-    newMarket: state.newMarket,
+    newMarket,
     currentTimestamp,
     address,
   };

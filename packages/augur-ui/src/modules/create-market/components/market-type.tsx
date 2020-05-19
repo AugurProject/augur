@@ -10,7 +10,11 @@ interface MarketTypeProps {
   updateNewMarket: Function;
 }
 
-export const MarketType = (props: MarketTypeProps) => (
+export const MarketType = ({
+  updateNewMarket,
+  categories,
+  marketType,
+}: MarketTypeProps) => (
   <section>
     <LargeSubheaders
       link
@@ -21,15 +25,12 @@ export const MarketType = (props: MarketTypeProps) => (
     />
 
     <RadioCardGroup
-      onChange={value => {
-          props.updateNewMarket({ marketType: value })
-        }
-      }
-      defaultSelected={props.marketType}
+      onChange={value => updateNewMarket({ marketType: value })}
+      defaultSelected={marketType}
       radioButtons={getTemplateRadioCardsMarketTypes({
-        primary: props.categories[0],
-        secondary: props.categories[1],
-        tertiary: props.categories[2],
+        primary: categories[0],
+        secondary: categories[1],
+        tertiary: categories[2],
       })}
     />
   </section>

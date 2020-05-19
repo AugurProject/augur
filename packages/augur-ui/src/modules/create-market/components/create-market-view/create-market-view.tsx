@@ -41,6 +41,13 @@ interface CreateMarketViewState {
   page: string;
 }
 
+// export const CreateMarketView = ({
+
+// }: CreateMarketViewProps) => {
+
+// }
+// export default CreateMarketView;
+
 export default class CreateMarketView extends React.Component<
   CreateMarketViewProps,
   CreateMarketViewState
