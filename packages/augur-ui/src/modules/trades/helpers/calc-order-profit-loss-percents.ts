@@ -121,6 +121,7 @@ export const calcOrderShareProfitLoss = (
   const marketRange = max.minus(min).abs();
 
   const displayLimit = createBigNumber(limitPrice, 10);
+  const feePercent = marketRange.times(displayLimit).div(marketRange);
   const userAveragePrice =
     sharesFilledAvgPrice && createBigNumber(sharesFilledAvgPrice, 10);
   const totalUserShareCost =
@@ -134,7 +135,7 @@ export const calcOrderShareProfitLoss = (
   const longETH = sharePriceLong.times(shareCost).times(marketRange);
   const shortETH = sharePriceShort.times(shareCost).times(marketRange);
 
-  const bnSettlementFee = createBigNumber(settlementFee, 10);
+  const bnSettlementFee = createBigNumber(settlementFee, 10).times(feePercent);
   const totalShareValue = longETH.plus(shortETH);
   const winningSettlementCost = totalShareValue.times(bnSettlementFee);
 
