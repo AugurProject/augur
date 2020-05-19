@@ -80,7 +80,7 @@ export const Gas = (props: GasProps) => {
     let amt = newAmount;
     if (newAmount) amt = Math.round(Math.abs(Number(amt)));
     setAmount(amt);
-    setShowLowAlert(isNaN(amt) || amt < props.safeLow);
+    setShowLowAlert(!amt || amt < props.safeLow);
   };
 
   const buttons = [
