@@ -113,7 +113,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         className={classNames(TooltipStyles.TooltipHint)}
         data-tip
         data-for={id}
-        data-iscapture={true}
       >
         {helpIcon}
       </label>
