@@ -40,7 +40,7 @@ const addFundsTorus = async (amount, address) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  track: (eventName, payload) => dispatch(track(eventName, payload)),
+  track: (eventName, payload) => track(eventName, payload),
   addFundsTorus: (amount, address) => addFundsTorus(amount, address),
   addFundsFortmatic: (amount, crypto, address) => addFundsFortmatic(amount, crypto, address),
 });

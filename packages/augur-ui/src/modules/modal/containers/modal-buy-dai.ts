@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
       setModal({ type: MODAL_ADD_FUNDS, cb: callback }),
     showAugurP2PModal: () =>
       setModal({ type: MODAL_AUGUR_P2P }),
-    track: (eventName, payload) => dispatch(track(eventName, payload)),
+    track: (eventName, payload) => track(eventName, payload),
     gotoOnboardingStep: step => setModal({ type: getOnboardingStep(step) }),
   });
 }

@@ -23,8 +23,8 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  track: (eventName, payload) => dispatch(track(eventName, payload)),
-  gotoOnboardingStep: (step) => dispatch(AppStatus.actions.setModal({ type: getOnboardingStep(step) })),
+  track: (eventName, payload) => track(eventName, payload),
+  gotoOnboardingStep: (step) => AppStatus.actions.setModal({ type: getOnboardingStep(step) }),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({

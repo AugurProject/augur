@@ -10,11 +10,9 @@ export const closeModal = () => (
 ) => {
   const { modal: { type: modal } } = AppStatus.get();
   if (modal) {
-    dispatch(
-      track(`${modal} - ${MODAL_CLOSED}`, {
-        modal: modal,
-      })
-    );
+    track(`${modal} - ${MODAL_CLOSED}`, {
+      modal,
+    });
   }
   AppStatus.actions.closeModal();
 };
