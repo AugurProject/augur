@@ -217,7 +217,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
     env.showReloadModal ?
     dispatch(updateModal({
       type: MODAL_ERROR,
-      error: '(Synching) Too many blocks behind, please refresh',
+      error: '(Syncing) Too many blocks behind, please refresh',
       title: 'Currently Far Behind in Syncing',
     }))
     : location.reload();

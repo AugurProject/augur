@@ -77,11 +77,10 @@ export const Gas = (props: GasProps) => {
   };
 
   const updateAmount = (newAmount: number) => {
-    let amt = amount;
-    if (newAmount) amt = newAmount;
-    if (isNaN(newAmount)) amt = 0;
+    let amt = newAmount;
+    if (newAmount) amt = Math.round(Math.abs(Number(amt)));
     setAmount(amt);
-    setShowLowAlert(amt < props.safeLow);
+    setShowLowAlert(!amt || amt < props.safeLow);
   };
 
   const buttons = [
@@ -169,12 +168,12 @@ export const Gas = (props: GasProps) => {
               <label>Gas Price (GWEI)</label>
               <input
                 id='price'
-                placeholder='price'
+                placeholder='Price'
                 step={1}
                 type='number'
                 value={amount}
                 onChange={e => {
-                  updateAmount(Math.round(Number(e.target.value)));
+                  updateAmount(e.target.value);
                 }}
               />
             </div>
@@ -183,7 +182,7 @@ export const Gas = (props: GasProps) => {
                 <span>&lt; {gasCostTrade}</span>
                 <span> / Trade</span>
               </div>
-              <span>{getEthTradeCost(amount).formatted} ETH</span>
+              <span>{amount ? getEthTradeCost(amount).formatted : '-'} ETH</span>
             </div>
             <div>
               <span>{getEstTime(amount)}</span>
