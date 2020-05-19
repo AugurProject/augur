@@ -437,6 +437,11 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
   }
 };
 
+const handleOrderCanceledLogs = logs => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => logs.map(log => dispatch(handleOrderCanceledLog(log)));
+
+
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -446,20 +451,13 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
     log.orderCreator,
     loginAccount.mixedCaseAddress
   );
-  if (isUserDataUpdate) {
-    // TODO: do we need to remove stuff based on events?
-    // if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
-    //handleAlert(log, CANCELORDER, dispatch, getState);
-    const { blockchain } = getState();
+  const isUserDataAccount = isSameAddress(
+    log.account,
+    loginAccount.mixedCaseAddress
+  );
+
+  if (isUserDataUpdate || isUserDataAccount) {
     if (authStatus.isLogged) {
-      dispatch(
-        updateAlert(log.orderId, {
-          name: CANCELORDER,
-          timestamp: blockchain.currentAugurTimestamp * 1000,
-          status: TXEventName.Success,
-          params: { ...log },
-        })
-      );
       dispatch(throttleLoadUserOpenOrders());
     }
   }
@@ -741,6 +739,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
 
 const EventHandlers = {
   [SubscriptionEventName.OrderEvent]: wrapLogHandler(handleNewBlockFilledOrdersLog),
+  [SubscriptionEventName.CancelZeroXOrder]: wrapLogHandler(handleOrderCanceledLogs),
   [SubscriptionEventName.TokensTransferred]: wrapLogHandler(handleTokensTransferredLog),
   [SubscriptionEventName.TokenBalanceChanged]: wrapLogHandler(handleTokenBalanceChangedLog),
   [SubscriptionEventName.TokensMinted]: wrapLogHandler(handleTokensMintedLog),
