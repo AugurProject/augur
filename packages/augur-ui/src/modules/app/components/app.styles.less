@@ -10,14 +10,11 @@ body {
   background: @color-page-background;
 
   // See Issue #3504
-  top: 0px !important;
+  top: 0 !important;
   position: initial !important;
 
   @media @breakpoint-mobile {
     --is-mobile: true;
-  }
-
-  @media @breakpoint-mobile {
     overflow-y: auto;
   }
 
@@ -159,7 +156,7 @@ h6 {
   overflow-y: auto;
 
   @media @breakpoint-mobile {
-    height: fit-content;
+    height: 100vh;
     width: 100vw;
     padding-bottom: @size-16;
 
