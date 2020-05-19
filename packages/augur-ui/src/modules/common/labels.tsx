@@ -1436,7 +1436,7 @@ export const BulkTxLabel = ({
         title={`${buttonName} requires ${count} transaction${
           count > 1 ? `s` : ``
         }${needsApproval ? `, and 1 approval` : ''}`}
-        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE}
+        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
       />
     </div>
   ) : null;

@@ -28,6 +28,8 @@ import { selectLoginAccountClaimablePositions } from 'modules/positions/selector
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { labelWithTooltip } from 'modules/common/label-with-tooltip';
 
+const EstTxLabel = 'Est. Transaction Fee';
+
 const mapStateToProps = (state: AppState) => {
   const pendingQueue = state.pendingQueue || [];
   const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
@@ -50,10 +52,6 @@ const mapStateToProps = (state: AppState) => {
         const unclaimedProceeds = formatDai(
           claimablePosition.unclaimedProceeds
         );
-        const unclaimedProfit = formatDai(claimablePosition.unclaimedProfit);
-        const fees = formatDai(
-          claimablePosition.fee
-        );
         return {
           marketId,
           title: market.description,
@@ -68,7 +66,7 @@ const mapStateToProps = (state: AppState) => {
               value: unclaimedProceeds.full,
             },
             {
-              label: 'Est. Transaction Fee',
+              label: EstTxLabel,
               value: state.appStatus.gsnEnabled
                 ? displayGasInDai(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE)
                 : formatEther(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE).formattedValue,
@@ -131,8 +129,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   const multiMarket = claimableMarkets.length > 1 ? 's' : '';
   const totalUnclaimedProceedsFormatted = formatDai(sP.totalUnclaimedProceeds);
-  const totalUnclaimedProfitFormatted = formatDai(sP.totalUnclaimedProfit);
-  const totalFeesFormatted = formatDai(sP.totalFees);
   const submitAllTxCount = Math.ceil(
     claimableMarkets.length / MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT
   );
@@ -167,7 +163,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         const gas = await dP.estimateGas(claimableMarkets.map(m => m.marketId), sP.account);
         const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
         return {
-          label: 'Est. Transaction Fee',
+          label: EstTxLabel,
           value: String(displayfee),
         };
       }
