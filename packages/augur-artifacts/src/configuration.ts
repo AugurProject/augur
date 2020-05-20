@@ -128,6 +128,8 @@ export interface ContractAddresses {
   EthExchange?: string;
   UniswapV2Router01?: string;
   AuditFunds?: string;
+  RelayHubV2?: string;
+  AugurWalletRegistryV2?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.
@@ -155,6 +157,7 @@ export interface ExternalAddresses {
   Exchange?: string;
   UniswapV2Factory?: string;
   UniswapV2Router01?: string;
+  RelayHubV2?: string;
 }
 
 // TS doesn't allow mapping of any type but string or number so we list it out manually

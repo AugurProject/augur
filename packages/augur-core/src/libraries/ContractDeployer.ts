@@ -194,6 +194,15 @@ Deploying to: ${env}
             }
         }
 
+        // GSN V2 requires a more standard deployment
+        if (this.configuration.deploy.isProduction || externalAddresses.RelayHubV2) {
+            if (!externalAddresses.RelayHubV2) throw new Error('Must provide RelayHubV2');
+            console.log(`Registering RelayHubV2 Contract at ${externalAddresses.RelayHubV2}`);
+            await this.augur!.registerContract(stringTo32ByteHex('RelayHubV2'), externalAddresses.RelayHubV2);
+        } else {
+            await this.uploadGSNV2Contracts();
+        }
+
         await this.initializeAllContracts();
         await this.doTradingApprovals();
 
@@ -284,6 +293,7 @@ Deploying to: ${env}
             if (contract.contractName === 'TestNetReputationToken') continue;
             if (contract.contractName === 'TestNetReputationTokenFactory') continue;
             if (contract.contractName === 'CashFaucetProxy') continue;
+            if (contract.contractName === 'RelayHub') continue;
             if (contract.contractName === 'Time') contract = this.configuration.deploy.normalTime ? contract : this.contracts.get('TimeControlled');
             if (contract.contractName === 'ReputationTokenFactory') contract = this.configuration.deploy.isProduction ? contract: this.contracts.get('TestNetReputationTokenFactory');
             if (contract.contractName === 'CashFaucet') {
@@ -449,6 +459,17 @@ Deploying to: ${env}
       return uniswapV2FactoryContract.address;
     }
 
+    private async uploadGSNV2Contracts(): Promise<string> {
+        console.log(`Uploading GSN V2 contracts`);
+        const penalizerContract = await this.contracts.get('Penalizer');
+        penalizerContract.address = await this.uploadAndAddToAugur(penalizerContract, 'Penalizer');
+        const stakeManagerContract = await this.contracts.get('StakeManager');
+        stakeManagerContract.address = await this.uploadAndAddToAugur(stakeManagerContract, 'StakeManager');
+        const relayHubContract = await this.contracts.get('RelayHubV2');
+        relayHubContract.address = await this.uploadAndAddToAugur(relayHubContract, 'RelayHubV2', ["0x44", stakeManagerContract.address, penalizerContract.address]);
+        return relayHubContract.address;
+    }
+
     private async uploadAllContracts(): Promise<void> {
         console.log('Uploading contracts...');
 
@@ -479,6 +500,7 @@ Deploying to: ${env}
         if (contractName === 'ReputationTokenFactory') contract = this.configuration.deploy.isProduction ? contract : this.contracts.get('TestNetReputationTokenFactory');
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
         if (contract.relativeFilePath.startsWith('uniswap/')) return;
+        if (contract.relativeFilePath.startsWith('gsn/')) return;
         if (contractName === 'LegacyReputationToken') return;
         if (contractName === 'Cash') return;
         if (contractName === 'CashFaucet') return;
@@ -629,6 +651,13 @@ Deploying to: ${env}
                 }
                 return contract.initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) });
             },
+            async () => {
+                const contract = new AugurWalletRegistry(this.dependencies, await this.getContractAddress('AugurWalletRegistryV2'));
+                if (await contract.getInitialized_()) {
+                    return true;
+                }
+                return contract.initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) });
+            },
         ];
 
         if (!this.configuration.deploy.normalTime) {
@@ -725,8 +754,10 @@ Deploying to: ${env}
         mapping['AffiliateValidator'] = this.contracts.get('AffiliateValidator').address!;
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
+        mapping['AugurWalletRegistryV2'] = this.contracts.get('AugurWalletRegistryV2').address!;
         mapping['UniswapV2Factory'] = this.contracts.get('UniswapV2Factory').address!;
         mapping['UniswapV2Router01'] = this.contracts.get('UniswapV2Router01').address!;
+        mapping['RelayHubV2'] = this.contracts.get('RelayHubV2').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
         mapping['EthExchange'] = await uniswapV2Factory.getExchange_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;

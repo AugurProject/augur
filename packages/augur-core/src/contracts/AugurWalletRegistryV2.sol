@@ -88,7 +88,7 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
         return true;
     }
 
-    function getGasLimits() external view returns (GSNTypes.GasLimits memory limits) {
+    function getGasLimits() external pure returns (GSNTypes.GasLimits memory limits) {
         return GSNTypes.GasLimits(
             ACCEPT_RELAYED_CALL_GAS_LIMIT,
             PRE_RELAYED_CALL_GAS_LIMIT,
@@ -118,7 +118,7 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
         return _payment;
     }
 
-    function preRelayedCall(bytes calldata context) external relayHubOnly returns (bool) {
+    function preRelayedCall(bytes calldata context) external pure returns (bool) {
         return true;
     }
 
