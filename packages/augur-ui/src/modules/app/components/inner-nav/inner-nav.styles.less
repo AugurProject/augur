@@ -168,17 +168,19 @@
 
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
-  .InnerNav {
-    background: none;
-  }
 
+  .InnerNav, 
   .InnerNav__menu--main {
-    border-right: 0;
     background: none;
 
     @media @breakpoint-mobile-tablet {
       background: var(--color-module-background);
     }
+  }
+
+
+  .InnerNav__menu--main {
+    border-right: 0;
   }
 }
 
