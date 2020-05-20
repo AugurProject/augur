@@ -1,30 +1,24 @@
 import React from 'react';
 import {
   LargeSubheaders,
-  SmallHeaderLink,
 } from 'modules/create-market/components/common';
 import { RadioCardGroup } from 'modules/common/form';
 import Styles from 'modules/create-market/components/sub-categories.styles.less';
 import {
   getTemplateRadioCards
 } from 'modules/create-market/get-template';
-import { Getters } from '@augurproject/sdk/src';
-import { NewMarket } from 'modules/types';
-import { MARKET_COPY_LIST } from 'modules/create-market/constants';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export interface SubCategoriesProps {
-  newMarket: NewMarket;
-  updateNewMarket: Function;
   nextPage: Function;
-  categoryStats: Getters.Markets.CategoryStats;
 }
 
-export const SubCategories = ({
-  newMarket,
-  updateNewMarket,
-  nextPage,
-  categoryStats,
-}: SubCategoriesProps) => {
+export const SubCategories = ({ nextPage }: SubCategoriesProps) => {
+  const {
+    newMarket,
+    categoryStats,
+    actions: { updateNewMarket },
+  } = useAppStatusStore();
   const { navCategories } = newMarket;
   const cats = getTemplateRadioCards(
     {
@@ -56,3 +50,5 @@ export const SubCategories = ({
     </section>
   );
 };
+
+export default SubCategories;

@@ -55,7 +55,7 @@ import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/components/form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
-import SubCategories from 'modules/create-market/containers/sub-categories';
+import SubCategories from 'modules/create-market/components/sub-categories';
 import { MarketType } from 'modules/create-market/components/market-type';
 import makePath from 'modules/routes/helpers/make-path';
 import { CREATE_MARKET, MY_POSITIONS } from 'modules/routes/constants/views';
@@ -111,6 +111,7 @@ import {
   TemplateInput,
   getTemplateWednesdayAfterOpeningDay,
 } from '@augurproject/artifacts';
+import { AppStatus } from 'modules/app/store/app-status';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -735,7 +736,6 @@ export default class Form extends React.Component<FormProps, FormState> {
     const {
       newMarket,
       drafts,
-      updateNewMarket,
       openCreateMarketModal,
       history,
       needsApproval,
@@ -749,7 +749,7 @@ export default class Form extends React.Component<FormProps, FormState> {
     } = this.props;
     const { contentPages } = this.state;
 
-    const { currentStep, validations, uniqueId, marketType } = newMarket;
+    const { currentStep, validations, uniqueId } = newMarket;
 
     const {
       mainContent,
@@ -887,12 +887,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                 <SubCategories nextPage={this.nextPage} />
               )}
               {mainContent === MARKET_TYPE && (
-                <MarketType
-                  updateNewMarket={updateNewMarket}
-                  marketType={marketType}
-                  categories={newMarket.navCategories}
-                  nextPage={this.nextPage}
-                />
+                <MarketType />
               )}
               {saveDraftError && (
                 <Error
@@ -909,7 +904,7 @@ export default class Form extends React.Component<FormProps, FormState> {
               {secondButton === CREATE && !GsnEnabled && (
                 <BulkTxLabel
                   className={Styles.MultipleTransactions}
-                  buttonName={'Create'}
+                  buttonName='Create'
                   count={1}
                   needsApproval={needsApproval}
                 />
