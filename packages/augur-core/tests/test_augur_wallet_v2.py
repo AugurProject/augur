@@ -307,6 +307,10 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
     assert augurWalletRegistry.getWallet(account) == walletAddress
     assert reputationToken.balanceOf(walletAddress) == initialRep + repAmount
 
+    # Lets quickly make sure the wallet addresses and functions for the legacy registry work with this wallet
+    legacyWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
+    assert legacyWalletRegistry.getCreate2WalletAddress(account) == walletAddress
+
 def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, cash, reputationToken):
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistryV2"]
     stakeManager = contractsFixture.contracts["StakeManager"]

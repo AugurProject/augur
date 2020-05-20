@@ -16,6 +16,7 @@ contract AugurWallet is Initializable, IAugurWallet {
     using SafeMathUint256  for uint256;
 
     IAugurWalletRegistry public registry;
+    address public legacyRegistry;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
@@ -33,11 +34,12 @@ contract AugurWallet is Initializable, IAugurWallet {
     bytes32 public domainSeparator;
     IERC20 public cash;
 
-    function initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, IERC20 _cash, IAffiliates _affiliates, IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade) external beforeInitialized {
+    function initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, address _legacyRegistry, IERC20 _cash, IAffiliates _affiliates, IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade) external beforeInitialized {
         endInitialization();
         domainSeparator = keccak256(abi.encode(DOMAIN_SEPARATOR_TYPEHASH, this));
         owner = _owner;
         registry = IAugurWalletRegistry(msg.sender);
+        legacyRegistry = _legacyRegistry;
         cash = _cash;
 
         _cash.approve(_augur, MAX_APPROVAL_AMOUNT);
@@ -58,12 +60,12 @@ contract AugurWallet is Initializable, IAugurWallet {
     }
 
     function transferCash(address _to, uint256 _amount) external {
-        require(msg.sender == address(registry));
+        require(msg.sender == address(registry) || msg.sender == legacyRegistry);
         cash.transfer(_to, _amount);
     }
 
     function executeTransaction(address _to, bytes calldata _data, uint256 _value) external returns (bool) {
-        require(msg.sender == address(registry));
+        require(msg.sender == address(registry) || msg.sender == legacyRegistry);
         (bool _didSucceed, bytes memory _resultData) = address(_to).call.value(_value)(_data);
         return _didSucceed;
     }

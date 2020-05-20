@@ -3364,28 +3364,35 @@ export class AugurWallet<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public initialize = async (owner: string, referralAddress: string, fingerprint: string, augur: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<Array<Event>> => {
+	public initialize = async (owner: string, referralAddress: string, fingerprint: string, augur: string, legacyRegistry: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [owner, referralAddress, fingerprint, augur, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], 'initialize', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"address","name":"_legacyRegistry","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [owner, referralAddress, fingerprint, augur, legacyRegistry, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], 'initialize', options.sender)
 	}
 	
-	public initialize_estimateGas = async (owner: string, referralAddress: string, fingerprint: string, augur: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<TBigNumber> => {
+	public initialize_estimateGas = async (owner: string, referralAddress: string, fingerprint: string, augur: string, legacyRegistry: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [owner, referralAddress, fingerprint, augur, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], 'initialize', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"address","name":"_legacyRegistry","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [owner, referralAddress, fingerprint, augur, legacyRegistry, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], 'initialize', options.sender)
 	}
 
-	public initialize_ = async (owner: string, referralAddress: string, fingerprint: string, augur: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<void> => {
+	public initialize_ = async (owner: string, referralAddress: string, fingerprint: string, augur: string, legacyRegistry: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<void> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [owner, referralAddress, fingerprint, augur, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"address","name":"_legacyRegistry","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [owner, referralAddress, fingerprint, augur, legacyRegistry, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], options.sender)
 	}
 
 	public isValidSignature_ = async (data: string, signature: string, options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"bytes","name":"_signature","type":"bytes"}],"name":"isValidSignature","outputs":[{"internalType":"bytes4","name":"","type":"bytes4"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [data, signature], options.sender)
+		return <string>result[0]
+	}
+
+	public legacyRegistry_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"legacyRegistry","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
 	}
 
@@ -3471,6 +3478,13 @@ export class AugurWalletRegistry<TBigNumber> extends Contract<TBigNumber> {
 	public augurTrading_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"augurTrading","outputs":[{"internalType":"contract IAugurTrading","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public augurWalletRegistryV2_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"augurWalletRegistryV2","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
 	}
@@ -3645,13 +3659,6 @@ export class AugurWalletRegistry<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"token0IsCash","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <boolean>result[0]
-	}
-
-	public wallets_ = async (arg0: string, options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"wallets","outputs":[{"internalType":"contract IAugurWallet","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [arg0], options.sender)
-		return <string>result[0]
 	}
 
 	public zeroXTrade_ = async (options?: { sender?: string }): Promise<string> => {

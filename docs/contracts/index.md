@@ -2958,11 +2958,11 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#AugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#AugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li><li><a href="#AugurWallet.withdrawAllFundsAsDai(address,uint256)"><code class="function-signature">withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai)</code></a></li><li><a href="#AugurWallet.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWallet.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#AugurWallet.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes _message)</code></a></li><li><a href="#AugurWallet.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWallet.initialize(address,address,bytes32,address,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, address _legacyRegistry, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#AugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#AugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li><li><a href="#AugurWallet.withdrawAllFundsAsDai(address,uint256)"><code class="function-signature">withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai)</code></a></li><li><a href="#AugurWallet.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWallet.isValidSignature(bytes,bytes)"><code class="function-signature">isValidSignature(bytes _data, bytes _signature)</code></a></li><li><a href="#AugurWallet.getMessageHash(bytes)"><code class="function-signature">getMessageHash(bytes _message)</code></a></li><li><a href="#AugurWallet.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"></a><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AugurWallet.initialize(address,address,bytes32,address,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"></a><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, address _legacyRegistry, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -3018,11 +3018,11 @@ Returns hash of a message that can be signed by the owner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#IAugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#IAugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWallet.initialize(address,address,bytes32,address,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, address _legacyRegistry, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#IAugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#IAugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.initialize(address,address,bytes32,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"></a><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.initialize(address,address,bytes32,address,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"></a><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, address _legacyRegistry, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -3138,11 +3138,17 @@ Returns hash of a message that can be signed by the owner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IWETH.deposit()"><code class="function-signature">deposit()</code></a></li><li><a href="#IWETH.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 value)</code></a></li><li><a href="#IWETH.withdraw(uint256)"><code class="function-signature">withdraw(uint256)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IWETH.deposit()"><code class="function-signature">deposit()</code></a></li><li><a href="#IWETH.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li><a href="#IWETH.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 value)</code></a></li><li><a href="#IWETH.withdraw(uint256)"><code class="function-signature">withdraw(uint256)</code></a></li></ul></div>
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="IWETH.deposit()"></a><code class="function-signature">deposit()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IWETH.balanceOf(address)"></a><code class="function-signature">balanceOf(address owner) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -3188,7 +3194,7 @@ Returns hash of a message that can be signed by the owner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWalletRegistry.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AugurWalletRegistry.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address, address _from, bytes _encodedFunction, uint256, uint256, uint256, uint256, bytes, uint256 _maxPossibleCharge)</code></a></li><li><a href="#AugurWalletRegistry._preRelayedCall(bytes)"><code class="function-signature">_preRelayedCall(bytes _context)</code></a></li><li><a href="#AugurWalletRegistry._postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">_postRelayedCall(bytes _context, bool, uint256 _actualCharge, bytes32)</code></a></li><li><a href="#AugurWalletRegistry.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWalletRegistry.getAmountIn(uint256,uint256,uint256)"><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWalletRegistry.getCreate2WalletAddress(address)"><code class="function-signature">getCreate2WalletAddress(address _owner)</code></a></li><li><a href="#AugurWalletRegistry.getWallet(address)"><code class="function-signature">getWallet(address _account)</code></a></li><li><a href="#AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32,uint256,uint256,bool)"><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint, uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai, bool _revertOnFailure)</code></a></li><li><a href="#AugurWalletRegistry.getRelayMessageHash(address,address,address,bytes,uint256,uint256,uint256,uint256)"><code class="function-signature">getRelayMessageHash(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce)</code></a></li><li><a href="#AugurWalletRegistry.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#GSNRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li class="inherited"><a href="#GSNRecipient._upgradeRelayHub(address)"><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code></a></li><li class="inherited"><a href="#GSNRecipient.relayHubVersion()"><code class="function-signature">relayHubVersion()</code></a></li><li class="inherited"><a href="#GSNRecipient._withdrawDeposits(uint256,address payable)"><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code></a></li><li class="inherited"><a href="#GSNRecipient._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li class="inherited"><a href="#GSNRecipient._msgData()"><code class="function-signature">_msgData()</code></a></li><li class="inherited"><a href="#GSNRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall()"><code class="function-signature">_approveRelayedCall()</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall(bytes)"><code class="function-signature">_approveRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient._rejectRelayedCall(uint256)"><code class="function-signature">_rejectRelayedCall(uint256 errorCode)</code></a></li><li class="inherited"><a href="#GSNRecipient._computeCharge(uint256,uint256,uint256)"><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee)</code></a></li><li class="inherited"><a href="#Context.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#AugurWalletRegistry.ExecuteTransactionStatus(bool,bool)"><code class="function-signature">ExecuteTransactionStatus(bool success, bool fundingSuccess)</code></a></li><li class="inherited"><a href="#GSNRecipient.RelayHubChanged(address,address)"><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurWalletRegistry.initialize(contract IAugur,contract IAugurTrading)"><code class="function-signature">initialize(contract IAugur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AugurWalletRegistry.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address, address _from, bytes _encodedFunction, uint256, uint256, uint256, uint256, bytes, uint256 _maxPossibleCharge)</code></a></li><li><a href="#AugurWalletRegistry._preRelayedCall(bytes)"><code class="function-signature">_preRelayedCall(bytes _context)</code></a></li><li><a href="#AugurWalletRegistry._postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">_postRelayedCall(bytes _context, bool, uint256 _actualCharge, bytes32)</code></a></li><li><a href="#AugurWalletRegistry.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWalletRegistry.getAmountIn(uint256,uint256,uint256)"><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#AugurWalletRegistry.getCreate2WalletAddress(address)"><code class="function-signature">getCreate2WalletAddress(address _owner)</code></a></li><li><a href="#AugurWalletRegistry.getWallet(address)"><code class="function-signature">getWallet(address _account)</code></a></li><li><a href="#AugurWalletRegistry.executeWalletTransaction(address,bytes,uint256,uint256,address,bytes32,uint256,uint256,bool)"><code class="function-signature">executeWalletTransaction(address _to, bytes _data, uint256 _value, uint256 _payment, address _referralAddress, bytes32 _fingerprint, uint256 _desiredSignerBalance, uint256 _maxExchangeRateInDai, bool _revertOnFailure)</code></a></li><li><a href="#AugurWalletRegistry.getRelayMessageHash(address,address,address,bytes,uint256,uint256,uint256,uint256)"><code class="function-signature">getRelayMessageHash(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce)</code></a></li><li><a href="#AugurWalletRegistry.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="#GSNRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li class="inherited"><a href="#GSNRecipient._upgradeRelayHub(address)"><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code></a></li><li class="inherited"><a href="#GSNRecipient.relayHubVersion()"><code class="function-signature">relayHubVersion()</code></a></li><li class="inherited"><a href="#GSNRecipient._withdrawDeposits(uint256,address payable)"><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code></a></li><li class="inherited"><a href="#GSNRecipient._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li class="inherited"><a href="#GSNRecipient._msgData()"><code class="function-signature">_msgData()</code></a></li><li class="inherited"><a href="#GSNRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall()"><code class="function-signature">_approveRelayedCall()</code></a></li><li class="inherited"><a href="#GSNRecipient._approveRelayedCall(bytes)"><code class="function-signature">_approveRelayedCall(bytes context)</code></a></li><li class="inherited"><a href="#GSNRecipient._rejectRelayedCall(uint256)"><code class="function-signature">_rejectRelayedCall(uint256 errorCode)</code></a></li><li class="inherited"><a href="#GSNRecipient._computeCharge(uint256,uint256,uint256)"><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#AugurWalletRegistry.ExecuteTransactionStatus(bool,bool)"><code class="function-signature">ExecuteTransactionStatus(bool success, bool fundingSuccess)</code></a></li><li class="inherited"><a href="#GSNRecipient.RelayHubChanged(address,address)"><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code></a></li></ul></div>
 
 
 
@@ -3270,13 +3276,7 @@ Returns hash of a message that can be signed by the owner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Context.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#Context._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li><a href="#Context._msgData()"><code class="function-signature">_msgData()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="Context.constructor()"></a><code class="function-signature">constructor()</code><span class="function-visibility">internal</span></h4>
-
-
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Context._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li><a href="#Context._msgData()"><code class="function-signature">_msgData()</code></a></li></ul></div>
 
 
 
@@ -3298,7 +3298,7 @@ Returns hash of a message that can be signed by the owner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#GSNRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li><a href="#GSNRecipient._upgradeRelayHub(address)"><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code></a></li><li><a href="#GSNRecipient.relayHubVersion()"><code class="function-signature">relayHubVersion()</code></a></li><li><a href="#GSNRecipient._withdrawDeposits(uint256,address payable)"><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code></a></li><li><a href="#GSNRecipient._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li><a href="#GSNRecipient._msgData()"><code class="function-signature">_msgData()</code></a></li><li><a href="#GSNRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li><a href="#GSNRecipient._preRelayedCall(bytes)"><code class="function-signature">_preRelayedCall(bytes context)</code></a></li><li><a href="#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li><a href="#GSNRecipient._postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">_postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li><a href="#GSNRecipient._approveRelayedCall()"><code class="function-signature">_approveRelayedCall()</code></a></li><li><a href="#GSNRecipient._approveRelayedCall(bytes)"><code class="function-signature">_approveRelayedCall(bytes context)</code></a></li><li><a href="#GSNRecipient._rejectRelayedCall(uint256)"><code class="function-signature">_rejectRelayedCall(uint256 errorCode)</code></a></li><li><a href="#GSNRecipient._computeCharge(uint256,uint256,uint256)"><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee)</code></a></li><li class="inherited"><a href="#Context.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#IRelayRecipient.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address relay, address from, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce, bytes approvalData, uint256 maxPossibleCharge)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#GSNRecipient.RelayHubChanged(address,address)"><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#GSNRecipient.getHubAddr()"><code class="function-signature">getHubAddr()</code></a></li><li><a href="#GSNRecipient._upgradeRelayHub(address)"><code class="function-signature">_upgradeRelayHub(address newRelayHub)</code></a></li><li><a href="#GSNRecipient.relayHubVersion()"><code class="function-signature">relayHubVersion()</code></a></li><li><a href="#GSNRecipient._withdrawDeposits(uint256,address payable)"><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code></a></li><li><a href="#GSNRecipient._msgSender()"><code class="function-signature">_msgSender()</code></a></li><li><a href="#GSNRecipient._msgData()"><code class="function-signature">_msgData()</code></a></li><li><a href="#GSNRecipient.preRelayedCall(bytes)"><code class="function-signature">preRelayedCall(bytes context)</code></a></li><li><a href="#GSNRecipient._preRelayedCall(bytes)"><code class="function-signature">_preRelayedCall(bytes context)</code></a></li><li><a href="#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li><a href="#GSNRecipient._postRelayedCall(bytes,bool,uint256,bytes32)"><code class="function-signature">_postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code></a></li><li><a href="#GSNRecipient._approveRelayedCall()"><code class="function-signature">_approveRelayedCall()</code></a></li><li><a href="#GSNRecipient._approveRelayedCall(bytes)"><code class="function-signature">_approveRelayedCall(bytes context)</code></a></li><li><a href="#GSNRecipient._rejectRelayedCall(uint256)"><code class="function-signature">_rejectRelayedCall(uint256 errorCode)</code></a></li><li><a href="#GSNRecipient._computeCharge(uint256,uint256,uint256)"><code class="function-signature">_computeCharge(uint256 gas, uint256 gasPrice, uint256 serviceFee)</code></a></li><li class="inherited"><a href="#IRelayRecipient.acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)"><code class="function-signature">acceptRelayedCall(address relay, address from, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce, bytes approvalData, uint256 maxPossibleCharge)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#GSNRecipient.RelayHubChanged(address,address)"><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code></a></li></ul></div>
 
 
 
@@ -3327,7 +3327,7 @@ Returns the version string of the {IRelayHub} for which this recipient implement
 
 <h4><a class="anchor" aria-hidden="true" id="GSNRecipient._withdrawDeposits(uint256,address payable)"></a><code class="function-signature">_withdrawDeposits(uint256 amount, address payable payee)</code><span class="function-visibility">internal</span></h4>
 
-Withdraws the recipient&#x27;s deposits in [`RelayHub`](gsn#relayhub).
+Withdraws the recipient&#x27;s deposits in [`RelayHub`](gsn/v1#relayhub).
 
 Derived contracts should expose this in an external interface with proper access control.
 
@@ -3336,7 +3336,7 @@ Derived contracts should expose this in an external interface with proper access
 <h4><a class="anchor" aria-hidden="true" id="GSNRecipient._msgSender()"></a><code class="function-signature">_msgSender() <span class="return-arrow">→</span> <span class="return-type">address payable</span></code><span class="function-visibility">internal</span></h4>
 
 Replacement for msg.sender. Returns the actual sender of a transaction: msg.sender for regular transactions,
-and the end-user for GSN relayed calls (where msg.sender is actually [`RelayHub`](gsn#relayhub)).
+and the end-user for GSN relayed calls (where msg.sender is actually [`RelayHub`](gsn/v1#relayhub)).
 
 IMPORTANT: Contracts derived from {GSNRecipient} should never use `msg.sender`, and use {_msgSender} instead.
 
@@ -3353,21 +3353,21 @@ IMPORTANT: Contracts derived from {GSNRecipient} should never use `msg.data`, an
 
 <h4><a class="anchor" aria-hidden="true" id="GSNRecipient.preRelayedCall(bytes)"></a><code class="function-signature">preRelayedCall(bytes context) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">external</span></h4>
 
-See [`IRelayRecipient.preRelayedCall`](gsn#IRelayRecipient.preRelayedCall(bytes)).
+See [`IRelayRecipient.preRelayedCall`](gsn/v1#IRelayRecipient.preRelayedCall(bytes)).
 
 This function should not be overriden directly, use [`_preRelayedCall`](.#GSNRecipient._preRelayedCall(bytes)) instead.
 
 * Requirements:
 
-- the caller must be the [`RelayHub`](gsn#relayhub) contract.
+- the caller must be the [`RelayHub`](gsn/v1#relayhub) contract.
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="GSNRecipient._preRelayedCall(bytes)"></a><code class="function-signature">_preRelayedCall(bytes context) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
 
-See [`IRelayRecipient.preRelayedCall`](gsn#IRelayRecipient.preRelayedCall(bytes)).
+See [`IRelayRecipient.preRelayedCall`](gsn/v1#IRelayRecipient.preRelayedCall(bytes)).
 
-Called by [`GSNRecipient.preRelayedCall`](.#GSNRecipient.preRelayedCall(bytes)), which asserts the caller is the [`RelayHub`](gsn#relayhub) contract. Derived contracts
+Called by [`GSNRecipient.preRelayedCall`](.#GSNRecipient.preRelayedCall(bytes)), which asserts the caller is the [`RelayHub`](gsn/v1#relayhub) contract. Derived contracts
 must implement this function with any relayed-call preprocessing they may wish to do.
      
 
@@ -3375,21 +3375,21 @@ must implement this function with any relayed-call preprocessing they may wish t
 
 <h4><a class="anchor" aria-hidden="true" id="GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)"></a><code class="function-signature">postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code><span class="function-visibility">external</span></h4>
 
-See [`IRelayRecipient.postRelayedCall`](gsn#IRelayRecipient.postRelayedCall(bytes,bool,uint256,bytes32)).
+See [`IRelayRecipient.postRelayedCall`](gsn/v1#IRelayRecipient.postRelayedCall(bytes,bool,uint256,bytes32)).
 
 This function should not be overriden directly, use [`_postRelayedCall`](.#GSNRecipient._postRelayedCall(bytes,bool,uint256,bytes32)) instead.
 
 * Requirements:
 
-- the caller must be the [`RelayHub`](gsn#relayhub) contract.
+- the caller must be the [`RelayHub`](gsn/v1#relayhub) contract.
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="GSNRecipient._postRelayedCall(bytes,bool,uint256,bytes32)"></a><code class="function-signature">_postRelayedCall(bytes context, bool success, uint256 actualCharge, bytes32 preRetVal)</code><span class="function-visibility">internal</span></h4>
 
-See [`IRelayRecipient.postRelayedCall`](gsn#IRelayRecipient.postRelayedCall(bytes,bool,uint256,bytes32)).
+See [`IRelayRecipient.postRelayedCall`](gsn/v1#IRelayRecipient.postRelayedCall(bytes,bool,uint256,bytes32)).
 
-Called by [`GSNRecipient.postRelayedCall`](.#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)), which asserts the caller is the [`RelayHub`](gsn#relayhub) contract. Derived contracts
+Called by [`GSNRecipient.postRelayedCall`](.#GSNRecipient.postRelayedCall(bytes,bool,uint256,bytes32)), which asserts the caller is the [`RelayHub`](gsn/v1#relayhub) contract. Derived contracts
 must implement this function with any relayed-call postprocessing they may wish to do.
      
 
@@ -3427,6 +3427,22 @@ Return this in acceptRelayedCall to impede execution of a relayed call. No fees 
 <h4><a class="anchor" aria-hidden="true" id="GSNRecipient.RelayHubChanged(address,address)"></a><code class="function-signature">RelayHubChanged(address oldRelayHub, address newRelayHub)</code><span class="function-visibility"></span></h4>
 
 Emitted when a contract changes its {IRelayHub} contract to a new one.
+
+
+
+### `IAugurWalletFactory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWalletFactory.trustedCreateAugurWallet(address,address,bytes32)"><code class="function-signature">trustedCreateAugurWallet(address _owner, address _referralAddress, bytes32 _fingerprint)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurWalletFactory.trustedCreateAugurWallet(address,address,bytes32)"></a><code class="function-signature">trustedCreateAugurWallet(address _owner, address _referralAddress, bytes32 _fingerprint) <span class="return-arrow">→</span> <span class="return-type">contract IAugurWallet</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
 
 
 
@@ -3511,7 +3527,7 @@ Returns an account&#x27;s deposits. These can be either a contracts&#x27;s funds
 
 <h4><a class="anchor" aria-hidden="true" id="IRelayHub.canRelay(address,address,address,bytes,uint256,uint256,uint256,uint256,bytes,bytes)"></a><code class="function-signature">canRelay(address relay, address from, address to, bytes encodedFunction, uint256 transactionFee, uint256 gasPrice, uint256 gasLimit, uint256 nonce, bytes signature, bytes approvalData) <span class="return-arrow">→</span> <span class="return-type">uint256,bytes</span></code><span class="function-visibility">external</span></h4>
 
-Checks if the [`RelayHub`](gsn#relayhub) will accept a relayed operation.
+Checks if the [`RelayHub`](gsn/v1#relayhub) will accept a relayed operation.
 Multiple things must be true for this to happen:
  - all arguments must be signed for by the sender (`from`)
  - the sender&#x27;s nonce must be the current one
@@ -3548,7 +3564,7 @@ Parameters:
  - `nonce`: client&#x27;s nonce
  - `signature`: client&#x27;s signature over all previous params, plus the relay and RelayHub addresses
  - `approvalData`: dapp-specific data forwared to {acceptRelayedCall}. This value is *not* verified by the
-[`RelayHub`](gsn#relayhub), but it still can be used for e.g. a signature.
+[`RelayHub`](gsn/v1#relayhub), but it still can be used for e.g. a signature.
 
 Emits a {TransactionRelayed} event.
 
@@ -3578,13 +3594,13 @@ The (unsigned) transaction data and signature for both transactions must be prov
 
 <h4><a class="anchor" aria-hidden="true" id="IRelayHub.penalizeIllegalTransaction(bytes,bytes)"></a><code class="function-signature">penalizeIllegalTransaction(bytes unsignedTx, bytes signature)</code><span class="function-visibility">external</span></h4>
 
-Penalize a relay that sent a transaction that didn&#x27;t target [`RelayHub`](gsn#relayhub)&#x27;s {registerRelay} or {relayCall}.
+Penalize a relay that sent a transaction that didn&#x27;t target [`RelayHub`](gsn/v1#relayhub)&#x27;s {registerRelay} or {relayCall}.
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="IRelayHub.getNonce(address)"></a><code class="function-signature">getNonce(address from) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
-Returns an account&#x27;s nonce in [`RelayHub`](gsn#relayhub).
+Returns an account&#x27;s nonce in [`RelayHub`](gsn/v1#relayhub).
 
 
 
@@ -3623,7 +3639,7 @@ Emitted when {depositFor} is called, including the amount and account that was f
 
 <h4><a class="anchor" aria-hidden="true" id="IRelayHub.Withdrawn(address,address,uint256)"></a><code class="function-signature">Withdrawn(address account, address dest, uint256 amount)</code><span class="function-visibility"></span></h4>
 
-Emitted when an account withdraws funds from [`RelayHub`](gsn#relayhub).
+Emitted when an account withdraws funds from [`RelayHub`](gsn/v1#relayhub).
 
 
 

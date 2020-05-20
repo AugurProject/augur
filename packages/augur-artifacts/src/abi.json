@@ -10954,6 +10954,11 @@
 					"type": "address"
 				},
 				{
+					"internalType": "address",
+					"name": "_legacyRegistry",
+					"type": "address"
+				},
+				{
 					"internalType": "contract IERC20",
 					"name": "_cash",
 					"type": "address"
@@ -11010,6 +11015,21 @@
 					"internalType": "bytes4",
 					"name": "",
 					"type": "bytes4"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "legacyRegistry",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -11240,6 +11260,21 @@
 			"outputs": [
 				{
 					"internalType": "contract IAugurTrading",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augurWalletRegistryV2",
+			"outputs": [
+				{
+					"internalType": "address",
 					"name": "",
 					"type": "address"
 				}
@@ -11669,27 +11704,6 @@
 					"internalType": "bool",
 					"name": "",
 					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "wallets",
-			"outputs": [
-				{
-					"internalType": "contract IAugurWallet",
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
