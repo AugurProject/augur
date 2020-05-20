@@ -2,7 +2,7 @@
 
 .Headers {
   background: var(--color-table-header);
-  border-bottom: 1px solid var(--color-dark-grey);
+  border-bottom: @size-1 solid var(--color-dark-grey);
   display: flex;
   overflow-x: auto;
   min-height: @size-32;
@@ -157,7 +157,7 @@
 }
 
 .Fill {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: @size-1 solid rgba(255, 255, 255, 0.1);
   left: 0;
   right: 0;
   z-index: @above-all-content;
@@ -178,7 +178,7 @@
 }
 
 .ActiveSpanFill {
-  border-bottom: 1px solid var(--color-primary-text);
+  border-bottom: @size-1 solid var(--color-primary-text);
 }
 
 .NoBorder {
@@ -209,4 +209,36 @@
 .ActiveNoBorder {
   border: 0;
   position: relative;
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Headers {
+    > ul {
+      > li {
+        @media @breakpoint-mobile {
+          margin: 0
+        }
+        
+        &.ActiveTab {
+          @media @breakpoint-mobile {
+            border-bottom: @size-2 solid var(--color-primary-text);
+          }
+        }
+
+        > button {
+          @media @breakpoint-mobile {
+            .mono-12-semi-bold;
+
+            padding: 0 @size-14;
+          }
+        }
+      }
+    }
+
+    @media @breakpoint-mobile {
+      height: @size-39;
+      max-height: @size-39;
+    }
+  }
 }
