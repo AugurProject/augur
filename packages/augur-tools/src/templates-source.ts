@@ -62,6 +62,7 @@ import {
   FIN_INDEXES_HOLIDAY_CLOSURES,
   FIN_EXCHANGES_HOLIDAY_CLOSURES,
   SOCCER_LEAGUE_DEP_TEAMS,
+  FIN_EXCHANGES_CURRENCIES,
 } from './templates-lists';
 
 const YES_NO = 'YesNo';
@@ -7026,6 +7027,7 @@ export const TEMPLATES = {
             marketType: SCALAR,
             question: `What will [0] ([1]) close at on the [2] on [3]?`,
             example: `What will Apple (AAPL) close at on the Nasdaq (traded in USD) on December 31, 2019?`,
+            denomination: 'currency',
             inputs: [
               {
                 id: 0,
@@ -7042,6 +7044,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Exchange`,
                 values: LIST_VALUES.FIN_STOCK_EXCHANGES,
+                denomination: FIN_EXCHANGES_CURRENCIES
               },
               {
                 id: 3,

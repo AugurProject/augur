@@ -238,6 +238,9 @@ export interface TemplateInput {
   };
   noSort: boolean;
   daysAfterDateStart: number;
+  denomination: {
+    [key: string]: string;
+  }
 }
 
 export interface RetiredTemplate {
