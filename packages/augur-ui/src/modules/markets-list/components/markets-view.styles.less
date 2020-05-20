@@ -43,8 +43,6 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .MarketsView {
-    margin: 0;
-
     > section:not([class*='LandingHero']) {
       // this is the sportsbook/betting-ui topsection
       align-items: center;
@@ -53,11 +51,7 @@
       grid-template-columns: 0fr 1fr minmax(270px, 1fr);
       margin-top: @size-32;
 
-      @media @breakpoint-mobile-tablet {
-        grid-template-columns: 0fr 1fr;
-      }
-
-      > ul {
+      > button {
         display: none;
       }
 
@@ -65,14 +59,19 @@
         justify-self: flex-end;
         grid-column: 2;
       }
-    }
-  }
-}
 
-:root[theme="SPORTS"] {
-  .MarketsView > section:not([class*='LandingHero']) > ul {
-    display: flex;
-    grid-column: 1;
+      @media @breakpoint-mobile-tablet {
+        grid-template-columns: 1fr auto;
+
+        > ul {
+          display: none;
+        }
+
+        > button {
+          display: flex;
+        }
+      }
+    }
   }
 }
 

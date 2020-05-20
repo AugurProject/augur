@@ -173,8 +173,12 @@
   }
 
   .InnerNav__menu--main {
-    background: none;
     border-right: 0;
+    background: none;
+
+    @media @breakpoint-mobile-tablet {
+      background: var(--color-module-background);
+    }
   }
 }
 
