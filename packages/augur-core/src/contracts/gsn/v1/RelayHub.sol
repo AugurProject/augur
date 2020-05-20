@@ -1,11 +1,11 @@
 pragma solidity 0.5.15;
 
-import 'ROOT/gsn/IRelayHub.sol';
-import 'ROOT/gsn/IRelayRecipient.sol';
-import 'ROOT/gsn/ECDSA.sol';
-import 'ROOT/gsn/SafeMath.sol';
-import 'ROOT/gsn/RLPReader.sol';
-import 'ROOT/gsn/GsnUtils.sol';
+import 'ROOT/gsn/v1/IRelayHub.sol';
+import 'ROOT/gsn/v1/IRelayRecipient.sol';
+import 'ROOT/gsn/v1/ECDSA.sol';
+import 'ROOT/gsn/v1/SafeMath.sol';
+import 'ROOT/gsn/v1/RLPReader.sol';
+import 'ROOT/gsn/v1/GsnUtils.sol';
 import 'ROOT/0x/utils/contracts/src/LibBytes.sol';
 
 
