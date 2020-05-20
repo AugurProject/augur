@@ -79,17 +79,9 @@ function updateBalances(
       legacyRepNonSafe,
       ethNonSafe,
     };
-    const {
-      loginAccount: { balances: currentBalances },
-    } = AppStatus.get();
-    if (
-      JSON.stringify(currentBalances) !==
-      JSON.stringify(balances)
-    ) {
-      AppStatus.actions.updateLoginAccount({
-        balances,
-      });
-    }
+    AppStatus.actions.updateLoginAccount({
+      balances,
+    });
     return callback(null, { rep, dai, eth });
   });
 }

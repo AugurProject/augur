@@ -3,7 +3,7 @@ import Media from 'react-media';
 
 import MarketsInDispute from 'modules/reporting/containers/markets-in-dispute';
 import DisputeWindowProgress from 'modules/reporting/containers/disputing-window-progress';
-import UserRepDisplay from 'modules/reporting/containers/user-rep-display';
+import { UserRepDisplay } from 'modules/reporting/common';
 import { ReportingModalButton } from 'modules/reporting/common';
 import ParticipationTokensView from 'modules/reporting/containers/participation-tokens-view';
 import { HEADER_TYPE, SMALL_MOBILE } from 'modules/common/constants';

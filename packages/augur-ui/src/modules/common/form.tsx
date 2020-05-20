@@ -26,7 +26,7 @@ import debounce from 'utils/debounce';
 import { CUSTOM, SCALAR, ZERO, CATEGORY_PARAM_NAME } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
-import { formatAttoRep, formatNumber } from 'utils/format-number';
+import { formatAttoRep } from 'utils/format-number';
 import ReportingBondsView from 'modules/reporting/containers/reporting-bonds-view';
 import DisputingBondsView from 'modules/reporting/containers/disputing-bonds-view';
 
@@ -40,7 +40,6 @@ import noop from 'utils/noop';
 import { Getters } from '@augurproject/sdk';
 import { MarketData, DisputeInputtedValues, SortedGroup, QueryEndpoints } from 'modules/types';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
-import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
 
 interface CheckboxProps {
