@@ -1,13 +1,13 @@
-const NY_STOCK_EXCHANGE = 'New York Stock Exchange (traded in USD)';
-const NASDAQ = 'Nasdaq (traded in USD)';
-const AMERICAN_EXCHANGE = 'American Stock Exchange (traded in USD)';
-const TOKYO_EXCHANGE = 'Tokyo Stock Exchange (traded in JPY)';
-const LONDON_EXCHANGE = 'London Stock Exchange (traded in GBP)';
-const SHANGHAI_A_EXCHANGE = 'Shanghai Stock Exchange (A shares traded in CNY)';
-const SHANGHAI_B_EXCHANGE = 'Shanghai Stock Exchange (B shares traded in USD)';
-const HONG_KONG_EXCHANGE = 'Hong Kong Stock Exchange (traded in HKD)';
-const TORONTO_EXCHANGE = 'Toronto Stock Exchange (traded in CAD)';
-const EURONEXT_EXCHANGE = 'Euronext NV (traded in EUR)';
+const NY_STOCK_EXCHANGE_INDEX = 0;
+const NASDAQ_INDEX = 1;
+const AMERICAN_EXCHANGE_INDEX = 2;
+const TOKYO_EXCHANGE_INDEX = 3;
+const LONDON_EXCHANGE_INDEX = 4;
+const SHANGHAI_A_EXCHANGE_INDEX = 5;
+const SHANGHAI_B_EXCHANGE_INDEX = 6;
+const HONG_KONG_EXCHANGE_INDEX = 7;
+const TORONTO_EXCHANGE_INDEX = 8;
+const EURONEXT_EXCHANGE_INDEX = 9;
 
 export const LIST_VALUES = {
   MONTHS: [
@@ -2513,16 +2513,16 @@ export const LIST_VALUES = {
     'VIX',
   ],
   FIN_STOCK_EXCHANGES: [
-    NY_STOCK_EXCHANGE,
-    NASDAQ,
-    AMERICAN_EXCHANGE,
-    TOKYO_EXCHANGE,
-    LONDON_EXCHANGE,
-    SHANGHAI_A_EXCHANGE,
-    SHANGHAI_B_EXCHANGE,
-    HONG_KONG_EXCHANGE,
-    TORONTO_EXCHANGE,
-    EURONEXT_EXCHANGE,
+    'New York Stock Exchange (traded in USD)',
+    'Nasdaq (traded in USD)',
+    'American Stock Exchange (traded in USD)',
+    'Tokyo Stock Exchange (traded in JPY)',
+    'London Stock Exchange (traded in GBP)',
+    'Shanghai Stock Exchange (A shares traded in CNY)',
+    'Shanghai Stock Exchange (B shares traded in USD)',
+    'Hong Kong Stock Exchange (traded in HKD)',
+    'Toronto Stock Exchange (traded in CAD)',
+    'Euronext NV (traded in EUR)',
   ],
   OLYMPIC_DIVING_EVENTS: [
     "Men's 3m Springboard",
@@ -3328,56 +3328,56 @@ export const SOCCER_LEAGUE_DEP_TEAMS = {
 };
 
 export const FIN_EXCHANGES_CLOSING_OFFSETS = {
-  [NY_STOCK_EXCHANGE]: {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[NY_STOCK_EXCHANGE_INDEX]]: {
     offset: -4,
     hour: 16,
     minutes: 0,
     timezone: 'America/New_York',
   },
-  [NASDAQ]: { offset: -5, hour: 16, minutes: 0, timezone: 'America/New_York' },
-  [AMERICAN_EXCHANGE]: {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[NASDAQ_INDEX]]: { offset: -5, hour: 16, minutes: 0, timezone: 'America/New_York' },
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[AMERICAN_EXCHANGE_INDEX]]: {
     offset: -4,
     hour: 16,
     minutes: 0,
     timezone: 'America/New_York',
   },
-  [TOKYO_EXCHANGE]: {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[TOKYO_EXCHANGE_INDEX]]: {
     offset: 9,
     hour: 15,
     minutes: 0,
     timezone: 'Asia/Tokyo',
   },
-  [LONDON_EXCHANGE]: {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[LONDON_EXCHANGE_INDEX]]: {
     offset: 0,
     hour: 16,
     minutes: 30,
     timezone: 'Europe/London',
   },
-  [SHANGHAI_A_EXCHANGE]: {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[SHANGHAI_A_EXCHANGE_INDEX]]: {
     offset: 8,
     hour: 15,
     minutes: 0,
     timezone: 'Asia/Shanghai',
   },
-  [SHANGHAI_B_EXCHANGE]: {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[SHANGHAI_B_EXCHANGE_INDEX]]: {
     offset: 8,
     hour: 15,
     minutes: 0,
     timezone: 'Asia/Shanghai',
   },
-  [HONG_KONG_EXCHANGE]: {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[HONG_KONG_EXCHANGE_INDEX]]: {
     offset: 8,
     hour: 16,
     minutes: 0,
     timezone: 'Asia/Hong_Kong',
   },
-  [TORONTO_EXCHANGE]: {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[TORONTO_EXCHANGE_INDEX]]: {
     offset: -4,
     hour: 16,
     minutes: 0,
     timezone: 'America/Toronto',
   },
-  [EURONEXT_EXCHANGE]: {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[EURONEXT_EXCHANGE_INDEX]]: {
     offset: 2,
     hour: 17,
     minutes: 30,
@@ -5235,29 +5235,29 @@ export const SOUTH_KOREA_HOLIDAYS = {
 };
 
 export const FIN_EXCHANGES_HOLIDAY_CLOSURES = {
-  [NY_STOCK_EXCHANGE]: USA_HOLIDAYS,
-  [NASDAQ]: USA_HOLIDAYS,
-  [AMERICAN_EXCHANGE]: USA_HOLIDAYS,
-  [EURONEXT_EXCHANGE]: FRANCE_HOLIDAYS,
-  [LONDON_EXCHANGE]: ENGLAND_HOLIDAYS,
-  [HONG_KONG_EXCHANGE]: HONG_KONG_HOLIDAYS,
-  [SHANGHAI_A_EXCHANGE]: CHINA_HOLIDAYS,
-  [SHANGHAI_B_EXCHANGE]: CHINA_HOLIDAYS,
-  [TOKYO_EXCHANGE]: JAPAN_HOLIDAYS,
-  [TORONTO_EXCHANGE]: CANADA_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[NY_STOCK_EXCHANGE_INDEX]]: USA_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[NASDAQ_INDEX]]: USA_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[AMERICAN_EXCHANGE_INDEX]]: USA_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[EURONEXT_EXCHANGE_INDEX]]: FRANCE_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[LONDON_EXCHANGE_INDEX]]: ENGLAND_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[HONG_KONG_EXCHANGE_INDEX]]: HONG_KONG_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[SHANGHAI_A_EXCHANGE_INDEX]]: CHINA_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[SHANGHAI_B_EXCHANGE_INDEX]]: CHINA_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[TOKYO_EXCHANGE_INDEX]]: JAPAN_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[TORONTO_EXCHANGE_INDEX]]: CANADA_HOLIDAYS,
 };
 
 export const FIN_EXCHANGES_CURRENCIES = {
-  [NY_STOCK_EXCHANGE]: 'USD',
-  [NASDAQ]: 'USD',
-  [AMERICAN_EXCHANGE]: 'USD',
-  [EURONEXT_EXCHANGE]: 'EUR',
-  [LONDON_EXCHANGE]: 'GBP',
-  [HONG_KONG_EXCHANGE]: 'HKD',
-  [SHANGHAI_A_EXCHANGE]: 'CNY',
-  [SHANGHAI_B_EXCHANGE]: 'USD',
-  [TOKYO_EXCHANGE]: 'JPY',
-  [TORONTO_EXCHANGE]: 'CAD',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[NY_STOCK_EXCHANGE_INDEX]]: 'USD',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[NASDAQ_INDEX]]: 'USD',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[AMERICAN_EXCHANGE_INDEX]]: 'USD',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[EURONEXT_EXCHANGE_INDEX]]: 'EUR',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[LONDON_EXCHANGE_INDEX]]: 'GBP',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[HONG_KONG_EXCHANGE_INDEX]]: 'HKD',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[SHANGHAI_A_EXCHANGE_INDEX]]: 'CNY',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[SHANGHAI_B_EXCHANGE_INDEX]]: 'USD',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[TOKYO_EXCHANGE_INDEX]]: 'JPY',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[TORONTO_EXCHANGE_INDEX]]: 'CAD',
 };
 
 export const FIN_INDEXES_HOLIDAY_CLOSURES = {
