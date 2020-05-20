@@ -238,6 +238,9 @@ export interface TemplateInput {
   };
   noSort: boolean;
   daysAfterDateStart: number;
+  denomination: {
+    [key: string]: string;
+  }
 }
 
 export interface RetiredTemplate {
@@ -312,7 +315,7 @@ export interface ExtraInfo {
 export const ValidationTemplateInputType = {
   [ValidationType.SOCIAL]: `[a-zA-Z0-9_]{1,15}`,
   [TemplateInputType.TEXT]: `(.*)`,
-  [ValidationType.WHOLE_NUMBER]: `[1-9][0-9]*`,
+  [ValidationType.WHOLE_NUMBER]: `[1-9]*[0-9]+`,
   [ValidationType.NUMBER]: `[0-9]+(\\\.[0-9]+){0,1}`,
   [ValidationType.NUMBER_ONE_DECIMAL]: `[0-9]+(\.[0-9]{1}){0,1}`,
   [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(.*)`,
