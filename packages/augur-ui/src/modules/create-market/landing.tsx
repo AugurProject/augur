@@ -8,42 +8,38 @@ import {
   SmallHeaderLink,
 } from 'modules/create-market/components/common';
 import { SecondaryButton } from 'modules/common/buttons';
-import { SCRATCH, TEMPLATE, MARKET_COPY_LIST, EMPTY_STATE } from 'modules/create-market/constants';
+import {
+  SCRATCH,
+  TEMPLATE,
+  MARKET_COPY_LIST,
+  EMPTY_STATE,
+} from 'modules/create-market/constants';
 import SavedDrafts from 'modules/create-market/containers/saved-drafts';
 
 import Styles from 'modules/create-market/landing.styles.less';
 import { getTemplateRadioCards } from './get-template';
-import { Getters } from '@augurproject/sdk';
-import { NewMarket } from 'modules/types';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { marketCreationStarted } from 'services/analytics/helpers';
 
 interface LandingProps {
-  newMarket: NewMarket;
-  updateNewMarket: (newMarketData: NewMarket) => void;
-  address: String;
   updatePage: Function;
-  clearNewMarket: Function;
-  categoryStats: Getters.Markets.CategoryStats;
-  marketCreationStarted: Function;
 }
 
 const Landing = ({
   updatePage,
-  updateNewMarket,
-  newMarket,
-  clearNewMarket,
-  categoryStats,
-  marketCreationStarted,
 }: LandingProps) => {
+  const {
+    newMarket,
+    categoryStats,
+    actions: { updateNewMarket, clearNewMarket },
+  } = useAppStatusStore();
   const node = useRef(null);
   useEffect(() => {
     node.current.scrollIntoView();
   }, [true]);
   return (
-    <div
-      ref={node}
-      className={Styles.Landing}
-    >
-      <XLargeSubheaders header={'Create a new market'}>
+    <div ref={node} className={Styles.Landing}>
+      <XLargeSubheaders header='Create a new market'>
         Augur allows <span>anyone</span>, <span>anywhere</span>, to create a
         market on <span>anything</span>
       </XLargeSubheaders>
@@ -80,7 +76,11 @@ const Landing = ({
                 categoryStats
               )}
             >
-              <SmallHeaderLink copyType={MARKET_COPY_LIST.DONT_SEE_CAT} text="Don't see your category?" link />
+              <SmallHeaderLink
+                copyType={MARKET_COPY_LIST.DONT_SEE_CAT}
+                text="Don't see your category?"
+                link
+              />
             </RadioCardGroup>
           </section>
         </ContentBlock>
@@ -104,5 +104,5 @@ const Landing = ({
       </div>
     </div>
   );
-}
+};
 export default Landing;

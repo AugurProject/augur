@@ -50,7 +50,7 @@ const mapDispatchToProps = dispatch => {
       setModal({ type: MODAL_DISCARD, cb }),
     openCreateMarketModal: (cb: NodeStyleCallback) =>
       setModal({ type: MODAL_CREATE_MARKET, cb }),
-    marketCreationStarted: (templateName, isTemplate) => dispatch(marketCreationStarted(templateName, isTemplate)),
+    marketCreationStarted: (templateName, isTemplate) => marketCreationStarted(templateName, isTemplate),
     marketCreationSaved: (templateName, isTemplate) => dispatch(marketCreationSaved(templateName, isTemplate)),
   });
 }

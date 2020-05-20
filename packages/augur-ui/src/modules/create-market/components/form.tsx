@@ -594,11 +594,13 @@ export default class Form extends React.Component<FormProps, FormState> {
     });
 
     if (errorMsg) {
+      console.log('errorMsg:', label, errorMsg);
       this.onError(label, errorMsg);
       return true;
     }
 
     // no errors
+    console.log('no Errors', label);
     this.onError(label, '');
   };
 
@@ -714,11 +716,11 @@ export default class Form extends React.Component<FormProps, FormState> {
 
   onError = (name, error) => {
     const { updateNewMarket, newMarket } = this.props;
-    const { currentStep, validations } = newMarket;
+    const { validations } = newMarket;
     const updatedValidations = validations;
 
     updatedValidations[name] = error;
-    updateNewMarket({ validations: updatedValidations });
+    if (!!error) updateNewMarket({ validations: updatedValidations });
   };
 
   preview = () => {

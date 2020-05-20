@@ -118,15 +118,11 @@ export const sendTwitterShare = (
 export const marketCreationStarted = (
   templateName: string,
   isTemplate: boolean
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+) =>
   track(MARKET_CREATION_STARTED, {
     templateName,
     isTemplate,
   });
-};
 
 export const marketCreationSaved = (
   templateName: string,
