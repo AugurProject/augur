@@ -63,6 +63,7 @@ import {
 } from 'modules/reporting/common';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export interface HeaderProps {
   text: string;
@@ -1326,18 +1327,17 @@ export const EstimatedStartSelector = ({
 };
 
 export interface QuestionBuilderProps {
-  newMarket: NewMarket;
   onChange: Function;
-  currentTimestamp: number;
-  isAfter: number;
 }
 
 export const QuestionBuilder = ({
   onChange,
-  newMarket,
-  currentTimestamp,
-  isAfter,
 }: QuestionBuilderProps) => {
+  const { 
+    newMarket,
+    universe: { maxMarketEndTime: isAfter },
+    blockchain: { currentAugurTimestamp: currentTimestamp },
+  } = useAppStatusStore();
   const { template, marketType } = newMarket;
   const question = template.question.split(' ');
   const inputs = template.inputs;
@@ -1395,7 +1395,7 @@ export const QuestionBuilder = ({
           }
         })}
       </div>
-      <TemplateBanners categories={newMarket.categories} />
+      <TemplateBanners />
       {dateTimeIndex > -1 && (
         <EstimatedStartSelector
           newMarket={newMarket}
@@ -1414,11 +1414,8 @@ export const QuestionBuilder = ({
   );
 };
 
-export interface TemplateBannersProps {
-  categories: string[];
-}
-
-export const TemplateBanners = ({ categories }: TemplateBannersProps) => {
+export const TemplateBanners = () => {
+  const { newMarket: { categories } } = useAppStatusStore();
   const text = categories.reduce(
     (p, c) =>
       Object.keys(TemplateBannerText).includes(c.toLowerCase())

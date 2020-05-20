@@ -52,7 +52,7 @@ import {
   ContentBlock,
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts } from 'modules/types';
-import FormDetails from 'modules/create-market/containers/form-details';
+import FormDetails from 'modules/create-market/components/form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
 import SubCategories from 'modules/create-market/containers/sub-categories';
@@ -201,12 +201,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   }
 
   unblock = (cb?: Function) => {
-    const {
-      drafts,
-      newMarket,
-      discardModal,
-      isTemplate,
-    } = this.props;
+    const { drafts, newMarket, discardModal, isTemplate } = this.props;
 
     const savedDraft = drafts[newMarket.uniqueId];
 
@@ -528,7 +523,11 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
       checkUserInputFilled
-        ? checkForUserInputFilled(value, newMarket.endTimeFormatted, currentTimestamp)
+        ? checkForUserInputFilled(
+            value,
+            newMarket.endTimeFormatted,
+            currentTimestamp
+          )
         : '',
       checkWholeNumber ? isCheckWholeNumber(value) : '',
     ];
@@ -765,7 +764,8 @@ export default class Form extends React.Component<FormProps, FormState> {
       useBullets,
     } = contentPages[currentStep];
 
-    const disableCreate = walletStatus !== WALLET_STATUS_VALUES.CREATED || this.state.disableCreate;
+    const disableCreate =
+      walletStatus !== WALLET_STATUS_VALUES.CREATED || this.state.disableCreate;
     let savedDraft = drafts[uniqueId];
     if (savedDraft) savedDraft.validations = [];
     let comparableNewMarket = deepClone<NewMarket>(newMarket);
@@ -806,7 +806,7 @@ export default class Form extends React.Component<FormProps, FormState> {
           }),
         });
       });
-    }
+    };
 
     return (
       <div
@@ -865,12 +865,10 @@ export default class Form extends React.Component<FormProps, FormState> {
               />
             )}
             <ContentBlock noDarkBackground={noDarkBackground}>
-              {mainContent === FORM_DETAILS && (
-                <FormDetails onChange={this.onChange} onError={this.onError} />
-              )}
-              {mainContent === TEMPLATE_FORM_DETAILS && (
+              {(mainContent === FORM_DETAILS ||
+                mainContent === TEMPLATE_FORM_DETAILS) && (
                 <FormDetails
-                  isTemplate
+                  isTemplate={isTemplate}
                   onChange={this.onChange}
                   onError={this.onError}
                 />
@@ -943,10 +941,12 @@ export default class Form extends React.Component<FormProps, FormState> {
                       disabled={disableCreate}
                       action={() => {
                         gsnUnavailable && !gsnWalletInfoSeen
-                        ? initializeGsnWallet(() => setTimeout(() => {
-                          openCreateMarketModal(createModalCallback);
-                        }))
-                        : openCreateMarketModal(createModalCallback);
+                          ? initializeGsnWallet(() =>
+                              setTimeout(() => {
+                                openCreateMarketModal(createModalCallback);
+                              })
+                            )
+                          : openCreateMarketModal(createModalCallback);
                       }}
                     />
                   )}
