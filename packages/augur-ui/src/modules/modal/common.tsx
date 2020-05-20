@@ -117,6 +117,7 @@ export interface ActionRow {
   properties: Array<{ value: string; label: string; addExtraSpace: boolean }>;
   queueName?: string;
   queueId?: string;
+  estimateGas?: Function;
 }
 
 export interface ActionRowsProps {
@@ -473,35 +474,60 @@ export const Breakdown = (props: BreakdownProps) => (
   </div>
 );
 
-export const ActionRows = (props: ActionRowsProps) =>
-  props.rows.map((row: ActionRow) => (
-    <section key={row.title} className={Styles.ActionRow}>
-      <section>
-        <MarketTitle title={row.title} />
+export const ActionRows = ({ rows }: ActionRowsProps) => {
+  const [estimatedRows, setEstimatedRows] = useState(rows);
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      Promise.all(rows.map(async row => await row.estimateGas())).then(
+        estimates => {
+          const newRows = [...rows];
+          estimates.map((estimate, index) => {
+            newRows[index].properties = [
+              ...rows[index].properties,
+              estimate,
+            ];
+          });
+          setEstimatedRows(newRows);
+        }
+      );
+    }, 200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    estimatedRows.map((row: ActionRow) => (
+      <section key={row.title} className={Styles.ActionRow}>
+        <section>
+          <MarketTitle title={row.title} />
+          <div>
+            {row.properties.map(property => (
+              <React.Fragment key={row.title + ' ' + property.label}>
+                <LinearPropertyLabel
+                  label={property.label}
+                  value={property.value}
+                />
+                {property.addExtraSpace && <span />}
+              </React.Fragment>
+            ))}
+          </div>
+        </section>
         <div>
-          {row.properties.map(property => (
-            <React.Fragment key={row.title + ' ' + property.label}>
-              <LinearPropertyLabel
-                label={property.label}
-                value={property.value}
-              />
-              {property.addExtraSpace && <span />}
-            </React.Fragment>
-          ))}
+          {row.action &&
+            <ProcessingButton
+              text={row.text}
+              queueName={row.queueName}
+              queueId={row.queueId}
+              action={row.action}
+              submitTextButtton={true}
+            />
+          }
         </div>
+        {row.notice && <DismissableNotice title={row.notice} description={''} show={true} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
       </section>
-      <div>
-        <ProcessingButton
-          text={row.text}
-          queueName={row.queueName}
-          queueId={row.queueId}
-          action={row.action}
-          submitTextButtton={true}
-        />
-      </div>
-      {row.notice && <DismissableNotice title={row.notice} description={''} show={true} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
-    </section>
-  ));
+    ))
+  )
+}
+
 
 export const ReadableAddress = (props: ReadableAddressProps) => (
   <div className={Styles.ReadableAddress}>
