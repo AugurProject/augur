@@ -25,8 +25,8 @@
 
     @media @breakpoint-mobile {
       background: unset;
-      min-height: calc(~"100vh - @{multi-top-bar-height-mobile} - @{main-content-mobile-bottom-padding}");
-      height: 100%;
+      min-height: calc(~"100vh - @{multi-top-bar-height-mobile}");
+      max-height: calc(~"100vh - @{multi-top-bar-height-mobile}");
       overflow-y: visible;
       padding: 0 @size-6 @size-4;
     }
