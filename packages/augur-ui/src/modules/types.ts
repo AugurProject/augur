@@ -599,9 +599,9 @@ export interface AppStatus {
 export interface AuthStatus {
   isLogged?: boolean;
   restoredAccount?: boolean;
-  edgeLoading?: boolean;
-  edgeContext?: string;
   isConnectionTrayOpen?: boolean;
+  signerHasDAI?: boolean;
+  vaultHasDAI?: boolean;
 }
 
 export interface AccountPositionAction {
@@ -640,6 +640,7 @@ export interface AccountBalances {
   attoRep: string;
   legacyAttoRep: string;
   ethNonSafe?: number;
+  daiNonSafe?: number;
 }
 
 export interface LoginAccountMeta {

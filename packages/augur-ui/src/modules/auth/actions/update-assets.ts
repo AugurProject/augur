@@ -15,6 +15,8 @@ import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-s
 import { createBigNumber } from 'utils/create-big-number';
 import { WALLET_STATUS_VALUES, FIVE } from 'modules/common/constants';
 import { addEthIncreaseAlert } from 'modules/alerts/actions/alerts';
+import { updateAuthStatus, SIGNER_HAS_DAI, VAULT_HAS_DAI } from 'modules/auth/actions/auth-status';
+
 
 export const updateAssets = (
   callback?: NodeStyleCallback,
@@ -32,6 +34,7 @@ export const updateAssets = (
     nonSafeWallet,
     loginAccount.balances.ethNonSafe,
     dispatch,
+    getState,
     (err, balances) => {
       let status = appStatus[WALLET_STATUS];
       if (createBigNumber(balances.dai).gt(FIVE) && (status !== WALLET_STATUS_VALUES.CREATED)) {
@@ -47,7 +50,8 @@ function updateBalances(
   nonSafeWallet: string,
   ethNonSafeBalance: string,
   dispatch: ThunkDispatch<void, any, Action>,
-  callback: NodeStyleCallback
+  getState:  () => AppState,
+  callback: NodeStyleCallback,
 ) {
   Promise.all([
     getRepBalance(universe, address),
@@ -56,7 +60,8 @@ function updateBalances(
     getLegacyRepBalance(address),
     getLegacyRepBalance(nonSafeWallet),
     getEthBalance(nonSafeWallet),
-  ]).then(amounts => {
+    getDaiBalance(nonSafeWallet),
+  ]).then(async (amounts) => {
     const attoRep = amounts[0].toString();
     const dai = amounts[1];
     const eth = amounts[2];
@@ -64,8 +69,22 @@ function updateBalances(
     const legacyAttoRepNonSafe = amounts[4].toString();
     const rep = formatAttoRep(attoRep, { decimalsRounded: 14 }).roundedValue?.toNumber();
     const ethNonSafe = amounts[5];
+    const daiNonSafe = amounts[6];
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const legacyRepNonSafe = formatAttoRep(legacyAttoRepNonSafe).value;
+
+    const { loginAccount, authStatus } = getState();
+    const updatedDaiAmount = createBigNumber(dai);
+    const currentDaiAmount = createBigNumber(await getDaiBalance(loginAccount.address));
+
+    if (createBigNumber(daiNonSafe).gt(0)) {
+      dispatch(updateAuthStatus(SIGNER_HAS_DAI, true));
+    }
+
+    if (updatedDaiAmount.gt(0) && currentDaiAmount.gt(0)) {
+      dispatch(updateAuthStatus(VAULT_HAS_DAI, true));
+    }
+
     dispatch(addedDaiEvent(dai));
     dispatch(addEthIncreaseAlert(dai, ethNonSafeBalance, ethNonSafe));
     dispatch(
@@ -79,6 +98,7 @@ function updateBalances(
           legacyRep,
           legacyRepNonSafe,
           ethNonSafe,
+          daiNonSafe,
         },
       })
     );

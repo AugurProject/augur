@@ -11,6 +11,7 @@ import {
   DaiLogoIcon,
   EthIcon,
   helpIcon,
+  OnboardingCheckIcon,
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -28,7 +29,7 @@ import {
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
 import { PENDING, SUCCESS, DAI, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS } from 'modules/common/constants';
-import { LinkContent, LoginAccount } from 'modules/types';
+import { LinkContent, LoginAccount, FormattedNumber } from 'modules/types';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { toChecksumAddress } from 'ethereumjs-util';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -309,6 +310,10 @@ export const DescriptionWithLink = (props: DescriptionWithLinkProps) => {
 export const ButtonsRow = (props: ButtonsRowProps) => (
   <div className={Styles.ButtonsRow}>
     {props.buttons.map((Button: DefaultButtonProps, index: number) => {
+      if (Button.text === '') {
+        return null;
+      }
+
       if (index === 0) return <PrimaryButton key={Button.text} {...Button} />;
       return <SecondaryButton key={Button.text} {...Button} />;
     })}
@@ -395,7 +400,62 @@ export const Stepper = ({ currentStep, maxSteps, changeCurrentStep = null }: Ste
     <span onClick={() => changeCurrentStep && changeCurrentStep(step)} key={idx} className={currentStep === step ? Styles.Current : null}></span>
   ))}
 </div>
-)
+);
+
+interface TransferMyDaiProps {
+  walletType: string;
+  daiAmount: FormattedNumber;
+  showTransferModal: Function;
+}
+
+export const TransferMyDai = ({ walletType, daiAmount, showTransferModal }: TransferMyDaiProps) => (
+  <div className={Styles.TransferMyDai}>
+    <div>
+      <span>{daiAmount.formattedValue} Dai in your {walletType} wallet</span>
+      <span>Transfer any amount to your Augur user account. </span>
+    </div>
+    <PrimaryButton
+      action={() => showTransferModal()}
+      text={'Transfer my Dai'}
+    />
+  </div>
+);
+
+
+interface AccountStatusTrackerProps {
+  accountStatusTracker: number;
+}
+
+export const AccountStatusTracker = ({ accountStatusTracker } :AccountStatusTrackerProps) => (
+  <div className={Styles.AccountStatusTracker}>
+    <div>
+      <div className={classNames(Styles.AccountStep, {
+        [Styles.AccountStepCompleted]: accountStatusTracker >= 1
+      })}>
+        {accountStatusTracker >= 1 && OnboardingCheckIcon}
+      </div>
+      <div className={Styles.line}/>
+      <div className={classNames(Styles.AccountStep, {
+        [Styles.AccountStepCompleted]: accountStatusTracker >= 2
+      })}>
+        {accountStatusTracker >= 2 && OnboardingCheckIcon}
+      </div>
+      <div className={Styles.line}/>
+      <div className={classNames(Styles.AccountStep, {
+        [Styles.AccountStepCompleted]: accountStatusTracker === 3
+      })}>
+        {accountStatusTracker === 3 && OnboardingCheckIcon}
+      </div>
+    </div>
+
+    <div>
+      <div>Create log-in</div>
+      <div>Add funds</div>
+      <div>Activate account</div>
+    </div>
+
+  </div>
+);
 
 export const DaiGraphic = () => (
   <div className={Styles.DaiGraphic}>

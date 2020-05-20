@@ -167,10 +167,10 @@ div.Onboarding {
 
   align-items: center;
   border: 3px solid @color-secondary-action-outline;
-  min-height: 487px;
+  height: 598px;
   justify-content: center;
-  padding: @size-32 @size-40 @size-32;
-  width: 454px;
+  padding: @size-32 @size-28 @size-32;
+  width: 568px;
 
   @media @breakpoint-mobile {
     align-items: center;
@@ -202,18 +202,31 @@ div.Onboarding {
 
     > div:nth-of-type(2) {
       text-align: center;
-      margin-top: 56px;
+      margin-top: @size-16;
     }
 
-    > div:nth-of-type(3) {
+    > div:last-of-type {
       text-align: center;
-      margin-top: @size-12;
+      margin: @size-12 0 0 0;
+
+      > div {
+        margin-top: @size-16;
+      }
 
       button {
         .text-10-semi-bold;
 
+        color: @color-primary-text;
         background: none;
         border: none;
+
+        > svg path:first-of-type {
+          fill: @color-primary-text;
+        }
+
+        > svg path:last-of-type {
+          stroke: @color-primary-text;
+        }
       }
     }
 
@@ -232,14 +245,24 @@ div.Onboarding {
 
     > div:first-of-type {
       display: flex;
-      flex-direction: row-reverse;
+      flex-direction: row;
 
-      > button:last-of-type {
-        margin-right: @size-16;
+      > div:first-of-type {
+        display: flex;
+        flex-direction: row-reverse;
+        padding: 0;
+
+        > button:first-of-type {
+          margin-left: @size-16;
+        }
+
+        > button:only-of-type {
+          margin: 0;
+        }
       }
 
-      > button:only-of-type {
-        margin: 0;
+      > button {
+        margin-left: @size-16;
       }
     }
 
@@ -3582,5 +3605,88 @@ div.ButtonsRow:last-of-type {
   > ul > li:last-of-type {
     border-bottom-right-radius: @size-24;
     border-top-right-radius: @size-24;
+  }
+}
+
+.AccountStatusTracker {
+  display: flex;
+  flex-direction: column;
+  width: 346px;
+  align-items: center;
+
+  > div:first-of-type {
+    display: flex;
+    flex-direction: row;
+    margin: 0 0 @size-4 0;
+
+    div.AccountStep {
+      display: inline-block;
+      border: @size-2 solid @color-secondary-text;
+      border-radius: 50%;
+      width: @size-26;
+      height: @size-26;
+    }
+
+    div.AccountStepCompleted {
+      > svg {
+        width: @size-14;
+        height: @size-14;
+        transform: translate(4px 3px);
+      }
+    }
+
+    div.line {
+      border-top: @size-2 solid @color-secondary-text;
+      display: inline-block;
+      margin: auto;
+      width: 106px;
+    }
+  }
+
+  > div:last-of-type {
+    display: flex;
+    text-align: center;
+
+    width: 100%;
+
+    > div {
+      .text-10-semi-bold;
+
+      color: @color-secondary-text;
+      flex: 2;
+    }
+
+    > div:first-of-type,
+    > div:last-of-type {
+      flex: 1;
+    }
+  }
+}
+
+.TransferMyDai {
+  align-items: center;
+  display: flex;
+  border: @size-2 solid @color-secondary-action-outline;
+  border-radius: @size-3;
+  justify-content: space-between;
+  margin: @size-16 0 @size-24 0;
+  padding: @size-12 @size-16;
+  width: 100%;
+
+  > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+
+    > span:first-of-type {
+      .text-14-bold;
+
+      color: @color-primary-text;
+    }
+
+    > span:last-of-type {
+      .text-14;
+
+      color: @color-secondary-text;
+    }
   }
 }

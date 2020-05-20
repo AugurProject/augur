@@ -21,6 +21,7 @@ import {
   MODAL_ERROR,
   MODAL_HARDWARE_WALLET,
   HELP_CENTER_THIRD_PARTY_COOKIES,
+  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -36,6 +37,7 @@ import { windowRef } from 'utils/window-ref';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
+  walletStatus: state.appStatus.walletStatus,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -103,7 +105,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     setTimeout(() => {
       dP.closeModal();
 
-      if (LOGIN_OR_SIGNUP === 'Signup') {
+      if (sP.walletStatus !== WALLET_STATUS_VALUES.CREATED || LOGIN_OR_SIGNUP === 'Signup') {
         // Kicks off onboarding
         dP.accountCreatedModal();
       }

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { DefaultButtonProps } from 'modules/common/buttons';
+import { DefaultButtonProps, ProcessingButton } from 'modules/common/buttons';
 import {
   ButtonsRow,
   LargeSubheader,
@@ -9,11 +9,12 @@ import {
   LinkContentSection,
   Stepper,
 } from 'modules/modal/common';
-
-import Styles from 'modules/modal/modal.styles.less';
+import AccountStatusTracker from 'modules/modal/containers/account-status-tracker';
+import TransferMyDai from 'modules/modal/containers/transfer-my-dai';
 import { LinkContent } from 'modules/types';
 import classNames from 'classnames';
-import { ONBOARDING_MAX_STEPS } from 'modules/common/constants';
+import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET } from 'modules/common/constants';
+import Styles from 'modules/modal/modal.styles.less';
 
 interface OnboardingProps {
   closeAction: Function;
@@ -27,6 +28,10 @@ interface OnboardingProps {
   icon: React.ReactNode;
   condensed?: boolean;
   analyticsEvent?: Function;
+  showAccountStatus?: boolean;
+  showTransferMyDai?: boolean;
+  showActivationButton?: boolean;
+  createFundedGsnWallet?: Function;
 }
 
 export const Onboarding = ({
@@ -40,12 +45,17 @@ export const Onboarding = ({
   condensed,
   analyticsEvent,
   changeCurrentStep,
+  showAccountStatus,
+  showTransferMyDai,
+  showActivationButton,
+  createFundedGsnWallet,
 }: OnboardingProps) => {
   useEffect(() => {
     analyticsEvent && analyticsEvent();
   });
   return (
     <div className={classNames(Styles.Onboarding, {[Styles.Condensed]: condensed})}>
+      {showAccountStatus && <AccountStatusTracker />}
       <main>
         {icon && <div>{icon}</div>}
         {largeHeader && <LargeSubheader text={largeHeader} />}
@@ -53,8 +63,20 @@ export const Onboarding = ({
         {mediumHeader && <MediumSubheader text={mediumHeader} />}
         {linkContent && <LinkContentSection linkContent={linkContent} />}
       </main>
+      {showTransferMyDai && <TransferMyDai />}
       <div>
-        {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
+        <div>
+          {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
+          {showActivationButton &&
+            <ProcessingButton
+              small
+              text={'Activate Account'}
+              action={() => createFundedGsnWallet()}
+              queueName={TRANSACTIONS}
+              queueId={CREATEAUGURWALLET}
+            />
+          }
+        </div>
         {currentStep && <Stepper changeCurrentStep={changeCurrentStep} currentStep={currentStep} maxSteps={ONBOARDING_MAX_STEPS} /> }
       </div>
     </div>
