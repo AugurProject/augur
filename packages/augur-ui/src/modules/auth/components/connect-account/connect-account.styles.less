@@ -9,7 +9,7 @@
   position: relative;
   z-index: @above-all-content-above;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     position: static;
     display: flex;
     height: @top-bar-height-mobile;
@@ -28,7 +28,7 @@
       width: calc(100% - @size-2);
       z-index: @default-z-index;
     
-      @media @breakpoint-mobile {
+      @media @breakpoint-mobile-tablet {
         display: none;
       }
     }
@@ -38,9 +38,8 @@
       border: @size-1 solid var(--color-secondary-action-outline);
       border-bottom: 0;
 
-      @media @breakpoint-mobile {
+      @media @breakpoint-mobile-tablet {
         border: none;
-        background: var(--color-module-background);
         z-index: @above-all-content-above;
         border: @size-1 solid var(--color-secondary-action-outline);
         border-bottom: 0;
@@ -56,18 +55,15 @@
       background-color: var(--color-module-background);
     }
 
-    background: var(--color-dark-grey);
     border: @size-1 solid var(--color-dark-grey);
     border-bottom: 0;
     display: flex;
     padding: @size-12;
-    max-height: @size-56;
+    max-height: @top-bar-height-mobile;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       border: none;
-      background: var(--color-module-background);
       padding: @size-24 @size-12;
-      max-height: @size-72;
     }
 
     &:focus {
@@ -101,7 +97,7 @@
   right: 0px;
   top: @size-56;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     top: 0;
     right: @size-1;
     left: @size-1;
@@ -131,7 +127,7 @@
     flex-direction: column;
     margin-left: @size-8;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       max-width: @size-56;
     }
 
@@ -148,7 +144,7 @@
       color: var(--color-primary-text);
       margin-top: @size-2;
 
-      @media @breakpoint-mobile {
+      @media @breakpoint-mobile-tablet {
         .text-10-bold;
 
         margin-top: 0px;
