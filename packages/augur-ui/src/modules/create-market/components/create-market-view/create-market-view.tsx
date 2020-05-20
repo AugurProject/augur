@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router';
 import { LANDING, TEMPLATE } from 'modules/create-market/constants';
 
-import Form from 'modules/create-market/containers/form';
+import Form from 'modules/create-market/components/form';
 import Landing from 'modules/create-market/landing';
 import Styles from 'modules/create-market/components/create-market-view/create-market-view.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';

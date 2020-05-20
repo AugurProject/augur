@@ -127,9 +127,6 @@ export const marketCreationStarted = (
 export const marketCreationSaved = (
   templateName: string,
   isTemplate: boolean
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
   track(MARKET_CREATION_SAVED, {
     templateName,

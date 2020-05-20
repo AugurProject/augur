@@ -30,7 +30,7 @@ const mapStateToProps = state => {
     drafts,
     needsApproval: allowance.lte(ZERO),
     GsnEnabled,
-    gsnUnavailable: isGSNUnavailable(state),
+    gsnUnavailable: isGSNUnavailable(),
     gsnWalletInfoSeen,
     walletStatus,
   }

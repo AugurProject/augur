@@ -10,10 +10,10 @@ import { NewMarket, NodeStyleCallback } from "modules/types";
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { modal, loginAccount: { address } } = AppStatus.get();
+  const { newMarket, modal, loginAccount: { address } } = AppStatus.get();
   return ({
     modal,
-    newMarket: state.newMarket,
+    newMarket,
     address,
   });
 }

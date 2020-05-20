@@ -1430,7 +1430,7 @@ export const ModalLabelNotice = (props: DismissableNoticeProps) => (
 );
 
 const mapStateToPropsInitWalletModal = (state: AppState) => ({
-  gsnUnavailable: isGSNUnavailable(state),
+  gsnUnavailable: isGSNUnavailable(),
 });
 
 const InitializeWalletModalNoticeCmp = ({ gsnUnavailable }) => (

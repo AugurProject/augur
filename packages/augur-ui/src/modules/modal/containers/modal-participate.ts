@@ -37,7 +37,7 @@ const mapStateToProps = (state: AppState) => {
     ],
     title: 'Buy Participation Tokens',
     GsnEnabled,
-    gsnUnavailable: isGSNUnavailable(state),
+    gsnUnavailable: isGSNUnavailable(),
     gsnWalletInfoSeen,
   };
 };

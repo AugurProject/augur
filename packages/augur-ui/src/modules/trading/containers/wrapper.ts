@@ -36,8 +36,8 @@ const getMarketPath = id => {
 };
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { newMarket } = state;
   const {
+    newMarket,
     accountPositions,
     userOpenOrders,
     loginAccount: {
@@ -65,7 +65,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     GsnEnabled,
     currentTimestamp,
     availableDai,
-    gsnUnavailable: isGSNUnavailable(state),
+    gsnUnavailable: isGSNUnavailable(),
   };
 };
 
