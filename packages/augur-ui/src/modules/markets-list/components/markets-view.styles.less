@@ -48,8 +48,14 @@
       align-items: center;
       display: grid;
       grid-gap: 0 @size-8;
-      grid-template-columns: 0fr 1fr minmax(270px, 1fr);
+      grid-template-columns: auto 1fr minmax(270px, 1fr);
       margin-top: @size-32;
+
+      > h2 {
+        .text-20-bold;
+
+        color: var(--color-primary-text);
+      }
 
       > button {
         display: none;
@@ -63,10 +69,11 @@
       @media @breakpoint-mobile-tablet {
         grid-template-columns: 1fr auto;
 
-        > ul {
-          display: none;
+        > h2 {
+          grid-column: 1 / span 2;
+          margin-bottom: @size-8;
         }
-
+        
         > button {
           display: flex;
         }

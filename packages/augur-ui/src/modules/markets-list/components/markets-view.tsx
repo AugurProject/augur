@@ -306,14 +306,7 @@ const MarketsView = ({
       )}
       {!isTrading && (
         <section>
-          <PillSelection
-            options={SPORTS_MARKET_TYPES}
-            defaultSelection={selectedMarketCardType}
-            large
-            onChange={selected =>
-              setState({ ...state, selectedMarketCardType: selected })
-            }
-          />
+          <h2>{headerTitle}</h2>
           <FilterDropDowns />
           <FilterSearch
             isSearchingMarkets={isSearching}
