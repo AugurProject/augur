@@ -23,109 +23,104 @@ import {
 import { AppStatus } from 'modules/app/store/app-status';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 
-export function submitNewMarket(
+export const submitNewMarket = async (
   market: NewMarket,
   callback: NodeStyleCallback = noop
-) {
-  return async (
-    dispatch: ThunkDispatch<void, any, Action>,
-    getState: () => AppState
-  ) => {
-    const {
-      loginAccount: { address, allowance },
-      gsnEnabled,
-    } = AppStatus.get();
-    market.orderBook = sortOrders(market.orderBook);
-    market.endTime = market.endTimeFormatted.timestamp;
-    market.designatedReporterAddress =
-      market.designatedReporterAddress === ''
-        ? address
-        : market.designatedReporterAddress;
+) => {
+  const {
+    loginAccount: { address, allowance },
+    gsnEnabled,
+  } = AppStatus.get();
+  market.orderBook = sortOrders(market.orderBook);
+  market.endTime = market.endTimeFormatted.timestamp;
+  market.designatedReporterAddress =
+    market.designatedReporterAddress === ''
+      ? address
+      : market.designatedReporterAddress;
 
-    const hasOrders = market.orderBook && Object.keys(market.orderBook).length;
-    const sortOrderBook = hasOrders && sortOrders(market.orderBook);
-    const hashId = getConstructedMarketId(market);
+  const hasOrders = market.orderBook && Object.keys(market.orderBook).length;
+  const sortOrderBook = hasOrders && sortOrders(market.orderBook);
+  const hashId = getConstructedMarketId(market);
 
-    // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
-    if (!gsnEnabled && allowance.lte(ZERO)) {
-      await approveToTrade();
-    }
+  // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
+  if (!gsnEnabled && allowance.lte(ZERO)) {
+    await approveToTrade();
+  }
 
-    if (!!hasOrders) {
-      PendingOrders.actions.addLiquidity({
-        txParamHash: hashId,
-        liquidityOrders: sortOrderBook,
-      });
-    }
-    let extraInfoTemplate = null;
-    if (market.template) {
-      const { template } = market;
+  if (!!hasOrders) {
+    PendingOrders.actions.addLiquidity({
+      txParamHash: hashId,
+      liquidityOrders: sortOrderBook,
+    });
+  }
+  let extraInfoTemplate = null;
+  if (market.template) {
+    const { template } = market;
 
-      const inputs = template.inputs.reduce(
-        (p, i: TemplateInput) =>
-          i.userInput
-            ? [
-                ...p,
-                {
-                  id: i.id,
-                  value: i.userInput.trim(),
-                  type: i.type,
-                  timestamp:
-                    (i.type === TemplateInputType.DATETIME &&
-                      !!i.userInputObject) ||
-                    (i.type === TemplateInputType.ESTDATETIME &&
-                      !!i.userInputObject)
-                      ? (i.userInputObject as UserInputDateTime)
-                          .endTimeFormatted.timestamp
-                      : ((i.type === TemplateInputType.DATESTART ||
-                          i.type === TemplateInputType.DATEYEAR) &&
-                          i.setEndTime) ||
-                        null,
-                },
-              ]
-            : p,
-        []
-      );
-      extraInfoTemplate = {
-        hash: template.hash,
-        question: market.template.question,
-        inputs,
-      };
-    }
+    const inputs = template.inputs.reduce(
+      (p, i: TemplateInput) =>
+        i.userInput
+          ? [
+              ...p,
+              {
+                id: i.id,
+                value: i.userInput.trim(),
+                type: i.type,
+                timestamp:
+                  (i.type === TemplateInputType.DATETIME &&
+                    !!i.userInputObject) ||
+                  (i.type === TemplateInputType.ESTDATETIME &&
+                    !!i.userInputObject)
+                    ? (i.userInputObject as UserInputDateTime).endTimeFormatted
+                        .timestamp
+                    : ((i.type === TemplateInputType.DATESTART ||
+                        i.type === TemplateInputType.DATEYEAR) &&
+                        i.setEndTime) ||
+                      null,
+              },
+            ]
+          : p,
+      []
+    );
+    extraInfoTemplate = {
+      hash: template.hash,
+      question: market.template.question,
+      inputs,
+    };
+  }
 
-    let err = null;
-    try {
-      await createMarket(
-        {
-          outcomes: market.outcomes,
-          scalarDenomination: market.scalarDenomination,
-          description: market.description,
-          designatedReporterAddress: market.designatedReporterAddress,
-          minPrice: market.minPrice,
-          maxPrice: market.maxPrice,
-          endTime: market.endTime,
-          tickSize: market.tickSize,
-          marketType: market.marketType,
-          detailsText: market.template
-            ? buildResolutionDetails(
-                market.detailsText,
-                market.template.resolutionRules
-              )
-            : market.detailsText,
-          categories: market.categories,
-          settlementFee: market.settlementFee,
-          affiliateFee: market.affiliateFee,
-          offsetName: market.offsetName,
-          template: extraInfoTemplate,
-        },
-        false
-      );
-    } catch (e) {
-      err = e;
-    }
-    if (callback) callback(err);
-  };
-}
+  let err = null;
+  try {
+    await createMarket(
+      {
+        outcomes: market.outcomes,
+        scalarDenomination: market.scalarDenomination,
+        description: market.description,
+        designatedReporterAddress: market.designatedReporterAddress,
+        minPrice: market.minPrice,
+        maxPrice: market.maxPrice,
+        endTime: market.endTime,
+        tickSize: market.tickSize,
+        marketType: market.marketType,
+        detailsText: market.template
+          ? buildResolutionDetails(
+              market.detailsText,
+              market.template.resolutionRules
+            )
+          : market.detailsText,
+        categories: market.categories,
+        settlementFee: market.settlementFee,
+        affiliateFee: market.affiliateFee,
+        offsetName: market.offsetName,
+        template: extraInfoTemplate,
+      },
+      false
+    );
+  } catch (e) {
+    err = e;
+  }
+  if (callback) callback(err);
+};
 
 export function retrySubmitMarket(
   market: CreateMarketData,

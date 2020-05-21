@@ -26,6 +26,8 @@ import {
   CATEGORICAL,
   CATEGORICAL_OUTCOMES_MIN_NUM,
   REP,
+  MODAL_ADD_FUNDS,
+  DAI,
 } from 'modules/common/constants';
 import {
   buildformattedDate,
@@ -791,9 +793,8 @@ export interface NoFundsErrorsProps {
   availableEthFormatted: FormattedNumber;
   availableRepFormatted: FormattedNumber;
   availableDaiFormatted: FormattedNumber;
-  GsnEnabled: boolean;
-  showAddFundsModal: Function;
 }
+
 export const NoFundsErrors = ({
   noEth,
   noRep,
@@ -804,43 +805,44 @@ export const NoFundsErrors = ({
   availableEthFormatted,
   availableRepFormatted,
   availableDaiFormatted,
-  GsnEnabled,
-  showAddFundsModal,
-}: NoFundsErrorsProps) => (
-  <div className={classNames({ [Styles.HasError]: noEth || noDai || noRep })}>
-    {noEth && !GsnEnabled && (
-      <DismissableNotice
-        title="Not enough ETH in your wallet"
-        description={`You have ${availableEthFormatted.formatted} ETH of ${totalEth.formatted} required to create this market`}
-        show={true}
-        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
-        buttonText="Add Funds"
-        buttonAction={() => showAddFundsModal()}
-      />
-    )}
-    {noRep && (
-      <DismissableNotice
-        title="Not enough REP in your wallet"
-        description={`You have ${availableRepFormatted.formatted} V2 REP of ${totalRep.formatted} required to create this market.`}
-        show={true}
-        buttonText="Add Funds"
-        buttonAction={() => showAddFundsModal(REP)}
-        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
-      />
-    )}
-    {noDai && (
-      <DismissableNotice
-        alternate
-        title="Not enough $ (DAI) in your wallet"
-        show={true}
-        buttonText="Add Funds"
-        buttonAction={() => showAddFundsModal()}
-        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
-        description={`You have $${availableDaiFormatted.formatted} (DAI) of $${totalDai.formatted} (DAI) required to create this market`}
-      />
-    )}
-  </div>
-);
+}: NoFundsErrorsProps) => {
+  const { actions: { setModal }, gsnEnabled } = useAppStatusStore();
+  return (
+    <div className={classNames({ [Styles.HasError]: noEth || noDai || noRep })}>
+      {noEth && !gsnEnabled && (
+        <DismissableNotice
+          title="Not enough ETH in your wallet"
+          description={`You have ${availableEthFormatted.formatted} ETH of ${totalEth.formatted} required to create this market`}
+          show={true}
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
+          buttonText="Add Funds"
+          buttonAction={() => setModal({ type: MODAL_ADD_FUNDS, fundType: DAI })}
+        />
+      )}
+      {noRep && (
+        <DismissableNotice
+          title="Not enough REP in your wallet"
+          description={`You have ${availableRepFormatted.formatted} V2 REP of ${totalRep.formatted} required to create this market.`}
+          show={true}
+          buttonText="Add Funds"
+          buttonAction={() => setModal({ type: MODAL_ADD_FUNDS, fundType: REP })}
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
+        />
+      )}
+      {noDai && (
+        <DismissableNotice
+          alternate
+          title="Not enough $ (DAI) in your wallet"
+          show={true}
+          buttonText="Add Funds"
+          buttonAction={() => setModal({ type: MODAL_ADD_FUNDS, fundType: DAI })}
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
+          description={`You have $${availableDaiFormatted.formatted} (DAI) of $${totalDai.formatted} (DAI) required to create this market`}
+        />
+      )}
+    </div>
+  );
+};
 
 interface InputFactoryProps {
   input: TemplateInput;

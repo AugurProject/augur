@@ -57,7 +57,7 @@ import {
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/components/form-details';
-import Review from 'modules/create-market/containers/review';
+import Review from 'modules/create-market/components/review';
 import FeesLiquidity from 'modules/create-market/fees-liquidity';
 import SubCategories from 'modules/create-market/components/sub-categories';
 import { MarketType } from 'modules/create-market/components/market-type';
@@ -297,9 +297,8 @@ const saveDraft = (isTemplate, templateFormStarts) => {
       updated: createdDate,
     });
   }
-
   marketCreationSaved(
-    newMarket.template && newMarket.template.name,
+    newMarket?.template?.name,
     isTemplate
   );
 };
