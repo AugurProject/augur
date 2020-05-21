@@ -228,7 +228,7 @@
 
         > button {
           @media @breakpoint-mobile {
-            .mono-12-semi-bold;
+            .mono-12-bold;
 
             padding: 0 @size-14;
           }
@@ -239,6 +239,12 @@
     @media @breakpoint-mobile {
       height: @size-39;
       max-height: @size-39;
+    }
+  }
+
+  .NoBorder {
+    @media @breakpoint-mobile {
+      background-color: var(--color-page-background);
     }
   }
 }

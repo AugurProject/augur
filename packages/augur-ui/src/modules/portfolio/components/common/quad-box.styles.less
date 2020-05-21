@@ -94,7 +94,10 @@
     border-bottom-right-radius: @border-radius-rounded;
 
     @media @breakpoint-mobile {
+      margin: @size-16;
       background: var(--color-module-background);
+      border: @size-1 solid var(--color-dark-grey);
+      border-radius: @border-radius-rounded;
 
       > div:last-of-type {
         padding: 0 0 @size-4;
