@@ -15,6 +15,7 @@ import {
   HELP_CENTER_INVALID_MARKETS,
   THEMES,
   SPORTS_MARKET_TYPES,
+  CATEGORY_PARAM_NAME,
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
@@ -25,6 +26,8 @@ import { MARKETS_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import FilterSearch from 'modules/filter-sort/containers/filter-search';
 import { PillSelection } from 'modules/common/selection';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { FilterButton } from 'modules/common/buttons';
+import parseQuery from 'modules/routes/helpers/parse-query';
 
 const PAGINATION_COUNT = 10;
 
@@ -59,6 +62,31 @@ interface MarketsViewProps {
   marketsInReportingState: MarketData[];
   loadMarketOrderBook: Function;
 }
+
+const getHeaderTitleFromProps = (
+  search: string,
+  location: Location,
+  selectedCategory: string[]
+) => {
+  if (search) {
+    if (search.endsWith('*')) {
+      search = search.slice(0, -1)
+    }
+    return `Search: "${search}"`;
+  }
+
+  const searchParams = parseQuery(location.search);
+
+  if (searchParams[CATEGORY_PARAM_NAME]) {
+    return searchParams[CATEGORY_PARAM_NAME];
+  }
+
+  if (selectedCategory && selectedCategory.length > 0) {
+    return selectedCategory[selectedCategory.length - 1];
+  }
+
+  return "Popular markets";
+};
 
 const MarketsView = ({
   history,
@@ -120,6 +148,12 @@ const MarketsView = ({
     templateFilter,
     includeInvalidMarkets
   ]);
+
+  const headerTitle = getHeaderTitleFromProps(
+    search,
+    location,
+    selectedCategories
+  );
 
   useEffect(() => {
     marketListViewed(
@@ -229,6 +263,7 @@ const MarketsView = ({
       {isTrading && (
         <>
           <MarketsHeader
+            headerTitle={headerTitle}
             location={location}
             isSearchingMarkets={isSearching}
             filter={marketFilter}
@@ -262,20 +297,14 @@ const MarketsView = ({
       )}
       {!isTrading && (
         <section>
-          <PillSelection
-            options={SPORTS_MARKET_TYPES}
-            defaultSelection={selectedMarketCardType}
-            large
-            onChange={selected =>
-              setState({ ...state, selectedMarketCardType: selected })
-            }
-          />
+          <h2>{headerTitle}</h2>
           <FilterDropDowns />
           <FilterSearch
             isSearchingMarkets={isSearching}
             search={search}
             selectedCategory={selectedCategories}
           />
+          <FilterButton />
         </section>
       )}
       <FilterTags

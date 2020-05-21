@@ -11,7 +11,7 @@
     border-bottom: 0;
   }
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     border: none;
     min-width: 100%;
     height: 100vh;
@@ -33,7 +33,7 @@
 .AddFunds {
   .SharedStyles;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     display: none;
   }
 
@@ -65,11 +65,11 @@
 
   background: var(--color-table-header);
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     background: var(--color-module-background);
   }
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     background: var(--color-table-header);
   }
 
@@ -81,7 +81,7 @@
     display: flex;
     text-transform: uppercase;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       .mono-12-bold;
     }
 
@@ -112,7 +112,7 @@
 
     color: var(--color-primary-text);
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       .mono-12-medium;
     }
 
@@ -225,7 +225,7 @@
       width: 235px;
       white-space: nowrap;
 
-      @media @breakpoint-mobile {
+      @media @breakpoint-mobile-tablet {
         width: calc(100vw - 167px);
       }
     }
@@ -257,7 +257,7 @@
 }
 
 .WalletProvider.MetaMask {
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     display: none;
   }
 }
@@ -265,7 +265,7 @@
 .MobileAddFunds {
   display: none;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     background: var(--color-module-background);
     border-bottom: @size-1 solid var(--color-dark-grey);
     display: flex;
@@ -299,10 +299,6 @@
     > g {
       fill: var(--color-primary-text);
     }
-  }
-
-  @media @breakpoint-mobile {
-    display: none;
   }
 }
 
@@ -380,7 +376,7 @@
     }
   }
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     border-bottom: @size-1 solid var(--color-secondary-action-outline);
   }
 }
@@ -400,7 +396,7 @@
   right: @size-16;
   top: -@size-16;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     bottom: @size-25;
     left: @size-8;
   }
@@ -422,7 +418,7 @@
   text-transform: capitalize;
   top: -39px;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     bottom: @size-32;
   }
 }
