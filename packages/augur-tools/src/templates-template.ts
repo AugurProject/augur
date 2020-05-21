@@ -189,6 +189,10 @@ export interface TemplateValidation {
   categoricalOutcomes: CategoricalOutcomes;
 }
 
+export interface TemplateGroup {
+  groupKeys: string[];
+  templatesHashes: string[];
+}
 export interface TemplateValidationHash {
   [hash: string]: TemplateValidation;
 }
@@ -250,6 +254,7 @@ export interface TemplateInput {
   denomination: {
     [key: string]: string;
   }
+  groupKey: string;
 }
 
 export interface RetiredTemplate {
@@ -336,6 +341,7 @@ export const ValidationTemplateInputType = {
 
 export let TEMPLATE_VALIDATIONS = {};
 export let RETIRED_TEMPLATES = [];
+export let TEMPLATE_GROUPS = [];
 
 export function hasTemplateTextInputs(hash: string, isCategorical: boolean) {
   const validation = TEMPLATE_VALIDATIONS[hash] as TemplateValidation;

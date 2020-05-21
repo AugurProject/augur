@@ -15,7 +15,8 @@ import {
   DateInputDependencies,
   PlaceholderValues,
   CategoricalOutcomes,
-  EventExpEndNextMonth
+  EventExpEndNextMonth,
+  TemplateGroup
 } from '../templates-template';
 import { TEMPLATES, TEMPLATES2 } from '../templates-source';
 import { retiredTemplates } from '../templates-retired';
@@ -23,7 +24,7 @@ import { retiredTemplates } from '../templates-retired';
 const templateString = '//##TEMPLATES##';
 const templateValidationString = '//##TEMPLATE_VALIDATIONS##';
 const templateRetiredTemplatesString = '//##RETIRED_TEMPLATES';
-const templateGroups = '//##TEMPLATE_GROUPS##';
+const templateGroupsString = '//##TEMPLATE_GROUPS##';
 const templateArtifactsFile = '../augur-artifacts/src/templates.ts';
 const templateTemplateFile = './src/templates-template.ts';
 
@@ -37,6 +38,9 @@ export const generateTemplateValidations = async () => {
     );
     const newTemplateValueObj = merge.all(
       templateValidations.map(tv => tv.template)
+    );
+    const newTemplateGroupsArray = merge.all(
+      templateValidations.map(tv => tv.templateGroups)
     );
     if (!fs.existsSync(templateTemplateFile)) {
       return console.error(templateTemplateFile, 'does not exist');
@@ -57,18 +61,24 @@ export const generateTemplateValidations = async () => {
       templateValidationString,
       newValidation
     );
+
+    const newTemplateGroups = `TEMPLATE_GROUPS = ${JSON.stringify(
+      newTemplateGroupsArray
+    )};`;
+
+    const setTemplateGroups = setNewTemplateValidations.replace(
+      templateGroupsString,
+      newTemplateGroups
+    );
+
     const newRetiredTemplates = `RETIRED_TEMPLATES = ${JSON.stringify(
       retiredTemplates
     )}`;
-    const setRetiredTemplates = setNewTemplateValidations.replace(
+
+    const setRetiredTemplates = setTemplateGroups.replace(
       templateRetiredTemplatesString,
       newRetiredTemplates
     );
-
-    // generate template groups
-    Object.keys(newTemplateValueObj).map(template => {
-
-    })
 
     fs.writeFileSync(templateArtifactsFile, setRetiredTemplates, 'utf8');
   } catch (e) {
@@ -78,7 +88,8 @@ export const generateTemplateValidations = async () => {
 
 const generateValidations = (
   templates
-): { template: Template; validations: TemplateValidation } => {
+): { template: Template; validations: TemplateValidation; templateGroups: TemplateGroup[] } => {
+  const templateGroups: TemplateGroup[] = [];
   const validations: TemplateValidation = {
     templateValidation: null,
     templateValidationResRules: null,
@@ -98,20 +109,25 @@ const generateValidations = (
   };
   const newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
-  topCategories.map(c => addTemplates(newTemplates[c], validations));
-  return { template: newTemplates, validations };
+  topCategories.map(c => addTemplates(newTemplates[c], validations, templateGroups));
+  return { template: newTemplates, validations, templateGroups };
 };
 
 const addTemplates = (
   category: CategoryTemplate,
-  validations: TemplateValidation
+  validations: TemplateValidation,
+  templateGroups: TemplateGroup[]
 ) => {
   if (category.children) {
     return Object.keys(category.children).map(c =>
-      addTemplates(category.children[c], validations)
+      addTemplates(category.children[c], validations, templateGroups)
     );
   }
   if (category.templates) {
+    const group: TemplateGroup = {
+      groupKeys: [],
+      templatesHashes: [],
+    }
     category.templates.map(t => {
       const hashValue = generateTemplateHash(t);
       t.hash = hashValue;
@@ -142,7 +158,18 @@ const addTemplates = (
         noAdditionalOutcomes: t.noAdditionalUserOutcomes,
         eventExpEndNextMonthValues: getEventExpEndNextMonth(t.inputs),
       };
+
+      const groupName = t.groupName;
+      if (groupName) {
+        group.templatesHashes.push(t.hash);
+        group.groupKeys = t.inputs.reduce((p, i) =>
+          i.groupKey ? [...p, i.groupKey] : p, []
+        );
+      }
     });
+    if (group.groupKeys.length > 0) {
+      templateGroups.push(group);
+    }
   }
 };
 
