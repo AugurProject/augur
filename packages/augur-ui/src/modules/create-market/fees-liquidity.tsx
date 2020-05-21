@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { TextInput } from 'modules/common/form';
 import { LargeSubheaders } from 'modules/create-market/components/common';
-import InitialLiquidity from 'modules/create-market/containers/initial-liquidity';
+import InitialLiquidity from 'modules/create-market/initial-liquidity';
 import OrderBook from 'modules/market-charts/containers/order-book';
 import TradingForm from 'modules/trading/components/trading-form';
 import { BUY, CATEGORICAL } from 'modules/common/constants';
