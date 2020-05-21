@@ -5,7 +5,7 @@ import { formatRep, formatGasCostToEther } from 'utils/format-number';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { LoginAccount } from 'modules/types';
 import { ExternalLinkButton } from 'modules/common/buttons';
-import { LinearPropertyLabel } from 'modules/common/labels';
+import { LinearPropertyLabel, TransactionFeeLabel } from 'modules/common/labels';
 import { InfoIcon } from 'modules/common/icons';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
@@ -59,15 +59,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
         <span>{formatRep(loginAccount.balances.legacyRep).formattedValue}</span>
       </div>
       <div>
-        <LinearPropertyLabel
-          key="cost"
-          label={GsnEnabled ? 'Transaction Fee' : 'Gas Cost'}
-          value={
-            GsnEnabled
-              ? displayGasInDai(gasLimit)
-              : gasEstimateInEth
-          }
-        />
+      <TransactionFeeLabel gasCostDai={displayGasInDai(gasLimit)} />
       </div>
       <div>
         {InfoIcon} Your wallet will need to sign <span>2</span> transactions

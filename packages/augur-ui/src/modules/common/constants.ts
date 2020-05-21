@@ -765,6 +765,9 @@ export const COMMITTING = 'committing';
 export const SUBMITTED = 'submitted';
 export const INTERRUPTED = 'interrupted';
 
+// transcation fee
+export const USE_ETH_RESERVE = 'Est. TX Fee (paid by ETH reserve)';
+export const NOT_USE_ETH_RESERVE = 'Est. TX Fee';
 // Market Creation
 export const CREATING_MARKET = 'creating market...';
 

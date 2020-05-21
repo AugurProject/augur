@@ -25,8 +25,7 @@ import {
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { labelWithTooltip } from 'modules/common/label-with-tooltip';
-
-const EstTxLabel = 'Est. Transaction Fee';
+import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 
 const mapStateToProps = (state: AppState) => {
   const pendingQueue = state.pendingQueue || [];
@@ -46,7 +45,8 @@ const mapStateToProps = (state: AppState) => {
     accountMarketClaimablePositions,
     GsnEnabled: state.appStatus.gsnEnabled,
     account: state.loginAccount.address,
-    pendingQueue
+    pendingQueue,
+    transactionLabel: getTransactionLabel(state)
   };
 };
 
@@ -64,6 +64,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
+  const transactionLabel = sP.transactionLabel;
   const pendingQueue = sP.pendingQueue;
   const accountMarketClaimablePositions = sP.accountMarketClaimablePositions;
   const showBreakdown = accountMarketClaimablePositions.markets.length > 1;
@@ -104,7 +105,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
               const gas = await dP.estimateGas([marketId], sP.account);
               const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
               return {
-                label: EstTxLabel,
+                label: transactionLabel,
                 value: String(displayfee),
               };
           },
@@ -149,7 +150,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         const gas = await dP.estimateGas(claimableMarkets.map(m => m.marketId), sP.account);
         const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
         return {
-          label: EstTxLabel,
+          label: transactionLabel,
           value: String(displayfee),
         };
       }
