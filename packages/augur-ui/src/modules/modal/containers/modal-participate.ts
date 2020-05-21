@@ -10,6 +10,7 @@ import { updateModal } from '../actions/update-modal';
 import { MODAL_INITIALIZE_ACCOUNT, GSN_WALLET_SEEN } from 'modules/common/constants';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
+import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 
 const mapStateToProps = (state: AppState) => {
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN) === "true" ? true : false;
@@ -28,6 +29,7 @@ const mapStateToProps = (state: AppState) => {
     GsnEnabled: state.appStatus.gsnEnabled,
     gsnUnavailable: isGSNUnavailable(state),
     gsnWalletInfoSeen,
+    transactionLabel: getTransactionLabel(state)
   }
 };
 

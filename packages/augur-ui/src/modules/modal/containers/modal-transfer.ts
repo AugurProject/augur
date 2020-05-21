@@ -14,6 +14,7 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
@@ -49,6 +50,7 @@ const mapStateToProps = (state: AppState) => {
         gasPrice
       )
     ),
+    transactionLabel: getTransactionLabel(state)
   },
 }
 };

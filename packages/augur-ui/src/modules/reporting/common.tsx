@@ -44,6 +44,7 @@ import {
   MovementLabel,
   InReportingLabel,
   InitializeWalletModalNotice,
+  TransactionFeeLabel,
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
 import {
@@ -688,11 +689,7 @@ export class DisputingBondsView extends Component<
           }
           value={formatRep(stakeValue || ZERO).formatted + ' REP'}
         />
-        <LinearPropertyLabel
-          key="estimatedGasFee"
-          label={GsnEnabled ? 'Transaction Fee' : 'Gas Fee'}
-          value={displayGasInDai(gasEstimate)}
-        />
+        <TransactionFeeLabel gasCostDai={displayGasInDai(gasEstimate)} />
         <InitializeWalletModalNotice />
         <PrimaryButton
           text="Confirm"
@@ -982,15 +979,7 @@ export class ReportingBondsView extends Component<
           </div>
         )}
         <div>
-          <LinearPropertyLabel
-            key="totalEstimatedGasFee"
-            label={GsnEnabled ? 'Transaction Fee' : 'Gas Fee'}
-            value={
-              GsnEnabled
-                ? displayGasInDai(gasEstimate)
-                : `${displayGasInDai(gasEstimate)} ETH`
-            }
-          />
+          <TransactionFeeLabel gasCostDai={displayGasInDai(gasEstimate)} />
           {insufficientFunds && (
             <span className={FormStyles.ErrorText}>
               Insufficient Funds to complete transaction
