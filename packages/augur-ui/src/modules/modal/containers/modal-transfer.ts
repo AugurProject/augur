@@ -14,6 +14,7 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
@@ -50,6 +51,7 @@ const mapStateToProps = (state: AppState) => {
       )
     ),
   },
+  transactionLabel: getTransactionLabel(state)
 }
 };
 
@@ -70,6 +72,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   balances: sP.balances,
   account: sP.account,
   gasPrice: sP.gasPrice,
+  transactionLabel: sP.transactionLabel,
   closeAction: () => dP.closeModal(),
   transferFundsGasEstimate: (amount: string, asset: string, to: string) => dP.transferFundsGasEstimate(amount, asset, to),
   transferFunds: (amount: string, asset: string, to: string) =>

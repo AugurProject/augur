@@ -15,7 +15,7 @@ import {
   DateTimeHeaders,
   PreviewMarketTitleHeader
 } from "modules/create-market/components/common";
-import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/labels";
+import { LinearPropertyLabel, LinearPropertyLabelTooltip, TransactionFeeLabel } from "modules/common/labels";
 import {
   SCALAR,
   CATEGORICAL,
@@ -344,14 +344,7 @@ export default class Review extends React.Component<
               label={"Total DAI"}
               value={totalDai.formattedValue + " DAI"}
             />
-            {GsnEnabled && <LinearPropertyLabel
-              label={"Transaction Fee"}
-              value={totalGasInDai + " DAI"}
-            />}
-            {!GsnEnabled && <LinearPropertyLabel
-              label={"Transaction Fee"}
-              value={totalEth.formattedValue + " ETH"}
-            />}
+            <TransactionFeeLabel gasCostDai={totalGasInDai} />
             <LinearPropertyLabel
               label={"TOTAL REP"}
               value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue + " REP"}
