@@ -13,6 +13,7 @@
     flex-flow: column nowrap;
     width: @size-56;
     order: 2;
+    height: 100%;
 
     @media @breakpoint-mobile-tablet {
       height: @top-bar-height-mobile;
@@ -66,11 +67,15 @@
         display: flex;
         flex-flow: column nowrap;
         position: absolute;
-        top: @top-bar-height-mobile;
+        top: @top-bar-height;
         align-self: flex-end;
         box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
         width: @size-240;
         border-radius: 0 0 @border-radius-default @border-radius-default;
+
+        @media @breakpoint-mobile-tablet {
+          top: @top-bar-height-mobile;
+        }
 
         > li {
           .text-14;

@@ -5,7 +5,7 @@
   color: var(--color-primary-text);
   flex-direction: column;
   justify-content: center;
-  max-height: @size-56;
+  max-height: @top-bar-height;
   position: relative;
   z-index: @above-all-content-above;
 
@@ -59,11 +59,12 @@
     border-bottom: 0;
     display: flex;
     padding: @size-12;
-    max-height: @top-bar-height-mobile;
+    max-height: @top-bar-height;
 
     @media @breakpoint-mobile-tablet {
       border: none;
       padding: @size-24 @size-12;
+      max-height: @top-bar-height-mobile;
     }
 
     &:focus {
