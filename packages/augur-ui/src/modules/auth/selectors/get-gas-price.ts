@@ -1,8 +1,9 @@
 import { createSelector } from "reselect";
-import { selectGasPriceInfo } from "appStore/select-state";
+import { selectGasPriceInfo, selectEnvState } from "appStore/select-state";
 import { createBigNumber } from "utils/create-big-number";
 import store from "appStore";
-import { GWEI_CONVERSION } from 'modules/common/constants';
+import { GWEI_CONVERSION, USE_ETH_RESERVE, NOT_USE_ETH_RESERVE } from 'modules/common/constants';
+import loginAccount, { selectLoginAccount } from "./login-account";
 
 export default function() {
   return getGasPrice(store.getState());
@@ -17,3 +18,14 @@ export const getGasPrice = createSelector(
       .toNumber();
   }
 );
+
+export const getTransactionLabel = createSelector(
+  selectLoginAccount,
+  selectEnvState,
+  (loginAccount, env) => {
+    const useEthReserve = createBigNumber(loginAccount.balances.dai).isGreaterThan(
+      createBigNumber(env.gsn.minDaiForSignerETHBalanceInDAI));
+    if (useEthReserve) return USE_ETH_RESERVE;
+    return NOT_USE_ETH_RESERVE;
+  }
+)

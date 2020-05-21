@@ -29,7 +29,7 @@ interface ModalParticipateProps {
   gsnWalletInfoSeen: boolean;
   gsnUnavailable: boolean;
   initializeGsnWallet: Function;
-
+  transactionLabel: string;
 }
 
 export const ModalParticipate = (props: ModalParticipateProps) => {
@@ -39,6 +39,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     messages,
     title,
     GsnEnabled,
+    transactionLabel,
   } = props;
 
   const [isValid, setIsValid] = useState(false);
@@ -132,7 +133,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
       showDenomination: true,
     },
     {
-      label: 'transaction fee',
+      label: transactionLabel,
       value: GsnEnabled
         ? displayGasInDai(gasLimit)
         : gasEstimateInEth,

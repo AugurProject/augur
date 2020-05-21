@@ -6,17 +6,16 @@ import {
   formatEther,
   formatRep,
   formatDai,
-  formatGasCostToEther,
 } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
-import { FormattedNumber, LoginAccount } from 'modules/types';
+import { FormattedNumber } from 'modules/types';
 import { FormDropdown, TextInput } from 'modules/common/form';
 import { CloseButton } from 'modules/common/buttons';
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
-import { ethToDai, displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface TransferFormProps {
   closeAction: Function;
@@ -35,6 +34,7 @@ interface TransferFormProps {
   account: string;
   GsnEnabled: boolean;
   gasPrice: number;
+  transactionLabel: string;
 }
 
 interface TransferFormState {
@@ -230,6 +230,7 @@ export class TransferForm extends Component<
       closeAction,
       GsnEnabled,
       gasPrice,
+      transactionLabel,
     } = this.props;
     const { relayerGasCosts, amount, currency, address, errors } = this.state;
     const { amount: errAmount, address: errAddress } = errors;
@@ -266,7 +267,7 @@ export class TransferForm extends Component<
         value: formattedAmount,
       },
       {
-        label: 'Transaction Fee',
+        label: transactionLabel,
         value: gasEstimate,
       },
     ];
