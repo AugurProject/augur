@@ -284,6 +284,15 @@ h6 {
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .TopBar {
+    @media @breakpoint-mobile {
+      height: @size-64;
+    }
+  }
+}
+
 .FloatAbove {
   z-index: @mask-above;
 
