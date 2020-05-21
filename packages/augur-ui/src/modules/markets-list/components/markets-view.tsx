@@ -149,20 +149,11 @@ const MarketsView = ({
     includeInvalidMarkets
   ]);
 
-  const [headerTitle, setHeaderTitle] = React.useState(
-    getHeaderTitleFromProps(search, location, selectedCategories)
+  const headerTitle = getHeaderTitleFromProps(
+    search,
+    location,
+    selectedCategories
   );
-
-  React.useEffect(() => {
-    const nextHeaderTitle = getHeaderTitleFromProps(
-      search,
-      location,
-      selectedCategories
-    );
-
-    setHeaderTitle(nextHeaderTitle);
-  }, [location, selectedCategories, search]);
-
 
   useEffect(() => {
     marketListViewed(
