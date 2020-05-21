@@ -23,7 +23,7 @@ import { ParsedLog } from '@augurproject/types';
 import { QUINTILLION, padHex } from '../../utils';
 import { SubscriptionEventName } from '../../constants';
 import { Block } from 'ethereumjs-blockstream';
-import { isTemplateMarket } from '@augurproject/artifacts';
+import { isTemplateMarket, getGroupHashInfo } from '@augurproject/artifacts';
 
 interface MarketOrderBookData {
   _id: string;
@@ -327,10 +327,10 @@ export class MarketDB extends DerivedDB {
     for (const order of orderbook[INVALID_OUTCOME].bids) {
       const bidAmount = new BigNumber(order.amount);
       const bidPrice = new BigNumber(order.price);
-  
+
       const validRevenue = bidAmount.multipliedBy(baseRevenue);
       const validCost = baseCost.plus(bidAmount.multipliedBy(numTicks.minus(bidPrice)));
-  
+
       if ((validRevenue.minus(validCost)).gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI)) {
         return 1;
       }
@@ -395,6 +395,11 @@ export class MarketDB extends DerivedDB {
         let errors = [];
         log['isTemplate'] = isTemplateMarket(log['extraInfo'].description, log['extraInfo'].template, log['outcomes'], log['extraInfo'].longDescription, log['endTime'], errors);
         if (errors.length > 0) console.error(log['extraInfo'].description, errors);
+
+        if (log['isTemplate']) {
+          const groupHashInfo = getGroupHashInfo(log['extraInfo'].template);
+          console.log(groupHashInfo);
+        }
       }
     } catch (err) {
       log['extraInfo'].isTemplate = false;

@@ -419,6 +419,12 @@ function hashResolutionRules(details) {
   return ethers.utils.sha256(value);
 }
 
+function hashGroupKeyValues(keyValues: string[]): string {
+  const params = JSON.stringify(keyValues);
+  const value = `0x${Buffer.from(params, 'utf8').toString('hex')}`;
+  return ethers.utils.sha256(value);
+}
+
 export const isValidTemplateMarket = (
   templateValidation: string,
   marketTitle: string
@@ -674,13 +680,19 @@ function isRetiredAutofail(hash: string) {
   return found.autoFail;
 }
 
-function getGroupHashInfo(templateHash: string, inputs: ExtraInfoTemplateInput[]): TemplateGroupInfo {
+export function getGroupHashInfo(template: ExtraInfoTemplate): TemplateGroupInfo {
+  if (!template || !template.hash || !template.inputs) return null;
+  const templateHash = template.hash;
+  const inputs = template.inputs;
   const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find(g => g[templateHash]);
   if (!hashGroup) return null;
+  const group = hashGroup[templateHash];
+  const keyValues = group.keys.map(k => String(inputs[k.inputId].value));
+  const hashKeyInputValues = hashGroupKeyValues(keyValues);
 
   return {
-    hashKeyInputValues: "blah",
-    groupType: hashGroup.groupType
+    hashKeyInputValues,
+    groupType: group.groupType
   }
 }
 

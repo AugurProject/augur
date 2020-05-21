@@ -680,17 +680,19 @@ function isRetiredAutofail(hash: string) {
   return found.autoFail;
 }
 
-export function getGroupHashInfo(templateHash: string, inputs: ExtraInfoTemplateInput[]): TemplateGroupInfo {
-  if (!templateHash || !inputs) return null;
+export function getGroupHashInfo(template: ExtraInfoTemplate): TemplateGroupInfo {
+  if (!template || !template.hash || !template.inputs) return null;
+  const templateHash = template.hash;
+  const inputs = template.inputs;
   const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find(g => g[templateHash]);
   if (!hashGroup) return null;
-
-  const keyValues = hashGroup.keys.map(k => String(inputs[k.inputId]));
+  const group = hashGroup[templateHash];
+  const keyValues = group.keys.map(k => String(inputs[k.inputId].value));
   const hashKeyInputValues = hashGroupKeyValues(keyValues);
 
   return {
     hashKeyInputValues,
-    groupType: hashGroup.groupType
+    groupType: group.groupType
   }
 }
 
