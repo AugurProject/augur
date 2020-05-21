@@ -52,8 +52,8 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
 
     // Gas stipends for acceptRelayedCall, preRelayedCall and postRelayedCall
     uint256 constant private ACCEPT_RELAYED_CALL_GAS_LIMIT = 50000;
-    uint256 constant private PRE_RELAYED_CALL_GAS_LIMIT = 500000;
-    uint256 constant private POST_RELAYED_CALL_GAS_LIMIT = 500000;
+    uint256 constant private PRE_RELAYED_CALL_GAS_LIMIT = 5000;
+    uint256 constant private POST_RELAYED_CALL_GAS_LIMIT = 200000;
 
     modifier relayHubOnly() {
         require(msg.sender == getHubAddr(), "Function can only be called by RelayHub");

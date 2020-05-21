@@ -36,6 +36,8 @@ class Contract():
             if getReturnData or abiFunc['constant'] or not commitTx:
                 try:
                     retVal = contractFunction.call({'from': sender, 'value': value}, block_identifier='pending')
+                except TransactionFailed as e:
+                    raise e
                 except: # There is a specific contract this is for where the expected return value is (bool, string)
                     retVal = True, ""
             if not abiFunc['constant'] and commitTx:
