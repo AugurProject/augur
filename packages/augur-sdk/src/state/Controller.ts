@@ -71,7 +71,8 @@ export class Controller {
       lowestBlock = blockNumber;
     }
 
-    const blocksBehindCurrent = blockNumber - lowestBlock;
+    const latestBlock = await this.getLatestBlock();
+    const blocksBehindCurrent = latestBlock.number - lowestBlock;
     const percentSynced = ((lowestBlock / blockNumber) * 100).toFixed(4);
     const timestamp = await this.augur.getTimestamp();
 
