@@ -92,11 +92,12 @@ export const MyBetsInnerNav = () => {
       <ul className={classNames(Styles.InnerNav__menu)}>
         <div>
           <span>View By</span>
-          <RadioBarGroup
-            radioButtons={MY_BETS_VIEW_BY}
-            defaultSelected={viewByLocal}
+          <PillSelection
+            options={MY_BETS_VIEW_BY}
+            defaultSelection={viewByLocal}
+            large
             onChange={viewByLocal => setState({ ...state, viewByLocal })}
-            light
+
           />
           {showEvents && (
             <>
@@ -110,13 +111,12 @@ export const MyBetsInnerNav = () => {
                 light
               />
               <span>Show</span>
-              <PillSelection
-                options={SPORTS_MARKET_TYPES}
-                defaultSelection={selectedMarketCardTypeLocal}
-                large
+              <RadioBarGroup
+                radioButtons={SPORTS_MARKET_TYPES}
+                defaultSelected={selectedMarketCardTypeLocal}
                 onChange={selectedMarketCardTypeLocal =>
-                  setState({ ...state, selectedMarketCardTypeLocal })
-                }
+                  setState({ ...state, selectedMarketCardTypeLocal })}
+                light
               />
             </>
           )}
@@ -130,13 +130,13 @@ export const MyBetsInnerNav = () => {
                 light
               />
               <span>Show</span>
-              <PillSelection
-                options={MARKET_STATE_TYPES}
-                defaultSelection={selectedMarketStateTypeLocal}
-                large
+              <RadioBarGroup
+                radioButtons={MARKET_STATE_TYPES}
+                defaultSelected={selectedMarketStateTypeLocal}
                 onChange={selectedMarketStateTypeLocal =>
                   setState({ ...state, selectedMarketStateTypeLocal })
                 }
+                light
               />
             </>
           )}
