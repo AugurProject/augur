@@ -122,6 +122,7 @@ import {
   marketCreationSaved,
 } from 'services/analytics/helpers';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
+import parsePath from 'modules/routes/helpers/parse-path';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -524,6 +525,10 @@ export const Form = ({ isTemplate, updatePage }) => {
   const history = useHistory();
   useEffect(() => {
     node?.current?.scrollIntoView();
+    return () => {
+      if (!blockShown && parsePath(history.location.pathname)[0] !== CREATE_MARKET) unblock(isTemplate, templateFormStarts,
+        history);
+    }
   }, [newMarket.currentStep]);
   const templateFormStarts = hasNoTemplateCategoryChildren(
     newMarket.navCategories[0]
@@ -664,7 +669,6 @@ export const Form = ({ isTemplate, updatePage }) => {
 
   const onChange = (name, value) => {
     let updates = { [name]: value };
-    // updateNewMarket({ [name]: value });
 
     if (name === 'outcomes') {
       const outcomesFormatted = getFormattedOutcomes(
@@ -673,7 +677,6 @@ export const Form = ({ isTemplate, updatePage }) => {
         newMarket.scalarDenomination
       );
       updates = { ...updates, outcomesFormatted };
-      // updateNewMarket({ outcomesFormatted });
     } else if (name === 'marketType') {
       let outcomesFormatted = [];
       if (value === CATEGORICAL) {
@@ -704,24 +707,16 @@ export const Form = ({ isTemplate, updatePage }) => {
           minPriceBigNumber: ZERO,
           maxPriceBigNumber: ONE,
         };
-        // updateNewMarket({
-        //   minPrice: 0,
-        //   maxPrice: 1,
-        //   minPriceBigNumber: ZERO,
-        //   maxPriceBigNumber: ONE,
-        // });
       }
       if (value !== CATEGORICAL) {
         onError('outcomes', '');
       }
       updates = { ...updates, outcomesFormatted };
-      // updateNewMarket({ outcomesFormatted });
       removeAllOrdersFromNewMarket();
     } else if (name === 'scalarDenomination') {
       let outcomesFormatted = SCALAR_OUTCOMES;
       outcomesFormatted[1].description = value;
       updates = { ...updates, outcomesFormatted };
-      // updateNewMarket({ outcomesFormatted });
     } else if (
       name === 'setEndTime' ||
       name === 'hour' ||
@@ -778,16 +773,6 @@ export const Form = ({ isTemplate, updatePage }) => {
         offsetName,
         timezone,
       };
-      // updateNewMarket({
-      //   endTimeFormatted,
-      //   setEndTime,
-      //   hour,
-      //   minute,
-      //   meridiem,
-      //   offset,
-      //   offsetName,
-      //   timezone,
-      // });
     }
     updateNewMarket(updates);
     onError(name, '');

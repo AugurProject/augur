@@ -24,7 +24,7 @@ interface FilterSearchState {
 }
 
 // Show mobile placeholder on devices with 475px or lower screen width
-const SERACH_PLACEHOLDER =
+const SEARCH_PLACEHOLDER =
   window.innerWidth > 475
     ? SEARCH_FILTER_PLACHOLDER
     : SEARCH_FILTER_PLACHOLDER_MOBILE;
@@ -48,7 +48,7 @@ export default class FilterSearch extends Component<
 
     this.state = {
       search: search || '',
-      placeholder: placeholder || SERACH_PLACEHOLDER,
+      placeholder: placeholder || SEARCH_PLACEHOLDER,
     };
 
     this.updateQuery = this.updateQuery.bind(this);
@@ -81,7 +81,7 @@ export default class FilterSearch extends Component<
 
   onBlur = () => {
     this.setState({
-      placeholder: this.props.placeholder || SERACH_PLACEHOLDER,
+      placeholder: this.props.placeholder || SEARCH_PLACEHOLDER,
     });
   };
 
