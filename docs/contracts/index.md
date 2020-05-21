@@ -3434,7 +3434,13 @@ Emitted when a contract changes its {IRelayHub} contract to a new one.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWalletFactory.trustedCreateAugurWallet(address,address,bytes32)"><code class="function-signature">trustedCreateAugurWallet(address _owner, address _referralAddress, bytes32 _fingerprint)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWalletFactory.getCreate2WalletAddress(address)"><code class="function-signature">getCreate2WalletAddress(address _owner)</code></a></li><li><a href="#IAugurWalletFactory.trustedCreateAugurWallet(address,address,bytes32)"><code class="function-signature">trustedCreateAugurWallet(address _owner, address _referralAddress, bytes32 _fingerprint)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurWalletFactory.getCreate2WalletAddress(address)"></a><code class="function-signature">getCreate2WalletAddress(address _owner) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
 
 
 

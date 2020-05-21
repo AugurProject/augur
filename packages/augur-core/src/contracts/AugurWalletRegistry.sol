@@ -190,14 +190,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     }
 
     function getCreate2WalletAddress(address _owner) public view returns (address) {
-        bytes1 _const = 0xff;
-        bytes32 _salt = keccak256(abi.encodePacked(_owner));
-        return address(uint160(uint256(keccak256(abi.encodePacked(
-            _const,
-            augurWalletRegistryV2,
-            _salt,
-            keccak256(abi.encodePacked(type(AugurWallet).creationCode))
-        )))));
+        return IAugurWalletFactory(augurWalletRegistryV2).getCreate2WalletAddress(_owner);
     }
 
 /**
