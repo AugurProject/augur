@@ -41,6 +41,11 @@ import {
   TEXT_PLACEHOLDERS,
   NFL_DRAFT,
   NBA_DRAFT,
+  MONEY_LINE,
+  WEEK_NO,
+  TEAM_B,
+  TEAM_A,
+  START_TIME,
 } from './templates-template';
 import {
   LIST_VALUES,
@@ -5157,9 +5162,11 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0]: Which NFL Team will win: [1] vs. [2]?`,
                 example: ` Week 1: Which NFL Team will win: NY Giants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                groupName: MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
+                    groupKey: WEEK_NO,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Week #`,
                     noSort: true,
@@ -5169,18 +5176,21 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
                     id: 2,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     values: LIST_VALUES.NFL_TEAMS,
                   },
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 8,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                   {

@@ -23,6 +23,7 @@ import { retiredTemplates } from '../templates-retired';
 const templateString = '//##TEMPLATES##';
 const templateValidationString = '//##TEMPLATE_VALIDATIONS##';
 const templateRetiredTemplatesString = '//##RETIRED_TEMPLATES';
+const templateGroups = '//##TEMPLATE_GROUPS##';
 const templateArtifactsFile = '../augur-artifacts/src/templates.ts';
 const templateTemplateFile = './src/templates-template.ts';
 
@@ -63,6 +64,11 @@ export const generateTemplateValidations = async () => {
       templateRetiredTemplatesString,
       newRetiredTemplates
     );
+
+    // generate template groups
+    Object.keys(newTemplateValueObj).map(template => {
+
+    })
 
     fs.writeFileSync(templateArtifactsFile, setRetiredTemplates, 'utf8');
   } catch (e) {

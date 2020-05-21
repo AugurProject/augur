@@ -2,6 +2,14 @@ import { ethers } from 'ethers';
 import moment from 'moment';
 import { BigNumber } from 'ethers/utils';
 
+export const MONEY_LINE = 'MONEY_LINE';
+export const OVER_UNDER = 'OVER_UNDER';
+export const SPREAD = 'SPREAD';
+export const WEEK_NO = 'WEEK_NO';
+export const TEAM_A = 'TEAM_A';
+export const TEAM_B = 'TEAM_B';
+export const START_TIME = 'START_TIME';
+
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
 // Market templates
@@ -197,6 +205,7 @@ export interface Template {
   minPrice?: number;
   maxPrice?: number;
   noAdditionalUserOutcomes?: boolean;
+  groupName: string;
 }
 
 export interface TemplateInput {
@@ -878,3 +887,5 @@ export const isTemplateMarket = (
 //##TEMPLATES##
 
 //##TEMPLATE_VALIDATIONS##
+
+//##TEMPLATE_GROUPS##
