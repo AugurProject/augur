@@ -1,40 +1,51 @@
 import React from 'react';
 
-import { Drafts, Draft } from 'modules/types';
+import { Draft } from 'modules/types';
 import { formatDate } from 'utils/format-date';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import { SCRATCH, TEMPLATE } from 'modules/create-market/constants';
 
 import Styles from 'modules/create-market/saved-drafts.styles.less';
 import { CancelTextButton } from 'modules/common/buttons';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { createBigNumber } from 'utils/create-big-number';
+import { ZERO, ONE } from 'modules/common/constants';
 
 interface SavedDraftsProps {
-  drafts: Drafts;
-  updateNewMarket: Function;
   updatePage: Function;
-  removeDraft: Function;
 }
 
 interface DraftRowProps {
   draft?: Draft;
-  updateNewMarket: Function;
   updatePage: Function;
-  removeDraft: Function;
 }
 
 const DraftRow: React.FC<DraftRowProps> = ({
   draft,
-  removeDraft,
-  updateNewMarket,
   updatePage,
 }) => {
+  const { actions: { updateNewMarket, removeDraft } } = useAppStatusStore();
   const date = formatDate(new Date(draft.updated * 1000))
     .formattedLocalShortWithUtcOffset;
   return (
     <div className={Styles.DraftRow}>
       <button
         onClick={() => {
-          updateNewMarket(draft);
+          const data = draft;
+          // convert strings to BigNumber for BigNumber fields
+          data.initialLiquidityDai = data.initialLiquidityDai
+            ? createBigNumber(data.initialLiquidityDai)
+            : ZERO;
+          data.initialLiquidityGas = data.initialLiquidityGas
+            ? createBigNumber(data.initialLiquidityGas)
+            : ZERO;
+          data.maxPriceBigNumber = data.maxPriceBigNumber
+            ? createBigNumber(data.maxPriceBigNumber)
+            : ONE;
+          data.minPriceBigNumber = data.minPriceBigNumber
+            ? createBigNumber(data.minPriceBigNumber)
+            : ZERO;
+          updateNewMarket(data);
           updatePage(draft.template ? TEMPLATE : SCRATCH);
         }}
       >
@@ -49,7 +60,10 @@ const DraftRow: React.FC<DraftRowProps> = ({
   );
 };
 
-const SavedDrafts = ({ drafts, updatePage, removeDraft, updateNewMarket }: SavedDraftsProps) => {
+const SavedDrafts = ({
+  updatePage,
+}: SavedDraftsProps) => {
+  const { drafts } = useAppStatusStore();
   if (!Object.keys(drafts).length) return null;
 
   const draftsSorted = Object.keys(drafts).sort(function(a, b) {
@@ -67,8 +81,6 @@ const SavedDrafts = ({ drafts, updatePage, removeDraft, updateNewMarket }: Saved
             <DraftRow
               key={key}
               draft={drafts[key]}
-              removeDraft={removeDraft}
-              updateNewMarket={updateNewMarket}
               updatePage={updatePage}
             />
           ))}

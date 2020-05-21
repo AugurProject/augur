@@ -14,7 +14,7 @@ import {
   MARKET_COPY_LIST,
   EMPTY_STATE,
 } from 'modules/create-market/constants';
-import SavedDrafts from 'modules/create-market/containers/saved-drafts';
+import SavedDrafts from 'modules/create-market/saved-drafts';
 
 import Styles from 'modules/create-market/landing.styles.less';
 import { getTemplateRadioCards } from './get-template';

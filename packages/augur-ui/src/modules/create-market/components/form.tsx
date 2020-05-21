@@ -84,7 +84,7 @@ import {
   buildformattedDate,
   convertUnixToFormattedDate,
 } from 'utils/format-date';
-import TemplatePicker from 'modules/create-market/containers/template-picker';
+import TemplatePicker from 'modules/create-market/components/template-picker';
 
 import Styles from 'modules/create-market/components/form.styles.less';
 
