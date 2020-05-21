@@ -124,10 +124,7 @@ const addTemplates = (
     );
   }
   if (category.templates) {
-    const group: TemplateGroup = {
-      groupKeys: [],
-      templatesHashes: [],
-    }
+    let group: TemplateGroup = {}
     category.templates.map(t => {
       const hashValue = generateTemplateHash(t);
       t.hash = hashValue;
@@ -161,13 +158,19 @@ const addTemplates = (
 
       const groupName = t.groupName;
       if (groupName) {
-        group.templatesHashes.push(t.hash);
-        group.groupKeys = t.inputs.reduce((p, i) =>
-          i.groupKey ? [...p, i.groupKey] : p, []
+        const keys = t.inputs.reduce((p, i) =>
+          i.groupKey ? [...p, {groupKey: i.groupKey, inputId: i.id}] : p, []
         );
+        group = {
+          ...group,
+          [t.hash]: {
+            groupType: groupName,
+            keys
+          }
+        }
       }
     });
-    if (group.groupKeys.length > 0) {
+    if (Object.keys(group).length > 0) {
       templateGroups.push(group);
     }
   }

@@ -189,9 +189,12 @@ export interface TemplateValidation {
   categoricalOutcomes: CategoricalOutcomes;
 }
 
+export interface TemplateGroupKeys {
+  groupType: string;
+  keys: { groupKey: string, inputId: number }[]
+}
 export interface TemplateGroup {
-  groupKeys: string[];
-  templatesHashes: string[];
+  [hash: string] : TemplateGroupKeys
 }
 export interface TemplateValidationHash {
   [hash: string]: TemplateValidation;
@@ -260,6 +263,11 @@ export interface TemplateInput {
 export interface RetiredTemplate {
   hash: string;
   autoFail: boolean;
+}
+
+export interface TemplateGroupInfo {
+  hashKeyInputValues: string;
+  groupType: string;
 }
 
 export enum ValidationType {
@@ -408,6 +416,12 @@ export function generateResolutionRulesHash(rules: ResolutionRules) {
 function hashResolutionRules(details) {
   if (!details) return null;
   const value = `0x${Buffer.from(details, 'utf8').toString('hex')}`;
+  return ethers.utils.sha256(value);
+}
+
+function hashGroupKeyValues(keyValues: string[]): string {
+  const params = JSON.stringify(keyValues);
+  const value = `0x${Buffer.from(params, 'utf8').toString('hex')}`;
   return ethers.utils.sha256(value);
 }
 
@@ -664,6 +678,20 @@ function isRetiredAutofail(hash: string) {
   );
   if (!found) return false;
   return found.autoFail;
+}
+
+export function getGroupHashInfo(templateHash: string, inputs: ExtraInfoTemplateInput[]): TemplateGroupInfo {
+  if (!templateHash || !inputs) return null;
+  const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find(g => g[templateHash]);
+  if (!hashGroup) return null;
+
+  const keyValues = hashGroup.keys.map(k => String(inputs[k.inputId]));
+  const hashKeyInputValues = hashGroupKeyValues(keyValues);
+
+  return {
+    hashKeyInputValues,
+    groupType: hashGroup.groupType
+  }
 }
 
 export const isTemplateMarket = (
