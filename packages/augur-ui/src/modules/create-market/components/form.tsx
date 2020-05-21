@@ -58,7 +58,7 @@ import {
 import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/components/form-details';
 import Review from 'modules/create-market/containers/review';
-import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
+import FeesLiquidity from 'modules/create-market/fees-liquidity';
 import SubCategories from 'modules/create-market/components/sub-categories';
 import { MarketType } from 'modules/create-market/components/market-type';
 import makePath from 'modules/routes/helpers/make-path';
@@ -862,7 +862,6 @@ export const Form = ({ isTemplate, updatePage }) => {
             {mainContent === FEES_LIQUIDITY && (
               <FeesLiquidity
                 onChange={(name, value) => onChange(name, value)}
-                onError={(name, error) => onError(name, error)}
               />
             )}
             {mainContent === REVIEW && (
