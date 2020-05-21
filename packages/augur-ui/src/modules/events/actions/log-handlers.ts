@@ -184,7 +184,7 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { isLogged, env: { showReloadModal } } = AppStatus.get();  
+  const { isLogged, zeroXStatus, env: { showReloadModal } } = AppStatus.get();  
   if (log && log.error && log.error.message.includes('too many blocks')) {
     console.error('too many blocks behind, reloading UI');
     showReloadModal ? AppStatus.actions.setModal({
@@ -193,7 +193,6 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
       title: 'Currently Far Behind to get Orders',
     }) : location.reload();
   }
-  const { isLogged, zeroXStatus } = AppStatus.get();
   if (zeroXStatus !== status) AppStatus.actions.setOxStatus(status);
   if (status === ZEROX_STATUSES.SYNCED && isLogged) {
     dispatch(throttleLoadUserOpenOrders());
