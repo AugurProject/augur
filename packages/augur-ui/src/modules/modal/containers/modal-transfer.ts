@@ -50,8 +50,8 @@ const mapStateToProps = (state: AppState) => {
         gasPrice
       )
     ),
-    transactionLabel: getTransactionLabel(state)
   },
+  transactionLabel: getTransactionLabel(state)
 }
 };
 
@@ -72,6 +72,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   balances: sP.balances,
   account: sP.account,
   gasPrice: sP.gasPrice,
+  transactionLabel: sP.transactionLabel,
   closeAction: () => dP.closeModal(),
   transferFundsGasEstimate: (amount: string, asset: string, to: string) => dP.transferFundsGasEstimate(amount, asset, to),
   transferFunds: (amount: string, asset: string, to: string) =>

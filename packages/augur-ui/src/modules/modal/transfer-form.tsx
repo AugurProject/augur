@@ -230,6 +230,7 @@ export class TransferForm extends Component<
       closeAction,
       GsnEnabled,
       gasPrice,
+      transactionLabel,
     } = this.props;
     const { relayerGasCosts, amount, currency, address, errors } = this.state;
     const { amount: errAmount, address: errAddress } = errors;
@@ -266,7 +267,7 @@ export class TransferForm extends Component<
         value: formattedAmount,
       },
       {
-        label: this.props.transactionLabel,
+        label: transactionLabel,
         value: gasEstimate,
       },
     ];

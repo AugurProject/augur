@@ -80,7 +80,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   };
   const submitAllTxCount = redeemStakeBatches(allRedeemStakeOptions);
   const claimableMarkets = claimReportingFees.claimableMarkets;
-  const showBreakdown = claimableMarkets.marketContracts.length > 1;
+  const showBreakdown = (claimableMarkets.marketContracts.length + reportingParticipants.length) > 1;
   const totalRep = `${formatAttoRep(claimReportingFees.totalUnclaimedRep).formatted} REP`;
 
   if (!participationTokensOnly) {
