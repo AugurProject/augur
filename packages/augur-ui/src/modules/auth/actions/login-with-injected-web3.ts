@@ -11,6 +11,7 @@ import {
   SIGNIN_LOADING_TEXT,
   SIGNIN_SIGN_WALLET,
   MODAL_LOADING,
+  NETWORK_IDS,
 } from 'modules/common/constants';
 import { augurSdk } from 'services/augursdk';
 import { closeModal } from 'modules/modal/actions/close-modal';
@@ -36,7 +37,7 @@ export const loginWithInjectedWeb3 = () => async (
 
     const web3 = windowRef.web3;
 
-    if (web3.currentProvider?.publicConfigStore?.on) {
+    if (web3 && web3.currentProvider?.publicConfigStore?.on) {
       web3.currentProvider.publicConfigStore.on('update', config => {
         if (augurSdk.networkId !== config.networkVersion) {
           console.log(
@@ -96,7 +97,7 @@ const login = (account: string) => (
   getState: () => AppState
 ) => {
   const provider = getWeb3Provider(windowRef);
-  const networkId = windowRef.web3.currentProvider.networkVersion;
+  const networkId = windowRef.web3?.currentProvider?.networkVersion || getState().env['networkId'];
   const address = toChecksumAddress(account);
   const accountObject = {
     address,

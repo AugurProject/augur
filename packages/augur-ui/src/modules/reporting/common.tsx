@@ -53,7 +53,7 @@ import {
   formatGasCostToEther,
 } from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
-import { ExclamationCircle, InfoIcon, XIcon, REP } from 'modules/common/icons';
+import { InfoIcon, InformationIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
 import FormStyles from 'modules/common/form.styles.less';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -99,7 +99,7 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
     <>
       {show ? (
         <div className={classNames(Styles.DismissableNotice, props.className)}>
-          <span>{ExclamationCircle}</span>
+          <span>{InformationIcon}</span>
           <div>
             <div>{props.title}</div>
             {props.description && <div>{props.description}</div>}

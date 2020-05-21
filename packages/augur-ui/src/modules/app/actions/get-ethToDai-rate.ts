@@ -6,7 +6,7 @@ import { NodeStyleCallback, FormattedNumber } from 'modules/types';
 import logError from 'utils/log-error';
 import { formatDaiEstimate, formatAttoDai } from 'utils/format-number';
 import { augurSdk } from 'services/augursdk';
-import { BigNumber } from 'utils/create-big-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export const getEthToDaiRate = (
@@ -23,7 +23,12 @@ export const getEthToDaiRate = (
   }
 };
 
-export const ethToDai = (ethAmount: number, ethToDaiRate: BigNumber) => {
+export const ethToDaiFromAttoRate = (ethAmount: number): FormattedNumber => {
+  const attoEthToDaiRate: BigNumber = getEthForDaiRate();
+  return ethToDai(createBigNumber(ethAmount), attoEthToDaiRate.div(10 ** 18));
+};
+
+export const ethToDai = (ethAmount: number, ethToDaiRate: BigNumber): FormattedNumber => {
   if (!ethToDaiRate) return formatDaiEstimate(0);
   return formatDaiEstimate(ethToDaiRate.times(ethAmount));
 };

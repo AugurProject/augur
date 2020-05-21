@@ -11,38 +11,38 @@ import { Action } from 'redux';
 import { formatAttoRep } from 'utils/format-number';
 import { addedDaiEvent } from 'services/analytics/helpers';
 import { createBigNumber } from 'utils/create-big-number';
-import { WALLET_STATUS_VALUES, TWENTY_FIVE } from 'modules/common/constants';
+import { WALLET_STATUS_VALUES, FIVE} from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
+import { addEthIncreaseAlert } from 'modules/alerts/actions/alerts';
 
 export const updateAssets = (
-  callback: NodeStyleCallback
+  callback?: NodeStyleCallback,
 ): ThunkAction<any, any, any, any> => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const {
-    loginAccount: { address, meta },
-  } = AppStatus.get();
+  const { loginAccount: { address, meta, balances: { ethNonSafe } } } = AppStatus.get();
   const nonSafeWallet = await meta.signer.getAddress();
 
-  updateBalances(address, nonSafeWallet, dispatch, (err, balances) => {
-    const { walletStatus } = AppStatus.get();
-    // TODO: set min amount of DAI, for testing need a real values
-    if (
-      createBigNumber(balances.dai).gt(TWENTY_FIVE) &&
-      walletStatus !== WALLET_STATUS_VALUES.CREATED
-    ) {
-      AppStatus.actions.setWalletStatus(
-        WALLET_STATUS_VALUES.FUNDED_NEED_CREATE
-      );
-    }
-    if (callback) callback(balances);
-  });
+  updateBalances(
+    address,
+    nonSafeWallet,
+    String(ethNonSafe),
+    dispatch,
+    (err, balances) => {
+      const { walletStatus } = AppStatus.get();
+      // TODO: set min amount of DAI, for testing need a real values
+      if (createBigNumber(balances.dai).gt(FIVE) && (walletStatus !== WALLET_STATUS_VALUES.CREATED)) {
+        AppStatus.actions.setWalletStatus(WALLET_STATUS_VALUES.FUNDED_NEED_CREATE);
+      }
+      if (callback) callback(balances);
+    });
 };
 
 function updateBalances(
   address: string,
   nonSafeWallet: string,
+  ethNonSafeBalance: string,
   dispatch: ThunkDispatch<void, any, Action>,
   callback: NodeStyleCallback
 ) {
@@ -79,6 +79,7 @@ function updateBalances(
       legacyRepNonSafe,
       ethNonSafe,
     };
+    dispatch(addEthIncreaseAlert(dai, ethNonSafeBalance, ethNonSafe));
     AppStatus.actions.updateLoginAccount({
       balances,
     });

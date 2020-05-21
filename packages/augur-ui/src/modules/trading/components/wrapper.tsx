@@ -9,13 +9,10 @@ import {
   SCALAR,
   BUY,
   SELL,
-  UPPER_FIXED_PRECISION_BOUND,
-  INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import Styles from 'modules/trading/components/wrapper.styles.less';
 import { OrderButton, PrimaryButton } from 'modules/common/buttons';
 import {
-  formatShares,
   formatGasCostToEther,
   formatNumber,
   formatMarketShares,
@@ -25,6 +22,7 @@ import { MarketData, OutcomeFormatted } from 'modules/types';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { formatDai } from 'utils/format-number';
 import { Moment } from 'moment';
+import { calcOrderExpirationTime } from 'utils/format-date';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
@@ -63,7 +61,7 @@ interface WrapperProps {
   availableDai: number;
   gsnUnavailable: boolean;
   initializeGsnWallet: Function;
-  zeroXEnabled: boolean;
+  endTime: number;
 }
 
 interface WrapperState {
@@ -221,7 +219,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   clearOrderForm(wholeForm = true) {
     const trade = Wrapper.getDefaultTrade(this.props);
     const expirationDate =
-      this.props.selectedOrderProperties.expirationDate || null;
+      this.props.selectedOrderProperties.expirationDate || calcOrderExpirationTime(this.props.endTime, this.props.currentTimestamp);
     const updatedState: any = wholeForm
       ? {
           orderPrice: '',
@@ -455,7 +453,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       gsnUnavailable,
       initializeGsnWallet,
       gsnWalletInfoSeen,
-      zeroXEnabled,
     } = this.props;
     let {
       marketType,
@@ -619,7 +616,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               updateTradeNumShares={this.updateTradeNumShares}
               clearOrderConfirmation={this.clearOrderConfirmation}
               initialLiquidity={initialLiquidity}
-              zeroXEnabled={zeroXEnabled}
             />
           )}
         </div>
@@ -642,7 +638,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             />
           )}
         <div>{actionButton}</div>
-        {showTip && (
+        {showTip && !initialLiquidity && (
           <div>
             <span>TIP:</span> If you think an outcome won't occur, you can sell
             shares that you don't own.

@@ -59,6 +59,7 @@
 
     > div:last-of-type {
       min-height: @size-414;
+      position: relative;
 
       div[class*='RowContent'] {
         > div > div {
@@ -86,6 +87,38 @@
         > span {
           display: none;
         }
+      }
+    }
+  }
+
+  .BottomContent {
+    border-top: @size-1 solid var(--color-dark-grey);
+    display: flex;
+    flex-direction: row-reverse;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+
+    > a > button {
+      .mono-10-semi-bold;
+
+      border: none;
+      text-transform: uppercase;
+
+      > svg {
+        margin-right: @size-8;
+
+        > path {
+          fill: var(--color-primary-text);
+        }
+      }
+
+      &:not(:disabled):hover,
+      &:not(:disabled):focus,
+      &:not(:disabled):focus:hover,
+      &:not(:disabled):active {
+        color: var(--color-primary-text);
+        background: var(--color-secondary-action);
       }
     }
   }

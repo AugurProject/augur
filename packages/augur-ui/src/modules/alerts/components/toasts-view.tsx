@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import Alert from 'modules/alerts/components/alert';
-
+import { Alert as AlertType } from 'modules/types';
 import Styles from 'modules/alerts/components/toasts-view.styles.less';
 import classNames from 'classnames';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -42,6 +42,7 @@ const ToastsView = ({
         removeAlert={() => removeAlert(toast.uniqueId, toast.name)}
         toggleAlerts={toggleAlerts}
         showToast={true}
+        timestampInMilliseconds={toast.timestamp}
         {...toast}
       />
     </div>

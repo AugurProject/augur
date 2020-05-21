@@ -9,7 +9,7 @@
   border-radius: @border-radius-default;
   height: 304px;
   background-image: url('../../../assets/images/hero-background.png');
-  background-position: 85% center;
+  background-position: 100% center;
   background-size: contain;
   background-repeat: no-repeat;
 
@@ -29,8 +29,8 @@
     flex-direction: column;
     justify-content: center;
     flex: 1;
-    max-width: 340px;
-    margin: @size-40 0 @size-48 @size-48;
+    max-width: 480px;
+    margin: @size-40 @size-16 @size-48 @size-48;
 
     > h1 {
       .text-30-bold;
@@ -61,7 +61,7 @@
     grid-gap: 54px;
     grid-template-columns: 1fr 1fr;
     margin-left: auto;
-    margin-right: 14%;
+    margin-right: 11%;
 
     > img:first-of-type {
       max-width: 152px;
@@ -81,10 +81,11 @@
   }
 
   @media @breakpoint-mobile-tablet {
-    background-size: cover;
+    background-position: 120% center;
 
     > div:first-of-type {
       z-index: 1;
+      max-width: 340px;
     }
 
     > div:last-of-type {

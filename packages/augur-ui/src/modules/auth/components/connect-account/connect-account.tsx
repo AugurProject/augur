@@ -14,18 +14,14 @@ const ConnectAccount = () => {
   const connectDropdown = useRef(null);
   const {
     loginAccount: { meta: userInfo, balances },
-    mobileMenuState,
     isLogged,
     restoredAccount,
     isConnectionTrayOpen,
-    actions: { setIsConnectionTrayOpen, setMobileMenuState },
+    actions: { setIsConnectionTrayOpen },
   } = useAppStatusStore();
   if ((!isLogged && !restoredAccount) || !userInfo) return null;
 
   function toggleDropdown(cb?: Function) {
-    if (mobileMenuState <= 0) {
-      setMobileMenuState(1);
-    }
     setIsConnectionTrayOpen(!isConnectionTrayOpen);
     if (cb && typeof cb === 'function') cb();
   }

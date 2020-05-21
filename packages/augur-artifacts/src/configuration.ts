@@ -39,6 +39,8 @@ export interface SDKConfiguration {
   }
   gsn?: {
     enabled: boolean,
+    minDaiForSignerETHBalanceInDAI?: number,
+    desiredSignerBalanceInETH?: number,
   },
   zeroX?: {
     rpc?: {
@@ -84,6 +86,8 @@ export interface SDKConfiguration {
   },
   // In the JSON configs an integer will need to be used.
   logLevel?: LoggerLevels,
+  showReloadModal?: boolean,
+  averageBlocktime?: number,
 };
 
 export interface ContractAddresses {
@@ -209,7 +213,9 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     exchangeRateBufferMultiplier: 1.075,
   },
   gsn: {
-    enabled: true
+    enabled: true,
+    minDaiForSignerETHBalanceInDAI: 40,
+    desiredSignerBalanceInETH: .04,
   },
   zeroX: {
     rpc: {
@@ -244,6 +250,8 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   },
   uploadBlockNumber: 0,
   logLevel: LoggerLevels.warn,
+  showReloadModal: true,
+  averageBlocktime: 2000
 };
 
 export function isDevNetworkId(id: NetworkId): boolean {

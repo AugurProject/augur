@@ -6,7 +6,7 @@
   margin: auto;
   padding: 0 @size-16;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     margin: 0 @size-14;
     padding: 0;
   }
@@ -24,7 +24,7 @@
       margin: @size-4 @size-24 @size-4 0;
     }
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       align-items: baseline;
       margin: 0;
 
@@ -43,17 +43,21 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .MarketsView {
-    margin: 0;
-
     > section:not([class*='LandingHero']) {
       // this is the sportsbook/betting-ui topsection
       align-items: center;
       display: grid;
       grid-gap: 0 @size-8;
-      grid-template-columns: 0fr 1fr minmax(270px, 1fr);
+      grid-template-columns: auto 1fr minmax(270px, 1fr);
       margin-top: @size-32;
 
-      > ul {
+      > h2 {
+        .text-20-bold;
+
+        color: var(--color-primary-text);
+      }
+
+      > button {
         display: none;
       }
 
@@ -61,14 +65,20 @@
         justify-self: flex-end;
         grid-column: 2;
       }
-    }
-  }
-}
 
-:root[theme="SPORTS"] {
-  .MarketsView > section:not([class*='LandingHero']) > ul {
-    display: flex;
-    grid-column: 1;
+      @media @breakpoint-mobile-tablet {
+        grid-template-columns: 1fr auto;
+
+        > h2 {
+          grid-column: 1 / span 2;
+          margin-bottom: @size-8;
+        }
+        
+        > button {
+          display: flex;
+        }
+      }
+    }
   }
 }
 
@@ -76,36 +86,5 @@
   > div {
     pointer-events: none;
     opacity: 0.5;
-  }
-}
-
-
-@media @breakpoint-tablet {
-  .MarketsView {
-    max-width: @size-775;
-
-    > div:first-of-type {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      margin-top: 0;
-
-      > div:first-of-type {
-        margin-top: @size-8;
-      }
-
-      > div:nth-of-type(2) {
-        justify-content: flex-end;
-        align-items: center;
-        margin-right: 0;
-
-        > span {
-          display: flex;
-        }
-      }
-
-      > div:last-of-type {
-        display: none;
-      }
-    }
   }
 }

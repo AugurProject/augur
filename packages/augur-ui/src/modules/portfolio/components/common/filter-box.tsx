@@ -11,6 +11,7 @@ import { createTabsInfo } from 'modules/portfolio/helpers/create-tabs-info';
 import { THEMES } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
+import { StarIcon } from 'modules/common/icons';
 
 export interface MarketsByReportingState {
   [type: string]: Array<Market>;
@@ -36,6 +37,11 @@ export interface FilterBoxProps {
   extend: boolean;
   customClass?: string;
   showLiquidityDepleted?: boolean;
+  bottomContent?: ReactNode;
+  emptyDisplayTitle?: string,
+  emptyDisplayText?: string,
+  emptyDisplayIcon: any;
+  emptyDisplayButton?: ReactNode;
 }
 
 const FilterBox: React.FC<FilterBoxProps> = ({
@@ -56,6 +62,11 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   data,
   customClass,
   showLiquidityDepleted,
+  bottomContent,
+  emptyDisplayTitle,
+  emptyDisplayText,
+  emptyDisplayIcon,
+  emptyDisplayButton,
 }) => {
   const [search, setSearch] = useState('');
   const [selectedTab, setSelectedTab] = useState(ALL_MARKETS);
@@ -137,7 +148,9 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   return (
     <QuadBox
       title={title}
-      leftContent={<div className={Styles.Count}>{filteredData.length}</div>}
+      leftContent={filteredData.length > 0 &&
+        <div className={Styles.Count}>{filteredData.length}</div>
+      }
       customClass={customClass}
       switchHeaders={true}
       showFilterSearch={true}
@@ -178,6 +191,7 @@ const FilterBox: React.FC<FilterBoxProps> = ({
           </div>
         )
       }
+      bottomContent={bottomContent}
       content={
         <>
           {filteredData.length === 0 && (
@@ -185,6 +199,11 @@ const FilterBox: React.FC<FilterBoxProps> = ({
               selectedTab={''}
               filterLabel={filterLabel}
               search={search}
+              title={title}
+              emptyTitle={emptyDisplayTitle}
+              emptyText={emptyDisplayText}
+              icon={emptyDisplayIcon}
+              button={emptyDisplayButton}
             />
           )}
           <div className={Styles.MarketBox}>
@@ -213,5 +232,9 @@ const FilterBox: React.FC<FilterBoxProps> = ({
     />
   );
 };
+
+FilterBox.defaultProps = {
+  emptyDisplayIcon: StarIcon
+}
 
 export default FilterBox;

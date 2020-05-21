@@ -100,6 +100,9 @@ const Favorites = ({
         'endTime',
         'creationTime',
       ]}
+      emptyDisplayText={
+        isTrading ? null : "You don't have any favorite market to show!"
+      }
     />
   );
 };

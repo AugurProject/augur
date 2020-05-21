@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import { NameValuePair, Market } from 'modules/portfolio/types';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
+import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
 
 export interface MarketsByReportingState {
   [type: string]: Array<Market>;
@@ -27,6 +28,11 @@ export interface FilterBoxProps {
   hide?:boolean;
   customClass?: string;
   showHeaderOnMobile?: boolean;
+  bottomContent?: ReactNode;
+  emptyDisplayTitle?: string,
+  emptyDisplayText?: string,
+  emptyDisplayIcon: any;
+  emptyDisplayButton?: ReactNode;
 }
 
 interface FilterBoxState {
@@ -105,7 +111,12 @@ export default class FilterSwitchBox extends React.Component<
       extend,
       hide,
       customClass,
-      showHeaderOnMobile
+      showHeaderOnMobile,
+      bottomContent,
+      emptyDisplayTitle,
+      emptyDisplayText,
+      emptyDisplayIcon,
+      emptyDisplayButton,
     } = this.props;
 
     const { search, filteredData } = this.state;
@@ -113,6 +124,9 @@ export default class FilterSwitchBox extends React.Component<
     return (
       <QuadBox
         title={title}
+        leftContent={filteredData.length > 0 &&
+          <div className={Styles.Count}>{filteredData.length}</div>
+        }
         showFilterSearch={showFilterSearch}
         search={search}
         customClass={customClass}
@@ -127,6 +141,7 @@ export default class FilterSwitchBox extends React.Component<
         extend={extend}
         hide={hide}
         showHeaderOnMobile={showHeaderOnMobile}
+        bottomContent={bottomContent}
         content={
           <>
             {filteredData.length === 0 && (
@@ -134,6 +149,11 @@ export default class FilterSwitchBox extends React.Component<
                 selectedTab=""
                 filterLabel={filterLabel}
                 search={search}
+                title={title}
+                emptyTitle={emptyDisplayTitle}
+                emptyText={emptyDisplayText}
+                icon={emptyDisplayIcon}
+                button={emptyDisplayButton}
               />
             )}
             {filteredData.length > 0 &&

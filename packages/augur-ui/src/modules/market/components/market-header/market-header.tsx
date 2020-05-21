@@ -57,7 +57,6 @@ interface MarketHeaderState {
   detailsHeight: number;
   headerCollapsed: boolean;
   showCopied: boolean;
-  notExpandedHeight: boolean | number;
   showProperties: boolean;
   clickHandler: EventListenerOrEventListenerObject;
 }
@@ -83,7 +82,6 @@ export default class MarketHeader extends Component<
       detailsHeight: 0,
       headerCollapsed: false,
       showCopied: false,
-      notExpandedHeight: false,
       clickHandler: null,
     };
 
@@ -94,15 +92,8 @@ export default class MarketHeader extends Component<
   }
 
   componentDidMount() {
-    const notExpandedHeight =
-      !this.state.headerCollapsed &&
-      !!this.refNotCollapsed &&
-      this.refNotCollapsed.firstChild.clientHeight;
     this.updateDetailsHeight();
 
-    if (notExpandedHeight) {
-      this.setState({ notExpandedHeight });
-    }
     const clickHandler = e => {
       const ClickedOnExpandedContent = e
         .composedPath()
@@ -188,7 +179,6 @@ export default class MarketHeader extends Component<
       showProperties,
       detailsHeight,
       showCopied,
-      notExpandedHeight,
     } = this.state;
     const detailsTooLong =
       market.details && detailsHeight > OVERFLOW_DETAILS_LENGTH;
@@ -204,11 +194,7 @@ export default class MarketHeader extends Component<
     const bigTitle =
       !!this.refTitle && this.refTitle.firstChild.scrollHeight > 64;
     const expandedDetails = detailsTooLong && showReadMore;
-    const containerStyle = notExpandedHeight
-      ? {
-          minHeight: `${notExpandedHeight}px`,
-        }
-      : {};
+
     return (
       <section
         className={classNames(
@@ -232,7 +218,6 @@ export default class MarketHeader extends Component<
               className={classNames({
                 [Styles.ShowTutorial]: showTutorialDetails,
               })}
-              style={containerStyle}
             >
               <HeadingBar
                 market={market}

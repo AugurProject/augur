@@ -63,9 +63,13 @@
       > li {
         background: var(--color-module-background);
 
-        &.Selected,
+        &[class*="Selected"],
         &:hover {
           border: @size-1 solid var(--color-primary-text);
+
+          & + li {
+            border-left: 0;
+          }
         }
   
         > button {

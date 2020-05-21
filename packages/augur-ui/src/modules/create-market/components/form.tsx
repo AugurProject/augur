@@ -769,6 +769,7 @@ export const Form = ({ isTemplate, updatePage }) => {
       updates = {
         ...updates,
         endTimeFormatted,
+        endTime: endTimeFormatted.timestamp,
         setEndTime,
         hour,
         minute,

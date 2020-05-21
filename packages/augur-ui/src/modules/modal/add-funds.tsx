@@ -71,6 +71,9 @@ export const AddFunds = ({
   } else if (accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC) {
     BUY_MIN = 50;
     BUY_MAX = 250;
+  } else {
+    BUY_MIN = 20;
+    BUY_MAX = 250;
   }
 
   const validateAndSet = amount => {

@@ -10,7 +10,7 @@ import {
   ProcessingButton,
 } from 'modules/common/buttons';
 import GlobalChat from 'modules/global-chat/containers/global-chat' ;
-import { NavMenuItem, AccountBalances } from 'modules/types';
+import { NavMenuItem, AccountBalances, FormattedNumber } from 'modules/types';
 import { helpIcon, Dot } from 'modules/common/icons';
 import {
   TRANSACTIONS,
@@ -25,6 +25,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 import { LinearPropertyLabelUnderlineTooltip } from 'modules/common/labels';
 import { formatNumber } from 'utils/format-number';
+import { getEthReserveInDai } from 'modules/auth/selectors/get-eth-reserve';
 
 interface TopNavProps {
   isLogged: boolean;
@@ -48,6 +49,7 @@ const TopNav = ({
   createFundedGsnWallet,
 }: TopNavProps) => {
   const { currentBasePath } = useAppStatusStore();
+  const ethReserveInDai = getEthReserveInDai();
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
     return item.route === currentBasePath;
@@ -86,7 +88,7 @@ const TopNav = ({
                   {...(formatNumber(0))}
                   highlightAlternateBolded
                   id={'totalFunds'}
-                  tipText={TOTAL_FUNDS_TOOLTIP}
+                  tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
                 />
               </div>
 

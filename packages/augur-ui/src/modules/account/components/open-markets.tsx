@@ -2,6 +2,7 @@ import React from "react";
 import FilterSwitchBox from "modules/portfolio/components/common/filter-switch-box";
 import MarketRow from "modules/portfolio/containers/market-row";
 import { MovementLabel } from "modules/common/labels";
+import { ActiveMarketsIcon } from 'modules/common/icons';
 import { SizeTypes, FormattedNumber, MarketData } from "modules/types";
 import { THEMES } from "modules/common/constants";
 import { formatNumber } from "utils/format-number";
@@ -29,8 +30,10 @@ const OpenMarkets = ({
   toggle,
 }: OpenMarketsProps) => {
   const { theme } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
+
   let customClass = Styles.OpenMarkets;
-  if (theme !== THEMES.TRADING && markets.length === 0) {
+  if (!isTrading && markets.length === 0) {
     customClass = Styles.OpenMarketsEmptyDisplay;
   }
 
@@ -104,6 +107,9 @@ const OpenMarkets = ({
       }
       noSwitch
       renderRows={renderRows}
+      emptyDisplayTitle={isTrading ? null : "No Active Markets"}
+      emptyDisplayText={isTrading ? null : "You don't have any active markets yet!"}
+      emptyDisplayIcon={ActiveMarketsIcon}
     />
   );
 };
