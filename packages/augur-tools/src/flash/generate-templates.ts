@@ -159,7 +159,7 @@ const addTemplates = (
       const groupName = t.groupName;
       if (groupName) {
         const keys = t.inputs.reduce((p, i) =>
-          i.groupKey ? [...p, {groupKey: i.groupKey, inputId: i.id}] : p, []
+          i.groupKey ? [...p, {key: i.groupKey, id: i.id}] : p, []
         );
         group = {
           ...group,

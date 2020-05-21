@@ -5,6 +5,8 @@ import { BigNumber } from 'ethers/utils';
 export const MONEY_LINE = 'MONEY_LINE';
 export const OVER_UNDER = 'OVER_UNDER';
 export const SPREAD = 'SPREAD';
+export const LEAGUE_NAME = 'LEAGUE_NAME';
+export const GENDER = 'GENDER';
 export const WEEK_NO = 'WEEK_NO';
 export const TEAM_A = 'TEAM_A';
 export const TEAM_B = 'TEAM_B';
@@ -191,7 +193,7 @@ export interface TemplateValidation {
 
 export interface TemplateGroupKeys {
   groupType: string;
-  keys: { groupKey: string, inputId: number }[]
+  keys: { key: string, id: number }[]
 }
 export interface TemplateGroup {
   [hash: string] : TemplateGroupKeys
@@ -680,14 +682,12 @@ function isRetiredAutofail(hash: string) {
   return found.autoFail;
 }
 
-export function getGroupHashInfo(template: ExtraInfoTemplate): TemplateGroupInfo {
-  if (!template || !template.hash || !template.inputs) return null;
-  const templateHash = template.hash;
-  const inputs = template.inputs;
-  const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find(g => g[templateHash]);
+export function getGroupHashInfo({ hash, inputs }: ExtraInfoTemplate): TemplateGroupInfo {
+  if (!hash || !inputs) return null;
+  const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find(g => g[hash]);
   if (!hashGroup) return null;
-  const group = hashGroup[templateHash];
-  const keyValues = group.keys.map(k => String(inputs[k.inputId].value));
+  const group = hashGroup[hash];
+  const keyValues = group.keys.map(k => String(inputs[k.id].value));
   const hashKeyInputValues = hashGroupKeyValues(keyValues);
 
   return {

@@ -48,6 +48,8 @@ import {
   START_TIME,
   SPREAD,
   OVER_UNDER,
+  LEAGUE_NAME,
+  GENDER,
 } from './templates-template';
 import {
   LIST_VALUES,
@@ -733,23 +735,27 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NHL: Which team will win: [0] vs. [1]?`,
             example: `NHL: Which Team will win: NY Rangers vs. NJ Devils?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+            groupName: MONEY_LINE,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                 placeholder: `Team A`,
+                groupKey: TEAM_A,
                 values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
                 type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                 placeholder: `Team B`,
+                groupKey: TEAM_B,
                 values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 2,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 6,
+                groupKey: START_TIME,
                 placeholder: `Date time`,
               },
               {
@@ -776,11 +782,13 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NHL (Goal Spread): [0] to win by more than [1].5 goals over the [2]?`,
             example: `NHL (Goal Spread): St Louis Blues to win by more than 2.5 goals over the NY Rangers?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            groupName: SPREAD,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Team A`,
+                groupKey: TEAM_A,
                 values: LIST_VALUES.NHL_TEAMS,
               },
               {
@@ -793,12 +801,14 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Team B`,
+                groupKey: TEAM_B,
                 values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 3,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 6,
+                groupKey: START_TIME,
                 placeholder: `Date time`,
               },
               {
@@ -835,17 +845,20 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NHL (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
             example: `NHL (O/U): St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+            groupName: OVER_UNDER,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Team A`,
+                groupKey: TEAM_A,
                 values: LIST_VALUES.NHL_TEAMS,
               },
               {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Team B`,
+                groupKey: TEAM_B,
                 values: LIST_VALUES.NHL_TEAMS,
               },
               {
@@ -858,6 +871,7 @@ export const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 6,
+                groupKey: START_TIME,
                 placeholder: `Date time`,
               },
               {
@@ -1772,11 +1786,13 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0]: Which team will win: [1] vs. [2]?`,
                 example: `Men's English Premier League: Which team will win: Manchester City vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                groupName: MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `League`,
+                    groupKey: LEAGUE_NAME,
                     inputDestIds: [1, 2],
                     values: LIST_VALUES.SOCCER_LEAGUES,
                     inputDestValues: SOCCER_LEAGUE_DEP_TEAMS,
@@ -1786,6 +1802,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     defaultLabel: `Select League First`,
                     inputSourceId: 0,
                     values: [],
@@ -1794,6 +1811,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     defaultLabel: `Select League First`,
                     inputSourceId: 0,
                     values: [],
@@ -1802,6 +1820,7 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                   {
@@ -1846,11 +1865,13 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] (Point Spread): [1] to win by more than [2].5 goals over [3]?`,
                 example: `Men's Ligue 1 (France): Marseille to win by more than 1.5 goals over Lyon?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                groupName: SPREAD,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `League`,
+                    groupKey: LEAGUE_NAME,
                     inputDestIds: [1, 3],
                     values: LIST_VALUES.SOCCER_LEAGUES,
                     inputDestValues: SOCCER_LEAGUE_DEP_TEAMS,
@@ -1860,6 +1881,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     defaultLabel: `Select League First`,
                     inputSourceId: 0,
                     values: [],
@@ -1874,6 +1896,7 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     defaultLabel: `Select League First`,
                     inputSourceId: 0,
                     values: [],
@@ -1882,6 +1905,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                   {
@@ -1921,11 +1945,13 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] (O/U): [1] vs. [2]: Total goals scored; Over/Under [3].5?`,
                 example: `Men's MLS (USA) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                groupName: OVER_UNDER,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                     placeholder: `League`,
+                    groupKey: LEAGUE_NAME,
                     inputDestIds: [1, 2],
                     values: LIST_VALUES.SOCCER_LEAGUES,
                     inputDestValues: SOCCER_LEAGUE_DEP_TEAMS,
@@ -1935,6 +1961,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     defaultLabel: `Select League First`,
                     inputSourceId: 0,
                     values: [],
@@ -1943,6 +1970,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     defaultLabel: `Select League First`,
                     inputSourceId: 0,
                     values: [],
@@ -1957,6 +1985,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                   {
@@ -3068,17 +3097,20 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA: Which team will win: [0] vs. [1]?`,
                 example: `WNBA: Which Team will win: Phoenix Mercury vs. Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                groupName: MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     values: LIST_VALUES.WNBA_TEAMS,
                   },
                   {
                     id: 1,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     values: LIST_VALUES.WNBA_TEAMS,
                   },
                   {
@@ -3090,6 +3122,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                 ],
@@ -3108,11 +3141,13 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA (Point Spread): [0] to win by more than [1].5 points over the [2]?`,
                 example: `WNBA (Point Spread): Phoenix Mercury to win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                groupName: SPREAD,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     values: LIST_VALUES.WNBA_TEAMS,
                   },
                   {
@@ -3125,6 +3160,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     values: LIST_VALUES.WNBA_TEAMS,
                   },
                   {
@@ -3136,6 +3172,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                   {
@@ -3164,17 +3201,20 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA (O/U): [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
                 example: `WNBA (O/U): Phoenix Mercury vs. Seattle Storm: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                groupName: OVER_UNDER,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     values: LIST_VALUES.WNBA_TEAMS,
                   },
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     values: LIST_VALUES.WNBA_TEAMS,
                   },
                   {
@@ -3187,6 +3227,7 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                   {
@@ -3617,29 +3658,34 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB: Which team will win: [1] vs. [2]?`,
                 example: `NCAA Men's BB: Which Team will win: Duke vs. Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                groupName: MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Men's / Women's`,
+                    groupKey: GENDER,
                     values: LIST_VALUES.MENS_WOMENS,
                   },
                   {
                     id: 1,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 2,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                   {
@@ -3666,17 +3712,20 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB (Point Spread): [1] to win by more than [2].5 points over [3]?`,
                 example: `NCAA Men's BB (Point Spread): Duke to win by more than 10.5 points over Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                groupName: SPREAD,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Men's / Women's`,
+                    groupKey: GENDER,
                     values: LIST_VALUES.MENS_WOMENS,
                   },
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
@@ -3689,12 +3738,14 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                   {
@@ -3731,23 +3782,27 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB (O/U): [1] vs. [2]: Total Points scored; Over/Under [3].5?`,
                 example: `NCAA Men's BB (O/U): Duke vs. Arizona: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                groupName: OVER_UNDER,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Men's / Women's`,
+                    groupKey: GENDER,
                     values: LIST_VALUES.MENS_WOMENS,
                   },
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     values: LIST_VALUES.NCAA_BASKETBALL_TEAMS,
                   },
                   {
@@ -3760,6 +3815,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                   {
@@ -5889,11 +5945,13 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA FB [0]: Which College Football Team will win: [1] vs. [2]?`,
                 example: `NCAA FB Week 1: Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                groupName: MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Week #`,
+                    groupKey: WEEK_NO,
                     noSort: true,
                     values: LIST_VALUES.NCAA_WEEK_NUM,
                   },
@@ -5901,18 +5959,21 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 2,
                     type: TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 3,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                   {
@@ -5937,11 +5998,13 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA FB (Point Spread) [0]: [1] to win by more than [2].5 points over [3]?`,
                 example: `NCAA FB (Point Spread) Week 1: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                groupName: SPREAD,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Week #`,
+                    groupKey: WEEK_NO,
                     noSort: true,
                     values: LIST_VALUES.NCAA_WEEK_NUM,
                   },
@@ -5949,6 +6012,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
@@ -5961,12 +6025,14 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                   {
@@ -6001,11 +6067,13 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA FB (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
                 example: `NCAA FB (O/U) Week 1: Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                groupName: OVER_UNDER,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Week #`,
+                    groupKey: WEEK_NO,
                     noSort: true,
                     values: LIST_VALUES.NCAA_WEEK_NUM,
                   },
@@ -6013,12 +6081,14 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
                   },
                   {
@@ -6031,6 +6101,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                   {
