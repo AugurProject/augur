@@ -16,7 +16,7 @@ contract AugurWallet is Initializable, IAugurWallet {
     using SafeMathUint256  for uint256;
 
     IAugurWalletRegistry public registry;
-    address public legacyRegistry;
+    mapping(address => bool) public authorizedProxies;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
@@ -39,7 +39,8 @@ contract AugurWallet is Initializable, IAugurWallet {
         domainSeparator = keccak256(abi.encode(DOMAIN_SEPARATOR_TYPEHASH, this));
         owner = _owner;
         registry = IAugurWalletRegistry(msg.sender);
-        legacyRegistry = _legacyRegistry;
+        authorizedProxies[msg.sender] = true;
+        authorizedProxies[_legacyRegistry] = true;
         cash = _cash;
 
         _cash.approve(_augur, MAX_APPROVAL_AMOUNT);
@@ -60,14 +61,26 @@ contract AugurWallet is Initializable, IAugurWallet {
     }
 
     function transferCash(address _to, uint256 _amount) external {
-        require(msg.sender == address(registry) || msg.sender == legacyRegistry);
+        require(authorizedProxies[msg.sender]);
         cash.transfer(_to, _amount);
     }
 
     function executeTransaction(address _to, bytes calldata _data, uint256 _value) external returns (bool) {
-        require(msg.sender == address(registry) || msg.sender == legacyRegistry);
+        require(authorizedProxies[msg.sender]);
         (bool _didSucceed, bytes memory _resultData) = address(_to).call.value(_value)(_data);
         return _didSucceed;
+    }
+
+    function addAuthorizedProxy(address _authorizedProxy) external returns (bool) {
+        require(msg.sender == owner || authorizedProxies[msg.sender] || msg.sender == address(this));
+        authorizedProxies[_authorizedProxy] = true;
+        return true;
+    }
+
+    function removeAuthorizedProxy(address _authorizedProxy) external returns (bool) {
+        require(msg.sender == owner || authorizedProxies[msg.sender] || msg.sender == address(this));
+        authorizedProxies[_authorizedProxy] = false;
+        return true;
     }
 
     function withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai) external payable returns (bool) {

@@ -408,7 +408,55 @@ def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, ca
     assert cash.balanceOf(walletAddress) == 0
     assert cash.balanceOf(destinationAddress) > walletCashBalance
     assert contractsFixture.ethBalance(account) < txCost
-    
+
+def test_authorizedProxies(contractsFixture, augur, universe, cash, reputationToken):
+    augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistryV2"]
+    stakeManager = contractsFixture.contracts["StakeManager"]
+    relayHub = contractsFixture.contracts["RelayHubV2"]
+    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    weth = contractsFixture.contracts["WETH9"]
+    account = contractsFixture.accounts[0]
+    accountKey = contractsFixture.privateKeys[0]
+
+    assert augurWalletRegistry.getWallet(account) == nullAddress
+    walletAddress = augurWalletRegistry.getCreate2WalletAddress(account)
+
+    desiredSignerBalance = 0
+    maxExchangeRate = 0
+
+    repAmount = 10**18
+    fingerprint = longTo32Bytes(42)
+    ethPayment = 10**16
+    repFaucetData = reputationToken.faucet_encode(repAmount)
+
+    initialRep = reputationToken.balanceOf(walletAddress)
+
+    augurWalletRegistry.executeWalletTransaction(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate, False)
+    assert reputationToken.balanceOf(walletAddress) == initialRep + repAmount
+
+    # Now lets add an authorizedProxy to do the call by uploading a different AugurWalletRegistry
+    newProxy = contractsFixture.upload('../src/contracts/AugurWalletRegistry.sol', 'NewProxy')
+    newProxy.initialize(contractsFixture.contracts['Augur'].address, contractsFixture.contracts['AugurTrading'].address, value=2.5 * 10**17)
+
+    # Initially we may not execute transactions using this contract
+    with raises(TransactionFailed):
+        newProxy.executeWalletTransaction(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate, False)
+
+    # If we add this contract to the wallets authorized proxies however it may then execute the transaction
+    wallet = contractsFixture.applySignature("AugurWallet", walletAddress)
+    assert wallet.addAuthorizedProxy(newProxy.address)
+
+    initialRep = reputationToken.balanceOf(walletAddress)
+    augurWalletRegistry.executeWalletTransaction(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate, False)
+    assert reputationToken.balanceOf(walletAddress) == initialRep + repAmount
+
+    # We can remove an authorized proxy as well
+    assert wallet.removeAuthorizedProxy(newProxy.address)
+
+    with raises(TransactionFailed):
+        newProxy.executeWalletTransaction(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate, False)
+
+
 
 def signMessage(messageHash, private_key):
     key = normalize_key(private_key.to_hex())
