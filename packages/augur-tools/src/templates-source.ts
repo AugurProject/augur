@@ -867,6 +867,7 @@ export const TEMPLATES = {
             question: `NHL (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
             example: `NHL (O/U): St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             groupName: OVER_UNDER_MEGA,
+            groupLineId: 2,
             inputs: [
               {
                 id: 0,
@@ -1335,6 +1336,7 @@ export const TEMPLATES = {
                 question: `[0] Singles Tennis [1] [2] (O/U), [3] vs. [4]: Total [5] played in a match; Over/Under [6].5?`,
                 example: `Men's Singles Tennis 2020 French Open (O/U), Novak Djokovic vs. Rafael Nadal: Total games played in a match; Over/Under 15.5?`,
                 groupName: OVER_UNDER,
+                groupLineId: 6,
                 inputs: [
                   {
                     id: 0,
@@ -1405,6 +1407,7 @@ export const TEMPLATES = {
                     id: 10,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 9,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                 ],
@@ -1689,6 +1692,7 @@ export const TEMPLATES = {
                 question: `[0] Doubles Tennis [1] [2] (O/U), [3] vs. [4]: Total [5] played in a match; Over/Under [6].5?`,
                 example: `Men's Doubles Tennis 2020 French Open (O/U), Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan: Total games played in a match; Over/Under 15.5?`,
                 groupName: OVER_UNDER,
+                groupLineId: 6,
                 inputs: [
                   {
                     id: 0,
@@ -1948,6 +1952,7 @@ export const TEMPLATES = {
                 question: `Men's [0] (Point Spread): [1] to win by more than [2].5 goals over [3]?`,
                 example: `Men's Ligue 1 (France): Marseille to win by more than 1.5 goals over Lyon?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 groupName: SPREAD,
+                groupLineId: 2,
                 inputs: [
                   {
                     id: 0,
@@ -2028,6 +2033,7 @@ export const TEMPLATES = {
                 question: `Men's [0] (O/U): [1] vs. [2]: Total goals scored; Over/Under [3].5?`,
                 example: `Men's MLS (USA) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 groupName: OVER_UNDER,
+                groupLineId: 3,
                 inputs: [
                   {
                     id: 0,
@@ -2600,6 +2606,7 @@ export const TEMPLATES = {
                 question: `NBA (O/U): [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
                 example: `NBA (O/U): Brooklyn Nets vs. NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 groupName: OVER_UNDER_MEGA,
+                groupLineId: 2,
                 inputs: [
                   {
                     id: 0,
@@ -2950,6 +2957,7 @@ export const TEMPLATES = {
                 question: `[0] NBA Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
                 example: `2020 NBA Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 groupName: OVER_UNDER,
+                groupLineId: 2,
                 inputs: [
                   {
                     id: 0,
@@ -3305,6 +3313,7 @@ export const TEMPLATES = {
                 question: `WNBA (O/U): [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
                 example: `WNBA (O/U): Phoenix Mercury vs. Seattle Storm: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 groupName: OVER_UNDER_MEGA,
+                groupLineId: 2,
                 inputs: [
                   {
                     id: 0,
@@ -3894,6 +3903,7 @@ export const TEMPLATES = {
                 question: `NCAA [0] BB (O/U): [1] vs. [2]: Total Points scored; Over/Under [3].5?`,
                 example: `NCAA Men's BB (O/U): Duke vs. Arizona: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 groupName: OVER_UNDER_MEGA,
+                groupLineId: 3,
                 inputs: [
                   {
                     id: 0,
@@ -4242,6 +4252,7 @@ export const TEMPLATES = {
             question: `MLB (O/U): [0] vs. [1]: Total Runs scored; Over/Under [2].5?`,
             example: `MLB (O/U): NY Yankees vs. Boston Red Sox: Total Runs scored; Over/Under 9.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             groupName: OVER_UNDER_MEGA,
+            groupLineId: 2,
             inputs: [
               {
                 id: 0,
@@ -5506,6 +5517,7 @@ export const TEMPLATES = {
                 question: `NFL (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
                 example: `NFL (O/U) Week 1: NY Giants vs. Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 groupName: OVER_UNDER_MEGA,
+                groupLineId: 3,
                 inputs: [
                   {
                     id: 0,
@@ -5851,6 +5863,7 @@ export const TEMPLATES = {
                 question: `[0] NFL Draft(O/U): [1].5 Total [2] drafted in Round 1?`,
                 example: `2020 NFL Draft(O/U): 5.5 Total Quarterbacks drafted in Round 1?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 groupName: OVER_UNDER,
+                groupLineId: 1,
                 inputs: [
                   {
                     id: 0,
@@ -5907,6 +5920,7 @@ export const TEMPLATES = {
                 question: `[0] NFL Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
                 example: `2020 NFL Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 groupName: OVER_UNDER,
+                groupLineId: 2,
                 inputs: [
                   {
                     id: 0,
@@ -6232,6 +6246,7 @@ export const TEMPLATES = {
                 question: `NCAA FB (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
                 example: `NCAA FB (O/U) Week 1: Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 groupName: OVER_UNDER_MEGA,
+                groupLineId: 3,
                 inputs: [
                   {
                     id: 0,

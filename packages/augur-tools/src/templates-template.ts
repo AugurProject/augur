@@ -201,6 +201,7 @@ export interface TemplateValidation {
 
 export interface TemplateGroupKeys {
   groupType: string;
+  groupLineId: number;
   keys: { key: string, id: number }[]
 }
 export interface TemplateGroup {
@@ -223,6 +224,7 @@ export interface Template {
   maxPrice?: number;
   noAdditionalUserOutcomes?: boolean;
   groupName: string;
+  groupLineId: number;
 }
 
 export interface TemplateInput {
@@ -278,6 +280,7 @@ export interface RetiredTemplate {
 export interface TemplateGroupInfo {
   hashKeyInputValues: string;
   groupType: string;
+  groupLine?: string;
 }
 
 export enum ValidationType {
@@ -697,10 +700,12 @@ export function getGroupHashInfo({ hash, inputs }: ExtraInfoTemplate): TemplateG
   const group = hashGroup[hash];
   const keyValues = group.keys.map(k => String(inputs[k.id].value));
   const hashKeyInputValues = hashGroupKeyValues(keyValues);
+  const groupLine = group?.groupLineId ? inputs[group.groupLineId].value : undefined;
 
   return {
     hashKeyInputValues,
-    groupType: group.groupType
+    groupType: group.groupType,
+    groupLine
   }
 }
 

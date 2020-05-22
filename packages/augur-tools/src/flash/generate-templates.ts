@@ -165,6 +165,7 @@ const addTemplates = (
           ...group,
           [t.hash]: {
             groupType: groupName,
+            groupLineId: t.groupLineId,
             keys
           }
         }
