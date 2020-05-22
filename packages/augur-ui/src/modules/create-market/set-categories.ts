@@ -411,6 +411,18 @@ export const setCategories: SortedGroup[] = [
         ],
       },
       {
+        value: 'MMA',
+        label: 'MMA',
+        subGroup: [
+          { value: 'UFC', label: 'UFC' },
+          { value: 'Bellator', label: 'Bellator' },
+          { value: 'ONE', label: 'ONE' },
+          { value: 'WSOF', label: 'WSOF' },
+          { value: 'Jungle Fight', label: 'Jungle Fight' },
+          { value: CUSTOM, label: CUSTOM },
+        ],
+      },
+      {
         value: 'Golf',
         label: 'Golf',
         subGroup: [
@@ -1278,7 +1290,7 @@ export const setCategories: SortedGroup[] = [
           { value: CUSTOM, label: CUSTOM },
         ],
       },
-      { 
+      {
         value: 'Statistics',
         label: 'Statistics',
       },
