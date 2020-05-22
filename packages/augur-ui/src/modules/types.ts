@@ -641,6 +641,7 @@ export interface AccountBalances {
   legacyAttoRep: string;
   ethNonSafe?: number;
   daiNonSafe?: number;
+  repNonSafe?: number;
 }
 
 export interface LoginAccountMeta {

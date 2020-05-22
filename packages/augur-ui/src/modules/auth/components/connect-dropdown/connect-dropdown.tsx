@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
-import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, GWEI_CONVERSION } from 'modules/common/constants';
+import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH } from 'modules/common/constants';
 import {
   DaiLogoIcon,
   EthIcon,
@@ -14,16 +14,16 @@ import {
   ClipboardCopy,
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { formatDai, formatEther, formatRep, formatGasCostToEther } from 'utils/format-number';
+import { formatDai, formatEther, formatRep } from 'utils/format-number';
 import { AccountBalances, FormattedNumber } from 'modules/types';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
-import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 import { displayGasInDai, ethToDai } from 'modules/app/actions/get-ethToDai-rate';
-
-import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
-import { augurSdk } from 'services/augursdk';
+import TransferMyDai from 'modules/modal/containers/transfer-my-dai';
+
+import TooltipStyles from 'modules/common/tooltip.styles.less';
+import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -50,6 +50,7 @@ interface ConnectDropdownProps {
   ethToDaiRate: FormattedNumber;
   loginAccountAddress: string;
   reserveEthAmount: FormattedNumber;
+  showTransferMyDai: boolean;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
@@ -71,6 +72,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     ethToDaiRate,
     loginAccountAddress,
     reserveEthAmount,
+    showTransferMyDai,
   } = props;
 
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
@@ -221,9 +223,11 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         </div>
 
         <div className={Styles.AddFunds}>
-          <div>Your account</div>
+          <div>Trading account</div>
           <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
         </div>
+
+        {showTransferMyDai && <TransferMyDai condensed={true} />}
 
         {accountFunds
           .filter(fundType => !fundType.disabled)

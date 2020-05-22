@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: sP.authStatus?.signerHasDAI ? null : OnboardingPaymentIcon,
-  largeHeader: 'Add Dai to your account',
+  largeHeader: 'Add Dai to your trading account',
   showAccountStatus: true,
   currentStep: 3,
   changeCurrentStep: step => {
@@ -42,7 +42,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   linkContent: [
     {
       content:
-        'Buy Dai ($) directly or transfer Dai ($) to your user account address to start placing bets.',
+        'Buy Dai ($) directly or transfer Dai ($) to your trading account to start placing bets.',
     },
     {
       content:

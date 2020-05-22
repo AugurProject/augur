@@ -105,7 +105,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     setTimeout(() => {
       dP.closeModal();
 
-      if (sP.walletStatus !== WALLET_STATUS_VALUES.CREATED || LOGIN_OR_SIGNUP === 'Signup') {
+      if (LOGIN_OR_SIGNUP === 'Signup') {
         // Kicks off onboarding
         dP.accountCreatedModal();
       }

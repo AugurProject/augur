@@ -7,28 +7,36 @@ import { TransferMyDai } from 'modules/modal/common';
 import { formatDai } from 'utils/format-number';
 import { updateModal } from '../actions/update-modal';
 import {
-  MODAL_ADD_FUNDS,
   MODAL_BUY_DAI,
+  MODAL_TRANSFER,
+  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 
 const mapStateToProps = (state: AppState) => ({
   walletType: state.loginAccount?.meta?.accountType,
   daiAmount: state.loginAccount?.balances?.daiNonSafe || 0,
+  walletStatus: state.appStatus.walletStatus,
+
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   showBuyDaiModal: () => dispatch(updateModal({ type: MODAL_BUY_DAI })),
-  addFunds: callback =>
+  transferfunds: callback =>
     dispatch(
-      updateModal({ type: MODAL_ADD_FUNDS, showTransfer: true, cb: callback })
+      updateModal({ type: MODAL_TRANSFER, useSigner: true, cb: callback })
     ),
 });
 
-const mergeProps = (sP: any, dP: any) => ({
+const mergeProps = (sP: any, dP: any, oP: any) => ({
   ...sP,
+  isCondensed: oP.condensed || false,
   daiAmount: formatDai(sP.daiAmount),
   showTransferModal: () => {
-    dP.addFunds(() => setTimeout(() => dP.showBuyDaiModal()));
+    dP.transferfunds(() => {
+      if (sP.walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING) {
+        setTimeout(() => dP.showBuyDaiModal())
+      }
+    });
   },
 });
 

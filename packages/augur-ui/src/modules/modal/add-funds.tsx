@@ -99,7 +99,7 @@ export const AddFunds = ({
   };
 
   const accountLabel =
-    isRelayDown && fundType === DAI ? `[${accountMeta.accountType}]` : 'User';
+    isRelayDown && fundType === DAI ? `[${accountMeta.accountType}]` : 'trading';
   const fundTypeToUse = isRelayDown && fundType === DAI ? ETH : fundType;
   const fundTypeLabel =
     fundTypeToUse === ETH ? 'ETH' : fundTypeToUse === DAI ? 'Dai ($)' : 'REP';
@@ -147,7 +147,7 @@ export const AddFunds = ({
       header: 'Transfer',
       description: `Send ${
         fundTypeToUse === ETH ? 'ETH' : 'Funds'
-      } to your ${accountLabel} account address`,
+      } to your ${accountLabel} account`,
       value: ADD_FUNDS_TRANSFER,
     },
     {

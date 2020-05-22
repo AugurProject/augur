@@ -292,7 +292,9 @@ div.Onboarding {
 }
 
 .Stepper {
+  align-items: center;
   display: flex;
+  height: @size-12;
   margin-top: @size-32;
 
   > span {
@@ -302,6 +304,12 @@ div.Onboarding {
     height: @size-8;
     margin-right: @size-10;
     width: @size-8;
+
+    &:hover {
+      background: @color-dark-text;
+      height: @size-12;
+      width: @size-12;
+    }
 
     &.Current {
       background: @color-primary-text;
@@ -3631,7 +3639,7 @@ div.ButtonsRow:last-of-type {
       > svg {
         width: @size-14;
         height: @size-14;
-        transform: translate(4px 3px);
+        transform: translate(@size-4, @size-3);
       }
     }
 
@@ -3685,6 +3693,31 @@ div.ButtonsRow:last-of-type {
 
     > span:last-of-type {
       .text-14;
+
+      color: @color-secondary-text;
+    }
+  }
+}
+
+.TransferMyDaiCondensed {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  background: #1B1A1E;
+  padding: @size-16;
+
+  > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+
+    > span:first-of-type {
+      .text-12-bold;
+
+      color: @color-primary-text;
+    }
+
+    > span:last-of-type {
+      .text-12;
 
       color: @color-secondary-text;
     }

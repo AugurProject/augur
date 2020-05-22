@@ -61,6 +61,7 @@ function updateBalances(
     getLegacyRepBalance(nonSafeWallet),
     getEthBalance(nonSafeWallet),
     getDaiBalance(nonSafeWallet),
+    getRepBalance(universe, nonSafeWallet),
   ]).then(async (amounts) => {
     const attoRep = amounts[0].toString();
     const dai = amounts[1];
@@ -70,6 +71,7 @@ function updateBalances(
     const rep = formatAttoRep(attoRep, { decimalsRounded: 14 }).roundedValue?.toNumber();
     const ethNonSafe = amounts[5];
     const daiNonSafe = amounts[6];
+    const repNonSafe = amounts[7];
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const legacyRepNonSafe = formatAttoRep(legacyAttoRepNonSafe).value;
 
@@ -99,6 +101,7 @@ function updateBalances(
           legacyRepNonSafe,
           ethNonSafe,
           daiNonSafe,
+          repNonSafe,
         },
       })
     );

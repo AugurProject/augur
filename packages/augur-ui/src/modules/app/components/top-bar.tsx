@@ -72,7 +72,8 @@ interface TopBarProps {
   showAddFundsButton: boolean;
   showActivationButton: boolean;
   createFundedGsnWallet: Function;
-  addFundsModal: Function;
+  buyDaiModal: Function;
+  activateWalletModal: Function;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
@@ -89,8 +90,8 @@ const TopBar: React.FC<TopBarProps> = ({
   ethReserveInDai,
   showAddFundsButton,
   showActivationButton,
-  createFundedGsnWallet,
-  addFundsModal,
+  buyDaiModal,
+  activateWalletModal,
 }) => {
   return (
     <header className={Styles.TopBar}>
@@ -107,14 +108,16 @@ const TopBar: React.FC<TopBarProps> = ({
         ethReserveInDai={ethReserveInDai}
       />
       <div>
-        {showAddFundsButton && <PrimaryButton action={() => addFundsModal()} text={'Add funds'} /> }
-        {showActivationButton &&
-          <ProcessingButton
-            small
-            action={() => createFundedGsnWallet()}
-            text={'Complete Acount Activation'}
-            queueName={TRANSACTIONS}
-            queueId={CREATEAUGURWALLET}
+        {(showActivationButton || showAddFundsButton) &&
+          <PrimaryButton
+            action={() => {
+              if (showAddFundsButton) {
+                buyDaiModal();
+              } else {
+                activateWalletModal();
+              }
+            }}
+            text={'Complete account activation'}
           />
         }
 

@@ -397,7 +397,11 @@ export const Stepper = ({ currentStep, maxSteps, changeCurrentStep = null }: Ste
   {[...Array(maxSteps).keys()]
     .map(key => key + 1)
     .map((step, idx) => (
-    <span onClick={() => changeCurrentStep && changeCurrentStep(step)} key={idx} className={currentStep === step ? Styles.Current : null}></span>
+    <span
+      key={idx}
+      onClick={() => changeCurrentStep && changeCurrentStep(step)}
+      className={currentStep === step ? Styles.Current : null}
+    ></span>
   ))}
 </div>
 );
@@ -406,20 +410,38 @@ interface TransferMyDaiProps {
   walletType: string;
   daiAmount: FormattedNumber;
   showTransferModal: Function;
+  isCondensed: boolean;
 }
 
-export const TransferMyDai = ({ walletType, daiAmount, showTransferModal }: TransferMyDaiProps) => (
-  <div className={Styles.TransferMyDai}>
-    <div>
-      <span>{daiAmount.formattedValue} Dai in your {walletType} wallet</span>
-      <span>Transfer any amount to your Augur user account. </span>
+export const TransferMyDai = ({ walletType, daiAmount, showTransferModal, isCondensed = false}: TransferMyDaiProps) => {
+  if (isCondensed) {
+    return (
+      <div className={Styles.TransferMyDaiCondensed}>
+        <div>
+          <span>{daiAmount.formattedValue} DAI</span>
+          <span>in {walletType} wallet</span>
+        </div>
+        <SecondaryButton
+          action={() => showTransferModal()}
+          text={'Transfer to trading account'}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={Styles.TransferMyDai}>
+      <div>
+        <span>{daiAmount.formattedValue} Dai in your {walletType} wallet</span>
+        <span>Transfer any amount to your Augur user account. </span>
+      </div>
+      <PrimaryButton
+        action={() => showTransferModal()}
+        text={'Transfer my Dai'}
+      />
     </div>
-    <PrimaryButton
-      action={() => showTransferModal()}
-      text={'Transfer my Dai'}
-    />
-  </div>
-);
+  );
+}
 
 
 interface AccountStatusTrackerProps {
@@ -663,7 +685,7 @@ export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <p>Need help?</p>
     <div>
-      <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your User account address.</span>
+      <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your trading account.</span>
       <ExternalLinkButton URL={HELP_CENTER_ADD_FUNDS} label='Learn More' />
     </div>
   </div>
@@ -902,10 +924,10 @@ export const Coinbase = ({
       </li>
       <li>Buy the cryptocurrency {fundTypeLabel}</li>
       <li>
-        Send the {fundTypeLabel} to your {accountLabel} account address
+        Send the {fundTypeLabel} to your {accountLabel} account
       </li>
     </ol>
-    <h3>{accountLabel} account address</h3>
+    <h3>{accountLabel} account</h3>
     <AccountAddressDisplay
       copyable
       address={toChecksumAddress(walletAddress)}
@@ -936,7 +958,7 @@ export const Transfer = ({
     <h1>Transfer</h1>
     <h2>
       Send {fundTypeToUse === ETH ? fundTypeLabel : 'funds'} to your{' '}
-      {accountLabel} account address
+      {accountLabel} account
     </h2>
     <ol>
       <li>
@@ -954,10 +976,10 @@ export const Transfer = ({
         </a>
       </li>
       <li>
-        Transfer the {fundTypeLabel} to your {accountLabel} account address
+        Transfer the {fundTypeLabel} to your {accountLabel} account
       </li>
     </ol>
-    <h3>{accountLabel} account address</h3>
+    <h3>{accountLabel} account</h3>
     <AccountAddressDisplay
       copyable
       address={toChecksumAddress(walletAddress)}
