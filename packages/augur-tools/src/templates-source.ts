@@ -129,12 +129,12 @@ export const TEMPLATES = {
                 placeholder: `Fighter B`,
               },
               {
-                id: 6,
+                id: 3,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Draw`,
               },
               {
-                id: 7,
+                id: 4,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
@@ -461,13 +461,13 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                type: TemplateInputType.TEXT,
                 groupKey: TEAM_A,
                 placeholder: `Fighter A`,
               },
               {
                 id: 1,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                type: TemplateInputType.TEXT,
                 groupKey: TEAM_B,
                 placeholder: `Fighter B`,
               },
@@ -476,6 +476,16 @@ export const TEMPLATES = {
                 type: TemplateInputType.TEXT,
                 validationType: ValidationType.WHOLE_NUMBER,
                 placeholder: `Whole #`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Over [2].5`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Under [2].5`,
               },
               {
                 id: 3,
