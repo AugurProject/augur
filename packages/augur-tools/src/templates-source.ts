@@ -58,6 +58,9 @@ import {
   EVENT,
   SET_GAME,
   SUB_EVENT,
+  MMA,
+  BOXING,
+  CAR_RACING,
 } from './templates-template';
 import {
   LIST_VALUES,
@@ -97,6 +100,748 @@ export const TEMPLATES2 = {};
 export const TEMPLATES = {
   [SPORTS]: {
     children: {
+      [MMA]: {
+        templates: [
+          {
+            marketType: CATEGORICAL,
+            question: `MMA [0]: [1] vs. [2], Who will win?`,
+            example: `MMA UFC: Donald Cerrone vs. Conor McGregor, Who will win?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            groupName: MONEY_LINE,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Organization`,
+                groupKey: GENDER,
+                values: LIST_VALUES.MMA_ORGS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                groupKey: TEAM_A,
+                placeholder: `Fighter A`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                groupKey: TEAM_B,
+                placeholder: `Fighter B`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Draw`,
+              },
+              {
+                id: 7,
+                type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
+                groupKey: START_TIME,
+                placeholder: `Date time`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `MMA [0]: [1] vs. [2] (O/U), [3].5 Rounds?`,
+            example: `MMA UFC: Donald Cerrone vs. Conor McGregor (O/U), 1.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            groupName: OVER_UNDER,
+            groupLineId: 3,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Organization`,
+                groupKey: GENDER,
+                values: LIST_VALUES.MMA_ORGS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                groupKey: TEAM_A,
+                placeholder: `Fighter A`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                groupKey: TEAM_B,
+                placeholder: `Fighter B`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.TEXT,
+                validationType: ValidationType.WHOLE_NUMBER,
+                placeholder: `Whole #`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Draw`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
+                groupKey: START_TIME,
+                placeholder: `Date time`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `MMA [0]: [1] vs. [2], Method of victory?`,
+            example: `MMA UFC: Donald Cerrone vs. Conor McGregor, Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            groupName: FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Organization`,
+                groupKey: GENDER,
+                values: LIST_VALUES.MMA_ORGS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                groupKey: TEAM_A,
+                placeholder: `Fighter A`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                groupKey: TEAM_B,
+                placeholder: `Fighter B`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] by KO/TKO`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] by Submission`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] by Points`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[2] by KO/TKO`,
+              },
+              {
+                id: 7,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[2] by Submission`,
+              },
+              {
+                id: 8,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[2] by Points`,
+              },
+              {
+                id: 9,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Draw`,
+              },
+              {
+                id: 10,
+                type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
+                groupKey: START_TIME,
+                placeholder: `Date time`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `MMA [0]: [1] vs. [2], How will fight end?`,
+            example: `MMA UFC: Donald Cerrone vs. Conor McGregor, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            groupName: FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Organization`,
+                groupKey: GENDER,
+                values: LIST_VALUES.MMA_ORGS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                groupKey: TEAM_A,
+                placeholder: `Fighter A`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                groupKey: TEAM_B,
+                placeholder: `Fighter B`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `KO/TKO`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Submission`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Points`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Draw`,
+              },
+              {
+                id: 7,
+                type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
+                groupKey: START_TIME,
+                placeholder: `Date time`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `MMA [0]: [1] vs. [2], What round will the fight end?`,
+            example: `MMA UFC: Donald Cerrone vs. Conor McGregor, What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            groupName: FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Organization`,
+                groupKey: GENDER,
+                values: LIST_VALUES.MMA_ORGS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                groupKey: TEAM_A,
+                placeholder: `Fighter A`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                groupKey: TEAM_B,
+                placeholder: `Fighter B`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Round 1`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Round 2`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Round 3`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Round 4`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Round 5`,
+              },
+              {
+                id: 7,
+                type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
+                groupKey: START_TIME,
+                placeholder: `Date time`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [BOXING]: {
+        templates: [
+          {
+            marketType: CATEGORICAL,
+            question: `Boxing [0]: [1] vs. [2], Who will win?`,
+            example: `Boxing WBA: Robert Helenius vs. Adam Kownacki, Who will win?\nEstimated schedule start time: Feb 10, 2020 8:20 pm EST`,
+            groupName: MONEY_LINE,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Organization`,
+                groupKey: GENDER,
+                values: LIST_VALUES.BOXING_ORGS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                groupKey: TEAM_A,
+                placeholder: `Fighter A`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                groupKey: TEAM_B,
+                placeholder: `Fighter B`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Draw`,
+              },
+              {
+                id: 7,
+                type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
+                groupKey: START_TIME,
+                placeholder: `Date time`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Boxing [0]: [1] vs. [2] (O/U), [3].5 Rounds?`,
+            example: `Boxing WBA: Robert Helenius vs. Adam Kownacki (O/U), 5.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            groupName: OVER_UNDER,
+            groupLineId: 3,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Organization`,
+                groupKey: GENDER,
+                values: LIST_VALUES.BOXING_ORGS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                groupKey: TEAM_A,
+                placeholder: `Fighter A`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                groupKey: TEAM_B,
+                placeholder: `Fighter B`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.TEXT,
+                validationType: ValidationType.WHOLE_NUMBER,
+                placeholder: `Whole #`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Draw`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
+                groupKey: START_TIME,
+                placeholder: `Date time`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Boxing [0]: [1] vs. [2], Method of victory?`,
+            example: `Boxing WBA: Robert Helenius vs. Adam Kownacki, Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            groupName: FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Organization`,
+                groupKey: GENDER,
+                values: LIST_VALUES.BOXING_ORGS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                groupKey: TEAM_A,
+                placeholder: `Fighter A`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                groupKey: TEAM_B,
+                placeholder: `Fighter B`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] by KO`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] by TKO`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] by Points`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[2] by KO`,
+              },
+              {
+                id: 7,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[2] by TKO`,
+              },
+              {
+                id: 8,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[2] by Points`,
+              },
+              {
+                id: 9,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Draw`,
+              },
+              {
+                id: 10,
+                type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
+                groupKey: START_TIME,
+                placeholder: `Date time`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Boxing [0]: [1] vs. [2], How will fight end?`,
+            example: `Boxing WBA: Robert Helenius vs. Adam Kownacki, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            groupName: FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Organization`,
+                groupKey: GENDER,
+                values: LIST_VALUES.MMA_ORGS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                groupKey: TEAM_A,
+                placeholder: `Fighter A`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                groupKey: TEAM_B,
+                placeholder: `Fighter B`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `KO`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `TKO`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Points`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Draw`,
+              },
+              {
+                id: 7,
+                type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
+                groupKey: START_TIME,
+                placeholder: `Date time`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Boxing [0]: [1] vs. [2], What round will the fight end?`,
+            example: `Boxing WBA: Robert Helenius vs. Adam Kownacki, What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            groupName: FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Organization`,
+                groupKey: GENDER,
+                values: LIST_VALUES.MMA_ORGS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                groupKey: TEAM_A,
+                placeholder: `Fighter A`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                groupKey: TEAM_B,
+                placeholder: `Fighter B`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Round 1-3`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Round 4-6`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Round 7-9`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Round 10-12`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Goes the Distance`,
+              },
+              {
+                id: 7,
+                type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
+                groupKey: START_TIME,
+                placeholder: `Date time`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [CAR_RACING]: {
+        templates: [
+          {
+            marketType: CATEGORICAL,
+            question: `[0] [1] [2]: [3] vs. [4]: Who will finish better?`,
+            example: `2020 NASCAR Daytona 500: Who will finish better?`,
+            groupName: FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Car Type`,
+                groupKey: GENDER,
+                values: LIST_VALUES.CAR_RACING_TYPE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                groupKey: YEAR,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                placeholder: `Event`,
+                groupKey: EVENT,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                groupKey: TEAM_A,
+                placeholder: `Racer A`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                groupKey: TEAM_B,
+                placeholder: `Racer B`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Event Cancelled`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `[0] [1] [2]: Winner?`,
+            example: `NASCAR 2020 Daytona 500: Winner?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+            groupName: FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Car Type`,
+                groupKey: GENDER,
+                values: LIST_VALUES.CAR_RACING_TYPE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                groupKey: YEAR,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                placeholder: `Event`,
+                groupKey: EVENT,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 6,
+                groupKey: START_TIME,
+                placeholder: `Date time`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `[0] NASCAR CUP Series Championship Winner?`,
+            example: `2020 NASCAR CUP Winner?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+            groupName: FUTURES,
+            inputs: [
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                groupKey: YEAR,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Placeholder, still devloping resolution rules`,
+                },
+              ],
+            },
+          },
+        ],
+      },
       [GOLF]: {
         children: {
           [PGA]: {
@@ -3006,8 +3751,8 @@ export const TEMPLATES = {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
                     },
                     {
-                      text: `If player is not selected "Over #.5" should be the winning outcome`
-                    }
+                      text: `If player is not selected "Over #.5" should be the winning outcome`,
+                    },
                   ],
                 },
               },
@@ -5969,8 +6714,8 @@ export const TEMPLATES = {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
                     },
                     {
-                      text: `If player is not selected "Over #.5" should be the winning outcome`
-                    }
+                      text: `If player is not selected "Over #.5" should be the winning outcome`,
+                    },
                   ],
                 },
               },
@@ -7284,7 +8029,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Exchange`,
                 values: LIST_VALUES.FIN_STOCK_EXCHANGES,
-                denomination: FIN_EXCHANGES_CURRENCIES
+                denomination: FIN_EXCHANGES_CURRENCIES,
               },
               {
                 id: 3,
