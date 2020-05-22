@@ -9,6 +9,7 @@ import { PrimaryButton, CategoryButtons } from 'modules/common/buttons';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { CategorySelector } from 'modules/common/selection';
+import { AppStatus } from 'modules/app/store/app-status';
 
 interface MarketsViewProps {
   isLogged: boolean;
@@ -19,8 +20,6 @@ interface MarketsViewProps {
   isConnected: boolean;
   loadMarketsByFilter: Function;
   isSearching: boolean;
-  setLoadMarketsPending: Function;
-  updateMarketsListMeta: Function;
   categoryData: object;
   signupModal: Function;
   categoryStats: Getters.Markets.CategoryStats;
@@ -63,13 +62,10 @@ export default class MarketsView extends Component<
 
   updateFilteredMarkets() {
     const {
-      setLoadMarketsPending,
       loadMarketsByFilter,
-      updateMarketsListMeta,
     } = this.props;
     const { marketCategory } = this.state;
-
-    setLoadMarketsPending(true);
+    AppStatus.actions.updateMarketsList({ isSearching: true });
     loadMarketsByFilter(
       {
         categories:
@@ -84,8 +80,7 @@ export default class MarketsView extends Component<
           this.setState({
             filterSortedMarkets,
           });
-          updateMarketsListMeta(result.meta);
-          setLoadMarketsPending(false);
+          AppStatus.actions.updateMarketsList({ isSearching: false, meta: result.meta });
         }
       }
     );

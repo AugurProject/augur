@@ -6,22 +6,19 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { submitNewMarket } from "modules/markets/actions/submit-new-market";
-import { NewMarket, NodeStyleCallback } from "modules/types";
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => {
-  const { modal, loginAccount: { address } } = AppStatus.get();
+  const { newMarket, modal, loginAccount: { address } } = AppStatus.get();
   return ({
     modal,
-    newMarket: state.newMarket,
+    newMarket,
     address,
   });
 }
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  submitNewMarket: (data: NewMarket, cb: NodeStyleCallback) =>
-    dispatch(submitNewMarket(data, cb)),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -44,8 +41,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     {
       text: "Confirm",
       action: () => {
-        const { newMarket, address } = sP;
-        dP.submitNewMarket(newMarket);
+        const { newMarket } = sP;
+        submitNewMarket(newMarket);
         if (sP.modal.cb) {
           sP.modal.cb();
         }

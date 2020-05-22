@@ -26,6 +26,8 @@ import {
   CATEGORICAL,
   CATEGORICAL_OUTCOMES_MIN_NUM,
   REP,
+  MODAL_ADD_FUNDS,
+  DAI,
 } from 'modules/common/constants';
 import {
   buildformattedDate,
@@ -63,28 +65,23 @@ import {
 } from 'modules/reporting/common';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export interface HeaderProps {
   text: string;
   children?: Array<any>;
 }
 
-export const Header = (props: HeaderProps) => (
-  <h2 className={Styles.Header}>
-    {props.children ? props.children : props.text}
-  </h2>
+export const Header = ({ children, text }: HeaderProps) => (
+  <h2 className={Styles.Header}>{children ? children : text}</h2>
 );
 
-export const LargeHeader = (props: HeaderProps) => (
-  <span className={Styles.LargeHeader}>
-    {props.children ? props.children : props.text}
-  </span>
+export const LargeHeader = ({ children, text }: HeaderProps) => (
+  <span className={Styles.LargeHeader}>{children ? children : text}</span>
 );
 
-export const MediumHeader = (props: HeaderProps) => (
-  <span className={Styles.MediumHeader}>
-    {props.children ? props.children : props.text}
-  </span>
+export const MediumHeader = ({ children, text }: HeaderProps) => (
+  <span className={Styles.MediumHeader}>{children ? children : text}</span>
 );
 
 export interface SubheadersProps {
@@ -104,17 +101,27 @@ export interface DateTimeHeadersProps extends SubheadersProps {
   timezone: string;
 }
 
-export const Subheaders = (props: SubheadersProps) => (
+export const Subheaders = ({
+  header,
+  subheader,
+  link,
+  href,
+  underline,
+  ownLine,
+  smallSubheader,
+  renderMarkdown,
+  copyType,
+}: SubheadersProps) => (
   <div className={Styles.Subheaders}>
-    <h1>{props.header}</h1>
+    <h1>{header}</h1>
     <p>
-      <span>{props.subheader}</span>
-      {props.link && (
+      <span>{subheader}</span>
+      {link && (
         <Link
-          href={props.href}
-          underline={props.underline}
-          ownLine={props.ownLine}
-          copyType={props.copyType}
+          href={href}
+          underline={underline}
+          ownLine={ownLine}
+          copyType={copyType}
         />
       )}
     </p>
@@ -127,10 +134,14 @@ export interface XLargeSubheadersProps {
   children?: Array<any>;
 }
 
-export const XLargeSubheaders = (props: XLargeSubheadersProps) => (
+export const XLargeSubheaders = ({
+  children,
+  header,
+  subheader,
+}: XLargeSubheadersProps) => (
   <div className={Styles.XLargeSubheaders}>
-    <LargeHeader text={props.header} />
-    <MediumHeader text={props.subheader}>{props.children}</MediumHeader>
+    <LargeHeader text={header} />
+    <MediumHeader text={subheader}>{children}</MediumHeader>
   </div>
 );
 
@@ -144,68 +155,98 @@ export interface HeaderLinkProps {
   copyType?: string;
 }
 
-export const SmallHeaderLink = (props: HeaderLinkProps) => (
+export const SmallHeaderLink = ({
+  text,
+  href,
+  link,
+  ownLine,
+  underline,
+  smallSubheader,
+  copyType,
+}: HeaderLinkProps) => (
   <p
     className={classNames(Styles.SmallHeaderLink, {
-      [Styles.XSmall]: props.smallSubheader,
+      [Styles.XSmall]: smallSubheader,
     })}
   >
-    <span>{props.text}</span>
-    {props.link && (
+    <span>{text}</span>
+    {link && (
       <Link
-        href={props.href}
-        underline={props.underline}
-        ownLine={props.ownLine}
-        copyType={props.copyType}
+        href={href}
+        underline={underline}
+        ownLine={ownLine}
+        copyType={copyType}
       />
     )}
   </p>
 );
 
-export const LargeSubheaders = (props: SubheadersProps) => (
+export const LargeSubheaders = ({
+  header,
+  subheader,
+  link,
+  href,
+  underline,
+  ownLine,
+  smallSubheader,
+  renderMarkdown,
+  copyType,
+}: SubheadersProps) => (
   <div
     className={classNames(Styles.LargeSubheaders, {
-      [Styles.Small]: props.smallSubheader,
+      [Styles.Small]: smallSubheader,
     })}
   >
-    <Header text={props.header} />
+    <Header text={header} />
     <SmallHeaderLink
-      text={props.subheader}
-      href={props.href}
-      underline={props.underline}
-      ownLine={props.ownLine}
-      link={props.link}
-      smallSubheader={props.smallSubheader}
-      copyType={props.copyType}
+      text={subheader}
+      href={href}
+      underline={underline}
+      ownLine={ownLine}
+      link={link}
+      smallSubheader={smallSubheader}
+      copyType={copyType}
     />
   </div>
 );
 
-export const DateTimeHeaders = (props: DateTimeHeadersProps) => (
+export const DateTimeHeaders = ({
+  header,
+  subheader,
+  timezone,
+  timezoneDateTime,
+}: DateTimeHeadersProps) => (
   <div className={Styles.SmallSubheaders}>
-    <h1>{props.header}</h1>
-    <span>{props.subheader}</span>
-    {props.timezone && <span>{props.timezoneDateTime}</span>}
+    <h1>{header}</h1>
+    <span>{subheader}</span>
+    {timezone && <span>{timezoneDateTime}</span>}
   </div>
 );
 
-export const SmallSubheaders = (props: SubheadersProps) => (
+export const SmallSubheaders = ({
+  header,
+  subheader,
+  renderMarkdown,
+}: SubheadersProps) => (
   <div className={Styles.SmallSubheaders}>
-    <h1>{props.header}</h1>
-    {props.renderMarkdown && <MarkdownRenderer text={props.subheader} />}
-    {!props.renderMarkdown && <span>{props.subheader}</span>}
+    <h1>{header}</h1>
+    {renderMarkdown ? (
+      <MarkdownRenderer text={subheader} />
+    ) : (
+      <span>{subheader}</span>
+    )}
   </div>
 );
 
 interface PreviewMarketTitleHeaderProps {
   market: NewMarket;
 }
-export const PreviewMarketTitleHeader = (
-  props: PreviewMarketTitleHeaderProps
-) => (
+export const PreviewMarketTitleHeader = ({
+  market,
+}: PreviewMarketTitleHeaderProps) => (
   <div className={Styles.SmallSubheaders}>
     <h1>Market Question</h1>
-    <PreviewMarketTitle market={props.market} />
+    <PreviewMarketTitle market={market} />
   </div>
 );
 
@@ -221,22 +262,32 @@ export interface SubheadersTooltipProps {
   tooltipSubheader?: Boolean;
 }
 
-export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
+export const SmallSubheadersTooltip = ({
+  header,
+  subheader,
+  link,
+  href,
+  underline,
+  ownLine,
+  smallSubheader,
+  text,
+  tooltipSubheader,
+}: SubheadersTooltipProps) => (
   <div className={Styles.SmallSubheadersTooltip}>
     <h1>
-      {props.header}
-      {!props.tooltipSubheader && (
+      {header}
+      {!tooltipSubheader && (
         <>
           <label
             className={TooltipStyles.TooltipHint}
             data-tip
-            data-for={`tooltip-${props.header}`}
+            data-for={`tooltip-${header}`}
             data-iscapture={true}
           >
             {helpIcon}
           </label>
           <ReactTooltip
-            id={`tooltip-${props.header}`}
+            id={`tooltip-${header}`}
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="top"
@@ -244,25 +295,25 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
             event="mouseover mouseenter"
             eventOff="mouseleave mouseout scroll mousewheel blur"
           >
-            {props.text}
+            {text}
           </ReactTooltip>
         </>
       )}
     </h1>
     <span>
-      {props.subheader}
-      {props.tooltipSubheader && (
+      {subheader}
+      {tooltipSubheader && (
         <>
           <label
             className={TooltipStyles.TooltipHint}
             data-tip
-            data-for={`tooltip-${props.header}`}
+            data-for={`tooltip-${header}`}
             data-iscapture={true}
           >
             {helpIcon}
           </label>
           <ReactTooltip
-            id={`tooltip-${props.header}`}
+            id={`tooltip-${header}`}
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="top"
@@ -270,7 +321,7 @@ export const SmallSubheadersTooltip = (props: SubheadersTooltipProps) => (
             event="mouseover mouseenter"
             eventOff="mouseleave mouseout scroll mousewheel blur"
           >
-            {props.text}
+            {text}
           </ReactTooltip>
         </>
       )}
@@ -282,11 +333,11 @@ export interface OutcomesListProps {
   outcomes: Array<string>;
 }
 
-export const OutcomesList = (props: OutcomesListProps) => (
+export const OutcomesList = ({ outcomes }: OutcomesListProps) => (
   <div className={Styles.OutcomesList}>
     <h1>Outcomes</h1>
     <div>
-      {props.outcomes.map((outcome: string, index: Number) => (
+      {outcomes.map((outcome: string, index: Number) => (
         <span key={String(index)}>
           {Number(index) + 1}. {outcome}
         </span>
@@ -302,20 +353,25 @@ export interface ExplainerBlockProps {
   isModal?: boolean;
 }
 
-export const ExplainerBlock = (props: ExplainerBlockProps) => (
+export const ExplainerBlock = ({
+  isModal,
+  title,
+  subtexts,
+  useBullets,
+}: ExplainerBlockProps) => (
   <div
     className={classNames(Styles.ExplainerBlock, {
-      [Styles.ModalStyling]: props.isModal,
+      [Styles.ModalStyling]: isModal,
     })}
   >
-    <h5>{props.title}</h5>
+    <h5>{title}</h5>
     <ul
       className={classNames({
-        [Styles.NotBulleted]: !props.useBullets,
+        [Styles.NotBulleted]: !useBullets,
       })}
     >
-      {props.subtexts.map((subtext, index) => {
-        return props.useBullets ? (
+      {subtexts.map((subtext, index) => {
+        return useBullets ? (
           <li key={index}>{subtext}</li>
         ) : (
           <p key={index}>{subtext}</p>
@@ -331,14 +387,18 @@ export interface ContentBlockProps {
   dark?: Boolean;
 }
 
-export const ContentBlock = (props: ContentBlockProps) => (
+export const ContentBlock = ({
+  noDarkBackground,
+  dark,
+  children,
+}: ContentBlockProps) => (
   <div
     className={classNames(Styles.ContentBlock, {
-      [Styles.NoDark]: props.noDarkBackground,
-      [Styles.Dark]: props.dark,
+      [Styles.NoDark]: noDarkBackground,
+      [Styles.Dark]: dark,
     })}
   >
-    {props.children}
+    {children}
   </div>
 );
 
@@ -382,19 +442,17 @@ interface DatePickerSelectorProps {
   onlyAllowFriday?: boolean;
 }
 
-export const DatePickerSelector = (props: DatePickerSelectorProps) => {
-  const {
-    setEndTime,
-    onChange,
-    currentTimestamp,
-    errorMessage,
-    placeholder,
-    condensedStyle,
-    isAfter,
-    isBefore,
-    onlyAllowFriday
-  } = props;
-
+export const DatePickerSelector = ({
+  setEndTime,
+  onChange,
+  currentTimestamp,
+  errorMessage,
+  placeholder,
+  condensedStyle,
+  isAfter,
+  isBefore,
+  onlyAllowFriday,
+}: DatePickerSelectorProps) => {
   const [dateFocused, setDateFocused] = useState(false);
 
   return (
@@ -410,7 +468,11 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
       isOutsideRange={day =>
         (onlyAllowFriday && day.weekday() !== FRIDAY_DAY_OF_WEEK) ||
         day.isAfter(moment.unix(isAfter)) ||
-        day.isBefore(isBefore ? moment.unix(isBefore) : minMarketEndTimeDay(currentTimestamp))
+        day.isBefore(
+          isBefore
+            ? moment.unix(isBefore)
+            : minMarketEndTimeDay(currentTimestamp)
+        )
       }
       numberOfMonths={1}
       onFocusChange={({ focused }) => {
@@ -426,26 +488,24 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
   );
 };
 
-export const DateTimeSelector = (props: DateTimeSelectorProps) => {
-  const {
-    setEndTime,
-    onChange,
-    currentTimestamp,
-    validations,
-    hour,
-    minute,
-    meridiem,
-    timezone,
-    endTimeFormatted,
-    header,
-    subheader,
-    uniqueKey,
-    condensedStyle,
-    isAfter,
-    openTop,
-    disabled
-  } = props;
-
+export const DateTimeSelector = ({
+  setEndTime,
+  onChange,
+  currentTimestamp,
+  validations,
+  hour,
+  minute,
+  meridiem,
+  timezone,
+  endTimeFormatted,
+  header,
+  subheader,
+  uniqueKey,
+  condensedStyle,
+  isAfter,
+  openTop,
+  disabled,
+}: DateTimeSelectorProps) => {
   const [dateFocused, setDateFocused] = useState(false);
   const [timeFocused, setTimeFocused] = useState(false);
 
@@ -733,34 +793,30 @@ export interface NoFundsErrorsProps {
   availableEthFormatted: FormattedNumber;
   availableRepFormatted: FormattedNumber;
   availableDaiFormatted: FormattedNumber;
-  GsnEnabled: boolean;
-  showAddFundsModal: Function;
 }
-export const NoFundsErrors = (props: NoFundsErrorsProps) => {
-  const {
-    noEth,
-    noRep,
-    noDai,
-    totalEth,
-    totalRep,
-    totalDai,
-    availableEthFormatted,
-    availableRepFormatted,
-    availableDaiFormatted,
-    GsnEnabled,
-  } = props;
 
+export const NoFundsErrors = ({
+  noEth,
+  noRep,
+  noDai,
+  totalEth,
+  totalRep,
+  totalDai,
+  availableEthFormatted,
+  availableRepFormatted,
+  availableDaiFormatted,
+}: NoFundsErrorsProps) => {
+  const { actions: { setModal }, gsnEnabled } = useAppStatusStore();
   return (
     <div className={classNames({ [Styles.HasError]: noEth || noDai || noRep })}>
-      {noEth && !GsnEnabled && (
+      {noEth && !gsnEnabled && (
         <DismissableNotice
           title="Not enough ETH in your wallet"
           description={`You have ${availableEthFormatted.formatted} ETH of ${totalEth.formatted} required to create this market`}
           show={true}
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
-          buttonText='Add Funds'
-          buttonAction={() => props.showAddFundsModal()}
-
+          buttonText="Add Funds"
+          buttonAction={() => setModal({ type: MODAL_ADD_FUNDS, fundType: DAI })}
         />
       )}
       {noRep && (
@@ -768,8 +824,8 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
           title="Not enough REP in your wallet"
           description={`You have ${availableRepFormatted.formatted} V2 REP of ${totalRep.formatted} required to create this market.`}
           show={true}
-          buttonText='Add Funds'
-          buttonAction={() => props.showAddFundsModal(REP)}
+          buttonText="Add Funds"
+          buttonAction={() => setModal({ type: MODAL_ADD_FUNDS, fundType: REP })}
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
         />
       )}
@@ -778,8 +834,8 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
           alternate
           title="Not enough $ (DAI) in your wallet"
           show={true}
-          buttonText='Add Funds'
-          buttonAction={() => props.showAddFundsModal()}
+          buttonText="Add Funds"
+          buttonAction={() => setModal({ type: MODAL_ADD_FUNDS, fundType: DAI })}
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
           description={`You have $${availableDaiFormatted.formatted} (DAI) of $${totalDai.formatted} (DAI) required to create this market`}
         />
@@ -798,17 +854,17 @@ interface InputFactoryProps {
   isAfter: number;
 }
 
-export const InputFactory = (props: InputFactoryProps) => {
-  const {
-    input,
-    inputIndex,
-    onChange,
-    newMarket,
-    currentTimestamp,
-    isAfter,
-  } = props;
+export const InputFactory = ({
+  input,
+  inputIndex,
+  onChange,
+  newMarket,
+  currentTimestamp,
+  isAfter,
+  inputs: passedInputs,
+}: InputFactoryProps) => {
   const { template, outcomes, marketType, validations, categories } = newMarket;
-  const { inputs, question } = template;
+  const { inputs } = template;
 
   const updateData = value => {
     let inputValidations = newMarket.validations.inputs;
@@ -872,9 +928,9 @@ export const InputFactory = (props: InputFactoryProps) => {
       <DatePickerSelector
         onChange={value => {
           const startOfDay = moment
-          .unix(value)
-          .startOf('day')
-          .unix();
+            .unix(value)
+            .startOf('day')
+            .unix();
           input.setEndTime = startOfDay;
           const stringValue = convertUnixToFormattedDate(Number(startOfDay))
             .formattedSimpleData;
@@ -892,7 +948,9 @@ export const InputFactory = (props: InputFactoryProps) => {
             });
           }
           if (input.daysAfterDateStart) {
-            const newEndTime = SECONDS_IN_A_DAY.times(input.daysAfterDateStart).plus(startOfDay).toNumber()
+            const newEndTime = SECONDS_IN_A_DAY.times(input.daysAfterDateStart)
+              .plus(startOfDay)
+              .toNumber();
             onChange('updateEventExpiration', {
               setEndTime: newEndTime,
               hour: '12',
@@ -912,7 +970,10 @@ export const InputFactory = (props: InputFactoryProps) => {
           startOfTomorrow(currentTimestamp)
         }
         isAfter={isAfter}
-        onlyAllowFriday={input.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY}
+        onlyAllowFriday={
+          input.validationType ===
+          ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY
+        }
         errorMessage={validations.inputs && validations.inputs[inputIndex]}
       />
     );
@@ -959,16 +1020,18 @@ export const InputFactory = (props: InputFactoryProps) => {
           } else if (input.type === TemplateInputType.DROPDOWN_QUESTION_DEP) {
             if (value) {
               const list = input.inputDestValues[value];
-              let targets = props.inputs.filter(i => input.inputDestIds.includes(i.id));
+              let targets = passedInputs.filter(i =>
+                input.inputDestIds.includes(i.id)
+              );
               if (targets && list && list.length > 0) {
                 targets.forEach(target => {
                   target.userInput = '';
                   target.values = list;
-                })
+                });
               }
             }
           } else if (input.type === TemplateInputType.DROPDOWN) {
-            const target = props.inputs.find(i => i.inputSourceId === input.id);
+            const target = passedInputs.find(i => i.inputSourceId === input.id);
             if (
               value &&
               target &&
@@ -1000,7 +1063,13 @@ export const InputFactory = (props: InputFactoryProps) => {
                 month = inputs[input.monthDropdown].userInput;
               }
               if (year && month && year !== '' && month !== '') {
-                const newEndTime = moment().utc().month(month).year(year).add(1, 'M').endOf('month').unix();
+                const newEndTime = moment()
+                  .utc()
+                  .month(month)
+                  .year(year)
+                  .add(1, 'M')
+                  .endOf('month')
+                  .unix();
                 const comps = timestampComponents(newEndTime, 0);
                 onChange('updateEventExpiration', {
                   setEndTime: comps.setEndTime,
@@ -1023,19 +1092,22 @@ export const InputFactory = (props: InputFactoryProps) => {
   }
 };
 
-export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
-  const { currentTime, onChange, openTop } = props;
-
+export const SimpleTimeSelector = ({
+  currentTime,
+  onChange,
+  openTop,
+  isAfter,
+}: EstimatedStartSelectorProps) => {
   const [endTime, setEndTime] = useState(null);
   const [hour, setHour] = useState(null);
   const [minute, setMinute] = useState(null);
   const [meridiem, setMeridiem] = useState('AM');
   const [timezone, setTimezone] = useState('');
-  const [endTimeFormatted, setEndTimeFormatted] = useState('');
-  const [offset, setOffset] = useState('');
+  const [endTimeFormatted, setEndTimeFormatted] = useState(null);
+  const [offset, setOffset] = useState(null);
   const [offsetName, setOffsetName] = useState('');
   useEffect(() => {
-    const endTimeFormatted = buildformattedDate(
+    const newEndTime = buildformattedDate(
       Number(endTime),
       Number(hour),
       Number(minute),
@@ -1043,8 +1115,8 @@ export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
       offsetName,
       Number(offset)
     );
-    setEndTimeFormatted(endTimeFormatted);
-    onChange(endTimeFormatted);
+    setEndTimeFormatted(newEndTime);
+    onChange(newEndTime);
   }, [endTime, hour, minute, meridiem, timezone, offset, offsetName]);
 
   return (
@@ -1087,8 +1159,8 @@ export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
       timezone={timezone}
       currentTimestamp={currentTime}
       endTimeFormatted={endTimeFormatted}
-      isAfter={props.isAfter}
-      uniqueKey={'startTime'}
+      isAfter={isAfter}
+      uniqueKey="startTime"
     />
   );
 };
@@ -1104,17 +1176,15 @@ interface EstimatedStartSelectorProps {
   openTop?: boolean;
 }
 
-export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
-  const {
-    newMarket,
-    template,
-    input,
-    inputIndex,
-    currentTime,
-    onChange,
-    isAfter,
-  } = props;
-
+export const EstimatedStartSelector = ({
+  newMarket,
+  template,
+  input,
+  inputIndex,
+  currentTime,
+  onChange,
+  isAfter,
+}: EstimatedStartSelectorProps) => {
   const [endTime, setEndTime] = useState(
     input.userInput
       ? (input.userInputObject as UserInputDateTime).endTime
@@ -1149,7 +1219,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
   );
   let userInput = input.placeholder;
   useEffect(() => {
-    const endTimeFormatted = buildformattedDate(
+    const newEndTimeFormatted = buildformattedDate(
       Number(endTime),
       Number(hour),
       Number(minute),
@@ -1157,15 +1227,14 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       offsetName,
       Number(offset)
     );
-    setEndTimeFormatted(endTimeFormatted);
+    setEndTimeFormatted(newEndTimeFormatted);
     if (hour !== null && minute !== null) {
       if (input.type === TemplateInputType.DATETIME) {
-        userInput = endTimeFormatted.formattedUtc;
-      }
-      else {
+        userInput = newEndTimeFormatted.formattedUtc;
+      } else {
         const addHours = input.hoursAfterEst;
-        userInput = String(endTimeFormatted.timestamp);
-        const newEndTime = (addHours * 60 * 60) + endTimeFormatted.timestamp
+        userInput = String(newEndTimeFormatted.timestamp);
+        const newEndTime = addHours * 60 * 60 + newEndTimeFormatted.timestamp;
         const comps = timestampComponents(newEndTime, offset);
         onChange('updateEventExpiration', {
           setEndTime: comps.setEndTime,
@@ -1178,7 +1247,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
         });
       }
     }
-    template.inputs[props.input.id].userInputObject = {
+    template.inputs[input.id].userInputObject = {
       endTime,
       hour,
       minute,
@@ -1186,10 +1255,10 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       timezone,
       offset,
       offsetName,
-      endTimeFormatted,
+      endTimeFormatted: newEndTimeFormatted,
     } as UserInputDateTime;
     if (hour !== null && minute !== null) {
-      template.inputs[props.input.id].userInput = userInput;
+      template.inputs[input.id].userInput = userInput;
     }
     let inputValidations = newMarket.validations.inputs;
     if (!inputValidations) {
@@ -1210,10 +1279,8 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
   return (
     <div className={Styles.EstimatedStartSelector}>
       <DateTimeSelector
-        header={props.input.label || 'Estimated start time'}
-        subheader={
-          props.input.sublabel || 'When is the event estimated to begin?'
-        }
+        header={input.label || 'Estimated start time'}
+        subheader={input.sublabel || 'When is the event estimated to begin?'}
         setEndTime={endTime}
         onChange={(label, value) => {
           switch (label) {
@@ -1262,14 +1329,17 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
 };
 
 export interface QuestionBuilderProps {
-  newMarket: NewMarket;
   onChange: Function;
-  currentTimestamp: number;
-  isAfter: number;
 }
 
-export const QuestionBuilder = (props: QuestionBuilderProps) => {
-  const { onChange, newMarket, currentTimestamp, isAfter } = props;
+export const QuestionBuilder = ({
+  onChange,
+}: QuestionBuilderProps) => {
+  const { 
+    newMarket,
+    universe: { maxMarketEndTime: isAfter },
+    blockchain: { currentAugurTimestamp: currentTimestamp },
+  } = useAppStatusStore();
   const { template, marketType } = newMarket;
   const question = template.question.split(' ');
   const inputs = template.inputs;
@@ -1327,7 +1397,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
           }
         })}
       </div>
-      <TemplateBanners categories={newMarket.categories} />
+      <TemplateBanners />
       {dateTimeIndex > -1 && (
         <EstimatedStartSelector
           newMarket={newMarket}
@@ -1336,7 +1406,7 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
           currentTime={currentTimestamp}
           template={template}
           inputIndex={dateTimeIndex}
-          isAfter={props.isAfter}
+          isAfter={isAfter}
         />
       )}
       {marketType === CATEGORICAL && (
@@ -1346,12 +1416,9 @@ export const QuestionBuilder = (props: QuestionBuilderProps) => {
   );
 };
 
-export interface TemplateBannersProps {
-  categories: string[];
-}
-
-export const TemplateBanners = (props: TemplateBannersProps) => {
-  const text = props.categories.reduce(
+export const TemplateBanners = () => {
+  const { newMarket: { categories } } = useAppStatusStore();
+  const text = categories.reduce(
     (p, c) =>
       Object.keys(TemplateBannerText).includes(c.toLowerCase())
         ? TemplateBannerText[c.toLowerCase()]
@@ -1385,9 +1452,11 @@ export interface CategoricalTemplateProps {
 }
 
 export const CategoricalTemplate = (props: CategoricalTemplateProps) => {
-  const { newMarket } = props;
-  const { template } = newMarket;
-  const inputs = template.inputs;
+  const {
+    newMarket: {
+      template: { inputs },
+    },
+  } = props;
   const hasDropdowns = inputs.find(
     (i: TemplateInput) =>
       i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP ||
@@ -1409,37 +1478,30 @@ export interface CategoricalTemplateTextInputsProps {
   onChange: Function;
 }
 
-const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
-  const [marketOutcomes, setMarketOutcomes] = useState(null);
-  const [noAdditionOutcomes] = useState(!!props.newMarket.template.noAdditionalUserOutcomes);
-  const [required] = useState(
-    props.newMarket.template.inputs
-      .filter(i => i.type === TemplateInputType.ADDED_OUTCOME)
-      .map(i => ({ value: i.placeholder, editable: false }))
-  );
-  const [showOutcomes, setShowOutcomes] = useState([]);
+const SimpleTextInputOutcomes = ({
+  onChange,
+  newMarket: { outcomes, validations, template },
+}: CategoricalTemplateTextInputsProps) => {
+  let marketOutcomes = null;
+  let showOutcomes = [];
+  const noAdditionOutcomes = !!template.noAdditionalUserOutcomes;
+  const required = template.inputs
+    .filter(i => i.type === TemplateInputType.ADDED_OUTCOME)
+    .map(i => ({ value: i.placeholder, editable: false }));
+  if (String(marketOutcomes) !== String(outcomes)) {
+    const requiredOutcomes = required.map(r => r.value);
+    showOutcomes = [...outcomes]
+      .reduce((p, o) => (requiredOutcomes.includes(o) ? p : [...p, o]), [])
+      .map(i => ({ value: i, editable: true }));
 
-  useEffect(() => {
-    if (String(marketOutcomes) !== String(props.newMarket.outcomes)) {
-      const requiredOutcomes = required.map(r => r.value);
-      let showOutcomes = [...outcomes]
-        .reduce((p, o) => (requiredOutcomes.includes(o) ? p : [...p, o]), [])
-        .map(i => ({ value: i, editable: true }));
-
-      while (showOutcomes.length < CATEGORICAL_OUTCOMES_MIN_NUM) {
-        showOutcomes.push({
-          value: '',
-          editable: true,
-        });
-      }
-      setShowOutcomes(showOutcomes);
-      setMarketOutcomes(props.newMarket.outcomes);
+    while (showOutcomes.length < CATEGORICAL_OUTCOMES_MIN_NUM) {
+      showOutcomes.push({
+        value: '',
+        editable: true,
+      });
     }
-  });
-
-  const { onChange, newMarket } = props;
-  const { outcomes, validations } = newMarket;
-
+    marketOutcomes = outcomes;
+  }
   return (
     <>
       {!noAdditionOutcomes && (
@@ -1456,7 +1518,7 @@ const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
             updateList={(value: string[]) => {
               onChange('outcomes', [...value, ...required.map(i => i.value)]);
             }}
-            errorMessage={validations && validations.outcomes}
+            errorMessage={validations?.outcomes}
           />
         </>
       )}
@@ -1472,11 +1534,7 @@ const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
           onChange={() => {}}
           number={index}
           removable={false}
-          errorMessage={
-            validations &&
-            validations.outcomes &&
-            validations.outcomes[showOutcomes.length + index]
-          }
+          errorMessage={validations?.outcomes[showOutcomes.length + index]}
           editable={false}
         />
       ))}
@@ -1484,20 +1542,16 @@ const SimpleTextInputOutcomes = (props: CategoricalTemplateTextInputsProps) => {
   );
 };
 
-export const CategoricalTemplateTextInputs = (
-  props: CategoricalTemplateTextInputsProps
-) => {
+export const CategoricalTemplateTextInputs = ({
+  onChange,
+  newMarket: { template, validations },
+}: CategoricalTemplateTextInputsProps) => {
   const [outcomeList, setOutcomeList] = useState([]);
-  const { onChange, newMarket } = props;
-  const { validations } = newMarket;
   const [requiredOutcomes] = useState(
-    props.newMarket.template.inputs.filter(
-      i => i.type === TemplateInputType.ADDED_OUTCOME
-    )
+    template.inputs.filter(i => i.type === TemplateInputType.ADDED_OUTCOME)
   );
 
   useEffect(() => {
-    const { template } = newMarket;
     const otherOutcomes = template.inputs.filter(
       (i: TemplateInput) => i.type !== TemplateInputType.ADDED_OUTCOME
     );
@@ -1536,7 +1590,10 @@ export const CategoricalTemplateTextInputs = (
       String(initialList.map(o => o.value))
     ) {
       setOutcomeList(initialList);
-      onChange('outcomes', initialList.map(o => o.value));
+      onChange(
+        'outcomes',
+        initialList.map(o => o.value)
+      );
     }
   });
 
@@ -1579,7 +1636,7 @@ interface CategoricalDropDownAction {
   data: Partial<CategoricalDropDownItem>;
 }
 export const CategoricalTemplateDropdowns = (
-  props: CategoricalTemplateDropdownsProps
+  { onChange, newMarket: { template, validations, outcomes }}: CategoricalTemplateDropdownsProps
 ) => {
   const MAX_ADDED_OUTCOMES = 7;
   const ACTIONS = {
@@ -1596,16 +1653,22 @@ export const CategoricalTemplateDropdowns = (
       switch (action.type) {
         case ACTIONS.ADD:
           const newAddState = OrderOutcomesItems([...state, action.data]);
-          props.onChange('outcomes', newAddState.map(o => o.value));
+          onChange(
+            'outcomes',
+            newAddState.map(o => o.value)
+          );
           return newAddState;
         case ACTIONS.REMOVE:
           const newRemoveState = OrderOutcomesItems(
             state.filter(s => s.value !== action.data.value)
           );
-          props.onChange('outcomes', newRemoveState.map(o => o.value));
+          onChange(
+            'outcomes',
+            newRemoveState.map(o => o.value)
+          );
           return newRemoveState;
         case ACTIONS.REMOVE_ALL:
-          props.onChange('outcomes', []);
+          onChange('outcomes', []);
           return [];
         case ACTIONS.REPLACE_CURRENT:
           const removeCurrent = state.filter(s => !s.current);
@@ -1613,7 +1676,10 @@ export const CategoricalTemplateDropdowns = (
             ...removeCurrent,
             action.data,
           ]);
-          props.onChange('outcomes', newUpdatedState.map(o => o.value));
+          onChange(
+            'outcomes',
+            newUpdatedState.map(o => o.value)
+          );
           return newUpdatedState;
         case ACTIONS.ADD_NEW:
           return state.map(o => ({ ...o, current: false }));
@@ -1635,7 +1701,7 @@ export const CategoricalTemplateDropdowns = (
   const [initialized, setInitialized] = useState(false);
   const [sourceUserInput, setSourceUserInput] = useState(undefined);
   const [depDropdownInput] = useState(
-    props.newMarket.template.inputs.find(
+    template.inputs.find(
       input =>
         input.type ===
           TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP ||
@@ -1643,7 +1709,7 @@ export const CategoricalTemplateDropdowns = (
     )
   );
   const [defaultOutcomeItems] = useState(
-    props.newMarket.template.inputs
+    template.inputs
       .filter(input => input.type === TemplateInputType.ADDED_OUTCOME)
       .map(input => ({
         value: input.placeholder,
@@ -1655,7 +1721,6 @@ export const CategoricalTemplateDropdowns = (
   const [showBanner, setShowBanner] = useState(true);
 
   useEffect(() => {
-    const { template } = props.newMarket;
     const isDepDropdown =
       depDropdownInput.type ===
       TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP;
@@ -1667,7 +1732,6 @@ export const CategoricalTemplateDropdowns = (
 
     // in case of re-hyration of market creation form need to set newMarket outcomes
     if (!initialized) {
-      const { outcomes } = props.newMarket;
       setInitialized(true);
       outcomes.map((i: string) => {
         const defaultItems = defaultOutcomeItems.map(
@@ -1687,10 +1751,13 @@ export const CategoricalTemplateDropdowns = (
           data,
         });
       });
-      !isDepDropdown && setdropdownList(createTemplateValueList(depDropdownInput.values));
+      !isDepDropdown &&
+        setdropdownList(createTemplateValueList(depDropdownInput.values));
       if (isDepDropdown && source && source.userInput !== undefined) {
         setSourceUserInput(source.userInput);
-        setdropdownList(createTemplateValueList(depDropdownInput.values[source.userInput]));
+        setdropdownList(
+          createTemplateValueList(depDropdownInput.values[source.userInput])
+        );
       }
     } else {
       if (outcomeList.length == 0 && defaultOutcomeItems.length > 0) {
@@ -1701,17 +1768,17 @@ export const CategoricalTemplateDropdowns = (
       if (isDepDropdown && sourceUserInput !== source.userInput) {
         setSourceUserInput(source.userInput);
         dispatch({ type: ACTIONS.REMOVE_ALL, data: null });
-        setdropdownList(createTemplateValueList(depDropdownInput.values[source.userInput]));
+        setdropdownList(
+          createTemplateValueList(depDropdownInput.values[source.userInput])
+        );
         setSourceUserInput(source && source.userInput);
       }
     }
     setTooFewOutomesError(null);
     if (
-      props.newMarket.validations &&
-      props.newMarket.validations.outcomes &&
-      Array.isArray(props.newMarket.validations.outcomes)
+      Array.isArray(validations?.outcomes)
     ) {
-      props.newMarket.validations.outcomes.forEach((error, index) => {
+      validations.outcomes.forEach((error, index) => {
         if (!!error) {
           outcomeList.length > index
             ? dispatch({ type: ACTIONS.HAS_ERROR, data: { error, id: index } })
@@ -1732,19 +1799,19 @@ export const CategoricalTemplateDropdowns = (
       />
       {outcomeList
         .filter(o => !o.current && o.removable)
-        .map((item, index) => (
+        .map(({ value, removable, error, editable }, index) => (
           <NumberedInput
             key={index}
-            value={item.value}
+            value={value}
             placeholder={''}
             onChange={() => {}}
             number={index}
-            removable={item.removable}
+            removable={removable}
             onRemove={index =>
-              dispatch({ type: ACTIONS.REMOVE, data: { value: item.value } })
+              dispatch({ type: ACTIONS.REMOVE, data: { value } })
             }
-            errorMessage={item.error}
-            editable={item.editable}
+            errorMessage={error}
+            editable={editable}
           />
         ))}
       {showBanner && <SelectEventNotice text={SelectEventNoticeText} />}
@@ -1752,7 +1819,7 @@ export const CategoricalTemplateDropdowns = (
         <OutcomeDropdownInput
           number={outcomeList.filter(o => !o.current && o.removable).length}
           list={dropdownList}
-          defaultValue={currentValue && currentValue.value}
+          defaultValue={currentValue?.value}
           onChange={value => {
             dispatch({
               type: ACTIONS.REPLACE_CURRENT,
@@ -1760,7 +1827,7 @@ export const CategoricalTemplateDropdowns = (
             });
           }}
           errorMessage={
-            tooFewOutcomesError || (currentValue && currentValue.error)
+            tooFewOutcomesError || (currentValue?.error)
           }
           onAdd={() => dispatch({ type: ACTIONS.ADD_NEW, data: {} })}
           canAddMore={canAddMore}
@@ -1772,19 +1839,19 @@ export const CategoricalTemplateDropdowns = (
       />
       {outcomeList
         .filter(o => !o.current && !o.removable)
-        .map((item, index) => (
+        .map(({ value, removable, error, editable }, index) => (
           <NumberedInput
             key={index}
-            value={item.value}
+            value={value}
             placeholder={''}
             onChange={() => {}}
             number={index}
-            removable={item.removable}
+            removable={removable}
             onRemove={index =>
-              dispatch({ type: ACTIONS.REMOVE, data: { value: item.value } })
+              dispatch({ type: ACTIONS.REMOVE, data: { value } })
             }
-            errorMessage={item.error}
-            editable={item.editable}
+            errorMessage={error}
+            editable={editable}
           />
         ))}
     </>
@@ -1844,9 +1911,10 @@ export interface ResolutionRulesProps {
   onChange: Function;
 }
 
-export const ResolutionRules = (props: ResolutionRulesProps) => {
-  const { onChange, newMarket } = props;
-  const { template } = newMarket;
+export const ResolutionRules = ({
+  newMarket: { template },
+  onChange,
+}: ResolutionRulesProps) => {
   const { resolutionRules } = template;
   if (Object.keys(resolutionRules).length === 0) {
     return null;
@@ -1909,15 +1977,21 @@ export interface InputHeadingProps {
   copyType?: string;
 }
 
-export const InputHeading = (props: InputHeadingProps) => (
+export const InputHeading = ({
+  name,
+  heading,
+  subHeading,
+  listItems,
+  copyType,
+}: InputHeadingProps) => (
   <div className={Styles.InputHeading}>
-    <h1>{props.heading}</h1>
+    <h1>{heading}</h1>
     <span>
-      {props.subHeading}
-      <Link copyType={props.copyType} />
+      {subHeading}
+      <Link copyType={copyType} />
     </span>
-    <ul key={props.name}>
-      {props.listItems.map((i, ndx) => (
+    <ul key={name}>
+      {listItems.map((i, ndx) => (
         <li key={ndx}>{i}</li>
       ))}
     </ul>

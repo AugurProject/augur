@@ -24,7 +24,7 @@ const mapStateToProps = (state: AppState) => {
     userAvailableRep,
     GsnEnabled,
     gasPrice: getGasPrice(),
-    gsnUnavailable: isGSNUnavailable(state),
+    gsnUnavailable: isGSNUnavailable(),
     gsnWalletInfoSeen,
   };
 };

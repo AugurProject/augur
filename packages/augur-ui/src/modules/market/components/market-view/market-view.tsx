@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import classNames from 'classnames';
+import { useLocation, useHistory } from 'react-router';
 import Media from 'react-media';
 
 import MarketHeader from 'modules/market/containers/market-header';
@@ -91,7 +92,6 @@ interface MarketViewProps {
   showMarketLoadingModal: Function;
   addAlert: Function;
   hotloadMarket: Function;
-  location: Location;
   defaultMarket: MarketData;
   isPreview?: boolean;
 }
@@ -116,10 +116,8 @@ const MarketView = ({
   closeMarketLoadingModalOnly,
   loadMarketsInfo,
   updateModal,
-  history,
   showMarketLoadingModal,
   addAlert,
-  location,
   defaultMarket,
   isPreview
 }: MarketViewProps) => {
@@ -133,7 +131,8 @@ const MarketView = ({
     blockchain: { currentAugurTimestamp },
   } = useAppStatusStore();
   const { marketInfos, orderBooks, actions: { updateOrderBook, bulkMarketTradingHistory } } = useMarketsStore();
-
+  const location = useLocation();
+  const history = useHistory();
   const node = useRef(null);
 
   const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];

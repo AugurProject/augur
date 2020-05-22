@@ -38,8 +38,16 @@ import {
   USER_OPEN_ORDERS,
   FILLED_ORDERS,
   ACCOUNT_POSITIONS,
+  ANALYTICS,
+  DRAFTS,
+  NEW_MARKET,
+  MARKETS_LIST,
 } from 'modules/app/store/constants';
-
+import { EMPTY_STATE } from 'modules/create-market/constants';
+import { ZERO, NEW_ORDER_GAS_ESTIMATE } from 'modules/common/constants';
+import { createBigNumber } from 'utils/create-big-number';
+import { LiquidityOrder } from 'modules/types';
+import { formatDai, formatShares } from 'utils/format-number';
 const {
   SET_THEME,
   SET_ODDS,
@@ -86,10 +94,58 @@ const {
   REFRESH_USER_OPEN_ORDERS,
   UPDATE_USER_FILLED_ORDERS,
   UPDATE_ACCOUNT_POSITIONS_DATA,
+  ADD_ANALYTIC,
+  REMOVE_ANALYTIC,
+  ADD_UPDATE_DRAFT,
+  REMOVE_DRAFT,
+  LOAD_DRAFTS,
+  ADD_ORDER_TO_NEW_MARKET,
+  REMOVE_ORDER_FROM_NEW_MARKET,
+  REMOVE_ALL_ORDER_FROM_NEW_MARKET,
+  UPDATE_NEW_MARKET,
+  CLEAR_NEW_MARKET,
+  UPDATE_MARKETS_LIST,
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
   document.documentElement.setAttribute(THEME, theme);
+
+const recalculateCumulativeShares = orders => {
+  let counterBids = 0;
+  let counterAsks = 0;
+  const bids = orders
+    .filter(a => a.type === 'sell')
+    .sort((a, b) => Number(a.price) - Number(b.price))
+    .map(order => {
+      counterBids = counterBids + Number(order.shares);
+      order.cumulativeShares = String(counterBids);
+      return order;
+    });
+
+  const asks = orders
+    .filter(a => a.type === 'buy')
+    .sort((a, b) => Number(b.price) - Number(a.price))
+    .map(order => {
+      counterAsks = counterAsks + Number(order.shares);
+      order.cumulativeShares = String(counterAsks);
+      return order;
+    });
+  return [...bids, ...asks];
+};
+
+const calculateLiquidity = orderBook => {
+  let initialLiquidityDai = ZERO;
+  let initialLiquidityGas = ZERO;
+  Object.keys(orderBook).map(id => {
+    orderBook[id].map((order: LiquidityOrder) => {
+      initialLiquidityDai = initialLiquidityDai.plus(order.orderEstimate);
+      initialLiquidityGas = createBigNumber(initialLiquidityGas).plus(
+        NEW_ORDER_GAS_ESTIMATE
+      );
+    });
+  });
+  return { initialLiquidityDai, initialLiquidityGas };
+};
 
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
@@ -412,11 +468,164 @@ export function AppStatusReducer(state, action) {
       }
       break;
     }
+    case ADD_ANALYTIC: {
+      updatedState[ANALYTICS] = {
+        ...updatedState[ANALYTICS],
+        [action.id]: action.analytic,
+      };
+      break;
+    }
+    case REMOVE_ANALYTIC: {
+      delete updatedState[ANALYTICS][action.id];
+      break;
+    }
+    case ADD_UPDATE_DRAFT: {
+      updatedState[DRAFTS] = {
+        ...updatedState[DRAFTS],
+        [action.key]: action.draft,
+      };
+      break;
+    }
+    case REMOVE_DRAFT: {
+      delete updatedState[DRAFTS][action.key];
+      break;
+    }
+    case LOAD_DRAFTS: {
+      updatedState[DRAFTS] = action.drafts;
+      break;
+    }
+    case ADD_ORDER_TO_NEW_MARKET: {
+      const orderToAdd = action.order;
+      const {
+        quantity,
+        price,
+        type,
+        orderEstimate,
+        outcomeName,
+        outcomeId,
+      } = orderToAdd;
+      const existingOrders = updatedState[NEW_MARKET].orderBook[outcomeId] || [];
+
+      let orderAdded = false;
+
+      const updatedOrders: LiquidityOrder[] = existingOrders.map(
+        (order: LiquidityOrder) => {
+          const orderInfo = Object.assign({}, order);
+          if (
+            createBigNumber(order.price).eq(createBigNumber(price)) &&
+            order.type === type
+          ) {
+            orderInfo.quantity = createBigNumber(order.quantity).plus(
+              createBigNumber(quantity)
+            );
+            (orderInfo.orderEstimate = createBigNumber(
+              order.orderEstimate
+            ).plus(createBigNumber(orderEstimate))),
+              (orderInfo.shares = orderInfo.quantity);
+            orderInfo.mySize = orderInfo.quantity;
+            orderInfo.cumulativeShares = orderInfo.quantity;
+            orderAdded = true;
+            return orderInfo;
+          }
+          return order;
+        }
+      );
+
+      if (!orderAdded) {
+        updatedOrders.push({
+          outcomeName,
+          outcomeId,
+          type,
+          price,
+          quantity,
+          shares: quantity,
+          mySize: quantity,
+          cumulativeShares: quantity,
+          orderEstimate: createBigNumber(orderEstimate),
+          avgPrice: formatDai(price),
+          unmatchedShares: formatShares(quantity),
+          sharesEscrowed: formatShares(quantity),
+          tokensEscrowed: formatDai(createBigNumber(orderEstimate)),
+          id: updatedOrders.length,
+        } as any);
+      }
+
+      const newUpdatedOrders = recalculateCumulativeShares(updatedOrders);
+      const orderBook = {
+        ...updatedState[NEW_MARKET].orderBook,
+        [outcomeId]: newUpdatedOrders,
+      };
+
+      const { initialLiquidityDai, initialLiquidityGas } = calculateLiquidity(
+        orderBook
+      );
+
+      updatedState[NEW_MARKET] = {
+        ...updatedState[NEW_MARKET],
+        initialLiquidityDai,
+        initialLiquidityGas,
+        orderBook,
+      };
+      break;
+    }
+    case REMOVE_ORDER_FROM_NEW_MARKET: {
+      const { outcome, orderId } = action.order;
+      const updatedOrders = updatedState[NEW_MARKET].orderBook[outcome].filter(
+        order => order.id !== orderId
+      );
+      const updatedOutcomeUpdatedShares = recalculateCumulativeShares(
+        updatedOrders
+      );
+      const orderBook = {
+        ...updatedState[NEW_MARKET].orderBook,
+        [outcome]: updatedOutcomeUpdatedShares,
+      };
+
+      const { initialLiquidityDai, initialLiquidityGas } = calculateLiquidity(
+        orderBook
+      );
+
+      updatedState[NEW_MARKET] = {
+        ...updatedState[NEW_MARKET],
+        initialLiquidityDai,
+        initialLiquidityGas,
+        orderBook,
+      };
+      break;
+    }
+    case UPDATE_NEW_MARKET: {
+      updatedState[NEW_MARKET] = {
+        ...updatedState[NEW_MARKET],
+        ...action.newMarketData,
+      };
+      break;
+    }
+    case REMOVE_ALL_ORDER_FROM_NEW_MARKET: {
+      updatedState[NEW_MARKET] = {
+        ...updatedState[NEW_MARKET],
+        initialLiquidityDai: ZERO,
+        initialLiquidityGas: ZERO,
+        orderBook: {},
+      };
+      break;
+    }
+    case CLEAR_NEW_MARKET: {
+      updatedState[NEW_MARKET] = { ...EMPTY_STATE };
+      break;
+    }
+    case UPDATE_MARKETS_LIST: {
+      updatedState[MARKETS_LIST] = {
+        ...updatedState[MARKETS_LIST],
+        ...action.data,
+      };
+      break;
+    }
     default:
       throw new Error(
         `Error: ${action.type} not caught by App Status reducer.`
       );
   }
+  // console.log(action.type, updatedState, action);
   window.appStatus = updatedState;
   return updatedState;
 }
@@ -479,8 +688,8 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
       updateUniverse: universe => dispatch({ type: UPDATE_UNIVERSE, universe }),
       switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
-      updateLoginAccount: (loginAccount, clear = false) =>
-        dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount, clear }),
+      updateLoginAccount: (loginAccount) =>
+        dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount }),
       clearLoginAccount: () => dispatch({ type: CLEAR_LOGIN_ACCOUNT }),
       loadFavorites: favorites => dispatch({ type: LOAD_FAVORITES, favorites }),
       toggleFavorite: marketId => dispatch({ type: TOGGLE_FAVORITE, marketId }),
@@ -538,6 +747,23 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
           positionData,
           marketId,
         }),
+      addAnalytic: (id, analytic) =>
+        dispatch({ type: ADD_ANALYTIC, id, analytic }),
+      removeAnalytic: id => dispatch({ type: REMOVE_ANALYTIC, id }),
+      addUpdateDraft: (key, draft) =>
+        dispatch({ type: ADD_UPDATE_DRAFT, key, draft }),
+      removeDraft: key => dispatch({ type: REMOVE_DRAFT, key }),
+      loadDrafts: drafts => dispatch({ type: LOAD_DRAFTS, drafts }),
+      addOrderToNewMarket: order =>
+        dispatch({ type: ADD_ORDER_TO_NEW_MARKET, order }),
+      removeOrderFromNewMarket: order =>
+        dispatch({ type: REMOVE_ORDER_FROM_NEW_MARKET, order }),
+      updateNewMarket: newMarketData =>
+        dispatch({ type: UPDATE_NEW_MARKET, newMarketData }),
+      removeAllOrdersFromNewMarket: () =>
+        dispatch({ type: REMOVE_ALL_ORDER_FROM_NEW_MARKET }),
+      clearNewMarket: () => dispatch({ type: CLEAR_NEW_MARKET }),
+      updateMarketsList: data => dispatch({ type: UPDATE_MARKETS_LIST, data }),
     },
   };
 };

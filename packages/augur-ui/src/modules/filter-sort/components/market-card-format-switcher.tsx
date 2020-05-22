@@ -3,16 +3,10 @@ import { Compact, Classic, Expanded } from 'modules/common/icons';
 import { MARKET_CARD_FORMATS } from 'modules/common/constants';
 import classNames from 'classnames';
 import Styles from 'modules/filter-sort/components/market-card-format-switcher.styles.less';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
-interface MarketCardFormatSwitcherProps {
-  marketCardFormat: string;
-  updateMarketsListCardFormat: Function;
-}
-
-export const MarketCardFormatSwitcher = (
-  props: MarketCardFormatSwitcherProps
-) => {
-  const { marketCardFormat, updateMarketsListCardFormat } = props;
+export const MarketCardFormatSwitcher = () => {
+  const { marketsList: { marketCardFormat }, actions: { updateMarketsList } } = useAppStatusStore();
 
   const ViewSwitcher = ({ handleClick, type, selected = false }) => (
     <span
@@ -31,22 +25,22 @@ export const MarketCardFormatSwitcher = (
         VIEW
       </div>
       <ViewSwitcher
-        handleClick={() =>
-          updateMarketsListCardFormat(MARKET_CARD_FORMATS.COMPACT)
+        handleClick={() => 
+          updateMarketsList({ marketCardFormat: MARKET_CARD_FORMATS.COMPACT })
         }
         type={Compact}
         selected={marketCardFormat === MARKET_CARD_FORMATS.COMPACT}
       />
       <ViewSwitcher
-        handleClick={() =>
-          updateMarketsListCardFormat(MARKET_CARD_FORMATS.CLASSIC)
+        handleClick={() => 
+          updateMarketsList({ marketCardFormat: MARKET_CARD_FORMATS.CLASSIC })
         }
         type={Classic}
         selected={marketCardFormat === MARKET_CARD_FORMATS.CLASSIC}
       />
       <ViewSwitcher
-        handleClick={() =>
-          updateMarketsListCardFormat(MARKET_CARD_FORMATS.EXPANDED)
+        handleClick={() => 
+          updateMarketsList({ marketCardFormat: MARKET_CARD_FORMATS.EXPANDED })
         }
         type={Expanded}
         selected={marketCardFormat === MARKET_CARD_FORMATS.EXPANDED}

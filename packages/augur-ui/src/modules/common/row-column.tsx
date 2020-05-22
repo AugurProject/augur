@@ -12,7 +12,7 @@ import {
 } from 'modules/common/labels';
 import { CancelTextButton, CashoutButton } from 'modules/common/buttons';
 import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
-import { DateFormattedObject } from 'modules/types';
+import { DateFormattedObject, FormattedNumber } from 'modules/types';
 import { TXEventName } from '@augurproject/sdk/src';
 import { XIcon } from 'modules/common/icons';
 
@@ -30,7 +30,7 @@ export interface Properties {
   showBrackets?: string;
   showPlusMinus?: string;
   showColors?: boolean;
-  value?: string;
+  value?: string | FormattedNumber;
   size?: string;
   showEmptyDash?: boolean;
   addIndicator?: boolean;

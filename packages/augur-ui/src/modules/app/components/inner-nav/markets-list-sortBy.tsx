@@ -8,18 +8,16 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface MarketsListFiltersProps {
   marketSort: string;
-  isSearching: boolean;
   updateMarketsSortBy: Function;
   setSortOptions: Function;
 }
 
 const MarketsListFilters = ({
   marketSort,
-  isSearching,
   updateMarketsSortBy,
   setSortOptions,
 }: MarketsListFiltersProps) => {
-  const { isMobile } = useAppStatusStore();
+  const { isMobile, marketsList: { isSearching } } = useAppStatusStore();
   return (
     <div className={Styles.Filters}>
       <div

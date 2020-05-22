@@ -19,14 +19,18 @@ import deepClone from 'utils/deep-clone';
 import { NewMarket } from 'modules/types';
 import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
-export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
-  const { navCategories, marketType } = newMarket;
-  const tertiaryOptions = newMarket.navCategories[1]
+export const TemplatePicker = () => {
+  const {
+    newMarket: { currentStep, marketType, navCategories },
+    actions: { updateNewMarket },
+  } = useAppStatusStore();
+  const tertiaryOptions = navCategories[1]
     ? getTemplateCategoriesList(
         {
-          primary: newMarket.navCategories[0],
-          secondary: newMarket.navCategories[1],
+          primary: navCategories[0],
+          secondary: navCategories[1],
           tertiary: '',
         },
         marketType
@@ -42,7 +46,9 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
     tertiary: tertiary.value,
   };
   const templates = getTemplates(categoriesFormatted, marketType);
-  const catLabels = Object.values(categoriesFormatted).filter(c => c).join(' / ');
+  const catLabels = Object.values(categoriesFormatted)
+    .filter(c => c)
+    .join(' / ');
   let subheader = `Popular ${catLabels} templates with up to 8 possible outcomes.`;
   if (marketType === YES_NO) {
     subheader = `Popular Yes/No ${catLabels} templates.`;
@@ -52,7 +58,7 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
 
   const templateOptions = templates.map((template, index) => {
     return {
-      header: `${getTemplateReadableDescription(template)}`,
+      header: getTemplateReadableDescription(template),
       description: `Example: ${template.example}`,
       value: index.toString(),
       renderMarkdown: true,
@@ -88,19 +94,26 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
             setDefaultValue(value);
             if (!value) return;
             const template = templates[value];
-            const scalarDenomination = newMarket.marketType === SCALAR && template.denomination;
+            const scalarDenomination =
+              marketType === SCALAR && template.denomination;
             const outcomes =
-            newMarket.marketType === CATEGORICAL
-              ? createTemplateOutcomes(template.inputs)
-              : ['', ''];
-            const outcomesFormatted = getFormattedOutcomes(newMarket.marketType, outcomes, scalarDenomination)
+              marketType === CATEGORICAL
+                ? createTemplateOutcomes(template.inputs)
+                : ['', ''];
+            const outcomesFormatted = getFormattedOutcomes(
+              marketType,
+              outcomes,
+              scalarDenomination
+            );
             let minPrice = '0';
             let maxPrice = '1';
-            if (newMarket.marketType === SCALAR) {
+            if (marketType === SCALAR) {
               minPrice = '';
               maxPrice = '';
-              if (template.minPrice !== undefined) minPrice = String(template.minPrice);
-              if (template.maxPrice !== undefined) maxPrice = String(template.maxPrice);
+              if (template.minPrice !== undefined)
+                minPrice = String(template.minPrice);
+              if (template.maxPrice !== undefined)
+                maxPrice = String(template.maxPrice);
             }
             updateNewMarket({
               ...deepClone<NewMarket>(EMPTY_STATE),
@@ -110,31 +123,23 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
               ),
               outcomes,
               outcomesFormatted,
-              currentStep: newMarket.currentStep,
+              currentStep,
               tickSize:
-                newMarket.marketType === SCALAR && template.tickSize
+                marketType === SCALAR && template.tickSize
                   ? template.tickSize
                   : DEFAULT_TICK_SIZE,
               scalarDenomination,
               minPrice,
               maxPrice,
               minPriceBigNumber:
-                minPrice != ''
-                    ? createBigNumber(minPrice)
-                    : null,
+                minPrice != '' ? createBigNumber(minPrice) : null,
               maxPriceBigNumber:
-                  maxPrice != ''
-                    ? createBigNumber(maxPrice)
-                    : null,
-              marketType: newMarket.marketType,
-              categories: [
-                newMarket.navCategories[0],
-                newMarket.navCategories[1],
-                tertiary.label,
-              ],
+                maxPrice != '' ? createBigNumber(maxPrice) : null,
+              marketType,
+              categories: [navCategories[0], navCategories[1], tertiary.label],
               navCategories: [
-                newMarket.navCategories[0],
-                newMarket.navCategories[1],
+                navCategories[0],
+                navCategories[1],
                 tertiary.label,
               ],
               template,
@@ -145,3 +150,5 @@ export const TemplatePicker = ({ newMarket, updateNewMarket }) => {
     </section>
   );
 };
+
+export default TemplatePicker;

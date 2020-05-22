@@ -15,13 +15,10 @@ interface MarketsHeaderProps {
   headerTitle: string;
 }
 
-const MarketsHeader: React.FC<MarketsHeaderProps> = props => {
-  const {
-    isSearchingMarkets,
-    marketCardFormat,
-    updateMarketsListCardFormat,
-    headerTitle
-  } = props;
+const MarketsHeader: React.FC<MarketsHeaderProps> = ({
+  isSearchingMarkets,
+  headerTitle
+}) => {
 
   return (
     <article
@@ -37,10 +34,7 @@ const MarketsHeader: React.FC<MarketsHeaderProps> = props => {
       <div>
         <h2>{headerTitle}</h2>
         <FilterSearch isSearchingMarkets={isSearchingMarkets} />
-        <MarketCardFormatSwitcher
-          marketCardFormat={marketCardFormat}
-          updateMarketsListCardFormat={updateMarketsListCardFormat}
-        />
+        <MarketCardFormatSwitcher />
         <FilterDropDowns />
       </div>
     </article>

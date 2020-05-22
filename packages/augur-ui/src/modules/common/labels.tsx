@@ -39,7 +39,7 @@ import {
   MODAL_INVALID_MARKET_RULES,
   GWEI_CONVERSION,
 } from 'modules/common/constants';
-import { useAppStatusStore } from 'modules/app/store/app-status';
+import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber, formatBlank, formatGasCostToEther, formatAttoEth } from 'utils/format-number';
 import { DateFormattedObject, FormattedNumber, SizeTypes, MarketData } from 'modules/types';
@@ -1433,7 +1433,7 @@ export const ModalLabelNotice = (props: DismissableNoticeProps) => (
 );
 
 const mapStateToPropsInitWalletModal = (state: AppState) => ({
-  gsnUnavailable: isGSNUnavailable(state),
+  gsnUnavailable: isGSNUnavailable(),
 });
 
 const InitializeWalletModalNoticeCmp = ({ gsnUnavailable }) => (
@@ -1457,7 +1457,8 @@ export const InitializeWalletModalNotice = connect(
 
 const mapStateToPropsEthReserve = (state: AppState, ownProps) => {
   const gasLimit = ownProps.gasLimit;
-  const aboveCutoff = createBigNumber(state.loginAccount.balances.dai).isGreaterThan(createBigNumber(state.env.gsn.minDaiForSignerETHBalanceInDAI * 10**18))
+  const { gasPriceInfo, loginAccount: { balances: { dai }}, env } = AppStatus.get();
+  const aboveCutoff = createBigNumber(dai).isGreaterThan(createBigNumber(env.gsn.minDaiForSignerETHBalanceInDAI * 10**18))
   if (!aboveCutoff) {
     return {
       show: false
@@ -1466,7 +1467,7 @@ const mapStateToPropsEthReserve = (state: AppState, ownProps) => {
 
   const ethInReserve = getEthReserve(state);
   const gasPrice =
-    state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
+    gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const estTransactionFee = createBigNumber(
     formatGasCostToEther(
       gasLimit,
@@ -1483,7 +1484,7 @@ const mapStateToPropsEthReserve = (state: AppState, ownProps) => {
   if (show) {
     const attoEthToDaiRate: BigNumber = getEthForDaiRate();
     const attoEthReserve = formatAttoEth(
-      state.env.gsn.desiredSignerBalanceInETH
+      env.gsn.desiredSignerBalanceInETH
     ).value;
     const diffReserve = createBigNumber(attoEthReserve).minus(createBigNumber(ethInReserve.value).div(10 ** 18));
     reserve = ethToDai(diffReserve, createBigNumber(attoEthToDaiRate || 0));

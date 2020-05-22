@@ -176,7 +176,6 @@ export const addEthIncreaseAlert = (
       createBigNumber(attoEthToDaiRate.div(10 ** 18) || 0)
     );
     const timestamp = currentAugurTimestamp * 1000;
-    console.log('adding eth reserve increase alert');
     dispatch(
       addAlert({
         name: ETH_RESERVE_INCREASE,

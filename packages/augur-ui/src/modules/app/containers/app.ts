@@ -41,14 +41,17 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const { setModal, updateLoginAccount } = AppStatus.actions;
+  const { setModal, updateLoginAccount, updateMarketsList } = AppStatus.actions;
   return ({
     initAugur: (history, overrides, cb) =>
       dispatch(initAugur(history, overrides, cb)),
     updateModal: modal => setModal(modal),
     finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
     logout: () => dispatch(logout()),
-    updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
+    updateSelectedCategories: (category) => updateMarketsList({
+      selectedCategories: category || [],
+      selectedCategory: category.length ? category[category.length - 1] : null,
+    }),
     showGlobalChat: () => setModal({ type: MODAL_GLOBAL_CHAT }),
     migrateV1Rep: () => setModal({ type: MODAL_MIGRATE_REP }),
     saveAffilateAddress: affiliate => isAddress(affiliate) ? updateLoginAccount({ affiliate }) : null,
