@@ -29,6 +29,7 @@
       flex-flow: row nowrap;
       align-items: flex-start;
       justify-content: flex-end;
+      z-index: @mask-toast;
 
       > div {
         align-items: flex-end;
@@ -68,10 +69,13 @@
       }
 
       &.Minimized {
-        position: unset;
         background: transparent;
         padding: @size-32 0;
         max-width: @size-36;
+        left: unset;
+        top: @size-32;
+        z-index: @above-all-content;
+        position: fixed;
 
         > div {
           width: @size-36;
