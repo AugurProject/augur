@@ -2,15 +2,23 @@ import { ethers } from 'ethers';
 import moment from 'moment';
 import { BigNumber } from 'ethers/utils';
 
+export const FUTURES = 'FUTURES';
 export const MONEY_LINE = 'MONEY_LINE';
+export const MONEY_LINE_MEGA = 'MONEY_LINE_MEGA';
 export const OVER_UNDER = 'OVER_UNDER';
+export const OVER_UNDER_MEGA = 'OVER_UNDER_MEGA';
 export const SPREAD = 'SPREAD';
+export const SPREAD_MEGA = 'SPREAD_MEGA';
 export const LEAGUE_NAME = 'LEAGUE_NAME';
 export const GENDER = 'GENDER';
 export const WEEK_NO = 'WEEK_NO';
 export const TEAM_A = 'TEAM_A';
 export const TEAM_B = 'TEAM_B';
 export const START_TIME = 'START_TIME';
+export const YEAR = 'YEAR';
+export const EVENT = 'EVENT';
+export const SUB_EVENT = 'SUB_EVENT';
+export const SET_GAME = 'SET_GAME';
 
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
