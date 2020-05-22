@@ -8,6 +8,7 @@ import {
   sendRep_estimateGas,
 } from 'modules/contracts/actions/contractCalls';
 import { augurSdk } from 'services/augursdk';
+import { createBigNumber } from 'utils/create-big-number';
 
 // GasCosts fallbacks
 export const TRANSFER_ETH_GAS_COST = 21000;
@@ -74,11 +75,11 @@ export function transferFundsGasEstimate(
       case REP:
         return sendRep_estimateGas(to, amount);
       default:
-        return TRANSFER_ETH_GAS_COST;
+        return createBigNumber(TRANSFER_ETH_GAS_COST);
     }
   }
   catch (error) {
     console.error('error could estimate gas', error);
-    return TRANSFER_ETH_GAS_COST;
+    return createBigNumber(TRANSFER_ETH_GAS_COST);
   }
 }
