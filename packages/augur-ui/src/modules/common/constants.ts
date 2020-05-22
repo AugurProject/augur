@@ -964,11 +964,13 @@ export const SPORTS_MARKET_TYPES = [
     header: GAMES,
     label: GAMES,
     id: 0,
+    value: 0,
   },
   {
     header: FUTURES,
     label: FUTURES,
     id: 1,
+    value: 1,
   }
 ];
 
@@ -980,11 +982,13 @@ export const MARKET_STATE_TYPES = [
     header: ACTIVE,
     label: ACTIVE,
     id: 0,
+    value: 0,
   },
   {
     header: RESOLVED,
     label: RESOLVED,
     id: 1,
+    value: 1
   }
 ];
 
@@ -1474,11 +1478,13 @@ export const MY_BETS_VIEW_BY = [
     header: EVENT,
     label: EVENT,
     value: 0,
+    id: 0,
   },
   {
     header: OUTCOMES,
     label: OUTCOMES,
     value: 1,
+    id: 1,
   },
 ];
 
