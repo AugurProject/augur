@@ -1,29 +1,27 @@
-import {
-  NetworkId,
-  SDKConfiguration
-} from '@augurproject/artifacts';
+import { NetworkId, SDKConfiguration } from '@augurproject/artifacts';
+import { EthersSigner } from '@augurproject/contract-dependencies-ethers';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
   Augur,
   Connectors,
   createClient,
-  NULL_ADDRESS
+  NULL_ADDRESS,
 } from '@augurproject/sdk';
-import { EthersSigner } from '@augurproject/contract-dependencies-ethers';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { JsonRpcProvider } from 'ethers/providers';
 import {
   listenToUpdates,
   unListenToEvents,
 } from 'modules/events/actions/listen-to-updates';
-import { isEmpty } from 'utils/is-empty';
-import { analytics } from './analytics';
-import { isLocalHost } from 'utils/is-localhost';
-import { createBrowserMesh, createBrowserMeshWorker } from './browser-mesh';
-import { getFingerprint } from 'utils/get-fingerprint';
 import { BigNumber } from 'utils/create-big-number';
+import { getFingerprint } from 'utils/get-fingerprint';
+import { isEmpty } from 'utils/is-empty';
+import { isLocalHost } from 'utils/is-localhost';
+import { isMobileSafari } from 'utils/is-safari';
+import { disableWarpSync } from '../../../augur-artifacts/src/helpers';
+import { analytics } from './analytics';
+import { createBrowserMeshWorker } from './browser-mesh';
 
 window.BigNumber = BigNumber;
-
 
 export class SDK {
   client: Augur | null = null;
@@ -49,7 +47,8 @@ export class SDK {
     affiliate: string = NULL_ADDRESS,
     enableFlexSearch = true,
   ): Promise<Augur> {
-    this.config = config;
+    this.config = isMobileSafari() ? disableWarpSync(config) : config;
+
     this.networkId = config.networkId;
 
     const ethersProvider = new EthersProvider(

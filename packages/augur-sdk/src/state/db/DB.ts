@@ -306,23 +306,12 @@ export class DB {
 
     this.syncableDatabases = {};
 
-    this.disputeDatabase.delete();
     delete this.disputeDatabase;
-
-    this.currentOrdersDatabase.delete();
     delete this.currentOrdersDatabase;
-
-    this.marketDatabase.delete();
     delete this.marketDatabase;
-
-    this.parsedOrderEventDatabase.delete();
     delete this.parsedOrderEventDatabase;
 
-    this.dexieDB['Rollback'].delete();
-    delete this.dexieDB['Rollback'];
-
     if (this.zeroXOrders) {
-      this.zeroXOrders.delete();
       delete this.zeroXOrders;
     }
 
