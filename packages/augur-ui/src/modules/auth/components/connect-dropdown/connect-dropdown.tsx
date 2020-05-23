@@ -170,7 +170,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           <p>Augur runs on a peer-to-peer network, transaction fees are paid in ETH. These fees go entirely to the network. Augur doesn’t collect any of these fees.</p>
           <p>If your account balance exceeds $40, 0.04 ETH equivilant in DAI will be held in your ETH reserve to cover transaction fees, which results in cheaper transaction fees.</p>
           <p>As long as your available account balance remains over $40 Dai, your ETH reserve will automatically be replenished.</p>
-          <p>Your ETH reserve can be easily cashed out at anytime using the withdraw button in the transactions section of your account summary.</p>
+          <p>Your ETH reserve can easily be cashed out at anytime using the withdraw button in the transactions section of your account summary.</p>
         </div>
       ),
       logo: EthIcon,

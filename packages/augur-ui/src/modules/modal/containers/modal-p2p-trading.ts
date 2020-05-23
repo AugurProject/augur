@@ -84,7 +84,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       content: `So long as your available account balance remains over $${DAI_HIGH_VALUE_AMOUNT} Dai, your ETH reserve will replenish automatically.`,
     },
     {
-      content: 'Your ETH reserve can be easily cashed out at anytime.',
+      content: 'Your ETH reserve can easily be cashed out at anytime.',
     },
     {
       content: 'LEARN MORE',
