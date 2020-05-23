@@ -291,7 +291,7 @@ export class OnChainTrading {
         params.orderType ? params.orderType : Dexie.maxKey
       ]).and((log) => {
         if (params.account) {
-          if (log.orderCreator != params.account && log.orderFiller != params.account) return false;
+          if (log.orderCreator !== params.account && log.orderFiller != params.account) return false;
         }
 
         if (params.orderState === OrderState.OPEN && log.amount === "0x00") return false;

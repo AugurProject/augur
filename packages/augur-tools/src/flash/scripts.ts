@@ -24,18 +24,25 @@ import {
   NativePlaceTradeDisplayParams,
   startServer,
   ContractEvents,
+  ZeroXPlaceTradeDisplayParams,
 } from '@augurproject/sdk';
 import { fork } from './fork';
 import { dispute } from './dispute';
 import {
-  MarketList,
-} from '@augurproject/sdk/build/state/getter/Markets';
+  MarketInfo,
+  MarketList
+} from "@augurproject/sdk/build/state/getter/Markets";
 import { generateTemplateValidations } from './generate-templates';
 import { spawn, spawnSync } from 'child_process';
 import { perfSetup } from './perf-setup';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { ContractAPI, deployContracts, startGanacheServer } from '..';
-import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
+import {
+  NumOutcomes,
+  OrderType,
+  OutcomeNumber,
+  TradeDirection
+} from "@augurproject/sdk/build/state/logs/types";
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
 import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
@@ -43,19 +50,16 @@ import { orderFirehose } from './order-firehose';
 import {
   AccountCreator,
   createOrders,
-  FINNEY,
-  getAllMarkets,
-  setupMarkets,
+  getAllMarkets, getMarket,
   setupOrderBookShapers,
   setupOrders,
   setupPerfConfigAndZeroX,
-  setupUsers,
   takeOrder,
-  takeOrders
-} from './performance';
+  takeOrders,
+  setupUsers, FINNEY
+} from "./performance";
 import { simpleOrderbookShaper } from './orderbook-shaper';
 import {
-  awaitUserInput,
   formatAddress,
   getOrCreateMarket,
   sleep,
@@ -68,6 +72,7 @@ import {
   createYesNoZeroXOrders
 } from './create-orders';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
+import { Connectors } from "@augurproject/sdk/build";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -2200,6 +2205,11 @@ export function addScripts(flash: FlashSession) {
         required: true,
       },
       {
+        name: 'amount',
+        abbr: 'a',
+        description: 'how many shares of the order to take; defauls to all',
+      },
+      {
         name: 'wait-time-for-0x',
         abbr: 'w',
         description: 'how many milliseconds to wait for 0x orders to arrive. default=90000',
@@ -2209,6 +2219,7 @@ export function addScripts(flash: FlashSession) {
       const marketAddress = args.market as string;
       const direction = Number(args.direction);
       const outcome = Number(args.outcome);
+      const amount = args.amount ? new BigNumber(args.amount as string) : null;
       const waitTimeForZeroX = Number(args.waitTimeFor0x) || 90000;
 
       const user = await this.createUser(this.getAccount(), this.deriveConfig({
@@ -2222,7 +2233,11 @@ export function addScripts(flash: FlashSession) {
       console.log('Waiting for 0x orders to arrive');
       await sleep(waitTimeForZeroX);
 
-      await takeOrder(user, marketInfo, direction, outcome);
+      if (amount) {
+        await takeOrder(user, marketInfo, direction, outcome, amount);
+      } else {
+        await takeOrder(user, marketInfo, direction, outcome);
+      }
     }});
 
   flash.addScript({
@@ -2351,7 +2366,7 @@ export function addScripts(flash: FlashSession) {
       const accountCreator = new AccountCreator(BASE_MNEMONIC);
       const traderAccounts = accountCreator.traders(traderCount);
       const makerAccounts = accountCreator.marketMakers(makerCount);
-      const connector = ethSource.augur.connector
+      const connector = ethSource.augur.connector;
       const traders = await ContractAPI.wrapUsers(traderAccounts, ethSource.provider, config, connector);
 
       await waitForSync(ethSource);
@@ -2393,6 +2408,7 @@ export function addScripts(flash: FlashSession) {
         console.log(`${trader.privateKey} -> ${trader.address}`);
       })
     }});
+
   flash.addScript({
     name: 'run-chaos-monkey',
     options: [
@@ -2440,4 +2456,254 @@ export function addScripts(flash: FlashSession) {
         await user.addTokenExchangeLiquidity(attoCash, attoRep);
       },
     });
+
+  flash.addScript({
+    name: 'market-maker-bot',
+    description: "Maintains shares and prices. Risks entire account's DAI so give the bot its own account.",
+    options: [
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'address of market to trade on',
+        required: true,
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: 'which outcome to trade upon (number 0-7)',
+        required: true,
+      },
+      {
+        name: 'expiration',
+        abbr: 'e',
+        description: 'how long to keep the orders alive until they lapse; denominated in seconds',
+        required: true,
+      },
+      {
+        name: 'buyPrice',
+        abbr: 'b',
+        description: 'price to purchase shares at; denominated in DAI',
+        required: true,
+      },
+      {
+        name: 'sellPrice',
+        abbr: 's',
+        description: 'price to sell shares at; denominated in DAI',
+        required: true,
+      },
+      {
+        name: 'buyShares',
+        abbr: 'B',
+        description: 'number of shares to keep on the buy side; denominated in total shares (not attoshares)',
+        required: true,
+      },
+      {
+        name: 'sellShares',
+        abbr: 'S',
+        description: 'number of shares to keep on the sell side; denominated in total shares (not attoshares)',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments): Promise<void> {
+      const market = args.market as string;
+      const outcome = Number(args.outcome) as OutcomeNumber;
+      const expiration = new BigNumber(args.expiration as string).times(1000);
+      const buyPrice = new BigNumber(args.buyPrice as string);
+      const sellPrice = new BigNumber(args.sellPrice as string);
+      const buyShares = new BigNumber(args.buyShares as string);
+      const sellShares = new BigNumber(args.sellShares as string);
+
+      if (!buyShares.mod(10).eq(0) || !sellShares.mod(10).eq(0)) {
+        console.error('Shares must be divisible by 10');
+        return;
+      }
+
+      const config = this.deriveConfig({
+        zeroX: { rpc: { enabled: true }, mesh: { enabled: false }},
+        flash: { useGSN: false, syncSDK: true },
+      });
+      const maker = await this.createUser(this.getAccount(), config);
+      await maker.approve();
+
+      maker.augur.connector.connect(config);
+      await waitForSync(maker);
+      const marketInfo = await getMarket(maker, market);
+
+      const bot = async () => {
+        while (true) {
+          await sleep(10000);
+          await waitForSync(maker);
+          const orderbook = await maker.augur.getMarketOrderBook({
+            marketId: market, account: maker.account.address, outcomeId: outcome
+          });
+
+          let currentBids = 0;
+          let currentAsks = 0;
+          if (orderbook.orderBook[outcome]) {
+            const { bids, asks } = orderbook.orderBook[outcome];
+            currentBids = bids.reduce((total, one) => total + Number(one.shares), 0);
+            currentAsks = asks.reduce((total, one) => total + Number(one.shares), 0);
+          }
+          const neededBid = buyShares.minus(currentBids);
+          const neededAsk = sellShares.minus(currentAsks);
+
+          const now = await maker.getTimestamp();
+          const orders: ZeroXPlaceTradeDisplayParams[] = [];
+          if (neededBid.gte(10)) {  // minimum shares in a new order is 10
+            orders.push(buildOrder(marketInfo, outcome, now, expiration, neededBid, buyPrice, OrderType.Bid));
+          }
+          if (neededAsk.gte(10)) {  // minimum shares in a new order is 10
+            orders.push(buildOrder(marketInfo, outcome, now, expiration, neededAsk, sellPrice, OrderType.Ask));
+          }
+
+          const attoDAI = await maker.augur.contracts.cash.balanceOf_(maker.account.address);
+          const dai = attoDAI.div(1e18);
+
+          console.log(`Current DAI: \$${dai.toFixed()}`);
+          console.log(`Current shares: bids=${currentBids}@${buyPrice.toFixed()}, asks=${currentAsks}@${sellPrice.toFixed()}`);
+          if (orders) {
+            console.log(`Creating ${orders.length} new orders`);
+            orders.forEach((order) => {
+              const direction = order.direction === OrderType.Bid ? 'BID' : 'ASK';
+              console.log(`\tOrder: ${direction}, ${order.displayAmount}@${order.displayPrice}`);
+            });
+            await maker.placeZeroXOrders(orders, false);
+          } else {
+            console.log('Not creating any new orders')
+          }
+          console.log('--------------------------------------------------------------------------------');
+        }
+      };
+
+      bot().catch((err) => {
+        console.error(`Something went wrong with the maker bot: ${err}`);
+        process.kill(process.pid, 'SIGINT'); // to end waitForSigint
+      });
+
+      console.log('Running market maker bot. Type ctrl-c to quit but orders will remain until expiry.');
+      await waitForSigint();
+    }});
+
+  flash.addScript({
+    name: 'perf-make-order-history',
+    options: [
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'address of market to trade on',
+        required: true,
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: 'which outcome to trade upon (number 0-7)',
+        required: true,
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'how many orders to take',
+        required: true,
+      },
+      {
+        name: 'price',
+        abbr: 'p',
+        description: 'price per share; denominated in DAI',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments): Promise<void> {
+      const market = args.market as string;
+      const outcome = Number(args.outcome) as OutcomeNumber;
+      const amount = Number(args.amount as string);
+      const price = new BigNumber(args.price as string);
+
+      const config = this.deriveConfig({
+        zeroX: { rpc: { enabled: true }, mesh: { enabled: false }},
+        flash: { useGSN: false, syncSDK: true },
+      });
+      const ethSource = await this.createUser(this.getAccount(), config);
+      const connector = ethSource.augur.connector;
+      const accountCreator = new AccountCreator(BASE_MNEMONIC);
+      const [maker, taker] = await setupUsers(
+        accountCreator.traders(2),
+        ethSource,
+        new BigNumber(FINNEY.times(100)),
+        config,
+        connector,
+      );
+      // connector.connect(config);
+
+      const now = await maker.getTimestamp();
+      const oneWeek = new BigNumber(1000 * 60 * 60 * 24 * 7);
+
+      await maker.faucetCash(price.times(amount).times(10).times(1e18));
+      await taker.faucetCash(price.times(amount).times(10).times(1e18));
+
+      await maker.approve();
+      await taker.approve();
+
+      await waitForSync(ethSource);
+      const marketInfo = await getMarket(ethSource, market);
+
+      const totalShares = new BigNumber(amount * 10);
+      const order = buildOrder(marketInfo, outcome, now, oneWeek, totalShares, price, OrderType.Bid);
+      await maker.placeZeroXOrders([order]);
+
+      await sleep(10000); // give 0x plenty of time to propagate the order
+      await waitForSync(ethSource);
+      const orderbook = await ethSource.augur.getMarketOrderBook({
+        marketId: market, account: maker.account.address, outcomeId: outcome
+      });
+
+      for (let i = 0; i < amount; i++) {
+        const taken = await taker.augur.placeTrade(buildTakerOrder(marketInfo, outcome, now, new BigNumber(10), price, OrderType.Ask));
+        console.log(`${i}: ${taken}`)
+      }
+
+    }});
 }
+
+// TODO put somewhere else
+export function buildOrder(marketInfo: MarketInfo, outcome: OutcomeNumber, now: BigNumber, expirationMS: BigNumber, amount: BigNumber, price: BigNumber, direction: TradeDirection): ZeroXPlaceTradeDisplayParams {
+  return {
+    expirationTime: now.plus(expirationMS),
+    displayMinPrice: new BigNumber(marketInfo.minPrice),
+    displayMaxPrice: new BigNumber(marketInfo.maxPrice),
+    displayAmount: amount,
+    displayPrice: price,
+    displayShares: new BigNumber(0),
+    direction,
+    market: marketInfo.id,
+    numTicks: new BigNumber(marketInfo.numTicks),
+    numOutcomes: marketInfo.numOutcomes,
+    outcome,
+    tradeGroupId: formatBytes32String('marketbot-id'),
+    fingerprint: formatBytes32String('marketbot-fp'),
+    doNotCreateOrders: false,
+  };
+}
+export function buildTakerOrder(marketInfo: MarketInfo, outcome: OutcomeNumber, now: BigNumber, amount: BigNumber, price: BigNumber, direction: TradeDirection): ZeroXPlaceTradeDisplayParams {
+  return {
+    expirationTime: now.plus(31557600), // shouldn't matter - not used
+    displayMinPrice: new BigNumber(marketInfo.minPrice),
+    displayMaxPrice: new BigNumber(marketInfo.maxPrice),
+    displayAmount: amount,
+    displayPrice: price,
+    displayShares: new BigNumber(0),
+    direction,
+    market: marketInfo.id,
+    numTicks: new BigNumber(marketInfo.numTicks),
+    numOutcomes: marketInfo.numOutcomes,
+    outcome,
+    tradeGroupId: formatBytes32String('marketbot-id'),
+    fingerprint: formatBytes32String('marketbot-fp'),
+    doNotCreateOrders: true,
+  };
+}
+
+// TODO
+// The first algorithm is as follows:
+//    Define a range of price to maintain. For each end, keep a certain number of shares on the book.
+//    Should some shares be taken, add more until the desires quantity is reached.
+//    However, only do so up to the provided risk.

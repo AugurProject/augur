@@ -300,15 +300,18 @@ export class ContractAPI {
   }
 
   async placeZeroXOrders(
-    params: ZeroXPlaceTradeDisplayParams[]
+    params: ZeroXPlaceTradeDisplayParams[],
+    print = true,
   ): Promise<void> {
-    console.log(
-      `${this.account.address} is creating orders: ${JSON.stringify(
-        params,
-        null,
-        2
-      )}`
-    );
+    if (print) {
+      console.log(
+        `${this.account.address} is creating orders: ${JSON.stringify(
+          params,
+          null,
+          2
+        )}`
+      );
+    }
     await this.augur.zeroX.placeOrders(params);
   }
 

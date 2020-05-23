@@ -6,7 +6,7 @@ import { Augur } from '../../Augur';
 import { DB } from './DB';
 import { MarketData, MarketType } from '../logs/types';
 import { OrderEventType, SubscriptionEventName } from '../../constants';
-import { getTradeInterval, convertDisplayAmountToOnChainAmount } from '../../utils';
+import { getTradeInterval } from '../../utils';
 import { OrderInfo, OrderEvent, BigNumber } from '@0x/mesh-rpc-client';
 import { getAddress } from 'ethers/utils/address';
 import { defaultAbiCoder, ParamType } from 'ethers/utils';
@@ -128,7 +128,7 @@ export class ZeroXOrders extends AbstractTable {
     this.takerAssetData = `0xa7cb5fb7000000000000000000000000${this.tradeTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
 
     this.subscribeToOrderEvents();
-    this.clearDBAndCacheOrders();
+    this.clearDBAndCacheOrders(); // TODO: dangling promise
     this.augur.events.on(SubscriptionEventName.ZeroXStatusReady, this.clearDBAndCacheOrders.bind(this));
   }
 
@@ -274,7 +274,7 @@ export class ZeroXOrders extends AbstractTable {
     if (!storedOrder['numberAmount'].mod(tradeInterval).isEqualTo(0)) return false;
 
     if (storedOrder.numberAmount.isEqualTo(0)) {
-      console.log('Deleting filled order');
+      // console.log('Deleting filled order'); // TODO do we need this?
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
       const event = {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder};
       this.augur.events.emit('OrderEvent', event);

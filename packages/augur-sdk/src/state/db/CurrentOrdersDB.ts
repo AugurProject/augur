@@ -25,7 +25,7 @@ export class CurrentOrdersDatabase extends DerivedDB {
       log['tokensEscrowed'] = log['uint256Data'][9];
       delete log['uint256Data'];
     }
-    log['open'] = log['amount'] != '0x00' ? 1 : 0;
+    log['open'] = log['amount'] !== '0x00' ? 1 : 0;
     return log;
   }
 }

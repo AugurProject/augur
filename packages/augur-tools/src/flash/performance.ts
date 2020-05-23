@@ -21,27 +21,29 @@ import { ZeroXPlaceTradeDisplayParams } from '@augurproject/sdk';
 import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { stringTo32ByteHex } from '../libs/Utils';
+import { BaseConnector } from "@augurproject/sdk/build/connector";
+import { EmptyConnector } from "@augurproject/sdk/build";
 
 export const FINNEY = new BigNumber(1e16);
 
-export async function setupUsers(accounts: Account[], ethSource: ContractAPI, funding: BigNumber, baseConfig: SDKConfiguration, serial=false) {
-  return mapPromises(accounts.map((account) => () => setupUser(account, ethSource, funding, baseConfig)), serial);
+export async function setupUsers(accounts: Account[], ethSource: ContractAPI, funding: BigNumber, baseConfig: SDKConfiguration, connector?: BaseConnector, serial=false) {
+  return mapPromises(accounts.map((account) => () => setupUser(account, ethSource, funding, baseConfig, connector)), serial);
 }
 
-export async function setupUser(account: Account, ethSource: ContractAPI, funding: BigNumber, baseConfig: SDKConfiguration): Promise<ContractAPI> {
+export async function setupUser(account: Account, ethSource: ContractAPI, funding: BigNumber, baseConfig: SDKConfiguration, connector?: BaseConnector): Promise<ContractAPI> {
   console.log(`Setting up account ${account.address}`);
   const { config } = setupPerfConfigAndZeroX(baseConfig);
   await ethSource.augur.sendETH(account.address, funding);
-  const user = await ContractAPI.userWrapper(account, ethSource.provider, config);
-  await waitForFunding(user)
+  const user = await ContractAPI.userWrapper(account, ethSource.provider, config, connector || new EmptyConnector());
+  await waitForFunding(user);
 
   if (config.flash?.useGSN) {
-    console.log(`GSN enabled for ${account.address}`)
+    console.log(`GSN enabled for ${account.address}`);
     await user.getOrCreateWallet();
     user.setUseWallet(true);
     user.setUseRelay(true);
   } else if (!config.flash?.skipApproval) {
-    console.log(`Approving cash/etc transfers for ${account.address}`)
+    console.log(`Approving cash/etc transfers for ${account.address}`);
     await user.approveIfNecessary();
   }
 
@@ -111,6 +113,7 @@ export async function takeOrder(
   market: MarketInfo,
   direction: number,
   outcome: number,
+  amount?: BigNumber,
 ): Promise<boolean> {
   const orders = flattenZeroXOrders(await trader.getOrders(market.id, String(direction), outcome));
   if (orders.length === 0) {
@@ -139,7 +142,7 @@ export async function takeOrder(
       tradeGroupId: stringTo32ByteHex('tradegroupId'),
       fingerprint: stringTo32ByteHex('fingerprint'),
       doNotCreateOrders: true,
-      displayAmount: new BigNumber(order.amount),
+      displayAmount: amount || new BigNumber(order.amount),
       displayPrice: new BigNumber(order.price),
       displayMaxPrice: new BigNumber(market.maxPrice),
       displayMinPrice: new BigNumber(market.minPrice),
@@ -184,6 +187,17 @@ export async function getAllMarkets(user: ContractAPI, makerAccounts: Account[])
   })).markets;
   const makerAddresses = makerAccounts.map((account) => account.address.toLowerCase());
   return marketInfos.filter((market) => makerAddresses.indexOf(market.author.toLowerCase()) !== -1);
+}
+
+export async function getMarket(user: ContractAPI, address: string): Promise<MarketInfo> {
+  const marketInfos: MarketInfo[] = await user.augur.getMarketsInfo({
+    marketIds: [address]
+  });
+  if (marketInfos.length === 1) {
+    return marketInfos[0];
+  } else {
+    return null; // no such market or somehow duplicates
+  }
 }
 
 export class AccountCreator {
