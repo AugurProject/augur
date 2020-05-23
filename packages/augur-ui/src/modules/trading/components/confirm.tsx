@@ -34,7 +34,7 @@ import {
   formatNumber,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { LinearPropertyLabel, EthReserveNotice } from 'modules/common/labels';
+import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabel } from 'modules/common/labels';
 import { Trade } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
 import { getGasInDai, ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
@@ -402,10 +402,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
             {gasCostDai.roundedValue.gt(0) > 0 &&
               numFills > 0 && (
-              <LinearPropertyLabel
-                label="Est. TX Fee"
-                value={gasCostDai}
-                showDenomination={true}
+              <TransactionFeeLabel
+                gasCostDai={gasCostDai}
               />
             )}
             <LinearPropertyLabel
@@ -469,11 +467,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
             {gasCostDai.roundedValue.gt(0) > 0 &&
               numFills > 0 && (
-                <LinearPropertyLabel
-                  label="Est. TX Fee"
-                  value={gasCostDai}
-                  showDenomination={true}
-                />
+              <TransactionFeeLabel
+                gasCostDai={gasCostDai}
+              />
               )}
           </div>
         )}

@@ -36,6 +36,8 @@ import {
   ACCOUNT_TYPES,
   CLOSED_SHORT,
   GWEI_CONVERSION,
+  USE_ETH_RESERVE,
+  NOT_USE_ETH_RESERVE,
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber, formatBlank, formatGasCostToEther, formatAttoEth } from 'utils/format-number';
@@ -57,6 +59,7 @@ import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
+import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -805,6 +808,31 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
   </div>
 );
 
+interface TransactionFeeLabelProps {
+  label: string;
+  gasCostDai: FormattedNumber;
+}
+
+const mapStateToPropsTransactionFeeLabel = (state: AppState) => ({
+  label: getTransactionLabel(state)
+});
+
+export const TransactionFeeLabelCmp = ({
+  label,
+  gasCostDai
+}: TransactionFeeLabelProps) => (
+    <LinearPropertyLabel
+    label={label}
+    value={gasCostDai}
+    showDenomination={true}
+  />
+)
+
+
+export const TransactionFeeLabel = connect(
+  mapStateToPropsTransactionFeeLabel
+)(TransactionFeeLabelCmp);
+
 export const LinearPropertyLabel = ({
   highlight,
   highlightAlternateBolded,
@@ -1436,7 +1464,7 @@ export const BulkTxLabel = ({
         title={`${buttonName} requires ${count} transaction${
           count > 1 ? `s` : ``
         }${needsApproval ? `, and 1 approval` : ''}`}
-        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE}
+        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
       />
     </div>
   ) : null;
@@ -1472,7 +1500,7 @@ export const InitializeWalletModalNotice = connect(
 
 const mapStateToPropsEthReserve = (state: AppState, ownProps) => {
   const gasLimit = ownProps.gasLimit;
-  const aboveCutoff = createBigNumber(state.loginAccount.balances.dai).isGreaterThan(createBigNumber(state.env.gsn.minDaiForSignerETHBalanceInDAI * 10**18))
+  const aboveCutoff = createBigNumber(state.loginAccount.balances.dai).isGreaterThan(createBigNumber(state.env.gsn.minDaiForSignerETHBalanceInDAI))
   if (!aboveCutoff) {
     return {
       show: false

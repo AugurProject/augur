@@ -15,7 +15,7 @@ import {
   DateTimeHeaders,
   PreviewMarketTitleHeader
 } from "modules/create-market/components/common";
-import { LinearPropertyLabel, LinearPropertyLabelTooltip } from "modules/common/labels";
+import { LinearPropertyLabel, LinearPropertyLabelTooltip, TransactionFeeLabel } from "modules/common/labels";
 import {
   SCALAR,
   CATEGORICAL,
@@ -319,7 +319,7 @@ export default class Review extends React.Component<
             />
           </span>
 
-          <Subheaders copyType={MARKET_COPY_LIST.NO_SHOW_BOND} header="No-show bond" subheader={"A “no-show” bond must be put up by the market creator which is lost if the designated reporter doesn’t show up on time (within 3 days of the market end time) to put forth the initial tentative outcome."} link />
+          <Subheaders copyType={MARKET_COPY_LIST.NO_SHOW_BOND} header="No-show bond" subheader={"A “no-show” bond must be put up by the market creator which is lost if the designated reporter doesn’t show up on time (within 1 day of the market end time) to put forth the initial tentative outcome."} link />
           <span>
             <LinearPropertyLabel
               label={"No-Show Bond"}
@@ -344,14 +344,7 @@ export default class Review extends React.Component<
               label={"Total DAI"}
               value={totalDai.formattedValue + " DAI"}
             />
-            {GsnEnabled && <LinearPropertyLabel
-              label={"Transaction Fee"}
-              value={totalGasInDai + " DAI"}
-            />}
-            {!GsnEnabled && <LinearPropertyLabel
-              label={"Transaction Fee"}
-              value={totalEth.formattedValue + " ETH"}
-            />}
+            <TransactionFeeLabel gasCostDai={totalGasInDai} />
             <LinearPropertyLabel
               label={"TOTAL REP"}
               value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue + " REP"}
