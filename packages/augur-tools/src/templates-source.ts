@@ -150,13 +150,13 @@ export const TEMPLATES = {
             inputs: [
               {
                 id: 0,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                type: TemplateInputType.TEXT,
                 groupKey: TEAM_A,
                 placeholder: `Fighter A`,
               },
               {
                 id: 1,
-                type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                type: TemplateInputType.TEXT,
                 groupKey: TEAM_B,
                 placeholder: `Fighter B`,
               },
@@ -168,11 +168,21 @@ export const TEMPLATES = {
               },
               {
                 id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Over [2].5`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Under [2].5`,
+              },
+              {
+                id: 5,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Draw/No Winner`,
               },
               {
-                id: 4,
+                id: 6,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
