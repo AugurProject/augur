@@ -1,37 +1,37 @@
-import { formatBytes32String } from 'ethers/utils';
 import {
-  today,
-  thisYear,
-  inOneMonths,
-  inTwoMonths,
-  inThreeMonths,
-  inFiveMonths,
-  inSixMonths,
-  inTenMonths,
-  midnightTomorrow,
-} from '../time';
-import moment from 'moment';
-import {
-  TEMPLATES,
-  POLITICS,
-  US_POLITICS,
-  Template,
-  REQUIRED,
-  FINANCE,
-  INDEXES,
   AMERICAN_FOOTBALL,
-  SPORTS,
-  NFL,
-  SOCCER,
-  MENS_LEAGUES,
-  GOLF,
-  PGA,
+  BASKETBALL,
   CRYPTO,
   ETHEREUM,
-  BASKETBALL,
+  FINANCE,
+  GOLF,
+  INDEXES,
+  MENS_LEAGUES,
   NBA,
+  NFL,
   NFL_DRAFT,
+  PGA,
+  POLITICS,
+  SOCCER,
+  SPORTS,
+  Template,
+  TEMPLATES,
+  US_POLITICS,
 } from '@augurproject/artifacts';
+import { formatBytes32String } from 'ethers/utils';
+import moment from 'moment';
+import { buildExtraInfo, getFilledInputs } from '../../libs/templates';
+import {
+  inFiveMonths,
+  inOneMonths,
+  inSixMonths,
+  inTenMonths,
+  inThreeMonths,
+  inTwoMonths,
+  midnightTomorrow,
+  thisYear,
+  today,
+} from '../time';
 
 interface AskBid {
   shares: string;
@@ -333,17 +333,10 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     endTime: inTenMonths.getTime() / 1000,
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.01',
-    extraInfo: {
-      categories: ['Politics', 'US Politics'],
-      description: 'Will Donald Trump win the 2020 U.S. Presidential election?',
-      tags: [],
-      longDescription: getLongDescription(template1),
-      template: {
-        hash: template1.hash,
-        question: template1.question,
-        inputs: getFilledInputs(template1, usInputValues),
-      },
-    },
+    extraInfo: buildExtraInfo(template1, usInputValues, [
+      'Politics',
+      'US Politics',
+    ]),
     orderBook: yesNoOrderBook,
   });
 
@@ -363,17 +356,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     endTime: finUnixEndTime,
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.015',
-    extraInfo: {
-      categories: [FINANCE, INDEXES],
-      description: fillInQuestion(finTemplate, finInputValues),
-      tags: [],
-      longDescription: getLongDescription(finTemplate),
-      template: {
-        hash: finTemplate.hash,
-        question: finTemplate.question,
-        inputs: getFilledInputs(finTemplate, finInputValues),
-      },
-    },
+    extraInfo: buildExtraInfo(finTemplate, finInputValues, [FINANCE, INDEXES]),
     orderBook: yesNoOrderBook,
   });
 
@@ -390,17 +373,11 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     endTime: unixEndTime,
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.01',
-    extraInfo: {
-      categories: [SPORTS, AMERICAN_FOOTBALL, NFL],
-      description: fillInQuestion(fbTemplate, inputValues),
-      tags: [],
-      longDescription: getLongDescription(fbTemplate),
-      template: {
-        hash: fbTemplate.hash,
-        question: fbTemplate.question,
-        inputs: getFilledInputs(fbTemplate, inputValues),
-      },
-    },
+    extraInfo: buildExtraInfo(fbTemplate, inputValues, [
+      SPORTS,
+      AMERICAN_FOOTBALL,
+      NFL,
+    ]),
     orderBook: yesNoOrderBook,
   });
 
@@ -428,17 +405,11 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         'Draw',
         'Unofficial game/Cancelled',
       ],
-      extraInfo: {
-        categories: [SPORTS, SOCCER, MENS_LEAGUES],
-        description: fillInQuestion(socTemplate, socInputValues),
-        tags: [],
-        longDescription: getLongDescription(socTemplate),
-        template: {
-          hash: socTemplate.hash,
-          question: socTemplate.question,
-          inputs: getFilledInputs(socTemplate, socInputValues),
-        },
-      },
+      extraInfo: buildExtraInfo(socTemplate, socInputValues, [
+        SPORTS,
+        SOCCER,
+        MENS_LEAGUES,
+      ]),
       orderBook: {
         1: {
           buy: singleOutcomeBids,
@@ -462,17 +433,14 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
 
   markets.push(convertedMarkets[0]);
 
-  const draftTemplates = TEMPLATES[SPORTS].children[AMERICAN_FOOTBALL].children[NFL_DRAFT]
-  .templates as Template[];
+  const draftTemplates = TEMPLATES[SPORTS].children[AMERICAN_FOOTBALL].children[
+    NFL_DRAFT
+  ].templates as Template[];
   const draftTemplate: Template = draftTemplates[1];
   const draftExpDate = moment().add(4, 'weeks');
   const draftEstTime = draftExpDate.unix();
   const draftEndTime = draftExpDate.add(50, 'hours').unix();
-  const draftInputValues = [
-    '2020',
-    'Wide Receiver',
-    String(draftEstTime),
-  ];
+  const draftInputValues = ['2020', 'Wide Receiver', String(draftEstTime)];
 
   const draftMarkets = massageMarkets([
     {
@@ -480,24 +448,12 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
       endTime: draftEndTime,
       affiliateFeeDivisor: 0,
       creatorFeeDecimal: '0.01',
-      outcomes: [
-        'Jonny B',
-        'Eric C',
-        'Mac D',
-        'Linny Q',
-        'Other (Field)'
-      ],
-      extraInfo: {
-        categories: [SPORTS, AMERICAN_FOOTBALL, NFL_DRAFT],
-        description: fillInQuestion(draftTemplate, draftInputValues),
-        tags: [],
-        longDescription: getLongDescription(draftTemplate),
-        template: {
-          hash: draftTemplate.hash,
-          question: draftTemplate.question,
-          inputs: getFilledInputs(draftTemplate, draftInputValues),
-        },
-      },
+      outcomes: ['Jonny B', 'Eric C', 'Mac D', 'Linny Q', 'Other (Field)'],
+      extraInfo: buildExtraInfo(draftTemplate, draftInputValues, [
+        SPORTS,
+        AMERICAN_FOOTBALL,
+        NFL_DRAFT,
+      ]),
       orderBook: {
         1: {
           buy: singleOutcomeBids,
@@ -543,17 +499,11 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         'Other (Field)',
         'No winner/Event cancelled',
       ],
-      extraInfo: {
-        categories: [SPORTS, GOLF, PGA],
-        description: fillInQuestion(golfTemplate, golfInputValues),
-        tags: [],
-        longDescription: getLongDescription(golfTemplate),
-        template: {
-          hash: golfTemplate.hash,
-          question: golfTemplate.question,
-          inputs: getFilledInputs(golfTemplate, golfInputValues),
-        },
-      },
+      extraInfo: buildExtraInfo(golfTemplate, golfInputValues, [
+        SPORTS,
+        GOLF,
+        PGA,
+      ]),
       orderBook: {
         1: {
           buy: singleOutcomeBids,
@@ -607,17 +557,11 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     tickSize: '0.01',
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.01',
-    extraInfo: {
-      categories: [CRYPTO, ETHEREUM, 'ETHUSD (crypto - Bittrex)'],
-      description: fillInQuestion(cryptoTemplate, cryptoInputValues),
-      tags: [],
-      longDescription: getLongDescription(cryptoTemplate),
-      template: {
-        hash: cryptoTemplate.hash,
-        question: cryptoTemplate.question,
-        inputs: getFilledInputs(cryptoTemplate, cryptoInputValues),
-      },
-    },
+    extraInfo: buildExtraInfo(cryptoTemplate, cryptoInputValues, [
+      CRYPTO,
+      ETHEREUM,
+      'ETHUSD (crypto - Bittrex)',
+    ]),
     orderBook: {
       2: {
         buy: [
@@ -651,17 +595,11 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     tickSize: '0.1',
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.01',
-    extraInfo: {
-      categories: [SPORTS, BASKETBALL, NBA],
-      description: fillInQuestion(bbTemplate, bbInputValues),
-      tags: [],
-      longDescription: getLongDescription(bbTemplate),
-      template: {
-        hash: bbTemplate.hash,
-        question: bbTemplate.question,
-        inputs: getFilledInputs(bbTemplate, bbInputValues),
-      },
-    },
+    extraInfo: buildExtraInfo(bbTemplate, bbInputValues, [
+      SPORTS,
+      BASKETBALL,
+      NBA,
+    ]),
     orderBook: {
       2: {
         buy: [
@@ -679,26 +617,4 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
   });
 
   return markets;
-};
-
-const fillInQuestion = (template, values) => {
-  let description = template.question;
-  template.inputs.forEach(input => {
-    let value = values[input.id];
-    description = description.replace(`[${input.id}]`, `${value}`);
-  });
-  return description;
-};
-
-const getLongDescription = template => {
-  return template.resolutionRules[REQUIRED].map(m => m.text).join('\n');
-};
-
-const getFilledInputs = (template, values) => {
-  return values.map((value, index) => ({
-    id: template.inputs[index].id,
-    type: template.inputs[index].type,
-    value,
-    timestamp: !isNaN(value) ? value : null,
-  }));
 };

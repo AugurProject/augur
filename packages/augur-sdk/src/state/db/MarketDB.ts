@@ -546,11 +546,12 @@ export class MarketDB extends DerivedDB {
           console.error(log['extraInfo'].description, errors);
 
         if (log['isTemplate']) {
-          const { groupType, hashKeyInputValues } = getGroupHashInfo(
+          const { groupLine, groupType, hashKeyInputValues } = getGroupHashInfo(
             log['extraInfo'].template
           );
           log['templateGroupHash'] = hashKeyInputValues;
           log['templateGroupType'] = groupType;
+          if (groupLine) log['templateGroupLine'] = groupLine;
         }
       }
     } catch (err) {

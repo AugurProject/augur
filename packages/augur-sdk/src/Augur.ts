@@ -49,6 +49,7 @@ import { TXStatus } from './event-handlers';
 import { augurEmitter, Callback, TXStatusCallback } from './events';
 import { ContractDependenciesGSN } from './lib/contract-deps';
 import { SyncableFlexSearch } from './state/db/SyncableFlexSearch';
+import { Betting } from './state/getter/Betting';
 import { Accounts } from './state/getter/Accounts';
 import { Liquidity as LiquidityGetter } from './state/getter/Liquidity';
 import { Markets } from './state/getter/Markets';
@@ -380,6 +381,12 @@ export class Augur<TProvider extends Provider = Provider> {
     params: Parameters<typeof Markets.getMarkets>[2]
   ): ReturnType<typeof Markets.getMarkets> => {
     return this.bindTo(Markets.getMarkets)(params);
+  };
+
+  getBettingMarkets = (
+    params: Parameters<typeof Betting.getBettingMarkets>[2]
+  ): ReturnType<typeof Betting.getBettingMarkets> => {
+    return this.bindTo(Betting.getBettingMarkets)(params);
   };
 
   getMarketsInfo = (

@@ -1,92 +1,86 @@
 import {
-  SPORTS,
-  GOLF,
-  TemplateInputType,
-  REQUIRED,
-  HOCKEY,
-  ValidationType,
-  HORSE_RACING,
-  TENNIS,
-  SOCCER,
-  MENS_LEAGUES,
-  CUSTOMIZED,
-  BASKETBALL,
-  NBA,
-  NCAA,
-  BASEBALL,
-  AMERICAN_FOOTBALL,
-  OLYMPICS,
-  NFL,
-  SUMMER,
-  WINTER,
-  POLITICS,
-  US_POLITICS,
-  WORLD,
-  FINANCE,
-  STOCKS,
-  STATISTICS,
-  INDEXES,
-  ENTERTAINMENT,
-  CRYPTO,
-  BITCOIN,
-  ETHEREUM,
-  LITECOIN,
-  PGA,
-  EURO_TOUR,
-  LPGA,
-  MEDICAL,
-  SINGLES,
-  DOUBLES,
-  WNBA,
-  TEXT_PLACEHOLDERS,
-  NFL_DRAFT,
-  NBA_DRAFT,
-  MONEY_LINE_MEGA,
-  WEEK_NO,
-  TEAM_B,
-  TEAM_A,
-  START_TIME,
-  SPREAD_MEGA,
-  OVER_UNDER_MEGA,
-  LEAGUE_NAME,
-  GENDER,
-  FUTURES,
-  OVER_UNDER,
-  SPREAD,
-  MONEY_LINE,
-  YEAR,
-  EVENT,
-  SET_GAME,
-  SUB_EVENT,
-  MMA,
-  BOXING,
-  CAR_RACING,
-  AWARDS,
-  TV_MOVIES,
-  SOCIAL_MEDIA,
-} from './templates-template';
-import {
-  LIST_VALUES,
-  BASKETBALL_EVENT_DEP_TEAMS,
-  HOCKEY_EVENT_DEP_TEAMS,
   BASEBALL_EVENT_DEP_TEAMS,
-  FOOTBALL_EVENT_DEP_TEAMS,
-  NCAA_BASKETBALL_CONF_DEP_TEAMS,
-  TENNIS_SINGLES_EVENTS,
-  TENNIS_DOUBLES_EVENTS,
-  ENTERTAINMENT_EVENT_DEP_TEAMS,
+  BASKETBALL_EVENT_DEP_TEAMS,
   CRYPTO_BTC_CURRENCY_MARKETS,
   CRYPTO_ETH_CURRENCY_MARKETS,
   CRYPTO_LTC_CURRENCY_MARKETS,
-  OLYMPIC_SUMMER_SPORT_EVENTS,
-  OLYMPIC_WINTER_SPORT_EVENTS,
+  ENTERTAINMENT_EVENT_DEP_TEAMS,
   FIN_EXCHANGES_CLOSING_OFFSETS,
+  FIN_EXCHANGES_CURRENCIES,
+  FIN_EXCHANGES_HOLIDAY_CLOSURES,
   FIN_INDEXES_CLOSING_OFFSETS,
   FIN_INDEXES_HOLIDAY_CLOSURES,
-  FIN_EXCHANGES_HOLIDAY_CLOSURES,
+  FOOTBALL_EVENT_DEP_TEAMS,
+  HOCKEY_EVENT_DEP_TEAMS,
+  LIST_VALUES,
+  NCAA_BASKETBALL_CONF_DEP_TEAMS,
+  OLYMPIC_SUMMER_SPORT_EVENTS,
+  OLYMPIC_WINTER_SPORT_EVENTS,
   SOCCER_LEAGUE_DEP_TEAMS,
-  FIN_EXCHANGES_CURRENCIES,
+  TENNIS_DOUBLES_EVENTS,
+  TENNIS_SINGLES_EVENTS,
 } from './templates-lists';
+import {
+  AMERICAN_FOOTBALL,
+  AWARDS,
+  BASEBALL,
+  BASKETBALL,
+  BITCOIN,
+  BOXING,
+  CAR_RACING,
+  CRYPTO,
+  CUSTOMIZED,
+  DOUBLES,
+  ENTERTAINMENT,
+  ETHEREUM,
+  EURO_TOUR,
+  EVENT,
+  FINANCE,
+  GENDER,
+  GOLF,
+  groupTypes,
+  HOCKEY,
+  HORSE_RACING,
+  INDEXES,
+  LEAGUE_NAME,
+  LITECOIN,
+  LPGA,
+  MEDICAL,
+  MENS_LEAGUES,
+  MMA,
+  NBA,
+  NBA_DRAFT,
+  NCAA,
+  NFL,
+  NFL_DRAFT,
+  OLYMPICS,
+  PGA,
+  POLITICS,
+  REQUIRED,
+  SET_GAME,
+  SINGLES,
+  SOCCER,
+  SOCIAL_MEDIA,
+  SPORTS,
+  START_TIME,
+  STATISTICS,
+  STOCKS,
+  SUB_EVENT,
+  SUMMER,
+  TEAM_A,
+  TEAM_B,
+  TemplateInputType,
+  TENNIS,
+  TEXT_PLACEHOLDERS,
+  TV_MOVIES,
+  US_POLITICS,
+  ValidationType,
+  WEEK_NO,
+  WINTER,
+  WNBA,
+  WORLD,
+  YEAR,
+} from './templates-template';
 
 const YES_NO = 'YesNo';
 const CATEGORICAL = 'Categorical';
@@ -109,7 +103,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MMA: [0] vs. [1], Who will win?`,
             example: `MMA: Donald Cerrone vs. Conor McGregor, Who will win?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: MONEY_LINE,
+            groupName: groupTypes.MONEY_LINE,
             inputs: [
               {
                 id: 0,
@@ -142,17 +136,17 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`
-                }
+                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`,
+                },
               ],
             },
           },
@@ -160,7 +154,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MMA: [0] vs. [1] (O/U), [2].5 Rounds?`,
             example: `MMA: Donald Cerrone vs. Conor McGregor (O/U), 1.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: OVER_UNDER,
+            groupName: groupTypes.OVER_UNDER,
             groupLineId: 2,
             inputs: [
               {
@@ -210,14 +204,14 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `For settlement purposes where a half round is stated, 2 minutes 30 seconds of the respective round will define the half to determine over or under. Example: If Total Rounds 2.5 (O/U) is in market question, the midway point in Round 3 is the under/over line. If the fight is stopped at exactly 2 minutes 30 seconds of the round named in the market "over" should be the winning outcome.`
-                }
+                  text: `For settlement purposes where a half round is stated, 2 minutes 30 seconds of the respective round will define the half to determine over or under. Example: If Total Rounds 2.5 (O/U) is in market question, the midway point in Round 3 is the under/over line. If the fight is stopped at exactly 2 minutes 30 seconds of the round named in the market "over" should be the winning outcome.`,
+                },
               ],
             },
           },
@@ -225,7 +219,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MMA: [0] vs. [1], Method of victory?`,
             example: `MMA: Donald Cerrone vs. Conor McGregor, Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -288,26 +282,26 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`,
                 },
                 {
                   text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`,
                 },
                 {
-                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`
+                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`,
                 },
                 {
-                  text: `KO/TKO: 1. Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. 2. Stoppage by doctor or a fighter’s corner/team. 3. A fighter retires due to injury.`
+                  text: `KO/TKO: 1. Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. 2. Stoppage by doctor or a fighter’s corner/team. 3. A fighter retires due to injury.`,
                 },
                 {
-                  text: `Submission: A Submission should be used when a fighter taps out, either verbally or physically.`
-                }
+                  text: `Submission: A Submission should be used when a fighter taps out, either verbally or physically.`,
+                },
               ],
             },
           },
@@ -315,7 +309,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MMA: [0] vs. [1], How will fight end?`,
             example: `MMA UFC: Donald Cerrone vs. Conor McGregor, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -363,26 +357,26 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "No Contest".`,
                 },
                 {
                   text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`
+                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`,
                 },
                 {
-                  text: `KO/TKO: 1. Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. 2. Stoppage by doctor or a fighter’s corner/team. 3. A fighter retires due to injury.`
+                  text: `KO/TKO: 1. Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. 2. Stoppage by doctor or a fighter’s corner/team. 3. A fighter retires due to injury.`,
                 },
                 {
-                  text: `Submission: A Submission should be used when a fighter taps out, either verbally or physically.`
-                }
+                  text: `Submission: A Submission should be used when a fighter taps out, either verbally or physically.`,
+                },
               ],
             },
           },
@@ -390,7 +384,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MMA: [0] vs. [1], What round will the fight end?`,
             example: `MMA: Donald Cerrone vs. Conor McGregor, What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -453,17 +447,17 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
                 },
                 {
                   text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`,
                 },
                 {
-                  text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`
-                }
+                  text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`,
+                },
               ],
             },
           },
@@ -475,7 +469,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Boxing: [0] vs. [1], Who will win?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki, Who will win?\nEstimated schedule start time: Feb 10, 2020 8:20 pm EST`,
-            groupName: MONEY_LINE,
+            groupName: groupTypes.MONEY_LINE,
             inputs: [
               {
                 id: 0,
@@ -508,17 +502,17 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `A Draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`
-                }
+                  text: `A Draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`,
+                },
               ],
             },
           },
@@ -526,7 +520,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Boxing: [0] vs. [1] (O/U), [2].5 Rounds?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki (O/U), 5.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: OVER_UNDER,
+            groupName: groupTypes.OVER_UNDER,
             groupLineId: 2,
             inputs: [
               {
@@ -577,14 +571,14 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `For settlement purposes where a half round is stated a new round must be started to determine over or under. For Example: If Total Rounds 8.5 (O/U) is quoted, then Round 9 must start for Over to win. If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round.`
-                }
+                  text: `For settlement purposes where a half round is stated a new round must be started to determine over or under. For Example: If Total Rounds 8.5 (O/U) is quoted, then Round 9 must start for Over to win. If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round.`,
+                },
               ],
             },
           },
@@ -592,7 +586,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Boxing: [0] vs. [1], Method of victory?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki, Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -655,26 +649,26 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `A Draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`
+                  text: `A Draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`,
                 },
                 {
-                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then the market should resolve as "Points" victory to the winner.`
+                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then the market should resolve as "Points" victory to the winner.`,
                 },
                 {
-                  text: `KO Stoppage: KO is used when a boxer does NOT stand up after a 10 count.`
+                  text: `KO Stoppage: KO is used when a boxer does NOT stand up after a 10 count.`,
                 },
                 {
-                  text: `TKO Stoppage: TKO is used when a fighter is knocked down 3 times in a round, if the referee steps in to stop the fight, official attending physicians or the boxers corner stop the fight.`
-                }
+                  text: `TKO Stoppage: TKO is used when a fighter is knocked down 3 times in a round, if the referee steps in to stop the fight, official attending physicians or the boxers corner stop the fight.`,
+                },
               ],
             },
           },
@@ -682,7 +676,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Boxing: [0] vs. [1], How will fight end?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -730,20 +724,20 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the fight is determined to be a draw, market should resolve as "Points".`
+                  text: `If the fight is determined to be a draw, market should resolve as "Points".`,
                 },
                 {
-                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then the market should resolve as "Points".`
-                }
+                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then the market should resolve as "Points".`,
+                },
               ],
             },
           },
@@ -751,7 +745,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Boxing: [0] vs. [1], What round will the fight end?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki, What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -809,14 +803,14 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`
-                }
+                  text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`,
+                },
               ],
             },
           },
@@ -828,7 +822,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NASCAR [0] [1]: Winner?`,
             example: `NASCAR 2020 Daytona 500: Winner?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-            groupName: MONEY_LINE,
+            groupName: groupTypes.MONEY_LINE,
             inputs: [
               {
                 id: 0,
@@ -869,20 +863,20 @@ export const TEMPLATES = {
                   text: `Market should resolve after the race conclusion once the winner is verified by officials and standing on the podium. Official results reflecting any changes, disqualifications or position penalties after the podium presentation will not be recognized for the market resolution purposes.`,
                 },
                 {
-                  text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`
+                  text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`,
                 },
                 {
-                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`
+                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all finishing positions.`
+                  text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all finishing positions.`,
                 },
                 {
-                  text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`
+                  text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`,
                 },
                 {
-                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`
-                }
+                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`,
+                },
               ],
             },
           },
@@ -890,7 +884,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NASCAR [0] [1]: [2] vs. [3]: Who will finish better?`,
             example: `NASCAR 2020 Daytona 500: Who will finish better?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -938,26 +932,26 @@ export const TEMPLATES = {
                   text: `Market should resolve after the race conclusion once the winner is verified by officials and standing on the podium. Official results reflecting any changes, disqualifications or position penalties after the podium presentation will not be recognized for the market resolution purposes.`,
                 },
                 {
-                  text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`
+                  text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`,
                 },
                 {
-                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`
+                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all Head to head match-ups and finishing positions.`
+                  text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all Head to head match-ups and finishing positions.`,
                 },
                 {
-                  text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`
+                  text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`,
                 },
                 {
-                  text: `Both drivers must start the race for head to head match-ups to be considered action. If one or both drivers do not start the race the market should resolve as "No Contest".`
+                  text: `Both drivers must start the race for head to head match-ups to be considered action. If one or both drivers do not start the race the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If a driver does not finish the race for any reason (including disqualifications), the opposing driver should be declared the winner.`
+                  text: `If a driver does not finish the race for any reason (including disqualifications), the opposing driver should be declared the winner.`,
                 },
                 {
-                  text: `If both Drivers do not finish the race for any reason (including disqualifications), the driver who completed more laps should be declared the winner. If both racers were disqualified at the same time or come in at same place (tie), the market should resolve as "No Contest"`
-                }
+                  text: `If both Drivers do not finish the race for any reason (including disqualifications), the driver who completed more laps should be declared the winner. If both racers were disqualified at the same time or come in at same place (tie), the market should resolve as "No Contest"`,
+                },
               ],
             },
           },
@@ -965,7 +959,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NASCAR [0] CUP Series Championship Winner?`,
             example: `NASCAR 2020 CUP Series Championship Winner?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -983,20 +977,20 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`
+                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`,
                 },
                 {
-                  text: `The NASCAR Cup Series Drivers' Championship is awarded to the most successful NASCAR Cup Series racing car driver over a season, as determined by a points system based on race results. The winner can only be determined after the completion of the final race of the year and points for the season have been calculated.`
+                  text: `The NASCAR Cup Series Drivers' Championship is awarded to the most successful NASCAR Cup Series racing car driver over a season, as determined by a points system based on race results. The winner can only be determined after the completion of the final race of the year and points for the season have been calculated.`,
                 },
                 {
-                  text: `If the season is officially cancelled and event named in the market is not played, this market should resolve as "Invalid".`
+                  text: `If the season is officially cancelled and event named in the market is not played, this market should resolve as "Invalid".`,
                 },
                 {
-                  text: `If Nascar suspends play and starts up again at a later date, and the winner of the event named in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                  text: `If Nascar suspends play and starts up again at a later date, and the winner of the event named in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                 },
                 {
-                  text: `If Nascar suspends play and starts up again at a later date, and the winner of the event named in the market is determined after the Market’s Event Expiration begins, this market should resolve as "Invalid".`
-                }
+                  text: `If Nascar suspends play and starts up again at a later date, and the winner of the event named in the market is determined after the Market’s Event Expiration begins, this market should resolve as "Invalid".`,
+                },
               ],
             },
           },
@@ -1113,7 +1107,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `PGA: Which golfer will win the [0] [1]?`,
                 example: `PGA: Which golfer will win the 2020 PGA Championship?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -1160,7 +1154,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `PGA: Which team will win the [0] Presidents Cup?`,
                 example: `PGA: Which team will win the 2020 Presidents Cup?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 noAdditionalUserOutcomes: true,
                 inputs: [
                   {
@@ -1315,7 +1309,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Euro Tour: Which golfer will win the [0] [1]?`,
                 example: `Euro Tour: Which golfer will win the 2020 Omega Dubai Dessert Classic?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -1362,7 +1356,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Euro Tour: Which golf team will win the [0] Ryders Cup?`,
                 example: `Euro Tour: Which golf team will win the 2020 Ryders Cup?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 noAdditionalUserOutcomes: true,
                 inputs: [
                   {
@@ -1494,7 +1488,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `LPGA: Which golfer will win the [0] [1]?`,
                 example: `LPGA: Which golfer will win the 2020 U.S. Women's Open?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -1661,7 +1655,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NHL: Which team will win: [0] vs. [1]?`,
             example: `NHL: Which Team will win: NY Rangers vs. NJ Devils?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-            groupName: MONEY_LINE_MEGA,
+            groupName: groupTypes.MONEY_LINE_MEGA,
             inputs: [
               {
                 id: 0,
@@ -1708,7 +1702,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NHL (Goal Spread): [0] to win by more than [1].5 goals over the [2]?`,
             example: `NHL (Goal Spread): St Louis Blues to win by more than 2.5 goals over the NY Rangers?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-            groupName: SPREAD_MEGA,
+            groupName: groupTypes.SPREAD_MEGA,
             inputs: [
               {
                 id: 0,
@@ -1771,7 +1765,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NHL (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
             example: `NHL (O/U): St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-            groupName: OVER_UNDER_MEGA,
+            groupName: groupTypes.OVER_UNDER_MEGA,
             groupLineId: 2,
             inputs: [
               {
@@ -1835,7 +1829,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which NHL team will win the [0] [1]?`,
             example: `Which NHL team will win the 2019-20 Stanley Cup?`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -1886,7 +1880,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which NHL player will win the [0] [1]?`,
             example: `Which NHL player will win the 2019-20 Calder Trophy?`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -2004,7 +1998,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which horse will win the [0] [1]?`,
             example: `Which horse will win the 2020 Kentucky Derby?`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -2106,7 +2100,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Singles Tennis: Which player will win the [1] [2]?`,
                 example: `Men's Singles Tennis: Which player will win the 2020 Australian Open?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -2162,7 +2156,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Singles Tennis [1] [2]: Who will win Set number [3], [4] vs. [5]?`,
                 example: `Men's Singles Tennis 2020 French Open: Who will win Set number 3, Novak Djokovic vs. Rafael Nadal?`,
-                groupName: MONEY_LINE,
+                groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
@@ -2240,7 +2234,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Singles Tennis [1] [2] (O/U), [3] vs. [4]: Total [5] played in a match; Over/Under [6].5?`,
                 example: `Men's Singles Tennis 2020 French Open (O/U), Novak Djokovic vs. Rafael Nadal: Total games played in a match; Over/Under 15.5?`,
-                groupName: OVER_UNDER,
+                groupName: groupTypes.OVER_UNDER,
                 groupLineId: 6,
                 inputs: [
                   {
@@ -2334,7 +2328,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Single Tennis: [1] [2] Match play winner: [3] vs. [4]?`,
                 example: `Men's Single Tennis: 2020 Wimbledon Match play winner between Roger Federer vs. Rafael Nadal?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -2457,7 +2451,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Doubles Tennis: Which player/player will win the [1] [2]?`,
                 example: `Men's Doubles Tennis: Which player/player will win the 2020 Australian Open?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -2516,7 +2510,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Doubles Tennis [1] [2]: Who will win Set number [3], [4] vs. [5]?`,
                 example: `Men's Doubles Tennis 2020 French Open: Who will win Set number 3, Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan?`,
-                groupName: MONEY_LINE,
+                groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
@@ -2596,7 +2590,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Doubles Tennis [1] [2] (O/U), [3] vs. [4]: Total [5] played in a match; Over/Under [6].5?`,
                 example: `Men's Doubles Tennis 2020 French Open (O/U), Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan: Total games played in a match; Over/Under 15.5?`,
-                groupName: OVER_UNDER,
+                groupName: groupTypes.OVER_UNDER,
                 groupLineId: 6,
                 inputs: [
                   {
@@ -2693,7 +2687,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Doubles Tennis: [1] [2] Match play winner: [3] vs. [4]?`,
                 example: `Men's Doubles Tennis: 2020 Wimbledon Match play winner between Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan?`,
-                groupName: MONEY_LINE,
+                groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
@@ -2777,7 +2771,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0]: Which team will win: [1] vs. [2]?`,
                 example: `Men's English Premier League: Which team will win: Manchester City vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: MONEY_LINE,
+                groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
@@ -2856,7 +2850,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] (Point Spread): [1] to win by more than [2].5 goals over [3]?`,
                 example: `Men's Ligue 1 (France): Marseille to win by more than 1.5 goals over Lyon?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: SPREAD,
+                groupName: groupTypes.SPREAD,
                 groupLineId: 2,
                 inputs: [
                   {
@@ -2937,7 +2931,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] (O/U): [1] vs. [2]: Total goals scored; Over/Under [3].5?`,
                 example: `Men's MLS (USA) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: OVER_UNDER,
+                groupName: groupTypes.OVER_UNDER,
                 groupLineId: 3,
                 inputs: [
                   {
@@ -3406,7 +3400,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NBA: Which team will win: [0] vs. [1]?`,
                 example: `NBA: Which Team will win: Brooklyn Nets vs. NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: MONEY_LINE_MEGA,
+                groupName: groupTypes.MONEY_LINE_MEGA,
                 inputs: [
                   {
                     id: 0,
@@ -3450,7 +3444,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NBA (Point Spread): [0] to win by more than [1].5 points over the [2]?`,
                 example: `NBA (Point Spread): Brooklyn Nets to win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: SPREAD_MEGA,
+                groupName: groupTypes.SPREAD_MEGA,
                 inputs: [
                   {
                     id: 0,
@@ -3510,7 +3504,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NBA (O/U): [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
                 example: `NBA (O/U): Brooklyn Nets vs. NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: OVER_UNDER_MEGA,
+                groupName: groupTypes.OVER_UNDER_MEGA,
                 groupLineId: 2,
                 inputs: [
                   {
@@ -3571,7 +3565,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NBA team will win the [0] [1]?`,
                 example: `Which NBA team will win the 2019-20 Western Conference Finals?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -3623,7 +3617,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NBA player will win the [0] [1] award?`,
                 example: `Which NBA player will win the 2019-20 Most Valuable Player award?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -3663,7 +3657,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NBA: Which Player will have the most [0] at the end of the the [1] regular season?`,
                 example: `NBA: Which Player will have the most Points scored at the end of the the 2019-20 regular season?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -3767,7 +3761,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NBA Draft: Who will be the [1] overall pick?`,
                 example: `2020 NBA Draft: Who will be the 1st overall pick?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -3814,7 +3808,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NBA Draft: The First draft pick by the [1]?`,
                 example: `2020 NBA Draft: The First draft pick by the LA Lakers?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -3861,7 +3855,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NBA Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
                 example: `2020 NBA Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                groupName: OVER_UNDER,
+                groupName: groupTypes.OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
                   {
@@ -4113,7 +4107,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA: Which team will win: [0] vs. [1]?`,
                 example: `WNBA: Which Team will win: Phoenix Mercury vs. Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: MONEY_LINE_MEGA,
+                groupName: groupTypes.MONEY_LINE_MEGA,
                 inputs: [
                   {
                     id: 0,
@@ -4157,7 +4151,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA (Point Spread): [0] to win by more than [1].5 points over the [2]?`,
                 example: `WNBA (Point Spread): Phoenix Mercury to win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: SPREAD_MEGA,
+                groupName: groupTypes.SPREAD_MEGA,
                 inputs: [
                   {
                     id: 0,
@@ -4217,7 +4211,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA (O/U): [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
                 example: `WNBA (O/U): Phoenix Mercury vs. Seattle Storm: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: OVER_UNDER_MEGA,
+                groupName: groupTypes.OVER_UNDER_MEGA,
                 groupLineId: 2,
                 inputs: [
                   {
@@ -4276,7 +4270,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which WNBA team will win the [0] Championship?`,
                 example: `Which WNBA team will win the 2019-20 Championship?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -4318,7 +4312,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which WNBA player will win the [0] [1] award?`,
                 example: `Which WNBA player will win the 2019-20 Most Valuable Player award?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -4358,7 +4352,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA: Which Player will have the most [0] at the end of the the [1] regular season?`,
                 example: `WNBA: Which Player will have the most Points scored at the end of the the 2019-20 regular season?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -4683,7 +4677,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB: Which team will win: [1] vs. [2]?`,
                 example: `NCAA Men's BB: Which Team will win: Duke vs. Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: MONEY_LINE_MEGA,
+                groupName: groupTypes.MONEY_LINE_MEGA,
                 inputs: [
                   {
                     id: 0,
@@ -4737,7 +4731,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB (Point Spread): [1] to win by more than [2].5 points over [3]?`,
                 example: `NCAA Men's BB (Point Spread): Duke to win by more than 10.5 points over Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: SPREAD_MEGA,
+                groupName: groupTypes.SPREAD_MEGA,
                 inputs: [
                   {
                     id: 0,
@@ -4807,7 +4801,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB (O/U): [1] vs. [2]: Total Points scored; Over/Under [3].5?`,
                 example: `NCAA Men's BB (O/U): Duke vs. Arizona: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: OVER_UNDER_MEGA,
+                groupName: groupTypes.OVER_UNDER_MEGA,
                 groupLineId: 3,
                 inputs: [
                   {
@@ -4875,7 +4869,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB: Which college basketball team will win the [1] [2] tournament?`,
                 example: `NCAA Men's BB: Which college basketball team will win the 2020 ACC tournament?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -4936,7 +4930,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB: Which college basketball team will win the [1] D1 National Championship?`,
                 example: `NCAA Men's BB: Which college basketball team will win the 2020 National Championship?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -5040,7 +5034,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB: Which team will win: [0] vs. [1]?`,
             example: `MLB: Which Team will win: Yankees vs. Red Sox?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-            groupName: MONEY_LINE_MEGA,
+            groupName: groupTypes.MONEY_LINE_MEGA,
             inputs: [
               {
                 id: 0,
@@ -5090,7 +5084,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB (Run Spread): [0] to win by more than [1].5 runs over the [2]?`,
             example: `MLB (Run Spread): NY Yankees to win by more than 2.5 runs over the Boston Red Sox?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-            groupName: SPREAD_MEGA,
+            groupName: groupTypes.SPREAD_MEGA,
             inputs: [
               {
                 id: 0,
@@ -5156,7 +5150,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB (O/U): [0] vs. [1]: Total Runs scored; Over/Under [2].5?`,
             example: `MLB (O/U): NY Yankees vs. Boston Red Sox: Total Runs scored; Over/Under 9.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-            groupName: OVER_UNDER_MEGA,
+            groupName: groupTypes.OVER_UNDER_MEGA,
             groupLineId: 2,
             inputs: [
               {
@@ -5223,7 +5217,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which MLB team will win the [0] [1]?`,
             example: `Which MLB team will win the 2020 World Series?`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -5274,7 +5268,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB: Which player will win the [0] [1]?`,
             example: `MLB: Which Player will win the 2019 American League Cy Young award?`,
-            groupName: FUTURES,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
@@ -5558,7 +5552,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics: Which country will win the most [0] medals at the [1] Summer Olympics?`,
                 example: `Olympics: Which country will win the most Gold medals at the 2020 Summer Olympics`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -5601,7 +5595,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics [0]: Which country will win the Gold medal in [1] at the [2] Summer Olympics?`,
                 example: `Olympics Tennis: Which country will win the Gold medal in Singles (Men/Women) at the 2020 Summer Olympics`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -5900,7 +5894,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics: Which country will win the most [0] medals at the [1] Winter Olympics?`,
                 example: `Olympics: Which country will win the most Gold medals at the 2020 Winter Olympics`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -5943,7 +5937,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics [0]: Which country will win the Gold medal in [1] at the [2] Winter Olympics?`,
                 example: `Olympics Curling: Which country will win the Gold medal in mens at the 2020 Winter Olympics`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -6299,7 +6293,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0]: Which NFL Team will win: [1] vs. [2]?`,
                 example: ` Week 1: Which NFL Team will win: NY Giants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: MONEY_LINE_MEGA,
+                groupName: groupTypes.MONEY_LINE_MEGA,
                 inputs: [
                   {
                     id: 0,
@@ -6352,7 +6346,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NFL (Point Spread) [0]: [1] to win by more than [2].5 points over [3]?`,
                 example: `NFL (Point Spread) Week 1: Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: SPREAD_MEGA,
+                groupName: groupTypes.SPREAD_MEGA,
                 inputs: [
                   {
                     id: 0,
@@ -6421,7 +6415,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NFL (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
                 example: `NFL (O/U) Week 1: NY Giants vs. Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: OVER_UNDER_MEGA,
+                groupName: groupTypes.OVER_UNDER_MEGA,
                 groupLineId: 3,
                 inputs: [
                   {
@@ -6491,7 +6485,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NFL team will win the [0] [1]?`,
                 example: `Which NFL team will win the 2020 AFC Championship game?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -6543,7 +6537,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NFL player will win the [0] season [1] award?`,
                 example: `Which NFL player will win the 2019-20 season Most Valuable Player award?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -6626,7 +6620,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft: Who will be the [1] overall pick?`,
                 example: `2020 NFL Draft: Who will be the 1st overall pick?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -6672,7 +6666,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft: Who will be the first [1] selected?`,
                 example: `2020 NFL Draft: Who will be the first Quarterback selected?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -6720,7 +6714,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft: The First draft pick by the [1]?`,
                 example: `2020 NFL Draft: The First draft pick by the NY Giants?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -6767,7 +6761,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft(O/U): [1].5 Total [2] drafted in Round 1?`,
                 example: `2020 NFL Draft(O/U): 5.5 Total Quarterbacks drafted in Round 1?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                groupName: OVER_UNDER,
+                groupName: groupTypes.OVER_UNDER,
                 groupLineId: 1,
                 inputs: [
                   {
@@ -6824,7 +6818,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
                 example: `2020 NFL Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                groupName: OVER_UNDER,
+                groupName: groupTypes.OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
                   {
@@ -7028,7 +7022,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA FB [0]: Which College Football Team will win: [1] vs. [2]?`,
                 example: `NCAA FB Week 1: Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: MONEY_LINE_MEGA,
+                groupName: groupTypes.MONEY_LINE_MEGA,
                 inputs: [
                   {
                     id: 0,
@@ -7081,7 +7075,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA FB (Point Spread) [0]: [1] to win by more than [2].5 points over [3]?`,
                 example: `NCAA FB (Point Spread) Week 1: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: SPREAD_MEGA,
+                groupName: groupTypes.SPREAD_MEGA,
                 inputs: [
                   {
                     id: 0,
@@ -7150,7 +7144,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA FB (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
                 example: `NCAA FB (O/U) Week 1: Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: OVER_UNDER_MEGA,
+                groupName: groupTypes.OVER_UNDER_MEGA,
                 groupLineId: 3,
                 inputs: [
                   {
@@ -7220,7 +7214,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which college football team will win [0] National Championship?`,
                 example: `Which college football team will win 2020 National Championship?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
@@ -7270,7 +7264,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which college football player will win the [0] Heisman Trophy?`,
                 example: `Which college football player will win the 2020 Heisman Trophy?`,
-                groupName: FUTURES,
+                groupName: groupTypes.FUTURES,
                 inputs: [
                   {
                     id: 0,
