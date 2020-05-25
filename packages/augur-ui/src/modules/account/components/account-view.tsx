@@ -49,28 +49,49 @@ const AccountView = () => {
       <HelmetTag {...ACCOUNT_VIEW_HEAD_TAGS} />
       <Media query={SMALL_MOBILE}>
         {matches =>
-          matches ? (
-            <ModuleTabs selected={0} fillWidth noBorder>
-              <ModulePane label={YOUR_OVERVIEW_TITLE}>
-                <Overview />
-              </ModulePane>
-              <ModulePane label="Notifications" isNew={newNotifications}>
-                <Notifications />
-              </ModulePane>
-              <ModulePane label="My Active Markets">
-                <OpenMarkets />
-              </ModulePane>
-              <ModulePane label="Watchlist">
-                <Favorites />
-              </ModulePane>
-              <ModulePane label="Transactions">
-                <Transactions />
-              </ModulePane>
-              <ModulePane label={AUGUR_STATUS_TITLE}>
-                <AugurStatus />
-              </ModulePane>
-            </ModuleTabs>
-          ) : 
+          matches ? 
+            theme === THEMES.TRADING ? (
+              <ModuleTabs selected={0} fillWidth noBorder>
+                <ModulePane label={YOUR_OVERVIEW_TITLE}>
+                  <Overview />
+                </ModulePane>
+                <ModulePane label="Notifications" isNew={newNotifications}>
+                  <Notifications />
+                </ModulePane>
+                <ModulePane label="My Active Markets">
+                  <OpenMarkets />
+                </ModulePane>
+                <ModulePane label="Watchlist">
+                  <Favorites />
+                </ModulePane>
+                <ModulePane label="Transactions">
+                  <Transactions />
+                </ModulePane>
+                <ModulePane label={AUGUR_STATUS_TITLE}>
+                  <AugurStatus />
+                </ModulePane>
+              </ModuleTabs>
+            ) : (
+              <ModuleTabs selected={0} fillWidth noBorder>
+                <ModulePane label={YOUR_OVERVIEW_TITLE}>
+                  <Overview />
+                  <Transactions />
+                  <AugurStatus />
+                </ModulePane>
+                <ModulePane label="Notifications" isNew={newNotifications}>
+                  <Notifications />
+                </ModulePane>
+                <ModulePane label="My Active Markets">
+                  <OpenMarkets />
+                </ModulePane>
+                <ModulePane label="Favorites">
+                  <Favorites />
+                </ModulePane>
+                <ModulePane label="My Created Markets">
+                  <MyMarkets />
+                </ModulePane>
+              </ModuleTabs>
+            ) : 
           theme === THEMES.TRADING ? (
             <div
               className={classNames(Styles.AccountView, {

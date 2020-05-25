@@ -94,13 +94,19 @@
     border-bottom-right-radius: @border-radius-rounded;
 
     @media @breakpoint-mobile {
-      margin: @size-16;
+      margin: @size-16 @size-16 0;
       background: var(--color-module-background);
       border: @size-1 solid var(--color-dark-grey);
       border-radius: @border-radius-rounded;
+    }
 
-      > div:last-of-type {
-        padding: 0 0 @size-4;
+    > div:last-of-type {
+      @media @breakpoint-mobile {
+        padding: 0;
+        max-height: unset;
+        min-height: unset;
+        border-bottom-left-radius: @border-radius-rounded;
+        border-bottom-right-radius: @border-radius-rounded;
       }
     }
   }
