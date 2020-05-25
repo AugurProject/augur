@@ -30,6 +30,7 @@ export const LIST_VALUES = {
   WINTER_OLYMPIC_YEARS: ['2022', '2026', '2030'],
   YEAR_RANGE: ['2019-20', '2020-21', '2021-22', '2022-23'],
   MMA_ROUNDS: ['1', '2', '3', '4'],
+  BOXING_ROUNDS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
   FOOTBALL_AWARDS: [
     'Offensive Player of the year',
     'Defensive player of the year',

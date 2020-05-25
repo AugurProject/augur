@@ -409,7 +409,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw`,
+                placeholder: `Draw/No Contest`,
               },
               {
                 id: 3,
@@ -432,7 +432,7 @@ export const TEMPLATES = {
             question: `Boxing: [0] vs. [1] (O/U), [2].5 Rounds?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki (O/U), 5.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             groupName: OVER_UNDER,
-            groupLineId: 3,
+            groupLineId: 2,
             inputs: [
               {
                 id: 0,
@@ -448,27 +448,27 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.TEXT,
-                validationType: ValidationType.WHOLE_NUMBER,
-                placeholder: `Whole #`,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Round #`,
+                values: LIST_VALUES.BOXING_ROUNDS,
               },
               {
-                id: 2,
+                id: 3,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                 placeholder: `Over [2].5`,
               },
               {
-                id: 3,
+                id: 4,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                 placeholder: `Under [2].5`,
               },
               {
-                id: 3,
+                id: 5,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw`,
+                placeholder: `No Contest`,
               },
               {
-                id: 4,
+                id: 6,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
@@ -504,37 +504,37 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] by KO`,
+                placeholder: `[0] by KO`,
               },
               {
                 id: 3,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] by TKO`,
+                placeholder: `[0] by TKO`,
               },
               {
                 id: 4,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] by Points`,
+                placeholder: `[0] by Points`,
               },
               {
                 id: 5,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[2] by KO`,
+                placeholder: `[1] by KO`,
               },
               {
                 id: 6,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[2] by TKO`,
+                placeholder: `[1] by TKO`,
               },
               {
                 id: 7,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[2] by Points`,
+                placeholder: `[1] by Points`,
               },
               {
                 id: 8,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw`,
+                placeholder: `Draw/No Contest`,
               },
               {
                 id: 9,
@@ -588,7 +588,7 @@ export const TEMPLATES = {
               {
                 id: 5,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw`,
+                placeholder: `No Contest`,
               },
               {
                 id: 6,
