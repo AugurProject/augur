@@ -396,7 +396,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 Shares @ ${limitPrice}`}
             </div>
             <LinearPropertyLabel
-              label="Settlement Fee"
+              label="Market Trading Fee"
               value={orderShareTradingFee}
               showDenomination={true}
             />
