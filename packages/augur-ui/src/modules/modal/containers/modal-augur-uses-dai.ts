@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   buyDaiModal: () => AppStatus.actions.setModal({ type: MODAL_BUY_DAI }),
-  track: (eventName, payload) => dispatch(track(eventName, payload)),
+  track: (eventName, payload) => track(eventName, payload),
   gotoOnboardingStep: (step) => AppStatus.actions.setModal({ type: getOnboardingStep(step) })
 });
 

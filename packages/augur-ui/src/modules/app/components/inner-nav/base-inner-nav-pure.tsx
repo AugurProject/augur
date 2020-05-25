@@ -10,7 +10,7 @@ import {
 import { XIcon } from 'modules/common/icons';
 import MarketsListFilters from 'modules/app/containers/markets-list-filters';
 import MarketsListSortBy from 'modules/app/containers/markets-list-sortBy';
-import CategoryFilters from 'modules/app/containers/category-filters';
+import CategoryFilters from 'modules/app/components/inner-nav/category-filters';
 import { PrimaryButton } from 'modules/common/buttons';
 
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles.less';
@@ -25,7 +25,6 @@ interface BaseInnerNavPureProps {
   updateMaxSpread: Function;
   updateShowInvalid: Function;
   updateTemplateFilter: Function;
-  updateSelectedCategories: Function;
   history: History;
   location: Location;
 }
@@ -38,7 +37,6 @@ const BaseInnerNavPure = ({
   updateMaxSpread,
   updateShowInvalid,
   updateTemplateFilter,
-  updateSelectedCategories,
   location,
   history,
 }: BaseInnerNavPureProps) => {
@@ -47,6 +45,7 @@ const BaseInnerNavPure = ({
     mobileMenuState,
     actions: {
       setMobileMenuState,
+      updateMarketsList,
     },
   } = useAppStatusStore();
   const [originalSelectedCategories, setOriginalSelectedCategories] = useState(
@@ -176,7 +175,10 @@ const BaseInnerNavPure = ({
           <button
             onClick={() => {
               if (showMainMenu) {
-                updateSelectedCategories(originalSelectedCategories);
+                updateMarketsList({
+                  selectedCategories: originalSelectedCategories || [],
+                  selectedCategory: originalSelectedCategories.length ? originalSelectedCategories[originalSelectedCategories.length - 1] : null,
+                })
                 updateMarketsSortBy(originalFilterSortOptions.marketSort);
                 updateMaxFee(originalFilterSortOptions.maxFee);
                 updateMaxSpread(originalFilterSortOptions.maxLiquiditySpread);

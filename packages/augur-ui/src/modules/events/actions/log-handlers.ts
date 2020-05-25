@@ -184,7 +184,7 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { isLogged, env: { showReloadModal } } = AppStatus.get();  
+  const { isLogged, zeroXStatus, env: { showReloadModal } } = AppStatus.get();  
   if (log && log.error && log.error.message.includes('too many blocks')) {
     console.error('too many blocks behind, reloading UI');
     showReloadModal ? AppStatus.actions.setModal({
@@ -193,7 +193,7 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
       title: 'Currently Far Behind to get Orders',
     }) : location.reload();
   }
-  AppStatus.actions.setOxStatus(status);
+  if (zeroXStatus !== status) AppStatus.actions.setOxStatus(status);
   if (status === ZEROX_STATUSES.SYNCED && isLogged) {
     dispatch(throttleLoadUserOpenOrders());
   }
@@ -218,6 +218,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   getState: () => AppState
 ) => {
   const {
+    analytics,
     env: { averageBlocktime, showReloadModal },
     isLogged,
     blockchain: { currentAugurTimestamp },
@@ -244,7 +245,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   if (isLogged) {
     dispatch(updateAssets());
     dispatch(checkAccountAllowance());
-    dispatch(loadAnalytics(getState().analytics, currentAugurTimestamp));
+    loadAnalytics(analytics, currentAugurTimestamp);
     dispatch(findAndSetTransactionsTimeouts(log.highestAvailableBlockNumber));
   }
   // update ETH/REP rate and gasPrice each block

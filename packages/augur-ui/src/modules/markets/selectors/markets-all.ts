@@ -14,6 +14,15 @@ export default function() {
   return selectMarkets(store.getState());
 }
 
+export const getMarkets = () => {
+  const { marketInfos } = Markets.get();
+  if (!marketInfos) return [];
+  return Object.keys(marketInfos).reduce((p, marketId) => {
+    if (!marketId || !marketInfos[marketId]) return p;
+    return [...p, selectMarket(marketId)];
+  }, []);
+};
+
 export const selectMarkets = createSelector(
   selectMarketTradingHistoryState,
   selectCancelingOrdersState,

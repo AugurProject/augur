@@ -8,7 +8,8 @@
   height: 100%;
   justify-content: flex-end;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
+    height: @top-bar-height-mobile;
     > ul[class*="ThemeSwitch"] {
       display: none;
     }
@@ -22,7 +23,7 @@
     justify-content: flex-end;
     height: 100%;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       padding: 0;
       max-width: 40%;
     }
@@ -52,18 +53,10 @@
 
   div {
     width: @size-24;
-
-    @media @breakpoint-mobile {
-      width: @size-40;
-    }
   }
 
-  @media @breakpoint-mobile {
-    border: 0;
-    display: flex;
-    flex: 2;
-    margin-left: @size-46;
-    padding: 0;
+  @media @breakpoint-mobile-tablet {
+    display: none;
   }
 }
 
@@ -72,16 +65,16 @@
   display: flex;
   height: 100%;
 
+  @media @breakpoint-mobile-tablet {
+    display: none;
+  }
+
   > div:first-of-type {
     display: flex;
     flex-direction: column;
     height: 100%;
     width: min-content;
     padding: @size-6 @size-20;
-
-    @media @breakpoint-mobile {
-      padding: 0;
-    }
     
     > span:first-of-type {
       display: flex;
@@ -95,10 +88,6 @@
 
       span div {
         margin-top: @size-10;
-
-        @media @breakpoint-mobile {
-          margin-top: 0;
-        }
       }
     }
 
@@ -119,10 +108,6 @@
 
       > span:first-of-type {
         margin-right: @size-30;
-
-        @media @breakpoint-mobile {
-          margin-right: @size-23;
-        }
       }
 
       > span:nth-of-type(2),
@@ -135,15 +120,6 @@
 
     > div:last-of-type {
       display: none;
-
-      @media @breakpoint-mobile {
-        display: flex;
-
-        > span:nth-of-type(2),
-        > span:last-of-type {
-          color: var(--color-positive);
-        }
-      }
     }
   }
 
@@ -176,10 +152,6 @@
 
         color: var(--color-positive);
       }
-    }
-
-    @media @breakpoint-mobile {
-      display: none;
     }
   }
 }
@@ -220,7 +192,7 @@
     }
   }
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     border-left: @size-1 solid var(--color-module-background);
   }
 
@@ -240,7 +212,7 @@
     background-color: var(--color-module-background);
   }
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     display: none;
   }
 }
@@ -289,9 +261,8 @@
 
   .alerts {
     border-top: @size-3 solid transparent;
-    width: @size-56;
-    height: @size-56;
     border-right: @size-1 solid var(--color-secondary-text-50);
+    border-left: @size-1 solid var(--color-secondary-text-50);
     order: 3;
 
     > svg {

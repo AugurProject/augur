@@ -2,10 +2,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import BaseInnerNavPure from 'modules/app/components/inner-nav/base-inner-nav-pure';
 import {
-  updateSelectedCategories,
-  updateMarketsListMeta,
-} from 'modules/markets-list/actions/update-markets-list';
-import {
   MARKET_SORT,
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
@@ -14,10 +10,14 @@ import {
 } from 'modules/app/store/constants';
 import { AppStatus } from '../store/app-status';
 
-const mapStateToProps = ({ marketsList }) => {
+const mapStateToProps = () => {
+  const {
+    marketsList: { selectedCategories },
+    loginAccount: { settings },
+  } = AppStatus.get();
   return {
-    selectedCategories: marketsList.selectedCategories,
-    settings: AppStatus.get().loginAccount.settings,
+    selectedCategories,
+    settings,
   };
 };
 
@@ -25,12 +25,11 @@ const mapDispatchToProps = dispatch => {
   const {
     updateFilterSortOptions,
     updateLoginAccount,
+    updateMarketsList,
   } = AppStatus.actions;
   return {
     updateLoginAccount: settings => updateLoginAccount({ settings }),
-    updateSelectedCategories: categories =>
-      dispatch(updateSelectedCategories(categories)),
-    updateMarketsListMeta: meta => dispatch(updateMarketsListMeta(meta)),
+    updateMarketsListMeta: meta => updateMarketsList({ meta }),
     updateMarketsSortBy: sortBy =>
       updateFilterSortOptions({ [MARKET_SORT]: sortBy }),
     updateMaxFee: maxFee =>

@@ -1,24 +1,14 @@
-import newMarket from 'modules/markets/reducers/new-market';
-import analytics from 'modules/app/reducers/analytics';
-import drafts from 'modules/create-market/reducers/drafts';
-import marketsList from 'modules/markets-list/reducers/markets-list';
+// import newMarket from 'modules/markets/reducers/new-market';
 import initialized3box from 'modules/global-chat/reducers/initialized-3box'
 import {
-  NewMarket,
-  Drafts,
-  MarketsList,
-  Analytics,
+  // NewMarket,
   Initialized3box
 } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
 import { SDKConfiguration } from '@augurproject/artifacts';
 
 export function createReducer() {
   return {
-    newMarket,
-    drafts,
-    marketsList,
-    analytics,
+    // newMarket,
     initialized3box
   };
 }
@@ -27,9 +17,6 @@ export function createReducer() {
 // keeping with reducers for easier maintenance.
 export interface AppStateInterface {
   config: SDKConfiguration;
-  newMarket: NewMarket;
-  drafts: Drafts;
-  marketsList: MarketsList;
-  analytics: Analytics;
+  // newMarket: NewMarket;
   initialized3box: Initialized3box;
 }

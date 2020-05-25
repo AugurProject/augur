@@ -19,7 +19,7 @@ export {
 
 export {
   default as CreateMarket
-} from "modules/create-market/containers/create-market";
+} from "modules/create-market/components/create-market-view/create-market-view";
 
 export {
   default as Reporting

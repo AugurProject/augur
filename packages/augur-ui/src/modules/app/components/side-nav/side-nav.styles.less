@@ -4,7 +4,7 @@
 .SideNav {
   display: none;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     display: flex;
     flex-flow: column nowrap;
     height: 100vh;
@@ -24,6 +24,7 @@
       }
 
       > div:last-of-type {
+        display: flex;
         padding: @size-6 @size-12 @size-6 @size-16;
       }
     }
@@ -121,7 +122,7 @@
     > ul:first-child,
     > div:first-child,
     > span:first-child {
-      margin-top: @top-bar-height-mobile;
+      margin-top: @side-bar-top-menu-height-mobile;
     }
 
     > ul:last-of-type {
@@ -231,6 +232,10 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .SideNav {
+    > div:first-of-type > div:last-of-type {
+      display: none;
+    }
+    
     > div {
       background: var(--color-primary-text);
     }

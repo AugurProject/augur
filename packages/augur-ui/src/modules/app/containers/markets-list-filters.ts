@@ -8,12 +8,11 @@ import {
 } from 'modules/app/store/constants';
 import MarketsListFilters from '../components/inner-nav/markets-list-filters';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
-import { AppState } from 'appStore';
 import { AppStatus } from '../store/app-status';
-import { updateSelectedCategories } from 'modules/markets-list/actions/update-markets-list';
 
-const mapStateToProps = ({ marketsList, loginAccount }: AppState) => {
+const mapStateToProps = () => {
   const {
+    marketsList: { isSearching },
     loginAccount: { settings },
     filterSortOptions: {
       maxFee,
@@ -26,7 +25,7 @@ const mapStateToProps = ({ marketsList, loginAccount }: AppState) => {
     maxFee,
     maxLiquiditySpread,
     includeInvalidMarkets,
-    isSearching: marketsList.isSearching,
+    isSearching,
     allTemplateFilter: templateFilter,
     settings,
   };
@@ -36,6 +35,7 @@ const mapDispatchToProps = dispatch => {
   const {
     updateFilterSortOptions,
     updateLoginAccount,
+    updateMarketsList,
   } = AppStatus.actions;
   return {
     updateMaxFee: maxFee =>
@@ -47,8 +47,11 @@ const mapDispatchToProps = dispatch => {
     updateTemplateFilter: templateFilter =>
       updateFilterSortOptions({ [TEMPLATE_FILTER]: templateFilter }),
     updateLoginAccount: settings => updateLoginAccount({ settings }),
-    updateSelectedCategories: category =>
-      dispatch(updateSelectedCategories(category)),
+    updateSelectedCategories: category => 
+      updateMarketsList({
+        selectedCategories: category || [],
+        selectedCategory: category.length ? category[category.length - 1] : null,
+      }),
   };
 };
 const mergeProps = (sP, dP, oP) => {

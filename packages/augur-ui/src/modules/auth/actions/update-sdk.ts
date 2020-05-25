@@ -9,7 +9,7 @@ import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { NetworkId } from '@augurproject/artifacts';
 import { AppState } from 'appStore';
-import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET, SUCCESS } from 'modules/common/constants';
+import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET, SUCCESS, MODAL_LOADING } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { addAlert } from 'modules/alerts/actions/alerts';
@@ -64,6 +64,7 @@ export const updateSdk = (
     setIsLogged(true);
     dispatch(loadAccountData());
     dispatch(updateAssets());
+    if (AppStatus.get().modal.type === MODAL_LOADING) AppStatus.actions.closeModal();
   } catch (error) {
     logError(error);
     setModal({

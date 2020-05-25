@@ -15,8 +15,10 @@ export const getEthToDaiRate = (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  const { ethToDaiRate: currentEthToDaiRate } = AppStatus.get();  
   const ethToDaiRate = getEthForDaiRate();
-  if (ethToDaiRate) {
+  const formattedRate = formatAttoDai(ethToDaiRate);
+  if (formattedRate.value !== currentEthToDaiRate?.value) {
     AppStatus.actions.setEthToDaiRate(formatAttoDai(ethToDaiRate));
   }
 };

@@ -7,10 +7,11 @@ import { AppStatus } from '../store/app-status';
 const mapStateToProps = state => {
   const {
     filterSortOptions: { marketSort },
+    marketsList: { isSearching },
   } = AppStatus.get();
   return {
     marketSort,
-    isSearching: state.marketsList.isSearching,
+    isSearching,
   };
 };
 

@@ -8,7 +8,7 @@ import AugurStatus from 'modules/account/components/augur-status';
 import Favorites from 'modules/portfolio/containers/favorites';
 import MyMarkets from 'modules/portfolio/containers/my-markets';
 import OpenMarkets from 'modules/account/containers/open-markets';
-import Overview from 'modules/account/containers/overview';
+import Overview from 'modules/account/components/overview';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 import {
@@ -37,7 +37,6 @@ const AccountView = () => {
     extendActiveMarkets,
     extendWatchlist,
     extendNotifications,
-    extendTransactions,
   } = state;
 
   function toggle(extend: string, hide: string) {

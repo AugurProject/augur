@@ -52,7 +52,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     gasPrice: getGasPrice(),
     openReporting,
     enoughRepBalance,
-    gsnUnavailable: isGSNUnavailable(state),
+    gsnUnavailable: isGSNUnavailable(),
     gsnWalletInfoSeen,
   };
 };

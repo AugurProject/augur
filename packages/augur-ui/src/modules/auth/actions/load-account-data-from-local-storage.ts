@@ -1,4 +1,3 @@
-import { loadDrafts } from 'modules/create-market/actions/update-drafts';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { loadPendingLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 import { loadPendingOrdersTransactions } from 'modules/orders/actions/pending-orders-management';
@@ -39,6 +38,7 @@ export const loadAccountDataFromLocalStorage = (
         loadFavorites,
         updateGasPriceInfo,
         updateNotifications,
+        loadDrafts,
       } = AppStatus.actions;
       const { selectedUniverse } = storedAccountData;
       const { favorites } = storedAccountData;
@@ -101,7 +101,7 @@ export const loadAccountDataFromLocalStorage = (
         analytics,
       } = storedAccountData;
       if (drafts) {
-        dispatch(loadDrafts(drafts));
+        loadDrafts(drafts);
       }
       if (alerts) {
         // get all market ids and load markets then process alerts
@@ -126,7 +126,7 @@ export const loadAccountDataFromLocalStorage = (
         dispatch(loadPendingLiquidityOrders(pendingLiquidityOrders));
       }
       if (analytics) {
-        dispatch(loadAnalytics(analytics, 0));
+        loadAnalytics(analytics, 0);
       }
       if (pendingOrders && Object.keys(pendingOrders).length > 0) {
         dispatch(loadPendingOrdersTransactions(pendingOrders));

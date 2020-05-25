@@ -9,8 +9,6 @@ import { Markets } from 'modules/markets/store/markets';
 
 export const selectAccountPositionsState = (state: AppState) =>
   AppStatus.get().accountPositions;
-export const selectDisputeWindowStats = (state: AppState) =>
-  state.universe.disputeWindow;
 export const selectLoginAccountState = (state: AppState): LoginAccount =>
 AppStatus.get().loginAccount;
 export const selectLoginAccountReportingState = (
@@ -24,7 +22,7 @@ export const selectLoginAccountBalancesState = (
 ): AccountBalances => AppStatus.get().loginAccount.balances;
 export const selectLoginAccountTotalsState = (state: AppState) => AppStatus.get().loginAccount.tradingPositionsTotal;
 export const selectMarketsListsState = (state: AppState): MarketsList =>
-  state.marketsList;
+  AppStatus.get().marketsList;
 export const selectCancelingOrdersState = (state: AppState) =>
   AppStatus.get().pendingQueue[CANCELORDER] || [];
 export const selectMarketTradingHistoryState = (state: AppState) =>

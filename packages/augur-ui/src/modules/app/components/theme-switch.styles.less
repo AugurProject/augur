@@ -8,7 +8,7 @@
   height: 100%;
   justify-content: space-around;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     background: var(--color-module-background-10-transparent);
     height: @size-40;
     padding-bottom: 0;
@@ -18,7 +18,7 @@
     border-right: @size-1 solid var(--color-module-background);
     height: 100%;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       border-right: 0;
     }
 
@@ -44,7 +44,7 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .ThemeSwitch {
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       border-bottom: @size-1 solid var(--color-secondary-text-50);
       border-top: @size-1 solid var(--color-secondary-text-50);
     }
@@ -52,7 +52,7 @@
     > li {
       border-right: @size-1 solid var(--color-secondary-text-50);
 
-      @media @breakpoint-mobile {
+      @media @breakpoint-mobile-tablet {
         border-right: 0;
       }
 

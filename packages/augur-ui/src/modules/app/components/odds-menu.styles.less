@@ -11,17 +11,26 @@
     justify-content: center;
     display: flex;
     flex-flow: column nowrap;
-    height: @size-56;
     width: @size-56;
     order: 2;
+    height: 100%;
+
+    @media @breakpoint-mobile-tablet {
+      height: @top-bar-height-mobile;
+    }
 
     > button {
       background: var(--color-primary-text);
       flex: 1;
       width: 100%;
       border-top: @size-3 solid transparent;
-      border-right: @size-1 solid var(--color-secondary-text-50);
       z-index: 11;
+
+      @media @breakpoint-mobile-tablet {
+        border-right: 0;
+        border-left: @size-1 solid var(--color-secondary-text-50);
+        padding: 0 @size-8;
+      }
 
       &:hover {
         background: var(--color-secondary-text-25);
@@ -58,11 +67,15 @@
         display: flex;
         flex-flow: column nowrap;
         position: absolute;
-        top: @size-56;
+        top: @top-bar-height;
         align-self: flex-end;
         box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
         width: @size-240;
         border-radius: 0 0 @border-radius-default @border-radius-default;
+
+        @media @breakpoint-mobile-tablet {
+          top: @top-bar-height-mobile;
+        }
 
         > li {
           .text-14;

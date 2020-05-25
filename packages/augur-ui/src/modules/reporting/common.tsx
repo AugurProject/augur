@@ -21,6 +21,7 @@ import {
   MODAL_INITIALIZE_ACCOUNT,
   WARNING,
   WALLET_STATUS_VALUES,
+  MODAL_ADD_FUNDS,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -71,6 +72,7 @@ import {
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
+import { selectReportingBalances, selectDefaultReportingBalances } from 'modules/account/selectors/select-reporting-balances';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -1161,31 +1163,20 @@ const AllTimeProfitLoss = (props: AllTimeProfitLossProps) => (
   </div>
 );
 
-interface UserRepDisplayProps {
-  repBalanceFormatted: FormattedNumber;
-  repProfitLossPercentageFormatted: FormattedNumber;
-  repProfitAmountFormatted: FormattedNumber;
-  disputingAmountFormatted: FormattedNumber;
-  reportingAmountFormatted: FormattedNumber;
-  participationAmountFormatted: FormattedNumber;
-  repTotalAmountStakedFormatted: FormattedNumber;
-  openGetRepModal: Function;
-  hasStakedRep: boolean;
-}
-
-export const UserRepDisplay = ({
-  repBalanceFormatted,
-  repProfitAmountFormatted,
-  repProfitLossPercentageFormatted,
-  openGetRepModal,
-  repTotalAmountStakedFormatted,
-  disputingAmountFormatted,
-  reportingAmountFormatted,
-  participationAmountFormatted,
-  hasStakedRep,
-}: UserRepDisplayProps) => {
+export const UserRepDisplay = () => {
   const [toggle, setToggle] = useState(false);
-  const { isLogged } = useAppStatusStore();
+  const { isLogged, loginAccount: { balances, reporting }, actions: { setModal } } = useAppStatusStore();
+  const {
+    repBalanceFormatted,
+    repProfitAmountFormatted,
+    repProfitLossPercentageFormatted,
+    repTotalAmountStakedFormatted,
+    disputingAmountFormatted,
+    reportingAmountFormatted,
+    participationAmountFormatted,
+    hasStakedRep,
+  } = isLogged ? selectReportingBalances(reporting, balances)
+  : selectDefaultReportingBalances();
   return (
     <div
       className={classNames(Styles.UserRepDisplay, {
@@ -1210,7 +1201,7 @@ export const UserRepDisplay = ({
             }
           />
           <PrimaryButton
-            action={openGetRepModal}
+            action={() => setModal({ type: MODAL_ADD_FUNDS, fundType: REP })}
             text={'Get REP'}
             id="get-rep"
           />

@@ -34,9 +34,8 @@ const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   testBet: () => AppStatus.actions.setModal({ type: MODAL_TEST_BET }),
-  track: (eventName, payload) => dispatch(track(eventName, payload)),
-  gotoOnboardingStep: step =>
-    dispatch(updateModal({ type: getOnboardingStep(step) })),
+  track: (eventName, payload) => track(eventName, payload),
+  gotoOnboardingStep: step => AppStatus.actions.setModal({ type: getOnboardingStep(step) }),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({

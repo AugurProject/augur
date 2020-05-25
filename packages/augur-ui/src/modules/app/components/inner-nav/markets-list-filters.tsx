@@ -26,7 +26,6 @@ interface MarketsListFiltersProps {
   maxLiquiditySpread: string;
   includeInvalidMarkets: INVALID_OPTIONS;
   allTemplateFilter: string;
-  isSearching: boolean;
   updateMaxFee: Function;
   updateMaxSpread: Function;
   updateShowInvalid: Function;
@@ -47,7 +46,6 @@ const MarketsListFilters = ({
   location,
   includeInvalidMarkets,
   allTemplateFilter,
-  isSearching,
   updateMaxFee,
   updateMaxSpread,
   updateShowInvalid,
@@ -60,7 +58,7 @@ const MarketsListFilters = ({
   settings,
   updateSelectedCategories,
 }: MarketsListFiltersProps) => {
-  const { isMobile } = useAppStatusStore();
+  const { isMobile, marketsList: { isSearching } } = useAppStatusStore();
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(location.search);
 

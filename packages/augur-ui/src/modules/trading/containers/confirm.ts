@@ -12,8 +12,8 @@ import { removePendingTransaction } from 'modules/pending-queue/actions/pending-
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { newMarket } = state;
   const {
+    newMarket,
     pendingQueue,
     loginAccount: { balances, allowance: allowanceBigNumber },
     gsnEnabled: GsnEnabled,
