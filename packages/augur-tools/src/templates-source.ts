@@ -179,7 +179,7 @@ export const TEMPLATES = {
               {
                 id: 5,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw/No Winner`,
+                placeholder: `Event Cancelled`,
               },
               {
                 id: 6,
