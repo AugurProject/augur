@@ -684,8 +684,9 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Event`,
+                values: LIST_VALUES.NASCAR_EVENTS,
                 groupKey: EVENT,
                 categoryDestId: 2,
               },
@@ -725,8 +726,9 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
+                type: TemplateInputType.DROPDOWN,
                 placeholder: `Event`,
+                values: LIST_VALUES.NASCAR_EVENTS,
                 groupKey: EVENT,
                 categoryDestId: 2,
               },
