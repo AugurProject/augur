@@ -184,7 +184,7 @@ export const addEthIncreaseAlert = (
 
   const daiCutoff = getState().env.gsn.minDaiForSignerETHBalanceInDAI;
   // user dai balance too low to have ETH reserve
-  if (createBigNumber(daiBalance).lt(daiCutoff)) return null;
+  if (createBigNumber(daiBalance).lte(daiCutoff)) return null;
 
   const maxEthReserve = createBigNumber(
     getState().env.gsn.desiredSignerBalanceInETH

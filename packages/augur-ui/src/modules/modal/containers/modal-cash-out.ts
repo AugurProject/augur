@@ -12,6 +12,7 @@ import { formatDai } from 'utils/format-number';
 import { selectAccountFunds } from 'modules/auth/selectors/login-account';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { createBigNumber } from 'utils/create-big-number';
+import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
@@ -34,6 +35,7 @@ const mapStateToProps = (state: AppState) => {
     availableFundsFormatted,
     reserveInDaiFormatted,
     totalDaiFormatted,
+    transactionLabel: getTransactionLabel(state)
   }
 };
 

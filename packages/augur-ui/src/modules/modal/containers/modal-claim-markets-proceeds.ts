@@ -9,11 +9,9 @@ import {
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { Proceeds } from 'modules/modal/proceeds';
 import {
-  CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE,
   MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,
   PROCEEDS_TO_CLAIM_TITLE,
   CLAIM_ALL_TITLE,
-  CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import { CLAIM_MARKETS_PROCEEDS } from 'modules/common/constants';
 import { AppState } from 'appStore';
@@ -27,72 +25,28 @@ import {
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { labelWithTooltip } from 'modules/common/label-with-tooltip';
+import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 
 const mapStateToProps = (state: AppState) => {
   const pendingQueue = state.pendingQueue || [];
   const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
     state
   );
-  let claimableMarkets = [];
-  if (
-    accountMarketClaimablePositions.markets &&
-    accountMarketClaimablePositions.markets.length > 0
-  ) {
-    claimableMarkets = accountMarketClaimablePositions.markets.map(
-      (market: MarketData) => {
-        const marketId = market.id;
-        const claimablePosition =
-          accountMarketClaimablePositions.positions[marketId];
-        const pending =
-          pendingQueue[CLAIM_MARKETS_PROCEEDS] &&
-          pendingQueue[CLAIM_MARKETS_PROCEEDS][marketId];
 
-        const unclaimedProceeds = formatDai(
-          claimablePosition.unclaimedProceeds
-        );
-        const unclaimedProfit = formatDai(claimablePosition.unclaimedProfit);
-        const fees = formatDai(
-          claimablePosition.fee
-        );
-        return {
-          marketId,
-          title: market.description,
-          status: pending && pending.status,
-          properties: [
-            {
-              label: labelWithTooltip({
-                labelText: "Proceeds after market fees",
-                key: "proceeds-after-market-fees",
-                tipText: "This number is the return of Frozen Funds for any position(s) held in addition to any profit or loss accrued in this market."
-              }),
-              value: unclaimedProceeds.full,
-            },
-            {
-              label: 'Est. Transaction Fee',
-              value: state.appStatus.gsnEnabled
-                ? displayGasInDai(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE)
-                : formatEther(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE).formattedValue,
-            },
-          ],
-          text: PROCEEDS_TO_CLAIM_TITLE,
-          action: null,
-        };
-      }
-    );
-  }
   return {
     modal: state.modal,
-    gasCost: CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE,
     currentTimestamp: selectCurrentTimestampInSeconds(state),
-    claimableMarkets,
     totalUnclaimedProfit:
       accountMarketClaimablePositions.totals.totalUnclaimedProfit,
     totalUnclaimedProceeds:
     accountMarketClaimablePositions.totals.totalUnclaimedProceeds,
     totalFees:
     accountMarketClaimablePositions.totals.totalFees,
+    accountMarketClaimablePositions,
     GsnEnabled: state.appStatus.gsnEnabled,
     account: state.loginAccount.address,
+    pendingQueue,
+    transactionLabel: getTransactionLabel(state)
   };
 };
 
@@ -110,34 +64,63 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
-  const markets = sP.claimableMarkets;
-  const showBreakdown = markets.length > 1;
-  const claimableMarkets = showBreakdown
-    ? markets.map(m => ({
-        ...m,
-        queueName: CLAIMMARKETSPROCEEDS,
-        queueId: m.marketId,
-        action: () => dP.startClaimingMarketsProceeds([m.marketId], sP.account, () => {}),
-      }))
-    : markets.map(m => ({
-        ...m,
-        action: () => dP.startClaimingMarketsProceeds([m.marketId], sP.account, () => {}),
-        queueName: CLAIMMARKETSPROCEEDS,
-        queueId: m.marketId,
-        properties: [
-          ...m.properties,
-        ],
-      }));
+  const transactionLabel = sP.transactionLabel;
+  const pendingQueue = sP.pendingQueue;
+  const accountMarketClaimablePositions = sP.accountMarketClaimablePositions;
+  const showBreakdown = accountMarketClaimablePositions.markets.length > 1;
+  let claimableMarkets = [];
+  if (
+    accountMarketClaimablePositions.markets &&
+    accountMarketClaimablePositions.markets.length > 0
+  ) {
+    claimableMarkets = accountMarketClaimablePositions.markets.map(
+      (market: MarketData) => {
+        const marketId = market.id;
+        const claimablePosition =
+          accountMarketClaimablePositions.positions[marketId];
+        const pending =
+          pendingQueue[CLAIM_MARKETS_PROCEEDS] &&
+          pendingQueue[CLAIM_MARKETS_PROCEEDS][marketId];
+
+        const unclaimedProceeds = formatDai(
+          claimablePosition.unclaimedProceeds
+        );
+        return {
+          marketId,
+          title: market.description,
+          status: pending && pending.status,
+          properties: [
+            {
+              label: labelWithTooltip({
+                labelText: "Proceeds after market fees",
+                key: "proceeds-after-market-fees",
+                tipText: "This number is the return of Frozen Funds for any position(s) held in addition to any profit or loss accrued in this market."
+              }),
+              value: unclaimedProceeds.full,
+            },
+          ],
+          text: PROCEEDS_TO_CLAIM_TITLE,
+          action: showBreakdown ? () => dP.startClaimingMarketsProceeds([marketId], sP.account, () => {}) : null,
+          estimateGas: async () => {
+              const gas = await dP.estimateGas([marketId], sP.account);
+              const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
+              return {
+                label: transactionLabel,
+                value: String(displayfee),
+              };
+          },
+        };
+      }
+    );
+  }
 
   const multiMarket = claimableMarkets.length > 1 ? 's' : '';
   const totalUnclaimedProceedsFormatted = formatDai(sP.totalUnclaimedProceeds);
-  const totalUnclaimedProfitFormatted = formatDai(sP.totalUnclaimedProfit);
-  const totalFeesFormatted = formatDai(sP.totalFees);
   const submitAllTxCount = Math.ceil(
     claimableMarkets.length / MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT
   );
 
-  if (markets.length === 0) {
+  if (claimableMarkets.length === 0) {
     if (sP.modal.cb) {
       sP.modal.cb();
     }
@@ -167,7 +150,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         const gas = await dP.estimateGas(claimableMarkets.map(m => m.marketId), sP.account);
         const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
         return {
-          label: 'Est. Transaction Fee',
+          label: transactionLabel,
           value: String(displayfee),
         };
       }

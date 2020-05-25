@@ -1,10 +1,35 @@
+const NY_STOCK_EXCHANGE_INDEX = 0;
+const NASDAQ_INDEX = 1;
+const AMERICAN_EXCHANGE_INDEX = 2;
+const TOKYO_EXCHANGE_INDEX = 3;
+const LONDON_EXCHANGE_INDEX = 4;
+const SHANGHAI_A_EXCHANGE_INDEX = 5;
+const SHANGHAI_B_EXCHANGE_INDEX = 6;
+const HONG_KONG_EXCHANGE_INDEX = 7;
+const TORONTO_EXCHANGE_INDEX = 8;
+const EURONEXT_EXCHANGE_INDEX = 9;
+
 export const LIST_VALUES = {
-  MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  MONTHS: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ],
   YEARS: ['2020', '2021', '2022', '2023', '2024', '2025'],
   PRES_YEARS: ['2020', '2024', '2028'],
   SUMMER_OLYMPIC_YEARS: ['2021', '2024', '2028'],
   WINTER_OLYMPIC_YEARS: ['2022', '2026', '2030'],
   YEAR_RANGE: ['2019-20', '2020-21', '2021-22', '2022-23'],
+  MMA_ORGS: ['UFC', 'Bellator', 'ONE', 'WSOF', 'Jungle Fight'],
   FOOTBALL_AWARDS: [
     'Offensive Player of the year',
     'Defensive player of the year',
@@ -17,11 +42,7 @@ export const LIST_VALUES = {
     'AFC Championship game',
     'NFC Championship game',
   ],
-  DRAFT_PICK_NUMBER: [
-    '1st',
-    '2nd',
-    '3rd',
-  ],
+  DRAFT_PICK_NUMBER: ['1st', '2nd', '3rd'],
   NFL_DRAFT_POSITIONS: [
     'Quarterback',
     'Wide Receiver',
@@ -576,10 +597,7 @@ export const LIST_VALUES = {
   OLYMPIC_LIST: ['World', 'Olympic'],
   OLYMPIC_LIST_MEDAL: ['Any', 'A gold'],
   OLYMPIC_MEDALS: ['Total', 'Gold', 'Silver', 'Bronze'],
-  MEDICAL_CASE_DEATH: [
-    'cases of',
-    'deaths from'
-  ],
+  MEDICAL_CASE_DEATH: ['cases of', 'deaths from'],
   MEDICAL_COUNTRIES_ONLY: [
     'China',
     'Italy',
@@ -2510,12 +2528,12 @@ export const LIST_VALUES = {
   OLYMPIC_DIVING_EVENTS: [
     "Men's 3m Springboard",
     "Men's 10m Platform",
-    "Men's Synchronised 3m Springboard",
-    "Men's Synchronised 10m Platform",
+    "Men's Synchronized 3m Springboard",
+    "Men's Synchronized 10m Platform",
     "Women's 3m Springboard",
     "Women's 10m Platform",
-    "Women's Synchronised 3m Springboard",
-    "Women's Synchronised 10m Platform",
+    "Women's Synchronized 3m Springboard",
+    "Women's Synchronized 10m Platform",
   ],
   OLYMPIC_SWIMMING_EVENTS: [
     "Men's 50m Freestyle",
@@ -3311,70 +3329,105 @@ export const SOCCER_LEAGUE_DEP_TEAMS = {
 };
 
 export const FIN_EXCHANGES_CLOSING_OFFSETS = {
-  'New York Stock Exchange (traded in USD)': {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[NY_STOCK_EXCHANGE_INDEX]]: {
     offset: -4,
     hour: 16,
     minutes: 0,
-    timezone: 'America/New_York'
+    timezone: 'America/New_York',
   },
-  'Nasdaq (traded in USD)': { offset: -5, hour: 16, minutes: 0, timezone: 'America/New_York' },
-  'American Stock Exchange (traded in USD)': {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[NASDAQ_INDEX]]: { offset: -5, hour: 16, minutes: 0, timezone: 'America/New_York' },
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[AMERICAN_EXCHANGE_INDEX]]: {
     offset: -4,
     hour: 16,
     minutes: 0,
-    timezone: 'America/New_York'
+    timezone: 'America/New_York',
   },
-  'Tokyo Stock Exchange (traded in JPY)': {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[TOKYO_EXCHANGE_INDEX]]: {
     offset: 9,
     hour: 15,
     minutes: 0,
     timezone: 'Asia/Tokyo',
   },
-  'London Stock Exchange (traded in GBP)': {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[LONDON_EXCHANGE_INDEX]]: {
     offset: 0,
     hour: 16,
     minutes: 30,
     timezone: 'Europe/London',
   },
-  'Shanghai Stock Exchange (A shares traded in CNY)': {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[SHANGHAI_A_EXCHANGE_INDEX]]: {
     offset: 8,
     hour: 15,
     minutes: 0,
     timezone: 'Asia/Shanghai',
   },
-  'Shanghai Stock Exchange (B shares traded in USD)': {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[SHANGHAI_B_EXCHANGE_INDEX]]: {
     offset: 8,
     hour: 15,
     minutes: 0,
     timezone: 'Asia/Shanghai',
   },
-  'Hong Kong Stock Exchange (traded in HKD)': {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[HONG_KONG_EXCHANGE_INDEX]]: {
     offset: 8,
     hour: 16,
     minutes: 0,
     timezone: 'Asia/Hong_Kong',
   },
-  'Toronto Stock Exchange (traded in CAD)': {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[TORONTO_EXCHANGE_INDEX]]: {
     offset: -4,
     hour: 16,
     minutes: 0,
     timezone: 'America/Toronto',
   },
-  'Euronext NV (traded in EUR)': { offset: 2, hour: 17, minutes: 30, timezone: 'Europe/Amsterdam' },
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[EURONEXT_EXCHANGE_INDEX]]: {
+    offset: 2,
+    hour: 17,
+    minutes: 30,
+    timezone: 'Europe/Amsterdam',
+  },
 };
 
 export const FIN_INDEXES_CLOSING_OFFSETS = {
-  'S&P 500 Index': { offset: -4, hour: 16, minutes: 0, timezone: 'America/New_York' },
-  'Dow Jones Industrial Average': { offset: -4, hour: 16, minutes: 0, timezone: 'America/New_York' },
-  'Nasdaq Composite': { offset: -4, hour: 16, minutes: 0, timezone: 'America/New_York' },
-  'Wilshire 5000': { offset: -4, hour: 16, minutes: 0, timezone: 'America/New_York' },
-  'Russell 1000': { offset: -4, hour: 16, minutes: 0, timezone: 'America/New_York' },
-  'NYSE Composite': { offset: -4, hour: 16, minutes: 0, timezone: 'America/New_York' },
+  'S&P 500 Index': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
+  'Dow Jones Industrial Average': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
+  'Nasdaq Composite': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
+  'Wilshire 5000': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
+  'Russell 1000': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
+  'NYSE Composite': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/New_York',
+  },
   'FTSE 100': {
     offset: 1,
     hour: 16,
     minutes: 30,
-    timezone: 'Europe/London'
+    timezone: 'Europe/London',
   },
   DAX: {
     offset: 2,
@@ -3386,7 +3439,7 @@ export const FIN_INDEXES_CLOSING_OFFSETS = {
     offset: 8,
     hour: 15,
     minutes: 0,
-    timezone: 'Asia/Shanghai'
+    timezone: 'Asia/Shanghai',
   },
   'Hang Seng': {
     offset: 8,
@@ -3400,17 +3453,32 @@ export const FIN_INDEXES_CLOSING_OFFSETS = {
     minutes: 0,
     timezone: 'Asia/Tokyo',
   },
-  'S&P/TSX Composite': { offset: -4, hour: 16, minutes: 0, timezone: 'America/Toronto' },
+  'S&P/TSX Composite': {
+    offset: -4,
+    hour: 16,
+    minutes: 0,
+    timezone: 'America/Toronto',
+  },
   'CAC 40': { offset: 2, hour: 17, minutes: 30, timezone: 'Europe/Amsterdam' },
-  'All Ordinaries': { offset: 11, hour: 16, minutes: 12, timezone: 'Australia/Sydney' },
-  'BSE Sensex 30': { offset: 5.5, hour: 15, minutes: 30, timezone: 'Asia/Kolkata' },
+  'All Ordinaries': {
+    offset: 11,
+    hour: 16,
+    minutes: 12,
+    timezone: 'Australia/Sydney',
+  },
+  'BSE Sensex 30': {
+    offset: 5.5,
+    hour: 15,
+    minutes: 30,
+    timezone: 'Asia/Kolkata',
+  },
   'KOSPI Index': {
     offset: 9,
     hour: 15,
     minutes: 0,
     timezone: 'Asia/Seoul',
   },
-  VIX: { offset: -5, hour: 15, minutes: 15,  timezone: 'America/Chicago' },
+  VIX: { offset: -5, hour: 15, minutes: 15, timezone: 'America/Chicago' },
 };
 
 export const OLYMPIC_WINTER_SPORT_EVENTS = {
@@ -3697,7 +3765,7 @@ export const USA_HOLIDAYS = {
     },
     {
       holiday: HOLIDAYS.WASHINGTON,
-      date: 'Feb 17'
+      date: 'Feb 17',
     },
     {
       holiday: HOLIDAYS.GOOD_FRIDAY,
@@ -5168,16 +5236,29 @@ export const SOUTH_KOREA_HOLIDAYS = {
 };
 
 export const FIN_EXCHANGES_HOLIDAY_CLOSURES = {
-  'New York Stock Exchange (traded in USD)': USA_HOLIDAYS,
-  'Nasdaq (traded in USD)': USA_HOLIDAYS,
-  'American Stock Exchange (traded in USD)': USA_HOLIDAYS,
-  'Euronext NV (traded in Euro)': FRANCE_HOLIDAYS,
-  'London Stock Exchange (traded in GBP)': ENGLAND_HOLIDAYS,
-  'Hong Kong Stock Exchange (traded in HKD)': HONG_KONG_HOLIDAYS,
-  'Shanghai Stock Exchange (A shares traded in CNY)': CHINA_HOLIDAYS,
-  'Shanghai Stock Exchange (B shares traded in USD)': CHINA_HOLIDAYS,
-  'Tokyo Stock Exchange (traded in JPY)': JAPAN_HOLIDAYS,
-  'Toronto Stock Exchange (traded in CAD)': CANADA_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[NY_STOCK_EXCHANGE_INDEX]]: USA_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[NASDAQ_INDEX]]: USA_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[AMERICAN_EXCHANGE_INDEX]]: USA_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[EURONEXT_EXCHANGE_INDEX]]: FRANCE_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[LONDON_EXCHANGE_INDEX]]: ENGLAND_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[HONG_KONG_EXCHANGE_INDEX]]: HONG_KONG_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[SHANGHAI_A_EXCHANGE_INDEX]]: CHINA_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[SHANGHAI_B_EXCHANGE_INDEX]]: CHINA_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[TOKYO_EXCHANGE_INDEX]]: JAPAN_HOLIDAYS,
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[TORONTO_EXCHANGE_INDEX]]: CANADA_HOLIDAYS,
+};
+
+export const FIN_EXCHANGES_CURRENCIES = {
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[NY_STOCK_EXCHANGE_INDEX]]: 'USD',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[NASDAQ_INDEX]]: 'USD',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[AMERICAN_EXCHANGE_INDEX]]: 'USD',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[EURONEXT_EXCHANGE_INDEX]]: 'EUR',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[LONDON_EXCHANGE_INDEX]]: 'GBP',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[HONG_KONG_EXCHANGE_INDEX]]: 'HKD',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[SHANGHAI_A_EXCHANGE_INDEX]]: 'CNY',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[SHANGHAI_B_EXCHANGE_INDEX]]: 'USD',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[TOKYO_EXCHANGE_INDEX]]: 'JPY',
+  [LIST_VALUES.FIN_STOCK_EXCHANGES[TORONTO_EXCHANGE_INDEX]]: 'CAD',
 };
 
 export const FIN_INDEXES_HOLIDAY_CLOSURES = {

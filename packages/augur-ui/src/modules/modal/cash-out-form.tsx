@@ -11,8 +11,7 @@ import { FormattedNumber } from 'modules/types';
 import { TextInput } from 'modules/common/form';
 import { CloseButton, ProcessingButton, SecondaryButton } from 'modules/common/buttons';
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
-import { ethToDai, displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
-import { getDaiBalance, getEthBalance } from 'modules/contracts/actions/contractCalls';
+import { displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { WITHDRAWALLFUNDSASDAI, TRANSACTIONS, GWEI_CONVERSION } from 'modules/common/constants';
 import { AutoCancelOrdersNotice } from 'modules/common/labels';
 
@@ -28,6 +27,7 @@ interface CashOutFormProps {
   availableFundsFormatted: FormattedNumber;
   reserveInDaiFormatted: FormattedNumber;
   totalDaiFormatted: FormattedNumber;
+  transactionLabel: string;
 }
 
 export const CashOutForm = ( props: CashOutFormProps) => {
@@ -42,6 +42,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     availableFundsFormatted,
     reserveInDaiFormatted,
     totalDaiFormatted,
+    transactionLabel
   } = props;
   const [gasCosts, setGasCosts] = useState(createBigNumber(TRANSFER_ETH_GAS_COST));
   const [address, setAddress] = useState('');
@@ -100,7 +101,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
       showDenomination: true,
     },
     {
-      label: 'Transaction Fee',
+      label: transactionLabel,
       value: gasInDai.full,
     },
     {

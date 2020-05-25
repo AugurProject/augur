@@ -40,6 +40,9 @@ import {
   BITCOIN,
   ETHEREUM,
   LITECOIN,
+  BOXING,
+  MMA,
+  CAR_RACING,
 } from '@augurproject/artifacts';
 
 export const INVALID_OUTCOME = 'Invalid';
@@ -301,6 +304,24 @@ export const MARKET_SUB_TEMPLATES = {
       header: OLYMPICS,
       description: defaultDescription,
       icon: icons.Olympics,
+    },
+    {
+      value: BOXING,
+      header: BOXING,
+      description: defaultDescription,
+      icon: icons.Boxing,
+    },
+    {
+      value: MMA,
+      header: MMA,
+      description: defaultDescription,
+      icon: icons.MMA,
+    },
+    {
+      value: CAR_RACING,
+      header: CAR_RACING,
+      description: defaultDescription,
+      icon: icons.CarRacing,
     },
   ],
   [OLYMPICS]: [
