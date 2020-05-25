@@ -12,10 +12,6 @@ pragma solidity 0.5.15;
  * This contract is only required for intermediate, library-like contracts.
  */
 contract Context {
-    // Empty internal constructor, to prevent people from mistakenly deploying
-    // an instance of this contract, which should be used via inheritance.
-    constructor () internal { }
-
     function _msgSender() internal view returns (address payable) {
         return msg.sender;
     }

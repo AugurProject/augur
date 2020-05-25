@@ -1,14 +1,16 @@
 pragma solidity 0.5.15;
+pragma experimental ABIEncoderV2;
 
-import 'ROOT/gsn/v1/RLPReader.sol';
-import 'ROOT/gsn/v1/GSNRecipient.sol';
-import 'ROOT/gsn/v1/IRelayHub.sol';
+import 'ROOT/gsn/v2/BaseRelayRecipient.sol';
+import 'ROOT/gsn/v2/BasePaymaster.sol';
+import 'ROOT/gsn/v2/TrustedForwarder.sol';
+import 'ROOT/gsn/v2/interfaces/IRelayHub.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/IAugurWallet.sol';
 import 'ROOT/AugurWallet.sol';
-import 'ROOT/IAugurWalletFactory.sol';
 import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
@@ -19,19 +21,15 @@ import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
 import 'ROOT/uniswap/interfaces/IWETH.sol';
 
 
-contract AugurWalletRegistry is Initializable, GSNRecipient {
+contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForwarder {
     using LibBytes for bytes;
     using ContractExists for address;
 
     using SafeMathUint256  for uint256;
 
-    enum GSNRecipientERC20FeeErrorCodes {
-        OK,
-        TX_COST_TOO_HIGH,
-        INSUFFICIENT_BALANCE
-    }
-
     event ExecuteTransactionStatus(bool success, bool fundingSuccess);
+
+    IRelayHub internal relayHub;
 
     IAugur public augur;
     IAugurTrading public augurTrading;
@@ -42,20 +40,32 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     address public createOrder;
     address public fillOrder;
     address public zeroXTrade;
-    address public augurWalletRegistryV2;
+    address public otherRegistry;
 
     IUniswapV2Exchange public ethExchange;
     IWETH public WETH;
     bool public token0IsCash;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
-
     uint256 private constant MAX_TX_FEE_IN_ETH = 10**17;
+    uint256 private constant POST_RELAY_GAS_COST = 200000;
+
+    // Gas stipends for acceptRelayedCall, preRelayedCall and postRelayedCall
+    uint256 constant private ACCEPT_RELAYED_CALL_GAS_LIMIT = 50000;
+    uint256 constant private PRE_RELAYED_CALL_GAS_LIMIT = 5000;
+    uint256 constant private POST_RELAYED_CALL_GAS_LIMIT = 200000;
+
+    modifier relayHubOnly() {
+        require(msg.sender == getHubAddr(), "Function can only be called by RelayHub");
+        _;
+    }
 
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public payable beforeInitialized returns (bool) {
         require(msg.value >= MAX_TX_FEE_IN_ETH, "Must provide initial Max TX Fee Deposit");
         endInitialization();
         augur = _augur;
+        trustedForwarder = address(this);
+        relayHub = IRelayHub(_augurTrading.lookup("RelayHubV2"));
         cash = IERC20(_augur.lookup("Cash"));
         affiliates = augur.lookup("Affiliates");
         shareToken = augur.lookup("ShareToken");
@@ -65,7 +75,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         fillOrder = _augurTrading.lookup("FillOrder");
         zeroXTrade = _augurTrading.lookup("ZeroXTrade");
         WETH = IWETH(_augurTrading.lookup("WETH9"));
-        augurWalletRegistryV2 = _augurTrading.lookup("AugurWalletRegistryV2");
+        otherRegistry = _augurTrading.lookup("AugurWalletRegistry");
         IUniswapV2Factory _uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
         address _ethExchangeAddress = _uniswapFactory.getExchange(address(WETH), address(cash));
         if (_ethExchangeAddress == address(0)) {
@@ -74,33 +84,32 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         ethExchange = IUniswapV2Exchange(_ethExchangeAddress);
         token0IsCash = ethExchange.token0() == address(cash);
 
-        IRelayHub(getHubAddr()).depositFor.value(address(this).balance)(address(this));
+        relayHub.depositFor.value(address(this).balance)(address(this));
         return true;
     }
 
-    function acceptRelayedCall(
-        address,
-        address _from,
-        bytes calldata _encodedFunction,
-        uint256,
-        uint256,
-        uint256,
-        uint256,
-        bytes calldata,
-        uint256 _maxPossibleCharge
-    )
-        external
-        view
-        returns (uint256 _reason, bytes memory _context)
-    {
+    function getGasLimits() external pure returns (GSNTypes.GasLimits memory limits) {
+        return GSNTypes.GasLimits(
+            ACCEPT_RELAYED_CALL_GAS_LIMIT,
+            PRE_RELAYED_CALL_GAS_LIMIT,
+            POST_RELAYED_CALL_GAS_LIMIT
+        );
+    }
+
+    function getHubAddr() public view returns (address) {
+        return address(relayHub);
+    }
+
+    function acceptRelayedCall(GSNTypes.RelayRequest calldata relayRequest, bytes calldata approvalData, uint256 maxPossibleGas) external view returns (bytes memory context) {
+        (approvalData);
         // executeWalletTransaction is the only encodedFunction that can succesfully be called through the relayHub
-        uint256 _payment = getPaymentFromEncodedFunction(_encodedFunction);
-        GSNRecipientERC20FeeErrorCodes _code = getAcceptRelayCallStatus(_from, _payment, _maxPossibleCharge);
-        if (_code != GSNRecipientERC20FeeErrorCodes.OK) {
-            return _rejectRelayedCall(uint256(_code));
-        }
-        uint256 _initialEth = address(this).balance;
-        return _approveRelayedCall(abi.encode(_from, _initialEth));
+        uint256 _payment = getPaymentFromEncodedFunction(relayRequest.encodedFunction);
+        (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = ethExchange.getReserves();
+        uint256 _maxDaiNeeded = getAmountIn(maxPossibleGas, token0IsCash ? _reserve0 : _reserve1, token0IsCash ? _reserve1 : _reserve0);
+        require(_payment > _maxDaiNeeded, "Transaction cost too high");
+        address _walletAddress = getCreate2WalletAddress(relayRequest.relayData.senderAddress);
+        require(_payment <= cash.balanceOf(_walletAddress), "Insufficient balance");
+        return abi.encode(_walletAddress, _payment);
     }
 
     function getPaymentFromEncodedFunction(bytes memory _encodedFunction) private pure returns (uint256) {
@@ -109,41 +118,34 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         return _payment;
     }
 
-    function getAcceptRelayCallStatus(address _from, uint256 _payment, uint256 _maxPossibleCharge) private view returns (GSNRecipientERC20FeeErrorCodes _code) {
-        (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = ethExchange.getReserves();
-        uint256 _maxDaiNeeded = getAmountIn(_maxPossibleCharge, token0IsCash ? _reserve0 : _reserve1, token0IsCash ? _reserve1 : _reserve0);
-        if (_maxDaiNeeded > _payment) {
-            return GSNRecipientERC20FeeErrorCodes.TX_COST_TOO_HIGH;
-        }
-        if (cash.balanceOf(getCreate2WalletAddress(_from)) < _payment) {
-            return GSNRecipientERC20FeeErrorCodes.INSUFFICIENT_BALANCE;
-        }
-        return GSNRecipientERC20FeeErrorCodes.OK;
+    function preRelayedCall(bytes calldata context) external pure returns (bool) {
+        return true;
     }
 
-    function _preRelayedCall(bytes memory _context) internal returns (bytes32) { }
+    function postRelayedCall(bytes calldata context, bool success, bytes32 preRetVal, uint256 gasUseWithoutPost, GSNTypes.GasData calldata gasData) external relayHubOnly returns (bool) {
+        (success, preRetVal);
+        (address _walletAddress, uint256 _payment) = abi.decode(context, (address, uint256));
 
-    function _postRelayedCall(bytes memory _context, bool, uint256 _actualCharge, bytes32) internal {
-        (address _from, uint256 _initialEth) = abi.decode(_context, (address, uint256));
+        uint256 _ethActualCharge = relayHub.calculateCharge(gasUseWithoutPost + POST_RELAY_GAS_COST, gasData);
+        (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = ethExchange.getReserves();
+        uint256 _tokenActualCharge = getAmountIn(_ethActualCharge, token0IsCash ? _reserve0 : _reserve1, token0IsCash ? _reserve1 : _reserve0);
 
-        // Refund any excess ETH paid back to the wallet
-        uint256 _ethPaid = address(this).balance.sub(_initialEth);
-        uint256 _ethRefund = _ethPaid.sub(_actualCharge);
-        (bool _success,) = address(_from).call.value(_ethRefund)("");
-        require(_success);
+        // Refund payer excess Cash
+        cash.transfer(_walletAddress, _payment - _tokenActualCharge);
+
+        // Get ETH with our Cash balance from Uniswap
+        uint256 _cashBalance = cash.balanceOf(address(this));
+        uint256 _ethReceived = getAmountOut(_cashBalance, token0IsCash ? _reserve0 : _reserve1, token0IsCash ? _reserve1 : _reserve0);
+        cash.transfer(address(ethExchange), _cashBalance);
+        ethExchange.swap(token0IsCash ? 0 : _ethReceived, token0IsCash ? _ethReceived : 0, address(this), "");
+        WETH.withdraw(_ethReceived);
 
         // Top off Relay Hub balance with whatever ETH we have
         uint256 _depositAmount = address(this).balance;
         _depositAmount = _depositAmount.min(2 ether); // This is the maximum single RelayHub deposit
-        IRelayHub(getHubAddr()).depositFor.value(_depositAmount)(address(this));
-    }
+        relayHub.depositFor.value(_depositAmount)(address(this));
 
-    function getEthFromWallet(IAugurWallet _wallet, uint256 _cashAmount) private {
-        (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = ethExchange.getReserves();
-        uint256 _ethAmount = getAmountOut(_cashAmount, token0IsCash ? _reserve0 : _reserve1, token0IsCash ? _reserve1 : _reserve0);
-        _wallet.transferCash(address(ethExchange), _cashAmount);
-        ethExchange.swap(token0IsCash ? 0 : _ethAmount, token0IsCash ? _ethAmount : 0, address(this), "");
-        WETH.withdraw(_ethAmount);
+        return true;
     }
 
     // Returns whether the signer eth balance was funded as desired
@@ -185,15 +187,49 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         amountIn = (numerator / denominator).add(1);
     }
 
+    function trustedCreateAugurWallet(address _owner, address _referralAddress, bytes32 _fingerprint) public returns (IAugurWallet) {
+        require(msg.sender == otherRegistry);
+        return createAugurWalletInternal(_owner, _referralAddress, _fingerprint);
+    }
+
     function createAugurWallet(address _referralAddress, bytes32 _fingerprint) private returns (IAugurWallet) {
-        return IAugurWalletFactory(augurWalletRegistryV2).trustedCreateAugurWallet(_msgSender(), _referralAddress, _fingerprint);
+        address _owner = _msgSender();
+        return createAugurWalletInternal(_owner, _referralAddress, _fingerprint);
+    }
+
+    function createAugurWalletInternal(address _owner, address _referralAddress, bytes32 _fingerprint) private returns (IAugurWallet) {
+        // Create2 creation of wallet based on owner
+        address _walletAddress = getCreate2WalletAddress(_owner);
+        if (_walletAddress.exists()) {
+            return IAugurWallet(_walletAddress);
+        }
+        {
+            bytes32 _salt = keccak256(abi.encodePacked(_owner));
+            bytes memory _deploymentData = abi.encodePacked(type(AugurWallet).creationCode);
+            assembly {
+                _walletAddress := create2(0x0, add(0x20, _deploymentData), mload(_deploymentData), _salt)
+                if iszero(extcodesize(_walletAddress)) {
+                    revert(0, 0)
+                }
+            }
+        }
+        IAugurWallet _wallet = IAugurWallet(_walletAddress);
+        _wallet.initialize(_owner, _referralAddress, _fingerprint, address(augur), otherRegistry, cash, IAffiliates(affiliates), IERC1155(shareToken), createOrder, fillOrder, zeroXTrade);
+        return _wallet;
     }
 
     function getCreate2WalletAddress(address _owner) public view returns (address) {
-        return IAugurWalletFactory(augurWalletRegistryV2).getCreate2WalletAddress(_owner);
+        bytes1 _const = 0xff;
+        bytes32 _salt = keccak256(abi.encodePacked(_owner));
+        return address(uint160(uint256(keccak256(abi.encodePacked(
+            _const,
+            address(this),
+            _salt,
+            keccak256(abi.encodePacked(type(AugurWallet).creationCode))
+        )))));
     }
 
-/**
+    /**
      * @notice Get the Wallet for the given account
      * @param _account The account to look up
      * @return IAugurWallet for the account or 0x if none exists
@@ -216,9 +252,9 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         if (_wallet == IAugurWallet(0)) {
             _wallet = createAugurWallet(_referralAddress, _fingerprint);
         }
-        // If the user is having this sent via relay we need to reimburse this contract for paying the relayer. We do the payment here to avoid hard coded gas stipend problems in GSN V1
+        // If the user is having this sent via relay we need to reimburse this contract for paying the relayer. We do the payment here to avoid complexity handling the wallet not existing in the pre relay call
         if (_user != msg.sender) {
-            getEthFromWallet(_wallet, _payment);
+            _wallet.transferCash(address(this), _payment);
         }
         bool _success = _wallet.executeTransaction(_to, _data, _value);
         // We need to be able to fail in order to get accurate gas estimates. We only allow this however when not using the relayhub since otherwise funds could be drained this way
@@ -230,17 +266,9 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         emit ExecuteTransactionStatus(_success, _fundingSuccess);
     }
 
-    function getRelayMessageHash(
-        address relay,
-        address from,
-        address to,
-        bytes memory encodedFunction,
-        uint256 transactionFee,
-        uint256 gasPrice,
-        uint256 gasLimit,
-        uint256 nonce) public view returns (bytes32) {
-        bytes memory packed = abi.encodePacked("rlx:", from, to, encodedFunction, transactionFee, gasPrice, gasLimit, nonce, getHubAddr());
-        return keccak256(abi.encodePacked(packed, relay));
+    /// check current deposit on relay hub.
+    function getRelayHubDeposit() public view returns (uint) {
+        return relayHub.balanceOf(address(this));
     }
 
     function () external payable {}

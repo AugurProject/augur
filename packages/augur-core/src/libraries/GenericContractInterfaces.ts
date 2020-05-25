@@ -110,14 +110,24 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885': {"name":"Mint","signature":"Mint(address,uint256)","signatureHash":"0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885","parameters":[{"indexed":true,"internalType":"address","name":"target","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}]},
 	'0xbf88b5a3158512dc8ad44dadf221f46eb1df762a2e7fd1de86aab34b0af455cf': {"name":"FundedAccount","signature":"FundedAccount(address,address,uint256,uint256)","signatureHash":"0xbf88b5a3158512dc8ad44dadf221f46eb1df762a2e7fd1de86aab34b0af455cf","parameters":[{"indexed":true,"internalType":"address","name":"_universe","type":"address"},{"indexed":true,"internalType":"address","name":"_sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"_repBalance","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"_timestamp","type":"uint256"}]},
 	'0xafb5afd6d1c2e8ffbfb480e674a169f493ece0b22658d4f4484e7334f0241e22': {"name":"CanRelayFailed","signature":"CanRelayFailed(address,address,address,bytes4,uint256)","signatureHash":"0xafb5afd6d1c2e8ffbfb480e674a169f493ece0b22658d4f4484e7334f0241e22","parameters":[{"indexed":true,"internalType":"address","name":"relay","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"bytes4","name":"selector","type":"bytes4"},{"indexed":false,"internalType":"uint256","name":"reason","type":"uint256"}]},
-	'0x8752a472e571a816aea92eec8dae9baf628e840f4929fbcc2d155e6233ff68a7': {"name":"Deposited","signature":"Deposited(address,address,uint256)","signatureHash":"0x8752a472e571a816aea92eec8dae9baf628e840f4929fbcc2d155e6233ff68a7","parameters":[{"indexed":true,"internalType":"address","name":"recipient","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}]},
-	'0xb0595266ccec357806b2691f348b128209f1060a0bda4f5c95f7090730351ff8': {"name":"Penalized","signature":"Penalized(address,address,uint256)","signatureHash":"0xb0595266ccec357806b2691f348b128209f1060a0bda4f5c95f7090730351ff8","parameters":[{"indexed":true,"internalType":"address","name":"relay","type":"address"},{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}]},
+	'0x8752a472e571a816aea92eec8dae9baf628e840f4929fbcc2d155e6233ff68a7': {"name":"Deposited","signature":"Deposited(address,address,uint256)","signatureHash":"0x8752a472e571a816aea92eec8dae9baf628e840f4929fbcc2d155e6233ff68a7","parameters":[{"indexed":true,"internalType":"address","name":"paymaster","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}]},
+	'0xb0595266ccec357806b2691f348b128209f1060a0bda4f5c95f7090730351ff8': {"name":"Penalized","signature":"Penalized(address,address,uint256)","signatureHash":"0xb0595266ccec357806b2691f348b128209f1060a0bda4f5c95f7090730351ff8","parameters":[{"indexed":true,"internalType":"address","name":"relayWorker","type":"address"},{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}]},
 	'0x85b3ae3aae9d3fcb31142fbd8c3b4722d57825b8edd6e1366e69204afa5a0dfa': {"name":"RelayAdded","signature":"RelayAdded(address,address,uint256,uint256,uint256,string)","signatureHash":"0x85b3ae3aae9d3fcb31142fbd8c3b4722d57825b8edd6e1366e69204afa5a0dfa","parameters":[{"indexed":true,"internalType":"address","name":"relay","type":"address"},{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"transactionFee","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"stake","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"unstakeDelay","type":"uint256"},{"indexed":false,"internalType":"string","name":"url","type":"string"}]},
 	'0x5490afc1d818789c8b3d5d63bce3d2a3327d0bba4efb5a7751f783dc977d7d11': {"name":"RelayRemoved","signature":"RelayRemoved(address,uint256)","signatureHash":"0x5490afc1d818789c8b3d5d63bce3d2a3327d0bba4efb5a7751f783dc977d7d11","parameters":[{"indexed":true,"internalType":"address","name":"relay","type":"address"},{"indexed":false,"internalType":"uint256","name":"unstakeTime","type":"uint256"}]},
 	'0x1449c6dd7851abc30abf37f57715f492010519147cc2652fbc38202c18a6ee90': {"name":"Staked","signature":"Staked(address,uint256,uint256)","signatureHash":"0x1449c6dd7851abc30abf37f57715f492010519147cc2652fbc38202c18a6ee90","parameters":[{"indexed":true,"internalType":"address","name":"relay","type":"address"},{"indexed":false,"internalType":"uint256","name":"stake","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"unstakeDelay","type":"uint256"}]},
 	'0xab74390d395916d9e0006298d47938a5def5d367054dcca78fa6ec84381f3f22': {"name":"TransactionRelayed","signature":"TransactionRelayed(address,address,address,bytes4,uint8,uint256)","signatureHash":"0xab74390d395916d9e0006298d47938a5def5d367054dcca78fa6ec84381f3f22","parameters":[{"indexed":true,"internalType":"address","name":"relay","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"bytes4","name":"selector","type":"bytes4"},{"indexed":false,"internalType":"enum IRelayHub.RelayCallStatus","name":"status","type":"uint8"},{"indexed":false,"internalType":"uint256","name":"charge","type":"uint256"}]},
 	'0x0f5bb82176feb1b5e747e28471aa92156a04d9f3ab9f45f28e2d704232b93f75': {"name":"Unstaked","signature":"Unstaked(address,uint256)","signatureHash":"0x0f5bb82176feb1b5e747e28471aa92156a04d9f3ab9f45f28e2d704232b93f75","parameters":[{"indexed":true,"internalType":"address","name":"relay","type":"address"},{"indexed":false,"internalType":"uint256","name":"stake","type":"uint256"}]},
 	'0xd1c19fbcd4551a5edfb66d43d2e337c04837afda3482b42bdf569a8fccdae5fb': {"name":"Withdrawn","signature":"Withdrawn(address,address,uint256)","signatureHash":"0xd1c19fbcd4551a5edfb66d43d2e337c04837afda3482b42bdf569a8fccdae5fb","parameters":[{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"dest","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}]},
+	'0x18d1605753700a9b48e43123a6aef09c0abd2126f7d36fdb0c5ee174ac867923': {"name":"CanRelayFailed","signature":"CanRelayFailed(address,address,address,address,address,bytes4,string)","signatureHash":"0x18d1605753700a9b48e43123a6aef09c0abd2126f7d36fdb0c5ee174ac867923","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":true,"internalType":"address","name":"relayWorker","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":false,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"address","name":"paymaster","type":"address"},{"indexed":false,"internalType":"bytes4","name":"selector","type":"bytes4"},{"indexed":false,"internalType":"string","name":"reason","type":"string"}]},
+	'0x77f2d8afec4b9d82ffa0dea525320620292bd1067f575964994d5c4501479aed': {"name":"RelayServerRegistered","signature":"RelayServerRegistered(address,uint256,uint256,string)","signatureHash":"0x77f2d8afec4b9d82ffa0dea525320620292bd1067f575964994d5c4501479aed","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":false,"internalType":"uint256","name":"baseRelayFee","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"indexed":false,"internalType":"string","name":"relayUrl","type":"string"}]},
+	'0xebf4a9bffb39f7c5dbf3f65540183b9381ae226ac3d0a45b4cad484713bd4a28': {"name":"RelayWorkersAdded","signature":"RelayWorkersAdded(address,address[],uint256)","signatureHash":"0xebf4a9bffb39f7c5dbf3f65540183b9381ae226ac3d0a45b4cad484713bd4a28","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":false,"internalType":"address[]","name":"newRelayWorkers","type":"address[]"},{"indexed":false,"internalType":"uint256","name":"workersCount","type":"uint256"}]},
+	'0xc9aa709786a3d5fe2cc947abc1ba8cbb0f6decb57aa74b84eb7f558125fee454': {"name":"TransactionRelayed","signature":"TransactionRelayed(address,address,address,address,address,bytes4,uint8,uint256)","signatureHash":"0xc9aa709786a3d5fe2cc947abc1ba8cbb0f6decb57aa74b84eb7f558125fee454","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":true,"internalType":"address","name":"relayWorker","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":false,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"address","name":"paymaster","type":"address"},{"indexed":false,"internalType":"bytes4","name":"selector","type":"bytes4"},{"indexed":false,"internalType":"enum IRelayHub.RelayCallStatus","name":"status","type":"uint8"},{"indexed":false,"internalType":"uint256","name":"charge","type":"uint256"}]},
+	'0xe292c4f6e9f34c975f4958cd5650a8111352feae914a67b06407957105421021': {"name":"HubAuthorized","signature":"HubAuthorized(address,address)","signatureHash":"0xe292c4f6e9f34c975f4958cd5650a8111352feae914a67b06407957105421021","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":true,"internalType":"address","name":"relayHub","type":"address"}]},
+	'0x8d941c9b73ba7e59671a59eed85054004624684182b0e4bdb56c35937bac65a6': {"name":"HubUnauthorized","signature":"HubUnauthorized(address,address,uint256)","signatureHash":"0x8d941c9b73ba7e59671a59eed85054004624684182b0e4bdb56c35937bac65a6","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":true,"internalType":"address","name":"relayHub","type":"address"},{"indexed":false,"internalType":"uint256","name":"removalBlock","type":"uint256"}]},
+	'0xef7c8dfef14cbefdf829b8f066b068b677992411137321d64b3ed4538c2b3637': {"name":"StakeAdded","signature":"StakeAdded(address,address,uint256,uint256)","signatureHash":"0xef7c8dfef14cbefdf829b8f066b068b677992411137321d64b3ed4538c2b3637","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"stake","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"unstakeDelay","type":"uint256"}]},
+	'0x2f2ba0bf4c9bedc2210a4da5b5811c2a4fd28e62c51bb90c3ea6fdce00808eb0': {"name":"StakePenalized","signature":"StakePenalized(address,address,uint256)","signatureHash":"0x2f2ba0bf4c9bedc2210a4da5b5811c2a4fd28e62c51bb90c3ea6fdce00808eb0","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":true,"internalType":"address","name":"beneficiary","type":"address"},{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}]},
+	'0x9ffc6168de1eb7f1d16200f614753cd7edce5a2186aab1c612199dd7316cd7c4': {"name":"StakeUnlocked","signature":"StakeUnlocked(address,address,uint256)","signatureHash":"0x9ffc6168de1eb7f1d16200f614753cd7edce5a2186aab1c612199dd7316cd7c4","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"withdrawBlock","type":"uint256"}]},
+	'0xb7c918e0e249f999e965cafeb6c664271b3f4317d296461500e71da39f0cbda3': {"name":"StakeWithdrawn","signature":"StakeWithdrawn(address,address,uint256)","signatureHash":"0xb7c918e0e249f999e965cafeb6c664271b3f4317d296461500e71da39f0cbda3","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}]},
 	'0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31': {"name":"ApprovalForAll","signature":"ApprovalForAll(address,address,bool)","signatureHash":"0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31","parameters":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}]},
 	'0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb': {"name":"TransferBatch","signature":"TransferBatch(address,address,address,uint256[],uint256[])","signatureHash":"0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb","parameters":[{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"ids","type":"uint256[]"},{"indexed":false,"internalType":"uint256[]","name":"values","type":"uint256[]"}]},
 	'0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62': {"name":"TransferSingle","signature":"TransferSingle(address,address,address,uint256,uint256)","signatureHash":"0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62","parameters":[{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}]},
@@ -3364,28 +3374,35 @@ export class AugurWallet<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public initialize = async (owner: string, referralAddress: string, fingerprint: string, augur: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<Array<Event>> => {
+	public initialize = async (owner: string, referralAddress: string, fingerprint: string, augur: string, legacyRegistry: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [owner, referralAddress, fingerprint, augur, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], 'initialize', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"address","name":"_legacyRegistry","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [owner, referralAddress, fingerprint, augur, legacyRegistry, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], 'initialize', options.sender)
 	}
 	
-	public initialize_estimateGas = async (owner: string, referralAddress: string, fingerprint: string, augur: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<TBigNumber> => {
+	public initialize_estimateGas = async (owner: string, referralAddress: string, fingerprint: string, augur: string, legacyRegistry: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [owner, referralAddress, fingerprint, augur, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], 'initialize', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"address","name":"_legacyRegistry","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [owner, referralAddress, fingerprint, augur, legacyRegistry, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], 'initialize', options.sender)
 	}
 
-	public initialize_ = async (owner: string, referralAddress: string, fingerprint: string, augur: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<void> => {
+	public initialize_ = async (owner: string, referralAddress: string, fingerprint: string, augur: string, legacyRegistry: string, cash: string, affiliates: string, shareToken: string, createOrder: string, fillOrder: string, zeroXTrade: string, options?: { sender?: string }): Promise<void> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		await this.localCall(abi, [owner, referralAddress, fingerprint, augur, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"address","name":"_augur","type":"address"},{"internalType":"address","name":"_legacyRegistry","type":"address"},{"internalType":"contract IERC20","name":"_cash","type":"address"},{"internalType":"contract IAffiliates","name":"_affiliates","type":"address"},{"internalType":"contract IERC1155","name":"_shareToken","type":"address"},{"internalType":"address","name":"_createOrder","type":"address"},{"internalType":"address","name":"_fillOrder","type":"address"},{"internalType":"address","name":"_zeroXTrade","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [owner, referralAddress, fingerprint, augur, legacyRegistry, cash, affiliates, shareToken, createOrder, fillOrder, zeroXTrade], options.sender)
 	}
 
 	public isValidSignature_ = async (data: string, signature: string, options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"bytes","name":"_signature","type":"bytes"}],"name":"isValidSignature","outputs":[{"internalType":"bytes4","name":"","type":"bytes4"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [data, signature], options.sender)
+		return <string>result[0]
+	}
+
+	public legacyRegistry_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"legacyRegistry","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
 	}
 
@@ -3471,6 +3488,13 @@ export class AugurWalletRegistry<TBigNumber> extends Contract<TBigNumber> {
 	public augurTrading_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"augurTrading","outputs":[{"internalType":"contract IAugurTrading","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public augurWalletRegistryV2_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"augurWalletRegistryV2","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
 	}
@@ -3647,11 +3671,307 @@ export class AugurWalletRegistry<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
-	public wallets_ = async (arg0: string, options?: { sender?: string }): Promise<string> => {
+	public zeroXTrade_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"wallets","outputs":[{"internalType":"contract IAugurWallet","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [arg0], options.sender)
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"zeroXTrade","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
+	}
+}
+
+
+export class AugurWalletRegistryV2<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public CALLDATA_TYPEHASH_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"CALLDATA_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public RELAYDATA_TYPEHASH_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"RELAYDATA_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public RELAY_REQUEST_TYPEHASH_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"RELAY_REQUEST_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public WETH_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"WETH","outputs":[{"internalType":"contract IWETH","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public acceptRelayedCall_ = async (relayRequest: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, approvalData: string, maxPossibleGas: TBigNumber, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"relayRequest","type":"tuple"},{"internalType":"bytes","name":"approvalData","type":"bytes"},{"internalType":"uint256","name":"maxPossibleGas","type":"uint256"}],"name":"acceptRelayedCall","outputs":[{"internalType":"bytes","name":"context","type":"bytes"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [relayRequest, approvalData, maxPossibleGas], options.sender)
+		return <string>result[0]
+	}
+
+	public affiliates_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"affiliates","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public augur_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"augur","outputs":[{"internalType":"contract IAugur","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public augurTrading_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"augurTrading","outputs":[{"internalType":"contract IAugurTrading","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public cash_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"cash","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public createOrder_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"createOrder","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public ethExchange_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"ethExchange","outputs":[{"internalType":"contract IUniswapV2Exchange","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public executeWalletTransaction = async (to: string, data: string, value: TBigNumber, payment: TBigNumber, referralAddress: string, fingerprint: string, desiredSignerBalance: TBigNumber, maxExchangeRateInDai: TBigNumber, revertOnFailure: boolean, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"uint256","name":"_payment","type":"uint256"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"uint256","name":"_desiredSignerBalance","type":"uint256"},{"internalType":"uint256","name":"_maxExchangeRateInDai","type":"uint256"},{"internalType":"bool","name":"_revertOnFailure","type":"bool"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [to, data, value, payment, referralAddress, fingerprint, desiredSignerBalance, maxExchangeRateInDai, revertOnFailure], 'executeWalletTransaction', options.sender)
+	}
+	
+	public executeWalletTransaction_estimateGas = async (to: string, data: string, value: TBigNumber, payment: TBigNumber, referralAddress: string, fingerprint: string, desiredSignerBalance: TBigNumber, maxExchangeRateInDai: TBigNumber, revertOnFailure: boolean, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"uint256","name":"_payment","type":"uint256"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"uint256","name":"_desiredSignerBalance","type":"uint256"},{"internalType":"uint256","name":"_maxExchangeRateInDai","type":"uint256"},{"internalType":"bool","name":"_revertOnFailure","type":"bool"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [to, data, value, payment, referralAddress, fingerprint, desiredSignerBalance, maxExchangeRateInDai, revertOnFailure], 'executeWalletTransaction', options.sender)
+	}
+
+	public executeWalletTransaction_ = async (to: string, data: string, value: TBigNumber, payment: TBigNumber, referralAddress: string, fingerprint: string, desiredSignerBalance: TBigNumber, maxExchangeRateInDai: TBigNumber, revertOnFailure: boolean, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"uint256","name":"_payment","type":"uint256"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"},{"internalType":"uint256","name":"_desiredSignerBalance","type":"uint256"},{"internalType":"uint256","name":"_maxExchangeRateInDai","type":"uint256"},{"internalType":"bool","name":"_revertOnFailure","type":"bool"}],"name":"executeWalletTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [to, data, value, payment, referralAddress, fingerprint, desiredSignerBalance, maxExchangeRateInDai, revertOnFailure], options.sender)
+	}
+
+	public fillOrder_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"fillOrder","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public getAmountIn_ = async (amountOut: TBigNumber, reserveIn: TBigNumber, reserveOut: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountIn","outputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [amountOut, reserveIn, reserveOut], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public getAmountOut_ = async (amountIn: TBigNumber, reserveIn: TBigNumber, reserveOut: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"reserveIn","type":"uint256"},{"internalType":"uint256","name":"reserveOut","type":"uint256"}],"name":"getAmountOut","outputs":[{"internalType":"uint256","name":"amountOut","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [amountIn, reserveIn, reserveOut], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public getCreate2WalletAddress_ = async (owner: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_owner","type":"address"}],"name":"getCreate2WalletAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [owner], options.sender)
+		return <string>result[0]
+	}
+
+	public getGasLimits_ = async (options?: { sender?: string }): Promise<{ acceptRelayedCallGasLimit: TBigNumber, preRelayedCallGasLimit: TBigNumber, postRelayedCallGasLimit: TBigNumber }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getGasLimits","outputs":[{"components":[{"internalType":"uint256","name":"acceptRelayedCallGasLimit","type":"uint256"},{"internalType":"uint256","name":"preRelayedCallGasLimit","type":"uint256"},{"internalType":"uint256","name":"postRelayedCallGasLimit","type":"uint256"}],"internalType":"struct GSNTypes.GasLimits","name":"limits","type":"tuple"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <{ acceptRelayedCallGasLimit: TBigNumber, preRelayedCallGasLimit: TBigNumber, postRelayedCallGasLimit: TBigNumber }>result[0]
+	}
+
+	public getHubAddr_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getHubAddr","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public getInitialized_ = async (options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getInitialized","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <boolean>result[0]
+	}
+
+	public getNonce_ = async (from: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"from","type":"address"}],"name":"getNonce","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [from], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public getRelayHubDeposit_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getRelayHubDeposit","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public getRelayMessageHash_ = async (relayRequest: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"relayRequest","type":"tuple"}],"name":"getRelayMessageHash","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [relayRequest], options.sender)
+		return <string>result[0]
+	}
+
+	public getTrustedForwarder_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getTrustedForwarder","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public getWallet_ = async (account: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"}],"name":"getWallet","outputs":[{"internalType":"contract IAugurWallet","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [account], options.sender)
+		return <string>result[0]
+	}
+
+	public initialize = async (augur: string, augurTrading: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IAugur","name":"_augur","type":"address"},{"internalType":"contract IAugurTrading","name":"_augurTrading","type":"address"}],"name":"initialize","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [augur, augurTrading], 'initialize', options.sender, options.attachedEth)
+	}
+	
+	public initialize_estimateGas = async (augur: string, augurTrading: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IAugur","name":"_augur","type":"address"},{"internalType":"contract IAugurTrading","name":"_augurTrading","type":"address"}],"name":"initialize","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [augur, augurTrading], 'initialize', options.sender, options.attachedEth)
+	}
+
+	public initialize_ = async (augur: string, augurTrading: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IAugur","name":"_augur","type":"address"},{"internalType":"contract IAugurTrading","name":"_augurTrading","type":"address"}],"name":"initialize","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [augur, augurTrading], options.sender, options.attachedEth)
+		return <boolean>result[0]
+	}
+
+	public otherRegistry_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"otherRegistry","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public postRelayedCall = async (context: string, success: boolean, preRetVal: string, gasUseWithoutPost: TBigNumber, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes","name":"context","type":"bytes"},{"internalType":"bool","name":"success","type":"bool"},{"internalType":"bytes32","name":"preRetVal","type":"bytes32"},{"internalType":"uint256","name":"gasUseWithoutPost","type":"uint256"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"}],"name":"postRelayedCall","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [context, success, preRetVal, gasUseWithoutPost, gasData], 'postRelayedCall', options.sender)
+	}
+	
+	public postRelayedCall_estimateGas = async (context: string, success: boolean, preRetVal: string, gasUseWithoutPost: TBigNumber, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes","name":"context","type":"bytes"},{"internalType":"bool","name":"success","type":"bool"},{"internalType":"bytes32","name":"preRetVal","type":"bytes32"},{"internalType":"uint256","name":"gasUseWithoutPost","type":"uint256"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"}],"name":"postRelayedCall","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [context, success, preRetVal, gasUseWithoutPost, gasData], 'postRelayedCall', options.sender)
+	}
+
+	public postRelayedCall_ = async (context: string, success: boolean, preRetVal: string, gasUseWithoutPost: TBigNumber, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes","name":"context","type":"bytes"},{"internalType":"bool","name":"success","type":"bool"},{"internalType":"bytes32","name":"preRetVal","type":"bytes32"},{"internalType":"uint256","name":"gasUseWithoutPost","type":"uint256"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"}],"name":"postRelayedCall","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [context, success, preRetVal, gasUseWithoutPost, gasData], options.sender)
+		return <boolean>result[0]
+	}
+
+	public preRelayedCall_ = async (context: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"bytes","name":"context","type":"bytes"}],"name":"preRelayedCall","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [context], options.sender)
+		return <boolean>result[0]
+	}
+
+	public shareToken_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"shareToken","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public token0IsCash_ = async (options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"token0IsCash","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <boolean>result[0]
+	}
+
+	public trustedCreateAugurWallet = async (owner: string, referralAddress: string, fingerprint: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"trustedCreateAugurWallet","outputs":[{"internalType":"contract IAugurWallet","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [owner, referralAddress, fingerprint], 'trustedCreateAugurWallet', options.sender)
+	}
+	
+	public trustedCreateAugurWallet_estimateGas = async (owner: string, referralAddress: string, fingerprint: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"trustedCreateAugurWallet","outputs":[{"internalType":"contract IAugurWallet","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [owner, referralAddress, fingerprint], 'trustedCreateAugurWallet', options.sender)
+	}
+
+	public trustedCreateAugurWallet_ = async (owner: string, referralAddress: string, fingerprint: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_referralAddress","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"trustedCreateAugurWallet","outputs":[{"internalType":"contract IAugurWallet","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [owner, referralAddress, fingerprint], options.sender)
+		return <string>result[0]
+	}
+
+	public verify_ = async (req: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, sig: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"req","type":"tuple"},{"internalType":"bytes","name":"sig","type":"bytes"}],"name":"verify","outputs":[],"payable":false,"stateMutability":"view","type":"function"}
+		await this.localCall(abi, [req, sig], options.sender)
+	}
+
+	public verifyAndCall = async (req: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, sig: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"req","type":"tuple"},{"internalType":"bytes","name":"sig","type":"bytes"}],"name":"verifyAndCall","outputs":[{"internalType":"bool","name":"success","type":"bool"},{"internalType":"bytes","name":"ret","type":"bytes"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [req, sig], 'verifyAndCall', options.sender)
+	}
+	
+	public verifyAndCall_estimateGas = async (req: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, sig: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"req","type":"tuple"},{"internalType":"bytes","name":"sig","type":"bytes"}],"name":"verifyAndCall","outputs":[{"internalType":"bool","name":"success","type":"bool"},{"internalType":"bytes","name":"ret","type":"bytes"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [req, sig], 'verifyAndCall', options.sender)
+	}
+
+	public verifyAndCall_ = async (req: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, sig: string, options?: { sender?: string }): Promise<{success: boolean, ret: string}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"req","type":"tuple"},{"internalType":"bytes","name":"sig","type":"bytes"}],"name":"verifyAndCall","outputs":[{"internalType":"bool","name":"success","type":"bool"},{"internalType":"bytes","name":"ret","type":"bytes"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [req, sig], options.sender)
+		return <{success: boolean, ret: string}>result
 	}
 
 	public zeroXTrade_ = async (options?: { sender?: string }): Promise<string> => {
@@ -5980,6 +6300,424 @@ export class RelayHub<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address payable","name":"dest","type":"address"}],"name":"withdraw","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		await this.localCall(abi, [amount, dest], options.sender)
+	}
+}
+
+
+export class Penalizer<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public penalizeIllegalTransaction = async (unsignedTx: string, signature: string, hub: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes","name":"unsignedTx","type":"bytes"},{"internalType":"bytes","name":"signature","type":"bytes"},{"internalType":"contract IRelayHub","name":"hub","type":"address"}],"name":"penalizeIllegalTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [unsignedTx, signature, hub], 'penalizeIllegalTransaction', options.sender)
+	}
+	
+	public penalizeIllegalTransaction_estimateGas = async (unsignedTx: string, signature: string, hub: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes","name":"unsignedTx","type":"bytes"},{"internalType":"bytes","name":"signature","type":"bytes"},{"internalType":"contract IRelayHub","name":"hub","type":"address"}],"name":"penalizeIllegalTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [unsignedTx, signature, hub], 'penalizeIllegalTransaction', options.sender)
+	}
+
+	public penalizeIllegalTransaction_ = async (unsignedTx: string, signature: string, hub: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes","name":"unsignedTx","type":"bytes"},{"internalType":"bytes","name":"signature","type":"bytes"},{"internalType":"contract IRelayHub","name":"hub","type":"address"}],"name":"penalizeIllegalTransaction","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [unsignedTx, signature, hub], options.sender)
+	}
+
+	public penalizeRepeatedNonce = async (unsignedTx1: string, signature1: string, unsignedTx2: string, signature2: string, hub: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes","name":"unsignedTx1","type":"bytes"},{"internalType":"bytes","name":"signature1","type":"bytes"},{"internalType":"bytes","name":"unsignedTx2","type":"bytes"},{"internalType":"bytes","name":"signature2","type":"bytes"},{"internalType":"contract IRelayHub","name":"hub","type":"address"}],"name":"penalizeRepeatedNonce","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [unsignedTx1, signature1, unsignedTx2, signature2, hub], 'penalizeRepeatedNonce', options.sender)
+	}
+	
+	public penalizeRepeatedNonce_estimateGas = async (unsignedTx1: string, signature1: string, unsignedTx2: string, signature2: string, hub: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes","name":"unsignedTx1","type":"bytes"},{"internalType":"bytes","name":"signature1","type":"bytes"},{"internalType":"bytes","name":"unsignedTx2","type":"bytes"},{"internalType":"bytes","name":"signature2","type":"bytes"},{"internalType":"contract IRelayHub","name":"hub","type":"address"}],"name":"penalizeRepeatedNonce","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [unsignedTx1, signature1, unsignedTx2, signature2, hub], 'penalizeRepeatedNonce', options.sender)
+	}
+
+	public penalizeRepeatedNonce_ = async (unsignedTx1: string, signature1: string, unsignedTx2: string, signature2: string, hub: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"bytes","name":"unsignedTx1","type":"bytes"},{"internalType":"bytes","name":"signature1","type":"bytes"},{"internalType":"bytes","name":"unsignedTx2","type":"bytes"},{"internalType":"bytes","name":"signature2","type":"bytes"},{"internalType":"contract IRelayHub","name":"hub","type":"address"}],"name":"penalizeRepeatedNonce","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [unsignedTx1, signature1, unsignedTx2, signature2, hub], options.sender)
+	}
+}
+
+
+export class RelayHubV2<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public COMMIT_ID_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"COMMIT_ID","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public GTRANSACTION_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"GTRANSACTION","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public MAX_WORKER_COUNT_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"MAX_WORKER_COUNT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public addRelayWorkers = async (newRelayWorkers: Array<string>, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address[]","name":"newRelayWorkers","type":"address[]"}],"name":"addRelayWorkers","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [newRelayWorkers], 'addRelayWorkers', options.sender)
+	}
+	
+	public addRelayWorkers_estimateGas = async (newRelayWorkers: Array<string>, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address[]","name":"newRelayWorkers","type":"address[]"}],"name":"addRelayWorkers","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [newRelayWorkers], 'addRelayWorkers', options.sender)
+	}
+
+	public addRelayWorkers_ = async (newRelayWorkers: Array<string>, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address[]","name":"newRelayWorkers","type":"address[]"}],"name":"addRelayWorkers","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [newRelayWorkers], options.sender)
+	}
+
+	public balanceOf_ = async (target: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"target","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [target], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public calculateCharge_ = async (gasUsed: TBigNumber, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"gasUsed","type":"uint256"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"}],"name":"calculateCharge","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [gasUsed, gasData], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public canRelay_ = async (relayRequest: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, maxPossibleGas: TBigNumber, acceptRelayedCallGasLimit: TBigNumber, signature: string, approvalData: string, options?: { sender?: string }): Promise<{success: boolean, returnValue: string}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"relayRequest","type":"tuple"},{"internalType":"uint256","name":"maxPossibleGas","type":"uint256"},{"internalType":"uint256","name":"acceptRelayedCallGasLimit","type":"uint256"},{"internalType":"bytes","name":"signature","type":"bytes"},{"internalType":"bytes","name":"approvalData","type":"bytes"}],"name":"canRelay","outputs":[{"internalType":"bool","name":"success","type":"bool"},{"internalType":"string","name":"returnValue","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [relayRequest, maxPossibleGas, acceptRelayedCallGasLimit, signature, approvalData], options.sender)
+		return <{success: boolean, returnValue: string}>result
+	}
+
+	public depositFor = async (target: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"target","type":"address"}],"name":"depositFor","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [target], 'depositFor', options.sender, options.attachedEth)
+	}
+	
+	public depositFor_estimateGas = async (target: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"target","type":"address"}],"name":"depositFor","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [target], 'depositFor', options.sender, options.attachedEth)
+	}
+
+	public depositFor_ = async (target: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"target","type":"address"}],"name":"depositFor","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		await this.localCall(abi, [target], options.sender, options.attachedEth)
+	}
+
+	public eip712sig_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"eip712sig","outputs":[{"internalType":"contract EIP712Sig","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public getHubOverhead_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getHubOverhead","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public getStakeManager_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getStakeManager","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public getVersion_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getVersion","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public gtxdatanonzero_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"gtxdatanonzero","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public penalize = async (relayWorker: string, beneficiary: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address payable","name":"beneficiary","type":"address"}],"name":"penalize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [relayWorker, beneficiary], 'penalize', options.sender)
+	}
+	
+	public penalize_estimateGas = async (relayWorker: string, beneficiary: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address payable","name":"beneficiary","type":"address"}],"name":"penalize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [relayWorker, beneficiary], 'penalize', options.sender)
+	}
+
+	public penalize_ = async (relayWorker: string, beneficiary: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address payable","name":"beneficiary","type":"address"}],"name":"penalize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [relayWorker, beneficiary], options.sender)
+	}
+
+	public penalizer_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"penalizer","outputs":[{"internalType":"contract Penalizer","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public recipientCallsAtomic = async (relayRequest: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, signature: string, gasLimits: { acceptRelayedCallGasLimit: TBigNumber, preRelayedCallGasLimit: TBigNumber, postRelayedCallGasLimit: TBigNumber }, totalInitialGas: TBigNumber, calldataGas: TBigNumber, recipientContext: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"relayRequest","type":"tuple"},{"internalType":"bytes","name":"signature","type":"bytes"},{"components":[{"internalType":"uint256","name":"acceptRelayedCallGasLimit","type":"uint256"},{"internalType":"uint256","name":"preRelayedCallGasLimit","type":"uint256"},{"internalType":"uint256","name":"postRelayedCallGasLimit","type":"uint256"}],"internalType":"struct GSNTypes.GasLimits","name":"gasLimits","type":"tuple"},{"internalType":"uint256","name":"totalInitialGas","type":"uint256"},{"internalType":"uint256","name":"calldataGas","type":"uint256"},{"internalType":"bytes","name":"recipientContext","type":"bytes"}],"name":"recipientCallsAtomic","outputs":[{"internalType":"enum IRelayHub.RelayCallStatus","name":"","type":"uint8"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [relayRequest, signature, gasLimits, totalInitialGas, calldataGas, recipientContext], 'recipientCallsAtomic', options.sender)
+	}
+	
+	public recipientCallsAtomic_estimateGas = async (relayRequest: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, signature: string, gasLimits: { acceptRelayedCallGasLimit: TBigNumber, preRelayedCallGasLimit: TBigNumber, postRelayedCallGasLimit: TBigNumber }, totalInitialGas: TBigNumber, calldataGas: TBigNumber, recipientContext: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"relayRequest","type":"tuple"},{"internalType":"bytes","name":"signature","type":"bytes"},{"components":[{"internalType":"uint256","name":"acceptRelayedCallGasLimit","type":"uint256"},{"internalType":"uint256","name":"preRelayedCallGasLimit","type":"uint256"},{"internalType":"uint256","name":"postRelayedCallGasLimit","type":"uint256"}],"internalType":"struct GSNTypes.GasLimits","name":"gasLimits","type":"tuple"},{"internalType":"uint256","name":"totalInitialGas","type":"uint256"},{"internalType":"uint256","name":"calldataGas","type":"uint256"},{"internalType":"bytes","name":"recipientContext","type":"bytes"}],"name":"recipientCallsAtomic","outputs":[{"internalType":"enum IRelayHub.RelayCallStatus","name":"","type":"uint8"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [relayRequest, signature, gasLimits, totalInitialGas, calldataGas, recipientContext], 'recipientCallsAtomic', options.sender)
+	}
+
+	public recipientCallsAtomic_ = async (relayRequest: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, signature: string, gasLimits: { acceptRelayedCallGasLimit: TBigNumber, preRelayedCallGasLimit: TBigNumber, postRelayedCallGasLimit: TBigNumber }, totalInitialGas: TBigNumber, calldataGas: TBigNumber, recipientContext: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"relayRequest","type":"tuple"},{"internalType":"bytes","name":"signature","type":"bytes"},{"components":[{"internalType":"uint256","name":"acceptRelayedCallGasLimit","type":"uint256"},{"internalType":"uint256","name":"preRelayedCallGasLimit","type":"uint256"},{"internalType":"uint256","name":"postRelayedCallGasLimit","type":"uint256"}],"internalType":"struct GSNTypes.GasLimits","name":"gasLimits","type":"tuple"},{"internalType":"uint256","name":"totalInitialGas","type":"uint256"},{"internalType":"uint256","name":"calldataGas","type":"uint256"},{"internalType":"bytes","name":"recipientContext","type":"bytes"}],"name":"recipientCallsAtomic","outputs":[{"internalType":"enum IRelayHub.RelayCallStatus","name":"","type":"uint8"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [relayRequest, signature, gasLimits, totalInitialGas, calldataGas, recipientContext], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public registerRelayServer = async (baseRelayFee: TBigNumber, pctRelayFee: TBigNumber, url: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"baseRelayFee","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"string","name":"url","type":"string"}],"name":"registerRelayServer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [baseRelayFee, pctRelayFee, url], 'registerRelayServer', options.sender)
+	}
+	
+	public registerRelayServer_estimateGas = async (baseRelayFee: TBigNumber, pctRelayFee: TBigNumber, url: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"baseRelayFee","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"string","name":"url","type":"string"}],"name":"registerRelayServer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [baseRelayFee, pctRelayFee, url], 'registerRelayServer', options.sender)
+	}
+
+	public registerRelayServer_ = async (baseRelayFee: TBigNumber, pctRelayFee: TBigNumber, url: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"baseRelayFee","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"string","name":"url","type":"string"}],"name":"registerRelayServer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [baseRelayFee, pctRelayFee, url], options.sender)
+	}
+
+	public relayCall = async (relayRequest: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, signature: string, approvalData: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"relayRequest","type":"tuple"},{"internalType":"bytes","name":"signature","type":"bytes"},{"internalType":"bytes","name":"approvalData","type":"bytes"}],"name":"relayCall","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [relayRequest, signature, approvalData], 'relayCall', options.sender)
+	}
+	
+	public relayCall_estimateGas = async (relayRequest: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, signature: string, approvalData: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"relayRequest","type":"tuple"},{"internalType":"bytes","name":"signature","type":"bytes"},{"internalType":"bytes","name":"approvalData","type":"bytes"}],"name":"relayCall","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [relayRequest, signature, approvalData], 'relayCall', options.sender)
+	}
+
+	public relayCall_ = async (relayRequest: { target: string, encodedFunction: string, gasData: { gasLimit: TBigNumber, gasPrice: TBigNumber, pctRelayFee: TBigNumber, baseRelayFee: TBigNumber }, relayData: { senderAddress: string, senderNonce: TBigNumber, relayWorker: string, paymaster: string } }, signature: string, approvalData: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"},{"components":[{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"},{"internalType":"uint256","name":"baseRelayFee","type":"uint256"}],"internalType":"struct GSNTypes.GasData","name":"gasData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAddress","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayWorker","type":"address"},{"internalType":"address","name":"paymaster","type":"address"}],"internalType":"struct GSNTypes.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct GSNTypes.RelayRequest","name":"relayRequest","type":"tuple"},{"internalType":"bytes","name":"signature","type":"bytes"},{"internalType":"bytes","name":"approvalData","type":"bytes"}],"name":"relayCall","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [relayRequest, signature, approvalData], options.sender)
+	}
+
+	public stakeManager_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"stakeManager","outputs":[{"internalType":"contract StakeManager","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public version_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"version","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public withdraw = async (amount: TBigNumber, dest: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address payable","name":"dest","type":"address"}],"name":"withdraw","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [amount, dest], 'withdraw', options.sender)
+	}
+	
+	public withdraw_estimateGas = async (amount: TBigNumber, dest: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address payable","name":"dest","type":"address"}],"name":"withdraw","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [amount, dest], 'withdraw', options.sender)
+	}
+
+	public withdraw_ = async (amount: TBigNumber, dest: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address payable","name":"dest","type":"address"}],"name":"withdraw","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [amount, dest], options.sender)
+	}
+}
+
+
+export class StakeManager<TBigNumber> extends Contract<TBigNumber> {
+	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
+		super(dependencies, address)
+	}
+
+	public authorizeHub = async (relayManager: string, relayHub: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"address","name":"relayHub","type":"address"}],"name":"authorizeHub","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [relayManager, relayHub], 'authorizeHub', options.sender)
+	}
+	
+	public authorizeHub_estimateGas = async (relayManager: string, relayHub: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"address","name":"relayHub","type":"address"}],"name":"authorizeHub","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [relayManager, relayHub], 'authorizeHub', options.sender)
+	}
+
+	public authorizeHub_ = async (relayManager: string, relayHub: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"address","name":"relayHub","type":"address"}],"name":"authorizeHub","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [relayManager, relayHub], options.sender)
+	}
+
+	public authorizedHubs_ = async (arg0: string, arg1: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"authorizedHubs","outputs":[{"internalType":"uint256","name":"removalBlock","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0, arg1], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public getStakeInfo_ = async (relayManager: string, options?: { sender?: string }): Promise<{ stake: TBigNumber, unstakeDelay: TBigNumber, withdrawBlock: TBigNumber, owner: string }> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"relayManager","type":"address"}],"name":"getStakeInfo","outputs":[{"components":[{"internalType":"uint256","name":"stake","type":"uint256"},{"internalType":"uint256","name":"unstakeDelay","type":"uint256"},{"internalType":"uint256","name":"withdrawBlock","type":"uint256"},{"internalType":"address payable","name":"owner","type":"address"}],"internalType":"struct IStakeManager.StakeInfo","name":"stakeInfo","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [relayManager], options.sender)
+		return <{ stake: TBigNumber, unstakeDelay: TBigNumber, withdrawBlock: TBigNumber, owner: string }>result[0]
+	}
+
+	public isRelayManagerStaked_ = async (relayManager: string, minAmount: TBigNumber, minUnstakeDelay: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"uint256","name":"minAmount","type":"uint256"},{"internalType":"uint256","name":"minUnstakeDelay","type":"uint256"}],"name":"isRelayManagerStaked","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [relayManager, minAmount, minUnstakeDelay], options.sender)
+		return <boolean>result[0]
+	}
+
+	public penalizeRelayManager = async (relayManager: string, beneficiary: string, amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"address payable","name":"beneficiary","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"penalizeRelayManager","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [relayManager, beneficiary, amount], 'penalizeRelayManager', options.sender)
+	}
+	
+	public penalizeRelayManager_estimateGas = async (relayManager: string, beneficiary: string, amount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"address payable","name":"beneficiary","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"penalizeRelayManager","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [relayManager, beneficiary, amount], 'penalizeRelayManager', options.sender)
+	}
+
+	public penalizeRelayManager_ = async (relayManager: string, beneficiary: string, amount: TBigNumber, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"address payable","name":"beneficiary","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"penalizeRelayManager","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [relayManager, beneficiary, amount], options.sender)
+	}
+
+	public stakeForAddress = async (relayManager: string, unstakeDelay: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"uint256","name":"unstakeDelay","type":"uint256"}],"name":"stakeForAddress","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [relayManager, unstakeDelay], 'stakeForAddress', options.sender, options.attachedEth)
+	}
+	
+	public stakeForAddress_estimateGas = async (relayManager: string, unstakeDelay: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"uint256","name":"unstakeDelay","type":"uint256"}],"name":"stakeForAddress","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [relayManager, unstakeDelay], 'stakeForAddress', options.sender, options.attachedEth)
+	}
+
+	public stakeForAddress_ = async (relayManager: string, unstakeDelay: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"uint256","name":"unstakeDelay","type":"uint256"}],"name":"stakeForAddress","outputs":[],"payable":true,"stateMutability":"payable","type":"function"}
+		await this.localCall(abi, [relayManager, unstakeDelay], options.sender, options.attachedEth)
+	}
+
+	public stakes_ = async (arg0: string, options?: { sender?: string }): Promise<{stake: TBigNumber, unstakeDelay: TBigNumber, withdrawBlock: TBigNumber, owner: string}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakes","outputs":[{"internalType":"uint256","name":"stake","type":"uint256"},{"internalType":"uint256","name":"unstakeDelay","type":"uint256"},{"internalType":"uint256","name":"withdrawBlock","type":"uint256"},{"internalType":"address payable","name":"owner","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0], options.sender)
+		return <{stake: TBigNumber, unstakeDelay: TBigNumber, withdrawBlock: TBigNumber, owner: string}>result
+	}
+
+	public unauthorizeHub = async (relayManager: string, relayHub: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"address","name":"relayHub","type":"address"}],"name":"unauthorizeHub","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [relayManager, relayHub], 'unauthorizeHub', options.sender)
+	}
+	
+	public unauthorizeHub_estimateGas = async (relayManager: string, relayHub: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"address","name":"relayHub","type":"address"}],"name":"unauthorizeHub","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [relayManager, relayHub], 'unauthorizeHub', options.sender)
+	}
+
+	public unauthorizeHub_ = async (relayManager: string, relayHub: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"},{"internalType":"address","name":"relayHub","type":"address"}],"name":"unauthorizeHub","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [relayManager, relayHub], options.sender)
+	}
+
+	public unlockStake = async (relayManager: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"}],"name":"unlockStake","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [relayManager], 'unlockStake', options.sender)
+	}
+	
+	public unlockStake_estimateGas = async (relayManager: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"}],"name":"unlockStake","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [relayManager], 'unlockStake', options.sender)
+	}
+
+	public unlockStake_ = async (relayManager: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"}],"name":"unlockStake","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [relayManager], options.sender)
+	}
+
+	public withdrawStake = async (relayManager: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"}],"name":"withdrawStake","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [relayManager], 'withdrawStake', options.sender)
+	}
+	
+	public withdrawStake_estimateGas = async (relayManager: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"}],"name":"withdrawStake","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [relayManager], 'withdrawStake', options.sender)
+	}
+
+	public withdrawStake_ = async (relayManager: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"relayManager","type":"address"}],"name":"withdrawStake","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [relayManager], options.sender)
 	}
 }
 
