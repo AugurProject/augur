@@ -146,7 +146,7 @@ export const TEMPLATES = {
             question: `MMA: [0] vs. [1] (O/U), [2].5 Rounds?`,
             example: `MMA: Donald Cerrone vs. Conor McGregor (O/U), 1.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             groupName: OVER_UNDER,
-            groupLineId: 3,
+            groupLineId: 2,
             inputs: [
               {
                 id: 0,
@@ -162,9 +162,9 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.TEXT,
-                validationType: ValidationType.WHOLE_NUMBER,
-                placeholder: `Whole #`,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Round #`,
+                values: LIST_VALUES.MMA_ROUNDS,
               },
               {
                 id: 3,
