@@ -72,25 +72,28 @@ const AccountView = () => {
                 </ModulePane>
               </ModuleTabs>
             ) : (
-              <ModuleTabs selected={0} fillWidth noBorder>
-                <ModulePane label={YOUR_OVERVIEW_TITLE}>
-                  <Overview />
-                  <Transactions />
-                  <AugurStatus />
-                </ModulePane>
-                <ModulePane label="Notifications" isNew={newNotifications}>
-                  <Notifications />
-                </ModulePane>
-                <ModulePane label="My Active Markets">
-                  <OpenMarkets />
-                </ModulePane>
-                <ModulePane label="Favorites">
-                  <Favorites />
-                </ModulePane>
-                <ModulePane label="My Created Markets">
-                  <MyMarkets />
-                </ModulePane>
-              </ModuleTabs>
+              <div>
+                <h1>My Account</h1>
+                <ModuleTabs selected={0} fillWidth noBorder>
+                  <ModulePane label={YOUR_OVERVIEW_TITLE}>
+                    <Overview />
+                    <Transactions />
+                    <AugurStatus />
+                  </ModulePane>
+                  <ModulePane label="Notifications" isNew={newNotifications}>
+                    <Notifications />
+                  </ModulePane>
+                  <ModulePane label="My Active Markets">
+                    <OpenMarkets />
+                  </ModulePane>
+                  <ModulePane label="Favorites">
+                    <Favorites />
+                  </ModulePane>
+                  <ModulePane label="My Created Markets">
+                    <MyMarkets />
+                  </ModulePane>
+                </ModuleTabs>
+              </div>
             ) : 
           theme === THEMES.TRADING ? (
             <div
