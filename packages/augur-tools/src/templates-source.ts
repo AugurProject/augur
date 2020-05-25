@@ -123,7 +123,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw`,
+                placeholder: `Draw/No Winner`,
               },
               {
                 id: 3,
@@ -169,7 +169,7 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw`,
+                placeholder: `Draw/No Winner`,
               },
               {
                 id: 4,
@@ -238,7 +238,7 @@ export const TEMPLATES = {
               {
                 id: 8,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw`,
+                placeholder: `Draw/No Winner`,
               },
               {
                 id: 9,
@@ -292,7 +292,7 @@ export const TEMPLATES = {
               {
                 id: 5,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw`,
+                placeholder: `Draw/No Winner`,
               },
               {
                 id: 6,
@@ -355,6 +355,11 @@ export const TEMPLATES = {
               },
               {
                 id: 7,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Event Cancelled`,
+              },
+              {
+                id: 8,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
