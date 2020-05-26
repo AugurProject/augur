@@ -179,7 +179,7 @@ export const TEMPLATES = {
               {
                 id: 5,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Event Cancelled`,
+                placeholder: `No Contest`,
               },
               {
                 id: 6,
@@ -218,32 +218,32 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] by KO/TKO`,
+                placeholder: `[0] by KO/TKO`,
               },
               {
                 id: 3,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] by Submission`,
+                placeholder: `[0] by Submission`,
               },
               {
                 id: 4,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] by Points`,
+                placeholder: `[0] by Points`,
               },
               {
                 id: 5,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[2] by KO/TKO`,
+                placeholder: `[1] by KO/TKO`,
               },
               {
                 id: 6,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[2] by Submission`,
+                placeholder: `[1] by Submission`,
               },
               {
                 id: 7,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[2] by Points`,
+                placeholder: `[1] by Points`,
               },
               {
                 id: 8,
@@ -302,7 +302,7 @@ export const TEMPLATES = {
               {
                 id: 5,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw/No Contest`,
+                placeholder: `No Contest`,
               },
               {
                 id: 6,
@@ -366,7 +366,7 @@ export const TEMPLATES = {
               {
                 id: 7,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Event Cancelled`,
+                placeholder: `No Contest`,
               },
               {
                 id: 8,
@@ -651,6 +651,11 @@ export const TEMPLATES = {
               },
               {
                 id: 7,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Contest`,
+              },
+              {
+                id: 8,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
