@@ -9,7 +9,6 @@ import makePath from "modules/routes/helpers/make-path";
 import { MARKETS } from "modules/routes/constants/views";
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

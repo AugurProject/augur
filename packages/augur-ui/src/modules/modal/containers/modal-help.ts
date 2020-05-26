@@ -7,7 +7,6 @@ import { Action } from 'redux';
 import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
