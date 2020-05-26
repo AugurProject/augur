@@ -8,7 +8,7 @@ import { v2AugurLogo } from 'modules/common/icons';
 import { PropertyLabel } from 'modules/common/labels';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import Funds from 'modules/account/components/funds';
-import Stats from 'modules/account/containers/stats';
+import Stats from 'modules/account/components/stats';
 import OverviewChart from 'modules/account/containers/overview-chart';
 import Styles from 'modules/account/components/overview.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';

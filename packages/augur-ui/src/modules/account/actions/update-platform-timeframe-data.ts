@@ -4,7 +4,7 @@ import { Getters } from '@augurproject/sdk';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export const updatePlatformTimeframeData = async (
-  options: any = {},
+  options: { startTime: number },
   callback: any = logError
 ): Promise<void> => {
   const { universe: { id }, blockchain: { currentAugurTimestamp }} = AppStatus.get();
