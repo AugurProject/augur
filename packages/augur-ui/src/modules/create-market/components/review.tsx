@@ -15,7 +15,7 @@ import {
   DateTimeHeaders,
   PreviewMarketTitleHeader
 } from "modules/create-market/components/common";
-import { LinearPropertyLabel, LinearPropertyLabelTooltip, TransactionFeeLabel } from "modules/common/labels";
+import { LinearPropertyLabel, TransactionFeeLabel } from "modules/common/labels";
 import {
   SCALAR,
   CATEGORICAL,
