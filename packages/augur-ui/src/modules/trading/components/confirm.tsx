@@ -416,6 +416,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             {gasCostDai.roundedValue.gt(0) > 0 &&
               numFills > 0 && (
               <TransactionFeeLabelToolTip
+                isError={createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
                 gasCostDai={gasCostDai}
               />
             )}
