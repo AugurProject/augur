@@ -33,7 +33,9 @@ export async function setupUsers(accounts: Account[], ethSource: ContractAPI, fu
 export async function setupUser(account: Account, ethSource: ContractAPI, funding: BigNumber, baseConfig: SDKConfiguration, connector?: BaseConnector): Promise<ContractAPI> {
   console.log(`Setting up account ${account.address}`);
   const { config } = setupPerfConfigAndZeroX(baseConfig);
-  await ethSource.augur.sendETH(account.address, funding);
+  if (funding.gt(0)) {
+    await ethSource.augur.sendETH(account.address, funding);
+  }
   const user = await ContractAPI.userWrapper(account, ethSource.provider, config, connector || new EmptyConnector());
   await waitForFunding(user);
 

@@ -56,7 +56,7 @@ import {
   setupPerfConfigAndZeroX,
   takeOrder,
   takeOrders,
-  setupUsers, FINNEY
+  setupUsers, FINNEY, setupUser
 } from "./performance";
 import { simpleOrderbookShaper } from './orderbook-shaper';
 import {
@@ -72,7 +72,6 @@ import {
   createYesNoZeroXOrders
 } from './create-orders';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
-import { Connectors } from "@augurproject/sdk/build";
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -2625,20 +2624,23 @@ export function addScripts(flash: FlashSession) {
       const ethSource = await this.createUser(this.getAccount(), config);
       const connector = ethSource.augur.connector;
       const accountCreator = new AccountCreator(BASE_MNEMONIC);
-      const [maker, taker] = await setupUsers(
-        accountCreator.traders(2),
-        ethSource,
-        new BigNumber(FINNEY.times(100)),
-        config,
-        connector,
-      );
-      // connector.connect(config);
+      const traders = accountCreator.traders(2);
+      const maker = await setupUser(traders[0], ethSource, FINNEY, config, connector);
+      const taker = await setupUser(traders[1], ethSource, FINNEY.times(1000), config, connector);
+      console.log(`Maker: ${maker.account.address}`);
+      console.log(`Taker: ${taker.account.address}`);
+
+      const NUM_SHARES = 10;
 
       const now = await maker.getTimestamp();
       const oneWeek = new BigNumber(1000 * 60 * 60 * 24 * 7);
 
-      await maker.faucetCash(price.times(amount).times(10).times(1e18));
-      await taker.faucetCash(price.times(amount).times(10).times(1e18));
+      const cashForMaker = price.times(amount).times(NUM_SHARES).times(1e18);
+      const cashForTaker = price.times(amount).times(NUM_SHARES).times(1e18).times(2); // extra for fees
+      console.log(`Fauceting DAI for maker: ${cashForMaker.toFixed()}`);
+      console.log(`Fauceting DAI for taker: ${cashForTaker.toFixed()}`);
+      await maker.faucetCash(cashForMaker);
+      await taker.faucetCash(cashForTaker);
 
       await maker.approve();
       await taker.approve();
@@ -2646,15 +2648,11 @@ export function addScripts(flash: FlashSession) {
       await waitForSync(ethSource);
       const marketInfo = await getMarket(ethSource, market);
 
-      const totalShares = new BigNumber(amount * 10);
+      const totalShares = new BigNumber(amount * NUM_SHARES);
       const order = buildOrder(marketInfo, outcome, now, oneWeek, totalShares, price, OrderType.Bid);
       await maker.placeZeroXOrders([order]);
 
       await sleep(10000); // give 0x plenty of time to propagate the order
-      await waitForSync(ethSource);
-      const orderbook = await ethSource.augur.getMarketOrderBook({
-        marketId: market, account: maker.account.address, outcomeId: outcome
-      });
 
       for (let i = 0; i < amount; i++) {
         const taken = await taker.augur.placeTrade(buildTakerOrder(marketInfo, outcome, now, new BigNumber(10), price, OrderType.Ask));
