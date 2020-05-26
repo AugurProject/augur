@@ -14,6 +14,7 @@ import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 
 import Styles from 'modules/trading/betslip.styles';
+import { PrimaryButton } from 'modules/common/buttons';
 
 export const Betslip = () => {
   const [minimized, setMinimized] = useState(true);
@@ -54,6 +55,7 @@ export const Betslip = () => {
         <button onClick={() => setMinimized(!minimized)}>
           Betslip ({betslipCount}) {ThickChevron}
         </button>
+        <PrimaryButton text={`Betslip (${betslipCount})`} action={() => setMinimized(!minimized)} />
       </div>
       <section className={Styles.Container}>
         <BetslipHeader myBetsCount={myBetsCount} />

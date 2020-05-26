@@ -614,6 +614,7 @@ export const MODAL_LOADING = 'MODAL_LOADING';
 export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
 export const MODAL_ERROR = 'MODAL_ERROR';
 export const MODAL_HELP = 'MODAL_HELP';
+export const MODAL_ODDS = 'MODAL_ODDS';
 
 // transactions parameter names
 export const TX_ORDER_ID = 'orderId';

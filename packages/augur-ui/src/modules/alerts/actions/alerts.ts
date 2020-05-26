@@ -16,8 +16,6 @@ import {
   getNetworkId,
   getEthForDaiRate,
 } from 'modules/contracts/actions/contractCalls';
-import { Action } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { AppStatus } from 'modules/app/store/app-status';
 import {
   createUniqueOrderId,
@@ -33,32 +31,30 @@ export const UPDATE_EXISTING_ALERT = 'UPDATE_EXISTING_ALERT';
 export const CLEAR_ALERTS = 'CLEAR_ALERTS';
 
 export function addAlert(alert: Partial<Alert>) {
-  return (dispatch: ThunkDispatch<void, any, Action>) => {
-    if (alert != null) {
-      const { universe } = AppStatus.get();
-      const callback = alertUpdated =>
-        AppStatus.actions.addAlert({
-          seen: false,
-          level: INFO,
-          networkId: getNetworkId(),
-          universe: universe.id,
-          ...alertUpdated,
-        });
-      try {
-        dispatch(setAlertText(alert, callback));
-      } catch (error) {
-        callback(error, null);
-      }
+  if (alert != null) {
+    const { universe } = AppStatus.get();
+    const callback = alertUpdated =>
+      AppStatus.actions.addAlert({
+        seen: false,
+        level: INFO,
+        networkId: getNetworkId(),
+        universe: universe.id,
+        ...alertUpdated,
+      });
+    try {
+      setAlertText(alert, callback);
+    } catch (error) {
+      callback(error, null);
     }
-  };
+  }
 }
 
 export function updateExistingAlert(id, alert) {
-  return (dispatch, getState) => {
+  return () => {
     const callback = alertUpdated =>
       AppStatus.actions.updateAlert(id, alertUpdated);
     try {
-      return dispatch(setAlertText(alert, callback));
+      return setAlertText(alert, callback);
     } catch (error) {
       return callback(error, null);
     }
@@ -70,79 +66,73 @@ export function updateAlert(
   alert: any,
   dontMakeNewAlerts?: boolean
 ) {
-  return (dispatch: ThunkDispatch<void, any, Action>): void => {
-    if (alert) {
-      const { alerts } = AppStatus.get();
-      const alertName = alert.name.toUpperCase();
-      alert.id = id;
-      alert.uniqueId =
-        alertName === PUBLICTRADE || alertName === PUBLICFILLORDER
-          ? createUniqueOrderId(alert)
-          : id;
+  if (alert) {
+    const { alerts } = AppStatus.get();
+    const alertName = alert.name.toUpperCase();
+    alert.id = id;
+    alert.uniqueId =
+      alertName === PUBLICTRADE || alertName === PUBLICFILLORDER
+        ? createUniqueOrderId(alert)
+        : id;
 
-      if (alertName === CLAIMTRADINGPROCEEDS) {
-        alert.uniqueId = createAlternateUniqueOrderId(alert);
-        if (createBigNumber(alert.params.numPayoutTokens).eq(ZERO)) {
-          return;
-        }
-      }
-
-      if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
-        dispatch(
-          updateAlert(id, {
-            ...alert,
-            params: {
-              ...alert.params,
-              preFilled: true,
-            },
-            name: CONTRIBUTE,
-          })
-        );
-      }
-
-      let foundAlert = alerts.find(
-        findAlert =>
-          findAlert.uniqueId === alert.uniqueId &&
-          findAlert.name.toUpperCase() === alert.name.toUpperCase()
-      );
-      if (alertName === REDEEMSTAKE) {
-        foundAlert = alerts.find(
-          findAlert =>
-            findAlert.id === alert.id &&
-            findAlert.name.toUpperCase() === REDEEMSTAKE
-        );
-      }
-      if (foundAlert) {
-        AppStatus.actions.removeAlert(alert.uniqueId, alert.name);
-        dispatch(
-          addAlert({
-            ...foundAlert,
-            ...alert,
-            name: foundAlert.name !== '' ? foundAlert.name : alert.name,
-            params: {
-              ...foundAlert.params,
-              ...alert.params,
-              repReceived:
-                alert.params.repReceived &&
-                foundAlert.params.repReceived &&
-                createBigNumber(alert.params.repReceived).plus(
-                  createBigNumber(foundAlert.params.repReceived)
-                ),
-            },
-          })
-        );
-      } else {
-        dispatch(addAlert(alert));
+    if (alertName === CLAIMTRADINGPROCEEDS) {
+      alert.uniqueId = createAlternateUniqueOrderId(alert);
+      if (createBigNumber(alert.params.numPayoutTokens).eq(ZERO)) {
+        return;
       }
     }
-  };
+
+    if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
+      updateAlert(id, {
+        ...alert,
+        params: {
+          ...alert.params,
+          preFilled: true,
+        },
+        name: CONTRIBUTE,
+      });
+    }
+
+    let foundAlert = alerts.find(
+      findAlert =>
+        findAlert.uniqueId === alert.uniqueId &&
+        findAlert.name.toUpperCase() === alert.name.toUpperCase()
+    );
+    if (alertName === REDEEMSTAKE) {
+      foundAlert = alerts.find(
+        findAlert =>
+          findAlert.id === alert.id &&
+          findAlert.name.toUpperCase() === REDEEMSTAKE
+      );
+    }
+    if (foundAlert) {
+      AppStatus.actions.removeAlert(alert.uniqueId, alert.name);
+      addAlert({
+        ...foundAlert,
+        ...alert,
+        name: foundAlert.name !== '' ? foundAlert.name : alert.name,
+        params: {
+          ...foundAlert.params,
+          ...alert.params,
+          repReceived:
+            alert.params.repReceived &&
+            foundAlert.params.repReceived &&
+            createBigNumber(alert.params.repReceived).plus(
+              createBigNumber(foundAlert.params.repReceived)
+            ),
+        },
+      });
+    } else {
+      addAlert(alert);
+    }
+  }
 }
 
 export const addEthIncreaseAlert = (
   daiBalance: string,
   oldEthBalance: string,
   newEthBalance: string
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => {
   // eth balances hasn't be initialized to signing wallets eth balance
   if (oldEthBalance === null) return null;
   const {
@@ -176,20 +166,18 @@ export const addEthIncreaseAlert = (
       createBigNumber(attoEthToDaiRate.div(10 ** 18) || 0)
     );
     const timestamp = currentAugurTimestamp * 1000;
-    dispatch(
-      addAlert({
-        name: ETH_RESERVE_INCREASE,
-        uniqueId: String(timestamp),
-        toast: true,
-        description: `Your ETH balance has increased by $${amount.formatted} DAI`,
-        title: 'ETH reserves replenished',
-        status: SUCCESS,
-        timestamp,
-        params: {
-          marketId: NULL_ADDRESS,
-        },
-      })
-    );
+    addAlert({
+      name: ETH_RESERVE_INCREASE,
+      uniqueId: String(timestamp),
+      toast: true,
+      description: `Your ETH balance has increased by $${amount.formatted} DAI`,
+      title: 'ETH reserves replenished',
+      status: SUCCESS,
+      timestamp,
+      params: {
+        marketId: NULL_ADDRESS,
+      },
+    });
   }
   return null;
 };

@@ -292,7 +292,7 @@ const ConnectDropdown = ({
             onClick={() => copyClicked()}
             className={isCopied ? Styles.ShowConfirmaiton : null}
           >
-            {ClipboardCopy} Copy
+            Copy {ClipboardCopy}
           </button>
         </div>
 

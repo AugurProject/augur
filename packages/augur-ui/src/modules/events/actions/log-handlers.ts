@@ -91,15 +91,13 @@ const handleAlert = (
   } = AppStatus.get();
   const timestamp = currentAugurTimestamp * 1000;
   try {
-    dispatch(
       updateAlert(log.transactionHash, {
         params: log,
         toast: toast,
         status: TXEventName.Success,
         timestamp,
         name,
-      })
-    );
+      });
   } catch (e) {
     console.error('alert could not be created', e);
   }
@@ -308,8 +306,7 @@ export const handleMarketCreatedLog = (logs: any) => (
     if (log.removed) {
       Markets.actions.removeMarket(log.markett);
     } else {
-      dispatch(
-        loadMarketsInfo([log.market], (err, marketInfos) => {
+        Markets.actions.updateMarketsData(null, loadMarketsInfo([log.market], (err, marketInfos) => {
           if (err) return console.error(err);
           Object.keys(marketInfos).map(id => {
             const market = marketInfos[id];
@@ -321,8 +318,7 @@ export const handleMarketCreatedLog = (logs: any) => (
               dispatch(marketCreationCreated(market, log.extraInfo));
             }
           });
-        })
-      );
+        });
     }
   });
   if (userLogs.length > 0) {
@@ -354,7 +350,7 @@ export const handleMarketMigratedLog = (log: any) => (
     Markets.actions.removeMarket(log.markett);
     dispatch(addPendingData(log.market, MARKETMIGRATED, TXEventName.Success, '0', undefined));
   } else {
-    dispatch(loadMarketsInfo([log.market]));
+    Markets.actions.updateMarketsData(null, loadMarketsInfo([log.market]));
   }
   dispatch(loadUniverseDetails(universeId, address));
 };
@@ -541,14 +537,12 @@ export const handleTradingProceedsClaimedLog = (
     log.sender,
     address
   )) {
-    dispatch(
       updateAlert(log.market, {
         name: CLAIMTRADINGPROCEEDS,
         timestamp: currentAugurTimestamp * 1000,
         status: TXEventName.Success,
         params: { ...log },
-      })
-    );
+      });
     dispatch(removePendingTransaction(CLAIMMARKETSPROCEEDS));
   }
 };
@@ -652,7 +646,7 @@ export const handleMarketParticipantsDisavowedLog = (logs: any) => (
       addPendingData(marketId, DISAVOWCROWDSOURCERS, TXEventName.Success, '0')
     );
   });
-  dispatch(loadMarketsInfo(marketIds));
+  Markets.actions.updateMarketsData(null, loadMarketsInfo(marketIds));
 };
 
 export const handleMarketTransferredLog = (logs: any) => (
@@ -660,7 +654,7 @@ export const handleMarketTransferredLog = (logs: any) => (
   getState: () => AppState
 ) => {
   const marketIds = logs.map(log => log.market);
-  dispatch(loadMarketsInfo(marketIds));
+  Markets.actions.updateMarketsData(null, loadMarketsInfo(marketIds));
 };
 
 export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
@@ -773,7 +767,6 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
       }
       if (log.tokenType === Logs.TokenType.ReputationToken && !isForking) {
         const timestamp = currentAugurTimestamp * 1000;
-        dispatch(
           updateAlert(
             log.blockHash,
             {
@@ -786,8 +779,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
               toast: true,
             },
             false
-          )
-        );
+          );
         dispatch(removePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN));
       }
     });

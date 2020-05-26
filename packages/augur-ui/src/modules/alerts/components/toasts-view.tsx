@@ -6,16 +6,15 @@ import Styles from 'modules/alerts/components/toasts-view.styles.less';
 import classNames from 'classnames';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getInfoAlertsAndSeenCount } from '../helpers/alerts';
+import { updateExistingAlert } from '../actions/alerts';
 
 interface ToastsViewProps {
   toggleAlerts: Function;
-  updateExistingAlert: Function;
   onTradingTutorial?: boolean;
 }
 
 const ToastsView = ({
   toggleAlerts,
-  updateExistingAlert,
   onTradingTutorial,
 }: ToastsViewProps) => {
   const { alerts } = getInfoAlertsAndSeenCount();

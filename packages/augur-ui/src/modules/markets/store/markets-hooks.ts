@@ -44,7 +44,7 @@ export function MarketsReducer(state, action) {
     case UPDATE_MARKETS_DATA:
       updatedState.marketInfos = {
         ...updatedState.marketInfos,
-        ...processMarketsData(action.marketInfos, updatedState.marketInfos)
+        ...processMarketsData(action.marketInfos || action.payload?.marketInfos, updatedState.marketInfos)
       };
       break;
     case REMOVE_MARKET:
@@ -106,7 +106,7 @@ export const useMarkets = (defaultState = MOCK_MARKETS_STATE) => {
       actions: {
         updateOrderBook: (marketId, orderBook, payload) => newDispatch({ type: UPDATE_ORDER_BOOK, marketId, orderBook, payload}),
         clearOrderBook: () => dispatch({ type: CLEAR_ORDER_BOOK }),
-        updateMarketsData: (marketInfos) => dispatch({ type: UPDATE_MARKETS_DATA, marketInfos }),
+        updateMarketsData: (marketInfos, payload) => newDispatch({ type: UPDATE_MARKETS_DATA, marketInfos, payload }),
         removeMarket: (marketId) => dispatch({ type: REMOVE_MARKET, marketId }),
         bulkMarketTradingHistory: (keyedMarketTradingHistory, payload) => newDispatch({ type: BULK_MARKET_TRADING_HISTORY, keyedMarketTradingHistory, payload}),
         updateReportingList: (reportingState, marketIds, params, isLoading) => dispatch({type: UPDATE_REPORTING_LIST, reportingState, marketIds, params, isLoading})

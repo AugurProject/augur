@@ -18,14 +18,31 @@
 
     > div:first-of-type {
       z-index: @above-all-content;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+
+      > button {
+        padding: @size-12;
+
+        > svg {
+          width: @size-12;
+          height: @size-12;
+
+          > g {
+            stroke: @color-outcome-seven;
+          }
+        }
+      }
 
       > div:first-of-type {
+        justify-content: flex-end;
         border-right: @size-1 solid var(--color-module-background);
       }
 
       > div:last-of-type {
         display: flex;
         padding: @size-6 @size-12 @size-6 @size-16;
+        flex-direction: column;
       }
     }
 
@@ -55,6 +72,7 @@
           display: flex;
           justify-content: flex-end;
           width: 100%;
+          padding-bottom: 0;
         }
       }
     }
@@ -188,7 +206,7 @@
       justify-content: flex-start;
       padding: 0 @size-16;
       position: fixed;
-      width: calc(100% - @size-52);
+      width: 100%;
 
       > button {
         .text-12-bold;
@@ -239,6 +257,25 @@
     > div {
       background: var(--color-primary-text);
     }
+
+    @media @breakpoint-mobile-tablet {
+      > div:first-of-type {
+        justify-content: space-between;
+        padding: @size-8 0;
+        padding-right: @size-14;
+        align-items: center;
+
+        > button {
+          color: var(--color-secondary-action);
+
+          > svg {
+            > path {
+              fill: var(--color-secondary-action);
+            }
+          }
+        }
+      }
+    }
   }
   .Container {
     background: var(--color-primary-text);
@@ -280,9 +317,15 @@
 
       > footer {
         background: var(--color-primary-text);
-        border-top: none;
-        flex-flow: row-reverse nowrap;
-  
+        border-top: @size-1 solid var(--color-secondary-text-50);
+        padding: 0;
+
+        > div:nth-of-type(2) {
+          > button {
+            border-left: 0;
+            border-right: @size-1 solid var(--color-secondary-text-50);
+          }
+        }
         > button {
           color: var(--color-module-background);
           border: 0;
