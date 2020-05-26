@@ -83,7 +83,7 @@ const TopBar = () => {
         {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
           <HelpResources />
         )}
-        <OddsMenu />
+        {!isMobile && <OddsMenu />}
         {!isLogged && !restoredAccount && (
           <SecondaryButton action={() => setModal({ type: MODAL_LOGIN })} text={'Login'} />
         )}

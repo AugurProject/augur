@@ -54,6 +54,7 @@ import ModalInvalidMarketRules from 'modules/modal/containers/modal-invalid-mark
 import ModalInitializeAccounts from 'modules/modal/containers/modal-initialize-account';
 import ModalHelp from 'modules/modal/containers/modal-help';
 import ModalMarketNotFound from 'modules/modal/containers/modal-market-not-found';
+import ModalOdds from 'modules/modal/containers/modal-odds';
 
 import * as TYPES from 'modules/common/constants';
 
@@ -154,6 +155,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalSignin {...props} isLogin />;
     case TYPES.MODAL_HELP:
       return <ModalHelp {...props} />;
+    case TYPES.MODAL_ODDS:
+        return <ModalOdds {...props} />;
     case TYPES.MODAL_SIGNUP:
       return <ModalSignin {...props} isLogin={false} />;
     case TYPES.MODAL_LOADING:

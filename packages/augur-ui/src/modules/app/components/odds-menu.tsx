@@ -3,7 +3,7 @@ import classNames from 'classNames';
 
 import { Gear, CheckMark } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { ODDS_TYPE } from 'modules/common/constants';
+import { ODDS_TYPE, MODAL_ODDS } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/odds-menu.styles';
 
@@ -12,12 +12,20 @@ const { DECIMAL, FRACTIONAL, AMERICAN, PERCENT } = ODDS_TYPE;
 const Odds = [DECIMAL, FRACTIONAL, AMERICAN, PERCENT];
 
 export const OddsMenu = () => {
-  const { oddsType, isOddsMenuOpen, actions: { setOdds, setIsOddsMenuOpen } } = useAppStatusStore();
+  const { isOddsMenuOpen, isMobile, actions: { setIsOddsMenuOpen, setModal } } = useAppStatusStore();
 
   return (
     <div className={classNames(Styles.OddsMenu, { [Styles.Open]: isOddsMenuOpen })}>
-      <button onClick={() => setIsOddsMenuOpen(!isOddsMenuOpen)}>{Gear}</button>
-      <ul>
+      <button onClick={() => isMobile ? setModal({type: MODAL_ODDS}) : setIsOddsMenuOpen(!isOddsMenuOpen)}>{Gear}</button>
+      <OddsOptions />
+    </div>
+  );
+};
+
+export const OddsOptions = () => {
+  const { oddsType, actions: { setOdds } } = useAppStatusStore();
+  return (
+    <ul className={Styles.OddsOptions}>
         <li>
           <h4>Odds Settings</h4>
         </li>
@@ -50,6 +58,5 @@ export const OddsMenu = () => {
           </button>
         </li>
       </ul>
-    </div>
   );
-};
+}

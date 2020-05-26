@@ -96,7 +96,7 @@ function renderMobileMenuButton(
     if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
       icon = null;
     } else {
-      icon = <MobileNavCloseIcon />;
+      return <div/>;
     }
   }
 

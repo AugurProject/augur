@@ -6,8 +6,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'appStore';
 
-const mapStateToProps = (state: AppState) => ({
-});
+const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
@@ -15,8 +14,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP, dP, oP) => {
   return {
-    showHelp: true,
-    title: 'Popular help resources',
+    showOdds: true,
+    title: 'Settings',
     closeAction: () => {
         dP.closeModal();
       },

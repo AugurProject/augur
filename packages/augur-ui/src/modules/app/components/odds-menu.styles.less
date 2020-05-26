@@ -40,7 +40,7 @@
       > svg {
         height: @size-20;
         width: @size-20;
-  
+
         > path {
           fill: var(--color-module-background);
         }
@@ -63,78 +63,82 @@
       }
 
       > ul {
-        background: var(--color-module-background);
         display: flex;
-        flex-flow: column nowrap;
         position: absolute;
         top: @top-bar-height;
-        align-self: flex-end;
-        box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
-        width: @size-240;
-        border-radius: 0 0 @border-radius-default @border-radius-default;
 
         @media @breakpoint-mobile-tablet {
           top: @top-bar-height-mobile;
         }
+      }
+    }
+  }
+}
 
-        > li {
-          .text-14;
+.OddsOptions {
+  background: var(--color-module-background);
+  display: flex;
+  flex-flow: column nowrap;
+  align-self: flex-end;
+  box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
+  width: @size-240;
+  border-radius: 0 0 @border-radius-default @border-radius-default;
 
-          height: @size-44;
-          color: var(--color-secondary-text);
-          display: flex;
-          align-items: center;
-          padding: 0 @size-16;
+  > li {
+    .text-14;
 
-          &.Selected {
-            color: var(--color-primary-text);
+    height: @size-44;
+    color: var(--color-secondary-text);
+    display: flex;
+    align-items: center;
+    padding: 0 @size-16;
 
-            > button > svg {
-              display: block;
-            }
-          }
+    &.Selected {
+      color: var(--color-primary-text);
 
-          > button {
-            align-items: center;
-            display: flex;
-            flex-flow: row nowrap;
-            flex: 1;
-            height: 100%;
-            justify-content: space-between;
-            border-bottom: @size-1 solid var(--color-dark-grey);
+      > button > svg {
+        display: block;
+      }
+    }
 
-            > svg {
-              display: none;
-              height: @size-9;
-              width: @size-11;
+    > button {
+      align-items: center;
+      display: flex;
+      flex-flow: row nowrap;
+      flex: 1;
+      height: 100%;
+      justify-content: space-between;
+      border-bottom: @size-1 solid var(--color-dark-grey);
 
-              > path {
-                stroke: var(--color-primary-text);
-              }
-            }
-          }
+      > svg {
+        display: none;
+        height: @size-9;
+        width: @size-11;
 
-          &:first-of-type {
-            background: var(--color-table-header);
-            border-bottom: @size-1 solid var(--color-dark-grey);
-            padding: 0 @size-12;
-
-            > h4 {
-              .text-12-semi-bold;
-
-              color: var(--color-primary-text);
-              text-transform: uppercase;
-            }
-          }
-
-          &:last-of-type {
-            border-radius: 0 0 @border-radius-default @border-radius-default;
-
-            > button {
-              border-bottom: @size-1 solid transparent;
-            }
-          }
+        > path {
+          stroke: var(--color-primary-text);
         }
+      }
+    }
+
+    &:first-of-type {
+      background: var(--color-table-header);
+      border-bottom: @size-1 solid var(--color-dark-grey);
+      padding: 0 @size-12;
+
+      > h4 {
+        .text-12-semi-bold;
+
+        color: var(--color-primary-text);
+        text-transform: uppercase;
+      }
+    }
+
+    &:last-of-type {
+      border-radius: 0 0 @border-radius-default @border-radius-default;
+
+      > button {
+        border-bottom: @size-1 solid transparent;
       }
     }
   }
