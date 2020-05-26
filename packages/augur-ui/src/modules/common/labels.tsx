@@ -36,8 +36,6 @@ import {
   ACCOUNT_TYPES,
   CLOSED_SHORT,
   GWEI_CONVERSION,
-  USE_ETH_RESERVE,
-  NOT_USE_ETH_RESERVE,
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber, formatBlank, formatGasCostToEther, formatAttoEth } from 'utils/format-number';
@@ -811,6 +809,7 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
 interface TransactionFeeLabelProps {
   label: string;
   gasCostDai: FormattedNumber;
+  isError: boolean;
 }
 
 const mapStateToPropsTransactionFeeLabel = (state: AppState) => ({
@@ -819,19 +818,38 @@ const mapStateToPropsTransactionFeeLabel = (state: AppState) => ({
 
 export const TransactionFeeLabelCmp = ({
   label,
-  gasCostDai
+  gasCostDai,
 }: TransactionFeeLabelProps) => (
-    <LinearPropertyLabel
+  <LinearPropertyLabel
     label={label}
     value={gasCostDai}
     showDenomination={true}
   />
-)
+);
 
+export const TransactionFeeLabelToolTipCmp = ({
+  label,
+  isError,
+  gasCostDai
+}: TransactionFeeLabelProps) => (
+    <LinearPropertyLabelUnderlineTooltip
+      label={label}
+      value={gasCostDai}
+      showDenomination={true}
+      highlight
+      accentValue={isError}
+      id={'totalFunds'}
+      tipText={`Est. TX Fee is not included in profit and loss`}
+    />
+)
 
 export const TransactionFeeLabel = connect(
   mapStateToPropsTransactionFeeLabel
 )(TransactionFeeLabelCmp);
+
+export const TransactionFeeLabelToolTip = connect(
+  mapStateToPropsTransactionFeeLabel
+)(TransactionFeeLabelToolTipCmp);
 
 export const LinearPropertyLabel = ({
   highlight,
@@ -1358,6 +1376,7 @@ export const LinearPropertyLabelUnderlineTooltip = ({
   id,
   label,
   accentValue,
+  highlight,
   showDenomination,
   useFull,
 }: LinearPropertyLabelUnderlineTooltipProps) => (
@@ -1368,6 +1387,7 @@ export const LinearPropertyLabelUnderlineTooltip = ({
       className={classNames({
         [Styles.TEXT]: !!tipText,
         [Styles.isAccented]: accentValue,
+        [Styles.isHighlighted]: highlight,
       })}
       data-tip
       data-for={`underlinetooltip-${id}`}
@@ -1663,18 +1683,18 @@ export const DiscordLink = (props: DiscordLinkProps) => (
 export const AddFundsHelp = props => (
   <ol>
     <li>
-      Add ETH to your {props.walletType} account address.{' '}
+      Add ETH to your {props.walletType} trading account.{' '}
       {props.walletType === ACCOUNT_TYPES.WEB3WALLET
         ? ''
         : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring Dai.`}{' '}
       {props.walletType === ACCOUNT_TYPES.WEB3WALLET ? null : (
         <span onClick={() => props.showAddFundsModal()}>
-          Add ETH to your {props.walletType} account address
+          Add ETH to your {props.walletType} trading account
         </span>
       )}
     </li>
     <li>
-      After you have sent the ETH to your {props.walletType} account address you
+      After you have sent the ETH to your {props.walletType} trading account you
       can then return and make the transaction.
     </li>
   </ol>

@@ -11,10 +11,10 @@ import { CoreStats, FormattedNumber } from 'modules/types';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
-import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
+import { PrimaryButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
-import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
+import { TOTAL_FUNDS_TOOLTIP, TRANSACTIONS, CREATEAUGURWALLET } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/top-bar.styles.less';
 
@@ -69,6 +69,11 @@ interface TopBarProps {
   loginModal: Function;
   helpModal: Function;
   ethReserveInDai: FormattedNumber;
+  showAddFundsButton: boolean;
+  showActivationButton: boolean;
+  createFundedGsnWallet: Function;
+  buyDaiModal: Function;
+  activateWalletModal: Function;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
@@ -82,7 +87,11 @@ const TopBar: React.FC<TopBarProps> = ({
   signupModal,
   loginModal,
   helpModal,
-  ethReserveInDai
+  ethReserveInDai,
+  showAddFundsButton,
+  showActivationButton,
+  buyDaiModal,
+  activateWalletModal,
 }) => {
   return (
     <header className={Styles.TopBar}>
@@ -99,6 +108,19 @@ const TopBar: React.FC<TopBarProps> = ({
         ethReserveInDai={ethReserveInDai}
       />
       <div>
+        {(showActivationButton || showAddFundsButton) &&
+          <PrimaryButton
+            action={() => {
+              if (showAddFundsButton) {
+                buyDaiModal();
+              } else {
+                activateWalletModal();
+              }
+            }}
+            text={'Complete account activation'}
+          />
+        }
+
         {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
           <HelpResources isMobile={isMobile} helpModal={helpModal} />
         )}

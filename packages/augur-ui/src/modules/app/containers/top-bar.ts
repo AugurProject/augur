@@ -7,7 +7,7 @@ import { selectInfoAlertsAndSeenCount } from 'modules/alerts/selectors/alerts';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_LOGIN, MODAL_SIGNUP, MODAL_HELP } from 'modules/common/constants';
+import { MODAL_LOGIN, MODAL_SIGNUP, MODAL_HELP, WALLET_STATUS_VALUES, MODAL_ADD_FUNDS, MODAL_AUGUR_P2P, MODAL_BUY_DAI } from 'modules/common/constants';
 import { Action } from 'redux';
 import { getEthReserveInDai } from 'modules/auth/selectors/get-eth-reserve';
 
@@ -24,6 +24,8 @@ const mapStateToProps = (state: AppState) => {
     restoredAccount: authStatus.restoredAccount,
     alertsVisible: authStatus.isLogged && sidebarStatus.isAlertsVisible,
     ethReserveInDai,
+    showAddFundsButton: authStatus.isLogged && appStatus.walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING,
+    showActivationButton: authStatus.isLogged && appStatus.walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE,
   };
 };
 
@@ -32,6 +34,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   loginModal: () => dispatch(updateModal({ type: MODAL_LOGIN })),
   signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
   helpModal: () => dispatch(updateModal({ type: MODAL_HELP })),
+  buyDaiModal: () => dispatch(updateModal({ type: MODAL_BUY_DAI })),
+  activateWalletModal: () => dispatch(updateModal({ type: MODAL_AUGUR_P2P })),
 });
 
 export default withRouter(

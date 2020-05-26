@@ -7,7 +7,7 @@ import { selectEnvState, selectAppStatus } from 'appStore/select-state';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 
  const userEthReserve = (balances, env): FormattedNumber => {
-  const ethNonSafeBN = createBigNumber(balances.ethNonSafe || 0);
+  const ethNonSafeBN = createBigNumber(balances.signerBalances.eth || 0);
   let desiredSignerEthBalance = createBigNumber(
     formatAttoEth(env.gsn.desiredSignerBalanceInETH * 10**18).value
   );
