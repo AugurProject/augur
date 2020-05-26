@@ -69,7 +69,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
 
   const mainWalletContent = (
     <>
-      <h3>User account address</h3>
+      <h3>Trading account</h3>
       <AccountAddressDisplay
         copyable
         address={toChecksumAddress(loginAccount.address)}
@@ -92,7 +92,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
 
       <main>
         {showForSafeWallet && (
-          <h1>You have V1 REP in your User account address</h1>
+          <h1>You have V1 REP in your trading account</h1>
         )}
         {!showForSafeWallet && <h1>You have V1 REP in your wallet</h1>}
 
@@ -111,9 +111,9 @@ export const MigrateRep = (props: MigrateRepForm) => {
         {!showForSafeWallet && (
           <h2>
             In order to migrate your V1 REP to V2 REP to use it in Augur V2, you
-            need to send your V1 REP to your User Account Address shown below.
+            need to send your V1 REP to your trading account shown below.
             <p />
-            When your V1 REP is in your User Account Address you will see a
+            When your V1 REP is in your trading account you will see a
             button named “Migrate V1 to V2 REP” in the Augur app navigation.
             From here you can migrate all V1 REP in your account to V2 REP.
             <ExternalLinkButton

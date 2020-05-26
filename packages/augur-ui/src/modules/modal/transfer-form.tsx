@@ -30,10 +30,17 @@ interface TransferFormProps {
     eth: number;
     rep: number;
     dai: number;
+    signerBalances: {
+      eth: number;
+      dai: number;
+      rep: number;
+    }
   };
   account: string;
   GsnEnabled: boolean;
   gasPrice: number;
+  useSigner?: boolean;
+  signerAddress?: string;
   transactionLabel: string;
 }
 
@@ -41,6 +48,7 @@ interface TransferFormState {
   address: string;
   currency: string;
   amount: string;
+  options: object[];
   errors: {
     address: string;
     amount: string;
@@ -58,29 +66,32 @@ export class TransferForm extends Component<
 > {
   state: TransferFormState = {
     relayerGasCosts: createBigNumber(TRANSFER_ETH_GAS_COST),
-    address: '',
-    currency: ETH,
+    address: this.props.useSigner ? this.props.account : '',
+    currency: this.props.useSigner ? DAI : ETH,
     amount: '',
     errors: {
       address: '',
       amount: '',
     },
+    options: this.props.useSigner ?
+      [{
+        label: DAI,
+        value: DAI,
+      }] :
+      [{
+        label: DAI,
+        value: DAI,
+      },
+      {
+        label: ETH,
+        value: ETH,
+      },
+      {
+        label: REP,
+        value: REP,
+      },
+    ]
   };
-
-  options = [
-    {
-      label: DAI,
-      value: DAI,
-    },
-    {
-      label: ETH,
-      value: ETH,
-    },
-    {
-      label: REP,
-      value: REP,
-    },
-  ];
 
   dropdownChange = (value: string) => {
     const { amount } = this.state;
@@ -92,15 +103,18 @@ export class TransferForm extends Component<
   };
 
   handleMax = () => {
-    const { balances, fallBackGasCosts, GsnEnabled, gasPrice } = this.props;
+    const { balances, useSigner, fallBackGasCosts, GsnEnabled, gasPrice } = this.props;
     const { currency, relayerGasCosts } = this.state;
+    const balance = useSigner
+      ? balances.signerBalances[currency.toLowerCase()]
+      : balances[currency.toLowerCase()];
 
     const gasEstimate = GsnEnabled
       ? getGasInDai(relayerGasCosts.multipliedBy(gasPrice))
       : fallBackGasCosts[currency.toLowerCase()];
 
     const fullAmount = createBigNumber(
-      balances[currency.toLowerCase()]
+      balance
     );
     const valueMinusGas = !GsnEnabled ? fullAmount.minus(createBigNumber(gasEstimate.value)) : fullAmount;
     const resolvedValue = valueMinusGas.lt(ZERO) ? ZERO : valueMinusGas;
@@ -113,14 +127,24 @@ export class TransferForm extends Component<
       fallBackGasCosts,
       GsnEnabled,
       gasPrice,
+      useSigner,
     } = this.props;
     const { relayerGasCosts } = this.state;
     const newAmount = convertExponentialToDecimal(sanitizeArg(amount));
     const bnNewAmount = createBigNumber(newAmount || '0');
     const { errors: updatedErrors, currency } = this.state;
     updatedErrors.amount = '';
-    const availableEth = createBigNumber(balances.eth);
-    const availableDai = createBigNumber(balances.dai);
+    let availableEth = createBigNumber(balances.eth);
+    let availableDai = createBigNumber(balances.dai);
+    const balance = useSigner
+      ? balances.signerBalances[currency.toLowerCase()]
+      : balances[currency.toLowerCase()];
+
+    if (useSigner) {
+      availableEth = createBigNumber(balances.signerBalances?.eth || 0);
+      availableDai = createBigNumber(balances.signerBalances?.dai || 0);
+    }
+
     let amountMinusGas = ZERO;
 
     if (GsnEnabled) {
@@ -168,7 +192,7 @@ export class TransferForm extends Component<
 
     if (
       bnNewAmount.gt(
-        createBigNumber(balances[currency.toLowerCase()])
+        createBigNumber(balance)
       )
     ) {
       updatedErrors.amount = 'Quantity is greater than available funds.';
@@ -188,6 +212,32 @@ export class TransferForm extends Component<
 
     this.setState({ amount: newAmount, errors: updatedErrors });
   };
+
+  componentDidMount() {
+    const { useSigner, balances } = this.props;
+    if (useSigner) {
+      let currencies = [{
+        label: DAI,
+        value: DAI,
+      }]
+
+      if (balances.signerBalances.eth > 0) {
+        currencies = currencies.concat({
+          label: ETH,
+          value: ETH,
+        });
+      }
+
+      if (balances.signerBalances.rep > 0) {
+        currencies = currencies.concat({
+          label: REP,
+          value: REP,
+        });
+      }
+
+      this.setState({ options: currencies });
+    }
+  }
 
   async componentDidUpdate(prevProps, prevState) {
     if (this.state.currency && this.state.currency !== prevState.currency) {
@@ -229,6 +279,7 @@ export class TransferForm extends Component<
       balances,
       closeAction,
       GsnEnabled,
+      useSigner,
       gasPrice,
       transactionLabel,
     } = this.props;
@@ -245,6 +296,9 @@ export class TransferForm extends Component<
       formattedAmount = formatRep(amount || 0);
     }
 
+    const balance = useSigner
+      ? balances.signerBalances[currency.toLowerCase()]
+      : balances[currency.toLowerCase()];
     const gasEstimate = GsnEnabled
       ? displayGasInDai(relayerGasCosts)
       : fallBackGasCosts[currency.toLowerCase()];
@@ -253,7 +307,7 @@ export class TransferForm extends Component<
       {
         text: 'Send',
         action: () =>
-          transferFunds(formattedAmount.fullPrecision, currency, address),
+          transferFunds(formattedAmount.fullPrecision, currency, address, useSigner),
         disabled: !isValid,
       },
       {
@@ -279,8 +333,8 @@ export class TransferForm extends Component<
             <CloseButton action={() => closeAction()} />
           </div>
           <div>
-            <h1>Transfer funds</h1>
-            <h2>Transfer funds to another address</h2>
+            <h1>Transfer {useSigner ? 'my Dai' : 'funds'}</h1>
+            <h2>Transfer {useSigner ? 'Dai to your Trading account' : 'funds to another address'}</h2>
           </div>
         </header>
 
@@ -292,6 +346,7 @@ export class TransferForm extends Component<
                 type='text'
                 value={address}
                 placeholder='0x...'
+                disabled={useSigner}
                 onChange={this.addressChange}
                 errorMessage={errors.address.length > 0 ? errors.address : ''}
               />
@@ -299,13 +354,11 @@ export class TransferForm extends Component<
             <div>
               <div>
                 <label htmlFor='currency'>Currency</label>
-                <span>
-                  Available: {balances[currency.toLowerCase()]}
-                </span>
+                <span>Available: {balance}</span>
               </div>
               <FormDropdown
                 id='currency'
-                options={this.options}
+                options={this.state.options}
                 defaultValue={currency}
                 onChange={this.dropdownChange}
               />

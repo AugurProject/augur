@@ -95,6 +95,11 @@ export const WALLET_STATUS_VALUES = {
   CREATED: 'CREATED',
 };
 
+export const ON_BORDING_STATUS_STEP = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 3
+}
 
 // ethereumNodeHttp
 export const ETHEREUM_NODE_HTTP = 'ethereum_node_http';
