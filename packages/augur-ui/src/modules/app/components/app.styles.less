@@ -211,6 +211,20 @@ h6 {
     display: flex;
     justify-content: space-between;
 
+    @media @breakpoint-mobile {
+      > div:nth-of-type(2) {
+        width: 100%;
+        background: var(--color-page-background);
+
+        > h1 {
+          .text-24-bold;
+
+          color: var(--color-primary-text);
+          margin: @size-40 @size-12 @size-20;
+        }
+      }
+    }
+
     @media @breakpoint-mobile-tablet {
       display: block;
     }
@@ -277,6 +291,15 @@ h6 {
 
 .TopBar {
   z-index: @mask-above;
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .TopBar {
+    @media @breakpoint-mobile {
+      height: @size-64;
+    }
+  }
 }
 
 .FloatAbove {

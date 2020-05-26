@@ -324,7 +324,9 @@ const AppView = ({
             createFundedGsnWallet={createFundedGsnWallet}
           />
           <AlertsContainer />
-          {forkEndTime !== '0' && currentAugurTimestamp && (
+          {forkEndTime !== '0' &&
+            currentAugurTimestamp &&
+            currentPath !== ACCOUNT_SUMMARY && (
             <section className={Styles.TopBar} />
           )}
           <section
