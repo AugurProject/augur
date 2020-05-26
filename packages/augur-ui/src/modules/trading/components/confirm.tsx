@@ -34,10 +34,10 @@ import {
   formatNumber,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabel } from 'modules/common/labels';
+import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip } from 'modules/common/labels';
 import { Trade } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
-import { getGasInDai, ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
+import { ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
 import { TXEventName } from '@augurproject/sdk/src';
 
 interface MessageButton {
@@ -163,6 +163,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       potentialDaiLoss,
       numFills,
       loopLimit,
+      potentialDaiProfit,
     } = trade;
 
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
@@ -231,6 +232,18 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         header: 'Insufficient DAI',
         type: ERROR,
         message: `You do not have enough funds to place this order. ${gasCostDai} DAI required for gas.`,
+      };
+    }
+
+    if (
+      !isNaN(numTrades) && numTrades > 0 &&
+      createBigNumber(gasCostDai).gt(potentialDaiProfit.value) &&
+      !tradingTutorial
+    ) {
+      messages = {
+        header: 'UNPROFITABLE TRADE',
+        type: WARNING,
+        message: `Est. TX Fee is higher than profit`,
       };
     }
 
@@ -402,7 +415,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
             {gasCostDai.roundedValue.gt(0) > 0 &&
               numFills > 0 && (
-              <TransactionFeeLabel
+              <TransactionFeeLabelToolTip
                 gasCostDai={gasCostDai}
               />
             )}
@@ -467,7 +480,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
             {gasCostDai.roundedValue.gt(0) > 0 &&
               numFills > 0 && (
-              <TransactionFeeLabel
+              <TransactionFeeLabelToolTip
+                isError={createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
                 gasCostDai={gasCostDai}
               />
               )}
