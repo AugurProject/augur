@@ -1,33 +1,19 @@
-import { createSelector } from 'reselect';
-import { Getters } from '@augurproject/sdk';
-import { selectLoginAccountReportingState } from 'appStore/select-state';
+import { AppStatus } from 'modules/app/store/app-status';
 
-export const hasStakeInMarket = (state, marketId: string) => {
-  if (!marketId) return false;
-  return selectMarketStake(state, { marketId });
-};
+export const hasStakeInMarket = (marketId: string) => {
+  const { loginAccount: { reporting: accountReporting }} = AppStatus.get();
+  const { reporting, disputing } = accountReporting;
+  if (!accountReporting) return false;
+  let hasStaked = false;
 
-const getMarketid = (state, props) => props.marketId;
-
-const selectMarketStake = createSelector(
-  selectLoginAccountReportingState,
-  getMarketid,
-  (
-    accountReporting: Getters.Accounts.AccountReportingHistory,
-    marketId: string
-  ) => {
-    if (!accountReporting) return false;
-    const { reporting, disputing } = accountReporting;
-    let hasStaked = false;
-
-    if (reporting && reporting.contracts.length > 0)
-      hasStaked = !!reporting.contracts.find(c => c.marketId === marketId);
-
-    if (hasStaked) return true;
-
-    if (disputing && disputing.contracts.length > 0)
-      hasStaked = !!disputing.contracts.find(c => c.marketId === marketId);
-
-    return hasStaked;
+  if (reporting?.contracts?.length > 0) {
+    hasStaked = !!reporting.contracts.find(c => c.marketId === marketId);
   }
-);
+
+  if (hasStaked) return hasStaked;
+
+  if (disputing?.contracts?.length > 0) {
+    hasStaked = !!disputing.contracts.find(c => c.marketId === marketId);
+  }
+  return hasStaked;
+};

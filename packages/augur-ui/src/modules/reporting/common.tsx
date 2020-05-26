@@ -19,7 +19,6 @@ import {
   HELP_CENTER_PARTICIPATION_TOKENS,
   CREATEAUGURWALLET,
   MODAL_INITIALIZE_ACCOUNT,
-  WARNING,
   WALLET_STATUS_VALUES,
   MODAL_ADD_FUNDS,
 } from 'modules/common/constants';
@@ -35,7 +34,6 @@ import {
   CancelTextButton,
   PrimaryButton,
   ProcessingButton,
-  ExternalLinkButton,
 } from 'modules/common/buttons';
 import { Checkbox, TextInput } from 'modules/common/form';
 import {
@@ -72,7 +70,10 @@ import {
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
-import { selectReportingBalances, selectDefaultReportingBalances } from 'modules/account/selectors/select-reporting-balances';
+import {
+  selectReportingBalances,
+  selectDefaultReportingBalances,
+} from 'modules/account/selectors/select-reporting-balances';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -92,27 +93,37 @@ export interface DismissableNoticeProps {
   queueId?: string;
 }
 
-export const DismissableNotice = (props: DismissableNoticeProps) => {
-  const [show, setShow] = useState(props.show);
+export const DismissableNotice = ({
+  title,
+  description,
+  buttonType,
+  buttonText,
+  buttonAction,
+  className,
+  show: showProp,
+  queueName,
+  queueId,
+}: DismissableNoticeProps) => {
+  const [show, setShow] = useState(showProp);
 
   return (
     <>
       {show ? (
-        <div className={classNames(Styles.DismissableNotice, props.className)}>
+        <div className={classNames(Styles.DismissableNotice, className)}>
           <span>{InformationIcon}</span>
           <div>
-            <div>{props.title}</div>
-            {props.description && <div>{props.description}</div>}
+            <div>{title}</div>
+            {description && <div>{description}</div>}
           </div>
-          {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON && (
-             <ProcessingButton
-              text={props.buttonText}
-              action={props.buttonAction}
-              queueName={props.queueName}
-              queueId={props.queueId}
+          {buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON && (
+            <ProcessingButton
+              text={buttonText}
+              action={buttonAction}
+              queueName={queueName}
+              queueId={queueId}
             />
           )}
-          {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE && (
+          {buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE && (
             <button
               type="button"
               className={Styles.close}
@@ -127,7 +138,6 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
   );
 };
 
-
 const mapStateToPropsActivateWalletButton = () => {
   const { gsnEnabled, walletStatus } = AppStatus.get();
   return {
@@ -137,11 +147,11 @@ const mapStateToPropsActivateWalletButton = () => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  initializeGsnWallet: () => dispatch(AppStatus.actions.setModal({ type: MODAL_INITIALIZE_ACCOUNT })),
+const mapDispatchToProps = dispatch => ({
+  initializeGsnWallet: () => AppStatus.actions.setModal({ type: MODAL_INITIALIZE_ACCOUNT }),
   updateWalletStatus: () => {
     dispatch(removePendingTransaction(CREATEAUGURWALLET));
-  }
+  },
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -186,9 +196,8 @@ const ActivateWalletButtonCmp = ({ showMessage, buttonAction }) => (
 export const ActivateWalletButton = connect(
   mapStateToPropsActivateWalletButton,
   mapDispatchToProps,
-  mergeProps,
+  mergeProps
 )(ActivateWalletButtonCmp);
-
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
@@ -1165,7 +1174,11 @@ const AllTimeProfitLoss = (props: AllTimeProfitLossProps) => (
 
 export const UserRepDisplay = () => {
   const [toggle, setToggle] = useState(false);
-  const { isLogged, loginAccount: { balances, reporting }, actions: { setModal } } = useAppStatusStore();
+  const {
+    isLogged,
+    loginAccount: { balances, reporting },
+    actions: { setModal },
+  } = useAppStatusStore();
   const {
     repBalanceFormatted,
     repProfitAmountFormatted,
@@ -1175,8 +1188,9 @@ export const UserRepDisplay = () => {
     reportingAmountFormatted,
     participationAmountFormatted,
     hasStakedRep,
-  } = isLogged ? selectReportingBalances(reporting, balances)
-  : selectDefaultReportingBalances();
+  } = isLogged
+    ? selectReportingBalances(reporting, balances)
+    : selectDefaultReportingBalances();
   return (
     <div
       className={classNames(Styles.UserRepDisplay, {
@@ -1186,19 +1200,12 @@ export const UserRepDisplay = () => {
       <>
         <div onClick={() => setToggle(!toggle)}>
           <RepBalance alternate larger rep={repBalanceFormatted.formatted} />
-          <ChevronFlip
-            stroke="#fff"
-            filledInIcon
-            quick
-            pointDown={toggle}
-          />
+          <ChevronFlip stroke="#fff" filledInIcon quick pointDown={toggle} />
         </div>
         <div>
           <AllTimeProfitLoss
             repProfitAmountFormatted={repProfitAmountFormatted}
-            repProfitLossPercentageFormatted={
-              repProfitLossPercentageFormatted
-            }
+            repProfitLossPercentageFormatted={repProfitLossPercentageFormatted}
           />
           <PrimaryButton
             action={() => setModal({ type: MODAL_ADD_FUNDS, fundType: REP })}
@@ -1206,9 +1213,7 @@ export const UserRepDisplay = () => {
             id="get-rep"
           />
         </div>
-        {!isLogged && (
-          <p>Connect a wallet to see your Available REP Balance</p>
-        )}
+        {!isLogged && <p>Connect a wallet to see your Available REP Balance</p>}
         {isLogged && hasStakedRep && (
           <>
             <div />
@@ -1256,7 +1261,6 @@ export const UserRepDisplay = () => {
     </div>
   );
 };
-
 
 export interface ParticipationTokensViewProps {
   openModal: Function;
