@@ -39,7 +39,7 @@
         height: 100%;
         width: 100%;
 
-        > button {
+        > button:first-of-type {
           .text-12-bold;
 
           align-content: center;
@@ -66,6 +66,10 @@
             }
           }
         }
+
+        > button:last-of-type {
+          display: none;
+        }
       }
 
       &.Minimized {
@@ -82,22 +86,68 @@
           height: @size-106;
           display: block;
 
-          > button {
+          > button:first-of-type {
             background: var(--color-primary-text);
             transform: rotate(-0.25turn) translate(-@size-17, -@size-17);
             transform-origin: bottom;
+            width: @size-106;
 
             > svg {
               transform: rotate(0.5turn);
             }
           }
+
+          > button:last-of-type {
+            display: none;
+          }
         }
 
         > section {
-          display: None;
+          display: none;
         }
       }
     }
+
+    @media @breakpoint-mobile {
+      flex-direction: column;
+
+      > div {
+        align-items: normal;
+        height: unset;
+
+        > button:first-of-type {
+          width: unset;
+          transform: unset;
+        }
+
+        > button:last-of-type {
+          display: none;
+        }
+      }
+
+      &.Minimized {
+        padding: @size-8;
+        right: 0;
+        left: 0;
+        max-width: unset;
+        top: unset;
+
+        > div {
+          background: unset;
+          height: unset;
+          width: 100%;
+          display: flex;
+          
+          > button:first-of-type {
+            display: none;
+          }
+
+          > button:last-of-type {
+            display: flex;
+          }
+        }
+      }
+    }     
   }
 
   .Container {
@@ -112,6 +162,9 @@
       height: 100%;
       border: 0;
       border-radius: 0;
+      width: 100%;
+      max-width: unset;
+      min-width: unset;
     }
   }
 
@@ -169,5 +222,22 @@
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
+
+    @media @breakpoint-mobile {
+      height: 100%;
+
+      > section {
+        display: block;
+        max-height: unset;
+
+        > div {
+          max-width: unset;
+        }
+
+        > div:first-of-type {
+          margin-top: @size-8;
+        }
+      }
+    }
   }
 }
