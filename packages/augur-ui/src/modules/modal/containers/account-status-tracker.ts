@@ -4,20 +4,19 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { AccountStatusTracker } from 'modules/modal/common';
-import { WALLET_STATUS_VALUES } from 'modules/common/constants';
+import { WALLET_STATUS_VALUES, ON_BORDING_STATUS_STEP } from 'modules/common/constants';
 
 const mapStateToProps = (state: AppState) => {
-  const { loginAccount, appStatus } = state;
-  const balances = loginAccount.balances;
+  const { appStatus } = state;
   const { walletStatus } = appStatus;
 
-  let accountStatusTracker = 1;
+  let accountStatusTracker = ON_BORDING_STATUS_STEP.ONE;
 
   if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE) {
-    accountStatusTracker = 2;
+    accountStatusTracker = ON_BORDING_STATUS_STEP.TWO;
   }
   else if (walletStatus === WALLET_STATUS_VALUES.CREATED) {
-    accountStatusTracker = 3;
+    accountStatusTracker = ON_BORDING_STATUS_STEP.THREE;
   }
 
   return {

@@ -38,14 +38,16 @@ export const getOnboardingStep = (step: number): string => {
 
 const mapStateToProps = (state: AppState) => {
   const balances = state.loginAccount.balances;
-
+  const daiHighValueAmount = state.env.gsn?.minDaiForSignerETHBalanceInDAI || DAI_HIGH_VALUE_AMOUNT;
+  const ethInReserveAmount = state.env.gsn?.desiredSignerBalanceInETH || RESERVE_IN_ETH;
   const ethRate = state.appStatus.ethToDaiRate?.value || 0;
-  const reserveInDai = formatDai(createBigNumber(RESERVE_IN_ETH).multipliedBy(ethRate));
+  const reserveInDai = formatDai(createBigNumber(ethInReserveAmount).multipliedBy(ethRate));
 
   return {
     walletStatus: state.appStatus.walletStatus,
-    highBalance: balances.dai >= DAI_HIGH_VALUE_AMOUNT,
+    highBalance: balances.dai > daiHighValueAmount,
     reserveInDai,
+    daiHighValueAmount,
   };
 };
 
@@ -77,11 +79,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       content: `Account activation is required before making your first transaction.There will be a small transaction fee to activate your account. ${
         sP.highBalance
           ? `$${sP.reserveInDai.formattedValue} worth of ETH, from your total funds will be held in your ETH reserve to cover further transactions.`
-          : `If your account balance exceeds $${DAI_HIGH_VALUE_AMOUNT}, a portion of this equivilant to 0.04ETH will be held in your ETH reserve to cover further transactions.`
+          : `If your account balance exceeds $${sP.daiHighValueAmount}, a portion of this equivilant to 0.04ETH will be held in your ETH reserve to cover further transactions.`
       }`,
     },
     {
-      content: `So long as your available account balance remains over $${DAI_HIGH_VALUE_AMOUNT} Dai, your ETH reserve will replenish automatically.`,
+      content: `So long as your available account balance remains over $${sP.daiHighValueAmount} Dai, your ETH reserve will replenish automatically.`,
     },
     {
       content: 'Your ETH reserve can easily be cashed out at anytime.',

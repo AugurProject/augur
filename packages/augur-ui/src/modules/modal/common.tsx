@@ -17,18 +17,15 @@ import {
   DefaultButtonProps,
   PrimaryButton,
   SecondaryButton,
-  SubmitTextButton,
   ExternalLinkButton,
   ProcessingButton,
 } from 'modules/common/buttons';
 import {
   LinearPropertyLabel,
   LinearPropertyLabelProps,
-  PendingLabel,
-  ConfirmedLabel,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS, DAI, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS } from 'modules/common/constants';
+import { PENDING, SUCCESS, DAI, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS, ON_BORDING_STATUS_STEP } from 'modules/common/constants';
 import { LinkContent, LoginAccount, FormattedNumber } from 'modules/types';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { toChecksumAddress } from 'ethereumjs-util';
@@ -453,21 +450,21 @@ export const AccountStatusTracker = ({ accountStatusTracker } :AccountStatusTrac
   <div className={Styles.AccountStatusTracker}>
     <div>
       <div className={classNames(Styles.AccountStep, {
-        [Styles.AccountStepCompleted]: accountStatusTracker >= 1
+        [Styles.AccountStepCompleted]: accountStatusTracker >= ON_BORDING_STATUS_STEP.ONE
       })}>
-        {accountStatusTracker >= 1 && OnboardingCheckIcon}
+        {accountStatusTracker >= ON_BORDING_STATUS_STEP.ONE && OnboardingCheckIcon}
       </div>
       <div className={Styles.line}/>
       <div className={classNames(Styles.AccountStep, {
-        [Styles.AccountStepCompleted]: accountStatusTracker >= 2
+        [Styles.AccountStepCompleted]: accountStatusTracker >= ON_BORDING_STATUS_STEP.TWO
       })}>
-        {accountStatusTracker >= 2 && OnboardingCheckIcon}
+        {accountStatusTracker >= ON_BORDING_STATUS_STEP.TWO && OnboardingCheckIcon}
       </div>
       <div className={Styles.line}/>
       <div className={classNames(Styles.AccountStep, {
-        [Styles.AccountStepCompleted]: accountStatusTracker === 3
+        [Styles.AccountStepCompleted]: accountStatusTracker === ON_BORDING_STATUS_STEP.THREE
       })}>
-        {accountStatusTracker === 3 && OnboardingCheckIcon}
+        {accountStatusTracker === ON_BORDING_STATUS_STEP.THREE && OnboardingCheckIcon}
       </div>
     </div>
 
