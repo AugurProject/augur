@@ -18,7 +18,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   updateTimeframeData: (options: any) =>
-    dispatch(updatePlatformTimeframeData(options)),
+    updatePlatformTimeframeData(options),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {

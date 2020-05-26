@@ -16,8 +16,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  updatePlatformTimeframeData: (startTime) =>
-    dispatch(updatePlatformTimeframeData({ startTime })),
+  updatePlatformTimeframeData: (startTime) => updatePlatformTimeframeData({ startTime }),
 });
 
 export default connect(

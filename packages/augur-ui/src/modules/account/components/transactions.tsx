@@ -10,62 +10,65 @@ import {
   DAIFaucetButton,
   ExternalLinkButton,
 } from 'modules/common/buttons';
-import { THEMES } from 'modules/common/constants';
+import {
+  THEMES,
+  NETWORK_IDS,
+  ZERO,
+  MODAL_TRANSACTIONS,
+  MODAL_ADD_FUNDS,
+  MODAL_TRANSFER,
+  MODAL_CASHOUT,
+  MODAL_REP_FAUCET,
+  MODAL_DAI_FAUCET,
+} from 'modules/common/constants';
 import { AddIcon } from 'modules/common/icons';
 import { AccountAddressDisplay } from 'modules/modal/common';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { toChecksumAddress } from 'ethereumjs-util';
 import Styles from 'modules/account/components/transactions.styles.less';
+import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls';
+import { createBigNumber } from 'utils/create-big-number';
 
-interface TransactionsProps {
-  showFaucets: boolean;
-  repFaucet: Function;
-  daiFaucet: Function;
-  deposit: Function;
-  transfer: Function;
-  transactions: Function;
-  approval: Function;
-  addFunds: Function;
-  legacyRepFaucet: Function;
-  cashOut: Function;
-  targetAddress: string;
-  signingWalletNoEth: boolean;
-  localLabel: string;
-}
+export const Transactions = () => {
+  const {
+    theme,
+    loginAccount: { meta, balances },
+    actions: { setModal },
+  } = useAppStatusStore();
+  const networkId = getNetworkId();
+  const targetAddress = meta.signer?._address;
+  const showFaucets = networkId !== NETWORK_IDS.Mainnet;
+  const localLabel =
+    networkId !== NETWORK_IDS.Kovan
+      ? 'Use flash to transfer ETH to address'
+      : null;
+  const signingWalletNoEth = createBigNumber(balances.ethNonSafe || 0).lte(
+    ZERO
+  );
 
-export const Transactions = ({
-  transactions,
-  addFunds,
-  transfer,
-  showFaucets,
-  repFaucet,
-  daiFaucet,
-  legacyRepFaucet,
-  cashOut,
-  targetAddress,
-  signingWalletNoEth,
-  localLabel
-}: TransactionsProps) => {
-  const { theme } = useAppStatusStore();
   return (
     <QuadBox
-      title={theme === THEMES.TRADING ? 'Transactions': 'Your funds'}
+      title={theme === THEMES.TRADING ? 'Transactions' : 'Your funds'}
       rightContent={
         <div className={Styles.RightContent}>
-          <ViewTransactionsButton action={transactions} />
+          <ViewTransactionsButton
+            action={() => setModal({ type: MODAL_TRANSACTIONS })}
+          />
         </div>
       }
       content={
         <div className={Styles.Content}>
           <div>
             <h4>Your transactions history</h4>
-            <ViewTransactionsButton action={transactions} />
+            <ViewTransactionsButton
+              action={() => setModal({ type: MODAL_TRANSACTIONS })}
+            />
           </div>
           <div>
             <h4>Your funds</h4>
-            <DepositButton action={addFunds} />
-            <TransferButton action={transfer} />
-            <WithdrawButton action={cashOut} />
+            <DepositButton action={() => setModal({ type: MODAL_ADD_FUNDS })} />
+            <TransferButton action={() => setModal({ type: MODAL_TRANSFER })} />
+            <WithdrawButton action={() => setModal({ type: MODAL_CASHOUT })} />
             <div>
               <span>
                 {AddIcon}
@@ -74,32 +77,40 @@ export const Transactions = ({
             </div>
           </div>
           {showFaucets && (
-            <div>
-              <h4>REP for test net</h4>
-              <h4>DAI for test net</h4>
-              <REPFaucetButton action={repFaucet} />
-              <DAIFaucetButton action={daiFaucet} />
-            </div>
-          )}
-          {showFaucets && (
-            <div>
-              <h4>Legacy REP</h4>
-              <REPFaucetButton
-                title="Legacy REP Faucet"
-                action={legacyRepFaucet}
-              />
-            </div>
+            <>
+              <div>
+                <h4>REP for test net</h4>
+                <h4>DAI for test net</h4>
+                <REPFaucetButton
+                  action={() => setModal({ type: MODAL_REP_FAUCET })}
+                />
+                <DAIFaucetButton
+                  action={() => setModal({ type: MODAL_DAI_FAUCET })}
+                />
+              </div>
+              <div>
+                <h4>Legacy REP</h4>
+                <REPFaucetButton
+                  title="Legacy REP Faucet"
+                  action={() => getLegacyRep()}
+                />
+              </div>
+            </>
           )}
           {signingWalletNoEth && (
             <div>
               <ExternalLinkButton
-                URL={!localLabel ? "https://faucet.kovan.network/" : null}
+                URL={!localLabel ? 'https://faucet.kovan.network/' : null}
                 showNonLink={!!localLabel}
-                label={localLabel ? localLabel : "faucet.kovan.network"}
+                label={localLabel ? localLabel : 'faucet.kovan.network'}
               />
               <AccountAddressDisplay
                 copyable
-                address={targetAddress ? toChecksumAddress(targetAddress) : 'loading...'}
+                address={
+                  targetAddress
+                    ? toChecksumAddress(targetAddress)
+                    : 'loading...'
+                }
               />
             </div>
           )}
@@ -107,4 +118,6 @@ export const Transactions = ({
       }
     />
   );
-}
+};
+
+export default Transactions;

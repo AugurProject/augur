@@ -1,17 +1,11 @@
 import logError from 'utils/log-error';
-import { AppState } from 'appStore';
-import { Action } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
 import { AppStatus } from 'modules/app/store/app-status';
 
-export const updatePlatformTimeframeData = (
+export const updatePlatformTimeframeData = async (
   options: any = {},
   callback: any = logError
-) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ): Promise<void> => {
   const { universe: { id }, blockchain: { currentAugurTimestamp }} = AppStatus.get();
   if (id == null) return callback(null);
@@ -25,13 +19,6 @@ export const updatePlatformTimeframeData = (
     }
   );
   AppStatus.actions.updateUniverse({
-    timeframeData: {
-      activeUsers: stats.activeUsers,
-      marketsCreated: stats.marketsCreated,
-      numberOfTrades: stats.numberOfTrades,
-      disputedMarkets: stats.disputedMarkets,
-      volume: stats.volume,
-      amountStaked: stats.amountStaked,
-    },
+    timeframeData: { ...stats },
   });
 };
