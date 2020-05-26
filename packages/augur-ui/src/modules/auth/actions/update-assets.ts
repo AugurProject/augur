@@ -79,7 +79,7 @@ function updateBalances(
       legacyRepNonSafe,
       ethNonSafe,
     };
-    dispatch(addEthIncreaseAlert(dai, ethNonSafeBalance, ethNonSafe));
+    addEthIncreaseAlert(dai, ethNonSafeBalance, ethNonSafe);
     AppStatus.actions.updateLoginAccount({
       balances,
     });

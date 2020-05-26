@@ -100,7 +100,7 @@ export const createFundedGsnWallet = () => async (
         market: '0x0000000000000000000000000000000000000000',
       }
     }
-    dispatch(addAlert(alert));
+    addAlert(alert);
   } catch (e) {
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Failure));
     setWalletStatus(WALLET_STATUS_VALUES.FUNDED_NEED_CREATE)

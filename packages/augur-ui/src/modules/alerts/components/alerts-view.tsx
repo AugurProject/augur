@@ -11,14 +11,9 @@ import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 import { INFO } from 'modules/common/constants';
+import { updateExistingAlert } from '../actions/alerts';
 
-interface AlertsViewProps {
-  updateExistingAlert: (alertId: string, alert: AlertType) => void;
-}
-
-const AlertsView: React.FC<AlertsViewProps> = ({
-  updateExistingAlert,
-}) => {
+const AlertsView = () => {
   const { alerts } = getInfoAlertsAndSeenCount();
   const {
     isLogged,

@@ -17,7 +17,6 @@ const mapDispatchToProps = (dispatch) => {
   const { setModal } = AppStatus.actions; 
   return {
     hotloadMarket: marketId => hotloadMarket(marketId),
-    loadMarketsInfo: marketId => loadMarketsInfo([marketId]),
     updateModal: modal => setModal(modal),
     marketReviewModal: modal =>
       setModal({
@@ -30,7 +29,7 @@ const mapDispatchToProps = (dispatch) => {
       }),
     closeMarketLoadingModalOnly: (type: string) =>
       type === MODAL_MARKET_LOADING && dispatch(closeModal()),
-    addAlert: alert => dispatch(addAlert(alert)),
+    addAlert: alert => addAlert(alert),
   };
 };
 const Market = withRouter(

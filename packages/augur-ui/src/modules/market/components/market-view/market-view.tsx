@@ -83,10 +83,10 @@ import { useMarketsStore } from 'modules/markets/store/markets';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 
 interface MarketViewProps {
   closeMarketLoadingModalOnly: Function;
-  loadMarketsInfo: Function;
   updateModal: Function;
   history: History;
   showMarketLoadingModal: Function;
@@ -114,7 +114,6 @@ const EmptyOrderBook: IndividualOutcomeOrderBook = {
 
 const MarketView = ({
   closeMarketLoadingModalOnly,
-  loadMarketsInfo,
   updateModal,
   showMarketLoadingModal,
   addAlert,
@@ -130,7 +129,7 @@ const MarketView = ({
     canHotload,
     blockchain: { currentAugurTimestamp },
   } = useAppStatusStore();
-  const { marketInfos, orderBooks, actions: { updateOrderBook, bulkMarketTradingHistory } } = useMarketsStore();
+  const { marketInfos, orderBooks, actions: { updateOrderBook, bulkMarketTradingHistory, updateMarketsData } } = useMarketsStore();
   const location = useLocation();
   const history = useHistory();
   const node = useRef(null);
@@ -258,7 +257,7 @@ const MarketView = ({
       !preview &&
       zeroXstatus === ZEROX_STATUSES.SYNCED
     ) {
-      loadMarketsInfo(marketId);
+      updateMarketsData(null, loadMarketsInfo(marketId));
       updateOrderBook(marketId, null, loadMarketOrderBook(marketId));
       bulkMarketTradingHistory(null, loadMarketTradingHistory(marketId));
     }
@@ -319,7 +318,7 @@ const MarketView = ({
       zeroXstatus === ZEROX_STATUSES.SYNCED
     ) {
       updateOrderBook(marketId, null, loadMarketOrderBook(marketId));
-      loadMarketsInfo(marketId);
+      updateMarketsData(null, loadMarketsInfo(marketId));
       bulkMarketTradingHistory(null, loadMarketTradingHistory(marketId));
     }
     if (market && closeMarketLoadingModalOnly) {
