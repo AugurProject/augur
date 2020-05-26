@@ -9,12 +9,11 @@ import { updateModal } from '../actions/update-modal';
 import {
   MODAL_BUY_DAI,
   MODAL_TRANSFER,
-  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 
 const mapStateToProps = (state: AppState) => ({
   walletType: state.loginAccount?.meta?.accountType,
-  daiAmount: state.loginAccount?.balances?.daiNonSafe || 0,
+  daiAmount: state.loginAccount?.balances?.signerBalances?.dai || 0,
   walletStatus: state.appStatus.walletStatus,
 
 });
@@ -33,8 +32,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   daiAmount: formatDai(sP.daiAmount),
   showTransferModal: () => {
     dP.transferfunds(() => {
-      if (sP.walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING) {
-        setTimeout(() => dP.showBuyDaiModal())
+      if (oP.callBack) {
+        setTimeout(() => oP.callBack());
       }
     });
   },

@@ -32,7 +32,7 @@ export const updateAssets = (
     universe.id,
     address,
     nonSafeWallet,
-    loginAccount.balances.ethNonSafe,
+    loginAccount.balances.signerBalances?.eth,
     dispatch,
     getState,
     (err, balances) => {
@@ -71,7 +71,7 @@ function updateBalances(
     const rep = formatAttoRep(attoRep, { decimalsRounded: 14 }).roundedValue?.toNumber();
     const ethNonSafe = amounts[5];
     const daiNonSafe = amounts[6];
-    const repNonSafe = amounts[7];
+    const repNonSafe = formatAttoRep(amounts[7].toString()).value;
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const legacyRepNonSafe = formatAttoRep(legacyAttoRepNonSafe).value;
 
@@ -99,9 +99,11 @@ function updateBalances(
           legacyAttoRep,
           legacyRep,
           legacyRepNonSafe,
-          ethNonSafe,
-          daiNonSafe,
-          repNonSafe,
+          signerBalances: {
+            eth: ethNonSafe,
+            dai: daiNonSafe,
+            rep: repNonSafe,
+          }
         },
       })
     );

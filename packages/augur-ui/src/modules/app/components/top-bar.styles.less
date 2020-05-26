@@ -28,6 +28,8 @@
 
     > button[class*="PrimaryButton"] {
       margin-right: @size-16;
+      max-height: fit-content;
+      white-space: pre-wrap;
     }
   }
 
@@ -70,7 +72,7 @@
     @media @breakpoint-mobile {
       padding: 0;
     }
-    
+
     > span:first-of-type {
       display: flex;
       justify-content: center;

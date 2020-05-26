@@ -14,6 +14,8 @@ import TransferMyDai from 'modules/modal/containers/transfer-my-dai';
 import { LinkContent } from 'modules/types';
 import classNames from 'classnames';
 import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET } from 'modules/common/constants';
+import { LeftChevron } from 'modules/common/icons';
+
 import Styles from 'modules/modal/modal.styles.less';
 
 interface OnboardingProps {
@@ -32,6 +34,7 @@ interface OnboardingProps {
   showTransferMyDai?: boolean;
   showActivationButton?: boolean;
   createFundedGsnWallet?: Function;
+  showBuyDaiModal?: Function;
 }
 
 export const Onboarding = ({
@@ -47,37 +50,73 @@ export const Onboarding = ({
   changeCurrentStep,
   showAccountStatus,
   showTransferMyDai,
+  showBuyDaiModal,
   showActivationButton,
   createFundedGsnWallet,
 }: OnboardingProps) => {
   useEffect(() => {
     analyticsEvent && analyticsEvent();
   });
-  return (
-    <div className={classNames(Styles.Onboarding, {[Styles.Condensed]: condensed})}>
-      {showAccountStatus && <AccountStatusTracker />}
-      <main>
-        {icon && <div>{icon}</div>}
-        {largeHeader && <LargeSubheader text={largeHeader} />}
-        {smallHeader && <SmallSubheader text={smallHeader} />}
-        {mediumHeader && <MediumSubheader text={mediumHeader} />}
-        {linkContent && <LinkContentSection linkContent={linkContent} />}
-      </main>
-      {showTransferMyDai && <TransferMyDai />}
+
+  const NavControls = (
+    <>
       <div>
-        <div>
-          {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
-          {showActivationButton &&
-            <ProcessingButton
-              small
-              text={'Activate Account'}
-              action={() => createFundedGsnWallet()}
-              queueName={TRANSACTIONS}
-              queueId={CREATEAUGURWALLET}
-            />
+        {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
+        {showActivationButton &&
+          <ProcessingButton
+            small
+            text={'Activate Account'}
+            action={() => createFundedGsnWallet()}
+            queueName={TRANSACTIONS}
+            queueId={CREATEAUGURWALLET}
+          />
+        }
+      </div>
+      {currentStep && <Stepper changeCurrentStep={changeCurrentStep} currentStep={currentStep} maxSteps={ONBOARDING_MAX_STEPS} /> }
+    </>
+  );
+
+  return (
+    <div
+      className={classNames(Styles.Onboarding, {
+        [Styles.Condensed]: condensed,
+      })}
+    >
+      <div>
+        {showAccountStatus && <AccountStatusTracker />}
+
+        <main>
+          {icon && <div>{icon}</div>}
+          {largeHeader && <LargeSubheader text={largeHeader} />}
+          {smallHeader && <SmallSubheader text={smallHeader} />}
+          {mediumHeader && <MediumSubheader text={mediumHeader} />}
+          {linkContent && <LinkContentSection linkContent={linkContent} />}
+          {showTransferMyDai && <TransferMyDai callBack={() => showBuyDaiModal()}/>}
+        </main>
+
+        <div className={Styles.OnboardingNav}>{NavControls}</div>
+      </div>
+
+      <div className={Styles.OnboardingMobileNav}>
+        <div
+          onClick={() =>
+            changeCurrentStep(currentStep === 1 ? 1 : currentStep - 1)
           }
+        >
+          {currentStep < ONBOARDING_MAX_STEPS && LeftChevron}
         </div>
-        {currentStep && <Stepper changeCurrentStep={changeCurrentStep} currentStep={currentStep} maxSteps={ONBOARDING_MAX_STEPS} /> }
+        <div>{NavControls}</div>
+        <div
+          onClick={() =>
+            changeCurrentStep(
+              currentStep === ONBOARDING_MAX_STEPS
+                ? ONBOARDING_MAX_STEPS
+                : currentStep + 1
+            )
+          }
+        >
+          {currentStep < ONBOARDING_MAX_STEPS && LeftChevron}
+        </div>
       </div>
     </div>
   );

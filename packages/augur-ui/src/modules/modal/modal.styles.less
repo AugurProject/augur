@@ -173,101 +173,158 @@ div.Onboarding {
   width: 568px;
 
   @media @breakpoint-mobile {
-    align-items: center;
     border: 2px solid @color-secondary-action-outline;
     height: 100%;
-    justify-content: center;
     margin: @size-32 @size-8;
-    max-height: 100%;
     max-width: 100%;
+    padding: 0;
+    justify-content: space-between;
   }
 
-  > main {
-    align-items: center;
+  > div {
     display: flex;
-    flex: 2;
-    flex-direction: column;
-    justify-content: center;
-    min-height: fit-content;
-    padding: 0;
-
-    > div:nth-of-type(1) {
-      text-align: center;
-
-      > svg {
-        height: 62px;
-        fill: @color-primary-text;
-      }
-    }
-
-    > div:nth-of-type(2) {
-      text-align: center;
-      margin-top: @size-16;
-    }
-
-    > div:last-of-type {
-      text-align: center;
-      margin: @size-12 0 0 0;
-
-      > div {
-        margin-top: @size-16;
-      }
-
-      button {
-        .text-10-semi-bold;
-
-        color: @color-primary-text;
-        background: none;
-        border: none;
-
-        > svg path:first-of-type {
-          fill: @color-primary-text;
-        }
-
-        > svg path:last-of-type {
-          stroke: @color-primary-text;
-        }
-      }
-    }
+    flex-flow: column nowrap;
+    align-items: center;
+    height: 100%;
 
     @media @breakpoint-mobile {
-      flex: 1;
-    }
-  }
-
-  > div:last-of-type {
-    align-items: center;
-    border-top: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0;
-
-    > div:first-of-type {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
+      overflow: auto;
+      height: 75%;
+      padding: @size-16 @size-22 0 @size-22;
+
+      > div:first-of-type {
+        margin: 0 0 1rem 0;
+      }
+    }
+
+    > main {
+      display: flex;
+      flex: 2;
+      flex-direction: column;
+      justify-content: center;
+
+      > div {
+        text-align: center;
+      }
+
+      > div:nth-of-type(1) {
+        > svg {
+          height: 62px;
+          fill: @color-primary-text;
+        }
+      }
+
+      > div[class*='LargeSubheader'] {
+        margin: @size-16 0 0 0;
+      }
+
+
+      > div[class*="LinkContentSection"] {
+        margin: @size-12 0 0 0;
+        text-align: center;
+
+        > div {
+          margin: @size-16 0 0 0;
+        }
+
+        button {
+          .text-10-semi-bold;
+
+          color: @color-primary-text;
+          background: none;
+          border: none;
+
+          > svg path:first-of-type {
+            fill: @color-primary-text;
+          }
+
+          > svg path:last-of-type {
+            stroke: @color-primary-text;
+          }
+        }
+      }
+    }
+
+    > div.OnboardingNav {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+
+      @media @breakpoint-mobile {
+        display: none;
+      }
 
       > div:first-of-type {
         display: flex;
-        flex-direction: row-reverse;
-        padding: 0;
+        flex-direction: row;
 
-        > button:first-of-type {
+        > div:first-of-type {
+          display: flex;
+          flex-direction: row-reverse;
+          padding: 0;
+
+          > button:first-of-type {
+            margin-left: @size-16;
+          }
+
+          > button:only-of-type {
+            margin: 0;
+          }
+        }
+
+        > button {
           margin-left: @size-16;
         }
-
-        > button:only-of-type {
-          margin: 0;
-        }
       }
+    }
+  }
 
-      > button {
-        margin-left: @size-16;
+  > div.OnboardingMobileNav {
+    display: none;
+
+    @media @breakpoint-mobile {
+      border-top: 1px solid @color-secondary-action-outline;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      max-height: 100px;
+      width: 100%;
+    }
+
+    > div:first-of-type,
+    > div:last-of-type {
+      height: @size-12;
+      width: @size-12;
+      margin: 0;
+
+      > svg {
+        stroke: @color-secondary-text;
       }
     }
 
-    @media @breakpoint-mobile {
-      flex: 1;
+    > div:last-of-type > svg {
+      transform: rotate(-180deg);
+    }
+
+    > div:nth-of-type(2) {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+
+      div[class*="ButtonsRow"] {
+        display: flex;
+        flex-direction: row-reverse;
+      }
+    }
+
+    button[class*="SecondaryButton"] {
+      margin: 0 @size-12 0 0;
+    }
+
+    div[class*="Stepper"] {
+      margin-top: @size-6;
     }
   }
 
@@ -290,6 +347,8 @@ div.Onboarding {
     }
   }
 }
+
+
 
 .Stepper {
   align-items: center;
@@ -3681,6 +3740,12 @@ div.ButtonsRow:last-of-type {
   padding: @size-12 @size-16;
   width: 100%;
 
+  @media @breakpoint-mobile {
+    flex-direction: column;
+    text-align: center;
+
+  }
+
   > div:first-of-type {
     display: flex;
     flex-direction: column;
@@ -3695,6 +3760,12 @@ div.ButtonsRow:last-of-type {
       .text-14;
 
       color: @color-secondary-text;
+    }
+
+    @media @breakpoint-mobile {
+      > span {
+        margin: 0 0 @size-6 0;
+      }
     }
   }
 }

@@ -639,9 +639,11 @@ export interface AccountBalances {
   legacyRepNonSafe: number;
   attoRep: string;
   legacyAttoRep: string;
-  ethNonSafe?: number;
-  daiNonSafe?: number;
-  repNonSafe?: number;
+  signerBalances: {
+    eth: number;
+    rep: number;
+    dai: number;
+  }
 }
 
 export interface LoginAccountMeta {

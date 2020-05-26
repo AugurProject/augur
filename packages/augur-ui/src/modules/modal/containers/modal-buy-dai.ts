@@ -10,6 +10,7 @@ import {
   MODAL_ADD_FUNDS,
   MODAL_AUGUR_P2P,
   HELP_CENTER_ADD_FUNDS,
+  MODAL_BUY_DAI,
 } from 'modules/common/constants';
 import { OnboardingPaymentIcon } from 'modules/common/icons';
 import { BUY_DAI, track } from 'services/analytics/helpers';
@@ -27,6 +28,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   track: (eventName, payload) => dispatch(track(eventName, payload)),
   gotoOnboardingStep: step =>
     dispatch(updateModal({ type: getOnboardingStep(step) })),
+  showBuyDaiModal: () => dispatch(updateModal({ type: MODAL_BUY_DAI })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -39,6 +41,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   },
   analyticsEvent: () => dP.track(BUY_DAI, {}),
   showTransferMyDai: sP.authStatus?.signerHasDAI,
+  showBuyDaiModal: () => dP.showBuyDaiModal(),
   linkContent: [
     {
       content:

@@ -30,8 +30,11 @@ interface TransferFormProps {
     eth: number;
     rep: number;
     dai: number;
-    ethNonSafe: number;
-    daiNonSafe: number;
+    signerBalances: {
+      eth: number;
+      dai: number;
+      rep: number;
+    }
   };
   account: string;
   GsnEnabled: boolean;
@@ -45,6 +48,7 @@ interface TransferFormState {
   address: string;
   currency: string;
   amount: string;
+  options: object[];
   errors: {
     address: string;
     amount: string;
@@ -69,22 +73,25 @@ export class TransferForm extends Component<
       address: '',
       amount: '',
     },
+    options: this.props.useSigner ?
+      [{
+        label: DAI,
+        value: DAI,
+      }] :
+      [{
+        label: DAI,
+        value: DAI,
+      },
+      {
+        label: ETH,
+        value: ETH,
+      },
+      {
+        label: REP,
+        value: REP,
+      },
+    ]
   };
-
-  options = [
-    {
-      label: DAI,
-      value: DAI,
-    },
-    {
-      label: ETH,
-      value: ETH,
-    },
-    {
-      label: REP,
-      value: REP,
-    },
-  ];
 
   dropdownChange = (value: string) => {
     const { amount } = this.state;
@@ -98,9 +105,8 @@ export class TransferForm extends Component<
   handleMax = () => {
     const { balances, useSigner, fallBackGasCosts, GsnEnabled, gasPrice } = this.props;
     const { currency, relayerGasCosts } = this.state;
-
     const balance = useSigner
-      ? balances[`${currency.toLowerCase()}NonSafe`]
+      ? balances.signerBalances[currency.toLowerCase()]
       : balances[currency.toLowerCase()];
 
     const gasEstimate = GsnEnabled
@@ -131,12 +137,12 @@ export class TransferForm extends Component<
     let availableEth = createBigNumber(balances.eth);
     let availableDai = createBigNumber(balances.dai);
     const balance = useSigner
-      ? balances[`${currency.toLowerCase()}NonSafe`]
+      ? balances.signerBalances[currency.toLowerCase()]
       : balances[currency.toLowerCase()];
 
     if (useSigner) {
-      availableEth = createBigNumber(balances.ethNonSafe);
-      availableDai = createBigNumber(balances.daiNonSafe);
+      availableEth = createBigNumber(balances.signerBalances?.eth || 0);
+      availableDai = createBigNumber(balances.signerBalances?.dai || 0);
     }
 
     let amountMinusGas = ZERO;
@@ -207,6 +213,32 @@ export class TransferForm extends Component<
     this.setState({ amount: newAmount, errors: updatedErrors });
   };
 
+  componentDidMount() {
+    const { useSigner, balances } = this.props;
+    if (useSigner) {
+      let currencies = [{
+        label: DAI,
+        value: DAI,
+      }]
+
+      if (balances.signerBalances.eth > 0) {
+        currencies = currencies.concat({
+          label: ETH,
+          value: ETH,
+        });
+      }
+
+      if (balances.signerBalances.rep > 0) {
+        currencies = currencies.concat({
+          label: REP,
+          value: REP,
+        });
+      }
+
+      this.setState({ options: currencies });
+    }
+  }
+
   async componentDidUpdate(prevProps, prevState) {
     if (this.state.currency && this.state.currency !== prevState.currency) {
       const formattedAmount =
@@ -265,7 +297,7 @@ export class TransferForm extends Component<
     }
 
     const balance = useSigner
-      ? balances[`${currency.toLowerCase()}NonSafe`]
+      ? balances.signerBalances[currency.toLowerCase()]
       : balances[currency.toLowerCase()];
     const gasEstimate = GsnEnabled
       ? displayGasInDai(relayerGasCosts)
@@ -326,7 +358,7 @@ export class TransferForm extends Component<
               </div>
               <FormDropdown
                 id='currency'
-                options={this.options}
+                options={this.state.options}
                 defaultValue={currency}
                 onChange={this.dropdownChange}
               />

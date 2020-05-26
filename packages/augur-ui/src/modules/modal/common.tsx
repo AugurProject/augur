@@ -434,7 +434,7 @@ export const TransferMyDai = ({ walletType, daiAmount, showTransferModal, isCond
     <div className={Styles.TransferMyDai}>
       <div>
         <span>{daiAmount.formattedValue} Dai in your {walletType} wallet</span>
-        <span>Transfer any amount to your Augur user account. </span>
+        <span>Transfer any amount to your trading account.</span>
       </div>
       <PrimaryButton
         action={() => showTransferModal()}
