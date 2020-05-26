@@ -14,6 +14,16 @@ import * as _ from 'lodash';
 import { FasterAbiInterface } from './FasterAbiInterface';
 import { Counter, isInstanceOfArray, isInstanceOfBigNumber } from './utils';
 
+declare global {
+  interface Array<T> {
+    toLowerCase(): Array<T>;
+  }
+}
+
+Array.prototype.toLowerCase = function () {
+  return this.map((item) => item.toLowerCase());
+}
+
 interface MultiAddressFilter {
   blockhash?: string;
   fromBlock?: number | string;
@@ -304,19 +314,17 @@ export class EthersProvider extends ethers.providers.BaseProvider
   // We're primarily hacking this and bypassing ethers to support multiple addresses in the filter but this also allows us to cut out some expensive behavior we don't care about for the address
   async getMultiAddressLogs(filter: MultiAddressFilter): Promise<Array<Log>> {
     await this.ready;
-    if (filter.address && Array.isArray(filter.address)) {
-      filter.address['toLowerCase'] = () => {
-        return _.map(filter.address, address => address.toLowerCase());
-      };
-    }
-    if (filter.fromBlock !== undefined)
+    if (filter.fromBlock !== undefined) {
       filter.fromBlock = ethers.utils.hexStripZeros(
         ethers.utils.hexlify(filter.fromBlock)
       );
-    if (filter.toBlock !== undefined)
+    }
+    if (filter.toBlock !== undefined) {
       filter.toBlock = ethers.utils.hexStripZeros(
         ethers.utils.hexlify(filter.toBlock)
       );
+    }
+    console.log(`GETTING LOGS: ${JSON.stringify(filter)}`);
     const logs = await this.perform('getLogs', { filter });
     for (const log of logs) {
       log.logIndex = parseInt(log.logIndex, 16);
@@ -342,25 +350,44 @@ export class EthersProvider extends ethers.providers.BaseProvider
         throw e;
       }
 
-      // bisect the block window.
-      const midBlock = Math.floor(
-        (Number(filter.toBlock) + Number(filter.fromBlock)) / 2
-      );
+      console.log(`HIT LOG LIMIT FOR ${Number(filter.fromBlock)} to ${Number(filter.toBlock)}`);
 
-      // Presumably we would never have more than 10k logs in one block but just in case.
-      if (Number(filter.fromBlock) === midBlock) throw e;
+      return this.getSplitLogs(filter, 2);
+    }
+  }
 
+  getSplitLogs = async (filter: MultiAddressFilter, desiredDepth: number): Promise<ethers.providers.Log[]> => {
+    // bisect the block window.
+    const midBlock = Math.floor(
+      (Number(filter.toBlock) + Number(filter.fromBlock)) / 2
+    );
+
+    // Presumably we would never have more than 10k logs in one block but just in case.
+    if (Number(filter.fromBlock) === midBlock) throw new Error("Log Limit encountered in a single block");
+
+    const firstFilter = {
+      ...filter,
+      toBlock: midBlock,
+    };
+
+    const secondFilter = {
+      ...filter,
+      fromBlock: midBlock + 1,
+    };
+
+    if (desiredDepth == 0) {
       return [
-        ...(await this._getLogs({
-          ...filter,
-          toBlock: midBlock,
-        })),
-        ...(await this._getLogs({
-          ...filter,
-          fromBlock: midBlock + 1,
-        })),
+        ...(await this._getLogs(firstFilter)),
+        ...(await this._getLogs(secondFilter)),
       ];
     }
+
+    desiredDepth -= 1;
+
+    return [
+      ...(await this.getSplitLogs(firstFilter, desiredDepth)),
+      ...(await this.getSplitLogs(secondFilter, desiredDepth)),
+    ]
   }
 
   getLogs = async (filter: MultiAddressFilter): Promise<Log[]> => {
