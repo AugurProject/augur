@@ -16,6 +16,7 @@ contract AugurWallet is Initializable, IAugurWallet {
     using SafeMathUint256  for uint256;
 
     IAugurWalletRegistry public registry;
+    mapping(address => bool) public authorizedProxies;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
@@ -33,11 +34,13 @@ contract AugurWallet is Initializable, IAugurWallet {
     bytes32 public domainSeparator;
     IERC20 public cash;
 
-    function initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, IERC20 _cash, IAffiliates _affiliates, IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade) external beforeInitialized {
+    function initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, address _legacyRegistry, IERC20 _cash, IAffiliates _affiliates, IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade) external beforeInitialized {
         endInitialization();
         domainSeparator = keccak256(abi.encode(DOMAIN_SEPARATOR_TYPEHASH, this));
         owner = _owner;
         registry = IAugurWalletRegistry(msg.sender);
+        authorizedProxies[msg.sender] = true;
+        authorizedProxies[_legacyRegistry] = true;
         cash = _cash;
 
         _cash.approve(_augur, MAX_APPROVAL_AMOUNT);
@@ -58,14 +61,26 @@ contract AugurWallet is Initializable, IAugurWallet {
     }
 
     function transferCash(address _to, uint256 _amount) external {
-        require(msg.sender == address(registry));
+        require(authorizedProxies[msg.sender]);
         cash.transfer(_to, _amount);
     }
 
     function executeTransaction(address _to, bytes calldata _data, uint256 _value) external returns (bool) {
-        require(msg.sender == address(registry));
+        require(authorizedProxies[msg.sender]);
         (bool _didSucceed, bytes memory _resultData) = address(_to).call.value(_value)(_data);
         return _didSucceed;
+    }
+
+    function addAuthorizedProxy(address _authorizedProxy) external returns (bool) {
+        require(msg.sender == owner || authorizedProxies[msg.sender] || msg.sender == address(this));
+        authorizedProxies[_authorizedProxy] = true;
+        return true;
+    }
+
+    function removeAuthorizedProxy(address _authorizedProxy) external returns (bool) {
+        require(msg.sender == owner || authorizedProxies[msg.sender] || msg.sender == address(this));
+        authorizedProxies[_authorizedProxy] = false;
+        return true;
     }
 
     function withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai) external payable returns (bool) {
