@@ -80,7 +80,7 @@ import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { logger } from '@augurproject/utils';
 
-const handleAlert = (
+export const handleAlert = (
   log: any,
   name: string,
   toast: boolean,
@@ -430,7 +430,6 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
     loginAccount.mixedCaseAddress
   );
   if (isUserDataUpdate && authStatus.isLogged) {
-    handleAlert(log, PUBLICTRADE, false, dispatch, getState);
     dispatch(throttleLoadUserOpenOrders());
     const pendingOrderId = constructPendingOrderid(log.amount, log.price, log.outcome, log.market)
     dispatch(removePendingOrder(pendingOrderId, log.market));

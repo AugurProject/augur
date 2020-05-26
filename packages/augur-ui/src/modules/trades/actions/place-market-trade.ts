@@ -1,24 +1,39 @@
-import { createBigNumber } from "utils/create-big-number";
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import {
-  BUY, INVALID_OUTCOME_ID, MODAL_ERROR, ZEROX_STATUSES,
-} from "modules/common/constants";
-import { AppState } from "appStore";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { placeTrade, approveToTrade } from "modules/contracts/actions/contractCalls";
-import { Getters, TXEventName } from "@augurproject/sdk";
-import { addPendingOrder, updatePendingOrderStatus, generatePendingOrderId } from "modules/orders/actions/pending-orders-management";
-import { convertUnixToFormattedDate } from "utils/format-date";
-import { getOutcomeNameWithOutcome } from "utils/get-outcome";
-import { updateModal } from "modules/modal/actions/update-modal";
-import { Ox_STATUS } from "modules/app/actions/update-app-status";
+  BUY,
+  INVALID_OUTCOME_ID,
+  MODAL_ERROR,
+  PUBLICTRADE,
+  ZEROX_STATUSES,
+} from 'modules/common/constants';
+import { AppState } from 'appStore';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import {
+  placeTrade,
+  approveToTrade,
+} from 'modules/contracts/actions/contractCalls';
+import { Getters, TXEventName } from '@augurproject/sdk';
+import {
+  addPendingOrder,
+  updatePendingOrderStatus,
+  generatePendingOrderId,
+} from 'modules/orders/actions/pending-orders-management';
+import { convertUnixToFormattedDate } from 'utils/format-date';
+import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
+import { updateModal } from 'modules/modal/actions/update-modal';
+import { Ox_STATUS } from 'modules/app/actions/update-app-status';
+import { handleAlert } from 'modules/events/actions/log-handlers';
 
 export const placeMarketTrade = ({
   marketId,
   outcomeId,
   tradeInProgress,
   doNotCreateOrders,
-}: any) => async (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+}: any) => async (
+  dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState
+) => {
   if (!marketId) return null;
   const { marketInfos, loginAccount, blockchain, appStatus } = getState();
   // numFills is 0 and zerox mesh client has error auto fail processing order label
@@ -26,7 +41,7 @@ export const placeMarketTrade = ({
   const market: Getters.Markets.MarketInfo = marketInfos[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
-      `required parameters not found for market ${marketId} outcome ${outcomeId}`,
+      `required parameters not found for market ${marketId} outcome ${outcomeId}`
     );
   }
 
@@ -34,7 +49,9 @@ export const placeMarketTrade = ({
   let needsApproval = false;
 
   if (!appStatus.gsnEnabled) {
-    needsApproval = createBigNumber(loginAccount.allowance).lt(tradeInProgress.totalCost.value);
+    needsApproval = createBigNumber(loginAccount.allowance).lt(
+      tradeInProgress.totalCost.value
+    );
   }
 
   if (needsApproval) await approveToTrade();
@@ -44,24 +61,53 @@ export const placeMarketTrade = ({
   const displayPrice = tradeInProgress.limitPrice;
   const displayAmount = tradeInProgress.numShares;
   const orderType = tradeInProgress.side === BUY ? 0 : 1;
-  const expirationTime = tradeInProgress.expirationTime ? createBigNumber(tradeInProgress.expirationTime) : undefined;
-  const tradeGroupId = generatePendingOrderId(displayAmount, displayPrice, outcomeId, marketId, market.tickSize, market.minPrice);
-  dispatch(addPendingOrder(
-    {
-      ...tradeInProgress,
-      type: tradeInProgress.side,
-      name: getOutcomeNameWithOutcome(market, outcomeId.toString(), outcomeId === INVALID_OUTCOME_ID),
-      pending: true,
-      fullPrecisionPrice: tradeInProgress.limitPrice,
-      id: tradeGroupId,
-      amount: tradeInProgress.numShares,
-      status: (autoFailOrder && tradeInProgress.numFills === 0) ? TXEventName.Failure : TXEventName.Pending,
-      creationTime: convertUnixToFormattedDate(
-        blockchain.currentAugurTimestamp
-      ),
-    },
-    market.id
-  ));
+  const expirationTime = tradeInProgress.expirationTime
+    ? createBigNumber(tradeInProgress.expirationTime)
+    : undefined;
+  const tradeGroupId = generatePendingOrderId(
+    displayAmount,
+    displayPrice,
+    outcomeId,
+    marketId,
+    market.tickSize,
+    market.minPrice
+  );
+  dispatch(
+    addPendingOrder(
+      {
+        ...tradeInProgress,
+        type: tradeInProgress.side,
+        name: getOutcomeNameWithOutcome(
+          market,
+          outcomeId.toString(),
+          outcomeId === INVALID_OUTCOME_ID
+        ),
+        pending: true,
+        fullPrecisionPrice: tradeInProgress.limitPrice,
+        id: tradeGroupId,
+        amount: tradeInProgress.numShares,
+        status:
+          autoFailOrder && tradeInProgress.numFills === 0
+            ? TXEventName.Failure
+            : TXEventName.Pending,
+        creationTime: convertUnixToFormattedDate(
+          blockchain.currentAugurTimestamp
+        ),
+      },
+      market.id
+    )
+  );
+
+  const logForBellAlert = {
+    amount: new BigNumber(tradeInProgress.numShares)
+      .times(new BigNumber(10).pow(16))
+      .toNumber(),
+    eventType: orderType,
+    market: marketId,
+    outcome: '0x0'.concat(outcomeId),
+    price: displayPrice * 100,
+    orderType,
+  };
 
   placeTrade(
     orderType,
@@ -76,8 +122,14 @@ export const placeMarketTrade = ({
     displayPrice,
     userShares,
     expirationTime,
-    tradeGroupId,
-  ).catch((err) => {
+    tradeGroupId
+  )
+    .then(result => {
+      if (tradeInProgress.numFills === 0) {
+        handleAlert(logForBellAlert, PUBLICTRADE, false, dispatch, getState);
+      }
+    })
+    .catch(err => {
       console.log(err);
       dispatch(
         updateModal({
@@ -86,7 +138,12 @@ export const placeMarketTrade = ({
         })
       );
       dispatch(
-        updatePendingOrderStatus(tradeGroupId, marketId, TXEventName.Failure, null)
+        updatePendingOrderStatus(
+          tradeGroupId,
+          marketId,
+          TXEventName.Failure,
+          null
+        )
       );
     });
 };
