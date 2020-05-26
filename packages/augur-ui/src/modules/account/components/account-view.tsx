@@ -22,6 +22,8 @@ import classNames from 'classnames';
 import { ACCOUNT_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import getLoginAccountPositionsMarkets from "modules/positions/selectors/login-account-positions-markets";
+import { selectAuthorOwnedMarkets } from 'modules/markets/selectors/user-markets';
 
 const AccountView = () => {
   const [state, setState] = useState({
@@ -30,8 +32,10 @@ const AccountView = () => {
     extendWatchlist: false,
     extendTransactions: false,
   });
-  const { theme, notifications } = useAppStatusStore();
+  const { theme, notifications, favorites } = useAppStatusStore();
   const newNotifications = notifications.filter(item => item.isNew).length > 0;
+  const createdMarkets = selectAuthorOwnedMarkets(state);
+  const positionsMarkets = getLoginAccountPositionsMarkets();
 
   const {
     extendActiveMarkets,
@@ -48,28 +52,64 @@ const AccountView = () => {
       <HelmetTag {...ACCOUNT_VIEW_HEAD_TAGS} />
       <Media query={SMALL_MOBILE}>
         {matches =>
-          matches ? (
-            <ModuleTabs selected={0} fillWidth noBorder>
-              <ModulePane label={YOUR_OVERVIEW_TITLE}>
-                <Overview />
-              </ModulePane>
-              <ModulePane label="Notifications" isNew={newNotifications}>
-                <Notifications />
-              </ModulePane>
-              <ModulePane label="My Active Markets">
-                <OpenMarkets />
-              </ModulePane>
-              <ModulePane label="Watchlist">
-                <Favorites />
-              </ModulePane>
-              <ModulePane label="Transactions">
-                <Transactions />
-              </ModulePane>
-              <ModulePane label={AUGUR_STATUS_TITLE}>
-                <AugurStatus />
-              </ModulePane>
-            </ModuleTabs>
-          ) : 
+          matches ? 
+            theme === THEMES.TRADING ? (
+              <ModuleTabs selected={0} fillWidth noBorder>
+                <ModulePane label={YOUR_OVERVIEW_TITLE}>
+                  <Overview />
+                </ModulePane>
+                <ModulePane label="Notifications" isNew={newNotifications}>
+                  <Notifications />
+                </ModulePane>
+                <ModulePane label="My Active Markets">
+                  <OpenMarkets />
+                </ModulePane>
+                <ModulePane label="Watchlist">
+                  <Favorites />
+                </ModulePane>
+                <ModulePane label="Transactions">
+                  <Transactions />
+                </ModulePane>
+                <ModulePane label={AUGUR_STATUS_TITLE}>
+                  <AugurStatus />
+                </ModulePane>
+              </ModuleTabs>
+            ) : (
+              <div>
+                <h1>My Account</h1>
+                <ModuleTabs selected={0} fillWidth noBorder>
+                  <ModulePane label={YOUR_OVERVIEW_TITLE}>
+                    <Overview />
+                    <Transactions />
+                    <AugurStatus />
+                  </ModulePane>
+                  <ModulePane label="Notifications" isNew={newNotifications}>
+                    <Notifications />
+                  </ModulePane>
+                  <ModulePane
+                    label={positionsMarkets.markets.length === 0 ?
+                      "My Active Markets" :
+                      `My Active Markets (${positionsMarkets.markets.length})`}
+                  >
+                    <OpenMarkets />
+                  </ModulePane>
+                  <ModulePane
+                    label={Object.keys(favorites).length === 0 ?
+                      "Favorites" :
+                      `Favorites (${Object.keys(favorites).length})`}
+                  >
+                    <Favorites />
+                  </ModulePane>
+                  <ModulePane
+                    label={createdMarkets.length === 0 ?
+                      "My Created Markets" :
+                      `My Created Markets  (${createdMarkets.length})`}
+                  >
+                    <MyMarkets />
+                  </ModulePane>
+                </ModuleTabs>
+              </div>
+            ) : 
           theme === THEMES.TRADING ? (
             <div
               className={classNames(Styles.AccountView, {

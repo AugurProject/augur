@@ -118,6 +118,14 @@
 
     > div:last-of-type {
       min-height: @size-414;
+
+      @media @breakpoint-mobile {
+        min-height: unset;
+
+        > div:nth-of-type(2):not([class*="EmptyDisplay"]) {
+          border-top: none;
+        }
+      }
     }
   }
 

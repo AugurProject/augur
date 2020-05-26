@@ -78,6 +78,10 @@
   @media @breakpoint-mobile {
     border: @size-1 solid var(--color-dark-grey);
     margin-top: @size-8;
+
+    > div[class*='MarketRow']:last-of-type {
+      border-bottom: none;
+    }
   }
 }
 
@@ -94,11 +98,28 @@
     border-bottom-right-radius: @border-radius-rounded;
 
     @media @breakpoint-mobile {
+      margin: @size-16 @size-16 0;
       background: var(--color-module-background);
+      border: @size-1 solid var(--color-dark-grey);
+      border-radius: @border-radius-rounded;
+    }
 
-      > div:last-of-type {
-        padding: 0 0 @size-4;
+    > div:last-of-type {
+      @media @breakpoint-mobile {
+        padding: 0;
+        max-height: unset;
+        min-height: unset;
+        border-bottom-left-radius: @border-radius-rounded;
+        border-bottom-right-radius: @border-radius-rounded;
       }
+    }
+  }
+
+
+  .MarketBox {
+    @media @breakpoint-mobile {
+      border: none;
+      margin-top: 0;
     }
   }
 
