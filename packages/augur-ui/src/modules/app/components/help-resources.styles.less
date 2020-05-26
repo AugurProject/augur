@@ -30,9 +30,11 @@
       background: var(--color-module-background);
     }
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       padding: @size-12;
-      max-height: @top-bar-height-mobile;
+      max-height: unset;
+      border-right: 0;
+      align-items: center;
 
       &:hover {
         background: var(--color-page-background);
