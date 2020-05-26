@@ -324,7 +324,6 @@ export class EthersProvider extends ethers.providers.BaseProvider
         ethers.utils.hexlify(filter.toBlock)
       );
     }
-    console.log(`GETTING LOGS: ${JSON.stringify(filter)}`);
     const logs = await this.perform('getLogs', { filter });
     for (const log of logs) {
       log.logIndex = parseInt(log.logIndex, 16);
@@ -349,8 +348,6 @@ export class EthersProvider extends ethers.providers.BaseProvider
       if (e.code !== -32005) {
         throw e;
       }
-
-      console.log(`HIT LOG LIMIT FOR ${Number(filter.fromBlock)} to ${Number(filter.toBlock)}`);
 
       return this.getSplitLogs(filter, 2);
     }
