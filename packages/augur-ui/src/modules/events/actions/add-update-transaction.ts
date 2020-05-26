@@ -154,24 +154,20 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         methodCall === CREATEYESNOMARKET ||
         methodCall === CREATESCALARMARKET
       ) {
-        dispatch(
           updateAlert(hash, {
             params: transaction.params,
             status: TXEventName.Success,
             timestamp,
             name: CREATEMARKET,
-          })
-        );
+          });
       } else {
-        dispatch(
           updateAlert(hash, {
             params: transaction.params,
             status: TXEventName.Success,
             toast: methodCall === PUBLICFILLORDER,
             timestamp,
             name: methodCall,
-          })
-        );
+          });
       }
     }
 
@@ -225,7 +221,6 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           const genHash = hash
             ? hash
             : generateTxParameterId(transaction.params);
-          dispatch(
             updateAlert(genHash, {
               id: genHash,
               uniqueId: genHash,
@@ -238,8 +233,7 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
               status: eventName,
               timestamp,
               name: methodCall,
-            })
-          );
+            });
         }
 
         break;

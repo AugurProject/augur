@@ -118,7 +118,7 @@ export const loadAccountDataFromLocalStorage = (
         ) as string[];
         dispatch(
           loadMarketsInfoIfNotLoaded(marketIds, () => {
-            alerts.map(n => dispatch(updateAlert(n.id, n, true)));
+            alerts.map(n => updateAlert(n.id, n, true));
           })
         );
       }

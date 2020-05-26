@@ -12,11 +12,8 @@ import { MARKETS_ACTIONS } from "../store/constants";
 
 export const loadMarketsInfo = (
   marketIds: Array<string>,
-  callback: NodeStyleCallback = logError
-): ThunkAction<any, any, any, any> => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+  callback: NodeStyleCallback = logError,
+): ThunkAction<any, any, any, any> => async () => {
   if (!marketIds || marketIds === undefined || marketIds.length === 0) {
     return callback(null, []);
   }
@@ -39,23 +36,21 @@ export const loadMarketsInfo = (
   if (!Object.keys(marketInfos).length)
     return callback("no marketIds in collection");
 
-  Markets.actions.updateMarketsData(marketInfos);
+  //if (!payload) Markets.actions.updateMarketsData(marketInfos);
 
   callback(null, marketInfos);
+  return {marketInfos: marketInfos};
 };
 
 export const loadMarketsInfoIfNotLoaded = (
   marketIds: string[],
   callback: NodeStyleCallback = logError
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+): ThunkAction<any, any, any, any> => {
   const { marketInfos } = Markets.get();
   const marketIdsToLoad = marketIds.filter(
     (marketId: string) => !isMarketLoaded(marketId, marketInfos)
   );
 
   if (marketIdsToLoad.length === 0) return callback(null);
-  dispatch(loadMarketsInfo(marketIdsToLoad, callback));
+  Markets.actions.updateMarketsData(null, loadMarketsInfo(marketIdsToLoad, callback));
 };

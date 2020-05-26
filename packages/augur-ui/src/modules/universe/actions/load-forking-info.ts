@@ -13,6 +13,7 @@ import { ForkingInfo } from 'modules/types';
 import { NULL_ADDRESS } from 'modules/common/constants';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
 export function loadUniverseForkingInfo(
   forkingMarketId?: string
@@ -42,7 +43,7 @@ export function loadUniverseForkingInfo(
         isForkingMarketFinalized,
         winningChildUniverseId,
       };
-      dispatch(loadMarketsInfo([forkingMarket]));
+      Markets.actions.updateMarketsData(null, loadMarketsInfo([forkingMarket]));
       AppStatus.actions.updateUniverse({ forkingInfo });
     }
   };

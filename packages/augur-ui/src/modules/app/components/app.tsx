@@ -9,8 +9,8 @@ import TopBar from 'modules/app/components/top-bar';
 import SideNav from 'modules/app/components/side-nav/side-nav';
 import TopNav from 'modules/app/components/top-nav/top-nav';
 import Routes from 'modules/routes/components/routes/routes';
-import AlertsContainer from 'modules/alerts/containers/alerts-view';
-import ToastsContainer from 'modules/alerts/containers/toasts-view';
+import AlertsContainer from 'modules/alerts/components/alerts-view';
+import ToastsContainer from 'modules/alerts/components/toasts-view';
 
 import { Betslip } from 'modules/trading/betslip';
 import { BetslipProvider } from 'modules/trading/store/betslip';
