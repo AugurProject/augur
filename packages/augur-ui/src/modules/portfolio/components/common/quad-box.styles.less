@@ -78,6 +78,10 @@
   @media @breakpoint-mobile {
     border: @size-1 solid var(--color-dark-grey);
     margin-top: @size-8;
+
+    > div[class*='MarketRow']:last-of-type {
+      border-bottom: none;
+    }
   }
 }
 
@@ -108,6 +112,14 @@
         border-bottom-left-radius: @border-radius-rounded;
         border-bottom-right-radius: @border-radius-rounded;
       }
+    }
+  }
+
+
+  .MarketBox {
+    @media @breakpoint-mobile {
+      border: none;
+      margin-top: 0;
     }
   }
 

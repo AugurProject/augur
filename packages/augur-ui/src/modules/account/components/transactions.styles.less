@@ -99,6 +99,10 @@
   .Content {
     padding: @size-12;
 
+    @media @breakpoint-mobile {
+      padding: @size-12 @size-12 @size-20;
+    }
+
     > div {
       background: transparent;
       display: none;
@@ -137,6 +141,10 @@
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         grid-gap: @size-12;
+
+        @media @breakpoint-mobile {
+          grid-gap: @size-16 @size-12;
+        }
 
         > button:nth-of-type(2) {
           display: none;

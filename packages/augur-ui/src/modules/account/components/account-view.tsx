@@ -22,6 +22,8 @@ import classNames from 'classnames';
 import { ACCOUNT_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import getLoginAccountPositionsMarkets from "modules/positions/selectors/login-account-positions-markets";
+import { selectAuthorOwnedMarkets } from 'modules/markets/selectors/user-markets';
 
 const AccountView = () => {
   const [state, setState] = useState({
@@ -30,8 +32,10 @@ const AccountView = () => {
     extendWatchlist: false,
     extendTransactions: false,
   });
-  const { theme, notifications } = useAppStatusStore();
+  const { theme, notifications, favorites } = useAppStatusStore();
   const newNotifications = notifications.filter(item => item.isNew).length > 0;
+  const createdMarkets = selectAuthorOwnedMarkets(state);
+  const positionsMarkets = getLoginAccountPositionsMarkets();
 
   const {
     extendActiveMarkets,
@@ -82,13 +86,25 @@ const AccountView = () => {
                   <ModulePane label="Notifications" isNew={newNotifications}>
                     <Notifications />
                   </ModulePane>
-                  <ModulePane label="My Active Markets">
+                  <ModulePane
+                    label={positionsMarkets.markets.length === 0 ?
+                      "My Active Markets" :
+                      `My Active Markets (${positionsMarkets.markets.length})`}
+                  >
                     <OpenMarkets />
                   </ModulePane>
-                  <ModulePane label="Favorites">
+                  <ModulePane
+                    label={Object.keys(favorites).length === 0 ?
+                      "Favorites" :
+                      `Favorites (${Object.keys(favorites).length})`}
+                  >
                     <Favorites />
                   </ModulePane>
-                  <ModulePane label="My Created Markets">
+                  <ModulePane
+                    label={createdMarkets.length === 0 ?
+                      "My Created Markets" :
+                      `My Created Markets  (${createdMarkets.length})`}
+                  >
                     <MyMarkets />
                   </ModulePane>
                 </ModuleTabs>
