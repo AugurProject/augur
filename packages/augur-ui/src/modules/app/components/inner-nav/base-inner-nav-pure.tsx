@@ -9,7 +9,7 @@ import {
 } from 'modules/common/constants';
 import { XIcon } from 'modules/common/icons';
 import MarketsListFilters from 'modules/app/containers/markets-list-filters';
-import MarketsListSortBy from 'modules/app/containers/markets-list-sortBy';
+import MarketsListSortBy from 'modules/app/components/inner-nav/markets-list-sortBy';
 import CategoryFilters from 'modules/app/components/inner-nav/category-filters';
 import { PrimaryButton } from 'modules/common/buttons';
 
