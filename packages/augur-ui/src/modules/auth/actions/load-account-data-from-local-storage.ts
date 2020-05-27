@@ -26,7 +26,7 @@ export const loadAccountDataFromLocalStorage = (
   getState: () => AppState
 ) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-  const { universe } = AppStatus.get();
+  const { universe, filterSortOptions } = AppStatus.get();
 
   if (localStorageRef && localStorageRef.getItem && address) {
     const storedAccountData = JSON.parse(localStorageRef.getItem(address));
@@ -49,22 +49,13 @@ export const loadAccountDataFromLocalStorage = (
 
       if (settings) {
         const { maxFee, maxLiquiditySpread, includeInvalidMarkets, templateFilter } = settings;
-        if (maxFee) {
-          updateFilterSortOptions({ [MARKET_MAX_FEES]: settings.maxFee });
-        }
-        if (maxLiquiditySpread) {
-          updateFilterSortOptions({ [MARKET_MAX_SPREAD]: settings.maxLiquiditySpread });
-        }
-        if (includeInvalidMarkets) {
-          updateFilterSortOptions({
-            [MARKET_SHOW_INVALID]: settings.includeInvalidMarkets,
-          });
-        }
-        if (templateFilter) {
-          updateFilterSortOptions({
-            [TEMPLATE_FILTER]: settings.templateFilter,
-          });
-        }
+        updateFilterSortOptions({
+          ...filterSortOptions,
+          maxFee,
+          maxLiquiditySpread,
+          includeInvalidMarkets,
+          templateFilter,
+        });
       }
 
       if (!!affiliate && isAddress(affiliate))

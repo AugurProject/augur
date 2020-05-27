@@ -38,7 +38,7 @@ import {
   THEMES,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/app.styles.less';
-import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
+import MarketsInnerNav from 'modules/app/components/inner-nav/base-inner-nav-pure';
 import { Universe, Notification, AccountBalances } from 'modules/types';
 import ForkingBanner from 'modules/reporting/containers/forking-banner';
 import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
@@ -336,7 +336,7 @@ const AppView = ({
             })}
           >
             {currentPath === MARKETS && (
-              <MarketsInnerNavContainer location={location} history={history} />
+              <MarketsInnerNav />
             )}
             <MyBetsProvider>
               {currentPath === MY_POSITIONS && <MyBetsInnerNav />}

@@ -8,10 +8,10 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { MARKET_SORT } from 'modules/app/store/constants';
 
 interface MarketsListSortByProps {
-  setSortOptions: Function;
+  setFilterSortState: Function;
 }
 
-const MarketsListSortBy = ({ setSortOptions }: MarketsListSortByProps) => {
+const MarketsListSortBy = ({ setFilterSortState }: MarketsListSortByProps) => {
   const {
     isMobile,
     filterSortOptions: { marketSort },
@@ -35,7 +35,7 @@ const MarketsListSortBy = ({ setSortOptions }: MarketsListSortByProps) => {
           light
           onChange={(value: string) =>
             isMobile
-              ? setSortOptions(value)
+              ? setFilterSortState({ [MARKET_SORT]: value })
               : updateFilterSortOptions({ [MARKET_SORT]: value })
           }
         />

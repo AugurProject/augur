@@ -42,16 +42,13 @@ const mapDispatchToProps = dispatch => {
       updateFilterSortOptions({ [TEMPLATE_FILTER]: templateFilter }),
   };
 };
+
 const mergeProps = (sP, dP, oP) => {
   return {
     ...sP,
     ...dP,
     ...oP,
     updateLoginAccount: settings => console.log('would have updated settings for account', settings),
-      // dP.updateLoginAccount({
-      //   ...AppStatus.get().loginAccount.settings,
-      //   ...settings,
-      // }),
   };
 };
 
