@@ -13,6 +13,9 @@ import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 import {
   SMALL_MOBILE,
+  TABLET,
+  DESKTOP,
+  LARGE_DESKTOP,
   YOUR_OVERVIEW_TITLE,
   AUGUR_STATUS_TITLE,
   THEMES,
@@ -50,120 +53,130 @@ const AccountView = () => {
   return (
     <>
       <HelmetTag {...ACCOUNT_VIEW_HEAD_TAGS} />
-      <Media query={SMALL_MOBILE}>
-        {matches =>
-          matches ? 
-            theme === THEMES.TRADING ? (
-              <ModuleTabs selected={0} fillWidth noBorder>
-                <ModulePane label={YOUR_OVERVIEW_TITLE}>
-                  <Overview />
-                </ModulePane>
-                <ModulePane label="Notifications" isNew={newNotifications}>
-                  <Notifications />
-                </ModulePane>
-                <ModulePane label="My Active Markets">
-                  <OpenMarkets />
-                </ModulePane>
-                <ModulePane label="Watchlist">
-                  <Favorites />
-                </ModulePane>
-                <ModulePane label="Transactions">
-                  <Transactions />
-                </ModulePane>
-                <ModulePane label={AUGUR_STATUS_TITLE}>
-                  <AugurStatus />
-                </ModulePane>
-              </ModuleTabs>
-            ) : (
-              <div>
-                <h1>My Account</h1>
+      <Media queries={{
+        smallMobile: SMALL_MOBILE,
+        tablet: TABLET,
+        desktop: DESKTOP,
+        largeDesktop: LARGE_DESKTOP
+      }}>
+        {matches => (
+          <>
+            {matches.smallMobile && (
+              theme === THEMES.TRADING ? (
                 <ModuleTabs selected={0} fillWidth noBorder>
                   <ModulePane label={YOUR_OVERVIEW_TITLE}>
                     <Overview />
-                    <Transactions />
-                    <AugurStatus />
                   </ModulePane>
                   <ModulePane label="Notifications" isNew={newNotifications}>
                     <Notifications />
                   </ModulePane>
-                  <ModulePane
-                    label={positionsMarkets.markets.length === 0 ?
-                      "My Active Markets" :
-                      `My Active Markets (${positionsMarkets.markets.length})`}
-                  >
+                  <ModulePane label="My Active Markets">
                     <OpenMarkets />
                   </ModulePane>
-                  <ModulePane
-                    label={Object.keys(favorites).length === 0 ?
-                      "Favorites" :
-                      `Favorites (${Object.keys(favorites).length})`}
-                  >
+                  <ModulePane label="Watchlist">
                     <Favorites />
                   </ModulePane>
-                  <ModulePane
-                    label={createdMarkets.length === 0 ?
-                      "My Created Markets" :
-                      `My Created Markets  (${createdMarkets.length})`}
-                  >
-                    <MyMarkets />
+                  <ModulePane label="Transactions">
+                    <Transactions />
+                  </ModulePane>
+                  <ModulePane label={AUGUR_STATUS_TITLE}>
+                    <AugurStatus />
                   </ModulePane>
                 </ModuleTabs>
-              </div>
-            ) : 
-          theme === THEMES.TRADING ? (
-            <div
-              className={classNames(Styles.AccountView, {
-                [Styles.HideNotifications]: extendActiveMarkets,
-                [Styles.HideTransactions]: extendWatchlist,
-                [Styles.HideActiveMarkets]: extendNotifications,
-              })}
-            >
-              <Notifications
-                toggle={() =>
-                  toggle('extendActiveMarkets', 'extendNotifications')
-                }
-              />
-              <ModuleTabs selected={0}>
-                <ModulePane label={YOUR_OVERVIEW_TITLE}>
-                  <Overview hideHeader={true} />
-                </ModulePane>
-                <ModulePane label={AUGUR_STATUS_TITLE}>
-                  <AugurStatus hideHeader={true} />
-                </ModulePane>
-              </ModuleTabs>
-              <Favorites
-                toggle={() =>
-                  toggle('extendWatchlist', 'extendTransactions')
-                }
-              />
-              <OpenMarkets
-                toggle={() =>
-                  toggle('extendNotifications', 'extendActiveMarkets')
-                }
-              />
-              <Transactions />
-              <TermsAndConditions />
-            </div>
-          ) : (
-            <div
-              className={classNames(Styles.AccountView, {
-                [Styles.HideNotifications]: extendActiveMarkets,
-                [Styles.HideTransactions]: extendWatchlist,
-                [Styles.HideActiveMarkets]: extendNotifications,
-              })}
-            >
-              <h1>My Account</h1>
-              <Notifications />
-              <OpenMarkets />
-              <Overview hideHeader={false} />
-              <AugurStatus hideHeader={false} />
-              <Transactions />
-              <Favorites />
-              <MyMarkets />
-              <TermsAndConditions />
-            </div>
-          )
-        }
+              ) : (
+                <div>
+                  <h1>My Account</h1>
+                  <ModuleTabs selected={0} fillWidth noBorder>
+                    <ModulePane label={YOUR_OVERVIEW_TITLE}>
+                      <Overview />
+                      <Transactions />
+                      <AugurStatus />
+                    </ModulePane>
+                    <ModulePane label="Notifications" isNew={newNotifications}>
+                      <Notifications />
+                    </ModulePane>
+                    <ModulePane
+                      label={positionsMarkets.markets.length === 0 ?
+                        "My Active Markets" :
+                        `My Active Markets (${positionsMarkets.markets.length})`}
+                    >
+                      <OpenMarkets />
+                    </ModulePane>
+                    <ModulePane
+                      label={Object.keys(favorites).length === 0 ?
+                        "Favorites" :
+                        `Favorites (${Object.keys(favorites).length})`}
+                    >
+                      <Favorites />
+                    </ModulePane>
+                    <ModulePane
+                      label={createdMarkets.length === 0 ?
+                        "My Created Markets" :
+                        `My Created Markets  (${createdMarkets.length})`}
+                    >
+                      <MyMarkets />
+                    </ModulePane>
+                  </ModuleTabs>
+                </div>
+              )
+            )}
+            {(matches.tablet || matches.desktop || matches.largeDesktop) && (
+              theme === THEMES.TRADING ? (
+                <div
+                  className={classNames(Styles.AccountView, {
+                    [Styles.HideNotifications]: extendActiveMarkets,
+                    [Styles.HideTransactions]: extendWatchlist,
+                    [Styles.HideActiveMarkets]: extendNotifications,
+                  })}
+                >
+                  <Notifications
+                    toggle={() =>
+                      toggle('extendActiveMarkets', 'extendNotifications')
+                    }
+                  />
+                  <ModuleTabs selected={0}>
+                    <ModulePane label={YOUR_OVERVIEW_TITLE}>
+                      <Overview hideHeader={true} />
+                    </ModulePane>
+                    <ModulePane label={AUGUR_STATUS_TITLE}>
+                      <AugurStatus hideHeader={true} />
+                    </ModulePane>
+                  </ModuleTabs>
+                  <Favorites
+                    toggle={() =>
+                      toggle('extendWatchlist', 'extendTransactions')
+                    }
+                  />
+                  <OpenMarkets
+                    toggle={() =>
+                      toggle('extendNotifications', 'extendActiveMarkets')
+                    }
+                  />
+                  <Transactions />
+                  <TermsAndConditions />
+                </div>
+              ) : (
+                <div
+                  className={classNames(Styles.AccountView, {
+                    [Styles.HideNotifications]: extendActiveMarkets,
+                    [Styles.HideTransactions]: extendWatchlist,
+                    [Styles.HideActiveMarkets]: extendNotifications,
+                  })}
+                >
+                  <h1>My Account</h1>
+                  <Notifications />
+                  <OpenMarkets />
+                  <Overview hideHeader={false} />
+                  <AugurStatus hideHeader={false} />
+                  <Transactions />
+                  <Favorites />
+                  <MyMarkets />
+                  <TermsAndConditions />
+                </div>
+              )
+            )}
+          </>
+        )}
       </Media>
     </>
   );
