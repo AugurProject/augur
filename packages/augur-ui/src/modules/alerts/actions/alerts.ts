@@ -90,7 +90,7 @@ function createUniqueOrderId(alert) {
   const direction = alert.params._direction
     ? alert.params._direction.toString()
     : alert.params.orderType;
-  const timestamp = alert.timestamp || '0101';
+  const timestamp = alert.timestamp;
 
   return `${alert.id}_${price}_${outcome}_${direction}_${timestamp}`;
 }
