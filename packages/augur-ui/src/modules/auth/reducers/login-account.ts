@@ -17,7 +17,7 @@ const DEFAULT_STATE: LoginAccount = {
     attoRep: '0',
     legacyAttoRep: '0',
     signerBalances: {
-      eth: 0,
+      eth: null,
       rep: 0,
       dai: 0,
     }

@@ -450,6 +450,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Round #`,
+                noSort: true,
                 values: LIST_VALUES.BOXING_ROUNDS,
               },
               {
@@ -698,7 +699,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ESTDATETIME,
-                hoursAfterEst: 12,
+                hoursAfterEst: 24,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
               },
@@ -707,6 +708,11 @@ export const TEMPLATES = {
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
               },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Contest`
+              }
             ],
             resolutionRules: {
               [REQUIRED]: [
@@ -752,12 +758,12 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Event Cancelled`,
+                placeholder: `No Contest`,
               },
               {
                 id: 5,
                 type: TemplateInputType.ESTDATETIME,
-                hoursAfterEst: 12,
+                hoursAfterEst: 24,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
               },
@@ -8364,6 +8370,9 @@ export const TEMPLATES = {
             {
               text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
             },
+            {
+              text: ` If the event does not take place or if the results of the event do not occur by the Event Expiration time, this market should resolve as "Invalid"`,
+            }
           ],
         },
       },
@@ -8405,6 +8414,9 @@ export const TEMPLATES = {
             {
               text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
             },
+            {
+              text: ` If the event does not take place or if the results of the event do not occur by the Event Expiration time, this market should resolve as "Invalid"`,
+            }
           ],
         },
       },
