@@ -97,7 +97,7 @@ const MarketsListFilters = ({
     categories
       ? updateSelectedCategories(categories.split(','))
       : updateSelectedCategories([]);
-  }, [location.search, settings.maxFee, settings.maxLiquiditySpread, settings.templateFilter, settings.showInvalid]);
+  }, [location.search, settings.maxFee, settings.maxLiquiditySpread, settings.templateFilter, settings.includeInvalidMarkets]);
 
   const [showFilters, setShowFilters] = useState(false);
 
