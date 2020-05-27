@@ -16,10 +16,12 @@ import { END_TIME } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';
 import { CancelTextButton, SubmitTextButton } from 'modules/common/buttons';
 import { CreatedMarketsIcon } from 'modules/common/icons';
+import { retrySubmitMarket } from 'modules/markets/actions/submit-new-market';
+import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { selectAuthorOwnedMarkets } from 'modules/markets/selectors/user-markets';
 
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import marketStyles from 'modules/portfolio/components/markets/markets.styles.less';
-import { MarketData } from 'modules/types';
 
 const sortByOptions = [
   {
@@ -66,26 +68,20 @@ function filterComp(input, market) {
 }
 
 interface MyMarketsProps {
-  myMarkets: MarketData[];
-  disputingWindowEndTime: number;
-  removePendingMarket: Function;
-  retrySubmitMarket: Function;
   toggle: Function;
   hide: boolean;
   extend: boolean;
 }
 
 const MyMarkets = ({
-  myMarkets,
-  disputingWindowEndTime,
-  removePendingMarket,
-  retrySubmitMarket,
   toggle,
   hide,
   extend, 
 }: MyMarketsProps) => {
-  const { theme, actions: { setTheme } } = useAppStatusStore();
+  const { theme, universe: { disputeWindow }, actions: { setTheme } } = useAppStatusStore();
   const isTrading = theme === THEMES.TRADING;
+  const disputingWindowEndTime = disputeWindow?.endTime || 0;
+  const myMarkets = selectAuthorOwnedMarkets();
 
   function renderRightContent(market) {
     return (
@@ -145,7 +141,7 @@ const MyMarkets = ({
                 <CancelTextButton
                   text={'cancel'}
                   action={() =>
-                    removePendingMarket(market.pendingId)
+                    removePendingData(market.pendingId, CREATE_MARKET)
                   }
                 />
               </div>

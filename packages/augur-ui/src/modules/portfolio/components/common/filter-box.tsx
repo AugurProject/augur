@@ -5,7 +5,7 @@ import QuadBox from 'modules/portfolio/components/common/quad-box';
 import { SquareDropdown } from 'modules/common/selection';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
 import { NameValuePair, Market, Tab } from 'modules/portfolio/types';
-import MarketRow from 'modules/portfolio/containers/market-row';
+import MarketRow from 'modules/portfolio/components/common/market-row';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { createTabsInfo } from 'modules/portfolio/helpers/create-tabs-info';
 import { THEMES } from 'modules/common/constants';

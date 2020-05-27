@@ -25,7 +25,7 @@ export const loginWithInjectedWeb3 = () => async (
   getState: () => AppState
 ) => {
   const failure = error => {
-    dispatch(closeModal());
+    closeModal();
     throw error;
   };
   const success = async (account: string, refresh: boolean) => {
@@ -64,7 +64,7 @@ export const loginWithInjectedWeb3 = () => async (
               type: MODAL_LOADING,
               message,
               showMetaMaskHelper,
-              callback: () => dispatch(closeModal()),
+              callback: () => closeModal(),
             });
 
             await dispatch(loginWithInjectedWeb3());

@@ -8,7 +8,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 export const collectMarketCreatorFees = (
   marketId: string,
   callback: NodeStyleCallback = logError
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => {
   const { loginAccount: { address } } = AppStatus.get();
   if (!address) return callback(null);
   // TODO: get market creators fees, using crazy stubb here so we rem to fix this

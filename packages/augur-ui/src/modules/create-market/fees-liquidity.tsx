@@ -6,7 +6,7 @@ import InitialLiquidity from 'modules/create-market/initial-liquidity';
 import OrderBook from 'modules/market-charts/containers/order-book';
 import TradingForm from 'modules/trading/components/trading-form';
 import { BUY, CATEGORICAL } from 'modules/common/constants';
-import FilterSwitchBox from 'modules/portfolio/containers/filter-switch-box';
+import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
 import DepthChart from 'modules/market-charts/containers/depth';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
