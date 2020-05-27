@@ -976,7 +976,7 @@ export const COLUMN_TYPES = {
 // Login method variables
 export const TREZOR_MANIFEST_EMAIL = 'team@augur.net';
 export const TREZOR_MANIFEST_APPURL = 'https://dev.augur.net';
-export const PORTIS_API_KEY = 'b67817cf-8dd0-4116-a0cf-657820ddc019';
+export const PORTIS_API_KEY = 'ede221f9-710f-44c9-a429-ed28bbb54376';
 export const FORTMATIC_API_KEY = 'pk_live_8001A50CCA35D8CB';
 export const FORTMATIC_API_TEST_KEY = 'pk_test_5185BE42CA372148';
 
