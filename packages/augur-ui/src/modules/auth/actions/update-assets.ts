@@ -75,7 +75,7 @@ function updateBalances(
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const legacyRepNonSafe = formatAttoRep(legacyAttoRepNonSafe).value;
 
-    const { loginAccount, authStatus } = getState();
+    const { loginAccount } = getState();
     const updatedDaiAmount = createBigNumber(dai);
     const currentDaiAmount = createBigNumber(await getDaiBalance(loginAccount.address));
 

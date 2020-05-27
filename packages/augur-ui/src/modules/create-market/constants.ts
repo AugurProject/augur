@@ -43,6 +43,9 @@ import {
   BOXING,
   MMA,
   CAR_RACING,
+  AWARDS,
+  TV_MOVIES,
+  SOCIAL_MEDIA,
 } from '@augurproject/artifacts';
 
 export const INVALID_OUTCOME = 'Invalid';
@@ -195,10 +198,6 @@ export const MARKET_TYPE_NAME = {
 };
 
 // Market Subtemplates
-export const AWARDS = 'Awards';
-export const MOVIES = 'Movies';
-export const MUSIC = 'Music';
-export const TV = 'TV';
 export const AUGUR = 'Augur';
 
 const defaultDescription = '-  |  -';
@@ -394,22 +393,16 @@ export const MARKET_SUB_TEMPLATES = {
       icon: icons.Awards,
     },
     {
-      value: MOVIES,
-      header: MOVIES,
+      value: TV_MOVIES,
+      header: TV_MOVIES,
       description: defaultDescription,
       icon: icons.Movies,
     },
     {
-      value: MUSIC,
-      header: MUSIC,
+      value: SOCIAL_MEDIA,
+      header: SOCIAL_MEDIA,
       description: defaultDescription,
-      icon: icons.Music,
-    },
-    {
-      value: TV,
-      header: TV,
-      description: defaultDescription,
-      icon: icons.TV,
+      icon: icons.TwitterButton,
     },
   ],
   [CRYPTO]: [

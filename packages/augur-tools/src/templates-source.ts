@@ -61,6 +61,9 @@ import {
   MMA,
   BOXING,
   CAR_RACING,
+  AWARDS,
+  TV_MOVIES,
+  SOCIAL_MEDIA,
 } from './templates-template';
 import {
   LIST_VALUES,
@@ -450,6 +453,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Round #`,
+                noSort: true,
                 values: LIST_VALUES.BOXING_ROUNDS,
               },
               {
@@ -698,7 +702,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ESTDATETIME,
-                hoursAfterEst: 12,
+                hoursAfterEst: 24,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
               },
@@ -706,6 +710,11 @@ export const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
@@ -752,12 +761,12 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Event Cancelled`,
+                placeholder: `No Contest`,
               },
               {
                 id: 5,
                 type: TemplateInputType.ESTDATETIME,
-                hoursAfterEst: 12,
+                hoursAfterEst: 24,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
               },
@@ -8119,296 +8128,314 @@ export const TEMPLATES = {
     },
   },
   [ENTERTAINMENT]: {
-    templates: [
-      {
-        marketType: YES_NO,
-        question: `Will [0] host the [1] [2]?`,
-        example: `Will Billy Crystal host the 2019 Academy Awards?`,
-        inputs: [
+    children: {
+      [AWARDS]: {
+        templates: [
           {
-            id: 0,
-            type: TemplateInputType.TEXT,
-            placeholder: TEXT_PLACEHOLDERS.SINGLE_PERSON_NAME,
+            marketType: YES_NO,
+            question: `Will [0] host the [1] [2]?`,
+            example: `Will Billy Crystal host the 2019 Academy Awards?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: TEXT_PLACEHOLDERS.SINGLE_PERSON_NAME,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.ENTERTAINMENT_EVENT,
+                categoryDestId: 1,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text:
+                    'If more than one person hosts the event and the person named in the market is one of the multiple hosts, the market should resolve as "Yes"',
+                },
+                {
+                  text: `Person has to officially host the event in order for the market to resolve as "Yes", not just named as host`,
+                },
+                {
+                  text: `If event does not occur the market should resolve as 'No'`,
+                },
+                {
+                  text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                },
+              ],
+            },
           },
           {
-            id: 1,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `Year`,
-            values: LIST_VALUES.YEARS,
+            marketType: YES_NO,
+            question: `Will [0] win an award for [1] at the [2] [3]?`,
+            example: `Will Leonardo DiCaprio win an award for Best Actor at the 2016 Academy Awards?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder:
+                  TEXT_PLACEHOLDERS.SINGLE_PERSON_OR_GROUP_OR_MOVIE_TITLE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                defaultLabel: `Select Event First`,
+                placeholder: `Award`,
+                values: [],
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                placeholder: `Event`,
+                inputDestIds: [1],
+                values: LIST_VALUES.ENTERTAINMENT_EVENT,
+                inputDestValues: ENTERTAINMENT_EVENT_DEP_TEAMS,
+                categoryDestId: 1,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text:
+                    'If more than one person wins the award and the person named in the market is one of the named, the market should resolve as "Yes"',
+                },
+                {
+                  text: `If event does not occur the market should resolve as 'No'`,
+                },
+                {
+                  text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                },
+              ],
+            },
           },
           {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `Event`,
-            values: LIST_VALUES.ENTERTAINMENT_EVENT,
-            categoryDestId: 1,
+            marketType: CATEGORICAL,
+            question: `Who will host the [0] [1]?`,
+            example: `Who wll host the 2020 Emmy Awards?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Event`,
+                values: LIST_VALUES.ENTERTAINMENT_EVENT,
+                categoryDestId: 1,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Multiple Hosts`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text:
+                    'The market should resolve as "multiple hosts" if more than one of the possible outcomes hosts the event. If only one of the potential outcomes hosts with multiple people, then the individual outcome would be the winner.',
+                },
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
+                {
+                  text: ` If the event does not take place or if the results of the event do not occur by the Event Expiration time, this market should resolve as "Invalid"`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Who will win [0] in the [1] [2]?`,
+            example: `Who will win Best Pop Vocal Album in the 2020 Grammy Awards?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                defaultLabel: `Select Event First`,
+                placeholder: `Award`,
+                values: [],
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                placeholder: `Event`,
+                inputDestIds: [0],
+                values: LIST_VALUES.ENTERTAINMENT_EVENT,
+                inputDestValues: ENTERTAINMENT_EVENT_DEP_TEAMS,
+                categoryDestId: 1,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                },
+                {
+                  text: ` If the event does not take place or if the results of the event do not occur by the Event Expiration time, this market should resolve as "Invalid"`,
+                },
+              ],
+            },
           },
         ],
-        resolutionRules: {
-          [REQUIRED]: [
-            {
-              text:
-                'If more than one person hosts the event and the person named in the market is one of the multiple hosts, the market should resolve as "Yes"',
-            },
-            {
-              text: `Person has to officially host the event in order for the market to resolve as "Yes", not just named as host`,
-            },
-            {
-              text: `If event does not occur the market should resolve as 'No'`,
-            },
-            {
-              text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
-            },
-          ],
-        },
       },
-      {
-        marketType: YES_NO,
-        question: `Will [0] win an award for [1] at the [2] [3]?`,
-        example: `Will Leonardo DiCaprio win an award for Best Actor at the 2016 Academy Awards?`,
-        inputs: [
+      [TV_MOVIES]: {
+        templates: [
           {
-            id: 0,
-            type: TemplateInputType.TEXT,
-            placeholder:
-              TEXT_PLACEHOLDERS.SINGLE_PERSON_OR_GROUP_OR_MOVIE_TITLE,
+            marketType: YES_NO,
+            question: `Will the total gross for [0] be $[1] USD or more on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com?`,
+            example: `Will the total gross for Avengers: Endgame gross 350 million USD or more on domestic opening weekend of April 22, 2019 in the US, according to www.boxofficemojo.com?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_MOVIE_TITLE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                placeholder: `Total Gross sales`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DATEYEAR,
+                validationType:
+                  ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY,
+                placeholder: `Opening day`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays`,
+                },
+                {
+                  text: `This market is intended to be about a Single Movie, if this is not the case, this market should settle as 'Invalid'.`,
+                },
+                {
+                  text:
+                    'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.',
+                },
+              ],
+            },
           },
           {
-            id: 1,
-            type: TemplateInputType.DROPDOWN,
-            defaultLabel: `Select Event First`,
-            placeholder: `Award`,
-            values: [],
-          },
-          {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `Year`,
-            values: LIST_VALUES.YEARS,
-          },
-          {
-            id: 3,
-            type: TemplateInputType.DROPDOWN_QUESTION_DEP,
-            placeholder: `Event`,
-            inputDestIds: [1],
-            values: LIST_VALUES.ENTERTAINMENT_EVENT,
-            inputDestValues: ENTERTAINMENT_EVENT_DEP_TEAMS,
-            categoryDestId: 1,
+            marketType: YES_NO,
+            question: `Head-to-Head: Will [0] on domestic opening weekend of [1] in the US gross more than [2] on its opening weekend in US, according to www.boxofficemojo.com?`,
+            example: `Head-to-Head: Will Avengers: Endgame on domestic opening weekend of April 22, 2019 gross more than Avengers: Age of Ultron on its opening weekend in the US, according to www.boxofficemojo.com?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_MOVIE_TITLE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                validationType:
+                  ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY,
+                placeholder: `Opening day`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.TEXT,
+                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_MOVIE_TITLE,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text:
+                    'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays',
+                },
+                {
+                  text: `This market is intended to be about a Single Movie compared to another uniquely identifiable Single Movie, if this is not the case, this market should settle as 'Invalid'.`,
+                },
+                {
+                  text:
+                    'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movies.',
+                },
+              ],
+            },
           },
         ],
-        resolutionRules: {
-          [REQUIRED]: [
-            {
-              text:
-                'If more than one person wins the award and the person named in the market is one of the named, the market should resolve as "Yes"',
-            },
-            {
-              text: `If event does not occur the market should resolve as 'No'`,
-            },
-            {
-              text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
-            },
-          ],
-        },
       },
-      {
-        marketType: YES_NO,
-        question: `Will the total gross for [0] be $[1] USD or more on domestic opening weekend of [2] in the US, according to www.boxofficemojo.com?`,
-        example: `Will the total gross for Avengers: Endgame gross 350 million USD or more on domestic opening weekend of April 22, 2019 in the US, according to www.boxofficemojo.com?`,
-        inputs: [
+      [SOCIAL_MEDIA]: {
+        templates: [
           {
-            id: 0,
-            type: TemplateInputType.TEXT,
-            placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_MOVIE_TITLE,
-          },
-          {
-            id: 1,
-            type: TemplateInputType.TEXT,
-            placeholder: `Total Gross sales`,
-          },
-          {
-            id: 2,
-            type: TemplateInputType.DATEYEAR,
-            validationType:
-              ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY,
-            placeholder: `Opening day`,
+            marketType: YES_NO,
+            question: `Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.trackalytics.com?`,
+            example: `Twitter: Will @elonmusk have 50 million or more twitter followers on September 12, 2020, according to www.trackalytics.com?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                validationType: ValidationType.SOCIAL,
+                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_SOCIAL_MEDIA_HANDLE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                validationType: ValidationType.NUMBER,
+                placeholder: `Number`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DROPDOWN,
+                values: LIST_VALUES.AMOUNT_UNITS,
+                placeholder: `Amount Unit`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.DATESTART,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text:
+                    'If www.trackalytics.com is down or not available use inspectsocial.com/ to determine total twitter followers for the social media account stated in market question.',
+                },
+              ],
+            },
           },
         ],
-        resolutionRules: {
-          [REQUIRED]: [
-            {
-              text: `Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays`,
-            },
-            {
-              text: `This market is intended to be about a Single Movie, if this is not the case, this market should settle as 'Invalid'.`,
-            },
-            {
-              text:
-                'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movie.',
-            },
-          ],
-        },
       },
-      {
-        marketType: YES_NO,
-        question: `Head-to-Head: Will [0] on domestic opening weekend of [1] in the US gross more than [2] on its opening weekend in US, according to www.boxofficemojo.com?`,
-        example: `Head-to-Head: Will Avengers: Endgame on domestic opening weekend of April 22, 2019 gross more than Avengers: Age of Ultron on its opening weekend in the US, according to www.boxofficemojo.com?`,
-        inputs: [
-          {
-            id: 0,
-            type: TemplateInputType.TEXT,
-            placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_MOVIE_TITLE,
-          },
-          {
-            id: 1,
-            type: TemplateInputType.DATEYEAR,
-            validationType:
-              ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY,
-            placeholder: `Opening day`,
-          },
-          {
-            id: 2,
-            type: TemplateInputType.TEXT,
-            placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_MOVIE_TITLE,
-          },
-        ],
-        resolutionRules: {
-          [REQUIRED]: [
-            {
-              text:
-                'Gross total should include the first Friday through Sunday of the movie release and does not include extra days due to holidays',
-            },
-            {
-              text: `This market is intended to be about a Single Movie compared to another uniquely identifiable Single Movie, if this is not the case, this market should settle as 'Invalid'.`,
-            },
-            {
-              text:
-                'If www.boxofficemojo.com is down or not available use www.the-numbers.com to determine domestic US total gross of movies.',
-            },
-          ],
-        },
-      },
-      {
-        marketType: YES_NO,
-        question: `Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.trackalytics.com?`,
-        example: `Twitter: Will @elonmusk have 50 million or more twitter followers on September 12, 2020, according to www.trackalytics.com?`,
-        inputs: [
-          {
-            id: 0,
-            type: TemplateInputType.TEXT,
-            validationType: ValidationType.SOCIAL,
-            placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_SOCIAL_MEDIA_HANDLE,
-          },
-          {
-            id: 1,
-            type: TemplateInputType.TEXT,
-            validationType: ValidationType.NUMBER,
-            placeholder: `Number`,
-          },
-          {
-            id: 2,
-            type: TemplateInputType.DROPDOWN,
-            values: LIST_VALUES.AMOUNT_UNITS,
-            placeholder: `Amount Unit`,
-          },
-          {
-            id: 3,
-            type: TemplateInputType.DATESTART,
-            placeholder: `Day of Year`,
-          },
-        ],
-        resolutionRules: {
-          [REQUIRED]: [
-            {
-              text:
-                'If www.trackalytics.com is down or not available use inspectsocial.com/ to determine total twitter followers for the social media account stated in market question.',
-            },
-          ],
-        },
-      },
-      {
-        marketType: CATEGORICAL,
-        question: `Who will host the [0] [1]?`,
-        example: `Who wll host the 2020 Emmy Awards?`,
-        inputs: [
-          {
-            id: 0,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `Year`,
-            values: LIST_VALUES.YEARS,
-          },
-          {
-            id: 1,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `Event`,
-            values: LIST_VALUES.ENTERTAINMENT_EVENT,
-            categoryDestId: 1,
-          },
-          {
-            id: 2,
-            type: TemplateInputType.ADDED_OUTCOME,
-            placeholder: `Multiple Hosts`,
-          },
-          {
-            id: 3,
-            type: TemplateInputType.ADDED_OUTCOME,
-            placeholder: `Other (Field)`,
-          },
-        ],
-        resolutionRules: {
-          [REQUIRED]: [
-            {
-              text:
-                'The market should resolve as "multiple hosts" if more than one of the possible outcomes hosts the event. If only one of the potential outcomes hosts with multiple people, then the individual outcome would be the winner.',
-            },
-            {
-              text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
-            },
-          ],
-        },
-      },
-      {
-        marketType: CATEGORICAL,
-        question: `Who will win [0] in the [1] [2]?`,
-        example: `Who will win Best Pop Vocal Album in the 2020 Grammy Awards?`,
-        inputs: [
-          {
-            id: 0,
-            type: TemplateInputType.DROPDOWN,
-            defaultLabel: `Select Event First`,
-            placeholder: `Award`,
-            values: [],
-          },
-          {
-            id: 1,
-            type: TemplateInputType.DROPDOWN,
-            placeholder: `Year`,
-            values: LIST_VALUES.YEARS,
-          },
-          {
-            id: 2,
-            type: TemplateInputType.DROPDOWN_QUESTION_DEP,
-            placeholder: `Event`,
-            inputDestIds: [0],
-            values: LIST_VALUES.ENTERTAINMENT_EVENT,
-            inputDestValues: ENTERTAINMENT_EVENT_DEP_TEAMS,
-            categoryDestId: 1,
-          },
-          {
-            id: 3,
-            type: TemplateInputType.ADDED_OUTCOME,
-            placeholder: `Other (Field)`,
-          },
-        ],
-        resolutionRules: {
-          [REQUIRED]: [
-            {
-              text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
-            },
-          ],
-        },
-      },
-    ],
+    },
   },
   [CRYPTO]: {
     children: {
