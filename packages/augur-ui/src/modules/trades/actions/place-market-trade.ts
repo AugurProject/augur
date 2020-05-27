@@ -5,6 +5,8 @@ import {
   MODAL_ERROR,
   PUBLICTRADE,
   ZEROX_STATUSES,
+  BUY_INDEX,
+  SELL,
 } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
@@ -23,7 +25,8 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { Ox_STATUS } from 'modules/app/actions/update-app-status';
-import { handleAlert } from 'modules/events/actions/log-handlers';
+import { formatShares, formatDai } from 'utils/format-number';
+import { updateAlert } from 'modules/alerts/actions/alerts';
 
 export const placeMarketTrade = ({
   marketId,
@@ -98,17 +101,6 @@ export const placeMarketTrade = ({
     )
   );
 
-  const logForBellAlert = {
-    amount: new BigNumber(tradeInProgress.numShares)
-      .times(new BigNumber(10).pow(16))
-      .toNumber(),
-    eventType: orderType,
-    market: marketId,
-    outcome: '0x0'.concat(outcomeId),
-    price: displayPrice * 100,
-    orderType,
-  };
-
   placeTrade(
     orderType,
     market.id,
@@ -126,7 +118,23 @@ export const placeMarketTrade = ({
   )
     .then(result => {
       if (tradeInProgress.numFills === 0) {
-        handleAlert(logForBellAlert, PUBLICTRADE, false, dispatch, getState);
+        const alert = {
+          eventType: orderType,
+          market: marketId,
+          name: PUBLICTRADE,
+          status: TXEventName.Success,
+          timestamp: blockchain.currentAugurTimestamp * 1000,
+          params: {
+            outcome: '0x0'.concat(outcomeId),
+            price: displayPrice * 100,
+            orderType,
+            amount: new BigNumber(tradeInProgress.numShares)
+            .times(new BigNumber(10).pow(16))
+            .toNumber(),
+            marketId
+          }
+        };
+        dispatch(updateAlert(alert.id, alert, false));
       }
     })
     .catch(err => {

@@ -80,7 +80,7 @@ import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { logger } from '@augurproject/utils';
 
-export const handleAlert = (
+const handleAlert = (
   log: any,
   name: string,
   toast: boolean,
