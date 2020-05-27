@@ -28,8 +28,7 @@
 
     > button[class*="PrimaryButton"] {
       margin-right: @size-16;
-      max-height: fit-content;
-      white-space: pre-wrap;
+
     }
   }
 
@@ -37,6 +36,18 @@
     > div[class*='statsContainer'] {
       display: none;
     }
+  }
+}
+
+.AccountActivation > button {
+  max-height: 100%;
+
+  @media @breakpoint-mobile {
+    .text-10-bold;
+
+    padding: @size-4 @size-8;
+    width: @size-120;
+    white-space: break-spaces;
   }
 }
 
