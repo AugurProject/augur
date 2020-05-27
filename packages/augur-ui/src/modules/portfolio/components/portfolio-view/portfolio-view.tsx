@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Media from 'react-media';
 
 import MyPositions from 'modules/portfolio/containers/positions';
-import MyMarkets from 'modules/portfolio/containers/my-markets';
+import MyMarkets from 'modules/portfolio/components/markets/markets';
 import OpenOrders from "modules/portfolio/components/orders/open-orders";
 import FilledOrders from 'modules/portfolio/components/orders/filled-orders';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';

@@ -6,7 +6,7 @@ import Notifications from 'modules/account/components/notifications';
 import Transactions from 'modules/account/components/transactions';
 import AugurStatus from 'modules/account/components/augur-status';
 import Favorites from 'modules/portfolio/containers/favorites';
-import MyMarkets from 'modules/portfolio/containers/my-markets';
+import MyMarkets from 'modules/portfolio/components/markets/markets';
 import OpenMarkets from 'modules/account/components/open-markets';
 import Overview from 'modules/account/components/overview';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';

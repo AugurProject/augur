@@ -1,6 +1,6 @@
 import React from 'react';
 import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
-import MarketRow from 'modules/portfolio/containers/market-row';
+import MarketRow from 'modules/portfolio/components/common/market-row';
 import { MovementLabel } from 'modules/common/labels';
 import { ActiveMarketsIcon } from 'modules/common/icons';
 import { SizeTypes, FormattedNumber, MarketData } from 'modules/types';

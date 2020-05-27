@@ -126,7 +126,7 @@ export function retrySubmitMarket(
   market: CreateMarketData,
   callback: NodeStyleCallback = noop
 ) {
-  return async (dispatch: ThunkDispatch<void, any, Action>) => {
+  return async () => {
     const hasOrders = market.orderBook && Object.keys(market.orderBook).length;
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
     const txParamHash = getDeconstructedMarketId(market.txParams);
