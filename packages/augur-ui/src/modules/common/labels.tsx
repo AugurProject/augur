@@ -1548,8 +1548,15 @@ const mapStateToPropsEthReserve = (state: AppState, ownProps) => {
     const attoEthReserve = formatAttoEth(
       state.env.gsn.desiredSignerBalanceInETH
     ).value;
-    const diffReserve = createBigNumber(attoEthReserve).minus(createBigNumber(ethInReserve.value).div(10 ** 18));
-    reserve = ethToDai(diffReserve, createBigNumber(attoEthToDaiRate || 0));
+    const diffReserve = createBigNumber(attoEthReserve).minus(
+      createBigNumber(ethInReserve.value).div(10 ** 18)
+    );
+    reserve = ethToDai(
+      diffReserve.lte(0)
+        ? attoEthReserve
+        : diffReserve,
+      createBigNumber(attoEthToDaiRate || 0)
+    );
   }
   return {
     show,
