@@ -134,7 +134,7 @@ export const placeMarketTrade = ({
             marketId
           }
         };
-        dispatch(updateAlert(alert.id, alert, false));
+        dispatch(updateAlert(undefined, alert, false));
       }
     })
     .catch(err => {
