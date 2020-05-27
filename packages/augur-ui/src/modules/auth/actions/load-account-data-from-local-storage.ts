@@ -49,7 +49,8 @@ export const loadAccountDataFromLocalStorage = (
 
       if (settings) {
         const { maxFee, spread, showInvalid, templateFilter } = settings;
-        updateLoginAccount({ settings });
+        console.log('in loadAccountDataStorage. Saved Settings:', settings);
+        // updateLoginAccount({ settings });
         if (maxFee) {
           updateFilterSortOptions({ [MARKET_MAX_FEES]: settings.maxFee });
         }

@@ -41,11 +41,7 @@ interface MarketsListFiltersProps {
 }
 
 const MarketsListFilters = ({
-  maxFee,
-  maxLiquiditySpread,
   location,
-  includeInvalidMarkets,
-  allTemplateFilter,
   updateMaxFee,
   updateMaxSpread,
   updateShowInvalid,
@@ -55,10 +51,19 @@ const MarketsListFilters = ({
   setMaxSpreadFilter,
   setShowInvalidFilter,
   setTemplateOrCustomFilter,
-  settings,
   updateSelectedCategories,
 }: MarketsListFiltersProps) => {
-  const { isMobile, marketsList: { isSearching } } = useAppStatusStore();
+  const {
+    isMobile,
+    marketsList: { isSearching },
+    loginAccount: { settings },
+    filterSortOptions: {
+      maxFee,
+      maxLiquiditySpread,
+      includeInvalidMarkets,
+      templateFilter: allTemplateFilter,
+    },
+  } = useAppStatusStore();
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(location.search);
 

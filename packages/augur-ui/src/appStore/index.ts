@@ -21,10 +21,10 @@ import { PendingOrders } from 'modules/app/store/pending-orders';
 // console log middleware
 const consoleLog = store => next => action => {
   if (!action) return;
-  const isIgnoreFlag = action.meta != null && action.meta.ignore === true;
-  if (typeof action !== 'function' && !isIgnoreFlag) {
-    // console.log(action);
-  }
+  // const isIgnoreFlag = action.meta != null && action.meta.ignore === true;
+  // if (typeof action !== 'function' && !isIgnoreFlag) {
+  //   // console.log(action);
+  // }
   return next(action);
 };
 
@@ -40,7 +40,7 @@ const localStorageMiddleware = store => next => action => {
   ) {
     return;
   }
-  const { address, affiliate } = loginAccount;
+  const { address, affiliate, settings } = loginAccount;
   const windowApp: WindowApp = windowRef as WindowApp;
   if (windowApp.localStorage && windowApp.localStorage.setItem) {
     const { localStorage } = windowApp;
@@ -83,7 +83,7 @@ const localStorageMiddleware = store => next => action => {
         selectedUniverse: {
           ...storedAccountData.selectedUniverse,
         },
-        settings: loginAccount.settings || {},
+        settings,
         affiliate
       })
     );

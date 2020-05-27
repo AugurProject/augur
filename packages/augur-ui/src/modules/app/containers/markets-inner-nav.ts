@@ -47,8 +47,11 @@ const mergeProps = (sP, dP, oP) => {
     ...sP,
     ...dP,
     ...oP,
-    updateLoginAccount: settings =>
-      dP.updateLoginAccount(Object.assign({}, sP.settings, settings)),
+    updateLoginAccount: settings => console.log('would have updated settings for account', settings),
+      // dP.updateLoginAccount({
+      //   ...AppStatus.get().loginAccount.settings,
+      //   ...settings,
+      // }),
   };
 };
 

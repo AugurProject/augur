@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import { DEFAULT_PENDING_ORDERS, STUBBED_PENDING_ORDERS_ACTIONS } from 'modules/app/store/constants';
 import { usePendingOrders } from 'modules/app/store/pending-orders-hooks';
+import { handleLocalStorage } from './local-storage-persistence';
 
 const PendingOrdersContext = createContext({
   ...DEFAULT_PENDING_ORDERS,
@@ -22,6 +23,7 @@ export const PendingOrdersProvider = ({ children }) => {
   const readableState = { ...state };
   delete readableState.actions;
   PendingOrders.get = () => readableState;
+  handleLocalStorage();
   return (
     <PendingOrdersContext.Provider value={state}>
       {children}

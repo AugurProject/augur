@@ -7,11 +7,11 @@ import { RadioBarGroup } from 'modules/common/form';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { MARKET_SORT } from 'modules/app/store/constants';
 
-interface MarketsListFiltersProps {
+interface MarketsListSortByProps {
   setSortOptions: Function;
 }
 
-const MarketsListFilters = ({ setSortOptions }: MarketsListFiltersProps) => {
+const MarketsListSortBy = ({ setSortOptions }: MarketsListSortByProps) => {
   const {
     isMobile,
     filterSortOptions: { marketSort },
@@ -43,4 +43,4 @@ const MarketsListFilters = ({ setSortOptions }: MarketsListFiltersProps) => {
     </div>
   );
 };
-export default MarketsListFilters;
+export default MarketsListSortBy;

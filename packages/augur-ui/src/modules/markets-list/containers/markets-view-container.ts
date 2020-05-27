@@ -44,7 +44,12 @@ const mapStateToProps = (state: AppState, { location }) => {
   } = getSelectedTagsAndCategoriesFromLocation(location);
   const {
     marketsList: { marketCardFormat, isSearching, meta, selectedCategories },
-    loginAccount: { settings },
+    loginAccount: {
+      settings: {
+        showInvalidMarketsBannerHideOrShow,
+        showInvalidMarketsBannerFeesOrLiquiditySpread,
+      },
+    },
     isMobile,
     universe: { id },
     isConnected,
@@ -79,10 +84,8 @@ const mapStateToProps = (state: AppState, { location }) => {
     marketSort,
     marketFilter,
     marketCardFormat: autoSetupMarketCardFormat,
-    showInvalidMarketsBannerHideOrShow:
-      settings.showInvalidMarketsBannerHideOrShow,
-    showInvalidMarketsBannerFeesOrLiquiditySpread:
-      settings.showInvalidMarketsBannerFeesOrLiquiditySpread,
+    showInvalidMarketsBannerHideOrShow,
+    showInvalidMarketsBannerFeesOrLiquiditySpread,
     templateFilter,
   };
 };

@@ -276,6 +276,12 @@ export function AppStatusReducer(state, action) {
         ...updatedState[FILTER_SORT_OPTIONS],
         ...action.filterSortOptions,
       };
+      if (updatedState[IS_LOGGED]) {
+        updatedState[LOGIN_ACCOUNT].settings = {
+          ...updatedState[LOGIN_ACCOUNT].settings,
+          ...action.filterSortOptions
+        };
+      }
       break;
     }
     case SET_MODAL: {
