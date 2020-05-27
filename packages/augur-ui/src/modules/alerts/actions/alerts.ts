@@ -90,8 +90,9 @@ function createUniqueOrderId(alert) {
   const direction = alert.params._direction
     ? alert.params._direction.toString()
     : alert.params.orderType;
+  const timestamp = alert.timestamp;
 
-  return `${alert.id}_${price}_${outcome}_${direction}`;
+  return `${alert.id}_${price}_${outcome}_${direction}_${timestamp}`;
 }
 
 function createAlternateUniqueOrderId(alert) {
@@ -105,7 +106,7 @@ export function updateAlert(
 ) {
   return (dispatch: ThunkDispatch<void, any, Action>): void => {
     if (alert) {
-      const { alerts, loginAccount } = store.getState() as AppState;
+      const { alerts } = store.getState() as AppState;
       const alertName = alert.name.toUpperCase();
       alert.id = id;
       alert.uniqueId =
