@@ -525,11 +525,13 @@ export const Form = ({ isTemplate, updatePage }) => {
   const history = useHistory();
   useEffect(() => {
     node?.current?.scrollIntoView();
+  }, [newMarket.currentStep]);
+  useEffect(() => {
     return () => {
       if (!blockShown && parsePath(history.location.pathname)[0] !== CREATE_MARKET) unblock(isTemplate, templateFormStarts,
         history);
     }
-  }, [newMarket.currentStep]);
+  });
   const templateFormStarts = hasNoTemplateCategoryChildren(
     newMarket.navCategories[0]
   )
@@ -588,7 +590,6 @@ export const Form = ({ isTemplate, updatePage }) => {
   const disabledNext = disabledFunction && disabledFunction(newMarket);
 
   const createModalCallback = () => {
-    setBlockShown(true);
     history.push({
       pathname: makePath(MY_POSITIONS, null),
       search: makeQuery({
@@ -902,6 +903,7 @@ export const Form = ({ isTemplate, updatePage }) => {
                     text="Create"
                     disabled={disableCreateButton}
                     action={() => {
+                      setBlockShown(true);
                       gsnUnavailable && !gsnWalletInfoSeen
                         ? setModal({
                             customAction: () =>
