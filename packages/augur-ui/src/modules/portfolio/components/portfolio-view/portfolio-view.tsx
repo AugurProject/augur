@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Media from 'react-media';
 
-import MyPositions from 'modules/portfolio/containers/positions';
+import Positions from "modules/portfolio/components/positions/positions";
 import MyMarkets from 'modules/portfolio/components/markets/markets';
 import OpenOrders from "modules/portfolio/components/orders/open-orders";
 import FilledOrders from 'modules/portfolio/components/orders/filled-orders';
@@ -66,7 +66,7 @@ const PortfolioView = ({ location }: PortfolioViewProps) => {
               <>
               <ModuleTabs selected={initialPage} fillWidth noBorder>
                 <ModulePane label="Positions">
-                  <MyPositions />
+                  <Positions />
                 </ModulePane>
                 <ModulePane label="Open Orders">
                   <OpenOrders />
@@ -82,7 +82,7 @@ const PortfolioView = ({ location }: PortfolioViewProps) => {
             ) : (
               <section>
                 <div>
-                  <MyPositions
+                  <Positions
                     toggle={() =>
                       toggle('extendPositions', 'extendMarkets')
                     }
