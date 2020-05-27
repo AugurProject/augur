@@ -1419,8 +1419,8 @@ export const setCategories: SortedGroup[] = [
         label: 'Music',
       },
       {
-        value: 'TV Shows',
-        label: 'TV Shows',
+        value: 'TV & Movies',
+        label: 'TV & Movies',
         subGroup: [
           {
             value: 'American Idol',
@@ -1442,12 +1442,16 @@ export const setCategories: SortedGroup[] = [
             value: 'Dancing with the Stars',
             label: 'Dancing with the Stars',
           },
+          {
+            value: 'Box Office',
+            label: 'Box Office',
+          },
           { value: CUSTOM, label: CUSTOM },
         ],
       },
       {
-        value: 'Social',
-        label: 'Social',
+        value: 'Social Media',
+        label: 'Social Media',
         autoCompleteList: [
           { value: "Twitter", label: "Twitter" },
           { value: "Instagram", label: "Instagram" },

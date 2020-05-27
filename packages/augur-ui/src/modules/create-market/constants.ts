@@ -120,25 +120,25 @@ export const EMPTY_STATE: NewMarket = {
 
 export const WarpSyncErrorHeader = 'Universe Warp Sync Hash is undefined';
 export const WarpSyncErrorSubheader = 'Wait until warp sunc hash is defined to report or dispute';
-
+export const InvalidRules = [
+  'The market question, resolution details or its outcomes are ambiguous, subjective or unknown.',
+  'The result of the event was known at market creation time.',
+  'The outcome was not known at event expiration time.',
+  'It can resolve without at least one of the outcomes listed being the winner, unless it is explicitly stated how the market will otherwise resolve in the resolution details.',
+  'The title, details and outcomes are in direct conflict with each other.',
+  'The market can resolve with more than one winning outcome.',
+  'Any of the outcomes don’t answer the market question ONLY. (outcomes cannot introduce a secondary question)',
+  'If using a resolution source (a source is a noun that reports on or decides the result of a market), the source\'s URL or full name is NOT in the Market Question, regardless of it being in the resolution details.',
+  'If using a resolution source, it is not referenced consistently between the Market Question and Resolution Details e.g. as either a URL or its full name.',
+  'For any sports markets that list a player or team not in the correct league, division or conference, at the time the market was created, the market should resolve as invalid.',
+  'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability as resolving as invalid.',
+]
 export const EventDetailsContentTemplate = `template`;
 export const EventDetailsContent = (type = `custom`) => ({
   title: 'Event details',
   largeHeader: `Create a ${type} market`,
   explainerBlockTitle: 'A market is invalid if:',
-  explainerBlockSubtexts: [
-    'The market question, resolution details or its outcomes are ambiguous, subjective or unknown.',
-    'The result of the event was known at market creation time.',
-    'The outcome was not known at event expiration time.',
-    'It can resolve without at least one of the outcomes listed being the winner, unless it is explicitly stated how the market will otherwise resolve in the resolution details.',
-    'The title, details and outcomes are in direct conflict with each other.',
-    'The market can resolve with more than one winning outcome',
-    'Any of the outcomes don’t answer the market question ONLY. (outcomes cannot introduce a secondary question)',
-    'If using a resolution source (a source is a noun that reports on or decides the result of a market), the source\'s URL or full name is NOT in the Market Question, regardless of it being in the resolution details.',
-    'If using a resolution source, it is not referenced consistently between the Market Question and Resolution Details e.g. as either a URL or its full name',
-    'For any sports markets that list a player or team not in the correct league, division or conference, at the time the market was created, the market should resolve as invalid.',
-    'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability as resolving as invalid.',
-  ],
+  explainerBlockSubtexts: InvalidRules,
   mainContent:
     type == EventDetailsContentTemplate ? TEMPLATE_FORM_DETAILS : FORM_DETAILS,
   firstButton: BACK,
@@ -160,19 +160,7 @@ export const ReviewContent = {
   largeHeader: 'Review market details',
   previewButton: true,
   explainerBlockTitle: 'Note that markets will resolve as invalid if:',
-  explainerBlockSubtexts: [
-    'The market question, resolution details or its outcomes are ambiguous, subjective or unknown.',
-    'The result of the event was known at market creation time.',
-    'The outcome was not known at event expiration time.',
-    'It can resolve without at least one of the outcomes listed being the winner, unless it is explicitly stated how the market will otherwise resolve in the resolution details.',
-    'The title, details and outcomes are in direct conflict with each other.',
-    'The market can resolve with more than one winning outcome',
-    'Any of the outcomes don’t answer the market question ONLY. (outcomes cannot introduce a secondary question)',
-    'If using a resolution source (a source is a noun that reports on or decides the result of a market), the source\'s URL or full name is NOT in the Market Question, regardless of it being in the resolution details.',
-    'If using a resolution source, it is not referenced consistently between the Market Question and Resolution Details e.g. as either a URL or its full name',
-    'For any sports markets that list a player or team not in the correct league, division or conference, at the time the market was created, the market should resolve as invalid.',
-    'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability as resolving as invalid.',
-  ],
+  explainerBlockSubtexts: InvalidRules,
   useBullets: true,
   mainContent: REVIEW,
   firstButton: BACK,
