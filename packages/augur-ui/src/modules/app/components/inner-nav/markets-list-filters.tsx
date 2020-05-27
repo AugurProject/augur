@@ -78,7 +78,7 @@ const MarketsListFilters = ({
       settings.templateFilter;
     const newShowInvalid =
       filterOptionsFromQuery.showInvalid ||
-      settings.showInvalid;
+      settings.includeInvalidMarkets;
     const categories =
       filterOptionsFromQuery.category;
 
