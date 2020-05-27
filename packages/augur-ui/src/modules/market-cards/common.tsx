@@ -26,9 +26,10 @@ import {
   ASKS,
   ODDS_TYPE,
   SCALAR_INVALID_BEST_BID_ALERT_VALUE as INVALID_ALERT_PERCENTAGE,
+  MODAL_REPORTING,
 } from 'modules/common/constants';
 import { convertToOdds } from 'utils/get-odds';
-import { MARKET_LIST_CARD } from 'services/analytics/helpers';
+import { MARKET_LIST_CARD, marketLinkCopied } from 'services/analytics/helpers';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import ReactTooltip from 'react-tooltip';
@@ -74,7 +75,6 @@ import { MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { useMarketsStore } from 'modules/markets/store/markets';
-import { id } from '../../../../../node_modules/ethers/utils/hash';
 
 export interface PercentProps {
   percent: number;
@@ -174,9 +174,13 @@ export const Outcome = ({
           ) : (
             <span>{description}</span>
           )}
-          <span className={classNames({ [Styles.Zero]: percent === 0,
-          [Styles.InvalidPrice]: invalid
-            && percent >= INVALID_ALERT_PERCENTAGE.toNumber()})}>
+          <span
+            className={classNames({
+              [Styles.Zero]: percent === 0,
+              [Styles.InvalidPrice]:
+                invalid && percent >= INVALID_ALERT_PERCENTAGE.toNumber(),
+            })}
+          >
             {percent === 0
               ? `0.00${isScalar ? '' : '%'}`
               : `${formatDai(percent).formatted}%`}
@@ -222,10 +226,9 @@ export const DisputeOutcome = ({
   const showButton =
     !stake.tentativeWinning || (canSupport && stake.tentativeWinning);
 
-  let buttonText =
-    stake?.tentativeWinning
-      ? 'Support Tentative Winner'
-      : 'Dispute Tentative Winner';
+  let buttonText = stake?.tentativeWinning
+    ? 'Support Tentative Winner'
+    : 'Dispute Tentative Winner';
 
   if (forkingMarket) {
     buttonText = "Migrate Rep to this Outcome's Universe";
@@ -239,11 +242,7 @@ export const DisputeOutcome = ({
         [Styles[`Outcome-${index}`]]: !invalid,
       })}
     >
-      <span>
-        {isWarpSync && !invalid
-          ? stake.warpSyncHash
-          : description}
-      </span>
+      <span>{isWarpSync && !invalid ? stake.warpSyncHash : description}</span>
       {!forkingMarket && (
         <>
           {stake && stake.tentativeWinning ? (
@@ -267,7 +266,6 @@ export const DisputeOutcome = ({
                 {stake?.tentativeWinning ? (
                   <SmallSubheadersTooltip
                     header="pre-filled stake"
-                    subheader={``}
                     text="Users can add extra support for a Tentative Winning Outcome"
                   />
                 ) : (
@@ -282,9 +280,7 @@ export const DisputeOutcome = ({
               ) : (
                 <span>
                   {stake ? stakeCurrent.formatted : 0}
-                  <span>
-                    / {stake ? bondSizeCurrent.formatted : 0} REP
-                  </span>
+                  <span>/ {stake ? bondSizeCurrent.formatted : 0} REP</span>
                 </span>
               )}
             </div>
@@ -321,37 +317,42 @@ export const DisputeOutcome = ({
 
 interface ScalarBlankDisputeOutcomeProps {
   denomination: string;
-  dispute: Function;
   canDispute: boolean;
-  marketId: string;
+  market: MarketData;
   otherOutcomes: string[];
 }
 
 export const ScalarBlankDisputeOutcome = ({
   denomination,
-  dispute,
   canDispute,
-  marketId,
+  market,
   otherOutcomes,
-}: ScalarBlankDisputeOutcomeProps) => (
-  <div className={classNames(Styles.DisputeOutcome, Styles[`Outcome-1`])}>
-    <span>{`Dispute current Tentative Winner with new ${denomination} value`}</span>
-    <div className={Styles.blank}>
-      <div />
-      <ProcessingButton
-        secondaryButton
-        queueName={SUBMIT_DISPUTE}
-        queueId={marketId}
-        nonMatchingIds={otherOutcomes}
-        small
-        disabled={!canDispute}
-        text={'Dispute Tentative Winner'}
-        action={() => dispute(null)}
-      />
+}: ScalarBlankDisputeOutcomeProps) => {
+  const { actions: { setModal }} = useAppStatusStore();
+  return (
+    <div className={classNames(Styles.DisputeOutcome, Styles[`Outcome-1`])}>
+      <span>{`Dispute current Tentative Winner with new ${denomination} value`}</span>
+      <div className={Styles.blank}>
+        <div />
+        <ProcessingButton
+          secondaryButton
+          queueName={SUBMIT_DISPUTE}
+          queueId={market.id}
+          nonMatchingIds={otherOutcomes}
+          small
+          disabled={!canDispute}
+          text={'Dispute Tentative Winner'}
+          action={() => setModal({
+            type: MODAL_REPORTING,
+            market,
+            selectedOutcome: null,
+            isInvalid: false,
+          })}
+        />
+      </div>
     </div>
-  </div>
-);
-
+  );
+};
 export interface ScalarOutcomeProps {
   scalarDenomination: string;
   min: BigNumber;
@@ -397,19 +398,19 @@ const mockData = (marketId, addBet, description) => [
     spread: {
       topLabel: '+ 3.5',
       label: '-110',
-      action: () => addBet(marketId, description, '-110', 'Team A', "0"),
+      action: () => addBet(marketId, description, '-110', 'Team A', '0'),
       volume: '$5,000.43',
     },
     moneyLine: {
       topLabel: null,
       label: '+132',
-      action: () => addBet(marketId, description, '+132', 'Team A', "0"),
+      action: () => addBet(marketId, description, '+132', 'Team A', '0'),
       volume: '$6,500.12',
     },
     overUnder: {
       topLabel: 'O 227.5',
       label: '-110',
-      action: () => addBet(marketId, description, '-110', 'Team A', "0"),
+      action: () => addBet(marketId, description, '-110', 'Team A', '0'),
       volume: '$2,542.00',
     },
   },
@@ -418,19 +419,19 @@ const mockData = (marketId, addBet, description) => [
     spread: {
       topLabel: '- 3.5',
       label: '-110',
-      action: () => addBet(marketId, description, '-110', 'Team B', "0"),
+      action: () => addBet(marketId, description, '-110', 'Team B', '0'),
       volume: '$6,093.50',
     },
     moneyLine: {
       topLabel: null,
       label: '-156',
-      action: () => addBet(marketId, description, '-156', 'Team B', "0"),
+      action: () => addBet(marketId, description, '-156', 'Team B', '0'),
       volume: '$10,000.54',
     },
     overUnder: {
       topLabel: 'U 227.5',
       label: '-110',
-      action: () => addBet(marketId, description, '-110', 'Team B', "0"),
+      action: () => addBet(marketId, description, '-110', 'Team B', '0'),
       volume: '$5,000.18',
     },
   },
@@ -439,19 +440,19 @@ const mockData = (marketId, addBet, description) => [
     spread: {
       topLabel: null,
       label: '-110',
-      action: () => addBet(marketId, description, '-110', 'No Winner', "0"),
+      action: () => addBet(marketId, description, '-110', 'No Winner', '0'),
       volume: '$500.70',
     },
     moneyLine: {
       topLabel: null,
       label: '-157',
-      action: () => addBet(marketId, description, '-157', 'No Winner', "0"),
+      action: () => addBet(marketId, description, '-157', 'No Winner', '0'),
       volume: '$740.98',
     },
     overUnder: {
       topLabel: null,
       label: '-110',
-      action: () => addBet(marketId, description, '-110', 'No Winner', "0"),
+      action: () => addBet(marketId, description, '-110', 'No Winner', '0'),
       volume: '$540.50',
     },
   },
@@ -481,7 +482,14 @@ export interface MultiMarketTable {
   }>;
 }
 
-const processMultiMarketTableData = (orderBook, outcomes, min, max, addBet, description) => {
+const processMultiMarketTableData = (
+  orderBook,
+  outcomes,
+  min,
+  max,
+  addBet,
+  description
+) => {
   const marketId = outcomes[0].marketId;
   if (!orderBook || orderBook?.asks) {
     // this might change, shortcut
@@ -494,19 +502,22 @@ const processMultiMarketTableData = (orderBook, outcomes, min, max, addBet, desc
       spread: {
         topLabel: null,
         label: '-110',
-        action: () => addBet(marketId, description, '-110', outcome.description, "0"),
+        action: () =>
+          addBet(marketId, description, '-110', outcome.description, '0'),
         volume: '$500.70',
       },
       moneyLine: {
         topLabel: null,
         label: '-157',
-        action: () => addBet(marketId, description, '-157', outcome.description, "0"),
+        action: () =>
+          addBet(marketId, description, '-157', outcome.description, '0'),
         volume: '$740.98',
       },
       overUnder: {
         topLabel: null,
         label: '-110',
-        action: () => addBet(marketId, description, '-110', outcome.description, "0"),
+        action: () =>
+          addBet(marketId, description, '-110', outcome.description, '0'),
         volume: '$540.50',
       },
     };
@@ -517,145 +528,173 @@ const processMultiMarketTableData = (orderBook, outcomes, min, max, addBet, desc
         price,
         min,
         max,
-        type: ASKS
+        type: ASKS,
       });
       const OddToUse = odds[ODDS_TYPE.AMERICAN];
       outcomeObject.title = outcome.description;
       outcomeObject.spread.label = OddToUse;
-      outcomeObject.spread.action = () => addBet(marketId, description, OddToUse, outcome.description, amount);
+      outcomeObject.spread.action = () =>
+        addBet(marketId, description, OddToUse, outcome.description, amount);
       outcomeObject.moneyLine.label = OddToUse;
-      outcomeObject.moneyLine.action = () => addBet(marketId, description, OddToUse, outcome.description, amount);
+      outcomeObject.moneyLine.action = () =>
+        addBet(marketId, description, OddToUse, outcome.description, amount);
       outcomeObject.overUnder.label = OddToUse;
-      outcomeObject.overUnder.action = () => addBet(marketId, description, OddToUse, outcome.description, amount);
+      outcomeObject.overUnder.action = () =>
+        addBet(marketId, description, OddToUse, outcome.description, amount);
       data.push(outcomeObject);
     }
   });
   return data;
 };
 
-function processMultiOutcomeMarketTableData(orderBook, outcomes, min, max, addBet, description) {
+function processMultiOutcomeMarketTableData(
+  orderBook,
+  outcomes,
+  min,
+  max,
+  addBet,
+  description
+) {
   const marketId = outcomes[0].marketId;
   const data = [
     {
       title: 'Team A',
-      action: () => addBet(marketId, description, '+132', 'Team A', "0"),
+      action: () => addBet(marketId, description, '+132', 'Team A', '0'),
       topLabel: null,
       label: '+132',
       volume: '$100.43',
     },
     {
       title: 'Draw',
-      action: () => addBet(marketId, description, '+200', 'Draw', "0"),
+      action: () => addBet(marketId, description, '+200', 'Draw', '0'),
       topLabel: null,
       label: '+200',
       volume: '$100.43',
     },
     {
       title: 'Team B',
-      action: () => addBet(marketId, description, '+150', 'Team B', "0"),
+      action: () => addBet(marketId, description, '+150', 'Team B', '0'),
       topLabel: null,
       label: '+150',
       volume: '$100.43',
     },
     {
       title: 'Game Canceled',
-      action: () => addBet(marketId, description, '+200', 'Game Canceled', "0"),
+      action: () => addBet(marketId, description, '+200', 'Game Canceled', '0'),
       topLabel: null,
       label: '+200',
       volume: '$100.43',
     },
   ];
   return data;
-};
+}
 
-function processMultiOutcomeMarketGridData(orderBook, outcomes, min, max, addBet, description) {
+function processMultiOutcomeMarketGridData(
+  orderBook,
+  outcomes,
+  min,
+  max,
+  addBet,
+  description
+) {
   const marketId = outcomes[0].marketId;
   const data = [
     {
       title: 'Man City',
       topLabel: null,
-      action: () => addBet(marketId, description, '+310', 'Man City', "0"),
+      action: () => addBet(marketId, description, '+310', 'Man City', '0'),
       label: '+310',
-      volume: '$100.43'
+      volume: '$100.43',
     },
     {
       title: 'Liverpool',
       topLabel: null,
-      action: () => addBet(marketId, description, '+530', 'Liverpool', "0"),
+      action: () => addBet(marketId, description, '+530', 'Liverpool', '0'),
       label: '+530',
-      volume: '$100.43'
-    }, 
+      volume: '$100.43',
+    },
     {
       title: 'Bayern Munich',
       topLabel: null,
-      action: () => addBet(marketId, description, '+440', 'Bayern Munich', "0"),
+      action: () => addBet(marketId, description, '+440', 'Bayern Munich', '0'),
       label: '+440',
-      volume: '$100.43'
-    }, 
+      volume: '$100.43',
+    },
     {
       title: 'Barcelona',
       topLabel: null,
-      action: () => addBet(marketId, description, '+550', 'Barcelona', "0"),
+      action: () => addBet(marketId, description, '+550', 'Barcelona', '0'),
       label: '+550',
-      volume: '$100.43'
-    }, 
+      volume: '$100.43',
+    },
     {
       title: 'PSG',
       topLabel: null,
-      action: () => addBet(marketId, description, '+540', 'PSG', "0"),
+      action: () => addBet(marketId, description, '+540', 'PSG', '0'),
       label: '+540',
-      volume: '$100.43'
-    }, 
+      volume: '$100.43',
+    },
     {
       title: 'Juventus',
       topLabel: null,
-      action: () => addBet(marketId, description, '+730', 'Juventus', "0"),
+      action: () => addBet(marketId, description, '+730', 'Juventus', '0'),
       label: '+730',
-      volume: '$100.43'
-    }, 
+      volume: '$100.43',
+    },
     {
       title: 'Other',
       topLabel: null,
-      action: () => addBet(marketId, description, '+490', 'Other', "0"),
+      action: () => addBet(marketId, description, '+490', 'Other', '0'),
       label: '+490',
-      volume: '$100.43'
-    }, 
+      volume: '$100.43',
+    },
     {
       title: 'Event Canceled',
       topLabel: null,
-      action: () => addBet(marketId, description, '+1000', 'Event Canceled', "0"),
+      action: () =>
+        addBet(marketId, description, '+1000', 'Event Canceled', '0'),
       label: '+1000',
-      volume: '$100.43'
-    }, 
+      volume: '$100.43',
+    },
   ];
   return data;
-};
+}
 
-function processSubMarketCollapsibleData(orderBook, outcomes, min, max, addBet, description) {
+function processSubMarketCollapsibleData(
+  orderBook,
+  outcomes,
+  min,
+  max,
+  addBet,
+  description
+) {
   const marketId = outcomes[0].marketId;
   const data = [
     {
       title: 'O 230.5',
-      action: () => addBet(marketId, description, '-105', 'O 230.5', "0"),
+      action: () => addBet(marketId, description, '-105', 'O 230.5', '0'),
       topLabel: null,
       label: '-105',
       volume: '$100.43',
-    }, {
+    },
+    {
       title: 'U 230.5',
-      action: () => addBet(marketId, description, '-115', 'U 230.5', "0"),
+      action: () => addBet(marketId, description, '-115', 'U 230.5', '0'),
       topLabel: null,
       label: '-115',
       volume: '$100.43',
-    }, {
+    },
+    {
       title: 'Game Cancelled',
-      action: () => addBet(marketId, description, '-128', 'Game Cancelled', "0"),
+      action: () =>
+        addBet(marketId, description, '-128', 'Game Cancelled', '0'),
       topLabel: null,
       label: '-128',
       volume: '$100.43',
-    }
+    },
   ];
   return data;
-};
+}
 
 interface ReportedOutcomeProps {
   isTentative?: boolean;
@@ -668,9 +707,11 @@ export const ReportedOutcome = ({
   value,
 }: ReportedOutcomeProps) => {
   return (
-    <div className={classNames(Styles.ReportedOutcome, {
-      [Styles.Tenatative]: isTentative,
-    })}>
+    <div
+      className={classNames(Styles.ReportedOutcome, {
+        [Styles.Tenatative]: isTentative,
+      })}
+    >
       <div>
         {WinningMedal}
         <div>
@@ -683,10 +724,8 @@ export const ReportedOutcome = ({
   );
 };
 
-export const MultiOutcomeMarketTable = ({
-  multiOutcomeMarketTableData
-}) => (
-  <section className={Styles.MultiOutcomeMarketTable} >
+export const MultiOutcomeMarketTable = ({ multiOutcomeMarketTableData }) => (
+  <section className={Styles.MultiOutcomeMarketTable}>
     <ul>
       {multiOutcomeMarketTableData.map(({ title, ...outcomeData }) => (
         <li>
@@ -717,49 +756,91 @@ export const MultiMarketTable = ({
   description,
 }) => {
   const { actions } = useBetslipStore();
-  const multiMarketTableData = processMultiMarketTableData(orderBook, outcomes, min, max, actions.addBet, description);
-  const multiOutcomeMarketGridData = processMultiOutcomeMarketGridData(orderBook, outcomes, min, max, actions.addBet, description);
-  const multiOutcomeMarketTableData = processMultiOutcomeMarketTableData(orderBook, outcomes, min, max, actions.addBet, description);
-  const SubMarketCollapsibleData = processSubMarketCollapsibleData(orderBook, outcomes, min, max, actions.addBet, description);
+  const multiMarketTableData = processMultiMarketTableData(
+    orderBook,
+    outcomes,
+    min,
+    max,
+    actions.addBet,
+    description
+  );
+  const multiOutcomeMarketGridData = processMultiOutcomeMarketGridData(
+    orderBook,
+    outcomes,
+    min,
+    max,
+    actions.addBet,
+    description
+  );
+  const multiOutcomeMarketTableData = processMultiOutcomeMarketTableData(
+    orderBook,
+    outcomes,
+    min,
+    max,
+    actions.addBet,
+    description
+  );
+  const SubMarketCollapsibleData = processSubMarketCollapsibleData(
+    orderBook,
+    outcomes,
+    min,
+    max,
+    actions.addBet,
+    description
+  );
   return (
     <>
-    <section className={classNames(Styles.MultiMarketTable)}>
-      <div>
-        <ul>
-          <li>Spread</li>
-          <li>Moneyline</li>
-          <li>Over / Under</li>
-        </ul>
-      </div>
-      <>
-        {multiMarketTableData.map(({ title, spread, moneyLine, overUnder }) => (
-          <article key={title}>
-            <h3>{title}</h3>
-            <SportsOutcome {...spread} />
-            <SportsOutcome {...moneyLine} />
-            <SportsOutcome {...overUnder} />
-          </article>
-        ))}
-      </>
-    </section>
-    <MultiOutcomeMarketGrid multiOutcomeMarketGridData={multiOutcomeMarketGridData} />
-    <MultiOutcomeMarketTable multiOutcomeMarketTableData={multiOutcomeMarketTableData} />
-    <SubMarketCollapsible title='over / under 230.5' SubMarketCollapsibleData={SubMarketCollapsibleData} />
-    <SubMarketCollapsible title='over / under 230.5' SubMarketCollapsibleData={SubMarketCollapsibleData} />
-    <SubMarketCollapsible title='over / under 230.5' SubMarketCollapsibleData={SubMarketCollapsibleData} />
+      <section className={classNames(Styles.MultiMarketTable)}>
+        <div>
+          <ul>
+            <li>Spread</li>
+            <li>Moneyline</li>
+            <li>Over / Under</li>
+          </ul>
+        </div>
+        <>
+          {multiMarketTableData.map(
+            ({ title, spread, moneyLine, overUnder }) => (
+              <article key={title}>
+                <h3>{title}</h3>
+                <SportsOutcome {...spread} />
+                <SportsOutcome {...moneyLine} />
+                <SportsOutcome {...overUnder} />
+              </article>
+            )
+          )}
+        </>
+      </section>
+      <MultiOutcomeMarketGrid
+        multiOutcomeMarketGridData={multiOutcomeMarketGridData}
+      />
+      <MultiOutcomeMarketTable
+        multiOutcomeMarketTableData={multiOutcomeMarketTableData}
+      />
+      <SubMarketCollapsible
+        title="over / under 230.5"
+        SubMarketCollapsibleData={SubMarketCollapsibleData}
+      />
+      <SubMarketCollapsible
+        title="over / under 230.5"
+        SubMarketCollapsibleData={SubMarketCollapsibleData}
+      />
+      <SubMarketCollapsible
+        title="over / under 230.5"
+        SubMarketCollapsibleData={SubMarketCollapsibleData}
+      />
     </>
   );
 };
 
-export const SubMarketCollapsible = ({
-  title,
-  SubMarketCollapsibleData,
-}) => {
+export const SubMarketCollapsible = ({ title, SubMarketCollapsibleData }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   return (
-    <section className={classNames(Styles.SubMarketCollapsible, {
-      [Styles.Collapsed]: isCollapsed,
-    })}>
+    <section
+      className={classNames(Styles.SubMarketCollapsible, {
+        [Styles.Collapsed]: isCollapsed,
+      })}
+    >
       <div>
         <h6>{title}</h6>
         <button onClick={() => setIsCollapsed(!isCollapsed)}>
@@ -798,12 +879,11 @@ export const SportsOutcome = ({
     </button>
     <span>{volume}</span>
   </div>
-)
+);
 
 export interface OutcomeGroupProps {
   market: MarketData;
   expanded?: Boolean;
-  dispute?: Function;
   showOutcomeNumber: number;
   canDispute: boolean;
   canSupport: boolean;
@@ -812,14 +892,12 @@ export interface OutcomeGroupProps {
 
 export const OutcomeGroup = ({
   expanded,
-  dispute,
   showOutcomeNumber,
   canDispute,
   canSupport,
   market,
   forkingMarket,
 }: OutcomeGroupProps) => {
-  
   const {
     description,
     outcomesFormatted,
@@ -839,13 +917,19 @@ export const OutcomeGroup = ({
     reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
   const stakes = disputeInfo?.stakes;
   const { theme } = useAppStatusStore();
-  const {
-    orderBooks,
-  } = useMarketsStore();
+  const { orderBooks } = useMarketsStore();
   const orderBook = orderBooks[id]?.orderBook;
 
   if (theme === THEMES.SPORTS) {
-    return <MultiMarketTable orderBook={orderBook} outcomes={outcomesFormatted} min={minPriceBigNumber} max={maxPriceBigNumber} description={description} />;
+    return (
+      <MultiMarketTable
+        orderBook={orderBook}
+        outcomes={outcomesFormatted}
+        min={minPriceBigNumber}
+        max={maxPriceBigNumber}
+        description={description}
+      />
+    );
   }
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     marketType,
@@ -924,23 +1008,18 @@ export const OutcomeGroup = ({
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
             ((!expanded && index < showOutcomeNumber) ||
-              (expanded || marketType === YES_NO)) &&
+              expanded || marketType === YES_NO) &&
             (inDispute &&
-            !!stakes.find(
-              stake => parseFloat(stake.outcome) === outcome.id
-            ) ? (
+            !!stakes.find(stake => parseFloat(stake.outcome) === outcome.id) ? (
               <Fragment key={id + outcome.id + index}>
-                {marketType === SCALAR &&
-                  index === 1 &&
-                  expanded && (
-                    <ScalarBlankDisputeOutcome
-                      denomination={scalarDenomination}
-                      dispute={dispute}
-                      canDispute={canDispute}
-                      marketId={id}
-                      otherOutcomes={outcomesShow.map(o => String(o.id))}
-                    />
-                  )}
+                {marketType === SCALAR && index === 1 && expanded && (
+                  <ScalarBlankDisputeOutcome
+                    denomination={scalarDenomination}
+                    canDispute={canDispute}
+                    market={market}
+                    otherOutcomes={outcomesShow.map(o => String(o.id))}
+                  />
+                )}
                 <DisputeOutcome
                   key={outcome.id}
                   marketId={id}
@@ -948,7 +1027,9 @@ export const OutcomeGroup = ({
                   invalid={outcome.isInvalid}
                   index={index > 2 ? index : index + 1}
                   stake={stakes.find(
-                    stake => parseFloat(stake.outcome) === outcome.id && stake.isInvalidOutcome === outcome.isInvalid
+                    stake =>
+                      parseFloat(stake.outcome) === outcome.id &&
+                      stake.isInvalidOutcome === outcome.isInvalid
                   )}
                   dispute={dispute}
                   id={outcome.id}
@@ -977,9 +1058,8 @@ export const OutcomeGroup = ({
       {isScalar && inDispute && !expanded && (
         <ScalarBlankDisputeOutcome
           denomination={scalarDenomination}
-          dispute={dispute}
           canDispute={canDispute}
-          marketId={id}
+          market={market}
           otherOutcomes={outcomesShow.map(o => String(o.id))}
         />
       )}
@@ -1015,7 +1095,12 @@ export interface HoverIconProps {
 }
 
 export const HoverIcon = ({ id, icon, hoverText, label }: HoverIconProps) => (
-  <div className={Styles.HoverIcon} data-tip data-for={`tooltip-${id}${label}`} data-iscapture={true}>
+  <div
+    className={Styles.HoverIcon}
+    data-tip
+    data-for={`tooltip-${id}${label}`}
+    data-iscapture={true}
+  >
     {icon}
     <ReactTooltip
       id={`tooltip-${id}${label}`}
@@ -1073,23 +1158,27 @@ export const ResolvedOutcomes = ({
 };
 
 export interface TentativeWinnerProps {
-  tentativeWinner: Getters.Markets.StakeDetails;
   market: MarketData;
-  dispute: Function;
   canDispute: boolean;
   isForkingMarket?: boolean;
 }
 
 export const TentativeWinner = ({
-  tentativeWinner,
   market,
-  dispute,
   canDispute,
   isForkingMarket,
 }: TentativeWinnerProps) => {
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
+  const tentativeWinner = market.disputeInfo.stakes.find(
+    stake => stake.tentativeWinning
+  );
   return (
     <div
-      className={classNames(Styles.ResolvedOutcomes, Styles.TentativeWinner, {[Styles.forking]: isForkingMarket})}
+      className={classNames(Styles.ResolvedOutcomes, Styles.TentativeWinner, {
+        [Styles.forking]: isForkingMarket,
+      })}
     >
       {!isForkingMarket && (
         <>
@@ -1117,7 +1206,14 @@ export const TentativeWinner = ({
             ? "Migrate Rep to an Outcome's Universe"
             : 'SUPPORT OR DISPUTE OUTCOME'
         }
-        action={() => dispute()}
+        action={() =>
+          setModal({
+            type: MODAL_REPORTING,
+            market,
+            selectedOutcome: undefined,
+            isInvalid: undefined,
+          })
+        }
       />
     </div>
   );
@@ -1130,22 +1226,14 @@ export const LoadingMarketCard = () => (
 export interface TopRowProps {
   market: MarketData;
   categoriesWithClick: Array<{ label: string; onClick: Function }>;
-  marketLinkCopied: Function;
 }
 
-export const TopRow = ({
-  market,
-  categoriesWithClick,
-  marketLinkCopied,
-}) => {
+export const TopRow = ({ market, categoriesWithClick }) => {
   useEffect(() => {
     const clipboardMarketId = new Clipboard('#copy_marketId');
     const clipboardAuthor = new Clipboard('#copy_author');
   }, [market.id, market.author]);
-  const {
-    theme,
-    isLogged,
-  } = useAppStatusStore();
+  const { theme, isLogged } = useAppStatusStore();
   const {
     settlementFeePercent,
     marketType,
@@ -1203,11 +1291,7 @@ export const TopRow = ({
           reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
         />
       )}
-      <FavoritesButton
-        marketId={id}
-        hideText
-        disabled={!isLogged}
-      />
+      <FavoritesButton marketId={id} hideText disabled={!isLogged} />
       <DotSelection>
         <SocialMediaButtons
           listView
@@ -1231,17 +1315,18 @@ export const TopRow = ({
 
 export interface InfoIconsProps {
   market: MarketData;
-  address?: string;
   hasPosition?: boolean;
   hasStaked?: boolean;
 }
 
 export const InfoIcons = ({
   market,
-  address,
   hasPosition,
   hasStaked,
 }: InfoIconsProps) => {
+  const {
+    loginAccount: { address },
+  } = useAppStatusStore();
   const { id, designatedReporter, author } = market;
   return (
     <>
@@ -1282,7 +1367,6 @@ export const InfoIcons = ({
 };
 
 export interface TradingSideSectionProps {
-  address: string;
   market: MarketData;
   condensed: boolean;
   hasPosition: boolean;
@@ -1290,12 +1374,14 @@ export interface TradingSideSectionProps {
 }
 
 export const TradingSideSection = ({
-  address,
   market,
   condensed,
   hasPosition,
   hasStaked,
 }) => {
+  const {
+    loginAccount: { address },
+  } = useAppStatusStore();
   const {
     disputeInfo,
     endTimeFormatted,
@@ -1333,7 +1419,6 @@ export const TradingSideSection = ({
           market={market}
           hasPosition={hasPosition}
           hasStaked={hasStaked}
-          address={address}
         />
       </div>
       <MarketProgress

@@ -70,12 +70,8 @@ export const addedDaiEvent = (dai: Number): ThunkAction<any, any, any, any> => (
 export const marketLinkCopied = (
   marketId: string,
   location: string
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  track(MARKET_LINK_COPIED, { location: location, marketId: marketId }, null);
-};
+) => track(MARKET_LINK_COPIED, { location: location, marketId: marketId }, null);
+
 
 export const sendFacebookShare = (
   marketAddress: string,

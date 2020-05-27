@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Pagination } from 'modules/common/pagination';
 import NullStateMessage from 'modules/common/null-state-message';
 import { TYPE_TRADE, MARKET_CARD_FORMATS } from 'modules/common/constants';
-import MarketCard from 'modules/market-cards/containers/market-card';
+import MarketCard from 'modules/market-cards/market-card';
 import { MarketData } from 'modules/types';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { MagnifyingGlass } from 'modules/common/icons';
