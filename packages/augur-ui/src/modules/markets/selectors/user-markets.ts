@@ -4,22 +4,22 @@ import {
   selectMarketTradingHistoryState,
 } from "appStore/select-state";
 import { CREATE_MARKET, ZERO } from 'modules/common/constants';
-import selectAllMarkets from "modules/markets/selectors/markets-all";
+import selectMarkets from "modules/markets/selectors/markets-all";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
 import { isSameAddress } from "utils/isSameAddress";
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
 import { formatDate } from "utils/format-date";
 import { AppStatus } from "modules/app/store/app-status";
 import { PendingOrders } from "modules/app/store/pending-orders";
+import { Markets } from "../store/markets";
 
-export const selectAuthorOwnedMarkets = createSelector(
-  selectAllMarkets,
-  selectMarketTradingHistoryState,
-  selectLoginAccountAddress,
-  (allMarkets, marketTradingHistory, authorId) => {
+export const selectAuthorOwnedMarkets = () => {
+    const allMarkets = selectMarkets();
+    const { pendingQueue,  loginAccount: {address: authorId}} = AppStatus.get();
+    const { marketTradingHistory } = Markets.get();
+
     if (!allMarkets || !authorId) return null;
     const { pendingLiquidityOrders } = PendingOrders.get();
-    const { pendingQueue } = AppStatus.get();
     let filteredMarkets = allMarkets.filter(
       market => isSameAddress(market.author, authorId)
     );
@@ -48,4 +48,3 @@ export const selectAuthorOwnedMarkets = createSelector(
       };
     });
   }
-);
