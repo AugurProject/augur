@@ -109,16 +109,18 @@ const TopBar: React.FC<TopBarProps> = ({
       />
       <div>
         {(showActivationButton || showAddFundsButton) &&
-          <PrimaryButton
-            action={() => {
-              if (showAddFundsButton) {
-                buyDaiModal();
-              } else {
-                activateWalletModal();
-              }
-            }}
-            text={'Complete account activation'}
-          />
+          <div className={Styles.AccountActivation}>
+            <PrimaryButton
+              action={() => {
+                if (showAddFundsButton) {
+                  buyDaiModal();
+                } else {
+                  activateWalletModal();
+                }
+              }}
+              text={'Complete account activation'}
+            />
+          </div>
         }
 
         {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
