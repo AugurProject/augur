@@ -120,7 +120,7 @@ const TopNav = ({
                       <p>
                         {
                           walletBalances.legacyRep > 0
-                            ? 'You have V1 REP in your User account address. Migrate it to V2 REP to use it in Augur V2.'
+                            ? 'You have V1 REP in your trading account. Migrate it to V2 REP to use it in Augur V2.'
                             : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'
                         }
                       </p>

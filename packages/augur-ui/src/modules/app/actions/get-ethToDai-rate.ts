@@ -8,7 +8,7 @@ import {
 } from 'modules/app/actions/update-app-status';
 import { NodeStyleCallback, FormattedNumber } from 'modules/types';
 import logError from 'utils/log-error';
-import { formatDaiEstimate, formatAttoDai } from 'utils/format-number';
+import { formatAttoDai, formatDai } from 'utils/format-number';
 import { augurSdk } from 'services/augursdk';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 
@@ -30,14 +30,14 @@ export const ethToDaiFromAttoRate = (ethAmount: number): FormattedNumber => {
 };
 
 export const ethToDai = (ethAmount: number, ethToDaiRate: BigNumber): FormattedNumber => {
-  if (!ethToDaiRate) return formatDaiEstimate(0);
-  return formatDaiEstimate(ethToDaiRate.times(ethAmount));
+  if (!ethToDaiRate) return formatDai(0);
+  return formatDai(ethToDaiRate.times(ethAmount));
 };
 
 export const getGasInDai = (amount: BigNumber, manualGasPrice?: number): FormattedNumber => {
   const augur = augurSdk.get();
   const gasInAttoDai = augur.convertGasEstimateToDaiCost(amount, manualGasPrice);
-  return formatDaiEstimate(gasInAttoDai.dividedBy(10 ** 18));
+  return formatDai(gasInAttoDai.dividedBy(10 ** 18));
 }
 
 export const displayGasInDai = (amount: BigNumber, manualGasPrice?: number): string => {

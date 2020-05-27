@@ -59,8 +59,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   transferFundsGasEstimate: (amount: string, asset: string, to: string) =>
     transferFundsGasEstimate(amount, asset, to),
-  transferFunds: (amount: string, asset: string, to: string) => {
-    transferFunds(amount, asset, to);
+  transferFunds: (amount: string, asset: string, to: string, useSigner: boolean) => {
+    transferFunds(amount, asset, to, useSigner);
     dispatch(closeModal());
   },
 });
@@ -72,11 +72,17 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   balances: sP.balances,
   account: sP.account,
   gasPrice: sP.gasPrice,
+  useSigner: sP.modal?.useSigner ? true : false,
+  closeAction: () => {
+    if (sP.modal.cb) {
+      sP.modal.cb();
+    }
+    dP.closeModal();
+  },
   transactionLabel: sP.transactionLabel,
-  closeAction: () => dP.closeModal(),
   transferFundsGasEstimate: (amount: string, asset: string, to: string) => dP.transferFundsGasEstimate(amount, asset, to),
-  transferFunds: (amount: string, asset: string, to: string) =>
-    dP.transferFunds(amount, asset, to),
+  transferFunds: (amount: string, asset: string, to: string, useSigner: boolean) =>
+    dP.transferFunds(amount, asset, to, useSigner),
 });
 
 export default withRouter(

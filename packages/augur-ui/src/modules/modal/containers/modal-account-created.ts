@@ -13,18 +13,22 @@ import { getOnboardingStep } from './modal-p2p-trading';
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  augurUsesDaiModal: () => dispatch(updateModal({ type: MODAL_AUGUR_USES_DAI })),
+  augurUsesDaiModal: () =>
+    dispatch(updateModal({ type: MODAL_AUGUR_USES_DAI })),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
-  gotoOnboardingStep: (step) => dispatch(updateModal({ type: getOnboardingStep(step) })),
+  gotoOnboardingStep: step =>
+    dispatch(updateModal({ type: getOnboardingStep(step) })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: OnboardingCheckIcon,
   analyticsEvent: () => dP.track(ACCOUNT_CREATED, {}),
-  largeHeader: 'Account created ',
-  smallHeader: 'You’re almost ready to start betting!',
+  largeHeader: 'Log-in created',
+  smallHeader:
+    'The next two steps are adding funds and activating your account. Once done you can start betting!',
+  showAccountStatus: true,
   currentStep: 1,
-  changeCurrentStep: (step) => {
+  changeCurrentStep: step => {
     dP.gotoOnboardingStep(step);
   },
   buttons: [
@@ -39,9 +43,5 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
 });
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(Onboarding)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(Onboarding)
 );

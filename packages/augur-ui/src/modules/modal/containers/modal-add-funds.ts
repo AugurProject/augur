@@ -11,8 +11,12 @@ import { createBigNumber } from 'utils/create-big-number';
 const mapStateToProps = (state: AppState) => {
   const ethToDaiRate = state.appStatus.ethToDaiRate;
   const repToDaiRate = state.appStatus.repToDaiRate;
-  const ETH_RATE = createBigNumber(1).dividedBy(ethToDaiRate?.value  || createBigNumber(1));
-  const REP_RATE = createBigNumber(1).dividedBy(repToDaiRate?.value  || createBigNumber(1));
+  const ETH_RATE = createBigNumber(1).dividedBy(
+    ethToDaiRate?.value || createBigNumber(1)
+  );
+  const REP_RATE = createBigNumber(1).dividedBy(
+    repToDaiRate?.value || createBigNumber(1)
+  );
 
   return {
     modal: state.modal,
@@ -21,12 +25,12 @@ const mapStateToProps = (state: AppState) => {
     REP_RATE,
     config: state.env,
     isRelayDown: false, // TODO XXX Need to have some suitable status update for when relayer is down. No longer related to wallets
-  }
+  };
 };
 
-const addFundsPortis = async (amount) => {
+const addFundsPortis = async amount => {
   // TODO
-}
+};
 
 const addFundsFortmatic = async (amount, crypto, address) => {
   await fm.user.deposit({
@@ -34,22 +38,23 @@ const addFundsFortmatic = async (amount, crypto, address) => {
     crypto,
     address,
   });
-}
+};
 
 const addFundsTorus = async (amount, address) => {
   await window.torus.initiateTopup('wyre', {
     selectedCurrency: 'USD',
     selectedAddress: address,
     fiatValue: amount.toNumber(),
-    selectedCryptoCurrency: 'DAI'
+    selectedCryptoCurrency: 'DAI',
   });
-}
+};
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
   addFundsTorus: (amount, address) => addFundsTorus(amount, address),
-  addFundsFortmatic: (amount, crypto, address) => addFundsFortmatic(amount, crypto, address),
+  addFundsFortmatic: (amount, crypto, address) =>
+    addFundsFortmatic(amount, crypto, address),
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -64,16 +69,12 @@ const mergeProps = (sP, dP, oP) => {
       }
       dP.closeModal();
     },
+    showTransfer: sP.modal.showTransfer || false,
     ...oP,
     ...sP,
   };
 };
 
-
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(AddFunds)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(AddFunds)
 );

@@ -3,7 +3,7 @@ import { selectGasPriceInfo, selectEnvState } from "appStore/select-state";
 import { createBigNumber } from "utils/create-big-number";
 import store from "appStore";
 import { GWEI_CONVERSION, USE_ETH_RESERVE, NOT_USE_ETH_RESERVE } from 'modules/common/constants';
-import loginAccount, { selectLoginAccount } from "./login-account";
+import { selectLoginAccount } from "./login-account";
 
 export default function() {
   return getGasPrice(store.getState());

@@ -1,8 +1,8 @@
 pragma solidity 0.5.15;
 
-import "ROOT/gsn/IRelayRecipient.sol";
-import "ROOT/gsn/IRelayHub.sol";
-import "ROOT/gsn/Context.sol";
+import "ROOT/gsn/v1/IRelayRecipient.sol";
+import "ROOT/gsn/v1/IRelayHub.sol";
+import "ROOT/gsn/v1/Context.sol";
 
 
 /**

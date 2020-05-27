@@ -45,6 +45,7 @@ const mapStateToProps = (state: AppState) => {
     GsnEnabled: state.appStatus.gsnEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
     reserveEthAmount,
+    showTransferMyDai: state.authStatus?.signerHasDAI,
   };
 };
 

@@ -37,6 +37,7 @@ interface AddFundsProps {
   config: SDKConfiguration;
   addFundsTorus: Function;
   addFundsFortmatic: Function;
+  showTransfer: boolean;
 }
 
 export const AddFunds = ({
@@ -50,6 +51,7 @@ export const AddFunds = ({
   isRelayDown = false,
   addFundsTorus,
   addFundsFortmatic,
+  showTransfer = false,
 }: AddFundsProps) => {
   const address = loginAccount.address;
   const accountMeta = loginAccount.meta;
@@ -97,7 +99,7 @@ export const AddFunds = ({
   };
 
   const accountLabel =
-    isRelayDown && fundType === DAI ? `[${accountMeta.accountType}]` : 'User';
+    isRelayDown && fundType === DAI ? `[${accountMeta.accountType}]` : 'trading';
   const fundTypeToUse = isRelayDown && fundType === DAI ? ETH : fundType;
   const fundTypeLabel =
     fundTypeToUse === ETH ? 'ETH' : fundTypeToUse === DAI ? 'Dai ($)' : 'REP';
@@ -109,6 +111,10 @@ export const AddFunds = ({
   } else if (usingOnRampSupportedWallet && fundTypeToUse === DAI) {
     // IF Add Funds DAI flow and using a onramp supported wallet show CreditCard as default selected
     autoSelectValue = ADD_FUNDS_CREDIT_CARD;
+  }
+
+  if (showTransfer) {
+    autoSelectValue = ADD_FUNDS_TRANSFER;
   }
 
   const [selectedOption, setSelectedOption] = useState(
@@ -141,7 +147,7 @@ export const AddFunds = ({
       header: 'Transfer',
       description: `Send ${
         fundTypeToUse === ETH ? 'ETH' : 'Funds'
-      } to your ${accountLabel} account address`,
+      } to your ${accountLabel} account`,
       value: ADD_FUNDS_TRANSFER,
     },
     {
