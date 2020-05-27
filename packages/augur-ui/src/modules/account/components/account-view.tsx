@@ -3,11 +3,11 @@ import Media from 'react-media';
 
 import TermsAndConditions from 'modules/app/components/terms-and-conditions';
 import Notifications from 'modules/account/components/notifications';
-import Transactions from 'modules/account/containers/transactions';
+import Transactions from 'modules/account/components/transactions';
 import AugurStatus from 'modules/account/components/augur-status';
 import Favorites from 'modules/portfolio/containers/favorites';
 import MyMarkets from 'modules/portfolio/containers/my-markets';
-import OpenMarkets from 'modules/account/containers/open-markets';
+import OpenMarkets from 'modules/account/components/open-markets';
 import Overview from 'modules/account/components/overview';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';

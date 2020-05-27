@@ -31,7 +31,7 @@ import {
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import store, { AppState } from 'appStore';
 import { MarketClaimablePositions, MarketReportClaimableContracts, } from 'modules/types';
-import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
+import { getLoginAccountClaimableWinnings } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { isSameAddress } from 'utils/isSameAddress';
@@ -251,9 +251,7 @@ export const selectNotifications = createSelector(
       });
     }
 
-    const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
-      store.getState()
-    );
+    const accountMarketClaimablePositions: MarketClaimablePositions = getLoginAccountClaimableWinnings();
     if (accountMarketClaimablePositions.markets.length > 0) {
       notifications = notifications.concat({
         type: NOTIFICATION_TYPES.proceedsToClaim,

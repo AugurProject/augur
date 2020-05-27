@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
+import { useLocation } from 'react-router';
 
 import {
   OutcomeGroup,
@@ -26,6 +27,7 @@ import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
 import { ThickChevron } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { hasStakeInMarket } from 'modules/account/selectors/has-stake-in-market';
 
 const LoadingCard = () => (<div
 className={classNames(Styles.MarketCard, {
@@ -44,22 +46,10 @@ className={classNames(Styles.MarketCard, {
 
 interface MarketCardProps {
   market: MarketData;
-  theme: string;
-  history: History;
   location: Location;
-  disputingWindowEndTime: number;
   condensed?: boolean;
   expandedView?: boolean;
-  address: string;
   loading?: boolean;
-  hasPosition?: boolean;
-  hasStaked?: boolean;
-  dispute: Function;
-  migrateMarketModal: Function;
-  marketLinkCopied: Function;
-  forkingMarket: string | null;
-  isForking?: boolean;
-  forkingEndTime?: number; 
 }
 
 const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;
@@ -67,21 +57,14 @@ const MARKET_CARD_FOLD_OUTCOME_COUNT = 2;
 
 export const MarketCard = ({
   market,
-  location,
   condensed,
-  address,
   expandedView,
   loading,
-  hasPosition,
-  hasStaked,
-  dispute,
-  marketLinkCopied,
 }: MarketCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [showMore, setShowMore] = useState(false);
-  const { theme, isLogged } = useAppStatusStore();
-  
-  
+  const { theme, isLogged, accountPositions } = useAppStatusStore();
+  const location = useLocation();
   const {
     outcomesFormatted,
     marketType,
@@ -92,6 +75,8 @@ export const MarketCard = ({
     endTimeFormatted,
     consensusFormatted,
   } = market;
+  const hasStaked = hasStakeInMarket(id);
+  const hasPosition = !!accountPositions[id];
 
   if (loading) {
     return <LoadingCard />;
@@ -141,7 +126,6 @@ export const MarketCard = ({
     >
       <>
         <TradingSideSection
-          address={address}
           market={market}
           condensed={condensed}
           hasPosition={hasPosition}
@@ -150,14 +134,12 @@ export const MarketCard = ({
         <TopRow
           market={market}
           categoriesWithClick={getCategoriesWithClick(categories)}
-          marketLinkCopied={marketLinkCopied}
         />
         <MarketTitle id={id} headerType={headerType} />
         {!condensed && !marketResolved ? (
           <>
             <OutcomeGroup
               expanded={expandedView ? true : expanded}
-              dispute={dispute}
               showOutcomeNumber={showOutcomeNumber}
               canDispute={canDispute}
               canSupport={canSupport}
@@ -188,10 +170,6 @@ export const MarketCard = ({
         {condensed && inDispute && (
           <TentativeWinner
             market={market}
-            tentativeWinner={disputeInfo.stakes.find(
-              stake => stake.tentativeWinning
-            )}
-            dispute={dispute}
             canDispute={canDispute}
           />
         )}
@@ -201,7 +179,6 @@ export const MarketCard = ({
           market={market}
           hasPosition={hasPosition}
           hasStaked={hasStaked}
-          address={address}
         />
       </div>
       {notTrading && (
@@ -221,3 +198,5 @@ export const MarketCard = ({
     </div>
   );
 };
+
+export default MarketCard;

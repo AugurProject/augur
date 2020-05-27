@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
-import { Tab } from 'modules/portfolio/types';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
-import MarketCard from 'modules/market-cards/containers/market-card';
+import MarketCard from 'modules/market-cards/market-card';
 import { Checkbox } from 'modules/common/form';
 
 import PaginationStyles from 'modules/common/pagination.styles.less';
