@@ -5,9 +5,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { AppStatus } from 'modules/app/store/app-status';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
 
-export const closeModal = () => (
-  dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState
-) => {
+export const closeModal = () => {
   const { modal: { type: modal } } = AppStatus.get();
   if (modal) {
     track(`${modal} - ${MODAL_CLOSED}`, {
