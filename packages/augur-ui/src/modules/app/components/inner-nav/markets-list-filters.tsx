@@ -72,7 +72,7 @@ const MarketsListFilters = ({
       settings.maxFee;
     const newSpread =
       filterOptionsFromQuery.spread ||
-      settings.spread;
+      settings.maxLiquiditySpread;
     const newTemplateFilter =
       filterOptionsFromQuery.templateFilter ||
       settings.templateFilter;
@@ -97,7 +97,7 @@ const MarketsListFilters = ({
     categories
       ? updateSelectedCategories(categories.split(','))
       : updateSelectedCategories([]);
-  }, [location.search, settings.maxFee, settings.spread, settings.templateFilter, settings.showInvalid]);
+  }, [location.search, settings.maxFee, settings.maxLiquiditySpread, settings.templateFilter, settings.showInvalid]);
 
   const [showFilters, setShowFilters] = useState(false);
 

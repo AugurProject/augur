@@ -48,18 +48,16 @@ export const loadAccountDataFromLocalStorage = (
       const { settings } = storedAccountData;
 
       if (settings) {
-        const { maxFee, spread, showInvalid, templateFilter } = settings;
-        console.log('in loadAccountDataStorage. Saved Settings:', settings);
-        // updateLoginAccount({ settings });
+        const { maxFee, maxLiquiditySpread, includeInvalidMarkets, templateFilter } = settings;
         if (maxFee) {
           updateFilterSortOptions({ [MARKET_MAX_FEES]: settings.maxFee });
         }
-        if (spread) {
-          updateFilterSortOptions({ [MARKET_MAX_SPREAD]: settings.spread });
+        if (maxLiquiditySpread) {
+          updateFilterSortOptions({ [MARKET_MAX_SPREAD]: settings.maxLiquiditySpread });
         }
-        if (showInvalid) {
+        if (includeInvalidMarkets) {
           updateFilterSortOptions({
-            [MARKET_SHOW_INVALID]: settings.showInvalid,
+            [MARKET_SHOW_INVALID]: settings.includeInvalidMarkets,
           });
         }
         if (templateFilter) {

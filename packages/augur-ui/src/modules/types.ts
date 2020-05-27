@@ -648,10 +648,10 @@ export interface LoginAccountMeta {
 export interface LoginAccountSettings {
   showInvalidMarketsBannerFeesOrLiquiditySpread?: boolean;
   showInvalidMarketsBannerHideOrShow?: boolean;
-  templateFilter?: boolean;
-  maxFee?: boolean;
-  spread?: boolean;
-  showInvalid?: boolean;
+  templateFilter?: string;
+  maxFee?: string;
+  maxLiquiditySpread?: INVALID_OPTIONS;
+  includeInvalidMarkets?: string;
 }
 
 export interface LoginAccount {
