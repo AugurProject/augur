@@ -22,7 +22,7 @@ const mapStateToProps = ({ initialized3box }) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   initialize3box: (address, box, profile) => dispatch(initialize3box(address, box, profile)),
 });
 

@@ -25,7 +25,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   migrateMarketThroughOneFork: (marketId, payoutNumerators, description, estimateGas, callback) =>
     dispatch(migrateMarketThroughOneFork(marketId, payoutNumerators, description, estimateGas, callback)),
 });

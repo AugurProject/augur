@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     if (localStorageRef && localStorageRef.setItem) {
       localStorageRef.setItem(DISCLAIMER_SEEN, 'true');
     }
-    dispatch(closeModal());
+    closeModal();
   },
 });
 

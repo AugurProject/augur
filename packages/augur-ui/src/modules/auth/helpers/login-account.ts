@@ -5,6 +5,7 @@ import { ZERO } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from "utils/create-big-number";
 import { AppStatus } from 'modules/app/store/app-status';
 import { DESIRED_SIGNER_ETH_BALANCE } from '@augurproject/sdk';
+import { FormattedNumber } from 'modules/types';
 
 export const getLoginAccountFormatted = loginAccount => {
   const genAccountProperties = generateDownloadAccountLink(

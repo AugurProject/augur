@@ -53,7 +53,7 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   const loggedInAccountType = (loggedInUser && loggedInUser.type) || null;
   const { setModal } = AppStatus.actions;
   const errorModal = () => {
-    dispatch(logout());
+    logout();
     setModal({
         type: MODAL_ERROR,
       });
@@ -67,7 +67,7 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
               type: MODAL_LOADING,
               message: SIGNIN_SIGN_WALLET,
               showMetaMaskHelper: true,
-              callback: () => dispatch(closeModal()),
+              callback: () => closeModal(),
             });
         }
         await dispatch(loginWithInjectedWeb3());
@@ -103,7 +103,7 @@ function pollForNetwork(
             type: MODAL_NETWORK_DISABLED,
           });
       } else if (!isMainnet && modal.type === MODAL_NETWORK_DISABLED) {
-        dispatch(closeModal());
+        closeModal();
       }
     }
   }, NETWORK_ID_POLL_INTERVAL_DURATION);
@@ -247,7 +247,7 @@ export function connectAugur(
     // If the network disconnected modal is being shown, but we are now
     // connected -- hide it.
     if (modal?.type === MODAL_NETWORK_DISCONNECTED) {
-      dispatch(closeModal());
+      closeModal();
     }
 
     if (isInitialConnection) {

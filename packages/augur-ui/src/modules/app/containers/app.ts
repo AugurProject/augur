@@ -47,7 +47,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(initAugur(history, overrides, cb)),
     updateModal: modal => setModal(modal),
     finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
-    logout: () => dispatch(logout()),
+    logout: () => logout(),
     updateSelectedCategories: (category) => updateMarketsList({
       selectedCategories: category || [],
       selectedCategory: category.length ? category[category.length - 1] : null,

@@ -32,7 +32,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: any) => ({
   closeModal: () => {
-    dispatch(closeModal());
+    closeModal();
 
     const localStorageRef =
       typeof window !== 'undefined' && window.localStorage;

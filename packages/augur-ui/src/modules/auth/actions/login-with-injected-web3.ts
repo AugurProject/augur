@@ -25,7 +25,7 @@ export const loginWithInjectedWeb3 = () => async (
   getState: () => AppState
 ) => {
   const failure = error => {
-    dispatch(closeModal());
+    closeModal();
     throw error;
   };
   const success = async (account: string, refresh: boolean) => {
@@ -64,14 +64,14 @@ export const loginWithInjectedWeb3 = () => async (
               type: MODAL_LOADING,
               message,
               showMetaMaskHelper,
-              callback: () => dispatch(closeModal()),
+              callback: () => closeModal(),
             });
 
             await dispatch(loginWithInjectedWeb3());
           };
 
           console.log('refreshing account to', accounts[0]);
-          await dispatch(logout());
+          await logout();
 
           initWeb3(accounts[0]);
         }
@@ -97,7 +97,7 @@ const login = (account: string) => (
   getState: () => AppState
 ) => {
   const provider = getWeb3Provider(windowRef);
-  const networkId = windowRef.web3?.currentProvider?.networkVersion || getState().env['networkId'];
+  const networkId = windowRef.web3?.currentProvider?.networkVersion || AppStatus.get().env['networkId'];
   const address = toChecksumAddress(account);
   const accountObject = {
     address,

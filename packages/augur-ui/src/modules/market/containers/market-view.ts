@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch) => {
         type: MODAL_MARKET_LOADING,
       }),
     closeMarketLoadingModalOnly: (type: string) =>
-      type === MODAL_MARKET_LOADING && dispatch(closeModal()),
+      type === MODAL_MARKET_LOADING && closeModal(),
     addAlert: alert => addAlert(alert),
   };
 };

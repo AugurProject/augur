@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import classNames from 'classnames';
 import Blockies from 'react-blockies';
 
-import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
+import ConnectDropdown from 'modules/auth/components/connect-dropdown/connect-dropdown';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { formatDai } from 'utils/format-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';

@@ -48,7 +48,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
       customAction,
       type: MODAL_INITIALIZE_ACCOUNT,
     }),
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   purchaseParticipationTokens: (amount, gasEstimate, callback) =>
     dispatch(purchaseParticipationTokens(amount, gasEstimate, callback)),
 });
