@@ -558,7 +558,7 @@ export const handleInitialReportSubmittedLog = (
       handleAlert(log, DOINITIALREPORT, false, dispatch, getState)
       dispatch(removePendingData(log.market, SUBMIT_REPORT));
     });
-    dispatch(loadAccountReportingHistory());
+    loadAccountReportingHistory();
   }
   const marketIds = userLogs.map(log => log.market);
   if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
@@ -570,7 +570,7 @@ export const handleInitialReporterRedeemedLog = (
   const { loginAccount: { address }} = AppStatus.get();
   const reporterLogs = logs.filter(log => isSameAddress(log.reporter, address));
   if (reporterLogs.length > 0) {
-    dispatch(loadAccountReportingHistory());
+    loadAccountReportingHistory();
     dispatch(removePendingTransaction(REDEEMSTAKE));
     reporterLogs.map(log => {
       handleAlert(log, REDEEMSTAKE, false, dispatch, getState);
@@ -587,7 +587,7 @@ export const handleInitialReporterTransferredLog = (logs: any) => (
     log => isSameAddress(log.from, address) || isSameAddress(log.to, address)
   );
   if (userLogs.length > 0) {
-    dispatch(loadAccountReportingHistory());
+    loadAccountReportingHistory();
     userLogs.map(log => {
       handleAlert(log, DOINITIALREPORTWARPSYNC, false, dispatch, getState);
     });
@@ -619,7 +619,7 @@ export const handleParticipationTokensRedeemedLog = (
         getState
       )
     );
-    dispatch(loadAccountReportingHistory());
+    loadAccountReportingHistory();
     dispatch(removePendingTransaction(REDEEMSTAKE));
   }
 };
@@ -632,7 +632,7 @@ export const handleReportingParticipantDisavowedLog = (
     logs.filter(log => isSameAddress(log.reportingParticipant, address))
       .length > 0
   ) {
-    dispatch(loadAccountReportingHistory());
+    loadAccountReportingHistory();
   }
 };
 
@@ -710,7 +710,7 @@ export const handleDisputeCrowdsourcerContributionLog = (
       handleAlert(log, CONTRIBUTE, false, dispatch, getState);
       dispatch(removePendingData(log.market, SUBMIT_DISPUTE));
     });
-    dispatch(loadAccountReportingHistory());
+    loadAccountReportingHistory();
   }
   if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
 };
@@ -723,7 +723,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = (
     isSameAddress(log.reporter, address)
   );
   if (userLogs.length > 0) {
-    dispatch(loadAccountReportingHistory());
+    loadAccountReportingHistory();
     userLogs.map(log =>
       handleAlert(log, REDEEMSTAKE, false, dispatch, getState)
     );
@@ -737,7 +737,7 @@ export const handleDisputeWindowCreatedLog = (
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   if (logs.length > 0) {
     dispatch(loadDisputeWindow());
-    dispatch(loadAccountReportingHistory());
+    loadAccountReportingHistory();
     if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
   }
 };
@@ -760,7 +760,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
     .map(log => {
       if (log.tokenType === Logs.TokenType.ParticipationToken) {
         dispatch(removePendingTransaction(BUYPARTICIPATIONTOKENS));
-        dispatch(loadAccountReportingHistory());
+        loadAccountReportingHistory();
       }
       if (log.tokenType === Logs.TokenType.ReputationToken && isForking) {
         dispatch(loadUniverseDetails(universeId, userAddress));
