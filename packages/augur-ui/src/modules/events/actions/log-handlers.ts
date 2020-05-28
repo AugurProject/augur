@@ -331,8 +331,7 @@ export const handleMarketCreatedLog = (logs: any) => (
               dispatch(marketCreationCreated(market, log.extraInfo));
             }
           });
-        })
-      );
+        }));
     }
   });
   if (userLogs.length > 0) {
