@@ -284,31 +284,33 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser-lite@9.3.0", "@0x/mesh-browser-lite@^9.3.0":
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser-lite/-/mesh-browser-lite-9.3.0.tgz#57890f155c99ab93a8862f504a58fd80a24ac2ad"
-  integrity sha512-waQRu5mGXwipjidaPjEcCmNzTpJJMfYDb3noDUBGvCfUq3qsqwo56TMhBCyYp5rKqHFd1wLepD+3ZJR7J1NMzQ==
+"@0x/mesh-browser-lite@9.4.0", "@0x/mesh-browser-lite@^9.4.0":
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser-lite/-/mesh-browser-lite-9.4.0.tgz#bc40bd262fe2417a099f8b1b0379e253a0502a49"
+  integrity sha512-yXMYRs54fzd1qxaUE/XxeYOzuCD4ptg0lJQjXpIz0QPjjveKK2EmeemEpm9nbmPcTw59Qp9cnVt9mj8v+yFHRw==
   dependencies:
+    "@0x/contract-addresses" "^4.9.0"
     "@0x/order-utils" "^10.2.0"
     "@0x/utils" "^5.4.0"
+    ajv "^6.12.2"
     base64-arraybuffer "^0.2.0"
     browserfs "^1.4.3"
     ethereum-types "^3.0.0"
 
-"@0x/mesh-browser@9.3.0":
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.3.0.tgz#d31bc2448c66d7dbc6ab9cb8edcf17f7c27a6528"
-  integrity sha512-No9qrx87u72loFELB7jnyS9rtilGcXZ06JL4koflTEYKWw19Q4eOpU5wf3yKuEqBs4pLmfcZXY+512v3YUhJoA==
+"@0x/mesh-browser@9.4.0":
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser/-/mesh-browser-9.4.0.tgz#ce184fa906392b2dd9317937d1ac3db16c983e2f"
+  integrity sha512-suf2tNSflyUJmolFwQvm+NO/U5r3e0LsP35vPdcdYdNr4eipYPvywLQJTX//VuLeao5sdTuW8Ps9Wi3Ioo+Xtw==
   dependencies:
-    "@0x/mesh-browser-lite" "^9.3.0"
+    "@0x/mesh-browser-lite" "^9.4.0"
     base64-arraybuffer "^0.2.0"
     browserfs "^1.4.3"
     ethereum-types "^3.0.0"
 
-"@0x/mesh-rpc-client@9.3.0":
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-9.3.0.tgz#8508aa5199b31e9facd12be1c5533c8e3edbd264"
-  integrity sha512-RfRW3dZThYhq0SezeMQ52eKRDUoZL1tk2mJYdv72V8yIiROOvILmDu2weZ+6ET5HP3zVou2YAQDnHb1M7iPiAg==
+"@0x/mesh-rpc-client@9.4.0":
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-rpc-client/-/mesh-rpc-client-9.4.0.tgz#98aa384acca9e9c4cbb747267c8299ff79f4ef5b"
+  integrity sha512-XEn0XP/LwjXNSMXQQ+n6r1VXoCPomkJXX+GCaTIc5hadZO3IZxuT1q4VDniqCXuRuF/joANPNxfVf26qumaAow==
   dependencies:
     "@0x/assert" "^3.0.6"
     "@0x/types" "^3.1.2"
@@ -4677,7 +4679,7 @@ abstract-leveldown@~2.6.0:
   dependencies:
     xtend "~4.0.0"
 
-abstract-leveldown@~6.0.0, abstract-leveldown@~6.0.1:
+abstract-leveldown@~6.0.0, abstract-leveldown@~6.0.1, abstract-leveldown@~6.0.3:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/abstract-leveldown/-/abstract-leveldown-6.0.3.tgz#b4b6159343c74b0c5197b2817854782d8f748c4a"
   integrity sha512-jzewKKpZbaYUa6HTThnrl+GrJhzjEAeuc7hTVpZdzg7kupXZFoqQDFwyOwLNbmJKJlmzw8yiipMPkDiuKkT06Q==
@@ -4838,7 +4840,7 @@ ajv@^5.2.2:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.3.0"
 
-ajv@^6.0.1, ajv@^6.10.0:
+ajv@^6.0.1, ajv@^6.10.0, ajv@^6.12.2:
   version "6.12.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.2.tgz#c629c5eced17baf314437918d2da88c99d5958cd"
   integrity sha512-k+V+hzjm5q/Mr8ef/1Y9goCmlsK4I6Sm74teeyGvFk1XrOsbsKLjEdrvny42CZ+a8sXbk8KWpY/bDwS+FLL2UQ==
@@ -6302,10 +6304,15 @@ big.js@^5.1.2, big.js@^5.2.2:
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
-bignumber.js@*, bignumber.js@9.0.0, bignumber.js@^9.0.0, "bignumber.js@git+https://github.com/frozeman/bignumber.js-nolookahead.git", bignumber.js@~8.0.2, bignumber.js@~9.0.0:
+bignumber.js@*, bignumber.js@9.0.0, bignumber.js@^9.0.0, "bignumber.js@git+https://github.com/frozeman/bignumber.js-nolookahead.git", bignumber.js@~9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.0.tgz#805880f84a329b5eac6e7cb6f8274b6d82bdf075"
   integrity sha512-t/OYhhJ2SD+YGBQcjY8GzzDHEk9f3nerxjtfa6tlMXfe7frs/WozhvCNoGvpM0P3bNf3Gq5ZRMlGr5f3r4/N8A==
+
+bignumber.js@~8.0.2:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-8.0.2.tgz#d8c4e1874359573b1ef03011a2d861214aeef137"
+  integrity sha512-EiuvFrnbv0jFixEQ9f58jo7X0qI2lNGIr/MxntmVzQc5JUweDSh8y8hbTCAomFtqwUPIOWcLXP0VEOSZTG7FFw==
 
 binary-extensions@^1.0.0:
   version "1.13.1"
@@ -17229,13 +17236,22 @@ level@^5.0.1, level@~5.0.1:
     leveldown "^5.0.0"
     opencollective-postinstall "^2.0.0"
 
-leveldown@5.4.1, leveldown@^5.0.0, leveldown@~5.1.1:
+leveldown@^5.0.0:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/leveldown/-/leveldown-5.4.1.tgz#83a8fdd9bb52b1ed69be2ef59822b6cdfcdb51ec"
   integrity sha512-3lMPc7eU3yj5g+qF1qlALInzIYnkySIosR1AsUKFjL9D8fYbTLuENBAeDRZXIG4qeWOAyqRItOoLu2v2avWiMA==
   dependencies:
     abstract-leveldown "~6.2.1"
     napi-macros "~2.0.0"
+    node-gyp-build "~4.1.0"
+
+leveldown@~5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/leveldown/-/leveldown-5.1.1.tgz#5d3a043f0ec76e91e189117ec3627bef0436c0dc"
+  integrity sha512-4n2R/vEA/sssh5TKtFwM9gshW2tirNoURLqekLRUUzuF+eUBLFAufO8UW7bz8lBbG2jw8tQDF3LC+LcUCc12kg==
+  dependencies:
+    abstract-leveldown "~6.0.3"
+    napi-macros "~1.8.1"
     node-gyp-build "~4.1.0"
 
 levelup@3.1.1, levelup@^3.0.0:
@@ -19343,6 +19359,11 @@ nan@2.14.0, nan@^2.12.1, nan@^2.13.2, nan@^2.14.0, nan@^2.2.1:
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.0.tgz#7818f722027b2459a86f0295d434d1fc2336c52c"
   integrity sha512-INOFj37C7k3AfaNTtX8RhsTw7qRy7eLET14cROi9+5HAVbbHuIWUHEauBv5qT4Av2tWasiTY1Jw6puUNqRJXQg==
 
+nan@^2.0.8:
+  version "2.14.1"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.1.tgz#d7be34dfa3105b91494c3147089315eff8874b01"
+  integrity sha512-isWHgVjnFjh2x2yuJ/tj3JbwoHu3UC2dX5G/88Cm24yB6YopVgxvBObDY7n5xW6ExmFhJpSEQqFPvq9zaXc8Jw==
+
 nano-json-stream-parser@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/nano-json-stream-parser/-/nano-json-stream-parser-0.1.2.tgz#0cc8f6d0e2b622b479c40d499c46d64b755c6f5f"
@@ -19369,6 +19390,11 @@ nanomatch@^1.2.9:
     regex-not "^1.0.0"
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
+
+napi-macros@~1.8.1:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/napi-macros/-/napi-macros-1.8.2.tgz#299265c1d8aa401351ad0675107d751228c03eda"
+  integrity sha512-Tr0DNY4RzTaBG2W2m3l7ZtFuJChTH6VZhXVhkGGjF/4cZTt+i8GcM9ozD+30Lmr4mDoZ5Xx34t2o4GJqYWDGcg==
 
 napi-macros@~2.0.0:
   version "2.0.0"
@@ -24509,9 +24535,12 @@ scrypt.js@^0.3.0:
   optionalDependencies:
     scrypt "^6.0.2"
 
-scrypt@^6.0.2, "scrypt@https://github.com/AugurProject/blackhole.git":
-  version "1.0.0"
-  resolved "https://github.com/AugurProject/blackhole.git#f8230443bf4fc9d5921655e06ebe2755d84afbcd"
+scrypt@^6.0.2:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/scrypt/-/scrypt-6.0.3.tgz#04e014a5682b53fa50c2d5cce167d719c06d870d"
+  integrity sha1-BOAUpWgrU/pQwtXM4WfXGcBthw0=
+  dependencies:
+    nan "^2.0.8"
 
 scryptsy@2.1.0, scryptsy@^2.1.0:
   version "2.1.0"
