@@ -36,9 +36,9 @@ const mapStateToProps = (state: AppState) => {
   ethToDaiRate: appStatus.ethToDaiRate,
   gasPrice,
   fallBackGasCosts: {
-    eth: displayGasInDai(TRANSFER_ETH_GAS_COST),
-    rep: displayGasInDai(TRANSFER_REP_GAS_COST),
-    dai: displayGasInDai(TRANSFER_DAI_GAS_COST),
+    eth: TRANSFER_ETH_GAS_COST,
+    rep: TRANSFER_REP_GAS_COST,
+    dai: TRANSFER_DAI_GAS_COST,
   },
   transactionLabel: getTransactionLabel(state)
 }
