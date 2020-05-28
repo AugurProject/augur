@@ -21,73 +21,12 @@ import { PendingOrders } from 'modules/app/store/pending-orders';
 // console log middleware
 const consoleLog = store => next => action => {
   if (!action) return;
-  // const isIgnoreFlag = action.meta != null && action.meta.ignore === true;
-  // if (typeof action !== 'function' && !isIgnoreFlag) {
-  //   // console.log(action);
-  // }
   return next(action);
 };
 
 // local storage middleware
 const localStorageMiddleware = store => next => action => {
   next(action);
-  // const { drafts, analytics, alerts, notifications, favorites, loginAccount, isLogged, isConnected, env, gasPriceInfo, pendingQueue } = AppStatus.get();
-  // const { pendingOrders, pendingLiquidityOrders } = PendingOrders.get();
-  // if (
-  //   !loginAccount?.address ||
-  //   !isLogged ||
-  //   !isConnected
-  // ) {
-  //   return;
-  // }
-  // const { address, affiliate, settings } = loginAccount;
-  // const windowApp: WindowApp = windowRef as WindowApp;
-  // if (windowApp.localStorage && windowApp.localStorage.setItem) {
-  //   const { localStorage } = windowApp;
-  //   const networkIdToUse: number = isConnected
-  //     ? parseInt(getNetworkId(), 10)
-  //     : 1;
-  //   let universeId = env.universe;
-  //   const Augur = augurSdk ? augurSdk.get() : undefined;
-  //   if (Augur) {
-  //     universeId = Augur.contracts.universe.address;
-  //   }
-  //   const universeIdToUse = universeId;
-  //   const accountValue = localStorage.getItem(address) || '{}';
-  //   let storedAccountData = JSON.parse(accountValue);
-  //   if (!storedAccountData || !storedAccountData.selectedUniverse) {
-  //     storedAccountData = {
-  //       selectedUniverse: { [networkIdToUse]: universeIdToUse },
-  //     };
-  //   }
-  //   const processedFavorites = processFavorites(
-  //     favorites,
-  //     storedAccountData.favorites,
-  //     networkIdToUse,
-  //     universeIdToUse
-  //   );
-  //   localStorage.setItem(
-  //     address,
-  //     JSON.stringify({
-  //       pendingLiquidityOrders,
-  //       analytics,
-  //       favorites: processedFavorites,
-  //       alerts,
-  //       notifications,
-  //       pendingOrders,
-  //       pendingQueue,
-  //       drafts,
-  //       gasPriceInfo: {
-  //         userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
-  //       },
-  //       selectedUniverse: {
-  //         ...storedAccountData.selectedUniverse,
-  //       },
-  //       settings,
-  //       affiliate
-  //     })
-  //   );
-  // }
 };
 
 let middleware;
