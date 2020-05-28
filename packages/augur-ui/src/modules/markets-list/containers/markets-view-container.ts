@@ -98,7 +98,7 @@ const mapDispatchToProps = (
     loadMarketsByFilter: (
       filter: LoadMarketsFilterOptions,
       cb: NodeStyleCallback
-    ) => dispatch(loadMarketsByFilter(filter, cb)),
+    ) => loadMarketsByFilter(filter, cb),
     loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
     removeFeeFilter: () =>
       updateFilterSortOptions({ [MARKET_MAX_FEES]: MAX_FEE_100_PERCENT }),

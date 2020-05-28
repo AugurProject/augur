@@ -217,8 +217,8 @@ export const handleSDKReadyEvent = () => (
 
   // app is connected when subscribed to sdk
   AppStatus.actions.setIsConnected(true);
-  dispatch(loadAccountData());
-  dispatch(loadUniverseForkingInfo());
+  loadAccountData();
+  loadUniverseForkingInfo();
   dispatch(getCategoryStats());
 };
 
@@ -372,7 +372,7 @@ export const handleMarketMigratedLog = (log: any) => (
   } else {
     Markets.actions.updateMarketsData(null, loadMarketsInfo([log.market]));
   }
-  dispatch(loadUniverseDetails(universeId, address));
+  loadUniverseDetails(universeId, address);
 };
 
 export const handleWarpSyncHashUpdatedLog = (log: { hash: string }) => (
@@ -693,7 +693,7 @@ export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
 ) => {
   console.log('handleUniverseForkedLog');
   const { forkingMarket } = log;
-  dispatch(loadUniverseForkingInfo(forkingMarket));
+  loadUniverseForkingInfo(forkingMarket);
   if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
 };
 
@@ -707,7 +707,7 @@ export const handleMarketFinalizedLog = (logs: Logs.MarketFinalizedLog[]) => (
   logs.map(log => {
     if (forkingInfo) {
       if (log.market === forkingInfo.forkingMarket) {
-        dispatch(loadUniverseForkingInfo());
+        loadUniverseForkingInfo();
       }
     }
   });
@@ -766,7 +766,7 @@ export const handleDisputeWindowCreatedLog = (
   logs: Logs.DisputeWindowCreatedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>) => {
   if (logs.length > 0) {
-    dispatch(loadDisputeWindow());
+    loadDisputeWindow();
     loadAccountReportingHistory();
     if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
   }
@@ -793,7 +793,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
         loadAccountReportingHistory();
       }
       if (log.tokenType === Logs.TokenType.ReputationToken && isForking) {
-        dispatch(loadUniverseDetails(universeId, userAddress));
+        loadUniverseDetails(universeId, userAddress);
       }
       if (log.tokenType === Logs.TokenType.ReputationToken && !isForking) {
         const timestamp = currentAugurTimestamp * 1000;
@@ -813,7 +813,7 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
         dispatch(removePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN));
       }
     });
-  if (isParticipationTokens) dispatch(loadDisputeWindow());
+  if (isParticipationTokens) loadDisputeWindow();
 };
 
 const EventHandlers = {

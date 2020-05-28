@@ -72,7 +72,7 @@ export const loadAccountDataFromLocalStorage = (
         }
       } else {
         // we have a no selectedUniveres for this account, default to default universe for this network.
-        dispatch(setSelectedUniverse());
+        setSelectedUniverse();
       }
       if (
         favorites &&

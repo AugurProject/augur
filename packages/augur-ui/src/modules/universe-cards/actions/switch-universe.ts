@@ -10,10 +10,10 @@ import { ALL_MARKETS } from 'modules/common/constants';
 import { setSelectedUniverse } from 'modules/auth/actions/selected-universe-management';
 import { AppStatus } from 'modules/app/store/app-status';
 
-export const switchUniverse = (
+export const switchUniverse = async (
   universeId: string,
   history: History
-): ThunkAction<any, any, any, any> => async (dispatch, getState) => {
+) => {
   history.push({
     pathname: makePath(MARKETS, null),
   });
@@ -26,28 +26,26 @@ export const switchUniverse = (
       marketFilter,
     },
   } = AppStatus.get();
-  dispatch(
-    loadUniverseDetails(universeId, account, () => {
-      AppStatus.actions.switchUniverse();
-      dispatch(setSelectedUniverse(universeId));
-      dispatch(loadUniverseForkingInfo());
-      dispatch(loadDisputeWindow());
-      dispatch(loadAccountData());
+  loadUniverseDetails(universeId, account, () => {
+    AppStatus.actions.switchUniverse();
+    setSelectedUniverse(universeId);
+    loadUniverseForkingInfo();
+    loadDisputeWindow();
+    loadAccountData();
 
-      const filter = {
-        maxFee,
-        maxLiquiditySpread,
-        includeInvalidMarkets: false,
-        sort,
-        marketFilter,
-        categories: [],
-        search: '',
-        filter: ALL_MARKETS,
-        limit: 10,
-        offset: 1,
-      };
-      // force `getMarkets` call to re-populate markets
-      dispatch(loadMarketsByFilter(filter));
-    })
-  );
+    const filter = {
+      maxFee,
+      maxLiquiditySpread,
+      includeInvalidMarkets: false,
+      sort,
+      marketFilter,
+      categories: [],
+      search: '',
+      filter: ALL_MARKETS,
+      limit: 10,
+      offset: 1,
+    };
+    // force `getMarkets` call to re-populate markets
+    loadMarketsByFilter(filter);
+  });
 };
