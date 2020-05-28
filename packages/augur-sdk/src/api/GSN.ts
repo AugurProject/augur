@@ -70,10 +70,12 @@ export class GSN {
       this.augur.setUseWallet(false);
       this.augur.setUseRelay(false);
 
-      const minExchangeRateInDai = this.augur.dependencies.ethToDaiRate.multipliedBy(MIN_EXCHANGE_RATE_MULTIPLIER).decimalPlaces(0);
-      const ethBalance = await this.augur.getEthBalance(signerAddress);
+      const ethBalance = this.augur.config.gsn.desiredSignerBalanceInETH * 10 ** 18;
+      const signerEthBalance = await this.augur.getEthBalance(signerAddress);
+
+      const minExchangeRateInDai = this.augur.dependencies.ethToDaiRate.multipliedBy(MIN_EXCHANGE_RATE_MULTIPLIER).multipliedBy(2).decimalPlaces(0);
       const ethTxCost = WITHDRAW_GAS_COST_MAX.multipliedBy((await this.augur.dependencies.provider.getGasPrice()).toString());
-      const ethAmount = new BigNumber(ethBalance).minus(ethTxCost);
+      const ethAmount = new BigNumber(BigNumber.min(ethBalance, signerEthBalance)).minus(ethTxCost);
       await wallet.withdrawAllFundsAsDai(destination, minExchangeRateInDai, {attachedEth: ethAmount});
 
       this.augur.setUseWallet(useWallet);
