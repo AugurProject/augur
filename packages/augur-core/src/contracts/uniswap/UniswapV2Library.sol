@@ -3,8 +3,8 @@ pragma solidity 0.5.15;
 import 'ROOT/uniswap/interfaces/IUniswapV2Library.sol';
 import 'ROOT/uniswap/libraries/SafeMath.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
-import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
-import 'ROOT/uniswap/UniswapV2Exchange.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
+import 'ROOT/uniswap/UniswapV2Pair.sol';
 
 
 contract UniswapV2Library is IUniswapV2Library {
@@ -22,13 +22,13 @@ contract UniswapV2Library is IUniswapV2Library {
 
     // calculates the CREATE2 address for an exchange
     function exchangeFor(address tokenA, address tokenB) public view returns (address exchange) {
-        return factory.getExchange(tokenA, tokenB);
+        return factory.getPair(tokenA, tokenB);
     }
 
     // fetches and sorts the reserves for an exchange
     function getReserves(address tokenA, address tokenB) internal view returns (uint reserveA, uint reserveB) {
         (address token0,) = sortTokens(tokenA, tokenB);
-        (uint reserve0, uint reserve1,) = IUniswapV2Exchange(exchangeFor(tokenA, tokenB)).getReserves();
+        (uint reserve0, uint reserve1,) = IUniswapV2Pair(exchangeFor(tokenA, tokenB)).getReserves();
         (reserveA, reserveB) = tokenA == token0 ? (reserve0, reserve1) : (reserve1, reserve0);
     }
 

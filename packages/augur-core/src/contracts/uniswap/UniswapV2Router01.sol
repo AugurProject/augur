@@ -4,7 +4,7 @@ import 'ROOT/uniswap/interfaces/IUniswapV2Router01.sol';
 import 'ROOT/uniswap/UniswapV2Library.sol';
 import 'ROOT/uniswap/interfaces/IWETH.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
-import 'ROOT/uniswap/UniswapV2Exchange.sol';
+import 'ROOT/uniswap/UniswapV2Pair.sol';
 
 
 contract UniswapV2Router01 is IUniswapV2Router01, UniswapV2Library {
@@ -45,7 +45,7 @@ contract UniswapV2Router01 is IUniswapV2Router01, UniswapV2Library {
 
     // calculates the CREATE2 address for a pair
     function pairFor(address tokenA, address tokenB) public view returns (address pair) {
-        return factory.getExchange(tokenA, tokenB);
+        return factory.getPair(tokenA, tokenB);
     }
 
     // **** ADD LIQUIDITY ****
@@ -58,7 +58,7 @@ contract UniswapV2Router01 is IUniswapV2Router01, UniswapV2Library {
         uint amountBMin
     ) private returns (uint amountA, uint amountB) {
         // create the pair if it doesn't exist yet
-        if (factory.getExchange(tokenA, tokenB) == address(0)) factory.createExchange(tokenA, tokenB);
+        if (factory.getPair(tokenA, tokenB) == address(0)) factory.createPair(tokenA, tokenB);
         (uint reserveA, uint reserveB) = getReserves(tokenA, tokenB);
         if (reserveA == 0 && reserveB == 0) {
             (amountA, amountB) = (amountADesired, amountBDesired);

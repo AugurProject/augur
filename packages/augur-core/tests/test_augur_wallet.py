@@ -10,7 +10,7 @@ RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494"
 def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputationToken):
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
-    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())
     weth = contractsFixture.contracts["WETH9"]
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]
@@ -228,7 +228,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
 def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, cash, reputationToken):
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
-    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())
     weth = contractsFixture.contracts["WETH9"]
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]
@@ -312,7 +312,7 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
 def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, cash, reputationToken):
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
-    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())
     weth = contractsFixture.contracts["WETH9"]
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]

@@ -128,7 +128,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
     );
     this.ethExchange = new ethers.Contract(
       this.config.addresses.EthExchange,
-      abi['UniswapV2Exchange'],
+      abi['UniswapV2Pair'],
       provider
     );
     this.cash = new ethers.Contract(
