@@ -64,7 +64,7 @@ export const sendAnalytic = (
   }
 };
 
-export const addedDaiEvent = (dai: Number): ThunkAction<any, any, any, any> => (
+export const addedDaiEvent = (dai: string): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {

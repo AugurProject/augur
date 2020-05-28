@@ -96,7 +96,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
       showDenomination: true,
     },
     {
-      label: 'ETH Reserve',
+      label: 'Fee reserve',
       value: reserveInDaiFormatted.formatted,
       showDenomination: true,
     },

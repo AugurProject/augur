@@ -18,6 +18,7 @@ import { getOnboardingStep } from './modal-p2p-trading';
 
 const mapStateToProps = (state: AppState) => ({
   authStatus: state.authStatus,
+  signerHasDAI: state.loginAccount.balances.signerBalances.dai !== "0",
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -32,7 +33,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  icon: sP.authStatus?.signerHasDAI ? null : OnboardingPaymentIcon,
+  icon: sP.signerHasDAI ? null : OnboardingPaymentIcon,
   largeHeader: 'Add Dai to your trading account',
   showAccountStatus: true,
   currentStep: 3,
@@ -40,7 +41,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     dP.gotoOnboardingStep(step);
   },
   analyticsEvent: () => dP.track(BUY_DAI, {}),
-  showTransferMyDai: sP.authStatus?.signerHasDAI,
+  showTransferMyDai: sP.signerHasDAI,
   showBuyDaiModal: () => dP.showBuyDaiModal(),
   linkContent: [
     {
@@ -49,10 +50,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     },
     {
       content:
-        'Adding more than 40 Dai ($) allows for 0.04 ETH will be converted for your ETH reserve resulting in cheaper transaction fees.',
+        'Adding more than 40 Dai ($) allows for 0.04 ETH will be converted for your Fee reserve resulting in cheaper transaction fees.',
     },
     {
-      content: 'Your ETH reserve can easily be cashed out at anytime.',
+      content: 'Your Fee reserve can easily be cashed out at anytime.',
     },
     {
       content: 'LEARN MORE',

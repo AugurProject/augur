@@ -369,10 +369,15 @@ export const TEMPLATES = {
               {
                 id: 7,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
+                placeholder: `Goes the distance`,
               },
               {
                 id: 8,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Contest`,
+              },
+              {
+                id: 9,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,

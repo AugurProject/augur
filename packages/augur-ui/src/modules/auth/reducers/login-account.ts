@@ -9,17 +9,17 @@ import { formatAttoDai } from 'utils/format-number';
 
 const DEFAULT_STATE: LoginAccount = {
   balances: {
-    eth: 0,
-    rep: 0,
-    dai: 0,
-    legacyRep: 0,
-    legacyRepNonSafe: 0,
+    eth: '0',
+    rep: '0',
+    dai: '0',
+    legacyRep: '0',
+    legacyRepNonSafe: '0',
     attoRep: '0',
     legacyAttoRep: '0',
     signerBalances: {
       eth: null,
-      rep: 0,
-      dai: 0,
+      rep: '0',
+      dai: '0',
     }
   },
   reporting: {

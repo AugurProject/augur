@@ -9,13 +9,12 @@ import {
 import { AppState } from 'appStore';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
-import { formatAttoRep } from 'utils/format-number';
 import { addedDaiEvent } from 'services/analytics/helpers';
 import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { createBigNumber } from 'utils/create-big-number';
-import { WALLET_STATUS_VALUES, FIVE } from 'modules/common/constants';
+import { WALLET_STATUS_VALUES, FIVE, ETHER } from 'modules/common/constants';
 import { addEthIncreaseAlert } from 'modules/alerts/actions/alerts';
-import { updateAuthStatus, SIGNER_HAS_DAI, VAULT_HAS_DAI } from 'modules/auth/actions/auth-status';
+import { updateAuthStatus, VAULT_HAS_DAI } from 'modules/auth/actions/auth-status';
 
 
 export const updateAssets = (
@@ -63,25 +62,21 @@ function updateBalances(
     getDaiBalance(nonSafeWallet),
     getRepBalance(universe, nonSafeWallet),
   ]).then(async (amounts) => {
-    const attoRep = amounts[0].toString();
-    const dai = amounts[1];
+    const attoRep = String(amounts[0]);
+    const dai = String(amounts[1]);
     const eth = amounts[2];
-    const legacyAttoRep = amounts[3].toString();
-    const legacyAttoRepNonSafe = amounts[4].toString();
-    const rep = formatAttoRep(attoRep, { decimalsRounded: 14 }).roundedValue?.toNumber();
+    const legacyAttoRep = String(amounts[3]);
+    const legacyAttoRepNonSafe = String(amounts[4]);
+    const rep = String(createBigNumber(attoRep).dividedBy(ETHER));
     const ethNonSafe = amounts[5];
-    const daiNonSafe = amounts[6];
-    const repNonSafe = formatAttoRep(amounts[7].toString()).value;
-    const legacyRep = formatAttoRep(legacyAttoRep).value;
-    const legacyRepNonSafe = formatAttoRep(legacyAttoRepNonSafe).value;
+    const daiNonSafe = String(amounts[6]);
+    const repNonSafe = String(createBigNumber(String(amounts[7])).dividedBy(ETHER));
+    const legacyRep = String(createBigNumber(String(legacyAttoRep)).dividedBy(ETHER));
+    const legacyRepNonSafe = String(createBigNumber(String(legacyAttoRepNonSafe)).dividedBy(ETHER));
 
     const { loginAccount } = getState();
     const updatedDaiAmount = createBigNumber(dai);
     const currentDaiAmount = createBigNumber(await getDaiBalance(loginAccount.address));
-
-    if (createBigNumber(daiNonSafe).gt(0)) {
-      dispatch(updateAuthStatus(SIGNER_HAS_DAI, true));
-    }
 
     if (updatedDaiAmount.gt(0) && currentDaiAmount.gt(0)) {
       dispatch(updateAuthStatus(VAULT_HAS_DAI, true));

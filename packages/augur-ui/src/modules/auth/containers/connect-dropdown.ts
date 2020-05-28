@@ -10,7 +10,6 @@ import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
 
 const mapStateToProps = (state: AppState) => {
   const { fast, average, safeLow, userDefinedGasPrice } = state.gasPriceInfo;
-
   const userDefined = userDefinedGasPrice || average || 0;
   let gasPriceSpeed = GAS_SPEED_LABELS.STANDARD;
   let gasPriceTime = GAS_TIME_LEFT_LABELS.STANDARD
@@ -45,7 +44,7 @@ const mapStateToProps = (state: AppState) => {
     GsnEnabled: state.appStatus.gsnEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
     reserveEthAmount,
-    showTransferMyDai: state.authStatus?.signerHasDAI,
+    showTransferMyDai: state.loginAccount.balances.signerBalances.dai !== "0",
   };
 };
 
