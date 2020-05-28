@@ -8,11 +8,10 @@ import { Action } from 'redux';
 import { withdrawAllFunds, withdrawAllFundsEstimateGas } from 'modules/contracts/actions/contractCalls';
 import { FormattedNumber } from 'modules/types';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatEther } from 'utils/format-number';
 import { selectAccountFunds } from 'modules/auth/selectors/login-account';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { createBigNumber } from 'utils/create-big-number';
-import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
@@ -21,12 +20,12 @@ const mapStateToProps = (state: AppState) => {
   const { ethToDaiRate} = appStatus;
 
   const ethReserveAmount: FormattedNumber = getEthReserve(state);
-  const balances = selectAccountFunds(state);
+  const accountFunds = selectAccountFunds(state);
   const totalOpenOrderFundsFormatted: FormattedNumber = formatDai(totalOpenOrdersFrozenFunds || 0);
-  const availableFundsFormatted = formatDai(balances.totalAvailableTradingBalance);
+  const availableFundsFormatted = formatDai(accountFunds.totalAvailableTradingBalance);
   const reserveInDaiFormatted = ethToDai(ethReserveAmount.value || 0, createBigNumber(ethToDaiRate?.value || 0));
-  const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(balances.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
-
+  const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(accountFunds.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
+  const tradingAccountEthFormatted = formatEther(loginAccount.balances.eth);
   return {
     account: address,
     modal,
@@ -35,7 +34,7 @@ const mapStateToProps = (state: AppState) => {
     availableFundsFormatted,
     reserveInDaiFormatted,
     totalDaiFormatted,
-    transactionLabel: getTransactionLabel(state)
+    tradingAccountEthFormatted,
   }
 };
 

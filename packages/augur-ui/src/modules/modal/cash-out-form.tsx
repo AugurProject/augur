@@ -7,12 +7,12 @@ import {
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
-import { FormattedNumber } from 'modules/types';
+import { FormattedNumber, AccountBalances } from 'modules/types';
 import { TextInput } from 'modules/common/form';
 import { CloseButton, ProcessingButton, SecondaryButton } from 'modules/common/buttons';
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
 import { displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
-import { WITHDRAWALLFUNDSASDAI, TRANSACTIONS, GWEI_CONVERSION } from 'modules/common/constants';
+import { WITHDRAWALLFUNDSASDAI, TRANSACTIONS, GWEI_CONVERSION, NOT_USE_ETH_RESERVE, ZERO } from 'modules/common/constants';
 import { AutoCancelOrdersNotice } from 'modules/common/labels';
 
 interface CashOutFormProps {
@@ -27,7 +27,7 @@ interface CashOutFormProps {
   availableFundsFormatted: FormattedNumber;
   reserveInDaiFormatted: FormattedNumber;
   totalDaiFormatted: FormattedNumber;
-  transactionLabel: string;
+  tradingAccountEthFormatted: FormattedNumber;
 }
 
 export const CashOutForm = ( props: CashOutFormProps) => {
@@ -35,14 +35,13 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     closeAction,
     withdrawAllFunds,
     withdrawAllFundsEstimateGas,
-    GsnEnabled,
     account,
     gasPrice,
     totalOpenOrderFundsFormatted,
     availableFundsFormatted,
     reserveInDaiFormatted,
     totalDaiFormatted,
-    transactionLabel
+    tradingAccountEthFormatted,
   } = props;
   const [gasCosts, setGasCosts] = useState(createBigNumber(TRANSFER_ETH_GAS_COST));
   const [address, setAddress] = useState('');
@@ -72,15 +71,6 @@ export const CashOutForm = ( props: CashOutFormProps) => {
 
   const gasLimit = createBigNumber(gasCosts || TRANSFER_ETH_GAS_COST);
   const gasInDai = getGasInDai(gasLimit.multipliedBy(gasPrice));
-  const gasEstimateInEth = formatGasCostToEther(
-    TRANSFER_ETH_GAS_COST,
-    { decimalsRounded: 4 },
-    createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
-  );
-
-  const gasEstimate = GsnEnabled
-  ? displayGasInDai(gasLimit)
-  : gasEstimateInEth;
 
   const formattedTotalMinusGasInDai = formatDai(totalDaiFormatted.value - gasInDai.value);
 
@@ -89,27 +79,44 @@ export const CashOutForm = ( props: CashOutFormProps) => {
       label: 'Available Funds',
       value: availableFundsFormatted.formatted,
       showDenomination: true,
-    },
-    {
-      label: 'Open Orders (Funds Held)',
-      value: totalOpenOrderFundsFormatted.formatted,
-      showDenomination: true,
-    },
-    {
-      label: 'Fee reserve',
-      value: reserveInDaiFormatted.formatted,
-      showDenomination: true,
-    },
-    {
-      label: transactionLabel,
-      value: gasInDai.full,
-    },
-    {
+    }];
+
+    if (totalOpenOrderFundsFormatted.value > 0) {
+      breakdown.push({
+        label: 'Open Orders (Funds Held)',
+        value: totalOpenOrderFundsFormatted.formatted,
+        showDenomination: true,
+      });
+    }
+
+    if (reserveInDaiFormatted.value > 0) {
+      breakdown.push({
+        label: 'Fee reserve',
+        value: reserveInDaiFormatted.formatted,
+        showDenomination: true,
+      });
+    }
+
+    if (tradingAccountEthFormatted.value > 0) {
+      breakdown.push({
+        label: 'ETH',
+        value: tradingAccountEthFormatted.formatted,
+        showDenomination: false,
+      });
+    }
+
+    breakdown.push({
+      label: NOT_USE_ETH_RESERVE,
+      value: gasInDai.formatted,
+      showDenomination: false,
+    });
+
+    breakdown.push({
       label: 'Total',
-      value: formattedTotalMinusGasInDai,
+      value: formattedTotalMinusGasInDai.formatted,
       showDenomination: true,
-    },
-  ];
+    });
+
 
   const isValid = errors.length === 0 && address.length > 0 && formattedTotalMinusGasInDai.value > 0;
 
@@ -139,7 +146,7 @@ export const CashOutForm = ( props: CashOutFormProps) => {
           </div>
         </div>
         <Breakdown rows={breakdown} />
-        <AutoCancelOrdersNotice />
+        { totalOpenOrderFundsFormatted.value > 0 && <AutoCancelOrdersNotice /> }
       </main>
       <div>
         <ProcessingButton
