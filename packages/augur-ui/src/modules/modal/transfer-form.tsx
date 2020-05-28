@@ -126,7 +126,7 @@ export class TransferForm extends Component<
     const eth = balances.signerBalances.eth;
     let amountMinusGas = createBigNumber(eth).minus(createBigNumber(gasInEth))
     if (currency === ETH) {
-      newAmount = createBigNumber(amount).minus(createBigNumber(gasInEth))
+      newAmount = createBigNumber(amount);
     }
     this.setErrorMessage(newAmount, updatedErrors, balance, amountMinusGas, false);
   }
