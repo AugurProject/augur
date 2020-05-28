@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@types/async": "3.0.1",
-    "@types/bn.js": "4.11.5",
+    "@types/bn.js": "4.11.8",
     "@types/chai": "4.2.3",
     "@types/chai-as-promised": "7.1.2",
     "@types/express": "4.17.1",
@@ -93,9 +93,10 @@
     "**/sha3": "2.0.1",
     "**/leveldown": "5.4.1",
     "**/bignumber.js": "9.0.0",
-    "**/scrypt": "https://github.com/AugurProject/blackhole.git"
-  },
-  "dependencies": {
-    "docusaurus-init": "1.12.0"
+    "**/scrypt": "https://github.com/AugurProject/blackhole.git",
+    "ethers": "4.0.37",
+    "node-forge": "0.9.1",
+    "bn.js": "4.11.8",
+    "elliptic": "6.5.2"
   }
 }
