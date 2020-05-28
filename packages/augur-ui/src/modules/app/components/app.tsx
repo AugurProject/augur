@@ -3,6 +3,7 @@
 
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
+import { useHistory } from 'react-router';
 import isWindows from 'utils/is-windows';
 import Modal from 'modules/modal/containers/modal-view';
 import TopBar from 'modules/app/components/top-bar';
@@ -55,17 +56,11 @@ import isAddress from 'modules/auth/helpers/is-address';
 
 interface AppProps {
   config: SDKConfiguration;
-  history: History;
   initAugur: Function;
   location: Location;
   ethereumNodeHttp: string;
   ethereumNodeWs: string;
   sdkEndpoint: string;
-  updateIsAlertVisible: Function;
-  toasts: any[];
-  whichChatPlugin: string;
-  appStatus: AppStatus;
-  ethReserveInDai: FormattedNumber;
 }
 
 function renderMobileMenuButton(
@@ -120,7 +115,6 @@ const AppView = ({
   ethereumNodeHttp = null,
   ethereumNodeWs = null,
   sdkEndpoint = null,
-  history,
   initAugur,
   location: locationProp,
 }: AppProps) => {
@@ -140,6 +134,7 @@ const AppView = ({
       updateLoginAccount,
     },
   } = useAppStatusStore();
+  const history = useHistory();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
   const ModalShowing = Object.keys(modal).length !== 0;
@@ -188,7 +183,6 @@ const AppView = ({
   useEffect(() => {
     const useWeb3Transport = isGlobalWeb3();
     initAugur(
-      history,
       {
         ...env,
         ethereumNodeHttp,
@@ -368,9 +362,6 @@ const SideBarSection = ({
       {/* HIDDEN ON DESKTOP */}
       <SideNav
         showNav={navShowing}
-        defaultMobileClick={() => {
-          setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
-        }}
         isLogged={isLogged || restoredAccount}
         menuData={sideNavMenuData}
       />

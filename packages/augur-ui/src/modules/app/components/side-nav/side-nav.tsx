@@ -7,7 +7,7 @@ import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/connect-dropdown';
 import { Dot, helpIcon, MobileNavCloseIcon, LogoutIcon, AddIcon } from 'modules/common/icons';
-import { AccountBalances, NavMenuItem } from 'modules/types';
+import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon } from 'modules/app/components/help-resources';
 import {
@@ -26,6 +26,7 @@ import {
   THEMES,
   MODAL_GLOBAL_CHAT,
   MODAL_MIGRATE_REP,
+  MOBILE_MENU_STATES,
 } from 'modules/common/constants';
 import { Stats } from 'modules/app/components/top-bar';
 import { NewLogo } from 'modules/app/components/logo';
@@ -33,7 +34,6 @@ import { OddsMenu } from 'modules/app/components/odds-menu';
 import { logout } from 'modules/auth/actions/logout';
 
 interface SideNavProps {
-  defaultMobileClick: Function;
   isLogged: boolean;
   menuData: NavMenuItem[];
   showNav: boolean;
@@ -41,7 +41,6 @@ interface SideNavProps {
 
 const SideNav = ({
   isLogged,
-  defaultMobileClick,
   menuData,
   showNav,
 }: SideNavProps) => {
@@ -54,7 +53,7 @@ const SideNav = ({
     isConnectionTrayOpen,
     theme,
     mobileMenuState,
-    actions: { setIsHelpMenuOpen, setGSNEnabled, setModal, setMobileMenuState, closeAppMenus },
+    actions: { setIsHelpMenuOpen, setModal, setMobileMenuState, closeAppMenus },
   } = useAppStatusStore();
   const pending =
     pendingQueue[TRANSACTIONS] &&
@@ -129,7 +128,7 @@ const SideNav = ({
                   to={item.route ? makePath(item.route) : null}
                   onClick={() => {
                     setIsHelpMenuOpen(false);
-                    defaultMobileClick();
+                    setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
                   }}
                 >
                   {item.button ? (
@@ -184,7 +183,7 @@ const SideNav = ({
               {whichChatPlugin &&
                 <div className={Styles.GlobalChat}>
                   <SecondaryButton
-                    action={showGlobalChat}
+                    action={() => setModal({ type: MODAL_GLOBAL_CHAT })}
                     text="Global Chat"
                     icon={Chevron}
                   />

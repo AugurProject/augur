@@ -35,6 +35,8 @@ export const updateSdk = (
     setOxEnabled,
     setWalletStatus,
     setIsLogged,
+    updateLoginAccount,
+    closeModal,
   } = AppStatus.actions;
   const useGSN = env.gsn?.enabled;
 
@@ -45,11 +47,7 @@ export const updateSdk = (
       const hasWallet = await augurSdk.client.gsn.userHasInitializedWallet(
         newAccount.address
       );
-      if (hasWallet) {
-        setWalletStatus(WALLET_STATUS_VALUES.CREATED);
-      } else {
-        setWalletStatus(WALLET_STATUS_VALUES.WAITING_FOR_FUNDING);
-      }
+      setWalletStatus(hasWallet ? WALLET_STATUS_VALUES.CREATED : WALLET_STATUS_VALUES.WAITING_FOR_FUNDING);
       const walletAddress = await augurSdk.client.gsn.calculateWalletAddress(
         newAccount.address
       );
@@ -71,12 +69,12 @@ export const updateSdk = (
       useGSN
     );
 
-    AppStatus.actions.updateLoginAccount(newAccount);
+    updateLoginAccount(newAccount);
     setIsLogged(true);
     dispatch(loadAccountData());
     dispatch(updateAssets());
     if (AppStatus.get().modal.type === MODAL_LOADING)
-      AppStatus.actions.closeModal();
+      closeModal();
   } catch (error) {
     logError(error);
     setModal({
