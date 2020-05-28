@@ -9,7 +9,7 @@ export {
 
 export { default as Account } from "modules/account/components/account-view";
 
-export { default as Market } from "modules/market/containers/market-view";
+export { default as Market } from 'modules/market/components/market-view/market-view';
 
 export { default as BettingMarket } from "modules/market/components/market-view/betting-market-view";
 

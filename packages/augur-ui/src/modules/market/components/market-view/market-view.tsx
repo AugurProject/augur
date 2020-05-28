@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { useLocation, useHistory } from 'react-router';
 import Media from 'react-media';
 
+import { closeModal } from 'modules/modal/actions/close-modal';
 import MarketHeader from 'modules/market/containers/market-header';
 import MarketOrdersPositionsTable from 'modules/market/containers/market-orders-positions-table';
 import MarketOutcomesList from 'modules/market/containers/market-outcomes-list';
@@ -34,6 +35,7 @@ import {
   TUTORIAL_TRADING_HISTORY,
   TUTORIAL_ORDER_BOOK,
   SCALAR_MODAL_SEEN,
+  MODAL_MARKET_LOADING,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -84,14 +86,10 @@ import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketDa
 import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
+import { addAlert } from 'modules/alerts/actions/alerts';
 
 interface MarketViewProps {
-  closeMarketLoadingModalOnly: Function;
-  updateModal: Function;
   history: History;
-  showMarketLoadingModal: Function;
-  addAlert: Function;
-  hotloadMarket: Function;
   defaultMarket: MarketData;
   isPreview?: boolean;
 }
@@ -113,10 +111,6 @@ const EmptyOrderBook: IndividualOutcomeOrderBook = {
 };
 
 const MarketView = ({
-  closeMarketLoadingModalOnly,
-  updateModal,
-  showMarketLoadingModal,
-  addAlert,
   defaultMarket,
   isPreview
 }: MarketViewProps) => {
@@ -128,6 +122,7 @@ const MarketView = ({
     isConnected: connected,
     canHotload,
     blockchain: { currentAugurTimestamp },
+    actions: { setModal }
   } = useAppStatusStore();
   const { marketInfos, orderBooks, actions: { updateOrderBook, bulkMarketTradingHistory, updateMarketsData } } = useMarketsStore();
   const location = useLocation();
@@ -243,7 +238,9 @@ const MarketView = ({
       window.scrollTo(0, 1);
     }
     if (!market) {
-      showMarketLoadingModal();
+      setModal({
+        type: MODAL_MARKET_LOADING,
+      });
     }
   }, []);
 
@@ -263,7 +260,7 @@ const MarketView = ({
     }
 
     return () => {
-      closeMarketLoadingModalOnly && closeMarketLoadingModalOnly(modalShowing);
+      modalShowing === MODAL_MARKET_LOADING && closeModal();
     }
   }, []);
 
@@ -293,7 +290,7 @@ const MarketView = ({
         !introShowing &&
         tutorialStep === TRADING_TUTORIAL_STEPS.INTRO_MODAL
       ) {
-        updateModal({
+        setModal({
           type: MODAL_TUTORIAL_INTRO,
           next: next,
         });
@@ -321,8 +318,8 @@ const MarketView = ({
       updateMarketsData(null, loadMarketsInfo(marketId));
       bulkMarketTradingHistory(null, loadMarketTradingHistory(marketId));
     }
-    if (market && closeMarketLoadingModalOnly) {
-      closeMarketLoadingModalOnly(modalShowing);
+    if (market) {
+      modalShowing === MODAL_MARKET_LOADING && closeModal();
     }
 
     if (
@@ -331,7 +328,7 @@ const MarketView = ({
       market && market.marketType === SCALAR &&
       !hasShownScalarModal
     ) {
-      updateModal({
+      setModal({
         type: MODAL_SCALAR_MARKET,
         cb: () =>
           setState({
@@ -525,7 +522,7 @@ const MarketView = ({
     } else if (tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS) {
       AppStatus.actions.removeAlert(TRADING_TUTORIAL, PUBLICFILLORDER);
     } else if (tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS) {
-      updateModal({
+      setModal({
         type: MODAL_TUTORIAL_OUTRO,
         back: () => {
           setState({
