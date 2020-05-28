@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   redeemStakeGas: options => redeemStakeGas(options),
   disavowMarket: marketId => disavowMarket(marketId),
   addPendingData: (pendingId, queueName, status, hash, info) =>
-    dispatch(addPendingData(pendingId, queueName, status, hash, info)),
+    addPendingData(pendingId, queueName, status, hash, info),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {

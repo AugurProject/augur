@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch: any) => ({
       localStorageRef.setItem(GSN_WALLET_SEEN, 'true');
     }
   },
-  createFundedGsnWallet: () => dispatch(createFundedGsnWallet()),
+  createFundedGsnWallet: () => createFundedGsnWallet(),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({

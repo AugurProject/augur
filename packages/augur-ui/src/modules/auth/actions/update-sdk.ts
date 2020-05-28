@@ -8,8 +8,13 @@ import { loadAccountDataFromLocalStorage } from './load-account-data-from-local-
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { NetworkId } from '@augurproject/artifacts';
-import { AppState } from 'appStore';
-import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET, SUCCESS, MODAL_LOADING } from 'modules/common/constants';
+import {
+  MODAL_ERROR,
+  WALLET_STATUS_VALUES,
+  CREATEAUGURWALLET,
+  SUCCESS,
+  MODAL_LOADING,
+} from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { addAlert } from 'modules/alerts/actions/alerts';
@@ -17,23 +22,29 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
-  networkId: string,
-) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-) => {
+  networkId: string
+) => async (dispatch: ThunkDispatch<void, any, Action>) => {
   if (!loginAccount || !loginAccount.address || !loginAccount.meta) return;
   if (!augurSdk.sdk) return;
 
   let newAccount = { ...loginAccount };
   const { env } = AppStatus.get();
-  const { setModal, setGSNEnabled, setOxEnabled, setWalletStatus, setIsLogged } = AppStatus.actions;
+  const {
+    setModal,
+    setGSNEnabled,
+    setOxEnabled,
+    setWalletStatus,
+    setIsLogged,
+  } = AppStatus.actions;
   const useGSN = env.gsn?.enabled;
 
   try {
     setOxEnabled(!!augurSdk.sdk.zeroX);
     setGSNEnabled(useGSN);
     if (useGSN) {
-      const hasWallet = await augurSdk.client.gsn.userHasInitializedWallet(newAccount.address);
+      const hasWallet = await augurSdk.client.gsn.userHasInitializedWallet(
+        newAccount.address
+      );
       if (hasWallet) {
         setWalletStatus(WALLET_STATUS_VALUES.CREATED);
       } else {
@@ -64,7 +75,8 @@ export const updateSdk = (
     setIsLogged(true);
     dispatch(loadAccountData());
     dispatch(updateAssets());
-    if (AppStatus.get().modal.type === MODAL_LOADING) AppStatus.actions.closeModal();
+    if (AppStatus.get().modal.type === MODAL_LOADING)
+      AppStatus.actions.closeModal();
   } catch (error) {
     logError(error);
     setModal({
@@ -74,18 +86,17 @@ export const updateSdk = (
   }
 };
 
-export const createFundedGsnWallet = () => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const createFundedGsnWallet = () => async () => {
   const { setWalletStatus } = AppStatus.actions;
   try {
-    dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending));
+    addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending);
 
     await augurSdk.client.gsn.initializeWallet();
 
-    setWalletStatus(WALLET_STATUS_VALUES.CREATED)
-    const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
+    setWalletStatus(WALLET_STATUS_VALUES.CREATED);
+    const {
+      blockchain: { currentAugurTimestamp },
+    } = AppStatus.get();
     const timestamp = currentAugurTimestamp * 1000;
     const alert = {
       name: CREATEAUGURWALLET,
@@ -98,11 +109,11 @@ export const createFundedGsnWallet = () => async (
       status: SUCCESS,
       params: {
         market: '0x0000000000000000000000000000000000000000',
-      }
-    }
+      },
+    };
     addAlert(alert);
   } catch (e) {
-    dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Failure));
-    setWalletStatus(WALLET_STATUS_VALUES.FUNDED_NEED_CREATE)
+    addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Failure);
+    setWalletStatus(WALLET_STATUS_VALUES.FUNDED_NEED_CREATE);
   }
 };

@@ -91,13 +91,13 @@ const handleAlert = (
   } = AppStatus.get();
   const timestamp = currentAugurTimestamp * 1000;
   try {
-      updateAlert(log.transactionHash, {
-        params: log,
-        toast: toast,
-        status: TXEventName.Success,
-        timestamp,
-        name,
-      });
+    updateAlert(log.transactionHash, {
+      params: log,
+      toast: toast,
+      status: TXEventName.Success,
+      timestamp,
+      name,
+    });
   } catch (e) {
     console.error('alert could not be created', e);
   }
@@ -105,7 +105,12 @@ const handleAlert = (
 const HIGH_PRI_REFRESH_MS = 1000;
 const MED_PRI_LOAD_REFRESH_MS = 2000;
 const loadOrderBook = _.throttle(
-  (marketId) => Markets.actions.updateOrderBook(marketId, null, loadMarketOrderBook(marketId)),
+  marketId =>
+    Markets.actions.updateOrderBook(
+      marketId,
+      null,
+      loadMarketOrderBook(marketId)
+    ),
   HIGH_PRI_REFRESH_MS,
   { leading: true }
 );
@@ -182,14 +187,20 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { isLogged, zeroXStatus, env: { showReloadModal } } = AppStatus.get();  
+  const {
+    isLogged,
+    zeroXStatus,
+    env: { showReloadModal },
+  } = AppStatus.get();
   if (log && log.error && log.error.message.includes('too many blocks')) {
     console.error('too many blocks behind, reloading UI');
-    showReloadModal ? AppStatus.actions.setModal({
-      type: MODAL_ERROR,
-      error: '(Orders) Too many blocks behind, please refresh',
-      title: 'Currently Far Behind to get Orders',
-    }) : location.reload();
+    showReloadModal
+      ? AppStatus.actions.setModal({
+          type: MODAL_ERROR,
+          error: '(Orders) Too many blocks behind, please refresh',
+          title: 'Currently Far Behind to get Orders',
+        })
+      : location.reload();
   }
   if (zeroXStatus !== status) AppStatus.actions.setOxStatus(status);
   if (status === ZEROX_STATUSES.SYNCED && isLogged) {
@@ -224,13 +235,13 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   const blockTime = averageBlocktime;
   if (blocksBehindTimer) clearTimeout(blocksBehindTimer);
   blocksBehindTimer = setTimeout(function() {
-    showReloadModal ?
-    AppStatus.actions.setModal({
-      type: MODAL_ERROR,
-      error: '(Synching) Too many blocks behind, please refresh',
-      title: 'Currently Far Behind in Syncing',
-    })
-    : location.reload();
+    showReloadModal
+      ? AppStatus.actions.setModal({
+          type: MODAL_ERROR,
+          error: '(Synching) Too many blocks behind, please refresh',
+          title: 'Currently Far Behind in Syncing',
+        })
+      : location.reload();
   }, BLOCKS_BEHIND_RELOAD_THRESHOLD * blockTime);
   AppStatus.actions.updateBlockchain({
     currentBlockNumber: log.highestAvailableBlockNumber,
@@ -306,7 +317,9 @@ export const handleMarketCreatedLog = (logs: any) => (
     if (log.removed) {
       Markets.actions.removeMarket(log.markett);
     } else {
-        Markets.actions.updateMarketsData(null, loadMarketsInfo([log.market], (err, marketInfos) => {
+      Markets.actions.updateMarketsData(
+        null,
+        loadMarketsInfo([log.market], (err, marketInfos) => {
           if (err) return console.error(err);
           Object.keys(marketInfos).map(id => {
             const market = marketInfos[id];
@@ -318,7 +331,8 @@ export const handleMarketCreatedLog = (logs: any) => (
               dispatch(marketCreationCreated(market, log.extraInfo));
             }
           });
-        }));
+        })
+      );
     }
   });
   if (userLogs.length > 0) {
@@ -348,7 +362,13 @@ export const handleMarketMigratedLog = (log: any) => (
   } = AppStatus.get();
   if (log.originalUniverse === universeId) {
     Markets.actions.removeMarket(log.markett);
-    dispatch(addPendingData(log.market, MARKETMIGRATED, TXEventName.Success, '0', undefined));
+    addPendingData(
+      log.market,
+      MARKETMIGRATED,
+      TXEventName.Success,
+      '0',
+      undefined
+    );
   } else {
     Markets.actions.updateMarketsData(null, loadMarketsInfo([log.market]));
   }
@@ -412,7 +432,10 @@ export const handleBulkOrdersLog = (data: {
     unqMarketIds.map(marketId => {
       if (isCurrentMarket(marketId)) {
         updateMarketOrderBook(marketId);
-        Markets.actions.bulkMarketTradingHistory(null, loadMarketTradingHistory(marketId));
+        Markets.actions.bulkMarketTradingHistory(
+          null,
+          loadMarketTradingHistory(marketId)
+        );
         dispatch(checkUpdateUserPositions([marketId]));
       }
     });
@@ -420,8 +443,9 @@ export const handleBulkOrdersLog = (data: {
   }
 };
 
-export const handleOrderLog = (log: any) =>
-(dispatch: ThunkDispatch<void, any, Action>) => {
+export const handleOrderLog = (log: any) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
   const type = log.eventType;
   switch (type) {
     case OrderEventType.Create:
@@ -467,7 +491,6 @@ const handleOrderCanceledLogs = logs => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => logs.map(log => dispatch(handleOrderCanceledLog(log)));
 
-
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -477,10 +500,7 @@ export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => (
     isLogged,
   } = AppStatus.get();
   const isUserDataUpdate = isSameAddress(log.orderCreator, mixedCaseAddress);
-  const isUserDataAccount = isSameAddress(
-    log.account,
-    mixedCaseAddress
-  );
+  const isUserDataAccount = isSameAddress(log.account, mixedCaseAddress);
   if (isLogged && (isUserDataUpdate || isUserDataAccount)) {
     dispatch(throttleLoadUserOpenOrders());
   }
@@ -496,7 +516,10 @@ const handleNewBlockFilledOrdersLog = logs => (
   unqMarketIds.map((marketId: string) => {
     if (isCurrentMarket(marketId)) {
       updateMarketOrderBook(marketId);
-      Markets.actions.bulkMarketTradingHistory(null, loadMarketTradingHistory(marketId));
+      Markets.actions.bulkMarketTradingHistory(
+        null,
+        loadMarketTradingHistory(marketId)
+      );
       dispatch(checkUpdateUserPositions([marketId]));
     }
   });
@@ -533,16 +556,13 @@ export const handleTradingProceedsClaimedLog = (
     loginAccount: { address },
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
-  if (isSameAddress(
-    log.sender,
-    address
-  )) {
-      updateAlert(log.market, {
-        name: CLAIMTRADINGPROCEEDS,
-        timestamp: currentAugurTimestamp * 1000,
-        status: TXEventName.Success,
-        params: { ...log },
-      });
+  if (isSameAddress(log.sender, address)) {
+    updateAlert(log.market, {
+      name: CLAIMTRADINGPROCEEDS,
+      timestamp: currentAugurTimestamp * 1000,
+      status: TXEventName.Success,
+      params: { ...log },
+    });
     dispatch(removePendingTransaction(CLAIMMARKETSPROCEEDS));
   }
 };
@@ -551,11 +571,13 @@ export const handleTradingProceedsClaimedLog = (
 export const handleInitialReportSubmittedLog = (
   logs: Logs.InitialReportSubmittedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount: { address }} = AppStatus.get();
+  const {
+    loginAccount: { address },
+  } = AppStatus.get();
   const userLogs = logs.filter(log => isSameAddress(log.reporter, address));
   if (userLogs.length > 0) {
     userLogs.map(log => {
-      handleAlert(log, DOINITIALREPORT, false, dispatch, getState)
+      handleAlert(log, DOINITIALREPORT, false, dispatch, getState);
       dispatch(removePendingData(log.market, SUBMIT_REPORT));
     });
     loadAccountReportingHistory();
@@ -567,7 +589,9 @@ export const handleInitialReportSubmittedLog = (
 export const handleInitialReporterRedeemedLog = (
   logs: Logs.InitialReporterRedeemedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount: { address }} = AppStatus.get();
+  const {
+    loginAccount: { address },
+  } = AppStatus.get();
   const reporterLogs = logs.filter(log => isSameAddress(log.reporter, address));
   if (reporterLogs.length > 0) {
     loadAccountReportingHistory();
@@ -582,7 +606,9 @@ export const handleInitialReporterTransferredLog = (logs: any) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount: { address }} = AppStatus.get();
+  const {
+    loginAccount: { address },
+  } = AppStatus.get();
   const userLogs = logs.filter(
     log => isSameAddress(log.from, address) || isSameAddress(log.to, address)
   );
@@ -600,7 +626,9 @@ export const handleInitialReporterTransferredLog = (logs: any) => (
 export const handleProfitLossChangedLog = (
   logs: Logs.ProfitLossChangedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount: { address }} = AppStatus.get();
+  const {
+    loginAccount: { address },
+  } = AppStatus.get();
   if (logs.filter(log => isSameAddress(log.account, address)).length > 0)
     dispatch(loadAllAccountPositions());
 };
@@ -608,7 +636,9 @@ export const handleProfitLossChangedLog = (
 export const handleParticipationTokensRedeemedLog = (
   logs: Logs.ParticipationTokensRedeemedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount: { address }} = AppStatus.get();
+  const {
+    loginAccount: { address },
+  } = AppStatus.get();
   if (logs.filter(log => isSameAddress(log.account, address)).length > 0) {
     logs.map(log =>
       handleAlert(
@@ -627,7 +657,9 @@ export const handleParticipationTokensRedeemedLog = (
 export const handleReportingParticipantDisavowedLog = (
   logs: Logs.ReportingParticipantDisavowedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount: { address }} = AppStatus.get();
+  const {
+    loginAccount: { address },
+  } = AppStatus.get();
   if (
     logs.filter(log => isSameAddress(log.reportingParticipant, address))
       .length > 0
@@ -642,9 +674,7 @@ export const handleMarketParticipantsDisavowedLog = (logs: any) => (
 ) => {
   const marketIds = logs.map(log => log.market);
   marketIds.map(marketId => {
-    dispatch(
-      addPendingData(marketId, DISAVOWCROWDSOURCERS, TXEventName.Success, '0')
-    );
+    addPendingData(marketId, DISAVOWCROWDSOURCERS, TXEventName.Success, '0');
   });
   Markets.actions.updateMarketsData(null, loadMarketsInfo(marketIds));
 };
@@ -701,10 +731,10 @@ export const handleDisputeCrowdsourcerCompletedLog = (
 export const handleDisputeCrowdsourcerContributionLog = (
   logs: Logs.DisputeCrowdsourcerContributionLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount: { address } } = AppStatus.get();
-  const userLogs = logs.filter(log =>
-    isSameAddress(log.reporter, address)
-  );
+  const {
+    loginAccount: { address },
+  } = AppStatus.get();
+  const userLogs = logs.filter(log => isSameAddress(log.reporter, address));
   if (userLogs.length > 0) {
     logs.map(log => {
       handleAlert(log, CONTRIBUTE, false, dispatch, getState);
@@ -718,10 +748,10 @@ export const handleDisputeCrowdsourcerContributionLog = (
 export const handleDisputeCrowdsourcerRedeemedLog = (
   logs: Logs.DisputeCrowdsourcerRedeemedLog[]
 ) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { loginAccount: { address } } = AppStatus.get();
-  const userLogs = logs.filter(log =>
-    isSameAddress(log.reporter, address)
-  );
+  const {
+    loginAccount: { address },
+  } = AppStatus.get();
+  const userLogs = logs.filter(log => isSameAddress(log.reporter, address));
   if (userLogs.length > 0) {
     loadAccountReportingHistory();
     userLogs.map(log =>
@@ -767,19 +797,19 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
       }
       if (log.tokenType === Logs.TokenType.ReputationToken && !isForking) {
         const timestamp = currentAugurTimestamp * 1000;
-          updateAlert(
-            log.blockHash,
-            {
-              id: log.blockHash,
-              uniqueId: log.blockHash,
-              params: { ...log },
-              status: TXEventName.Success,
-              timestamp,
-              name: MIGRATE_FROM_LEG_REP_TOKEN,
-              toast: true,
-            },
-            false
-          );
+        updateAlert(
+          log.blockHash,
+          {
+            id: log.blockHash,
+            uniqueId: log.blockHash,
+            params: { ...log },
+            status: TXEventName.Success,
+            timestamp,
+            name: MIGRATE_FROM_LEG_REP_TOKEN,
+            toast: true,
+          },
+          false
+        );
         dispatch(removePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN));
       }
     });
@@ -787,10 +817,18 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => (
 };
 
 const EventHandlers = {
-  [SubscriptionEventName.OrderEvent]: wrapLogHandler(handleNewBlockFilledOrdersLog),
-  [SubscriptionEventName.CancelZeroXOrder]: wrapLogHandler(handleOrderCanceledLogs),
-  [SubscriptionEventName.TokensTransferred]: wrapLogHandler(handleTokensTransferredLog),
-  [SubscriptionEventName.TokenBalanceChanged]: wrapLogHandler(handleTokenBalanceChangedLog),
+  [SubscriptionEventName.OrderEvent]: wrapLogHandler(
+    handleNewBlockFilledOrdersLog
+  ),
+  [SubscriptionEventName.CancelZeroXOrder]: wrapLogHandler(
+    handleOrderCanceledLogs
+  ),
+  [SubscriptionEventName.TokensTransferred]: wrapLogHandler(
+    handleTokensTransferredLog
+  ),
+  [SubscriptionEventName.TokenBalanceChanged]: wrapLogHandler(
+    handleTokenBalanceChangedLog
+  ),
   [SubscriptionEventName.TokensMinted]: wrapLogHandler(handleTokensMintedLog),
   [SubscriptionEventName.ProfitLossChanged]: wrapLogHandler(
     handleProfitLossChangedLog

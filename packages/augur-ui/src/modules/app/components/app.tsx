@@ -16,11 +16,7 @@ import { Betslip } from 'modules/trading/betslip';
 import { BetslipProvider } from 'modules/trading/store/betslip';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
-import {
-  MobileNavHamburgerIcon,
-  MobileNavCloseIcon,
-  XIcon,
-} from 'modules/common/icons';
+import { MobileNavHamburgerIcon, XIcon } from 'modules/common/icons';
 import parsePath from 'modules/routes/helpers/parse-path';
 import {
   MARKETS,
@@ -39,7 +35,6 @@ import {
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNav from 'modules/app/components/inner-nav/base-inner-nav-pure';
-import { Universe, Notification, AccountBalances } from 'modules/types';
 import ForkingBanner from 'modules/reporting/containers/forking-banner';
 import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
 import {
@@ -55,30 +50,19 @@ import { MyBetsInnerNav } from 'modules/portfolio/components/common/my-bets-inne
 import { MyBetsProvider } from 'modules/portfolio/store/my-bets';
 import { StatusErrorMessage } from 'modules/common/labels';
 import { MarketsProvider } from 'modules/markets/store/markets';
+import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
+import isAddress from 'modules/auth/helpers/is-address';
 
 interface AppProps {
-  notifications: Notification[];
   config: SDKConfiguration;
   history: History;
   initAugur: Function;
   location: Location;
-  modal: object;
-  universe: Universe;
-  updateModal: Function;
-  finalizeMarket: Function;
   ethereumNodeHttp: string;
   ethereumNodeWs: string;
   sdkEndpoint: string;
-  useWeb3Transport: boolean;
-  logout: Function;
   updateIsAlertVisible: Function;
   toasts: any[];
-  showGlobalChat: Function;
-  migrateV1Rep: Function;
-  walletBalances: AccountBalances;
-  saveAffilateAddress: Function;
-  createFundedGsnWallet: Function;
-  showMigrateRepButton: boolean;
   whichChatPlugin: string;
   appStatus: AppStatus;
   ethReserveInDai: FormattedNumber;
@@ -96,7 +80,7 @@ function renderMobileMenuButton(
     if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
       icon = null;
     } else {
-      return <div/>;
+      return <div />;
     }
   }
 
@@ -136,29 +120,25 @@ const AppView = ({
   ethereumNodeHttp = null,
   ethereumNodeWs = null,
   sdkEndpoint = null,
-  useWeb3Transport = false,
-  notifications,
   history,
   initAugur,
   location: locationProp,
-  updateModal,
-  saveAffilateAddress,
-  migrateV1Rep,
-  walletBalances,
-  createFundedGsnWallet,
-  showCreateAccountButton,
-  showMigrateRepButton,
-  logout,
-  showGlobalChat,
 }: AppProps) => {
   const {
     universe: { forkEndTime, forkingInfo },
     blockchain: { currentAugurTimestamp },
     mobileMenuState,
+    notifications,
     modal,
     env,
     isMobile,
-    actions: { setIsMobile, setMobileMenuState, setCurrentBasePath },
+    actions: {
+      setIsMobile,
+      setMobileMenuState,
+      setCurrentBasePath,
+      setModal,
+      updateLoginAccount,
+    },
   } = useAppStatusStore();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
@@ -206,6 +186,7 @@ const AppView = ({
   ];
 
   useEffect(() => {
+    const useWeb3Transport = isGlobalWeb3();
     initAugur(
       history,
       {
@@ -217,7 +198,7 @@ const AppView = ({
       },
       (err: any, res: any) => {
         if (err) {
-          updateModal({
+          setModal({
             type: MODAL_NETWORK_CONNECT,
             isInitialConnection: true,
             config: res.config,
@@ -245,8 +226,8 @@ const AppView = ({
   useEffect(() => {
     // weirdly location and the passed location prop are both needed, this uses the standard location object.
     const affiliate = parseLocation(location.href)[AFFILIATE_NAME];
-    if (affiliate) {
-      saveAffilateAddress(affiliate);
+    if (affiliate && isAddress(affiliate)) {
+      updateLoginAccount({ affiliate });
     }
   }, [location]);
 
@@ -315,29 +296,20 @@ const AppView = ({
             mainSectionClickHandler={mainSectionClickHandler}
             navShowing={navShowing}
             sideNavMenuData={sideNavMenuData}
-            logout={logout}
-            showGlobalChat={showGlobalChat}
-            migrateV1Rep={migrateV1Rep}
-            showMigrateRepButton={showMigrateRepButton}
-            walletBalances={walletBalances}
-            showCreateAccountButton={showCreateAccountButton}
-            createFundedGsnWallet={createFundedGsnWallet}
           />
           <AlertsContainer />
           {forkEndTime !== '0' &&
             currentAugurTimestamp &&
             currentPath !== ACCOUNT_SUMMARY && (
-            <section className={Styles.TopBar} />
-          )}
+              <section className={Styles.TopBar} />
+            )}
           <section
             className={classNames(Styles.Wrap, {
               [Styles.WrapMarkets]: currentPath === MARKETS,
               [Styles.TopBarOpen]: navShowing,
             })}
           >
-            {currentPath === MARKETS && (
-              <MarketsInnerNav />
-            )}
+            {currentPath === MARKETS && <MarketsInnerNav />}
             <MyBetsProvider>
               {currentPath === MY_POSITIONS && <MyBetsInnerNav />}
               {currentPath !== MARKETS && currentPath !== MY_POSITIONS && (
@@ -365,13 +337,6 @@ const SideBarSection = ({
   mainSectionClickHandler,
   navShowing,
   sideNavMenuData,
-  logout,
-  showGlobalChat,
-  migrateV1Rep,
-  showMigrateRepButton,
-  walletBalances,
-  showCreateAccountButton,
-  createFundedGsnWallet,
 }) => {
   const {
     mobileMenuState,
@@ -408,23 +373,11 @@ const SideBarSection = ({
         }}
         isLogged={isLogged || restoredAccount}
         menuData={sideNavMenuData}
-        logout={() => logout()}
-        showGlobalChat={() => showGlobalChat()}
-        migrateV1Rep={migrateV1Rep}
-        showMigrateRepButton={showMigrateRepButton}
-        walletBalances={walletBalances}
-        showCreateAccountButton={showCreateAccountButton}
-        createFundedGsnWallet={createFundedGsnWallet}
       />
       {/* HIDDEN ON MOBILE */}
       <TopNav
         isLogged={isLogged || restoredAccount}
         menuData={sideNavMenuData}
-        migrateV1Rep={migrateV1Rep}
-        showMigrateRepButton={showMigrateRepButton}
-        walletBalances={walletBalances}
-        showCreateAccountButton={showCreateAccountButton}
-        createFundedGsnWallet={createFundedGsnWallet}
       />
     </section>
   );
