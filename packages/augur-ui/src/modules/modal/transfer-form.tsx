@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { ButtonsRow, Breakdown } from 'modules/modal/common';
-import { DAI, ETH, REP, ZERO, GWEI_CONVERSION } from 'modules/common/constants';
+import { DAI, ETH, REP, ZERO, GWEI_CONVERSION, MAX_DECIMALS } from 'modules/common/constants';
 import {
   formatEther,
   formatRep,
@@ -16,7 +16,8 @@ import { FormattedNumber } from 'modules/types';
 import { FormDropdown, TextInput } from 'modules/common/form';
 import { CloseButton } from 'modules/common/buttons';
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
-import { displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import getPrecision from 'utils/get-number-precision';
 
 interface TransferFormProps {
   closeAction: Function;
@@ -197,7 +198,11 @@ export class TransferForm extends Component<
       updatedErrors.amount = `Not enough ETH to pay gas cost. ${amountMinusGas} is needed`;
     }
 
-    this.setState({ amount: newAmount, errors: updatedErrors });
+    if (getPrecision(newAmount, MAX_DECIMALS) > MAX_DECIMALS) {
+      updatedErrors.amount = `Too many decimal places. ${MAX_DECIMALS} is allowed`;
+    }
+
+    this.setState({ amount: String(newAmount), errors: updatedErrors });
   }
 
   componentDidMount() {

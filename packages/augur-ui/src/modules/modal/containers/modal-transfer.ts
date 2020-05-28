@@ -15,9 +15,8 @@ import { Action } from 'redux';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 import { WALLET_STATUS } from 'modules/app/actions/update-app-status';
-import { WALLET_STATUS_VALUES, GWEI_CONVERSION } from 'modules/common/constants';
+import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
-import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
