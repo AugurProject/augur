@@ -2,7 +2,6 @@ import { ThunkAction } from 'redux-thunk';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
-import { switchUniverseState } from 'modules/app/actions/reset-state';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
@@ -29,7 +28,6 @@ export const switchUniverse = (
   } = AppStatus.get();
   dispatch(
     loadUniverseDetails(universeId, account, () => {
-      dispatch(switchUniverseState());
       AppStatus.actions.switchUniverse();
       dispatch(setSelectedUniverse(universeId));
       dispatch(loadUniverseForkingInfo());

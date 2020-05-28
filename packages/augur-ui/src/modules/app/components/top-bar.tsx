@@ -67,6 +67,8 @@ const TopBar = () => {
     actions: { setIsAlertsMenuOpen, setModal },
   } = useAppStatusStore();
   const { unseenCount } = getInfoAlertsAndSeenCount();
+  const LoggedOrRestored = isLogged || restoredAccount;
+  const notLoggedAndRestored = !isLogged && !restoredAccount;
   
   return (
     <header className={Styles.TopBar}>
@@ -76,21 +78,21 @@ const TopBar = () => {
         </Link>
       </div>
       <ThemeSwitch />
-      {(isLogged || restoredAccount) && (
+      {LoggedOrRestored && (
         <Stats />
       )}
       <div>
-        {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
+        {(!isLogged || (!isMobile && LoggedOrRestored)) && (
           <HelpResources />
         )}
         {!isMobile && <OddsMenu />}
-        {!isLogged && !restoredAccount && (
-          <SecondaryButton action={() => setModal({ type: MODAL_LOGIN })} text={'Login'} />
+        {notLoggedAndRestored && (
+          <>
+            <SecondaryButton action={() => setModal({ type: MODAL_LOGIN })} text="Login" />
+            <PrimaryButton action={() => setModal({ type: MODAL_SIGNUP })} text="Signup" />
+          </>
         )}
-        {!isLogged && !restoredAccount && (
-          <PrimaryButton action={() => setModal({ type: MODAL_SIGNUP })} text={'Signup'} />
-        )}
-        {(isLogged || restoredAccount) && (
+        {LoggedOrRestored && (
           <button
             className={classNames(Styles.alerts, {
               [Styles.alertsDark]: isAlertsMenuOpen,

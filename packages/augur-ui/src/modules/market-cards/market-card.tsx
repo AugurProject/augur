@@ -27,7 +27,7 @@ import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/containers/market-title';
 import { ThickChevron } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { hasStakeInMarket } from 'modules/account/selectors/has-stake-in-market';
+import { hasStakeInMarket } from 'modules/account/helpers/common';
 
 const LoadingCard = () => (<div
 className={classNames(Styles.MarketCard, {

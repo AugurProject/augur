@@ -37,6 +37,6 @@ export const loadAccountData = (
     dispatch(loadUniverseDetails(universe.id, address));
     getEthToDaiRate();
     getRepToDaiRate();
-    dispatch(registerUserDefinedGasPriceFunction(gasPriceInfo.userDefinedGasPrice, gasPriceInfo.average));
+    registerUserDefinedGasPriceFunction(gasPriceInfo.userDefinedGasPrice, gasPriceInfo.average);
   }
 };
