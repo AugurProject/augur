@@ -33,10 +33,10 @@ export const loadAccountData = (
 
     }
     dispatch(loadAccountHistory());
-    dispatch(checkAccountAllowance());
+    checkAccountAllowance();
     dispatch(loadUniverseDetails(universe.id, address));
-    dispatch(getEthToDaiRate());
-    dispatch(getRepToDaiRate());
+    getEthToDaiRate();
+    getRepToDaiRate();
     dispatch(registerUserDefinedGasPriceFunction(gasPriceInfo.userDefinedGasPrice, gasPriceInfo.average));
   }
 };

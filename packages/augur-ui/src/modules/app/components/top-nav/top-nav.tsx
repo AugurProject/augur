@@ -25,7 +25,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 import { LinearPropertyLabelUnderlineTooltip } from 'modules/common/labels';
 import { formatNumber } from 'utils/format-number';
-import { getEthReserveInDai } from 'modules/auth/selectors/get-eth-reserve';
+import { getEthReserveInDai } from 'modules/auth/helpers/get-eth-reserve';
 
 interface TopNavProps {
   isLogged: boolean;

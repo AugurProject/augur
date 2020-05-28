@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import makePath from 'modules/routes/helpers/make-path';
-import ConnectDropdown from 'modules/auth/components/connect-dropdown/connect-dropdown';
+import ConnectDropdown from 'modules/auth/connect-dropdown';
 import { Dot, helpIcon, MobileNavCloseIcon, LogoutIcon, AddIcon } from 'modules/common/icons';
 import { AccountBalances, NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';

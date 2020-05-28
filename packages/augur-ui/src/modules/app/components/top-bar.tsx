@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Alerts } from 'modules/common/icons';
-import ConnectAccount from 'modules/auth/components/connect-account/connect-account';
+import ConnectAccount from 'modules/auth/connect-account';
 import {
   MovementLabel,
   LinearPropertyLabel,
@@ -21,7 +21,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
 import { getCoreStats } from 'modules/auth/helpers/login-account';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
-import { getEthReserveInDai } from 'modules/auth/selectors/get-eth-reserve';
+import { getEthReserveInDai } from 'modules/auth/helpers/get-eth-reserve';
 
 export const Stats = () => {
   const { isMobile, loginAccount, isLogged, restoredAccount } = useAppStatusStore();

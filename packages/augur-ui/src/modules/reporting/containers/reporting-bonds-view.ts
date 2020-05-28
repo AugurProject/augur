@@ -10,7 +10,7 @@ import {
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';
 import { isSameAddress } from 'utils/isSameAddress';
-import getGasPrice from 'modules/auth/selectors/get-gas-price';
+import getGasPrice from 'modules/auth/helpers/get-gas-price';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
 import { AppStatus } from 'modules/app/store/app-status';

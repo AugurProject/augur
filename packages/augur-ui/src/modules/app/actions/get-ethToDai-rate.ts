@@ -1,6 +1,3 @@
-import { AppState } from 'appStore';
-import { Action } from 'redux';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
 import { NodeStyleCallback, FormattedNumber } from 'modules/types';
 import logError from 'utils/log-error';
@@ -11,9 +8,6 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 export const getEthToDaiRate = (
   callback: NodeStyleCallback = logError
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
   const { ethToDaiRate: currentEthToDaiRate } = AppStatus.get();  
   const ethToDaiRate = getEthForDaiRate();

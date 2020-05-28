@@ -2,11 +2,11 @@ import React, { useRef } from 'react';
 import classNames from 'classnames';
 import Blockies from 'react-blockies';
 
-import ConnectDropdown from 'modules/auth/components/connect-dropdown/connect-dropdown';
+import ConnectDropdown from 'modules/auth/connect-dropdown';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { formatDai } from 'utils/format-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import Styles from 'modules/auth/components/connect-account/connect-account.styles.less';
+import Styles from 'modules/auth/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 
 const ConnectAccount = () => {

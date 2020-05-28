@@ -11,7 +11,6 @@ import {
   SIGNIN_LOADING_TEXT,
   SIGNIN_SIGN_WALLET,
   MODAL_LOADING,
-  NETWORK_IDS,
 } from 'modules/common/constants';
 import { augurSdk } from 'services/augursdk';
 import { closeModal } from 'modules/modal/actions/close-modal';

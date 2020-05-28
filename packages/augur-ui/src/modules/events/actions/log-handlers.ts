@@ -242,13 +242,13 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   // update assets each block
   if (isLogged) {
     dispatch(updateAssets());
-    dispatch(checkAccountAllowance());
+    checkAccountAllowance();
     loadAnalytics(analytics, currentAugurTimestamp);
     dispatch(findAndSetTransactionsTimeouts(log.highestAvailableBlockNumber));
   }
   // update ETH/REP rate and gasPrice each block
-  dispatch(getEthToDaiRate());
-  dispatch(getRepToDaiRate());
+  getEthToDaiRate();
+  getRepToDaiRate();
 
   if (log.logs && log.logs.length > 0) {
     const eventLogs = log.logs.reduce(

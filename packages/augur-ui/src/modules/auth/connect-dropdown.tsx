@@ -33,7 +33,7 @@ import {
   ethToDai,
 } from 'modules/app/actions/get-ethToDai-rate';
 import { logout } from 'modules/auth/actions/logout';
-import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
+import Styles from 'modules/auth/connect-dropdown.styles.less';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getEthReserve } from 'modules/auth/helpers/login-account';

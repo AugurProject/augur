@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { DisputingBondsView } from 'modules/reporting/common';
-import getGasPrice from 'modules/auth/selectors/get-gas-price';
+import getGasPrice from 'modules/auth/helpers/get-gas-price';
 import { AppState } from 'appStore';
 import {
   GSN_WALLET_SEEN,
