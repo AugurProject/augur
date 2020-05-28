@@ -1,10 +1,11 @@
 import { createSelector } from 'reselect';
 import { createBigNumber } from 'utils/create-big-number';
 import { selectLoginAccount } from './login-account';
-import { formatAttoEth, formatEther } from 'utils/format-number';
+import { formatAttoEth, formatEther, formatNumber } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
 import { selectEnvState, selectAppStatus } from 'appStore/select-state';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
+import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 
  const userEthReserve = (balances, env): FormattedNumber => {
   const ethNonSafeBN = createBigNumber(balances.signerBalances.eth || 0);
@@ -27,8 +28,11 @@ import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 export const getEthReserve = createSelector(
   selectLoginAccount,
   selectEnvState,
-  (loginAccount, env): FormattedNumber => {
+  selectAppStatus,
+  (loginAccount, env, appStatus): FormattedNumber => {
     const { balances } = loginAccount;
+    const { walletStatus } = appStatus;
+    if (walletStatus !== WALLET_STATUS_VALUES.CREATED) return formatNumber(0);
     return userEthReserve(balances, env);
   }
 );

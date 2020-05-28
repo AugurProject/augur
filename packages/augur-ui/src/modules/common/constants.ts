@@ -771,7 +771,7 @@ export const SUBMITTED = 'submitted';
 export const INTERRUPTED = 'interrupted';
 
 // transcation fee
-export const USE_ETH_RESERVE = 'Est. TX Fee (paid by ETH reserve)';
+export const USE_ETH_RESERVE = 'Est. TX Fee (paid by Fee reserve)';
 export const NOT_USE_ETH_RESERVE = 'Est. TX Fee';
 // Market Creation
 export const CREATING_MARKET = 'creating market...';
@@ -1209,7 +1209,7 @@ export const EVENT_EXPIRATION_TOOLTIP = {
   header: 'Event expiration',
   content: 'This date time indicates when the settlement process begins.',
 };
-export const TOTAL_FUNDS_TOOLTIP = 'Your total funds does not include the ETH reserve';
+export const TOTAL_FUNDS_TOOLTIP = 'Your total funds does not include the Fee reserve';
 export const TUTORIAL_OUTCOME = 1;
 export const TUTORIAL_QUANTITY = 100;
 export const TUTORIAL_PRICE = 0.4;

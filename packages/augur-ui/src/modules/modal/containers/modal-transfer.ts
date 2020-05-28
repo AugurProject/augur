@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { TransferForm } from 'modules/modal/transfer-form';
 import { AppState } from 'appStore';
 import { closeModal } from 'modules/modal/actions/close-modal';
-import { formatGasCostToEther, formatEtherEstimate } from 'utils/format-number';
 import {
   transferFunds,
   TRANSFER_ETH_GAS_COST,
@@ -15,41 +14,31 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
+import { WALLET_STATUS } from 'modules/app/actions/update-app-status';
+import { WALLET_STATUS_VALUES, GWEI_CONVERSION } from 'modules/common/constants';
+import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
-  const balances = loginAccount.balances;
-  balances.dai = totalTradingBalance(loginAccount).toNumber();
+  const { balances } = loginAccount;
+  const walletStatus = appStatus[WALLET_STATUS];
+  balances.dai = String(totalTradingBalance(loginAccount));
   const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
+  const ethInReserve = getEthReserve(state);
+
   return {
   account: loginAccount.address,
   modal,
   balances,
-  GsnEnabled: appStatus.gsnEnabled,
+  ethInReserve,
+  GsnEnabled: appStatus.gsnEnabled && walletStatus === WALLET_STATUS_VALUES.CREATED,
   ethToDaiRate: appStatus.ethToDaiRate,
   gasPrice,
   fallBackGasCosts: {
-    eth: formatEtherEstimate(
-      formatGasCostToEther(
-        TRANSFER_ETH_GAS_COST,
-        { decimalsRounded: 4 },
-        gasPrice
-      )
-    ),
-    rep: formatEtherEstimate(
-      formatGasCostToEther(
-        TRANSFER_REP_GAS_COST,
-        { decimalsRounded: 4 },
-        gasPrice
-      )
-    ),
-    dai: formatEtherEstimate(
-      formatGasCostToEther(
-        TRANSFER_DAI_GAS_COST,
-        { decimalsRounded: 4 },
-        gasPrice
-      )
-    ),
+    eth: displayGasInDai(TRANSFER_ETH_GAS_COST),
+    rep: displayGasInDai(TRANSFER_REP_GAS_COST),
+    dai: displayGasInDai(TRANSFER_DAI_GAS_COST),
   },
   transactionLabel: getTransactionLabel(state)
 }
@@ -66,6 +55,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
+  ethInReserve: sP.ethInReserve,
   fallBackGasCosts: sP.fallBackGasCosts,
   GsnEnabled: sP.GsnEnabled,
   ethToDaiRate: sP.ethToDaiRate,

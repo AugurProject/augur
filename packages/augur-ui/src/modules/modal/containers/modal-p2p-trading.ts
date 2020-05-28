@@ -78,15 +78,15 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     {
       content: `Account activation is required before making your first transaction.There will be a small transaction fee to activate your account. ${
         sP.highBalance
-          ? `$${sP.reserveInDai.formattedValue} worth of ETH, from your total funds will be held in your ETH reserve to cover further transactions.`
-          : `If your account balance exceeds $${sP.daiHighValueAmount}, a portion of this equivilant to 0.04ETH will be held in your ETH reserve to cover further transactions.`
+          ? `$${sP.reserveInDai.formattedValue} worth of ETH, from your total funds will be held in your Fee reserve to cover further transactions.`
+          : `If your account balance exceeds $${sP.daiHighValueAmount}, a portion of this equivilant to 0.04ETH will be held in your Fee reserve to cover further transactions.`
       }`,
     },
     {
-      content: `So long as your available account balance remains over $${sP.daiHighValueAmount} Dai, your ETH reserve will replenish automatically.`,
+      content: `So long as your available account balance remains over $${sP.daiHighValueAmount} Dai, your Fee reserve will replenish automatically.`,
     },
     {
-      content: 'Your ETH reserve can easily be cashed out at anytime.',
+      content: 'Your Fee reserve can easily be cashed out at anytime.',
     },
     {
       content: 'LEARN MORE',

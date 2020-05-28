@@ -600,7 +600,6 @@ export interface AuthStatus {
   isLogged?: boolean;
   restoredAccount?: boolean;
   isConnectionTrayOpen?: boolean;
-  signerHasDAI?: boolean;
   vaultHasDAI?: boolean;
 }
 
@@ -632,17 +631,17 @@ export interface TimeframeData {
   redeemedPositions: number;
 }
 export interface AccountBalances {
-  eth: number;
-  rep: number;
-  dai: number;
-  legacyRep: number;
-  legacyRepNonSafe: number;
+  eth: string;
+  rep: string;
+  dai: string;
+  legacyRep: string;
+  legacyRepNonSafe: string;
   attoRep: string;
   legacyAttoRep: string;
   signerBalances: {
-    eth: number;
-    rep: number;
-    dai: number;
+    eth: string;
+    rep: string;
+    dai: string;
   }
 }
 

@@ -2,7 +2,6 @@ import { BaseAction } from 'modules/types';
 
 export const IS_LOGGED = 'isLogged';
 export const RESTORED_ACCOUNT = 'restoredAccount';
-export const SIGNER_HAS_DAI = 'signerHasDAI';
 export const VAULT_HAS_DAI = 'vaultHasDAI';
 export const IS_CONNECTION_TRAY_OPEN = 'isConnectionTrayOpen';
 export const UPDATE_AUTH_STATUS = 'UPDATE_AUTH_STATUS';

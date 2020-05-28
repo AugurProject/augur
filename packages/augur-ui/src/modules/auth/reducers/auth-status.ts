@@ -3,7 +3,6 @@ import {
   IS_CONNECTION_TRAY_OPEN,
   UPDATE_AUTH_STATUS,
   RESTORED_ACCOUNT,
-  SIGNER_HAS_DAI,
   VAULT_HAS_DAI,
 } from 'modules/auth/actions/auth-status';
 import { AuthStatus, BaseAction } from 'modules/types';
@@ -14,7 +13,6 @@ const DEFAULT_STATE: AuthStatus = {
   [IS_LOGGED]: false,
   [RESTORED_ACCOUNT]: false,
   [IS_CONNECTION_TRAY_OPEN]: false,
-  [SIGNER_HAS_DAI]: false,
   [VAULT_HAS_DAI]: false,
 }
 

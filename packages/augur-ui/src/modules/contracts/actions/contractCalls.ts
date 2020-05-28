@@ -173,19 +173,18 @@ export async function getLegacyRepBalance(
 }
 
 
-export async function getEthBalance(address: string): Promise<number> {
-  if (!address) return 0;
+export async function getEthBalance(address: string): Promise<string> {
+  if (!address) return "0";
   const Augur = augurSdk.get();
   const balance = await Augur.getEthBalance(address);
-  const balances = formatAttoEth(balance, { decimals: 4 });
-  return balances.value;
+  return String(createBigNumber(String(balance)).dividedBy(ETHER));
 }
 
 export async function getDaiBalance(address: string): Promise<number> {
   if (!address) return 0;
   const { contracts } = augurSdk.get();
   const balance = await contracts.cash.balanceOf_(address);
-  return formatAttoDai(balance).value;
+  return createBigNumber(String(balance)).dividedBy(ETHER);
 }
 
 export async function sendDai_estimateGas(address: string, amount: string): Promise<BigNumber> {

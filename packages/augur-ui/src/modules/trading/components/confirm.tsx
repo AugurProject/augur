@@ -32,6 +32,7 @@ import {
   formatGasCostToEther,
   formatShares,
   formatNumber,
+  formatEther,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip } from 'modules/common/labels';
@@ -479,6 +480,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               value={potentialDaiLoss}
               showDenomination={true}
             />
+            <LinearPropertyLabel
+              label="Gas Fee"
+              value={formatEther(gasCostInEth || "0")}
+              showDenomination={true}
+            />
+
             {gasCostDai.roundedValue.gt(0) > 0 &&
               numFills > 0 && (
               <TransactionFeeLabelToolTip

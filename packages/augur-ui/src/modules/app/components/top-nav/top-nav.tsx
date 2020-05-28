@@ -83,7 +83,7 @@ const TopNav = ({
                 <LinearPropertyLabelUnderlineTooltip
                   {...(formatNumber(0))}
                   highlightAlternateBolded
-                  id={'totalFunds'}
+                  id={'totalFunds_top_nav'}
                   tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
                 />
               </div>

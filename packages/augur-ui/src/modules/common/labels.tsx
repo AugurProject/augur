@@ -838,7 +838,7 @@ export const TransactionFeeLabelToolTipCmp = ({
       showDenomination={true}
       highlight
       accentValue={isError}
-      id={'totalFunds'}
+      id={'transaction_fee'}
       tipText={`Est. TX Fee is not included in profit and loss`}
     />
 )
@@ -1576,8 +1576,8 @@ const EthReserveNoticeCmp = ({ show, reserve }: EthReseveProps) => (
         <DismissableNotice
           show
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          title={`Replenish ETH Reserves`}
-          description={`$${reserve.formatted} DAI will be added to your ETH reserves`}
+          title={`Replenish Fee reserves`}
+          description={`$${reserve.formatted} DAI will be added to your Fee reserves`}
         />
       </div>
     )}

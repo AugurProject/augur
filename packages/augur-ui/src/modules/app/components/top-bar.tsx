@@ -11,10 +11,10 @@ import { CoreStats, FormattedNumber } from 'modules/types';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
-import { PrimaryButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
+import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
-import { TOTAL_FUNDS_TOOLTIP, TRANSACTIONS, CREATEAUGURWALLET } from 'modules/common/constants';
+import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/top-bar.styles.less';
 
@@ -40,7 +40,7 @@ export const Stats = ({ ethReserveInDai, isLogged, restoredAccount, stats, isMob
             <LinearPropertyLabelUnderlineTooltip
               {...totalFunds}
               highlightAlternateBolded
-              id={isMobile ? 'totalFundsMobile' : 'totalFunds'}
+              id={isMobile ? 'totalFundsMobile' : 'totalFunds_top_bar'}
               tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
             />
             <div>
