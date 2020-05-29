@@ -12,7 +12,7 @@ import Stats from 'modules/account/components/stats';
 import OverviewChart from 'modules/account/components/overview-chart';
 import Styles from 'modules/account/components/overview.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { selectReportingBalances } from '../selectors/select-reporting-balances';
+import { selectReportingBalances } from 'modules/account/helpers/common';
 import { formatRep } from 'utils/format-number';
 
 export interface OverviewProps {
