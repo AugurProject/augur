@@ -30,7 +30,7 @@ export const purchaseParticipationTokens = (
     return callback(null, gas);
   }
   buyParticipationTokens(universeId, amount).catch(() => {
-    dispatch(addUpdatePendingTransaction(BUYPARTICIPATIONTOKENS, TXEventName.Failure))
+    addUpdatePendingTransaction(BUYPARTICIPATIONTOKENS, TXEventName.Failure)
   });
   callback(null);
 };

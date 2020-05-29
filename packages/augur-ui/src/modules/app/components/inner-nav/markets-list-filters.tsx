@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
+import { useLocation, useHistory } from 'react-router';
 import {
   feeFilters,
   invalidFilters,
@@ -17,48 +18,36 @@ import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import updateQuery from 'modules/routes/helpers/update-query';
-import { INVALID_OPTIONS, LoginAccountSettings } from 'modules/types';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { MARKET_SHOW_INVALID, MARKET_MAX_FEES, MARKET_MAX_SPREAD } from 'modules/app/store/constants';
 
 interface MarketsListFiltersProps {
-  maxFee: string;
-  maxLiquiditySpread: string;
-  includeInvalidMarkets: INVALID_OPTIONS;
-  allTemplateFilter: string;
-  updateMaxFee: Function;
-  updateMaxSpread: Function;
-  updateShowInvalid: Function;
-  updateTemplateFilter: Function;
-  history: History;
-  location: Location;
-  setMaxFeeFilter: Function;
-  setMaxSpreadFilter: Function;
-  setShowInvalidFilter: Function;
-  setTemplateOrCustomFilter: Function;
-  settings: LoginAccountSettings;
-  updateSelectedCategories: Function;
+  setFilterSortState: Function;
 }
 
 const MarketsListFilters = ({
-  maxFee,
-  maxLiquiditySpread,
-  location,
-  includeInvalidMarkets,
-  allTemplateFilter,
-  updateMaxFee,
-  updateMaxSpread,
-  updateShowInvalid,
-  updateTemplateFilter,
-  history,
-  setMaxFeeFilter,
-  setMaxSpreadFilter,
-  setShowInvalidFilter,
-  setTemplateOrCustomFilter,
-  settings,
-  updateSelectedCategories,
+  setFilterSortState,
 }: MarketsListFiltersProps) => {
-  const { isMobile, marketsList: { isSearching } } = useAppStatusStore();
+  const history = useHistory();
+  const location = useLocation();
+  const {
+    isMobile,
+    marketsList: { isSearching },
+    loginAccount: { settings },
+    filterSortOptions: {
+      maxFee,
+      maxLiquiditySpread,
+      includeInvalidMarkets,
+      templateFilter: allTemplateFilter,
+    },
+    actions: {
+      updateFilterSortOptions,
+      updateMarketsList
+    },
+  } = useAppStatusStore();
+  const [showFilters, setShowFilters] = useState(false);
+
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(location.search);
 
@@ -67,34 +56,39 @@ const MarketsListFilters = ({
       settings.maxFee;
     const newSpread =
       filterOptionsFromQuery.spread ||
-      settings.spread;
+      settings.maxLiquiditySpread;
     const newTemplateFilter =
       filterOptionsFromQuery.templateFilter ||
       settings.templateFilter;
     const newShowInvalid =
       filterOptionsFromQuery.showInvalid ||
-      settings.showInvalid;
+      settings.includeInvalidMarkets;
     const categories =
       filterOptionsFromQuery.category;
 
+    let filterUpdates = {};
     if (newMaxFee && newMaxFee !== maxFee) {
-      updateMaxFee(newMaxFee);
+      filterUpdates[MARKET_MAX_FEES] = newMaxFee;
     }
     if (newSpread && newSpread !== maxLiquiditySpread) {
-      updateMaxSpread(newSpread);
+      filterUpdates[MARKET_MAX_SPREAD] = newSpread;
     }
     if (newTemplateFilter && newTemplateFilter !== allTemplateFilter) {
-      updateTemplateFilter(newTemplateFilter);
+      filterUpdates[TEMPLATE_FILTER] = newTemplateFilter;
     }
     if (newShowInvalid && newShowInvalid !== includeInvalidMarkets) {
-      updateShowInvalid(newShowInvalid);
+      filterUpdates[MARKET_SHOW_INVALID] = newShowInvalid;
     }
-    categories
-      ? updateSelectedCategories(categories.split(','))
-      : updateSelectedCategories([]);
-  }, [location.search, settings.maxFee, settings.spread, settings.templateFilter, settings.showInvalid]);
-
-  const [showFilters, setShowFilters] = useState(false);
+    if (Object.keys(filterUpdates).length > 0) {
+      updateFilterSortOptions(filterUpdates);
+      setFilterSortState(filterUpdates);
+    }
+    const categoriesUpdate = categories ? categories.split(',') : [];
+    updateMarketsList({
+      selectedCategories: categoriesUpdate || [],
+      selectedCategory: categoriesUpdate.length ? categoriesUpdate[categoriesUpdate.length - 1] : null,
+    });
+  }, [location.search, settings.maxFee, settings.maxLiquiditySpread, settings.templateFilter, settings.includeInvalidMarkets]);
 
   if (!maxLiquiditySpread) return null;
 
@@ -105,21 +99,6 @@ const MarketsListFilters = ({
       location,
       history
     );
-
-    switch (whichFilterToUpdate) {
-      case TEMPLATE_FILTER:
-        updateTemplateFilter(value);
-        break;
-      case MAXFEE_PARAM_NAME:
-        updateMaxFee(value);
-        break;
-      case SPREAD_PARAM_NAME:
-        updateMaxSpread(value);
-        break;
-      case SHOW_INVALID_MARKETS_PARAM_NAME:
-        updateShowInvalid(value);
-        break;
-    }
   };
 
   return (
@@ -145,7 +124,7 @@ const MarketsListFilters = ({
               light
               radioButtons={templateFilterValues}
               defaultSelected={allTemplateFilter}
-              onChange={(value: string) => isMobile ? setTemplateOrCustomFilter(value) : updateFilter(value, TEMPLATE_FILTER)}
+              onChange={(value: string) => isMobile ? setFilterSortState({ [TEMPLATE_FILTER]: value }) : updateFilter(value, TEMPLATE_FILTER)}
             />
 
             <div className={Styles.Filter}>
@@ -160,7 +139,7 @@ const MarketsListFilters = ({
               radioButtons={feeFilters}
               light
               defaultSelected={maxFee}
-              onChange={(value: string) => isMobile ? setMaxFeeFilter(value) : updateFilter(value, MAXFEE_PARAM_NAME)}
+              onChange={(value: string) => isMobile ? setFilterSortState({ [MARKET_MAX_FEES]: value }) : updateFilter(value, MAXFEE_PARAM_NAME)}
             />
 
             <div className={Styles.Filter}>
@@ -175,7 +154,7 @@ const MarketsListFilters = ({
               radioButtons={spreadFilters}
               light
               defaultSelected={maxLiquiditySpread}
-              onChange={(value: string) => isMobile ? setMaxSpreadFilter(value) : updateFilter(value, SPREAD_PARAM_NAME)}
+              onChange={(value: string) => isMobile ? setFilterSortState({ [MARKET_MAX_SPREAD]: value }) : updateFilter(value, SPREAD_PARAM_NAME)}
             />
 
             <div className={Styles.Filter}>
@@ -190,7 +169,7 @@ const MarketsListFilters = ({
               radioButtons={invalidFilters}
               light
               defaultSelected={String(includeInvalidMarkets)}
-              onChange={(value: string) => isMobile ? setShowInvalidFilter(value) : updateFilter(value, SHOW_INVALID_MARKETS_PARAM_NAME)}
+              onChange={(value: string) => isMobile ? setFilterSortState({ [MARKET_SHOW_INVALID]: value }) : updateFilter(value, SHOW_INVALID_MARKETS_PARAM_NAME)}
             />
           </>
         )}

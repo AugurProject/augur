@@ -27,4 +27,4 @@ export {
 
 export {
   default as Disputing
-} from "modules/reporting/containers/disputing";
+} from "modules/reporting/disputing";

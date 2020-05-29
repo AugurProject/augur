@@ -73,7 +73,7 @@ import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import {
   selectReportingBalances,
   selectDefaultReportingBalances,
-} from 'modules/account/selectors/select-reporting-balances';
+} from 'modules/account/helpers/common';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',

@@ -5,19 +5,19 @@ import Styles from 'modules/app/components/inner-nav/markets-list-sortBy.styles.
 import { SortByIcon } from 'modules/common/icons';
 import { RadioBarGroup } from 'modules/common/form';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { MARKET_SORT } from 'modules/app/store/constants';
 
-interface MarketsListFiltersProps {
-  marketSort: string;
-  updateMarketsSortBy: Function;
-  setSortOptions: Function;
+interface MarketsListSortByProps {
+  setFilterSortState: Function;
 }
 
-const MarketsListFilters = ({
-  marketSort,
-  updateMarketsSortBy,
-  setSortOptions,
-}: MarketsListFiltersProps) => {
-  const { isMobile, marketsList: { isSearching } } = useAppStatusStore();
+const MarketsListSortBy = ({ setFilterSortState }: MarketsListSortByProps) => {
+  const {
+    isMobile,
+    filterSortOptions: { marketSort },
+    marketsList: { isSearching },
+    actions: { updateFilterSortOptions },
+  } = useAppStatusStore();
   return (
     <div className={Styles.Filters}>
       <div
@@ -33,10 +33,14 @@ const MarketsListFilters = ({
           radioButtons={SORT_OPTIONS}
           defaultSelected={marketSort}
           light
-          onChange={(value: string) => isMobile ? setSortOptions(value) : updateMarketsSortBy(value)}
+          onChange={(value: string) =>
+            isMobile
+              ? setFilterSortState({ [MARKET_SORT]: value })
+              : updateFilterSortOptions({ [MARKET_SORT]: value })
+          }
         />
       </div>
     </div>
   );
-}
-export default MarketsListFilters;
+};
+export default MarketsListSortBy;

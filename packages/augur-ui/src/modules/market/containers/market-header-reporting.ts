@@ -56,7 +56,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const { setModal } = AppStatus.actions;
   return {
     finalizeMarket: (marketId, cb) =>
-      dispatch(sendFinalizeMarket(marketId, cb)),
+      sendFinalizeMarket(marketId, cb),
     showReportingModal: () =>
       setModal({
         type: MODAL_REPORTING,

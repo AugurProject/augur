@@ -22,9 +22,9 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   finalizeMarket: (marketId: string, cb: NodeStyleCallback) =>
-    dispatch(sendFinalizeMarket(marketId, cb)),
+    sendFinalizeMarket(marketId, cb),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({

@@ -6,26 +6,18 @@ import DisputeWindowProgress from 'modules/reporting/containers/disputing-window
 import { UserRepDisplay } from 'modules/reporting/common';
 import { ReportingModalButton } from 'modules/reporting/common';
 import ParticipationTokensView from 'modules/reporting/containers/participation-tokens-view';
-import { HEADER_TYPE, SMALL_MOBILE } from 'modules/common/constants';
+import { HEADER_TYPE, SMALL_MOBILE, MODAL_DR_QUICK_GUIDE } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 
 import Styles from 'modules/reporting/disputing.styles.less';
-import { ButtonActionType } from 'modules/types';
 import { DISPUTING_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { loadDisputeWindow } from "modules/auth/actions/load-dispute-window";
 
-interface DisputingProps {
-  loadDisputeWindow: () => void;
-  openDisputingModal: ButtonActionType;
-}
-
-const Disputing: React.FC<DisputingProps> = ({
-  loadDisputeWindow,
-  openDisputingModal,
-}) => {
-  const { isConnected } = useAppStatusStore();
+const Disputing = () => {
+  const { isConnected, actions: { setModal } } = useAppStatusStore();
   useEffect(() => {
     if (isConnected) {
       loadDisputeWindow();
@@ -43,7 +35,7 @@ const Disputing: React.FC<DisputingProps> = ({
                 <ReportingModalButton
                   highlightedText='Need Help?'
                   text="Disputing Quick Guide"
-                  action={openDisputingModal}
+                  action={() => setModal({ type: MODAL_DR_QUICK_GUIDE, whichGuide: 'disputing' })}
                 />
                 <UserRepDisplay />
                 <ParticipationTokensView />
@@ -60,7 +52,7 @@ const Disputing: React.FC<DisputingProps> = ({
                 <ReportingModalButton
                   highlightedText='Need Help?'
                   text="Disputing Quick Guide"
-                  action={openDisputingModal}
+                  action={() => setModal({ type: MODAL_DR_QUICK_GUIDE, whichGuide: 'disputing' })}
                 />
                 <UserRepDisplay />
               </div>

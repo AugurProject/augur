@@ -12,7 +12,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal())
+  closeModal: () => closeModal()
 });
 // TODO: fill out with real content later
 const mergeProps = (sP: any, dP: any, oP: any) => ({

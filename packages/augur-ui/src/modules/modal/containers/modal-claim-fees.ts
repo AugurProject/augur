@@ -50,12 +50,12 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   redeemStake: (options, callback) => redeemStake(options, callback),
   redeemStakeGas: options => redeemStakeGas(options),
   disavowMarket: marketId => disavowMarket(marketId),
   addPendingData: (pendingId, queueName, status, hash, info) =>
-    dispatch(addPendingData(pendingId, queueName, status, hash, info)),
+    addPendingData(pendingId, queueName, status, hash, info),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {

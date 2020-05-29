@@ -15,7 +15,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     if (localStorageRef && localStorageRef.setItem) {
       localStorageRef.setItem(SCALAR_MODAL_SEEN, String(checked));
     }
-    dispatch(closeModal());
+    closeModal();
   },
 });
 

@@ -5,9 +5,9 @@ import classNames from 'classnames';
 
 import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import makePath from 'modules/routes/helpers/make-path';
-import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
+import ConnectDropdown from 'modules/auth/connect-dropdown';
 import { Dot, helpIcon, MobileNavCloseIcon, LogoutIcon, AddIcon } from 'modules/common/icons';
-import { AccountBalances, NavMenuItem } from 'modules/types';
+import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon } from 'modules/app/components/help-resources';
 import {
@@ -24,42 +24,42 @@ import {
   MODAL_HELP,
   MODAL_ADD_FUNDS,
   THEMES,
+  MODAL_GLOBAL_CHAT,
+  MODAL_MIGRATE_REP,
+  MOBILE_MENU_STATES,
 } from 'modules/common/constants';
-import { Stats } from '../top-bar';
-import { NewLogo } from '../logo';
-import { OddsMenu } from '../odds-menu';
+import { Stats } from 'modules/app/components/top-bar';
+import { NewLogo } from 'modules/app/components/logo';
+import { OddsMenu } from 'modules/app/components/odds-menu';
+import { logout } from 'modules/auth/actions/logout';
 
 interface SideNavProps {
-  defaultMobileClick: Function;
   isLogged: boolean;
   menuData: NavMenuItem[];
-  logout: Function;
   showNav: boolean;
-  showGlobalChat: Function;
-  migrateV1Rep: Function;
-  showMigrateRepButton: boolean;
-  walletBalances: AccountBalances;
 }
 
 const SideNav = ({
   isLogged,
-  defaultMobileClick,
   menuData,
-  logout,
   showNav,
-  showGlobalChat,
-  migrateV1Rep,
-  showMigrateRepButton,
 }: SideNavProps) => {
   const {
+    pendingQueue,
+    loginAccount: { balances },
     env,
     currentBasePath,
     isHelpMenuOpen,
     isConnectionTrayOpen,
     theme,
     mobileMenuState,
-    actions: { setIsHelpMenuOpen, setGSNEnabled, setModal, setMobileMenuState, closeAppMenus },
+    actions: { setIsHelpMenuOpen, setModal, setMobileMenuState, closeAppMenus },
   } = useAppStatusStore();
+  const pending =
+    pendingQueue[TRANSACTIONS] &&
+    pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
+  const showMigrateRepButton =
+    !!balances.legacyRep || !!balances.legacyRepNonSafe || !!pending;
   const whichChatPlugin = env.plugins?.chat;
   const accessFilteredMenu = menuData.filter(
     item => !(item.requireLogin && !isLogged)
@@ -128,7 +128,7 @@ const SideNav = ({
                   to={item.route ? makePath(item.route) : null}
                   onClick={() => {
                     setIsHelpMenuOpen(false);
-                    defaultMobileClick();
+                    setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
                   }}
                 >
                   {item.button ? (
@@ -146,7 +146,7 @@ const SideNav = ({
                 <span className={Styles.SideNavMigrateRep}>
                   <ProcessingButton
                     text={'Migrate V1 to V2 REP'}
-                    action={() => migrateV1Rep()}
+                    action={() => setModal({ type: MODAL_MIGRATE_REP })}
                     queueName={TRANSACTIONS}
                     queueId={MIGRATE_FROM_LEG_REP_TOKEN}
                     secondaryButton
@@ -183,13 +183,13 @@ const SideNav = ({
               {whichChatPlugin &&
                 <div className={Styles.GlobalChat}>
                   <SecondaryButton
-                    action={showGlobalChat}
+                    action={() => setModal({ type: MODAL_GLOBAL_CHAT })}
                     text="Global Chat"
                     icon={Chevron}
                   />
                 </div>
               }
-              <button onClick={() => logout(setGSNEnabled)}>
+              <button onClick={() => logout()}>
                 Logout {LogoutIcon}
               </button>
             </footer>
@@ -204,7 +204,7 @@ const SideNav = ({
               {whichChatPlugin &&
                 <div className={Styles.GlobalChat}>
                   <SecondaryButton
-                    action={showGlobalChat}
+                    action={() => setModal({ type: MODAL_GLOBAL_CHAT })}
                     text="Global Chat"
                     icon={Chevron}
                   />

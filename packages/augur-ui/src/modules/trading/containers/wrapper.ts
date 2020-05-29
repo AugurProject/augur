@@ -9,7 +9,7 @@ import {
   MODAL_INITIALIZE_ACCOUNT,
   GSN_WALLET_SEEN,
 } from 'modules/common/constants';
-import getGasPrice from 'modules/auth/selectors/get-gas-price';
+import getGasPrice from 'modules/auth/helpers/get-gas-price';
 import {
   updateTradeCost,
   updateTradeShares,

@@ -9,7 +9,7 @@ import { AppState } from 'appStore';
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
 });
 
 const mergeProps = (sP, dP, oP) => {

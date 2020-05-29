@@ -56,12 +56,12 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   transferFundsGasEstimate: (amount: string, asset: string, to: string) =>
     transferFundsGasEstimate(amount, asset, to),
   transferFunds: (amount: string, asset: string, to: string) => {
     transferFunds(amount, asset, to);
-    dispatch(closeModal());
+    closeModal();
   },
 });
 

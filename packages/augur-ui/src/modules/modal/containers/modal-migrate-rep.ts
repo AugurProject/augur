@@ -27,7 +27,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   convertV1ToV2: () => dispatch(convertV1ToV2()),
   convertV1ToV2Estimate: () => convertV1ToV2Estimate(),
 });

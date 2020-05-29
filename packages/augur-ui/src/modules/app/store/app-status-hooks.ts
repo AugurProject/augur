@@ -276,6 +276,12 @@ export function AppStatusReducer(state, action) {
         ...updatedState[FILTER_SORT_OPTIONS],
         ...action.filterSortOptions,
       };
+      if (updatedState[IS_LOGGED]) {
+        updatedState[LOGIN_ACCOUNT].settings = {
+          ...updatedState[LOGIN_ACCOUNT].settings,
+          ...action.filterSortOptions
+        };
+      }
       break;
     }
     case SET_MODAL: {
@@ -316,6 +322,12 @@ export function AppStatusReducer(state, action) {
       updatedState[PENDING_QUEUE] = {};
       updatedState[USER_OPEN_ORDERS] = {};
       updatedState[ACCOUNT_POSITIONS] = {};
+      updatedState[MOBILE_MENU_STATE] = 0;
+      updatedState[WALLET_STATUS] = null;
+      updatedState[GSN_ENABLED] = false;
+      updatedState[IS_LOGGED] = false;
+      updatedState[RESTORED_ACCOUNT] = false;
+      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
       break;
     }
     case LOAD_FAVORITES: {

@@ -22,7 +22,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   track: (eventName, payload) => track(eventName, payload),
   gotoOnboardingStep: (step) => AppStatus.actions.setModal({ type: getOnboardingStep(step) }),
 });

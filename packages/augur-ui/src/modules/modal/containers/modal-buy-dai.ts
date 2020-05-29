@@ -17,7 +17,7 @@ const mapStateToProps = (state: AppState) => ({});
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
   const { setModal } = AppStatus.actions;
   return ({
-    closeModal: () => dispatch(closeModal()),
+    closeModal: () => closeModal(),
     addFunds: callback =>
       setModal({ type: MODAL_ADD_FUNDS, cb: callback }),
     showAugurP2PModal: () =>

@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import MarketView from 'modules/market/components/market-view/market-view';
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import {
   MODAL_MARKET_REVIEW,
   MODAL_MARKET_LOADING,
@@ -28,7 +27,7 @@ const mapDispatchToProps = (dispatch) => {
         type: MODAL_MARKET_LOADING,
       }),
     closeMarketLoadingModalOnly: (type: string) =>
-      type === MODAL_MARKET_LOADING && dispatch(closeModal()),
+      type === MODAL_MARKET_LOADING && closeModal(),
     addAlert: alert => addAlert(alert),
   };
 };

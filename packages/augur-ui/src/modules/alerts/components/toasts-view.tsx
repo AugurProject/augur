@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
 
 import Alert from 'modules/alerts/components/alert';
-import { Alert as AlertType } from 'modules/types';
 import Styles from 'modules/alerts/components/toasts-view.styles.less';
 import classNames from 'classnames';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { getInfoAlertsAndSeenCount } from '../helpers/alerts';
-import { updateExistingAlert } from '../actions/alerts';
+import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 
 interface ToastsViewProps {
   toggleAlerts: Function;
@@ -20,14 +18,14 @@ const ToastsView = ({
   const { alerts } = getInfoAlertsAndSeenCount();
   const toasts = alerts.filter(alert => alert.toast && !alert.seen);
   const toast = toasts[0];
-  const { actions: { removeAlert }} = useAppStatusStore();
+  const { actions: { removeAlert, updateAlert }} = useAppStatusStore();
   useEffect(() => {
     const Timeout = setInterval(() => {
       const newToast = {
         name: toast?.name,
         toast: false,
       };
-      if (toast) updateExistingAlert(toast.uniqueId, newToast);
+      if (toast) updateAlert(toast.uniqueId, newToast);
     }, 2000);
     return () => clearInterval(Timeout);
   }, [toast]);

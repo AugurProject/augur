@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   withdrawAllFunds: (destination: string) => withdrawAllFunds(destination),
   withdrawAllFundsEstimateGas: (destination: string) =>
     withdrawAllFundsEstimateGas(destination),
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({

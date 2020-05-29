@@ -22,7 +22,7 @@ const mapStateToProps = (state: AppState) => {
   });
 }
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   openZeroExInstant: async () => {
     const { contracts } = augurSdk.get();
     const repTokenAddress = contracts.getReputationToken();

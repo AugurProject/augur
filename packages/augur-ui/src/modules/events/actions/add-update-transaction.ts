@@ -91,30 +91,25 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
 ) => {
   const { eventName, transaction, hash } = txStatus;
   if (transaction) {
-    const { loginAccount: { meta } } = AppStatus.get();
+    const {
+      loginAccount: { meta },
+    } = AppStatus.get();
     const methodCall = transaction.name.toUpperCase();
 
     if (ADD_PENDING_QUEUE_METHOD_CALLS.includes(methodCall)) {
-      dispatch(
-        addUpdatePendingTransaction(methodCall, eventName, hash, {
-          ...transaction,
-        })
-      );
+      addUpdatePendingTransaction(methodCall, eventName, hash, {
+        ...transaction,
+      });
     }
 
     if (eventName === TXEventName.RelayerDown) {
       const hasEth = (
-        await meta.signer.provider.getBalance(
-          meta.signer._address
-        )
+        await meta.signer.provider.getBalance(meta.signer._address)
       ).gt(0);
 
       AppStatus.actions.setModal({
         type: MODAL_ERROR,
-        error: getRelayerDownErrorMessage(
-          meta.accountType,
-          hasEth
-        ),
+        error: getRelayerDownErrorMessage(meta.accountType, hasEth),
         showDiscordLink: false,
         showAddFundsHelp: !hasEth,
         walletType: meta.accountType,
@@ -154,20 +149,20 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         methodCall === CREATEYESNOMARKET ||
         methodCall === CREATESCALARMARKET
       ) {
-          updateAlert(hash, {
-            params: transaction.params,
-            status: TXEventName.Success,
-            timestamp,
-            name: CREATEMARKET,
-          });
+        updateAlert(hash, {
+          params: transaction.params,
+          status: TXEventName.Success,
+          timestamp,
+          name: CREATEMARKET,
+        });
       } else {
-          updateAlert(hash, {
-            params: transaction.params,
-            status: TXEventName.Success,
-            toast: methodCall === PUBLICFILLORDER,
-            timestamp,
-            name: methodCall,
-          });
+        updateAlert(hash, {
+          params: transaction.params,
+          status: TXEventName.Success,
+          toast: methodCall === PUBLICFILLORDER,
+          timestamp,
+          name: methodCall,
+        });
       }
     }
 
@@ -175,39 +170,31 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       case REDEEMSTAKE: {
         const params = transaction.params;
         params._reportingParticipants.map(participant =>
-          dispatch(
-            addPendingData(participant, REDEEMSTAKE, eventName, hash, {
-              ...transaction,
-            })
-          )
+          addPendingData(participant, REDEEMSTAKE, eventName, hash, {
+            ...transaction,
+          })
         );
         params._disputeWindows.map(window =>
-          dispatch(
-            addPendingData(window, REDEEMSTAKE, eventName, hash, {
-              ...transaction,
-            })
-          )
+          addPendingData(window, REDEEMSTAKE, eventName, hash, {
+            ...transaction,
+          })
         );
         break;
       }
       case CLAIMMARKETSPROCEEDS: {
         const params = transaction.params;
         if (params._markets.length === 1) {
-          dispatch(
-            addPendingData(
-              params._markets[0],
-              CLAIMMARKETSPROCEEDS,
-              eventName,
-              hash,
-              { ...transaction }
-            )
+          addPendingData(
+            params._markets[0],
+            CLAIMMARKETSPROCEEDS,
+            eventName,
+            hash,
+            { ...transaction }
           );
         } else {
-          dispatch(
-            addUpdatePendingTransaction(methodCall, eventName, hash, {
-              ...transaction,
-            })
-          );
+          addUpdatePendingTransaction(methodCall, eventName, hash, {
+            ...transaction,
+          });
         }
         break;
       }
@@ -221,19 +208,19 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           const genHash = hash
             ? hash
             : generateTxParameterId(transaction.params);
-            updateAlert(genHash, {
-              id: genHash,
-              uniqueId: genHash,
-              params: {
-                ...transaction.params,
-                marketId: 1,
-                startTime,
-                endTime,
-              },
-              status: eventName,
-              timestamp,
-              name: methodCall,
-            });
+          updateAlert(genHash, {
+            id: genHash,
+            uniqueId: genHash,
+            params: {
+              ...transaction.params,
+              marketId: 1,
+              startTime,
+              endTime,
+            },
+            status: eventName,
+            timestamp,
+            name: methodCall,
+          });
         }
 
         break;
@@ -252,15 +239,21 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         );
         // pending queue will be updated when created market event comes in.
         if (eventName !== TXEventName.Success)
-          dispatch(addPendingData(id, CREATE_MARKET, eventName, hash, data));
+          addPendingData(id, CREATE_MARKET, eventName, hash, data);
         if (hash)
-          PendingOrders.actions.updateLiquidityHash({ txParamHash: id, txHash: hash });
+          PendingOrders.actions.updateLiquidityHash({
+            txParamHash: id,
+            txHash: hash,
+          });
         if (
           (hash && eventName === TXEventName.Failure) ||
           eventName === TXEventName.RelayerDown
         ) {
           // if tx fails, revert hash to generated tx id, for retry
-          PendingOrders.actions.updateLiquidityHash({ txParamHash: hash, txHash: id });
+          PendingOrders.actions.updateLiquidityHash({
+            txParamHash: hash,
+            txHash: id,
+          });
         }
         break;
       }
@@ -283,13 +276,11 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           dispatch(addCanceledOrder(order.orderId, eventName, hash))
         );
         orders.map(order =>
-          dispatch(
-            addPendingData(
-              parseZeroXMakerAssetData(order.makerAssetData).market,
-              CANCELORDERS,
-              eventName,
-              hash
-            )
+          addPendingData(
+            parseZeroXMakerAssetData(order.makerAssetData).market,
+            CANCELORDERS,
+            eventName,
+            hash
           )
         );
         break;
