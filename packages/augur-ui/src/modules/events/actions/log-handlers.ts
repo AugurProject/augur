@@ -127,40 +127,20 @@ const updateMarketOrderBook = (marketId: string) => {
     throttleLoadMarketOrders(marketId);
   }
 };
-// TODO: combine all these handleTX functions into one function called HandleTXEvents.
-export const handleTxAwaitingSigning = (txStatus: Events.TXStatus) => {
-  console.log('AwaitingSigning Transaction', txStatus.transaction.name);
-  addUpdateTransaction(txStatus);
-};
 
-export const handleTxPending = (txStatus: Events.TXStatus) => {
-  console.log('TxPending Transaction', txStatus.transaction.name);
-  addUpdateTransaction(txStatus);
-};
-
-export const handleTxFailure = (txStatus: Events.TXStatus) => {
-  console.log('TxFailure Transaction', txStatus.transaction.name, txStatus);
-  addUpdateTransaction(txStatus);
-};
-
-export const handleTxRelayerDown = (txStatus: Events.TXStatus) => {
-  console.log('TxRelayerDown Transaction', txStatus.transaction.name);
-  addUpdateTransaction(txStatus);
-};
-
-export const handleTxSuccess = (txStatus: Events.TXStatus) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  console.log('TxSuccess Transaction', txStatus.transaction.name);
-  // update wallet status on any TxSuccess
-  AppStatus.actions.setWalletStatus(WALLET_STATUS_VALUES.CREATED);
-  dispatch(updateAssets());
+export const handleTxEvents = (txStatus: Events.TXStatus) => {
+  console.log(`${txStatus.eventName} for ${txStatus.transaction.name} Transaction.`);
+  if (txStatus.eventName === 'Success') {
+    AppStatus.actions.setWalletStatus(WALLET_STATUS_VALUES.CREATED);
+    updateAssets();
+  } else if (txStatus.eventName === 'FeeTooLow') {
+    AppStatus.actions.setModal({ type: MODAL_GAS_PRICE, feeTooLow: true });
+  }
   addUpdateTransaction(txStatus);
 };
 
 export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => {
-  console.log('TxFeeTooLow Transaction', txStatus.transaction.name);
+  console.log('TxFeeTooLow Transaction', txStatus.transaction.name, txStatus);
   addUpdateTransaction(txStatus);
   AppStatus.actions.setModal({ type: MODAL_GAS_PRICE, feeTooLow: true });
 };
@@ -231,7 +211,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   });
   // update assets each block
   if (isLogged) {
-    dispatch(updateAssets());
+    updateAssets();
     checkAccountAllowance();
     loadAnalytics(analytics, currentAugurTimestamp);
     findAndSetTransactionsTimeouts(log.highestAvailableBlockNumber);

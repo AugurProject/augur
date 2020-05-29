@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useEffect, useRef } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 
 import { ALL_MARKETS, END_TIME } from 'modules/common/constants';
 import QuadBox from 'modules/portfolio/components/common/quad-box';

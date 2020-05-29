@@ -5,9 +5,6 @@ import {
   getRepBalance,
   getLegacyRepBalance,
 } from 'modules/contracts/actions/contractCalls';
-import { AppState } from 'appStore';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
-import { Action } from 'redux';
 import { formatAttoRep } from 'utils/format-number';
 import { addedDaiEvent } from 'services/analytics/helpers';
 import { createBigNumber } from 'utils/create-big-number';
@@ -15,11 +12,8 @@ import { WALLET_STATUS_VALUES, FIVE} from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 import { addEthIncreaseAlert } from 'modules/alerts/actions/alerts';
 
-export const updateAssets = (
+export const updateAssets = async (
   callback?: NodeStyleCallback,
-): ThunkAction<any, any, any, any> => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
   const { loginAccount: { address, meta, balances: { ethNonSafe } } } = AppStatus.get();
   const nonSafeWallet = await meta.signer.getAddress();
@@ -28,7 +22,6 @@ export const updateAssets = (
     address,
     nonSafeWallet,
     String(ethNonSafe),
-    dispatch,
     (err, balances) => {
       const { walletStatus } = AppStatus.get();
       // TODO: set min amount of DAI, for testing need a real values
@@ -43,7 +36,6 @@ function updateBalances(
   address: string,
   nonSafeWallet: string,
   ethNonSafeBalance: string,
-  dispatch: ThunkDispatch<void, any, Action>,
   callback: NodeStyleCallback
 ) {
   const {
@@ -68,7 +60,7 @@ function updateBalances(
     const ethNonSafe = amounts[5];
     const legacyRep = formatAttoRep(legacyAttoRep).value;
     const legacyRepNonSafe = formatAttoRep(legacyAttoRepNonSafe).value;
-    dispatch(addedDaiEvent(dai));
+    addedDaiEvent(dai);
     const balances = {
       attoRep,
       rep,

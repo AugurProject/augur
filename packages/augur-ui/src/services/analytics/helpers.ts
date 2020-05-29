@@ -167,7 +167,7 @@ export const orderAmountEntered = (
 export const orderPriceEntered = (
   type: string,
   marketId: string
-): => {
+) => {
   track(ORDER_PRICE_ENTERED, {
     marketId,
     type,
