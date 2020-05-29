@@ -2,24 +2,21 @@ import React from 'react';
 
 import { FacebookButton, TwitterButton } from 'modules/common/icons';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
+import { sendFacebookShare, sendTwitterShare } from 'services/analytics/helpers';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface SocialMediaButtonsProps {
-  address?: string;
   marketDescription: string;
   marketAddress: string;
-  sendFacebookShare: Function;
-  sendTwitterShare: Function;
   listView?: boolean;
 }
 
 export const SocialMediaButtons = ({
-  address,
   marketDescription,
   marketAddress,
-  sendFacebookShare,
-  sendTwitterShare,
-  listView,
+  listView = false,
 }: SocialMediaButtonsProps) => {
+  const { loginAccount: { address } } = useAppStatusStore();
   const showFacebookShare = (encodedMarketUrl, encodedMarketDescription) => {
     const url = `https://www.facebook.com/sharer/sharer.php?t=${encodedMarketDescription}&u=${encodedMarketUrl}&${AFFILIATE_NAME}=${address}`;
     window.open(
@@ -97,3 +94,5 @@ export const SocialMediaButtons = ({
     </>
   );
 };
+
+export default SocialMediaButtons;

@@ -15,9 +15,9 @@ import { MODAL_SIGNUP, POPULAR_CATEGORIES } from 'modules/common/constants';
 import { selectMarketStats } from 'modules/markets-list/selectors/markets-list';
 import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = (state: AppState, { location }) => {
+const mapStateToProps = (state: AppState) => {
   const marketStats = selectMarketStats();
-  const markets = selectMarkets(state);
+  const markets = selectMarkets();
   const {
     marketsList: { isSearching },
     universe: { id },

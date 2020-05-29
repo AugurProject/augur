@@ -53,9 +53,7 @@ export function processRows(
         : MOCK_FUTURES_DATA;
     rows = rows
       .filter(data => {
-        const {
-          reportingState
-        } = data;
+        const { reportingState } = data;
         const marketStatusLabel = MY_BETS_MARKET_STATUS[marketStatus].label;
         if (marketStatusLabel === MARKET_OPEN) {
           return reportingState === REPORTING_STATE.PRE_REPORTING;
@@ -73,7 +71,8 @@ export function processRows(
         }
       })
       .filter(
-        data => data.description.toLowerCase().indexOf(search.toLowerCase()) >= 0
+        data =>
+          data.description.toLowerCase().indexOf(search.toLowerCase()) >= 0
       )
       .sort((a, b) => b.startTime - a.startTime);
   } else {
@@ -148,7 +147,7 @@ export const MyBets = () => {
             customLink={{
               pathname: MARKETS,
             }}
-            label={'go to trading'}
+            label="go to trading"
           />
         </div>
         <FilterNotice
@@ -160,7 +159,7 @@ export const MyBets = () => {
               <span>
                 You have <b>$200.00</b> in winnings to claim.
               </span>
-              <PrimaryButton text={'Claim Bets'} action={null} />
+              <PrimaryButton text="Claim Bets" action={null} />
             </div>
           }
         />
@@ -220,10 +219,9 @@ export const MyBets = () => {
           />
         )}
         <FilterSearchPure
-          placeholder={'Search markets & outcomes...'}
+          placeholder="Search markets & outcomes..."
           search={search}
           onChange={search => setSearch(search)}
-          isSearchingMarkets={false}
         />
         <FilterButton title="Filters" />
       </div>
