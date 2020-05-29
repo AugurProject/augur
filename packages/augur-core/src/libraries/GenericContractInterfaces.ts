@@ -3320,6 +3320,32 @@ export class AugurWallet<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
+	public addAuthorizedProxy = async (authorizedProxy: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_authorizedProxy","type":"address"}],"name":"addAuthorizedProxy","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [authorizedProxy], 'addAuthorizedProxy', options.sender)
+	}
+	
+	public addAuthorizedProxy_estimateGas = async (authorizedProxy: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_authorizedProxy","type":"address"}],"name":"addAuthorizedProxy","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [authorizedProxy], 'addAuthorizedProxy', options.sender)
+	}
+
+	public addAuthorizedProxy_ = async (authorizedProxy: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_authorizedProxy","type":"address"}],"name":"addAuthorizedProxy","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [authorizedProxy], options.sender)
+		return <boolean>result[0]
+	}
+
+	public authorizedProxies_ = async (arg0: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"authorizedProxies","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0], options.sender)
+		return <boolean>result[0]
+	}
+
 	public cash_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"cash","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -3399,18 +3425,30 @@ export class AugurWallet<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public legacyRegistry_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"legacyRegistry","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
 	public registry_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"registry","outputs":[{"internalType":"contract IAugurWalletRegistry","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
+	}
+
+	public removeAuthorizedProxy = async (authorizedProxy: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_authorizedProxy","type":"address"}],"name":"removeAuthorizedProxy","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [authorizedProxy], 'removeAuthorizedProxy', options.sender)
+	}
+	
+	public removeAuthorizedProxy_estimateGas = async (authorizedProxy: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_authorizedProxy","type":"address"}],"name":"removeAuthorizedProxy","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [authorizedProxy], 'removeAuthorizedProxy', options.sender)
+	}
+
+	public removeAuthorizedProxy_ = async (authorizedProxy: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_authorizedProxy","type":"address"}],"name":"removeAuthorizedProxy","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [authorizedProxy], options.sender)
+		return <boolean>result[0]
 	}
 
 	public transferCash = async (to: string, amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -13391,6 +13429,13 @@ export class HotLoading<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"contract IAugur","name":"_augur","type":"address"},{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IFillOrder","name":"_fillOrder","type":"address"},{"internalType":"contract IOrders","name":"_orders","type":"address"}],"name":"getMarketData","outputs":[{"components":[{"internalType":"string","name":"extraInfo","type":"string"},{"internalType":"address","name":"marketCreator","type":"address"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"bytes32[]","name":"outcomes","type":"bytes32[]"},{"internalType":"enum IMarket.MarketType","name":"marketType","type":"uint8"},{"internalType":"int256[]","name":"displayPrices","type":"int256[]"},{"internalType":"address","name":"designatedReporter","type":"address"},{"internalType":"enum HotLoading.ReportingState","name":"reportingState","type":"uint8"},{"internalType":"uint256","name":"disputeRound","type":"uint256"},{"internalType":"uint256[]","name":"winningPayout","type":"uint256[]"},{"internalType":"uint256","name":"volume","type":"uint256"},{"internalType":"uint256","name":"openInterest","type":"uint256"},{"internalType":"uint256[]","name":"lastTradedPrices","type":"uint256[]"},{"internalType":"address","name":"universe","type":"address"},{"internalType":"uint256","name":"numTicks","type":"uint256"},{"internalType":"uint256","name":"feeDivisor","type":"uint256"},{"internalType":"uint256","name":"affiliateFeeDivisor","type":"uint256"},{"internalType":"uint256","name":"endTime","type":"uint256"},{"internalType":"uint256","name":"numOutcomes","type":"uint256"},{"internalType":"uint256","name":"validityBond","type":"uint256"},{"internalType":"uint256","name":"reportingFeeDivisor","type":"uint256"},{"internalType":"uint256[]","name":"outcomeVolumes","type":"uint256[]"}],"internalType":"struct HotLoading.MarketData","name":"_marketData","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [augur, market, fillOrder, orders], options.sender)
 		return <{ extraInfo: string, marketCreator: string, owner: string, outcomes: Array<string>, marketType: TBigNumber, displayPrices: Array<TBigNumber>, designatedReporter: string, reportingState: TBigNumber, disputeRound: TBigNumber, winningPayout: Array<TBigNumber>, volume: TBigNumber, openInterest: TBigNumber, lastTradedPrices: Array<TBigNumber>, universe: string, numTicks: TBigNumber, feeDivisor: TBigNumber, affiliateFeeDivisor: TBigNumber, endTime: TBigNumber, numOutcomes: TBigNumber, validityBond: TBigNumber, reportingFeeDivisor: TBigNumber, outcomeVolumes: Array<TBigNumber> }>result[0]
+	}
+
+	public getMarketsData_ = async (augur: string, markets: Array<string>, fillOrder: string, orders: string, options?: { sender?: string }): Promise<Array<{ extraInfo: string, marketCreator: string, owner: string, outcomes: Array<string>, marketType: TBigNumber, displayPrices: Array<TBigNumber>, designatedReporter: string, reportingState: TBigNumber, disputeRound: TBigNumber, winningPayout: Array<TBigNumber>, volume: TBigNumber, openInterest: TBigNumber, lastTradedPrices: Array<TBigNumber>, universe: string, numTicks: TBigNumber, feeDivisor: TBigNumber, affiliateFeeDivisor: TBigNumber, endTime: TBigNumber, numOutcomes: TBigNumber, validityBond: TBigNumber, reportingFeeDivisor: TBigNumber, outcomeVolumes: Array<TBigNumber> }>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"contract IAugur","name":"_augur","type":"address"},{"internalType":"contract IMarket[]","name":"_markets","type":"address[]"},{"internalType":"contract IFillOrder","name":"_fillOrder","type":"address"},{"internalType":"contract IOrders","name":"_orders","type":"address"}],"name":"getMarketsData","outputs":[{"components":[{"internalType":"string","name":"extraInfo","type":"string"},{"internalType":"address","name":"marketCreator","type":"address"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"bytes32[]","name":"outcomes","type":"bytes32[]"},{"internalType":"enum IMarket.MarketType","name":"marketType","type":"uint8"},{"internalType":"int256[]","name":"displayPrices","type":"int256[]"},{"internalType":"address","name":"designatedReporter","type":"address"},{"internalType":"enum HotLoading.ReportingState","name":"reportingState","type":"uint8"},{"internalType":"uint256","name":"disputeRound","type":"uint256"},{"internalType":"uint256[]","name":"winningPayout","type":"uint256[]"},{"internalType":"uint256","name":"volume","type":"uint256"},{"internalType":"uint256","name":"openInterest","type":"uint256"},{"internalType":"uint256[]","name":"lastTradedPrices","type":"uint256[]"},{"internalType":"address","name":"universe","type":"address"},{"internalType":"uint256","name":"numTicks","type":"uint256"},{"internalType":"uint256","name":"feeDivisor","type":"uint256"},{"internalType":"uint256","name":"affiliateFeeDivisor","type":"uint256"},{"internalType":"uint256","name":"endTime","type":"uint256"},{"internalType":"uint256","name":"numOutcomes","type":"uint256"},{"internalType":"uint256","name":"validityBond","type":"uint256"},{"internalType":"uint256","name":"reportingFeeDivisor","type":"uint256"},{"internalType":"uint256[]","name":"outcomeVolumes","type":"uint256[]"}],"internalType":"struct HotLoading.MarketData[]","name":"_marketsData","type":"tuple[]"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [augur, markets, fillOrder, orders], options.sender)
+		return <Array<{ extraInfo: string, marketCreator: string, owner: string, outcomes: Array<string>, marketType: TBigNumber, displayPrices: Array<TBigNumber>, designatedReporter: string, reportingState: TBigNumber, disputeRound: TBigNumber, winningPayout: Array<TBigNumber>, volume: TBigNumber, openInterest: TBigNumber, lastTradedPrices: Array<TBigNumber>, universe: string, numTicks: TBigNumber, feeDivisor: TBigNumber, affiliateFeeDivisor: TBigNumber, endTime: TBigNumber, numOutcomes: TBigNumber, validityBond: TBigNumber, reportingFeeDivisor: TBigNumber, outcomeVolumes: Array<TBigNumber> }>>result[0]
 	}
 
 	public getReportingState_ = async (augur: string, market: string, options?: { sender?: string }): Promise<TBigNumber> => {

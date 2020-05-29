@@ -64,7 +64,7 @@ contract HotLoading {
         uint256[] outcomeVolumes;
     }
 
-    function getMarketData(IAugur _augur, IMarket _market, IFillOrder _fillOrder, IOrders _orders) external view returns (MarketData memory _marketData) {
+    function getMarketData(IAugur _augur, IMarket _market, IFillOrder _fillOrder, IOrders _orders) public view returns (MarketData memory _marketData) {
         IAugurCreationDataGetter.MarketCreationData memory _marketCreationData = IAugurCreationDataGetter(address(_augur)).getMarketCreationData(_market);
         _marketData.extraInfo = _marketCreationData.extraInfo;
         _marketData.marketCreator = _marketCreationData.marketCreator;
@@ -91,6 +91,14 @@ contract HotLoading {
         if (_marketData.reportingState == ReportingState.Finalized) {
             IReportingParticipant _winningReportingParticipant = _market.getWinningReportingParticipant();
             _marketData.winningPayout = _winningReportingParticipant.getPayoutNumerators();
+        }
+    }
+
+    function getMarketsData(IAugur _augur, IMarket[] calldata _markets, IFillOrder _fillOrder, IOrders _orders) external view returns (MarketData[] memory _marketsData) {
+        uint256 _numMarkets = _markets.length;
+        _marketsData = new MarketData[](_numMarkets);
+        for (uint256 _marketIndex = 0; _marketIndex < _numMarkets; _marketIndex++) {
+            _marketsData[_marketIndex] = getMarketData(_augur, _markets[_marketIndex], _fillOrder, _orders);
         }
     }
 
