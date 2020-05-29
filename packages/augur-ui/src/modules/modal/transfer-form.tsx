@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { ButtonsRow, Breakdown } from 'modules/modal/common';
+import { Breakdown } from 'modules/modal/common';
 import { DAI, ETH, REP, ZERO, GWEI_CONVERSION, MAX_DECIMALS, TRANSACTIONS, TRANSFER } from 'modules/common/constants';
 import {
   formatEther,
@@ -46,79 +46,81 @@ interface TransferFormProps {
   signingEthBalance: string;
 }
 
-interface TransferFormState {
-  address: string;
-  currency: string;
-  amount: string;
-  options: object[];
-  errors: {
-    address: string;
-    amount: string;
-  };
-  relayerGasCosts: BigNumber;
-  gasEstimate: string;
-}
-
 function sanitizeArg(arg) {
   return arg == null || arg === '' ? '' : arg;
 }
 
-export class TransferForm extends Component<
-  TransferFormProps,
-  TransferFormState
-> {
-  state: TransferFormState = {
+export const TransferForm = ({
+  closeAction,
+  transferFunds,
+  transferFundsGasEstimate,
+  fallBackGasCosts,
+  balances,
+  account,
+  gasPrice,
+  useSigner,
+  transactionLabel,
+  GsnEnabled,
+}: TransferFormProps) => {
+  const [state, setState] = useState({
     relayerGasCosts: createBigNumber(TRANSFER_ETH_GAS_COST),
-    address: this.props.useSigner ? this.props.account : '',
+    address: '',
     currency: DAI,
-    gasEstimate: getGasInDai(this.props.fallBackGasCosts[DAI.toLowerCase()]).formatted,
+    gasEstimate: getGasInDai(fallBackGasCosts[DAI.toLowerCase()]).formatted,
     amount: '',
     errors: {
       address: '',
       amount: '',
     },
-    options: this.props.useSigner ?
-      [{
-        label: DAI,
-        value: DAI,
-      }] :
-      [{
-        label: DAI,
-        value: DAI,
-      },
-      {
-        label: ETH,
-        value: ETH,
-      },
-      {
-        label: REP,
-        value: REP,
-      },
-    ]
-  };
+    options: useSigner ?
+    [{
+      label: DAI,
+      value: DAI,
+    }] :
+    [{
+      label: DAI,
+      value: DAI,
+    },
+    {
+      label: ETH,
+      value: ETH,
+    },
+    {
+      label: REP,
+      value: REP,
+    },
+  ]
+  });
 
-  dropdownChange = (value: string) => {
-    const { amount } = this.state;
-    this.setState({ currency: value }, () => {
-      if (amount.length) {
-        this.amountChange(amount);
-      }
+  useEffect(() => {
+    const formattedAmount =
+      state.currency === ETH
+        ? formatEther(Number(state.amount) || 0)
+        : formatRep(state.amount || 0);
+
+    const relayerGasCosts = transferFundsGasEstimate(
+      formattedAmount.fullPrecision,
+      state.currency,
+      state.address ? state.address : account
+    );
+
+    setState({
+      ...state,
+      relayerGasCosts: createBigNumber(relayerGasCosts),
     });
-  };
+  }, [state.currency]);
 
-  handleMax = () => {
-    const { balances, useSigner } = this.props;
-    const { currency } = this.state;
+  const handleMax = () => {
+    const { currency } = state;
     const balance = useSigner
       ? balances.signerBalances[currency.toLowerCase()]
       : balances[currency.toLowerCase()];
 
-    this.amountChange(balance);
+    amountChange(balance);
   };
 
-  amountChangeFromSigner = (amount: string, gasInEth: string) => {
-    const { balances } = this.props;
-    const { errors: updatedErrors, currency } = this.state;
+  const amountChangeFromSigner = (amount: string, gasInEth: string) => {
+    const { errors: updatedErrors, currency } = state;
     updatedErrors.amount = '';
     let newAmount = amount;
     const balance = balances.signerBalances[currency.toLowerCase()];
@@ -130,25 +132,18 @@ export class TransferForm extends Component<
         newAmount = createBigNumber(eth).minus(createBigNumber(gasInEth))
       }
     }
-    this.setErrorMessage(newAmount, updatedErrors, balance, amountMinusGas, false);
+    setErrorMessage(newAmount, updatedErrors, balance, amountMinusGas, false);
   }
 
-  amountChange = (amount: string) => {
-    const {
-      balances,
-      fallBackGasCosts,
-      GsnEnabled,
-      gasPrice,
-      useSigner,
-    } = this.props;
-    const { errors: updatedErrors, currency } = this.state;
-    const { relayerGasCosts } = this.state;
+  const amountChange = (amount: string, currency: string = state.currency) => {
+    const { errors: updatedErrors } = state;
+    const { relayerGasCosts } = state;
     let newAmount = convertExponentialToDecimal(sanitizeArg(amount)) || "0";
 
     const gas = fallBackGasCosts[currency.toLowerCase()];
     const gasInEth = formatGasCostToEther(gas, { decimals: 4}, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
 
-    if (useSigner) return this.amountChangeFromSigner(newAmount, gasInEth);
+    if (useSigner) return amountChangeFromSigner(newAmount, gasInEth);
 
     const balance = balances[currency.toLowerCase()];
     let amountMinusGas = createBigNumber(balances.signerBalances.eth).minus(createBigNumber(gasInEth))
@@ -160,16 +155,16 @@ export class TransferForm extends Component<
       }
     }
 
-    this.setErrorMessage(newAmount, updatedErrors, balance, amountMinusGas, GsnEnabled);
+    setErrorMessage(newAmount, updatedErrors, balance, amountMinusGas, GsnEnabled);
   };
 
-  setErrorMessage = (newAmount, updatedErrors, balance, amountMinusGas: BigNumber, GsnEnabled) => {
+  const setErrorMessage = (newAmount, updatedErrors, balance, amountMinusGas: BigNumber, GsnEnabled) => {
     updatedErrors.amount = '';
     const bnNewAmount = createBigNumber(newAmount || '0');
     // validation...
     if (newAmount === '' || newAmount === undefined) {
       updatedErrors.amount = 'Quantity is required.';
-      return this.setState({ amount: newAmount, errors: updatedErrors });
+      return setState({ ...state, amount: newAmount, errors: updatedErrors });
     }
 
     if (!isFinite(Number(newAmount))) {
@@ -204,57 +199,12 @@ export class TransferForm extends Component<
       updatedErrors.amount = `Too many decimal places. ${MAX_DECIMALS} is allowed`;
     }
 
-    this.setState({ amount: String(newAmount), errors: updatedErrors });
+    setState({ ...state, amount: String(newAmount), errors: updatedErrors });
   }
 
-  componentDidMount() {
-    const { useSigner, balances } = this.props;
-    if (useSigner) {
-      let currencies = [{
-        label: DAI,
-        value: DAI,
-      }]
 
-      if (balances.signerBalances.eth > 0) {
-        currencies = currencies.concat({
-          label: ETH,
-          value: ETH,
-        });
-      }
-
-      if (balances.signerBalances.rep > 0) {
-        currencies = currencies.concat({
-          label: REP,
-          value: REP,
-        });
-      }
-
-      this.setState({ options: currencies });
-    }
-  }
-
-  async componentDidUpdate(prevProps, prevState) {
-    if (this.state.currency && this.state.currency !== prevState.currency) {
-      const formattedAmount =
-        this.state.currency === ETH
-          ? formatEther(Number(this.state.amount) || 0)
-          : formatRep(this.state.amount || 0);
-
-      const relayerGasCosts = await this.props.transferFundsGasEstimate(
-        formattedAmount.fullPrecision,
-        this.state.currency,
-        this.state.address
-          ? this.state.address
-          : this.props.account
-      );
-      this.setState({
-        relayerGasCosts,
-      });
-    }
-  }
-
-  addressChange = (address: string) => {
-    const { errors: updatedErrors } = this.state;
+  const addressChange = (address: string) => {
+    const { errors: updatedErrors } = state;
     updatedErrors.address = '';
     if (address && !isAddress(address)) {
       updatedErrors.address = 'Address is invalid';
@@ -263,18 +213,10 @@ export class TransferForm extends Component<
     if (address === '') {
       updatedErrors.address = 'Address is required';
     }
-    this.setState({ address, errors: updatedErrors });
+    setState({ ...state, address, errors: updatedErrors });
   };
 
-  render() {
-    const {
-      transferFunds,
-      balances,
-      closeAction,
-      useSigner,
-      transactionLabel,
-    } = this.props;
-    const { amount, currency, address, errors, gasEstimate } = this.state;
+    const { amount, currency, address, errors, gasEstimate } = state;
     const { amount: errAmount, address: errAddress } = errors;
     const isValid =
       errAmount === '' && errAddress === '' && amount.length && address.length;
@@ -325,7 +267,7 @@ export class TransferForm extends Component<
                 value={address}
                 placeholder='0x...'
                 disabled={useSigner}
-                onChange={this.addressChange}
+                onChange={addressChange}
                 errorMessage={errors.address.length > 0 ? errors.address : ''}
               />
             </div>
@@ -336,19 +278,19 @@ export class TransferForm extends Component<
               </div>
               <FormDropdown
                 id='currency'
-                options={this.state.options}
+                options={state.options}
                 defaultValue={currency}
-                onChange={this.dropdownChange}
+                onChange={currency => amountChange(state.amount, currency)}
               />
             </div>
             <div>
               <label htmlFor='amount'>Amount</label>
-              <button onClick={this.handleMax}>MAX</button>
+              <button onClick={handleMax}>MAX</button>
               <TextInput
                 type='number'
                 value={amount}
                 placeholder='0.00'
-                onChange={this.amountChange}
+                onChange={amountChange}
                 errorMessage={
                   errors.amount && errors.amount.length > 0 ? errors.amount : ''
                 }
@@ -369,5 +311,5 @@ export class TransferForm extends Component<
         </div>
       </div>
     );
-  }
+
 }

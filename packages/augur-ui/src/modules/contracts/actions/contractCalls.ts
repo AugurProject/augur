@@ -202,6 +202,7 @@ export async function sendDai(address: string, amount: string) {
   const onChainAmount = createBigNumber(amount).multipliedBy(
     TEN_TO_THE_EIGHTEENTH_POWER
   );
+  console.log('send DAI', amount, String(onChainAmount));
   return Cash.transfer(address, onChainAmount);
 }
 

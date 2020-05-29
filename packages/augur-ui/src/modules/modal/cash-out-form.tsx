@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from 'react';
 
 import { Breakdown } from 'modules/modal/common';
-import {
-  formatDai, formatGasCostToEther,
-} from 'utils/format-number';
+import { formatDai, formatGasCostToEther } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { FormattedNumber } from 'modules/types';
 import { TextInput } from 'modules/common/form';
-import { CloseButton, ProcessingButton, SecondaryButton } from 'modules/common/buttons';
-import { TRANSFER_ETH_GAS_COST, TRANSFER_DAI_GAS_COST } from 'modules/auth/actions/transfer-funds';
+import {
+  CloseButton,
+  ProcessingButton,
+  SecondaryButton,
+} from 'modules/common/buttons';
+import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
 import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
-import { WITHDRAWALLFUNDSASDAI, TRANSACTIONS, GWEI_CONVERSION, NOT_USE_ETH_RESERVE, ZERO, TRANSFER } from 'modules/common/constants';
+import {
+  WITHDRAWALLFUNDSASDAI,
+  TRANSACTIONS,
+  NOT_USE_ETH_RESERVE,
+  TRANSFER,
+} from 'modules/common/constants';
 import { AutoCancelOrdersNotice } from 'modules/common/labels';
 
 interface CashOutFormProps {
@@ -30,10 +37,10 @@ interface CashOutFormProps {
   reserveInDaiFormatted: FormattedNumber;
   totalDaiFormatted: FormattedNumber;
   tradingAccountEthFormatted: FormattedNumber;
-  signingEthBalance: string;
+  totalDai: string;
 }
 
-export const CashOutForm = ( props: CashOutFormProps) => {
+export const CashOutForm = (props: CashOutFormProps) => {
   const {
     closeAction,
     withdrawAllFunds,
@@ -47,24 +54,36 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     reserveInDaiFormatted,
     totalDaiFormatted,
     tradingAccountEthFormatted,
-    signingEthBalance
+    totalDai,
   } = props;
-  const [gasCosts, setGasCosts] = useState(createBigNumber(TRANSFER_ETH_GAS_COST));
+  const [gasCosts, setGasCosts] = useState(
+    createBigNumber(TRANSFER_ETH_GAS_COST)
+  );
   const [address, setAddress] = useState('');
   const [errors, setErrors] = useState('');
   const [signerPays, setSignerPays] = useState(true);
 
   async function getGasCost(account) {
+    let gasCosts = createBigNumber(TRANSFER_ETH_GAS_COST);
+    let signerPays = true;
     try {
-      const gasCosts = await withdrawAllFundsEstimateGas(account);
-      setGasCosts(gasCosts);
+      gasCosts = await withdrawAllFundsEstimateGas(account);
     } catch (error) {
       // user can't withdraw all funds, needs to transfer
-      setSignerPays(false);
+      signerPays = false;
     }
-    const testHalfDaiAmount = String(createBigNumber(tradingAccountEthFormatted.value).div(2));
-    const relayerGasCosts = await transferFundsGasEstimate(testHalfDaiAmount, account);
-    setGasCosts(relayerGasCosts.times(2.5));
+    setSignerPays(signerPays);
+    if (signerPays) {
+      return setGasCosts(createBigNumber(gasCosts));
+    }
+    const testHalfDaiAmount = String(
+      createBigNumber(tradingAccountEthFormatted.value).div(2)
+    );
+    const relayerGasCosts = await transferFundsGasEstimate(
+      testHalfDaiAmount,
+      account
+    );
+    setGasCosts(createBigNumber(relayerGasCosts).times(3.5));
   }
 
   useEffect(() => {
@@ -90,55 +109,63 @@ export const CashOutForm = ( props: CashOutFormProps) => {
     setErrors(updatedErrors);
   };
 
-  const gasLimit = signerPays && createBigNumber(gasCosts || TRANSFER_ETH_GAS_COST);
-  const gasInDai = getGasInDai(gasLimit.multipliedBy(gasPrice));
-  const formattedTotalMinusGasInDai = signerPays ? formatDai(totalDaiFormatted.value) : formatDai(createBigNumber(totalDaiFormatted.value).minus(createBigNumber(gasInDai.value)));
+  const gasInDai = getGasInDai(createBigNumber(gasCosts).times(createBigNumber(gasPrice)));
+  const formattedTotalMinusGasInDai = signerPays
+    ? formatDai(totalDai)
+    : formatDai(
+        createBigNumber(totalDai).minus(
+          createBigNumber(gasInDai.value)
+        )
+      );
 
   const breakdown = [
     {
       label: 'Available Funds',
       value: availableFundsFormatted,
       showDenomination: true,
-    }];
+    },
+  ];
 
-    if (totalOpenOrderFundsFormatted.value > 0) {
-      breakdown.push({
-        label: 'Open Orders (Funds Held)',
-        value: totalOpenOrderFundsFormatted,
-        showDenomination: true,
-      });
-    }
-
-    if (reserveInDaiFormatted.value > 0) {
-      breakdown.push({
-        label: 'Fee reserve',
-        value: reserveInDaiFormatted,
-        showDenomination: true,
-      });
-    }
-
-    if (tradingAccountEthFormatted.value > 0) {
-      breakdown.push({
-        label: 'ETH',
-        value: tradingAccountEthFormatted,
-        showDenomination: true,
-      });
-    }
-
+  if (totalOpenOrderFundsFormatted.value > 0) {
     breakdown.push({
-      label: NOT_USE_ETH_RESERVE,
-      value: gasInDai,
+      label: 'Open Orders (Funds Held)',
+      value: totalOpenOrderFundsFormatted,
       showDenomination: true,
     });
+  }
 
+  if (reserveInDaiFormatted.value > 0) {
     breakdown.push({
-      label: 'Total',
-      value: formattedTotalMinusGasInDai,
+      label: 'Fee reserve',
+      value: reserveInDaiFormatted,
       showDenomination: true,
     });
+  }
 
+  if (tradingAccountEthFormatted.value > 0) {
+    breakdown.push({
+      label: 'ETH',
+      value: tradingAccountEthFormatted,
+      showDenomination: true,
+    });
+  }
 
-  const isValid = errors.length === 0 && address.length > 0 && formattedTotalMinusGasInDai.value > 0;
+  breakdown.push({
+    label: NOT_USE_ETH_RESERVE,
+    value: gasInDai,
+    showDenomination: true,
+  });
+
+  breakdown.push({
+    label: 'Total',
+    value: totalDaiFormatted,
+    showDenomination: true,
+  });
+
+  const isValid =
+    errors.length === 0 &&
+    address.length > 0 &&
+    formattedTotalMinusGasInDai.value > 0;
 
   return (
     <div className={Styles.WithdrawForm}>
@@ -155,23 +182,29 @@ export const CashOutForm = ( props: CashOutFormProps) => {
       <main>
         <div className={Styles.GroupedForm}>
           <div>
-            <label htmlFor='recipient'>Recipient address</label>
+            <label htmlFor="recipient">Recipient address</label>
             <TextInput
-              type='text'
+              type="text"
               value={address}
-              placeholder='0x...'
+              placeholder="0x..."
               onChange={addressChange}
               errorMessage={errors.length > 0 ? errors : ''}
             />
           </div>
         </div>
         <Breakdown rows={breakdown} />
-        { totalOpenOrderFundsFormatted.value > 0 && <AutoCancelOrdersNotice /> }
+        {totalOpenOrderFundsFormatted.value > 0 && <AutoCancelOrdersNotice />}
       </main>
       <div>
         <ProcessingButton
           text={'Send'}
-          action={() => action(address, signerPays, formattedTotalMinusGasInDai.fullPrecision)}
+          action={() =>
+            action(
+              address,
+              signerPays,
+              formattedTotalMinusGasInDai.fullPrecision
+            )
+          }
           queueName={TRANSACTIONS}
           queueId={signerPays ? WITHDRAWALLFUNDSASDAI : TRANSFER}
           disabled={!isValid}
@@ -181,4 +214,4 @@ export const CashOutForm = ( props: CashOutFormProps) => {
       </div>
     </div>
   );
-}
+};
