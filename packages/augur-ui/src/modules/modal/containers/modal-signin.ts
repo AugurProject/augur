@@ -41,7 +41,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
   const { setModal } = AppStatus.actions;
   return {
-    closeModal: () => dispatch(closeModal()),
+    closeModal: () => closeModal(),
     loginModal: () => setModal({ type: MODAL_LOGIN }),
     hardwareWalletModal: isLogin =>
       setModal({ type: MODAL_HARDWARE_WALLET, isLogin }),

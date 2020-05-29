@@ -1,38 +1,28 @@
 import { userPositionProcessing } from 'modules/positions/actions/load-account-positions';
-import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
-import { Action } from 'redux';
-import { AppState } from 'appStore';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 
-export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  dispatch(clearTransactions());
-  loadTransactions(dispatch, getState());
+export const loadAccountHistory = () => {
+  loadTransactions();
 };
 
-async function loadTransactions(
-  dispatch: ThunkDispatch<void, any, Action>,
-  appState: AppState
-) {
-  dispatch(loadDisputeWindow()); // need to load dispute window for user to claim reporting fees
+async function loadTransactions() {
+  loadDisputeWindow(); // need to load dispute window for user to claim reporting fees
   const {
     loginAccount: { mixedCaseAddress },
     universe,
   } = AppStatus.get();
   const { updateLoginAccount, refreshUserOpenOrders, updateUserFilledOrders } = AppStatus.actions;
+  const { updateMarketsData, bulkMarketTradingHistory } = Markets.actions;
   const Augur = augurSdk.get();
   const userData: Getters.Users.UserAccountDataResult = await Augur.getUserAccountData(
     { universe: universe.id, account: mixedCaseAddress }
   );
   updateUserFilledOrders(mixedCaseAddress, userData.userTradeHistory);
-  Markets.actions.bulkMarketTradingHistory(userData.userTradeHistory, null);
+  bulkMarketTradingHistory(userData.userTradeHistory, null);
 
   const marketsDataById = userData.marketsInfo.reduce(
     (acc, marketData) => ({
@@ -42,7 +32,7 @@ async function loadTransactions(
     {}
   );
 
-  Markets.actions.updateMarketsData(marketsDataById);
+  updateMarketsData(marketsDataById);
   if (userData.userOpenOrders)
     refreshUserOpenOrders(userData.userOpenOrders.orders);
   if (userData.userPositions)

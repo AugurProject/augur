@@ -23,7 +23,7 @@ const mapStateToProps = (state: StateProps) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   submitForm: (e: Event) => e.preventDefault(),
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
 });
 // to make sure we override the generic submitForm with the passed submitForm from a disconnection Modal we need to merge props...
 const mergedProps = (sP, dP, oP) => ({ ...sP, ...dP, ...oP });

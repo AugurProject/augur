@@ -17,11 +17,11 @@ const mapStateToProps = (state: AppState) => {
 }
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeAction: () => dispatch(closeModal()),
+  closeAction: () => closeModal(),
   saveAction: (userDefinedGasPrice: number, average: number) => {
     AppStatus.actions.updateGasPriceInfo({ userDefinedGasPrice });
-    dispatch(registerUserDefinedGasPriceFunction(userDefinedGasPrice, average));
-    dispatch(closeModal());
+    registerUserDefinedGasPriceFunction(userDefinedGasPrice, average);
+    closeModal();
   },
 });
 

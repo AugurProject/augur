@@ -26,7 +26,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   fundGsnWallet: () => fundGsnWallet(),
 });
 

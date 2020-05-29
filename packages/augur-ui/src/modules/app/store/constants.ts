@@ -110,10 +110,10 @@ export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
   settings: {
     showInvalidMarketsBannerFeesOrLiquiditySpread: true,
     showInvalidMarketsBannerHideOrShow: true,
-    templateFilter: null,
-    maxFee: null,
-    spread: null,
-    showInvalid: null,
+    templateFilter: Getters.Markets.TemplateFilters.templateOnly,
+    maxFee: MAX_FEE_02_PERCENT,
+    maxLiquiditySpread: MAX_SPREAD_ALL_SPREADS,
+    includeInvalidMarkets: INVALID_OPTIONS.Hide,
   },
   timeframeData: {
     positions: 0,

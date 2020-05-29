@@ -11,7 +11,7 @@ import {
   MIGRATE_MARKET_GAS_ESTIMATE,
 } from 'modules/common/constants';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
-import getGasPrice from 'modules/auth/selectors/get-gas-price';
+import getGasPrice from 'modules/auth/helpers/get-gas-price';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
@@ -25,7 +25,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   migrateMarketThroughOneFork: (marketId, payoutNumerators, description, estimateGas, callback) =>
     dispatch(migrateMarketThroughOneFork(marketId, payoutNumerators, description, estimateGas, callback)),
 });

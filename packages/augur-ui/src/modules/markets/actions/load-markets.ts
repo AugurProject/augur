@@ -69,12 +69,9 @@ export const organizeReportingStates = reportingState => {
   return reportingStates;
 };
 
-export const loadMarketsByFilter = (
+export const loadMarketsByFilter = async (
   filterOptions: LoadMarketsFilterOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
-  dispatch,
-  getState
 ) => {
   console.log('loadMarketsByFilter called', filterOptions);
   const { universe, isConnected } = AppStatus.get();

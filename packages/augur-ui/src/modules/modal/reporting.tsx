@@ -8,7 +8,6 @@ import {
   RepBalance,
   TemplateShield,
 } from 'modules/common/labels';
-import { Subheaders } from 'modules/reporting/common';
 import {
   ReportingRadioBarGroup,
   ReportingRadioBarProps,

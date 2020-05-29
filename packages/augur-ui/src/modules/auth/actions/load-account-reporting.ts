@@ -1,16 +1,10 @@
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
-import { AppState } from 'appStore';
 import { NodeStyleCallback } from 'modules/types';
 import { NOTIFICATION_TYPES } from 'modules/common/constants';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { AppStatus } from 'modules/app/store/app-status';
 
-export const loadAccountReportingHistory = () => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const loadAccountReportingHistory = () => async () => {
   const { notifications, loginAccount: { address }, universe } = AppStatus.get();
   const { updateLoginAccount, updateNotifications } = AppStatus.actions;
   if (!address) return;

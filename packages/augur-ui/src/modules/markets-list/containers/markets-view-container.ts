@@ -44,7 +44,12 @@ const mapStateToProps = (state: AppState, { location }) => {
   } = getSelectedTagsAndCategoriesFromLocation(location);
   const {
     marketsList: { marketCardFormat, isSearching, meta, selectedCategories },
-    loginAccount: { settings },
+    loginAccount: {
+      settings: {
+        showInvalidMarketsBannerHideOrShow,
+        showInvalidMarketsBannerFeesOrLiquiditySpread,
+      },
+    },
     isMobile,
     universe: { id },
     isConnected,
@@ -79,10 +84,8 @@ const mapStateToProps = (state: AppState, { location }) => {
     marketSort,
     marketFilter,
     marketCardFormat: autoSetupMarketCardFormat,
-    showInvalidMarketsBannerHideOrShow:
-      settings.showInvalidMarketsBannerHideOrShow,
-    showInvalidMarketsBannerFeesOrLiquiditySpread:
-      settings.showInvalidMarketsBannerFeesOrLiquiditySpread,
+    showInvalidMarketsBannerHideOrShow,
+    showInvalidMarketsBannerFeesOrLiquiditySpread,
     templateFilter,
   };
 };
@@ -95,7 +98,7 @@ const mapDispatchToProps = (
     loadMarketsByFilter: (
       filter: LoadMarketsFilterOptions,
       cb: NodeStyleCallback
-    ) => dispatch(loadMarketsByFilter(filter, cb)),
+    ) => loadMarketsByFilter(filter, cb),
     loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
     removeFeeFilter: () =>
       updateFilterSortOptions({ [MARKET_MAX_FEES]: MAX_FEE_100_PERCENT }),

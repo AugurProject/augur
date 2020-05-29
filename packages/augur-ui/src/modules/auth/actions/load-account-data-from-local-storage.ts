@@ -26,7 +26,7 @@ export const loadAccountDataFromLocalStorage = (
   getState: () => AppState
 ) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-  const { universe } = AppStatus.get();
+  const { universe, filterSortOptions } = AppStatus.get();
 
   if (localStorageRef && localStorageRef.getItem && address) {
     const storedAccountData = JSON.parse(localStorageRef.getItem(address));
@@ -48,24 +48,14 @@ export const loadAccountDataFromLocalStorage = (
       const { settings } = storedAccountData;
 
       if (settings) {
-        const { maxFee, spread, showInvalid, templateFilter } = settings;
-        updateLoginAccount({ settings });
-        if (maxFee) {
-          updateFilterSortOptions({ [MARKET_MAX_FEES]: settings.maxFee });
-        }
-        if (spread) {
-          updateFilterSortOptions({ [MARKET_MAX_SPREAD]: settings.spread });
-        }
-        if (showInvalid) {
-          updateFilterSortOptions({
-            [MARKET_SHOW_INVALID]: settings.showInvalid,
-          });
-        }
-        if (templateFilter) {
-          updateFilterSortOptions({
-            [TEMPLATE_FILTER]: settings.templateFilter,
-          });
-        }
+        const { maxFee, maxLiquiditySpread, includeInvalidMarkets, templateFilter } = settings;
+        updateFilterSortOptions({
+          ...filterSortOptions,
+          maxFee,
+          maxLiquiditySpread,
+          includeInvalidMarkets,
+          templateFilter,
+        });
       }
 
       if (!!affiliate && isAddress(affiliate))
@@ -82,7 +72,7 @@ export const loadAccountDataFromLocalStorage = (
         }
       } else {
         // we have a no selectedUniveres for this account, default to default universe for this network.
-        dispatch(setSelectedUniverse());
+        setSelectedUniverse();
       }
       if (
         favorites &&

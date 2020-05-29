@@ -53,7 +53,7 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   const loggedInAccountType = (loggedInUser && loggedInUser.type) || null;
   const { setModal } = AppStatus.actions;
   const errorModal = () => {
-    dispatch(logout());
+    logout();
     setModal({
         type: MODAL_ERROR,
       });
@@ -89,10 +89,7 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   }
 }
 
-function pollForNetwork(
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) {
+function pollForNetwork() {
   setInterval(() => {
     const { modal } = AppStatus.get();
     const { setModal } = AppStatus.actions;
@@ -110,20 +107,18 @@ function pollForNetwork(
 }
 
 export function connectAugur(
-  history: History,
   config: SDKConfiguration,
   isInitialConnection = false,
   callback: NodeStyleCallback = logError,
 ) {
   return async (
     dispatch: ThunkDispatch<void, any, Action>,
-    getState: () => AppState
   ) => {
     const { modal, loginAccount } = AppStatus.get();
     const windowApp = windowRef as WindowApp;
     const loggedInUser = getLoggedInUserFromLocalStorage();
-    const loggedInAccount = (loggedInUser && loggedInUser.address) || null;
-    const loggedInAccountType = (loggedInUser && loggedInUser.type) || null;
+    const loggedInAccount = (loggedInUser?.address) || null;
+    const loggedInAccountType = (loggedInUser?.type) || null;
 
     // Preload Account
     const preloadAccount = accountType => {
@@ -252,7 +247,7 @@ export function connectAugur(
 
     if (isInitialConnection) {
       loadAccountIfStored(dispatch);
-      pollForNetwork(dispatch, getState);
+      pollForNetwork();
     }
 
     // wire up start up events for sdk
@@ -273,7 +268,6 @@ interface initAugurParams {
 }
 
 export function initAugur(
-  history: History,
   {
     ethereumNodeHttp,
     ethereumNodeWs /* unused */,
@@ -308,7 +302,7 @@ export function initAugur(
     getFingerprint();
     AppStatus.actions.setEnv(config);
     tryToPersistStorage();
-    connectAugur(history, config, true, callback)(dispatch, getState);
+    connectAugur(config, true, callback)(dispatch);
 
     windowRef.showIndexedDbSize = showIndexedDbSize;
   };

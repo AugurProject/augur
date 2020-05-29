@@ -12,7 +12,7 @@ import { FINISHED_TEST_TRADE, track } from 'services/analytics/helpers';
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   track: (eventName, payload) => track(eventName, payload),
 });
 

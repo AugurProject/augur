@@ -9,32 +9,28 @@ import {
   ExternalLinkText,
   ProcessingButton,
 } from 'modules/common/buttons';
-import GlobalChat from 'modules/global-chat/containers/global-chat' ;
-import { NavMenuItem, AccountBalances, FormattedNumber } from 'modules/types';
+import GlobalChat from 'modules/global-chat/containers/global-chat';
+import { NavMenuItem } from 'modules/types';
 import { helpIcon, Dot } from 'modules/common/icons';
 import {
   TRANSACTIONS,
   MIGRATE_FROM_LEG_REP_TOKEN,
   CREATEAUGURWALLET,
   TOTAL_FUNDS_TOOLTIP,
+  WALLET_STATUS_VALUES,
+  MODAL_MIGRATE_REP,
 } from 'modules/common/constants';
-import {
-  CREATE_MARKET
-} from 'modules/routes/constants/views';
+import { CREATE_MARKET } from 'modules/routes/constants/views';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 import { LinearPropertyLabelUnderlineTooltip } from 'modules/common/labels';
 import { formatNumber } from 'utils/format-number';
-import { getEthReserveInDai } from 'modules/auth/selectors/get-eth-reserve';
+import { getEthReserveInDai } from 'modules/auth/helpers/get-eth-reserve';
+import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
 
 interface TopNavProps {
   isLogged: boolean;
   menuData: NavMenuItem[];
-  migrateV1Rep: Function;
-  showMigrateRepButton: boolean;
-  walletBalances: AccountBalances;
-  showCreateAccountButton: boolean;
-  createFundedGsnWallet: Function;
 }
 
 const SPREAD_INDEX = 3;
@@ -42,13 +38,21 @@ const SPREAD_INDEX = 3;
 const TopNav = ({
   isLogged,
   menuData,
-  migrateV1Rep,
-  showMigrateRepButton = false,
-  walletBalances,
-  showCreateAccountButton,
-  createFundedGsnWallet,
 }: TopNavProps) => {
-  const { currentBasePath } = useAppStatusStore();
+  const {
+    walletStatus,
+    currentBasePath,
+    pendingQueue,
+    loginAccount: { balances: walletBalances },
+    actions: { setModal },
+  } = useAppStatusStore();
+  const pending =
+    pendingQueue[TRANSACTIONS] &&
+    pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
+  const showMigrateRepButton =
+    !!walletBalances.legacyRep || !!walletBalances.legacyRepNonSafe || !!pending;
+  const showCreateAccountButton = walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING ||
+  walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
   const ethReserveInDai = getEthReserveInDai();
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
@@ -67,7 +71,11 @@ const TopNav = ({
           if (item.route === CREATE_MARKET) {
             return (
               <li className={Styles.CreateButton} key={item.title}>
-                <Link to={item.route || !item.disabled ? makePath(item.route) : null}>
+                <Link
+                  to={
+                    item.route || !item.disabled ? makePath(item.route) : null
+                  }
+                >
                   <SecondaryButton
                     disabled={item.disabled}
                     text={'Create Market'}
@@ -80,12 +88,12 @@ const TopNav = ({
           return (
             <Fragment key={item.title}>
               {index === SPREAD_INDEX && (
-                <li key='fill-space' className={Styles.FillSpace} />
+                <li key="fill-space" className={Styles.FillSpace} />
               )}
 
               <div className={Styles.ToolTip}>
                 <LinearPropertyLabelUnderlineTooltip
-                  {...(formatNumber(0))}
+                  {...formatNumber(0)}
                   highlightAlternateBolded
                   id={'totalFunds'}
                   tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
@@ -93,15 +101,15 @@ const TopNav = ({
               </div>
 
               {index === SPREAD_INDEX && showMigrateRepButton && (
-                <li className={Styles.MigrateRepItem} key='migrate-rep-button'>
+                <li className={Styles.MigrateRepItem} key="migrate-rep-button">
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
-                        text={'Migrate V1 to V2 REP'}
-                        action={() => migrateV1Rep()}
-                        queueName={TRANSACTIONS}
-                        queueId={MIGRATE_FROM_LEG_REP_TOKEN}
-                        secondaryButton
-                      />
+                      text={'Migrate V1 to V2 REP'}
+                      action={() => setModal({ type: MODAL_MIGRATE_REP })}
+                      queueName={TRANSACTIONS}
+                      queueId={MIGRATE_FROM_LEG_REP_TOKEN}
+                      secondaryButton
+                    />
                   </div>
                   <span>
                     <label
@@ -122,11 +130,9 @@ const TopNav = ({
                       eventOff="mouseleave mouseout scroll mousewheel blur"
                     >
                       <p>
-                        {
-                          walletBalances.legacyRep > 0
-                            ? 'You have V1 REP in your User account address. Migrate it to V2 REP to use it in Augur V2.'
-                            : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'
-                        }
+                        {walletBalances.legacyRep > 0
+                          ? 'You have V1 REP in your User account address. Migrate it to V2 REP to use it in Augur V2.'
+                          : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'}
                       </p>
                     </ReactTooltip>
                   </span>
@@ -136,7 +142,11 @@ const TopNav = ({
                 <li className={Styles.CreatAccountButton}>
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
-                      text={walletBalances.dai === 0 ? 'Waiting for Funding' : 'Initiaize GSN Wallet'}
+                      text={
+                        walletBalances.dai === 0
+                          ? 'Waiting for Funding'
+                          : 'Initiaize GSN Wallet'
+                      }
                       action={() => createFundedGsnWallet()}
                       disabled={walletBalances.dai === 0}
                       queueName={CREATEAUGURWALLET}
@@ -179,7 +189,7 @@ const TopNav = ({
                   {item.showAlert && Dot}
                 </Link>
               </li>
-            </ Fragment>
+            </Fragment>
           );
         })}
 

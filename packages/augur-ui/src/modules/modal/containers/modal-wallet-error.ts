@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => dispatch(closeModal()),
+  closeModal: () => closeModal(),
   showAddFundsModal: () => AppStatus.actions.setModal({ type: MODAL_ADD_FUNDS }),
 });
 
