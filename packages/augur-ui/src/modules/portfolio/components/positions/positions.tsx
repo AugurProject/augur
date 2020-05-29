@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import memoize from "memoizee";
-import FilterBox from "modules/portfolio/containers/filter-box";
+import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { CompactButton } from "modules/common/buttons";
 import { MovementLabel, ValueLabel } from "modules/common/labels";
 import PositionsTable from "modules/market/containers/positions-table";

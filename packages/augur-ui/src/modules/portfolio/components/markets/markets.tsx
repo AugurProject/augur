@@ -5,7 +5,7 @@ import {
   CREATE_MARKET
 } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
-import FilterBox from 'modules/portfolio/containers/filter-box';
+import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { SecondaryButton } from 'modules/common/buttons';
 import { THEMES } from 'modules/common/constants';
 import { AddIcon } from 'modules/common/icons';

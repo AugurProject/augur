@@ -12,6 +12,7 @@ import { THEMES } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
 import { StarIcon } from 'modules/common/icons';
+import { createMarketsStateObject } from 'modules/portfolio/helpers/create-markets-state-object';
 
 export interface MarketsByReportingState {
   [type: string]: Array<Market>;
@@ -21,11 +22,9 @@ export interface FilterBoxProps {
   title: string;
   sortByOptions: Array<NameValuePair>;
   filteredData: Array<Market>;
-  data: MarketsByReportingState;
   filterComp: (input: string, market: Market) => boolean;
   bottomRightContent?: ReactNode;
   rightContent?: Function;
-  dataObj: object;
   noToggle?: boolean;
   renderToggleContent?: Function;
   filterLabel: string;
@@ -44,13 +43,21 @@ export interface FilterBoxProps {
   emptyDisplayButton?: ReactNode;
 }
 
+function pick(object, keys) {
+  return keys.reduce((obj, key) => {
+    if (object && object.hasOwnProperty(key)) {
+      obj[key] = object[key];
+    }
+    return obj;
+  }, {});
+}
+
 const FilterBox: React.FC<FilterBoxProps> = ({
   title,
   sortByOptions,
   bottomRightContent,
   noToggle,
   renderRightContent,
-  dataObj,
   renderToggleContent,
   filterLabel,
   sortByStyles,
@@ -59,7 +66,6 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   toggle,
   hide,
   extend,
-  data,
   customClass,
   showLiquidityDepleted,
   bottomContent,
@@ -67,7 +73,23 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   emptyDisplayText,
   emptyDisplayIcon,
   emptyDisplayButton,
+  markets,
+  pickVariables
 }) => {
+  const marketsObj = markets.reduce((obj, market) => {
+    obj[market.id] = market;
+    return obj;
+  }, {});
+
+  const marketsPick =
+    markets &&
+    markets.map((
+      market 
+    ) => pick(market, pickVariables));
+
+  const marketsByState = createMarketsStateObject(marketsPick);
+  const dataObj = marketsObj;
+  const data = marketsByState;
   const [search, setSearch] = useState('');
   const [selectedTab, setSelectedTab] = useState(ALL_MARKETS);
   const [sortBy, setSortBy] = useState(

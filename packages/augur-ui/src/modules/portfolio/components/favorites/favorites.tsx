@@ -1,14 +1,15 @@
 import React from 'react';
 
-import FilterBox from 'modules/portfolio/containers/filter-box';
+import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { MarketProgress } from 'modules/common/progress';
 import { FavoritesButton } from 'modules/common/buttons';
 import { END_TIME, THEMES } from 'modules/common/constants';
 
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import favoriteStyles from 'modules/portfolio/components/favorites/favorites.styles.less';
-import { MarketData } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { MarketData } from "modules/types";
 
 const sortByOptions = [
   {
@@ -42,21 +43,27 @@ function filterComp(input, market) {
 }
 
 interface FavoritesProps {
-  markets: Array<MarketData>;
   toggle: Function;
 }
 
 const Favorites = ({
-  markets,
   toggle,
 }: FavoritesProps) => {
-  const { theme } = useAppStatusStore();
+  const { theme, favorites } = useAppStatusStore();
+
+  const markets = Object.keys(favorites).reduce(
+    (filtered: any, marketId: string) => [
+      ...filtered,
+      { ...selectMarket(marketId), favoriteAddedData: favorites[marketId] }
+    ],
+    [],
+  );
+
   const isTrading = theme === THEMES.TRADING;
   let customClass = favoriteStyles.Watchlist;
   if (!isTrading && markets.length === 0) {
     customClass = favoriteStyles.WatchlistEmptyDisplay;
   }
-
   function renderRightContent(market) {
     return (
       <div className={Styles.MultiColumn}>
