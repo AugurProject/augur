@@ -210,16 +210,16 @@ h6 {
   background: @color-module-background;
   border-right: @size-1 solid @color-dark-grey;
 
-  @media @breakpoint-mobile {
-    padding-top: 0;
-  }
-
   > div:first-of-type {
-    left: 0px;
+    left: 0;
     position: absolute;
-    right: 0px;
+    right: 0;
     width: 100%;
     z-index: @mask-toast;
+  }
+
+  @media @breakpoint-mobile {
+    padding-top: 0;
   }
 }
 
