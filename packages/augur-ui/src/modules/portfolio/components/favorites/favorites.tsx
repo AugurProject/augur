@@ -53,12 +53,6 @@ const Favorites = ({
   toggle,
 }: FavoritesProps) => {
   const { theme, favorites } = useAppStatusStore();
-  const { marketInfos } = useMarketsStore();
-
-  useEffect(() => {
-    loadMarketsInfoIfNotLoaded(Object.keys(favorites));
-  });
-
   const markets = Object.keys(favorites).reduce(
     (filtered: any, marketId: string) => [
       ...filtered,
