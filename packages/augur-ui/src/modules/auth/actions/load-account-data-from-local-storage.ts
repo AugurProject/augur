@@ -80,8 +80,9 @@ export const loadAccountDataFromLocalStorage = (
         favorites[networkId] &&
         favorites[networkId][universe.id]
       ) {
-        loadMarketsInfoIfNotLoaded(Object.keys(favorites[networkId][universe.id]));
-        loadFavorites(favorites[networkId][universe.id]);
+        loadMarketsInfoIfNotLoaded(Object.keys(favorites[networkId][universe.id]), () => {
+          loadFavorites(favorites[networkId][universe.id]);
+        });
       }
       const {
         alerts,
