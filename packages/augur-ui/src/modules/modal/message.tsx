@@ -89,7 +89,7 @@ export const Message = ({
   showHelp,
   showOdds
 }: MessageProps) => (
-  <div className={classNames(Styles.Message, {[Styles.Help]: showHelp})}>
+  <div className={classNames(Styles.Message, {[Styles.Help]: showHelp || showOdds})}>
     <Title title={title} closeAction={closeAction} />
     <main>
       {alertMessage && <AlertMessage {...alertMessage} />}
