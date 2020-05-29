@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { ButtonsRow, Breakdown } from 'modules/modal/common';
-import { DAI, ETH, REP, ZERO, GWEI_CONVERSION, MAX_DECIMALS } from 'modules/common/constants';
+import { DAI, ETH, REP, ZERO, GWEI_CONVERSION, MAX_DECIMALS, TRANSACTIONS, TRANSFER } from 'modules/common/constants';
 import {
   formatEther,
   formatRep,
@@ -12,9 +12,8 @@ import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
-import { FormattedNumber } from 'modules/types';
 import { FormDropdown, TextInput } from 'modules/common/form';
-import { CloseButton } from 'modules/common/buttons';
+import { CloseButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
 import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import getPrecision from 'utils/get-number-precision';
@@ -44,7 +43,7 @@ interface TransferFormProps {
   useSigner?: boolean;
   signerAddress?: string;
   transactionLabel: string;
-  ethInReserve: FormattedNumber;
+  signingEthBalance: string;
 }
 
 interface TransferFormState {
@@ -194,11 +193,11 @@ export class TransferForm extends Component<
     }
 
     if (GsnEnabled && amountMinusGas.lt(ZERO)) {
-      updatedErrors.amount = `Not enough DAI available to pay gas cost. ${amountMinusGas} is needed`;
+      updatedErrors.amount = `Not enough DAI available to pay gas cost. ${amountMinusGas.abs()} is needed`;
     }
 
     if (!GsnEnabled && amountMinusGas.lt(ZERO)) {
-      updatedErrors.amount = `Not enough ETH to pay gas cost. ${amountMinusGas} is needed`;
+      updatedErrors.amount = `Not enough ETH to pay gas cost. ${amountMinusGas.abs()} is needed`;
     }
 
     if (getPrecision(newAmount, MAX_DECIMALS) > MAX_DECIMALS) {
@@ -292,26 +291,16 @@ export class TransferForm extends Component<
       ? balances.signerBalances[currency.toLowerCase()]
       : balances[currency.toLowerCase()];
 
-    const buttons = [
-      {
-        text: 'Send',
-        action: () =>
-          transferFunds(formattedAmount.fullPrecision, currency, address, useSigner),
-        disabled: !isValid,
-      },
-      {
-        text: 'Cancel',
-        action: closeAction,
-      },
-    ];
     const breakdown = [
       {
         label: 'Send',
         value: formattedAmount,
+        showDenomination: true,
       },
       {
         label: transactionLabel,
-        value: gasEstimate,
+        value: formatDai(gasEstimate),
+        showDenomination: true,
       },
     ];
 
@@ -368,7 +357,16 @@ export class TransferForm extends Component<
           </div>
           <Breakdown rows={breakdown} />
         </main>
-        <ButtonsRow buttons={buttons} />
+        <div>
+          <ProcessingButton
+            text={'Send'}
+            action={() => transferFunds(formattedAmount.fullPrecision, currency, address, useSigner)}
+            queueName={TRANSACTIONS}
+            queueId={TRANSFER}
+            disabled={!isValid}
+          />
+          <SecondaryButton text={'Cancel'} action={closeAction} />
+        </div>
       </div>
     );
   }

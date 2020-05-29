@@ -323,7 +323,12 @@ export async function withdrawAllFunds(destination: string): Promise<void> {
 
 export async function withdrawAllFundsEstimateGas(destination: string): Promise<BigNumber> {
   const { gsn } = augurSdk.get();
-  return await gsn.withdrawAllFundsEstimateGas(destination);
+  try {
+    return await gsn.withdrawAllFundsEstimateGas(destination);
+  } catch(error) {
+    console.error('withdrawAllFundsEstimateGas', error);
+    throw error;
+  }
 }
 
 

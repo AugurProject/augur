@@ -29,6 +29,7 @@ import {
   FINALIZE,
   DOINITIALREPORT,
   CONTRIBUTE,
+  TRANSFER,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -68,6 +69,7 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   SWAPETHFOREXACTTOKENS,
   CLAIMMARKETSPROCEEDS,
   FINALIZE,
+  TRANSFER,
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage =

@@ -12,6 +12,8 @@ import { formatDai, formatEther } from 'utils/format-number';
 import { selectAccountFunds } from 'modules/auth/selectors/login-account';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { createBigNumber } from 'utils/create-big-number';
+import { transferFunds, transferFundsGasEstimate } from 'modules/auth/actions/transfer-funds';
+import { DAI } from 'modules/common/constants';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
@@ -26,6 +28,8 @@ const mapStateToProps = (state: AppState) => {
   const reserveInDaiFormatted = ethToDai(ethReserveAmount.value || 0, createBigNumber(ethToDaiRate?.value || 0));
   const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(accountFunds.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
   const tradingAccountEthFormatted = formatEther(loginAccount.balances.eth);
+  const signingEthBalance = loginAccount.balances.signerBalances.eth;
+
   return {
     account: address,
     modal,
@@ -35,6 +39,7 @@ const mapStateToProps = (state: AppState) => {
     reserveInDaiFormatted,
     totalDaiFormatted,
     tradingAccountEthFormatted,
+    signingEthBalance,
   }
 };
 
@@ -42,6 +47,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   withdrawAllFunds: (destination: string) => withdrawAllFunds(destination),
   withdrawAllFundsEstimateGas: (destination: string) => withdrawAllFundsEstimateGas(destination),
   closeModal: () => dispatch(closeModal()),
+  transferFunds: (amount: string, destination: string) => transferFunds(amount, DAI, destination),
+  transferFundsGasEstimate: (amount: string, asset: string, to: string) => transferFundsGasEstimate(amount, asset, to),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -49,6 +56,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   closeAction: () => dP.closeModal(),
   withdrawAllFunds: (destination: string) => dP.withdrawAllFunds(destination),
   withdrawAllFundsEstimateGas: (destination: string) => dP.withdrawAllFundsEstimateGas(destination),
+  transferFunds: (amount: string, destination: string) => dP.transferFunds(amount, destination),
+  transferFundsGasEstimate: (amount: string, destination: string) => dP.transferFundsGasEstimate(amount, DAI, destination),
 });
 
 
