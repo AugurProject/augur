@@ -898,6 +898,30 @@ div.ButtonsRow:last-of-type {
         padding: 0 @size-24;
       }
     }
+
+    &.Help {
+      > main {
+        padding: 0;
+
+        > ul {
+          width: unset;
+        }
+        
+        > div {
+          position: static;
+          border: 0;
+          width: 100%;
+  
+          > span:first-of-type {
+            display: none;
+          }
+  
+          > span:nth-of-type(2) {
+            border-top: 0;
+          }
+        }
+      }
+    }
   }
 }
 

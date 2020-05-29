@@ -123,6 +123,10 @@
   .FiltersGroup {
     margin: 0 @size-32 0;
     border-bottom: @size-1 solid var(--color-secondary-action-outline);
+
+    @media @breakpoint-mobile-tablet {
+      border-bottom: 0;
+    }
   
     > div[class*='RadioBarGroup'] {
       margin: @size-13 0 0;
