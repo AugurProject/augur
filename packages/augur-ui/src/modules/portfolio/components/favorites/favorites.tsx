@@ -10,6 +10,9 @@ import favoriteStyles from 'modules/portfolio/components/favorites/favorites.sty
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { MarketData } from "modules/types";
+import { useEffect } from 'react';
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
+import { useMarketsStore } from 'modules/markets/store/markets';
 
 const sortByOptions = [
   {
@@ -50,6 +53,11 @@ const Favorites = ({
   toggle,
 }: FavoritesProps) => {
   const { theme, favorites } = useAppStatusStore();
+  const { marketInfos } = useMarketsStore();
+
+  useEffect(() => {
+    loadMarketsInfoIfNotLoaded(Object.keys(favorites));
+  });
 
   const markets = Object.keys(favorites).reduce(
     (filtered: any, marketId: string) => [
