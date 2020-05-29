@@ -150,7 +150,7 @@ const mapStateToPropsActivateWalletButton = () => {
 const mapDispatchToProps = dispatch => ({
   initializeGsnWallet: () => AppStatus.actions.setModal({ type: MODAL_INITIALIZE_ACCOUNT }),
   updateWalletStatus: () => {
-    dispatch(removePendingTransaction(CREATEAUGURWALLET));
+    removePendingTransaction(CREATEAUGURWALLET);
   },
 });
 

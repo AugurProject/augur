@@ -1,4 +1,3 @@
-import { AppState } from 'appStore';
 import {
   CANCELORDER,
   CANCELORDERS,
@@ -31,8 +30,6 @@ import {
   CONTRIBUTE,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import {
   Events,
   TXEventName,
@@ -85,10 +82,7 @@ export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   );
 };
 
-export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
   const { eventName, transaction, hash } = txStatus;
   if (transaction) {
     const {
@@ -125,16 +119,14 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       eventName === TXEventName.RelayerDown
     ) {
       const genHash = hash ? hash : generateTxParameterId(transaction.params);
-      dispatch(
-        addAlert({
-          id: genHash,
-          uniqueId: genHash,
-          params: transaction.params,
-          status: TXEventName.Failure,
-          timestamp,
-          name: methodCall,
-        })
-      );
+      addAlert({
+        id: genHash,
+        uniqueId: genHash,
+        params: transaction.params,
+        status: TXEventName.Failure,
+        timestamp,
+        name: methodCall,
+      });
     } else if (
       hash &&
       eventName === TXEventName.Success &&
@@ -260,21 +252,17 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       case CANCELORDER: {
         const orderId =
           transaction.params && transaction.params.order[TX_ORDER_ID];
-        dispatch(addCanceledOrder(orderId, eventName, hash));
+        addCanceledOrder(orderId, eventName, hash);
         break;
       }
       case BATCHCANCELORDERS: {
         const orders = (transaction.params && transaction.params.orders) || [];
-        orders.map(order =>
-          dispatch(addCanceledOrder(order.orderId, eventName, hash))
-        );
+        orders.map(order => addCanceledOrder(order.orderId, eventName, hash));
         break;
       }
       case CANCELORDERS: {
         const orders = (transaction.params && transaction.params._orders) || [];
-        orders.map(order =>
-          dispatch(addCanceledOrder(order.orderId, eventName, hash))
-        );
+        orders.map(order => addCanceledOrder(order.orderId, eventName, hash));
         orders.map(order =>
           addPendingData(
             parseZeroXMakerAssetData(order.makerAssetData).market,
@@ -286,17 +274,11 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
         break;
       }
       case DOINITIALREPORT: {
-        hash &&
-          dispatch(
-            updatePendingReportHash(transaction.params, hash, eventName)
-          );
+        hash && updatePendingReportHash(transaction.params, hash, eventName);
         break;
       }
       case CONTRIBUTE: {
-        hash &&
-          dispatch(
-            updatePendingDisputeHash(transaction.params, hash, eventName)
-          );
+        hash && updatePendingDisputeHash(transaction.params, hash, eventName);
         break;
       }
 

@@ -1,30 +1,23 @@
-import { AppState } from 'appStore';
 import {
   AccountPositionAction,
   AccountPosition,
 } from 'modules/types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
 import { AppStatus } from 'modules/app/store/app-status';
 
-export const checkUpdateUserPositions = (marketIds: string[]) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const checkUpdateUserPositions = (marketIds: string[]) => {
   const { accountPositions } = AppStatus.get();
   const posMarketIds = Object.keys(accountPositions);
   let included = false;
   posMarketIds.map(m => {
     if (marketIds.includes(m)) included = true});
   if (included) {
-    dispatch(loadAllAccountPositions());
+    loadAllAccountPositions();
   }
 };
 
-export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState) => {
+export const loadAllAccountPositions = async () => {
   const { loginAccount: { mixedCaseAddress }, universe: { id: universe }} = AppStatus.get();
   const { updateLoginAccount, updateUserFilledOrders } =  AppStatus.actions;
   const Augur = augurSdk.get();
@@ -40,10 +33,7 @@ export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void
   }
 };
 
-export const loadAccountOnChainFrozenFundsTotals = () => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const loadAccountOnChainFrozenFundsTotals = async () => {
   const { loginAccount, universe: { id: universe }} = AppStatus.get();
   const Augur = augurSdk.get();
   const frozen = await Augur.getTotalOnChainFrozenFunds({

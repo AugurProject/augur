@@ -41,8 +41,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  removeCanceledOrder: id => dispatch(removeCanceledOrder(id)),
-  removePendingOrder: (pendingId, marketId) => dispatch(removePendingOrder(pendingId, marketId)),
+  removeCanceledOrder: id => removeCanceledOrder(id),
+  removePendingOrder: (pendingId, marketId) => removePendingOrder(pendingId, marketId),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {

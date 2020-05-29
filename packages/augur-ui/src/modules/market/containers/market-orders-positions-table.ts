@@ -46,7 +46,7 @@ const mapDispatchToProps = dispatch => ({
   cancelAllOpenOrders: (orders) => {
     dispatch(cancelAllOpenOrders(orders));
     orders.forEach(order => {
-      dispatch(addCanceledOrder(order.id, TXEventName.Pending, null));
+      addCanceledOrder(order.id, TXEventName.Pending, null);
     });
   },
 });

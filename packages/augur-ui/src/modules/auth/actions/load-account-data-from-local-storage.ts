@@ -122,7 +122,7 @@ export const loadAccountDataFromLocalStorage = (
         dispatch(loadPendingOrdersTransactions(pendingOrders));
       }
       if (pendingQueue) {
-        dispatch(loadPendingQueue(pendingQueue));
+        loadPendingQueue(pendingQueue);
       }
       if (gasPriceInfo && gasPriceInfo.userDefinedGasPrice) {
         updateGasPriceInfo({

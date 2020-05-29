@@ -87,9 +87,8 @@ const FilterBox: React.FC<FilterBoxProps> = ({
       market 
     ) => pick(market, pickVariables));
 
-  const marketsByState = createMarketsStateObject(marketsPick);
+  const data = createMarketsStateObject(marketsPick);
   const dataObj = marketsObj;
-  const data = marketsByState;
   const [search, setSearch] = useState('');
   const [selectedTab, setSelectedTab] = useState(ALL_MARKETS);
   const [sortBy, setSortBy] = useState(
@@ -97,19 +96,15 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   );
   const [filteredData, setFilteredData] = useState(data[ALL_MARKETS]);
   const [tabs, setTabs] = useState(createTabsInfo(data));
-  const dataRef = useRef(null);
   const { theme, blockchain: { currentAugurTimestamp } } = useAppStatusStore();
 
   useEffect(() => {
     applySearchAndSort();
-  }, [search, sortBy, selectedTab, data]);
-
-  useEffect(() => {
-    dataRef.current = data;
-  }, [data]);
+  }, [search, sortBy, selectedTab, data.all, data.closed, data.open, data.reporting]);
 
   const applySearchAndSort = () => {
     let nextFilteredData = data[selectedTab];
+    let updateFilteredData = false;
     // filter markets
     nextFilteredData = nextFilteredData.filter(market =>
       filterComp(search, market)
@@ -149,22 +144,21 @@ const FilterBox: React.FC<FilterBoxProps> = ({
 
       nextFilteredData = nextFilteredData.sort((a, b) => comp(a, b));
     }
-
+    if (filteredData.length !== nextFilteredData.length) updateFilteredData = true;
     const nextTabs = [...tabs];
-
+    let updateTabs = false;
     for (let i = 0; i < tabs.length; i++) {
       const numOfMarkets = data[tabs[i].key].filter(market =>
         filterComp(search, market)
       ).length;
-
+      if (tabs[i].num !== numOfMarkets) updateTabs = true;
       nextTabs[i] = {
         ...nextTabs[i],
         num: numOfMarkets,
       };
     }
-
-    setTabs(nextTabs);
-    setFilteredData(nextFilteredData);
+    if (updateTabs) setTabs(nextTabs);
+    if (updateFilteredData) setFilteredData(nextFilteredData);
   };
 
   return (

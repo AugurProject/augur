@@ -303,7 +303,7 @@ const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
 
 const mapDispatchToPropsProcessingButton = (dispatch, ownProps) => ({
   cancel: () =>
-    dispatch(removePendingData(ownProps.queueId, ownProps.queueName)),
+    removePendingData(ownProps.queueId, ownProps.queueName),
 });
 
 export const ProcessingButton = connect(

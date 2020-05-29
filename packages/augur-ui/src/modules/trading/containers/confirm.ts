@@ -50,7 +50,7 @@ const mapDispatchToProps = dispatch => ({
       type: MODAL_INITIALIZE_ACCOUNT,
     }),
   updateWalletStatus: () => {
-    dispatch(removePendingTransaction(CREATEAUGURWALLET));
+    removePendingTransaction(CREATEAUGURWALLET);
   },
 });
 

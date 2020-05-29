@@ -1,13 +1,8 @@
-import { AppState } from 'appStore';
-import { ThunkAction } from 'redux-thunk';
 import { augurSdk } from 'services/augursdk';
 import { POPULAR_CATEGORIES } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 
-export const getCategoryStats = (): ThunkAction<void, AppState, void, any> => async (
-  dispatch,
-  getState
-) => {
+export const getCategoryStats = async () => {
   const augur = augurSdk.get();
   const { universe, isConnected } = AppStatus.get();
 

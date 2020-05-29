@@ -9,7 +9,6 @@ import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import favoriteStyles from 'modules/portfolio/components/favorites/favorites.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { MarketData } from "modules/types";
 
 const sortByOptions = [
   {

@@ -1,14 +1,11 @@
 import { isMarketLoaded } from "modules/markets/helpers/is-market-loaded";
 
 import logError from "utils/log-error";
-import { AppState } from "appStore";
-import { Action } from "redux";
 import { NodeStyleCallback } from "modules/types";
-import { ThunkDispatch, ThunkAction } from "redux-thunk";
+import { ThunkAction } from "redux-thunk";
 import { augurSdk } from "services/augursdk";
 import { AppStatus } from "modules/app/store/app-status";
 import { Markets } from "../store/markets";
-import { MARKETS_ACTIONS } from "../store/constants";
 
 export const loadMarketsInfo = (
   marketIds: Array<string>,
