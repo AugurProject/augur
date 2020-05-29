@@ -480,11 +480,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               value={potentialDaiLoss}
               showDenomination={true}
             />
-            <LinearPropertyLabel
-              label="Gas Fee"
-              value={formatEther(gasCostInEth || "0")}
-              showDenomination={true}
-            />
 
             {gasCostDai.roundedValue.gt(0) > 0 &&
               numFills > 0 && (
