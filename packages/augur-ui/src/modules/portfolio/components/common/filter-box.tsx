@@ -144,7 +144,8 @@ const FilterBox: React.FC<FilterBoxProps> = ({
 
       nextFilteredData = nextFilteredData.sort((a, b) => comp(a, b));
     }
-    if (filteredData.length !== nextFilteredData.length) updateFilteredData = true;
+    // if number of markets changes or if the market info isn't loaded yet (no id) then we need to update until it is.
+    if (filteredData.length !== nextFilteredData.length || !!filteredData.find(market => market.id === undefined)) updateFilteredData = true;
     const nextTabs = [...tabs];
     let updateTabs = false;
     for (let i = 0; i < tabs.length; i++) {
