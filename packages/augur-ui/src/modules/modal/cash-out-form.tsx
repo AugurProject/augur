@@ -182,11 +182,11 @@ export const CashOutForm = (props: CashOutFormProps) => {
       <main>
         <div className={Styles.GroupedForm}>
           <div>
-            <label htmlFor="recipient">Recipient address</label>
+            <label htmlFor='recipient'>Recipient address</label>
             <TextInput
-              type="text"
+              type='text'
               value={address}
-              placeholder="0x..."
+              placeholder='0x...'
               onChange={addressChange}
               errorMessage={errors.length > 0 ? errors : ''}
             />
