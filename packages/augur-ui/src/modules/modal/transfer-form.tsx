@@ -14,7 +14,6 @@ import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { FormDropdown, TextInput } from 'modules/common/form';
 import { CloseButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
-import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
 import { getGasInDai, ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
 import getPrecision from 'utils/get-number-precision';
 
@@ -49,6 +48,8 @@ interface TransferFormProps {
 function sanitizeArg(arg) {
   return arg == null || arg === '' ? '' : arg;
 }
+
+const RELAYER_DAI_CUSION = 0;
 
 export const TransferForm = ({
   closeAction,
@@ -107,11 +108,13 @@ export const TransferForm = ({
     } catch (error) {
       console.error('can not get gas estimate', error);
     }
-    const gasInEth = formatGasCostToEther(gasCosts, { decimals: 4}, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
+    const gasInEth = formatGasCostToEther(gasCosts, { decimals: 4}, createBigNumber(GWEI_CONVERSION).times(gasPrice));
     const signerPays = (createBigNumber(signingEthBalance).minus(gasInEth)).gte(ZERO);
     setSignerPays(signerPays);
     setGasCosts(createBigNumber(gasCosts))
-    const gasEstimateInDai = ethToDaiFromAttoRate(Number(gasInEth));
+    const estInDai = ethToDaiFromAttoRate(Number(createBigNumber(gasInEth)));
+    // TODO: figure out exact DAI amount needed to convert to eth.
+    const gasEstimateInDai = signerPays ? estInDai : formatDai(createBigNumber(estInDai.value).plus(RELAYER_DAI_CUSION));
     setState({...state, gasEstimateInDai});
   }
 
@@ -124,7 +127,11 @@ export const TransferForm = ({
       ? balances.signerBalances[currency.toLowerCase()]
       : balances[currency.toLowerCase()];
 
-    amountChange(balance);
+    let newAmount = convertExponentialToDecimal(sanitizeArg(balance));
+    if (!signerPays && currency === DAI) {
+      newAmount = createBigNumber(newAmount).minus(createBigNumber(gasEstimateInDai.value));;
+    }
+    amountChange(newAmount);
   };
 
   const amountChangeFromSigner = (amount: string, gasInEth: string) => {
@@ -140,7 +147,7 @@ export const TransferForm = ({
         newAmount = createBigNumber(eth).minus(createBigNumber(gasInEth))
       }
     }
-    setErrorMessage(newAmount, updatedErrors, balance, amountMinusGas, false);
+    setErrorMessage(newAmount, updatedErrors, balance, amountMinusGas);
   }
 
   const amountChange = (amount: string) => {
@@ -155,15 +162,12 @@ export const TransferForm = ({
     let amountMinusGas = createBigNumber(balances.signerBalances.eth).minus(createBigNumber(gasInEth))
     if (!signerPays && currency === DAI) {
       amountMinusGas = createBigNumber(balances.dai).minus(createBigNumber(gasEstimateInDai.value));
-      if (currency === DAI) {
-        newAmount = createBigNumber(newAmount).minus(createBigNumber(gasEstimateInDai.value));;
-      }
     }
 
-    setErrorMessage(newAmount, updatedErrors, balance, amountMinusGas, GsnEnabled);
+    setErrorMessage(newAmount, updatedErrors, balance, amountMinusGas);
   };
 
-  const setErrorMessage = (newAmount, updatedErrors, balance, amountMinusGas: BigNumber, GsnEnabled) => {
+  const setErrorMessage = (newAmount, updatedErrors, balance, amountMinusGas: BigNumber) => {
     updatedErrors.amount = '';
     const bnNewAmount = createBigNumber(newAmount || '0');
     // validation...
@@ -193,12 +197,14 @@ export const TransferForm = ({
       updatedErrors.amount = 'Quantity must be greater than zero.';
     }
 
-    if (GsnEnabled && amountMinusGas.lt(ZERO)) {
-      updatedErrors.amount = `Not enough DAI available to pay gas cost. ${amountMinusGas.abs()} is needed`;
+    if (!signerPays && (amountMinusGas.lt(ZERO) || createBigNumber(newAmount).gt(amountMinusGas))) {
+      updatedErrors.amount = `Not enough DAI available to pay transaction fee. ${
+        formatDai(amountMinusGas.abs(), { roundDown: true }).roundedFormatted
+      } is min`;
     }
 
-    if (!GsnEnabled && amountMinusGas.lt(ZERO)) {
-      updatedErrors.amount = `Not enough ETH to pay gas cost. ${amountMinusGas.abs()} is needed`;
+    if (signerPays && amountMinusGas.lt(ZERO)) {
+      updatedErrors.amount = `Not enough ETH to pay transaction fee. ${amountMinusGas.abs()} is needed`;
     }
 
     if (getPrecision(newAmount, MAX_DECIMALS) > MAX_DECIMALS) {
