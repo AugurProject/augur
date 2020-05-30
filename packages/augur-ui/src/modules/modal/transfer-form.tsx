@@ -49,7 +49,7 @@ function sanitizeArg(arg) {
   return arg == null || arg === '' ? '' : arg;
 }
 
-const RELAYER_DAI_CUSION = 0;
+const RELAYER_DAI_CUSION = 0.25;
 
 export const TransferForm = ({
   closeAction,
@@ -61,7 +61,6 @@ export const TransferForm = ({
   gasPrice,
   useSigner,
   transactionLabel,
-  GsnEnabled,
   signingEthBalance,
 }: TransferFormProps) => {
   const [currency, setCurrency] = useState(DAI);
