@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Breakdown } from 'modules/modal/common';
-import { formatDai, formatGasCostToEther } from 'utils/format-number';
+import { formatDai } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
@@ -12,7 +12,7 @@ import {
   ProcessingButton,
   SecondaryButton,
 } from 'modules/common/buttons';
-import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
+import { TRANSFER_DAI_GAS_COST } from 'modules/auth/actions/transfer-funds';
 import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
   WITHDRAWALLFUNDSASDAI,
@@ -57,14 +57,14 @@ export const CashOutForm = (props: CashOutFormProps) => {
     totalDai,
   } = props;
   const [gasCosts, setGasCosts] = useState(
-    createBigNumber(TRANSFER_ETH_GAS_COST)
+    createBigNumber(TRANSFER_DAI_GAS_COST)
   );
   const [address, setAddress] = useState('');
   const [errors, setErrors] = useState('');
   const [signerPays, setSignerPays] = useState(true);
 
   async function getGasCost(account) {
-    let gasCosts = createBigNumber(TRANSFER_ETH_GAS_COST);
+    let gasCosts = createBigNumber(TRANSFER_DAI_GAS_COST);
     let signerPays = true;
     try {
       gasCosts = await withdrawAllFundsEstimateGas(account);
@@ -77,13 +77,13 @@ export const CashOutForm = (props: CashOutFormProps) => {
       return setGasCosts(createBigNumber(gasCosts));
     }
     const testHalfDaiAmount = String(
-      createBigNumber(tradingAccountEthFormatted.value).div(2)
+      createBigNumber(totalDai).div(2)
     );
     const relayerGasCosts = await transferFundsGasEstimate(
       testHalfDaiAmount,
       account
     );
-    setGasCosts(createBigNumber(relayerGasCosts).times(3.5));
+    setGasCosts(createBigNumber(relayerGasCosts));
   }
 
   useEffect(() => {

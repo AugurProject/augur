@@ -15,7 +15,7 @@ import convertExponentialToDecimal from 'utils/convert-exponential';
 import { FormDropdown, TextInput } from 'modules/common/form';
 import { CloseButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
-import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { getGasInDai, ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
 import getPrecision from 'utils/get-number-precision';
 
 interface TransferFormProps {
@@ -61,13 +61,17 @@ export const TransferForm = ({
   useSigner,
   transactionLabel,
   GsnEnabled,
+  signingEthBalance,
 }: TransferFormProps) => {
+  const [currency, setCurrency] = useState(DAI);
+  const [signerPays, setSignerPays] = useState(true);
+  const [amount, setAmount] = useState('');
+  const [gasCosts, setGasCosts] = useState(
+    createBigNumber(getGasInDai(fallBackGasCosts[DAI.toLowerCase()]).value)
+  );
   const [state, setState] = useState({
-    relayerGasCosts: createBigNumber(TRANSFER_ETH_GAS_COST),
     address: '',
-    currency: DAI,
-    gasEstimate: getGasInDai(fallBackGasCosts[DAI.toLowerCase()]).formatted,
-    amount: '',
+    gasEstimateInDai: getGasInDai(fallBackGasCosts[DAI.toLowerCase()]),
     errors: {
       address: '',
       amount: '',
@@ -92,26 +96,30 @@ export const TransferForm = ({
   ]
   });
 
+  async function getGasCost(currency) {
+    let gasCosts = createBigNumber(fallBackGasCosts[currency.toLowerCase()]);
+    try {
+      gasCosts = await transferFundsGasEstimate(
+        formattedAmount.fullPrecision,
+        currency,
+        state.address ? state.address : account
+      );
+    } catch (error) {
+      console.error('can not get gas estimate', error);
+    }
+    const gasInEth = formatGasCostToEther(gasCosts, { decimals: 4}, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
+    const signerPays = (createBigNumber(signingEthBalance).minus(gasInEth)).gte(ZERO);
+    setSignerPays(signerPays);
+    setGasCosts(createBigNumber(gasCosts))
+    const gasEstimateInDai = ethToDaiFromAttoRate(Number(gasInEth));
+    setState({...state, gasEstimateInDai});
+  }
+
   useEffect(() => {
-    const formattedAmount =
-      state.currency === ETH
-        ? formatEther(Number(state.amount) || 0)
-        : formatRep(state.amount || 0);
-
-    const relayerGasCosts = transferFundsGasEstimate(
-      formattedAmount.fullPrecision,
-      state.currency,
-      state.address ? state.address : account
-    );
-
-    setState({
-      ...state,
-      relayerGasCosts: createBigNumber(relayerGasCosts),
-    });
-  }, [state.currency]);
+    getGasCost(currency);
+  }, [currency]);
 
   const handleMax = () => {
-    const { currency } = state;
     const balance = useSigner
       ? balances.signerBalances[currency.toLowerCase()]
       : balances[currency.toLowerCase()];
@@ -120,7 +128,7 @@ export const TransferForm = ({
   };
 
   const amountChangeFromSigner = (amount: string, gasInEth: string) => {
-    const { errors: updatedErrors, currency } = state;
+    const { errors: updatedErrors } = state;
     updatedErrors.amount = '';
     let newAmount = amount;
     const balance = balances.signerBalances[currency.toLowerCase()];
@@ -135,23 +143,20 @@ export const TransferForm = ({
     setErrorMessage(newAmount, updatedErrors, balance, amountMinusGas, false);
   }
 
-  const amountChange = (amount: string, currency: string = state.currency) => {
+  const amountChange = (amount: string) => {
     const { errors: updatedErrors } = state;
-    const { relayerGasCosts } = state;
     let newAmount = convertExponentialToDecimal(sanitizeArg(amount)) || "0";
 
-    const gas = fallBackGasCosts[currency.toLowerCase()];
-    const gasInEth = formatGasCostToEther(gas, { decimals: 4}, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
+    const gasInEth = formatGasCostToEther(gasCosts, { decimals: 4}, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
 
     if (useSigner) return amountChangeFromSigner(newAmount, gasInEth);
 
     const balance = balances[currency.toLowerCase()];
     let amountMinusGas = createBigNumber(balances.signerBalances.eth).minus(createBigNumber(gasInEth))
-    if (!amountMinusGas.gt(ZERO)) {
-      const relayerGasCostsDAI = getGasInDai(relayerGasCosts.multipliedBy(gasPrice));
-      amountMinusGas = createBigNumber(balances.dai).minus(createBigNumber(relayerGasCostsDAI.value));
+    if (!signerPays && currency === DAI) {
+      amountMinusGas = createBigNumber(balances.dai).minus(createBigNumber(gasEstimateInDai.value));
       if (currency === DAI) {
-        newAmount = createBigNumber(newAmount).minus(createBigNumber(relayerGasCostsDAI.value));;
+        newAmount = createBigNumber(newAmount).minus(createBigNumber(gasEstimateInDai.value));;
       }
     }
 
@@ -164,7 +169,8 @@ export const TransferForm = ({
     // validation...
     if (newAmount === '' || newAmount === undefined) {
       updatedErrors.amount = 'Quantity is required.';
-      return setState({ ...state, amount: newAmount, errors: updatedErrors });
+      setAmount(String(newAmount));
+      return setState({ ...state, errors: updatedErrors });
     }
 
     if (!isFinite(Number(newAmount))) {
@@ -199,7 +205,8 @@ export const TransferForm = ({
       updatedErrors.amount = `Too many decimal places. ${MAX_DECIMALS} is allowed`;
     }
 
-    setState({ ...state, amount: String(newAmount), errors: updatedErrors });
+    setState({ ...state, errors: updatedErrors });
+    setAmount(String(newAmount));
   }
 
 
@@ -216,7 +223,7 @@ export const TransferForm = ({
     setState({ ...state, address, errors: updatedErrors });
   };
 
-    const { amount, currency, address, errors, gasEstimate } = state;
+    const { address, errors, gasEstimateInDai } = state;
     const { amount: errAmount, address: errAddress } = errors;
     const isValid =
       errAmount === '' && errAddress === '' && amount.length && address.length;
@@ -241,7 +248,7 @@ export const TransferForm = ({
       },
       {
         label: transactionLabel,
-        value: formatDai(gasEstimate),
+        value: gasEstimateInDai,
         showDenomination: true,
       },
     ];
@@ -280,7 +287,10 @@ export const TransferForm = ({
                 id='currency'
                 options={state.options}
                 defaultValue={currency}
-                onChange={currency => amountChange(state.amount, currency)}
+                onChange={currency => {
+                  setCurrency(currency)
+                  setAmount('')
+                }}
               />
             </div>
             <div>
