@@ -1,8 +1,5 @@
 import logError from 'utils/log-error';
-import { AppState } from 'appStore';
 import { NodeStyleCallback } from 'modules/types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import {
   buyParticipationTokens,
   buyParticipationTokensEstimateGas,
@@ -12,13 +9,10 @@ import { BUYPARTICIPATIONTOKENS } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';
 import { AppStatus } from 'modules/app/store/app-status';
 
-export const purchaseParticipationTokens = (
+export const purchaseParticipationTokens = async (
   amount: string,
   estimateGas = false,
   callback: NodeStyleCallback = logError
-) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
   const { universe: { id: universeId }} = AppStatus.get();
   if (!universeId) return callback('no universe provided');

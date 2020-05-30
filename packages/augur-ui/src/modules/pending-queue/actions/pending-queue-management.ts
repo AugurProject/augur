@@ -1,5 +1,4 @@
 import {
-  BaseAction,
   CreateMarketData,
   PendingOrdersType,
   PendingQueue,
@@ -11,8 +10,6 @@ import {
   doReportDisputeAddStake,
 } from 'modules/contracts/actions/contractCalls';
 import { TXEventName } from '@augurproject/sdk';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import {
   TRANSACTIONS,
   CANCELORDER,
@@ -20,7 +17,6 @@ import {
   SUBMIT_REPORT,
   SUBMIT_DISPUTE,
 } from 'modules/common/constants';
-import { AppState } from 'appStore';
 import { updatePendingOrderStatus } from 'modules/orders/actions/pending-orders-management';
 import { AppStatus } from 'modules/app/store/app-status';
 
@@ -32,9 +28,7 @@ export const REMOVE_PENDING_DATA = 'REMOVE_PENDING_DATA';
 export const REMOVE_PENDING_DATA_BY_HASH = 'REMOVE_PENDING_DATA_BY_HASH';
 export const UPDATE_PENDING_DATA_BY_HASH = 'UPDATE_PENDING_DATA_BY_HASH';
 
-export const loadPendingQueue = (pendingQueue: any) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
+export const loadPendingQueue = (pendingQueue: any) => {
   if (!pendingQueue) return;
   Object.keys(pendingQueue).map(async queue => {
     const data = pendingQueue[queue];
@@ -52,7 +46,7 @@ export const loadPendingQueue = (pendingQueue: any) => (
         );
       const confirmed = await isTransactionConfirmed(pendingData.hash);
       confirmed
-        ? dispatch(removePendingData(d, queue))
+        ? removePendingData(d, queue)
         : addPendingData(
             d,
             queue,
@@ -69,7 +63,7 @@ export const addUpdatePendingTransaction = (
   status: string,
   hash: string = null,
   info?: TransactionMetadata
-): void =>
+) =>
   addPendingDataWithBlockNumber(methodCall, TRANSACTIONS, status, hash, info);
 
 export const removePendingTransaction = (methodCall: string) =>
@@ -81,7 +75,7 @@ export const addPendingData = (
   status: string,
   hash: string,
   info?: CreateMarketData | object
-): void =>
+) =>
   addPendingDataWithBlockNumber(pendingId, queueName, status, hash, info);
 
 const addPendingDataWithBlockNumber = (
@@ -90,7 +84,7 @@ const addPendingDataWithBlockNumber = (
   status: string,
   hash: string,
   info?: CreateMarketData | TransactionMetadata
-): void => {
+) => {
   const {
     blockchain: { currentBlockNumber: blockNumber },
   } = AppStatus.get();
@@ -109,9 +103,6 @@ const updatePendingDataHash = (
   oldHash: string,
   newHash: string,
   status: string
-): BaseAction => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
   const {
     blockchain: { currentBlockNumber: blockNumber },
@@ -145,26 +136,24 @@ export const addCanceledOrder = (
   orderId: string,
   status: string,
   hash: string
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
+) => {
   addPendingData(orderId, CANCELORDER, status, hash);
 };
 
-export const removeCanceledOrder = (orderId: string) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => dispatch(removePendingData(orderId, CANCELORDER));
+export const removeCanceledOrder = (orderId: string) => removePendingData(orderId, CANCELORDER);
 
 export const addPendingReport = (
   report: doReportDisputeAddStake,
   payload = {}
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  dispatch(addPendingReportDispute(report, SUBMIT_REPORT, payload));
+) => {
+  addPendingReportDispute(report, SUBMIT_REPORT, payload);
 };
 
 export const addPendingDispute = (
   report: doReportDisputeAddStake,
   payload = {}
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  dispatch(addPendingReportDispute(report, SUBMIT_DISPUTE, payload));
+) => {
+  addPendingReportDispute(report, SUBMIT_DISPUTE, payload);
 };
 
 const addPendingReportDispute = (
@@ -172,7 +161,7 @@ const addPendingReportDispute = (
   type: string = SUBMIT_REPORT,
   payload = {},
   status: string = TXEventName.Pending
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
+) => {
   const payoutnumerators = calculatePayoutNumeratorsArray(
     report.maxPrice,
     report.minPrice,
@@ -189,20 +178,12 @@ const addPendingReportDispute = (
   addPendingData(report.marketId, type, status, tempHash, payload);
 };
 
-export const updatePendingReportHash = (transaction, hash, status) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
-  dispatch(
-    updatePendingReportDisputehash(transaction, SUBMIT_REPORT, hash, status)
-  );
+export const updatePendingReportHash = (transaction, hash, status) => {
+  updatePendingReportDisputehash(transaction, SUBMIT_REPORT, hash, status)
 };
 
-export const updatePendingDisputeHash = (transaction, hash, status) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
-  dispatch(
-    updatePendingReportDisputehash(transaction, SUBMIT_DISPUTE, hash, status)
-  );
+export const updatePendingDisputeHash = (transaction, hash, status) => {
+  updatePendingReportDisputehash(transaction, SUBMIT_DISPUTE, hash, status)
 };
 
 const updatePendingReportDisputehash = (
@@ -210,13 +191,13 @@ const updatePendingReportDisputehash = (
   queueName,
   newHash,
   status
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
+) => {
   const payoutnumerators = transaction._payoutNumerators.map(x => String(x));
   const amount = transaction._additionalStake || transaction._amount;
   const tempHash = generateTxParameterIdFromString(
     `${String(payoutnumerators)}${queueName}${String(amount)}`
   );
-  dispatch(updatePendingDataHash(queueName, tempHash, newHash, status));
+  updatePendingDataHash(queueName, tempHash, newHash, status);
 };
 
 interface PendingItem {
@@ -229,22 +210,19 @@ interface PendingItem {
   data?: CreateMarketData;
 }
 
-export const findAndSetTransactionsTimeouts = (blockNumber: number) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const findAndSetTransactionsTimeouts = (blockNumber: number) => {
   const { pendingQueue } = AppStatus.get();
   const { pendingOrders } = PendingOrders.get();
   const thresholdBlockNumber = blockNumber - TX_CHECK_BLOCKNUMBER_LIMIT;
 
-  dispatch(processingPendingQueue(thresholdBlockNumber, pendingQueue));
-  dispatch(processingPendingOrders(thresholdBlockNumber, pendingOrders));
+  processingPendingQueue(thresholdBlockNumber, pendingQueue);
+  processingPendingOrders(thresholdBlockNumber, pendingOrders);
 };
 
 const processingPendingQueue = (
   thresholdBlockNumber: number,
   pendingQueue: PendingQueue
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
+) => {
   Object.keys(pendingQueue)
     .reduce(
       (p, queueName) =>
@@ -293,7 +271,7 @@ const processingPendingQueue = (
 const processingPendingOrders = (
   thresholdBlockNumber: number,
   pendingOrders: PendingOrdersType
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
+) => {
   Object.keys(pendingOrders).map(marketId => {
     pendingOrders[marketId]
       .filter(
@@ -303,13 +281,11 @@ const processingPendingOrders = (
             order.status === TXEventName.AwaitingSigning)
       )
       .map(order =>
-        dispatch(
-          updatePendingOrderStatus(
-            order.id,
-            marketId,
-            TXEventName.Failure,
-            order.hash
-          )
+        updatePendingOrderStatus(
+          order.id,
+          marketId,
+          TXEventName.Failure,
+          order.hash
         )
       );
   });

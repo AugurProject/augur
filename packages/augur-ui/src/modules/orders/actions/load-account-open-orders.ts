@@ -1,13 +1,7 @@
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
-import { AppState } from 'appStore';
 import { AppStatus } from 'modules/app/store/app-status';
 
-export const loadAccountOpenOrders = () => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const loadAccountOpenOrders = async () => {
   const {
     loginAccount: { mixedCaseAddress: account },
     universe: { id: universe },

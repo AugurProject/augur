@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useLocation, useHistory } from 'react-router';
 import { Input } from 'modules/common/form';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
@@ -29,133 +30,96 @@ const SEARCH_PLACEHOLDER =
     ? SEARCH_FILTER_PLACHOLDER
     : SEARCH_FILTER_PLACHOLDER_MOBILE;
 
-export default class FilterSearch extends Component<
-  FilterSearchProps,
-  FilterSearchState
-> {
-  static defaultProps = {
-    isSearchingMarkets: false,
-  };
-
-  timeout;
-  parent;
-
-  constructor(props) {
-    super(props);
-
-    const { location, placeholder } = props;
-    const search = parseQuery(location.search)[FILTER_SEARCH_PARAM];
-
-    this.state = {
-      search: search || '',
-      placeholder: placeholder || SEARCH_PLACEHOLDER,
-    };
-
-    this.updateQuery = this.updateQuery.bind(this);
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.resetSearch = this.resetSearch.bind(this);
-    this.timeout = null;
-  }
-
-  componentDidUpdate(
-    prevProps: FilterSearchProps,
-    prevState: FilterSearchState
-  ) {
-    if (
-      this.props.location !== prevProps.location &&
-      !this.props.location.search.includes(FILTER_SEARCH_PARAM)
-    ) {
-      clearTimeout(this.timeout);
-      this.resetSearch();
-    }
-    if (this.state.search !== prevState.search) {
-      this.updateQuery(this.state.search, this.props.location);
+export const FilterSearch = ({
+  isSearchingMarkets = false,
+  placeholder: placeholderProp = SEARCH_PLACEHOLDER,
+  search: searchProp = '',
+  onChange: onChangeProp = value => {},
+}) => {
+  const timeout = useRef(null);
+  const parent = useRef(null);
+  const location = useLocation();
+  const history = useHistory();
+  const [search, setSearch] = useState(
+    parseQuery(location.search)[FILTER_SEARCH_PARAM] || searchProp
+  );
+  const [placeholder, setPlaceholder] = useState(placeholderProp);
+  
+  const resetTimeout = () => {
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+      timeout.current = null;
     }
   }
 
-  onFocus() {
-    this.setState({ placeholder: '' });
-  }
-
-  onBlur = () => {
-    this.setState({
-      placeholder: this.props.placeholder || SEARCH_PLACEHOLDER,
-    });
+  const resetSearch = () => {
+    setPlaceholder(SEARCH_PLACEHOLDER);
+    setSearch('');
   };
 
-  onChange(search) {
-    clearTimeout(this.timeout);
-
-    this.timeout = setTimeout(() => {
-      if (this.parent) {
-        this.setState({ search });
+  const onChange = value => {
+    onChangeProp(value);
+    resetTimeout();
+    timeout.current = setTimeout(() => {
+      if (parent.current) {
+        setSearch(value);
       }
     }, 500);
-  }
+  };
 
-  resetSearch() {
-    this.setState({ search: '', placeholder: SEARCH_PLACEHOLDER });
-  }
+  useEffect(() => {
+    if (!location.search.includes(FILTER_SEARCH_PARAM)) {
+      resetTimeout();
+      resetSearch();
+    }
+  }, [location]);
 
-  updateQuery(search, location) {
-    const { history } = this.props;
+  useEffect(() => {
     let updatedSearch = parseQuery(location.search);
-
     if (search === '') {
       delete updatedSearch[FILTER_SEARCH_PARAM];
     } else {
       delete updatedSearch[PAGINATION_PARAM_NAME];
       updatedSearch[FILTER_SEARCH_PARAM] = search;
     }
-
     updatedSearch = makeQuery(updatedSearch);
-    // @ts-ignore
     history.push({
       ...location,
       search: updatedSearch,
     });
-  }
+    resetTimeout();
+  }, [search]);
 
-  render() {
-    const { isSearchingMarkets } = this.props;
-    const { placeholder, search } = this.state;
-
-    return (
-      <article
-        ref={parent => {
-          this.parent = parent;
-        }}
-      >
-        <FilterSearchPure
-          placeholder={placeholder}
-          search={search}
-          onChange={this.onChange}
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
-          isSearchingMarkets={isSearchingMarkets}
-        />
-      </article>
-    );
-  }
-}
+  return (
+    <article ref={parent}>
+      <FilterSearchPure
+        placeholder={placeholder}
+        search={search}
+        onChange={value => onChange(value)}
+        onFocus={() => setPlaceholder('')}
+        onBlur={() => setPlaceholder(placeholderProp)}
+        isSearchingMarkets={isSearchingMarkets}
+      />
+    </article>
+  );
+};
 
 interface FilterSearchPureProps {
-  placeholder: string;
-  search: string;
+  placeholder?: string;
+  search?: string;
   onChange: Function;
-  onFocus: Function;
-  onBlur: Function;
-  isSearchingMarkets: boolean;
+  onFocus?: Function;
+  onBlur?: Function;
+  isSearchingMarkets?: boolean;
 }
+
 export const FilterSearchPure = ({
-  placeholder,
-  search,
+  placeholder = SEARCH_PLACEHOLDER,
+  search = '',
   onChange,
   onFocus,
   onBlur,
-  isSearchingMarkets,
+  isSearchingMarkets = false,
 }: FilterSearchPureProps) => (
   <article className={Styles.FilterSearch}>
     <Input
@@ -168,9 +132,9 @@ export const FilterSearchPure = ({
       onChange={onChange}
       onFocus={onFocus}
       onBlur={onBlur}
-      isLoading={Boolean(
-        isSearchingMarkets || (isSearchingMarkets && search && search !== '')
-      )}
+      isLoading={isSearchingMarkets}
     />
   </article>
 );
+
+export default FilterSearch;

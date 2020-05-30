@@ -9,7 +9,6 @@ import {
   formatAttoRep,
   formatAttoEth,
   formatAttoDai,
-  formatRep,
   formatPercent,
 } from 'utils/format-number';
 import {
@@ -35,7 +34,6 @@ import {
   BUY,
   ZERO,
   ETHER,
-  NETWORK_IDS,
   ONE,
 } from 'modules/common/constants';
 import { TransactionResponse } from 'ethers/providers';

@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useEffect, useRef } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 
 import { ALL_MARKETS, END_TIME } from 'modules/common/constants';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
@@ -87,9 +87,8 @@ const FilterBox: React.FC<FilterBoxProps> = ({
       market 
     ) => pick(market, pickVariables));
 
-  const marketsByState = createMarketsStateObject(marketsPick);
+  const data = createMarketsStateObject(marketsPick);
   const dataObj = marketsObj;
-  const data = marketsByState;
   const [search, setSearch] = useState('');
   const [selectedTab, setSelectedTab] = useState(ALL_MARKETS);
   const [sortBy, setSortBy] = useState(
@@ -97,19 +96,15 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   );
   const [filteredData, setFilteredData] = useState(data[ALL_MARKETS]);
   const [tabs, setTabs] = useState(createTabsInfo(data));
-  const dataRef = useRef(null);
   const { theme, blockchain: { currentAugurTimestamp } } = useAppStatusStore();
 
   useEffect(() => {
     applySearchAndSort();
-  }, [search, sortBy, selectedTab, data]);
-
-  useEffect(() => {
-    dataRef.current = data;
-  }, [data]);
+  }, [search, sortBy, selectedTab, data.all, data.closed, data.open, data.reporting]);
 
   const applySearchAndSort = () => {
     let nextFilteredData = data[selectedTab];
+    let updateFilteredData = false;
     // filter markets
     nextFilteredData = nextFilteredData.filter(market =>
       filterComp(search, market)
@@ -149,22 +144,22 @@ const FilterBox: React.FC<FilterBoxProps> = ({
 
       nextFilteredData = nextFilteredData.sort((a, b) => comp(a, b));
     }
-
+    // if number of markets changes or if the market info isn't loaded yet (no id) then we need to update until it is.
+    if (filteredData.length !== nextFilteredData.length || !!filteredData.find(market => market.id === undefined)) updateFilteredData = true;
     const nextTabs = [...tabs];
-
+    let updateTabs = false;
     for (let i = 0; i < tabs.length; i++) {
       const numOfMarkets = data[tabs[i].key].filter(market =>
         filterComp(search, market)
       ).length;
-
+      if (tabs[i].num !== numOfMarkets) updateTabs = true;
       nextTabs[i] = {
         ...nextTabs[i],
         num: numOfMarkets,
       };
     }
-
-    setTabs(nextTabs);
-    setFilteredData(nextFilteredData);
+    if (updateTabs) setTabs(nextTabs);
+    if (updateFilteredData) setFilteredData(nextFilteredData);
   };
 
   return (

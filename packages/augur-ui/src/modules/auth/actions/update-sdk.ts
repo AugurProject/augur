@@ -72,7 +72,7 @@ export const updateSdk = (
     updateLoginAccount(newAccount);
     setIsLogged(true);
     loadAccountData();
-    dispatch(updateAssets());
+    updateAssets();
     if (AppStatus.get().modal.type === MODAL_LOADING)
       closeModal();
   } catch (error) {

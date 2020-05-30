@@ -9,7 +9,7 @@ import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import favoriteStyles from 'modules/portfolio/components/favorites/favorites.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { MarketData } from "modules/types";
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 
 const sortByOptions = [
   {
@@ -50,15 +50,15 @@ const Favorites = ({
   toggle,
 }: FavoritesProps) => {
   const { theme, favorites } = useAppStatusStore();
-
-  const markets = Object.keys(favorites).reduce(
+  const marketIds = Object.keys(favorites);
+  loadMarketsInfoIfNotLoaded(marketIds);
+  const markets = marketIds.reduce(
     (filtered: any, marketId: string) => [
       ...filtered,
       { ...selectMarket(marketId), favoriteAddedData: favorites[marketId] }
     ],
     [],
   );
-
   const isTrading = theme === THEMES.TRADING;
   let customClass = favoriteStyles.Watchlist;
   if (!isTrading && markets.length === 0) {

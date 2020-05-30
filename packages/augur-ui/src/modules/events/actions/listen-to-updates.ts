@@ -3,13 +3,8 @@ import {
   handleMarketsUpdatedLog,
   handleNewBlockLog,
   handleTradingProceedsClaimedLog,
-  handleTxAwaitingSigning,
-  handleTxFailure,
-  handleTxPending,
-  handleTxSuccess,
+  handleTxEvents,
   handleUniverseForkedLog,
-  handleTxRelayerDown,
-  handleTxFeeTooLow,
   handleSDKReadyEvent,
   handleReportingStateChanged,
   handleWarpSyncHashUpdatedLog,
@@ -62,12 +57,12 @@ const EVENTS = {
   [SubscriptionEventName.WarpSyncHashUpdated]: wrapLogHandler(
     handleWarpSyncHashUpdatedLog
   ),
-  [TXEventName.AwaitingSigning]: wrapLogHandler(handleTxAwaitingSigning),
-  [TXEventName.Success]: wrapLogHandler(handleTxSuccess),
-  [TXEventName.Pending]: wrapLogHandler(handleTxPending),
-  [TXEventName.Failure]: wrapLogHandler(handleTxFailure),
-  [TXEventName.RelayerDown]: wrapLogHandler(handleTxRelayerDown),
-  [TXEventName.FeeTooLow]: wrapLogHandler(handleTxFeeTooLow),
+  [TXEventName.AwaitingSigning]: wrapLogHandler(handleTxEvents),
+  [TXEventName.Success]: wrapLogHandler(handleTxEvents),
+  [TXEventName.Pending]: wrapLogHandler(handleTxEvents),
+  [TXEventName.Failure]: wrapLogHandler(handleTxEvents),
+  [TXEventName.RelayerDown]: wrapLogHandler(handleTxEvents),
+  [TXEventName.FeeTooLow]: wrapLogHandler(handleTxEvents),
 };
 
 export const listenToUpdates = (Augur: Augur<Provider>) => (

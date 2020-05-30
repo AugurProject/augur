@@ -9,7 +9,7 @@ import {
   InReportingLabel,
 } from 'modules/common/labels';
 import { TemplateShield } from 'modules/common/labels';
-import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
+import SocialMediaButtons from 'modules/market/components/common/social-media-buttons';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 import { marketLinkCopied, MARKET_PAGE } from 'services/analytics/helpers';
 import { FavoritesButton } from 'modules/common/buttons';
@@ -81,7 +81,6 @@ export const HeadingBar = ({
       {market.isTemplate && <TemplateShield market={market} />}
       <WordTrail items={[...categoriesWithClick]} />
       <SocialMediaButtons
-        listView={false}
         marketAddress={id}
         marketDescription={description}
       />

@@ -44,9 +44,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => closeModal(),
   getRepModal: () => AppStatus.actions.setModal({ type: MODAL_ADD_FUNDS, fundType: REP }),
   addPendingData: (pendingId, queueName, status,hash, info) => addPendingData(pendingId, queueName, status,hash, info),
-  removePendingData: (pendingId, queueName) => dispatch(removePendingData(pendingId, queueName)),
-  addPendingReport: (report) => dispatch(addPendingReport(report)),
-  addPendingDispute: (dispute, payload) => dispatch(addPendingDispute(dispute, payload))
+  removePendingData: (pendingId, queueName) => removePendingData(pendingId, queueName),
+  addPendingReport: (report) => addPendingReport(report),
+  addPendingDispute: (dispute, payload) => addPendingDispute(dispute, payload)
 });
 
 const mergeProps = (sP, dP, oP) => {

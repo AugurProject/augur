@@ -6,7 +6,7 @@ import MarketLink from 'modules/market/components/market-link/market-link';
 import { FavoritesButton } from 'modules/common/buttons';
 import { DotSelection } from 'modules/common/selection';
 import { MarketProgress } from 'modules/common/progress';
-import SocialMediaButtons from 'modules/market/containers/social-media-buttons';
+import SocialMediaButtons from 'modules/market/components/common/social-media-buttons';
 import {
   INVALID_OUTCOME_ID,
   SCALAR,
