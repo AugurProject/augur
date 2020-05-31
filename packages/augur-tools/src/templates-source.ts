@@ -139,8 +139,20 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
+                {
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`
+                }
               ],
             },
           },
@@ -195,8 +207,23 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
+                {
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                },
+                {
+                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`
+                },
+                {
+                  text: `For settlement purposes where a half round is stated, 2 minutes 30 seconds of the respective round will define the half to determine over or under. Example: If Total Rounds 2.5 (O/U) is in market question, the midway point in Round 3 is the under/over line. If the fight is stopped at exactly 2 minutes 30 seconds of the round named in the market "over" should be the winning outcome.`
+                }
               ],
             },
           },
@@ -264,8 +291,29 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
+                {
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`,
+                },
+                {
+                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`
+                },
+                {
+                  text: `KO/TKO Stoppage: Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. Stoppage by doctor or a fighter’s corner/team. A fighter retires due to injury.`
+                },
+                {
+                  text: `Submission Stoppage: A Submission should be used when A fighter taps out, either verbally or physically.`
+                }
               ],
             },
           },
@@ -318,8 +366,29 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
+                {
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`,
+                },
+                {
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`
+                },
+                {
+                  text: `KO/TKO Stoppage: Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. Stoppage by doctor or a fighter’s corner/team. A fighter retires due to injury.`
+                },
+                {
+                  text: `Submission Stoppage: A Submission should be used when A fighter taps out, either verbally or physically.`
+                }
               ],
             },
           },
@@ -387,7 +456,22 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
+                },
+                {
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner. If both fighters are disqualified the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                },
+                {
+                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`,
+                },
+                {
+                  text: `If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, "Goes the distance" should be used to resolve the market.`,
                 },
               ],
             },
@@ -430,8 +514,20 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
+                {
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `A Draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`
+                }
               ],
             },
           },
@@ -487,8 +583,20 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
+                {
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                },
+                {
+                  text: `For settlement purposes where a half round is stated a new round must be started to determine over or under. For Example: If Total Rounds 8.5 (O/U) is quoted, then Round 9 must start for Over to win. If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round.`
+                }
               ],
             },
           },
@@ -556,8 +664,29 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
+                {
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`
+                },
+                {
+                  text: `A Draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`
+                },
+                {
+                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then the market should resolve as "Points" victory to the winner.`
+                },
+                {
+                  text: `KO Stoppage: KO is used when a boxer does NOT stand up after a 10 count.`
+                },
+                {
+                  text: `TKO Stoppage: TKO is used when a fighter is knocked down 3 times in a round, if the referee steps in to stop the fight, official attending physicians or the boxers corner stop the fight.`
+                }
               ],
             },
           },
@@ -610,8 +739,23 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
+                {
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If the fight is determined to be a draw, market should resolve as "Points".`
+                },
+                {
+                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then the market should resolve as "Points".`
+                }
               ],
             },
           },
@@ -674,8 +818,20 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
+                {
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                },
+                {
+                  text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`
+                }
               ],
             },
           },
@@ -725,8 +881,23 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market should resolve after the race conclusion once the winner is verified by officials and standing on the podium. Official results reflecting any changes, disqualifications or position penalties after the podium presentation will not be recognized for the market resolution purposes.`,
                 },
+                {
+                  text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`
+                },
+                {
+                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`
+                },
+                {
+                  text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all finishing positions.`
+                },
+                {
+                  text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`
+                },
+                {
+                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`
+                }
               ],
             },
           },
@@ -779,8 +950,29 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market should resolve after the race conclusion once the winner is verified by officials and standing on the podium. Official results reflecting any changes, disqualifications or position penalties after the podium presentation will not be recognized for the market resolution purposes.`,
                 },
+                {
+                  text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`
+                },
+                {
+                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`
+                },
+                {
+                  text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all Head to head match-ups and finishing positions.`
+                },
+                {
+                  text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`
+                },
+                {
+                  text: `Both drivers must start the race for head to head match-ups to be considered action. If one or both drivers do not start the race the market should resolve as "No Contest".`
+                },
+                {
+                  text: `If a driver does not finish the race for any reason (including disqualifications), the opposing driver should be declared the winner.`
+                },
+                {
+                  text: `If both Drivers do not finish the race for any reason (including disqualifications), the driver who completed more laps should be declared the winner. If both racers were disqualified at the same time or come in at same place (tie), the market should resolve as "No Contest"`
+                }
               ],
             },
           },
@@ -806,8 +998,26 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Placeholder, still devloping resolution rules`,
+                  text: `Market should resolve after the race conclusion once the winner is verified by officials and standing on the podium. Official results reflecting any changes, disqualifications or position penalties after the podium presentation will not be recognized for the market resolution purposes.`,
                 },
+                {
+                  text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`
+                },
+                {
+                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`
+                },
+                {
+                  text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all finishing positions.`
+                },
+                {
+                  text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`
+                },
+                {
+                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`
+                },
+                {
+                  text: `The NASCAR Cup Series Drivers' Championship is awarded to the most successful NASCAR Cup Series racing car driver over a season, as determined by a points system based on race results. The winner can only be determined after the completion of the final race of the year and points for the season have been calculated.`
+                }
               ],
             },
           },
