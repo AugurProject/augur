@@ -986,25 +986,19 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Market should resolve after the race conclusion once the winner is verified by officials and standing on the podium. Official results reflecting any changes, disqualifications or position penalties after the podium presentation will not be recognized for the market resolution purposes.`,
-                },
-                {
-                  text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`
-                },
-                {
-                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`
-                },
-                {
-                  text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all finishing positions.`
-                },
-                {
-                  text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`
-                },
-                {
                   text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`
                 },
                 {
                   text: `The NASCAR Cup Series Drivers' Championship is awarded to the most successful NASCAR Cup Series racing car driver over a season, as determined by a points system based on race results. The winner can only be determined after the completion of the final race of the year and points for the season have been calculated.`
+                },
+                {
+                  text: `If the season is officially cancelled and event named in the market is not played, this market should resolve as "Invalid".`
+                },
+                {
+                  text: `If Nascar suspends play and starts up again at a later date, and the winner of the event named in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                },
+                {
+                  text: `If Nascar suspends play and starts up again at a later date, and the winner of the event named in the market is determined after the Market’s Event Expiration begins, this market should resolve as "Invalid".`
                 }
               ],
             },
