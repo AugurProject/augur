@@ -72,6 +72,7 @@ const AlertsView = () => {
         )}
         {alerts && alerts.length ? (
           <div className={Styles.dismissContainer}>
+            <span>Alerts</span>
             <button onClick={e => clearAlerts(INFO)} role="button" tabIndex={0}>
               Clear All
             </button>
