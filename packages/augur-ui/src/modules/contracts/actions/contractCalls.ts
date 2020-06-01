@@ -192,7 +192,7 @@ export async function sendDai_estimateGas(address: string, amount: string): Prom
   const Cash = contracts.cash;
   const onChainAmount = createBigNumber(amount).multipliedBy(
     TEN_TO_THE_EIGHTEENTH_POWER
-  );
+  ).decimalPlaces(0);
   return Cash.transfer_estimateGas(address, onChainAmount);
 }
 
@@ -201,7 +201,7 @@ export async function sendDai(address: string, amount: string) {
   const Cash = contracts.cash;
   const onChainAmount = createBigNumber(amount).multipliedBy(
     TEN_TO_THE_EIGHTEENTH_POWER
-  );
+  ).decimalPlaces(0);
   return Cash.transfer(address, onChainAmount);
 }
 
@@ -323,7 +323,12 @@ export async function withdrawAllFunds(destination: string): Promise<void> {
 
 export async function withdrawAllFundsEstimateGas(destination: string): Promise<BigNumber> {
   const { gsn } = augurSdk.get();
-  return await gsn.withdrawAllFundsEstimateGas(destination);
+  try {
+    return await gsn.withdrawAllFundsEstimateGas(destination);
+  } catch(error) {
+    console.error('withdrawAllFundsEstimateGas', error);
+    throw error;
+  }
 }
 
 

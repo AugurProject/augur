@@ -24,13 +24,13 @@ const mapStateToProps = (state: AppState) => {
   const walletStatus = appStatus[WALLET_STATUS];
   balances.dai = String(totalTradingBalance(loginAccount));
   const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
-  const ethInReserve = getEthReserve(state);
+  const signingEthBalance = loginAccount.balances.signerBalances.eth;
 
   return {
   account: loginAccount.address,
   modal,
   balances,
-  ethInReserve,
+  signingEthBalance,
   GsnEnabled: appStatus.gsnEnabled && walletStatus === WALLET_STATUS_VALUES.CREATED,
   ethToDaiRate: appStatus.ethToDaiRate,
   gasPrice,
@@ -49,12 +49,11 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     transferFundsGasEstimate(amount, asset, to),
   transferFunds: (amount: string, asset: string, to: string, useSigner: boolean) => {
     transferFunds(amount, asset, to, useSigner);
-    dispatch(closeModal());
   },
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  ethInReserve: sP.ethInReserve,
+  signingEthBalance: sP.signingEthBalance,
   fallBackGasCosts: sP.fallBackGasCosts,
   GsnEnabled: sP.GsnEnabled,
   ethToDaiRate: sP.ethToDaiRate,
