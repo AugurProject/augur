@@ -306,10 +306,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         });
       }
     )));
-    await Promise.all(this.state.simulateQueue).then(results => {
-      const result = results[results.length - 1];
-      this.setState(result);
-    });
+    await Promise.all(this.state.simulateQueue).then(results =>
+      this.setState(results[results.length - 1])
+    );
   }
   async updateTradeTotalCost(order, fromOrderBook = false) {
     const {
