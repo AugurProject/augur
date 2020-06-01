@@ -23,7 +23,7 @@ import {
   convertAttoValueToDisplayValue,
 } from '../../index';
 import { sortOptions } from './types';
-import { MarketReportingState, OrderEventType, INIT_REPORTING_FEE_DIVISOR } from '../../constants';
+import { MarketReportingState, OrderEventType, INIT_REPORTING_FEE_DIVISOR, ORDER_TYPES } from '../../constants';
 
 import * as _ from 'lodash';
 import * as t from 'io-ts';
@@ -1474,8 +1474,7 @@ function addEscrowedAmountsDecrementShares(
   const displayMinPrice = minPrice.dividedBy(QUINTILLION);
   let sharesUsed = ZERO;
 
-  if (orderType === 1) {
-    // bids
+  if (new BigNumber(orderType).eq(ORDER_TYPES.ASK)) {
     const userSharesBalancesRemoveOutcome = Object.keys(
       userSharesBalances
     ).reduce(
@@ -1503,7 +1502,6 @@ function addEscrowedAmountsDecrementShares(
       }
     });
   } else {
-    // ask
     const sharesBN = new BigNumber(userSharesBalances[outcome] || '0');
     sharesUsed = BigNumber.min(new BigNumber(order.amount), sharesBN);
 
