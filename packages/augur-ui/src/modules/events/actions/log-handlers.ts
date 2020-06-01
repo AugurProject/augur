@@ -49,6 +49,7 @@ import {
   DOINITIALREPORTWARPSYNC,
   ZEROX_STATUSES,
   MODAL_ERROR,
+  TRANSFER,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -141,7 +142,9 @@ export const handleTxSuccess = (txStatus: Events.TXStatus) => (
 ) => {
   console.log('TxSuccess Transaction', txStatus.transaction.name);
   // update wallet status on any TxSuccess
-  dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
+  if (txStatus.transaction.name !== TRANSFER.toLowerCase()) {
+    dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
+  }
   dispatch(updateAssets());
   dispatch(addUpdateTransaction(txStatus));
 };
