@@ -40,22 +40,21 @@ interface CashOutFormProps {
   totalDai: string;
 }
 
-export const CashOutForm = (props: CashOutFormProps) => {
-  const {
-    closeAction,
-    withdrawAllFunds,
-    transferFunds,
-    withdrawAllFundsEstimateGas,
-    transferFundsGasEstimate,
-    account,
-    gasPrice,
-    totalOpenOrderFundsFormatted,
-    availableFundsFormatted,
-    reserveInDaiFormatted,
-    totalDaiFormatted,
-    tradingAccountEthFormatted,
-    totalDai,
-  } = props;
+export const CashOutForm = ({
+  closeAction,
+  withdrawAllFunds,
+  transferFunds,
+  withdrawAllFundsEstimateGas,
+  transferFundsGasEstimate,
+  account,
+  gasPrice,
+  totalOpenOrderFundsFormatted,
+  availableFundsFormatted,
+  reserveInDaiFormatted,
+  totalDaiFormatted,
+  tradingAccountEthFormatted,
+  totalDai,
+}: CashOutFormProps) => {
   const [gasCosts, setGasCosts] = useState(
     createBigNumber(TRANSFER_DAI_GAS_COST)
   );
@@ -76,9 +75,7 @@ export const CashOutForm = (props: CashOutFormProps) => {
     if (signerPays) {
       return setGasCosts(createBigNumber(gasCosts));
     }
-    const testHalfDaiAmount = String(
-      createBigNumber(totalDai).div(2)
-    );
+    const testHalfDaiAmount = String(createBigNumber(totalDai).div(2));
     const relayerGasCosts = await transferFundsGasEstimate(
       testHalfDaiAmount,
       account
@@ -109,13 +106,13 @@ export const CashOutForm = (props: CashOutFormProps) => {
     setErrors(updatedErrors);
   };
 
-  const gasInDai = getGasInDai(createBigNumber(gasCosts).times(createBigNumber(gasPrice)));
+  const gasInDai = getGasInDai(
+    createBigNumber(gasCosts).times(createBigNumber(gasPrice))
+  );
   const formattedTotalMinusGasInDai = signerPays
     ? formatDai(totalDai)
     : formatDai(
-        createBigNumber(totalDai).minus(
-          createBigNumber(gasInDai.value)
-        )
+        createBigNumber(totalDai).minus(createBigNumber(gasInDai.value))
       );
 
   const breakdown = [
@@ -182,11 +179,11 @@ export const CashOutForm = (props: CashOutFormProps) => {
       <main>
         <div className={Styles.GroupedForm}>
           <div>
-            <label htmlFor='recipient'>Recipient address</label>
+            <label htmlFor="recipient">Recipient address</label>
             <TextInput
-              type='text'
+              type="text"
               value={address}
-              placeholder='0x...'
+              placeholder="0x..."
               onChange={addressChange}
               errorMessage={errors.length > 0 ? errors : ''}
             />
