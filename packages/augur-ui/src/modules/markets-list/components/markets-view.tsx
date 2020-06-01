@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useLocation, useHistory } from 'react-router';
 import MarketsHeader from 'modules/markets-list/components/markets-header';
 import MarketsList from 'modules/markets-list/components/markets-list';
 import Styles from 'modules/markets-list/components/markets-view.styles.less';
@@ -15,8 +16,8 @@ import {
   HELP_CENTER_INVALID_MARKETS,
   THEMES,
   CATEGORY_PARAM_NAME,
+  MARKET_CARD_FORMATS,
 } from 'modules/common/constants';
-import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
 import { LandingHero } from 'modules/markets-list/components/landing-hero';
@@ -26,36 +27,24 @@ import FilterSearch from 'modules/filter-sort/components/filter-search';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { FilterButton } from 'modules/common/buttons';
 import parseQuery from 'modules/routes/helpers/parse-query';
+import { useMarketsStore } from 'modules/markets/store/markets';
+import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
+import { getMarkets } from 'modules/markets/selectors/markets-all';
+import { getSelectedTagsAndCategoriesFromLocation } from 'modules/markets/helpers/get-selected-tags-and-categories-from-location';
+import { buildSearchString } from 'modules/markets/selectors/build-search-string';
+import { organizeReportingStates, loadMarketsByFilter } from 'modules/markets/actions/load-markets';
+import { MARKET_MAX_FEES, MARKET_MAX_SPREAD, MARKET_FILTER } from 'modules/app/store/constants';
+import { updateLoginAccountSettings } from '../actions/update-login-account-settings';
+import { marketListViewed } from 'services/analytics/helpers';
 
 const PAGINATION_COUNT = 10;
 
-interface MarketsViewProps {
-  markets: MarketData[];
-  location: object;
-  history: History;
-  isConnected: boolean;
-  loadMarketsByFilter: Function;
-  search?: string;
-  maxFee: string;
-  maxLiquiditySpread: string;
-  isSearching: boolean;
-  includeInvalidMarkets: string;
-  marketSort: string;
-  selectedCategories: string[];
-  removeLiquiditySpreadFilter: Function;
-  removeFeeFilter: Function;
-  filteredOutCount: number;
-  marketFilter: string;
-  updateMarketsFilter: Function;
-  marketCardFormat: string;
-  updateLoginAccountSettings: Function;
-  showInvalidMarketsBannerFeesOrLiquiditySpread: boolean;
-  showInvalidMarketsBannerHideOrShow: boolean;
-  templateFilter: string;
-  marketListViewed: Function;
-  marketsInReportingState: MarketData[];
-  loadMarketOrderBook: Function;
-}
+const findMarketsInReportingState = (markets, reportingState) => {
+  const reportingStates: String[] = organizeReportingStates(reportingState);
+  return markets.filter(market =>
+    reportingStates.find(state => state === market.reportingState)
+  );
+};
 
 const getHeaderTitleFromProps = (
   search: string,
@@ -82,33 +71,49 @@ const getHeaderTitleFromProps = (
   return "Popular markets";
 };
 
-const MarketsView = ({
-  history,
-  location,
-  markets,
-  marketCardFormat,
-  selectedCategories,
-  search = null,
-  isConnected,
-  updateLoginAccountSettings,
-  updateMarketsFilter,
-  marketFilter,
-  marketSort,
-  isSearching,
-  showInvalidMarketsBannerFeesOrLiquiditySpread,
-  showInvalidMarketsBannerHideOrShow,
-  maxFee,
-  maxLiquiditySpread,
-  removeFeeFilter,
-  removeLiquiditySpreadFilter,
-  includeInvalidMarkets,
-  filteredOutCount,
-  loadMarketsByFilter,
-  templateFilter,
-  loadMarketOrderBook,
-  marketListViewed,
-  marketsInReportingState,
-}: MarketsViewProps) => {
+const MarketsView = () => {
+  const location = useLocation();
+  const history = useHistory();
+  const markets = getMarkets();
+  const {
+    keywords,
+    selectedTagNames,
+  } = getSelectedTagsAndCategoriesFromLocation(location);
+  const {
+    marketsList: { isSearching, meta, selectedCategories },
+    loginAccount: {
+      settings: {
+        showInvalidMarketsBannerHideOrShow,
+        showInvalidMarketsBannerFeesOrLiquiditySpread,
+      },
+    },
+    isMobile,
+    universe: { id },
+    filterSortOptions: {
+      maxFee,
+      marketFilter,
+      maxLiquiditySpread,
+      marketSort,
+      templateFilter,
+      includeInvalidMarkets,
+    },
+    isLogged, restoredAccount, theme, 
+    actions: { updateMarketsList, updateFilterSortOptions }
+  } = useAppStatusStore();
+  let { isConnected, marketsList: { marketCardFormat } } = useAppStatusStore();
+  const searchPhrase = buildSearchString(keywords, selectedTagNames);
+  const autoSetupMarketCardFormat = marketCardFormat
+    ? marketCardFormat
+    : isMobile
+    ? MARKET_CARD_FORMATS.COMPACT
+    : MARKET_CARD_FORMATS.CLASSIC;
+
+  isConnected = isConnected && id != null;
+  const search = searchPhrase;
+  const marketsInReportingState = findMarketsInReportingState(markets, marketFilter);
+  const filteredOutCount = meta ? meta.filteredOutCount : 0;
+  marketCardFormat = autoSetupMarketCardFormat;
+
   const componentWrapper = useRef();
   const [state, setState] = useState({
     filterSortedMarkets: [],
@@ -118,7 +123,7 @@ const MarketsView = ({
     showPagination: false,
     selectedMarketCardType: 0,
   });
-  const { isLogged, restoredAccount, theme, actions: { updateMarketsList } } = useAppStatusStore();
+  const { actions: { updateOrderBook } } = useMarketsStore();
 
   useEffect(() => {
     if (state.offset !== 1) {
@@ -213,7 +218,7 @@ const MarketsView = ({
             showPagination,
           });
           filterSortedMarkets.forEach(marketId =>
-            loadMarketOrderBook(marketId)
+            updateOrderBook(marketId, null, loadMarketOrderBook(marketId))
           );
           updateMarketsList({ isSearching: false, meta: result.meta });
         }
@@ -271,7 +276,8 @@ const MarketsView = ({
             <MarketTypeFilter
               isSearchingMarkets={isSearching}
               marketCount={marketCount}
-              updateMarketsFilter={updateMarketsFilter}
+              updateMarketsFilter={filterOption =>
+                updateFilterSortOptions({ [MARKET_FILTER]: filterOption })}
               marketFilter={marketFilter}
             />
 
@@ -295,8 +301,9 @@ const MarketsView = ({
       <FilterTags
         maxLiquiditySpread={maxLiquiditySpread}
         maxFee={maxFee}
-        removeFeeFilter={removeFeeFilter}
-        removeLiquiditySpreadFilter={removeLiquiditySpreadFilter}
+        removeFeeFilter={() => updateFilterSortOptions({ [MARKET_MAX_FEES]: MAX_FEE_100_PERCENT })}
+        removeLiquiditySpreadFilter={() =>
+          updateFilterSortOptions({ [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS })}
         updateQuery={(param, value) =>
           updateQuery(param, value, location, history)
         }
@@ -304,7 +311,7 @@ const MarketsView = ({
       <FilterNotice
         show={includeInvalidMarkets === 'show'}
         showDismissButton={true}
-        updateLoginAccountSettings={updateLoginAccountSettings}
+        updateLoginAccountSettings={settings => updateLoginAccountSettings(settings)}
         settings={{
           propertyName: 'showInvalidMarketsBannerHideOrShow',
           propertyValue: showInvalidMarketsBannerHideOrShow,
@@ -327,7 +334,7 @@ const MarketsView = ({
       <FilterNotice
         show={!displayFee || !displayLiquiditySpread}
         showDismissButton={true}
-        updateLoginAccountSettings={updateLoginAccountSettings}
+        updateLoginAccountSettings={settings => updateLoginAccountSettings(settings)}
         settings={{
           propertyName: 'showInvalidMarketsBannerFeesOrLiquiditySpread',
           propertyValue: showInvalidMarketsBannerFeesOrLiquiditySpread,

@@ -1,70 +1,61 @@
-import React, { Component } from 'react';
+import React, { useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import MarketsList from 'modules/markets-list/components/markets-list';
 import Styles from 'modules/markets-list/components/markets-landing-page.styles.less';
-import { TYPE_TRADE, MARKET_CARD_FORMATS } from 'modules/common/constants';
-import { MarketData } from 'modules/types';
+import {
+  TYPE_TRADE,
+  MARKET_CARD_FORMATS,
+  POPULAR_CATEGORIES,
+  MODAL_SIGNUP,
+} from 'modules/common/constants';
 import { Getters } from '@augurproject/sdk';
 import { PrimaryButton, CategoryButtons } from 'modules/common/buttons';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { CategorySelector } from 'modules/common/selection';
-import { AppStatus } from 'modules/app/store/app-status';
+import { AppStatus, useAppStatusStore } from 'modules/app/store/app-status';
+import { selectMarketStats } from '../selectors/markets-list';
+import { selectMarkets } from 'modules/markets/selectors/markets-all';
+import { loadMarketsByFilter } from 'modules/markets/actions/load-markets';
+import { useEffect } from 'react';
+import { useLocation, useHistory } from 'react-router';
 
-interface MarketsViewProps {
-  isLogged: boolean;
-  restoredAccount: boolean;
-  markets: MarketData[];
-  location: object;
-  history: History;
-  isConnected: boolean;
-  loadMarketsByFilter: Function;
-  isSearching: boolean;
-  categoryData: object;
-  signupModal: Function;
-  categoryStats: Getters.Markets.CategoryStats;
-}
+const MarketsView = () => {
+  const location = useLocation();
+  const history = useHistory();
+  const componentWrapper = useRef();
+  const marketStats = selectMarketStats();
+  let markets = selectMarkets();
+  const {
+    marketsList: { isSearching },
+    universe: { id },
+    categoryStats,
+    isLogged,
+    restoredAccount,
+    actions: { setModal },
+  } = useAppStatusStore();
+  let { isConnected } = useAppStatusStore();
 
-interface MarketsViewState {
-  marketCategory: string;
-  filterSortedMarkets: string[];
-}
+  const [state, setState] = useState({
+    marketCategory: 'all',
+    filterSortedMarkets: [],
+  });
+  
+  const {marketCategory, filterSortedMarkets} = state;
 
-export default class MarketsView extends Component<
-  MarketsViewProps,
-  MarketsViewState
-> {
-  private componentWrapper!: HTMLElement | null;
+  isConnected = isConnected && id != null;
+  markets = markets.filter(market =>
+    POPULAR_CATEGORIES.includes(market.categories[0])
+  );
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      marketCategory: 'all',
-      filterSortedMarkets: [],
-    };
-  }
-
-  componentDidMount() {
-    const { isConnected } = this.props;
+  useEffect(() => {
     if (isConnected) {
-      this.updateFilteredMarkets();
+     updateFilteredMarkets();
     }
-  }
+  }, [isConnected, marketCategory])
 
-  componentDidUpdate(prevProps) {
-    const { isConnected } = this.props;
-
-    if (isConnected !== prevProps.isConnected) {
-      this.updateFilteredMarkets();
-    }
-  }
-
-  updateFilteredMarkets() {
-    const {
-      loadMarketsByFilter,
-    } = this.props;
-    const { marketCategory } = this.state;
+  function updateFilteredMarkets() {
+    const { marketCategory } = state;
     AppStatus.actions.updateMarketsList({ isSearching: true });
     loadMarketsByFilter(
       {
@@ -75,86 +66,71 @@ export default class MarketsView extends Component<
       },
       (err, result: Getters.Markets.MarketList) => {
         if (err) return console.log('Error loadMarketsFilter:', err);
-        if (this.componentWrapper) {
+        if (componentWrapper) {
           const filterSortedMarkets = result.markets.map(m => m.id);
-          this.setState({
+          setState({
+            ...state,
             filterSortedMarkets,
           });
-          AppStatus.actions.updateMarketsList({ isSearching: false, meta: result.meta });
+          AppStatus.actions.updateMarketsList({
+            isSearching: false,
+            meta: result.meta,
+          });
         }
       }
     );
   }
 
-  render() {
-    const {
-      history,
-      isLogged,
-      restoredAccount,
-      location,
-      markets,
-      signupModal,
-      isSearching,
-      categoryStats,
-    } = this.props;
+  return (
+    <section className={Styles.LandingPage} ref={componentWrapper}>
+      <Helmet>
+        <title>Markets</title>
+      </Helmet>
 
-    return (
-      <section
-        className={Styles.LandingPage}
-        ref={componentWrapper => {
-          this.componentWrapper = componentWrapper;
+      <div>The world’s most accessible, no-limit betting exchange.</div>
+
+      {!isLogged && !restoredAccount ? (
+        <div>
+          <PrimaryButton
+            action={() => setModal({ type: MODAL_SIGNUP })}
+            text="Signup to start betting"
+          />
+        </div>
+      ) : (
+        <div />
+      )}
+
+      <CategoryButtons
+        action={categoryName => {
+          history.push({
+            pathname: makePath(MARKETS, null),
+            search: `category=${categoryName}`,
+          });
         }}
-      >
-        <Helmet>
-          <title>Markets</title>
-        </Helmet>
+        categoryStats={categoryStats}
+      />
 
-        <div>The world’s most accessible, no-limit betting exchange.</div>
+      <div>Popular markets</div>
 
-        {!isLogged && !restoredAccount ? (
-          <div>
-            <PrimaryButton
-              action={() => signupModal()}
-              text="Signup to start betting"
-            />
-          </div>
-        ) : (
-          <div />
-        )}
+      <CategorySelector
+        action={marketCategory => {
+          setState({ ...state, marketCategory });
+        }}
+        selected={marketCategory}
+      />
 
-        <CategoryButtons
-          action={categoryName => {
-            history.push({
-              pathname: makePath(MARKETS, null),
-              search: `category=${categoryName}`,
-            });
-          }}
-          categoryStats={categoryStats}
-        />
-
-        <div>Popular markets</div>
-
-        <CategorySelector
-          action={marketCategory => {
-            this.setState({ marketCategory }, () => {
-              this.updateFilteredMarkets();
-            });
-          }}
-          selected={this.state.marketCategory}
-        />
-
-        <MarketsList
-          testid="markets"
-          markets={markets}
-          showPagination={false}
-          filteredMarkets={this.state.filterSortedMarkets}
-          location={location}
-          history={history}
-          linkType={TYPE_TRADE}
-          isSearchingMarkets={isSearching}
-          marketCardFormat={MARKET_CARD_FORMATS.COMPACT}
-        />
-      </section>
-    );
-  }
-}
+      <MarketsList
+        testid="markets"
+        markets={markets}
+        showPagination={false}
+        filteredMarkets={filterSortedMarkets}
+        location={location}
+        history={history}
+        linkType={TYPE_TRADE}
+        isSearchingMarkets={isSearching}
+        marketCardFormat={MARKET_CARD_FORMATS.COMPACT}
+      />
+    </section>
+  );
+};
+export default MarketsView;
