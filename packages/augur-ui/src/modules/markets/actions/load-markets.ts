@@ -75,11 +75,11 @@ export const loadMarketsByFilter = async (
 ) => {
   console.log('loadMarketsByFilter called', filterOptions);
   const { universe, isConnected } = AppStatus.get();
-  if (!(universe && universe.id)) return;
+  if (!(universe && universe.id)) return { marketInfos: {} };
 
   // Check to see if SDK is connected first
   // since URL parameters can trigger this action before the SDK is ready
-  if (!isConnected) return;
+  if (!isConnected) return { marketInfos: {} };
 
   const augur = augurSdk.get();
 
@@ -153,8 +153,10 @@ export const loadMarketsByFilter = async (
     delete params.maxLiquiditySpread;
 
   const marketList = await augur.getMarkets({ ...params });
-  addUpdateMarketInfos(marketList.markets);
+  const marketInfos = addUpdateMarketInfos(marketList.markets);
+
   cb(null, marketList);
+  return { marketInfos };
 };
 
 export const loadNextWindowDisputingMarkets = (

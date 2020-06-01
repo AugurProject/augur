@@ -71,6 +71,7 @@ export function MarketsReducer(state, action) {
       throw new Error(`Error: ${action.type} not caught by Markets reducer`);
   }
 
+  console.log(updatedState.marketInfos);
   window.markets = updatedState;
   return updatedState;
 }

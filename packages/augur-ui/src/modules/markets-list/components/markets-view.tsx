@@ -32,8 +32,15 @@ import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderboo
 import { getMarkets } from 'modules/markets/selectors/markets-all';
 import { getSelectedTagsAndCategoriesFromLocation } from 'modules/markets/helpers/get-selected-tags-and-categories-from-location';
 import { buildSearchString } from 'modules/markets/selectors/build-search-string';
-import { organizeReportingStates, loadMarketsByFilter } from 'modules/markets/actions/load-markets';
-import { MARKET_MAX_FEES, MARKET_MAX_SPREAD, MARKET_FILTER } from 'modules/app/store/constants';
+import {
+  organizeReportingStates,
+  loadMarketsByFilter,
+} from 'modules/markets/actions/load-markets';
+import {
+  MARKET_MAX_FEES,
+  MARKET_MAX_SPREAD,
+  MARKET_FILTER,
+} from 'modules/app/store/constants';
 import { updateLoginAccountSettings } from '../actions/update-login-account-settings';
 import { marketListViewed } from 'services/analytics/helpers';
 
@@ -53,7 +60,7 @@ const getHeaderTitleFromProps = (
 ) => {
   if (search) {
     if (search.endsWith('*')) {
-      search = search.slice(0, -1)
+      search = search.slice(0, -1);
     }
     return `Search: "${search}"`;
   }
@@ -68,7 +75,7 @@ const getHeaderTitleFromProps = (
     return selectedCategory[selectedCategory.length - 1];
   }
 
-  return "Popular markets";
+  return 'Popular markets';
 };
 
 const MarketsView = () => {
@@ -97,10 +104,15 @@ const MarketsView = () => {
       templateFilter,
       includeInvalidMarkets,
     },
-    isLogged, restoredAccount, theme, 
-    actions: { updateMarketsList, updateFilterSortOptions }
+    isLogged,
+    restoredAccount,
+    theme,
+    actions: { updateMarketsList, updateFilterSortOptions },
   } = useAppStatusStore();
-  let { isConnected, marketsList: { marketCardFormat } } = useAppStatusStore();
+  let {
+    isConnected,
+    marketsList: { marketCardFormat },
+  } = useAppStatusStore();
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
   const autoSetupMarketCardFormat = marketCardFormat
     ? marketCardFormat
@@ -110,7 +122,10 @@ const MarketsView = () => {
 
   isConnected = isConnected && id != null;
   const search = searchPhrase;
-  const marketsInReportingState = findMarketsInReportingState(markets, marketFilter);
+  const marketsInReportingState = findMarketsInReportingState(
+    markets,
+    marketFilter
+  );
   const filteredOutCount = meta ? meta.filteredOutCount : 0;
   marketCardFormat = autoSetupMarketCardFormat;
 
@@ -123,7 +138,9 @@ const MarketsView = () => {
     showPagination: false,
     selectedMarketCardType: 0,
   });
-  const { actions: { updateOrderBook } } = useMarketsStore();
+  const {
+    actions: { updateOrderBook, updateMarketsData },
+  } = useMarketsStore();
 
   useEffect(() => {
     if (state.offset !== 1) {
@@ -141,7 +158,7 @@ const MarketsView = () => {
     marketSort,
     maxFee,
     templateFilter,
-    includeInvalidMarkets
+    includeInvalidMarkets,
   ]);
 
   const headerTitle = getHeaderTitleFromProps(
@@ -173,7 +190,7 @@ const MarketsView = () => {
     templateFilter,
     includeInvalidMarkets,
     state.offset,
-    state.marketCount
+    state.marketCount,
   ]);
   const {
     filterSortedMarkets,
@@ -189,42 +206,45 @@ const MarketsView = () => {
 
     updateMarketsList({
       isSearching: true,
-      isSearchInPlace: Boolean(search)
+      isSearchInPlace: Boolean(search),
     });
-    loadMarketsByFilter(
-      {
-        categories: selectedCategories ? selectedCategories : [],
-        search,
-        filter: marketFilter,
-        sort: marketSort,
-        maxFee,
-        limit,
-        offset,
-        maxLiquiditySpread,
-        includeInvalidMarkets: includeInvalidMarkets === 'show',
-        templateFilter,
-      },
-      (err, result: Getters.Markets.MarketList) => {
-        if (err) return console.log('Error loadMarketsFilter:', err);
-        if (componentWrapper.current) {
-          // categories is also on results
-          const filterSortedMarkets = result.markets.map(m => m.id);
-          const marketCount = result.meta.marketCount;
-          const showPagination = marketCount > limit;
-          setState({
-            ...state,
-            filterSortedMarkets,
-            marketCount,
-            showPagination,
-          });
-          filterSortedMarkets.forEach(marketId =>
-            updateOrderBook(marketId, null, loadMarketOrderBook(marketId))
-          );
-          updateMarketsList({ isSearching: false, meta: result.meta });
+    updateMarketsData(
+      null,
+      loadMarketsByFilter(
+        {
+          categories: selectedCategories ? selectedCategories : [],
+          search,
+          filter: marketFilter,
+          sort: marketSort,
+          maxFee,
+          limit,
+          offset,
+          maxLiquiditySpread,
+          includeInvalidMarkets: includeInvalidMarkets === 'show',
+          templateFilter,
+        },
+        (err, result: Getters.Markets.MarketList) => {
+          if (err) return console.log('Error loadMarketsFilter:', err);
+          if (componentWrapper.current) {
+            // categories is also on results
+            const filterSortedMarkets = result.markets.map(m => m.id);
+            const marketCount = result.meta.marketCount;
+            const showPagination = marketCount > limit;
+            setState({
+              ...state,
+              filterSortedMarkets,
+              marketCount,
+              showPagination,
+            });
+            filterSortedMarkets.forEach(marketId =>
+              updateOrderBook(marketId, null, loadMarketOrderBook(marketId))
+            );
+            updateMarketsList({ isSearching: false, meta: result.meta });
+          }
         }
-      }
+      )
     );
-  };
+  }
 
   function updateLimit(limit) {
     setState({
@@ -277,7 +297,8 @@ const MarketsView = () => {
               isSearchingMarkets={isSearching}
               marketCount={marketCount}
               updateMarketsFilter={filterOption =>
-                updateFilterSortOptions({ [MARKET_FILTER]: filterOption })}
+                updateFilterSortOptions({ [MARKET_FILTER]: filterOption })
+              }
               marketFilter={marketFilter}
             />
 
@@ -301,9 +322,14 @@ const MarketsView = () => {
       <FilterTags
         maxLiquiditySpread={maxLiquiditySpread}
         maxFee={maxFee}
-        removeFeeFilter={() => updateFilterSortOptions({ [MARKET_MAX_FEES]: MAX_FEE_100_PERCENT })}
+        removeFeeFilter={() =>
+          updateFilterSortOptions({ [MARKET_MAX_FEES]: MAX_FEE_100_PERCENT })
+        }
         removeLiquiditySpreadFilter={() =>
-          updateFilterSortOptions({ [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS })}
+          updateFilterSortOptions({
+            [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS,
+          })
+        }
         updateQuery={(param, value) =>
           updateQuery(param, value, location, history)
         }
@@ -311,7 +337,9 @@ const MarketsView = () => {
       <FilterNotice
         show={includeInvalidMarkets === 'show'}
         showDismissButton={true}
-        updateLoginAccountSettings={settings => updateLoginAccountSettings(settings)}
+        updateLoginAccountSettings={settings =>
+          updateLoginAccountSettings(settings)
+        }
         settings={{
           propertyName: 'showInvalidMarketsBannerHideOrShow',
           propertyValue: showInvalidMarketsBannerHideOrShow,
@@ -334,7 +362,9 @@ const MarketsView = () => {
       <FilterNotice
         show={!displayFee || !displayLiquiditySpread}
         showDismissButton={true}
-        updateLoginAccountSettings={settings => updateLoginAccountSettings(settings)}
+        updateLoginAccountSettings={settings =>
+          updateLoginAccountSettings(settings)
+        }
         settings={{
           propertyName: 'showInvalidMarketsBannerFeesOrLiquiditySpread',
           propertyValue: showInvalidMarketsBannerFeesOrLiquiditySpread,
