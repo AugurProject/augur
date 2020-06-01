@@ -165,6 +165,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       numFills,
       loopLimit,
       potentialDaiProfit,
+      orderShareProfit,
     } = trade;
 
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
@@ -237,8 +238,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     }
 
     if (
-      !isNaN(numTrades) && numTrades > 0 &&
-      createBigNumber(gasCostDai).gt(potentialDaiProfit.value) &&
+      !isNaN(numTrades) &&
+      numTrades > 0 &&
+      ((potentialDaiProfit.value !== 0 &&
+        createBigNumber(gasCostDai).gt(potentialDaiProfit.value)) ||
+        (orderShareProfit.value !== 0 &&
+          createBigNumber(gasCostDai).gt(orderShareProfit.value))) &&
       !tradingTutorial
     ) {
       messages = {
