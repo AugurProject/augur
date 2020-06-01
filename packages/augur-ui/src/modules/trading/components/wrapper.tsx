@@ -295,6 +295,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           { decimalsRounded: 4 },
           String(gasPrice)
         ).toString();
+
         resolve({
           ...useValues,
           orderDaiEstimate: String(newOrderDaiEstimate),
@@ -305,9 +306,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         });
       }
     )));
-    await Promise.all(this.state.simulateQueue).then(results =>
-      this.setState(results[results.length - 1])
-    );
+    await Promise.all(this.state.simulateQueue).then(results => {
+      const result = results[results.length - 1];
+      this.setState(result);
+    });
   }
   async updateTradeTotalCost(order, fromOrderBook = false) {
     const {
