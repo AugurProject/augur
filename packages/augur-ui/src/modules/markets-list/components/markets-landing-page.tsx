@@ -18,13 +18,11 @@ import { selectMarketStats } from '../selectors/markets-list';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import { loadMarketsByFilter } from 'modules/markets/actions/load-markets';
 import { useEffect } from 'react';
+import { useLocation, useHistory } from 'react-router';
 
-interface MarketsViewProps {
-  location: object;
-  history: History;
-}
-
-const MarketsView = ({ history, location }: MarketsViewProps) => {
+const MarketsView = () => {
+  const location = useLocation();
+  const history = useHistory();
   const componentWrapper = useRef();
   const marketStats = selectMarketStats();
   let markets = selectMarkets();

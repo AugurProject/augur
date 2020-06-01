@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useLocation, useHistory } from 'react-router';
 import MarketsHeader from 'modules/markets-list/components/markets-header';
 import MarketsList from 'modules/markets-list/components/markets-list';
 import Styles from 'modules/markets-list/components/markets-view.styles.less';
@@ -38,11 +39,6 @@ import { marketListViewed } from 'services/analytics/helpers';
 
 const PAGINATION_COUNT = 10;
 
-interface MarketsViewProps {
-  location: object;
-  history: History;
-}
-
 const findMarketsInReportingState = (markets, reportingState) => {
   const reportingStates: String[] = organizeReportingStates(reportingState);
   return markets.filter(market =>
@@ -75,10 +71,9 @@ const getHeaderTitleFromProps = (
   return "Popular markets";
 };
 
-const MarketsView = ({
-  history,
-  location
-}: MarketsViewProps) => {
+const MarketsView = () => {
+  const location = useLocation();
+  const history = useHistory();
   const markets = getMarkets();
   const {
     keywords,
