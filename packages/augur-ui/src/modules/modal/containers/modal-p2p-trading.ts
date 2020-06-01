@@ -13,6 +13,8 @@ import {
   MODAL_BUY_DAI,
   MODAL_AUGUR_P2P,
   WALLET_STATUS_VALUES,
+  TRANSACTIONS,
+  CREATEAUGURWALLET,
 } from 'modules/common/constants';
 import { AUGUR_IS_P2P, track } from 'services/analytics/helpers';
 import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
@@ -38,13 +40,18 @@ export const getOnboardingStep = (step: number): string => {
 
 const mapStateToProps = (state: AppState) => {
   const balances = state.loginAccount.balances;
-  const daiHighValueAmount = state.env.gsn?.minDaiForSignerETHBalanceInDAI || DAI_HIGH_VALUE_AMOUNT;
-  const ethInReserveAmount = state.env.gsn?.desiredSignerBalanceInETH || RESERVE_IN_ETH;
+  const daiHighValueAmount =
+    state.env.gsn?.minDaiForSignerETHBalanceInDAI || DAI_HIGH_VALUE_AMOUNT;
+  const ethInReserveAmount =
+    state.env.gsn?.desiredSignerBalanceInETH || RESERVE_IN_ETH;
   const ethRate = state.appStatus.ethToDaiRate?.value || 0;
-  const reserveInDai = formatDai(createBigNumber(ethInReserveAmount).multipliedBy(ethRate));
+  const reserveInDai = formatDai(
+    createBigNumber(ethInReserveAmount).multipliedBy(ethRate)
+  );
 
   return {
     walletStatus: state.appStatus.walletStatus,
+    pendingQueue: state.pendingQueue,
     highBalance: balances.dai > daiHighValueAmount,
     reserveInDai,
     daiHighValueAmount,
@@ -64,7 +71,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   largeHeader: 'Augur runs on a peer-to-peer network',
   showAccountStatus: true,
   currentStep: 4,
-  showActivationButton: sP.walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE,
+  showActivationButton:
+    sP.walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE ||
+    (sP.walletStatus === WALLET_STATUS_VALUES.CREATED &&
+      sP.pendingQueue[TRANSACTIONS] &&
+      sP.pendingQueue[TRANSACTIONS][CREATEAUGURWALLET] &&
+      sP.pendingQueue[TRANSACTIONS][CREATEAUGURWALLET].status === 'Success'),
   analyticsEvent: () => dP.track(AUGUR_IS_P2P, {}),
   createFundedGsnWallet: () => dP.createFundedGsnWallet(),
   changeCurrentStep: step => {

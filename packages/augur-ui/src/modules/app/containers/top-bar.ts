@@ -26,6 +26,7 @@ const mapStateToProps = (state: AppState) => {
     ethReserveInDai,
     showAddFundsButton: authStatus.isLogged && appStatus.walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING,
     showActivationButton: authStatus.isLogged && appStatus.walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE,
+    walletStatus: appStatus.walletStatus,
   };
 };
 

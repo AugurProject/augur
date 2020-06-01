@@ -205,6 +205,10 @@ div.Onboarding {
       flex-direction: column;
       justify-content: center;
 
+      @media @breakpoint-mobile {
+        margin: 0 @size-16;
+      }
+
       > div {
         text-align: center;
       }
@@ -295,8 +299,8 @@ div.Onboarding {
 
     > div:first-of-type,
     > div:last-of-type {
-      height: @size-12;
-      width: @size-12;
+      height: @size-6;
+      width: @size-6;
       margin: 0;
 
       > svg {
@@ -349,7 +353,6 @@ div.Onboarding {
 }
 
 
-
 .Stepper {
   align-items: center;
   display: flex;
@@ -361,12 +364,13 @@ div.Onboarding {
     border-radius: 50%;
     cursor: pointer;
     height: @size-8;
-    margin-right: @size-10;
+    margin: @size-4;
     width: @size-8;
 
     &:hover {
       background: @color-dark-text;
       height: @size-12;
+      margin: @size-2;
       width: @size-12;
     }
 
@@ -376,7 +380,9 @@ div.Onboarding {
   }
 
   > span:last-of-type {
-    margin-right: 0;
+    &:hover {
+      margin-left: @size-2;
+    }
   }
 }
 
@@ -3749,6 +3755,7 @@ div.ButtonsRow:last-of-type {
   > div:first-of-type {
     display: flex;
     flex-direction: column;
+    text-align: left;
 
     > span:first-of-type {
       .text-14-bold;

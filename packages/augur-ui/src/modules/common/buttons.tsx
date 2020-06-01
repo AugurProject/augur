@@ -48,6 +48,7 @@ export interface DefaultButtonProps {
   confirmed?: boolean;
   failed?: boolean;
   submitTextButtton?: boolean;
+  customConfirmedButtonText?: string;
 }
 
 export interface SortButtonProps {
@@ -184,7 +185,13 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
   const failed = props.status === TXEventName.Failure;
   const confirmed = props.status === TXEventName.Success;
   if (failed) buttonText = 'Failed';
-  if (confirmed) buttonText = 'Confirmed';
+  if (confirmed) {
+    buttonText = 'Confirmed';
+
+    if (props.customConfirmedButtonText) {
+      buttonText = props.customConfirmedButtonText;
+    }
+  }
   if (failed || confirmed) {
     buttonAction = e => props.cancel(e);
     icon = XIcon;

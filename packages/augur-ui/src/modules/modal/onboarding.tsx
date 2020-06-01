@@ -69,6 +69,7 @@ export const Onboarding = ({
             action={() => createFundedGsnWallet()}
             queueName={TRANSACTIONS}
             queueId={CREATEAUGURWALLET}
+            customConfirmedButtonText={'Account Activated!'}
           />
         }
       </div>
