@@ -1,6 +1,5 @@
 @import (reference) '~assets/styles/shared';
 
-// Used in Betting UI
 .AlertsView {
   background-color: transparent;
   border-top: 0;
@@ -10,7 +9,7 @@
   max-height: 470px;
   position: relative;
   text-align: left;
-  width: 360px;
+  width: @size-360;
   z-index: @mask-above;
 
   @media @breakpoint-mobile {
@@ -84,7 +83,7 @@
   padding: @size-30;
   text-align: center;
   width: 100%;
-  border: 1px solid var(--color-secondary-action-outline);
+  border: @size-1 solid var(--color-secondary-action-outline);
 }
 
 .dismissContainer {
@@ -102,7 +101,7 @@
 
     align-self: flex-end;
     background: var(--color-secondary-action);
-    border: 1px solid var(--color-secondary-action-outline);
+    border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @size-3;
     color: var(--color-secondary-text);
     cursor: pointer;
@@ -118,5 +117,11 @@
     &:focus {
       outline: none;
     }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .AlertsView {
   }
 }
