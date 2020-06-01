@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import FilledOrder from "modules/portfolio/containers/filled-order";
+import { FilledOrder } from "modules/common/table-rows";
 import FilledOrdersHeader from "modules/portfolio/components/common/filled-orders-header";
 
 import Styles from "modules/market/components/market-orders-positions-table/open-orders-table.styles";

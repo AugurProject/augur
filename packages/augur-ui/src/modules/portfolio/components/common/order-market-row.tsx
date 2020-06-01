@@ -1,7 +1,7 @@
 import React from 'react';
 
-import OpenOrder from 'modules/portfolio/containers/open-order';
-import FilledOrder from 'modules/portfolio/containers/filled-order';
+import { OpenOrder } from 'modules/common/table-rows';
+import { FilledOrder } from "modules/common/table-rows";
 
 import Styles from 'modules/portfolio/components/common/order-market-row.styles.less';
 
