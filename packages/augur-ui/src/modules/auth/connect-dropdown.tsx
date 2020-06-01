@@ -171,7 +171,7 @@ const ConnectDropdown = () => {
       disabled: gsnEnabled ? balances.rep === 0 : false,
     },
     {
-      name: 'ETH RESERVE',
+      name: 'Fee reserve',
       toolTip: renderToolTip(
         'tooltip--ethReserve',
         <div>
@@ -198,7 +198,7 @@ const ConnectDropdown = () => {
       logo: EthIcon,
       value: reserveEthAmount.formattedValue,
       subValue: ethReserveInDai,
-      disabled: gsnEnabled ? balances.ethNonSafe === 0 : false,
+      disabled: gsnEnabled ? balances.signerBalances.eth !== "0" : false,
     },
   ];
 

@@ -42,9 +42,7 @@ export const Transactions = () => {
     networkId !== NETWORK_IDS.Kovan
       ? 'Use flash to transfer ETH to address'
       : null;
-  const signingWalletNoEth = createBigNumber(balances.ethNonSafe || 0).lte(
-    ZERO
-  );
+  const signingWalletNoEth = createBigNumber(balances.signerBalances?.eth || 0).lte(ZERO);
 
   return (
     <QuadBox
