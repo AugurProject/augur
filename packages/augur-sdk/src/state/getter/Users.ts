@@ -1474,7 +1474,7 @@ function addEscrowedAmountsDecrementShares(
   const displayMinPrice = minPrice.dividedBy(QUINTILLION);
   let sharesUsed = ZERO;
 
-  if (new BigNumber(orderType).eq(ORDER_TYPES.ASK)) {
+  if (new BigNumber(orderType).eq(ORDER_TYPES.BID)) {
     const userSharesBalancesRemoveOutcome = Object.keys(
       userSharesBalances
     ).reduce(
