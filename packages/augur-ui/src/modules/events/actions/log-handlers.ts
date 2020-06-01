@@ -38,6 +38,7 @@ import {
   DOINITIALREPORTWARPSYNC,
   ZEROX_STATUSES,
   MODAL_ERROR,
+  TRANSFER,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -137,12 +138,6 @@ export const handleTxEvents = (txStatus: Events.TXStatus) => {
     AppStatus.actions.setModal({ type: MODAL_GAS_PRICE, feeTooLow: true });
   }
   addUpdateTransaction(txStatus);
-};
-
-export const handleTxFeeTooLow = (txStatus: Events.TXStatus) => {
-  console.log('TxFeeTooLow Transaction', txStatus.transaction.name, txStatus);
-  addUpdateTransaction(txStatus);
-  AppStatus.actions.setModal({ type: MODAL_GAS_PRICE, feeTooLow: true });
 };
 
 export const handleZeroStatusUpdated = (status, log = undefined) => {
@@ -407,10 +402,11 @@ export const handleOrderLog = (log: any) => {
 
 export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => {
   const {
+    isLogged,
     loginAccount: { mixedCaseAddress },
   } = AppStatus.get();
   const isUserDataUpdate = isSameAddress(log.orderCreator, mixedCaseAddress);
-  if (isUserDataUpdate && AppStatus.get().isLogged) {
+  if (isUserDataUpdate && isLogged) {
     handleAlert(log, PUBLICTRADE, false);
     throttleLoadUserOpenOrders();
     const pendingOrderId = constructPendingOrderid(

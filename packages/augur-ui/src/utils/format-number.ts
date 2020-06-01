@@ -96,27 +96,6 @@ export function formatEtherEstimate(
   });
 }
 
-export function formatDaiEstimate(
-  num: NumStrBigNumber,
-  opts: FormattedNumberOptions = {}
-): FormattedNumber {
-  return formatNumber(num, {
-    decimals: 2,
-    decimalsRounded: 2,
-
-    denomination: v => {
-      const isNegative = Number(v) < 0;
-      const val = isNegative ? createBigNumber(v).abs().toFixed(2) : v;
-      return `${isNegative ? '-' : ''}$${val} (estimated)`;
-    },
-    positiveSign: false,
-    zeroStyled: false,
-    blankZero: false,
-    bigUnitPostfix: false,
-    ...opts,
-  });
-}
-
 export function formatPercent(
   num: NumStrBigNumber,
   opts: FormattedNumberOptions = {}

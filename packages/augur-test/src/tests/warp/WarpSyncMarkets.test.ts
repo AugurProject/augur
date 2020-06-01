@@ -321,7 +321,9 @@ describe('Warp Sync markets', () => {
 
       const { hash } = await john.api.route('getMostRecentWarpSync', undefined);
 
-      await otherJohn.warpSyncStrategy.start(hash);
+      const currentBlock = await john.provider.getBlock('latest');
+
+      await otherJohn.warpSyncStrategy.start(hash, currentBlock);
 
       let johnLogs = {};
       let otherJohnLogs = {};
@@ -408,7 +410,10 @@ describe('Warp Sync markets', () => {
         undefined
       );
 
-      await otherJohn.warpSyncStrategy.start(newHash);
+      await otherJohn.warpSyncStrategy.start(
+        newHash,
+        await provider.getBlock('latest')
+      );
 
       johnLogs = {};
       otherJohnLogs = {};

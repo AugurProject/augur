@@ -6,6 +6,7 @@ import {
   ACCOUNT_TYPES,
   NEW_ORDER_GAS_ESTIMATE,
   ETH,
+  DAI,
   NULL_ADDRESS,
   MODAL_ADD_FUNDS,
   MODAL_GAS_PRICE,
@@ -26,7 +27,6 @@ import {
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatDai, formatEther, formatRep } from 'utils/format-number';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
-import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 import {
   displayGasInDai,
@@ -82,7 +82,7 @@ const ConnectDropdown = () => {
     ethToDaiRate,
     actions: { setModal },
   } = useAppStatusStore();
-  // const showTransferMyDai = balances.signerBalances.dai !== "0";
+  const showTransferMyDai = balances.signerBalances.dai !== "0";
   const { gasPriceTime, gasPriceSpeed, userDefinedGasPrice } = useGasInfo();
   const parentUniverseId = parentUniId !== NULL_ADDRESS ? parentUniId : null;
   let gasCostTrade;
@@ -120,7 +120,6 @@ const ConnectDropdown = () => {
         className={classNames(TooltipStyles.TooltipHint)}
         data-tip
         data-for={id}
-        data-iscapture={true}
       >
         {helpIcon}
       </label>
@@ -160,7 +159,7 @@ const ConnectDropdown = () => {
       }).formattedValue,
       name: 'ETH',
       logo: EthIcon,
-      disabled: gsnEnabled ? balances.eth === 0 : false,
+      disabled: gsnEnabled ? balances.eth === "0" : false,
     },
     {
       name: 'REP',
@@ -169,7 +168,7 @@ const ConnectDropdown = () => {
         zeroStyled: false,
         decimalsRounded: 4,
       }).formattedValue,
-      disabled: gsnEnabled ? balances.rep === 0 : false,
+      disabled: gsnEnabled ? balances.rep === "0" : false,
     },
     {
       name: 'Fee reserve',
@@ -256,7 +255,7 @@ const ConnectDropdown = () => {
           />
         </div>
 
-        {/* {showTransferMyDai && <TransferMyDai condensed={true} />} */}
+        {showTransferMyDai && <TransferMyDai condensed={true} />}
 
         {accountFunds
           .filter(fundType => !fundType.disabled)
@@ -268,11 +267,8 @@ const ConnectDropdown = () => {
               </div>
               <div>
                 <div>
-                  <span>
-                    {fundType.value}{' '}
-                    {fundType.name === 'ETH RESERVE' ? ETH : fundType.name}
-                  </span>
-                  {fundType.subValue && <span>${fundType.subValue}</span>}
+                  <span>{fundType.value} {fundType.name === 'Fee reserve' ? DAI : fundType.name}</span>
+                  {fundType.subValue && <span>{fundType.subValue} ETH</span>}
                 </div>
               </div>
             </div>

@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'appStore';
+import { getGasPrice, getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 import {
   formatAttoRep,
   formatAttoDai,
@@ -46,6 +47,7 @@ const mapStateToProps = (state: AppState) => {
     pendingQueue,
     claimReportingFees: selectReportingWinningsByMarket(state),
     forkingInfo,
+    transactionLabel: getTransactionLabel(),
   };
 };
 
@@ -59,10 +61,11 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
+  const transactionLabel = sP.transactionLabel;
   const participationTokensOnly = sP.modal.participationTokensOnly;
   const isForking = !!sP.forkingInfo;
   const forkingMarket = isForking ? sP.forkingInfo.forkingMarket : null;
-  const { gasCost, pendingQueue } = sP;
+  const { pendingQueue } = sP;
   const claimReportingFees = sP.claimReportingFees as MarketReportClaimableContracts;
   const modalRows: ActionRowsProps[] = [];
 
@@ -78,7 +81,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   };
   const submitAllTxCount = redeemStakeBatches(allRedeemStakeOptions);
   const claimableMarkets = claimReportingFees.claimableMarkets;
-  const showBreakdown = claimableMarkets.marketContracts.length > 1;
+  const showBreakdown = (claimableMarkets.marketContracts.length + reportingParticipants.length) > 1;
   const totalRep = `${formatAttoRep(claimReportingFees.totalUnclaimedRep).formatted} REP`;
 
   if (!participationTokensOnly) {
@@ -100,6 +103,16 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         const marketTxCount = redeemStakeBatches(redeemStakeOptions);
         let notice = undefined;
         let action = () => dP.redeemStake(redeemStakeOptions);
+        let estimateGas = async () => {
+          const gas = await dP.redeemStakeGas(redeemStakeOptions);
+          const displayfee = sP.GsnEnabled
+            ? displayGasInDai(gas)
+            : formatEther(gas).formattedValue;
+          return {
+            label: transactionLabel,
+            value: String(displayfee),
+          };
+        };
         let buttonText = 'Claim';
         let queueName = REDEEMSTAKE;
         let queueId = marketObj.contracts[0];
@@ -124,7 +137,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
           if (isForkingMarket) {
             buttonText = 'Release and Migrate REP';
-            action = () => dP.redeemStake(redeemStakeOptions);
             queueName = TRANSACTIONS;
             queueId = FORKANDREDEEM;
             notice =
@@ -149,14 +161,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
               value: `${marketRep.formatted || 0} REP`,
               addExtraSpace: true,
             },
-            {
-              label: 'Transaction Fee',
-              value: sP.GsnEnabled
-                ? displayGasInDai(gasCost)
-                : gasCost + ' ETH',
-            },
           ],
-          action,
+          action: showBreakdown ? action : null,
+          estimateGas,
         });
       }
     });
@@ -193,12 +200,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           label: 'Reporting Fees',
           value: `$${daiFormatted.formattedValue}`,
         },
-        {
-          label: 'Transaction Fee',
-          value: sP.GsnEnabled
-            ? displayGasInDai(gasCost)
-            : gasCost + ' ETH',
-        },
       ],
       action: () => {
         const redeemStakeOptions = {
@@ -206,6 +207,18 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           reportingParticipants: [],
         };
         dP.redeemStake(redeemStakeOptions);
+      },
+      estimateGas: async () => {
+        const redeemStakeOptions = {
+          disputeWindows: claimReportingFees.participationContracts.contracts,
+          reportingParticipants: [],
+        };
+        const gas = await dP.redeemStakeGas(redeemStakeOptions);
+        const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
+        return {
+          label: transactionLabel,
+          value: String(displayfee),
+        };
       },
     });
   }
@@ -275,7 +288,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         const gas = await dP.redeemStakeGas(allRedeemStakeOptions);
         const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
         return {
-          label: 'Transaction Fee',
+          label: transactionLabel,
           value: String(displayfee),
         };
       }

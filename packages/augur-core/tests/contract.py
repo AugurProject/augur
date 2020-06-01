@@ -34,7 +34,12 @@ class Contract():
             if not self.coverageMode and len(outputs) == 1 and outputs[0]['type'] == 'bool':
                 getReturnData = False
             if getReturnData or abiFunc['constant'] or not commitTx:
-                retVal = contractFunction.call({'from': sender, 'value': value}, block_identifier='pending')
+                try:
+                    retVal = contractFunction.call({'from': sender, 'value': value}, block_identifier='pending')
+                except TransactionFailed as e:
+                    raise e
+                except: # There is a specific contract this is for where the expected return value is (bool, string)
+                    retVal = True, ""
             if not abiFunc['constant'] and commitTx:
                 tx_hash = contractFunction.transact({'from': sender, 'value': value, 'gasPrice': 1, 'gas': 1000000000})
                 receipt = self.w3.eth.waitForTransactionReceipt(tx_hash, 1)
