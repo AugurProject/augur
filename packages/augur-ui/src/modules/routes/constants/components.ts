@@ -1,10 +1,10 @@
 export {
   default as Markets
-} from "modules/markets-list/containers/markets-view-container";
+} from 'modules/markets-list/components/markets-view';
 
 export {
   default as MarketsLandingPage
-} from "modules/markets-list/containers/markets-landing-page-container";
+} from 'modules/markets-list/components/markets-landing-page';
 
 
 export { default as Account } from "modules/account/components/account-view";
