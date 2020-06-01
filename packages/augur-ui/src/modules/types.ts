@@ -600,7 +600,6 @@ export interface AuthStatus {
   isLogged?: boolean;
   restoredAccount?: boolean;
   isConnectionTrayOpen?: boolean;
-  vaultHasDAI?: boolean;
 }
 
 export interface AccountPositionAction {
