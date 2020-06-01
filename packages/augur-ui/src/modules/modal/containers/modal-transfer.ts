@@ -24,11 +24,13 @@ const mapStateToProps = (state: AppState) => {
   } = AppStatus.get();
   balances.dai = totalTradingBalance().toNumber();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
+  const signingEthBalance = balances.signerBalances.eth;
   return {
     account,
     modal,
     balances,
     gasPrice,
+    signingEthBalance,
     fallBackGasCosts: {
       eth: formatEtherEstimate(
         formatGasCostToEther(

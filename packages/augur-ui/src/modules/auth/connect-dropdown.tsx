@@ -82,6 +82,7 @@ const ConnectDropdown = () => {
     ethToDaiRate,
     actions: { setModal },
   } = useAppStatusStore();
+  // const showTransferMyDai = balances.signerBalances.dai !== "0";
   const { gasPriceTime, gasPriceSpeed, userDefinedGasPrice } = useGasInfo();
   const parentUniverseId = parentUniId !== NULL_ADDRESS ? parentUniId : null;
   let gasCostTrade;
@@ -254,6 +255,8 @@ const ConnectDropdown = () => {
             text="Add Funds"
           />
         </div>
+
+        {/* {showTransferMyDai && <TransferMyDai condensed={true} />} */}
 
         {accountFunds
           .filter(fundType => !fundType.disabled)
