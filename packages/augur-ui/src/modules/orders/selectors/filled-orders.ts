@@ -82,7 +82,6 @@ function findOrders(
       const outcomeValue = marketInfos.outcomes.find(o => o.id === outcome);
       if (foundOrder) {
         foundOrder.trades.push({
-          id: orderId,
           outcome: outcomeValue.description,
           amount: amountBN,
           price: priceBN,
