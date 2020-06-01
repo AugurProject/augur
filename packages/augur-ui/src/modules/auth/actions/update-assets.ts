@@ -14,7 +14,7 @@ import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-s
 import { createBigNumber } from 'utils/create-big-number';
 import { WALLET_STATUS_VALUES, FIVE, ETHER } from 'modules/common/constants';
 import { addEthIncreaseAlert } from 'modules/alerts/actions/alerts';
-import { updateAuthStatus, VAULT_HAS_DAI } from 'modules/auth/actions/auth-status';
+import { updateAuthStatus } from 'modules/auth/actions/auth-status';
 
 
 export const updateAssets = (
@@ -73,14 +73,6 @@ function updateBalances(
     const repNonSafe = String(createBigNumber(String(amounts[7])).dividedBy(ETHER));
     const legacyRep = String(createBigNumber(String(legacyAttoRep)).dividedBy(ETHER));
     const legacyRepNonSafe = String(createBigNumber(String(legacyAttoRepNonSafe)).dividedBy(ETHER));
-
-    const { loginAccount } = getState();
-    const updatedDaiAmount = createBigNumber(dai);
-    const currentDaiAmount = createBigNumber(await getDaiBalance(loginAccount.address));
-
-    if (updatedDaiAmount.gt(0) && currentDaiAmount.gt(0)) {
-      dispatch(updateAuthStatus(VAULT_HAS_DAI, true));
-    }
 
     dispatch(addedDaiEvent(dai));
     dispatch(addEthIncreaseAlert(dai, ethNonSafeBalance, ethNonSafe));

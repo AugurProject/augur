@@ -98,7 +98,7 @@
     "ws": "ws://localhost:60557"
   },
   "warpSync": {
-    "enabled": false,
+    "enabled": true,
     "autoReport": false
   },
   "logLevel": 0,
