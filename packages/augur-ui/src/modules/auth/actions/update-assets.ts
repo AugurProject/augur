@@ -5,23 +5,21 @@ import {
   getRepBalance,
   getLegacyRepBalance,
 } from 'modules/contracts/actions/contractCalls';
-import { formatAttoRep } from 'utils/format-number';
-import { addedDaiEvent } from 'services/analytics/helpers';
 import { createBigNumber } from 'utils/create-big-number';
-import { WALLET_STATUS_VALUES, FIVE} from 'modules/common/constants';
+import { WALLET_STATUS_VALUES, FIVE, ETHER} from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 import { addEthIncreaseAlert } from 'modules/alerts/actions/alerts';
 
 export const updateAssets = async (
   callback?: NodeStyleCallback,
 ) => {
-  const { loginAccount: { address, meta, balances: { ethNonSafe } } } = AppStatus.get();
+  const { loginAccount: { address, meta, balances: { signerBalances: { eth } } } } = AppStatus.get();
   const nonSafeWallet = await meta.signer.getAddress();
 
   updateBalances(
     address,
     nonSafeWallet,
-    String(ethNonSafe),
+    String(eth),
     (err, balances) => {
       const { walletStatus } = AppStatus.get();
       // TODO: set min amount of DAI, for testing need a real values
@@ -48,19 +46,21 @@ function updateBalances(
     getLegacyRepBalance(address),
     getLegacyRepBalance(nonSafeWallet),
     getEthBalance(nonSafeWallet),
+    getDaiBalance(nonSafeWallet),
+    getRepBalance(universe, nonSafeWallet),
   ]).then(amounts => {
-    const attoRep = amounts[0].toString();
-    const dai = amounts[1];
+    const attoRep = String(amounts[0]);
+    const dai = String(amounts[1]);
     const eth = amounts[2];
-    const legacyAttoRep = amounts[3].toString();
-    const legacyAttoRepNonSafe = amounts[4].toString();
-    const rep = formatAttoRep(attoRep, {
-      decimalsRounded: 14,
-    }).roundedValue?.toNumber();
+    const legacyAttoRep = String(amounts[3]);
+    const legacyAttoRepNonSafe = String(amounts[4]);
+    const rep = String(createBigNumber(attoRep).dividedBy(ETHER));
     const ethNonSafe = amounts[5];
-    const legacyRep = formatAttoRep(legacyAttoRep).value;
-    const legacyRepNonSafe = formatAttoRep(legacyAttoRepNonSafe).value;
-    addedDaiEvent(dai);
+    const daiNonSafe = String(amounts[6]);
+    const repNonSafe = String(createBigNumber(String(amounts[7])).dividedBy(ETHER));
+    const legacyRep = String(createBigNumber(String(legacyAttoRep)).dividedBy(ETHER));
+    const legacyRepNonSafe = String(createBigNumber(String(legacyAttoRepNonSafe)).dividedBy(ETHER));
+
     const balances = {
       attoRep,
       rep,
@@ -69,7 +69,11 @@ function updateBalances(
       legacyAttoRep,
       legacyRep,
       legacyRepNonSafe,
-      ethNonSafe,
+      signerBalances: {
+        eth: ethNonSafe,
+        dai: daiNonSafe,
+        rep: repNonSafe,
+      },
     };
     addEthIncreaseAlert(dai, ethNonSafeBalance, ethNonSafe);
     AppStatus.actions.updateLoginAccount({

@@ -82,6 +82,7 @@ const ConnectDropdown = () => {
     ethToDaiRate,
     actions: { setModal },
   } = useAppStatusStore();
+  // const showTransferMyDai = balances.signerBalances.dai !== "0";
   const { gasPriceTime, gasPriceSpeed, userDefinedGasPrice } = useGasInfo();
   const parentUniverseId = parentUniId !== NULL_ADDRESS ? parentUniId : null;
   let gasCostTrade;
@@ -171,7 +172,7 @@ const ConnectDropdown = () => {
       disabled: gsnEnabled ? balances.rep === 0 : false,
     },
     {
-      name: 'ETH RESERVE',
+      name: 'Fee reserve',
       toolTip: renderToolTip(
         'tooltip--ethReserve',
         <div>
@@ -198,7 +199,7 @@ const ConnectDropdown = () => {
       logo: EthIcon,
       value: reserveEthAmount.formattedValue,
       subValue: ethReserveInDai,
-      disabled: gsnEnabled ? balances.ethNonSafe === 0 : false,
+      disabled: gsnEnabled ? balances.signerBalances.eth !== "0" : false,
     },
   ];
 
@@ -254,6 +255,8 @@ const ConnectDropdown = () => {
             text="Add Funds"
           />
         </div>
+
+        {/* {showTransferMyDai && <TransferMyDai condensed={true} />} */}
 
         {accountFunds
           .filter(fundType => !fundType.disabled)
