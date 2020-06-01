@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Breakdown } from 'modules/modal/common';
-import { DAI, ETH, REP, ZERO, GWEI_CONVERSION, MAX_DECIMALS, TRANSACTIONS, TRANSFER } from 'modules/common/constants';
+import { DAI, ETH, REP, ZERO, GWEI_CONVERSION, MAX_DECIMALS, TRANSACTIONS, TRANSFER, SENDETHER } from 'modules/common/constants';
 import {
   formatEther,
   formatRep,
@@ -9,13 +9,14 @@ import {
   formatGasCostToEther,
 } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
-import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { FormDropdown, TextInput } from 'modules/common/form';
 import { CloseButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 import { getGasInDai, ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
 import getPrecision from 'utils/get-number-precision';
+
+import Styles from 'modules/modal/modal.styles.less';
 
 interface TransferFormProps {
   closeAction: Function;
@@ -70,7 +71,7 @@ export const TransferForm = ({
     createBigNumber(getGasInDai(fallBackGasCosts[DAI.toLowerCase()]).value)
   );
   const [state, setState] = useState({
-    address: '',
+    address: useSigner ? account : '',
     gasEstimateInDai: getGasInDai(fallBackGasCosts[DAI.toLowerCase()]),
     errors: {
       address: '',
@@ -292,6 +293,7 @@ export const TransferForm = ({
                 id='currency'
                 options={state.options}
                 defaultValue={currency}
+                disabled={!(state.options.length > 1)}
                 onChange={currency => {
                   setCurrency(currency)
                   setAmount('')
@@ -314,15 +316,19 @@ export const TransferForm = ({
           </div>
           <Breakdown rows={breakdown} />
         </main>
-        <div>
+        <div className={Styles.ButtonsRow}>
           <ProcessingButton
+            small
             text={'Send'}
             action={() => transferFunds(formattedAmount.fullPrecision, currency, address, useSigner)}
             queueName={TRANSACTIONS}
-            queueId={TRANSFER}
+            queueId={currency === ETH ? SENDETHER : TRANSFER}
             disabled={!isValid}
           />
-          <SecondaryButton text={'Cancel'} action={closeAction} />
+          <SecondaryButton
+            text={'Cancel'}
+            action={closeAction}
+          />
         </div>
       </div>
     );
