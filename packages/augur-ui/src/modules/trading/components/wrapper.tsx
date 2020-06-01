@@ -295,7 +295,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           { decimalsRounded: 4 },
           String(gasPrice)
         ).toString();
-
         resolve({
           ...useValues,
           orderDaiEstimate: String(newOrderDaiEstimate),
