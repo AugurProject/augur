@@ -213,9 +213,6 @@ export const TEMPLATES = {
                   text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "No Contest".`
-                },
-                {
                   text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
                 },
                 {
@@ -309,10 +306,10 @@ export const TEMPLATES = {
                   text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`
                 },
                 {
-                  text: `KO/TKO Stoppage: Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. Stoppage by doctor or a fighter’s corner/team. A fighter retires due to injury.`
+                  text: `KO/TKO: 1. Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. 2. Stoppage by doctor or a fighter’s corner/team. 3. A fighter retires due to injury.`
                 },
                 {
-                  text: `Submission Stoppage: A Submission should be used when A fighter taps out, either verbally or physically.`
+                  text: `Submission: A Submission should be used when a fighter taps out, either verbally or physically.`
                 }
               ],
             },
@@ -369,10 +366,10 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "No Contest".`
                 },
                 {
                   text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`,
@@ -384,10 +381,10 @@ export const TEMPLATES = {
                   text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`
                 },
                 {
-                  text: `KO/TKO Stoppage: Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. Stoppage by doctor or a fighter’s corner/team. A fighter retires due to injury.`
+                  text: `KO/TKO: 1. Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. 2. Stoppage by doctor or a fighter’s corner/team. 3. A fighter retires due to injury.`
                 },
                 {
-                  text: `Submission Stoppage: A Submission should be used when A fighter taps out, either verbally or physically.`
+                  text: `Submission: A Submission should be used when a fighter taps out, either verbally or physically.`
                 }
               ],
             },
@@ -462,17 +459,14 @@ export const TEMPLATES = {
                   text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner. If both fighters are disqualified the market should resolve as "No Contest".`
-                },
-                {
                   text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
                 },
                 {
                   text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`,
                 },
                 {
-                  text: `If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, "Goes the distance" should be used to resolve the market.`,
-                },
+                  text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`
+                }
               ],
             },
           },
@@ -587,9 +581,6 @@ export const TEMPLATES = {
                 },
                 {
                   text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
-                },
-                {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "No Contest".`
                 },
                 {
                   text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
@@ -822,9 +813,6 @@ export const TEMPLATES = {
                 },
                 {
                   text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
-                },
-                {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "No Contest".`
                 },
                 {
                   text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
