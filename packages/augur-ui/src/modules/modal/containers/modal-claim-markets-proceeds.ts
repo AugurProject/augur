@@ -25,7 +25,7 @@ import { getLoginAccountClaimableWinnings } from 'modules/positions/selectors/lo
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { labelWithTooltip } from 'modules/common/label-with-tooltip';
 import { AppStatus } from 'modules/app/store/app-status';
-import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
+import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
 
 const mapStateToProps = (state: AppState) => {
   const { pendingQueue = [], loginAccount: { address }, modal, gsnEnabled, blockchain: { currentAugurTimestamp } } = AppStatus.get();

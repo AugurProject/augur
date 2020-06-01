@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'appStore';
-import { getGasPrice, getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
+import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
 import {
   formatAttoRep,
   formatAttoDai,

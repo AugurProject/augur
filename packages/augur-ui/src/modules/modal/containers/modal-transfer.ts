@@ -12,7 +12,7 @@ import {
 } from 'modules/auth/actions/transfer-funds';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
+import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';

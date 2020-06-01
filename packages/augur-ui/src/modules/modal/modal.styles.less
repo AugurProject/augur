@@ -202,82 +202,81 @@ div.Onboarding {
       margin-top: @size-56;
     }
 
-      @media @breakpoint-mobile {
-        margin: 0 @size-16;
-      }
+    @media @breakpoint-mobile {
+      margin: 0 @size-16;
+    }
 
-      > div {
-        text-align: center;
-      }
+    > div {
+      text-align: center;
+    }
 
-      > div:nth-of-type(1) {
-        > svg {
-          height: 62px;
-          fill: var(--color-primary-text);
-        }
-      }
-
-      > div[class*='LargeSubheader'] {
-        margin: @size-16 0 0 0;
-      }
-
-
-      > div[class*="LinkContentSection"] {
-        margin: @size-12 0 0 0;
-        text-align: center;
-
-        > div {
-          margin: @size-16 0 0 0;
-        }
-
-        button {
-          .text-10-semi-bold;
-
-          color: var(--color-primary-text);
-          background: none;
-          border: none;
-
-          > svg path:first-of-type {
-            fill: var(--color-primary-text);
-          }
-
-          > svg path:last-of-type {
-            stroke: var(--color-primary-text);
-          }
-        }
+    > div:nth-of-type(1) {
+      > svg {
+        height: 62px;
+        fill: var(--color-primary-text);
       }
     }
 
-    > div.OnboardingNav {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
+    > div[class*='LargeSubheader'] {
+      margin: @size-16 0 0 0;
+    }
 
-      @media @breakpoint-mobile {
-        display: none;
+
+    > div[class*="LinkContentSection"] {
+      margin: @size-12 0 0 0;
+      text-align: center;
+
+      > div {
+        margin: @size-16 0 0 0;
       }
+
+      button {
+        .text-10-semi-bold;
+
+        color: var(--color-primary-text);
+        background: none;
+        border: none;
+
+        > svg path:first-of-type {
+          fill: var(--color-primary-text);
+        }
+
+        > svg path:last-of-type {
+          stroke: var(--color-primary-text);
+        }
+      }
+    }
+  }
+
+  > div.OnboardingNav {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    @media @breakpoint-mobile {
+      display: none;
+    }
+
+    > div:first-of-type {
+      display: flex;
+      flex-direction: row;
 
       > div:first-of-type {
         display: flex;
-        flex-direction: row;
+        flex-direction: row-reverse;
+        padding: 0;
 
-        > div:first-of-type {
-          display: flex;
-          flex-direction: row-reverse;
-          padding: 0;
-
-          > button:first-of-type {
-            margin-left: @size-16;
-          }
-
-          > button:only-of-type {
-            margin: 0;
-          }
-        }
-
-        > button {
+        > button:first-of-type {
           margin-left: @size-16;
         }
+
+        > button:only-of-type {
+          margin: 0;
+        }
+      }
+
+      > button {
+        margin-left: @size-16;
       }
     }
   }
