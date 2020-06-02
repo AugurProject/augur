@@ -60,7 +60,7 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
-export function getInfo(params: any, status: string, marketInfo: MarketData) {
+export function getInfo(params: any, status: string, marketInfo: MarketData, isOrder: boolean = true) {
   const outcome = new BigNumber(params.outcome || params._outcome).toString();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
   let orderType =
@@ -82,11 +82,16 @@ export function getInfo(params: any, status: string, marketInfo: MarketData) {
     onChainMinPrice,
     onChainMaxPrice
   );
-  const price = convertOnChainPriceToDisplayPrice(
-    createBigNumber(params._price || params.price),
-    onChainMinPrice,
-    tickSize
-  ).toString(10);
+  const price = isOrder
+    ? createBigNumber(params._price || params.price)
+        .times(tickSize)
+        .toString(10)
+    : convertOnChainPriceToDisplayPrice(
+        createBigNumber(params._price || params.price),
+        onChainMinPrice,
+        tickSize
+      ).toString(10);
+;
   const amount = convertOnChainAmountToDisplayAmount(
     createBigNumber(params.amount || params._amount),
     tickSize
@@ -281,7 +286,8 @@ export default function setAlertText(alert: any, callback: Function) {
               const { orderType, amount, price, outcomeDescription } = getInfo(
                 params,
                 alert.status,
-                marketInfo
+                marketInfo,
+                false
               );
               alert.details = `${orderType} ${
                 formatShares(amount).formatted
@@ -326,7 +332,8 @@ export default function setAlertText(alert: any, callback: Function) {
               const { orderType, amount, price, outcomeDescription } = getInfo(
                 params,
                 alert.status,
-                marketInfo
+                marketInfo,
+                false
               );
               alert.details = `${orderType}  ${
                 formatShares(amount).formatted
@@ -454,7 +461,7 @@ export default function setAlertText(alert: any, callback: Function) {
             const { orderType, amount, price, outcomeDescription } = getInfo(
               alert.params,
               alert.status,
-              marketInfo
+              marketInfo,
             );
 
             alert.details = `${orderType}  ${

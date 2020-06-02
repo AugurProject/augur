@@ -68,6 +68,7 @@ import {
   createYesNoZeroXOrders
 } from './create-orders';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
+import { getMarketIds } from './get-market-ids';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -2438,6 +2439,23 @@ export function addScripts(flash: FlashSession) {
         const attoCash = new BigNumber(Number(args.cashAmount)).times(_1_ETH);
         const user = await this.createUser(this.getAccount(), this.config);
         await user.addTokenExchangeLiquidity(attoCash, attoRep);
+      },
+    });
+
+    flash.addScript({
+      name: 'get-market-ids',
+      options: [
+        {
+          name: 'num',
+          abbr: 'n',
+          description: 'number of ids to get',
+        },
+      ],
+      async call(this: FlashSession, args: FlashArguments) {
+        const num = Number(args.num || 100);
+        const user = await this.createUser(this.getAccount(), this.config);
+        const marketIds = await getMarketIds(user, num);
+        console.log(`MARKET IDS: ${JSON.stringify(marketIds)}`);
       },
     });
 }

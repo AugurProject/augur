@@ -36,7 +36,7 @@ export class MockBrowserMesh {
         const rejected = [];
         try {
             for (const order of orders) {
-                const orderHash = orderHashUtils.getOrderHashHex(order);
+                const orderHash = orderHashUtils.getOrderHash(order);
                 const storedOrder: AcceptedOrderInfo = {
                     orderHash,
                     signedOrder: order,

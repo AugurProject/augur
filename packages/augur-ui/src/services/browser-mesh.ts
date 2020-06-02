@@ -11,6 +11,7 @@ import {
   SDKConfiguration,
 } from '@augurproject/artifacts';
 import { SubscriptionEventName, ZeroX } from '@augurproject/sdk';
+import { retry } from 'async';
 import * as Comlink from 'comlink';
 import { SupportedProvider } from 'ethereum-types';
 import './MeshTransferHandler';
@@ -162,7 +163,13 @@ export async function createBrowserMesh(
 
     zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarting, {});
     console.time(zeroXTimerLabel);
-    await loadMeshStreamingWithURLAsync('zerox.wasm');
+
+    const loadMesh = async () => loadMeshStreamingWithURLAsync('zerox.wasm');
+    await new Promise((resolve, reject) =>
+      retry(5, loadMesh, (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      }));
 
     const meshConfig = createBrowserMeshConfig(
       config.ethereum.http,

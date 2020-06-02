@@ -83,7 +83,7 @@ const TopNav = ({
                 <LinearPropertyLabelUnderlineTooltip
                   {...(formatNumber(0))}
                   highlightAlternateBolded
-                  id={'totalFunds'}
+                  id={'totalFunds_top_nav'}
                   tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
                 />
               </div>
@@ -103,13 +103,12 @@ const TopNav = ({
                     <label
                       className={classNames(TooltipStyles.TooltipHint)}
                       data-tip
-                      data-for={'migrateRep'}
-                      data-iscapture={true}
+                      data-for={'tooltip--migrateRep'}
                     >
                       {helpIcon}
                     </label>
                     <ReactTooltip
-                      id={'migrateRep'}
+                      id={'tooltip--migrateRep'}
                       className={TooltipStyles.Tooltip}
                       effect="solid"
                       place="top"
@@ -119,7 +118,7 @@ const TopNav = ({
                     >
                       <p>
                         {
-                          walletBalances.legacyRep > 0
+                          Number(walletBalances.legacyRep) > 0
                             ? 'You have V1 REP in your trading account. Migrate it to V2 REP to use it in Augur V2.'
                             : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'
                         }

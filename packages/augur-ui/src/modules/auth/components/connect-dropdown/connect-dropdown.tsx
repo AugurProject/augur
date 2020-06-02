@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
-import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH } from 'modules/common/constants';
+import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, DAI } from 'modules/common/constants';
 import {
   DaiLogoIcon,
   EthIcon,
@@ -151,7 +151,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       }).formattedValue,
       name: 'ETH',
       logo: EthIcon,
-      disabled: GsnEnabled ? balances.eth === 0 : false,
+      disabled: GsnEnabled ? balances.eth === "0" : false,
     },
     {
       name: 'REP',
@@ -160,23 +160,22 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         zeroStyled: false,
         decimalsRounded: 4,
       }).formattedValue,
-      disabled: GsnEnabled ? balances.rep === 0 : false,
+      disabled: GsnEnabled ? balances.rep === "0" : false,
     },
     {
-      name: 'ETH RESERVE',
+      name: 'Fee reserve',
       toolTip: renderToolTip(
         'tooltip--ethReserve',
         <div>
           <p>Augur runs on a peer-to-peer network, transaction fees are paid in ETH. These fees go entirely to the network. Augur doesn’t collect any of these fees.</p>
-          <p>If your account balance exceeds $40, 0.04 ETH equivilant in DAI will be held in your ETH reserve to cover transaction fees, which results in cheaper transaction fees.</p>
-          <p>As long as your available account balance remains over $40 Dai, your ETH reserve will automatically be replenished.</p>
-          <p>Your ETH reserve can easily be cashed out at anytime using the withdraw button in the transactions section of your account summary.</p>
+          <p>If your account balance exceeds $40, 0.04 ETH equivilant in DAI will be held in your Fee reserve to cover transaction fees, which results in cheaper transaction fees.</p>
+          <p>As long as your available account balance remains over $40 Dai, your Fee reserve will automatically be replenished.</p>
+          <p>Your Fee reserve can easily be cashed out at anytime using the withdraw button in the transactions section of your account summary.</p>
         </div>
       ),
-      logo: EthIcon,
-      value: reserveEthAmount.formattedValue,
-      subValue: ethReserveInDai,
-      disabled: GsnEnabled ? (balances.signerBalances?.eth || 0) === 0 : false,
+      value: ethReserveInDai,
+      subValue: reserveEthAmount.formattedValue,
+      disabled: GsnEnabled ? balances.signerBalances.eth === "0" : false,
     },
   ];
 
@@ -238,8 +237,8 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
               </div>
               <div>
                 <div>
-                  <span>{fundType.value} {fundType.name === 'ETH RESERVE' ? ETH : fundType.name}</span>
-                  {fundType.subValue && <span>${fundType.subValue}</span>}
+                  <span>{fundType.value} {fundType.name === 'Fee reserve' ? DAI : fundType.name}</span>
+                  {fundType.subValue && <span>{fundType.subValue} ETH</span>}
                 </div>
               </div>
             </div>

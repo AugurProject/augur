@@ -32,6 +32,7 @@ import {
   formatGasCostToEther,
   formatShares,
   formatNumber,
+  formatEther,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip } from 'modules/common/labels';
@@ -164,6 +165,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       numFills,
       loopLimit,
       potentialDaiProfit,
+      orderShareProfit,
     } = trade;
 
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
@@ -236,8 +238,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     }
 
     if (
-      !isNaN(numTrades) && numTrades > 0 &&
-      createBigNumber(gasCostDai).gt(potentialDaiProfit.value) &&
+      !isNaN(numTrades) &&
+      numTrades > 0 &&
+      ((potentialDaiProfit && potentialDaiProfit.value !== 0 &&
+        createBigNumber(gasCostDai).gt(potentialDaiProfit.value)) ||
+        (orderShareProfit && orderShareProfit.value !== 0 &&
+          createBigNumber(gasCostDai).gt(orderShareProfit.value))) &&
       !tradingTutorial
     ) {
       messages = {
@@ -479,6 +485,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               value={potentialDaiLoss}
               showDenomination={true}
             />
+
             {gasCostDai.roundedValue.gt(0) > 0 &&
               numFills > 0 && (
               <TransactionFeeLabelToolTip

@@ -34,7 +34,7 @@ interface OnboardingProps {
   showTransferMyDai?: boolean;
   showActivationButton?: boolean;
   createFundedGsnWallet?: Function;
-  showBuyDaiModal?: Function;
+  showAugurP2PModal?: Function;
 }
 
 export const Onboarding = ({
@@ -50,7 +50,7 @@ export const Onboarding = ({
   changeCurrentStep,
   showAccountStatus,
   showTransferMyDai,
-  showBuyDaiModal,
+  showAugurP2PModal,
   showActivationButton,
   createFundedGsnWallet,
 }: OnboardingProps) => {
@@ -69,6 +69,7 @@ export const Onboarding = ({
             action={() => createFundedGsnWallet()}
             queueName={TRANSACTIONS}
             queueId={CREATEAUGURWALLET}
+            customConfirmedButtonText={'Account Activated!'}
           />
         }
       </div>
@@ -91,7 +92,7 @@ export const Onboarding = ({
           {smallHeader && <SmallSubheader text={smallHeader} />}
           {mediumHeader && <MediumSubheader text={mediumHeader} />}
           {linkContent && <LinkContentSection linkContent={linkContent} />}
-          {showTransferMyDai && <TransferMyDai callBack={() => showBuyDaiModal()}/>}
+          {showTransferMyDai && <TransferMyDai callBack={() => showAugurP2PModal()}/>}
         </main>
 
         <div className={Styles.OnboardingNav}>{NavControls}</div>

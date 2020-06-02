@@ -18,6 +18,7 @@ import { getOnboardingStep } from './modal-p2p-trading';
 
 const mapStateToProps = (state: AppState) => ({
   authStatus: state.authStatus,
+  signerHasDAI: state.loginAccount.balances.signerBalances.dai !== "0",
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -28,11 +29,10 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   track: (eventName, payload) => dispatch(track(eventName, payload)),
   gotoOnboardingStep: step =>
     dispatch(updateModal({ type: getOnboardingStep(step) })),
-  showBuyDaiModal: () => dispatch(updateModal({ type: MODAL_BUY_DAI })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  icon: sP.authStatus?.signerHasDAI ? null : OnboardingPaymentIcon,
+  icon: sP.signerHasDAI ? null : OnboardingPaymentIcon,
   largeHeader: 'Add Dai to your trading account',
   showAccountStatus: true,
   currentStep: 3,
@@ -40,8 +40,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     dP.gotoOnboardingStep(step);
   },
   analyticsEvent: () => dP.track(BUY_DAI, {}),
-  showTransferMyDai: sP.authStatus?.signerHasDAI,
-  showBuyDaiModal: () => dP.showBuyDaiModal(),
+  showTransferMyDai: sP.signerHasDAI,
+  showAugurP2PModal: () => dP.showAugurP2PModal(),
   linkContent: [
     {
       content:
@@ -49,10 +49,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     },
     {
       content:
-        'Adding more than 40 Dai ($) allows for 0.04 ETH will be converted for your ETH reserve resulting in cheaper transaction fees.',
+        'Adding more than 40 Dai ($) allows for 0.04 ETH will be converted for your Fee reserve resulting in cheaper transaction fees.',
     },
     {
-      content: 'Your ETH reserve can easily be cashed out at anytime.',
+      content: 'Your Fee reserve can easily be cashed out at anytime.',
     },
     {
       content: 'LEARN MORE',

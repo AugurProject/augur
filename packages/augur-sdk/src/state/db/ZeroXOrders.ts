@@ -175,9 +175,11 @@ export class ZeroXOrders extends AbstractTable {
     );
 
     this.table.where('orderHash').anyOf(Object.keys(canceledOrders)).delete();
-    for (const d of Object.values(canceledOrders)) {
+    for (const d of documents) {
+      if (!canceledOrders[d.orderHash]) continue;
       // Spread this once to avoid extra copies
-      const event = {eventType: OrderEventType.Cancel, orderId: d.orderHash, ...d};
+      const eventType = canceledOrders[d.orderHash].endState === "EXPIRED" ? OrderEventType.Expire : OrderEventType.Cancel;
+      const event = {eventType, orderId: d.orderHash, ...d};
       this.augur.events.emit('OrderEvent', event);
       bulkOrderEvents.push(event);
       this.augur.events.emit('DB:updated:ZeroXOrders', event);

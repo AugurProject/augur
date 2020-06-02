@@ -173,19 +173,18 @@ export async function getLegacyRepBalance(
 }
 
 
-export async function getEthBalance(address: string): Promise<number> {
-  if (!address) return 0;
+export async function getEthBalance(address: string): Promise<string> {
+  if (!address) return "0";
   const Augur = augurSdk.get();
   const balance = await Augur.getEthBalance(address);
-  const balances = formatAttoEth(balance, { decimals: 4 });
-  return balances.value;
+  return String(createBigNumber(String(balance)).dividedBy(ETHER));
 }
 
 export async function getDaiBalance(address: string): Promise<number> {
   if (!address) return 0;
   const { contracts } = augurSdk.get();
   const balance = await contracts.cash.balanceOf_(address);
-  return formatAttoDai(balance).value;
+  return createBigNumber(String(balance)).dividedBy(ETHER);
 }
 
 export async function sendDai_estimateGas(address: string, amount: string): Promise<BigNumber> {
@@ -193,7 +192,7 @@ export async function sendDai_estimateGas(address: string, amount: string): Prom
   const Cash = contracts.cash;
   const onChainAmount = createBigNumber(amount).multipliedBy(
     TEN_TO_THE_EIGHTEENTH_POWER
-  );
+  ).decimalPlaces(0);
   return Cash.transfer_estimateGas(address, onChainAmount);
 }
 
@@ -202,7 +201,7 @@ export async function sendDai(address: string, amount: string) {
   const Cash = contracts.cash;
   const onChainAmount = createBigNumber(amount).multipliedBy(
     TEN_TO_THE_EIGHTEENTH_POWER
-  );
+  ).decimalPlaces(0);
   return Cash.transfer(address, onChainAmount);
 }
 
@@ -324,7 +323,12 @@ export async function withdrawAllFunds(destination: string): Promise<void> {
 
 export async function withdrawAllFundsEstimateGas(destination: string): Promise<BigNumber> {
   const { gsn } = augurSdk.get();
-  return await gsn.withdrawAllFundsEstimateGas(destination);
+  try {
+    return await gsn.withdrawAllFundsEstimateGas(destination);
+  } catch(error) {
+    console.error('withdrawAllFundsEstimateGas', error);
+    throw error;
+  }
 }
 
 

@@ -138,10 +138,8 @@ export const calcOrderShareProfitLoss = (
   const longETH = sharePriceLong.times(shareCost).times(marketRange);
   const shortETH = sharePriceShort.times(shareCost).times(marketRange);
 
-  const bnSettlementFee = createBigNumber(settlementFee, 10).times(feePercent);
-  const totalShareValue = longETH.plus(shortETH);
-  const winningSettlementCost = totalShareValue.times(bnSettlementFee);
-
+  const winningSettlementCost = (side === BUY ? shortETH : longETH).times(settlementFee);
+  
   let longETHpotentialProfit = longETH.minus(winningSettlementCost);
   let shortETHpotentialProfit = shortETH.minus(winningSettlementCost);
 

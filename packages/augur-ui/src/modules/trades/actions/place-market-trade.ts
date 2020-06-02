@@ -73,7 +73,8 @@ export const placeMarketTrade = ({
     outcomeId,
     marketId,
     market.tickSize,
-    market.minPrice
+    market.minPrice,
+    String(orderType),
   );
   dispatch(
     addPendingOrder(
