@@ -42,10 +42,12 @@ export function MarketsReducer(state, action) {
       break;
     }
     case UPDATE_MARKETS_DATA:
-      updatedState.marketInfos = {
-        ...updatedState.marketInfos,
-        ...processMarketsData(action.marketInfos || action.payload?.marketInfos, updatedState.marketInfos)
-      };
+      if (action.marketInfos || action.payload?.marketInfos) {
+        updatedState.marketInfos = {
+          ...updatedState.marketInfos,
+          ...processMarketsData(action.marketInfos || action.payload?.marketInfos, updatedState.marketInfos)
+        };
+      }
       break;
     case REMOVE_MARKET:
       updatedState.marketInfos = immutableDelete(updatedState.marketInfos, action.marketId);
@@ -71,7 +73,6 @@ export function MarketsReducer(state, action) {
       throw new Error(`Error: ${action.type} not caught by Markets reducer`);
   }
 
-  console.log(updatedState.marketInfos);
   window.markets = updatedState;
   return updatedState;
 }
@@ -84,12 +85,24 @@ const isAsync = obj => {
   );
 }
 
+const isPromise = obj => {
+  return (
+    !!obj &&
+    (typeof obj === "object" || typeof obj === "function") &&
+    typeof obj.then === "function"
+  );
+}
+
 const middleware = (dispatch, action) => {
   if (isAsync(action.payload)) {
     (async () => {
       const v = await action.payload();
       dispatch({ ...action, payload: v });
     })();
+  } else if (isPromise(action.payload)) {
+    action.payload.then(v => {
+      dispatch({ ...action, payload: v });
+    });
   } else {
     dispatch({...action});
   }
