@@ -43,14 +43,14 @@ const mapStateToProps = (state: AppState, ownProps) => {
     loginAccount: {
       balances: { dai, eth },
     },
-    gsnEnabled: GsnEnabled,
+    gsnEnabled,
     isLogged,
     restoredAccount,
     blockchain: { currentAugurTimestamp: currentTimestamp },
   } = AppStatus.get();
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
-  const hasFunds = GsnEnabled ? !!dai : !!eth && !!dai;
+  const hasFunds = gsnEnabled ? !!dai : !!eth && !!dai;
 
   let availableDai = totalTradingBalance();
   if (ownProps.initialLiquidity) {
@@ -64,7 +64,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
     hasFunds,
     isLogged,
     restoredAccount,
-    GsnEnabled,
     currentTimestamp,
     availableDai,
     gsnUnavailable: isGSNUnavailable(),

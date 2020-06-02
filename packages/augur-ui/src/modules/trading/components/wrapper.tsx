@@ -50,7 +50,6 @@ interface WrapperProps {
   disclaimerSeen: boolean;
   gsnWalletInfoSeen: boolean;
   gasPrice: number;
-  GsnEnabled: boolean;
   hasFunds: boolean;
   hasHistory: boolean;
   isLogged: boolean;
@@ -434,7 +433,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     const {
       market,
       selectedOutcome,
-      gasPrice,
       updateSelectedOutcome,
       disclaimerSeen,
       disclaimerModal,
@@ -442,7 +440,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       initialLiquidity,
       tradingTutorial,
       tutorialNext,
-      GsnEnabled,
       hasFunds,
       isLogged,
       restoredAccount,
@@ -619,24 +616,21 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             />
           )}
         </div>
-        { showConfirm && (
-            <Confirm
-              initialLiquidity={initialLiquidity}
-              numOutcomes={market.numOutcomes}
-              marketType={marketType}
-              maxPrice={maxPriceBigNumber}
-              minPrice={minPriceBigNumber}
-              trade={trade}
-              gasPrice={gasPrice}
-              gasLimit={trade.gasLimit}
-              selectedOutcomeId={selectedOutcome.id}
-              outcomeName={selectedOutcome.description}
-              scalarDenomination={market.scalarDenomination}
-              tradingTutorial={tradingTutorial}
-              GsnEnabled={GsnEnabled}
-              gsnUnavailable={gsnUnavailable}
-            />
-          )}
+        {showConfirm && (
+          <Confirm
+            initialLiquidity={initialLiquidity}
+            numOutcomes={market.numOutcomes}
+            marketType={marketType}
+            maxPrice={maxPriceBigNumber}
+            minPrice={minPriceBigNumber}
+            trade={trade}
+            gasLimit={trade.gasLimit}
+            selectedOutcomeId={selectedOutcome.id}
+            outcomeName={selectedOutcome.description}
+            scalarDenomination={market.scalarDenomination}
+            tradingTutorial={tradingTutorial}
+          />
+        )}
         <div>{actionButton}</div>
         {showTip && !initialLiquidity && (
           <div>

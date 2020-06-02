@@ -8,7 +8,6 @@ import {
   CREATEAUGURWALLET,
   TRANSACTIONS,
 } from 'modules/common/constants';
-import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState, ownProps) => {
@@ -16,12 +15,12 @@ const mapStateToProps = (state: AppState, ownProps) => {
     newMarket,
     pendingQueue,
     loginAccount: { balances, allowance: allowanceBigNumber },
-    gsnEnabled: GsnEnabled,
-    walletStatus: walletStatus,
+    gsnEnabled,
+    walletStatus,
     gasPriceInfo,
   } = AppStatus.get();
 
-  const hasFunds = GsnEnabled
+  const hasFunds = gsnEnabled
     ? !!balances.dai
     : !!balances.eth && !!balances.dai;
 
@@ -37,7 +36,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     availableDai,
     hasFunds,
     allowanceBigNumber,
-    GsnEnabled,
+    gsnEnabled,
     walletStatus,
     sweepStatus,
   };
@@ -49,9 +48,6 @@ const mapDispatchToProps = dispatch => ({
       customAction,
       type: MODAL_INITIALIZE_ACCOUNT,
     }),
-  updateWalletStatus: () => {
-    removePendingTransaction(CREATEAUGURWALLET);
-  },
 });
 
 const ConfirmContainer = connect(

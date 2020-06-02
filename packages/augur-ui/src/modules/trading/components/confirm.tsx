@@ -32,7 +32,6 @@ import {
   formatGasCostToEther,
   formatShares,
   formatNumber,
-  formatEther,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip } from 'modules/common/labels';
@@ -40,6 +39,7 @@ import { Trade } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
 import { ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
 import { TXEventName } from '@augurproject/sdk/src';
+import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 
 interface MessageButton {
   action: Function;
@@ -69,18 +69,21 @@ interface ConfirmProps {
   scalarDenomination: string | null;
   numOutcomes: number;
   tradingTutorial?: boolean;
-  GsnEnabled: boolean;
+  gsnEnabled: boolean;
   initialLiquidity: boolean;
   initializeGsnWallet: Function;
   walletStatus: string;
   selectedOutcomeId: number;
-  updateWalletStatus: Function;
   sweepStatus: string;
 }
 
 interface ConfirmState {
   messages: Message | null;
 }
+
+// const ConfirmPure = (props) => {
+
+// };
 
 class Confirm extends Component<ConfirmProps, ConfirmState> {
   static defaultProps = {
@@ -99,7 +102,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
   componentDidMount() {
     if (this.props.walletStatus === WALLET_STATUS_VALUES.CREATED && this.props.sweepStatus === TXEventName.Success) {
-      this.props.updateWalletStatus();
+      removePendingTransaction(CREATEAUGURWALLET);
     }
   }
 
@@ -150,7 +153,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableEth,
       availableDai,
       tradingTutorial,
-      GsnEnabled,
+      gsnEnabled,
       initializeGsnWallet,
       walletStatus,
       marketType,
@@ -178,7 +181,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = 0;
 
-    if (GsnEnabled) {
+    if (gsnEnabled) {
       gasCostDai = ethToDaiFromAttoRate(gasCostInEth).value;
     }
 
@@ -226,7 +229,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     // GAS error in DAI [Gsn]
     if (
       !tradingTutorial &&
-      GsnEnabled &&
+      gsnEnabled &&
       totalCost &&
       createBigNumber(gasCostDai).gte(createBigNumber(availableDai))
     ) {
@@ -256,7 +259,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     // GAS error in ETH
     if (
       !tradingTutorial &&
-      !GsnEnabled &&
+      !gsnEnabled &&
       totalCost &&
       createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))
     ) {
@@ -289,7 +292,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         type: WARNING,
         message: 'You can now place your trade',
         callback: () => {
-          this.props.updateWalletStatus();
+          removePendingTransaction(CREATEAUGURWALLET)
           this.clearErrorMessage();
         }
       };
@@ -324,7 +327,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       scalarDenomination,
       gasLimit,
       gasPrice,
-      GsnEnabled,
+      gsnEnabled,
       initialLiquidity,
     } = this.props;
 
@@ -357,7 +360,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
     : ZERO;
 
-    if (GsnEnabled) {
+    if (gsnEnabled) {
       gasCostDai = ethToDaiFromAttoRate(gasCostInEth);
     }
 
