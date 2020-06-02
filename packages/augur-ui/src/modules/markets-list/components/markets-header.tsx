@@ -1,10 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
-import FilterSearch from 'modules/filter-sort/components/filter-search';
-import MarketCardFormatSwitcher from 'modules/filter-sort/components/market-card-format-switcher';
+import FilterSearch from 'modules/filter-sort/filter-search';
+import MarketCardFormatSwitcher from 'modules/filter-sort/market-card-format-switcher';
 import Styles from 'modules/markets-list/components/markets-header.styles.less';
 import { FilterButton } from 'modules/common/buttons';
-import FilterDropDowns from 'modules/filter-sort/components/filter-dropdowns';
+import FilterDropDowns from 'modules/filter-sort/filter-dropdowns';
 
 interface MarketsHeaderProps {
   filter: string;

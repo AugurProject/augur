@@ -5,9 +5,9 @@ import MarketsList from 'modules/markets-list/components/markets-list';
 import Styles from 'modules/markets-list/components/markets-view.styles.less';
 import { FilterTags } from 'modules/common/filter-tags';
 import { FilterNotice } from 'modules/common/filter-notice';
-import FilterDropDowns from 'modules/filter-sort/components/filter-dropdowns';
-import MarketTypeFilter from 'modules/filter-sort/components/market-type-filter';
-import MarketCardFormatSwitcher from 'modules/filter-sort/components/market-card-format-switcher';
+import FilterDropDowns from 'modules/filter-sort/filter-dropdowns';
+import MarketTypeFilter from 'modules/filter-sort/market-type-filter';
+import MarketCardFormatSwitcher from 'modules/filter-sort/market-card-format-switcher';
 import updateQuery from 'modules/routes/helpers/update-query';
 import {
   TYPE_TRADE,
@@ -23,7 +23,7 @@ import classNames from 'classnames';
 import { LandingHero } from 'modules/markets-list/components/landing-hero';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKETS_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
-import FilterSearch from 'modules/filter-sort/components/filter-search';
+import FilterSearch from 'modules/filter-sort/filter-search';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { FilterButton } from 'modules/common/buttons';
 import parseQuery from 'modules/routes/helpers/parse-query';

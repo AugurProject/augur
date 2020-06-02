@@ -34,7 +34,7 @@ import {
   MOCK_FUTURES_DATA,
   MOCK_OUTCOMES_DATA,
 } from 'modules/portfolio/store/constants';
-import { FilterSearchPure } from 'modules/filter-sort/components/filter-search';
+import { FilterSearchPure } from 'modules/filter-sort/filter-search';
 
 export function processRows(
   viewBy,

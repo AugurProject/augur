@@ -10,7 +10,7 @@ import {
   SEARCH_FILTER_PLACHOLDER_MOBILE,
   SEARCH_FILTER_PLACHOLDER,
 } from 'modules/common/constants';
-import Styles from 'modules/filter-sort/components/filter-search.styles.less';
+import Styles from 'modules/filter-sort/filter-search.styles.less';
 
 interface FilterSearchProps {
   location: Location;
