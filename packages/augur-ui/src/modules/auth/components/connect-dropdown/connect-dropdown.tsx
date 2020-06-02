@@ -173,7 +173,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           <p>Your Fee reserve can easily be cashed out at anytime using the withdraw button in the transactions section of your account summary.</p>
         </div>
       ),
-      logo: EthIcon,
       value: ethReserveInDai,
       subValue: reserveEthAmount.formattedValue,
       disabled: GsnEnabled ? balances.signerBalances.eth === "0" : false,

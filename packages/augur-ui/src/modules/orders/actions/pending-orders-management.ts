@@ -82,15 +82,16 @@ export const constructPendingOrderid = (
   onChainAmount: string,
   onChainPrice: string,
   onchainOutcome: string,
-  market: string
+  market: string,
+  orderType: string,
 ) => {
   const params: TransactionMetadataParams = {
     amount: createBigNumber(onChainAmount).toString(),
     price: createBigNumber(onChainPrice).toString(16),
     outcome: onchainOutcome,
     market,
+    orderType,
   };
-
   return generateTxParameterId(params);
 };
 
@@ -100,7 +101,8 @@ export const generatePendingOrderId = (
   outcome: string,
   marketId: string,
   tickSize: string,
-  minPrice: string
+  minPrice: string,
+  orderType: string,
 ) => {
   const bnTickSize = createBigNumber(tickSize);
   const bnMinPrice = createBigNumber(minPrice);
@@ -116,13 +118,14 @@ export const generatePendingOrderId = (
     bnTickSize
   );
   const hexOutcome = `0x0${outcome}`;
+  const hexOrderType = `0x0${orderType}`;
 
   const params: TransactionMetadataParams = {
     amount: onChainAmount.toString(),
     price: onChainPrice.toString(16),
     outcome: hexOutcome,
     market: marketId,
+    orderType: hexOrderType,
   };
-
   return generateTxParameterId(params);
 };
