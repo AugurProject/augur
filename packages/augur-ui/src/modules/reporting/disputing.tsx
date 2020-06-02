@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Media from 'react-media';
 
-import MarketsInDispute from 'modules/reporting/containers/markets-in-dispute';
+import MarketsInDispute from 'modules/reporting/components/markets-in-dispute';
 import { WindowProgress } from 'modules/common/progress';
 import { UserRepDisplay } from 'modules/reporting/common';
 import { ReportingModalButton } from 'modules/reporting/common';
