@@ -150,67 +150,42 @@ export const DismissableNotice = ({
   );
 };
 
-const mapStateToPropsActivateWalletButton = () => {
-  const { gsnEnabled, walletStatus } = AppStatus.get();
-  return {
-    gsnUnavailable: isGSNUnavailable(),
-    gsnEnabled,
+export const ActivateWalletButton = () => {
+  const {
     walletStatus,
-  };
-};
-
-const mapDispatchToProps = dispatch => ({
-  initializeGsnWallet: () =>
-    AppStatus.actions.setModal({ type: MODAL_INITIALIZE_ACCOUNT }),
-  updateWalletStatus: () => {
-    removePendingTransaction(CREATEAUGURWALLET);
-  },
-});
-
-const mergeProps = (sP, dP, oP) => {
-  let showMessage = sP.gsnUnavailable;
-  let buttonAction = dP.initializeGsnWallet;
-  if (sP.walletStatus === WALLET_STATUS_VALUES.CREATED) {
-    buttonAction = dP.updateWalletStatus;
+    actions: { setModal },
+  } = useAppStatusStore();
+  const gsnUnavailable = isGSNUnavailable();
+  let showMessage = gsnUnavailable;
+  let buttonAction = setModal({ type: MODAL_INITIALIZE_ACCOUNT });
+  if (walletStatus === WALLET_STATUS_VALUES.CREATED) {
+    buttonAction = removePendingTransaction(CREATEAUGURWALLET);
   }
   if (
-    sP.walletStatus !== WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
-    sP.walletStatus !== WALLET_STATUS_VALUES.CREATED
+    walletStatus !== WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
+    walletStatus !== WALLET_STATUS_VALUES.CREATED
   ) {
     showMessage = false;
   }
-  return {
-    ...sP,
-    ...dP,
-    buttonAction,
-    showMessage,
-  };
+  return (
+    <>
+      {showMessage && (
+        <div className={classNames(Styles.ActivateWalletButton)}>
+          <DismissableNotice
+            show
+            title={'Account Activation'}
+            buttonText={'Activate Account'}
+            buttonAction={() => buttonAction}
+            queueName={TRANSACTIONS}
+            queueId={CREATEAUGURWALLET}
+            buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
+            description={`Activation of your account is needed`}
+          />
+        </div>
+      )}
+    </>
+  );
 };
-
-const ActivateWalletButtonCmp = ({ showMessage, buttonAction }) => (
-  <>
-    {showMessage && (
-      <div className={classNames(Styles.ActivateWalletButton)}>
-        <DismissableNotice
-          show
-          title={'Account Activation'}
-          buttonText={'Activate Account'}
-          buttonAction={buttonAction}
-          queueName={TRANSACTIONS}
-          queueId={CREATEAUGURWALLET}
-          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
-          description={`Activation of your account is needed`}
-        />
-      </div>
-    )}
-  </>
-);
-
-export const ActivateWalletButton = connect(
-  mapStateToPropsActivateWalletButton,
-  mapDispatchToProps,
-  mergeProps
-)(ActivateWalletButtonCmp);
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
