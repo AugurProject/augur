@@ -216,9 +216,6 @@ export const TEMPLATES = {
                   text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
                 },
                 {
-                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`
-                },
-                {
                   text: `For settlement purposes where a half round is stated, 2 minutes 30 seconds of the respective round will define the half to determine over or under. Example: If Total Rounds 2.5 (O/U) is in market question, the midway point in Round 3 is the under/over line. If the fight is stopped at exactly 2 minutes 30 seconds of the round named in the market "over" should be the winning outcome.`
                 }
               ],
