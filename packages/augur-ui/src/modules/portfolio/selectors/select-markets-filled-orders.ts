@@ -10,28 +10,27 @@ export default function() {
 }
 
 export const marketsFilledOrders = () => {
-    const timestamps = getMarketsPositionsRecentlyTraded();
-    const {
-      filledOrders,
-      loginAccount: { mixedCaseAddress: loginAccountAddress },
-    } = AppStatus.get();
-    const marketIds = filterMarketIds(
-      filledOrders[loginAccountAddress] || [],
-      [] // marketReportState.resolved
-    );
-    const markets = filterMarketsByStatus(marketIds, timestamps).sort(
-      (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
-    );
-    const allFilledOrders = getAllUserFilledOrders(marketIds);
+  const timestamps = getMarketsPositionsRecentlyTraded();
+  const {
+    filledOrders,
+    loginAccount: { mixedCaseAddress: loginAccountAddress },
+  } = AppStatus.get();
+  const marketIds = filterMarketIds(
+    filledOrders[loginAccountAddress] || [],
+    [] // marketReportState.resolved
+  );
+  const markets = filterMarketsByStatus(marketIds, timestamps).sort(
+    (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
+  );
+  const allFilledOrders = getAllUserFilledOrders(marketIds);
 
-    return {
-      markets,
-      marketsObj: keyObjectsById(markets),
-      ordersObj: keyObjectsById(allFilledOrders),
-      filledOrders: allFilledOrders,
-    };
-  }
-);
+  return {
+    markets,
+    marketsObj: keyObjectsById(markets),
+    ordersObj: keyObjectsById(allFilledOrders),
+    filledOrders: allFilledOrders,
+  };
+};
 
 const filterMarketIds = (userFilledOrders, resolvedMarkets) =>
   Object.keys(userFilledOrders).reduce(
