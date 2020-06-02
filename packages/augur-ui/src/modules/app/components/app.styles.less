@@ -10,7 +10,7 @@ body {
   background: var(--color-page-background);
 
   // See Issue #3504
-  top: 0px !important;
+  top: 0 !important;
   position: initial !important;
 
   @media @breakpoint-mobile-tablet {
@@ -161,7 +161,7 @@ h6 {
   @media @breakpoint-mobile-tablet {
     height: fit-content;
     width: 100vw;
-    padding-bottom: @size-16;
+    padding-bottom: @size-6;
 
     &.SideNavOpen {
       opacity: 0.1;
@@ -244,11 +244,15 @@ h6 {
   }
 
   > div:first-of-type {
-    left: 0px;
+    left: 0;
     position: absolute;
-    right: 0px;
+    right: 0;
     width: 100%;
     z-index: @mask-toast;
+  }
+
+  @media @breakpoint-mobile {
+    padding-top: 0;
   }
 }
 

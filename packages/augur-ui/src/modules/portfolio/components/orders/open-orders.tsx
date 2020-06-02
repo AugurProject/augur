@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
-import OpenOrder from 'modules/portfolio/containers/open-order';
+import { OpenOrder } from 'modules/common/table-rows';
 import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
 import OrderMarketRow from 'modules/portfolio/components/common/order-market-row';
 import { MarketData, UIOrder } from 'modules/types';

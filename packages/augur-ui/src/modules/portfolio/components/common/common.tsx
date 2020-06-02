@@ -9,7 +9,7 @@ import { CategoryTagTrail } from 'modules/common/labels';
 import { getCategoriesWithClick } from 'modules/market-cards/common';
 import { MarketProgress } from 'modules/common/progress';
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import MyBetsRow from 'modules/portfolio/containers/my-bets-row';
+import { MyBetsRow } from 'modules/common/table-rows';
 
 import Styles from 'modules/portfolio/components/common/common.styles.less';
 import { FUTURES, TABLET_MAX } from 'modules/common/constants';

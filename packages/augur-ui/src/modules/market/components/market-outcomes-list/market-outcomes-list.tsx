@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import Media from 'react-media';
 
-import MarketOutcomesListOutcome from 'modules/market/containers/market-outcome';
+import { MarketOutcome } from 'modules/common/table-rows';
 
 import Styles from 'modules/market/components/market-outcomes-list/market-outcomes-list.styles.less';
 import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
@@ -108,7 +108,7 @@ const MarketOutcomesList = ({
           {outcomesFormatted
             .filter(o => o.isTradeable)
             .map(outcome => (
-              <MarketOutcomesListOutcome
+              <MarketOutcome
                 key={outcome.id}
                 orderBook={orderBook}
                 marketId={marketId}

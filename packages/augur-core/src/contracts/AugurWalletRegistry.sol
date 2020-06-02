@@ -1,17 +1,19 @@
 pragma solidity 0.5.15;
 
-import 'ROOT/gsn/RLPReader.sol';
-import 'ROOT/gsn/GSNRecipient.sol';
-import 'ROOT/gsn/IRelayHub.sol';
+import 'ROOT/gsn/v1/RLPReader.sol';
+import 'ROOT/gsn/v1/GSNRecipient.sol';
+import 'ROOT/gsn/v1/IRelayHub.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/IAugurWallet.sol';
 import 'ROOT/AugurWallet.sol';
+import 'ROOT/IAugurWalletFactory.sol';
 import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/LibBytes.sol';
+import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
 import 'ROOT/uniswap/interfaces/IWETH.sol';
@@ -19,6 +21,7 @@ import 'ROOT/uniswap/interfaces/IWETH.sol';
 
 contract AugurWalletRegistry is Initializable, GSNRecipient {
     using LibBytes for bytes;
+    using ContractExists for address;
 
     using SafeMathUint256  for uint256;
 
@@ -30,8 +33,6 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
 
     event ExecuteTransactionStatus(bool success, bool fundingSuccess);
 
-    mapping (address => IAugurWallet) public wallets;
-
     IAugur public augur;
     IAugurTrading public augurTrading;
 
@@ -41,6 +42,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     address public createOrder;
     address public fillOrder;
     address public zeroXTrade;
+    address public augurWalletRegistryV2;
 
     IUniswapV2Exchange public ethExchange;
     IWETH public WETH;
@@ -63,6 +65,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         fillOrder = _augurTrading.lookup("FillOrder");
         zeroXTrade = _augurTrading.lookup("ZeroXTrade");
         WETH = IWETH(_augurTrading.lookup("WETH9"));
+        augurWalletRegistryV2 = _augurTrading.lookup("AugurWalletRegistryV2");
         IUniswapV2Factory _uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
         address _ethExchangeAddress = _uniswapFactory.getExchange(address(WETH), address(cash));
         if (_ethExchangeAddress == address(0)) {
@@ -183,46 +186,24 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     }
 
     function createAugurWallet(address _referralAddress, bytes32 _fingerprint) private returns (IAugurWallet) {
-        // Create2 creation of wallet based on msg.sender
-        address _owner = _msgSender();
-        if (wallets[_owner] != IAugurWallet(0)) {
-            return wallets[_owner];
-        }
-        address _walletAddress;
-        {
-            bytes32 _salt = keccak256(abi.encodePacked(_owner));
-            bytes memory _deploymentData = abi.encodePacked(type(AugurWallet).creationCode);
-            assembly {
-                _walletAddress := create2(0x0, add(0x20, _deploymentData), mload(_deploymentData), _salt)
-                if iszero(extcodesize(_walletAddress)) {
-                    revert(0, 0)
-                }
-            }
-        }
-        IAugurWallet _wallet = IAugurWallet(_walletAddress);
-        _wallet.initialize(_owner, _referralAddress, _fingerprint, address(augur), cash, IAffiliates(affiliates), IERC1155(shareToken), createOrder, fillOrder, zeroXTrade);
-        wallets[_owner] = _wallet;
-        return _wallet;
+        return IAugurWalletFactory(augurWalletRegistryV2).trustedCreateAugurWallet(_msgSender(), _referralAddress, _fingerprint);
     }
 
     function getCreate2WalletAddress(address _owner) public view returns (address) {
-        bytes1 _const = 0xff;
-        bytes32 _salt = keccak256(abi.encodePacked(_owner));
-        return address(uint160(uint256(keccak256(abi.encodePacked(
-            _const,
-            address(this),
-            _salt,
-            keccak256(abi.encodePacked(type(AugurWallet).creationCode))
-        )))));
+        return IAugurWalletFactory(augurWalletRegistryV2).getCreate2WalletAddress(_owner);
     }
 
-    /**
-     * @notice Get the registered Wallet for the given account
+/**
+     * @notice Get the Wallet for the given account
      * @param _account The account to look up
-     * @return IAugurWallet for the account or 0x if none is registered
+     * @return IAugurWallet for the account or 0x if none exists
      */
     function getWallet(address _account) public view returns (IAugurWallet) {
-        return wallets[_account];
+        address _walletAddress = getCreate2WalletAddress(_account);
+        if (!_walletAddress.exists()) {
+            return IAugurWallet(0);
+        }
+        return IAugurWallet(_walletAddress);
     }
 
     // 1. Create a user's wallet if it does not exist

@@ -820,6 +820,49 @@ describe('State API :: Users :: PL :: ', () => {
       },
     });
   });
+
+  describe('Partial closing of user positions', () => {
+    test('Scenario 1: Multiple orders partial closing position', async () => {
+      const [anyone, A, B] = [john, mary, bob];
+      const market = await createYesNoMarket(anyone, {});
+
+      await trade({
+        market,
+        buyer: B,
+        seller: A,
+        outcome: YES,
+        quantity: 100,
+        price: 0.31,
+      });
+      await trade({
+        market,
+        buyer: B,
+        seller: A,
+        outcome: YES,
+        quantity: 200,
+        price: 0.35,
+      });
+      // B should be long 300 @ 0.33666666666 + fee
+      await trade({
+        market,
+        buyer: A,
+        seller: B,
+        outcome: YES,
+        quantity: 100,
+        price: 0.3,
+      });
+      // B should have closed out 100 shares @ 0.3 for a loss of 3.66666
+      await B.advanceTimestamp(HOUR);
+      await verifyThirtyDayPL(B, {
+        [B.account.address]: {
+          unrealizedPL: -7.333333333333333,
+          unrealizedPercent: -0.1089,
+          realizedPL: -3.6736666666666666,
+          realizedPercent: -0.1091,
+        }
+      });
+    });
+  });
 });
 
 interface DirectedTrade {

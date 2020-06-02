@@ -46,7 +46,7 @@
     "3box-chatbox-react": "0.1.11",
     "3box-comments-react": "2.0.3",
     "3id-blockchain-utils": "0.3.3",
-    "@0x/order-utils": "8.4.0",
+    "@0x/order-utils": "10.2.4",
     "@analytics/segment": "0.4.0",
     "@augurproject/sdk": "2.0.0-alpha.2",
     "@augurproject/utils": "2.0.0-alpha.2",

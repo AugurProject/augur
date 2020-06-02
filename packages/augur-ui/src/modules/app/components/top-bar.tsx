@@ -16,7 +16,12 @@ import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import { HelpResources } from 'modules/app/components/help-resources';
 import { OddsMenu } from 'modules/app/components/odds-menu';
-import { TOTAL_FUNDS_TOOLTIP } from 'modules/common/constants';
+import {
+  TOTAL_FUNDS_TOOLTIP,
+  WALLET_STATUS_VALUES,
+  MODAL_BUY_DAI,
+  MODAL_AUGUR_P2P,
+} from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
 import { getCoreStats } from 'modules/auth/helpers/login-account';
@@ -24,7 +29,12 @@ import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 import { getEthReserveInDai } from 'modules/auth/helpers/get-eth-reserve';
 
 export const Stats = () => {
-  const { isMobile, loginAccount, isLogged, restoredAccount } = useAppStatusStore();
+  const {
+    isMobile,
+    loginAccount,
+    isLogged,
+    restoredAccount,
+  } = useAppStatusStore();
   const stats = getCoreStats(isLogged, loginAccount);
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
@@ -39,7 +49,7 @@ export const Stats = () => {
             <LinearPropertyLabelUnderlineTooltip
               {...totalFunds}
               highlightAlternateBolded
-              id={isMobile ? 'totalFundsMobile' : 'totalFunds'}
+              id={isMobile ? 'totalFundsMobile' : 'totalFunds_top_bar'}
               tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
             />
             <div>
@@ -57,7 +67,6 @@ export const Stats = () => {
   );
 };
 
-
 const TopBar = () => {
   const {
     isLogged,
@@ -65,11 +74,16 @@ const TopBar = () => {
     isMobile,
     isAlertsMenuOpen,
     actions: { setIsAlertsMenuOpen, setModal },
+    walletStatus,
   } = useAppStatusStore();
   const { unseenCount } = getInfoAlertsAndSeenCount();
   const LoggedOrRestored = isLogged || restoredAccount;
   const notLoggedAndRestored = !isLogged && !restoredAccount;
-  
+  const showAddFundsButton =
+    isLogged && walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING;
+  const showActivationButton =
+    isLogged && walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
+
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -78,34 +92,52 @@ const TopBar = () => {
         </Link>
       </div>
       <ThemeSwitch />
-      {LoggedOrRestored && (
-        <Stats />
-      )}
+      {LoggedOrRestored && <Stats />}
       <div>
-        {(!isLogged || (!isMobile && LoggedOrRestored)) && (
-          <HelpResources />
+        {(showActivationButton || showAddFundsButton) && (
+          <div className={Styles.AccountActivation}>
+            <PrimaryButton
+              action={() => {
+                if (showAddFundsButton) {
+                  setModal({ type: MODAL_BUY_DAI });
+                } else {
+                  setModal({ type: MODAL_AUGUR_P2P });
+                }
+              }}
+              text={'Complete account activation'}
+            />
+          </div>
         )}
+        {(!isLogged || (!isMobile && LoggedOrRestored)) && <HelpResources />}
         {!isMobile && <OddsMenu />}
         {notLoggedAndRestored && (
           <>
-            <SecondaryButton action={() => setModal({ type: MODAL_LOGIN })} text="Login" />
-            <PrimaryButton action={() => setModal({ type: MODAL_SIGNUP })} text="Signup" />
+            <SecondaryButton
+              action={() => setModal({ type: MODAL_LOGIN })}
+              text="Login"
+            />
+            <PrimaryButton
+              action={() => setModal({ type: MODAL_SIGNUP })}
+              text="Signup"
+            />
           </>
         )}
-        {LoggedOrRestored && (
-          <button
-            className={classNames(Styles.alerts, {
-              [Styles.alertsDark]: isAlertsMenuOpen,
-              [Styles.Empty]: unseenCount < 1,
-            })}
-            onClick={() => {
-              setIsAlertsMenuOpen(!isAlertsMenuOpen);
-            }}
-            tabIndex={-1}
-          >
-            {Alerts(unseenCount)}
-          </button>
-        )}
+        {LoggedOrRestored &&
+          ((isMobile && walletStatus === WALLET_STATUS_VALUES.CREATED) ||
+            !isMobile) && (
+            <button
+              className={classNames(Styles.alerts, {
+                [Styles.alertsDark]: isAlertsMenuOpen,
+                [Styles.Empty]: unseenCount < 1,
+              })}
+              onClick={() => {
+                setIsAlertsMenuOpen(!isAlertsMenuOpen);
+              }}
+              tabIndex={-1}
+            >
+              {Alerts(unseenCount)}
+            </button>
+          )}
         <ConnectAccount />
       </div>
     </header>

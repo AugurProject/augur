@@ -64,6 +64,52 @@
       > div {
         justify-self: flex-end;
         grid-column: 2;
+        margin-right: @size-16;
+
+        > div {
+          border: none;
+          background: transparent;
+          margin: auto 0;
+          min-width: unset;
+
+          > button {
+            padding: 0;
+            background: transparent;
+  
+            > span {
+              .text-14;
+  
+              color: var(--color-primary-text);
+              text-transform: none;
+              border-right: none;
+              padding: 0 @size-8 0 0;
+              text-decoration-line: underline;
+              text-decoration-style: dashed;
+              text-decoration-color: var(--color-primary-text);
+            }
+
+            > span::before {
+              display: none;
+            }
+
+            &::before {
+              .text-14;
+
+              color: var(--color-secondary-text);
+              content: 'Sort By:';
+              padding-right: @size-4;
+              text-transform: none;
+            }
+  
+            > svg {
+              margin: 0;
+  
+              > path {
+                fill: var(--color-primary-text);
+              }
+            }
+          }
+        }
       }
 
       @media @breakpoint-mobile-tablet {
@@ -78,6 +124,10 @@
           display: flex;
         }
       }
+    }
+
+    div[class*='Search'] {
+      height: @size-38;
     }
   }
 }

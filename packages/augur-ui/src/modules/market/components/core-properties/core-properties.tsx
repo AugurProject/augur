@@ -96,7 +96,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 }
               />
               <PropertyLabel
-                label="Estimated Fee"
+                label="Market Trading Fee"
                 value={
                   market.settlementFeePercent
                     ? formatPercent(market.settlementFeePercent.formattedValue).full

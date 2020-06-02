@@ -34,6 +34,7 @@ contract WarpSync is IWarpSync, Initializable {
     int256 private INT256_MAX = int256(2**255 - 1);
     int256[] private PRICES = [INT256_MIN, INT256_MAX];
     string private constant EXTRA_INFO = '{"description":"What will the next Augur Warp Sync hash be?","longDescription":"What will the Augur SDK warp sync hash be for the last block with a timestamp less than the reporting start timestamp for this market? At least 30 blocks should be mined after this block before attempting to generate a hash in order to account for possible rollbacks."}';
+    uint256 private constant MAX_REWARD_GROWTH_TIME = 7 days;
 
     function initialize(IAugur _augur) public beforeInitialized returns (bool) {
         endInitialization();
@@ -118,6 +119,9 @@ contract WarpSync is IWarpSync, Initializable {
     function getRepReward(uint256 _theoreticalTime) private view returns (uint256) {
         uint256 _currentTime = augur.getTimestamp();
         uint256 _timeSinceTheoreticalCreationInSeconds = _currentTime.sub(_theoreticalTime);
+        if (_timeSinceTheoreticalCreationInSeconds > MAX_REWARD_GROWTH_TIME) {
+            _timeSinceTheoreticalCreationInSeconds = MAX_REWARD_GROWTH_TIME;
+        }
         // Cannot overflow in any reasonable timeline of the universe
         return (_timeSinceTheoreticalCreationInSeconds ** 3).mul(1000);
     }

@@ -1,19 +1,19 @@
+import { Log as SerializedLog } from '@augurproject/types';
 import Dexie from 'dexie';
 import { Block } from 'ethers/providers';
 import * as IPFS from 'ipfs';
 import * as Unixfs from 'ipfs-unixfs';
 import { DAGNode } from 'ipld-dag-pb';
 import _ from 'lodash';
-import { Provider, Augur, NULL_ADDRESS, MarketReportingState } from '..';
 import LZString from 'lz-string';
+import { Augur, MarketReportingState, NULL_ADDRESS, Provider } from '..';
+import { SubscriptionEventName } from '../constants';
 
 import { DB } from '../state/db/DB';
 import { IpfsInfo } from '../state/db/WarpSyncCheckpointsDB';
 import { Markets } from '../state/getter/Markets';
-import { Address, Log } from '../state/logs/types';
-import { Log as SerializedLog } from '@augurproject/types';
+import { Log } from '../state/logs/types';
 import { Checkpoints } from './Checkpoints';
-import { SubscriptionEventName } from '../constants';
 
 export const WARPSYNC_VERSION = '1';
 
@@ -95,7 +95,6 @@ export interface CheckpointInterface {
 }
 
 export class WarpController {
-  private checkpointCreationInProgress = false;
   private static DEFAULT_NODE_TYPE = { format: 'dag-pb', hashAlg: 'sha2-256' };
   checkpoints: Checkpoints;
   private ipfs: Promise<IPFS>;
@@ -170,7 +169,9 @@ export class WarpController {
             mostRecentCheckpoint.end
           );
 
-          const newWarpSyncMarket = await this.augur.warpSync.getWarpSyncMarket(this.augur.contracts.universe.address);
+          const newWarpSyncMarket = await this.augur.warpSync.getWarpSyncMarket(
+            this.augur.contracts.universe.address
+          );
 
           await this.db.warpCheckpoints.createInitialCheckpoint(
             end,
@@ -196,7 +197,7 @@ export class WarpController {
       );
 
       // Market has finished and now we need to wait 30 blocks.
-      if((newBlock.number - newEndBlock.number) < 30) return;
+      if (newBlock.number - newEndBlock.number < 30) return;
 
       await this.db.prune(newEndBlock.timestamp);
       /*
@@ -240,9 +241,7 @@ export class WarpController {
     await this.db.initializeDB();
   }
 
-  async createCheckpoint(
-    endBlock: Block
-  ): Promise<IpfsInfo> {
+  async createCheckpoint(endBlock: Block): Promise<IpfsInfo> {
     const logs = [];
     for (const { databaseName } of databasesToSync) {
       // Awaiting here to reduce load on db.
@@ -304,9 +303,7 @@ export class WarpController {
       .then(JSON.parse);
   }
 
-  async getCheckpointFile(
-    ipfsRootHash: string,
-  ): Promise<CheckpointInterface> {
+  async getCheckpointFile(ipfsRootHash: string): Promise<CheckpointInterface> {
     return this.getFile(`${ipfsRootHash}/index`);
   }
 

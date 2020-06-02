@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PositionsHeader from 'modules/portfolio/components/common/positions-header';
-import PositionRow from 'modules/portfolio/containers/position-row';
+import { PositionRow } from 'modules/common/table-rows';
 import classNames from 'classnames';
 
 import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';

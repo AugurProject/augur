@@ -200,7 +200,6 @@
     &.mobileShow {
       left: 0;
       width: 100%;
-      padding-bottom: @size-40;
 
       // the header area
       > div:first-of-type {
@@ -215,8 +214,8 @@
         height: 50px;
         padding: @size-16;
         width: 100%;
-        z-index: @mask-above;
-        position: fixed;
+        z-index: unset;
+        position: initial;
 
         > span {
           padding-left: @size-25;
@@ -280,6 +279,10 @@
     button {
       background: var(--color-secondary-action-outline);
     }
+  }
+
+  .ExtraPaddingBottom {
+    padding-bottom: @size-66;
   }
 
   .InnerNav__menu--main,
