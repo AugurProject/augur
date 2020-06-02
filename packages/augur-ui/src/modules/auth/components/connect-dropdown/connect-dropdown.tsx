@@ -19,7 +19,7 @@ import { AccountBalances, FormattedNumber } from 'modules/types';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 import { displayGasInDai, ethToDai } from 'modules/app/actions/get-ethToDai-rate';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import TransferMyDai from 'modules/modal/containers/transfer-my-dai';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';

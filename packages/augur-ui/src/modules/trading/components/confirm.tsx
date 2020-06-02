@@ -76,6 +76,7 @@ interface ConfirmProps {
   selectedOutcomeId: number;
   updateWalletStatus: Function;
   sweepStatus: string;
+  hasEthReserve: boolean;
 }
 
 interface ConfirmState {
@@ -326,6 +327,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasPrice,
       GsnEnabled,
       initialLiquidity,
+      hasEthReserve,
     } = this.props;
 
     const {
@@ -495,7 +497,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               )}
           </div>
         )}
-        {numFills > 0 && <EthReserveAutomaticTopOff />}
+        {numFills > 0 && hasEthReserve && <EthReserveAutomaticTopOff />}
         {messages && (
           <div
             className={classNames(Styles.MessageContainer, {
