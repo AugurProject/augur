@@ -1,5 +1,3 @@
-import { createSelector } from 'reselect';
-import store from 'appStore';
 import * as constants from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
 import getUserFilledOrders from 'modules/orders/selectors/filled-orders';
@@ -8,12 +6,11 @@ import getMarketsPositionsRecentlyTraded from 'modules/portfolio/selectors/selec
 import { AppStatus } from 'modules/app/store/app-status';
 
 export default function() {
-  return marketsFilledOrders(store.getState());
+  return marketsFilledOrders();
 }
 
-export const marketsFilledOrders = createSelector(
-  getMarketsPositionsRecentlyTraded,
-  timestamps => {
+export const marketsFilledOrders = () => {
+    const timestamps = getMarketsPositionsRecentlyTraded();
     const {
       filledOrders,
       loginAccount: { mixedCaseAddress: loginAccountAddress },
