@@ -23,7 +23,8 @@ export {
 
 export {
   default as Reporting
-} from "modules/reporting/containers/reporting";
+} from "modules/reporting/reporting";
+
 
 export {
   default as Disputing

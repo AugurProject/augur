@@ -19,6 +19,7 @@ import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import { loadMarketsByFilter } from 'modules/markets/actions/load-markets';
 import { useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router';
+import { useMarketsStore } from 'modules/markets/store/markets';
 
 const MarketsView = () => {
   const location = useLocation();
@@ -34,6 +35,9 @@ const MarketsView = () => {
     restoredAccount,
     actions: { setModal },
   } = useAppStatusStore();
+  const {
+    actions: { updateMarketsList }
+  } = useMarketsStore();
   let { isConnected } = useAppStatusStore();
 
   const [state, setState] = useState({
@@ -56,8 +60,8 @@ const MarketsView = () => {
 
   function updateFilteredMarkets() {
     const { marketCategory } = state;
-    AppStatus.actions.updateMarketsList({ isSearching: true });
-    loadMarketsByFilter(
+    updateMarketsList({ isSearching: true });
+    updateMarketsList(null, loadMarketsByFilter(
       {
         categories:
           marketCategory && marketCategory !== 'all' ? [marketCategory] : [],
@@ -78,7 +82,7 @@ const MarketsView = () => {
           });
         }
       }
-    );
+    ));
   }
 
   return (

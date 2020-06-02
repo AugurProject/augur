@@ -314,21 +314,16 @@ const getWindowLabels = (
 };
 
 export interface WindowProgressProps {
-  startTime: DateFormattedObject | number;
-  endTime: DateFormattedObject | number;
-  title: string;
   description: string;
-  countdownLabel: string;
 }
 
 export const WindowProgress = ({
-  startTime,
-  endTime,
-  title,
   description,
-  countdownLabel,
 }: WindowProgressProps) => {
-  const { blockchain: { currentAugurTimestamp: currentTime }} = useAppStatusStore();
+  const title = "Current Dispute Window";
+  const countdownLabel = "Time Remaining in Window";
+  const { blockchain: { currentAugurTimestamp: currentTime }, universe: { disputeWindow }} = useAppStatusStore();
+  const { startTime, endTime } = disputeWindow;
   const {
     formattedStartTime,
     formattedEndTime,
