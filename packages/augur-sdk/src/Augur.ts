@@ -245,6 +245,10 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.dependencies.useRelay;
   }
 
+  getUseDesiredEthBalance(): boolean {
+    return this.dependencies.useDesiredSignerETHBalance;
+  }
+
   async getGasStation() {
     try {
       const result = await axios.get("https://safe-relay.gnosis.io/api/v1/gas-station/");
