@@ -8,5 +8,5 @@ export const addUpdateMarketInfos = (
     (p, m) => ({ ...p, [m.id]: m }),
     {}
   );
-  Markets.actions.updateMarketsData(marketInfos);
+  return marketInfos;
 };

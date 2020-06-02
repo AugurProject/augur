@@ -9,6 +9,7 @@ import { loadMarketsByFilter } from 'modules/markets/actions/load-markets';
 import { ALL_MARKETS } from 'modules/common/constants';
 import { setSelectedUniverse } from 'modules/auth/actions/selected-universe-management';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
 export const switchUniverse = async (
   universeId: string,
@@ -46,6 +47,8 @@ export const switchUniverse = async (
       offset: 1,
     };
     // force `getMarkets` call to re-populate markets
-    loadMarketsByFilter(filter);
+    Markets.actions.updateMarketsData(
+      null,
+      loadMarketsByFilter(filter));
   });
 };

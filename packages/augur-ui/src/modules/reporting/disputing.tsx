@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Media from 'react-media';
 
 import MarketsInDispute from 'modules/reporting/containers/markets-in-dispute';
-import DisputeWindowProgress from 'modules/reporting/containers/disputing-window-progress';
+import { WindowProgress } from 'modules/common/progress';
 import { UserRepDisplay } from 'modules/reporting/common';
 import { ReportingModalButton } from 'modules/reporting/common';
 import ParticipationTokensView from 'modules/reporting/containers/participation-tokens-view';
@@ -39,7 +39,7 @@ const Disputing = () => {
                 />
                 <UserRepDisplay />
                 <ParticipationTokensView />
-                <DisputeWindowProgress />
+                <WindowProgress />
               </ModulePane>
               <ModulePane label="markets in dispute" headerType={HEADER_TYPE.H1}>
                 <MarketsInDispute />
@@ -56,7 +56,7 @@ const Disputing = () => {
                 />
                 <UserRepDisplay />
               </div>
-              <DisputeWindowProgress />
+              <WindowProgress />
               <ParticipationTokensView />
             </>
           )

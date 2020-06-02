@@ -5,7 +5,7 @@ import { ButtonActionType } from 'modules/types';
 import { ReportingModalButton } from 'modules/reporting/common';
 import ReportingList from 'modules/reporting/containers/reporting-list';
 import { UserRepDisplay } from 'modules/reporting/common';
-import { REPORTING_STATE, SMALL_MOBILE, TABLET, DESKTOP, LARGE_DESKTOP } from "modules/common/constants";
+import { REPORTING_STATE, SMALL_MOBILE, TABLET, DESKTOP, LARGE_DESKTOP, MODAL_DR_QUICK_GUIDE } from "modules/common/constants";
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 
@@ -14,12 +14,9 @@ import { REPORTING_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
-interface ReportingProps {
-  openReportingModal: ButtonActionType;
-}
 
-const Reporting = ({ openReportingModal }: ReportingProps) => {
-  const { isLogged } = useAppStatusStore();
+const Reporting = () => {
+  const { isLogged, actions: {setModal}} = useAppStatusStore();
   const showLoggedOut = !isLogged;
   return (
     <section className={Styles.Reporting}>
@@ -38,7 +35,7 @@ const Reporting = ({ openReportingModal }: ReportingProps) => {
                   <ReportingModalButton
                     highlightedText='Need Help?'
                     text='View our Reporting Quick Guide'
-                    action={openReportingModal}
+                    action={() => setModal({ type: MODAL_DR_QUICK_GUIDE, whichGuide: 'reporting' })}
                   />
                   <UserRepDisplay />
                   <ReportingList
@@ -62,7 +59,7 @@ const Reporting = ({ openReportingModal }: ReportingProps) => {
                   <ReportingModalButton
                     highlightedText='Need Help?'
                     text='View our Reporting Quick Guide'
-                    action={openReportingModal}
+                    action={() => setModal({ type: MODAL_DR_QUICK_GUIDE, whichGuide: 'reporting' })}
                   />
                   <ReportingList
                     reportingType={REPORTING_STATE.OPEN_REPORTING}
@@ -97,7 +94,7 @@ const Reporting = ({ openReportingModal }: ReportingProps) => {
                   <ReportingModalButton
                     highlightedText='Need Help?'
                     text='View our Reporting Quick Guide'
-                    action={openReportingModal}
+                    action={() => setModal({ type: MODAL_DR_QUICK_GUIDE, whichGuide: 'reporting' })}
                   />
                   <UserRepDisplay />
                   <ReportingList
@@ -139,7 +136,7 @@ const Reporting = ({ openReportingModal }: ReportingProps) => {
                   <ReportingModalButton
                     highlightedText='Need Help?'
                     text='View our Reporting Quick Guide'
-                    action={openReportingModal}
+                    action={() => setModal({ type: MODAL_DR_QUICK_GUIDE, whichGuide: 'reporting' })}
                   />
                   <UserRepDisplay />
                 </div>

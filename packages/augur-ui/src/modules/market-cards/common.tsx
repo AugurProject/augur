@@ -888,6 +888,7 @@ export interface OutcomeGroupProps {
   canDispute: boolean;
   canSupport: boolean;
   forkingMarket?: boolean;
+  dispute?: Function;
 }
 
 export const OutcomeGroup = ({
@@ -897,6 +898,7 @@ export const OutcomeGroup = ({
   canSupport,
   market,
   forkingMarket,
+  dispute
 }: OutcomeGroupProps) => {
   const {
     description,
