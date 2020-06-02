@@ -14,6 +14,11 @@ import { LogFilterAggregatorInterface } from '../logs/LogFilterAggregator';
 import { AbstractSyncStrategy } from './AbstractSyncStrategy';
 import { SyncStrategy } from './index';
 import { BigNumber } from 'bignumber.js';
+import { AsyncQueue, queue } from 'async';
+
+interface BlockQueueTask {
+  block: any;
+}
 
 // This matches the JSON-rpc spec.
 export interface ExtendedFilter {
@@ -52,6 +57,7 @@ export interface BlockAndLogStreamerListenerInterface {
 export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
   implements BlockAndLogStreamerListenerInterface, SyncStrategy {
   private currentSuspectBlocks: Block[] = [];
+  private blockQueue: AsyncQueue<BlockQueueTask>;
 
   constructor(
     getLogs: (filter: Filter) => Promise<Log[]>,
@@ -68,6 +74,12 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
     private blockWindowWidth = 5
   ) {
     super(getLogs, contractAddresses, onLogsAdded);
+    this.blockQueue = queue(
+      async (task: BlockQueueTask) => {
+        return this.processBlockAdded(task.block);
+      },
+      1
+    );
     this.listenForBlockAdded(this.onBlockAdded);
   }
 
@@ -132,6 +144,17 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
   };
 
   onBlockAdded = async (block: Block) => {
+    return new Promise((resolve, reject) => {
+      this.blockQueue.push({ block }, (err, results) => {
+        if (err) {
+          reject(err);
+        }
+          resolve(results);
+      });
+    });
+  }
+
+  processBlockAdded = async (block: Block) => {
     this.currentSuspectBlocks.push(block);
 
     const suspectBlockNumbers = this.currentSuspectBlocks.map(b => {

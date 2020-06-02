@@ -390,11 +390,29 @@ export function calcOrderExpirationTime(endTime: number, currentTime: number) {
   return endTime;
 }
 
-export function calcOrderExpirationDaysRemaining(
+export enum EXPIRATION_DATE_OPTIONS {
+  DAYS = 'day',
+  CUSTOM = '1',
+  HOURS = 'hours',
+  MINUTES = 'minutes',
+}
+
+export interface TimeRemaining {
+  time: number;
+  unit: EXPIRATION_DATE_OPTIONS;
+}
+
+export function calcOrderExpirationTimeRemaining(
   endTime: number,
   currentTime: number
-) {
-  const remaining = getDaysRemaining(endTime, currentTime);
-  if (remaining <= 0) return DAYS_AFTER_END_TIME_ORDER_EXPIRATION;
-  return remaining;
+): TimeRemaining {
+  const fallback = { time: DAYS_AFTER_END_TIME_ORDER_EXPIRATION, unit: EXPIRATION_DATE_OPTIONS.DAYS};
+  if (endTime < currentTime) return fallback;
+  let remaining = getDaysRemaining(endTime, currentTime);
+  if (remaining > 0) return { time: remaining, unit: EXPIRATION_DATE_OPTIONS.DAYS};
+  remaining = getHoursRemaining(endTime, currentTime);
+  if (remaining > 0) return {time: remaining, unit: EXPIRATION_DATE_OPTIONS.HOURS}
+  remaining = getMinutesRemaining(endTime, currentTime);
+  if (remaining > 0) return {time: remaining, unit: EXPIRATION_DATE_OPTIONS.MINUTES}
+  return fallback;
 }

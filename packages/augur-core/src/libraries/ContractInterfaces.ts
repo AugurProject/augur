@@ -31,6 +31,8 @@ export class AugurWallet extends c.AugurWallet<BigNumber> {
 }
 export class AugurWalletRegistry extends c.AugurWalletRegistry<BigNumber> {
 }
+export class AugurWalletRegistryV2 extends c.AugurWalletRegistryV2<BigNumber> {
+}
 export class Cash extends c.Cash<BigNumber> {
 }
 export class CashFaucet extends c.CashFaucet<BigNumber> {
@@ -68,6 +70,12 @@ export class TestNetReputationTokenFactory extends c.TestNetReputationTokenFacto
 export class UniverseFactory extends c.UniverseFactory<BigNumber> {
 }
 export class RelayHub extends c.RelayHub<BigNumber> {
+}
+export class Penalizer extends c.Penalizer<BigNumber> {
+}
+export class RelayHubV2 extends c.RelayHubV2<BigNumber> {
+}
+export class StakeManager extends c.StakeManager<BigNumber> {
 }
 export class AffiliateValidator extends c.AffiliateValidator<BigNumber> {
 }

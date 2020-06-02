@@ -49,7 +49,7 @@ export const sendAnalytic = (analytic: Analytic) => {
   }
 };
 
-export const addedDaiEvent = (dai: Number) => {
+export const addedDaiEvent = (dai: string) => {
   const {
     loginAccount: { balances },
   } = AppStatus.get();

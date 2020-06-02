@@ -138,7 +138,7 @@ def pytest_configure(config):
     # register an additional marker
     config.addinivalue_line("markers", "cover: use coverage contracts")
 
-TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','AugurWalletRegistry']
+TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','AugurWalletRegistry','AugurWalletRegistryV2']
 
 class ContractsFixture:
     signatures = {}
@@ -333,7 +333,7 @@ class ContractsFixture:
             return(self.contracts[lookupKey])
         compiledCode = self.getCompiledCode(resolvedPath)
         # abstract contracts have a 0-length array for bytecode
-        abstractContracts = ["GSNRecipient", "Context"]
+        abstractContracts = ["GSNRecipient", "Context", "Ownable"]
         if len(compiledCode) == 0:
             if ("libraries" in relativeFilePath or lookupKey.startswith("I") or lookupKey.startswith("Base") or lookupKey.startswith("DS") or lookupKey in abstractContracts):
                 pass#print "Skipping upload of " + lookupKey + " because it had no bytecode (likely a abstract class/interface)."
@@ -398,6 +398,7 @@ class ContractsFixture:
             if 'external' in directory: continue
             if '0x' in directory: continue # uploaded separately
             if 'uniswap' in directory: continue # uploaded separately
+            if 'gsn/v2' in directory: continue # uploaded separately
             for filename in filenames:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]
@@ -489,7 +490,7 @@ class ContractsFixture:
         for contractName in TRADING_CONTRACTS:
             print("Initializing %s" % contractName)
             value = 0
-            if contractName == "AugurWalletRegistry":
+            if contractName.startswith("AugurWalletRegistry"):
                 value = 2.5 * 10**17
             self.contracts[contractName].initialize(self.contracts['Augur'].address, self.contracts['AugurTrading'].address, value=value)
 
@@ -525,6 +526,12 @@ class ContractsFixture:
         self.sendEth(self.accounts[0], "0xff20d47eb84b1b85aadcccc43d2dc0124c6211f7", 42 * 10**17)
         tester = self.testerProvider.ethereum_tester
         test = tester.send_raw_transaction(relayHubSignedDeployTx)
+
+    def deployRelayHubV2(self):
+        penalizer = self.upload("../src/contracts/gsn/v2/Penalizer.sol")
+        stakeManager = self.upload("../src/contracts/gsn/v2/StakeManager.sol")
+        relayHubV2 = self.upload("../src/contracts/gsn/v2/RelayHubV2.sol", constructorArgs=[68, stakeManager.address, penalizer.address])
+        self.contracts['AugurTrading'].registerContract("RelayHubV2".ljust(32, '\x00').encode('utf-8'), relayHubV2.address)
 
     def doAugurTradingApprovals(self):
         self.contracts["AugurTrading"].doApprovals()
@@ -648,6 +655,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.uploadAugur()
     fixture.uploadAugurTrading()
     fixture.deployRelayHub()
+    fixture.deployRelayHubV2()
     fixture.uploadAllContracts()
     fixture.uploadTestDaiContracts()
     fixture.upload0xContracts()

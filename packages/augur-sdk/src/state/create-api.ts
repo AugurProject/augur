@@ -1,5 +1,6 @@
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersSigner } from '@augurproject/contract-dependencies-ethers';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { logger, LoggerLevels } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { SupportedProvider } from 'ethereum-types';
@@ -10,7 +11,6 @@ import { Augur } from '../Augur';
 import { BaseConnector, EmptyConnector } from '../connector';
 import { SubscriptionEventName } from '../constants';
 import { ContractDependenciesGSN } from '../lib/contract-deps';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { WarpController } from '../warp/WarpController';
 import { Controller } from './Controller';
 import { DB } from './db/DB';
@@ -36,18 +36,18 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
       client.contractEvents.parseLogs,
     );
 
+    const currentBlock = await provider.getBlock('latest');
+    const warpController = new WarpController((await db), client, provider,
+      uploadBlockNumber);
+    const warpSyncStrategy = new WarpSyncStrategy(warpController,
+      logFilterAggregator.onLogsAdded, await db, provider);
+
+    const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
+      client.contracts.universe.address);
+
+    await warpSyncStrategy.start(warpSyncHash, currentBlock);
+
     if (config.warpSync && config.warpSync.enabled) {
-      const currentBlock = await provider.getBlock('latest');
-      const warpController = new WarpController((await db), client, provider,
-        uploadBlockNumber);
-      const warpSyncStrategy = new WarpSyncStrategy(warpController,
-        logFilterAggregator.onLogsAdded);
-
-      const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
-        client.contracts.universe.address);
-
-      await warpSyncStrategy.start(warpSyncHash, currentBlock);
-
       client.events.once(SubscriptionEventName.SDKReady, () => {
         // Check on each new block to see if we need to generate a checkpoint.
         client.events.on(SubscriptionEventName.NewBlock, async (newBlock) => {

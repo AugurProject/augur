@@ -165,32 +165,31 @@ div.Onboarding {
 
   align-items: center;
   border: 3px solid var(--color-secondary-action-outline);
-  min-height: 487px;
+  height: 598px;
   justify-content: center;
-  padding: @size-32 @size-40 @size-32;
-  width: 454px;
+  padding: @size-32 @size-28 @size-32;
+  width: 568px;
 
   @media @breakpoint-mobile {
-    align-items: center;
     border: 2px solid var(--color-secondary-action-outline);
-    height: 100%;
-    justify-content: center;
     margin: @size-32 @size-8;
-    max-height: 100%;
     max-width: 100%;
+    padding: 0;
+    justify-content: space-between;
   }
 
-  > main {
-    align-items: center;
+  > div {
     display: flex;
-    flex: 2;
-    flex-direction: column;
-    justify-content: center;
-    min-height: fit-content;
-    padding: 0;
+    flex-flow: column nowrap;
+    align-items: center;
+    height: 100%;
 
-    > div:nth-of-type(1) {
-      text-align: center;
+    @media @breakpoint-mobile {
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+      height: 75%;
+      padding: @size-16 @size-22 0 @size-22;
 
       > svg {
         height: @size-64;
@@ -203,46 +202,129 @@ div.Onboarding {
       margin-top: @size-56;
     }
 
-    > div:nth-of-type(3) {
+    @media @breakpoint-mobile {
+      margin: 0 @size-16;
+    }
+
+    > div {
       text-align: center;
-      margin-top: @size-12;
+    }
+
+    > div:nth-of-type(1) {
+      > svg {
+        height: 62px;
+        fill: var(--color-primary-text);
+      }
+    }
+
+    > div[class*='LargeSubheader'] {
+      margin: @size-16 0 0 0;
+    }
+
+
+    > div[class*="LinkContentSection"] {
+      margin: @size-12 0 0 0;
+      text-align: center;
+
+      > div {
+        margin: @size-16 0 0 0;
+      }
 
       button {
         .text-10-semi-bold;
 
+        color: var(--color-primary-text);
         background: none;
         border: none;
-      }
-    }
 
-    @media @breakpoint-mobile {
-      flex: 1;
+        > svg path:first-of-type {
+          fill: var(--color-primary-text);
+        }
+
+        > svg path:last-of-type {
+          stroke: var(--color-primary-text);
+        }
+      }
     }
   }
 
-  > div:last-of-type {
-    align-items: center;
-    border-top: 0;
+  > div.OnboardingNav {
     display: flex;
+    align-items: center;
     flex-direction: column;
-    justify-content: center;
-    padding: 0;
+
+    @media @breakpoint-mobile {
+      display: none;
+    }
 
     > div:first-of-type {
       display: flex;
-      flex-direction: row-reverse;
+      flex-direction: row;
 
-      > button:last-of-type {
-        margin-right: @size-16;
+      > div:first-of-type {
+        display: flex;
+        flex-direction: row-reverse;
+        padding: 0;
+
+        > button:first-of-type {
+          margin-left: @size-16;
+        }
+
+        > button:only-of-type {
+          margin: 0;
+        }
       }
 
-      > button:only-of-type {
-        margin: 0;
+      > button {
+        margin-left: @size-16;
+      }
+    }
+  }
+
+  > div.OnboardingMobileNav {
+    display: none;
+
+    @media @breakpoint-mobile {
+      border-top: 1px solid var(--color-secondary-action-outline);
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      max-height: 100px;
+      width: 100%;
+    }
+
+    > div:first-of-type,
+    > div:last-of-type {
+      height: @size-6;
+      width: @size-6;
+      margin: 0;
+
+      > svg {
+        stroke: var(--color-secondary-text);
       }
     }
 
-    @media @breakpoint-mobile {
-      flex: 1;
+    > div:last-of-type > svg {
+      transform: rotate(-180deg);
+    }
+
+    > div:nth-of-type(2) {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+
+      div[class*="ButtonsRow"] {
+        display: flex;
+        flex-direction: row-reverse;
+      }
+    }
+
+    button[class*="SecondaryButton"] {
+      margin: 0 @size-12 0 0;
+    }
+
+    div[class*="Stepper"] {
+      margin-top: @size-6;
     }
   }
 
@@ -266,8 +348,11 @@ div.Onboarding {
   }
 }
 
+
 .Stepper {
+  align-items: center;
   display: flex;
+  height: @size-12;
   margin-top: @size-32;
 
   > span {
@@ -275,8 +360,15 @@ div.Onboarding {
     border-radius: 50%;
     cursor: pointer;
     height: @size-8;
-    margin-right: @size-10;
+    margin: @size-4;
     width: @size-8;
+
+    &:hover {
+      background: var(--color-dark-text);
+      height: @size-12;
+      margin: @size-2;
+      width: @size-12;
+    }
 
     &.Current {
       background: var(--color-primary-text);
@@ -284,7 +376,9 @@ div.Onboarding {
   }
 
   > span:last-of-type {
-    margin-right: 0;
+    &:hover {
+      margin-left: @size-2;
+    }
   }
 }
 
@@ -3728,5 +3822,126 @@ div.ButtonsRow:last-of-type {
   > ul > li:last-of-type {
     border-bottom-right-radius: @size-24;
     border-top-right-radius: @size-24;
+  }
+}
+
+.AccountStatusTracker {
+  display: flex;
+  flex-direction: column;
+  width: 346px;
+  align-items: center;
+
+  > div:first-of-type {
+    display: flex;
+    flex-direction: row;
+    margin: 0 0 @size-4 0;
+
+    div.AccountStep {
+      display: inline-block;
+      border: @size-2 solid var(--color-secondary-text);
+      border-radius: 50%;
+      width: @size-26;
+      height: @size-26;
+    }
+
+    div.AccountStepCompleted {
+      > svg {
+        width: @size-14;
+        height: @size-14;
+        transform: translate(@size-4, @size-3);
+      }
+    }
+
+    div.line {
+      border-top: @size-2 solid var(--color-secondary-text);
+      display: inline-block;
+      margin: auto;
+      width: 106px;
+    }
+  }
+
+  > div:last-of-type {
+    display: flex;
+    text-align: center;
+
+    width: 100%;
+
+    > div {
+      .text-10-semi-bold;
+
+      color: var(--color-secondary-text);
+      flex: 2;
+    }
+
+    > div:first-of-type,
+    > div:last-of-type {
+      flex: 1;
+    }
+  }
+}
+
+.TransferMyDai {
+  align-items: center;
+  display: flex;
+  border: @size-2 solid var(--color-secondary-action-outline);
+  border-radius: @size-3;
+  justify-content: space-between;
+  margin: @size-16 0 @size-24 0;
+  padding: @size-12 @size-16;
+  width: 100%;
+
+  @media @breakpoint-mobile {
+    flex-direction: column;
+    text-align: center;
+
+  }
+
+  > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+
+    > span:first-of-type {
+      .text-14-bold;
+
+      color: var(--color-primary-text);
+    }
+
+    > span:last-of-type {
+      .text-14;
+
+      color: var(--color-secondary-text);
+    }
+
+    @media @breakpoint-mobile {
+      > span {
+        margin: 0 0 @size-6 0;
+      }
+    }
+  }
+}
+
+.TransferMyDaiCondensed {
+  align-items: center;
+  background: var(--color-module-background);
+  display: flex;
+  justify-content: space-between;
+  padding: @size-16;
+
+  > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+
+    > span:first-of-type {
+      .text-12-bold;
+
+      color: var(--color-primary-text);
+    }
+
+    > span:last-of-type {
+      .text-12;
+
+      color: var(--color-secondary-text);
+    }
   }
 }

@@ -6,7 +6,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 export const updateLoginAccountSettings = (
   settings: LoginAccountSettings = {},
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => {
   const { loginAccount } = AppStatus.get();
   try {
     console.log('updateLoginAccountSettings was called', settings);

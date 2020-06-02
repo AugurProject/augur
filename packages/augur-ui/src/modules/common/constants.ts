@@ -111,6 +111,11 @@ export const WALLET_STATUS_VALUES = {
   CREATED: 'CREATED',
 };
 
+export const ON_BORDING_STATUS_STEP = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 3
+}
 
 // ethereumNodeHttp
 export const ETHEREUM_NODE_HTTP = 'ethereum_node_http';
@@ -707,7 +712,7 @@ export const TRANSFERFROM = 'TRANSFERFROM';
 export const TRANSFEROWNERSHIP = 'TRANSFEROWNERSHIP';
 export const WITHDRAWETHERTO = 'WITHDRAWETHERTO';
 export const WITHDRAWINEMERGENCY = 'WITHDRAWINEMERGENCY';
-export const SENDETHER = 'SENDETHER';
+export const SENDETHER = 'SEND ETHER';
 export const SENDREPUTATION = 'SENDREPUTATION';
 export const CUSTOM = 'Custom';
 export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
@@ -765,18 +770,14 @@ export const V1_REP_MIGRATE_ESTIMATE = createBigNumber(303000);
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(675334);
 export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
 export const MIGRATE_MARKET_GAS_ESTIMATE = createBigNumber(3000000); // TODO: Get actual gas estimate for migrating a market
-export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(1121349); // Gas cost for claiming proceeds from a categorical market with 8 outcomes (worst-case gas cost)
+export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(600000); // Gas cost for claiming proceeds from a categorical market with 8 outcomes (worst-case gas cost)
 export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = createBigNumber(3000000);
 export const CLAIM_FEES_GAS_COST = createBigNumber(500000);
 export const BUY_PARTICIPATION_TOKENS_GAS_LIMIT = createBigNumber(290000);
-export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = Math.floor(
-  createBigNumber(CLAIM_MARKETS_PROCEEDS_GAS_LIMIT)
-    .div(CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE)
-    .toNumber()
-);
+export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = 5;
 export const MAX_BULK_ORDER_COUNT = 5;
 export const ETHER = createBigNumber(10).pow(18);
-
+export const MAX_DECIMALS = 18;
 export const DEFAULT_FALLBACK_GAS_SAFELOW = 2000000000; // 2 Gwei
 export const DEFAULT_FALLBACK_GAS_AVERAGE = 5000000000; // 5 Gwei
 export const DEFAULT_FALLBACK_GAS_FAST = 21000000000; // 21 Gwei
@@ -799,6 +800,9 @@ export const COMMITTING = 'committing';
 export const SUBMITTED = 'submitted';
 export const INTERRUPTED = 'interrupted';
 
+// transcation fee
+export const USE_ETH_RESERVE = 'Est. TX Fee (paid by Fee reserve)';
+export const NOT_USE_ETH_RESERVE = 'Est. TX Fee';
 // Market Creation
 export const CREATING_MARKET = 'creating market...';
 
@@ -1041,7 +1045,7 @@ export const COLUMN_TYPES = {
 // Login method variables
 export const TREZOR_MANIFEST_EMAIL = 'team@augur.net';
 export const TREZOR_MANIFEST_APPURL = 'https://dev.augur.net';
-export const PORTIS_API_KEY = 'b67817cf-8dd0-4116-a0cf-657820ddc019';
+export const PORTIS_API_KEY = 'ede221f9-710f-44c9-a429-ed28bbb54376';
 export const FORTMATIC_API_KEY = 'pk_live_8001A50CCA35D8CB';
 export const FORTMATIC_API_TEST_KEY = 'pk_test_5185BE42CA372148';
 
@@ -1281,7 +1285,7 @@ export const EVENT_EXPIRATION_TOOLTIP = {
   header: 'Event expiration',
   content: 'This date time indicates when the settlement process begins.',
 };
-export const TOTAL_FUNDS_TOOLTIP = 'Your total funds does not include the ETH reserve';
+export const TOTAL_FUNDS_TOOLTIP = 'Your total funds does not include the Fee reserve';
 export const TUTORIAL_OUTCOME = 1;
 export const TUTORIAL_QUANTITY = 100;
 export const TUTORIAL_PRICE = 0.4;
