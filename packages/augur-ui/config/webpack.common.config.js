@@ -231,6 +231,7 @@ module.exports = {
         AUGUR_HOSTED: process.env.AUGUR_HOSTED || false,
         ENABLE_MAINNET: process.env.ENABLE_MAINNET || false,
         CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
+        CURRENT_COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
 
         // Config overrides
         NETWORK_ID: process.env.NETWORK_ID,
