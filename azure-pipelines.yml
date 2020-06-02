@@ -94,6 +94,8 @@ jobs:
       FAKE_TIME: false
       PRODUCTION: false
     pool: 'Default'
+    workspace:
+      clean: resources
     strategy:
       matrix:
         non_specific_tests:
@@ -335,6 +337,8 @@ jobs:
         not(eq(variables['Build.sourceBranch'], 'refs/tags'))
       )
     pool: 'Default'
+    workspace:
+      clean: resources
     timeoutInMinutes: 240
     strategy:
       matrix:

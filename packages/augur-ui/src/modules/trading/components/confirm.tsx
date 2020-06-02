@@ -32,12 +32,13 @@ import {
   formatGasCostToEther,
   formatShares,
   formatNumber,
+  formatEther,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { LinearPropertyLabel, EthReserveNotice } from 'modules/common/labels';
+import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip } from 'modules/common/labels';
 import { Trade } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
-import { getGasInDai, ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
+import { ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
 import { TXEventName } from '@augurproject/sdk/src';
 
 interface MessageButton {
@@ -163,6 +164,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       potentialDaiLoss,
       numFills,
       loopLimit,
+      potentialDaiProfit,
+      orderShareProfit,
     } = trade;
 
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
@@ -231,6 +234,22 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         header: 'Insufficient DAI',
         type: ERROR,
         message: `You do not have enough funds to place this order. ${gasCostDai} DAI required for gas.`,
+      };
+    }
+
+    if (
+      !isNaN(numTrades) &&
+      numTrades > 0 &&
+      ((potentialDaiProfit.value !== 0 &&
+        createBigNumber(gasCostDai).gt(potentialDaiProfit.value)) ||
+        (orderShareProfit.value !== 0 &&
+          createBigNumber(gasCostDai).gt(orderShareProfit.value))) &&
+      !tradingTutorial
+    ) {
+      messages = {
+        header: 'UNPROFITABLE TRADE',
+        type: WARNING,
+        message: `Est. TX Fee is higher than profit`,
       };
     }
 
@@ -396,16 +415,15 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 Shares @ ${limitPrice}`}
             </div>
             <LinearPropertyLabel
-              label="Settlement Fee"
+              label="Market Trading Fee"
               value={orderShareTradingFee}
               showDenomination={true}
             />
             {gasCostDai.roundedValue.gt(0) > 0 &&
               numFills > 0 && (
-              <LinearPropertyLabel
-                label="Est. TX Fee"
-                value={gasCostDai}
-                showDenomination={true}
+              <TransactionFeeLabelToolTip
+                isError={createBigNumber(gasCostDai.value).gt(createBigNumber(orderShareProfit.value))}
+                gasCostDai={gasCostDai}
               />
             )}
             <LinearPropertyLabel
@@ -467,13 +485,13 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               value={potentialDaiLoss}
               showDenomination={true}
             />
+
             {gasCostDai.roundedValue.gt(0) > 0 &&
               numFills > 0 && (
-                <LinearPropertyLabel
-                  label="Est. TX Fee"
-                  value={gasCostDai}
-                  showDenomination={true}
-                />
+              <TransactionFeeLabelToolTip
+                isError={createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
+                gasCostDai={gasCostDai}
+              />
               )}
           </div>
         )}

@@ -95,7 +95,7 @@ const TopNav = ({
                 <LinearPropertyLabelUnderlineTooltip
                   {...formatNumber(0)}
                   highlightAlternateBolded
-                  id={'totalFunds'}
+                  id={'totalFunds_top_nav'}
                   tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
                 />
               </div>
@@ -170,7 +170,9 @@ const TopNav = ({
                     >
                       <p>
                         {
-                          'Account used to interact with Augur, needs to be funded before created'
+                          walletBalances.legacyRep > 0
+                            ? 'You have V1 REP in your trading account. Migrate it to V2 REP to use it in Augur V2.'
+                            : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'
                         }
                       </p>
                     </ReactTooltip>

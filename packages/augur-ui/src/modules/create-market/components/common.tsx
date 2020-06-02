@@ -1082,6 +1082,10 @@ export const InputFactory = ({
                 });
               }
             }
+            if (input.denomination) {
+              const currency = input.denomination[value]
+              onChange('scalarDenomination', currency);
+            }
           }
           updateData(value);
         }}

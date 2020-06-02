@@ -151,10 +151,10 @@ export const addEthIncreaseAlert = (
   const aboveCutoff = createBigNumber(oldEthBalance).isGreaterThan(
     createBigNumber(maxEthReserve)
   );
-  // user already has ETH reserve topped off
+  // user already has Fee reserve topped off
   if (aboveCutoff) return null;
 
-  // ETH increase can only be up to max ETH reserve
+  // ETH increase can only be up to max Fee reserve
   const toppedOffValue = BigNumber.min(maxEthReserve, newEthBalance);
   const increase = createBigNumber(toppedOffValue).minus(
     createBigNumber(oldEthBalance)

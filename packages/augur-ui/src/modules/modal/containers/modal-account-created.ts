@@ -22,10 +22,12 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: OnboardingCheckIcon,
   analyticsEvent: () => dP.track(ACCOUNT_CREATED, {}),
-  largeHeader: 'Account created ',
-  smallHeader: 'You’re almost ready to start betting!',
+  largeHeader: 'Log-in created',
+  smallHeader:
+    'The next two steps are adding funds and activating your account. Once done you can start betting!',
+  showAccountStatus: true,
   currentStep: 1,
-  changeCurrentStep: (step) => {
+  changeCurrentStep: step => {
     dP.gotoOnboardingStep(step);
   },
   buttons: [

@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from 'react';
 
 import { Breakdown } from 'modules/modal/common';
-import {
-  formatDai, formatGasCostToEther,
-} from 'utils/format-number';
+import { formatDai } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { FormattedNumber } from 'modules/types';
 import { TextInput } from 'modules/common/form';
-import { CloseButton, ProcessingButton, SecondaryButton } from 'modules/common/buttons';
-import { TRANSFER_ETH_GAS_COST } from 'modules/auth/actions/transfer-funds';
-import { displayGasInDai, getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
-import { WITHDRAWALLFUNDSASDAI, TRANSACTIONS, GWEI_CONVERSION } from 'modules/common/constants';
+import {
+  CloseButton,
+  ProcessingButton,
+  SecondaryButton,
+} from 'modules/common/buttons';
+import { TRANSFER_DAI_GAS_COST } from 'modules/auth/actions/transfer-funds';
+import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import {
+  WITHDRAWALLFUNDSASDAI,
+  TRANSACTIONS,
+  NOT_USE_ETH_RESERVE,
+  TRANSFER,
+} from 'modules/common/constants';
 import { AutoCancelOrdersNotice } from 'modules/common/labels';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
@@ -20,47 +27,78 @@ import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 interface CashOutFormProps {
   closeAction: Function;
   withdrawAllFunds: Function;
+  transferFunds: Function;
   withdrawAllFundsEstimateGas: Function;
+  transferFundsGasEstimate: Function;
   account: string;
   gasPrice: number;
   totalOpenOrderFundsFormatted: FormattedNumber;
   availableFundsFormatted: FormattedNumber;
-  ethReserveAmount: FormattedNumber;
-  balances: any;
-  totalOpenOrdersFrozenFunds: any;
+  reserveInDaiFormatted: FormattedNumber;
+  totalDaiFormatted: FormattedNumber;
+  tradingAccountEthFormatted: FormattedNumber;
+  totalDai: string;
+  accountFunds: any;
+  ethReserveAmount: any;
 }
 
 export const CashOutForm = ({
   closeAction,
+  accountFunds,
   withdrawAllFunds,
+  ethReserveAmount,
+  transferFunds,
   withdrawAllFundsEstimateGas,
+  transferFundsGasEstimate,
   account,
   gasPrice,
   totalOpenOrderFundsFormatted,
   availableFundsFormatted,
-  ethReserveAmount,
-  balances,
-  totalOpenOrdersFrozenFunds
+  tradingAccountEthFormatted,
+  totalDai,
 }: CashOutFormProps) => {
-  const [gasCosts, setGasCosts] = useState(createBigNumber(TRANSFER_ETH_GAS_COST));
+  const [gasCosts, setGasCosts] = useState(
+    createBigNumber(TRANSFER_DAI_GAS_COST)
+  );
   const [address, setAddress] = useState('');
   const [errors, setErrors] = useState('');
+  const [signerPays, setSignerPays] = useState(true);
 
-  const { ethToDaiRate } = useAppStatusStore();
+  const { ethToDaiRate, loginAccount: { totalOpenOrdersFrozenFunds } } = useAppStatusStore();
 
   const reserveInDaiFormatted = ethToDai(ethReserveAmount.value || 0, createBigNumber(ethToDaiRate?.value || 0));
-  const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(balances.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
-
-  const { gsnEnabled } = useAppStatusStore();
+  const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(accountFunds.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
 
   async function getGasCost(account) {
-    const gasCosts = await withdrawAllFundsEstimateGas(account);
-    setGasCosts(gasCosts);
+    let gasCosts = createBigNumber(TRANSFER_DAI_GAS_COST);
+    let signerPays = true;
+    try {
+      gasCosts = await withdrawAllFundsEstimateGas(account);
+    } catch (error) {
+      // user can't withdraw all funds, needs to transfer
+      signerPays = false;
+    }
+    setSignerPays(signerPays);
+    if (signerPays) {
+      return setGasCosts(createBigNumber(gasCosts));
+    }
+    const testHalfDaiAmount = String(createBigNumber(totalDai).div(2));
+    const relayerGasCosts = await transferFundsGasEstimate(
+      testHalfDaiAmount,
+      account
+    );
+    setGasCosts(createBigNumber(relayerGasCosts));
   }
 
   useEffect(() => {
     getGasCost(account);
   }, []);
+
+  const action = (address, signerPays, amount) => {
+    return signerPays
+      ? withdrawAllFunds(address)
+      : transferFunds(amount, address);
+  };
 
   const addressChange = (address: string) => {
     let updatedErrors = '';
@@ -75,48 +113,63 @@ export const CashOutForm = ({
     setErrors(updatedErrors);
   };
 
-  const gasLimit = createBigNumber(gasCosts || TRANSFER_ETH_GAS_COST);
-  const gasInDai = getGasInDai(gasLimit.multipliedBy(gasPrice));
-  const gasEstimateInEth = formatGasCostToEther(
-    TRANSFER_ETH_GAS_COST,
-    { decimalsRounded: 4 },
-    createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+  const gasInDai = getGasInDai(
+    createBigNumber(gasCosts).times(createBigNumber(gasPrice))
   );
-
-  const gasEstimate = gsnEnabled
-  ? displayGasInDai(gasLimit)
-  : gasEstimateInEth;
-
-  const formattedTotalMinusGasInDai = formatDai(totalDaiFormatted.value - gasInDai.value);
+  const formattedTotalMinusGasInDai = signerPays
+    ? formatDai(totalDai)
+    : formatDai(
+        createBigNumber(totalDai).minus(createBigNumber(gasInDai.value))
+      );
 
   const breakdown = [
     {
       label: 'Available Funds',
-      value: availableFundsFormatted.formatted,
-      showDenomination: true,
-    },
-    {
-      label: 'Open Orders (Funds Held)',
-      value: totalOpenOrderFundsFormatted.formatted,
-      showDenomination: true,
-    },
-    {
-      label: 'ETH Reserve',
-      value: reserveInDaiFormatted.formatted,
-      showDenomination: true,
-    },
-    {
-      label: 'Transaction Fee',
-      value: gasInDai.full,
-    },
-    {
-      label: 'Total',
-      value: formattedTotalMinusGasInDai,
+      value: availableFundsFormatted,
       showDenomination: true,
     },
   ];
 
-  const isValid = errors.length === 0 && address.length > 0 && formattedTotalMinusGasInDai.value > 0;
+  if (totalOpenOrderFundsFormatted.value > 0) {
+    breakdown.push({
+      label: 'Open Orders (Funds Held)',
+      value: totalOpenOrderFundsFormatted,
+      showDenomination: true,
+    });
+  }
+
+  if (reserveInDaiFormatted.value > 0) {
+    breakdown.push({
+      label: 'Fee reserve',
+      value: reserveInDaiFormatted,
+      showDenomination: true,
+    });
+  }
+
+  if (tradingAccountEthFormatted.value > 0) {
+    breakdown.push({
+      label: 'ETH',
+      value: tradingAccountEthFormatted,
+      showDenomination: true,
+    });
+  }
+
+  breakdown.push({
+    label: NOT_USE_ETH_RESERVE,
+    value: gasInDai,
+    showDenomination: true,
+  });
+
+  breakdown.push({
+    label: 'Total',
+    value: totalDaiFormatted,
+    showDenomination: true,
+  });
+
+  const isValid =
+    errors.length === 0 &&
+    address.length > 0 &&
+    formattedTotalMinusGasInDai.value > 0;
 
   return (
     <div className={Styles.WithdrawForm}>
@@ -133,25 +186,31 @@ export const CashOutForm = ({
       <main>
         <div className={Styles.GroupedForm}>
           <div>
-            <label htmlFor='recipient'>Recipient address</label>
+            <label htmlFor="recipient">Recipient address</label>
             <TextInput
-              type='text'
+              type="text"
               value={address}
-              placeholder='0x...'
+              placeholder="0x..."
               onChange={addressChange}
               errorMessage={errors.length > 0 ? errors : ''}
             />
           </div>
         </div>
         <Breakdown rows={breakdown} />
-        <AutoCancelOrdersNotice />
+        {totalOpenOrderFundsFormatted.value > 0 && <AutoCancelOrdersNotice />}
       </main>
       <div>
         <ProcessingButton
           text={'Send'}
-          action={() => withdrawAllFunds(address)}
+          action={() =>
+            action(
+              address,
+              signerPays,
+              formattedTotalMinusGasInDai.fullPrecision
+            )
+          }
           queueName={TRANSACTIONS}
-          queueId={WITHDRAWALLFUNDSASDAI}
+          queueId={signerPays ? WITHDRAWALLFUNDSASDAI : TRANSFER}
           disabled={!isValid}
         />
 
@@ -159,4 +218,4 @@ export const CashOutForm = ({
       </div>
     </div>
   );
-}
+};

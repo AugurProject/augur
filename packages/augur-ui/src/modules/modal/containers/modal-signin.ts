@@ -36,6 +36,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({
   modal: AppStatus.get().modal,
+  walletStatus: AppStatus.get().walletStatus
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {

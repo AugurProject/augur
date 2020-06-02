@@ -166,7 +166,10 @@ const BaseInnerNavPure = () => {
       <ul
         className={classNames(
           Styles.InnerNav__menu,
-          Styles['InnerNav__menu--main']
+          Styles['InnerNav__menu--main'],
+          {
+            [Styles.ExtraPaddingBottom]: (showMainMenu && showApply)
+          }
         )}
       >
         <CategoryFilters />
