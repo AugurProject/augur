@@ -161,7 +161,7 @@ export const selectUnsignedOrders = () => {
 };
 
 // Returns all notifications currently relevant to the user.
-export const selectNotifications = (): Notification[] => {
+export const getNotifications = (): Notification[] => {
   const reportOnMarkets = selectReportOnMarkets();
   const resolvedMarketsOpenOrder = selectResolvedMarketsOpenOrders();
   const marketsInDispute = selectMarketsInDispute();

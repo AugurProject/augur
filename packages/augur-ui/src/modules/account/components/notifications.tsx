@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RouteComponentProps, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router';
 import { orderBy } from 'lodash';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
@@ -46,6 +46,7 @@ import { MessagesIcon } from 'modules/common/icons';
 import Styles from 'modules/account/components/notification.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
+import { getNotifications } from 'modules/notifications/selectors/notification-state';
 
 export interface NotificationsProps {
   toggle?: Function;
@@ -337,17 +338,17 @@ function getButtonAction(
 const Notifications = ({ toggle }: NotificationsProps) => {
   const [disabledNotifications, setDisabledNotifications] = useState({});
   const {
-    notifications: stateNotifications,
     universe: { disputeWindow },
     blockchain: { currentAugurTimestamp: currentTime },
     actions: { setModal, updateNotifications },
   } = useAppStatusStore();
   const history = useHistory();
-  const notifications = stateNotifications.map(notification =>
+  const selectedNotifications = getNotifications();
+  const notifications = selectedNotifications.map(notification =>
     getButtonAction(
       notification,
       history,
-      stateNotifications,
+      selectedNotifications,
       updateNotifications,
       setModal,
       disabledNotifications,

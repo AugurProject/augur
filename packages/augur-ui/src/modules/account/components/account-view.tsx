@@ -27,6 +27,7 @@ import { HelmetTag } from 'modules/seo/helmet-tag';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import getLoginAccountPositionsMarkets from "modules/positions/selectors/login-account-positions-markets";
 import { selectAuthorOwnedMarkets } from 'modules/markets/selectors/user-markets';
+import { getNotifications } from 'modules/notifications/selectors/notification-state';
 
 const AccountView = () => {
   const [state, setState] = useState({
@@ -35,7 +36,8 @@ const AccountView = () => {
     extendWatchlist: false,
     extendTransactions: false,
   });
-  const { theme, notifications, favorites } = useAppStatusStore();
+  const { theme, favorites } = useAppStatusStore();
+  const notifications = getNotifications();
   const newNotifications = notifications.filter(item => item.isNew).length > 0;
   const createdMarkets = selectAuthorOwnedMarkets();
   const positionsMarkets = getLoginAccountPositionsMarkets();
