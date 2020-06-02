@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ReportingCardContainer from 'modules/reporting/containers/reporting-card';
+import { ReportingCard } from 'modules/reporting/common';
 
 import Styles from 'modules/reporting/common.styles.less';
 import { Getters } from '@augurproject/sdk';
@@ -33,7 +33,7 @@ export const ReportingList = (props: ReportingListProps) => {
   if (!props.isLoadingMarkets) {
     content.push(
       props.markets.map(market => (
-        <ReportingCardContainer market={market} key={market.id} />
+        <ReportingCard market={market} key={market.id} />
       ))
     );
     if (props.showLoggedOut)
@@ -137,7 +137,7 @@ export const Paginator = ({
       default:
         loadOpenReportingMarkets({ offset, limit }, cb);
     }
-  },
+  }
   const { reportingListState } = useMarketsStore();
   const markets = (
     (reportingListState[reportingType] || {}).marketIds || []

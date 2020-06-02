@@ -27,8 +27,8 @@ import { CUSTOM, SCALAR, ZERO, CATEGORY_PARAM_NAME } from 'modules/common/consta
 import { ExclamationCircle } from 'modules/common/icons';
 import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
 import { formatAttoRep } from 'utils/format-number';
-import ReportingBondsView from 'modules/reporting/containers/reporting-bonds-view';
-import DisputingBondsView from 'modules/reporting/containers/disputing-bonds-view';
+import { ReportingBondsView } from 'modules/reporting/common';
+import { DisputingBondsView } from 'modules/reporting/common';
 
 import Styles from 'modules/common/form.styles.less';
 import 'react-dates/initialize';
