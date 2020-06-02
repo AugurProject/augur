@@ -1,8 +1,9 @@
-import { createBigNumber } from 'utils/create-big-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import {
   BUY,
   INVALID_OUTCOME_ID,
   MODAL_ERROR,
+  PUBLICTRADE,
   ZEROX_STATUSES,
 } from 'modules/common/constants';
 import { AppState } from 'appStore';
@@ -22,6 +23,7 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
+import { updateAlert } from 'modules/alerts/actions/alerts';
 
 export const placeMarketTrade = ({
   marketId,
@@ -36,7 +38,7 @@ export const placeMarketTrade = ({
   const { marketInfos } = Markets.get();
   // numFills is 0 and zerox mesh client has error auto fail processing order label
   const {
-    loginAccount: { allowance }, 
+    loginAccount: { allowance },
     zeroXStatus,
     gsnEnabled,
     blockchain: { currentAugurTimestamp },
@@ -76,28 +78,26 @@ export const placeMarketTrade = ({
     market.tickSize,
     market.minPrice
   );
-  dispatch(
-    addPendingOrder(
-      {
-        ...tradeInProgress,
-        type: tradeInProgress.side,
-        name: getOutcomeNameWithOutcome(
-          market,
-          outcomeId.toString(),
-          outcomeId === INVALID_OUTCOME_ID
-        ),
-        pending: true,
-        fullPrecisionPrice: tradeInProgress.limitPrice,
-        id: tradeGroupId,
-        amount: tradeInProgress.numShares,
-        status:
-          autoFailOrder && tradeInProgress.numFills === 0
-            ? TXEventName.Failure
-            : TXEventName.Pending,
-        creationTime: convertUnixToFormattedDate(currentAugurTimestamp),
-      },
-      market.id
-    )
+  addPendingOrder(
+    {
+      ...tradeInProgress,
+      type: tradeInProgress.side,
+      name: getOutcomeNameWithOutcome(
+        market,
+        outcomeId.toString(),
+        outcomeId === INVALID_OUTCOME_ID
+      ),
+      pending: true,
+      fullPrecisionPrice: tradeInProgress.limitPrice,
+      id: tradeGroupId,
+      amount: tradeInProgress.numShares,
+      status:
+        autoFailOrder && tradeInProgress.numFills === 0
+          ? TXEventName.Failure
+          : TXEventName.Pending,
+      creationTime: convertUnixToFormattedDate(currentAugurTimestamp),
+    },
+    market.id
   );
 
   placeTrade(
@@ -114,21 +114,40 @@ export const placeMarketTrade = ({
     userShares,
     expirationTime,
     tradeGroupId
-  ).catch(err => {
-    console.log(err);
-    const { setModal } = AppStatus.actions;
-    setModal({
-      type: MODAL_ERROR,
-      error: err.message ? err.message : JSON.stringify(err),
-    });
-    console.log('placeTradeCatch failure');
-    dispatch(
+  )
+    .then(result => {
+      if (tradeInProgress.numFills === 0) {
+        const alert = {
+          eventType: orderType,
+          market: marketId,
+          name: PUBLICTRADE,
+          status: TXEventName.Success,
+          timestamp: AppStatus.get().blockchain.currentAugurTimestamp * 1000,
+          params: {
+            outcome: '0x0'.concat(outcomeId),
+            price: displayPrice * 100,
+            orderType,
+            amount: new BigNumber(tradeInProgress.numShares)
+              .times(new BigNumber(10).pow(16))
+              .toNumber(),
+            marketId,
+          },
+        };
+        updateAlert(undefined, alert, false);
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      const { setModal } = AppStatus.actions;
+      setModal({
+        type: MODAL_ERROR,
+        error: err.message ? err.message : JSON.stringify(err),
+      });
       updatePendingOrderStatus(
         tradeGroupId,
         marketId,
         TXEventName.Failure,
         null
-      )
-    );
-  });
+      );
+    });
 };

@@ -10,8 +10,7 @@ import {
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { WarpSyncStrategy } from '@augurproject/sdk/build/state/sync/WarpSyncStrategy';
 import { WarpController } from '@augurproject/sdk/build/warp/WarpController';
-import { Account, TestContractAPI } from '@augurproject/tools';
-import { makeSigner } from '@augurproject/tools';
+import { Account, makeSigner, TestContractAPI } from '@augurproject/tools';
 import { makeDbMock } from '@augurproject/tools/build/libs/MakeDbMock';
 import * as IPFS from 'ipfs';
 
@@ -43,7 +42,9 @@ export class WarpTestContractApi extends TestContractAPI {
 
     this.warpSyncStrategy = new WarpSyncStrategy(
       this.warpController,
-      db.logFilters.onLogsAdded
+      db.logFilters.onLogsAdded,
+      db,
+      provider
     );
   }
 

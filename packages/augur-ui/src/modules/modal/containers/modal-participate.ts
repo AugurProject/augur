@@ -13,6 +13,7 @@ import {
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
 import { AppStatus } from 'modules/app/store/app-status';
+import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
 
 const mapStateToProps = (state: AppState) => {
   const gsnWalletInfoSeen =
@@ -39,6 +40,7 @@ const mapStateToProps = (state: AppState) => {
     GsnEnabled,
     gsnUnavailable: isGSNUnavailable(),
     gsnWalletInfoSeen,
+    transactionLabel: getTransactionLabel(),
   };
 };
 

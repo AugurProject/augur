@@ -59,6 +59,7 @@ import { AppState } from 'appStore';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
 import { getEthReserve } from 'modules/auth/helpers/get-eth-reserve';
+import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -795,6 +796,51 @@ export const PropertyLabel = ({large, label, hint, value}: PropertyLabelProps) =
   </div>
 );
 
+interface TransactionFeeLabelProps {
+  label: string;
+  gasCostDai: FormattedNumber;
+  isError: boolean;
+}
+
+const mapStateToPropsTransactionFeeLabel = (state: AppState) => ({
+  label: getTransactionLabel(state)
+});
+
+export const TransactionFeeLabelCmp = ({
+  label,
+  gasCostDai,
+}: TransactionFeeLabelProps) => (
+  <LinearPropertyLabel
+    label={label}
+    value={gasCostDai}
+    showDenomination={true}
+  />
+);
+
+export const TransactionFeeLabelToolTipCmp = ({
+  label,
+  isError,
+  gasCostDai
+}: TransactionFeeLabelProps) => (
+    <LinearPropertyLabelUnderlineTooltip
+      label={label}
+      value={gasCostDai}
+      showDenomination={true}
+      highlight
+      accentValue={isError}
+      id={'transaction_fee'}
+      tipText={`Est. TX Fee is not included in profit and loss`}
+    />
+)
+
+export const TransactionFeeLabel = connect(
+  mapStateToPropsTransactionFeeLabel
+)(TransactionFeeLabelCmp);
+
+export const TransactionFeeLabelToolTip = connect(
+  mapStateToPropsTransactionFeeLabel
+)(TransactionFeeLabelToolTipCmp);
+
 export const LinearPropertyLabel = ({
   highlight,
   highlightAlternateBolded,
@@ -1315,6 +1361,7 @@ export const LinearPropertyLabelUnderlineTooltip = ({
   id,
   label,
   accentValue,
+  highlight,
   showDenomination,
   useFull,
 }: LinearPropertyLabelUnderlineTooltipProps) => (
@@ -1325,6 +1372,7 @@ export const LinearPropertyLabelUnderlineTooltip = ({
       className={classNames({
         [Styles.TEXT]: !!tipText,
         [Styles.isAccented]: accentValue,
+        [Styles.isHighlighted]: highlight,
       })}
       data-tip
       data-for={`underlinetooltip-${id}`}
@@ -1421,7 +1469,7 @@ export const BulkTxLabel = ({
         title={`${buttonName} requires ${count} transaction${
           count > 1 ? `s` : ``
         }${needsApproval ? `, and 1 approval` : ''}`}
-        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE}
+        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
       />
     </div>
   ) : null;
@@ -1486,8 +1534,15 @@ const mapStateToPropsEthReserve = (state: AppState, ownProps) => {
     const attoEthReserve = formatAttoEth(
       env.gsn.desiredSignerBalanceInETH
     ).value;
-    const diffReserve = createBigNumber(attoEthReserve).minus(createBigNumber(ethInReserve.value).div(10 ** 18));
-    reserve = ethToDai(diffReserve, createBigNumber(attoEthToDaiRate || 0));
+    const diffReserve = createBigNumber(attoEthReserve).minus(
+      createBigNumber(ethInReserve.value).div(10 ** 18)
+    );
+    reserve = ethToDai(
+      diffReserve.lte(0)
+        ? attoEthReserve
+        : diffReserve,
+      createBigNumber(attoEthToDaiRate || 0)
+    );
   }
   return {
     show,
@@ -1507,8 +1562,8 @@ const EthReserveNoticeCmp = ({ show, reserve }: EthReseveProps) => (
         <DismissableNotice
           show
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          title={`Replenish ETH Reserves`}
-          description={`$${reserve.formatted} DAI will be added to your ETH reserves`}
+          title={`Replenish Fee reserves`}
+          description={`$${reserve.formatted} DAI will be added to your Fee reserves`}
         />
       </div>
     )}
@@ -1621,18 +1676,18 @@ export const DiscordLink = (props: DiscordLinkProps) => (
 export const AddFundsHelp = props => (
   <ol>
     <li>
-      Add ETH to your {props.walletType} account address.{' '}
+      Add ETH to your {props.walletType} trading account.{' '}
       {props.walletType === ACCOUNT_TYPES.WEB3WALLET
         ? ''
         : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring Dai.`}{' '}
       {props.walletType === ACCOUNT_TYPES.WEB3WALLET ? null : (
         <span onClick={() => props.showAddFundsModal()}>
-          Add ETH to your {props.walletType} account address
+          Add ETH to your {props.walletType} trading account
         </span>
       )}
     </li>
     <li>
-      After you have sent the ETH to your {props.walletType} account address you
+      After you have sent the ETH to your {props.walletType} trading account you
       can then return and make the transaction.
     </li>
   </ol>

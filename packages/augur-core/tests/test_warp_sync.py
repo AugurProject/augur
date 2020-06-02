@@ -104,6 +104,11 @@ def test_warp_sync_finalization_reward(contractsFixture, augur, universe, reputa
     finalizationReward = warpSync.getFinalizationReward(market.address)
     assert finalizationReward == expectedFinalizationReward
 
+    # We limit the maximum growth time to a week
+    time.incrementTimestamp(1 * day)
+    finalizationReward = warpSync.getFinalizationReward(market.address)
+    assert finalizationReward == expectedFinalizationReward
+
 def test_warp_sync_gets_forked(contractsFixture, augur, universe, reputationToken, warpSync):
     account = contractsFixture.accounts[0]
     time = contractsFixture.contracts["Time"]

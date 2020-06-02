@@ -2,6 +2,24 @@ import { ethers } from 'ethers';
 import moment from 'moment';
 import { BigNumber } from 'ethers/utils';
 
+export const FUTURES = 'FUTURES';
+export const MONEY_LINE = 'MONEY_LINE';
+export const MONEY_LINE_MEGA = 'MONEY_LINE_MEGA';
+export const OVER_UNDER = 'OVER_UNDER';
+export const OVER_UNDER_MEGA = 'OVER_UNDER_MEGA';
+export const SPREAD = 'SPREAD';
+export const SPREAD_MEGA = 'SPREAD_MEGA';
+export const LEAGUE_NAME = 'LEAGUE_NAME';
+export const GENDER = 'GENDER';
+export const WEEK_NO = 'WEEK_NO';
+export const TEAM_A = 'TEAM_A';
+export const TEAM_B = 'TEAM_B';
+export const START_TIME = 'START_TIME';
+export const YEAR = 'YEAR';
+export const EVENT = 'EVENT';
+export const SUB_EVENT = 'SUB_EVENT';
+export const SET_GAME = 'SET_GAME';
+
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
 // Market templates
@@ -25,6 +43,9 @@ export const AMERICAN_FOOTBALL = 'American Football';
 export const OLYMPICS = 'Olympics';
 export const BASEBALL = 'Baseball';
 export const GOLF = 'Golf';
+export const MMA = 'MMA';
+export const BOXING = 'Boxing';
+export const CAR_RACING = 'Car Racing';
 export const BASKETBALL = 'Basketball';
 export const TENNIS = 'Tennis';
 export const HOCKEY = 'Hockey';
@@ -53,6 +74,9 @@ export const MENS = 'Men\'s';
 export const WOMENS = 'Women\'s';
 export const SINGLES = 'Singles';
 export const DOUBLES = 'Doubles';
+export const AWARDS = 'Awards';
+export const TV_MOVIES = 'TV & Movies';
+export const SOCIAL_MEDIA = 'Social Media';
 const FRIDAY_DAY_OF_WEEK = 5;
 const SATURDAY_DAY_OF_WEEK = 6;
 const SUNDAY_DAY_OF_WEEK = 0;
@@ -181,6 +205,14 @@ export interface TemplateValidation {
   categoricalOutcomes: CategoricalOutcomes;
 }
 
+export interface TemplateGroupKeys {
+  groupType: string;
+  groupLineId: number;
+  keys: { key: string, id: number }[]
+}
+export interface TemplateGroup {
+  [hash: string] : TemplateGroupKeys
+}
 export interface TemplateValidationHash {
   [hash: string]: TemplateValidation;
 }
@@ -197,6 +229,8 @@ export interface Template {
   minPrice?: number;
   maxPrice?: number;
   noAdditionalUserOutcomes?: boolean;
+  groupName: string;
+  groupLineId: number;
 }
 
 export interface TemplateInput {
@@ -238,11 +272,21 @@ export interface TemplateInput {
   };
   noSort: boolean;
   daysAfterDateStart: number;
+  denomination: {
+    [key: string]: string;
+  }
+  groupKey: string;
 }
 
 export interface RetiredTemplate {
   hash: string;
   autoFail: boolean;
+}
+
+export interface TemplateGroupInfo {
+  hashKeyInputValues: string;
+  groupType: string;
+  groupLine?: string;
 }
 
 export enum ValidationType {
@@ -312,7 +356,7 @@ export interface ExtraInfo {
 export const ValidationTemplateInputType = {
   [ValidationType.SOCIAL]: `[a-zA-Z0-9_]{1,15}`,
   [TemplateInputType.TEXT]: `(.*)`,
-  [ValidationType.WHOLE_NUMBER]: `[1-9][0-9]*`,
+  [ValidationType.WHOLE_NUMBER]: `[1-9]*[0-9]+`,
   [ValidationType.NUMBER]: `[0-9]+(\\\.[0-9]+){0,1}`,
   [ValidationType.NUMBER_ONE_DECIMAL]: `[0-9]+(\.[0-9]{1}){0,1}`,
   [TemplateInputType.USER_DESCRIPTION_OUTCOME]: `(.*)`,
@@ -324,6 +368,7 @@ export const ValidationTemplateInputType = {
 
 export let TEMPLATE_VALIDATIONS = {};
 export let RETIRED_TEMPLATES = [];
+export let TEMPLATE_GROUPS = [];
 
 export function hasTemplateTextInputs(hash: string, isCategorical: boolean) {
   const validation = TEMPLATE_VALIDATIONS[hash] as TemplateValidation;
@@ -390,6 +435,12 @@ export function generateResolutionRulesHash(rules: ResolutionRules) {
 function hashResolutionRules(details) {
   if (!details) return null;
   const value = `0x${Buffer.from(details, 'utf8').toString('hex')}`;
+  return ethers.utils.sha256(value);
+}
+
+function hashGroupKeyValues(keyValues: string[]): string {
+  const params = JSON.stringify(keyValues);
+  const value = `0x${Buffer.from(params, 'utf8').toString('hex')}`;
   return ethers.utils.sha256(value);
 }
 
@@ -648,6 +699,22 @@ function isRetiredAutofail(hash: string) {
   return found.autoFail;
 }
 
+export function getGroupHashInfo({ hash, inputs }: ExtraInfoTemplate): TemplateGroupInfo {
+  if (!hash || !inputs) return null;
+  const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find(g => g[hash]);
+  if (!hashGroup) return null;
+  const group = hashGroup[hash];
+  const keyValues = group.keys.map(k => String(inputs[k.id].value));
+  const hashKeyInputValues = hashGroupKeyValues(keyValues);
+  const groupLine = group?.groupLineId ? inputs[group.groupLineId].value : undefined;
+
+  return {
+    hashKeyInputValues,
+    groupType: group.groupType,
+    groupLine
+  }
+}
+
 export const isTemplateMarket = (
   title,
   template: ExtraInfoTemplate,
@@ -875,3 +942,5 @@ export const isTemplateMarket = (
 //##TEMPLATES##
 
 //##TEMPLATE_VALIDATIONS##
+
+//##TEMPLATE_GROUPS##

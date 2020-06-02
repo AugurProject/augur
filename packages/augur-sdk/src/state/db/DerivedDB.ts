@@ -18,14 +18,7 @@ export class DerivedDB extends RollbackTable {
   protected stateDB: DB;
   private mergeEventNames: string[];
   private name: string;
-  private updatingHighestSyncBlock = false;
   protected requiresOrder: boolean = false;
-  // For preventing race conditions between log-processing events and other
-  // events like controller:new:block, with the assumption that log processing
-  // should happen first.
-  protected locks: {[name: string]: boolean} = {};
-  protected readonly HANDLE_MERGE_EVENT_LOCK = 'handleMergeEvent';
-
   protected augur;
 
   constructor(
@@ -114,7 +107,6 @@ export class DerivedDB extends RollbackTable {
     logs: ParsedLog[],
     syncing = false
   ): Promise<number> {
-    await this.waitOnLock(this.HANDLE_MERGE_EVENT_LOCK, 5000, 50);
     let documentsByIdByTopic = null;
     if (logs.length > 0) {
       const documentsById = _.groupBy(logs, this.getIDValue.bind(this));
@@ -141,7 +133,6 @@ export class DerivedDB extends RollbackTable {
       blocknumber,
       syncing
     );
-    this.updatingHighestSyncBlock = false;
     if (logs.length > 0 && !this.syncing) {
       this.augur.events.emitAfter(SubscriptionEventName.NewBlock, `DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
     }
@@ -152,23 +143,5 @@ export class DerivedDB extends RollbackTable {
   // No-op by default. Can be overriden to provide custom document processing before being upserted into the DB.
   protected processDoc(log: ParsedLog): ParsedLog {
     return log;
-  }
-
-  protected lock(name: string) {
-    this.locks[name] = true;
-  }
-
-  protected async waitOnLock(lock: string, maxTimeMS: number, periodMS: number): Promise<void> {
-    for (let i = 0; i < (maxTimeMS / periodMS); i++) {
-      if (!this.locks[lock]) {
-        return;
-      }
-      await sleep(periodMS);
-    }
-    throw Error(`timeout: lock ${lock} on ${this.name} DB did not release after ${maxTimeMS}ms`);
-  }
-
-  protected clearLocks() {
-    this.locks = {};
   }
 }

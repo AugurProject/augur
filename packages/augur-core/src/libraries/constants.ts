@@ -24,6 +24,7 @@ export const INTERNAL_CONTRACTS = [
     'AffiliateValidator',
     'AugurWallet',
     'AugurWalletRegistry',
+    'AugurWalletRegistryV2',
     'RepOracle',
     // utility
     'BuyParticipationTokens',
@@ -53,6 +54,8 @@ export const TRADING_CONTRACTS = [
     'SimulateTrade',
     'ZeroXExchange', // uses registration name, not addresses.json name
     'AugurWalletRegistry',
+    'AugurWalletRegistryV2',
+    'RelayHubV2',
     'WETH9'
 ];
 
@@ -92,7 +95,10 @@ export const EXTERNAL_CONTRACTS = [
     'UniswapV2Exchange',
     'UniswapV2Router01',
     // GSN
-    'RelayHub'
+    'RelayHub',
+    'RelayHubV2',
+    'Penalizer',
+    'StakeManager'
 ];
 
 export const REGISTERED_EXTERNAL_CONTRACTS = [
@@ -106,7 +112,9 @@ export const REGISTERED_EXTERNAL_CONTRACTS = [
     'DaiPot',
     'DaiVat',
     // Uniswap
-    "UniswapV2Factory"
+    "UniswapV2Factory",
+    // GSN
+    "RelayHubV2"
 ];
 
 export const REGISTERED_INTERNAL_CONTRACTS = [
@@ -129,6 +137,7 @@ export const REGISTERED_INTERNAL_CONTRACTS = [
     'Affiliates',
     'AffiliateValidator',
     'AugurWalletRegistry',
+    'AugurWalletRegistryV2',
     // utility
     'BuyParticipationTokens',
     'Formulas',
@@ -158,6 +167,7 @@ export const INITIALIZED_CONTRACTS = [
     'ZeroXTrade',
     'WarpSync',
     'AugurWalletRegistry',
+    'AugurWalletRegistryV2',
     'RepOracle'
 ];
 
