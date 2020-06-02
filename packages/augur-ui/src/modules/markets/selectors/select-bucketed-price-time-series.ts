@@ -1,35 +1,21 @@
 import { createBigNumber } from 'utils/create-big-number';
-import createCachedSelector from 're-reselect';
-import store from 'appStore';
 import { ZERO } from 'modules/common/constants';
 import {
   convertUnixToFormattedDate,
   roundTimestampToPastDayMidnight,
 } from 'utils/format-date';
-import {
-  selectMarketTradingHistoryState,
-} from 'appStore/select-state';
 import { selectPriceTimeSeries } from 'modules/markets/selectors/price-time-series';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from '../store/markets';
 
-function selectMarketsDataStateMarket(state, marketId) {
-  const { marketInfos } = Markets.get();
-  return marketInfos[marketId];
-}
-
-function selectMarketTradingHistoryStateMarket(state, marketId) {
-  return selectMarketTradingHistoryState(state)[marketId];
-}
-
 export default function(marketId) {
-  return bucketedPriceTimeSeries(store.getState(), marketId);
+  return bucketedPriceTimeSeries(marketId);
 }
 
-export const bucketedPriceTimeSeries = createCachedSelector(
-  selectMarketsDataStateMarket,
-  selectMarketTradingHistoryStateMarket,
-  (marketData, marketTradeHistory) => {
+export const bucketedPriceTimeSeries = (marketId) => {
+    const { marketInfos, marketTradingHistory } = Markets.get();
+    const marketData = marketInfos[marketId];
+    const marketTradeHistory = marketTradingHistory[marketId];
     if (marketData === null || !marketData.creationTime) return {};
     const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
     const creationTime = convertUnixToFormattedDate(
