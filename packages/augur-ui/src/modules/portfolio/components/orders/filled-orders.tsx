@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 import OrderMarketRow from 'modules/portfolio/components/common/order-market-row';
-import FilledOrder from 'modules/portfolio/containers/filled-order';
+import { FilledOrder } from "modules/common/table-rows";
 
 import FilledOrdersHeader from 'modules/portfolio/components/common/filled-orders-header';
 import selectMarketsFilledOrders from 'modules/portfolio/selectors/select-markets-filled-orders';
