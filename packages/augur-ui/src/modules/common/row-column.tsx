@@ -2,7 +2,6 @@ import React from 'react';
 import * as constants from 'modules/common/constants';
 import {
   MovementLabel,
-  PendingLabel,
   PositionTypeLabel,
   TextLabel,
   ValueLabel,
