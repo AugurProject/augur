@@ -15,7 +15,9 @@ import {
   TemplateIcon,
   YellowTemplateIcon,
   ArchivedIcon,
-  ExclamationCircle
+  ExclamationCircle,
+  FilledCheckbox,
+  EmptyCheckbox
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -36,6 +38,7 @@ import {
   ACCOUNT_TYPES,
   CLOSED_SHORT,
   GWEI_CONVERSION,
+  AUTO_ETH_REPLENISH,
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber, formatBlank, formatGasCostToEther, formatAttoEth } from 'utils/format-number';
@@ -58,6 +61,7 @@ import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
 import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
+import { augurSdk } from 'services/augursdk';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -1588,6 +1592,22 @@ export const EthReserveNotice = connect(
   mapStateToPropsEthReserve
 )(EthReserveNoticeCmp);
 
+export const EthReserveAutomaticTopOff = () => {
+  const checked = augurSdk?.client?.getUseDesiredEthBalance();
+
+  return (
+    <div
+      className={classNames(Styles.CheckboxBar, Styles.smallText, {
+        [Styles.CheckboxBarChecked]: checked,
+      })}
+      role="button"
+      onClick={e => augurSdk?.client?.setUseDesiredEthBalance(!checked)}
+    >
+      {checked ? FilledCheckbox : EmptyCheckbox}
+      <h5>{AUTO_ETH_REPLENISH}</h5>
+    </div>
+  );
+};
 
 export const AutoCancelOrdersNotice = () => (
     <div className={classNames(Styles.ModalMessageAutoCancel)}>

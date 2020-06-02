@@ -19,6 +19,7 @@ import {
   TRANSACTIONS,
   NOT_USE_ETH_RESERVE,
   TRANSFER,
+  FEE_RESERVES_LABEL,
 } from 'modules/common/constants';
 import { AutoCancelOrdersNotice } from 'modules/common/labels';
 
@@ -133,7 +134,7 @@ export const CashOutForm = ({
 
   if (reserveInDaiFormatted.value > 0) {
     breakdown.push({
-      label: 'Fee reserve',
+      label: FEE_RESERVES_LABEL,
       value: reserveInDaiFormatted,
       showDenomination: true,
     });

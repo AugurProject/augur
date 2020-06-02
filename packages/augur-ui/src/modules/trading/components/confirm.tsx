@@ -35,7 +35,7 @@ import {
   formatEther,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip } from 'modules/common/labels';
+import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip, EthReserveAutomaticTopOff } from 'modules/common/labels';
 import { Trade } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
 import { ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
@@ -495,6 +495,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               )}
           </div>
         )}
+        {numFills > 0 && <EthReserveAutomaticTopOff />}
         {messages && (
           <div
             className={classNames(Styles.MessageContainer, {

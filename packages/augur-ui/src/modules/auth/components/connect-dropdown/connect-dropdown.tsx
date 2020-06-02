@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
-import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, DAI } from 'modules/common/constants';
+import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, DAI, FEE_RESERVES_LABEL } from 'modules/common/constants';
 import {
   DaiLogoIcon,
   EthIcon,
@@ -24,6 +24,7 @@ import TransferMyDai from 'modules/modal/containers/transfer-my-dai';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
+import { EthReserveAutomaticTopOff } from 'modules/common/labels';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -163,7 +164,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       disabled: GsnEnabled ? balances.rep === "0" : false,
     },
     {
-      name: 'Fee reserve',
+      name: FEE_RESERVES_LABEL,
       toolTip: renderToolTip(
         'tooltip--ethReserve',
         <div>
@@ -237,13 +238,12 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
               </div>
               <div>
                 <div>
-                  <span>{fundType.value} {fundType.name === 'Fee reserve' ? DAI : fundType.name}</span>
+                  <span>{fundType.value} {fundType.name === FEE_RESERVES_LABEL ? DAI : fundType.name}</span>
                   {fundType.subValue && <span>{fundType.subValue} ETH</span>}
                 </div>
               </div>
             </div>
           ))}
-
         {walletProviders
           .filter(wallet => wallet.accountType === accountMeta.accountType)
           .map((wallet, idx) => {
