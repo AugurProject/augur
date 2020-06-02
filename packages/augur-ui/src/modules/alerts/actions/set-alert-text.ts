@@ -82,11 +82,7 @@ export function getInfo(params: any, status: string, marketInfo: MarketData) {
     onChainMinPrice,
     onChainMaxPrice
   );
-  const price = convertOnChainPriceToDisplayPrice(
-    createBigNumber(params._price || params.price),
-    onChainMinPrice,
-    tickSize
-  ).toString(10);
+  const price = createBigNumber(params._price || params.price).times(tickSize).toString(10);
   const amount = convertOnChainAmountToDisplayAmount(
     createBigNumber(params.amount || params._amount),
     tickSize
