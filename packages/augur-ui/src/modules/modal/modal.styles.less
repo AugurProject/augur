@@ -191,7 +191,6 @@ div.Onboarding {
       display: flex;
       flex-direction: column;
       overflow: auto;
-      height: 75%;
       padding: @size-16 @size-22 0 @size-22;
 
       > div:first-of-type {
@@ -316,6 +315,11 @@ div.Onboarding {
       align-items: center;
       display: flex;
       flex-direction: column;
+
+      > div:first-of-type {
+        display: flex;
+        align-items: center;
+      }
 
       div[class*="ButtonsRow"] {
         display: flex;
@@ -2809,7 +2813,6 @@ div.ButtonsRow:last-of-type {
   border: 1px solid @color-secondary-action-outline;
   color: @color-secondary-text;
   display: flex;
-  font-family: monospace;
   flex-flow: row nowrap;
   justify-content: space-between;
   line-height: @size-14;
