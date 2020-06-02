@@ -884,7 +884,7 @@ export const SYNC_MESSAGE_BLOCKSBEHIND =
   'Market data such as price and orderbooks may be considerably out of date.';
 export const SYNC_BEHIND = 'Blocks behind';
 export const SYNC_PROCESSED = 'Blocks Processed';
-export const AUTO_ETH_REPLENISH = `Automatically replenish Fee reserve`;
+export const AUTO_ETH_REPLENISH = `Automatically replenish fee reserves`;
 
 // Account Summary - Notifications
 export const NOTIFICATIONS_TITLE = 'Notifications';

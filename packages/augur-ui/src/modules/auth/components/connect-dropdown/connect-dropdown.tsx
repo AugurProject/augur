@@ -163,22 +163,44 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       }).formattedValue,
       disabled: GsnEnabled ? balances.rep === "0" : false,
     },
-    {
-      name: FEE_RESERVES_LABEL,
-      toolTip: renderToolTip(
-        'tooltip--ethReserve',
-        <div>
-          <p>Augur runs on a peer-to-peer network, transaction fees are paid in ETH. These fees go entirely to the network. Augur doesn’t collect any of these fees.</p>
-          <p>If your account balance exceeds $40, 0.04 ETH equivilant in DAI will be held in your Fee reserve to cover transaction fees, which results in cheaper transaction fees.</p>
-          <p>As long as your available account balance remains over $40 Dai, your Fee reserve will automatically be replenished.</p>
-          <p>Your Fee reserve can easily be cashed out at anytime using the withdraw button in the transactions section of your account summary.</p>
-        </div>
-      ),
-      value: ethReserveInDai,
-      subValue: reserveEthAmount.formattedValue,
-      disabled: GsnEnabled ? balances.signerBalances.eth === "0" : false,
-    },
   ];
+
+  const feeReserveFunds = (
+    <div className={Styles.EthReserves}>
+      <div className={Styles.AccountFunds}>
+        {FEE_RESERVES_LABEL}
+        {renderToolTip(
+          'tooltip--ethReserve',
+          <div>
+            <p>
+              Augur runs on a peer-to-peer network, transaction fees are paid in
+              ETH. These fees go entirely to the network. Augur doesn’t collect
+              any of these fees.
+            </p>
+            <p>
+              If your account balance exceeds $40, 0.04 ETH equivilant in DAI
+              will be held in your Fee reserve to cover transaction fees, which
+              results in cheaper transaction fees.
+            </p>
+            <p>
+              As long as your available account balance remains over $40 Dai,
+              your Fee reserve will automatically be replenished.
+            </p>
+            <p>
+              Your Fee reserve can easily be cashed out at anytime using the
+              withdraw button in the transactions section of your account
+              summary.
+            </p>
+          </div>
+        )}
+        <div>
+          <span>{ethReserveInDai} DAI</span>
+          <span>{reserveEthAmount.formattedValue} ETH</span>
+        </div>
+      </div>
+      <EthReserveAutomaticTopOff />
+    </div>
+  );
 
   const walletProviders = [
     {
@@ -233,18 +255,13 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           .filter(fundType => !fundType.disabled)
           .map((fundType, idx) => (
             <div key={idx} className={Styles.AccountFunds}>
+              {fundType.logo} {fundType.name} {fundType.toolTip ? fundType.toolTip : null}
               <div>
-                {fundType.logo} {fundType.name} {fundType.toolTip ? fundType.toolTip : null}
-              </div>
-              <div>
-                <div>
-                  <span>{fundType.value} {fundType.name === FEE_RESERVES_LABEL ? DAI : fundType.name}</span>
-                  {fundType.subValue && <span>{fundType.subValue} ETH</span>}
-                </div>
-                {fundType.name === FEE_RESERVES_LABEL && <EthReserveAutomaticTopOff />}
+                  {fundType.value} {fundType.name}
               </div>
             </div>
           ))}
+        {feeReserveFunds}
         {walletProviders
           .filter(wallet => wallet.accountType === accountMeta.accountType)
           .map((wallet, idx) => {
