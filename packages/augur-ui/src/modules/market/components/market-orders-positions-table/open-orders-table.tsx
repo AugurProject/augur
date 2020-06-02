@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import classNames from 'classnames';
 
-import OpenOrder from 'modules/portfolio/containers/open-order';
+import { OpenOrder } from 'modules/common/table-rows';
 import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
 import { UIOrder } from 'modules/types';
 
