@@ -6,9 +6,6 @@ import {
   PUBLICTRADE,
   ZEROX_STATUSES,
 } from 'modules/common/constants';
-import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import {
   placeTrade,
   approveToTrade,
@@ -25,15 +22,12 @@ import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 
-export const placeMarketTrade = ({
+export const placeMarketTrade = async ({
   marketId,
   outcomeId,
   tradeInProgress,
   doNotCreateOrders,
-}: any) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+}: any) => {
   if (!marketId) return null;
   const { marketInfos } = Markets.get();
   // numFills is 0 and zerox mesh client has error auto fail processing order label

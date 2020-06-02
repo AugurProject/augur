@@ -57,10 +57,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  orderPriceEntered: (type, marketId) =>
-    dispatch(orderPriceEntered(type, marketId)),
-  orderAmountEntered: (type, marketId) =>
-    dispatch(orderAmountEntered(type, marketId)),
+  orderPriceEntered: (type, marketId) => orderPriceEntered(type, marketId),
+  orderAmountEntered: (type, marketId) => orderAmountEntered(type, marketId),
 });
 
 const mergeProps = (sP, dP, oP) => {

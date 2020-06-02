@@ -3,7 +3,6 @@ import { SelectedOrderProperties } from 'modules/trading/components/wrapper';
 import Wrapper from 'modules/trading/containers/wrapper';
 import Styles from 'modules/trading/components/trading-form.styles.less';
 import { MarketData, NewMarket } from 'modules/types';
-import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface TradingFormProps {
   market: MarketData | NewMarket;
@@ -20,15 +19,8 @@ interface TradingFormProps {
 const TradingForm = ({
   selectedOutcomeId = 2,
   market,
-  selectedOrderProperties,
-  updateSelectedOutcome,
-  updateLiquidity,
-  initialLiquidity,
-  tradingTutorial,
-  tutorialNext,
-  updateSelectedOrderProperties,
+  ...props
 }: TradingFormProps) => {
-  const { zeroXEnabled } = useAppStatusStore();
   const selectedOutcome = useMemo(
     () =>
       market.outcomesFormatted.find(
@@ -40,18 +32,12 @@ const TradingForm = ({
   return (
     <section className={Styles.TradingForm}>
       <Wrapper
-        zeroXEnabled={zeroXEnabled}
         market={market}
         selectedOutcome={selectedOutcome}
-        selectedOrderProperties={selectedOrderProperties}
-        updateSelectedOrderProperties={updateSelectedOrderProperties}
-        updateSelectedOutcome={updateSelectedOutcome}
-        updateLiquidity={updateLiquidity}
-        initialLiquidity={initialLiquidity}
-        tradingTutorial={tradingTutorial}
-        tutorialNext={tutorialNext}
+        {...props}
       />
     </section>
   );
 };
+
 export default TradingForm;

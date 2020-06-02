@@ -66,7 +66,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
     currentTimestamp,
     availableDai,
     gsnUnavailable: isGSNUnavailable(),
-    endTime: ownProps.initialLiquidity ? newMarket.setEndTime : ownProps.market.endTime,
+    endTime: ownProps.initialLiquidity
+      ? newMarket.setEndTime
+      : ownProps.market.endTime,
   };
 };
 
@@ -77,9 +79,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       setModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT }),
     handleFilledOnly: trade => null,
     updateTradeCost: (marketId, outcomeId, order, callback) =>
-      dispatch(updateTradeCost({ marketId, outcomeId, ...order, callback })),
+      updateTradeCost({ marketId, outcomeId, ...order, callback }),
     updateTradeShares: (marketId, outcomeId, order, callback) =>
-      dispatch(updateTradeShares({ marketId, outcomeId, ...order, callback })),
+      updateTradeShares({ marketId, outcomeId, ...order, callback }),
     disclaimerModal: modal =>
       setModal({
         type: MODAL_DISCLAIMER,
@@ -102,16 +104,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       tradeInProgress,
       doNotCreateOrders
     ) =>
-      dispatch(
-        placeMarketTrade({
-          marketId,
-          outcomeId,
-          tradeInProgress,
-          doNotCreateOrders,
-        })
-      ),
-    orderSubmitted: (type, marketId) =>
-      dispatch(orderSubmitted(type, marketId)),
+      placeMarketTrade({
+        marketId,
+        outcomeId,
+        tradeInProgress,
+        doNotCreateOrders,
+      }),
+    orderSubmitted: (type, marketId) => orderSubmitted(type, marketId),
   };
 };
 const mergeProps = (sP, dP, oP) => {
