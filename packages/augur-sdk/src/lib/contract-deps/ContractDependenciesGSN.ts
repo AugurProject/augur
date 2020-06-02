@@ -52,7 +52,7 @@ interface TransactionPaymentData {
 export class ContractDependenciesGSN extends ContractDependenciesEthers {
   useRelay = false;
   useWallet = false;
-  userDesiredSignerETHBalance = false;
+  useDesiredSignerETHBalance = true;
   walletAddress: string = null;
   relayClient: RelayClient;
   relayHub: ethers.Contract;
@@ -223,7 +223,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   }
 
   setUseDesiredEthBalance(useDesiredEthBalance: boolean): void {
-    this.userDesiredSignerETHBalance = useDesiredEthBalance;
+    this.useDesiredSignerETHBalance = useDesiredEthBalance;
   }
 
   setGasPrice(gasPrice: BigNumber): void {
@@ -434,7 +434,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   ): Transaction<ethers.utils.BigNumber> {
     payment = payment || new ethers.utils.BigNumber(0); // For gas estimates we use a payment of 0 dai as no payment is required
     const maxExchangeRate = `0x${this.maxExchangeRate}`;
-    const desiredSignerETHBalance = this.userDesiredSignerETHBalance ? this.walletDaiBalance.isGreaterThan(this.config.gsn.minDaiForSignerETHBalanceInDAI * 10**18) ? this.desiredSignerETHBalance : "0x00" : "0x00";
+    const desiredSignerETHBalance = this.useDesiredSignerETHBalance ? this.walletDaiBalance.isGreaterThan(this.config.gsn.minDaiForSignerETHBalanceInDAI * 10**18) ? this.desiredSignerETHBalance : "0x00" : "0x00";
     const data = this.augurWalletRegistry.interface.functions[
       'executeWalletTransaction'
     ].encode([
