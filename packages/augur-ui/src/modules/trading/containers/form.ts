@@ -61,18 +61,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   orderAmountEntered: (type, marketId) => orderAmountEntered(type, marketId),
 });
 
-const mergeProps = (sP, dP, oP) => {
-  return {
-    ...oP,
-    ...dP,
-    ...sP,
-  };
-};
-
 const FormContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(Form);
 
 export default FormContainer;

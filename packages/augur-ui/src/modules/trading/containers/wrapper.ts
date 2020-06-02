@@ -56,6 +56,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
   if (ownProps.initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
+  const disclaimerSeen = getValueFromlocalStorage(DISCLAIMER_SEEN);
+  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
   return {
     hasHistory,
     gasPrice: getGasPrice(),
@@ -69,6 +71,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     endTime: ownProps.initialLiquidity
       ? newMarket.setEndTime
       : ownProps.market.endTime,
+    disclaimerSeen: !!disclaimerSeen,
+    gsnWalletInfoSeen: !!gsnWalletInfoSeen,
   };
 };
 
@@ -113,23 +117,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     orderSubmitted: (type, marketId) => orderSubmitted(type, marketId),
   };
 };
-const mergeProps = (sP, dP, oP) => {
-  const disclaimerSeen = getValueFromlocalStorage(DISCLAIMER_SEEN);
-  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
-
-  return {
-    ...oP,
-    ...sP,
-    ...dP,
-    disclaimerSeen: !!disclaimerSeen,
-    gsnWalletInfoSeen: !!gsnWalletInfoSeen,
-  };
-};
 
 const WrapperContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(Wrapper);
 
 export default WrapperContainer;

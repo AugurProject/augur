@@ -54,18 +54,9 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-const mergeProps = (sP, dP, oP) => {
-  return {
-    ...oP,
-    ...sP,
-    ...dP,
-  };
-};
-
 const ConfirmContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(Confirm);
 
 export default ConfirmContainer;
