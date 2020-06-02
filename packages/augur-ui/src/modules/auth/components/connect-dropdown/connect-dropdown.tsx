@@ -261,7 +261,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
               </div>
             </div>
           ))}
-        {feeReserveFunds}
+        {reserveEthAmount.value !== 0 && feeReserveFunds}
         {walletProviders
           .filter(wallet => wallet.accountType === accountMeta.accountType)
           .map((wallet, idx) => {

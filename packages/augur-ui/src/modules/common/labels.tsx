@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
@@ -1593,15 +1593,20 @@ export const EthReserveNotice = connect(
 )(EthReserveNoticeCmp);
 
 export const EthReserveAutomaticTopOff = () => {
-  const checked = augurSdk?.client?.getUseDesiredEthBalance();
-
+  // using useState b/c lag in setting/getting property from sdk.
+  const [checked, setChecked] = useState(augurSdk?.client?.getUseDesiredEthBalance());
   return (
     <div
-      className={classNames(Styles.CheckboxBar, Styles.smallText, {
-        [Styles.CheckboxBarChecked]: checked,
+      className={classNames(Styles.Checkbox, {
+        [Styles.CheckboxChecked]: checked,
       })}
       role="button"
-      onClick={e => augurSdk?.client?.setUseDesiredEthBalance(!checked)}
+      onClick={e => {
+        if (checked !== null) {
+          augurSdk?.client?.setUseDesiredEthBalance(!checked);
+          setChecked(!checked);
+        }
+      }}
     >
       {checked ? FilledCheckbox : EmptyCheckbox}
       {AUTO_ETH_REPLENISH}
