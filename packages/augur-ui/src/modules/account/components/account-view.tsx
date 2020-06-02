@@ -37,7 +37,7 @@ const AccountView = () => {
   });
   const { theme, notifications, favorites } = useAppStatusStore();
   const newNotifications = notifications.filter(item => item.isNew).length > 0;
-  const createdMarkets = selectAuthorOwnedMarkets(state);
+  const createdMarkets = selectAuthorOwnedMarkets();
   const positionsMarkets = getLoginAccountPositionsMarkets();
 
   const {
