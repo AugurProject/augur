@@ -106,6 +106,7 @@ export class SDK {
       // TODO: In Dev this may be annoying as you can't faucet cash if these are on and you havent ever done a tx with the GSN relay
       this.client.setUseRelay(true);
       this.client.setUseWallet(true);
+      this.client.setUseDesiredEthBalance(true);
     }
 
     if (!isLocalHost()) {
