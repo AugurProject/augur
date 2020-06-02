@@ -434,7 +434,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => (
   );
   if (isUserDataUpdate && authStatus.isLogged) {
     dispatch(throttleLoadUserOpenOrders());
-    const pendingOrderId = constructPendingOrderid(log.amount, log.price, log.outcome, log.market)
+    const pendingOrderId = constructPendingOrderid(log.amount, log.price, log.outcome, log.market, log.orderType);
     dispatch(removePendingOrder(pendingOrderId, log.market));
   }
 };
