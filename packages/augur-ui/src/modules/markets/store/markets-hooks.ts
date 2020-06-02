@@ -29,11 +29,11 @@ export function MarketsReducer(state, action) {
   switch (action.type) {
     case UPDATE_ORDER_BOOK: {
       const { marketId, orderBook } = action;
-       // if (orderBook || action.payload?.orderBook) {
+       if (orderBook || action.payload?.orderBook) {
           updatedState.orderBooks = {
           ...updatedState.orderBooks,
           [marketId]: orderBook || action.payload?.orderBook,
-       // };
+       };
       }
       break;
     }
@@ -42,12 +42,12 @@ export function MarketsReducer(state, action) {
       break;
     }
     case UPDATE_MARKETS_DATA:
-      //if (action.marketInfos || action.payload?.marketInfos) {
+      if (action.marketInfos || action.payload?.marketInfos) {
         updatedState.marketInfos = {
           ...updatedState.marketInfos,
           ...processMarketsData(action.marketInfos || action.payload?.marketInfos, updatedState.marketInfos)
         };
-     // }
+      }
       break;
     case REMOVE_MARKET:
       updatedState.marketInfos = immutableDelete(updatedState.marketInfos, action.marketId);
