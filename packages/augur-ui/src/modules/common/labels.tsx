@@ -1063,7 +1063,7 @@ interface PendingLabelProps {
 export const PendingLabel = ({ status }: PendingLabelProps) => (
   <span
     className={classNames(Styles.PendingLabel, {
-      [Styles.Failure]: status && status === TXEventName.Failure,
+      [Styles.Failure]: status === TXEventName.Failure,
     })}
     data-tip
     data-for={'processing'}
@@ -1089,7 +1089,7 @@ export const PendingLabel = ({ status }: PendingLabelProps) => (
         </ReactTooltip>
       </>
     )}
-    {status && status === TXEventName.Failure && (
+    {status === TXEventName.Failure && (
       <span>Failed</span>
     )}
   </span>
