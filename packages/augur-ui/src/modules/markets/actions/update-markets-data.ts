@@ -9,5 +9,4 @@ export const addUpdateMarketInfos = (
     {}
   );
   return marketInfos;
- // Markets.actions.updateMarketsData(marketInfos);
 };
