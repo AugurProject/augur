@@ -1604,7 +1604,7 @@ export const EthReserveAutomaticTopOff = () => {
       onClick={e => augurSdk?.client?.setUseDesiredEthBalance(!checked)}
     >
       {checked ? FilledCheckbox : EmptyCheckbox}
-      <h5>{AUTO_ETH_REPLENISH}</h5>
+      {AUTO_ETH_REPLENISH}
     </div>
   );
 };

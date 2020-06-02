@@ -241,6 +241,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
                   <span>{fundType.value} {fundType.name === FEE_RESERVES_LABEL ? DAI : fundType.name}</span>
                   {fundType.subValue && <span>{fundType.subValue} ETH</span>}
                 </div>
+                {fundType.name === FEE_RESERVES_LABEL && <EthReserveAutomaticTopOff />}
               </div>
             </div>
           ))}
