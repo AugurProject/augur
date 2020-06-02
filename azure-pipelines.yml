@@ -529,6 +529,7 @@ jobs:
           aws s3 sync packages/augur-ui/build/ s3://demo.augur.net/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
           aws s3 cp s3://demo.augur.net/index.html s3://demo.augur.net/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
           aws s3 cp s3://demo.augur.net/zerox.wasm s3://demo.augur.net/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
+          aws cloudfront create-invalidation --distribution-id E2U7CL01QG2FRF --paths "/index.html"
         displayName: 'push build to S3'
         env:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
@@ -570,6 +571,7 @@ jobs:
           aws s3 sync packages/augur-ui/build/ s3://v2.augur.net/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
           aws s3 cp s3://v2.augur.net/index.html s3://v2.augur.net/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
           aws s3 cp s3://v2.augur.net/zerox.wasm s3://v2.augur.net/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
+          aws cloudfront create-invalidation --distribution-id E3RQRY8KA1PEUL --paths "/index.html"
         displayName: 'push build to S3'
         env:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
