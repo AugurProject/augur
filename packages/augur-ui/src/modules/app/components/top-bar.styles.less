@@ -40,9 +40,10 @@
 }
 
 .AccountActivation > button {
+  .text-11-bold;
   max-height: 100%;
 
-  @media @breakpoint-mobile {
+  @media all and (max-width: @step-4) {
     .text-10-bold;
 
     padding: @size-4 @size-8;
@@ -193,7 +194,7 @@
 
   @media @breakpoint-mobile {
     border-left: 1px solid @color-module-background;
-    padding: 0 @size-10 0 @size-18;
+    padding: @size-12 @size-10 @size-12 @size-18;
   }
 
   &:hover {

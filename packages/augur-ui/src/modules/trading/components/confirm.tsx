@@ -240,9 +240,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     if (
       !isNaN(numTrades) &&
       numTrades > 0 &&
-      ((potentialDaiProfit.value !== 0 &&
+      ((potentialDaiProfit && potentialDaiProfit.value !== 0 &&
         createBigNumber(gasCostDai).gt(potentialDaiProfit.value)) ||
-        (orderShareProfit.value !== 0 &&
+        (orderShareProfit && orderShareProfit.value !== 0 &&
           createBigNumber(gasCostDai).gt(orderShareProfit.value))) &&
       !tradingTutorial
     ) {

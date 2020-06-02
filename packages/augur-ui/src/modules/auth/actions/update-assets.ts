@@ -14,7 +14,6 @@ import { updateAppStatus, WALLET_STATUS } from 'modules/app/actions/update-app-s
 import { createBigNumber } from 'utils/create-big-number';
 import { WALLET_STATUS_VALUES, FIVE, ETHER } from 'modules/common/constants';
 import { addEthIncreaseAlert } from 'modules/alerts/actions/alerts';
-import { updateAuthStatus } from 'modules/auth/actions/auth-status';
 
 
 export const updateAssets = (
@@ -33,7 +32,6 @@ export const updateAssets = (
     nonSafeWallet,
     loginAccount.balances.signerBalances?.eth,
     dispatch,
-    getState,
     (err, balances) => {
       let status = appStatus[WALLET_STATUS];
       if (createBigNumber(balances.dai).gt(FIVE) && (status !== WALLET_STATUS_VALUES.CREATED)) {
@@ -49,7 +47,6 @@ function updateBalances(
   nonSafeWallet: string,
   ethNonSafeBalance: string,
   dispatch: ThunkDispatch<void, any, Action>,
-  getState:  () => AppState,
   callback: NodeStyleCallback,
 ) {
   Promise.all([
