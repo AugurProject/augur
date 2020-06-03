@@ -4,7 +4,7 @@ import classNames from "classnames";
 import getValue from "utils/get-value";
 import { LinearPropertyLabel } from "modules/common/labels";
 import { CancelTextButton } from "modules/common/buttons";
-import MarketTitle from 'modules/market/containers/market-title';
+import MarketTitle from 'modules/market/components/common/market-title';
 import { Order } from "modules/portfolio/types";
 
 import Styles from "modules/portfolio/components/common/expanded-content.styles.less";

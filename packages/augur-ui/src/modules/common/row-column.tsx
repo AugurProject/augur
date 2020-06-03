@@ -11,7 +11,7 @@ import {
   InvalidLabel,
 } from 'modules/common/labels';
 import { CancelTextButton, CashoutButton } from 'modules/common/buttons';
-import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
+import OutcomeTradingIndicator from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator";
 import { DateFormattedObject, FormattedNumber } from 'modules/types';
 import { TXEventName } from '@augurproject/sdk/src';
 import { XIcon } from 'modules/common/icons';
@@ -118,7 +118,7 @@ function selectColumn(columnType: string, properties: Properties) {
         (value || showEmptyDash) && (
           <>
             {addIndicator && (
-              <MarketOutcomeTradingIndicator
+              <OutcomeTradingIndicator
                 outcome={outcome}
                 location={location}
               />

@@ -24,7 +24,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import { MarketData } from 'modules/types';
 import MigrateMarketNotice from 'modules/market-cards/containers/migrate-market-notice';
 import Styles from 'modules/market-cards/market-card.styles.less';
-import MarketTitle from 'modules/market/containers/market-title';
+import MarketTitle from 'modules/market/components/common/market-title';
 import { ThickChevron } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { hasStakeInMarket } from 'modules/account/helpers/common';

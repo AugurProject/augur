@@ -6,9 +6,9 @@ import { useLocation, useHistory } from 'react-router';
 import Media from 'react-media';
 
 import { closeModal } from 'modules/modal/actions/close-modal';
-import MarketHeader from 'modules/market/containers/market-header';
-import MarketOrdersPositionsTable from 'modules/market/containers/market-orders-positions-table';
-import MarketOutcomesList from 'modules/market/containers/market-outcomes-list';
+import { MarketHeader } from 'modules/market/components/market-header/market-header';
+import MarketOrdersPositionsTable from 'modules/market/components/market-orders-positions-table/market-orders-positions-table';
+import MarketOutcomesList from "modules/market/components/market-outcomes-list/market-outcomes-list";
 import TradingForm from 'modules/trading/components/trading-form';
 import OrderBook from 'modules/market-charts/containers/order-book';
 import MarketChartsPane from 'modules/market-charts/containers/market-charts-pane';
