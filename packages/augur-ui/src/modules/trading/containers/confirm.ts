@@ -6,6 +6,7 @@ import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_INITIALIZE_ACCOUNT, CREATEAUGURWALLET, TRANSACTIONS } from 'modules/common/constants';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
+import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { authStatus, loginAccount, appStatus, newMarket } = state;
@@ -23,6 +24,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
   const sweepStatus = state.pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
+  const ethInReserve = getEthReserve(state);
   return {
     gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
     availableEth: createBigNumber(loginAccount.balances.eth),
@@ -33,6 +35,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     GsnEnabled,
     walletStatus,
     sweepStatus,
+    hasEthReserve: ethInReserve.value > 0,
   };
 };
 
