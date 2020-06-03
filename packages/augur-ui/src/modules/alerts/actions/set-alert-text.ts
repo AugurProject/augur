@@ -56,6 +56,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
+import getPrecision from 'utils/get-number-precision';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
@@ -91,13 +92,16 @@ export function getInfo(params: any, status: string, marketInfo: MarketData, isO
         onChainMinPrice,
         tickSize
       ).toString(10);
-;
+
   const amount = convertOnChainAmountToDisplayAmount(
     createBigNumber(params.amount || params._amount),
     tickSize
   ).toString();
 
+  const priceFormatted = formatDai(price, {decimals: getPrecision(String(tickSize), 2)})
+
   return {
+    priceFormatted,
     price,
     amount,
     orderType: toCapitalizeCase(orderType),
@@ -458,7 +462,7 @@ export default function setAlertText(alert: any, callback: Function) {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
             alert.description = marketInfo.description;
-            const { orderType, amount, price, outcomeDescription } = getInfo(
+            const { orderType, amount, price, outcomeDescription, priceFormatted } = getInfo(
               alert.params,
               alert.status,
               marketInfo,
@@ -466,7 +470,7 @@ export default function setAlertText(alert: any, callback: Function) {
 
             alert.details = `${orderType}  ${
               formatShares(amount).formatted
-            } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+            } of ${outcomeDescription} @ ${priceFormatted.formatted}`;
           })
         );
         break;
