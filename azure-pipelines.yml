@@ -118,6 +118,7 @@ jobs:
           key: 'contract | "$(Agent.OS)" | packages/augur-artifacts/src/contracts.json'
           path: /tmp/augur
         displayName: Cache seed file
+      - script: rm -rf /tmp/augur/seed.json
       - script: yarn test $(TEST_ARGS) --verbose --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
         env:
