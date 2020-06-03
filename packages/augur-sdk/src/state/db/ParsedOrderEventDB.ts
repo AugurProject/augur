@@ -14,6 +14,7 @@ export class ParsedOrderEventDB extends DelayedSyncableDB {
 
   private processOrderEvent(logs: ParsedLog[]) {
     for (let i = 0; i < logs.length; i++) {
+      if (logs[i].orderCreator) continue;
       logs[i].orderCreator = logs[i].addressData[0];
       logs[i].orderFiller = logs[i].addressData[1];
 
