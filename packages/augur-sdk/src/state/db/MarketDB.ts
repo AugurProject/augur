@@ -163,7 +163,7 @@ export class MarketDB extends DerivedDB {
 
   async getOrderBookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber, isFirstSync: Boolean): Promise<MarketOrderBookData> {
     const numOutcomes = marketData.outcomes && marketData.outcomes.length > 0 ? marketData.outcomes.length + 1 : 3;
-    const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes - 1];
+    const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes];
     const estimatedGasCost = ETHInAttoDAI.multipliedBy(DEFAULT_GAS_PRICE_IN_GWEI).div(10**9);
     const estimatedTradeGasCostInAttoDai = estimatedGasCost.multipliedBy(estimatedTradeGasCost);
     const estimatedClaimGasCostInAttoDai = estimatedGasCost.multipliedBy(CLAIM_GAS_COST);
