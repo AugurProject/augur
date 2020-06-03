@@ -11,10 +11,11 @@ import {
   BUY,
   YES_NO,
 } from 'modules/common/constants';
+import { TXEventName } from '@augurproject/sdk';
 import {
-  TXEventName
-} from '@augurproject/sdk';
-import { convertUnixToFormattedDate, convertSaltToFormattedDate } from 'utils/format-date';
+  convertUnixToFormattedDate,
+  convertSaltToFormattedDate,
+} from 'utils/format-date';
 import { formatNone, formatDai, formatMarketShares } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import {
@@ -65,7 +66,7 @@ export const selectUserOpenOrders = createSelector(
             market.description,
             outcome.description,
             market.marketType,
-            market.tickSize,
+            market.tickSize
           )
         )
         .filter(collection => collection.length !== 0)
@@ -77,12 +78,17 @@ export const selectUserOpenOrders = createSelector(
       const formatted = pendingOrders.map(o => ({
         ...o,
         unmatchedShares: formatMarketShares(market.marketType, o.amount),
-        avgPrice: formatDai(o.fullPrecisionPrice, { decimals, decimalsRounded: decimals}),
-        tokensEscrowed: formatDai(0, {zeroStyled: true}),
-        sharesEscrowed: formatMarketShares(market.marketType, 0, { zeroStyled: true }),
+        avgPrice: formatDai(o.fullPrecisionPrice, {
+          decimals,
+          decimalsRounded: decimals,
+        }),
+        tokensEscrowed: formatDai(0, { zeroStyled: true }),
+        sharesEscrowed: formatMarketShares(market.marketType, 0, {
+          zeroStyled: true,
+        }),
         pending: !!o.status, // TODO: can show status of transaction in the future
         status: o.status,
-      }))
+      }));
       userOpenOrderCollection = formatted.concat(userOpenOrderCollection);
     }
 
@@ -99,7 +105,7 @@ const userOpenOrders = memoize(
     marketDescription,
     name,
     marketType,
-    tickSize,
+    tickSize
   ) => {
     const orderData = userMarketOpenOrders[outcomeId];
 
@@ -115,7 +121,7 @@ const userOpenOrders = memoize(
             marketDescription,
             name,
             marketType,
-            tickSize,
+            tickSize
           );
     const userAsks =
       orderData == null || orderData[SELL_INDEX] == null
@@ -149,7 +155,7 @@ function getUserOpenOrders(
   marketDescription = '',
   name = '',
   marketType = YES_NO,
-  tickSize = '0.01',
+  tickSize = '0.01'
 ) {
   const typeOrders = orders[orderType];
 
@@ -167,17 +173,22 @@ function getUserOpenOrders(
       outcomeId,
       creationTime: convertSaltToFormattedDate(order.salt),
       expiry: convertUnixToFormattedDate(order.expirationTimeSeconds),
-      pending: !!orderCancellation[order.orderId] && orderCancellation[order.orderId] !== TXEventName.Failure,
+      pending:
+        !!orderCancellation[order.orderId] &&
+        orderCancellation[order.orderId] !== TXEventName.Failure,
       status: order.orderState,
       orderCancellationStatus: orderCancellation[order.orderId],
       originalShares: formatNone(),
-      avgPrice: formatDai(order.fullPrecisionPrice, { decimals: getPrecision(String(tickSize), 2), decimalsRounded: getPrecision(String(tickSize), 2)}),
+      avgPrice: formatDai(order.fullPrecisionPrice, {
+        decimals: getPrecision(String(tickSize), 2),
+        decimalsRounded: getPrecision(String(tickSize), 2),
+      }),
       matchedShares: formatNone(),
       unmatchedShares: formatMarketShares(marketType, order.amount),
       tokensEscrowed: formatDai(order.tokensEscrowed),
       sharesEscrowed: formatMarketShares(marketType, order.sharesEscrowed),
       marketDescription,
       name,
-      cancelOrder: (order) => store.dispatch(cancelOrder(order))
+      cancelOrder: order => store.dispatch(cancelOrder(order)),
     }));
 }
