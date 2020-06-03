@@ -20,22 +20,20 @@ const loadPerReportingState = {
   },
 };
 
-export const reloadReportingPage = (marketIds: string[]) => (dispatch, getState) => {
-  if (!getState) return;
+export const reloadReportingPage = (marketIds: string[]) => {
   const states = Object.keys(loadPerReportingState.reporting);
   states.map(reportingState => {
     if (!Markets.get().reportingListState[reportingState]) return;
     const params = Markets.get().reportingListState[reportingState].params;
-    dispatch(loadPerReportingState.reporting[reportingState](params));
+    loadPerReportingState.reporting[reportingState](params);
   });
 };
 
-export const reloadDisputingPage = (marketIds: string[]) => (dispatch, getState) => {
-  if (!getState) return;
+export const reloadDisputingPage = (marketIds: string[]) => {
   const states = Object.keys(loadPerReportingState.disputing);
   states.map(reportingState => {
     if (!Markets.get().reportingListState[reportingState]) return;
     const params = Markets.get().reportingListState[reportingState].params;
-    dispatch(loadPerReportingState.disputing[reportingState](params));
+    loadPerReportingState.disputing[reportingState](params);
   });
 };

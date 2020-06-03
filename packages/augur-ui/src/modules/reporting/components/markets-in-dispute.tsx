@@ -16,6 +16,10 @@ import Media from 'react-media';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { selectDisputingMarkets } from 'modules/markets/selectors/select-reporting-markets';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import {
+  loadCurrentlyDisputingMarkets,
+  loadNextWindowDisputingMarkets,
+} from 'modules/markets/actions/load-markets';
 
 const ITEMS_PER_SECTION = 10;
 const NUM_LOADING_CARDS = 5;
@@ -34,15 +38,6 @@ const DEFAULT_PAGINATION = {
   filteredData: defaultTabs,
 };
 
-interface DisputingMarkets {
-  [reportingState: string]: MarketData[];
-}
-
-interface MarketsInDisputeProps {
-  loadCurrentlyDisputingMarkets: Function;
-  loadNextWindowDisputingMarkets: Function;
-}
-
 const sortByOptions = [
   {
     label: 'Amount REP Staked',
@@ -54,10 +49,7 @@ const sortByOptions = [
   },
 ];
 
-const MarketsInDispute = ({
-  loadCurrentlyDisputingMarkets,
-  loadNextWindowDisputingMarkets,
-}: MarketsInDisputeProps) => {
+const MarketsInDispute = () => {
   const { reportingListState } = useMarketsStore();
   const {
     loginAccount: { mixedCaseAddress: userAddress },

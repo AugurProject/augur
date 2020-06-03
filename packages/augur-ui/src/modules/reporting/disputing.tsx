@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import Media from 'react-media';
 
-import MarketsInDispute from 'modules/reporting/containers/markets-in-dispute';
+import MarketsInDispute from 'modules/reporting/components/markets-in-dispute';
 import { WindowProgress } from 'modules/common/progress';
 import { UserRepDisplay } from 'modules/reporting/common';
 import { ReportingModalButton } from 'modules/reporting/common';
-import ParticipationTokensView from 'modules/reporting/containers/participation-tokens-view';
+import { ParticipationTokensView } from 'modules/reporting/common';
 import { HEADER_TYPE, SMALL_MOBILE, MODAL_DR_QUICK_GUIDE } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';

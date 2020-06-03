@@ -3,7 +3,7 @@ import Media from "react-media";
 
 import { ButtonActionType } from 'modules/types';
 import { ReportingModalButton } from 'modules/reporting/common';
-import ReportingList from 'modules/reporting/containers/reporting-list';
+import { Paginator as ReportingList} from 'modules/reporting/reporting-list';
 import { UserRepDisplay } from 'modules/reporting/common';
 import { REPORTING_STATE, SMALL_MOBILE, TABLET, DESKTOP, LARGE_DESKTOP, MODAL_DR_QUICK_GUIDE } from "modules/common/constants";
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";

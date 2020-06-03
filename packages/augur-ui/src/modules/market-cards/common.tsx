@@ -197,7 +197,6 @@ export interface DisputeOutcomeProps {
   invalid?: Boolean;
   index: number;
   stake: Getters.Markets.StakeDetails | null;
-  dispute: Function;
   id: number;
   canDispute: boolean;
   canSupport: boolean;
@@ -213,13 +212,13 @@ export const DisputeOutcome = ({
   forkingMarket,
   index,
   stake,
-  dispute,
   id,
   canDispute,
   canSupport,
   marketId,
   isWarpSync,
 }: DisputeOutcomeProps) => {
+  const { actions: {setModal}} = useAppStatusStore();
   const stakeCurrent = stake && formatAttoRep(stake.stakeCurrent);
   const bondSizeCurrent = stake && formatAttoRep(stake.bondSizeCurrent);
 
@@ -293,7 +292,12 @@ export const DisputeOutcome = ({
                 secondaryButton
                 disabled={!canDispute}
                 text={buttonText}
-                action={() => dispute(id.toString(), invalid)}
+                action={() => setModal({
+                  type: MODAL_REPORTING,
+                  marketId: marketId,
+                  selectedOutcome: id.toString(),
+                  isInvalid: invalid
+                })}
               />
             )}
           </div>
@@ -308,7 +312,12 @@ export const DisputeOutcome = ({
           secondaryButton
           disabled={!canDispute}
           text={buttonText}
-          action={() => dispute(id.toString(), invalid)}
+          action={() => setModal({
+            type: MODAL_REPORTING,
+            marketId: marketId,
+            selectedOutcome: id.toString(),
+            isInvalid: invalid
+          })}
         />
       )}
     </div>
@@ -888,7 +897,6 @@ export interface OutcomeGroupProps {
   canDispute: boolean;
   canSupport: boolean;
   forkingMarket?: boolean;
-  dispute?: Function;
 }
 
 export const OutcomeGroup = ({
@@ -898,7 +906,6 @@ export const OutcomeGroup = ({
   canSupport,
   market,
   forkingMarket,
-  dispute
 }: OutcomeGroupProps) => {
   const {
     description,
@@ -1033,7 +1040,6 @@ export const OutcomeGroup = ({
                       parseFloat(stake.outcome) === outcome.id &&
                       stake.isInvalidOutcome === outcome.isInvalid
                   )}
-                  dispute={dispute}
                   id={outcome.id}
                   canDispute={canDispute}
                   canSupport={canSupport}
