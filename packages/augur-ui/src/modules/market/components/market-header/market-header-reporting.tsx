@@ -51,7 +51,6 @@ export const MarketHeaderReporting = ({
   const disputeInfoStakes =
     marketSelected.disputeInfo && marketSelected.disputeInfo.stakes;
 
-  const currentTimestamp = currentAugurTimestamp || 0;
   const isForking = !!forkingInfo;
   const isForkingMarket =
     forkingInfo && forkingInfo.forkingMarket === marketSelected.id;
@@ -63,7 +62,6 @@ export const MarketHeaderReporting = ({
     reportingState,
     id,
     consensusFormatted,
-    marketType,
     designatedReporter,
   } = marketSelected;
 
