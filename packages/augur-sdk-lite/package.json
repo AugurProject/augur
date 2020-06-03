@@ -12,7 +12,8 @@
     "build": "tsc -b",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
     "check": "gts check",
-    "fix": "gts fix"
+    "fix": "gts fix",
+    "hotload-kovan-test": "node -r ts-node/register src/utils/hotloadKovanTest.ts"
   },
   "repository": {
     "type": "git",

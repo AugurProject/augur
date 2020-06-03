@@ -55,11 +55,11 @@ export interface HotLoadMarketInfo {
 export class HotLoading {
   private readonly provider: ethers.providers.Provider;
 
-  constructor(provider: ethers.providers.Provider, ) {
+  constructor(provider: ethers.providers.Provider) {
     this.provider = provider;
   }
 
-  async getMarketDataParams(params: GetMarketDataParams): Promise<HotLoadMarketInfo> {
+  async getMarketData(params: GetMarketDataParams): Promise<HotLoadMarketInfo> {
     const augur = params.augurAddress;
     const fillorder = params.fillOrderAddress;
     const orders = params.ordersAddress;
