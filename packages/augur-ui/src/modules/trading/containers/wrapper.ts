@@ -14,12 +14,10 @@ import {
   updateTradeCost,
   updateTradeShares,
 } from 'modules/trades/actions/update-trade-cost-shares';
-import { placeMarketTrade } from 'modules/trades/actions/place-market-trade';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
-import { orderSubmitted } from 'services/analytics/helpers';
 import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
@@ -101,19 +99,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         type: MODAL_SIGNUP,
         pathName: getMarketPath(ownProps.market.id),
       }),
-    onSubmitPlaceTrade: (
-      marketId,
-      outcomeId,
-      tradeInProgress,
-      doNotCreateOrders
-    ) =>
-      placeMarketTrade({
-        marketId,
-        outcomeId,
-        tradeInProgress,
-        doNotCreateOrders,
-      }),
-    orderSubmitted: (type, marketId) => orderSubmitted(type, marketId),
   };
 };
 

@@ -5,11 +5,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import Form from 'modules/trading/containers/form';
 import Confirm from 'modules/trading/components/confirm';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
-import {
-  SCALAR,
-  BUY,
-  SELL,
-} from 'modules/common/constants';
+import { SCALAR, BUY, SELL } from 'modules/common/constants';
 import Styles from 'modules/trading/components/wrapper.styles.less';
 import { OrderButton, PrimaryButton } from 'modules/common/buttons';
 import {
@@ -23,6 +19,8 @@ import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-prof
 import { formatDai } from 'utils/format-number';
 import { Moment } from 'moment';
 import { calcOrderExpirationTime } from 'utils/format-date';
+import { orderSubmitted } from 'services/analytics/helpers';
+import { placeMarketTrade } from 'modules/trades/actions/place-market-trade';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
@@ -39,8 +37,6 @@ interface WrapperProps {
   disclaimerModal: Function;
   handleFilledOnly: Function;
   loginModal: Function;
-  onSubmitPlaceTrade: Function;
-  orderSubmitted: Function;
   tutorialNext?: Function;
   updateLiquidity?: Function;
   updateSelectedOrderProperties: Function;
@@ -75,6 +71,52 @@ interface WrapperState {
   trade: any;
   simulateQueue: any[];
 }
+
+const OrderTicketHeader = ({ selectedNav, market, updateTradeTotalCost, state}) => {
+  const buySelected = selectedNav === BUY;
+  return (
+    <ul
+      className={classNames({
+        [Styles.Buy]: buySelected,
+        [Styles.Sell]: !buySelected,
+        [Styles.Scalar]: market.marketType === SCALAR,
+      })}
+    >
+      <li
+        className={classNames({
+          [`${Styles.active}`]: buySelected,
+        })}
+      >
+        <button
+          onClick={() =>
+            updateTradeTotalCost({
+              ...state,
+              selectedNav: BUY,
+            })
+          }
+        >
+          Buy Shares
+        </button>
+      </li>
+      <li
+        className={classNames({
+          [`${Styles.active}`]: !buySelected,
+        })}
+      >
+        <button
+          onClick={() =>
+            updateTradeTotalCost({
+              ...state,
+              selectedNav: SELL,
+            })
+          }
+        >
+          Sell Shares
+        </button>
+      </li>
+    </ul>
+  );
+};
 
 class Wrapper extends Component<WrapperProps, WrapperState> {
   static defaultProps = {
@@ -122,10 +164,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         props.selectedOrderProperties.doNotCreateOrders || false,
       expirationDate: props.selectedOrderProperties.expirationDate || null,
       trade: Wrapper.getDefaultTrade(props),
-      simulateQueue: []
+      simulateQueue: [],
     };
 
-    this.updateState = this.updateState.bind(this);
     this.clearOrderForm = this.clearOrderForm.bind(this);
     this.updateTradeTotalCost = this.updateTradeTotalCost.bind(this);
     this.updateTradeNumShares = this.updateTradeNumShares.bind(this);
@@ -162,7 +203,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         selectedOrderProperties.selectedNav !== selectedNav
       ) {
         if (selectedOrderProperties.selectedNav !== selectedNav) {
-          this.setState({selectedNav: selectedOrderProperties.selectedNav})
+          this.setState({ selectedNav: selectedOrderProperties.selectedNav });
         }
         if (
           !selectedOrderProperties.orderPrice &&
@@ -171,9 +212,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           return this.clearOrderForm();
         }
         // because of invalid outcome on scalars displaying percentage need to clear price before setting it.
-        if (
-          this.props.market.marketType === SCALAR
-        ) {
+        if (this.props.market.marketType === SCALAR) {
           this.setState(
             {
               orderPrice: '',
@@ -190,7 +229,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               )
           );
         } else {
-
           this.updateTradeTotalCost(
             {
               ...selectedOrderProperties,
@@ -205,11 +243,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     }
   }
 
-  updateState(stateValues, cb: () => void) {
-    // TODO: refactor this out complete, still in use for advanced options
-    this.setState(currentState => ({ ...currentState, ...stateValues }), cb);
-  }
-
   clearOrderConfirmation() {
     const trade = Wrapper.getDefaultTrade(this.props);
     this.setState({ trade });
@@ -218,7 +251,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   clearOrderForm(wholeForm = true) {
     const trade = Wrapper.getDefaultTrade(this.props);
     const expirationDate =
-      this.props.selectedOrderProperties.expirationDate || calcOrderExpirationTime(this.props.endTime, this.props.currentTimestamp);
+      this.props.selectedOrderProperties.expirationDate ||
+      calcOrderExpirationTime(this.props.endTime, this.props.currentTimestamp);
     const updatedState: any = wholeForm
       ? {
           orderPrice: '',
@@ -255,55 +289,55 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   async queueStimulateTrade(order, useValues, selectedNav) {
-    const {
-      updateTradeCost,
-      selectedOutcome,
-      market,
-      gasPrice,
-    } = this.props;
+    const { updateTradeCost, selectedOutcome, market, gasPrice } = this.props;
     this.state.simulateQueue.push(
-    new Promise((resolve) => updateTradeCost(
-      market.id,
-      order.selectedOutcomeId ? order.selectedOutcomeId : selectedOutcome.id,
-      {
-        limitPrice: order.orderPrice,
-        side: order.selectedNav,
-        numShares: order.orderQuantity,
-        selfTrade: order.selfTrade,
-      },
-      (err, newOrder) => {
-        if (err) {
-          // just update properties for form
-          return resolve({
-            ...useValues,
-            orderDaiEstimate: '',
-            orderEscrowdDai: '',
-            gasCostEst: '',
-            selectedNav,
-          });
-        }
-        const newOrderDaiEstimate = formatDai(
-          createBigNumber(newOrder.totalOrderValue.fullPrecision),
+      new Promise(resolve =>
+        updateTradeCost(
+          market.id,
+          order.selectedOutcomeId
+            ? order.selectedOutcomeId
+            : selectedOutcome.id,
           {
-            roundDown: false,
-          }
-        ).roundedValue;
+            limitPrice: order.orderPrice,
+            side: order.selectedNav,
+            numShares: order.orderQuantity,
+            selfTrade: order.selfTrade,
+          },
+          (err, newOrder) => {
+            if (err) {
+              // just update properties for form
+              return resolve({
+                ...useValues,
+                orderDaiEstimate: '',
+                orderEscrowdDai: '',
+                gasCostEst: '',
+                selectedNav,
+              });
+            }
+            const newOrderDaiEstimate = formatDai(
+              createBigNumber(newOrder.totalOrderValue.fullPrecision),
+              {
+                roundDown: false,
+              }
+            ).roundedValue;
 
-        const formattedGasCost = formatGasCostToEther(
-          newOrder.gasLimit,
-          { decimalsRounded: 4 },
-          String(gasPrice)
-        ).toString();
-        resolve({
-          ...useValues,
-          orderDaiEstimate: String(newOrderDaiEstimate),
-          orderEscrowdDai: newOrder.costInDai.formatted,
-          trade: newOrder,
-          gasCostEst: formattedGasCost,
-          selectedNav,
-        });
-      }
-    )));
+            const formattedGasCost = formatGasCostToEther(
+              newOrder.gasLimit,
+              { decimalsRounded: 4 },
+              String(gasPrice)
+            ).toString();
+            resolve({
+              ...useValues,
+              orderDaiEstimate: String(newOrderDaiEstimate),
+              orderEscrowdDai: newOrder.costInDai.formatted,
+              trade: newOrder,
+              gasCostEst: formattedGasCost,
+              selectedNav,
+            });
+          }
+        )
+      )
+    );
     await Promise.all(this.state.simulateQueue).then(results =>
       this.setState(results[results.length - 1])
     );
@@ -368,14 +402,14 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         await this.queueStimulateTrade(order, useValues, selectedNav);
       } else {
         this.setState({
-          orderQuantity: order.orderQuantity
-        })
+          orderQuantity: order.orderQuantity,
+        });
       }
     }
   }
 
-  placeMarketTrade(market, selectedOutcome, s) {
-    this.props.orderSubmitted(s.selectedNav, market.id);
+  handlePlaceMarketTrade(market, selectedOutcome, s) {
+    orderSubmitted(s.selectedNav, market.id);
     let trade = s.trade;
     if (this.state.expirationDate) {
       trade = {
@@ -383,12 +417,12 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         expirationTime: this.state.expirationDate,
       };
     }
-    this.props.onSubmitPlaceTrade(
-      market.id,
-      selectedOutcome.id,
-      trade,
-      s.doNotCreateOrders
-    );
+    placeMarketTrade({
+      marketId: market.id,
+      outcomeId: selectedOutcome.id,
+      tradeInProgress: trade,
+      doNotCreateOrders: s.doNotCreateOrders,
+    });
     this.clearOrderForm();
   }
 
@@ -405,9 +439,13 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       (err, newOrder) => {
         if (err) return console.error(err); // what to do with error here
 
-        const numShares = formatMarketShares(market.marketType, createBigNumber(newOrder.numShares), {
-          roundDown: false,
-        }).rounded;
+        const numShares = formatMarketShares(
+          market.marketType,
+          createBigNumber(newOrder.numShares),
+          {
+            roundDown: false,
+          }
+        ).rounded;
 
         const formattedGasCost = formatGasCostToEther(
           newOrder.gasLimit,
@@ -451,13 +489,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       initializeGsnWallet,
       gsnWalletInfoSeen,
     } = this.props;
-    let {
-      marketType,
-      minPriceBigNumber,
-      maxPriceBigNumber,
-      minPrice,
-      maxPrice,
-    } = market;
+    let { minPriceBigNumber, maxPriceBigNumber, minPrice, maxPrice } = market;
     if (!minPriceBigNumber) {
       minPriceBigNumber = createBigNumber(minPrice);
     }
@@ -469,10 +501,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       orderPrice,
       orderQuantity,
       orderDaiEstimate,
-      orderEscrowdDai,
-      gasCostEst,
-      doNotCreateOrders,
-      expirationDate,
       trade,
     } = this.state;
     const insufficientFunds =
@@ -497,21 +525,43 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           } else {
             if (disclaimerSeen) {
               gsnUnavailable && !gsnWalletInfoSeen
-                ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
-                : this.placeMarketTrade(market, selectedOutcome, this.state);
-
+                ? initializeGsnWallet(() =>
+                    this.handlePlaceMarketTrade(
+                      market,
+                      selectedOutcome,
+                      this.state
+                    )
+                  )
+                : this.handlePlaceMarketTrade(
+                    market,
+                    selectedOutcome,
+                    this.state
+                  );
             } else {
               disclaimerModal({
                 onApprove: () =>
                   gsnUnavailable && !gsnWalletInfoSeen
-                  ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
-                  : this.placeMarketTrade(market, selectedOutcome, this.state)
+                    ? initializeGsnWallet(() =>
+                        this.handlePlaceMarketTrade(
+                          market,
+                          selectedOutcome,
+                          this.state
+                        )
+                      )
+                    : this.handlePlaceMarketTrade(
+                        market,
+                        selectedOutcome,
+                        this.state
+                      ),
               });
             }
           }
         }}
         disabled={
-          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds
+          !trade ||
+          !trade.limitPrice ||
+          (gsnUnavailable && isOpenOrder) ||
+          insufficientFunds
         }
       />
     );
@@ -537,7 +587,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       default:
         break;
     }
-    const buySelected = selectedNav === BUY;
     const orderEmpty =
       orderPrice === '' && orderQuantity === '' && orderDaiEstimate === '';
     const showTip = !hasHistory && orderEmpty;
@@ -549,46 +598,12 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     return (
       <section className={Styles.Wrapper}>
         <div>
-          <ul
-            className={classNames({
-              [Styles.Buy]: buySelected,
-              [Styles.Sell]: !buySelected,
-              [Styles.Scalar]: market.marketType === SCALAR,
-            })}
-          >
-            <li
-              className={classNames({
-                [`${Styles.active}`]: buySelected,
-              })}
-            >
-              <button
-                onClick={() =>
-                  this.updateTradeTotalCost({
-                    ...this.state,
-                    selectedNav: BUY,
-                  })
-                }
-              >
-                Buy Shares
-              </button>
-            </li>
-            <li
-              className={classNames({
-                [`${Styles.active}`]: !buySelected,
-              })}
-            >
-              <button
-                onClick={() =>
-                  this.updateTradeTotalCost({
-                    ...this.state,
-                    selectedNav: SELL,
-                  })
-                }
-              >
-                Sell Shares
-              </button>
-            </li>
-          </ul>
+          <OrderTicketHeader
+            market={market}
+            selectedNav={selectedNav}
+            updateTradeTotalCost={this.updateTradeTotalCost}
+            state={this.state}
+          />
           <Form
             market={market}
             tradingTutorial={tradingTutorial}
@@ -596,7 +611,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             selectedOutcome={selectedOutcome}
             updateSelectedOutcome={updateSelectedOutcome}
             orderState={this.state}
-            updateState={this.updateState}
+            updateState={updates =>
+              this.setState({ ...this.state, ...updates })
+            }
             updateOrderProperty={this.updateOrderProperty}
             clearOrderForm={this.clearOrderForm}
             updateTradeTotalCost={this.updateTradeTotalCost}
