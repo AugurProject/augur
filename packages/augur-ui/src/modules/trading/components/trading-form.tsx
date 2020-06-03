@@ -5,15 +5,15 @@ import Styles from 'modules/trading/components/trading-form.styles.less';
 import { MarketData, NewMarket } from 'modules/types';
 
 interface TradingFormProps {
+  selectedOutcomeId: number;
   market: MarketData | NewMarket;
   selectedOrderProperties: SelectedOrderProperties;
-  selectedOutcomeId: number;
   updateSelectedOrderProperties: Function;
   updateSelectedOutcome: Function;
   updateLiquidity?: Function;
+  tutorialNext?: Function;
   initialLiquidity?: boolean;
   tradingTutorial?: boolean;
-  tutorialNext?: Function;
 }
 
 const TradingForm = ({

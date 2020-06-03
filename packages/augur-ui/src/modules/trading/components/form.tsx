@@ -37,6 +37,10 @@ import { EXPIRATION_DATE_OPTIONS, convertUnixToFormattedDate, calcOrderExpiratio
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import { calcPercentageFromPrice, calcPriceFromPercentage } from 'utils/format-number';
 import Media from 'react-media';
+import {
+  orderPriceEntered,
+  orderAmountEntered,
+} from 'services/analytics/helpers';
 
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10 ** 17);
 
@@ -74,7 +78,6 @@ const liqAdvancedDropdownOptions = [
 
 interface FromProps {
   market: MarketData;
-  marketType: string;
   maxPrice: BigNumber;
   minPrice: BigNumber;
   orderQuantity: string;
@@ -99,8 +102,6 @@ interface FromProps {
   currentTimestamp: number;
   tradingTutorial?: boolean;
   gasCostEst: string;
-  orderPriceEntered: Function;
-  orderAmountEntered: Function;
   gasPrice: number;
   getGasConfirmEstimate: Function;
   endTime: number;
@@ -819,10 +820,7 @@ class Form extends Component<FromProps, FormState> {
   render() {
     const {
       market,
-      marketType,
       selectedOutcome,
-      maxPrice,
-      minPrice,
       updateState,
       orderEscrowdDai,
       updateSelectedOutcome,
@@ -830,16 +828,14 @@ class Form extends Component<FromProps, FormState> {
       initialLiquidity,
       currentTimestamp,
       tradingTutorial,
-      orderPriceEntered,
-      orderAmountEntered,
       selectedNav,
     } = this.props;
     const s = this.state;
 
     const tickSize = parseFloat(market.tickSize);
     const quantityStep = getPrecision(tickSize, .001);
-    const max = maxPrice && maxPrice.toString();
-    const min = minPrice && minPrice.toString();
+    const max = market.maxPriceBigNumber.toString();
+    const min = market.minPriceBigNumber.toString();
     const errors = Array.from(
       new Set([
         ...s.errors[this.INPUT_TYPES.QUANTITY],
@@ -852,7 +848,7 @@ class Form extends Component<FromProps, FormState> {
     const quantityValue = convertExponentialToDecimal(
       s[this.INPUT_TYPES.QUANTITY]
     );
-    const isScalar: boolean = marketType === SCALAR;
+    const isScalar: boolean = market.marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
     const defaultOutcome = selectedOutcome !== null ? selectedOutcome.id : 2;
     const advancedOptions = initialLiquidity ? liqAdvancedDropdownOptions : advancedDropdownOptions;

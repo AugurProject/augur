@@ -589,32 +589,20 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               </button>
             </li>
           </ul>
-          {market && market.marketType && (
-            <Form
-              market={market}
-              tradingTutorial={tradingTutorial}
-              marketType={marketType}
-              maxPrice={maxPriceBigNumber}
-              minPrice={minPriceBigNumber}
-              selectedNav={selectedNav}
-              orderPrice={orderPrice}
-              orderQuantity={orderQuantity}
-              orderDaiEstimate={orderDaiEstimate}
-              orderEscrowdDai={orderEscrowdDai}
-              gasCostEst={gasCostEst}
-              doNotCreateOrders={doNotCreateOrders}
-              expirationDate={expirationDate}
-              selectedOutcome={selectedOutcome}
-              updateState={this.updateState}
-              updateOrderProperty={this.updateOrderProperty}
-              clearOrderForm={this.clearOrderForm}
-              updateSelectedOutcome={updateSelectedOutcome}
-              updateTradeTotalCost={this.updateTradeTotalCost}
-              updateTradeNumShares={this.updateTradeNumShares}
-              clearOrderConfirmation={this.clearOrderConfirmation}
-              initialLiquidity={initialLiquidity}
-            />
-          )}
+          <Form
+            market={market}
+            tradingTutorial={tradingTutorial}
+            initialLiquidity={initialLiquidity}
+            selectedOutcome={selectedOutcome}
+            updateSelectedOutcome={updateSelectedOutcome}
+            orderState={this.state}
+            updateState={this.updateState}
+            updateOrderProperty={this.updateOrderProperty}
+            clearOrderForm={this.clearOrderForm}
+            updateTradeTotalCost={this.updateTradeTotalCost}
+            updateTradeNumShares={this.updateTradeNumShares}
+            clearOrderConfirmation={this.clearOrderConfirmation}
+          />
         </div>
         {showConfirm && (
           <Confirm
