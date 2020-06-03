@@ -44,7 +44,7 @@ export class Liquidity {
   static async getMarketLiquidityRanking(augur: Augur, db: DB, params: t.TypeOf<typeof Liquidity.getMarketLiquidityRankingParams>): Promise<MarketLiquidityRanking> {
     // TODO Get ETH -> DAI price via uniswap when we integrate that as an oracle
     const ETHInAttoDAI = new BigNumber(200).multipliedBy(10**18);
-    const estimatedTradeGasCost = WORST_CASE_FILL[params.numOutcomes - 1];
+    const estimatedTradeGasCost = WORST_CASE_FILL[params.numOutcomes];
     const estimatedGasCost = ETHInAttoDAI.multipliedBy(DEFAULT_GAS_PRICE_IN_GWEI).div(10**9);
     const estimatedTradeGasCostInAttoDai = estimatedGasCost.multipliedBy(estimatedTradeGasCost);
     const liquidityScore = await augur.liquidity.getLiquidityForSpread({
