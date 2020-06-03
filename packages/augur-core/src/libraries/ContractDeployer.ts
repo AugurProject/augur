@@ -31,7 +31,7 @@ import {
   MultiAssetProxy,
   // Uniswap
   UniswapV2Factory,
-  UniswapV2Exchange,
+  UniswapV2Pair,
   UniswapV2Router01,
   WETH9
 } from './ContractInterfaces';
@@ -233,8 +233,8 @@ Deploying to: ${env}
             console.log('Add ETH exchange liquidity');
             const weth = new WETH9(this.dependencies, this.getContractAddress('WETH9'));
             const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
-            const ethExchangeAddress = await uniswapV2Factory.getExchange_(weth.address, cash.address);
-            const ethExchange = new UniswapV2Exchange(this.dependencies, ethExchangeAddress);
+            const ethExchangeAddress = await uniswapV2Factory.getPair_(weth.address, cash.address);
+            const ethExchange = new UniswapV2Pair(this.dependencies, ethExchangeAddress);
             const cashAmount = new BigNumber(4000 * 1e18) // 4000 Dai
             const ethAmount = new BigNumber(20 * 1e18) // 20 ETH
             await weth.deposit({attachedEth: ethAmount});
@@ -280,7 +280,7 @@ Deploying to: ${env}
         mapping['UniswapV2Factory'] = this.contracts.get('UniswapV2Factory').address!;
         mapping['UniswapV2Router01'] = this.contracts.get('UniswapV2Router01').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
-        mapping['EthExchange'] = await uniswapV2Factory.getExchange_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
+        mapping['EthExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
 
         mapping['OICash'] = this.contracts.get('OICash').address!;
@@ -759,7 +759,7 @@ Deploying to: ${env}
         mapping['UniswapV2Router01'] = this.contracts.get('UniswapV2Router01').address!;
         mapping['RelayHubV2'] = this.contracts.get('RelayHubV2').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
-        mapping['EthExchange'] = await uniswapV2Factory.getExchange_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
+        mapping['EthExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
 
         // 0x

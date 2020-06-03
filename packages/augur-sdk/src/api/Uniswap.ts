@@ -133,7 +133,7 @@ export class Uniswap {
     token0: string,
     token1: string,
   ): Promise<BigNumber> {
-    const exchangeAddress = await this.augur.contracts.uniswapV2Factory.getExchange_(token0, token1);
+    const exchangeAddress = await this.augur.contracts.uniswapV2Factory.getPair_(token0, token1);
     if (exchangeAddress === NULL_ADDRESS) {
         throw new Error("Exchange does not exist");
     }
