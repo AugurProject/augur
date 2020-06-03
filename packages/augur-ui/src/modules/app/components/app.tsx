@@ -36,7 +36,7 @@ import {
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNav from 'modules/app/components/inner-nav/base-inner-nav-pure';
-import ForkingBanner from 'modules/reporting/containers/forking-banner';
+import ForkingBanner from 'modules/reporting/forking-banner';
 import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
 import {
   MARKET_ID_PARAM_NAME,

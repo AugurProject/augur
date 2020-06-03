@@ -231,10 +231,7 @@ export const handleMarketsUpdatedLog = ({
   marketsInfo = [],
 }: {
   marketsInfo: Getters.Markets.MarketInfo[] | Getters.Markets.MarketInfo;
-}) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+}) => {
   let marketsDataById = {};
   if (Array.isArray(marketsInfo)) {
     if (marketsInfo.length === 0) return;
@@ -253,8 +250,8 @@ export const handleMarketsUpdatedLog = ({
   const marketIds = Object.keys(marketsDataById);
   Markets.actions.updateMarketsData(marketsDataById);
 
-  if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
-  if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
+  if (isOnDisputingPage()) reloadDisputingPage(marketIds);
+  if (isOnReportingPage()) reloadReportingPage(marketIds);
 };
 
 export const handleMarketCreatedLog = (logs: any) => {
@@ -289,14 +286,11 @@ export const handleMarketCreatedLog = (logs: any) => {
   }
 };
 
-export const handleReportingStateChanged = (event: any) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const handleReportingStateChanged = (event: any) => {
   if (event.data) {
     const marketIds = _.map(event.data, 'market');
-    if (isOnDisputingPage()) dispatch(reloadDisputingPage(marketIds));
-    if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
+    if (isOnDisputingPage()) reloadDisputingPage(marketIds);
+    if (isOnReportingPage()) reloadReportingPage(marketIds);
     checkUpdateUserPositions(marketIds);
   }
 };
@@ -507,7 +501,7 @@ export const handleInitialReportSubmittedLog = (
     loadAccountReportingHistory();
   }
   const marketIds = userLogs.map(log => log.market);
-  if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
+  if (isOnReportingPage()) reloadReportingPage(marketIds);
 };
 
 export const handleInitialReporterRedeemedLog = (
@@ -543,7 +537,7 @@ export const handleInitialReporterTransferredLog = (logs: any) => (
     });
   }
   const marketIds = userLogs.map(log => log.market);
-  if (isOnReportingPage()) dispatch(reloadReportingPage(marketIds));
+  if (isOnReportingPage()) reloadReportingPage(marketIds);
 };
 // ---- ------------ ----- //
 
@@ -610,7 +604,7 @@ export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
   console.log('handleUniverseForkedLog');
   const { forkingMarket } = log;
   loadUniverseForkingInfo(forkingMarket);
-  if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
+  if (isOnDisputingPage()) reloadDisputingPage([]);
 };
 
 export const handleMarketFinalizedLog = (logs: Logs.MarketFinalizedLog[]) => (
@@ -634,19 +628,19 @@ export const handleMarketFinalizedLog = (logs: Logs.MarketFinalizedLog[]) => (
 // ---- disputing ----- //
 export const handleDisputeCrowdsourcerCreatedLog = (
   logs: Logs.DisputeCrowdsourcerCreatedLog[]
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
+) => {
+  if (isOnDisputingPage()) reloadDisputingPage([]);
 };
 
 export const handleDisputeCrowdsourcerCompletedLog = (
   logs: Logs.DisputeCrowdsourcerCompletedLog[]
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
+) => {
+  if (isOnDisputingPage()) reloadDisputingPage([]);
 };
 
 export const handleDisputeCrowdsourcerContributionLog = (
   logs: Logs.DisputeCrowdsourcerContributionLog[]
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => {
   const {
     loginAccount: { address },
   } = AppStatus.get();
@@ -658,7 +652,7 @@ export const handleDisputeCrowdsourcerContributionLog = (
     });
     loadAccountReportingHistory();
   }
-  if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
+  if (isOnDisputingPage()) reloadDisputingPage([]);
 };
 
 export const handleDisputeCrowdsourcerRedeemedLog = (
@@ -680,11 +674,11 @@ export const handleDisputeCrowdsourcerRedeemedLog = (
 
 export const handleDisputeWindowCreatedLog = (
   logs: Logs.DisputeWindowCreatedLog[]
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
+) => {
   if (logs.length > 0) {
     loadDisputeWindow();
     loadAccountReportingHistory();
-    if (isOnDisputingPage()) dispatch(reloadDisputingPage([]));
+    if (isOnDisputingPage()) reloadDisputingPage([]);
   }
 };
 

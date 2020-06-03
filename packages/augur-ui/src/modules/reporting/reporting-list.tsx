@@ -1,18 +1,21 @@
-import React from 'react';
-import ReportingCardContainer from 'modules/reporting/containers/reporting-card';
+import React, { useState, useEffect } from 'react';
+import { ReportingCard } from 'modules/reporting/common';
 
 import Styles from 'modules/reporting/common.styles.less';
-import { MarketData } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
 import { Pagination } from 'modules/common/pagination';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { MarketReportingState } from '@augurproject/sdk/build';
-import { Markets } from 'modules/markets/store/markets';
+import { useMarketsStore } from 'modules/markets/store/markets';
 import { selectMarket } from 'modules/markets/selectors/market';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { REPORTING_STATE } from 'modules/common/constants';
+import { loadUpcomingDesignatedReportingMarkets, loadDesignatedReportingMarkets, loadOpenReportingMarkets } from 'modules/markets/actions/load-markets';
 
 const ITEMS_PER_SECTION = 5;
 const NUM_LOADING_CARDS = 2;
+
 export interface ReportingListProps {
   title: string;
   showLoggedOut?: boolean;
@@ -21,6 +24,7 @@ export interface ReportingListProps {
   emptySubheader: string;
   reportingType: string;
   isLoadingMarkets: boolean;
+  markets: string[];
 }
 
 export const ReportingList = (props: ReportingListProps) => {
@@ -29,7 +33,7 @@ export const ReportingList = (props: ReportingListProps) => {
   if (!props.isLoadingMarkets) {
     content.push(
       props.markets.map(market => (
-        <ReportingCardContainer market={market} key={market.id} />
+        <ReportingCard market={market} key={market.id} />
       ))
     );
     if (props.showLoggedOut)
@@ -46,9 +50,11 @@ export const ReportingList = (props: ReportingListProps) => {
 
   return (
     <div className={Styles.ReportingList}>
-      {props.reportingType === MarketReportingState.OpenReporting
-        ? <h1>{props.title}</h1>
-        : <span>{props.title}</span>}
+      {props.reportingType === MarketReportingState.OpenReporting ? (
+        <h1>{props.title}</h1>
+      ) : (
+        <span>{props.title}</span>
+      )}
       <div key={props.reportingType}>
         {props.isLoadingMarkets &&
           new Array(NUM_LOADING_CARDS)
@@ -65,115 +71,101 @@ export const ReportingList = (props: ReportingListProps) => {
 };
 
 interface PaginatorProps extends ReportingListProps {
-  isConnected: boolean;
-  isLogged: boolean;
-  loadMarkets: Function;
   reportingType: string;
-  markets: MarketData[];
+  showLoggedOut: boolean;
+  title: string;
+  loggedOutMessage?: string;
+  emptyHeader: string;
+  emptySubheader: string;
 }
+export const Paginator = ({
+  reportingType,
+  showLoggedOut,
+  title,
+  loggedOutMessage,
+  emptyHeader,
+  emptySubheader,
+}: PaginatorProps) => {
+  const { isLogged, isConnected } = useAppStatusStore();
 
-interface PaginatorState {
-  offset: number;
-  limit: number;
-  showPagination: boolean;
-  marketCount: number;
-  isLoadingMarkets: boolean;
-}
-
-export class Paginator extends React.Component<PaginatorProps, PaginatorState> {
-  state: PaginatorState = {
+  const [state, setState] = useState({
     offset: 1,
     limit: ITEMS_PER_SECTION,
     showPagination: false,
     marketCount: 0,
-    isLoadingMarkets: true,
-  };
+  });
+  const [isLoadingMarkets, setIsLoadingMarkets] = useState(true);
+  const { offset, limit, showPagination, marketCount } = state;
 
-  componentDidMount() {
-    const { loadMarkets, reportingType, isConnected } = this.props;
-    const { offset, limit } = this.state;
+  useEffect(() => {
     if (isConnected) {
-      loadMarkets(offset, limit, reportingType, this.processMarkets);
+      setIsLoadingMarkets(true);
+      loadMarkets(offset, limit, reportingType, processMarkets);
     }
+  }, [isConnected, isLogged]);
+
+  function loadingMarkets(offset, limit, reportingType) {
+    setIsLoadingMarkets(true);
+    loadMarkets(offset, limit, reportingType, processMarkets);
   }
 
-  componentDidUpdate(nextProps) {
-    const { isConnected, reportingType, isLogged } = this.props;
-    const { offset, limit } = this.state;
-    if (
-      nextProps.isConnected !== isConnected ||
-      nextProps.isLogged !== isLogged
-    ) {
-      this.isLoadingMarkets(offset, limit, reportingType);
-    }
-  }
-
-  isLoadingMarkets = (offset, limit, reportingType) => {
-    const { loadMarkets } = this.props;
-    this.setState(
-      { isLoadingMarkets: true },
-      loadMarkets(offset, limit, reportingType, this.processMarkets)
-    );
-  };
-
-  processMarkets = (err, marketResults: Getters.Markets.MarketList) => {
-    const isLoadingMarkets = false;
-    this.setState({ isLoadingMarkets }, () => {
-      if (err) return console.log('error', err);
-      const { limit } = this.state;
-      if (!marketResults || !marketResults.markets || !marketResults.meta)
-        return;
-      const showPagination = marketResults.meta.marketCount > limit;
-      this.setState({
-        showPagination,
-        marketCount: marketResults.meta.marketCount,
-        isLoadingMarkets,
-      });
-    });
-  };
-
-  setOffset = offset => {
-    const { reportingType } = this.props;
-    const { limit } = this.state;
-    this.setState({ offset }, () => {
-      this.isLoadingMarkets(offset, limit, reportingType);
-    });
-  };
-
-  render() {
-    const { reportingType } = this.props;
-    const { reportingListState } = Markets.get();
-    const markets = ((reportingListState[reportingType] || {}).marketIds || []).map(
-      id => selectMarket(id) || []
-    );
-
-    const {
-      isLoadingMarkets,
+  function processMarkets(err, marketResults: Getters.Markets.MarketList) {
+    setIsLoadingMarkets(false);
+    if (err) return console.log('error', err);
+    if (!marketResults || !marketResults.markets || !marketResults.meta) return;
+    const showPagination = marketResults.meta.marketCount > limit;
+    setState({
+      ...state,
       showPagination,
-      offset,
-      limit,
-      marketCount,
-    } = this.state;
-
-    return (
-      <>
-        <ReportingList
-          {...this.props}
-          markets={markets}
-          isLoadingMarkets={isLoadingMarkets}
-        />
-        {showPagination && (
-          <div className={PaginationStyles.PaginationContainer}>
-            <Pagination
-              page={offset}
-              itemCount={marketCount}
-              itemsPerPage={limit}
-              action={this.setOffset}
-              updateLimit={null}
-            />
-          </div>
-        )}
-      </>
-    );
+      marketCount: marketResults.meta.marketCount,
+    });
   }
-}
+
+  function setOffset(offset) {
+    setState({ ...state, offset });
+    loadingMarkets(offset, limit, reportingType);
+  }
+
+  function loadMarkets(offset, limit, type, cb) {
+    switch (type) {
+      case REPORTING_STATE.DESIGNATED_REPORTING:
+        loadDesignatedReportingMarkets({ offset, limit }, cb);
+        break;
+      case REPORTING_STATE.PRE_REPORTING:
+        loadUpcomingDesignatedReportingMarkets({ offset, limit }, cb);
+        break;
+      default:
+        loadOpenReportingMarkets({ offset, limit }, cb);
+    }
+  }
+  const { reportingListState } = useMarketsStore();
+  const markets = (
+    (reportingListState[reportingType] || {}).marketIds || []
+  ).map(id => selectMarket(id) || []);
+
+  return (
+    <>
+      <ReportingList
+        markets={markets}
+        title={title}
+        showLoggedOut={showLoggedOut}
+        reportingType={reportingType}
+        isLoadingMarkets={isLoadingMarkets}
+        loggedOutMessage={loggedOutMessage}
+        emptyHeader={emptyHeader}
+        emptySubheader={emptySubheader}
+      />
+      {showPagination && (
+        <div className={PaginationStyles.PaginationContainer}>
+          <Pagination
+            page={offset}
+            itemCount={marketCount}
+            itemsPerPage={limit}
+            action={setOffset}
+            updateLimit={null}
+          />
+        </div>
+      )}
+    </>
+  );
+};

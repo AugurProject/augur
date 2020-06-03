@@ -162,46 +162,40 @@ export const loadMarketsByFilter = async (
 export const loadNextWindowDisputingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, Action> => async (dispatch, getState) => {
+): ThunkAction<void, AppState, void, Action> => {
   const params = {
     reportingStates: [MarketReportingState.AwaitingNextWindow],
     ...filterOptions,
   };
-  dispatch(loadReportingMarkets(params, cb));
+  loadReportingMarkets(params, cb);
 };
 
 export const loadCurrentlyDisputingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, Action> => async (dispatch, getState) => {
+): ThunkAction<void, AppState, void, Action> => {
   const params = {
     reportingStates: [MarketReportingState.CrowdsourcingDispute],
     ...filterOptions,
   };
-  dispatch(loadReportingMarkets(params, cb));
+  loadReportingMarkets(params, cb);
 };
 
 export const loadOpenReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
-  dispatch,
-  getState
-) => {
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => {
   const params = {
     reportingStates: [MarketReportingState.OpenReporting],
     ...filterOptions,
   };
-  dispatch(loadReportingMarkets(params, cb));
+  loadReportingMarkets(params, cb);
 };
 
 export const loadUpcomingDesignatedReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
-  dispatch,
-  getState
-) => {
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => {
   const {
     loginAccount: { address: designatedReporter },
     blockchain: { currentAugurTimestamp },
@@ -216,16 +210,13 @@ export const loadUpcomingDesignatedReportingMarkets = (
     maxEndTime,
     ...filterOptions,
   };
-  dispatch(loadReportingMarkets(params, cb));
+  loadReportingMarkets(params, cb);
 };
 
 export const loadDesignatedReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, UpdateMarketsAction> => async (
-  dispatch,
-  getState
-) => {
+): ThunkAction<void, AppState, void, UpdateMarketsAction> => {
   const {
     loginAccount: { address: designatedReporter },
   } = AppStatus.get();
@@ -237,20 +228,20 @@ export const loadDesignatedReportingMarkets = (
     designatedReporter,
     ...filterOptions,
   };
-  dispatch(loadReportingMarkets(params, cb));
+ loadReportingMarkets(params, cb);
 };
 
 const loadReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, Action> => async () => {
+): ThunkAction<void, AppState, void, Action> => {
   const { universe, isConnected } = AppStatus.get();
   if (!isConnected) return cb(null, []);
   if (!(universe && universe.id)) return cb(null, []);
   let reportingState = null;
   if (filterOptions.reportingStates.length === 1) {
     reportingState = filterOptions.reportingStates[0];
-    Markets.actions.updateReportingList(reportingState, [], filterOptions, true);
+   Markets.actions.updateReportingList(reportingState, [], filterOptions, true);
   }
   const params = {
     sortBy: Getters.Markets.GetMarketsSortBy.endTime,
@@ -266,17 +257,26 @@ const loadReportingMarkets = (
     params.offset = paginationOffset * filterOptions.limit;
   }
 
+  Markets.actions.updateReportingList(reportingState, null, filterOptions, false, getMarkets(reportingState, params, cb));
+};
+
+const getMarkets = (reportingState, params, cb) => async () => {
   const augur = augurSdk.get();
   const marketList: Getters.Markets.MarketList = await augur.getMarkets({
     ...params,
   });
-  addUpdateMarketInfos(marketList.markets);
-  if (reportingState) {
-    const marketIds = marketList.markets.map(m => m.id);
-    Markets.actions.updateReportingList(reportingState, marketIds, filterOptions, false);
-  }
+  
+  const marketInfos = addUpdateMarketInfos(marketList.markets);
+  Markets.actions.updateMarketsData(marketInfos);
+
+  const marketIds = marketList.markets.map(m => m.id);
   if (cb) cb(null, marketList);
-};
+  if (reportingState) {
+    return {
+      marketIds
+    }
+  }
+}
 
 const hotLoadMarket = _.throttle(
   marketId => {
