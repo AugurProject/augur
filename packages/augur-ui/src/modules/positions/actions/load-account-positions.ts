@@ -11,16 +11,22 @@ import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
 import { updateUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
+import { isSameAddress } from 'utils/isSameAddress';
 
 export const checkUpdateUserPositions = (marketIds: string[]) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { accountPositions } = getState();
+  const { accountPositions, marketInfos, loginAccount } = getState();
   const posMarketIds = Object.keys(accountPositions);
+  const markMarketIds: string[] = Object.keys(marketInfos)
+    .filter(m => isSameAddress(marketInfos[m].author, loginAccount.address))
+    .map(m => marketInfos[m].id);
+  const userMarketIds = [...posMarketIds, ...markMarketIds];
   let included = false;
-  posMarketIds.map(m => {
-    if (marketIds.includes(m)) included = true});
+  userMarketIds.map(m => {
+    if (marketIds.includes(m)) included = true;
+  });
   if (included) {
     dispatch(loadAllAccountPositions());
   }
