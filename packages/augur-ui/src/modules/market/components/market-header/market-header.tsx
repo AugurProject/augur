@@ -21,7 +21,7 @@ import {
   REPORTING_STATE,
   ZERO,
 } from 'modules/common/constants';
-import MarketHeaderReporting from 'modules/market/containers/market-header-reporting';
+import { MarketHeaderReporting } from 'modules/market/components/market-header/market-header-reporting';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { MarketData, QueryEndpoints, TextObject } from 'modules/types';
 import Clipboard from 'clipboard';
@@ -148,7 +148,7 @@ export const MarketHeader = ({
     return () => {
       window.removeEventListener('click', clickHandler);
     };
-  });
+  }, []);
 
   function updateDetailsHeight() {
     if (detailsContainer) {
