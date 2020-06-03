@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
 
 import Form from 'modules/trading/containers/form';
-import Confirm from 'modules/trading/containers/confirm';
+import Confirm from 'modules/trading/components/confirm';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import {
   SCALAR,
@@ -618,16 +618,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         </div>
         {showConfirm && (
           <Confirm
-            initialLiquidity={initialLiquidity}
-            numOutcomes={market.numOutcomes}
-            marketType={marketType}
-            maxPrice={maxPriceBigNumber}
-            minPrice={minPriceBigNumber}
+            selectedOutcome={selectedOutcome}
+            market={market}
             trade={trade}
-            gasLimit={trade.gasLimit}
-            selectedOutcomeId={selectedOutcome.id}
-            outcomeName={selectedOutcome.description}
-            scalarDenomination={market.scalarDenomination}
+            initialLiquidity={initialLiquidity}
             tradingTutorial={tradingTutorial}
           />
         )}
