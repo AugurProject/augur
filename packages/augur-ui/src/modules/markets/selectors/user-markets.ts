@@ -1,8 +1,3 @@
-import { createSelector } from "reselect";
-import {
-  selectLoginAccountAddress,
-  selectMarketTradingHistoryState,
-} from "appStore/select-state";
 import { CREATE_MARKET, ZERO } from 'modules/common/constants';
 import selectMarkets from "modules/markets/selectors/markets-all";
 import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";

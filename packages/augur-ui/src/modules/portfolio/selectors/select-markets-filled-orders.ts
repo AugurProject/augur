@@ -1,5 +1,3 @@
-import { createSelector } from 'reselect';
-import store from 'appStore';
 import * as constants from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
 import getUserFilledOrders from 'modules/orders/selectors/filled-orders';
@@ -8,33 +6,31 @@ import getMarketsPositionsRecentlyTraded from 'modules/portfolio/selectors/selec
 import { AppStatus } from 'modules/app/store/app-status';
 
 export default function() {
-  return marketsFilledOrders(store.getState());
+  return marketsFilledOrders();
 }
 
-export const marketsFilledOrders = createSelector(
-  getMarketsPositionsRecentlyTraded,
-  timestamps => {
-    const {
-      filledOrders,
-      loginAccount: { mixedCaseAddress: loginAccountAddress },
-    } = AppStatus.get();
-    const marketIds = filterMarketIds(
-      filledOrders[loginAccountAddress] || [],
-      [] // marketReportState.resolved
-    );
-    const markets = filterMarketsByStatus(marketIds, timestamps).sort(
-      (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
-    );
-    const allFilledOrders = getAllUserFilledOrders(marketIds);
+export const marketsFilledOrders = () => {
+  const timestamps = getMarketsPositionsRecentlyTraded();
+  const {
+    filledOrders,
+    loginAccount: { mixedCaseAddress: loginAccountAddress },
+  } = AppStatus.get();
+  const marketIds = filterMarketIds(
+    filledOrders[loginAccountAddress] || [],
+    [] // marketReportState.resolved
+  );
+  const markets = filterMarketsByStatus(marketIds, timestamps).sort(
+    (a, b) => b.recentlyTraded.timestamp - a.recentlyTraded.timestamp
+  );
+  const allFilledOrders = getAllUserFilledOrders(marketIds);
 
-    return {
-      markets,
-      marketsObj: keyObjectsById(markets),
-      ordersObj: keyObjectsById(allFilledOrders),
-      filledOrders: allFilledOrders,
-    };
-  }
-);
+  return {
+    markets,
+    marketsObj: keyObjectsById(markets),
+    ordersObj: keyObjectsById(allFilledOrders),
+    filledOrders: allFilledOrders,
+  };
+};
 
 const filterMarketIds = (userFilledOrders, resolvedMarkets) =>
   Object.keys(userFilledOrders).reduce(

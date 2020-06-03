@@ -77,6 +77,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       text: 'Do it later',
       action: () => {
         dP.showAugurP2PModal();
+        dP.closeModal();
       },
     },
   ],

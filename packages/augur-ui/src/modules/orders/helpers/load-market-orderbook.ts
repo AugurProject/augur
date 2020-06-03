@@ -1,10 +1,6 @@
 import logError from 'utils/log-error';
 import { NodeStyleCallback } from 'modules/types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import { augurSdk } from 'services/augursdk';
-import { AppState } from 'appStore';
-import { Markets } from 'modules/markets/store/markets';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export const loadMarketOrderBook = (
