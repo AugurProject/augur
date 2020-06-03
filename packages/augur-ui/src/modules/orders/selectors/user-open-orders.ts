@@ -15,15 +15,17 @@ import {
   TXEventName
 } from '@augurproject/sdk';
 import { convertUnixToFormattedDate, convertSaltToFormattedDate } from 'utils/format-date';
-import { formatNone, formatShares, formatDai, formatMarketShares } from 'utils/format-number';
+import { formatNone, formatDai, formatMarketShares } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import {
   selectMarketInfosState,
   selectUserMarketOpenOrders,
   selectCancelingOrdersState,
   selectPendingOrdersState,
+  selectLoginAccountAddress,
 } from 'appStore/select-state';
 import { createSelector } from 'reselect';
+import getPrecision from 'utils/get-number-precision';
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];
@@ -49,76 +51,55 @@ export const selectUserOpenOrders = createSelector(
   selectUserMarketOpenOrdersMarket,
   selectCancelingOrdersState,
   selectPendingOrdersStateMarket,
-  (market, userMarketOpenOrders, orderCancellation, pendingOrders) => {
-    if (!market) return [];
-    let userOpenOrders =
+  selectLoginAccountAddress,
+  (market, userMarketOpenOrders, orderCancellation, pendingOrders, address) => {
+    if (!market || !address || userMarketOpenOrders == null) return [];
+    let userOpenOrderCollection =
       market.outcomes
         .map(outcome =>
-          selectUserOpenOrdersInternal(
+          userOpenOrders(
             market.id,
             outcome.id,
             userMarketOpenOrders,
             orderCancellation,
             market.description,
             outcome.description,
-            market.marketType
+            market.marketType,
+            market.tickSize,
           )
         )
         .filter(collection => collection.length !== 0)
         .flat() || [];
 
+    const decimals = getPrecision(String(market.tickSize), 2);
     // formatting and add pending orders
     if (pendingOrders && pendingOrders.length > 0) {
       const formatted = pendingOrders.map(o => ({
         ...o,
         unmatchedShares: formatMarketShares(market.marketType, o.amount),
-        avgPrice: formatDai(o.fullPrecisionPrice),
+        avgPrice: formatDai(o.fullPrecisionPrice, { decimals, decimalsRounded: decimals}),
         tokensEscrowed: formatDai(0, {zeroStyled: true}),
         sharesEscrowed: formatMarketShares(market.marketType, 0, { zeroStyled: true }),
         pending: !!o.status, // TODO: can show status of transaction in the future
         status: o.status,
       }))
-      userOpenOrders = formatted.concat(userOpenOrders);
+      userOpenOrderCollection = formatted.concat(userOpenOrderCollection);
     }
 
-    return userOpenOrders || [];
+    return userOpenOrderCollection || [];
   }
 );
-
-function selectUserOpenOrdersInternal(
-  marketId,
-  outcomeId,
-  userMarketOpenOrders,
-  orderCancellation,
-  marketDescription,
-  name,
-  marketType
-) {
-  const { loginAccount } = store.getState() as AppState;
-  if (!loginAccount.address || userMarketOpenOrders == null) return [];
-
-  return userOpenOrders(
-    marketId,
-    outcomeId,
-    loginAccount,
-    userMarketOpenOrders,
-    orderCancellation,
-    marketDescription,
-    name,
-    marketType
-  );
-}
 
 const userOpenOrders = memoize(
   (
     marketId,
     outcomeId,
-    loginAccount,
     userMarketOpenOrders,
     orderCancellation,
     marketDescription,
     name,
-    marketType
+    marketType,
+    tickSize,
   ) => {
     const orderData = userMarketOpenOrders[outcomeId];
 
@@ -130,11 +111,11 @@ const userOpenOrders = memoize(
             userMarketOpenOrders[outcomeId],
             BUY_INDEX,
             outcomeId,
-            loginAccount.address,
             orderCancellation,
             marketDescription,
             name,
-            marketType
+            marketType,
+            tickSize,
           );
     const userAsks =
       orderData == null || orderData[SELL_INDEX] == null
@@ -144,11 +125,11 @@ const userOpenOrders = memoize(
             userMarketOpenOrders[outcomeId],
             SELL_INDEX,
             outcomeId,
-            loginAccount.address,
             orderCancellation,
             marketDescription,
             name,
-            marketType
+            marketType,
+            tickSize
           );
 
     const orders = userAsks.concat(userBids);
@@ -164,17 +145,16 @@ function getUserOpenOrders(
   orders,
   orderType,
   outcomeId,
-  userId,
   orderCancellation = {},
   marketDescription = '',
   name = '',
   marketType = YES_NO,
+  tickSize = '0.01',
 ) {
   const typeOrders = orders[orderType];
 
   return Object.keys(typeOrders)
     .map(orderId => typeOrders[orderId])
-    .filter(order => isOrderOfUser(order, userId))
     .sort((order1, order2) =>
       createBigNumber(order2.salt, 10).comparedTo(
         createBigNumber(order1.salt, 10)
@@ -191,7 +171,7 @@ function getUserOpenOrders(
       status: order.orderState,
       orderCancellationStatus: orderCancellation[order.orderId],
       originalShares: formatNone(),
-      avgPrice: formatDai(order.fullPrecisionPrice),
+      avgPrice: formatDai(order.fullPrecisionPrice, { decimals: getPrecision(String(tickSize), 2), decimalsRounded: getPrecision(String(tickSize), 2)}),
       matchedShares: formatNone(),
       unmatchedShares: formatMarketShares(marketType, order.amount),
       tokensEscrowed: formatDai(order.tokensEscrowed),
