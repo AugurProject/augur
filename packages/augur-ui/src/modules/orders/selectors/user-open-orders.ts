@@ -51,7 +51,7 @@ export const selectUserOpenOrders = createSelector(
   selectPendingOrdersStateMarket,
   selectLoginAccountAddress,
   (market, userMarketOpenOrders, orderCancellation, pendingOrders, address) => {
-    if (!market || !address || (userMarketOpenOrders === undefined && orderCancellation.lenth === 0 && pendingOrders === undefined)) return [];
+    if (!market || !address || (!userMarketOpenOrders && orderCancellation.lenth === 0 && !pendingOrders)) return [];
     let userOpenOrderCollection =
       market.outcomes
         .map(outcome =>
