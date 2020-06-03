@@ -38,7 +38,7 @@ import {
 import Styles from 'modules/modal/modal.styles.less';
 import { Getters, TXEventName } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
-import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
+import { ReleasableRepNotice } from 'modules/reporting/common';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { EventDetailsContent, WarpSyncErrorHeader, WarpSyncErrorSubheader } from 'modules/create-market/constants';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';

@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
@@ -21,6 +21,10 @@ import {
   MODAL_INITIALIZE_ACCOUNT,
   WALLET_STATUS_VALUES,
   MODAL_ADD_FUNDS,
+  MODAL_REPORTING,
+  GSN_WALLET_SEEN,
+  MODAL_PARTICIPATE,
+  MODAL_CLAIM_FEES,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -50,9 +54,11 @@ import {
   formatRep,
   formatAttoRep,
   formatGasCostToEther,
+  formatPercent,
+  formatAttoDai,
 } from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
-import { InfoIcon, InformationIcon, XIcon } from 'modules/common/icons';
+import { InfoIcon, InformationIcon, XIcon, REP } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
 import FormStyles from 'modules/common/form.styles.less';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -62,7 +68,10 @@ import {
   convertAttoValueToDisplayValue,
 } from '@augurproject/sdk';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
-import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
+import {
+  getRepThresholdForPacing,
+  getGasPrice,
+} from 'modules/contracts/actions/contractCalls';
 import MarketTitle from 'modules/market/containers/market-title';
 import {
   displayGasInDai,
@@ -75,6 +84,8 @@ import {
   selectReportingBalances,
   selectDefaultReportingBalances,
 } from 'modules/account/helpers/common';
+import getValueFromlocalStorage from 'utils/get-local-storage-value';
+import { isSameAddress } from 'utils/isSameAddress';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -139,66 +150,42 @@ export const DismissableNotice = ({
   );
 };
 
-const mapStateToPropsActivateWalletButton = () => {
-  const { gsnEnabled, walletStatus } = AppStatus.get();
-  return {
-    gsnUnavailable: isGSNUnavailable(),
-    gsnEnabled,
+export const ActivateWalletButton = () => {
+  const {
     walletStatus,
-  };
-};
-
-const mapDispatchToProps = dispatch => ({
-  initializeGsnWallet: () => AppStatus.actions.setModal({ type: MODAL_INITIALIZE_ACCOUNT }),
-  updateWalletStatus: () => {
-    removePendingTransaction(CREATEAUGURWALLET);
-  },
-});
-
-const mergeProps = (sP, dP, oP) => {
-  let showMessage = sP.gsnUnavailable;
-  let buttonAction = dP.initializeGsnWallet;
-  if (sP.walletStatus === WALLET_STATUS_VALUES.CREATED) {
-    buttonAction = dP.updateWalletStatus;
+    actions: { setModal },
+  } = useAppStatusStore();
+  const gsnUnavailable = isGSNUnavailable();
+  let showMessage = gsnUnavailable;
+  let buttonAction = setModal({ type: MODAL_INITIALIZE_ACCOUNT });
+  if (walletStatus === WALLET_STATUS_VALUES.CREATED) {
+    buttonAction = removePendingTransaction(CREATEAUGURWALLET);
   }
   if (
-    sP.walletStatus !== WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
-    sP.walletStatus !== WALLET_STATUS_VALUES.CREATED
+    walletStatus !== WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
+    walletStatus !== WALLET_STATUS_VALUES.CREATED
   ) {
     showMessage = false;
   }
-  return {
-    ...sP,
-    ...dP,
-    buttonAction,
-    showMessage,
-  };
+  return (
+    <>
+      {showMessage && (
+        <div className={classNames(Styles.ActivateWalletButton)}>
+          <DismissableNotice
+            show
+            title={'Account Activation'}
+            buttonText={'Activate Account'}
+            buttonAction={() => buttonAction}
+            queueName={TRANSACTIONS}
+            queueId={CREATEAUGURWALLET}
+            buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
+            description={`Activation of your account is needed`}
+          />
+        </div>
+      )}
+    </>
+  );
 };
-
-const ActivateWalletButtonCmp = ({ showMessage, buttonAction }) => (
-  <>
-    {showMessage && (
-      <div className={classNames(Styles.ActivateWalletButton)}>
-        <DismissableNotice
-          show
-          title={'Account Activation'}
-          buttonText={'Activate Account'}
-          buttonAction={buttonAction}
-          queueName={TRANSACTIONS}
-          queueId={CREATEAUGURWALLET}
-          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
-          description={`Activation of your account is needed`}
-        />
-      </div>
-    )}
-  </>
-);
-
-export const ActivateWalletButton = connect(
-  mapStateToPropsActivateWalletButton,
-  mapDispatchToProps,
-  mergeProps
-)(ActivateWalletButtonCmp);
 
 export interface ReportingPercentProps {
   firstPercent: FormattedNumber;
@@ -478,78 +465,92 @@ export interface DisputingBondsViewProps {
   stakeRemaining?: string;
   tentativeWinning?: boolean;
   reportAction: Function;
-  GsnEnabled: boolean;
-  gasPrice: number;
-  warpSyncHash: string;
   isWarpSync: boolean;
-  gsnUnavailable: boolean;
-  gsnWalletInfoSeen: boolean;
-  initializeGsnWallet: Function;
 }
 
-interface DisputingBondsViewState {
-  disabled: boolean;
-  scalarError: string;
-  stakeError: string;
-  isScalar: boolean;
-  gasEstimate: string;
-}
+export const DisputingBondsView = ({
+  updateInputtedStake,
+  market,
+  inputScalarOutcome,
+  stakeValue,
+  stakeRemaining,
+  tentativeWinning,
+  reportAction,
+  id,
+  isInvalid,
+  isWarpSync,
+}: DisputingBondsViewProps) => {
+  const {
+    actions: { setModal },
+    loginAccount: {
+      balances: { rep: userAvailableRep },
+    },
+    universe: { warpSyncHash },
+    gsnEnabled: GsnEnabled,
+  } = useAppStatusStore();
 
-export class DisputingBondsView extends Component<
-  DisputingBondsViewProps,
-  DisputingBondsViewState
-> {
-  state: DisputingBondsViewState = {
+  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
+
+  const gasPrice = getGasPrice();
+  const gsnUnavailable = isGSNUnavailable();
+
+  const [state, setState] = useState({
     disabled: true,
     scalarError: '',
     stakeError: '',
-    isScalar: this.props.market.marketType === SCALAR,
+    isScalar: market.marketType === SCALAR,
     gasEstimate: formatGasCostToEther(
       DISPUTE_GAS_COST,
       { decimalsRounded: 4 },
-      this.props.gasPrice
+      gasPrice
     ),
-  };
+  });
+  const { disabled, scalarError, stakeError, isScalar, gasEstimate } = state;
 
-  updateScalarOutcome = (range: string) => {
-    const { market, updateScalarOutcome, stakeValue } = this.props;
+  useEffect(() => {
+    if (GsnEnabled) {
+      (async function setGasLimit() {
+        const gasLimit = await reportAction(true);
+        setState({
+          ...state,
+          gasEstimate: gasLimit,
+        });
+      })();
+    }
 
+    if (isWarpSync) {
+      updateScalarOutcome(warpSyncHash);
+      updateInputtedStakeLocal('0');
+    }
+  }, []);
+
+  function updateScalarOutcome(range: string) {
     if (
       createBigNumber(range).lt(createBigNumber(market.minPrice)) ||
       createBigNumber(range).gt(createBigNumber(market.maxPrice))
     ) {
-      this.setState({
+      setState({
+        ...state,
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
     } else if (!market.isWarpSync && (isNaN(Number(range)) || range === '')) {
-      this.setState({ scalarError: 'Enter a valid number', disabled: true });
+      setState({
+        ...state,
+        scalarError: 'Enter a valid number',
+        disabled: true,
+      });
     } else {
-      this.setState({ scalarError: '' });
-      if (
-        this.state.stakeError === '' &&
-        stakeValue !== '' &&
-        stakeValue !== '0'
-      ) {
-        this.setState({ disabled: false });
+      setState({ ...state, scalarError: '' });
+      if (stakeError === '' && stakeValue !== '' && stakeValue !== '0') {
+        setState({ ...state, disabled: false });
       }
     }
     updateScalarOutcome(range);
-  };
+  }
 
-  updateInputtedStake = (inputStakeValue: string) => {
-    const {
-      market,
-      updateInputtedStake,
-      inputScalarOutcome,
-      userAvailableRep,
-      stakeRemaining,
-      tentativeWinning,
-      isInvalid,
-      warpSyncHash,
-    } = this.props;
+  function updateInputtedStakeLocal(inputStakeValue: string) {
     let inputToAttoRep = null;
-    const { isScalar } = this.state;
     const min = formatAttoRep(market.noShowBondAmount).value;
     const remaining = formatAttoRep(stakeRemaining).value;
     if (!isNaN(Number(inputStakeValue))) {
@@ -565,12 +566,17 @@ export class DisputingBondsView extends Component<
         inputStakeValue === '.' ||
         inputStakeValue === '0.')
     ) {
-      this.setState({ stakeError: 'Enter a valid number', disabled: true });
+      setState({
+        ...state,
+        stakeError: 'Enter a valid number',
+        disabled: true,
+      });
       return updateInputtedStake({ inputStakeValue, ZERO });
     } else if (
       createBigNumber(userAvailableRep).lt(createBigNumber(inputStakeValue))
     ) {
-      this.setState({
+      setState({
+        ...state,
         stakeError: `Value is bigger than REP balance: ${userAvailableRep} REP`,
         disabled: true,
       });
@@ -579,7 +585,8 @@ export class DisputingBondsView extends Component<
       stakeRemaining &&
       createBigNumber(stakeRemaining).lt(inputToAttoRep)
     ) {
-      this.setState({
+      setState({
+        ...state,
         stakeError: `Value is bigger than needed: ${remaining} REP`,
         disabled: true,
       });
@@ -590,140 +597,103 @@ export class DisputingBondsView extends Component<
         createBigNumber(market.noShowBondAmount)
       )
     ) {
-      this.setState({
+      setState({
+        ...state,
         stakeError: `Value is smaller than minimum: ${min} REP`,
         disabled: true,
       });
     } else {
-      this.setState({ stakeError: '' });
+      setState({ ...state, stakeError: '' });
       if (
         (isScalar && inputScalarOutcome !== '') ||
         isInvalid ||
         !!warpSyncHash ||
         !isScalar
       ) {
-        this.setState({ disabled: false });
+        setState({ ...state, disabled: false });
       }
     }
     updateInputtedStake({ inputStakeValue, inputToAttoRep });
-  };
-
-  async componentDidMount() {
-    if (this.props.GsnEnabled) {
-      const gasLimit = await this.props.reportAction(true);
-      this.setState({
-        gasEstimate: gasLimit,
-      });
-    }
-    if (this.props.isWarpSync) {
-      this.updateScalarOutcome(this.props.warpSyncHash);
-      this.updateInputtedStake('0');
-    }
   }
 
-  render() {
-    const {
-      market,
-      inputScalarOutcome,
-      stakeValue,
-      stakeRemaining,
-      tentativeWinning,
-      reportAction,
-      id,
-      GsnEnabled,
-      warpSyncHash,
-      gsnUnavailable,
-      gsnWalletInfoSeen,
-      initializeGsnWallet,
-    } = this.props;
-
-    const {
-      disabled,
-      scalarError,
-      stakeError,
-      isScalar,
-      gasEstimate,
-    } = this.state;
-    const min = convertAttoValueToDisplayValue(
-      createBigNumber(market.noShowBondAmount)
-    );
-    const remaining = convertAttoValueToDisplayValue(
-      createBigNumber(stakeRemaining)
-    );
-    // id === "null" means blank scalar, user can input new scalar value to dispute
-    return (
-      <div className={classNames(Styles.DisputingBondsView)}>
-        {isScalar && id === 'null' && (
-          <ScalarOutcomeView
-            inputScalarOutcome={
-              !inputScalarOutcome && market.isWarpSync
-                ? warpSyncHash
-                : inputScalarOutcome
-            }
-            updateScalarOutcome={this.updateScalarOutcome}
-            scalarDenomination={market.scalarDenomination}
-            scalarError={scalarError}
-          />
-        )}
-        <TextInput
-          placeholder={'0.0000'}
-          value={String(stakeValue)}
-          onChange={value => this.updateInputtedStake(value)}
-          errorMessage={stakeError}
-          innerLabel="REP"
-        />
-        {!tentativeWinning && (
-          <section>
-            <CancelTextButton
-              noIcon
-              action={() => this.updateInputtedStake(String(min))}
-              text={'MIN'}
-            />
-            |
-            <CancelTextButton
-              noIcon
-              action={() => this.updateInputtedStake(String(remaining))}
-              text={'FILL DISPUTE BOND'}
-            />
-          </section>
-        )}
-        <span>Review</span>
-        <LinearPropertyLabel
-          key="disputeRoundStake"
-          label={
-            tentativeWinning
-              ? 'Contribute to Next Round'
-              : 'Dispute Round Stake'
+  const min = convertAttoValueToDisplayValue(
+    createBigNumber(market.noShowBondAmount)
+  );
+  const remaining = convertAttoValueToDisplayValue(
+    createBigNumber(stakeRemaining)
+  );
+  // id === "null" means blank scalar, user can input new scalar value to dispute
+  return (
+    <div className={classNames(Styles.DisputingBondsView)}>
+      {isScalar && id === 'null' && (
+        <ScalarOutcomeView
+          inputScalarOutcome={
+            !inputScalarOutcome && market.isWarpSync
+              ? warpSyncHash
+              : inputScalarOutcome
           }
-          value={formatRep(stakeValue || ZERO).formatted + ' REP'}
+          updateScalarOutcome={updateScalarOutcome}
+          scalarDenomination={market.scalarDenomination}
+          scalarError={scalarError}
         />
-        <TransactionFeeLabel gasCostDai={displayGasInDai(gasEstimate)} />
-        <InitializeWalletModalNotice />
-        <PrimaryButton
-          text="Confirm"
-          action={() => {
-            if (gsnUnavailable && !gsnWalletInfoSeen) {
-              initializeGsnWallet(() => {
+      )}
+      <TextInput
+        placeholder={'0.0000'}
+        value={String(stakeValue)}
+        onChange={value => updateInputtedStakeLocal(value)}
+        errorMessage={stakeError}
+        innerLabel="REP"
+      />
+      {!tentativeWinning && (
+        <section>
+          <CancelTextButton
+            noIcon
+            action={() => updateInputtedStakeLocal(String(min))}
+            text={'MIN'}
+          />
+          |
+          <CancelTextButton
+            noIcon
+            action={() => updateInputtedStakeLocal(String(remaining))}
+            text={'FILL DISPUTE BOND'}
+          />
+        </section>
+      )}
+      <span>Review</span>
+      <LinearPropertyLabel
+        key="disputeRoundStake"
+        label={
+          tentativeWinning ? 'Contribute to Next Round' : 'Dispute Round Stake'
+        }
+        value={formatRep(stakeValue || ZERO).formatted + ' REP'}
+      />
+      <TransactionFeeLabel gasCostDai={displayGasInDai(gasEstimate)} />
+      <InitializeWalletModalNotice />
+      <PrimaryButton
+        text="Confirm"
+        action={() => {
+          if (gsnUnavailable && !gsnWalletInfoSeen) {
+            setModal({
+              customAction: () => {
                 reportAction(false);
-              });
-            } else {
-              reportAction(false);
-            }
-          }}
-          disabled={disabled}
-        />
-      </div>
-    );
-  }
-}
+              },
+              type: MODAL_INITIALIZE_ACCOUNT,
+            });
+          } else {
+            reportAction(false);
+          }
+        }}
+        disabled={disabled}
+      />
+    </div>
+  );
+};
 
 export interface ReportingBondsViewProps {
   market: MarketData;
   id: string;
   updateScalarOutcome: Function;
   reportAction: Function;
-  GsnEnabled: boolean;
-  gasPrice: number;
   inputtedReportingStake: DisputeInputtedValues;
   updateInputtedStake?: Function;
   inputScalarOutcome?: string;
@@ -735,110 +705,147 @@ export interface ReportingBondsViewProps {
   openReporting: boolean;
   enoughRepBalance: boolean;
   userFunds: BigNumber;
-  gsnUnavailable: boolean;
-  gsnWalletInfoSeen: boolean;
   initializeGsnWallet: Function;
 }
 
-interface ReportingBondsViewState {
-  showInput: boolean;
-  disabled: boolean;
-  scalarError: string;
-  stakeError: string;
-  isScalar: boolean;
-  threshold: string;
-  readAndAgreedCheckbox: boolean;
-  gasEstimate: string;
-}
+export const ReportingBondsView = ({
+  market,
+  inputScalarOutcome,
+  reportAction,
+  inputtedReportingStake,
+  id,
+  initializeGsnWallet,
+  updateInputtedStake,
+  updateScalarOutcome,
+}: ReportingBondsViewProps) => {
+  const {
+    actions: { setModal },
+    loginAccount: { balances, address },
+    universe: { forkingInfo },
+    gsnEnabled: GsnEnabled,
+  } = useAppStatusStore();
+  let userAttoRep = createBigNumber((balances && balances.attoRep) || ZERO);
+  const userFunds = GsnEnabled
+    ? createBigNumber((balances && balances.dai) || ZERO)
+    : createBigNumber((balances && balances.eth) || ZERO);
+  const hasForked = !!forkingInfo;
+  const migrateRep = hasForked && forkingInfo?.forkingMarket === market.id;
+  const migrateMarket = hasForked && !!forkingInfo.winningChildUniverseId;
+  const initialReport = !migrateMarket && !migrateRep;
+  const openReporting =
+    market.reportingState === REPORTING_STATE.OPEN_REPORTING;
+  const owesRep = migrateMarket
+    ? migrateMarket
+    : !openReporting &&
+      !forkingInfo?.forkingMarket === market.id &&
+      !isSameAddress(market.author, address);
+  const enoughRepBalance = owesRep
+    ? userAttoRep.gte(createBigNumber(market.noShowBondAmount))
+    : true;
+  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
 
-export class ReportingBondsView extends Component<
-  ReportingBondsViewProps,
-  ReportingBondsViewState
-> {
-  state: ReportingBondsViewState = {
+  userAttoRep = convertAttoValueToDisplayValue(userAttoRep);
+  const gasPrice = getGasPrice();
+  const gsnUnavailable = isGSNUnavailable();
+  const [state, setState] = useState({
     showInput: false,
-    disabled:
-      this.props.market.marketType === SCALAR && this.props.migrateRep
-        ? true
-        : false,
+    disabled: market.marketType === SCALAR && migrateRep ? true : false,
     scalarError: '',
     stakeError: '',
-    isScalar: this.props.market.marketType === SCALAR,
-    threshold: this.props.userAttoRep.toString(),
+    isScalar: market.marketType === SCALAR,
+    threshold: userAttoRep.toString(),
     readAndAgreedCheckbox: false,
     gasEstimate: formatGasCostToEther(
       INITAL_REPORT_GAS_COST,
       { decimalsRounded: 4 },
-      this.props.gasPrice
+      gasPrice
     ),
-  };
+  });
 
-  async componentDidMount() {
-    if (this.props.initialReport) {
-      const threshold = await getRepThresholdForPacing();
-      this.setState({
-        threshold: String(convertAttoValueToDisplayValue(threshold)),
-      });
-      if (this.props.GsnEnabled) {
-        const gasLimit = await this.props
-          .reportAction(true)
-          .catch(e => console.error(e));
-        this.setState({
-          gasEstimate: gasLimit || INITAL_REPORT_GAS_COST,
+  const {
+    showInput,
+    disabled,
+    scalarError,
+    stakeError,
+    isScalar,
+    threshold,
+    readAndAgreedCheckbox,
+    gasEstimate,
+  } = state;
+
+  useEffect(() => {
+    (async function onMount() {
+      if (initialReport) {
+        const threshold = await getRepThresholdForPacing();
+        setState({
+          ...state,
+          threshold: String(convertAttoValueToDisplayValue(threshold)),
         });
+        if (GsnEnabled) {
+          const gasLimit = await reportAction(true).catch(e =>
+            console.error(e)
+          );
+          setState({
+            ...state,
+            gasEstimate: gasLimit || INITAL_REPORT_GAS_COST,
+          });
+        }
       }
-    }
-  }
+    })();
+  }, []);
 
-  toggleInput = () => {
-    this.setState({ showInput: !this.state.showInput });
+  const toggleInput = () => {
+    setState({ ...state, showInput: !showInput });
   };
 
-  updateScalarOutcome = (range: string) => {
-    const { market, updateScalarOutcome } = this.props;
-
+  const updateScalarOutcomeLocal = (range: string) => {
     if (
       createBigNumber(range).lt(createBigNumber(market.minPrice)) ||
       createBigNumber(range).gt(createBigNumber(market.maxPrice))
     ) {
-      this.setState({
+      setState({
+        ...state,
         scalarError: 'Input value not between scalar market range',
         disabled: true,
       });
     } else if (!market.isWarpSync && (isNaN(Number(range)) || range === '')) {
-      this.setState({ scalarError: 'Enter a valid number', disabled: true });
+      setState({
+        ...state,
+        scalarError: 'Enter a valid number',
+        disabled: true,
+      });
     } else {
-      this.setState({ scalarError: '' });
-      if (this.state.stakeError === '') {
-        this.setState({ disabled: false });
+      setState({ ...state, scalarError: '' });
+      if (stakeError === '') {
+        setState({ ...state, disabled: false });
       }
     }
     updateScalarOutcome(range);
   };
 
-  updateInputtedStake = (inputStakeValue: string) => {
-    const { updateInputtedStake, userAttoRep } = this.props;
-    const { threshold } = this.state;
+  const updateInputtedStakeLocal = (inputStakeValue: string) => {
     let disabled = false;
     if (isNaN(Number(inputStakeValue))) {
       disabled = true;
-      this.setState({ stakeError: 'Enter a valid number' });
+      setState({ ...state, stakeError: 'Enter a valid number' });
     } else if (
       createBigNumber(userAttoRep).lt(createBigNumber(inputStakeValue))
     ) {
       disabled = true;
-      this.setState({
+      setState({
+        ...state,
         stakeError: 'Value is bigger than user REP balance',
       });
     } else if (
       createBigNumber(threshold).lt(createBigNumber(inputStakeValue))
     ) {
       disabled = true;
-      this.setState({
+      setState({
+        ...state,
         stakeError: `Value is bigger than the REP threshold: ${threshold}`,
       });
     } else {
-      this.setState({ stakeError: '' });
+      setState({ ...state, stakeError: '' });
     }
     let inputToAttoRep = '0';
     if (!isNaN(Number(inputStakeValue)) && inputStakeValue !== '') {
@@ -847,210 +854,179 @@ export class ReportingBondsView extends Component<
       );
     }
     updateInputtedStake({ inputToAttoRep, inputStakeValue });
-    this.setState({ disabled });
+    setState({ ...state, disabled });
   };
 
-  checkCheckbox = (readAndAgreedCheckbox: boolean) => {
-    this.setState({ readAndAgreedCheckbox });
+  const checkCheckbox = (readAndAgreedCheckbox: boolean) => {
+    setState({ ...state, readAndAgreedCheckbox });
   };
 
-  render() {
-    const {
-      market,
-      inputScalarOutcome,
-      reportAction,
-      inputtedReportingStake,
-      userAttoRep,
-      id,
-      migrateRep,
-      initialReport,
-      owesRep,
-      GsnEnabled,
-      openReporting,
-      enoughRepBalance,
-      userFunds,
-      gsnUnavailable,
-      gsnWalletInfoSeen,
-      initializeGsnWallet,
-    } = this.props;
+  const repAmount = migrateRep
+    ? formatAttoRep(inputtedReportingStake.inputToAttoRep).formatted
+    : formatAttoRep(market.noShowBondAmount).formatted;
+  let repLabel = migrateRep ? 'REP to migrate' : 'Initial Reporter Stake';
 
-    const {
-      showInput,
-      disabled,
-      scalarError,
-      stakeError,
-      isScalar,
-      threshold,
-      readAndAgreedCheckbox,
-      gasEstimate,
-    } = this.state;
+  repLabel = openReporting ? 'Open Reporting winning Stake' : repLabel;
+  if (owesRep) {
+    repLabel = 'REP needed';
+  }
+  const reviewLabel = migrateRep
+    ? 'Review REP to migrate'
+    : 'Review Initial Reporting Stake';
+  const totalRep = owesRep
+    ? formatAttoRep(
+        createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO).plus(
+          market.noShowBondAmount
+        )
+      ).formatted
+    : formatAttoRep(
+        createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO)
+      ).formatted;
 
-    const repAmount = migrateRep
-      ? formatAttoRep(inputtedReportingStake.inputToAttoRep).formatted
-      : formatAttoRep(market.noShowBondAmount).formatted;
-    let repLabel = migrateRep ? 'REP to migrate' : 'Initial Reporter Stake';
+  let buttonDisabled = disabled;
+  if (
+    (isScalar &&
+      inputScalarOutcome === '' &&
+      id !== String(INVALID_OUTCOME_ID)) ||
+    (migrateRep &&
+      createBigNumber(inputtedReportingStake.inputStakeValue).lte(ZERO))
+  ) {
+    buttonDisabled = true;
+  }
+  let insufficientFunds = false;
+  if (userFunds.lt(createBigNumber(getGasInDai(gasEstimate).value))) {
+    buttonDisabled = true;
+    insufficientFunds = true;
+  }
 
-    repLabel = openReporting ? 'Open Reporting winning Stake' : repLabel;
-    if (owesRep) {
-      repLabel = 'REP needed';
-    }
-    const reviewLabel = migrateRep
-      ? 'Review REP to migrate'
-      : 'Review Initial Reporting Stake';
-    const totalRep = owesRep
-      ? formatAttoRep(
-          createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO).plus(
-            market.noShowBondAmount
-          )
-        ).formatted
-      : formatAttoRep(
-          createBigNumber(inputtedReportingStake.inputToAttoRep || ZERO)
-        ).formatted;
-
-    let buttonDisabled = disabled;
-    if (
-      (isScalar &&
-        inputScalarOutcome === '' &&
-        id !== String(INVALID_OUTCOME_ID)) ||
-      (migrateRep &&
-        createBigNumber(inputtedReportingStake.inputStakeValue).lte(ZERO))
-    ) {
-      buttonDisabled = true;
-    }
-    let insufficientFunds = false;
-    if (userFunds.lt(createBigNumber(getGasInDai(gasEstimate).value))) {
-      buttonDisabled = true;
-      insufficientFunds = true;
-    }
-
-    let insufficientRep = '';
-    if (!enoughRepBalance) {
-      (insufficientRep = 'Not enough REP to report'), (buttonDisabled = true);
-    }
-    return (
-      <div
-        className={classNames(Styles.ReportingBondsView, {
-          [Styles.Scalar]: isScalar,
-          [Styles.InitialReport]: initialReport,
-          [Styles.MigrateRep]: migrateRep,
-        })}
-      >
-        {isScalar && id === 'null' && (
-          <ScalarOutcomeView
-            inputScalarOutcome={inputScalarOutcome}
-            updateScalarOutcome={this.updateScalarOutcome}
-            scalarDenomination={market.scalarDenomination}
-            scalarError={scalarError}
-          />
-        )}
-        {migrateRep && (
-          <InputRepStake
-            stakeAmount={String(inputtedReportingStake.inputStakeValue)}
-            updateStakeAmount={this.updateInputtedStake}
-            stakeError={stakeError}
-            max={String(userAttoRep)}
-            maxLabel="MAX"
-          />
-        )}
-        <span>{reviewLabel}</span>
-        <LinearPropertyLabel
-          key="initial"
-          label={repLabel}
-          value={`${repAmount} REP`}
+  let insufficientRep = '';
+  if (!enoughRepBalance) {
+    (insufficientRep = 'Not enough REP to report'), (buttonDisabled = true);
+  }
+  return (
+    <div
+      className={classNames(Styles.ReportingBondsView, {
+        [Styles.Scalar]: isScalar,
+        [Styles.InitialReport]: initialReport,
+        [Styles.MigrateRep]: migrateRep,
+      })}
+    >
+      {isScalar && id === 'null' && (
+        <ScalarOutcomeView
+          inputScalarOutcome={inputScalarOutcome}
+          updateScalarOutcome={updateScalarOutcomeLocal}
+          scalarDenomination={market.scalarDenomination}
+          scalarError={scalarError}
         />
-        {initialReport && !market.isWarpSync && (
-          <PreFilledStake
-            showInput={showInput}
-            toggleInput={this.toggleInput}
-            updateInputtedStake={this.updateInputtedStake}
-            preFilledStake={inputtedReportingStake.inputStakeValue}
-            stakeError={stakeError}
-            threshold={threshold}
-          />
-        )}
-        {!market.isWarpSync && !migrateRep && (
-          <div className={Styles.ShowTotals}>
-            <span>Totals</span>
-            {!market.isForking && (
-              <span>
-                Sum total of Initial Reporter Stake and Pre-Filled Stake
-              </span>
-            )}
-            <LinearPropertyLabel
-              key="totalRep"
-              label="Total REP Needed"
-              value={totalRep}
-            />
-            {insufficientRep && (
-              <span className={FormStyles.ErrorText}>{insufficientRep}</span>
-            )}
-          </div>
-        )}
-        <div>
-          <TransactionFeeLabel gasCostDai={displayGasInDai(gasEstimate)} />
-          {insufficientFunds && (
-            <span className={FormStyles.ErrorText}>
-              Insufficient Funds to complete transaction
+      )}
+      {migrateRep && (
+        <InputRepStake
+          stakeAmount={String(inputtedReportingStake.inputStakeValue)}
+          updateStakeAmount={updateInputtedStakeLocal}
+          stakeError={stakeError}
+          max={String(userAttoRep)}
+          maxLabel="MAX"
+        />
+      )}
+      <span>{reviewLabel}</span>
+      <LinearPropertyLabel
+        key="initial"
+        label={repLabel}
+        value={`${repAmount} REP`}
+      />
+      {initialReport && !market.isWarpSync && (
+        <PreFilledStake
+          showInput={showInput}
+          toggleInput={toggleInput}
+          updateInputtedStake={updateInputtedStakeLocal}
+          preFilledStake={inputtedReportingStake.inputStakeValue}
+          stakeError={stakeError}
+          threshold={threshold}
+        />
+      )}
+      {!market.isWarpSync && !migrateRep && (
+        <div className={Styles.ShowTotals}>
+          <span>Totals</span>
+          {!market.isForking && (
+            <span>
+              Sum total of Initial Reporter Stake and Pre-Filled Stake
             </span>
           )}
-          <InitializeWalletModalNotice />
-        </div>
-
-        {migrateRep &&
-          createBigNumber(inputtedReportingStake.inputStakeValue).lt(
-            userAttoRep
-          ) && (
-            <DismissableNotice
-              show={true}
-              description=""
-              title="Are you sure you only want to migrate a portion of your REP to this universe?
-            If not, go back and select the ‘Max’ button to migrate your full REP amount."
-              buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-            />
+          <LinearPropertyLabel
+            key="totalRep"
+            label="Total REP Needed"
+            value={totalRep}
+          />
+          {insufficientRep && (
+            <span className={FormStyles.ErrorText}>{insufficientRep}</span>
           )}
-        {migrateRep && (
-          <div
-            className={Styles.ReportingBondsViewCheckbox}
-            role="button"
-            tabIndex={0}
-            onClick={(e: React.SyntheticEvent) => {
-              e.preventDefault();
-              this.checkCheckbox(!readAndAgreedCheckbox);
-            }}
-          >
-            <label htmlFor="migrate-rep-confirmation">
-              <Checkbox
-                id="migrate-rep-confirmation"
-                isChecked={readAndAgreedCheckbox}
-                onClick={() => this.checkCheckbox(!readAndAgreedCheckbox)}
-                disabled={false}
-              />
-              I have carefully read all the information and fully acknowledge
-              the consequences of migrating my REP to an unsuccessful universe
-            </label>
-          </div>
+        </div>
+      )}
+      <div>
+        <TransactionFeeLabel gasCostDai={displayGasInDai(gasEstimate)} />
+        {insufficientFunds && (
+          <span className={FormStyles.ErrorText}>
+            Insufficient Funds to complete transaction
+          </span>
         )}
-        <PrimaryButton
-          text={migrateRep ? 'Confirm and Migrate REP' : 'Confirm'}
-          disabled={
-            migrateRep
-              ? buttonDisabled || !readAndAgreedCheckbox
-              : buttonDisabled
-          }
-          action={() => {
-            if (gsnUnavailable && !gsnWalletInfoSeen) {
-              initializeGsnWallet(() => {
-                reportAction();
-              });
-            } else {
-              reportAction();
-            }
-          }}
-        />
+        <InitializeWalletModalNotice />
       </div>
-    );
-  }
-}
+
+      {migrateRep &&
+        createBigNumber(inputtedReportingStake.inputStakeValue).lt(
+          userAttoRep
+        ) && (
+          <DismissableNotice
+            show={true}
+            description=""
+            title="Are you sure you only want to migrate a portion of your REP to this universe?
+          If not, go back and select the ‘Max’ button to migrate your full REP amount."
+            buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+          />
+        )}
+      {migrateRep && (
+        <div
+          className={Styles.ReportingBondsViewCheckbox}
+          role="button"
+          tabIndex={0}
+          onClick={(e: React.SyntheticEvent) => {
+            e.preventDefault();
+            checkCheckbox(!readAndAgreedCheckbox);
+          }}
+        >
+          <label htmlFor="migrate-rep-confirmation">
+            <Checkbox
+              id="migrate-rep-confirmation"
+              isChecked={readAndAgreedCheckbox}
+              onClick={() => checkCheckbox(!readAndAgreedCheckbox)}
+              disabled={false}
+            />
+            I have carefully read all the information and fully acknowledge the
+            consequences of migrating my REP to an unsuccessful universe
+          </label>
+        </div>
+      )}
+      <PrimaryButton
+        text={migrateRep ? 'Confirm and Migrate REP' : 'Confirm'}
+        disabled={
+          migrateRep ? buttonDisabled || !readAndAgreedCheckbox : buttonDisabled
+        }
+        action={() => {
+          if (gsnUnavailable && !gsnWalletInfoSeen) {
+            setModal({
+              customAction: () => {
+                reportAction();
+              },
+              type: MODAL_INITIALIZE_ACCOUNT,
+            });
+          } else {
+            reportAction();
+          }
+        }}
+      />
+    </div>
+  );
+};
 
 interface UserRepDisplayState {
   toggle: boolean;
@@ -1058,19 +1034,18 @@ interface UserRepDisplayState {
 
 export interface ReportingCardProps {
   market: MarketData;
-  disputingWindowEndTime: number;
-  showReportingModal: Function;
-  callback: Function;
-  isForking: boolean;
 }
 
-export const ReportingCard = ({
-  market,
-  showReportingModal,
-  isForking,
-}: ReportingCardProps) => {
+export const ReportingCard = ({ market }: ReportingCardProps) => {
   if (!market) return null;
-  const { isLogged } = useAppStatusStore();
+  const {
+    universe: { forkingInfo },
+    actions: { setModal },
+  } = useAppStatusStore();
+  let { isLogged } = useAppStatusStore();
+
+  const isForking = forkingInfo;
+  isLogged = isLogged && !forkingInfo;
 
   const { id, reportingState, disputeInfo, endTimeFormatted } = market;
 
@@ -1110,7 +1085,12 @@ export const ReportingCard = ({
       >
         <ProcessingButton
           text="Report"
-          action={showReportingModal}
+          action={() =>
+            setModal({
+              type: MODAL_REPORTING,
+              market,
+            })
+          }
           disabled={preReporting || !isLogged}
           queueName={SUBMIT_REPORT}
           queueId={id}
@@ -1251,34 +1231,62 @@ export const UserRepDisplay = () => {
   );
 };
 
-export interface ParticipationTokensViewProps {
-  openModal: Function;
-  openClaimParticipationTokensModal: Function;
-  disputeWindowFees: FormattedNumber;
-  purchasedParticipationTokens: FormattedNumber;
-  tokensOwned: FormattedNumber;
-  percentageOfTotalFees: FormattedNumber;
-  pastParticipationTokensPurchased: FormattedNumber;
-  participationTokensClaimableFees: FormattedNumber;
-  disablePurchaseButton: boolean;
-  hasRedeemable: boolean;
-}
-
-export const ParticipationTokensView = (
-  props: ParticipationTokensViewProps
-) => {
+export const ParticipationTokensView = () => {
   const {
-    openModal,
-    openClaimParticipationTokensModal,
-    disputeWindowFees,
-    purchasedParticipationTokens,
-    tokensOwned,
-    percentageOfTotalFees,
-    pastParticipationTokensPurchased,
-    participationTokensClaimableFees,
-    disablePurchaseButton,
-    hasRedeemable,
-  } = props;
+    actions: { setModal },
+    loginAccount: {
+      reporting: { participationTokens },
+    },
+    universe: {
+      forkingInfo,
+      disputeWindow: { address, fees, purchased },
+    },
+    isLogged,
+  } = useAppStatusStore();
+
+  const disablePurchaseButton = !!forkingInfo;
+  const tokenAmount =
+    (address &&
+      participationTokens &&
+      (participationTokens.contracts.find(c => !c.isClaimable) || {}).amount) ||
+    ZERO;
+  const purchasedTokens = purchased || 0;
+  const purchasedParticipationTokens = formatAttoRep(purchasedTokens);
+  const ONE_HUNDRED_BECAUSE_PERCENTAGES = 100;
+  const percentageOfTotalFees = formatPercent(
+    purchasedParticipationTokens.value
+      ? createBigNumber(tokenAmount)
+          .dividedBy(createBigNumber(purchasedTokens))
+          .times(ONE_HUNDRED_BECAUSE_PERCENTAGES)
+      : 0
+  );
+  let pastParticipationTokensPurchased =
+    (participationTokens &&
+      createBigNumber(participationTokens.totalClaimable)) ||
+    ZERO;
+
+  let participationTokensClaimableFees =
+    participationTokens && participationTokens.contracts
+      ? participationTokens.contracts
+          .filter(c => c.isClaimable)
+          .map(c => c.amountFees)
+          .reduce((accumulator, currentValue) => {
+            const bigAccumulator = createBigNumber(accumulator) || ZERO;
+            const bigCurrentValue = createBigNumber(currentValue) || ZERO;
+            return bigCurrentValue.plus(bigAccumulator);
+          }, ZERO)
+      : ZERO;
+
+  const hasRedeemable = isLogged && pastParticipationTokensPurchased.gt(ZERO);
+
+  const disputeWindowFees = formatAttoDai(fees || 0);
+  const tokensOwned = formatAttoRep(tokenAmount);
+  pastParticipationTokensPurchased = formatAttoRep(
+    pastParticipationTokensPurchased
+  );
+  participationTokensClaimableFees = formatAttoDai(
+    participationTokensClaimableFees
+  );
 
   return (
     <div className={Styles.ParticipationTokensView}>
@@ -1326,7 +1334,7 @@ export const ParticipationTokensView = (
       <ProcessingButton
         disabled={disablePurchaseButton}
         text="Get Participation Tokens"
-        action={openModal}
+        action={() => setModal({ type: MODAL_PARTICIPATE })}
         queueName={TRANSACTIONS}
         queueId={BUYPARTICIPATIONTOKENS}
       />
@@ -1359,10 +1367,51 @@ export const ParticipationTokensView = (
       <ProcessingButton
         disabled={!hasRedeemable}
         text="Redeem Past Participation Tokens"
-        action={openClaimParticipationTokensModal}
+        action={() =>
+          setModal({ type: MODAL_CLAIM_FEES, participationTokensOnly: true })
+        }
         queueName={TRANSACTIONS}
         queueId={REDEEMSTAKE}
       />
     </div>
+  );
+};
+
+export const ReleasableRepNotice = () => {
+  const {
+    loginAccount: { reporting },
+    universe: { forkingInfo },
+  } = useAppStatusStore();
+  let hasStakedRep = false;
+  const hasForked = !!forkingInfo;
+  let show = false;
+  if (hasForked) {
+    if (reporting) {
+      if (
+        (reporting.reporting &&
+          createBigNumber(reporting.reporting.totalStaked).gt(ZERO)) ||
+        (reporting.disputing &&
+          createBigNumber(reporting.disputing.totalStaked).gt(ZERO)) ||
+        (reporting.participationTokens &&
+          createBigNumber(reporting.participationTokens.totalStaked).gt(ZERO))
+      )
+        hasStakedRep = true;
+    }
+  }
+  if (hasForked && hasStakedRep) show = true;
+
+  if (!show) return <div />;
+
+  return (
+    <DismissableNotice
+      show={true}
+      buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+      title={
+        'You Still have REP locked up in dispute Bonds and Participation Tokens.'
+      }
+      description={
+        'Please follow the instructions given in the banner at the top of this site or the notification in your account summary.'
+      }
+    />
   );
 };

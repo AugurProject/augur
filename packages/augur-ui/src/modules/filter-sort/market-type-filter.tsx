@@ -7,7 +7,7 @@ import {
 } from 'modules/common/constants';
 import { MarketStateLabel }  from 'modules/common/labels';
 
-import Styles from 'modules/filter-sort/components/market-type-filter.styles.less';
+import Styles from 'modules/filter-sort/market-type-filter.styles.less';
 
 interface MarketTypeFilterProps {
   marketCount: number;

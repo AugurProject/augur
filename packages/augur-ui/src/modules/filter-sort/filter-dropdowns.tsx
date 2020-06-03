@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { SORT_OPTIONS } from 'modules/common/constants';
-import Styles from 'modules/filter-sort/components/filter-dropdowns.styles.less';
+import Styles from 'modules/filter-sort/filter-dropdowns.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';

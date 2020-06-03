@@ -36,7 +36,7 @@ import {
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNav from 'modules/app/components/inner-nav/base-inner-nav-pure';
-import ForkingBanner from 'modules/reporting/containers/forking-banner';
+import ForkingBanner from 'modules/reporting/forking-banner';
 import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
 import {
   MARKET_ID_PARAM_NAME,
@@ -53,6 +53,7 @@ import { StatusErrorMessage } from 'modules/common/labels';
 import { MarketsProvider } from 'modules/markets/store/markets';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import isAddress from 'modules/auth/helpers/is-address';
+import { getNotifications } from 'modules/notifications/selectors/notification-state';
 
 interface AppProps {
   config: SDKConfiguration;
@@ -122,7 +123,6 @@ const AppView = ({
     universe: { forkEndTime, forkingInfo },
     blockchain: { currentAugurTimestamp },
     mobileMenuState,
-    notifications,
     modal,
     env,
     isMobile,
@@ -134,6 +134,7 @@ const AppView = ({
       updateLoginAccount,
     },
   } = useAppStatusStore();
+  const notifications = getNotifications();
   const history = useHistory();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;

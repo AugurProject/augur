@@ -13,6 +13,8 @@ import { formatRep } from 'utils/format-number';
 import { AppState } from 'appStore';
 import { AppStatus } from 'modules/app/store/app-status';
 import { addPendingReport, addPendingData, removePendingData, addPendingDispute } from 'modules/pending-queue/actions/pending-queue-management';
+import { Markets } from 'modules/markets/store/markets';
+import { selectMarket } from 'modules/markets/selectors/market';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const {
@@ -23,7 +25,10 @@ const mapStateToProps = (state: AppState, ownProps) => {
     universe: { forkingInfo, warpSyncHash },
     modal,
   } = AppStatus.get();
-  let { market } = ownProps;
+  let { market, marketId } = ownProps;
+  if (marketId && !market) {
+    market = selectMarket(marketId);
+  }
   market.isForking = forkingInfo && forkingInfo.forkingMarket === market.id;
   const hasForked = !!forkingInfo;
   const migrateRep = hasForked && forkingInfo.forkingMarket === market.id;

@@ -59,15 +59,17 @@ export function MarketsReducer(state, action) {
       };
       break;
     case UPDATE_REPORTING_LIST: 
-        const { reportingState, marketIds, params, isLoading } = action;
-        updatedState.reportingListState = {
-          ...updatedState.reportingListState,
-          [reportingState]: {
-            marketIds,
-            params,
-            isLoading,
-          }
-        };
+        const { reportingState, marketIds, params, isLoading, payload } = action;
+        if (marketIds || payload.marketIds) {
+          updatedState.reportingListState = {
+            ...updatedState.reportingListState,
+            [reportingState]: {
+              marketIds: marketIds || payload.marketIds,
+              params,
+              isLoading,
+            }
+          };
+        }
       break;
     default:
       throw new Error(`Error: ${action.type} not caught by Markets reducer`);
@@ -94,12 +96,12 @@ const isPromise = obj => {
 }
 
 const middleware = (dispatch, action) => {
-  if (isAsync(action.payload)) {
+  if (action.payload && isAsync(action.payload)) {
     (async () => {
       const v = await action.payload();
       dispatch({ ...action, payload: v });
     })();
-  } else if (isPromise(action.payload)) {
+  } else if (action.payload && isPromise(action.payload)) {
     action.payload.then(v => {
       dispatch({ ...action, payload: v });
     });
@@ -123,7 +125,7 @@ export const useMarkets = (defaultState = MOCK_MARKETS_STATE) => {
         updateMarketsData: (marketInfos, payload) => newDispatch({ type: UPDATE_MARKETS_DATA, marketInfos, payload }),
         removeMarket: (marketId) => dispatch({ type: REMOVE_MARKET, marketId }),
         bulkMarketTradingHistory: (keyedMarketTradingHistory, payload) => newDispatch({ type: BULK_MARKET_TRADING_HISTORY, keyedMarketTradingHistory, payload}),
-        updateReportingList: (reportingState, marketIds, params, isLoading) => dispatch({type: UPDATE_REPORTING_LIST, reportingState, marketIds, params, isLoading})
+        updateReportingList: (reportingState, marketIds, params, isLoading, payload) => newDispatch({type: UPDATE_REPORTING_LIST, reportingState, marketIds, params, isLoading, payload})
       },
     };
 };
