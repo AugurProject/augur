@@ -130,6 +130,7 @@ export const InvalidRules = [
   'Any of the outcomes don’t answer the market question ONLY. (outcomes cannot introduce a secondary question)',
   'If using a resolution source (a source is a noun that reports on or decides the result of a market), the source\'s URL or full name is NOT in the Market Question, regardless of it being in the resolution details.',
   'If using a resolution source, it is not referenced consistently between the Market Question and Resolution Details e.g. as either a URL or its full name.',
+  'If markets do not have a resolution source, they should resolve using general knowledge.',
   'For any sports markets that list a player or team not in the correct league, division or conference, at the time the market was created, the market should resolve as invalid.',
   'A market only covers events that occur after market creation time and on or before reporting start time. If the event occurs outside of these bounds it has a high probability as resolving as invalid.',
 ]

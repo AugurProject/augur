@@ -10,7 +10,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistryV2"]
     stakeManager = contractsFixture.contracts["StakeManager"]
     relayHub = contractsFixture.contracts["RelayHubV2"]
-    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())
     weth = contractsFixture.contracts["WETH9"]
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]
@@ -225,7 +225,7 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistryV2"]
     stakeManager = contractsFixture.contracts["StakeManager"]
     relayHub = contractsFixture.contracts["RelayHubV2"]
-    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())
     weth = contractsFixture.contracts["WETH9"]
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]
@@ -315,7 +315,7 @@ def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, ca
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistryV2"]
     stakeManager = contractsFixture.contracts["StakeManager"]
     relayHub = contractsFixture.contracts["RelayHubV2"]
-    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())
     weth = contractsFixture.contracts["WETH9"]
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]
@@ -413,7 +413,7 @@ def test_authorizedProxies(contractsFixture, augur, universe, cash, reputationTo
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistryV2"]
     stakeManager = contractsFixture.contracts["StakeManager"]
     relayHub = contractsFixture.contracts["RelayHubV2"]
-    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())
     weth = contractsFixture.contracts["WETH9"]
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]

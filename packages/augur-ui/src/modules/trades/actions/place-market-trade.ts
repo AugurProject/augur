@@ -15,7 +15,12 @@ import {
   placeTrade,
   approveToTrade,
 } from 'modules/contracts/actions/contractCalls';
-import { Getters, TXEventName } from '@augurproject/sdk';
+import {
+  Getters,
+  TXEventName,
+  convertDisplayAmountToOnChainAmount,
+  convertDisplayPriceToOnChainPrice,
+} from '@augurproject/sdk';
 import {
   addPendingOrder,
   updatePendingOrderStatus,
@@ -25,7 +30,6 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { Ox_STATUS } from 'modules/app/actions/update-app-status';
-import { formatShares, formatDai } from 'utils/format-number';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 
 export const placeMarketTrade = ({
@@ -60,7 +64,7 @@ export const placeMarketTrade = ({
   if (needsApproval) await approveToTrade();
   // we need to make sure approvals went through before doing trade / the rest of this function
   const userShares = createBigNumber(tradeInProgress.shareCost || 0, 10);
-
+  const { tickSize, minPrice } = market;
   const displayPrice = tradeInProgress.limitPrice;
   const displayAmount = tradeInProgress.numShares;
   const orderType = tradeInProgress.side === BUY ? 0 : 1;
@@ -72,8 +76,8 @@ export const placeMarketTrade = ({
     displayPrice,
     outcomeId,
     marketId,
-    market.tickSize,
-    market.minPrice,
+    tickSize,
+    minPrice,
     String(orderType),
   );
   dispatch(
@@ -127,13 +131,18 @@ export const placeMarketTrade = ({
           timestamp: blockchain.currentAugurTimestamp * 1000,
           params: {
             outcome: '0x0'.concat(outcomeId),
-            price: displayPrice * 100,
+            price: convertDisplayPriceToOnChainPrice(
+              createBigNumber(displayPrice),
+              createBigNumber(minPrice),
+              createBigNumber(tickSize)
+            ),
             orderType,
-            amount: new BigNumber(tradeInProgress.numShares)
-            .times(new BigNumber(10).pow(16))
-            .toNumber(),
-            marketId
-          }
+            amount: convertDisplayAmountToOnChainAmount(
+              createBigNumber(tradeInProgress.numShares),
+              createBigNumber(tickSize)
+            ),
+            marketId,
+          },
         };
         dispatch(updateAlert(undefined, alert, false));
       }

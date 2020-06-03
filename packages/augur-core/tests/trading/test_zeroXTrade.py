@@ -770,7 +770,7 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe, rep
     weth = contractsFixture.contracts["WETH9"]
 
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
-    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", ZeroXTrade.ethExchange())
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", ZeroXTrade.ethExchange())
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]
@@ -972,7 +972,7 @@ def test_protocol_fee_coverage(contractsFixture, cash, market):
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
     shareToken = contractsFixture.contracts["ShareToken"]
     weth = contractsFixture.contracts["WETH9"]
-    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", ZeroXTrade.ethExchange())
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", ZeroXTrade.ethExchange())
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
     tradeGroupID = longTo32Bytes(42)

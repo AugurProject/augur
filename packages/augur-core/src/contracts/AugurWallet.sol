@@ -7,7 +7,7 @@ import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/IAugurWalletRegistry.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
-import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
 import 'ROOT/uniswap/interfaces/IWETH.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 
@@ -85,7 +85,7 @@ contract AugurWallet is Initializable, IAugurWallet {
 
     function withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai) external payable returns (bool) {
         require(msg.sender == owner);
-        IUniswapV2Exchange _ethExchange = registry.ethExchange();
+        IUniswapV2Pair _ethExchange = registry.ethExchange();
         IWETH _weth = registry.WETH();
         bool _token0IsCash = registry.token0IsCash();
         uint256 _ethAmount = address(this).balance;

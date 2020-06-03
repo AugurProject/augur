@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
-import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, DAI } from 'modules/common/constants';
+import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, DAI, FEE_RESERVES_LABEL } from 'modules/common/constants';
 import {
   DaiLogoIcon,
   EthIcon,
@@ -19,11 +19,12 @@ import { AccountBalances, FormattedNumber } from 'modules/types';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 import { displayGasInDai, ethToDai } from 'modules/app/actions/get-ethToDai-rate';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import TransferMyDai from 'modules/modal/containers/transfer-my-dai';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
+import { EthReserveAutomaticTopOff } from 'modules/common/labels';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -162,22 +163,44 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       }).formattedValue,
       disabled: GsnEnabled ? balances.rep === "0" : false,
     },
-    {
-      name: 'Fee reserve',
-      toolTip: renderToolTip(
-        'tooltip--ethReserve',
-        <div>
-          <p>Augur runs on a peer-to-peer network, transaction fees are paid in ETH. These fees go entirely to the network. Augur doesn’t collect any of these fees.</p>
-          <p>If your account balance exceeds $40, 0.04 ETH equivilant in DAI will be held in your Fee reserve to cover transaction fees, which results in cheaper transaction fees.</p>
-          <p>As long as your available account balance remains over $40 Dai, your Fee reserve will automatically be replenished.</p>
-          <p>Your Fee reserve can easily be cashed out at anytime using the withdraw button in the transactions section of your account summary.</p>
-        </div>
-      ),
-      value: ethReserveInDai,
-      subValue: reserveEthAmount.formattedValue,
-      disabled: GsnEnabled ? balances.signerBalances.eth === "0" : false,
-    },
   ];
+
+  const feeReserveFunds = (
+    <div className={Styles.EthReserves}>
+      <div className={Styles.AccountFunds}>
+        {FEE_RESERVES_LABEL}
+        {renderToolTip(
+          'tooltip--ethReserve',
+          <div>
+            <p>
+              Augur runs on a peer-to-peer network, transaction fees are paid in
+              ETH. These fees go entirely to the network. Augur doesn’t collect
+              any of these fees.
+            </p>
+            <p>
+              If your account balance exceeds $40, 0.04 ETH equivilant in DAI
+              will be held in your Fee reserve to cover transaction fees, which
+              results in cheaper transaction fees.
+            </p>
+            <p>
+              As long as your available account balance remains over $40 Dai,
+              your Fee reserve will automatically be replenished.
+            </p>
+            <p>
+              Your Fee reserve can easily be cashed out at anytime using the
+              withdraw button in the transactions section of your account
+              summary.
+            </p>
+          </div>
+        )}
+        <div>
+          <span>{ethReserveInDai} DAI</span>
+          <span>{reserveEthAmount.formattedValue} ETH</span>
+        </div>
+      </div>
+      <EthReserveAutomaticTopOff />
+    </div>
+  );
 
   const walletProviders = [
     {
@@ -232,18 +255,13 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           .filter(fundType => !fundType.disabled)
           .map((fundType, idx) => (
             <div key={idx} className={Styles.AccountFunds}>
+              {fundType.logo} {fundType.name} {fundType.toolTip ? fundType.toolTip : null}
               <div>
-                {fundType.logo} {fundType.name} {fundType.toolTip ? fundType.toolTip : null}
-              </div>
-              <div>
-                <div>
-                  <span>{fundType.value} {fundType.name === 'Fee reserve' ? DAI : fundType.name}</span>
-                  {fundType.subValue && <span>{fundType.subValue} ETH</span>}
-                </div>
+                  {fundType.value} {fundType.name}
               </div>
             </div>
           ))}
-
+        {reserveEthAmount.value !== 0 && feeReserveFunds}
         {walletProviders
           .filter(wallet => wallet.accountType === accountMeta.accountType)
           .map((wallet, idx) => {
