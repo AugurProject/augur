@@ -128,7 +128,7 @@ export const TransferForm = ({
       : balances[currency.toLowerCase()];
 
     let newAmount = convertExponentialToDecimal(sanitizeArg(balance));
-    if (!signerPays && currency === DAI) {
+    if (!useSigner && !signerPays && currency === DAI) {
       newAmount = createBigNumber(newAmount).minus(createBigNumber(gasEstimateInDai.value));;
     }
     amountChange(newAmount);
@@ -197,13 +197,13 @@ export const TransferForm = ({
       updatedErrors.amount = 'Quantity must be greater than zero.';
     }
 
-    if (!signerPays && (amountMinusGas.lt(ZERO) || createBigNumber(newAmount).gt(amountMinusGas))) {
+    if ((!useSigner && !signerPays) && (amountMinusGas.lt(ZERO) || createBigNumber(newAmount).gt(amountMinusGas))) {
       updatedErrors.amount = `Not enough DAI available to pay transaction fee. ${
         formatDai(amountMinusGas.abs(), { roundDown: true }).roundedFormatted
       } is min`;
     }
 
-    if (signerPays && amountMinusGas.lt(ZERO)) {
+    if ((useSigner || signerPays) && amountMinusGas.lt(ZERO)) {
       updatedErrors.amount = `Not enough ETH to pay transaction fee. ${amountMinusGas.abs()} is needed`;
     }
 

@@ -4,7 +4,6 @@ import Blockies from 'react-blockies';
 
 import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
 import ChevronFlip from 'modules/common/chevron-flip';
-import formatAddress from 'modules/auth/helpers/format-address';
 import { LoginAccount } from 'modules/types';
 
 import Styles from 'modules/auth/components/connect-account/connect-account.styles.less';
@@ -16,8 +15,6 @@ interface ConnectAccountProps {
   isConnectionTrayOpen: boolean;
   updateConnectionTray: Function;
   updateHelpMenuState: Function;
-  updateMobileMenuState: Function;
-  mobileMenuState: number;
   userInfo: LoginAccount['meta'];
 }
 
@@ -29,11 +26,9 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
     const {
       updateConnectionTray,
       updateHelpMenuState,
-      updateMobileMenuState,
       isConnectionTrayOpen,
-      mobileMenuState,
     } = this.props;
-   
+
     updateConnectionTray(!isConnectionTrayOpen);
     updateHelpMenuState(false);
 
@@ -105,7 +100,7 @@ export default class ConnectAccount extends Component<ConnectAccountProps> {
             }
           )}
         >
-          <ConnectDropdown />
+          {isConnectionTrayOpen && <ConnectDropdown />}
         </div>
       </div>
     );
