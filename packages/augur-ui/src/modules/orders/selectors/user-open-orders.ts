@@ -1,9 +1,6 @@
 import memoize from 'memoizee';
 import { createBigNumber } from 'utils/create-big-number';
 import store, { AppState } from 'appStore';
-
-import { isOrderOfUser } from 'modules/orders/helpers/is-order-of-user';
-
 import {
   BUY_INDEX,
   SELL_INDEX,
@@ -54,7 +51,7 @@ export const selectUserOpenOrders = createSelector(
   selectPendingOrdersStateMarket,
   selectLoginAccountAddress,
   (market, userMarketOpenOrders, orderCancellation, pendingOrders, address) => {
-    if (!market || !address || userMarketOpenOrders == null) return [];
+    if (!market || !address || (!userMarketOpenOrders && orderCancellation.lenth === 0 && !pendingOrders)) return [];
     let userOpenOrderCollection =
       market.outcomes
         .map(outcome =>
@@ -100,8 +97,8 @@ const userOpenOrders = memoize(
   (
     marketId,
     outcomeId,
-    userMarketOpenOrders,
-    orderCancellation,
+    userMarketOpenOrders = {},
+    orderCancellation = {},
     marketDescription,
     name,
     marketType,
