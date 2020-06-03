@@ -3320,6 +3320,32 @@ export class AugurWallet<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
+	public addAuthorizedProxy = async (authorizedProxy: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_authorizedProxy","type":"address"}],"name":"addAuthorizedProxy","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [authorizedProxy], 'addAuthorizedProxy', options.sender)
+	}
+	
+	public addAuthorizedProxy_estimateGas = async (authorizedProxy: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_authorizedProxy","type":"address"}],"name":"addAuthorizedProxy","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [authorizedProxy], 'addAuthorizedProxy', options.sender)
+	}
+
+	public addAuthorizedProxy_ = async (authorizedProxy: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_authorizedProxy","type":"address"}],"name":"addAuthorizedProxy","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [authorizedProxy], options.sender)
+		return <boolean>result[0]
+	}
+
+	public authorizedProxies_ = async (arg0: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"authorizedProxies","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0], options.sender)
+		return <boolean>result[0]
+	}
+
 	public cash_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"cash","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -3399,18 +3425,30 @@ export class AugurWallet<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public legacyRegistry_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"legacyRegistry","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
 	public registry_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"registry","outputs":[{"internalType":"contract IAugurWalletRegistry","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
+	}
+
+	public removeAuthorizedProxy = async (authorizedProxy: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_authorizedProxy","type":"address"}],"name":"removeAuthorizedProxy","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [authorizedProxy], 'removeAuthorizedProxy', options.sender)
+	}
+	
+	public removeAuthorizedProxy_estimateGas = async (authorizedProxy: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_authorizedProxy","type":"address"}],"name":"removeAuthorizedProxy","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [authorizedProxy], 'removeAuthorizedProxy', options.sender)
+	}
+
+	public removeAuthorizedProxy_ = async (authorizedProxy: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_authorizedProxy","type":"address"}],"name":"removeAuthorizedProxy","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [authorizedProxy], options.sender)
+		return <boolean>result[0]
 	}
 
 	public transferCash = async (to: string, amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {

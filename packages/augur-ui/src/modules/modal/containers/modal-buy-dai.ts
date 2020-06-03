@@ -29,7 +29,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   track: (eventName, payload) => dispatch(track(eventName, payload)),
   gotoOnboardingStep: step =>
     dispatch(updateModal({ type: getOnboardingStep(step) })),
-  showBuyDaiModal: () => dispatch(updateModal({ type: MODAL_BUY_DAI })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -42,7 +41,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   },
   analyticsEvent: () => dP.track(BUY_DAI, {}),
   showTransferMyDai: sP.signerHasDAI,
-  showBuyDaiModal: () => dP.showBuyDaiModal(),
+  showAugurP2PModal: () => dP.showAugurP2PModal(),
   linkContent: [
     {
       content:
