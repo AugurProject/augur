@@ -96,7 +96,9 @@ contract HotLoading {
 
     function getMarketsData(IAugur _augur, IMarket[] calldata _markets, IFillOrder _fillOrder, IOrders _orders) external view returns (MarketData[] memory _marketsData) {
         uint256 _numMarkets = _markets.length;
+
         _marketsData = new MarketData[](_numMarkets);
+
         for (uint256 _marketIndex = 0; _marketIndex < _numMarkets; _marketIndex++) {
             _marketsData[_marketIndex] = getMarketData(_augur, _markets[_marketIndex], _fillOrder, _orders);
         }
