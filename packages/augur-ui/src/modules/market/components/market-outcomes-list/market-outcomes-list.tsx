@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import Media from 'react-media';
 
@@ -7,40 +7,47 @@ import { MarketOutcome } from 'modules/common/table-rows';
 import Styles from 'modules/market/components/market-outcomes-list/market-outcomes-list.styles.less';
 import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import HeaderStyles from 'modules/portfolio/components/common/data-table-header.styles.less';
-import { OutcomeFormatted } from 'modules/types';
+import { OutcomeFormatted, MarketData } from 'modules/types';
 import { ToggleExtendButton } from 'modules/common/buttons';
 import { SMALL_MOBILE } from 'modules/common/constants';
 import { Getters } from '@augurproject/sdk';
+import { selectSortedMarketOutcomes, selectMarket } from 'modules/markets/selectors/market';
 
 interface MarketOutcomesListProps {
-  outcomesFormatted: OutcomeFormatted[];
   updateSelectedOutcome: Function;
   selectedOutcomeId: number;
-  scalarDenomination: string | undefined;
-  marketType: string;
   marketId: string;
   popUp: boolean;
   toggle: Function;
   hideOutcomes?: boolean;
-  orderBook: Getters.Markets.OutcomeOrderBook;
   preview: boolean;
+  market: MarketData;
+  orderBook: Getters.Markets.OutcomeOrderBook;
   updateSelectedOrderProperties: Function;
 }
 
 const MarketOutcomesList = ({
-  outcomesFormatted,
   selectedOutcomeId,
   updateSelectedOutcome,
-  marketType,
-  scalarDenomination,
   popUp,
   marketId,
   toggle,
   hideOutcomes,
-  orderBook,
   preview,
   updateSelectedOrderProperties,
+  market,
+  orderBook
 }: MarketOutcomesListProps) => {
+  const marketSelected = market || selectMarket(marketId);
+
+  const {
+    scalarDenomination,
+    marketType,
+    outcomesFormatted
+  } = marketSelected;
+ 
+  const outcomesFormattedSelected = selectSortedMarketOutcomes(marketType, outcomesFormatted);
+
   return (
     <section className={Styles.OutcomesList}>
       {!popUp && (
@@ -105,7 +112,7 @@ const MarketOutcomesList = ({
           </Media>
         </ul>
         <div>
-          {outcomesFormatted
+          {outcomesFormattedSelected
             .filter(o => o.isTradeable)
             .map(outcome => (
               <MarketOutcome
