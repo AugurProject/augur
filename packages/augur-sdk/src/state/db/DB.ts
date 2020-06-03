@@ -423,6 +423,7 @@ export class DB {
 
     await this.disputeDatabase.sync(highestAvailableBlockNumber);
     await this.currentOrdersDatabase.sync(highestAvailableBlockNumber);
+    await this.parsedOrderEventDatabase.sync(highestAvailableBlockNumber);
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
     await this.marketDatabase.sync(highestAvailableBlockNumber);

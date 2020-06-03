@@ -1,9 +1,9 @@
 import { ParsedLog } from '@augurproject/types';
 import { Augur } from '../../Augur';
 import { DB } from './DB';
-import { SyncableDB } from './SyncableDB';
+import { DelayedSyncableDB } from './DelayedSyncableDB';
 
-export class ParsedOrderEventDB extends SyncableDB {
+export class ParsedOrderEventDB extends DelayedSyncableDB {
   constructor(db: DB, networkId: number, augur: Augur) {
     super(augur, db, networkId, 'OrderEvent', 'ParsedOrderEvents');
   }
