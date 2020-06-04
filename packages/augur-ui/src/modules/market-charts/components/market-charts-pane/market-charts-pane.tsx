@@ -3,7 +3,7 @@ import Media from 'react-media';
 
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
-import PriceHistory from 'modules/market-charts/containers/price-history';
+import PriceHistory from "modules/market-charts/components/price-history/price-history";
 import { SMALL_MOBILE, ZERO } from 'modules/common/constants';
 
 import { Candlestick } from 'modules/market-charts/components/candlestick/candlestick';

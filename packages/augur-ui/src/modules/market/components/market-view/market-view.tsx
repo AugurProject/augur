@@ -38,7 +38,7 @@ import {
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
-import PriceHistory from 'modules/market-charts/containers/price-history';
+import PriceHistory from "modules/market-charts/components/price-history/price-history";
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { LeftChevron } from 'modules/common/icons';
 import { SMALL_MOBILE } from 'modules/common/constants';
