@@ -7,7 +7,7 @@ import PriceHistory from "modules/market-charts/components/price-history/price-h
 import { SMALL_MOBILE, ZERO } from 'modules/common/constants';
 
 import { Candlestick } from 'modules/market-charts/components/candlestick/candlestick';
-import DepthChart from 'modules/market-charts/containers/depth';
+import DepthChart from 'modules/market-charts/components/depth/depth';
 import { BigNumber } from 'bignumber.js';
 import { MarketData, IndividualOutcomeOrderBook } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -77,7 +77,7 @@ const MarketChartsPane = ({
               <DepthChart
                 {...shared}
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
-                hoveredPrice={hoveredPrice}
+                hoveredPriceProp={hoveredPrice}
                 hoveredDepth={hoveredDepth}
                 updateHoveredDepth={updateHoveredDepth}
                 updateHoveredPrice={updateHoveredPrice}
@@ -122,7 +122,7 @@ const MarketChartsPane = ({
               <DepthChart
                 {...shared}
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
-                hoveredPrice={hoveredPrice}
+                hoveredPriceProp={hoveredPrice}
                 hoveredDepth={hoveredDepth}
                 updateHoveredDepth={updateHoveredDepth}
                 updateHoveredPrice={updateHoveredPrice}
