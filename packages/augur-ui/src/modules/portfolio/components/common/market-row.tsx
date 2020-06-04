@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import ToggleRow from 'modules/common/toggle-row';
 import { MarketStatusLabel, TemplateShield, MarketTypeLabel, LiquidityDepletedLabel, Archived } from 'modules/common/labels';
 import { SCALAR, SIGN_SEND_ORDERS, MODAL_UNSIGNED_ORDERS } from 'modules/common/constants';
-import MarketTitle from 'modules/market/containers/market-title';
+import MarketTitle from 'modules/market/components/common/market-title';
 import { TXEventName } from '@augurproject/sdk';
 import { SubmitTextButton } from 'modules/common/buttons';
 

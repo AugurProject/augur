@@ -10,7 +10,7 @@ import {
 } from 'modules/common/labels';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import Styles from 'modules/portfolio/components/common/filled-orders-table.styles.less';
-import MarketTitle from 'modules/market/containers/market-title';
+import MarketTitle from 'modules/market/components/common/market-title';
 
 export interface FilledOrdersTableProps {
   filledOrder: MarketData;

@@ -19,7 +19,7 @@ import {
   NOTIFICATION_TYPES,
   REPORTING_ENDS,
 } from 'modules/common/constants';
-import MarketTitle from 'modules/market/containers/market-title';
+import MarketTitle from 'modules/market/components/common/market-title';
 import { MarketReportingState } from '@augurproject/sdk/build';
 import classNames from 'classnames';
 import { getWarpSyncRepReward } from 'modules/contracts/actions/contractCalls';

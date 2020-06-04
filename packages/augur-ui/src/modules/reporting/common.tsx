@@ -72,7 +72,7 @@ import {
   getRepThresholdForPacing,
   getGasPrice,
 } from 'modules/contracts/actions/contractCalls';
-import MarketTitle from 'modules/market/containers/market-title';
+import MarketTitle from 'modules/market/components/common/market-title';
 import {
   displayGasInDai,
   getGasInDai,

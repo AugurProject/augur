@@ -6,7 +6,7 @@ import { FilledOrder } from "modules/common/table-rows";
 import Styles from 'modules/portfolio/components/common/order-market-row.styles.less';
 
 import { Market, Order } from 'modules/portfolio/types';
-import MarketTitle from 'modules/market/containers/market-title';
+import MarketTitle from 'modules/market/components/common/market-title';
 
 export interface OrderMarketRowProps {
   market: Market;

@@ -1,22 +1,32 @@
-import React from "react";
-import { UP, DOWN, NONE } from "modules/common/constants";
-import Styles from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator.styles.less";
+import React from 'react';
+import { UP, DOWN, NONE } from 'modules/common/constants';
+import Styles from 'modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator.styles.less';
+import { useMarketsStore } from 'modules/markets/store/markets';
+import { selectMarketOutcomeTradingIndicator } from 'modules/markets/selectors/select-market-outcome-trading-indicator';
+import { useLocation } from 'react-router';
+import { MarketInfoOutcome } from '@augurproject/sdk/src/state/getter/Markets';
 
 interface OutcomeTradingIndicatorProps {
-  tradingIndicator: string;
   style?: object;
-  location: string;
+  outcome: MarketInfoOutcome;
 }
 
 const OutcomeTradingIndicator: React.FC<OutcomeTradingIndicatorProps> = ({
-  tradingIndicator,
   style,
-  location
+  outcome,
 }) => {
+  const location = useLocation();
+  const { marketTradingHistory } = useMarketsStore();
+  const tradingIndicator = selectMarketOutcomeTradingIndicator(
+    marketTradingHistory,
+    outcome,
+    false
+  );
+
   const indicatorArray = {
     [UP]: Styles.Up,
     [DOWN]: Styles.Down,
-    [NONE]: ""
+    [NONE]: '',
   };
 
   const indicatorStyle = indicatorArray[tradingIndicator];
@@ -31,49 +41,49 @@ const OutcomeTradingIndicator: React.FC<OutcomeTradingIndicatorProps> = ({
   const spacing = (loc, direction) => {
     if (direction !== NONE) {
       switch (`${loc}|${direction}`) {
-        case "yes-no-scalar|up":
-          return { bottom: "0.875rem" };
-        case "yes-no-scalar|down":
-          return { top: "1.075rem" };
-        case "categorical|up":
-          return { top: "-0.9rem" };
-        case "categorical|down":
-          return { top: "0.85rem" };
-        case "outcomes|up":
-          return { position: "absolute" };
-        case "outcomes|down":
-          return { top: "1.5rem", position: "absolute" };
-        case "tradingPage|up":
+        case 'yes-no-scalar|up':
+          return { bottom: '0.875rem' };
+        case 'yes-no-scalar|down':
+          return { top: '1.075rem' };
+        case 'categorical|up':
+          return { top: '-0.9rem' };
+        case 'categorical|down':
+          return { top: '0.85rem' };
+        case 'outcomes|up':
+          return { position: 'absolute' };
+        case 'outcomes|down':
+          return { top: '1.5rem', position: 'absolute' };
+        case 'tradingPage|up':
           return {
-            position: "absolute",
-            marginLeft: "0.75rem",
-            borderWidth: "0 3px 4px",
-            opacity: "1"
+            position: 'absolute',
+            marginLeft: '0.75rem',
+            borderWidth: '0 3px 4px',
+            opacity: '1',
           };
-        case "tradingPage|down":
+        case 'tradingPage|down':
           return {
-            position: "absolute",
-            marginLeft: "0.75rem",
-            borderWidth: "4px 3px 0",
-            opacity: "1",
-            marginBottom: "-2px"
+            position: 'absolute',
+            marginLeft: '0.75rem',
+            borderWidth: '4px 3px 0',
+            opacity: '1',
+            marginBottom: '-2px',
           };
-        case "scalarScale|up":
+        case 'scalarScale|up':
           return {
-            position: "absolute",
-            borderBottomColor: "#FFF",
-            marginLeft: "0.3rem",
-            borderWidth: "5px",
-            opacity: "1"
+            position: 'absolute',
+            borderBottomColor: '#FFF',
+            marginLeft: '0.3rem',
+            borderWidth: '5px',
+            opacity: '1',
           };
-        case "scalarScale|down":
+        case 'scalarScale|down':
           return {
-            position: "absolute",
-            borderTopColor: "#FFF",
-            marginLeft: "0.3rem",
-            borderWidth: "5px",
-            opacity: "1",
-            top: "4px"
+            position: 'absolute',
+            borderTopColor: '#FFF',
+            marginLeft: '0.3rem',
+            borderWidth: '5px',
+            opacity: '1',
+            top: '4px',
           };
         default:
           return {};
@@ -84,11 +94,11 @@ const OutcomeTradingIndicator: React.FC<OutcomeTradingIndicatorProps> = ({
 
   const arrowStyles = (loc, indicator) => ({
     ...style,
-    position: "relative",
-    ...spacing(loc, indicator)
+    position: 'relative',
+    ...spacing(loc, indicator),
   });
 
-  if (tradingIndicator === "none") {
+  if (tradingIndicator === 'none') {
     return null;
   }
   return (
@@ -97,10 +107,10 @@ const OutcomeTradingIndicator: React.FC<OutcomeTradingIndicatorProps> = ({
       style={arrowStyles(location, direction(tradingIndicator))}
     />
   );
-}
-
-OutcomeTradingIndicator.defaultProps = {
-  style: {}
 };
 
-export default OutcomeTradingIndicator
+OutcomeTradingIndicator.defaultProps = {
+  style: {},
+};
+
+export default OutcomeTradingIndicator;
