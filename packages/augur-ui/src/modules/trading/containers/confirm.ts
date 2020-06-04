@@ -24,7 +24,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
   const sweepStatus = state.pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
-  const ethInReserve = getEthReserve(state);
   return {
     gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
     availableEth: createBigNumber(loginAccount.balances.eth),
@@ -35,7 +34,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
     GsnEnabled,
     walletStatus,
     sweepStatus,
-    hasEthReserve: ethInReserve.value > 0,
   };
 };
 

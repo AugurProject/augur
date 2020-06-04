@@ -1592,9 +1592,10 @@ export const EthReserveNotice = connect(
   mapStateToPropsEthReserve
 )(EthReserveNoticeCmp);
 
-export const EthReserveAutomaticTopOff = () => {
+export const EthReserveAutomaticTopOffCmp = ({ show }) => {
   // using useState b/c lag in setting/getting property from sdk.
   const [checked, setChecked] = useState(augurSdk?.client?.getUseDesiredEthBalance());
+  if (!show) return null;
   return (
     <div
       className={classNames(Styles.Checkbox, {
@@ -1613,6 +1614,20 @@ export const EthReserveAutomaticTopOff = () => {
     </div>
   );
 };
+
+const mapStateToPropsEthReserveTopOff = (state: AppState) => {
+  const tradingAccountDai = createBigNumber(state.loginAccount.balances.dai);
+  const signerEth = createBigNumber(state.loginAccount.balances.signerBalances.eth);
+  const aboveCutoff = tradingAccountDai.gt(createBigNumber(state.env.gsn.minDaiForSignerETHBalanceInDAI));
+  const aboveTopOff = signerEth.gt(createBigNumber(state.env.gsn.desiredSignerBalanceInETH));
+  return {
+    show: aboveCutoff && !aboveTopOff
+  }
+}
+
+export const EthReserveAutomaticTopOff = connect(
+  mapStateToPropsEthReserveTopOff
+)(EthReserveAutomaticTopOffCmp);
 
 export const AutoCancelOrdersNotice = () => (
     <div className={classNames(Styles.ModalMessageAutoCancel)}>
