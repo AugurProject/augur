@@ -55,7 +55,7 @@ export const selectUserOpenOrders = createSelector(
     let userOpenOrderCollection =
       market.outcomes
         .map(outcome => {
-          const orderData = userMarketOpenOrders[outcome.id];
+          const orderData = userMarketOpenOrders && userMarketOpenOrders[outcome.id];
           if (!orderData && orderCancellation.length === 0) return [];
           return userOpenOrders(
             market.id,
