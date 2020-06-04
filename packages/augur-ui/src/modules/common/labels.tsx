@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
@@ -15,7 +15,9 @@ import {
   TemplateIcon,
   YellowTemplateIcon,
   ArchivedIcon,
-  ExclamationCircle
+  ExclamationCircle,
+  FilledCheckbox,
+  EmptyCheckbox
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -36,6 +38,7 @@ import {
   ACCOUNT_TYPES,
   CLOSED_SHORT,
   GWEI_CONVERSION,
+  AUTO_ETH_REPLENISH,
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber, formatBlank, formatGasCostToEther, formatAttoEth } from 'utils/format-number';
@@ -58,6 +61,7 @@ import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
 import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
+import { augurSdk } from 'services/augursdk';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -1589,6 +1593,27 @@ export const EthReserveNotice = connect(
   mapStateToPropsEthReserve
 )(EthReserveNoticeCmp);
 
+export const EthReserveAutomaticTopOff = () => {
+  // using useState b/c lag in setting/getting property from sdk.
+  const [checked, setChecked] = useState(augurSdk?.client?.getUseDesiredEthBalance());
+  return (
+    <div
+      className={classNames(Styles.Checkbox, {
+        [Styles.CheckboxChecked]: checked,
+      })}
+      role="button"
+      onClick={e => {
+        if (checked !== null) {
+          augurSdk?.client?.setUseDesiredEthBalance(!checked);
+          setChecked(!checked);
+        }
+      }}
+    >
+      {checked ? FilledCheckbox : EmptyCheckbox}
+      {AUTO_ETH_REPLENISH}
+    </div>
+  );
+};
 
 export const AutoCancelOrdersNotice = () => (
     <div className={classNames(Styles.ModalMessageAutoCancel)}>

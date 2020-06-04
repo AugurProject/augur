@@ -4,7 +4,7 @@ import 'ROOT/IAugur.sol';
 import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/uniswap/libraries/UQ112x112.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
-import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 
@@ -38,7 +38,7 @@ contract RepOracle is Initializable {
     }
 
     function poke(address _reputationToken) external returns (uint256) {
-        IUniswapV2Exchange _exchange = getExchange(_reputationToken);
+        IUniswapV2Pair _exchange = getExchange(_reputationToken);
         uint256 _blockTimestamp = block.timestamp;
         // If we've never updated this rep data before initialize it and return
         if (repData[_reputationToken].price == 0) {
@@ -88,12 +88,12 @@ contract RepOracle is Initializable {
         return _price;
     }
 
-    function getExchange(address _reputationToken) public returns (IUniswapV2Exchange) {
-        address _exchangeAddress = uniswapFactory.getExchange(_reputationToken, address(cash));
+    function getExchange(address _reputationToken) public returns (IUniswapV2Pair) {
+        address _exchangeAddress = uniswapFactory.getPair(_reputationToken, address(cash));
         if (_exchangeAddress == address(0)) {
-            _exchangeAddress = uniswapFactory.createExchange(_reputationToken, address(cash));
+            _exchangeAddress = uniswapFactory.createPair(_reputationToken, address(cash));
         }
-        return IUniswapV2Exchange(_exchangeAddress);
+        return IUniswapV2Pair(_exchangeAddress);
     }
 
     function getInitialPrice(address _reputationToken) private view returns (uint256) {

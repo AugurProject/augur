@@ -60,45 +60,44 @@
 }
 
 .AccountFunds {
+  .mono-11-bold;
+
   background: @color-table-header;
 
   @media @breakpoint-mobile {
     background: @color-table-header;
   }
 
-  > div:first-of-type {
-    .mono-11-bold;
+  align-items: center;
+  color: @color-primary-text;
+  display: flex;
+  text-transform: uppercase;
 
-    align-items: center;
-    color: @color-primary-text;
-    display: flex;
-    text-transform: uppercase;
+  @media @breakpoint-mobile {
+    .mono-12-bold;
+  }
 
-    @media @breakpoint-mobile {
-      .mono-12-bold;
-    }
+  > span label {
 
-    > span label {
+    margin: 0px 4px;
 
-      margin: 0px 4px;
+    svg {
+      height: @size-12;
+      width: @size-12;
 
-      svg {
-        height: @size-12;
-        width: @size-12;
-
-        > path {
-          fill: @color-secondary-text;
-        }
+      > path {
+        fill: @color-secondary-text;
       }
     }
-
-    > svg {
-      fill: @color-primary-text;
-      height: @size-16;
-      margin-right: @size-8;
-      width: @size-16;
-    }
   }
+
+  > svg {
+    fill: @color-primary-text;
+    height: @size-16;
+    margin-right: @size-8;
+    width: @size-16;
+  }
+
 
   > div:last-of-type {
     .mono-11-bold;
@@ -109,17 +108,36 @@
       .mono-12-medium;
     }
 
-    > div {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-grow: 2;
 
-      > span:nth-of-type(2) {
-        .mono-9-bold;
+    > span:nth-of-type(2) {
+      .mono-9-bold;
 
-        color: @color-secondary-text;
-      }
+      color: @color-secondary-text;
     }
+  }
+}
+
+.EthReserves {
+  background: @color-table-header;
+  border-bottom: @size-1 solid @color-dark-grey;
+  flex-flow: column;
+
+  > div:first-of-type {
+    border-bottom: unset;
+    height: @size-32;
+    padding: 0 @size-14;
+
+    > div {
+      flex-grow: 2;
+    }
+  }
+
+  > div:last-of-type {
+    padding: 0 0 @size-8;
   }
 }
 

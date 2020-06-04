@@ -1101,3 +1101,34 @@ span.PendingLabel {
     padding: @size-5;
   }
 }
+
+.Checkbox {
+  .text-10;
+
+  align-items: center;
+  color: @color-primary-text;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: @size-40 auto @size-16;
+  width: 304px;
+
+  > svg {
+    margin: 0 @size-12;
+    width: @size-20;
+
+    > rect {
+      stroke: @color-secondary-action-outline;
+    }
+
+    > path {
+      stroke: @color-primary-text;
+    }
+  }
+}
+
+.CheckboxChecked {
+  > svg > rect {
+    fill: @color-secondary-action;
+    fill-opacity: 0.3;
+  }
+}

@@ -35,7 +35,7 @@ import {
   formatEther,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip } from 'modules/common/labels';
+import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip, EthReserveAutomaticTopOff } from 'modules/common/labels';
 import { Trade } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
 import { ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
@@ -76,6 +76,7 @@ interface ConfirmProps {
   selectedOutcomeId: number;
   updateWalletStatus: Function;
   sweepStatus: string;
+  hasEthReserve: boolean;
 }
 
 interface ConfirmState {
@@ -326,6 +327,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasPrice,
       GsnEnabled,
       initialLiquidity,
+      hasEthReserve,
     } = this.props;
 
     const {
@@ -495,6 +497,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               )}
           </div>
         )}
+        {numFills > 0 && hasEthReserve && <EthReserveAutomaticTopOff />}
         {messages && (
           <div
             className={classNames(Styles.MessageContainer, {

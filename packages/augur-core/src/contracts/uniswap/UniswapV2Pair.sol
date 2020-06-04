@@ -1,6 +1,6 @@
 pragma solidity 0.5.15;
 
-import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
 import 'ROOT/uniswap/UniswapV2ERC20.sol';
 import 'ROOT/uniswap/libraries/Math.sol';
 import 'ROOT/uniswap/libraries/UQ112x112.sol';
@@ -9,7 +9,7 @@ import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Callee.sol';
 
 
-contract UniswapV2Exchange is IUniswapV2Exchange, UniswapV2ERC20 {
+contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     using SafeMath  for uint;
     using UQ112x112 for uint224;
 

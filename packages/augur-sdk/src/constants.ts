@@ -131,12 +131,11 @@ export const PLACE_ORDER_WITH_SHARES = {
 };
 
 export const WORST_CASE_FILL = {
-  2: new BigNumber('935219', 10),
-  3: new BigNumber('996763', 10),
-  4: new BigNumber('1058302', 10),
-  5: new BigNumber('1119834', 10),
-  6: new BigNumber('1181369', 10),
-  7: new BigNumber('1242902', 10),
+  3: new BigNumber('935219', 10),
+  4: new BigNumber('996763', 10),
+  5: new BigNumber('1058302', 10),
+  6: new BigNumber('1119834', 10),
+  7: new BigNumber('1181369', 10),
   8: new BigNumber('1242902', 10),
 };
 

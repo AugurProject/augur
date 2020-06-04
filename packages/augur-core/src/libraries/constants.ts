@@ -92,7 +92,7 @@ export const EXTERNAL_CONTRACTS = [
     'DaiVat',
     // Uniswap
     'UniswapV2Factory',
-    'UniswapV2Exchange',
+    'UniswapV2Pair',
     'UniswapV2Router01',
     // GSN
     'RelayHub',

@@ -7,7 +7,7 @@ import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/IAugurWalletRegistry.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
-import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
 import 'ROOT/uniswap/interfaces/IWETH.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 
@@ -85,14 +85,14 @@ contract AugurWallet is Initializable, IAugurWallet {
 
     function withdrawAllFundsAsDai(address _destination, uint256 _minExchangeRateInDai) external payable returns (bool) {
         require(msg.sender == owner);
-        IUniswapV2Exchange _ethExchange = registry.ethExchange();
+        IUniswapV2Pair _ethExchange = registry.ethExchange();
         IWETH _weth = registry.WETH();
         bool _token0IsCash = registry.token0IsCash();
         uint256 _ethAmount = address(this).balance;
         (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = _ethExchange.getReserves();
         uint256 _cashAmount = getAmountOut(_ethAmount, _token0IsCash ? _reserve1 : _reserve0, _token0IsCash ? _reserve0 : _reserve1);
         uint256 _exchangeRate = _cashAmount.mul(10**18).div(_ethAmount);
-        require(_minExchangeRateInDai > _exchangeRate, "Exchange rate too low");
+        require(_minExchangeRateInDai <= _exchangeRate, "Exchange rate too low");
         _weth.deposit.value(_ethAmount)();
         _weth.transfer(address(_ethExchange), _ethAmount);
         _ethExchange.swap(_token0IsCash ? _cashAmount : 0, _token0IsCash ? 0 : _cashAmount, address(this), "");

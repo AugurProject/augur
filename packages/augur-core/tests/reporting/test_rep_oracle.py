@@ -10,7 +10,7 @@ def test_rep_oracle(contractsFixture, augur, market, universe):
     reputationTokenAddress = universe.getReputationToken()
     reputationToken = contractsFixture.applySignature('TestNetReputationToken', reputationTokenAddress)
     repOracle = contractsFixture.contracts["RepOracle"]
-    repExchange = contractsFixture.applySignature("UniswapV2Exchange", repOracle.getExchange(reputationTokenAddress))
+    repExchange = contractsFixture.applySignature("UniswapV2Pair", repOracle.getExchange(reputationTokenAddress))
 
     account = contractsFixture.accounts[0]
 

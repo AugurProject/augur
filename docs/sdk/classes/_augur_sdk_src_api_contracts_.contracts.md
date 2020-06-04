@@ -188,7 +188,7 @@ ___
 
 ###  ethExchange
 
-• **ethExchange**: *UniswapV2Exchange*
+• **ethExchange**: *UniswapV2Pair*
 
 *Defined in [packages/augur-sdk/src/api/Contracts.ts:33](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Contracts.ts#L33)*
 
@@ -505,7 +505,7 @@ ___
 
 ###  uniswapExchangeFromAddress
 
-▸ **uniswapExchangeFromAddress**(`address`: string): *UniswapV2Exchange*
+▸ **uniswapExchangeFromAddress**(`address`: string): *UniswapV2Pair*
 
 *Defined in [packages/augur-sdk/src/api/Contracts.ts:143](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Contracts.ts#L143)*
 
@@ -515,7 +515,7 @@ Name | Type |
 ------ | ------ |
 `address` | string |
 
-**Returns:** *UniswapV2Exchange*
+**Returns:** *UniswapV2Pair*
 
 ___
 
