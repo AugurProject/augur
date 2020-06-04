@@ -69,7 +69,7 @@ interface MarketCardProps {
   marketLinkCopied: Function;
   forkingMarket: string | null;
   isForking?: boolean;
-  forkingEndTime?: number; 
+  forkingEndTime?: number;
 }
 
 interface MarketCardState {
@@ -304,29 +304,29 @@ export default class MarketCard extends React.Component<
               forkingEndTime={forkingEndTime}
             />
           </div>
-          <div
-            className={classNames(Styles.TopRow, {
-              [Styles.scalar]: isScalar,
-              [Styles.template]: isTemplate,
-              [Styles.invalid]: mostLikelyInvalid,
-              [Styles.inReport]: !marketResolved && reportingState !== REPORTING_STATE.PRE_REPORTING,
-            })}
-          >
-            {marketStatus === MARKET_REPORTING && (
-              <InReportingLabel
-                marketStatus={marketStatus}
-                reportingState={reportingState}
-                disputeInfo={disputeInfo}
-                isWarpSync={market.isWarpSync}
-                isForkingMarket={isForking && forkingMarket === id}
-              />
-            )}
-            {isScalar && !isWarpSync && (
-              <MarketTypeLabel marketType={marketType} />
-            )}
-            <RedFlag market={market} />
-            {isTemplate && <TemplateShield market={market} />}
-            <Archived market={market} />
+          <div className={classNames(Styles.TopRow, {
+            [Styles.HasScalarOrInReportingLabels]: isScalar || (!marketResolved && reportingState !== REPORTING_STATE.PRE_REPORTING),
+            [Styles.HasCircularIcons]: market.isTemplate || market.isArchived || market.mostLikelyInvalid,
+          })}>
+            <div>
+              {isScalar && !isWarpSync && (
+                <MarketTypeLabel marketType={marketType} />
+              )}
+              {marketStatus === MARKET_REPORTING && (
+                <InReportingLabel
+                  marketStatus={marketStatus}
+                  reportingState={reportingState}
+                  disputeInfo={disputeInfo}
+                  isWarpSync={market.isWarpSync}
+                  isForkingMarket={isForking && forkingMarket === id}
+                />
+              )}
+            </div>
+            <div>
+              <RedFlag market={market} />
+              <TemplateShield market={market} />
+              <Archived market={market} />
+            </div>
             <CategoryTagTrail categories={categoriesWithClick} />
             <MarketProgress
               reportingState={reportingState}
