@@ -28,6 +28,12 @@ import {
   REP,
   MODAL_ADD_FUNDS,
   DAI,
+  ZERO,
+  REPORTING_STATE,
+  MARKETMIGRATED,
+  MODAL_CLAIM_FEES,
+  MODAL_REPORTING,
+  MODAL_MIGRATE_MARKET,
 } from 'modules/common/constants';
 import {
   buildformattedDate,
@@ -35,6 +41,7 @@ import {
   minMarketEndTimeDay,
   startOfTomorrow,
   timestampComponents,
+  dateHasPassed,
 } from 'utils/format-date';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import {
@@ -66,6 +73,10 @@ import {
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { createBigNumber } from 'utils/create-big-number';
+import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
+import { text } from 'modules/common/labels.styles.less';
 
 export interface HeaderProps {
   text: string;
@@ -1436,6 +1447,130 @@ export const TemplateBanners = () => {
       className={Styles.TopBannerMargin}
       buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
       show
+    />
+  );
+};
+
+export const MigrateMarketNotice = ({marketId}) => {
+  const {
+    universe: { forkingInfo, children },
+    blockchain: { currentAugurTimestamp },
+    actions: { setModal }
+  } = useAppStatusStore();
+  const isForking = !!forkingInfo;
+  const market = selectMarket(marketId);
+  const { reportingState, endTime } = market;
+  let show = isForking;
+  let canMigrateMarkets = false;
+  let hasReleaseRepOnThisMarket = false;
+
+  const hasMarketEnded = dateHasPassed(currentAugurTimestamp * 1000, endTime);
+
+  const hasForkPassed =
+    isForking &&
+    dateHasPassed(currentAugurTimestamp * 1000, forkingInfo.forkEndTime);
+
+  if (
+    isForking &&
+    forkingInfo.winningChildUniverseId &&
+    children &&
+    children.length > 0
+  ) {
+    const winning = children.find(
+      c => c.id === forkingInfo.winningChildUniverseId
+    );
+    if (createBigNumber(winning.usersRep || ZERO).gt(ZERO)) {
+      canMigrateMarkets = true;
+    }
+  }
+
+  const marketNeedsMigrating =
+    hasForkPassed && reportingState !== REPORTING_STATE.FINALIZED;
+
+  const releasableRep = selectReportingWinningsByMarket();
+  let hasReleaseRep = releasableRep.totalUnclaimedRep.gt(ZERO);
+
+  if (
+    hasReleaseRep &&
+    releasableRep.claimableMarkets &&
+    releasableRep.claimableMarkets.unclaimedRep
+  ) {
+    hasReleaseRepOnThisMarket =
+      releasableRep.claimableMarkets.marketContracts.filter(
+        c => c.marketId === marketId
+      ).length > 0;
+  }
+  let title =
+    'Fork has been initiated. Fork needs to be resolved before migrating this market to the new universe.';
+  let buttonText = '';
+  let description = '';
+  let buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
+  let queueName = '';
+  let queueId = '';
+
+  if (marketNeedsMigrating && canMigrateMarkets) {
+    title =
+      'Fork has finalized. Please migrate this market to the new universe.';
+    description =
+      'This market will be migrated to the winning universe and will no longer be viewable in the current universe.';
+    buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON;
+    if (hasMarketEnded) {
+      buttonText = 'Report and Migrate Market';
+      queueName = MARKETMIGRATED;
+      queueId = marketId;
+    } else {
+      buttonText = 'Migrate Market';
+    }
+  }
+
+  if (marketNeedsMigrating && !canMigrateMarkets) {
+    title =
+      'Fork has finalized. REP on Winning Universe is needed to migrate markets ';
+    buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
+  }
+
+  if (hasReleaseRepOnThisMarket) {
+    title =
+      'Disputing is paused on this market. Disputing can continue once the fork has finalised.';
+    description =
+      'As you hold REP in this market’s dispute, please release it now to migrate in the fork.';
+    buttonText = 'Release REP';
+    buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON;
+  }
+
+  if (isForking && forkingInfo.forkingMarket === market.id) {
+    show = false;
+  }
+
+  let action = null;
+  action = hasReleaseRep
+    ? () => setModal({
+      type: MODAL_CLAIM_FEES,
+      ...releasableRep,
+    })
+    : action;
+
+  if (canMigrateMarkets) {
+    action = hasMarketEnded
+      ? () => setModal({
+        type: MODAL_REPORTING,
+        market,
+      })
+      : () => setModal({
+        type: MODAL_MIGRATE_MARKET,
+        market,
+      });
+  }
+
+  return (
+    <DismissableNotice
+      buttonAction={action}
+      title={title}
+      buttonType={buttonType}
+      show={show}
+      queueName={queueName}
+      queueId={queueId}
+      description={description}
     />
   );
 };

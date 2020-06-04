@@ -10,7 +10,6 @@ import { MarketHeader } from 'modules/market/components/market-header/market-hea
 import MarketOrdersPositionsTable from 'modules/market/components/market-orders-positions-table/market-orders-positions-table';
 import MarketOutcomesList from "modules/market/components/market-outcomes-list/market-outcomes-list";
 import TradingForm from 'modules/trading/components/trading-form';
-import OrderBook from 'modules/market-charts/containers/order-book';
 import MarketChartsPane from 'modules/market-charts/containers/market-charts-pane';
 import parseMarketTitle from 'modules/markets/helpers/parse-market-title';
 import MarketTradeHistory from 'modules/market/components/market-trade-history/market-trade-history';
@@ -87,6 +86,7 @@ import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderboo
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { addAlert } from 'modules/alerts/actions/alerts';
+import OrderBook from 'modules/market-charts/components/order-book/order-book';
 
 interface MarketViewProps {
   history: History;
