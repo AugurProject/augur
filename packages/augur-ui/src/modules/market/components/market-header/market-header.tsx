@@ -189,8 +189,6 @@ export const MarketHeader = ({
   const bigTitle = refTitle?.firstChild?.scrollHeight > 64;
   const expandedDetails = detailsTooLong && showReadMore;
 
-  console.log(headerCollapsed);
-
   return (
     <section
       className={classNames(
