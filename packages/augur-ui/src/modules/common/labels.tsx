@@ -304,6 +304,7 @@ interface TemplateShieldProps {
 }
 
 export const TemplateShield = ({ market }: TemplateShieldProps) => {
+  if (!market.isTemplate) return null;
   const yellowShield = hasTemplateTextInputs(market.template.hash, market.marketType === CATEGORICAL);
   return (
     <>
