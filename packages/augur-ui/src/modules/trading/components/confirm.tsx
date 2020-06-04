@@ -238,7 +238,7 @@ export const Confirm = ({
     if (
       !tradingTutorial &&
       totalCost &&
-      createBigNumber(potentialDaiLoss.fullPrecision).gt(
+      createBigNumber(potentialDaiLoss?.fullPrecision).gt(
         createBigNumber(availableDai)
       ) &&
       !tradingTutorial

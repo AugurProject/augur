@@ -28,7 +28,6 @@ const TradingForm = ({
       ),
     [selectedOutcomeId, market]
   );
-  
   return (
     <section className={Styles.TradingForm}>
       <Wrapper

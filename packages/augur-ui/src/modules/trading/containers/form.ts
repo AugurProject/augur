@@ -38,7 +38,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
       ownProps.market.orderBook[selectedOutcomeId]
     );
   }
-  console.log('form container', ownProps);
+  // console.log('form container', ownProps);
   const {
     maxPriceBigNumber: maxPrice,
     minPriceBigNumber: minPrice,
