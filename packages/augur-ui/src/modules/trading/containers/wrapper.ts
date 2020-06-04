@@ -56,7 +56,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   }
   const disclaimerSeen = getValueFromlocalStorage(DISCLAIMER_SEEN);
   const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
-  // console.log('wrapper container', ownProps);
+
   return {
     hasHistory,
     gasPrice: getGasPrice(),
