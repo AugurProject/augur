@@ -1,38 +1,28 @@
 import { ParsedLog } from '@augurproject/types';
-import { Augur } from '../../Augur';
-import { DB } from './DB';
-import { DelayedSyncableDB } from './DelayedSyncableDB';
+import { DerivedDB } from './DerivedDB';
 
-export class ParsedOrderEventDB extends DelayedSyncableDB {
-  constructor(db: DB, networkId: number, augur: Augur) {
-    super(augur, db, networkId, 'OrderEvent', 'ParsedOrderEvents');
-  }
-
-  async addNewBlock(blocknumber: number, logs: ParsedLog[]): Promise<number> {
-    return super.addNewBlock(blocknumber, this.processOrderEvent(logs));
-  }
-
-  private processOrderEvent(logs: ParsedLog[]) {
-    for (let i = 0; i < logs.length; i++) {
-      if (logs[i].orderCreator) continue;
-      logs[i].orderCreator = logs[i].addressData[0];
-      logs[i].orderFiller = logs[i].addressData[1];
-
-      logs[i].price = logs[i].uint256Data[0];
-      logs[i].amount = logs[i].uint256Data[1];
-      logs[i].outcome = logs[i].uint256Data[2];
-      logs[i].tokenRefund = logs[i].uint256Data[3];
-      logs[i].sharesRefund = logs[i].uint256Data[4];
-      logs[i].fees = logs[i].uint256Data[5];
-      logs[i].amountFilled = logs[i].uint256Data[6];
-      logs[i].timestamp = logs[i].uint256Data[7];
-      logs[i].sharesEscrowed = logs[i].uint256Data[8];
-      logs[i].tokensEscrowed = logs[i].uint256Data[9];
-
-      delete logs[i].addressData;
-      delete logs[i].uint256Data;
+export class ParsedOrderEventDB extends DerivedDB {
+  
+  protected processDoc(log: ParsedLog): ParsedLog {
+    if (log['addressData']) {
+      log['orderCreator'] = log['addressData'][0];
+      log['orderFiller'] = log['addressData'][1];
+      delete log['addressData'];
     }
-
-    return logs;
+    if (log['uint256Data']) {
+      log['price'] = log['uint256Data'][0];
+      log['amount'] = log['uint256Data'][1];
+      log['outcome'] = log['uint256Data'][2];
+      log['tokenRefund'] = log['uint256Data'][3];
+      log['sharesRefund'] = log['uint256Data'][4];
+      log['fees'] = log['uint256Data'][5];
+      log['amountFilled'] = log['uint256Data'][6];
+      log['timestamp'] = log['uint256Data'][7];
+      log['sharesEscrowed'] = log['uint256Data'][8];
+      log['tokensEscrowed'] = log['uint256Data'][9];
+      delete log['uint256Data'];
+    }
+    log['open'] = log['amount'] != '0x00' ? 1 : 0;
+    return log;
   }
 }

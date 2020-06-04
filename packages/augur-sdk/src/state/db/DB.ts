@@ -46,7 +46,6 @@ import {
   ReportingFeeChangedLog,
 } from '../logs/types';
 import { BaseSyncableDB } from './BaseSyncableDB';
-import { CurrentOrdersDatabase } from './CurrentOrdersDB';
 import { DelayedSyncableDB } from './DelayedSyncableDB';
 import { DisputeDatabase } from './DisputeDB';
 import { MarketDB } from './MarketDB';
@@ -66,7 +65,7 @@ const PRUNE_HORIZON = SECONDS_IN_A_DAY.multipliedBy(60).toNumber();
 export class DB {
   private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
   private disputeDatabase: DisputeDatabase;
-  private currentOrdersDatabase: CurrentOrdersDatabase;
+  private currentOrdersDatabase: ParsedOrderEventDB;
   marketDatabase: MarketDB;
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
@@ -252,7 +251,7 @@ export class DB {
       ],
       this.augur
     );
-    this.currentOrdersDatabase = new CurrentOrdersDatabase(
+    this.currentOrdersDatabase = new ParsedOrderEventDB(
       this,
       this.networkId,
       'CurrentOrders',
@@ -263,6 +262,8 @@ export class DB {
     this.parsedOrderEventDatabase = new ParsedOrderEventDB(
       this,
       this.networkId,
+      'ParsedOrderEvents',
+      ['OrderEvent'],
       this.augur
     );
 
