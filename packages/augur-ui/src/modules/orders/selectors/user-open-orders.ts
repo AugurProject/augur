@@ -51,21 +51,23 @@ export const selectUserOpenOrders = createSelector(
   selectPendingOrdersStateMarket,
   selectLoginAccountAddress,
   (market, userMarketOpenOrders, orderCancellation, pendingOrders, address) => {
-    if (!market || !address || (!userMarketOpenOrders && orderCancellation.lenth === 0 && !pendingOrders)) return [];
+    if (!market || !address || (!userMarketOpenOrders && orderCancellation.length === 0 && !pendingOrders)) return [];
     let userOpenOrderCollection =
       market.outcomes
-        .map(outcome =>
-          userOpenOrders(
+        .map(outcome => {
+          const orderData = userMarketOpenOrders && userMarketOpenOrders[outcome.id];
+          if (!orderData && orderCancellation.length === 0) return [];
+          return userOpenOrders(
             market.id,
             outcome.id,
-            userMarketOpenOrders,
+            orderData,
             orderCancellation,
             market.description,
             outcome.description,
             market.marketType,
             market.tickSize
           )
-        )
+        })
         .filter(collection => collection.length !== 0)
         .flat() || [];
 
@@ -97,23 +99,21 @@ const userOpenOrders = memoize(
   (
     marketId,
     outcomeId,
-    userMarketOpenOrders = {},
+    orderData,
     orderCancellation = {},
     marketDescription,
     name,
     marketType,
     tickSize
   ) => {
-    const orderData = userMarketOpenOrders[outcomeId];
-
     const userBids =
       orderData == null || orderData[BUY_INDEX] == null
         ? []
         : getUserOpenOrders(
             marketId,
-            userMarketOpenOrders[outcomeId],
-            BUY_INDEX,
             outcomeId,
+            orderData,
+            BUY_INDEX,
             orderCancellation,
             marketDescription,
             name,
@@ -125,9 +125,9 @@ const userOpenOrders = memoize(
         ? []
         : getUserOpenOrders(
             marketId,
-            userMarketOpenOrders[outcomeId],
-            SELL_INDEX,
             outcomeId,
+            orderData,
+            SELL_INDEX,
             orderCancellation,
             marketDescription,
             name,
@@ -145,9 +145,9 @@ const userOpenOrders = memoize(
 
 function getUserOpenOrders(
   marketId,
+  outcomeId,
   orders,
   orderType,
-  outcomeId,
   orderCancellation = {},
   marketDescription = '',
   name = '',
