@@ -8640,7 +8640,7 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 1,
+                daysAfterDateStart: 2,
                 placeholder: `Day of Year`,
               },
             ],
@@ -8648,6 +8648,48 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `To find the results: In the header of the page. Select "Twitter" from the drop down menu. Then enter the twitter handle in the search bar. Scroll down the page until you reach the section that says "Twitter Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the larger number under the "Followers" section (number will not have a +/-). Settlement should be based off of this number.`
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Twitter: Will @[0] have [1] or more new tweets on [2], according to www.socialblade.com?`,
+            example: `Twitter: Will @elonmusk have 10 or more new tweets on September 12, 2020, according to www.socialblade.com?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                validationType: ValidationType.SOCIAL,
+                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_SOCIAL_MEDIA_HANDLE,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.TEXT,
+                validationType: ValidationType.NUMBER,
+                placeholder: `Number`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 2,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] or more`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `less than [1]`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `To find the results: In the header of the page. Select "Twitter" from the drop down menu. Then enter the twitter handle in the search bar. Scroll down the page until you reach the section that says "Twitter Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the number under the "Media" section, number will have a +/-, if no number value is 0. Settlement should be based off of this number.`
                 },
               ],
             },
