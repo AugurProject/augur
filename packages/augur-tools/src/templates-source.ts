@@ -64,6 +64,8 @@ import {
   AWARDS,
   TV_MOVIES,
   SOCIAL_MEDIA,
+  TWITTER,
+  INSTAGRAM,
 } from './templates-template';
 import {
   LIST_VALUES,
@@ -142,17 +144,17 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`
-                }
+                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`,
+                },
               ],
             },
           },
@@ -210,14 +212,14 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `For settlement purposes where a half round is stated, 2 minutes 30 seconds of the respective round will define the half to determine over or under. Example: If Total Rounds 2.5 (O/U) is in market question, the midway point in Round 3 is the under/over line. If the fight is stopped at exactly 2 minutes 30 seconds of the round named in the market "over" should be the winning outcome.`
-                }
+                  text: `For settlement purposes where a half round is stated, 2 minutes 30 seconds of the respective round will define the half to determine over or under. Example: If Total Rounds 2.5 (O/U) is in market question, the midway point in Round 3 is the under/over line. If the fight is stopped at exactly 2 minutes 30 seconds of the round named in the market "over" should be the winning outcome.`,
+                },
               ],
             },
           },
@@ -288,26 +290,26 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`,
                 },
                 {
                   text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`,
                 },
                 {
-                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`
+                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`,
                 },
                 {
-                  text: `KO/TKO: 1. Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. 2. Stoppage by doctor or a fighter’s corner/team. 3. A fighter retires due to injury.`
+                  text: `KO/TKO: 1. Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. 2. Stoppage by doctor or a fighter’s corner/team. 3. A fighter retires due to injury.`,
                 },
                 {
-                  text: `Submission: A Submission should be used when a fighter taps out, either verbally or physically.`
-                }
+                  text: `Submission: A Submission should be used when a fighter taps out, either verbally or physically.`,
+                },
               ],
             },
           },
@@ -363,26 +365,26 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "No Contest".`,
                 },
                 {
                   text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`
+                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`,
                 },
                 {
-                  text: `KO/TKO: 1. Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. 2. Stoppage by doctor or a fighter’s corner/team. 3. A fighter retires due to injury.`
+                  text: `KO/TKO: 1. Referee stoppage while either/both fighters are standing or on the canvas, due to one fighter not intelligently defending themselves from strikes, or in a defenseless position. 2. Stoppage by doctor or a fighter’s corner/team. 3. A fighter retires due to injury.`,
                 },
                 {
-                  text: `Submission: A Submission should be used when a fighter taps out, either verbally or physically.`
-                }
+                  text: `Submission: A Submission should be used when a fighter taps out, either verbally or physically.`,
+                },
               ],
             },
           },
@@ -453,17 +455,17 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
                 },
                 {
                   text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`,
                 },
                 {
-                  text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`
-                }
+                  text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`,
+                },
               ],
             },
           },
@@ -508,17 +510,17 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `A Draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`
-                }
+                  text: `A Draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`,
+                },
               ],
             },
           },
@@ -577,14 +579,14 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `For settlement purposes where a half round is stated a new round must be started to determine over or under. For Example: If Total Rounds 8.5 (O/U) is quoted, then Round 9 must start for Over to win. If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round.`
-                }
+                  text: `For settlement purposes where a half round is stated a new round must be started to determine over or under. For Example: If Total Rounds 8.5 (O/U) is quoted, then Round 9 must start for Over to win. If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round.`,
+                },
               ],
             },
           },
@@ -655,26 +657,26 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "Draw/No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "Draw/No Contest".`,
                 },
                 {
-                  text: `A Draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`
+                  text: `A Draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`,
                 },
                 {
-                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then the market should resolve as "Points" victory to the winner.`
+                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then the market should resolve as "Points" victory to the winner.`,
                 },
                 {
-                  text: `KO Stoppage: KO is used when a boxer does NOT stand up after a 10 count.`
+                  text: `KO Stoppage: KO is used when a boxer does NOT stand up after a 10 count.`,
                 },
                 {
-                  text: `TKO Stoppage: TKO is used when a fighter is knocked down 3 times in a round, if the referee steps in to stop the fight, official attending physicians or the boxers corner stop the fight.`
-                }
+                  text: `TKO Stoppage: TKO is used when a fighter is knocked down 3 times in a round, if the referee steps in to stop the fight, official attending physicians or the boxers corner stop the fight.`,
+                },
               ],
             },
           },
@@ -730,20 +732,20 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "No Contest".`
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the fight is determined to be a draw, market should resolve as "Points".`
+                  text: `If the fight is determined to be a draw, market should resolve as "Points".`,
                 },
                 {
-                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then the market should resolve as "Points".`
-                }
+                  text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then the market should resolve as "Points".`,
+                },
               ],
             },
           },
@@ -809,14 +811,14 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`
+                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`
-                }
+                  text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`,
+                },
               ],
             },
           },
@@ -869,20 +871,20 @@ export const TEMPLATES = {
                   text: `Market should resolve after the race conclusion once the winner is verified by officials and standing on the podium. Official results reflecting any changes, disqualifications or position penalties after the podium presentation will not be recognized for the market resolution purposes.`,
                 },
                 {
-                  text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`
+                  text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`,
                 },
                 {
-                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`
+                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all finishing positions.`
+                  text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all finishing positions.`,
                 },
                 {
-                  text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`
+                  text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`,
                 },
                 {
-                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`
-                }
+                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`,
+                },
               ],
             },
           },
@@ -938,26 +940,26 @@ export const TEMPLATES = {
                   text: `Market should resolve after the race conclusion once the winner is verified by officials and standing on the podium. Official results reflecting any changes, disqualifications or position penalties after the podium presentation will not be recognized for the market resolution purposes.`,
                 },
                 {
-                  text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`
+                  text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`,
                 },
                 {
-                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`
+                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all Head to head match-ups and finishing positions.`
+                  text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all Head to head match-ups and finishing positions.`,
                 },
                 {
-                  text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`
+                  text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`,
                 },
                 {
-                  text: `Both drivers must start the race for head to head match-ups to be considered action. If one or both drivers do not start the race the market should resolve as "No Contest".`
+                  text: `Both drivers must start the race for head to head match-ups to be considered action. If one or both drivers do not start the race the market should resolve as "No Contest".`,
                 },
                 {
-                  text: `If a driver does not finish the race for any reason (including disqualifications), the opposing driver should be declared the winner.`
+                  text: `If a driver does not finish the race for any reason (including disqualifications), the opposing driver should be declared the winner.`,
                 },
                 {
-                  text: `If both Drivers do not finish the race for any reason (including disqualifications), the driver who completed more laps should be declared the winner. If both racers were disqualified at the same time or come in at same place (tie), the market should resolve as "No Contest"`
-                }
+                  text: `If both Drivers do not finish the race for any reason (including disqualifications), the driver who completed more laps should be declared the winner. If both racers were disqualified at the same time or come in at same place (tie), the market should resolve as "No Contest"`,
+                },
               ],
             },
           },
@@ -983,20 +985,20 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`
+                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`,
                 },
                 {
-                  text: `The NASCAR Cup Series Drivers' Championship is awarded to the most successful NASCAR Cup Series racing car driver over a season, as determined by a points system based on race results. The winner can only be determined after the completion of the final race of the year and points for the season have been calculated.`
+                  text: `The NASCAR Cup Series Drivers' Championship is awarded to the most successful NASCAR Cup Series racing car driver over a season, as determined by a points system based on race results. The winner can only be determined after the completion of the final race of the year and points for the season have been calculated.`,
                 },
                 {
-                  text: `If the season is officially cancelled and event named in the market is not played, this market should resolve as "Invalid".`
+                  text: `If the season is officially cancelled and event named in the market is not played, this market should resolve as "Invalid".`,
                 },
                 {
-                  text: `If Nascar suspends play and starts up again at a later date, and the winner of the event named in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`
+                  text: `If Nascar suspends play and starts up again at a later date, and the winner of the event named in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                 },
                 {
-                  text: `If Nascar suspends play and starts up again at a later date, and the winner of the event named in the market is determined after the Market’s Event Expiration begins, this market should resolve as "Invalid".`
-                }
+                  text: `If Nascar suspends play and starts up again at a later date, and the winner of the event named in the market is determined after the Market’s Event Expiration begins, this market should resolve as "Invalid".`,
+                },
               ],
             },
           },
@@ -8613,88 +8615,192 @@ export const TEMPLATES = {
         ],
       },
       [SOCIAL_MEDIA]: {
-        templates: [
-          {
-            marketType: YES_NO,
-            question: `Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.socialblade.com?`,
-            example: `Twitter: Will @elonmusk have 50 million or more twitter followers on September 12, 2020, according to www.socialblade.com?`,
-            inputs: [
+        children: {
+          [TWITTER]: {
+            templates: [
               {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                validationType: ValidationType.SOCIAL,
-                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_SOCIAL_MEDIA_HANDLE,
+                marketType: YES_NO,
+                question: `Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.socialblade.com?`,
+                example: `Twitter: Will @elonmusk have 50 million or more twitter followers on September 12, 2020, according to www.socialblade.com?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.SOCIAL,
+                    placeholder:
+                      TEXT_PLACEHOLDERS.TWITTER_HANDLE,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Number`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    values: LIST_VALUES.AMOUNT_UNITS,
+                    placeholder: `Amount Unit`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATESTART,
+                    daysAfterDateStart: 2,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `To find the results: In the header of the page. Select "Twitter" from the drop down menu. Then enter the twitter handle in the search bar. Scroll down the page until you reach the section that says "Twitter Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the larger number under the "Followers" section (number will not have a +/-). Settlement should be based off of this number.`,
+                    },
+                    {
+                      text: 'If the twitter handle named in the market does not exist, the market should resolve as "Invalid".',
+                    }
+                  ],
+                },
               },
               {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                validationType: ValidationType.NUMBER,
-                placeholder: `Number`,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                values: LIST_VALUES.AMOUNT_UNITS,
-                placeholder: `Amount Unit`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 2,
-                placeholder: `Day of Year`,
+                marketType: CATEGORICAL,
+                question: `Twitter: Will @[0] have [1] or more new tweets on [2], according to www.socialblade.com?`,
+                example: `Twitter: Will @elonmusk have 10 or more new tweets on September 12, 2020, according to www.socialblade.com?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.SOCIAL,
+                    placeholder:
+                      TEXT_PLACEHOLDERS.TWITTER_HANDLE,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Number`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATESTART,
+                    daysAfterDateStart: 2,
+                    placeholder: `Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[1] or more`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `less than [1]`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `To find the results: In the header of the page. Select "Twitter" from the drop down menu. Then enter the twitter handle in the search bar. Scroll down the page until you reach the section that says "Twitter Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the number under the "Media" section, number will have a +/-, if no number value is 0. Settlement should be based off of this number.`,
+                    },
+                    {
+                      text: 'If the twitter handle named in the market does not exist, the market should resolve as "Invalid".',
+                    }
+                  ],
+                },
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `To find the results: In the header of the page. Select "Twitter" from the drop down menu. Then enter the twitter handle in the search bar. Scroll down the page until you reach the section that says "Twitter Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the larger number under the "Followers" section (number will not have a +/-). Settlement should be based off of this number.`
-                },
-              ],
-            },
           },
-          {
-            marketType: CATEGORICAL,
-            question: `Twitter: Will @[0] have [1] or more new tweets on [2], according to www.socialblade.com?`,
-            example: `Twitter: Will @elonmusk have 10 or more new tweets on September 12, 2020, according to www.socialblade.com?`,
-            inputs: [
+          [INSTAGRAM]: {
+            templates: [
               {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                validationType: ValidationType.SOCIAL,
-                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_SOCIAL_MEDIA_HANDLE,
+                marketType: YES_NO,
+                question: `Instagram: Will [0] have [1] [2] or more followers on [3], according to www.socialblade.com?`,
+                example: `Instagram: Will therock have 200 million or more followers on September 12, 2020, according to www.socialblade.com?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.SOCIAL,
+                    placeholder:
+                      TEXT_PLACEHOLDERS.INSTAGRAM_ACCOUNT,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Number`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    values: LIST_VALUES.AMOUNT_UNITS,
+                    placeholder: `Amount Unit`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATESTART,
+                    daysAfterDateStart: 2,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `To find the results: In the header of the page. Select "Instagram" from the drop down menu. Then enter the instagram account in the search bar. Scroll down the page until you reach the section that says "Instagram Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the larger number under the "Followers" section (number will not have a +/-). Settlement should be based off of this number.`,
+                    },
+                    {
+                      text: 'If the instagram account named in the market does not exist, the market should resolve as "Invalid".',
+                    }
+                  ],
+                },
               },
               {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                validationType: ValidationType.NUMBER,
-                placeholder: `Number`,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 2,
-                placeholder: `Day of Year`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] or more`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `less than [1]`,
+                marketType: CATEGORICAL,
+                question: `Instagram: Will [0] have [1] or more new posts on [2], according to www.socialblade.com?`,
+                example: `Instagram: Will therock have 2 or more new posts on September 12, 2020, according to www.socialblade.com?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.SOCIAL,
+                    placeholder:
+                      TEXT_PLACEHOLDERS.INSTAGRAM_ACCOUNT,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Number`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATESTART,
+                    daysAfterDateStart: 2,
+                    placeholder: `Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[1] or more`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `less than [1]`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `To find the results: In the header of the page. Select "Instagram" from the drop down menu. Then enter the instagram account in the search bar. Scroll down the page until you reach the section that says "Instagram Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the number under the "Media" section, number will have a +/-, if no number value is 0. Settlement should be based off of this number.`,
+                    },
+                    {
+                      text: 'If the instagram account named in the market does not exist, the market should resolve as "Invalid".',
+                    }
+                  ],
+                },
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `To find the results: In the header of the page. Select "Twitter" from the drop down menu. Then enter the twitter handle in the search bar. Scroll down the page until you reach the section that says "Twitter Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the number under the "Media" section, number will have a +/-, if no number value is 0. Settlement should be based off of this number.`
-                },
-              ],
-            },
           },
-        ],
+        },
       },
     },
   },
