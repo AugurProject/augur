@@ -425,9 +425,8 @@ export class Users {
     Object.keys(orders).forEach(marketId => {
       const market = markets[marketId];
       const marketPositions = positions[marketId];
-      let userSharesBalances = marketPositions
-        ? marketPositions.userSharesBalances
-        : {};
+      // need all outcomes represented in user shares balances
+      const userSharesBalances = populateUserShareBalances(market.outcomeVolumes.length, marketPositions.userSharesBalances);
       const outcomes = Object.keys(orders[marketId]);
       outcomes.forEach(outcome => {
         const orderTypes = Object.keys(orders[marketId][outcome]);
@@ -1458,6 +1457,18 @@ function getLastDocBeforeTimestamp<TDoc extends {timestamp: LogTimestamp}>(
     return _.last(allBeforeTimestamp);
   }
   return undefined;
+}
+
+function populateUserShareBalances(
+  numOutcomes: number,
+  userSharesBalances: { [outcome: string]: string })
+  : { [outcome: string]: string }
+{
+  return new Array(numOutcomes).fill("0")
+  .reduce((p, v, index) =>
+    userSharesBalances[index]
+      ? {...p, [index]: userSharesBalances[index]}
+      : {...p, [index] :"0"}, {});
 }
 
 function addEscrowedAmountsDecrementShares(
