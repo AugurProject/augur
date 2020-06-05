@@ -7502,6 +7502,32 @@ export const TEMPLATES = {
             },
           },
           {
+            marketType: YES_NO,
+            question: `Will [0] be federal charged by [1]?`,
+            example: `Will Al Capone be federal charged by December 31, 2020 11:59 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: TEXT_PLACEHOLDERS.SINGLE_PERSON_FULL_NAME,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATETIME,
+                placeholder: `Specific Datetime`,
+                label: `Specific Datetime`,
+                sublabel: `Specify date time for event`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Person named shall be indicted or otherwise formally charged with a U.S. federal crime, as publicly confirmed on or before date in market question by an authorized representative of the charging agency(ies) or judicial venue(s).`,
+                },
+              ],
+            },
+          },
+          {
             marketType: CATEGORICAL,
             question: `Which party will win the [0] U.S. Presidential election?`,
             example: `Which party will win the 2020 U.S. Presidential election?`,

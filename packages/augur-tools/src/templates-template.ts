@@ -303,6 +303,7 @@ export enum TEXT_PLACEHOLDERS {
   MULTIPLE_PLAYER = "Two Player's Names",
   SINGLE_CANDIDATE = 'Single Candidates Name',
   SINGLE_PERSON_NAME = "Single Person's Name",
+  SINGLE_PERSON_FULL_NAME = "Single Person's First, Last Name",
   SINGLE_HORSE = "Single Horse's Name",
   SINGLE_PERSON = 'Single Person',
   SINGLE_LOCATION = 'Single Location',
