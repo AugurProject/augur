@@ -17,6 +17,8 @@ import {
   Template,
   TEMPLATES,
   US_POLITICS,
+  HOCKEY,
+  groupTypes,
 } from '@augurproject/artifacts';
 import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';
@@ -32,6 +34,7 @@ import {
   thisYear,
   today,
 } from '../time';
+import { LIST_VALUES } from '../../templates-lists';
 
 interface AskBid {
   shares: string;
@@ -615,6 +618,46 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
       },
     },
   });
+
+  return markets;
+};
+
+const calcDailyHockeyMarket = () => {
+  const estStartTime = moment().add(3, 'weeks');
+  const unixEstStartTime = estStartTime.unix();
+  const endTime = estStartTime.add(6, 'hours').unix();
+  const hockeyTemplates = TEMPLATES[SPORTS].children[HOCKEY].templates as Template[];
+  const teamA = LIST_VALUES.NHL_TEAMS[0];
+  const teamB = LIST_VALUES.NHL_TEAMS[1];
+  const moneyLine = hockeyTemplates.find(t => t.groupName === groupTypes.MONEY_LINE_MEGA);
+  const spread = hockeyTemplates.find(t => t.groupName === groupTypes.SPREAD_MEGA);
+  const overUnder = hockeyTemplates.find(t => t.groupName === groupTypes.OVER_UNDER_MEGA);
+  const daily = [moneyLine, spread, overUnder];
+  const inputValues = [
+    [teamA, teamB, unixEstStartTime],
+    [teamA, 2, teamB, unixEstStartTime],
+    [teamA, teamB, 4, unixEstStartTime]
+  ]
+
+  return daily.map((template, index) =>
+    ({
+      marketType: 'categorical',
+      endTime,
+      affiliateFeeDivisor: 0,
+      creatorFeeDecimal: '0.01',
+      extraInfo: buildExtraInfo(template, inputValues[index], [
+        SPORTS,
+        HOCKEY,
+        'Daily'
+      ]),
+    }));
+}
+
+export const templatedCannedBettingMarkets = (): CannedMarket[] => {
+  const markets = [];
+
+  const hockeyMarkets = calcDailyHockeyMarket();
+  markets.concat(hockeyMarkets);
 
   return markets;
 };

@@ -68,6 +68,7 @@ export enum TemplateFilters {
   all = 'all',
   templateOnly = 'templateOnly',
   customOnly = 'customOnly',
+  sportsBook = 'sportsBook',
 }
 // Valid market liquidity spreads
 export enum MaxLiquiditySpread {
@@ -679,6 +680,11 @@ export class Markets {
             market.isTemplate
           )
             return false;
+          if (
+              params.templateFilter === TemplateFilters.sportsBook &&
+              !market.templateGroupHash
+            )
+              return false;
         }
         // Apply designatedReporter
         if (

@@ -1,6 +1,6 @@
 import { runChaosMonkey } from './chaos-monkey';
 import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarkets, createTemplatedMarkets } from './create-canned-markets-and-orders';
+import { createCannedMarkets, createTemplatedMarkets, createTemplatedBettingMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH, BASE_MNEMONIC } from '../constants';
 import {
   Contracts as compilerOutput,
@@ -484,6 +484,41 @@ export function addScripts(flash: FlashSession) {
               } catch (e) {
                 console.warn('could not create orders for scalar market', e)
               }
+            }
+          }
+        }
+      }
+    },
+  });
+
+  flash.addScript({
+    name: 'create-canned-betting-markets',
+    async call(this: FlashSession) {
+      const user = await this.createUser(this.getAccount(), this.config);
+      const million = QUINTILLION.multipliedBy(1e7);
+      await user.faucetRepUpTo(million, million);
+      await user.faucetCashUpTo(million, million);
+      await user.approveIfNecessary();
+
+      const markets = await createTemplatedBettingMarkets(user, false);
+      for (let i = 0; i < markets.length; i++) {
+        const createdMarket = markets[i];
+        const numTicks = await createdMarket.market.getNumTicks_();
+        const numOutcomes = await createdMarket.market.getNumberOfOutcomes_();
+        const marketId = createdMarket.market.address;
+        if (numOutcomes.gt(new BigNumber(3))) {
+          await createCatZeroXOrders(user, marketId, true, numOutcomes.toNumber() - 1);
+        } else {
+          if (numTicks.eq(new BigNumber(100))) {
+            await createYesNoZeroXOrders(user, marketId, true);
+          } else {
+            try {
+              const minPrice = new BigNumber(createdMarket.canned.minPrice);
+              const maxPrice = new BigNumber(createdMarket.canned.maxPrice);
+
+              await createScalarZeroXOrders(user, marketId, true, false, numTicks, minPrice, maxPrice);
+            } catch (e) {
+              console.warn('could not create orders for scalar market', e)
             }
           }
         }
