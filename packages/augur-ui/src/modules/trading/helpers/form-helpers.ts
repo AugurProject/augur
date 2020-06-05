@@ -7,6 +7,7 @@ import {
   UPPER_FIXED_PRECISION_BOUND,
   MIN_ORDER_LIFESPAN,
 } from 'modules/common/constants';
+import { FORM_INPUT_TYPES as INPUT_TYPES } from 'modules/trading/store/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { calcPercentageFromPrice } from 'utils/format-number';
 import getPrecision from 'utils/get-number-precision';
@@ -18,16 +19,6 @@ import {
   Getters
 } from '@augurproject/sdk';
 import { MarketData } from 'modules/types';
-
-export const INPUT_TYPES = {
-  MULTIPLE_QUANTITY: 'multipleOrderQuantity',
-  QUANTITY: 'orderQuantity',
-  PRICE: 'orderPrice',
-  DO_NOT_CREATE_ORDERS: 'doNotCreateOrders',
-  EST_DAI: 'orderDaiEstimate',
-  SELECTED_NAV: 'selectedNav',
-  EXPIRATION_DATE: 'expirationDate',
-};
 
 export const DEFAULT_TRADE_INTERVAL = new BigNumber(10 ** 17);
 

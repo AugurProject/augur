@@ -633,7 +633,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     default:
-      throw new Error(
+      console.error(
         `Error: ${action.type} not caught by App Status reducer.`
       );
   }

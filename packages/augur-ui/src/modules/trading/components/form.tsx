@@ -38,11 +38,11 @@ import {
   orderAmountEntered,
 } from 'services/analytics/helpers';
 import {
-  INPUT_TYPES,
   findMultipleOf,
   findNearestValues,
   orderValidation,
 } from 'modules/trading/helpers/form-helpers';
+import { FORM_INPUT_TYPES as INPUT_TYPES } from 'modules/trading/store/constants';
 
 enum ADVANCED_OPTIONS {
   GOOD_TILL = '0',
@@ -101,7 +101,6 @@ interface FromProps {
   availableDai: BigNumber;
   currentTimestamp: number;
   tradingTutorial?: boolean;
-  gasCostEst: string;
   gasPrice: number;
   getGasConfirmEstimate: Function;
   endTime: number;
@@ -121,35 +120,43 @@ interface FormState {
   confirmationTimeEstimation: number;
 }
 
+const calculateStartState = (props) => {
+  return {
+    [INPUT_TYPES.QUANTITY]: props.orderQuantity,
+    [INPUT_TYPES.PRICE]: props.orderPrice,
+    [INPUT_TYPES.DO_NOT_CREATE_ORDERS]: props.doNotCreateOrders,
+    [INPUT_TYPES.EXPIRATION_DATE]:
+      props.expirationDate ||
+      calcOrderExpirationTime(props.endTime, props.currentTimestamp),
+    [INPUT_TYPES.SELECTED_NAV]: props.selectedNav,
+    [INPUT_TYPES.EST_DAI]: props.orderDaiEstimate,
+    errors: {
+      [INPUT_TYPES.MULTIPLE_QUANTITY]: [],
+      [INPUT_TYPES.QUANTITY]: [],
+      [INPUT_TYPES.PRICE]: [],
+      [INPUT_TYPES.EST_DAI]: [],
+      [INPUT_TYPES.EXPIRATION_DATE]: [],
+    },
+  };
+};
+
+const FormPure = ({}) => {
+
+};
+
 class Form extends Component<FromProps, FormState> {
   constructor(props) {
     super(props);
 
-    const startState = {
-      [INPUT_TYPES.QUANTITY]: props.orderQuantity,
-      [INPUT_TYPES.PRICE]: props.orderPrice,
-      [INPUT_TYPES.DO_NOT_CREATE_ORDERS]: props.doNotCreateOrders,
-      [INPUT_TYPES.EXPIRATION_DATE]:
-        props.expirationDate ||
-        calcOrderExpirationTime(props.endTime, props.currentTimestamp),
-      [INPUT_TYPES.SELECTED_NAV]: props.selectedNav,
-      [INPUT_TYPES.EST_DAI]: props.orderDaiEstimate,
-      errors: {
-        [INPUT_TYPES.MULTIPLE_QUANTITY]: [],
-        [INPUT_TYPES.QUANTITY]: [],
-        [INPUT_TYPES.PRICE]: [],
-        [INPUT_TYPES.EST_DAI]: [],
-        [INPUT_TYPES.EXPIRATION_DATE]: [],
-      },
-    };
+    const startState = calculateStartState(props);
 
     const remainingTime = calcOrderExpirationTimeRemaining(
-      this.props.endTime,
-      this.props.currentTimestamp
+      props.endTime,
+      props.currentTimestamp
     );
     this.state = {
       ...startState,
-      isOrderValid: orderValidation(startState, undefined, this.props).isOrderValid,
+      isOrderValid: orderValidation(startState, undefined, props).isOrderValid,
       lastInputModified: '',
       errorCount: 0,
       advancedOption: advancedDropdownOptions[0].value,
@@ -445,7 +452,7 @@ class Form extends Component<FromProps, FormState> {
       selectedNav,
     } = this.props;
     const s = this.state;
-
+    // console.log('render Form:', this.state);
     const tickSize = parseFloat(market.tickSize);
     const quantityStep = getPrecision(tickSize, 0.001);
     const max = market.maxPriceBigNumber.toString();

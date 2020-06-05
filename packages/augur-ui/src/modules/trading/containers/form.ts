@@ -49,7 +49,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
     orderQuantity,
     orderDaiEstimate,
     orderEscrowdDai,
-    gasCostEst,
     doNotCreateOrders,
     expirationDate,
   } = ownProps.orderState;
@@ -59,7 +58,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
     orderQuantity,
     orderDaiEstimate,
     orderEscrowdDai,
-    gasCostEst,
     doNotCreateOrders,
     expirationDate,
     maxPrice,

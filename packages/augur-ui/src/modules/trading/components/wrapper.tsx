@@ -29,7 +29,7 @@ import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-prof
 import { formatDai } from 'utils/format-number';
 import { Moment } from 'moment';
 import { calcOrderExpirationTime } from 'utils/format-date';
-import { orderSubmitted, marketLinkCopied } from 'services/analytics/helpers';
+import { orderSubmitted } from 'services/analytics/helpers';
 import { placeMarketTrade } from 'modules/trades/actions/place-market-trade';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
@@ -921,6 +921,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       initializeGsnWallet,
       gsnWalletInfoSeen,
     } = this.props;
+    // console.log('render Wrapper:', this.state);
     let { minPriceBigNumber, maxPriceBigNumber, minPrice, maxPrice } = market;
     if (!minPriceBigNumber) {
       minPriceBigNumber = createBigNumber(minPrice);
