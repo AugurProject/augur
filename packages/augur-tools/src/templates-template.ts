@@ -77,6 +77,9 @@ export const DOUBLES = 'Doubles';
 export const AWARDS = 'Awards';
 export const TV_MOVIES = 'TV & Movies';
 export const SOCIAL_MEDIA = 'Social Media';
+export const TWITTER = 'Twitter';
+export const INSTAGRAM = 'Instagram';
+export const FACEBOOK = 'Facebook';
 const FRIDAY_DAY_OF_WEEK = 5;
 const SATURDAY_DAY_OF_WEEK = 6;
 const SUNDAY_DAY_OF_WEEK = 0;
@@ -311,7 +314,8 @@ export enum TEXT_PLACEHOLDERS {
   STOCK_OR_ETF = 'Individual Stock or ETF Name',
   INDIVIDUAL_STOCK_OR_ETF_NAME = 'Individual Stock or ETF Name',
   INDIVIDUAL_STOCK_OR_ETF_SYMBOL = 'Individual Stock or ETF Ticker Symbol',
-  INDIVIDUAL_SOCIAL_MEDIA_HANDLE = 'Social Media Handle',
+  TWITTER_HANDLE = 'Twitter Handle',
+  INSTAGRAM_ACCOUNT = 'Instagram Account'
 }
 
 export enum TemplateInputType {
