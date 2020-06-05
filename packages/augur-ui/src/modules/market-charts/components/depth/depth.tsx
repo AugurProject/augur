@@ -15,6 +15,7 @@ import getOrderBookKeys from 'modules/markets/helpers/get-orderbook-keys';
 import getPrecision from 'utils/get-number-precision';
 import { isEmpty } from 'utils/is-empty';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { useEffect } from 'react';
 
 interface DepthChartProps {
   marketDepth: MarketDepth;
@@ -53,7 +54,7 @@ const checkResize = memoize(
 );
 function determineInitialZoom(props) {
   const { orderBookKeys, marketMin, marketMax } = props;
-  
+
   const midPrice = orderBookKeys.mid;
   const minDistance = midPrice.minus(marketMin);
   const maxDistance = marketMax.minus(midPrice);
@@ -82,10 +83,10 @@ const DepthChart = ({
   selectedOutcomeId,
   market,
   marketId,
-  hoveredPriceProp
+  hoveredPriceProp,
 }) => {
   let depthChartThis = useRef();
-  let depthContainerThis = useRef();
+  let depthContainerThis = useRef(null);
   let drawParamsThis = useRef();
 
   let containerHeightThis = useRef(0);
@@ -107,7 +108,9 @@ const DepthChart = ({
   );
 
   const marketDepth = market ? orderForMarketDepth(cumulativeOrderBook) : null;
-  const orderBookKeys = market ? getOrderBookKeys(marketDepth, minPrice, maxPrice) : null;
+  const orderBookKeys = market
+    ? getOrderBookKeys(marketDepth, minPrice, maxPrice)
+    : null;
 
   const pricePrecision = market && getPrecision(market.tickSize, 4);
 
@@ -126,6 +129,86 @@ const DepthChart = ({
     determineInitialZoom({ orderBookKeys, marketMin, marketMax })
   );
 
+  useEffect(() => {
+    drawDepth({
+      marketDepth,
+      orderBookKeys,
+      pricePrecision,
+      marketMin,
+      marketMax,
+      updateHoveredPrice,
+      updateSelectedOrderProperties,
+      hasOrders,
+      zoom: zoom,
+    });
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const prevProps = useRef();
+  useEffect(() => {
+    prevProps.current = {
+      hoveredPriceProp, marketDepth, orderBookKeys, zoom
+    };
+  }, [hoveredPriceProp, marketDepth, orderBookKeys, zoom]);
+
+  const isFirstRender = React.useRef(true);
+  React.useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    const oldZoom = prevProps.current.zoom;
+    const curMarketDepth = JSON.stringify(prevProps.current.marketDepth);
+    const nextMarketDepth = JSON.stringify(marketDepth);
+    const handleChartDraw = () => drawDepth({
+      marketDepth: marketDepth,
+      orderBookKeys: orderBookKeys,
+      pricePrecision: pricePrecision,
+      marketMin: marketMin,
+      marketMax: marketMax,
+      updateHoveredPrice: updateHoveredPrice,
+      updateSelectedOrderProperties: updateSelectedOrderProperties,
+      hasOrders: hasOrders,
+      zoom,
+    });
+    if (
+      curMarketDepth !== nextMarketDepth ||
+      JSON.stringify(prevProps.current.orderBookKeys) !==
+        JSON.stringify(orderBookKeys) ||
+      oldZoom !== zoom
+    ) {
+      handleChartDraw();
+    } else if (
+      checkResize(
+        depthChartThis.current.clientWidth,
+        depthChartThis.current.clientHeight,
+        containerWidthThis.current,
+        containerHeightThis.current
+      )
+    ) {
+      handleChartDraw();
+    }
+
+    if (
+      prevProps.current.hoveredPriceProp !== hoveredPriceProp ||
+      curMarketDepth !== nextMarketDepth
+    ) {
+      drawCrosshairs({
+        hoveredPrice: hoveredPriceProp,
+        pricePrecision: pricePrecision,
+        marketDepth: marketDepth,
+        marketMin: marketMin,
+        marketMax: marketMax,
+        drawParams: drawParamsThis,
+      });
+    }  
+  });
+
   function determineDrawParams(options) {
     const {
       depthChart,
@@ -136,12 +219,12 @@ const DepthChart = ({
       zoom,
     } = options;
 
-    const containerHeight = containerHeightThis
-      ? containerHeightThis
-      : depthChartThis.clientHeight;
-    const containerWidth = depthChartThis.clientWidth;
-    containerWidthThis = containerWidth;
-    containerHeightThis = containerHeight;
+    const containerHeight = containerHeightThis?.current
+      ? containerHeightThis.current
+      : depthChartThis.current.clientHeight;
+    const containerWidth = depthChartThis.current.clientWidth;
+    containerWidthThis.current = containerWidth;
+    containerHeightThis.current = containerHeight;
     const drawHeight = containerHeight - CHART_DIM.bottom;
     const midPrice = orderBookKeys.mid;
     const minDistance = midPrice.minus(marketMin);
@@ -322,7 +405,7 @@ const DepthChart = ({
         drawParams,
       });
 
-      depthContainerThis = depthContainer.toReact();
+      depthContainerThis.current = depthContainer.toReact();
       if (cb) cb();
     }
   }
@@ -339,8 +422,8 @@ const DepthChart = ({
 
       const xScale = xScaleThis;
       const yScale = yScaleThis;
-      const containerHeight = containerHeightThis;
-      const containerWidth = containerWidthThis;
+      const containerHeight = containerHeightThis.current;
+      const containerWidth = containerWidthThis.current;
 
       if (hoveredPrice == null) {
         d3.select('#crosshairs').style('display', 'none');
@@ -432,124 +515,12 @@ const DepthChart = ({
       <button onClick={() => handleZoom(1)} disabled={zoom === ZOOM_MAX}>
         {ZoomInIcon}
       </button>
-      {depthContainerThis}
+      {depthContainerThis.current}
     </div>
   );
 };
 
 export default DepthChart;
-
-// export default class DepthChart extends Component<
-//   DepthChartProps,
-//   DepthChartState
-// > {
-//   static defaultProps = {
-//     hoveredPrice: null,
-//   };
-
-//   depthChart: any;
-//   depthContainer: any;
-//   drawParams: any;
-//   xScale: number = 0;
-//   yScale: number = 0;
-//   containerHeight: number = 0;
-//   containerWidth: number = 0;
-
-//   constructor(props) {
-//     super(props);
-
-//     this.state = {
-//       zoom: determineInitialZoom(props),
-//     };
-
-//     this.drawDepth = this.drawDepth.bind(this);
-//     this.drawCrosshairs = this.drawCrosshairs.bind(this);
-//     this.handleZoom = this.handleZoom.bind(this);
-//     this.handleResize = this.handleResize.bind(this);
-//     this.determineDrawParams = this.determineDrawParams.bind(this);
-//   }
-
-//   componentDidMount() {
-//     const {
-//       pricePrecision,
-//       marketDepth,
-//       marketMax,
-//       marketMin,
-//       orderBookKeys,
-//       updateHoveredPrice,
-//       updateSelectedOrderProperties,
-//       hasOrders,
-//     } = this.props;
-//     this.drawDepth({
-//       marketDepth,
-//       orderBookKeys,
-//       pricePrecision,
-//       marketMin,
-//       marketMax,
-//       updateHoveredPrice,
-//       updateSelectedOrderProperties,
-//       hasOrders,
-//       zoom: this.state.zoom,
-//     });
-//     window.addEventListener('resize', this.handleResize);
-//   }
-
-//   componentWillUnmount() {
-//     window.removeEventListener('resize', this.handleResize);
-//   }
-
-//   UNSAFE_componentWillUpdate(nextProps, nextState) {
-//     const { hoveredPrice, marketDepth, orderBookKeys } = this.props;
-//     const oldZoom = this.state.zoom;
-//     const { zoom } = nextState;
-//     const curMarketDepth = JSON.stringify(marketDepth);
-//     const nextMarketDepth = JSON.stringify(nextProps.marketDepth);
-//     const handleChartDraw = () => this.drawDepth({
-//       marketDepth: nextProps.marketDepth,
-//       orderBookKeys: nextProps.orderBookKeys,
-//       pricePrecision: nextProps.pricePrecision,
-//       marketMin: nextProps.marketMin,
-//       marketMax: nextProps.marketMax,
-//       updateHoveredPrice: nextProps.updateHoveredPrice,
-//       updateSelectedOrderProperties: nextProps.updateSelectedOrderProperties,
-//       hasOrders: nextProps.hasOrders,
-//       zoom,
-//     });
-//     if (
-//       curMarketDepth !== nextMarketDepth ||
-//       JSON.stringify(orderBookKeys) !==
-//         JSON.stringify(nextProps.orderBookKeys) ||
-//       oldZoom !== zoom
-//     ) {
-//       handleChartDraw();
-//     } else if (
-//       checkResize(
-//         this.depthChart.clientWidth,
-//         this.depthChart.clientHeight,
-//         this.containerWidth,
-//         this.containerHeight
-//       )
-//     ) {
-//       handleChartDraw();
-//     }
-
-//     if (
-//       hoveredPrice !== nextProps.hoveredPrice ||
-//       curMarketDepth !== nextMarketDepth
-//     ) {
-//       this.drawCrosshairs({
-//         hoveredPrice: nextProps.hoveredPrice,
-//         pricePrecision: nextProps.pricePrecision,
-//         marketDepth: nextProps.marketDepth,
-//         marketMin: nextProps.marketMin,
-//         marketMax: nextProps.marketMax,
-//         drawParams: this.drawParams,
-//       });
-//     }
-//   }
-
-//   }
-// }
 
 function nearestCompletelyFillingOrder(
   price,
