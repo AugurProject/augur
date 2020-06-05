@@ -10,7 +10,7 @@ import { MarketHeader } from 'modules/market/components/market-header/market-hea
 import MarketOrdersPositionsTable from 'modules/market/components/market-orders-positions-table/market-orders-positions-table';
 import MarketOutcomesList from "modules/market/components/market-outcomes-list/market-outcomes-list";
 import TradingForm from 'modules/trading/components/trading-form';
-import MarketChartsPane from 'modules/market-charts/containers/market-charts-pane';
+import MarketChartsPane from "modules/market-charts/components/market-charts-pane/market-charts-pane";
 import parseMarketTitle from 'modules/markets/helpers/parse-market-title';
 import MarketTradeHistory from 'modules/market/components/market-trade-history/market-trade-history';
 import MarketComments from 'modules/market/containers/market-comments';
@@ -38,7 +38,7 @@ import {
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
-import PriceHistory from 'modules/market-charts/containers/price-history';
+import PriceHistory from "modules/market-charts/components/price-history/price-history";
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { LeftChevron } from 'modules/common/icons';
 import { SMALL_MOBILE } from 'modules/common/constants';

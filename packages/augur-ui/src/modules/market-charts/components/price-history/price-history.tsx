@@ -3,6 +3,10 @@ import { createBigNumber } from 'utils/create-big-number';
 import Highcharts from 'highcharts/highstock';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import Styles from 'modules/market-charts/components/price-history/price-history.styles.less';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { SCALAR, TRADING_TUTORIAL } from 'modules/common/constants';
+import selectBucketedPriceTimeSeries from 'modules/markets/selectors/select-bucketed-price-time-series';
+import { MarketData } from 'modules/types';
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
@@ -30,27 +34,34 @@ interface BucketedPriceTimeSeries {
 }
 
 interface PriceHistoryProps {
-  maxPrice: number;
-  minPrice: number;
-  bucketedPriceTimeSeries: BucketedPriceTimeSeries;
-  isScalar: boolean;
-  scalarDenomination: string;
+  marketId: string;
+  market: MarketData;
   selectedOutcomeId: number;
-  pricePrecision: number;
-  isTradingTutorial?: boolean;
   isArchived?: boolean;
 }
 
 const PriceHistory = ({
-  maxPrice,
-  minPrice,
-  bucketedPriceTimeSeries,
-  isScalar = false,
-  scalarDenomination = '',
   selectedOutcomeId,
-  pricePrecision,
-  isArchived
+  isArchived,
+  marketId,
+  market
 }: PriceHistoryProps) => {
+  const isTradingTutorial = marketId === TRADING_TUTORIAL;
+  const {
+    maxPriceBigNumber,
+    minPriceBigNumber,
+    outcomes = [],
+    marketType,
+    scalarDenomination,
+  } = marketId && !isTradingTutorial ? selectMarket(marketId) : market;
+  const isScalar = marketType === SCALAR;
+
+  const bucketedPriceTimeSeries = !isTradingTutorial ? selectBucketedPriceTimeSeries(marketId) : {};
+
+  const maxPrice = !isTradingTutorial ? maxPriceBigNumber.toNumber() : 0;
+  const minPrice = !isTradingTutorial ? minPriceBigNumber.toNumber() : 0;
+  const pricePrecision = 4;
+
   const container = useRef(null);
   const options = getOptions({ maxPrice, minPrice, isScalar, pricePrecision, isArchived });
   const { priceTimeSeries } = bucketedPriceTimeSeries;
