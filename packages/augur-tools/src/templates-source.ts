@@ -80,6 +80,9 @@ import {
   WNBA,
   WORLD,
   YEAR,
+  SOCIAL_MEDIA,
+  TWITTER,
+  INSTAGRAM,
 } from './templates-template';
 
 const YES_NO = 'YesNo';
@@ -7496,6 +7499,31 @@ export const TEMPLATES = {
             },
           },
           {
+            marketType: YES_NO,
+            question: `Will [0] be federally charged by [1]?`,
+            example: `Will Al Capone be federal charged by December 31, 2020 11:59 pm EST`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: TEXT_PLACEHOLDERS.SINGLE_PERSON_NAME,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Person named shall be indicted or otherwise formally charged with a U.S. federal crime, as publicly confirmed on or before date by 11:59PM eastern time in market question by an authorized representative of the charging agency(ies) or judicial venue(s).`,
+                },
+              ],
+            },
+          },
+          {
             marketType: CATEGORICAL,
             question: `Which party will win the [0] U.S. Presidential election?`,
             example: `Which party will win the 2020 U.S. Presidential election?`,
@@ -8582,46 +8610,192 @@ export const TEMPLATES = {
         ],
       },
       [SOCIAL_MEDIA]: {
-        templates: [
-          {
-            marketType: YES_NO,
-            question: `Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.trackalytics.com?`,
-            example: `Twitter: Will @elonmusk have 50 million or more twitter followers on September 12, 2020, according to www.trackalytics.com?`,
-            inputs: [
+        children: {
+          [TWITTER]: {
+            templates: [
               {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                validationType: ValidationType.SOCIAL,
-                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_SOCIAL_MEDIA_HANDLE,
+                marketType: YES_NO,
+                question: `Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.socialblade.com?`,
+                example: `Twitter: Will @elonmusk have 50 million or more twitter followers on September 12, 2020, according to www.socialblade.com?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.SOCIAL,
+                    placeholder:
+                      TEXT_PLACEHOLDERS.TWITTER_HANDLE,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Number`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    values: LIST_VALUES.AMOUNT_UNITS,
+                    placeholder: `Amount Unit`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATESTART,
+                    daysAfterDateStart: 2,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `To find the results: In the header of the page. Select "Twitter" from the drop down menu. Then enter the twitter handle in the search bar. Scroll down the page until you reach the section that says "Twitter Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the larger number under the "Followers" section (number will not have a +/-). Settlement should be based off of this number.`,
+                    },
+                    {
+                      text: 'If the twitter handle named in the market does not exist, the market should resolve as "Invalid".',
+                    }
+                  ],
+                },
               },
               {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                validationType: ValidationType.NUMBER,
-                placeholder: `Number`,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                values: LIST_VALUES.AMOUNT_UNITS,
-                placeholder: `Amount Unit`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.DATESTART,
-                placeholder: `Day of Year`,
+                marketType: CATEGORICAL,
+                question: `Twitter: Will @[0] have [1] or more new tweets on [2], according to www.socialblade.com?`,
+                example: `Twitter: Will @elonmusk have 10 or more new tweets on September 12, 2020, according to www.socialblade.com?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.SOCIAL,
+                    placeholder:
+                      TEXT_PLACEHOLDERS.TWITTER_HANDLE,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Number`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATESTART,
+                    daysAfterDateStart: 2,
+                    placeholder: `Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[1] or more`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `less than [1]`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `To find the results: In the header of the page. Select "Twitter" from the drop down menu. Then enter the twitter handle in the search bar. Scroll down the page until you reach the section that says "Twitter Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the number under the "Media" section, number will have a +/-, if no number value is 0. Settlement should be based off of this number.`,
+                    },
+                    {
+                      text: 'If the twitter handle named in the market does not exist, the market should resolve as "Invalid".',
+                    }
+                  ],
+                },
               },
             ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text:
-                    'If www.trackalytics.com is down or not available use inspectsocial.com/ to determine total twitter followers for the social media account stated in market question.',
-                },
-              ],
-            },
           },
-        ],
+          [INSTAGRAM]: {
+            templates: [
+              {
+                marketType: YES_NO,
+                question: `Instagram: Will [0] have [1] [2] or more followers on [3], according to www.socialblade.com?`,
+                example: `Instagram: Will therock have 200 million or more followers on September 12, 2020, according to www.socialblade.com?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.SOCIAL,
+                    placeholder:
+                      TEXT_PLACEHOLDERS.INSTAGRAM_ACCOUNT,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Number`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    values: LIST_VALUES.AMOUNT_UNITS,
+                    placeholder: `Amount Unit`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DATESTART,
+                    daysAfterDateStart: 2,
+                    placeholder: `Day of Year`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `To find the results: In the header of the page. Select "Instagram" from the drop down menu. Then enter the instagram account in the search bar. Scroll down the page until you reach the section that says "Instagram Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the larger number under the "Followers" section (number will not have a +/-). Settlement should be based off of this number.`,
+                    },
+                    {
+                      text: 'If the instagram account named in the market does not exist, the market should resolve as "Invalid".',
+                    }
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `Instagram: Will [0] have [1] or more new posts on [2], according to www.socialblade.com?`,
+                example: `Instagram: Will therock have 2 or more new posts on September 12, 2020, according to www.socialblade.com?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.SOCIAL,
+                    placeholder:
+                      TEXT_PLACEHOLDERS.INSTAGRAM_ACCOUNT,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Number`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DATESTART,
+                    daysAfterDateStart: 2,
+                    placeholder: `Day of Year`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[1] or more`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `less than [1]`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `To find the results: In the header of the page. Select "Instagram" from the drop down menu. Then enter the instagram account in the search bar. Scroll down the page until you reach the section that says "Instagram Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the number under the "Media" section, number will have a +/-, if no number value is 0. Settlement should be based off of this number.`,
+                    },
+                    {
+                      text: 'If the instagram account named in the market does not exist, the market should resolve as "Invalid".',
+                    }
+                  ],
+                },
+              },
+            ],
+          },
+        },
       },
     },
   },
@@ -8651,6 +8825,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8698,6 +8873,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8746,6 +8922,7 @@ export const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8797,6 +8974,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8844,6 +9022,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8892,6 +9071,7 @@ export const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8943,6 +9123,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8990,6 +9171,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -9038,6 +9220,7 @@ export const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
