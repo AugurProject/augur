@@ -8616,8 +8616,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: YES_NO,
-            question: `Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.trackalytics.com?`,
-            example: `Twitter: Will @elonmusk have 50 million or more twitter followers on September 12, 2020, according to www.trackalytics.com?`,
+            question: `Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.socialblade.com?`,
+            example: `Twitter: Will @elonmusk have 50 million or more twitter followers on September 12, 2020, according to www.socialblade.com?`,
             inputs: [
               {
                 id: 0,
@@ -8640,14 +8640,14 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text:
-                    'If www.trackalytics.com is down or not available use inspectsocial.com/ to determine total twitter followers for the social media account stated in market question.',
+                  text: `To find the results: In the header of the page. Select "Twitter" from the drop down menu. Then enter the twitter handle in the search bar. Scroll down the page until you reach the section that says "Twitter Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the larger number under the "Followers" section (number will not have a +/-). Settlement should be based off of this number.`
                 },
               ],
             },
@@ -8682,6 +8682,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8729,6 +8730,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8777,6 +8779,7 @@ export const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8828,6 +8831,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8875,6 +8879,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8923,6 +8928,7 @@ export const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -8974,6 +8980,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -9021,6 +9028,7 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -9069,6 +9077,7 @@ export const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
