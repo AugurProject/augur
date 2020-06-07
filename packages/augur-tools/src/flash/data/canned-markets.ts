@@ -622,7 +622,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
   return markets;
 };
 
-const calcDailyHockeyMarket = () => {
+const calcDailyHockeyMarket = (): CannedMarket[] => {
   const estStartTime = moment().add(3, 'weeks');
   const unixEstStartTime = estStartTime.unix();
   const endTime = estStartTime.add(6, 'hours').unix();
@@ -635,12 +635,17 @@ const calcDailyHockeyMarket = () => {
   const daily = [moneyLine, spread, overUnder];
   const inputValues = [
     [teamA, teamB, unixEstStartTime],
-    [teamA, 2, teamB, unixEstStartTime],
-    [teamA, teamB, 4, unixEstStartTime]
+    [teamA, "2", teamB, unixEstStartTime],
+    [teamA, teamB, "4", unixEstStartTime]
   ]
 
-  return daily.map((template, index) =>
-    ({
+  const outcomeValues = [
+    [teamA, teamB, `No Winner`],
+    [`${teamA} -2.5`, `${teamB} +2.5`, `No Winner`],
+    [`Over 4.5`, `Under 4.5`, `No Winner`],
+  ]
+
+  return daily.map((template, index) => ({
       marketType: 'categorical',
       endTime,
       affiliateFeeDivisor: 0,
@@ -650,14 +655,66 @@ const calcDailyHockeyMarket = () => {
         HOCKEY,
         'Daily'
       ]),
+      outcomes: outcomeValues[index],
+      orderBook: {
+        1: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        2: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        3: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+      },
     }));
 }
 
+const calcFuturesHockeyMarket = (): CannedMarket => {
+  const estStartTime = moment().add(3, 'weeks');
+  const endTime = estStartTime.unix();
+  const hockeyTemplates = TEMPLATES[SPORTS].children[HOCKEY].templates as Template[];
+  const template = hockeyTemplates.filter(t => t.groupName === groupTypes.FUTURES && t.example.includes('Stanley'));
+  const inputValues = [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_EVENT[0]];
+  const outcomes = [...LIST_VALUES.NHL_TEAMS.slice(0,6), `Other (Field)`]
+
+  console.log('template', template);
+  console.log('inputValues', inputValues);
+  return {
+    marketType: 'categorical',
+    endTime,
+    affiliateFeeDivisor: 0,
+    creatorFeeDecimal: '0.01',
+    extraInfo: buildExtraInfo(template, inputValues, [
+      SPORTS,
+      HOCKEY,
+      'Stanley Cup'
+    ]),
+    outcomes: outcomes,
+    orderBook: {
+      1: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+      2: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+      3: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+    },
+  }
+}
+
 export const templatedCannedBettingMarkets = (): CannedMarket[] => {
-  const markets = [];
-
-  const hockeyMarkets = calcDailyHockeyMarket();
-  markets.concat(hockeyMarkets);
-
-  return markets;
+  //const markets = calcDailyHockeyMarket();
+  const hockeyFuture = calcFuturesHockeyMarket();
+  //markets.push(hockeyFuture);
+  //return massageMarkets(markets);
+  return [hockeyFuture];
 };
