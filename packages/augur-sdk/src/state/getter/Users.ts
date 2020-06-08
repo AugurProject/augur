@@ -1,42 +1,25 @@
 import { BigNumber } from 'bignumber.js';
 import { DB } from '../db/DB';
 import { Getter } from './Router';
+import * as _ from 'lodash';
 import { NumericDictionary } from 'lodash';
 import Dexie from 'dexie';
-import {
-  ProfitLossChangedLog,
-  ParsedOrderEventLog,
-  LogTimestamp,
-  MarketData,
-  Log,
-  MarketType,
-} from '../logs/types';
-import {
-  DisputeCrowdsourcerRedeemed,
-  OrderEvent,
-  ProfitLossChanged,
-} from '../../event-handlers';
+import { Log, LogTimestamp, MarketData, MarketType, ParsedOrderEventLog, ProfitLossChangedLog, } from '../logs/types';
+import { DisputeCrowdsourcerRedeemed, OrderEvent, ProfitLossChanged, } from '../../event-handlers';
 import {
   Augur,
-  numTicksToTickSize,
+  convertAttoValueToDisplayValue,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
-  convertAttoValueToDisplayValue,
+  numTicksToTickSize,
 } from '../../index';
 import { sortOptions } from './types';
-import { MarketReportingState, OrderEventType, INIT_REPORTING_FEE_DIVISOR, ORDER_TYPES } from '../../constants';
-
-import * as _ from 'lodash';
+import { INIT_REPORTING_FEE_DIVISOR, MarketReportingState, ORDER_TYPES, OrderEventType } from '../../constants';
 import * as t from 'io-ts';
-import { ZERO, QUINTILLION } from '../../utils';
-import {
-  OnChainTrading,
-  MarketTradingHistory,
-  getMarkets,
-  Order,
-} from './OnChainTrading';
+import { QUINTILLION, ZERO } from '../../utils';
+import { getMarkets, MarketTradingHistory, OnChainTrading, Order, } from './OnChainTrading';
 import { MarketInfo, Markets } from './Markets';
-import { Accounts, AccountReportingHistory } from './Accounts';
+import { AccountReportingHistory, Accounts } from './Accounts';
 import { ZeroXOrders } from './ZeroXOrdersGetters';
 
 const ONE_DAY = 1;
@@ -427,7 +410,11 @@ export class Users {
       const market = markets[marketId];
       const marketPositions = positions[marketId];
       // need all outcomes represented in user shares balances
-      const userSharesBalances = populateUserShareBalances(market.marketType === MarketType.Categorical ? market.outcomes.length : 3, marketPositions ? marketPositions.userSharesBalances : {});
+      const userSharesBalances = populateUserShareBalances(
+        market.marketType === MarketType.Categorical
+          ? market.outcomes.length
+          : 3,
+        marketPositions?.userSharesBalances || {});
       const outcomes = Object.keys(orders[marketId]);
       outcomes.forEach(outcome => {
         const orderTypes = Object.keys(orders[marketId][outcome]);
