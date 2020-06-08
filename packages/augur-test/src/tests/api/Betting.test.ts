@@ -16,12 +16,10 @@ import {
 } from '@augurproject/tools';
 import { buildTemplateMarketCreationObject } from '@augurproject/tools/build/libs/templates';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
 
 import { enableZeroX, makeProvider } from '../../libs';
 import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../libs/MockMeshServer';
-import { LIST_VALUES } from '@augurproject/tools/src/templates-lists';
 
 // Non-destructive version of splice
 function addItemToArray(arr, postion, ...items) {
@@ -102,8 +100,8 @@ describe('Betting', () => {
     const currentTime = await john.getTimestamp();
 
     const endTime = currentTime.plus(SECONDS_IN_A_DAY);
-    const teamA = LIST_VALUES.NFL_TEAMS[0];
-    const teamB = LIST_VALUES.NFL_TEAMS[1];
+    const teamA = 'Arizona Cardinals';
+    const teamB = 'Atlanta Falcons';
     const tieNoWinner = 'Tie/No Winner';
 
     const inputs = [
@@ -125,6 +123,17 @@ describe('Betting', () => {
         SPORTS,
         AMERICAN_FOOTBALL,
       ]),
+    });
+    const randomMarket = await john.createCategoricalMarket({
+      endTime: new BigNumber(endTime),
+      feePerCashInAttoCash,
+      affiliateFeeDivisor: new BigNumber(0),
+      designatedReporter: john.account.address,
+      outcomes: [],
+      extraInfo: JSON.stringify({
+        categories: ['random', 'market'],
+        description: 'random categorical market'
+      }),
     });
     /*
     const spreadMarket = await john.createCategoricalMarket({
