@@ -3,9 +3,7 @@
 .TradeHistory {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   max-height: 100%;
-  max-height: 95%;
 
   @media @breakpoint-mobile {
     max-height: @size-400;
@@ -14,7 +12,6 @@
   > div {
     display: block;
     overflow: overlay;
-    max-height: calc(50vh + @size-52);
 
     > span {
       .mono-10-medium;

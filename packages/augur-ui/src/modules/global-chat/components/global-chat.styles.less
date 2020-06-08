@@ -1,7 +1,6 @@
 @import (reference) '~assets/styles/shared';
 
 .OrbitChat {
-  background: @color-dark-grey;
   bottom: @size-4;
   position: fixed;
   right: @size-22;
@@ -17,6 +16,10 @@
     border: @size-1 solid @color-secondary-action-outline;
     border-radius: @size-3;
     overflow: hidden;
+  }
+
+  > button[class*="SecondaryButton"] {
+    background: fade(@color-dark-grey, 50);
   }
 
   // Closed global chat window
