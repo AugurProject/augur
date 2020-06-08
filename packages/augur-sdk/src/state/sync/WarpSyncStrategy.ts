@@ -5,7 +5,6 @@ import _ from 'lodash';
 import { SECONDS_IN_A_DAY } from '../../constants';
 import { WarpController } from '../../warp/WarpController';
 import { DB } from '../db/DB';
-import { check } from 'ethers/utils/wordlist';
 
 const BULKSYNC_HORIZON = SECONDS_IN_A_DAY.multipliedBy(7).toNumber();
 
