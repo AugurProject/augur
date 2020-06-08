@@ -21,6 +21,7 @@ import { formatBytes32String } from 'ethers/utils';
 import { enableZeroX, makeProvider } from '../../libs';
 import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../libs/MockMeshServer';
+import { LIST_VALUES } from '@augurproject/tools/src/templates-lists';
 
 // Non-destructive version of splice
 function addItemToArray(arr, postion, ...items) {
@@ -101,13 +102,16 @@ describe('Betting', () => {
     const currentTime = await john.getTimestamp();
 
     const endTime = currentTime.plus(SECONDS_IN_A_DAY);
+    const teamA = LIST_VALUES.NFL_TEAMS[0];
+    const teamB = LIST_VALUES.NFL_TEAMS[1];
+    const tieNoWinner = 'Tie/No Winner';
 
     const inputs = [
       'Week 1',
-      'Seattle Seahawks',
-      'Los Angeles Rams',
+      teamA,
+      teamB,
       String(endTime),
-      'Tie/No Winner',
+      tieNoWinner,
     ] as const;
 
     const expirationTime = new BigNumber(new Date().valueOf()).plus(10000);
@@ -196,16 +200,6 @@ describe('Betting', () => {
     expect(bettingMarkets.markets.length).toEqual(1);
     const market = bettingMarkets.markets[0];
     expect(market.id).toEqual(moneyLineMarket.address);
-    expect(market.outcomes).toEqual([
-      {
-        description: 'Seattle Seahawks',
-      },
-      {
-        description: 'Los Angeles Rams',
-      },
-      {
-        description: 'No Winner',
-      },
-    ]);
+    market.outcomes.map(outcome => expect([teamA, teamB, tieNoWinner].includes(outcome.description)).toEqual(true));
   });
 });
