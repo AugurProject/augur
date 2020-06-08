@@ -2,7 +2,6 @@ import { REQUIRED, TemplateInput } from '@augurproject/artifacts';
 import { formatBytes32String } from 'ethers/utils';
 
 export const fillInString = (str: string, inputs: TemplateInput[], values) => {
-  console.log('inputs', inputs);
   return inputs.reduce((acc, input) => {
     const value = values[input.id];
     return acc.replace(`[${input.id}]`, `${value}`);
@@ -10,7 +9,6 @@ export const fillInString = (str: string, inputs: TemplateInput[], values) => {
 };
 
 export const fillInQuestion = (template, values) => {
-console.log('template inputs', template.inputs);
   return fillInString(template.question, template.inputs, values);
 }
 

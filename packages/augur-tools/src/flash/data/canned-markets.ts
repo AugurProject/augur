@@ -677,12 +677,9 @@ const calcFuturesHockeyMarket = (): CannedMarket => {
   const estStartTime = moment().add(3, 'weeks');
   const endTime = estStartTime.unix();
   const hockeyTemplates = TEMPLATES[SPORTS].children[HOCKEY].templates as Template[];
-  const template = hockeyTemplates.filter(t => t.groupName === groupTypes.FUTURES && t.example.includes('Stanley'));
+  const template = hockeyTemplates.find(t => t.groupName === groupTypes.FUTURES && t.example.includes('Stanley'));
   const inputValues = [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_EVENT[0]];
-  const outcomes = [...LIST_VALUES.NHL_TEAMS.slice(0,6), `Other (Field)`]
-
-  console.log('template', template);
-  console.log('inputValues', inputValues);
+  const outcomes = [...LIST_VALUES.NHL_TEAMS.slice(0,5), `Other (Field)`]
   return {
     marketType: 'categorical',
     endTime,
@@ -712,9 +709,8 @@ const calcFuturesHockeyMarket = (): CannedMarket => {
 }
 
 export const templatedCannedBettingMarkets = (): CannedMarket[] => {
-  //const markets = calcDailyHockeyMarket();
+  const markets = calcDailyHockeyMarket();
   const hockeyFuture = calcFuturesHockeyMarket();
-  //markets.push(hockeyFuture);
-  //return massageMarkets(markets);
-  return [hockeyFuture];
+  markets.push(hockeyFuture);
+  return massageMarkets(markets);
 };
