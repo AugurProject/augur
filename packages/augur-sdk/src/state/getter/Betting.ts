@@ -120,13 +120,13 @@ export class Betting {
       )) {
         // Need to treat each type differently here:
         switch (templateGroupType) {
-          case groupTypes.OVER_UNDER_MEGA:
+          case groupTypes.DAILY_OVER_UNDER:
             processOverUnderMega(augur, db, markets);
             break;
-          case groupTypes.MONEY_LINE_MEGA:
+          case groupTypes.DAILY_MONEY_LINE:
             processMoneyLineMega(augur, db, markets);
             break;
-          case groupTypes.SPREAD_MEGA:
+          case groupTypes.DAILY_SPREAD:
             processSpreadMega(augur, db, markets);
             break;
           default:

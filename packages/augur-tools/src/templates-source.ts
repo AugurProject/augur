@@ -1657,7 +1657,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NHL: Which team will win: [0] vs. [1]?`,
             example: `NHL: Which Team will win: NY Rangers vs. NJ Devils?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-            groupName: groupTypes.MONEY_LINE_MEGA,
+            groupName: groupTypes.DAILY_MONEY_LINE,
             inputs: [
               {
                 id: 0,
@@ -1704,7 +1704,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NHL (Goal Spread): [0] to win by more than [1].5 goals over the [2]?`,
             example: `NHL (Goal Spread): St Louis Blues to win by more than 2.5 goals over the NY Rangers?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-            groupName: groupTypes.SPREAD_MEGA,
+            groupName: groupTypes.DAILY_SPREAD,
             inputs: [
               {
                 id: 0,
@@ -1767,7 +1767,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NHL (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
             example: `NHL (O/U): St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-            groupName: groupTypes.OVER_UNDER_MEGA,
+            groupName: groupTypes.DAILY_OVER_UNDER,
             groupLineId: 2,
             inputs: [
               {
@@ -3402,7 +3402,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NBA: Which team will win: [0] vs. [1]?`,
                 example: `NBA: Which Team will win: Brooklyn Nets vs. NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: groupTypes.MONEY_LINE_MEGA,
+                groupName: groupTypes.DAILY_MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
@@ -3446,7 +3446,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NBA (Point Spread): [0] to win by more than [1].5 points over the [2]?`,
                 example: `NBA (Point Spread): Brooklyn Nets to win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: groupTypes.SPREAD_MEGA,
+                groupName: groupTypes.DAILY_SPREAD,
                 inputs: [
                   {
                     id: 0,
@@ -3506,7 +3506,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NBA (O/U): [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
                 example: `NBA (O/U): Brooklyn Nets vs. NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.OVER_UNDER_MEGA,
+                groupName: groupTypes.DAILY_OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
                   {
@@ -4109,7 +4109,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA: Which team will win: [0] vs. [1]?`,
                 example: `WNBA: Which Team will win: Phoenix Mercury vs. Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: groupTypes.MONEY_LINE_MEGA,
+                groupName: groupTypes.DAILY_MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
@@ -4153,7 +4153,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA (Point Spread): [0] to win by more than [1].5 points over the [2]?`,
                 example: `WNBA (Point Spread): Phoenix Mercury to win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: groupTypes.SPREAD_MEGA,
+                groupName: groupTypes.DAILY_SPREAD,
                 inputs: [
                   {
                     id: 0,
@@ -4213,7 +4213,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA (O/U): [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
                 example: `WNBA (O/U): Phoenix Mercury vs. Seattle Storm: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.OVER_UNDER_MEGA,
+                groupName: groupTypes.DAILY_OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
                   {
@@ -4679,7 +4679,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB: Which team will win: [1] vs. [2]?`,
                 example: `NCAA Men's BB: Which Team will win: Duke vs. Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: groupTypes.MONEY_LINE_MEGA,
+                groupName: groupTypes.DAILY_MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
@@ -4733,7 +4733,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB (Point Spread): [1] to win by more than [2].5 points over [3]?`,
                 example: `NCAA Men's BB (Point Spread): Duke to win by more than 10.5 points over Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: groupTypes.SPREAD_MEGA,
+                groupName: groupTypes.DAILY_SPREAD,
                 inputs: [
                   {
                     id: 0,
@@ -4803,7 +4803,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB (O/U): [1] vs. [2]: Total Points scored; Over/Under [3].5?`,
                 example: `NCAA Men's BB (O/U): Duke vs. Arizona: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.OVER_UNDER_MEGA,
+                groupName: groupTypes.DAILY_OVER_UNDER,
                 groupLineId: 3,
                 inputs: [
                   {
@@ -5036,7 +5036,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB: Which team will win: [0] vs. [1]?`,
             example: `MLB: Which Team will win: Yankees vs. Red Sox?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-            groupName: groupTypes.MONEY_LINE_MEGA,
+            groupName: groupTypes.DAILY_MONEY_LINE,
             inputs: [
               {
                 id: 0,
@@ -5086,7 +5086,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB (Run Spread): [0] to win by more than [1].5 runs over the [2]?`,
             example: `MLB (Run Spread): NY Yankees to win by more than 2.5 runs over the Boston Red Sox?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-            groupName: groupTypes.SPREAD_MEGA,
+            groupName: groupTypes.DAILY_SPREAD,
             inputs: [
               {
                 id: 0,
@@ -5152,7 +5152,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB (O/U): [0] vs. [1]: Total Runs scored; Over/Under [2].5?`,
             example: `MLB (O/U): NY Yankees vs. Boston Red Sox: Total Runs scored; Over/Under 9.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-            groupName: groupTypes.OVER_UNDER_MEGA,
+            groupName: groupTypes.DAILY_OVER_UNDER,
             groupLineId: 2,
             inputs: [
               {
@@ -6295,7 +6295,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0]: Which NFL Team will win: [1] vs. [2]?`,
                 example: ` Week 1: Which NFL Team will win: NY Giants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.MONEY_LINE_MEGA,
+                groupName: groupTypes.DAILY_MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
@@ -6348,7 +6348,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NFL (Point Spread) [0]: [1] to win by more than [2].5 points over [3]?`,
                 example: `NFL (Point Spread) Week 1: Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.SPREAD_MEGA,
+                groupName: groupTypes.DAILY_SPREAD,
                 inputs: [
                   {
                     id: 0,
@@ -6417,7 +6417,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NFL (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
                 example: `NFL (O/U) Week 1: NY Giants vs. Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.OVER_UNDER_MEGA,
+                groupName: groupTypes.DAILY_OVER_UNDER,
                 groupLineId: 3,
                 inputs: [
                   {
@@ -7024,7 +7024,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA FB [0]: Which College Football Team will win: [1] vs. [2]?`,
                 example: `NCAA FB Week 1: Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.MONEY_LINE_MEGA,
+                groupName: groupTypes.DAILY_MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
@@ -7077,7 +7077,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA FB (Point Spread) [0]: [1] to win by more than [2].5 points over [3]?`,
                 example: `NCAA FB (Point Spread) Week 1: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.SPREAD_MEGA,
+                groupName: groupTypes.DAILY_SPREAD,
                 inputs: [
                   {
                     id: 0,
@@ -7146,7 +7146,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA FB (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
                 example: `NCAA FB (O/U) Week 1: Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.OVER_UNDER_MEGA,
+                groupName: groupTypes.DAILY_OVER_UNDER,
                 groupLineId: 3,
                 inputs: [
                   {

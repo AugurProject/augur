@@ -178,6 +178,9 @@ export interface MarketInfo {
   mostLikelyInvalid: boolean;
   isWarpSync: boolean;
   passDefaultLiquiditySpread: boolean;
+  sportsBookGroupId: string;
+  sportsBookType: string;
+  sportsBookLine: string;
 }
 
 export interface DisputeInfo {
@@ -1446,6 +1449,9 @@ async function getMarketsInfo(
       mostLikelyInvalid: marketData.invalidFilter,
       isWarpSync: marketData.isWarpSync,
       passDefaultLiquiditySpread,
+      sportsBookGroupId: marketData.templateGroupHash,
+      sportsBookType: marketData.templateGroupType,
+      sportsBookLine: marketData.templateGroupLine,
     };
   });
 }

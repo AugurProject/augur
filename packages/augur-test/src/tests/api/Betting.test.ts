@@ -87,15 +87,15 @@ describe('Betting', () => {
     );
 
     const [megaMoneyLineTemplate] = nflTemplates.filter(
-      item => item.groupName === groupTypes.MONEY_LINE_MEGA
+      item => item.groupName === groupTypes.DAILY_MONEY_LINE
     );
 
     const [megaSpreadTemplate] = nflTemplates.filter(
-      item => item.groupName === groupTypes.SPREAD_MEGA
+      item => item.groupName === groupTypes.DAILY_SPREAD
     );
 
     const [megaOverUnderMegaTemplate] = nflTemplates.filter(
-      item => item.groupName === groupTypes.OVER_UNDER_MEGA
+      item => item.groupName === groupTypes.DAILY_OVER_UNDER
     );
 
     const currentTime = await john.getTimestamp();
@@ -208,15 +208,15 @@ describe('Betting', () => {
         ],
         aggregatedMarkets: [
           {
-            groupType: groupTypes.SPREAD_MEGA,
+            groupType: groupTypes.DAILY_SPREAD,
             volume: 0,
           },
           {
-            groupType: groupTypes.MONEY_LINE_MEGA,
+            groupType: groupTypes.DAILY_MONEY_LINE,
             volume: 0,
           },
           {
-            groupType: groupTypes.OVER_UNDER_MEGA,
+            groupType: groupTypes.DAILY_OVER_UNDER,
             volume: 0,
           },
         ],
