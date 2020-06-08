@@ -14,9 +14,9 @@ import {
   loadSeed,
   TestContractAPI,
 } from '@augurproject/tools';
-import { buildTemplateMarketCreationObject } from '@augurproject/tools/build/libs/templates';
+import { buildExtraInfo } from '@augurproject/tools/build/libs/templates';
 import { BigNumber } from 'bignumber.js';
-
+import { formatBytes32String } from 'ethers/utils';
 import { enableZeroX, makeProvider } from '../../libs';
 import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../libs/MockMeshServer';
@@ -109,7 +109,6 @@ describe('Betting', () => {
       teamA,
       teamB,
       String(endTime),
-      tieNoWinner,
     ] as const;
 
     const expirationTime = new BigNumber(new Date().valueOf()).plus(10000);
@@ -119,21 +118,33 @@ describe('Betting', () => {
       endTime: endTime.plus(SECONDS_IN_A_DAY),
       feePerCashInAttoCash,
       designatedReporter: john.account.address,
-      ...buildTemplateMarketCreationObject(megaMoneyLineTemplate, inputs, [
+      extraInfo: JSON.stringify(buildExtraInfo(megaMoneyLineTemplate, inputs, [
         SPORTS,
         AMERICAN_FOOTBALL,
-      ]),
+      ])),
+      outcomes: [teamA, teamB, tieNoWinner].map(formatBytes32String),
     });
     const randomMarket = await john.createCategoricalMarket({
       endTime: new BigNumber(endTime),
       feePerCashInAttoCash,
       affiliateFeeDivisor: new BigNumber(0),
       designatedReporter: john.account.address,
-      outcomes: [],
+      outcomes: ['one', 'two', 'three'].map(formatBytes32String),
       extraInfo: JSON.stringify({
         categories: ['random', 'market'],
         description: 'random categorical market'
       }),
+    });
+    const yesNoTemplate = nflTemplates[0];
+    const yesNoMarket = await john.createYesNoMarket({
+      affiliateFeeDivisor: new BigNumber(0),
+      endTime: endTime.plus(SECONDS_IN_A_DAY),
+      feePerCashInAttoCash,
+      designatedReporter: john.account.address,
+      extraInfo: JSON.stringify(buildExtraInfo(yesNoTemplate, inputs, [
+        SPORTS,
+        AMERICAN_FOOTBALL,
+      ])),
     });
     /*
     const spreadMarket = await john.createCategoricalMarket({
@@ -206,9 +217,12 @@ describe('Betting', () => {
     await john.sync();
 
     const bettingMarkets = await john.getBettingMarkets();
-    expect(bettingMarkets.markets.length).toEqual(1);
+    expect(bettingMarkets.markets).toHaveLength(1);
     const market = bettingMarkets.markets[0];
+
     expect(market.id).toEqual(moneyLineMarket.address);
-    market.outcomes.map(outcome => expect([teamA, teamB, tieNoWinner].includes(outcome.description)).toEqual(true));
+    expect(market.isTemplate).toEqual(true);
+    await expect(market.sportsBookGroupId).not.toBeUndefined();
+    market.outcomes.map(outcome => expect(['Invalid', teamA, teamB, tieNoWinner].includes(outcome.description)).toEqual(true));
   });
 });
