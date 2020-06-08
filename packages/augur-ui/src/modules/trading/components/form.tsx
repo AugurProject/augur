@@ -477,6 +477,7 @@ class Form extends Component<FromProps, FormState> {
       (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
 
     const nearestValues = findNearestValues(quantityValue, market);
+
     return (
       <div className={Styles.TradingForm}>
         <div className={Styles.Outcome}>

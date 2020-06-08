@@ -62,12 +62,11 @@ const getMarketPath = id => {
 };
 
 const OrderTicketHeader = ({
-  selectedNav,
   market,
-  updateTradeTotalCost,
-  state,
+  updateSelectedOrderProperties,
+  selectedOrderProperties,
 }) => {
-  const buySelected = selectedNav === BUY;
+  const buySelected = selectedOrderProperties.selectedNav === BUY;
   return (
     <ul
       className={classNames({
@@ -83,8 +82,8 @@ const OrderTicketHeader = ({
       >
         <button
           onClick={() =>
-            updateTradeTotalCost({
-              ...state,
+            updateSelectedOrderProperties({
+              ...selectedOrderProperties,
               selectedNav: BUY,
             })
           }
@@ -99,8 +98,8 @@ const OrderTicketHeader = ({
       >
         <button
           onClick={() =>
-            updateTradeTotalCost({
-              ...state,
+            updateSelectedOrderProperties({
+              ...selectedOrderProperties,
               selectedNav: SELL,
             })
           }
@@ -137,12 +136,12 @@ const Wrapper = ({
     actions: { setModal },
   } = useAppStatusStore();
   const [state, setState] = useState({
-    orderPrice: selectedOrderProperties.orderPrice || '',
-    orderQuantity: selectedOrderProperties.orderQuantity || '',
+    // orderPrice: selectedOrderProperties.orderPrice || '',
+    // orderQuantity: selectedOrderProperties.orderQuantity || '',
     orderDaiEstimate: '',
     orderEscrowdDai: '',
     gasCostEst: '',
-    selectedNav: selectedOrderProperties.selectedNav || BUY,
+    // selectedNav: selectedOrderProperties.selectedNav || BUY,
     doNotCreateOrders: selectedOrderProperties.doNotCreateOrders || false,
     expirationDate: selectedOrderProperties.expirationDate || null,
     trade: getDefaultTrade({ market, selectedOutcome }),
@@ -161,13 +160,13 @@ const Wrapper = ({
 
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
 
-  useEffect(() => {
-    updateSelectedOrderProperties({
-      orderPrice: state.orderPrice,
-      orderQuantity: state.orderQuantity,
-      selectedNav: state.selectedNav,
-    });
-  }, [state.orderPrice, state.orderQuantity, state.selectedNav]);
+  // useEffect(() => {
+  //   updateSelectedOrderProperties({
+  //     orderPrice: state.orderPrice,
+  //     orderQuantity: state.orderQuantity,
+  //     selectedNav: state.selectedNav,
+  //   });
+  // }, [state.orderPrice, state.orderQuantity, state.selectedNav]);
 
   function clearOrderForm(wholeForm = true) {
     const tradeUpdate = getDefaultTrade({ market, selectedOutcome });
@@ -176,8 +175,8 @@ const Wrapper = ({
       calcOrderExpirationTime(endTime, currentTimestamp);
     const updatedState: any = wholeForm
       ? {
-          orderPrice: '',
-          orderQuantity: '',
+          // orderPrice: '',
+          // orderQuantity: '',
           orderDaiEstimate: '',
           orderEscrowdDai: '',
           gasCostEst: '',
@@ -195,7 +194,7 @@ const Wrapper = ({
   }
 
   function handlePlaceMarketTrade(market, selectedOutcome, s) {
-    orderSubmitted(s.selectedNav, market.id);
+    orderSubmitted(selectedOrderProperties.selectedNav, market.id);
     let tradeInProgress = state.trade;
     if (state.expirationDate) {
       tradeInProgress = {
@@ -222,13 +221,13 @@ const Wrapper = ({
       callback: (err, newOrder) => {
         if (err) return console.error(err); // what to do with error here
 
-        const numShares = formatMarketShares(
-          market.marketType,
-          createBigNumber(newOrder.numShares),
-          {
-            roundDown: false,
-          }
-        ).rounded;
+        // const numShares = formatMarketShares(
+        //   market.marketType,
+        //   createBigNumber(newOrder.numShares),
+        //   {
+        //     roundDown: false,
+        //   }
+        // ).rounded;
 
         const formattedGasCost = formatGasCostToEther(
           newOrder.gasLimit,
@@ -237,7 +236,7 @@ const Wrapper = ({
         ).toString();
         setState({
           ...state,
-          orderQuantity: String(numShares),
+          // orderQuantity: String(numShares),
           orderEscrowdDai: newOrder.costInDai.formatted,
           orderDaiEstimate: order.orderDaiEstimate,
           trade: newOrder,
@@ -248,9 +247,6 @@ const Wrapper = ({
   }
 
   async function updateTradeTotalCost(order, fromOrderBook = false) {
-    const selectedNav = order.selectedNav
-      ? order.selectedNav
-      : state.selectedNav;
     let useValues = {
       ...order,
       orderDaiEstimate: '',
@@ -280,9 +276,8 @@ const Wrapper = ({
         potentialDaiLoss: formatNumber(40),
         potentialDaiProfit: formatNumber(60),
         side: order.selectedNav,
-        selectedNav,
       };
-
+      console.log('gonna set state in updateTradeTotalcost', useValues);
       setState({
         ...state,
         ...useValues,
@@ -292,26 +287,15 @@ const Wrapper = ({
           : '',
         gasCostEst: '',
         trade: trade,
-        selectedNav,
       });
     } else {
       if (order.orderPrice) {
-        setState({
-          ...state,
-          selectedNav,
-        });
-        await queueStimulateTrade(order, useValues, selectedNav);
-      } else {
-        setState({
-          ...state,
-          selectedNav,
-          orderQuantity: order.orderQuantity,
-        });
+        await queueStimulateTrade(order, useValues);
       }
     }
   }
 
-  async function queueStimulateTrade(order, useValues, selectedNav) {
+  async function queueStimulateTrade(order, useValues) {
     const queue = state.simulateQueue.slice(0);
     queue.push(
       new Promise(resolve =>
@@ -332,7 +316,6 @@ const Wrapper = ({
                 orderDaiEstimate: '',
                 orderEscrowdDai: '',
                 gasCostEst: '',
-                selectedNav,
               });
             }
             const newOrderDaiEstimate = formatDai(
@@ -353,7 +336,6 @@ const Wrapper = ({
               orderEscrowdDai: newOrder.costInDai.formatted,
               trade: newOrder,
               gasCostEst: formattedGasCost,
-              selectedNav,
             });
           },
         })
@@ -365,7 +347,8 @@ const Wrapper = ({
   }
 
   function getActionButton() {
-    const { selectedNav, trade } = state;
+    const { trade } = state;
+    const { selectedNav } = selectedOrderProperties;
     const noGSN = gsnUnavailable && !gsnWalletInfoSeen;
     const hasFunds = gsnEnabled ? !!dai : !!eth && !!dai;
     let actionButton: any = (
@@ -454,8 +437,8 @@ const Wrapper = ({
     );
   const isOpenOrder = state.trade?.numFills === 0;
   const orderEmpty =
-    state.orderPrice === '' &&
-    state.orderQuantity === '' &&
+    selectedOrderProperties.orderPrice === '' &&
+    selectedOrderProperties.orderQuantity === '' &&
     state.orderDaiEstimate === '';
   const showTip = !hasHistory && orderEmpty;
   const { potentialDaiLoss, sharesFilled, orderShareProfit } = state.trade;
@@ -464,14 +447,14 @@ const Wrapper = ({
     (orderShareProfit && orderShareProfit.value !== 0) ||
     (sharesFilled && sharesFilled.value !== 0);
   const actionButton = getActionButton();
+
   return (
     <section className={Styles.Wrapper}>
       <div>
         <OrderTicketHeader
           market={market}
-          selectedNav={state.selectedNav}
-          updateTradeTotalCost={updateTradeTotalCost}
-          state={state}
+          selectedOrderProperties={selectedOrderProperties}
+          updateSelectedOrderProperties={updateSelectedOrderProperties}
         />
         <Form
           market={market}
@@ -479,7 +462,12 @@ const Wrapper = ({
           initialLiquidity={initialLiquidity}
           selectedOutcome={selectedOutcome}
           updateSelectedOutcome={updateSelectedOutcome}
-          orderState={state}
+          orderState={{
+            ...state,
+            orderPrice: selectedOrderProperties.orderPrice,
+            selectedNav: selectedOrderProperties.selectedNav,
+            orderQuantity: selectedOrderProperties.orderQuantity,
+          }}
           updateState={updates => setState({ ...state, ...updates })}
           updateOrderProperty={property => setState({ ...state, ...property })}
           clearOrderForm={clearOrderForm}
