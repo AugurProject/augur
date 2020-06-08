@@ -192,20 +192,19 @@ describe('Betting', () => {
 
     await john.sync();
 
-    await expect(john.getBettingMarkets()).resolves.toEqual([
+    const bettingMarkets = await john.getBettingMarkets();
+    expect(bettingMarkets.markets.length).toEqual(1);
+    const market = bettingMarkets.markets[0];
+    expect(market.id).toEqual(moneyLineMarket.address);
+    expect(market.outcomes).toEqual([
       {
-        id: expect.any(String),
-        outcomes: [
-          {
-            description: 'Seattle Seahawks',
-          },
-          {
-            description: 'Los Angeles Rams',
-          },
-          {
-            description: 'No Winner',
-          },
-        ],
+        description: 'Seattle Seahawks',
+      },
+      {
+        description: 'Los Angeles Rams',
+      },
+      {
+        description: 'No Winner',
       },
     ]);
   });
