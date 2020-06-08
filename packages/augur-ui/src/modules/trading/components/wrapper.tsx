@@ -247,6 +247,123 @@ const Wrapper = ({
     });
   }
 
+  async function updateTradeTotalCost(order, fromOrderBook = false) {
+    const selectedNav = order.selectedNav
+      ? order.selectedNav
+      : state.selectedNav;
+    let useValues = {
+      ...order,
+      orderDaiEstimate: '',
+    };
+    if (!fromOrderBook) {
+      useValues = {
+        orderDaiEstimate: '',
+      };
+    }
+    if (initialLiquidity || tradingTutorial) {
+      const totalCost = calculateTotalOrderValue(
+        order.orderQuantity,
+        order.orderPrice,
+        order.selectedNav,
+        createBigNumber(market.minPrice),
+        createBigNumber(market.maxPrice),
+        market.marketType
+      );
+      const formattedValue = formatDai(totalCost);
+      let trade = {
+        ...useValues,
+        limitPrice: order.orderPrice,
+        selectedOutcome: selectedOutcome.id,
+        totalCost: formatNumber(totalCost),
+        numShares: order.orderQuantity,
+        shareCost: formatNumber(0),
+        potentialDaiLoss: formatNumber(40),
+        potentialDaiProfit: formatNumber(60),
+        side: order.selectedNav,
+        selectedNav,
+      };
+
+      setState({
+        ...state,
+        ...useValues,
+        orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
+        orderEscrowdDai: totalCost
+          ? formattedValue.roundedValue.toString()
+          : '',
+        gasCostEst: '',
+        trade: trade,
+        selectedNav,
+      });
+    } else {
+      if (order.orderPrice) {
+        setState({
+          ...state,
+          selectedNav,
+        });
+        await queueStimulateTrade(order, useValues, selectedNav);
+      } else {
+        setState({
+          ...state,
+          selectedNav,
+          orderQuantity: order.orderQuantity,
+        });
+      }
+    }
+  }
+
+  async function queueStimulateTrade(order, useValues, selectedNav) {
+    const queue = state.simulateQueue.slice(0);
+    queue.push(
+      new Promise(resolve =>
+        updateTradeCost({
+          marketId: market.id,
+          outcomeId: order.selectedOutcomeId
+            ? order.selectedOutcomeId
+            : selectedOutcome.id,
+          limitPrice: order.orderPrice,
+          side: order.selectedNav,
+          numShares: order.orderQuantity,
+          selfTrade: order.selfTrade,
+          callback: (err, newOrder) => {
+            if (err) {
+              // just update properties for form
+              return resolve({
+                ...useValues,
+                orderDaiEstimate: '',
+                orderEscrowdDai: '',
+                gasCostEst: '',
+                selectedNav,
+              });
+            }
+            const newOrderDaiEstimate = formatDai(
+              createBigNumber(newOrder.totalOrderValue.fullPrecision),
+              {
+                roundDown: false,
+              }
+            ).roundedValue;
+
+            const formattedGasCost = formatGasCostToEther(
+              newOrder.gasLimit,
+              { decimalsRounded: 4 },
+              String(gasPrice)
+            ).toString();
+            resolve({
+              ...useValues,
+              orderDaiEstimate: String(newOrderDaiEstimate),
+              orderEscrowdDai: newOrder.costInDai.formatted,
+              trade: newOrder,
+              gasCostEst: formattedGasCost,
+              selectedNav,
+            });
+          },
+        })
+      )
+    );
+    await Promise.all(queue).then(results =>
+      setState({ ...state, ...results[results.length - 1] })
+    );
+  }
+
   function getActionButton() {
     const { selectedNav, trade } = state;
     const noGSN = gsnUnavailable && !gsnWalletInfoSeen;
@@ -328,123 +445,6 @@ const Wrapper = ({
     }
 
     return actionButton;
-  }
-
-  async function queueStimulateTrade(order, useValues, selectedNav) {
-    const queue = state.simulateQueue.slice(0);
-    queue.push(
-      new Promise(resolve =>
-        updateTradeCost({
-          marketId: market.id,
-          outcomeId: order.selectedOutcomeId
-            ? order.selectedOutcomeId
-            : selectedOutcome.id,
-          limitPrice: order.orderPrice,
-          side: order.selectedNav,
-          numShares: order.orderQuantity,
-          selfTrade: order.selfTrade,
-          callback: (err, newOrder) => {
-            if (err) {
-              // just update properties for form
-              return resolve({
-                ...useValues,
-                orderDaiEstimate: '',
-                orderEscrowdDai: '',
-                gasCostEst: '',
-                selectedNav,
-              });
-            }
-            const newOrderDaiEstimate = formatDai(
-              createBigNumber(newOrder.totalOrderValue.fullPrecision),
-              {
-                roundDown: false,
-              }
-            ).roundedValue;
-
-            const formattedGasCost = formatGasCostToEther(
-              newOrder.gasLimit,
-              { decimalsRounded: 4 },
-              String(gasPrice)
-            ).toString();
-            resolve({
-              ...useValues,
-              orderDaiEstimate: String(newOrderDaiEstimate),
-              orderEscrowdDai: newOrder.costInDai.formatted,
-              trade: newOrder,
-              gasCostEst: formattedGasCost,
-              selectedNav,
-            });
-          },
-        })
-      )
-    );
-    await Promise.all(queue).then(results =>
-      setState({ ...state, ...results[results.length - 1] })
-    );
-  }
-
-  async function updateTradeTotalCost(order, fromOrderBook = false) {
-    const selectedNav = order.selectedNav
-      ? order.selectedNav
-      : state.selectedNav;
-    let useValues = {
-      ...order,
-      orderDaiEstimate: '',
-    };
-    if (!fromOrderBook) {
-      useValues = {
-        orderDaiEstimate: '',
-      };
-    }
-    if (initialLiquidity || tradingTutorial) {
-      const totalCost = calculateTotalOrderValue(
-        order.orderQuantity,
-        order.orderPrice,
-        order.selectedNav,
-        createBigNumber(market.minPrice),
-        createBigNumber(market.maxPrice),
-        market.marketType
-      );
-      const formattedValue = formatDai(totalCost);
-      let trade = {
-        ...useValues,
-        limitPrice: order.orderPrice,
-        selectedOutcome: selectedOutcome.id,
-        totalCost: formatNumber(totalCost),
-        numShares: order.orderQuantity,
-        shareCost: formatNumber(0),
-        potentialDaiLoss: formatNumber(40),
-        potentialDaiProfit: formatNumber(60),
-        side: order.selectedNav,
-        selectedNav,
-      };
-
-      setState({
-        ...state,
-        ...useValues,
-        orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
-        orderEscrowdDai: totalCost
-          ? formattedValue.roundedValue.toString()
-          : '',
-        gasCostEst: '',
-        trade: trade,
-        selectedNav,
-      });
-    } else {
-      if (order.orderPrice) {
-        setState({
-          ...state,
-          selectedNav,
-        });
-        await queueStimulateTrade(order, useValues, selectedNav);
-      } else {
-        setState({
-          ...state,
-          selectedNav,
-          orderQuantity: order.orderQuantity,
-        });
-      }
-    }
   }
 
   const insufficientFunds =
