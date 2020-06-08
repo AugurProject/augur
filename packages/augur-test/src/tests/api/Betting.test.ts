@@ -122,7 +122,7 @@ describe('Betting', () => {
         AMERICAN_FOOTBALL,
       ]),
     });
-
+    /*
     const spreadMarket = await john.createCategoricalMarket({
       affiliateFeeDivisor: new BigNumber(0),
       endTime: endTime.plus(SECONDS_IN_A_DAY),
@@ -187,7 +187,7 @@ describe('Betting', () => {
         [SPORTS, AMERICAN_FOOTBALL]
       ),
     });
-
+    */
     await sleep(300);
 
     await john.sync();
@@ -204,20 +204,6 @@ describe('Betting', () => {
           },
           {
             description: 'No Winner',
-          },
-        ],
-        aggregatedMarkets: [
-          {
-            groupType: groupTypes.DAILY_SPREAD,
-            volume: 0,
-          },
-          {
-            groupType: groupTypes.DAILY_MONEY_LINE,
-            volume: 0,
-          },
-          {
-            groupType: groupTypes.DAILY_OVER_UNDER,
-            volume: 0,
           },
         ],
       },

@@ -23,6 +23,7 @@ import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';
 import { Account } from '../constants';
 import { makeSigner } from './blockchain';
+import { TemplateFilters } from '@augurproject/sdk/src/state/getter/Markets';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const MAX_APPROVAL = new BigNumber(2).pow(256).minus(1);
@@ -850,9 +851,9 @@ export class ContractAPI {
 
   async getBettingMarkets(
     params = {}
-  ): Promise<Getters.Betting.MegaBettingMarketsInfo[]> {
+  ): Promise<Getters.Markets.MarketList> {
     const universe = this.augur.contracts.universe.address;
-    return this.augur.getBettingMarkets({ universe, ...params });
+    return this.augur.getMarkets({ universe, templateFilter: TemplateFilters.sportsBook });
   }
 
   async getInitialReporterStake(
