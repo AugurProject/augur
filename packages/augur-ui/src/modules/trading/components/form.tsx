@@ -49,6 +49,24 @@ enum ADVANCED_OPTIONS {
   EXPIRATION = '1',
   FILL = '2',
 }
+const advancedExpirationDateOptions = [
+  {
+    label: 'Days',
+    value: EXPIRATION_DATE_OPTIONS.DAYS,
+  },
+  {
+    label: 'Hours',
+    value: EXPIRATION_DATE_OPTIONS.HOURS,
+  },
+  {
+    label: 'Minutes',
+    value: EXPIRATION_DATE_OPTIONS.MINUTES,
+  },
+  {
+    label: 'Custom',
+    value: EXPIRATION_DATE_OPTIONS.CUSTOM,
+  },
+];
 
 const advancedDropdownOptions = [
   {
@@ -782,24 +800,7 @@ class Form extends Component<FromProps, FormState> {
                   )}
                   <SquareDropdown
                     defaultValue={s.expirationDateOption}
-                    options={[
-                      {
-                        label: 'Days',
-                        value: EXPIRATION_DATE_OPTIONS.DAYS,
-                      },
-                      {
-                        label: 'Hours',
-                        value: EXPIRATION_DATE_OPTIONS.HOURS,
-                      },
-                      {
-                        label: 'Minutes',
-                        value: EXPIRATION_DATE_OPTIONS.MINUTES,
-                      },
-                      {
-                        label: 'Custom',
-                        value: EXPIRATION_DATE_OPTIONS.CUSTOM,
-                      },
-                    ]}
+                    options={advancedExpirationDateOptions}
                     onChange={value => {
                       const fastForwardTime = this.state.fastForwardTime || 1;
                       this.updateAndValidate(

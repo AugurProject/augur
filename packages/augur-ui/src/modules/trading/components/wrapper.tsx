@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
 
@@ -21,10 +21,7 @@ import { OrderButton, PrimaryButton } from 'modules/common/buttons';
 import {
   formatGasCostToEther,
   formatNumber,
-  formatMarketShares,
 } from 'utils/format-number';
-import convertExponentialToDecimal from 'utils/convert-exponential';
-import { MarketData, OutcomeFormatted } from 'modules/types';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { formatDai } from 'utils/format-number';
 import { Moment } from 'moment';
@@ -173,6 +170,13 @@ const Wrapper = ({
         }
       : { trade: tradeUpdate };
     setState({ ...state, ...updatedState });
+    if (wholeForm) {
+      updateSelectedOrderProperties({
+        ...selectedOrderProperties,
+        orderPrice: '',
+        orderQuantity: '',
+      });
+    }
   }
 
   function clearOrderConfirmation() {
