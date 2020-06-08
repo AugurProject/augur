@@ -9,6 +9,7 @@ import {
   LogTimestamp,
   MarketData,
   Log,
+  MarketType,
 } from '../logs/types';
 import {
   DisputeCrowdsourcerRedeemed,
@@ -426,7 +427,7 @@ export class Users {
       const market = markets[marketId];
       const marketPositions = positions[marketId];
       // need all outcomes represented in user shares balances
-      const userSharesBalances = populateUserShareBalances(market.outcomeVolumes.length, marketPositions.userSharesBalances);
+      const userSharesBalances = populateUserShareBalances(market.marketType === MarketType.Categorical ? market.outcomes.length : 3, marketPositions ? marketPositions.userSharesBalances : {});
       const outcomes = Object.keys(orders[marketId]);
       outcomes.forEach(outcome => {
         const orderTypes = Object.keys(orders[marketId][outcome]);

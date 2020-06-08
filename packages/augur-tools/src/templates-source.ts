@@ -121,15 +121,15 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw/No Contest`,
-              },
-              {
-                id: 3,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Draw/No Contest`,
               },
             ],
             resolutionRules: {
@@ -179,25 +179,25 @@ export const TEMPLATES = {
               },
               {
                 id: 3,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Over [2].5`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Under [2].5`,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
-              },
-              {
-                id: 6,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Over [2].5`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Under [2].5`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
@@ -237,45 +237,45 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[0] by KO/TKO`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[0] by Submission`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[0] by Points`,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] by KO/TKO`,
-              },
-              {
-                id: 6,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] by Submission`,
-              },
-              {
-                id: 7,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] by Points`,
-              },
-              {
-                id: 8,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw/No Contest`,
-              },
-              {
-                id: 9,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[0] by KO/TKO`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[0] by Submission`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[0] by Points`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] by KO/TKO`,
+              },
+              {
+                id: 7,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] by Submission`,
+              },
+              {
+                id: 8,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] by Points`,
+              },
+              {
+                id: 9,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Draw/No Contest`,
               },
             ],
             resolutionRules: {
@@ -327,30 +327,30 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `KO/TKO`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Submission`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Points`,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
-              },
-              {
-                id: 6,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `KO/TKO`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Submission`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Points`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
@@ -402,45 +402,45 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Round 1`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Round 2`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Round 3`,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Round 4`,
-              },
-              {
-                id: 6,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Round 5`,
-              },
-              {
-                id: 7,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Goes the distance`,
-              },
-              {
-                id: 8,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
-              },
-              {
-                id: 9,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Round 1`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Round 2`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Round 3`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Round 4`,
+              },
+              {
+                id: 7,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Round 5`,
+              },
+              {
+                id: 8,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Goes the distance`,
+              },
+              {
+                id: 9,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
@@ -487,15 +487,15 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw/No Contest`,
-              },
-              {
-                id: 3,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Draw/No Contest`,
               },
             ],
             resolutionRules: {
@@ -539,32 +539,32 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
+                type: TemplateInputType.ESTDATETIME,
+                hoursAfterEst: 9,
+                groupKey: START_TIME,
+                placeholder: `Date time`,
+              },
+              {
+                id: 3,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Round #`,
                 noSort: true,
                 values: LIST_VALUES.BOXING_ROUNDS,
               },
               {
-                id: 3,
+                id: 4,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                 placeholder: `Over [2].5`,
               },
               {
-                id: 4,
+                id: 5,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
                 placeholder: `Under [2].5`,
               },
               {
-                id: 5,
+                id: 6,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `No Contest`,
-              },
-              {
-                id: 6,
-                type: TemplateInputType.ESTDATETIME,
-                hoursAfterEst: 9,
-                groupKey: START_TIME,
-                placeholder: `Date time`,
               },
             ],
             resolutionRules: {
@@ -604,45 +604,45 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[0] by KO`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[0] by TKO`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[0] by Points`,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] by KO`,
-              },
-              {
-                id: 6,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] by TKO`,
-              },
-              {
-                id: 7,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `[1] by Points`,
-              },
-              {
-                id: 8,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Draw/No Contest`,
-              },
-              {
-                id: 9,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[0] by KO`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[0] by TKO`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[0] by Points`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] by KO`,
+              },
+              {
+                id: 7,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] by TKO`,
+              },
+              {
+                id: 8,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `[1] by Points`,
+              },
+              {
+                id: 9,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Draw/No Contest`,
               },
             ],
             resolutionRules: {
@@ -694,30 +694,30 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `KO`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `TKO`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Points`,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
-              },
-              {
-                id: 6,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `KO`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `TKO`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Points`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
@@ -763,40 +763,40 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Round 1-3`,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Round 4-6`,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Round 7-9`,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Round 10-12`,
-              },
-              {
-                id: 6,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Goes the Distance`,
-              },
-              {
-                id: 7,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
-              },
-              {
-                id: 8,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 9,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Round 1-3`,
+              },
+              {
+                id: 4,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Round 4-6`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Round 7-9`,
+              },
+              {
+                id: 6,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Round 10-12`,
+              },
+              {
+                id: 7,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Goes the Distance`,
+              },
+              {
+                id: 8,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
@@ -917,15 +917,15 @@ export const TEMPLATES = {
               },
               {
                 id: 4,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
-              },
-              {
-                id: 5,
                 type: TemplateInputType.ESTDATETIME,
                 hoursAfterEst: 24,
                 groupKey: START_TIME,
                 placeholder: `Date time`,
+              },
+              {
+                id: 5,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {

@@ -19,6 +19,7 @@ import {
   US_POLITICS,
   HOCKEY,
   groupTypes,
+  MMA,
 } from '@augurproject/artifacts';
 import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';
@@ -673,24 +674,29 @@ const calcDailyHockeyMarket = (): CannedMarket[] => {
     }));
 }
 
-const calcFuturesHockeyMarket = (): CannedMarket => {
+const calcFuturesHockeyMarket = (): CannedMarket[] => {
   const estStartTime = moment().add(3, 'weeks');
   const endTime = estStartTime.unix();
   const hockeyTemplates = TEMPLATES[SPORTS].children[HOCKEY].templates as Template[];
-  const template = hockeyTemplates.find(t => t.groupName === groupTypes.FUTURES && t.example.includes('Stanley'));
-  const inputValues = [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_EVENT[0]];
-  const outcomes = [...LIST_VALUES.NHL_TEAMS.slice(0,5), `Other (Field)`]
-  return {
+  const templates = hockeyTemplates.filter(t => t.groupName === groupTypes.FUTURES);
+  const inputValues = [
+    [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_EVENT[0]],
+    [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_AWARD[0]]
+  ];
+  const outcomes = [
+    [...LIST_VALUES.NHL_TEAMS.slice(0,5), 'Other (Field)'],
+    ['Joe Pavelski', 'Jonathan Toews', 'Carey Price', 'Erik Karlsson', 'Drew Doughty', 'Other (Field)'],
+  ]
+  return templates.map((template, index) => ({
     marketType: 'categorical',
     endTime,
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.01',
-    extraInfo: buildExtraInfo(template, inputValues, [
+    extraInfo: buildExtraInfo(template, inputValues[index], [
       SPORTS,
       HOCKEY,
-      'Stanley Cup'
     ]),
-    outcomes: outcomes,
+    outcomes: outcomes[index],
     orderBook: {
       1: {
         buy: singleOutcomeBids,
@@ -705,12 +711,61 @@ const calcFuturesHockeyMarket = (): CannedMarket => {
         sell: singleOutcomeAsks,
       },
     },
-  }
+  }));
+}
+
+const calcMMAMarkets = (): CannedMarket[] => {
+  const estStartTime = moment().add(3, 'weeks');
+  const unixEstStartTime = estStartTime.unix();
+  const endTime = estStartTime.add(9, 'hours').unix();
+  const templates = TEMPLATES[SPORTS].children[MMA].templates as Template[];
+  const fighterA = 'Donald Cerrone';
+  const fighterB = 'Anthony Pettis';
+  const inputValues = [
+    [fighterA, fighterB, unixEstStartTime],
+    [fighterA, fighterB, '2', unixEstStartTime],
+    [fighterA, fighterB, unixEstStartTime],
+    [fighterA, fighterB, unixEstStartTime],
+    [fighterA, fighterB, unixEstStartTime],
+  ];
+  const outcomes = [
+    [fighterA, fighterB, 'Draw/No Contest'],
+    ['Over 2.5', 'Under 2.5', 'No Contest'],
+    [`${fighterA} by KO/TKO`, `${fighterA} by Submission`, `${fighterA} by Points`, `${fighterB} by KO/TKO`, `${fighterB} by Submission`, `${fighterB} by Points`, `Draw/No Contest`],
+    ['KO/TKO', 'Submission', 'Points', 'No Contest'],
+    ['Round 1', 'Round 2', 'Round 3', 'Round 4', 'Round 5', 'Goes the distance', 'No Contest'],
+  ]
+
+  return templates.map((template, index) => ({
+    marketType: 'categorical',
+    endTime,
+    affiliateFeeDivisor: 0,
+    creatorFeeDecimal: '0.01',
+    extraInfo: buildExtraInfo(template, inputValues[index], [
+      SPORTS,
+      MMA,
+    ]),
+    outcomes: outcomes[index],
+    orderBook: {
+      1: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+      2: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+      3: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+    },
+  }));
 }
 
 export const templatedCannedBettingMarkets = (): CannedMarket[] => {
   const markets = calcDailyHockeyMarket();
-  const hockeyFuture = calcFuturesHockeyMarket();
-  markets.push(hockeyFuture);
-  return massageMarkets(markets);
+  const hockeyFutures = calcFuturesHockeyMarket();
+  const mmaMarkets = calcMMAMarkets();
+  return massageMarkets(markets.concat(hockeyFutures).concat(mmaMarkets));
 };
