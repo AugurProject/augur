@@ -136,12 +136,9 @@ const Wrapper = ({
     actions: { setModal },
   } = useAppStatusStore();
   const [state, setState] = useState({
-    // orderPrice: selectedOrderProperties.orderPrice || '',
-    // orderQuantity: selectedOrderProperties.orderQuantity || '',
     orderDaiEstimate: '',
     orderEscrowdDai: '',
     gasCostEst: '',
-    // selectedNav: selectedOrderProperties.selectedNav || BUY,
     doNotCreateOrders: selectedOrderProperties.doNotCreateOrders || false,
     expirationDate: selectedOrderProperties.expirationDate || null,
     trade: getDefaultTrade({ market, selectedOutcome }),
@@ -160,14 +157,6 @@ const Wrapper = ({
 
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
 
-  // useEffect(() => {
-  //   updateSelectedOrderProperties({
-  //     orderPrice: state.orderPrice,
-  //     orderQuantity: state.orderQuantity,
-  //     selectedNav: state.selectedNav,
-  //   });
-  // }, [state.orderPrice, state.orderQuantity, state.selectedNav]);
-
   function clearOrderForm(wholeForm = true) {
     const tradeUpdate = getDefaultTrade({ market, selectedOutcome });
     const expirationDate =
@@ -175,8 +164,6 @@ const Wrapper = ({
       calcOrderExpirationTime(endTime, currentTimestamp);
     const updatedState: any = wholeForm
       ? {
-          // orderPrice: '',
-          // orderQuantity: '',
           orderDaiEstimate: '',
           orderEscrowdDai: '',
           gasCostEst: '',
@@ -277,7 +264,6 @@ const Wrapper = ({
         potentialDaiProfit: formatNumber(60),
         side: order.selectedNav,
       };
-      console.log('gonna set state in updateTradeTotalcost', useValues);
       setState({
         ...state,
         ...useValues,
@@ -469,7 +455,16 @@ const Wrapper = ({
             orderQuantity: selectedOrderProperties.orderQuantity,
           }}
           updateState={updates => setState({ ...state, ...updates })}
-          updateOrderProperty={property => setState({ ...state, ...property })}
+          updateOrderProperty={property => {
+            if (property.orderQuantity || property.orderPrice || property.selectedNav) {
+              updateSelectedOrderProperties({
+                ...selectedOrderProperties,
+                ...property,
+              })
+            } else {
+              setState({ ...state, ...property });
+            }
+          }}
           clearOrderForm={clearOrderForm}
           updateTradeTotalCost={updateTradeTotalCost}
           updateTradeNumShares={updateTradeNumShares}
