@@ -223,7 +223,7 @@ export const templateFilterValues = [
   { header: 'All', value: TEMPLATE_FILTER_ALL},
   { header: 'Augur templates', value: Getters.Markets.TemplateFilters.templateOnly},
   { header: 'Custom markets', value: Getters.Markets.TemplateFilters.customOnly},
-  { header: 'SportsBook markets', value: Getters.Markets.TemplateFilters.sportsBook},
+  // { header: 'SportsBook markets', value: Getters.Markets.TemplateFilters.sportsBook},
 ]
 
 // # Valid Market Liquidity Spreads
