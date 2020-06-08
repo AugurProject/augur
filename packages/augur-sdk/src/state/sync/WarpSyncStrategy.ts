@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { SECONDS_IN_A_DAY } from '../../constants';
 import { WarpController } from '../../warp/WarpController';
 import { DB } from '../db/DB';
+import { check } from 'ethers/utils/wordlist';
 
 const BULKSYNC_HORIZON = SECONDS_IN_A_DAY.multipliedBy(7).toNumber();
 
@@ -52,10 +53,17 @@ export class WarpSyncStrategy {
       await this.warpSyncController.destroyAndRecreateDB();
       await this.warpSyncController.createInitialCheckpoint();
 
-      const {
-        logs,
-        endBlockNumber,
-      } = await this.warpSyncController.getCheckpointFile(ipfsRootHash);
+      let logs;
+      let endBlockNumber;
+
+      try {
+      const checkpoint = await this.warpSyncController.getCheckpointFile(ipfsRootHash);
+      logs = checkpoint.logs;
+      endBlockNumber = checkpoint.endBlockNumber;
+      } catch(e) {
+        console.error(`Couldn't get checkpoint file: ${e}`);
+        return undefined;
+      }
 
       const maxBlock = await this.processFile(logs);
 
