@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { SelectedOrderProperties } from 'modules/trading/components/wrapper';
-import Wrapper from 'modules/trading/containers/wrapper';
+import Wrapper from 'modules/trading/components/wrapper';
 import Styles from 'modules/trading/components/trading-form.styles.less';
 import { MarketData, NewMarket } from 'modules/types';
 
