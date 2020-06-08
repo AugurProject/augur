@@ -7505,8 +7505,8 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will [0] be federally charged by [1]?`,
-            example: `Will Al Capone be federal charged by December 31, 2020 11:59 pm EST`,
+            question: `Will [0] be federally charged by [1] 11:59PM ET?`,
+            example: `Will Al Capone be federal charged by December 31, 2020 11:59PM ET`,
             inputs: [
               {
                 id: 0,
@@ -7516,14 +7516,14 @@ export const TEMPLATES = {
               {
                 id: 1,
                 type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 1,
+                daysAfterDateStart: 2,
                 placeholder: `Day of Year`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Person named shall be indicted or otherwise formally charged with a U.S. federal crime, as publicly confirmed on or before date by 11:59PM eastern time in market question by an authorized representative of the charging agency(ies) or judicial venue(s).`,
+                  text: `Person named shall be indicted or otherwise formally charged with a U.S. federal crime, as publicly confirmed on or before date by 11:59PM eastern time (ET) in market question by an authorized representative of the charging agency(ies) or judicial venue(s).`,
                 },
               ],
             },
