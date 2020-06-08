@@ -32,7 +32,6 @@ import {
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   ProfitLossChangedLog,
-  ReportingFeeChangedLog,
   ReportingParticipantDisavowedLog,
   ShareTokenBalanceChangedLog,
   TimestampSetLog,
@@ -44,6 +43,7 @@ import {
   TransferSingleLog,
   UniverseCreatedLog,
   UniverseForkedLog,
+  ReportingFeeChangedLog,
 } from '../logs/types';
 import { BaseSyncableDB } from './BaseSyncableDB';
 import { DelayedSyncableDB } from './DelayedSyncableDB';
@@ -338,7 +338,7 @@ export class DB {
       schemas[genericEventDBDescription.EventName] = fields.join(',');
     }
     schemas['Markets'] =
-      'market,reportingState,universe,marketCreator,timestamp,finalized,blockNumber,[universe+templateGroupHash+templateGroupType]';
+      'market,reportingState,universe,marketCreator,timestamp,finalized,blockNumber';
     schemas['CurrentOrders'] =
       'orderId,[market+open],[market+outcome+orderType],orderCreator,orderFiller,blockNumber';
     schemas['Dispute'] = '[market+payoutNumerators],market,blockNumber';
