@@ -470,7 +470,7 @@ class Form extends Component<FromProps, FormState> {
         errors[this.INPUT_TYPES.PRICE].push(`Enter a valid percentage`);
       } else {
         errors[this.INPUT_TYPES.PRICE].push(
-          `Price must be between ${minPrice} and ${maxPrice}`
+          `Price must be above ${minPrice} and below ${maxPrice}`
         );
       }
     }
