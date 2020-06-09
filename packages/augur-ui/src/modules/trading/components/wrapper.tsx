@@ -282,7 +282,7 @@ const Wrapper = ({
           ? formattedValue.roundedValue.toString()
           : '',
         gasCostEst: '',
-        trade: trade,
+        trade,
       });
     } else {
       if (order.orderPrice) {
@@ -443,6 +443,7 @@ const Wrapper = ({
     (orderShareProfit && orderShareProfit.value !== 0) ||
     (sharesFilled && sharesFilled.value !== 0);
   const actionButton = getActionButton();
+
   return (
     <section className={Styles.Wrapper}>
       <div>
@@ -465,11 +466,15 @@ const Wrapper = ({
           }}
           updateState={updates => setState({ ...state, ...updates })}
           updateOrderProperty={property => {
-            if (property.hasOwnProperty(INPUT_TYPES.PRICE) || property.hasOwnProperty(INPUT_TYPES.QUANTITY) || property.hasOwnProperty(INPUT_TYPES.SELECTED_NAV)) {
+            if (
+              property.hasOwnProperty(INPUT_TYPES.PRICE) ||
+              property.hasOwnProperty(INPUT_TYPES.QUANTITY) ||
+              property.hasOwnProperty(INPUT_TYPES.SELECTED_NAV)
+            ) {
               updateSelectedOrderProperties({
                 ...selectedOrderProperties,
                 ...property,
-              })
+              });
             } else {
               setState({ ...state, ...property });
             }

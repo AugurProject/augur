@@ -1,5 +1,4 @@
 import { formatDate } from 'utils/format-date';
-import { BUY } from 'modules/common/constants';
 
 const now = new Date();
 
@@ -16,34 +15,6 @@ export const FORM_INPUT_TYPES = {
   TRADE: 'trade',
   SIMULATE_QUEUE: 'simulateQueue',
   GAS_COST_EST: 'gasCostEst',
-};
-
-export const DEFAULT_TRADING = {
-  [FORM_INPUT_TYPES.SELECTED_NAV]: BUY,
-  [FORM_INPUT_TYPES.QUANTITY]: "",
-  [FORM_INPUT_TYPES.PRICE]: "",
-  [FORM_INPUT_TYPES.DO_NOT_CREATE_ORDERS]: false,
-  [FORM_INPUT_TYPES.EXPIRATION_DATE]: null,
-  [FORM_INPUT_TYPES.EST_DAI]: "",
-  [FORM_INPUT_TYPES.GAS_COST_EST]: "",
-  [FORM_INPUT_TYPES.ESCROW_DAI]: "",
-  [FORM_INPUT_TYPES.TRADE]: null,
-  [FORM_INPUT_TYPES.SIMULATE_QUEUE]: [],
-  [FORM_INPUT_TYPES.ERRORS]: {
-    [FORM_INPUT_TYPES.MULTIPLE_QUANTITY]: [],
-    [FORM_INPUT_TYPES.QUANTITY]: [],
-    [FORM_INPUT_TYPES.PRICE]: [],
-    [FORM_INPUT_TYPES.EST_DAI]: [],
-    [FORM_INPUT_TYPES.EXPIRATION_DATE]: [],
-  },
-};
-
-export const TRADING_ACTIONS = {
-  UPDATE_AND_VALIDATE: 'UPDATE_AND_VALIDATE',
-};
-
-export const STUBBED_TRADING_ACTIONS = {
-  updateandValidate: (key, value) => {},
 };
 
 export const BET_TYPE = {
