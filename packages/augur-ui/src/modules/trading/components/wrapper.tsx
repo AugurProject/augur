@@ -197,6 +197,13 @@ const Wrapper = ({
     clearOrderForm(true);
   }, [selectedOutcome.id]);
 
+  useEffect(() => {
+    if (selectedOrderProperties.orderQuantity !== '' && selectedOrderProperties.orderPrice !== '' && state.orderDaiEstimate === '' && !state.trade.limitPrice && !state.trade.numShares) {
+      // if SelectedOrderProps aren't empty but we haven't estimated dai and have no price or numShares for trade then we need to calculate that.
+      updateTradeTotalCost(selectedOrderProperties);
+    }
+  }, [selectedOrderProperties.orderQuantity, selectedOrderProperties.orderPrice])
+
   function clearOrderForm(wholeForm = true) {
     const tradeUpdate = getDefaultTrade({ market, selectedOutcome });
     const expirationDate =
@@ -395,7 +402,12 @@ const Wrapper = ({
         action={e => {
           e.preventDefault();
           if (initialLiquidity) {
-            updateLiquidity(selectedOutcome, state);
+            // make sure we have everything defined.
+            updateLiquidity(selectedOutcome, {
+              ...trade,
+              ...state,
+              ...selectedOrderProperties,
+            });
             clearOrderForm();
           } else if (tradingTutorial) {
             tutorialNext();

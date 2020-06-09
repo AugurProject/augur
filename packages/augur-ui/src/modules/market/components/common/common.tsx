@@ -16,6 +16,7 @@ import { FavoritesButton } from 'modules/common/buttons';
 import Styles from 'modules/market/components/common/common.styles.less';
 import { SCALAR } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { useRef } from 'react';
 
 interface HeadingBarProps {
   market: MarketData;

@@ -3,12 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { TextInput } from 'modules/common/form';
 import { LargeSubheaders } from 'modules/create-market/components/common';
 import InitialLiquidity from 'modules/create-market/initial-liquidity';
-import OrderBook from "modules/market-charts/components/order-book/order-book";
+import OrderBook from 'modules/market-charts/components/order-book/order-book';
 import TradingForm from 'modules/trading/components/trading-form';
 import { BUY, CATEGORICAL } from 'modules/common/constants';
 import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
-import DepthChart from 'modules/market-charts/containers/depth';
+import DepthChart from 'modules/market-charts/components/depth/depth';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import Visibility from 'modules/create-market/components/visibility';
 
@@ -33,9 +33,7 @@ const DEFAULT_ORDER_PROPERTIES = {
 export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
   const {
     newMarket,
-    actions: {
-      addOrderToNewMarket,
-    },
+    actions: { addOrderToNewMarket },
   } = useAppStatusStore();
   const [selectedOutcome, setSelectedOutcome] = useState(
     newMarket.marketType === CATEGORICAL ? 1 : 2
@@ -68,14 +66,11 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
     }
   };
 
-  const updateLiquidity = (
-    selectedOutcomeFormatted: OutcomeFormatted,
-    TradeObj
-  ) =>
+  const updateLiquidity = (outcome: OutcomeFormatted, TradeObj) =>
     addOrderToNewMarket({
-      outcomeName: selectedOutcomeFormatted.description,
-      outcome: selectedOutcomeFormatted,
-      outcomeId: selectedOutcomeFormatted.id,
+      outcomeName: outcome.description,
+      outcome,
+      outcomeId: outcome.id,
       type: TradeObj.selectedNav,
       price: TradeObj.orderPrice,
       quantity: TradeObj.orderQuantity,
@@ -222,7 +217,7 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
             updateSelectedOrderProperties={value =>
               setSelectedOrderProperties(value)
             }
-            hoveredPrice={hoveredPrice}
+            hoveredPriceProp={hoveredPrice}
             hoveredDepth={hoveredDepth}
             updateHoveredDepth={price => setHoveredDepth(price)}
             updateHoveredPrice={price => setHoveredPrice(price)}

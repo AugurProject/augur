@@ -24,7 +24,6 @@ import {
 import { MarketHeaderReporting } from 'modules/market/components/market-header/market-header-reporting';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { MarketData, QueryEndpoints, TextObject } from 'modules/types';
-import Clipboard from 'clipboard';
 import { TutorialPopUp } from 'modules/market/components/common/tutorial-pop-up';
 import MarketTitle from 'modules/market/components/common/market-title';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
@@ -61,7 +60,9 @@ export const MarketHeader = ({
   next,
   step,
 }: MarketHeaderProps) => {
-  const detailsContainer = useRef();
+  const detailsContainer = useRef({
+    current: { clientHeight: 0, scrollHeight: 0, scrollTop: 0 },
+  });
   const refTitle = useRef(null);
   const refNotCollapsed = useRef(null);
 
@@ -105,35 +106,25 @@ export const MarketHeader = ({
   const maxPrice = maxPriceBigNumber || ZERO;
   const minPrice = minPriceBigNumber || ZERO;
 
-  const [state, setState] = useState({
-    showReadMore: false,
-    showProperties:
-      reportingState === REPORTING_STATE.PRE_REPORTING ? false : true,
-    detailsHeight: 0,
-    headerCollapsed: false,
-    showCopied: false,
-    clickHandler: null,
-  });
-
-  const {
-    headerCollapsed,
-    showReadMore,
-    showProperties,
-    detailsHeight,
-    showCopied,
-  } = state;
+  const [showProperties, setShowProperties] = useState(
+    reportingState === REPORTING_STATE.PRE_REPORTING ? false : true,
+  );
+  const [headerCollapsed, setHeaderCollapsed] = useState(false);
+  const [showCopied, setShowCopied] = useState(false);
+  const [clickHandler, setClickHandler] = useState(null);
+  const [showReadMore, setShowReadMore] = useState(false);
+  const [detailsHeight, setDetailsHeight] = useState(0);
 
   useEffect(() => {
     if (showCopied)
-      setTimeout(() => setState({ ...state, showCopied: false }), 4000);
+      setTimeout(() => setShowCopied(false), 4000);
   }, [showCopied]);
-
 
   useEffect(() => {
     updateDetailsHeight();
 
-    const clickHandler = e => {
-      const ClickedOnExpandedContent = e
+    const clickHandlerFnc = e => {
+      const ClickedOnExpandedContent = e && e
         .composedPath()
         .find(
           ({ className }) =>
@@ -142,8 +133,8 @@ export const MarketHeader = ({
         );
       if (!ClickedOnExpandedContent) toggleReadMore(true);
     };
-    window.addEventListener('click', clickHandler);
-    setState({ ...state, clickHandler });
+    window.addEventListener('click', clickHandlerFnc);
+    setClickHandler(clickHandlerFnc);
 
     return () => {
       window.removeEventListener('click', clickHandler);
@@ -152,23 +143,20 @@ export const MarketHeader = ({
 
   function updateDetailsHeight() {
     if (detailsContainer) {
-      setState({
-        ...state,
-        detailsHeight: detailsContainer.scrollHeight,
-      });
+      setDetailsHeight(detailsContainer.current.scrollHeight);
     }
   }
 
   function toggleReadMore(closeOnly: boolean = false) {
     if (closeOnly) {
-      setState({ ...state, showReadMore: false });
+      setShowReadMore(false);
     } else {
-      setState({ ...state, showReadMore: !showReadMore });
+      setShowReadMore(!showReadMore);
     }
   }
 
   function toggleShowProperties() {
-    setState({ ...state, showProperties: !showProperties });
+    setShowProperties(!showProperties);
   }
 
   function gotoFilter(type, value) {
@@ -228,7 +216,7 @@ export const MarketHeader = ({
               gotoFilter={gotoFilter}
               userAccount={userAccount}
               showCopied={showCopied}
-              setShowCopied={() => setState({ ...state, showCopied: true })}
+              setShowCopied={() => setShowCopied(true)}
             />
             <div
               ref={refTitle}
@@ -349,7 +337,7 @@ export const MarketHeader = ({
         )}
         <button
           onClick={() =>
-            setState({ ...state, headerCollapsed: !headerCollapsed })
+            setHeaderCollapsed(!headerCollapsed)
           }
         >
           {headerCollapsed && (
