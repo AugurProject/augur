@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Breakdown } from 'modules/modal/common';
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatGasCostToEther } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
@@ -20,6 +20,7 @@ import {
   NOT_USE_ETH_RESERVE,
   TRANSFER,
   FEE_RESERVES_LABEL,
+  GWEI_CONVERSION,
 } from 'modules/common/constants';
 import { AutoCancelOrdersNotice } from 'modules/common/labels';
 
@@ -39,6 +40,7 @@ interface CashOutFormProps {
   totalDaiFormatted: FormattedNumber;
   tradingAccountEthFormatted: FormattedNumber;
   totalDai: string;
+  signerEth: string;
 }
 
 export const CashOutForm = ({
@@ -55,6 +57,7 @@ export const CashOutForm = ({
   totalDaiFormatted,
   tradingAccountEthFormatted,
   totalDai,
+  signerEth,
 }: CashOutFormProps) => {
   const [gasCosts, setGasCosts] = useState(
     createBigNumber(TRANSFER_DAI_GAS_COST)
@@ -64,17 +67,22 @@ export const CashOutForm = ({
   const [signerPays, setSignerPays] = useState(true);
 
   async function getGasCost(account) {
-    let gasCosts = createBigNumber(TRANSFER_DAI_GAS_COST);
+    let gas = gasCosts;
     let signerPays = true;
     try {
-      gasCosts = await withdrawAllFundsEstimateGas(account);
+      // add buffer to gas
+      gas = (await withdrawAllFundsEstimateGas(account)).times(4);
+      const gasCostInEth = formatGasCostToEther(gas, {}, createBigNumber(GWEI_CONVERSION).multipliedBy(createBigNumber(gasPrice)));
+      console.log('withdraw all funds gas cost', String(createBigNumber(gasCostInEth)));
+      console.log('signerEth', signerEth);
+      signerPays = createBigNumber(signerEth).gte(createBigNumber(gasCostInEth));
     } catch (error) {
       // user can't withdraw all funds, needs to transfer
       signerPays = false;
     }
     setSignerPays(signerPays);
     if (signerPays) {
-      return setGasCosts(createBigNumber(gasCosts));
+      return setGasCosts(createBigNumber(gas));
     }
     const testHalfDaiAmount = String(createBigNumber(totalDai).div(2));
     const relayerGasCosts = await transferFundsGasEstimate(
