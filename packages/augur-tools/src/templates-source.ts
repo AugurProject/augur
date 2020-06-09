@@ -8627,7 +8627,8 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.TEXT,
-                    validationType: ValidationType.WHOLE_NUMBER,
+                    validationType: ValidationType.NUMBER_ONE_DECIMAL,
+                    numberRange: [0.1, 999.9],
                     placeholder: `Number`,
                   },
                   {
@@ -8650,6 +8651,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: 'If the twitter handle named in the market does not exist, the market should resolve as "Invalid".',
+                    },
+                    {
+                      text: `If www.socialblade.com is down or not available use www.socialtracker.io to determine the results for the specified handle/account on the date named in the market question.`
                     }
                   ],
                 },
@@ -8696,6 +8700,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: 'If the twitter handle named in the market does not exist, the market should resolve as "Invalid".',
+                    },
+                    {
+                      text: `If www.socialblade.com is down or not available use www.socialtracker.io to determine the results for the specified handle/account on the date named in the market question.`
                     }
                   ],
                 },
@@ -8719,7 +8726,8 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.TEXT,
-                    validationType: ValidationType.WHOLE_NUMBER,
+                    validationType: ValidationType.NUMBER_ONE_DECIMAL,
+                    numberRange: [0.1, 999.9],
                     placeholder: `Number`,
                   },
                   {
@@ -8742,6 +8750,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: 'If the instagram account named in the market does not exist, the market should resolve as "Invalid".',
+                    },
+                    {
+                      text: `If www.socialblade.com is down or not available use www.socialtracker.io to determine the results for the specified handle/account on the date named in the market question.`
                     }
                   ],
                 },
@@ -8788,6 +8799,9 @@ export const TEMPLATES = {
                     },
                     {
                       text: 'If the instagram account named in the market does not exist, the market should resolve as "Invalid".',
+                    },
+                    {
+                      text: `If www.socialblade.com is down or not available use www.socialtracker.io to determine the results for the specified handle/account on the date named in the market question.`
                     }
                   ],
                 },

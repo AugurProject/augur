@@ -3126,7 +3126,7 @@ export const LIST_VALUES = {
   BTC_CURRENCY_PAIRS: ['BTC/USD', 'BTC/USDT', 'BTC/EUR'],
   ETH_CURRENCY_PAIRS: ['ETH/USD', 'ETH/USDT', 'ETH/EUR'],
   LTC_CURRENCY_PAIRS: ['LTC/USD', 'LTC/USDT', 'LTC/EUR'],
-  AMOUNT_UNITS: ['Hundred', 'Thousand', 'Million', 'Billion'],
+  AMOUNT_UNITS: ['Thousand', 'Million', 'Billion'],
   SOCCER_LEAGUE_GERMANY: [
     'Bayern Munich',
     'Borussia Dortmund',

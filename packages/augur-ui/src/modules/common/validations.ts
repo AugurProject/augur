@@ -214,6 +214,11 @@ export function checkForUserInputFilled(
     ) {
       return 'Must be a whole positive number';
     } else if (
+      (input.validationType === ValidationType.NUMBER || input.validationType === ValidationType.NUMBER_ONE_DECIMAL) && input.numberRange &&
+      (checkValidNumber(input.userInput) || Number(input.userInput) < input.numberRange[0] || Number(input.userInput) > input.numberRange[1])
+    ) {
+      return `value range is ${input.numberRange[0]} to ${input.numberRange[1]}`;
+    } else if (
       (input.validationType === ValidationType.NUMBER || input.validationType === ValidationType.NUMBER_ONE_DECIMAL) &&
       checkValidNumber(input.userInput)
     ) {

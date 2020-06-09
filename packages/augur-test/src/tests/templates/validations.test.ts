@@ -61,6 +61,14 @@ const templateValidations = [
     result:
     'start date in question is not the required number of days before market event expiration endTime',
   },
+  {
+    skip: false,
+    title: 'Twitter: Will @realDonaldTrump have 1999.9 Thousand or more twitter followers on June 18, 2020, according to www.socialblade.com?',
+    templateInfo: '{"hash":"0x528d5c82bef2c4cc9808751b8c86c4e474a7df4cdd5cd3af23752181610d9b9c","question":"Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.socialblade.com?","inputs":[{"id":0,"type":"TEXT","value":"realDonaldTrump","timestamp":null},{"id":1,"type":"TEXT","value":"1999.9","timestamp":"1999.9"},{"id":2,"type":"DROPDOWN","value":"Thousand","timestamp":null},{"id":3,"type":"DATESTART","value":"June 18, 2020","timestamp":1592496396}]}',
+    endTime: '1592582796',
+    resolutionRules: 'To find the results: In the header of the page. Select \"Twitter\" from the drop down menu. Then enter the twitter handle in the search bar. Scroll down the page until you reach the section that says \"Twitter Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the larger number under the \"Followers\" section (number will not have a +/-). Settlement should be based off of this number.\nIf the twitter handle named in the market does not exist, the market should resolve as \"Invalid\".',
+    result: 'numeric input is outside of valid numeric range'
+  }
 ];
 
 test('flash :: tempalte validation tests', async () => {

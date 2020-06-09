@@ -213,30 +213,36 @@ error: `no validation found for hash`
 "Will the [0] close on or above [1] on [2]?" template string has input indexes the template.inputs fill in the indexes to produce a calculated market title "Will the CAC 40 close on or above 5200 on December 6, 2019?" given that the values are 0: 'CAC 40' 1: '5200' 2: 'December 6, 2019'
 error: `populated title does not match title given`
 
-5. For some templates they use ESTDATETIME input type, which is a timestamp for the estimated time the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime)
+5. For a few templates inputs have to fall within a numeric range. If template inputs are outside of the numeric range this error will occur
+error: `numeric input is outside of valid numeric range`
+
+6. For some templates they use ESTDATETIME input type, which is a timestamp for the estimated time the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime)
 error: `estimated schedule date time is after market event expiration endTime`
 
-6. For some markets there is are a number of required days between date in market question and market's event expiration.
+7. For some markets there is are a number of required days between date in market question and market's event expiration.
 error: `start date in question is not the required number of days before market event expiration endTime`
 
-7. For some templates the DATEYEAR input type can not be on a weekend.
+8. For some templates the DATEYEAR input type can not be on a weekend.
 error: `market question date can not be on weekend or on a holiday`
 
-8. There are templates that give date range in the market question. These templates can not have the end date before the start date.
+9. There are templates that give date range in the market question. These templates can not have the end date before the start date.
 error: `market question end date can not be after start date`
 
-9. For templates that rely on identifying a stock or index traded on exchange the market event expiration needs to be 1 hour after the latest possible time the exchange closes. Example part of the year NASDAQ closes at UTC -4 and other part UTC -5, with a one hour buffer and assuming the lastest closing time UTC -4 the market event expiration needs to be at UTC -3.
+10. For templates that rely on identifying a stock or index traded on exchange the market event expiration needs to be 1 hour after the latest possible time the exchange closes. Example part of the year NASDAQ closes at UTC -4 and other part UTC -5, with a one hour buffer and assuming the lastest closing time UTC -4 the market event expiration needs to be at UTC -3.
 error: `event expiration can not be before exchange close time`
 
-10. For movie total gross for opening weekend, the market event expiration needs to have a buffer. The earilest market event expiration time is the Wednesday after opening weekend.
+11. For movie total gross for opening weekend, the market event expiration needs to have a buffer. The earilest market event expiration time is the Wednesday after opening weekend.
 error: `event expiration can not be before Wednesday after movie opening weekend and/or opening day must be a friday`
 
-11. For some templates they use DATESTART input type, which is a timestamp for the day the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime)
+12. For some templates they use DATESTART input type, which is a timestamp for the day the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime)
 error: `start date is after market event expiration endTime`
 
+<<<<<<< HEAD
 12. For markets on a certain day the market creation time can not be before the date of event, error is
 error: `start date can not be before market creationTime`
 
+=======
+>>>>>>> add-number-range-template-inputs
 13. Template inputs can not have duplicate values
 error: `template input values have duplicates`
 
