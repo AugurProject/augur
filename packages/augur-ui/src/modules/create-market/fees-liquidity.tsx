@@ -8,7 +8,7 @@ import TradingForm from 'modules/trading/components/trading-form';
 import { BUY, CATEGORICAL } from 'modules/common/constants';
 import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
-import DepthChart from 'modules/market-charts/containers/depth';
+import DepthChart from 'modules/market-charts/components/depth/depth';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
 import Visibility from 'modules/create-market/components/visibility';
 
@@ -217,7 +217,7 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
             updateSelectedOrderProperties={value =>
               setSelectedOrderProperties(value)
             }
-            hoveredPrice={hoveredPrice}
+            hoveredPriceProp={hoveredPrice}
             hoveredDepth={hoveredDepth}
             updateHoveredDepth={price => setHoveredDepth(price)}
             updateHoveredPrice={price => setHoveredPrice(price)}
