@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
 
@@ -155,6 +155,10 @@ const Wrapper = ({
   const gsnWalletInfoSeen = !!getValueFromlocalStorage(GSN_WALLET_SEEN);
 
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
+
+  useEffect(() => {
+    clearOrderForm(true);
+  }, [selectedOutcome.id])
 
   function clearOrderForm(wholeForm = true) {
     const tradeUpdate = getDefaultTrade({ market, selectedOutcome });
