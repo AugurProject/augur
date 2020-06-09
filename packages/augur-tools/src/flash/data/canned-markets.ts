@@ -619,7 +619,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
   const cryptoTemplate: Template = cryptoTemplates[2];
   const cryptoExpDate = moment().add(3, 'weeks');
   const cryptoEstTime = cryptoExpDate.unix();
-  const cryptoEndTime = cryptoExpDate.add(20, 'hours').unix();
+  const cryptoEndTime = cryptoExpDate.add(2, 'days').unix();
   const cryptoDate = cryptoExpDate.format('MMMM DD, YYYY');
   const cryptoInputValues = [
     'ETH/USD',
