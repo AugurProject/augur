@@ -157,9 +157,9 @@ export const ActivateWalletButton = () => {
   } = useAppStatusStore();
   const gsnUnavailable = isGSNUnavailable();
   let showMessage = gsnUnavailable;
-  let buttonAction = setModal({ type: MODAL_INITIALIZE_ACCOUNT });
+  let buttonAction = () => setModal({ type: MODAL_INITIALIZE_ACCOUNT });
   if (walletStatus === WALLET_STATUS_VALUES.CREATED) {
-    buttonAction = removePendingTransaction(CREATEAUGURWALLET);
+    buttonAction = () => removePendingTransaction(CREATEAUGURWALLET);
   }
   if (
     walletStatus !== WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
