@@ -771,6 +771,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       previewButton,
       disabledFunction,
       useBullets,
+      augurMarketContent,
     } = contentPages[currentStep];
 
     const disableCreate = walletStatus !== WALLET_STATUS_VALUES.CREATED || this.state.disableCreate;
@@ -870,6 +871,13 @@ export default class Form extends React.Component<FormProps, FormState> {
                 title={explainerBlockTitle}
                 subtexts={explainerBlockSubtexts}
                 useBullets={useBullets}
+              />
+            )}
+            {augurMarketContent && (
+              <ExplainerBlock
+                title={augurMarketContent.explainerBlockTitle}
+                subtexts={augurMarketContent.explainerBlockSubtexts}
+                useBullets={augurMarketContent.useBullets}
               />
             )}
             <ContentBlock noDarkBackground={noDarkBackground}>

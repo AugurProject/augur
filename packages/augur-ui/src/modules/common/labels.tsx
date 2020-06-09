@@ -49,7 +49,7 @@ import {
   DismissableNotice,
   DismissableNoticeProps,
 } from 'modules/reporting/common';
-import { EventDetailsContent } from 'modules/create-market/constants';
+import { AugurMarketsContent, EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import { getDurationBetween } from 'utils/format-date';
@@ -773,6 +773,11 @@ export const InvalidLabel = ({
           title={explainerBlockTitle}
           subtexts={explainerBlockSubtexts}
           useBullets={useBullets}
+        />
+        <ExplainerBlock
+          title={AugurMarketsContent().explainerBlockTitle}
+          subtexts={AugurMarketsContent().explainerBlockSubtexts}
+          useBullets={AugurMarketsContent().useBullets}
         />
       </ReactTooltip>
     </span>

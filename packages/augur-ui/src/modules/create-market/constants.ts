@@ -132,11 +132,16 @@ export const InvalidRules = [
   'If using a resolution source, it is not referenced consistently between the Market Question and Resolution Details e.g. as either a URL or its full name.',
   'Should resolve using general knowledge if the market does not have a specific resolution source in market question.',
   'Player or team is not in the correct league, division or conference, at the time the market was created, the market should resolve as invalid.',
-]
+];
 export const AugurMarkets = [
   'Should resolve using general knowledge if the market does not have a resolution source in market question.',
   'Cover events that occur between market start time and end time in the market question. If start time is not specificed in the market quetion, market creation date/time is used. If no end time is specified in market question, the event expiration is to be used. If the event occurs outside of these bounds, the market should resolve as invalid'
-]
+];
+export const AugurMarketsContent = () => ({
+  explainerBlockTitle: 'Augur Markets',
+  explainerBlockSubtexts: AugurMarkets,
+  useBullets: true,
+});
 export const EventDetailsContentTemplate = `template`;
 export const EventDetailsContent = (type = `custom`) => ({
   title: 'Event details',
@@ -148,6 +153,7 @@ export const EventDetailsContent = (type = `custom`) => ({
   firstButton: BACK,
   secondButton: NEXT,
   useBullets: true,
+  augurMarketContent: AugurMarketsContent(),
 });
 
 export const LiquidityContent = {

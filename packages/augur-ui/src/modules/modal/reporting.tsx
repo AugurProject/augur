@@ -41,7 +41,12 @@ import { Getters, TXEventName } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
 import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
 import { ExplainerBlock } from 'modules/create-market/components/common';
-import { EventDetailsContent, WarpSyncErrorHeader, WarpSyncErrorSubheader } from 'modules/create-market/constants';
+import {
+  AugurMarketsContent,
+  EventDetailsContent,
+  WarpSyncErrorHeader,
+  WarpSyncErrorSubheader
+} from 'modules/create-market/constants';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import MarketLink from 'modules/market/components/market-link/market-link';
@@ -391,6 +396,13 @@ export default class ModalReporting extends Component<
               title={explainerBlockTitle}
               subtexts={explainerBlockSubtexts}
               useBullets={useBullets}
+            />
+          )}
+          {AugurMarketsContent && (
+            <ExplainerBlock
+              title={AugurMarketsContent().explainerBlockTitle}
+              subtexts={AugurMarketsContent().explainerBlockSubtexts}
+              useBullets={AugurMarketsContent().useBullets}
             />
           )}
           <div>
