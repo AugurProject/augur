@@ -190,6 +190,10 @@ export interface DateInputDependencies {
     [key: string]: TimeOffset;
   };
 }
+
+export interface NumberRangeValues {
+  [id: number]: number[];
+}
 export interface TemplateValidation {
   templateValidation: string;
   templateValidationResRules: string;
@@ -206,6 +210,7 @@ export interface TemplateValidation {
   daysAfterStartDate: number;
   eventExpEndNextMonthValues: EventExpEndNextMonth[];
   categoricalOutcomes: CategoricalOutcomes;
+  numberRangeValues: NumberRangeValues;
 }
 
 export interface TemplateGroupKeys {
@@ -720,6 +725,19 @@ export function getGroupHashInfo({ hash, inputs }: ExtraInfoTemplate): TemplateG
   }
 }
 
+function inputWithinNumericRange(inputs: ExtraInfoTemplateInput[], numberRangeValues: NumberRangeValues) {
+  let passes = true;
+  if (!numberRangeValues || Object.keys(numberRangeValues).length === 0) return passes;
+  Object.keys(numberRangeValues).forEach(index => {
+    const input = inputs.find(i => String(i.id) === String(index));
+    const range = numberRangeValues[index];
+    if (Number(input.value) < Number(range[0]) || Number(input.value) > Number(range[1])) {
+      passes = false;
+    }
+  })
+  return passes;
+}
+
 export const isTemplateMarket = (
   title,
   template: ExtraInfoTemplate,
@@ -763,6 +781,12 @@ export const isTemplateMarket = (
       return false;
     }
 
+    if (!inputWithinNumericRange(template.inputs, validation.numberRangeValues)) {
+      errors.push(
+        'numeric input is outside of valid numeric range'
+      );
+      return false;
+    }
     // check ESTDATETIME isn't after market event expiration or is within required hour buffer
     if (
       estimatedDateTimeAfterMarketEndTime(

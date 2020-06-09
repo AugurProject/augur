@@ -31,6 +31,9 @@ import {
   BASKETBALL,
   NBA,
   NFL_DRAFT,
+  ENTERTAINMENT,
+  SOCIAL_MEDIA,
+  TWITTER,
 } from '@augurproject/artifacts';
 
 interface AskBid {
@@ -324,6 +327,32 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
 export const templatedCannedMarkets = (): CannedMarket[] => {
   const markets = [];
 
+  const twitter = TEMPLATES[ENTERTAINMENT].children[SOCIAL_MEDIA].children[TWITTER]
+    .templates as Template[];
+  const twitterTemplate: Template = twitter[0];
+  const twitterDate = moment().add(9, 'days');
+  const twitterInputValues = ['realDonaldTrump', '999.9', 'Thousand', twitterDate.format('MMMM DD, YYYY')];
+  let twitterInputs = getFilledInputs(twitterTemplate, twitterInputValues);
+  twitterInputs[3].timestamp = twitterDate.unix();
+  markets.push({
+    marketType: 'yesNo',
+    endTime: twitterDate.add(1, 'days').unix(),
+    affiliateFeeDivisor: 0,
+    creatorFeeDecimal: '0.01',
+    extraInfo: {
+      categories: [ENTERTAINMENT, SOCIAL_MEDIA,TWITTER ],
+      description: fillInQuestion(twitterTemplate, twitterInputValues),
+      tags: [],
+      longDescription: getLongDescription(twitterTemplate),
+      template: {
+        hash: twitterTemplate.hash,
+        question: twitterTemplate.question,
+        inputs: twitterInputs,
+      },
+    },
+    orderBook: yesNoOrderBook,
+  });
+
   const usPoliticsTemplates = TEMPLATES[POLITICS].children[US_POLITICS]
     .templates as Template[];
   const template1: Template = usPoliticsTemplates[0];
@@ -334,8 +363,8 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.01',
     extraInfo: {
-      categories: ['Politics', 'US Politics'],
-      description: 'Will Donald Trump win the 2020 U.S. Presidential election?',
+      categories: [POLITICS, US_POLITICS],
+      description: fillInQuestion(template1, usInputValues),
       tags: [],
       longDescription: getLongDescription(template1),
       template: {
@@ -598,7 +627,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     'ETHUSD (crypto - Bittrex)',
   ];
   let cryptoInputs = getFilledInputs(cryptoTemplate, cryptoInputValues);
-  cryptoInputs = cryptoInputs[2].timestamp = cryptoEstTime;
+  cryptoInputs[2].timestamp = cryptoEstTime;
   markets.push({
     marketType: 'scalar',
     endTime: cryptoEndTime,
@@ -615,7 +644,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
       template: {
         hash: cryptoTemplate.hash,
         question: cryptoTemplate.question,
-        inputs: getFilledInputs(cryptoTemplate, cryptoInputValues),
+        inputs: cryptoInputs,
       },
     },
     orderBook: {
