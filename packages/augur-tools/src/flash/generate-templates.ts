@@ -296,7 +296,7 @@ function getDependencies(
 function getPlaceholderValues(inputs: TemplateInput[]): PlaceholderValues {
   return inputs.reduce(
     (p, i) =>
-      (i.type === TemplateInputType.TEXT && !i.validationType) ||
+      (i.type === TemplateInputType.TEXT && (!i.validationType || (i.validationType === ValidationType.SOCIAL))) ||
       (i.type === TemplateInputType.USER_DESCRIPTION_OUTCOME && !i.validationType)
         ? { ...p, [i.id]: i.placeholder }
         : p,
