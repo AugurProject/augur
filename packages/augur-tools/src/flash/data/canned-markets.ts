@@ -617,20 +617,17 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
   const cryptoTemplates = TEMPLATES[CRYPTO].children[ETHEREUM]
     .templates as Template[];
   const cryptoTemplate: Template = cryptoTemplates[2];
-  const cryptoExpDate = moment().add(3, 'weeks');
-  const cryptoEstTime = cryptoExpDate.unix();
-  const cryptoEndTime = cryptoExpDate.add(2, 'days').unix();
-  const cryptoDate = cryptoExpDate.format('MMMM DD, YYYY');
+  const cryptoExpDate = moment().add(1, 'weeks');
   const cryptoInputValues = [
     'ETH/USD',
-    cryptoDate,
+    cryptoExpDate.format('MMMM DD, YYYY'),
     'ETHUSD (crypto - Bittrex)',
   ];
   let cryptoInputs = getFilledInputs(cryptoTemplate, cryptoInputValues);
-  cryptoInputs[2].timestamp = cryptoEstTime;
+  cryptoInputs[1].timestamp = cryptoExpDate.unix();
   markets.push({
     marketType: 'scalar',
-    endTime: cryptoEndTime,
+    endTime: cryptoExpDate.add(1, 'days').unix(),
     minPrice: '120',
     maxPrice: '200',
     tickSize: '0.01',
