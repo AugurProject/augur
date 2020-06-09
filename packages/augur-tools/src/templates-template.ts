@@ -566,6 +566,15 @@ function dateStartAfterMarketEndTime(
   return Number(input.timestamp) >= Number(endTime);
 }
 
+function dateStartAfterMarketCreation(
+  inputs: ExtraInfoTemplateInput[],
+  creationTime: number
+): boolean {
+  const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
+  if (!input) return true;
+  return Number(creationTime) < Number(input.timestamp);
+}
+
 function wednesdayAfterOpeningNoFriday(
   inputs: ExtraInfoTemplateInput[],
   endTime: number,
@@ -755,6 +764,7 @@ export const isTemplateMarket = (
   outcomes: string[],
   longDescription: string,
   endTime: string,
+  creationTime: string,
   errors: string[] = []
 ) => {
   if (
@@ -762,9 +772,10 @@ export const isTemplateMarket = (
     !template.hash ||
     !template.question ||
     template.inputs.length === 0 ||
-    !endTime
+    !endTime ||
+    !creationTime
   ) {
-    errors.push('value missing template | hash | question | inputs | endTime');
+    errors.push('value missing template | hash | question | inputs | endTime | creationTime');
     return false;
   }
 
@@ -841,6 +852,17 @@ export const isTemplateMarket = (
       errors.push('start date is after market event expiration endTime');
       return false;
     }
+
+      // check DATESTART isn't after market creation date
+      if (
+        !dateStartAfterMarketCreation(
+          template.inputs,
+          new BigNumber(creationTime).toNumber()
+        )
+      ) {
+        errors.push('start date can not be before market creationTime');
+        return false;
+      }
 
     // check DATE isn't on weekend or holiday
     if (

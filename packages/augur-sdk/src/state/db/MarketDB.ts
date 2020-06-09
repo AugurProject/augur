@@ -540,6 +540,7 @@ export class MarketDB extends DerivedDB {
           log['outcomes'],
           log['extraInfo'].longDescription,
           log['endTime'],
+          log['timestamp'],
           errors
         );
         if (errors.length > 0)
