@@ -395,7 +395,12 @@ const Wrapper = ({
         action={e => {
           e.preventDefault();
           if (initialLiquidity) {
-            updateLiquidity(selectedOutcome, state);
+            // make sure we have everything defined.
+            updateLiquidity(selectedOutcome, {
+              ...trade,
+              ...state,
+              ...selectedOrderProperties,
+            });
             clearOrderForm();
           } else if (tradingTutorial) {
             tutorialNext();

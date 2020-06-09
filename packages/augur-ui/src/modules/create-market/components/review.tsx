@@ -108,13 +108,13 @@ const Review = ({ setDisableCreate }: ReviewProps) => {
   } = state;
 
   useEffect(() => {
-    calculateMarketCreationCosts();
+      calculateMarketCreationCosts();
   }, [
-    newMarket.initialLiquidityDai,
-    newMarket.initialLiquidityGas,
+    newMarket.initialLiquidityDai.toFixed(),
+    newMarket.initialLiquidityGas.toFixed(),
     availableEthFormatted.value,
     availableRepFormatted.value,
-    gasPrice,
+    gasPrice
   ]);
 
   async function calculateMarketCreationCosts() {
@@ -175,9 +175,9 @@ const Review = ({ setDisableCreate }: ReviewProps) => {
         gsnEnabled
       );
     }
-
     return insufficientFunds;
   }
+
   const totalDai = formatDai(
     createBigNumber(validityBond ? validityBond.value : 0).plus(
       createBigNumber(
