@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
 
-import Form from 'modules/trading/containers/form';
+import Form from 'modules/trading/components/form';
 import Confirm from 'modules/trading/components/confirm';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import {
@@ -212,7 +212,6 @@ const Wrapper = ({
       side: order.selectedNav,
       maxCost: order.orderDaiEstimate,
       callback: (err, newOrder) => {
-        console.log(err, newOrder, order);
         if (err) return console.error(err); // what to do with error here
 
         const numShares = formatMarketShares(
