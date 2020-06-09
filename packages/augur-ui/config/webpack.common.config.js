@@ -16,7 +16,13 @@ const PATHS = {
   ROOT_UI: path.resolve(__dirname, '../'),
   SITEMAP: path.resolve(__dirname, '../src/modules/sitemap'),
   ORBIT: path.resolve(__dirname, '../../orbit-web'),
+  ENVIRONMENTS: path.resolve(__dirname, '../../augur-artifacts/src/environments'),
 };
+
+const ETHEREUM_NETWORK = process.env.ETHEREUM_NETWORK || 'local';
+
+const configFile = path.resolve(PATHS.ENVIRONMENTS, `${ETHEREUM_NETWORK}.json`);
+const CONFIG = require(configFile);
 
 module.exports = {
   mode: 'development',
@@ -220,10 +226,10 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env': {
+        ETHEREUM_NETWORK: JSON.stringify(ETHEREUM_NETWORK),
+        CONFIG: JSON.stringify(JSON.stringify(CONFIG)),
+
         IPFS_STABLE_LOADER_HASH: process.env.IPFS_STABLE_LOADER_HASH,
-        ETHEREUM_NETWORK: JSON.stringify(
-          process.env.ETHEREUM_NETWORK || 'local'
-        ),
         AUTO_LOGIN: process.env.AUTO_LOGIN || false,
 
         // Set this var to remove code that is problematic for us to host.

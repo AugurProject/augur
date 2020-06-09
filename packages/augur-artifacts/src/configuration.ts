@@ -500,13 +500,6 @@ export const environments: {[network: string]: SDKConfiguration} = {};
 if (process?.versions?.node) {
   loadSDKConfigs('./environments');
 } else {
-  // tslint:disable-next-line:ban-ts-ignore
-  // @ts-ignore
-  const context = require.context('./environments', false, /.*\.json$/);
-  const envNameRegex = new RegExp('([^\/]*)\.json$');
-  context.keys().forEach((file: string) => {
-    const key = file.match(envNameRegex)[1];
-    environments[key] = context(file);
-  });
+  environments[process.env.ETHEREUM_NETWORK] = JSON.parse(process.env.CONFIG) as SDKConfiguration;
 }
 
