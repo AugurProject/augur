@@ -43,6 +43,8 @@ interface CashOutFormProps {
   signerEth: string;
 }
 
+const GAS_EST_MULTIPLIER = 4;
+
 export const CashOutForm = ({
   closeAction,
   withdrawAllFunds,
@@ -71,7 +73,7 @@ export const CashOutForm = ({
     let signerPays = true;
     try {
       // add buffer to gas
-      gas = (await withdrawAllFundsEstimateGas(account)).times(4);
+      gas = (await withdrawAllFundsEstimateGas(account)).times(GAS_EST_MULTIPLIER);
       const gasCostInEth = formatGasCostToEther(gas, {}, createBigNumber(GWEI_CONVERSION).multipliedBy(createBigNumber(gasPrice)));
       signerPays = createBigNumber(signerEth).gte(createBigNumber(gasCostInEth));
     } catch (error) {

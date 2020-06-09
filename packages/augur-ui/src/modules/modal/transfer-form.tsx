@@ -51,6 +51,7 @@ function sanitizeArg(arg) {
 }
 
 const RELAYER_DAI_CUSION = 0.25;
+const TURN_OFF_TOP_OFF_PERCENTAGE = 0.9;
 
 export const TransferForm = ({
   closeAction,
@@ -325,7 +326,7 @@ export const TransferForm = ({
               if (currency === DAI) {
                 // if 90% or more of user's DAI is being transferred disable topping off fee reserve
                 const percentage = createBigNumber(balances.dai).div(createBigNumber(formattedAmount.fullPrecision));
-                if (percentage.gt(createBigNumber(0.9))) {
+                if (percentage.gt(createBigNumber(TURN_OFF_TOP_OFF_PERCENTAGE))) {
                   useTopOff = false;
                 }
               }
