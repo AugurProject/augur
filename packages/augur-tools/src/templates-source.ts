@@ -8633,7 +8633,8 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.TEXT,
-                    validationType: ValidationType.WHOLE_NUMBER,
+                    validationType: ValidationType.NUMBER_ONE_DECIMAL,
+                    numberRange: [0.1, 999.9],
                     placeholder: `Number`,
                   },
                   {
@@ -8725,7 +8726,8 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.TEXT,
-                    validationType: ValidationType.WHOLE_NUMBER,
+                    validationType: ValidationType.NUMBER_ONE_DECIMAL,
+                    numberRange: [0.1, 999.9],
                     placeholder: `Number`,
                   },
                   {

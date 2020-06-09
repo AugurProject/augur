@@ -279,6 +279,7 @@ export interface TemplateInput {
     [key: string]: string;
   }
   groupKey: string;
+  numberRange: number[];
 }
 
 export interface RetiredTemplate {
