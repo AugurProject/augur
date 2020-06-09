@@ -320,7 +320,17 @@ export const TransferForm = ({
           <ProcessingButton
             small
             text={'Send'}
-            action={() => transferFunds(formattedAmount.fullPrecision, currency, address, useSigner)}
+            action={() => {
+              let useTopOff = true;
+              if (currency === DAI) {
+                // if 90% or more of user's DAI is being transferred disable topping off fee reserve
+                const percentage = createBigNumber(balances.dai).div(createBigNumber(formattedAmount.fullPrecision));
+                if (percentage.gt(createBigNumber(0.9))) {
+                  useTopOff = false;
+                }
+              }
+              transferFunds(formattedAmount.fullPrecision, currency, address, useSigner, useTopOff)}
+            }
             queueName={TRANSACTIONS}
             queueId={currency === ETH ? SENDETHER : TRANSFER}
             disabled={!isValid}

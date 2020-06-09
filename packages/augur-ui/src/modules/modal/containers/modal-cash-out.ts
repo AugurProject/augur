@@ -47,7 +47,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   withdrawAllFunds: (destination: string) => withdrawAllFunds(destination),
   withdrawAllFundsEstimateGas: (destination: string) => withdrawAllFundsEstimateGas(destination),
   closeModal: () => dispatch(closeModal()),
-  transferFunds: (amount: string, destination: string) => transferFunds(amount, DAI, destination),
+  transferFunds: (amount: string, destination: string) => transferFunds(amount, DAI, destination, false, false),
   transferFundsGasEstimate: (amount: string, asset: string, to: string) => transferFundsGasEstimate(amount, asset, to),
 });
 
