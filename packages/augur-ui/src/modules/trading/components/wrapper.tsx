@@ -60,10 +60,39 @@ const getMarketPath = id => {
   };
 };
 
+const getDefaultTrade = ({
+  market: {
+    id,
+    settlementFee,
+    marketType,
+    maxPrice,
+    minPrice,
+    cumulativeScale,
+    makerFee,
+  },
+  selectedOutcome,
+}) => {
+  if (!marketType || (!selectedOutcome && !isFinite(selectedOutcome.id)))
+    return null;
+  return generateTrade(
+    {
+      id,
+      settlementFee,
+      marketType,
+      maxPrice,
+      minPrice,
+      cumulativeScale,
+      makerFee,
+    },
+    {}
+  );
+};
+
 const OrderTicketHeader = ({
   market,
   updateSelectedOrderProperties,
   selectedOrderProperties,
+  updateTradeTotalCost,
 }) => {
   const buySelected = selectedOrderProperties.selectedNav === BUY;
   return (
@@ -80,12 +109,16 @@ const OrderTicketHeader = ({
         })}
       >
         <button
-          onClick={() =>
+          onClick={() => {
             updateSelectedOrderProperties({
               ...selectedOrderProperties,
               selectedNav: BUY,
-            })
-          }
+            });
+            updateTradeTotalCost({
+              ...selectedOrderProperties,
+              selectedNav: BUY,
+            });
+          }}
         >
           Buy Shares
         </button>
@@ -96,12 +129,16 @@ const OrderTicketHeader = ({
         })}
       >
         <button
-          onClick={() =>
+          onClick={() => {
             updateSelectedOrderProperties({
               ...selectedOrderProperties,
               selectedNav: SELL,
-            })
-          }
+            });
+            updateTradeTotalCost({
+              ...selectedOrderProperties,
+              selectedNav: SELL,
+            });
+          }}
         >
           Sell Shares
         </button>
@@ -158,7 +195,7 @@ const Wrapper = ({
 
   useEffect(() => {
     clearOrderForm(true);
-  }, [selectedOutcome.id])
+  }, [selectedOutcome.id]);
 
   function clearOrderForm(wholeForm = true) {
     const tradeUpdate = getDefaultTrade({ market, selectedOutcome });
@@ -455,6 +492,7 @@ const Wrapper = ({
           market={market}
           selectedOrderProperties={selectedOrderProperties}
           updateSelectedOrderProperties={updateSelectedOrderProperties}
+          updateTradeTotalCost={updateTradeTotalCost}
         />
         <Form
           market={market}
@@ -506,33 +544,6 @@ const Wrapper = ({
         </div>
       )}
     </section>
-  );
-};
-
-const getDefaultTrade = ({
-  market: {
-    id,
-    settlementFee,
-    marketType,
-    maxPrice,
-    minPrice,
-    cumulativeScale,
-    makerFee,
-  },
-  selectedOutcome,
-}) => {
-  if (!marketType || !selectedOutcome?.id) return null;
-  return generateTrade(
-    {
-      id,
-      settlementFee,
-      marketType,
-      maxPrice,
-      minPrice,
-      cumulativeScale,
-      makerFee,
-    },
-    {}
   );
 };
 

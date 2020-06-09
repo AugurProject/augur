@@ -507,6 +507,7 @@ const Form = ({
     });
     clearOrderForm();
   }
+
   const availableDai = totalTradingBalance();
   const sortedOutcomes = selectSortedMarketOutcomes(
     market.marketType,
