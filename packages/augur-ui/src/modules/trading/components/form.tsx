@@ -17,9 +17,7 @@ import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted } from 'modules/types';
-import {
-  Getters,
-} from '@augurproject/sdk';
+import { Getters } from '@augurproject/sdk';
 import { CancelTextButton, SecondaryButton } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
 import {
@@ -101,6 +99,68 @@ const liqAdvancedDropdownOptions = [
   },
 ];
 
+const ErrorsContainer = ({ errors }) => (
+  <div className={Styles.ErrorContainer}>
+    {errors.map(error => (
+      <div key={error} className={Styles.Error}>
+        {ExclamationCircle} <span>{error}</span>
+      </div>
+    ))}
+  </div>
+);
+
+const ValidationContainer = ({
+  validation,
+  updateAndValidate,
+  market,
+  quantityValue,
+}) => {
+  const nearestValues = findNearestValues(quantityValue, market);
+  return (
+    <div className={Styles.ErrorContainer}>
+      {validation.errors[INPUT_TYPES.MULTIPLE_QUANTITY].map((error, key) => (
+        <div key={error} className={Styles.ErrorClickable}>
+          {ExclamationCircle} <span>{error}</span>
+          <span>Please select from the closest quantities</span>
+          <div>
+            <SecondaryButton
+              action={() =>
+                updateAndValidate(
+                  INPUT_TYPES.QUANTITY,
+                  nearestValues[0].toString()
+                )
+              }
+              text={nearestValues[0].toString()}
+            />
+            <SecondaryButton
+              action={() =>
+                updateAndValidate(
+                  INPUT_TYPES.QUANTITY,
+                  nearestValues[1].toString()
+                )
+              }
+              text={nearestValues[1].toString()}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const QuickAdjustmentButtons = ({
+  updateTotalValue,
+  clearOrderFormProperties,
+}) => (
+  <li>
+    <CancelTextButton text="25%" action={() => updateTotalValue(0.25)} />
+    <CancelTextButton text="50%" action={() => updateTotalValue(0.5)} />
+    <CancelTextButton text="75%" action={() => updateTotalValue(0.75)} />
+    <CancelTextButton text="100%" action={() => updateTotalValue(1)} />
+    <CancelTextButton text="clear" action={() => clearOrderFormProperties()} />
+  </li>
+);
+
 const getGasConfirmEstimate = async () => {
   const augur = augurSdk.get();
   const gasConfirmTime = await augur.getGasConfirmEstimate();
@@ -151,7 +211,7 @@ interface FormState {
   confirmationTimeEstimation: number;
 }
 
-const calculateStartState = (props) => {
+const calculateStartState = props => {
   return {
     [INPUT_TYPES.QUANTITY]: props.orderQuantity,
     [INPUT_TYPES.PRICE]: props.orderPrice,
@@ -159,15 +219,7 @@ const calculateStartState = (props) => {
     [INPUT_TYPES.EXPIRATION_DATE]:
       props.expirationDate ||
       calcOrderExpirationTime(props.endTime, props.currentTimestamp),
-    // [INPUT_TYPES.SELECTED_NAV]: props.selectedNav,
     [INPUT_TYPES.EST_DAI]: props.orderDaiEstimate,
-    // errors: {
-    //   [INPUT_TYPES.MULTIPLE_QUANTITY]: [],
-    //   [INPUT_TYPES.QUANTITY]: [],
-    //   [INPUT_TYPES.PRICE]: [],
-    //   [INPUT_TYPES.EST_DAI]: [],
-    //   [INPUT_TYPES.EXPIRATION_DATE]: [],
-    // },
   };
 };
 
@@ -199,17 +251,12 @@ const FormPure = ({
   const selectedOutcomeId =
     selectedOutcome !== undefined && selectedOutcome !== null
       ? selectedOutcome.id
-      : market.defaultSelectedOutcomeId;  
+      : market.defaultSelectedOutcomeId;
   let orderBook = {};
   if (initialLiquidity) {
-    orderBook = formatOrderBook(
-      market.orderBook[selectedOutcomeId]
-    );
+    orderBook = formatOrderBook(market.orderBook[selectedOutcomeId]);
   }
-  const {
-    maxPriceBigNumber: maxPrice,
-    minPriceBigNumber: minPrice,
-  } = market;
+  const { maxPriceBigNumber: maxPrice, minPriceBigNumber: minPrice } = market;
   const {
     selectedNav,
     orderPrice,
@@ -221,8 +268,8 @@ const FormPure = ({
   } = orderState;
   const availableDai = totalTradingBalance();
   const sortedOutcomes = selectSortedMarketOutcomes(
-   market.marketType,
-   market.outcomesFormatted
+    market.marketType,
+    market.outcomesFormatted
   );
   const endTime = market.endTime || market.setEndTime;
 };
@@ -239,9 +286,7 @@ class Form extends Component<FromProps, FormState> {
     );
     this.state = {
       ...startState,
-      // isOrderValid: orderValidation(startState, undefined, props).isOrderValid,
       lastInputModified: '',
-      // errorCount: 0,
       advancedOption: advancedDropdownOptions[0].value,
       fastForwardTime: remainingTime.time,
       expirationDateOption: remainingTime.unit,
@@ -300,38 +345,12 @@ class Form extends Component<FromProps, FormState> {
   }
 
   updateTestProperty(property, nextProps) {
-    // const { clearOrderConfirmation } = this.props;
-    // console.log(nextProps[property], property, this.state[property]);
+    // keep state up to date with props. should be able to refactor out
     if (nextProps[property] !== this.state[property]) {
-      this.setState(
-        {
-          [property]: nextProps[property],
-        });
+      this.setState({
+        [property]: nextProps[property],
+      });
     }
-    //     () => {
-    //       // const newOrderInfo = {
-    //       //   ...this.state,
-    //       //   [property]: nextProps[property],
-    //       // };
-    //       // const { isOrderValid, errors, errorCount } = orderValidation(
-    //       //   newOrderInfo,
-    //       //   undefined,
-    //       //   nextProps,
-    //       //   this.state.confirmationTimeEstimation,
-    //       //   true
-    //       // );
-    //       // if (errorCount > 0) {
-    //       //   clearOrderConfirmation();
-    //       // }
-    //       // this.setState({
-    //       //   ...newOrderInfo,
-    //       //   // errors,
-    //       //   // isOrderValid,
-    //       //   // errorCount,
-    //       // });
-    //     }
-    //   );
-    // }
   }
 
   async getGasConfirmEstimate() {
@@ -392,10 +411,7 @@ class Form extends Component<FromProps, FormState> {
       updatedState[INPUT_TYPES.EST_DAI] = '';
       updateOrderProperty({ [INPUT_TYPES.EST_DAI]: '' });
       orderDaiEstimate = '';
-    } else if (
-      orderPrice &&
-      property === INPUT_TYPES.EST_DAI
-    ) {
+    } else if (orderPrice && property === INPUT_TYPES.EST_DAI) {
       // have price and total cost was modified clear quantity
       updatedState[INPUT_TYPES.QUANTITY] = '';
       updateOrderProperty({ [INPUT_TYPES.QUANTITY]: '' });
@@ -458,12 +474,7 @@ class Form extends Component<FromProps, FormState> {
   }
 
   clearOrderFormProperties() {
-    const {
-      selectedNav,
-      clearOrderForm,
-      endTime,
-      currentTimestamp,
-    } = this.props;
+    const { clearOrderForm, endTime, currentTimestamp } = this.props;
     const remainingTime = calcOrderExpirationTimeRemaining(
       endTime,
       currentTimestamp
@@ -476,23 +487,14 @@ class Form extends Component<FromProps, FormState> {
         endTime,
         currentTimestamp
       ),
-      // [INPUT_TYPES.SELECTED_NAV]: selectedNav,
       [INPUT_TYPES.EST_DAI]: '',
       fastForwardTime: remainingTime.time,
       expirationDateOption: remainingTime.unit,
       advancedOption: advancedDropdownOptions[0].value,
-      // errors: {
-      //   [INPUT_TYPES.MULTIPLE_QUANTITY]: [],
-      //   [INPUT_TYPES.QUANTITY]: [],
-      //   [INPUT_TYPES.PRICE]: [],
-      //   [INPUT_TYPES.EST_DAI]: [],
-      //   [INPUT_TYPES.EXPIRATION_DATE]: [],
-      // },
     };
     this.setState(
       {
         ...startState,
-        // isOrderValid: false,
         percentage: '',
       },
       () => clearOrderForm()
@@ -557,7 +559,7 @@ class Form extends Component<FromProps, FormState> {
         ...validation.errors[INPUT_TYPES.EXPIRATION_DATE],
       ])
     );
-    
+
     const quantityValue = convertExponentialToDecimal(s[INPUT_TYPES.QUANTITY]);
     const isScalar: boolean = market.marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
@@ -568,7 +570,8 @@ class Form extends Component<FromProps, FormState> {
     const showLimitPriceInput =
       (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
 
-    const nearestValues = findNearestValues(quantityValue, market);
+    const isExpirationCustom = s.expirationDateOption ===
+    EXPIRATION_DATE_OPTIONS.CUSTOM;
     return (
       <div className={Styles.TradingForm}>
         <div className={Styles.Outcome}>
@@ -603,7 +606,8 @@ class Form extends Component<FromProps, FormState> {
                   FormStyles.Form__input,
                   Styles.TradingFormInput,
                   {
-                    [`${Styles.error}`]: validation.errors[INPUT_TYPES.QUANTITY].length,
+                    [`${Styles.error}`]: validation.errors[INPUT_TYPES.QUANTITY]
+                      .length,
                   }
                 )}
                 id="quantity"
@@ -633,7 +637,8 @@ class Form extends Component<FromProps, FormState> {
               />
               <span
                 className={classNames({
-                  [`${Styles.error}`]: validation.errors[INPUT_TYPES.QUANTITY].length,
+                  [`${Styles.error}`]: validation.errors[INPUT_TYPES.QUANTITY]
+                    .length,
                 })}
               >
                 Shares
@@ -683,7 +688,8 @@ class Form extends Component<FromProps, FormState> {
                       (market.scalarDenomination || []).length <= 24,
                     [`${Styles.isScalar_smallText}`]:
                       isScalar && (market.scalarDenomination || []).length > 24,
-                    [`${Styles.error}`]: validation.errors[INPUT_TYPES.PRICE].length,
+                    [`${Styles.error}`]: validation.errors[INPUT_TYPES.PRICE]
+                      .length,
                   })}
                 >
                   {isScalar ? market.scalarDenomination : '$'}
@@ -736,7 +742,8 @@ class Form extends Component<FromProps, FormState> {
             <label htmlFor="total-order-value">Total Order Value</label>
             <div
               className={classNames(Styles.TradingFormInputContainer, {
-                [`${Styles.error}`]: validation.errors[INPUT_TYPES.EST_DAI].length,
+                [`${Styles.error}`]: validation.errors[INPUT_TYPES.EST_DAI]
+                  .length,
               })}
             >
               <input
@@ -744,7 +751,8 @@ class Form extends Component<FromProps, FormState> {
                   FormStyles.Form__input,
                   Styles.TradingFormInput,
                   {
-                    [`${Styles.error}`]: validation.errors[INPUT_TYPES.EST_DAI].length,
+                    [`${Styles.error}`]: validation.errors[INPUT_TYPES.EST_DAI]
+                      .length,
                   }
                 )}
                 id="total-order-value"
@@ -772,7 +780,8 @@ class Form extends Component<FromProps, FormState> {
               />
               <span
                 className={classNames({
-                  [`${Styles.error}`]: validation.errors[INPUT_TYPES.EST_DAI].length,
+                  [`${Styles.error}`]: validation.errors[INPUT_TYPES.EST_DAI]
+                    .length,
                 })}
               >
                 $
@@ -780,28 +789,10 @@ class Form extends Component<FromProps, FormState> {
             </div>
           </li>
           {!initialLiquidity && (
-            <li>
-              <CancelTextButton
-                text="25%"
-                action={() => this.updateTotalValue(0.25)}
-              />
-              <CancelTextButton
-                text="50%"
-                action={() => this.updateTotalValue(0.5)}
-              />
-              <CancelTextButton
-                text="75%"
-                action={() => this.updateTotalValue(0.75)}
-              />
-              <CancelTextButton
-                text="100%"
-                action={() => this.updateTotalValue(1)}
-              />
-              <CancelTextButton
-                text="clear"
-                action={() => this.clearOrderFormProperties()}
-              />
-            </li>
+            <QuickAdjustmentButtons
+              updateTotalValue={this.updateTotalValue}
+              clearOrderFormProperties={this.clearOrderFormProperties}
+            />
           )}
           <li>
             <label
@@ -819,7 +810,9 @@ class Form extends Component<FromProps, FormState> {
           </li>
           <li
             className={classNames(Styles.AdvancedShown, {
-              [`${Styles.error}`]: validation.errors[INPUT_TYPES.EXPIRATION_DATE].length,
+              [`${Styles.error}`]: validation.errors[
+                INPUT_TYPES.EXPIRATION_DATE
+              ].length,
             })}
           >
             <SquareDropdown
@@ -832,10 +825,7 @@ class Form extends Component<FromProps, FormState> {
                 );
                 const timestamp =
                   value === ADVANCED_OPTIONS.EXPIRATION
-                    ? calcOrderExpirationTime(
-                        endTime,
-                        currentTimestamp
-                      )
+                    ? calcOrderExpirationTime(endTime, currentTimestamp)
                     : null;
                 this.updateAndValidate(INPUT_TYPES.EXPIRATION_DATE, timestamp);
                 updateState({
@@ -852,8 +842,7 @@ class Form extends Component<FromProps, FormState> {
             {s.advancedOption === ADVANCED_OPTIONS.EXPIRATION && (
               <>
                 <div>
-                  {s.expirationDateOption !==
-                    EXPIRATION_DATE_OPTIONS.CUSTOM && (
+                  {!isExpirationCustom && (
                     <TextInput
                       value={s.fastForwardTime.toString()}
                       placeholder={'0'}
@@ -887,7 +876,7 @@ class Form extends Component<FromProps, FormState> {
                     }}
                   />
                 </div>
-                {s.expirationDateOption !== EXPIRATION_DATE_OPTIONS.CUSTOM && (
+                {!isExpirationCustom && (
                   <span>
                     {s[INPUT_TYPES.EXPIRATION_DATE] &&
                       convertUnixToFormattedDate(
@@ -895,7 +884,7 @@ class Form extends Component<FromProps, FormState> {
                       ).formattedLocalShortDateTimeWithTimezone}
                   </span>
                 )}
-                {s.expirationDateOption === EXPIRATION_DATE_OPTIONS.CUSTOM && (
+                {isExpirationCustom && (
                   <Media query={SMALL_MOBILE}>
                     {matches => (
                       <SimpleTimeSelector
@@ -921,51 +910,22 @@ class Form extends Component<FromProps, FormState> {
             )}
             <span
               className={classNames({
-                [`${Styles.error}`]: validation.errors[INPUT_TYPES.EXPIRATION_DATE]
-                  .length,
+                [`${Styles.error}`]: validation.errors[
+                  INPUT_TYPES.EXPIRATION_DATE
+                ].length,
               })}
             ></span>
           </li>
         </ul>
         {validation.errors[INPUT_TYPES.MULTIPLE_QUANTITY].length > 0 && (
-          <div className={Styles.ErrorContainer}>
-            {validation.errors[INPUT_TYPES.MULTIPLE_QUANTITY].map((error, key) => (
-              <div key={error} className={Styles.ErrorClickable}>
-                {ExclamationCircle} <span>{error}</span>
-                <span>Please select from the closest quantities</span>
-                <div>
-                  <SecondaryButton
-                    action={() =>
-                      this.updateAndValidate(
-                        INPUT_TYPES.QUANTITY,
-                        nearestValues[0].toString()
-                      )
-                    }
-                    text={nearestValues[0].toString()}
-                  />
-                  <SecondaryButton
-                    action={() =>
-                      this.updateAndValidate(
-                        INPUT_TYPES.QUANTITY,
-                        nearestValues[1].toString()
-                      )
-                    }
-                    text={nearestValues[1].toString()}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+          <ValidationContainer
+            validation={validation}
+            updateAndValidate={this.updateAndValidate}
+            market={market}
+            quantityValue={quantityValue}
+          />
         )}
-        {errors.length > 0 && (
-          <div className={Styles.ErrorContainer}>
-            {errors.map(error => (
-              <div key={error} className={Styles.Error}>
-                {ExclamationCircle} <span>{error}</span>
-              </div>
-            ))}
-          </div>
-        )}
+        {errors.length > 0 && <ErrorsContainer errors={errors} />}
       </div>
     );
   }
