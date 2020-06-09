@@ -28,7 +28,6 @@ const TradingForm = ({
       ),
     [selectedOutcomeId, market]
   );
-  // console.log("TradingForm", market, selectedOutcomeId, selectedOutcome, props);
   return (
     <section className={Styles.TradingForm}>
       <Wrapper

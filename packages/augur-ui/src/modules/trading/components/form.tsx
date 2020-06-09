@@ -159,15 +159,15 @@ const calculateStartState = (props) => {
     [INPUT_TYPES.EXPIRATION_DATE]:
       props.expirationDate ||
       calcOrderExpirationTime(props.endTime, props.currentTimestamp),
-    [INPUT_TYPES.SELECTED_NAV]: props.selectedNav,
+    // [INPUT_TYPES.SELECTED_NAV]: props.selectedNav,
     [INPUT_TYPES.EST_DAI]: props.orderDaiEstimate,
-    errors: {
-      [INPUT_TYPES.MULTIPLE_QUANTITY]: [],
-      [INPUT_TYPES.QUANTITY]: [],
-      [INPUT_TYPES.PRICE]: [],
-      [INPUT_TYPES.EST_DAI]: [],
-      [INPUT_TYPES.EXPIRATION_DATE]: [],
-    },
+    // errors: {
+    //   [INPUT_TYPES.MULTIPLE_QUANTITY]: [],
+    //   [INPUT_TYPES.QUANTITY]: [],
+    //   [INPUT_TYPES.PRICE]: [],
+    //   [INPUT_TYPES.EST_DAI]: [],
+    //   [INPUT_TYPES.EXPIRATION_DATE]: [],
+    // },
   };
 };
 
@@ -239,9 +239,9 @@ class Form extends Component<FromProps, FormState> {
     );
     this.state = {
       ...startState,
-      isOrderValid: orderValidation(startState, undefined, props).isOrderValid,
+      // isOrderValid: orderValidation(startState, undefined, props).isOrderValid,
       lastInputModified: '',
-      errorCount: 0,
+      // errorCount: 0,
       advancedOption: advancedDropdownOptions[0].value,
       fastForwardTime: remainingTime.time,
       expirationDateOption: remainingTime.unit,
@@ -300,36 +300,38 @@ class Form extends Component<FromProps, FormState> {
   }
 
   updateTestProperty(property, nextProps) {
-    const { clearOrderConfirmation } = this.props;
+    // const { clearOrderConfirmation } = this.props;
+    // console.log(nextProps[property], property, this.state[property]);
     if (nextProps[property] !== this.state[property]) {
       this.setState(
         {
           [property]: nextProps[property],
-        },
-        () => {
-          const newOrderInfo = {
-            ...this.state,
-            [property]: nextProps[property],
-          };
-          const { isOrderValid, errors, errorCount } = orderValidation(
-            newOrderInfo,
-            undefined,
-            nextProps,
-            this.state.confirmationTimeEstimation,
-            true
-          );
-          if (errorCount > 0) {
-            clearOrderConfirmation();
-          }
-          this.setState({
-            ...newOrderInfo,
-            errors,
-            isOrderValid,
-            errorCount,
-          });
-        }
-      );
+        });
     }
+    //     () => {
+    //       // const newOrderInfo = {
+    //       //   ...this.state,
+    //       //   [property]: nextProps[property],
+    //       // };
+    //       // const { isOrderValid, errors, errorCount } = orderValidation(
+    //       //   newOrderInfo,
+    //       //   undefined,
+    //       //   nextProps,
+    //       //   this.state.confirmationTimeEstimation,
+    //       //   true
+    //       // );
+    //       // if (errorCount > 0) {
+    //       //   clearOrderConfirmation();
+    //       // }
+    //       // this.setState({
+    //       //   ...newOrderInfo,
+    //       //   // errors,
+    //       //   // isOrderValid,
+    //       //   // errorCount,
+    //       // });
+    //     }
+    //   );
+    // }
   }
 
   async getGasConfirmEstimate() {
@@ -387,7 +389,6 @@ class Form extends Component<FromProps, FormState> {
 
     // have price and quantity was modified clear total cost
     if (orderPrice && property === INPUT_TYPES.QUANTITY) {
-      console.log('have price and quantity was modified clear total cost', this.state, property, rawValue);
       updatedState[INPUT_TYPES.EST_DAI] = '';
       updateOrderProperty({ [INPUT_TYPES.EST_DAI]: '' });
       orderDaiEstimate = '';
@@ -396,7 +397,6 @@ class Form extends Component<FromProps, FormState> {
       property === INPUT_TYPES.EST_DAI
     ) {
       // have price and total cost was modified clear quantity
-      console.log('have price and total cost was modified clear quantity', this.state, property, rawValue);
       updatedState[INPUT_TYPES.QUANTITY] = '';
       updateOrderProperty({ [INPUT_TYPES.QUANTITY]: '' });
       orderQuantity = '';
@@ -441,30 +441,17 @@ class Form extends Component<FromProps, FormState> {
       [INPUT_TYPES.EXPIRATION_DATE]: expiration,
       selectedNav,
     };
-
+    if (property !== INPUT_TYPES.PRICE) {
+      updatedState.lastInputModified = property;
+    }
     // update the local state of this form then make call to calculate total or shares
     this.setState(
       {
         ...updatedState,
-        errors: {
-          ...validationResults.errors,
-        },
-        errorCount: validationResults.errorCount,
-        isOrderValid: validationResults.isOrderValid,
       },
       () => {
-        if (
-          validationResults.errorCount === 0 &&
-          validationResults.isOrderValid
-        ) {
-          if (orderProcessingMethod) {
-            orderProcessingMethod(order);
-          }
-        }
-        if (property !== INPUT_TYPES.PRICE) {
-          this.setState({
-            lastInputModified: property,
-          });
+        if (orderProcessingMethod) {
+          orderProcessingMethod(order);
         }
       }
     );
@@ -489,23 +476,23 @@ class Form extends Component<FromProps, FormState> {
         endTime,
         currentTimestamp
       ),
-      [INPUT_TYPES.SELECTED_NAV]: selectedNav,
+      // [INPUT_TYPES.SELECTED_NAV]: selectedNav,
       [INPUT_TYPES.EST_DAI]: '',
       fastForwardTime: remainingTime.time,
       expirationDateOption: remainingTime.unit,
       advancedOption: advancedDropdownOptions[0].value,
-      errors: {
-        [INPUT_TYPES.MULTIPLE_QUANTITY]: [],
-        [INPUT_TYPES.QUANTITY]: [],
-        [INPUT_TYPES.PRICE]: [],
-        [INPUT_TYPES.EST_DAI]: [],
-        [INPUT_TYPES.EXPIRATION_DATE]: [],
-      },
+      // errors: {
+      //   [INPUT_TYPES.MULTIPLE_QUANTITY]: [],
+      //   [INPUT_TYPES.QUANTITY]: [],
+      //   [INPUT_TYPES.PRICE]: [],
+      //   [INPUT_TYPES.EST_DAI]: [],
+      //   [INPUT_TYPES.EXPIRATION_DATE]: [],
+      // },
     };
     this.setState(
       {
         ...startState,
-        isOrderValid: false,
+        // isOrderValid: false,
         percentage: '',
       },
       () => clearOrderForm()
@@ -535,22 +522,42 @@ class Form extends Component<FromProps, FormState> {
       currentTimestamp,
       tradingTutorial,
       selectedNav,
+      endTime,
     } = this.props;
     const s = this.state;
-    // console.log('render Form:', this.state);
+    const validation = orderValidation(
+      {
+        expirationDate: this.state.expirationDate,
+        orderQuantity: this.props.orderQuantity,
+        orderPrice: this.props.orderPrice,
+        orderDaiEstimate: this.props.orderDaiEstimate,
+      },
+      null,
+      {
+        maxPrice: market.maxPriceBigNumber,
+        minPrice: market.minPriceBigNumber,
+        market,
+        initialLiquidity,
+        selectedNav,
+        orderBook: this.props.orderBook,
+        selectedOutcome,
+        currentTimestamp,
+      },
+      this.state.confirmationTimeEstimation
+    );
     const tickSize = parseFloat(market.tickSize);
     const quantityStep = getPrecision(tickSize, 0.001);
     const max = market.maxPriceBigNumber.toString();
     const min = market.minPriceBigNumber.toString();
     const errors = Array.from(
       new Set([
-        ...s.errors[INPUT_TYPES.QUANTITY],
-        ...s.errors[INPUT_TYPES.PRICE],
-        ...s.errors[INPUT_TYPES.EST_DAI],
-        ...s.errors[INPUT_TYPES.EXPIRATION_DATE],
+        ...validation.errors[INPUT_TYPES.QUANTITY],
+        ...validation.errors[INPUT_TYPES.PRICE],
+        ...validation.errors[INPUT_TYPES.EST_DAI],
+        ...validation.errors[INPUT_TYPES.EXPIRATION_DATE],
       ])
     );
-
+    
     const quantityValue = convertExponentialToDecimal(s[INPUT_TYPES.QUANTITY]);
     const isScalar: boolean = market.marketType === SCALAR;
     // TODO: figure out default outcome after we figure out ordering of the outcomes
@@ -562,7 +569,6 @@ class Form extends Component<FromProps, FormState> {
       (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
 
     const nearestValues = findNearestValues(quantityValue, market);
-
     return (
       <div className={Styles.TradingForm}>
         <div className={Styles.Outcome}>
@@ -589,7 +595,7 @@ class Form extends Component<FromProps, FormState> {
             )}
             <div
               className={classNames(Styles.TradingFormInputContainer, {
-                [Styles.error]: s.errors[INPUT_TYPES.QUANTITY].length,
+                [Styles.error]: validation.errors[INPUT_TYPES.QUANTITY].length,
               })}
             >
               <input
@@ -597,7 +603,7 @@ class Form extends Component<FromProps, FormState> {
                   FormStyles.Form__input,
                   Styles.TradingFormInput,
                   {
-                    [`${Styles.error}`]: s.errors[INPUT_TYPES.QUANTITY].length,
+                    [`${Styles.error}`]: validation.errors[INPUT_TYPES.QUANTITY].length,
                   }
                 )}
                 id="quantity"
@@ -627,7 +633,7 @@ class Form extends Component<FromProps, FormState> {
               />
               <span
                 className={classNames({
-                  [`${Styles.error}`]: s.errors[INPUT_TYPES.QUANTITY].length,
+                  [`${Styles.error}`]: validation.errors[INPUT_TYPES.QUANTITY].length,
                 })}
               >
                 Shares
@@ -639,7 +645,7 @@ class Form extends Component<FromProps, FormState> {
               <label htmlFor="limit-price">Limit Price</label>
               <div
                 className={classNames(Styles.TradingFormInputContainer, {
-                  [Styles.error]: s.errors[INPUT_TYPES.PRICE].length,
+                  [Styles.error]: validation.errors[INPUT_TYPES.PRICE].length,
                 })}
               >
                 <input
@@ -677,7 +683,7 @@ class Form extends Component<FromProps, FormState> {
                       (market.scalarDenomination || []).length <= 24,
                     [`${Styles.isScalar_smallText}`]:
                       isScalar && (market.scalarDenomination || []).length > 24,
-                    [`${Styles.error}`]: s.errors[INPUT_TYPES.PRICE].length,
+                    [`${Styles.error}`]: validation.errors[INPUT_TYPES.PRICE].length,
                   })}
                 >
                   {isScalar ? market.scalarDenomination : '$'}
@@ -702,7 +708,7 @@ class Form extends Component<FromProps, FormState> {
                   min={1}
                   placeholder="0"
                   tabIndex={tradingTutorial ? -1 : 2}
-                  value={this.state.percentage}
+                  value={s.percentage}
                   onTouchStart={e =>
                     e.target.scrollIntoView({
                       block: 'nearest',
@@ -730,7 +736,7 @@ class Form extends Component<FromProps, FormState> {
             <label htmlFor="total-order-value">Total Order Value</label>
             <div
               className={classNames(Styles.TradingFormInputContainer, {
-                [`${Styles.error}`]: s.errors[INPUT_TYPES.EST_DAI].length,
+                [`${Styles.error}`]: validation.errors[INPUT_TYPES.EST_DAI].length,
               })}
             >
               <input
@@ -738,7 +744,7 @@ class Form extends Component<FromProps, FormState> {
                   FormStyles.Form__input,
                   Styles.TradingFormInput,
                   {
-                    [`${Styles.error}`]: s.errors[INPUT_TYPES.EST_DAI].length,
+                    [`${Styles.error}`]: validation.errors[INPUT_TYPES.EST_DAI].length,
                   }
                 )}
                 id="total-order-value"
@@ -766,7 +772,7 @@ class Form extends Component<FromProps, FormState> {
               />
               <span
                 className={classNames({
-                  [`${Styles.error}`]: s.errors[INPUT_TYPES.EST_DAI].length,
+                  [`${Styles.error}`]: validation.errors[INPUT_TYPES.EST_DAI].length,
                 })}
               >
                 $
@@ -813,7 +819,7 @@ class Form extends Component<FromProps, FormState> {
           </li>
           <li
             className={classNames(Styles.AdvancedShown, {
-              [`${Styles.error}`]: s.errors[INPUT_TYPES.EXPIRATION_DATE].length,
+              [`${Styles.error}`]: validation.errors[INPUT_TYPES.EXPIRATION_DATE].length,
             })}
           >
             <SquareDropdown
@@ -821,14 +827,14 @@ class Form extends Component<FromProps, FormState> {
               options={advancedOptions}
               onChange={value => {
                 const remainingTime = calcOrderExpirationTimeRemaining(
-                  this.props.endTime,
-                  this.props.currentTimestamp
+                  endTime,
+                  currentTimestamp
                 );
                 const timestamp =
                   value === ADVANCED_OPTIONS.EXPIRATION
                     ? calcOrderExpirationTime(
-                        this.props.endTime,
-                        this.props.currentTimestamp
+                        endTime,
+                        currentTimestamp
                       )
                     : null;
                 this.updateAndValidate(INPUT_TYPES.EXPIRATION_DATE, timestamp);
@@ -869,7 +875,7 @@ class Form extends Component<FromProps, FormState> {
                     defaultValue={s.expirationDateOption}
                     options={advancedExpirationDateOptions}
                     onChange={value => {
-                      const fastForwardTime = this.state.fastForwardTime || 1;
+                      const fastForwardTime = s.fastForwardTime || 1;
                       this.updateAndValidate(
                         INPUT_TYPES.EXPIRATION_DATE,
                         moment
@@ -915,15 +921,15 @@ class Form extends Component<FromProps, FormState> {
             )}
             <span
               className={classNames({
-                [`${Styles.error}`]: s.errors[INPUT_TYPES.EXPIRATION_DATE]
+                [`${Styles.error}`]: validation.errors[INPUT_TYPES.EXPIRATION_DATE]
                   .length,
               })}
             ></span>
           </li>
         </ul>
-        {s.errors[INPUT_TYPES.MULTIPLE_QUANTITY].length > 0 && (
+        {validation.errors[INPUT_TYPES.MULTIPLE_QUANTITY].length > 0 && (
           <div className={Styles.ErrorContainer}>
-            {s.errors[INPUT_TYPES.MULTIPLE_QUANTITY].map((error, key) => (
+            {validation.errors[INPUT_TYPES.MULTIPLE_QUANTITY].map((error, key) => (
               <div key={error} className={Styles.ErrorClickable}>
                 {ExclamationCircle} <span>{error}</span>
                 <span>Please select from the closest quantities</span>

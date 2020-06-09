@@ -21,6 +21,7 @@ import { OrderButton, PrimaryButton } from 'modules/common/buttons';
 import {
   formatGasCostToEther,
   formatNumber,
+  formatMarketShares,
 } from 'utils/format-number';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { formatDai } from 'utils/format-number';
@@ -41,6 +42,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
+import { FORM_INPUT_TYPES as INPUT_TYPES } from 'modules/trading/store/constants';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
@@ -210,21 +212,26 @@ const Wrapper = ({
       side: order.selectedNav,
       maxCost: order.orderDaiEstimate,
       callback: (err, newOrder) => {
+        console.log(err, newOrder, order);
         if (err) return console.error(err); // what to do with error here
 
-        // const numShares = formatMarketShares(
-        //   market.marketType,
-        //   createBigNumber(newOrder.numShares),
-        //   {
-        //     roundDown: false,
-        //   }
-        // ).rounded;
+        const numShares = formatMarketShares(
+          market.marketType,
+          createBigNumber(newOrder.numShares),
+          {
+            roundDown: false,
+          }
+        ).rounded;
 
         const formattedGasCost = formatGasCostToEther(
           newOrder.gasLimit,
           { decimalsRounded: 4 },
           String(gasPrice)
         ).toString();
+        updateSelectedOrderProperties({
+          ...selectedOrderProperties,
+          orderQuantity: String(numShares),
+        });
         setState({
           ...state,
           // orderQuantity: String(numShares),
@@ -437,7 +444,6 @@ const Wrapper = ({
     (orderShareProfit && orderShareProfit.value !== 0) ||
     (sharesFilled && sharesFilled.value !== 0);
   const actionButton = getActionButton();
-
   return (
     <section className={Styles.Wrapper}>
       <div>
@@ -460,7 +466,7 @@ const Wrapper = ({
           }}
           updateState={updates => setState({ ...state, ...updates })}
           updateOrderProperty={property => {
-            if (property.orderQuantity || property.orderPrice || property.selectedNav) {
+            if (property.hasOwnProperty(INPUT_TYPES.PRICE) || property.hasOwnProperty(INPUT_TYPES.QUANTITY) || property.hasOwnProperty(INPUT_TYPES.SELECTED_NAV)) {
               updateSelectedOrderProperties({
                 ...selectedOrderProperties,
                 ...property,
