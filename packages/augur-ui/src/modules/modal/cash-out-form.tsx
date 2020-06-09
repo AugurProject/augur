@@ -73,8 +73,6 @@ export const CashOutForm = ({
       // add buffer to gas
       gas = (await withdrawAllFundsEstimateGas(account)).times(4);
       const gasCostInEth = formatGasCostToEther(gas, {}, createBigNumber(GWEI_CONVERSION).multipliedBy(createBigNumber(gasPrice)));
-      console.log('withdraw all funds gas cost', String(createBigNumber(gasCostInEth)));
-      console.log('signerEth', signerEth);
       signerPays = createBigNumber(signerEth).gte(createBigNumber(gasCostInEth));
     } catch (error) {
       // user can't withdraw all funds, needs to transfer
