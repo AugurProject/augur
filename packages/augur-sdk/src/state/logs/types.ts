@@ -460,6 +460,9 @@ export interface MarketData extends Log {
   finalized: boolean;
   lastTradedTimestamp: UnixTimestamp;
   isWarpSync: boolean;
+  templateGroupHash?: string;
+  templateGroupType?: string;
+  templateGroupLine?: string;
 }
 
 export interface DisputeDoc extends Log {

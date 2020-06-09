@@ -1,6 +1,6 @@
 import { runChaosMonkey } from './chaos-monkey';
 import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarkets, createTemplatedMarkets } from './create-canned-markets-and-orders';
+import { createCannedMarkets, createTemplatedMarkets, createTemplatedBettingMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH, BASE_MNEMONIC } from '../constants';
 import {
   Contracts as compilerOutput,
@@ -488,6 +488,18 @@ export function addScripts(flash: FlashSession) {
           }
         }
       }
+    },
+  });
+
+  flash.addScript({
+    name: 'create-canned-betting-markets',
+    async call(this: FlashSession) {
+      const user = await this.createUser(this.getAccount(), this.config);
+      const million = QUINTILLION.multipliedBy(1e7);
+      await user.faucetRepUpTo(million, million);
+      await user.faucetCashUpTo(million, million);
+      await user.approveIfNecessary();
+      await createTemplatedBettingMarkets(user, false);
     },
   });
 
