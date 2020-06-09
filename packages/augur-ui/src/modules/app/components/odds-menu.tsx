@@ -78,7 +78,7 @@ export const TimeOptions = () => {
           <button
             onClick={() => TimeFormats[0] !== timeFormat && setTimeFormat(TimeFormats[0])}
           >
-            {TIME_FORMATS[0]} {CheckMark}
+            {TimeFormats[0]} {CheckMark}
           </button>
         </li>
         <li className={classNames({ [Styles.Selected]: TimeFormats[1] === timeFormat })}>
