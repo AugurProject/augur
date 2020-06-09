@@ -53,6 +53,12 @@ export const ODDS_TYPE = {
   PERCENT: 'Percent',
 };
 
+
+export const TIME_FORMATS = {
+  TWENTY_FOUR: '24h',
+  AM_PM: 'AM / PM',
+};
+
 export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;
