@@ -7,6 +7,7 @@ import {
   INVALID_OUTCOME_ID,
   SMALL_MOBILE,
   MIN_QUANTITY,
+  GWEI_CONVERSION,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
@@ -31,6 +32,7 @@ import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import {
   calcPercentageFromPrice,
   calcPriceFromPercentage,
+  formatGasCost,
 } from 'utils/format-number';
 import Media from 'react-media';
 import {
@@ -43,6 +45,11 @@ import {
   orderValidation,
 } from 'modules/trading/helpers/form-helpers';
 import { FORM_INPUT_TYPES as INPUT_TYPES } from 'modules/trading/store/constants';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import { totalTradingBalance } from 'modules/auth/helpers/login-account';
+import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
+import { augurSdk } from 'services/augursdk';
 
 enum ADVANCED_OPTIONS {
   GOOD_TILL = '0',
@@ -93,6 +100,12 @@ const liqAdvancedDropdownOptions = [
     value: ADVANCED_OPTIONS.GOOD_TILL,
   },
 ];
+
+const getGasConfirmEstimate = async () => {
+  const augur = augurSdk.get();
+  const gasConfirmTime = await augur.getGasConfirmEstimate();
+  return gasConfirmTime;
+};
 
 interface FromProps {
   market: MarketData;
@@ -158,8 +171,60 @@ const calculateStartState = (props) => {
   };
 };
 
-const FormPure = ({}) => {
+const FormPure = ({
+  market,
+  tradingTutorial,
+  initialLiquidity,
+  selectedOutcome,
+  updateSelectedOutcome,
+  orderState,
+  updateState,
+  updateOrderProperty,
+  clearOrderForm,
+  updateTradeTotalCost,
+  updateTradeNumShares,
+  clearOrderConfirmation,
+}) => {
+  const {
+    gasPriceInfo,
+    blockchain: { currentAugurTimestamp: currentTimestamp },
+  } = useAppStatusStore();
+  const gasPriceInWei = formatGasCost(
+    createBigNumber(gasPriceInfo.userDefinedGasPrice || 0).times(
+      createBigNumber(GWEI_CONVERSION)
+    ),
+    {}
+  ).value;
 
+  const selectedOutcomeId =
+    selectedOutcome !== undefined && selectedOutcome !== null
+      ? selectedOutcome.id
+      : market.defaultSelectedOutcomeId;  
+  let orderBook = {};
+  if (initialLiquidity) {
+    orderBook = formatOrderBook(
+      market.orderBook[selectedOutcomeId]
+    );
+  }
+  const {
+    maxPriceBigNumber: maxPrice,
+    minPriceBigNumber: minPrice,
+  } = market;
+  const {
+    selectedNav,
+    orderPrice,
+    orderQuantity,
+    orderDaiEstimate,
+    orderEscrowdDai,
+    doNotCreateOrders,
+    expirationDate,
+  } = orderState;
+  const availableDai = totalTradingBalance();
+  const sortedOutcomes = selectSortedMarketOutcomes(
+   market.marketType,
+   market.outcomesFormatted
+  );
+  const endTime = market.endTime || market.setEndTime;
 };
 
 class Form extends Component<FromProps, FormState> {
@@ -269,7 +334,7 @@ class Form extends Component<FromProps, FormState> {
 
   async getGasConfirmEstimate() {
     try {
-      const confirmationTimeEstimation = await this.props.getGasConfirmEstimate();
+      const confirmationTimeEstimation = await getGasConfirmEstimate();
       this.setState({ confirmationTimeEstimation });
     } catch (error) {
       this.setState({ confirmationTimeEstimation: 0 });
@@ -322,14 +387,16 @@ class Form extends Component<FromProps, FormState> {
 
     // have price and quantity was modified clear total cost
     if (orderPrice && property === INPUT_TYPES.QUANTITY) {
+      console.log('have price and quantity was modified clear total cost', this.state, property, rawValue);
       updatedState[INPUT_TYPES.EST_DAI] = '';
       updateOrderProperty({ [INPUT_TYPES.EST_DAI]: '' });
       orderDaiEstimate = '';
     } else if (
-      // have price and total cost was modified clear quantity
       orderPrice &&
       property === INPUT_TYPES.EST_DAI
     ) {
+      // have price and total cost was modified clear quantity
+      console.log('have price and total cost was modified clear quantity', this.state, property, rawValue);
       updatedState[INPUT_TYPES.QUANTITY] = '';
       updateOrderProperty({ [INPUT_TYPES.QUANTITY]: '' });
       orderQuantity = '';
