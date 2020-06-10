@@ -26,7 +26,7 @@ const templateString = '//##TEMPLATES##';
 const templateValidationString = '//##TEMPLATE_VALIDATIONS##';
 const templateRetiredTemplatesString = '//##RETIRED_TEMPLATES';
 const templateGroupsString = '//##TEMPLATE_GROUPS##';
-const templateArtifactsFile = '../augur-artifacts/src/templates.ts';
+const templateArtifactsFile = '../augur-templates/src/templates.ts';
 const templateTemplateFile = './src/templates-template.ts';
 
 export const generateTemplateValidations = async () => {
