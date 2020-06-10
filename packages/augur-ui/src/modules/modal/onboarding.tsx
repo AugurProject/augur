@@ -9,7 +9,7 @@ import {
   LinkContentSection,
   Stepper,
 } from 'modules/modal/common';
-import AccountStatusTracker from 'modules/modal/containers/account-status-tracker';
+import { AccountStatusTracker } from 'modules/modal/common';
 import TransferMyDai from 'modules/modal/containers/transfer-my-dai';
 import { LinkContent } from 'modules/types';
 import classNames from 'classnames';

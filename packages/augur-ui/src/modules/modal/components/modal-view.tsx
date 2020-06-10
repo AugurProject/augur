@@ -28,7 +28,7 @@ import ModalClaimFees from 'modules/modal/containers/modal-claim-fees';
 import ModalParticipate from 'modules/modal/containers/modal-participate';
 import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect';
 import ModalDisclaimer from 'modules/modal/containers/modal-disclaimer';
-import ModalGasPrice from 'modules/modal/containers/modal-gas-price';
+import { Gas as ModalGasPrice} from 'modules/modal/gas';
 import ModalClaimMarketsProceeds from 'modules/modal/containers/modal-claim-markets-proceeds';
 import ModalOpenOrders from 'modules/modal/containers/modal-open-orders';
 import ModalMarketLoading from 'modules/modal/containers/modal-market-loading';
