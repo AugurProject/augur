@@ -151,7 +151,7 @@ export const CopyIcon = (
 
 export const ScalarIcon = (
   <svg viewBox="0 0 20 6">
-    <rect y="2" rx="0.75" />
+    <rect y="2" rx="0.75" height="1.5" width="20" />
     <path
       fillRule="evenodd"
       clipRule="evenodd"

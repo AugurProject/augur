@@ -10,7 +10,7 @@ RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494"
 def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputationToken):
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
-    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())
     weth = contractsFixture.contracts["WETH9"]
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]
@@ -228,7 +228,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
 def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, cash, reputationToken):
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
-    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())
     weth = contractsFixture.contracts["WETH9"]
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]
@@ -312,7 +312,7 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
 def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, cash, reputationToken):
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
-    ethExchange = contractsFixture.applySignature("UniswapV2Exchange", augurWalletRegistry.ethExchange())
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())
     weth = contractsFixture.contracts["WETH9"]
     account = contractsFixture.accounts[0]
     accountKey = contractsFixture.privateKeys[0]
@@ -394,15 +394,15 @@ def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, ca
     assert walletCashBalance > 0
 
     destinationAddress = contractsFixture.accounts[4]
-    minExchangeRate = 10**24
+    minExchangeRate = 90 * 10 ** 18
     wallet = contractsFixture.applySignature("AugurWallet", walletAddress)
-    txCost = 1600000000
-    sendableEth = signerEthBalance - txCost
+    ethReserve = 10 ** 18
+    sendableEth = ethReserve
     with PrintGasUsed(contractsFixture, "WITHDRAW WALLET FUNDS", 0):
         assert wallet.withdrawAllFundsAsDai(destinationAddress, minExchangeRate, value=sendableEth)
     assert cash.balanceOf(walletAddress) == 0
     assert cash.balanceOf(destinationAddress) > walletCashBalance
-    assert contractsFixture.ethBalance(account) < txCost
+    assert contractsFixture.ethBalance(account) < signerEthBalance - ethReserve
     
 
 def signMessage(messageHash, private_key):

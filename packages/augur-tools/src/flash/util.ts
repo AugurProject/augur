@@ -1,5 +1,6 @@
 import readline from 'readline';
 import { ContractAPI } from '..';
+import { RLP, keccak256 } from 'ethers/utils';
 
 export function waitForSigint(): Promise<void> {
   process.removeAllListeners('SIGINT');
@@ -140,4 +141,10 @@ export async function getOrCreateMarket(user: ContractAPI, marketId?: string|boo
     console.log(`Created market ${marketId}`);
   }
   return marketId
+}
+
+export function generateAddress(creator: string, nonce: number): string { 
+  const rlpData = RLP.encode([creator, `0x${nonce.toString(16)}`]);
+  let contractAddress = keccak256(rlpData);
+  return `0x${contractAddress.substring(26)}`;
 }

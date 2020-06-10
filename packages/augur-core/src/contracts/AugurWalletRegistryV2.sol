@@ -17,7 +17,7 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/LibBytes.sol';
 import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
-import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
 import 'ROOT/uniswap/interfaces/IWETH.sol';
 
 
@@ -42,7 +42,7 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
     address public zeroXTrade;
     address public otherRegistry;
 
-    IUniswapV2Exchange public ethExchange;
+    IUniswapV2Pair public ethExchange;
     IWETH public WETH;
     bool public token0IsCash;
 
@@ -77,11 +77,11 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
         WETH = IWETH(_augurTrading.lookup("WETH9"));
         otherRegistry = _augurTrading.lookup("AugurWalletRegistry");
         IUniswapV2Factory _uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
-        address _ethExchangeAddress = _uniswapFactory.getExchange(address(WETH), address(cash));
+        address _ethExchangeAddress = _uniswapFactory.getPair(address(WETH), address(cash));
         if (_ethExchangeAddress == address(0)) {
-            _ethExchangeAddress = _uniswapFactory.createExchange(address(WETH), address(cash));
+            _ethExchangeAddress = _uniswapFactory.createPair(address(WETH), address(cash));
         }
-        ethExchange = IUniswapV2Exchange(_ethExchangeAddress);
+        ethExchange = IUniswapV2Pair(_ethExchangeAddress);
         token0IsCash = ethExchange.token0() == address(cash);
 
         relayHub.depositFor.value(address(this).balance)(address(this));

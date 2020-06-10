@@ -809,6 +809,7 @@ export const INTERRUPTED = 'interrupted';
 // transcation fee
 export const USE_ETH_RESERVE = 'Est. TX Fee (paid by Fee reserve)';
 export const NOT_USE_ETH_RESERVE = 'Est. TX Fee';
+export const FEE_RESERVES_LABEL = 'Fee reserves';
 // Market Creation
 export const CREATING_MARKET = 'creating market...';
 
@@ -919,6 +920,7 @@ export const SYNC_MESSAGE_BLOCKSBEHIND =
   'Market data such as price and orderbooks may be considerably out of date.';
 export const SYNC_BEHIND = 'Blocks behind';
 export const SYNC_PROCESSED = 'Blocks Processed';
+export const AUTO_ETH_REPLENISH = `Automatically replenish fee reserves`;
 
 // Account Summary - Notifications
 export const NOTIFICATIONS_TITLE = 'Notifications';

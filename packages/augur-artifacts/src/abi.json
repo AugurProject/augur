@@ -10803,6 +10803,48 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_authorizedProxy",
+					"type": "address"
+				}
+			],
+			"name": "addAuthorizedProxy",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "authorizedProxies",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "cash",
@@ -11024,21 +11066,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "legacyRegistry",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "registry",
 			"outputs": [
 				{
@@ -11049,6 +11076,27 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_authorizedProxy",
+					"type": "address"
+				}
+			],
+			"name": "removeAuthorizedProxy",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -11319,7 +11367,7 @@
 			"name": "ethExchange",
 			"outputs": [
 				{
-					"internalType": "contract IUniswapV2Exchange",
+					"internalType": "contract IUniswapV2Pair",
 					"name": "",
 					"type": "address"
 				}
@@ -11989,7 +12037,7 @@
 			"name": "ethExchange",
 			"outputs": [
 				{
-					"internalType": "contract IUniswapV2Exchange",
+					"internalType": "contract IUniswapV2Pair",
 					"name": "",
 					"type": "address"
 				}
@@ -22299,7 +22347,7 @@
 			"name": "getExchange",
 			"outputs": [
 				{
-					"internalType": "contract IUniswapV2Exchange",
+					"internalType": "contract IUniswapV2Pair",
 					"name": "",
 					"type": "address"
 				}
@@ -30746,7 +30794,7 @@
 			"name": "ethExchange",
 			"outputs": [
 				{
-					"internalType": "contract IUniswapV2Exchange",
+					"internalType": "contract IUniswapV2Pair",
 					"name": "",
 					"type": "address"
 				}
@@ -31489,7 +31537,200 @@
 			"type": "function"
 		}
 	],
-	"UniswapV2Exchange": [
+	"UniswapV2Factory": [
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_feeToSetter",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "token0",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "token1",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "pair",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"name": "PairCreated",
+			"type": "event"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"name": "allPairs",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "allPairsLength",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "tokenA",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "tokenB",
+					"type": "address"
+				}
+			],
+			"name": "createPair",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "pair",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "feeTo",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "feeToSetter",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "getPair",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_feeTo",
+					"type": "address"
+				}
+			],
+			"name": "setFeeTo",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_feeToSetter",
+					"type": "address"
+				}
+			],
+			"name": "setFeeToSetter",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"UniswapV2Pair": [
 		{
 			"inputs": [],
 			"payable": false,
@@ -32197,199 +32438,6 @@
 					"type": "bool"
 				}
 			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"UniswapV2Factory": [
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_feeToSetter",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "constructor"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"internalType": "address",
-					"name": "token0",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"internalType": "address",
-					"name": "token1",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "address",
-					"name": "exchange",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"name": "ExchangeCreated",
-			"type": "event"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"name": "allExchanges",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "allExchangesLength",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "tokenA",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "tokenB",
-					"type": "address"
-				}
-			],
-			"name": "createExchange",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "exchange",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "feeTo",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "feeToSetter",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "getExchange",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_feeTo",
-					"type": "address"
-				}
-			],
-			"name": "setFeeTo",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_feeToSetter",
-					"type": "address"
-				}
-			],
-			"name": "setFeeToSetter",
-			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
@@ -33916,6 +33964,154 @@
 					"internalType": "struct HotLoading.MarketData",
 					"name": "_marketData",
 					"type": "tuple"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "contract IAugur",
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IMarket[]",
+					"name": "_markets",
+					"type": "address[]"
+				},
+				{
+					"internalType": "contract IFillOrder",
+					"name": "_fillOrder",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IOrders",
+					"name": "_orders",
+					"type": "address"
+				}
+			],
+			"name": "getMarketsData",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "string",
+							"name": "extraInfo",
+							"type": "string"
+						},
+						{
+							"internalType": "address",
+							"name": "marketCreator",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "owner",
+							"type": "address"
+						},
+						{
+							"internalType": "bytes32[]",
+							"name": "outcomes",
+							"type": "bytes32[]"
+						},
+						{
+							"internalType": "enum IMarket.MarketType",
+							"name": "marketType",
+							"type": "uint8"
+						},
+						{
+							"internalType": "int256[]",
+							"name": "displayPrices",
+							"type": "int256[]"
+						},
+						{
+							"internalType": "address",
+							"name": "designatedReporter",
+							"type": "address"
+						},
+						{
+							"internalType": "enum HotLoading.ReportingState",
+							"name": "reportingState",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint256",
+							"name": "disputeRound",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256[]",
+							"name": "winningPayout",
+							"type": "uint256[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "volume",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "openInterest",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256[]",
+							"name": "lastTradedPrices",
+							"type": "uint256[]"
+						},
+						{
+							"internalType": "address",
+							"name": "universe",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numTicks",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "feeDivisor",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "affiliateFeeDivisor",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "endTime",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "numOutcomes",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "validityBond",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "reportingFeeDivisor",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256[]",
+							"name": "outcomeVolumes",
+							"type": "uint256[]"
+						}
+					],
+					"internalType": "struct HotLoading.MarketData[]",
+					"name": "_marketsData",
+					"type": "tuple[]"
 				}
 			],
 			"payable": false,

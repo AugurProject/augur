@@ -171,8 +171,9 @@ div.Onboarding {
   width: 568px;
 
   @media @breakpoint-mobile {
-    border: 2px solid var(--color-secondary-action-outline);
-    margin: @size-32 @size-8;
+    border: @size-2 solid var(--color-secondary-action-outline);
+    height: 100%;
+    margin: @size-32 @size-8 @size-72;
     max-width: 100%;
     padding: 0;
     justify-content: space-between;
@@ -188,7 +189,6 @@ div.Onboarding {
       display: flex;
       flex-direction: column;
       overflow: auto;
-      height: 75%;
       padding: @size-16 @size-22 0 @size-22;
 
       > svg {
@@ -312,6 +312,11 @@ div.Onboarding {
       align-items: center;
       display: flex;
       flex-direction: column;
+
+      > div:first-of-type {
+        display: flex;
+        align-items: center;
+      }
 
       div[class*="ButtonsRow"] {
         display: flex;
@@ -2933,7 +2938,6 @@ div.ButtonsRow:last-of-type {
   border: @size-1 solid var(--color-secondary-action-outline);
   color: var(--color-secondary-text);
   display: flex;
-  font-family: monospace;
   flex-flow: row nowrap;
   justify-content: space-between;
   line-height: @size-14;

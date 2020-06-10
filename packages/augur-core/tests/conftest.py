@@ -475,7 +475,7 @@ class ContractsFixture:
 
     def uploadUniswapContracts(self):
         factory = self.uploadAndAddToAugur("../src/contracts/uniswap/UniswapV2Factory.sol", constructorArgs=[nullAddress])
-        self.generateAndStoreSignature("../src/contracts/uniswap/UniswapV2Exchange.sol")
+        self.generateAndStoreSignature("../src/contracts/uniswap/UniswapV2Pair.sol")
         wethAddress = self.contracts["WETH9"].address
         self.upload("../src/contracts/uniswap/UniswapV2Router01.sol", constructorArgs=[wethAddress, factory.address])
 

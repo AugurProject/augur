@@ -34,7 +34,7 @@ export class Contracts {
   affiliateValidator: ContractInterfaces.AffiliateValidator;
   profitLoss: ContractInterfaces.ProfitLoss;
   uniswapV2Factory: ContractInterfaces.UniswapV2Factory;
-  ethExchange: ContractInterfaces.UniswapV2Exchange;
+  ethExchange: ContractInterfaces.UniswapV2Pair;
   warpSync: ContractInterfaces.WarpSync;
   augurWalletRegistry: ContractInterfaces.AugurWalletRegistry;
   relayHub: ContractInterfaces.RelayHub;
@@ -127,7 +127,7 @@ export class Contracts {
       dependencies,
       addresses.UniswapV2Factory
     );
-    this.ethExchange = new ContractInterfaces.UniswapV2Exchange(
+    this.ethExchange = new ContractInterfaces.UniswapV2Pair(
       dependencies,
       addresses.EthExchange
     );
@@ -245,7 +245,7 @@ export class Contracts {
 
   uniswapExchangeFromAddress(
     address: string
-  ): ContractInterfaces.UniswapV2Exchange {
-    return new ContractInterfaces.UniswapV2Exchange(this.dependencies, address);
+  ): ContractInterfaces.UniswapV2Pair {
+    return new ContractInterfaces.UniswapV2Pair(this.dependencies, address);
   }
 }

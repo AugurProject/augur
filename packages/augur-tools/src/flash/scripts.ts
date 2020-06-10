@@ -1,6 +1,6 @@
 import { runChaosMonkey } from './chaos-monkey';
 import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarkets, createTemplatedMarkets } from './create-canned-markets-and-orders';
+import { createCannedMarkets, createTemplatedMarkets, createTemplatedBettingMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH, BASE_MNEMONIC } from '../constants';
 import {
   Contracts as compilerOutput,
@@ -68,6 +68,7 @@ import {
   createYesNoZeroXOrders
 } from './create-orders';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
+import { getMarketIds } from './get-market-ids';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -487,6 +488,18 @@ export function addScripts(flash: FlashSession) {
           }
         }
       }
+    },
+  });
+
+  flash.addScript({
+    name: 'create-canned-betting-markets',
+    async call(this: FlashSession) {
+      const user = await this.createUser(this.getAccount(), this.config);
+      const million = QUINTILLION.multipliedBy(1e7);
+      await user.faucetRepUpTo(million, million);
+      await user.faucetCashUpTo(million, million);
+      await user.approveIfNecessary();
+      await createTemplatedBettingMarkets(user, false);
     },
   });
 
@@ -1399,6 +1412,11 @@ export function addScripts(flash: FlashSession) {
         name: 'endTime',
         description: 'market end time, also called event expiration',
         required: true,
+      },
+      {
+        name: 'creationTime',
+        description: 'market creation time, timestamp of the block market is created in',
+        required: true,
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -1409,7 +1427,8 @@ export function addScripts(flash: FlashSession) {
         const outcomesString = args.outcomes as string;
         const resolutionRules = args.resolutionRules as string;
         const endTime = Number(args.endTime);
-        result = validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime);
+        const creationTime = Number(args.creationTime);
+        result = validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime, creationTime);
         console.log(result);
       } catch (e) {
         console.log(e);
@@ -2438,6 +2457,23 @@ export function addScripts(flash: FlashSession) {
         const attoCash = new BigNumber(Number(args.cashAmount)).times(_1_ETH);
         const user = await this.createUser(this.getAccount(), this.config);
         await user.addTokenExchangeLiquidity(attoCash, attoRep);
+      },
+    });
+
+    flash.addScript({
+      name: 'get-market-ids',
+      options: [
+        {
+          name: 'num',
+          abbr: 'n',
+          description: 'number of ids to get',
+        },
+      ],
+      async call(this: FlashSession, args: FlashArguments) {
+        const num = Number(args.num || 100);
+        const user = await this.createUser(this.getAccount(), this.config);
+        const marketIds = await getMarketIds(user, num);
+        console.log(`MARKET IDS: ${JSON.stringify(marketIds)}`);
       },
     });
 }

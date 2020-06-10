@@ -20,6 +20,7 @@ export async function transferFunds(
   currency: string,
   toAddress: string,
   useSigner = false,
+  useTopoff = true,
 ) {
   const to = utils.formatEthereumAddress(toAddress);
   const sendFunds = async (currency) => {
@@ -47,6 +48,11 @@ export async function transferFunds(
     Augur.dependencies.setUseWallet(flag);
   }
 
+  const toggleFeeReserveTopOff = (flag: boolean) => {
+    const Augur = augurSdk.get();
+    Augur.dependencies.setUseDesiredEthBalance(flag);
+  }
+
   if (useSigner) {
     try {
       toggleRelay(false);
@@ -58,7 +64,17 @@ export async function transferFunds(
       toggleRelay(true);
     }
   } else {
-    sendFunds(currency);
+    const Augur = augurSdk.get();
+    const useTopOffFlag = Augur.dependencies.useDesiredSignerETHBalance;
+
+    try {
+      if (!useTopoff) toggleFeeReserveTopOff(useTopoff);
+      await sendFunds(currency);
+      if (!useTopoff) toggleFeeReserveTopOff(useTopOffFlag);
+    } catch(error) {
+      console.error(error);
+      toggleFeeReserveTopOff(useTopOffFlag)
+    }
   }
 }
 

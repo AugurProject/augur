@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Breakdown } from 'modules/modal/common';
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatGasCostToEther } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
@@ -19,6 +19,8 @@ import {
   TRANSACTIONS,
   NOT_USE_ETH_RESERVE,
   TRANSFER,
+  FEE_RESERVES_LABEL,
+  GWEI_CONVERSION,
 } from 'modules/common/constants';
 import { AutoCancelOrdersNotice } from 'modules/common/labels';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -40,7 +42,10 @@ interface CashOutFormProps {
   totalDai: string;
   accountFunds: any;
   ethReserveAmount: any;
+  signerEth: string;
 }
+
+const GAS_EST_MULTIPLIER = 4;
 
 export const CashOutForm = ({
   closeAction,
@@ -56,6 +61,7 @@ export const CashOutForm = ({
   availableFundsFormatted,
   tradingAccountEthFormatted,
   totalDai,
+  signerEth,
 }: CashOutFormProps) => {
   const [gasCosts, setGasCosts] = useState(
     createBigNumber(TRANSFER_DAI_GAS_COST)
@@ -70,17 +76,20 @@ export const CashOutForm = ({
   const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(accountFunds.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
 
   async function getGasCost(account) {
-    let gasCosts = createBigNumber(TRANSFER_DAI_GAS_COST);
+    let gas = gasCosts;
     let signerPays = true;
     try {
-      gasCosts = await withdrawAllFundsEstimateGas(account);
+      // add buffer to gas
+      gas = (await withdrawAllFundsEstimateGas(account)).times(GAS_EST_MULTIPLIER);
+      const gasCostInEth = formatGasCostToEther(gas, {}, createBigNumber(GWEI_CONVERSION).multipliedBy(createBigNumber(gasPrice)));
+      signerPays = createBigNumber(signerEth).gte(createBigNumber(gasCostInEth));
     } catch (error) {
       // user can't withdraw all funds, needs to transfer
       signerPays = false;
     }
     setSignerPays(signerPays);
     if (signerPays) {
-      return setGasCosts(createBigNumber(gasCosts));
+      return setGasCosts(createBigNumber(gas));
     }
     const testHalfDaiAmount = String(createBigNumber(totalDai).div(2));
     const relayerGasCosts = await transferFundsGasEstimate(
@@ -140,7 +149,7 @@ export const CashOutForm = ({
 
   if (reserveInDaiFormatted.value > 0) {
     breakdown.push({
-      label: 'Fee reserve',
+      label: FEE_RESERVES_LABEL,
       value: reserveInDaiFormatted,
       showDenomination: true,
     });

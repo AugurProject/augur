@@ -5,13 +5,21 @@ import {
 import { augurSdk } from 'services/augursdk';
 import { Getters } from '@augurproject/sdk';
 import { AppStatus } from 'modules/app/store/app-status';
+import { isSameAddress } from 'utils/isSameAddress';
+import { Markets } from 'modules/markets/store/markets';
 
 export const checkUpdateUserPositions = (marketIds: string[]) => {
-  const { accountPositions } = AppStatus.get();
+  const { accountPositions, loginAccount: { address } } = AppStatus.get();
+  const { marketInfos } = Markets.get();
   const posMarketIds = Object.keys(accountPositions);
+  const markMarketIds: string[] = Object.keys(marketInfos)
+    .filter(m => isSameAddress(marketInfos[m].author, address))
+    .map(m => marketInfos[m].id);
+  const userMarketIds = [...posMarketIds, ...markMarketIds];
   let included = false;
-  posMarketIds.map(m => {
-    if (marketIds.includes(m)) included = true});
+  userMarketIds.map(m => {
+    if (marketIds.includes(m)) included = true;
+  });
   if (included) {
     loadAllAccountPositions();
   }

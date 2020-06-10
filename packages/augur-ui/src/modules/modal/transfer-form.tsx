@@ -52,6 +52,7 @@ function sanitizeArg(arg) {
 }
 
 const RELAYER_DAI_CUSION = 0.25;
+const TURN_OFF_TOP_OFF_PERCENTAGE = 0.9;
 
 export const TransferForm = ({
   closeAction,
@@ -128,7 +129,7 @@ export const TransferForm = ({
       : balances[currency.toLowerCase()];
 
     let newAmount = convertExponentialToDecimal(sanitizeArg(balance));
-    if (!signerPays && currency === DAI) {
+    if (!useSigner && !signerPays && currency === DAI) {
       newAmount = createBigNumber(newAmount).minus(createBigNumber(gasEstimateInDai.value));;
     }
     amountChange(newAmount);
@@ -197,13 +198,13 @@ export const TransferForm = ({
       updatedErrors.amount = 'Quantity must be greater than zero.';
     }
 
-    if (!signerPays && (amountMinusGas.lt(ZERO) || createBigNumber(newAmount).gt(amountMinusGas))) {
+    if ((!useSigner && !signerPays) && (amountMinusGas.lt(ZERO) || createBigNumber(newAmount).gt(amountMinusGas))) {
       updatedErrors.amount = `Not enough DAI available to pay transaction fee. ${
         formatDai(amountMinusGas.abs(), { roundDown: true }).roundedFormatted
       } is min`;
     }
 
-    if (signerPays && amountMinusGas.lt(ZERO)) {
+    if ((useSigner || signerPays) && amountMinusGas.lt(ZERO)) {
       updatedErrors.amount = `Not enough ETH to pay transaction fee. ${amountMinusGas.abs()} is needed`;
     }
 
@@ -320,7 +321,17 @@ export const TransferForm = ({
           <ProcessingButton
             small
             text="Send"
-            action={() => transferFunds(formattedAmount.fullPrecision, currency, address, useSigner)}
+            action={() => {
+              let useTopOff = true;
+              if (currency === DAI) {
+                // if 90% or more of user's DAI is being transferred disable topping off fee reserve
+                const percentage = createBigNumber(balances.dai).div(createBigNumber(formattedAmount.fullPrecision));
+                if (percentage.gt(createBigNumber(TURN_OFF_TOP_OFF_PERCENTAGE))) {
+                  useTopOff = false;
+                }
+              }
+              transferFunds(formattedAmount.fullPrecision, currency, address, useSigner, useTopOff)}
+            }
             queueName={TRANSACTIONS}
             queueId={currency === ETH ? SENDETHER : TRANSFER}
             disabled={!isValid}

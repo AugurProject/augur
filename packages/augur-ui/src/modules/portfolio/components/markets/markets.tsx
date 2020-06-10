@@ -113,14 +113,14 @@ const MyMarkets = ({
               <LinearPropertyLabel
                 label="Volume"
                 highlightFirst
-                value={`${market.volumeFormatted &&
-                  market.volumeFormatted.formatted} DAI`}
+                value={`$${market.volumeFormatted &&
+                  market.volumeFormatted.formatted}`}
               />
               <LinearPropertyLabel
                 label="Open Interest"
                 highlightFirst
-                value={`${market.openInterestFormatted &&
-                  market.openInterestFormatted.formatted} DAI`}
+                value={`$${market.openInterestFormatted &&
+                  market.openInterestFormatted.formatted}`}
               />
             </div>
           )}

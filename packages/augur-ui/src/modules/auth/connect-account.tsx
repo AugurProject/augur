@@ -67,6 +67,7 @@ const ConnectAccount = () => {
           ToggleHeightStyles.target,
           ToggleHeightStyles.quick,
           {
+            [Styles.Open]: isConnectionTrayOpen,
             [ToggleHeightStyles.open]: isConnectionTrayOpen,
           }
         )}

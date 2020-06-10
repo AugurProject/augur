@@ -407,7 +407,8 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => {
       log.amount,
       log.price,
       log.outcome,
-      log.market
+      log.market,
+      log.orderType
     );
     const { pendingOrders } = PendingOrders.get();
     const marketPendingOrders = pendingOrders[log.market];

@@ -17,7 +17,7 @@ import "ROOT/IAugur.sol";
 import 'ROOT/libraries/token/IERC1155.sol';
 import 'ROOT/libraries/LibBytes.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
-import 'ROOT/uniswap/interfaces/IUniswapV2Exchange.sol';
+import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
 import 'ROOT/uniswap/interfaces/IWETH.sol';
 
 
@@ -88,7 +88,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     ICash public cash;
     IShareToken public shareToken;
     IExchange public exchange;
-    IUniswapV2Exchange public ethExchange;
+    IUniswapV2Pair public ethExchange;
     IWETH public WETH;
     bool public token0IsCash;
 
@@ -106,11 +106,11 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         require(fillOrder != IFillOrder(0));
         WETH = IWETH(_augurTrading.lookup("WETH9"));
         IUniswapV2Factory _uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
-        address _ethExchangeAddress = _uniswapFactory.getExchange(address(WETH), address(cash));
+        address _ethExchangeAddress = _uniswapFactory.getPair(address(WETH), address(cash));
         if (_ethExchangeAddress == address(0)) {
-            _ethExchangeAddress = _uniswapFactory.createExchange(address(WETH), address(cash));
+            _ethExchangeAddress = _uniswapFactory.createPair(address(WETH), address(cash));
         }
-        ethExchange = IUniswapV2Exchange(_ethExchangeAddress);
+        ethExchange = IUniswapV2Pair(_ethExchangeAddress);
         token0IsCash = ethExchange.token0() == address(cash);
 
         EIP712_DOMAIN_HASH = keccak256(
