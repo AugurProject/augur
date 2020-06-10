@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { UnsignedOrders } from 'modules/modal/unsigned-orders';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import {
   sendLiquidityOrder,
   startOrderSending,
@@ -42,7 +41,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   startOrderSending: (options: CreateLiquidityOrders) =>
     dispatch(startOrderSending(options)),
   clearMarketLiquidityOrders: (txParamHash: string) =>

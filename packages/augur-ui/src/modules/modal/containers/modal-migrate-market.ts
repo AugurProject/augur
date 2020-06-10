@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { ModalMigrateMarket } from 'modules/modal/components/modal-migrate-market';
 import { migrateMarketThroughOneFork } from 'modules/forking/actions/migrate-through-one-fork';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -25,7 +24,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   migrateMarketThroughOneFork: (marketId, payoutNumerators, description, estimateGas, callback) =>
     dispatch(migrateMarketThroughOneFork(marketId, payoutNumerators, description, estimateGas, callback)),
 });

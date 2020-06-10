@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AddFunds } from 'modules/modal/add-funds';
 import { AppState } from 'appStore';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { ADD_FUNDS, track } from 'services/analytics/helpers';
@@ -39,7 +38,7 @@ const addFundsTorus = async (amount, address) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   track: (eventName, payload) => track(eventName, payload),
   addFundsTorus: (amount, address) => addFundsTorus(amount, address),
   addFundsFortmatic: (amount, crypto, address) =>

@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 
 import { Message } from "modules/modal/message";
 import { selectMarket } from "modules/markets/selectors/market";
-import { closeModal } from "modules/modal/actions/close-modal";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { AppState } from "appStore";
 import { ThunkDispatch } from "redux-thunk";
@@ -22,7 +21,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   finalizeMarket: (marketId: string, cb: NodeStyleCallback) =>
     sendFinalizeMarket(marketId, cb),
 });

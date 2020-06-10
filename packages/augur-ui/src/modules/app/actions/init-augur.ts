@@ -1,7 +1,6 @@
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import logError from 'utils/log-error';
 import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { isEmpty } from 'utils/is-empty';
@@ -51,7 +50,7 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   const loggedInUser = getLoggedInUserFromLocalStorage();
   const loggedInAccount = (loggedInUser && loggedInUser.address) || null;
   const loggedInAccountType = (loggedInUser && loggedInUser.type) || null;
-  const { setModal } = AppStatus.actions;
+  const { setModal, closeModal } = AppStatus.actions;
   const errorModal = () => {
     logout();
     setModal({
@@ -92,7 +91,7 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
 function pollForNetwork() {
   setInterval(() => {
     const { modal } = AppStatus.get();
-    const { setModal } = AppStatus.actions;
+    const { setModal, closeModal } = AppStatus.actions;
     if (!process.env.ENABLE_MAINNET) {
       const isMainnet = checkIfMainnet();
       if (isMainnet && isEmpty(modal)) {
@@ -242,7 +241,7 @@ export function connectAugur(
     // If the network disconnected modal is being shown, but we are now
     // connected -- hide it.
     if (modal?.type === MODAL_NETWORK_DISCONNECTED) {
-      closeModal();
+      AppStatus.actions.closeModal();
     }
 
     if (isInitialConnection) {

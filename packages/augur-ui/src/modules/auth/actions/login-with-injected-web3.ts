@@ -13,7 +13,6 @@ import {
   MODAL_LOADING,
 } from 'modules/common/constants';
 import { augurSdk } from 'services/augursdk';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { logout } from 'modules/auth/actions/logout';
 import { AppState } from 'appStore';
 import { AppStatus } from 'modules/app/store/app-status';
@@ -23,13 +22,14 @@ export const loginWithInjectedWeb3 = () => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
+  const { setModal, closeModal, setIsLogged } = AppStatus.actions;
   const failure = error => {
     closeModal();
     throw error;
   };
   const success = async (account: string, refresh: boolean) => {
     if (!account) return failure('No Account');
-    const { setModal, setIsLogged } = AppStatus.actions;
+    
     if (refresh) setIsLogged(false);
 
     dispatch(login(account));

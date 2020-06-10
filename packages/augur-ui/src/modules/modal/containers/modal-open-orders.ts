@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { UnsignedOrders } from 'modules/modal/unsigned-orders';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
 import { AppState } from 'appStore';
@@ -23,7 +22,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   cancelAllOpenOrders: (orders, cb) =>
     dispatch(cancelAllOpenOrders(orders, cb)),
 });

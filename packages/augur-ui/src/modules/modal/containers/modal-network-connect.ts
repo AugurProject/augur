@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 
 import ModalNetworkConnect from 'modules/modal/components/modal-network-connect';
 
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { isWeb3Transport } from 'modules/contracts/actions/contractCalls';
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { AppStatus } from 'modules/app/store/app-status';
@@ -23,7 +22,7 @@ const mapStateToProps = (state: StateProps) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   submitForm: (e: Event) => e.preventDefault(),
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
 });
 // to make sure we override the generic submitForm with the passed submitForm from a disconnection Modal we need to merge props...
 const mergedProps = (sP, dP, oP) => ({ ...sP, ...dP, ...oP });

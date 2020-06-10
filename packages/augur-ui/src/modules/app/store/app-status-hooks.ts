@@ -49,6 +49,7 @@ import { ZERO, NEW_ORDER_GAS_ESTIMATE } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { LiquidityOrder } from 'modules/types';
 import { formatDai, formatShares } from 'utils/format-number';
+import { track, MODAL_CLOSED } from 'services/analytics/helpers';
 const {
   SET_THEME,
   SET_ODDS,
@@ -295,6 +296,12 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case CLOSE_MODAL: {
+      const { type } = updatedState[MODAL];
+      if (type) {
+        track(`${type} - ${MODAL_CLOSED}`, {
+          type,
+        });
+      }
       updatedState[MODAL] = {};
       break;
     }
