@@ -14,8 +14,6 @@ import {
   POLITICS,
   SOCCER,
   SPORTS,
-  Template,
-  TEMPLATES,
   US_POLITICS,
   HOCKEY,
   groupTypes,
@@ -23,6 +21,10 @@ import {
   ENTERTAINMENT,
   SOCIAL_MEDIA,
   TWITTER,
+} from '@augurproject/sdk-lite';
+import {
+  Template,
+  TEMPLATES,
 } from '@augurproject/templates';
 import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';

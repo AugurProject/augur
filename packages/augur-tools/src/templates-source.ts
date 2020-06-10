@@ -147,9 +147,6 @@ export const TEMPLATES = {
                 {
                   text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`,
                 },
-                {
-                  text: 'new rule here'
-                }
               ],
             },
           },

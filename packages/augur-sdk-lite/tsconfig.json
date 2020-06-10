@@ -13,9 +13,6 @@
       "path": "../augur-artifacts"
     },
     {
-      "path": "../augur-templates"
-    },
-    {
       "path": "../augur-utils"
     }
   ]

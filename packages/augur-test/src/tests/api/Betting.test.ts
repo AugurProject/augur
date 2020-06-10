@@ -4,6 +4,8 @@ import {
   groupTypes,
   NFL,
   SPORTS,
+} from '@augurproject/sdk-lite';
+import {
   TEMPLATES,
 } from '@augurproject/templates';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
