@@ -97,7 +97,7 @@ export const MarketCard = ({
     inDispute &&
     reportingState !== REPORTING_STATE.AWAITING_NEXT_WINDOW &&
     isLogged;
-  const canSupport = !disputeInfo.disputePacingOn;
+  const canSupport = !disputeInfo?.disputePacingOn;
 
   const headerType =
     location.pathname === makePath(DISPUTING)

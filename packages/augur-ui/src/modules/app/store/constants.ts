@@ -1,4 +1,4 @@
-import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_FAST, DEFAULT_FALLBACK_GAS_SAFELOW, MOBILE_MENU_STATES, MARKET_OPEN, MARKET_SORT_PARAMS, MAX_FEE_02_PERCENT, MAX_SPREAD_ALL_SPREADS, DAY, ZERO } from 'modules/common/constants';
+import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_FAST, DEFAULT_FALLBACK_GAS_SAFELOW, MOBILE_MENU_STATES, MARKET_OPEN, MARKET_SORT_PARAMS, MAX_FEE_02_PERCENT, MAX_SPREAD_ALL_SPREADS, DAY, ZERO, TIME_FORMATS } from 'modules/common/constants';
 import { MARKETS } from "modules/routes/constants/views";
 import { DEFAULT_SDK_CONFIGURATION, SDKConfiguration } from '@augurproject/artifacts';
 import { formatGasCostGwei, formatAttoDai } from 'utils/format-number';
@@ -9,6 +9,7 @@ import { EMPTY_STATE } from 'modules/create-market/constants';
 
 export const THEME = 'theme';
 export const ODDS = 'oddsType';
+export const TIME_FORMAT = 'timeFormat';
 export const IS_MOBILE = 'isMobile';
 export const IS_ODDS_MENU_OPEN = 'isOddsMenuOpen';
 export const IS_HELP_MENU_OPEN = 'isHelpMenuOpen';
@@ -201,6 +202,7 @@ const DEFAULT_MARKETS_LIST_STATE: MarketsList = {
 export const DEFAULT_APP_STATUS = {
   [THEME]: THEMES.TRADING,
   [ODDS]: ODDS_TYPE.DECIMAL,
+  [TIME_FORMAT]: TIME_FORMATS.TWENTY_FOUR,
   [IS_MOBILE]: false,
   [IS_HELP_MENU_OPEN]: false,
   [IS_CONNECTION_TRAY_OPEN]: false,
@@ -243,6 +245,7 @@ export const DEFAULT_APP_STATUS = {
 export const APP_STATUS_ACTIONS = {
   SET_THEME: 'SET_THEME',
   SET_ODDS: 'SET_ODDS',
+  SET_TIME_FORMAT: 'SET_TIME_FORMAT',
   SET_IS_MOBILE: 'SET_IS_MOBILE',
   SET_IS_ODDS_MENU_OPEN: 'SET_IS_ODDS_MENU_OPEN',
   SET_IS_HELP_MENU_OPEN: 'SET_IS_HELP_MENU_OPEN',
@@ -302,6 +305,7 @@ export const APP_STATUS_ACTIONS = {
 export const STUBBED_APP_STATUS_ACTIONS = {
   setTheme: theme => {},
   setOdds: odds => {},
+  setTimeFormat: timeFormat => {},
   setIsOddsMenuOpen: isOpen => {},
   setIsHelpMenuOpen: isOpen => {},
   setIsConnectionTrayOpen: isOpen => {},

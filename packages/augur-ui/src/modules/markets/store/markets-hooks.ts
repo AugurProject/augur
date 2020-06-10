@@ -72,7 +72,7 @@ export function MarketsReducer(state, action) {
         }
       break;
     default:
-      throw new Error(`Error: ${action.type} not caught by Markets reducer`);
+      console.error(`Error: ${action.type} not caught by Markets reducer`);
   }
 
   window.markets = updatedState;

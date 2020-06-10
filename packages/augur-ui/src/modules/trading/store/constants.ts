@@ -2,6 +2,21 @@ import { formatDate } from 'utils/format-date';
 
 const now = new Date();
 
+export const FORM_INPUT_TYPES = {
+  MULTIPLE_QUANTITY: 'multipleOrderQuantity',
+  QUANTITY: 'orderQuantity',
+  PRICE: 'orderPrice',
+  DO_NOT_CREATE_ORDERS: 'doNotCreateOrders',
+  EST_DAI: 'orderDaiEstimate',
+  ESCROW_DAI: 'orderEscrowdDai',
+  SELECTED_NAV: 'selectedNav',
+  EXPIRATION_DATE: 'expirationDate',
+  ERRORS: 'errors',
+  TRADE: 'trade',
+  SIMULATE_QUEUE: 'simulateQueue',
+  GAS_COST_EST: 'gasCostEst',
+};
+
 export const BET_TYPE = {
   SPREAD: 'Spread',
   MONEYLINE: 'Moneyline',

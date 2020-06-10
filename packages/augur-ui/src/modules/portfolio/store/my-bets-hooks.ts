@@ -52,7 +52,7 @@ export function MyBetsReducer(state, action) {
       break;
     }
     default:
-      throw new Error(`Error: ${action.type} not caught by My Bets reducer.`);
+      console.error(`Error: ${action.type} not caught by My Bets reducer.`);
   }
   return updatedState;
 }

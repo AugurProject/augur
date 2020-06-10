@@ -4,6 +4,7 @@ import {
   DEFAULT_APP_STATUS,
   THEME,
   ODDS,
+  TIME_FORMAT,
   IS_HELP_MENU_OPEN,
   IS_CONNECTION_TRAY_OPEN,
   IS_ODDS_MENU_OPEN,
@@ -51,6 +52,7 @@ import { formatDai, formatShares } from 'utils/format-number';
 const {
   SET_THEME,
   SET_ODDS,
+  SET_TIME_FORMAT,
   SET_IS_ODDS_MENU_OPEN,
   SET_IS_HELP_MENU_OPEN,
   SET_IS_CONNECTION_TRAY_OPEN,
@@ -156,6 +158,10 @@ export function AppStatusReducer(state, action) {
     }
     case SET_ODDS: {
       updatedState[ODDS] = action.odds;
+      break;
+    }
+    case SET_TIME_FORMAT: {
+      updatedState[TIME_FORMAT] = action.timeFormat;
       break;
     }
     case SET_IS_ODDS_MENU_OPEN: {
@@ -633,7 +639,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     default:
-      throw new Error(
+      console.error(
         `Error: ${action.type} not caught by App Status reducer.`
       );
   }
@@ -653,6 +659,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
         dispatch({ type: SET_THEME, theme });
       },
       setOdds: odds => dispatch({ type: SET_ODDS, odds }),
+      setTimeFormat: timeFormat => dispatch({ type: SET_TIME_FORMAT, timeFormat }),
       setIsOddsMenuOpen: isOpen =>
         dispatch({ type: SET_IS_ODDS_MENU_OPEN, isOpen }),
       setIsHelpMenuOpen: isOpen =>
