@@ -1,6 +1,5 @@
 import React from "react";
-
-import ModalDescription from "modules/modal/components/common/modal-description";
+import ReactHtmlParser from "react-html-parser";
 import ModalActions from "modules/modal/components/common/modal-actions";
 import Styles from "modules/modal/components/common/common.styles.less";
 
@@ -28,7 +27,7 @@ const ModalConfirm = ({
   <section className={Styles.ModalContainer}>
     <h1>{title}</h1>
     {description.map((text) => (
-      <ModalDescription text={text} key={text} />
+      <p key={text} className={Styles.Description}>{ReactHtmlParser(text)}</p>
     ))}
     <ModalActions
       buttons={[
