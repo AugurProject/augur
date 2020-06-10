@@ -138,7 +138,7 @@ export const AugurMarkets = [
   'Cover events that occur between market start time and end time in the market question. If start time is not specificed in the market quetion, market creation date/time is used. If no end time is specified in market question, the event expiration is to be used. If the event occurs outside of these bounds, the market should resolve as invalid'
 ];
 export const AugurMarketsContent = () => ({
-  explainerBlockTitle: 'Augur Markets',
+  explainerBlockTitle: 'Augur Markets:',
   explainerBlockSubtexts: AugurMarkets,
   useBullets: true,
 });
@@ -153,7 +153,6 @@ export const EventDetailsContent = (type = `custom`) => ({
   firstButton: BACK,
   secondButton: NEXT,
   useBullets: true,
-  augurMarketContent: AugurMarketsContent(),
 });
 
 export const LiquidityContent = {

@@ -33,7 +33,7 @@ import {
   TEMPLATE_INPUTS,
   TEMPLATE,
   ExchangeClosingMessage,
-  MovieWednesdayAfterOpeningMessage,
+  MovieWednesdayAfterOpeningMessage, AugurMarketsContent, EventDetailsContent,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -50,7 +50,7 @@ import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
   LargeHeader,
   ExplainerBlock,
-  ContentBlock,
+  ContentBlock, MultipleExplainerBlock,
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts, OutcomeFormatted } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
@@ -771,7 +771,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       previewButton,
       disabledFunction,
       useBullets,
-      augurMarketContent,
     } = contentPages[currentStep];
 
     const disableCreate = walletStatus !== WALLET_STATUS_VALUES.CREATED || this.state.disableCreate;
@@ -816,6 +815,16 @@ export default class Form extends React.Component<FormProps, FormState> {
         });
       });
     }
+
+    const explainerBlockContents = explainerBlockTitle === EventDetailsContent().explainerBlockTitle && [{
+      title: EventDetailsContent().explainerBlockTitle,
+      subtexts: EventDetailsContent().explainerBlockSubtexts,
+      useBullets: EventDetailsContent().useBullets,
+    }, {
+      title: AugurMarketsContent().explainerBlockTitle,
+      subtexts: AugurMarketsContent().explainerBlockSubtexts,
+      useBullets: AugurMarketsContent().useBullets,
+    }];
 
     return (
       <div
@@ -866,19 +875,15 @@ export default class Form extends React.Component<FormProps, FormState> {
             {previewButton && (
               <PrimaryButton text="Preview your market" action={this.preview} />
             )}
-            {explainerBlockTitle && explainerBlockSubtexts && (
+            {!explainerBlockContents && explainerBlockTitle && explainerBlockSubtexts && (
               <ExplainerBlock
                 title={explainerBlockTitle}
                 subtexts={explainerBlockSubtexts}
                 useBullets={useBullets}
               />
             )}
-            {augurMarketContent && (
-              <ExplainerBlock
-                title={augurMarketContent.explainerBlockTitle}
-                subtexts={augurMarketContent.explainerBlockSubtexts}
-                useBullets={augurMarketContent.useBullets}
-              />
+            {explainerBlockContents && (
+              <MultipleExplainerBlock contents={explainerBlockContents} />
             )}
             <ContentBlock noDarkBackground={noDarkBackground}>
               {mainContent === FORM_DETAILS && (
