@@ -13,7 +13,7 @@ import type {
   TemplateInput,
   TemplateInputType,
   ValidationType,
-} '@augurproject/templates'
+} from '@augurproject/templates'
 import {
   tellOnHoliday,
   ValidationTemplateInputType,
