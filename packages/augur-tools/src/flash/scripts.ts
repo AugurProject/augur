@@ -1,6 +1,6 @@
 import { runChaosMonkey } from './chaos-monkey';
 import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarkets, createTemplatedMarkets } from './create-canned-markets-and-orders';
+import { createCannedMarkets, createTemplatedMarkets, createTemplatedBettingMarkets } from './create-canned-markets-and-orders';
 import { _1_ETH, BASE_MNEMONIC } from '../constants';
 import {
   Contracts as compilerOutput,
@@ -488,6 +488,18 @@ export function addScripts(flash: FlashSession) {
           }
         }
       }
+    },
+  });
+
+  flash.addScript({
+    name: 'create-canned-betting-markets',
+    async call(this: FlashSession) {
+      const user = await this.createUser(this.getAccount(), this.config);
+      const million = QUINTILLION.multipliedBy(1e7);
+      await user.faucetRepUpTo(million, million);
+      await user.faucetCashUpTo(million, million);
+      await user.approveIfNecessary();
+      await createTemplatedBettingMarkets(user, false);
     },
   });
 
@@ -1400,6 +1412,11 @@ export function addScripts(flash: FlashSession) {
         name: 'endTime',
         description: 'market end time, also called event expiration',
         required: true,
+      },
+      {
+        name: 'creationTime',
+        description: 'market creation time, timestamp of the block market is created in',
+        required: true,
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -1410,7 +1427,8 @@ export function addScripts(flash: FlashSession) {
         const outcomesString = args.outcomes as string;
         const resolutionRules = args.resolutionRules as string;
         const endTime = Number(args.endTime);
-        result = validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime);
+        const creationTime = Number(args.creationTime);
+        result = validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime, creationTime);
         console.log(result);
       } catch (e) {
         console.log(e);

@@ -16,7 +16,8 @@ import {
   PlaceholderValues,
   CategoricalOutcomes,
   EventExpEndNextMonth,
-  TemplateGroup
+  TemplateGroup,
+  NumberRangeValues
 } from '../templates-template';
 import { TEMPLATES, TEMPLATES2 } from '../templates-source';
 import { retiredTemplates } from '../templates-retired';
@@ -106,6 +107,7 @@ const generateValidations = (
     hoursAfterEstimatedStartTime: null,
     daysAfterStartDate: null,
     eventExpEndNextMonthValues: null,
+    numberRangeValues: null,
   };
   const newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -154,6 +156,7 @@ const addTemplates = (
         daysAfterStartDate: getHoursAfterStartdate(t.inputs),
         noAdditionalOutcomes: t.noAdditionalUserOutcomes,
         eventExpEndNextMonthValues: getEventExpEndNextMonth(t.inputs),
+        numberRangeValues: getNumberRangeValues(t.inputs),
       };
 
       const groupName = t.groupName;
@@ -344,6 +347,16 @@ function getValidationValues(input: TemplateInput) {
     default:
       return ValidationTemplateInputType[type];
   }
+}
+
+function getNumberRangeValues(inputs: TemplateInput[]): NumberRangeValues {
+  return inputs.reduce(
+    (p, i) =>
+      i.numberRange
+        ? { ...p, [i.id]: i.numberRange }
+        : p,
+    {}
+  );
 }
 
 const specialCharacters = [

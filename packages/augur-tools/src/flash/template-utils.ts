@@ -25,7 +25,8 @@ export const validateMarketTemplate = (
   templateInfo: string,
   outcomesString: string,
   longDescription: string,
-  endTime: number
+  endTime: number,
+  creationTime: number,
 ): string => {
   try {
     const extraInfoTemplate = JSON.parse(templateInfo) as ExtraInfoTemplate;
@@ -39,6 +40,7 @@ export const validateMarketTemplate = (
       details = splits.join('\n');
     }
     const endTimeHex = new BigNumber(endTime).toHexString();
+    const creationTimeHex = new BigNumber(creationTime).toHexString();
     const errors = [];
     const result = isTemplateMarket(
       title,
@@ -46,6 +48,7 @@ export const validateMarketTemplate = (
       outcomes,
       details,
       endTimeHex,
+      creationTimeHex,
       errors
     );
 
