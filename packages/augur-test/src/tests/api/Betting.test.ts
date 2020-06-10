@@ -5,7 +5,7 @@ import {
   NFL,
   SPORTS,
   TEMPLATES,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
 import {

@@ -23,7 +23,7 @@ import {
   ENTERTAINMENT,
   SOCIAL_MEDIA,
   TWITTER,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';
 import { buildExtraInfo, getFilledInputs, fillInQuestion, getLongDescription } from '../../libs/templates';

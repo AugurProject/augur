@@ -1,5 +1,5 @@
 import { MarketReportingState } from '../../constants';
-import { ExtraInfoTemplate } from '@augurproject/artifacts';
+import { ExtraInfoTemplate } from '@augurproject/templates';
 
 export type Address = string;
 export type Bytes32 = string;

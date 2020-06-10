@@ -1,4 +1,4 @@
-import { ExtraInfoTemplate } from '@augurproject/artifacts';
+import { ExtraInfoTemplate } from '@augurproject/templates';
 import { BigNumber } from 'bignumber.js';
 import Dexie from 'dexie';
 import { SearchResults } from 'flexsearch';
