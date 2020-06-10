@@ -51,7 +51,7 @@ import {
 } from 'modules/reporting/common';
 import { EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock } from 'modules/create-market/components/common';
-import { hasTemplateTextInputs } from '@augurproject/artifacts';
+import { hasTemplateTextInputs } from '@augurproject/templates';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';

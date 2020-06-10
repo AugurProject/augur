@@ -40,6 +40,7 @@
     "@0x/mesh-rpc-client": "9.4.0",
     "@0x/order-utils": "10.2.4",
     "@augurproject/artifacts": "2.0.0-alpha.2",
+    "@augurproject/templates": "2.0.0-alpha.2",
     "@augurproject/contract-dependencies-ethers": "2.0.0-alpha.2",
     "@augurproject/core": "2.0.0-alpha.2",
     "@augurproject/indexeddbshim": "6.1.1",

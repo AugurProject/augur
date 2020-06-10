@@ -46,7 +46,7 @@ import {
   AWARDS,
   TV_MOVIES,
   SOCIAL_MEDIA,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 
 export const INVALID_OUTCOME = 'Invalid';
 

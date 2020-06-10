@@ -3,7 +3,7 @@ import { Augur } from '../Augur';
 import { SubscriptionEventName, MarketReportingStateByNum } from '../constants';
 import { Address, MarketTypeName } from '../state/logs/types';
 import { MarketInfoOutcome } from '../state/getter/Markets';
-import { ExtraInfoTemplate } from '@augurproject/artifacts';
+import { ExtraInfoTemplate } from '@augurproject/templates';
 import {
     convertOnChainPriceToDisplayPrice,
     marketTypeToName,

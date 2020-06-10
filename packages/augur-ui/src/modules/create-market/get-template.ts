@@ -21,7 +21,7 @@ import {
   CHOICE,
   getTemplateExchangeClosingWithBuffer,
   TimeOffset,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
 import { YES_NO, CATEGORICAL, SCALAR, YES_NO_OUTCOMES, SCALAR_OUTCOMES } from 'modules/common/constants';
 import { NameValuePair } from 'modules/common/selection';

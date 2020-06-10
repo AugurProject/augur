@@ -1,4 +1,4 @@
-import { getGroupHashInfo, isTemplateMarket } from '@augurproject/artifacts';
+import { getGroupHashInfo, isTemplateMarket } from '@augurproject/templates';
 import { ParsedLog } from '@augurproject/types';
 import { BigNumber } from 'bignumber.js';
 import * as _ from 'lodash';

@@ -9,6 +9,9 @@
       "path": "./packages/augur-types"
     },
     {
+      "path": "./packages/augur-templates"
+    },
+    {
       "path": "./packages/augur-sdk"
     },
     {

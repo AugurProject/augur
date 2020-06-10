@@ -15,7 +15,7 @@ import {
   UserInputDateTime,
   tellOnHoliday,
   ValidationTemplateInputType,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 import moment from 'moment';
 import { datesOnSameDay } from 'utils/format-date';
 
