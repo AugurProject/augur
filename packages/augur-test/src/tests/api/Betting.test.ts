@@ -57,7 +57,6 @@ describe('Betting', () => {
 
     johnBrowserMesh.addOtherBrowserMeshToMockNetwork([
       maryBrowserMesh,
-      carlBrowserMesh,
     ]);
 
     john.augur.zeroX.mesh = johnBrowserMesh;

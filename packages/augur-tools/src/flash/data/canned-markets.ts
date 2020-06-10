@@ -20,10 +20,13 @@ import {
   HOCKEY,
   groupTypes,
   MMA,
+  ENTERTAINMENT,
+  SOCIAL_MEDIA,
+  TWITTER,
 } from '@augurproject/artifacts';
 import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';
-import { buildExtraInfo, getFilledInputs } from '../../libs/templates';
+import { buildExtraInfo, getFilledInputs, fillInQuestion, getLongDescription } from '../../libs/templates';
 import {
   inFiveMonths,
   inOneMonths,
@@ -328,6 +331,32 @@ export const cannedMarkets: CannedMarket[] = massageMarkets([
 export const templatedCannedMarkets = (): CannedMarket[] => {
   const markets = [];
 
+  const twitter = TEMPLATES[ENTERTAINMENT].children[SOCIAL_MEDIA].children[TWITTER]
+    .templates as Template[];
+  const twitterTemplate: Template = twitter[0];
+  const twitterDate = moment().add(9, 'days');
+  const twitterInputValues = ['realDonaldTrump', '999.9', 'Thousand', twitterDate.format('MMMM DD, YYYY')];
+  let twitterInputs = getFilledInputs(twitterTemplate, twitterInputValues);
+  twitterInputs[3].timestamp = twitterDate.unix();
+  markets.push({
+    marketType: 'yesNo',
+    endTime: twitterDate.add(1, 'days').unix(),
+    affiliateFeeDivisor: 0,
+    creatorFeeDecimal: '0.01',
+    extraInfo: {
+      categories: [ENTERTAINMENT, SOCIAL_MEDIA,TWITTER ],
+      description: fillInQuestion(twitterTemplate, twitterInputValues),
+      tags: [],
+      longDescription: getLongDescription(twitterTemplate),
+      template: {
+        hash: twitterTemplate.hash,
+        question: twitterTemplate.question,
+        inputs: twitterInputs,
+      },
+    },
+    orderBook: yesNoOrderBook,
+  });
+
   const usPoliticsTemplates = TEMPLATES[POLITICS].children[US_POLITICS]
     .templates as Template[];
   const template1: Template = usPoliticsTemplates[0];
@@ -337,10 +366,17 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     endTime: inTenMonths.getTime() / 1000,
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.01',
-    extraInfo: buildExtraInfo(template1, usInputValues, [
-      'Politics',
-      'US Politics',
-    ]),
+    extraInfo: {
+      categories: [POLITICS, US_POLITICS],
+      description: fillInQuestion(template1, usInputValues),
+      tags: [],
+      longDescription: getLongDescription(template1),
+      template: {
+        hash: template1.hash,
+        question: template1.question,
+        inputs: getFilledInputs(template1, usInputValues),
+      },
+    },
     orderBook: yesNoOrderBook,
   });
 
@@ -350,17 +386,27 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
   const wed = 3;
   const finExpDate = moment()
     .day(wed)
-    .add(3, 'weeks')
+    .add(1, 'weeks')
     .add(6, 'hours');
   const date = finExpDate.format('MMMM DD, YYYY');
-  const finUnixEndTime = finExpDate.unix();
-  const finInputValues = ['Dow Jones Industrial Average', '25000', date];
+  const finInputValues = ['Dow Jones Industrial Average', '15000', date];
+  let finInputs = getFilledInputs(finTemplate, finInputValues);
+  finInputs[2].timestamp = finExpDate.unix();
   markets.push({
     marketType: 'yesNo',
-    endTime: finUnixEndTime,
+    endTime: finExpDate.add(1, 'days').unix(),
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.015',
-    extraInfo: buildExtraInfo(finTemplate, finInputValues, [FINANCE, INDEXES]),
+    extraInfo: {
+      categories: [FINANCE, INDEXES, 'Dow Jones Industrial Average'],
+      description: fillInQuestion(finTemplate, finInputValues),
+      longDescription: getLongDescription(finTemplate),
+      template: {
+        hash: finTemplate.hash,
+        question: finTemplate.question,
+        inputs: finInputs
+      }
+    },
     orderBook: yesNoOrderBook,
   });
 
@@ -542,30 +588,33 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
   const cryptoTemplates = TEMPLATES[CRYPTO].children[ETHEREUM]
     .templates as Template[];
   const cryptoTemplate: Template = cryptoTemplates[2];
-  const cryptoExpDate = moment().add(3, 'weeks');
-  const cryptoEstTime = cryptoExpDate.unix();
-  const cryptoEndTime = cryptoExpDate.add(20, 'hours').unix();
-  const cryptoDate = cryptoExpDate.format('MMMM DD, YYYY');
+  const cryptoExpDate = moment().add(1, 'weeks');
   const cryptoInputValues = [
     'ETH/USD',
-    cryptoDate,
+    cryptoExpDate.format('MMMM DD, YYYY'),
     'ETHUSD (crypto - Bittrex)',
   ];
   let cryptoInputs = getFilledInputs(cryptoTemplate, cryptoInputValues);
-  cryptoInputs = cryptoInputs[2].timestamp = cryptoEstTime;
+  cryptoInputs[1].timestamp = cryptoExpDate.unix();
   markets.push({
     marketType: 'scalar',
-    endTime: cryptoEndTime,
+    endTime: cryptoExpDate.add(1, 'days').unix(),
     minPrice: '120',
     maxPrice: '200',
     tickSize: '0.01',
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.01',
-    extraInfo: buildExtraInfo(cryptoTemplate, cryptoInputValues, [
-      CRYPTO,
-      ETHEREUM,
-      'ETHUSD (crypto - Bittrex)',
-    ]),
+    extraInfo: {
+      categories: [CRYPTO, ETHEREUM, 'ETHUSD (crypto - Bittrex)'],
+      description: fillInQuestion(cryptoTemplate, cryptoInputValues),
+      tags: [],
+      longDescription: getLongDescription(cryptoTemplate),
+      template: {
+        hash: cryptoTemplate.hash,
+        question: cryptoTemplate.question,
+        inputs: cryptoInputs,
+      },
+    },
     orderBook: {
       2: {
         buy: [

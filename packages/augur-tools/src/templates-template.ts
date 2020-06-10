@@ -193,6 +193,10 @@ export interface DateInputDependencies {
     [key: string]: TimeOffset;
   };
 }
+
+export interface NumberRangeValues {
+  [id: number]: number[];
+}
 export interface TemplateValidation {
   templateValidation: string;
   templateValidationResRules: string;
@@ -209,6 +213,7 @@ export interface TemplateValidation {
   daysAfterStartDate: number;
   eventExpEndNextMonthValues: EventExpEndNextMonth[];
   categoricalOutcomes: CategoricalOutcomes;
+  numberRangeValues: NumberRangeValues;
 }
 
 export interface TemplateGroupKeys {
@@ -282,6 +287,7 @@ export interface TemplateInput {
     [key: string]: string;
   };
   groupKey: string;
+  numberRange: number[];
 }
 
 export interface RetiredTemplate {
@@ -566,6 +572,15 @@ function dateStartAfterMarketEndTime(
   return Number(input.timestamp) >= Number(endTime);
 }
 
+function dateStartAfterMarketCreation(
+  inputs: ExtraInfoTemplateInput[],
+  creationTime: number
+): boolean {
+  const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
+  if (!input) return true;
+  return Number(creationTime) < Number(input.timestamp);
+}
+
 function wednesdayAfterOpeningNoFriday(
   inputs: ExtraInfoTemplateInput[],
   endTime: number,
@@ -694,9 +709,10 @@ export function getTemplateExchangeClosingWithBuffer(
   return closingDateTime.unix();
 }
 
-function closingDateDependencies(
+function closingDateDependenciesCheck(
   inputs: ExtraInfoTemplateInput[],
   endTime: number,
+  creationTime: number,
   closingDateDependencies: DateInputDependencies[]
 ) {
   if (!closingDateDependencies) return true;
@@ -704,7 +720,7 @@ function closingDateDependencies(
   const result = deps.reduce((p, d) => {
     const dateYearSource = inputs.find(i => i.id === d.inputDateYearId);
     const exchangeValue = inputs.find(i => i.id === d.inputSourceId);
-    if (!dateYearSource || !exchangeValue) return false;
+    if (!dateYearSource || !exchangeValue || !dateYearSource.timestamp) return false;
     const timeOffset = d.inputTimeOffset[exchangeValue.value] as TimeOffset;
     if (timeOffset) {
       const closingDateTime = getTemplateExchangeClosingWithBuffer(
@@ -713,7 +729,7 @@ function closingDateDependencies(
         timeOffset.minutes,
         timeOffset.offset
       );
-      if (closingDateTime > endTime) {
+      if (closingDateTime > endTime || creationTime > closingDateTime) {
         return false;
       }
     }
@@ -749,12 +765,26 @@ export function getGroupHashInfo({
   };
 }
 
+function inputWithinNumericRange(inputs: ExtraInfoTemplateInput[], numberRangeValues: NumberRangeValues) {
+  let passes = true;
+  if (!numberRangeValues || Object.keys(numberRangeValues).length === 0) return passes;
+  Object.keys(numberRangeValues).forEach(index => {
+    const input = inputs.find(i => String(i.id) === String(index));
+    const range = numberRangeValues[index];
+    if (Number(input.value) < Number(range[0]) || Number(input.value) > Number(range[1])) {
+      passes = false;
+    }
+  })
+  return passes;
+}
+
 export const isTemplateMarket = (
   title,
   template: ExtraInfoTemplate,
   outcomes: string[],
   longDescription: string,
   endTime: string,
+  creationTime: string,
   errors: string[] = []
 ) => {
   if (
@@ -762,9 +792,10 @@ export const isTemplateMarket = (
     !template.hash ||
     !template.question ||
     template.inputs.length === 0 ||
-    !endTime
+    !endTime ||
+    !creationTime
   ) {
-    errors.push('value missing template | hash | question | inputs | endTime');
+    errors.push('value missing template | hash | question | inputs | endTime | creationTime');
     return false;
   }
 
@@ -792,6 +823,12 @@ export const isTemplateMarket = (
       return false;
     }
 
+    if (!inputWithinNumericRange(template.inputs, validation.numberRangeValues)) {
+      errors.push(
+        'numeric input is outside of valid numeric range'
+      );
+      return false;
+    }
     // check ESTDATETIME isn't after market event expiration or is within required hour buffer
     if (
       estimatedDateTimeAfterMarketEndTime(
@@ -842,6 +879,17 @@ export const isTemplateMarket = (
       return false;
     }
 
+      // check DATESTART isn't after market creation date
+      if (
+        !dateStartAfterMarketCreation(
+          template.inputs,
+          new BigNumber(creationTime).toNumber()
+        )
+      ) {
+        errors.push('start date can not be before market creationTime');
+        return false;
+      }
+
     // check DATE isn't on weekend or holiday
     if (
       !dateNoWeekendHoliday(
@@ -863,13 +911,14 @@ export const isTemplateMarket = (
     }
 
     if (
-      !closingDateDependencies(
+      !closingDateDependenciesCheck(
         template.inputs,
         new BigNumber(endTime).toNumber(),
+        new BigNumber(creationTime).toNumber(),
         validation.closingDateDependencies
       )
     ) {
-      errors.push('event expiration can not be before exchange close time');
+      errors.push('event expiration can not be before exchange close time, or market creation after exchange close time');
       return false;
     }
 
