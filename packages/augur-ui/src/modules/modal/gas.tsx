@@ -15,22 +15,9 @@ import {
 import { createBigNumber } from 'utils/create-big-number';
 import classNames from 'classnames';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
-
-interface GasProps {
-  saveAction: Function;
-  closeAction: Function;
-  safeLow: number;
-  average: number;
-  fast: number;
-  userDefinedGasPrice: number;
-  feeTooLow: boolean;
-}
-
-interface GasState {
-  amount: number;
-  showLowAlert: boolean;
-  showAdvanced: boolean;
-}
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
+import { closeModal } from './actions/close-modal';
 
 export const getEthTradeCost = (gasPrice: number) => {
   return formatEtherEstimate(
@@ -42,16 +29,23 @@ export const getEthTradeCost = (gasPrice: number) => {
   );
 };
 
-export const Gas = (props: GasProps) => {
+export const Gas = () => {
+  const { gasPriceInfo, modal, actions: {updateGasPriceInfo} } = useAppStatusStore();
+  const { feeTooLow } = modal;
+  const closeAction = () => closeModal();
+  const saveAction = (userDefinedGasPrice: number, average: number) => {
+    updateGasPriceInfo({ userDefinedGasPrice });
+    registerUserDefinedGasPriceFunction(userDefinedGasPrice, average);
+    closeModal();
+  };
+
   const {
-    closeAction,
-    saveAction,
     safeLow,
     average,
     fast,
-    feeTooLow,
     userDefinedGasPrice
-  } = props;
+  } = gasPriceInfo;
+
   const doesGasPriceMatchPresets = (amount: number) => {
     return amount === fast || amount === average || amount === safeLow;
   };

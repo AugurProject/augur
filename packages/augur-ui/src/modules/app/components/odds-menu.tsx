@@ -21,11 +21,19 @@ export const OddsMenu = () => {
   return (
     <div className={classNames(Styles.OddsMenu, { [Styles.Open]: isOddsMenuOpen })}>
       <button onClick={() => isMobile ? setModal({type: MODAL_ODDS}) : setIsOddsMenuOpen(!isOddsMenuOpen)}>{Gear}</button>
-      <OddsOptions />
-      <TimeOptions />
+      <OptionsMenus />
     </div>
   );
 };
+
+export const OptionsMenus = () => {
+  return (
+      <div className={Styles.OptionsMenu}>
+        <OddsOptions />
+        <TimeOptions />
+      </div>
+  );
+}
 
 export const OddsOptions = () => {
   const { oddsType, actions: { setOdds } } = useAppStatusStore();

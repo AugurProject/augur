@@ -36,7 +36,7 @@ import {
 import Styles from 'modules/modal/modal.styles.less';
 import { HelpMenu } from 'modules/app/components/help-resources';
 import * as classNames from 'classnames';
-import { OddsOptions } from 'modules/app/components/odds-menu';
+import { OptionsMenus } from 'modules/app/components/odds-menu';
 
 interface MessageProps {
   closeAction: Function;
@@ -99,7 +99,7 @@ export const Message = ({
       {description && <Description description={description} />}
       {descriptionWithLink && <DescriptionWithLink {...descriptionWithLink} />}
       {showHelp && <HelpMenu />}
-      {showOdds && <OddsOptions />}
+      {showOdds && <OptionsMenus />}
       {showAddFundsHelp && <AddFundsHelp showAddFundsModal={showAddFundsModal} walletType={walletType} />}
       {showDiscordLink && <DiscordLink label='Please try again. If the issue persists please report it on ' /> }
       {subheader && <Subheader subheaderContent={subheader} />}

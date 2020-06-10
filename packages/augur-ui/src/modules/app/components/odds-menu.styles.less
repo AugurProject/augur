@@ -47,7 +47,7 @@
       }
     }
 
-    > ul {
+    > div {
       display: none;
     }
 
@@ -62,11 +62,11 @@
         }
       }
 
-      > ul {
+      > div {
         display: flex;
         position: absolute;
         top: @top-bar-height;
-
+        
         @media @breakpoint-mobile-tablet {
           top: @top-bar-height-mobile;
         }
@@ -75,14 +75,23 @@
   }
 }
 
+.OptionsMenu {
+  display: flex;
+  flex-direction: column;
+  box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
+  border-radius: 0 0 @border-radius-default @border-radius-default;
+}
+
 .OddsOptions {
   background: var(--color-module-background);
   display: flex;
   flex-flow: column nowrap;
   align-self: flex-end;
-  box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
   width: @size-240;
-  border-radius: 0 0 @border-radius-default @border-radius-default;
+
+  &:last-of-type {
+    border-top: @size-1 solid var(--color-dark-grey);
+  }
 
   > li {
     .text-14;
