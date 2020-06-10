@@ -33,7 +33,7 @@ import {
   TEMPLATE_INPUTS,
   TEMPLATE,
   ExchangeClosingMessage,
-  MovieWednesdayAfterOpeningMessage,
+  MovieWednesdayAfterOpeningMessage, AugurMarketsContent, EventDetailsContent, ReviewContent,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -50,7 +50,7 @@ import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
   LargeHeader,
   ExplainerBlock,
-  ContentBlock,
+  ContentBlock, MultipleExplainerBlock,
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts, OutcomeFormatted } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
@@ -816,6 +816,21 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
 
+    const explainerBlockContents = (explainerBlockTitle ===
+      EventDetailsContent().explainerBlockTitle ||
+      explainerBlockTitle === ReviewContent.explainerBlockTitle) && [
+      {
+        title: explainerBlockTitle,
+        subtexts: explainerBlockSubtexts,
+        useBullets: useBullets,
+      },
+      {
+        title: AugurMarketsContent().explainerBlockTitle,
+        subtexts: AugurMarketsContent().explainerBlockSubtexts,
+        useBullets: AugurMarketsContent().useBullets,
+      },
+    ];
+
     return (
       <div
         ref={node => {
@@ -865,12 +880,15 @@ export default class Form extends React.Component<FormProps, FormState> {
             {previewButton && (
               <PrimaryButton text="Preview your market" action={this.preview} />
             )}
-            {explainerBlockTitle && explainerBlockSubtexts && (
+            {!explainerBlockContents && explainerBlockTitle && explainerBlockSubtexts && (
               <ExplainerBlock
                 title={explainerBlockTitle}
                 subtexts={explainerBlockSubtexts}
                 useBullets={useBullets}
               />
+            )}
+            {explainerBlockContents && (
+              <MultipleExplainerBlock contents={explainerBlockContents} />
             )}
             <ContentBlock noDarkBackground={noDarkBackground}>
               {mainContent === FORM_DETAILS && (
