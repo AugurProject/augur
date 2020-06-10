@@ -20,10 +20,12 @@ import {
   TEMPLATES,
   TEMPLATE_VALIDATIONS,
   RETIRED_TEMPLATES,
-  REQUIRED,
-  CHOICE,
   getTemplateExchangeClosingWithBuffer,
 } from '@augurproject/templates';
+import {
+  REQUIRED,
+  CHOICE,
+} from '@augurproject/sdk-lite'
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
 import { YES_NO, CATEGORICAL, SCALAR, YES_NO_OUTCOMES, SCALAR_OUTCOMES } from 'modules/common/constants';
 import { NameValuePair } from 'modules/common/selection';
