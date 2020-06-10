@@ -36,7 +36,7 @@ import {
 } from 'modules/app/actions/get-ethToDai-rate';
 import { logout } from 'modules/auth/actions/logout';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import CommonModalStyles from 'modules/modal/components/common/common.styles.less';
+import CommonModalStyles from 'modules/modal/common.styles.less';
 import Styles from 'modules/auth/connect-dropdown.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';

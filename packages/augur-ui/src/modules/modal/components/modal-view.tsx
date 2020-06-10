@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import ModalSignTransaction from 'modules/modal/containers/modal-sign-transaction';
 import ModalReporting from 'modules/modal/containers/modal-reporting';
 import ModalConfirm from 'modules/modal/components/modal-confirm';
-import ModalReview from 'modules/modal/components/modal-review';
 import ModalRepFaucet from 'modules/modal/containers/modal-rep-faucet';
 import ModalGsnFaucet from 'modules/modal/containers/modal-gsn-faucet';
 import ModalCreateMarket from 'modules/modal/containers/modal-create-market';
@@ -58,7 +57,7 @@ import ModalOdds from 'modules/modal/containers/modal-odds';
 
 import * as TYPES from 'modules/common/constants';
 
-import Styles from 'modules/modal/components/common/common.styles.less';
+import Styles from 'modules/modal/common.styles.less';
 
 const ESCAPE_KEYCODE = 27;
 
@@ -110,8 +109,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalMigrateRep />;
     case TYPES.MODAL_CONFIRM:
       return <ModalConfirm {...modal} closeModal={closeModal} />;
-    case TYPES.MODAL_REVIEW:
-      return <ModalReview {...modal} />;
     case TYPES.MODAL_LEDGER:
     case TYPES.MODAL_TREZOR:
       return <ModalSignTransaction {...modal} />;
@@ -258,7 +255,7 @@ const ModalView = ({
     <section className={Styles.ModalView}>
       <div
         className={classNames({
-          [`${Styles['ModalView__content--taller']}`]:
+          [Styles.Taller]:
             modal.type === TYPES.MODAL_DISCLAIMER,
         })}
       >

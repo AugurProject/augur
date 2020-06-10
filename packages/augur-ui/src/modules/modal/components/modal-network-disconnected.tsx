@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PulseLoader } from 'react-spinners';
 import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect';
-import commonStyles from 'modules/modal/components/common/common.styles.less';
+import commonStyles from 'modules/modal/common.styles.less';
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 

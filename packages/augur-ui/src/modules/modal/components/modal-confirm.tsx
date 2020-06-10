@@ -1,7 +1,6 @@
-import React from "react";
-import ReactHtmlParser from "react-html-parser";
-import ModalActions from "modules/modal/components/common/modal-actions";
-import Styles from "modules/modal/components/common/common.styles.less";
+import React from 'react';
+import ReactHtmlParser from 'react-html-parser';
+import Styles from 'modules/modal/common.styles.less';
 
 type ModalAction = (...args: Array<any>) => any;
 
@@ -20,29 +19,31 @@ const ModalConfirm = ({
   description,
   title,
   submitAction,
-  cancelButtonText = "cancel",
-  submitButtonText = "submit",
+  cancelButtonText = 'cancel',
+  submitButtonText = 'submit',
   cancelAction,
 }: ModalConfirm) => (
   <section className={Styles.ModalContainer}>
     <h1>{title}</h1>
-    {description.map((text) => (
-      <p key={text} className={Styles.Description}>{ReactHtmlParser(text)}</p>
+    {description.map(text => (
+      <p key={text} className={Styles.Description}>
+        {ReactHtmlParser(text)}
+      </p>
     ))}
-    <ModalActions
-      buttons={[
-        {
-          label: cancelButtonText,
-          action: cancelAction || closeModal,
-          type: "gray",
-        },
-        {
-          label: submitButtonText,
-          action: submitAction,
-          type: "purple",
-        }
-      ]}
-    />
+    <div className={Styles.ActionButtons}>
+      <button
+        className={Styles.Secondary}
+        onClick={() => cancelAction || closeModal}
+      >
+        {cancelButtonText}
+      </button>
+      <button
+        className={Styles.Primary}
+        onClick={() => submitAction()}
+      >
+        {submitButtonText}
+      </button>
+    </div>
   </section>
 );
 

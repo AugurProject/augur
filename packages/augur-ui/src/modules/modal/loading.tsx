@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import ModalMetaMaskFinder from './components/common/modal-metamask-finder';
-import { LoadingEllipse } from 'modules/common/icons';
+import { LoadingEllipse, DirectionArrow } from 'modules/common/icons';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { CloseButton, ExternalLinkButton } from 'modules/common/buttons';
@@ -51,7 +50,13 @@ export const Loading = ({
   return (
     <div className={Styles.Loading}>
       {showHelper && (
-        <ModalMetaMaskFinder handleClick={() => setshowHelper(false)} />
+        <article onClick={() => setshowHelper(false)} className={Styles.ModalMetaMaskFinder}>
+          <div>
+            <img src="images/metamask-help.png" />
+          </div>
+          <div>Click the Metamask logo to open your wallet</div>
+          <div>{DirectionArrow}</div>
+        </article>
       )}
       {LoadingEllipse}
       <div>

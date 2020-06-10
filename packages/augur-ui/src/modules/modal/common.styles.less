@@ -313,66 +313,63 @@ div.ErrorField:focus {
 
   > button {
     min-width: 7rem;
+    margin-right: @size-16;
+
+    &:first-of-type {
+      margin-left: auto;
+    }
+
+    &:only-of-type {
+      margin: auto;
+    }
+
+    &:last-of-type {
+      margin-right: auto;
+    }
+
+    &.disabled {
+      pointer-events: none;
+    }
+
+    &.Secondary {
+      &:extend(.button--gray all);
+    
+      background-color: transparent;
+      border: 0;
+      color: var(--color-primary-text);
+      font-size: @size-14;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+      line-height: @size-14;
+      text-transform: capitalize;
+    
+      &.disabled {
+        background-color: transparent;
+        border: 0;
+        color: var(--color-inactive-text);
+      }
+    
+      &:hover {
+        background-color: transparent;
+        border: 0;
+        color: var(--color-inactive-text);
+      }
+    }
+    
+    &.Tertiary {
+      &:extend(.button--offWhite all);
+    
+      &.disabled {
+        &:extend(.button--offWhite--disabled);
+      }
+    }
+    
+    &.Primary {
+      &:extend(.button--bright all);
+    
+      text-transform: capitalize;
+    }
   }
-}
-
-.ActionButtons__button {
-  margin-right: @size-16;
-
-  &:first-of-type {
-    margin-left: auto;
-  }
-
-  &:only-of-type {
-    margin: auto;
-  }
-
-  &:last-of-type {
-    margin-right: auto;
-  }
-
-  &.disabled {
-    pointer-events: none;
-  }
-}
-
-.ActionButtons__button-gray {
-  &:extend(.button--gray all);
-
-  background-color: transparent;
-  border: 0;
-  color: var(--color-primary-text);
-  font-size: @size-14;
-  font-weight: 400;
-  letter-spacing: 0.3px;
-  line-height: @size-14;
-  text-transform: capitalize;
-
-  &.disabled {
-    background-color: transparent;
-    border: 0;
-    color: var(--color-inactive-text);
-  }
-
-  &:hover {
-    background-color: transparent;
-    border: 0;
-    color: var(--color-inactive-text);
-  }
-}
-
-.ActionButtons__button-offWhite {
-  &:extend(.button--offWhite all);
-
-  &.disabled {
-    &:extend(.button--offWhite--disabled);
-  }
-}
-
-.ActionButtons__button-purple {
-  &:extend(.button--bright all);
-
-  text-transform: capitalize;
 }
 
 .ModalDisclaimer {
@@ -516,12 +513,6 @@ div.ErrorField:focus {
   }
 }
 
-.ModalView__content--full {
-  background-color: var(--color-page-background);
-  justify-content: normal;
-  padding: 0;
-}
-
 .ModalContainerFull {
   background: transparent;
   border: 0;
@@ -559,15 +550,7 @@ div.ErrorField:focus {
 }
 
 @media @breakpoint-mobile-small {
-  .ModalView__content {
-    padding: @size-16;
-  }
-
-  .ModalView__content--full {
-    padding: 0;
-  }
-
-  .ModalView__content--taller {
+  .Taller {
     justify-content: flex-start;
   }
 

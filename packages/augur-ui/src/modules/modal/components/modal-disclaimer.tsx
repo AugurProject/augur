@@ -1,11 +1,10 @@
 import React, { useState, useRef } from 'react';
 
-import ModalActions from 'modules/modal/components/common/modal-actions';
 import { Checkbox } from 'modules/common/form';
 import classNames from 'classnames';
 import { OpenArrow } from 'modules/common/icons';
 
-import Styles from 'modules/modal/components/common/common.styles.less';
+import Styles from 'modules/modal/common.styles.less';
 
 const EST_HEIGHT_PERCENT = 0.98;
 
@@ -142,18 +141,18 @@ const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
             I have read and understood the above.
           </label>
         </div>
-        <ModalActions
-          buttons={[
-            {
-              label: 'I agree and accept the above',
-              isDisabled: !didScroll || !didCheck,
-              action: () => {
-                closeModal();
-                onApprove();
-              },
-            },
-          ]}
-        />
+        <div className={Styles.ActionButtons}>
+          <button
+            className={Styles.Primary}
+            disabled={!didScroll || !didCheck}
+            onClick={() => {
+              closeModal();
+              onApprove();
+            }}
+          >
+            I agee and accept the above
+          </button>
+        </div>
       </div>
       <div
         onClick={() => {

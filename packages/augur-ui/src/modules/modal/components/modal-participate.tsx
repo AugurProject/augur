@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { createBigNumber } from 'utils/create-big-number';
 import { TextInput } from 'modules/common/form';
-import Styles from 'modules/modal/components/common/common.styles.less';
+import Styles from 'modules/modal/common.styles.less';
 import { formatRep, formatGasCostToEther } from 'utils/format-number';
 import {
   BUY_PARTICIPATION_TOKENS_GAS_LIMIT,
   REP,
   GWEI_CONVERSION,
 } from 'modules/common/constants';
-import ModalActions from './common/modal-actions';
 import {
   Title,
   DescriptionMessage,
@@ -64,14 +63,19 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
   }, []);
 
   const submitForm = () => {
-    const { initializeGsnWallet, gsnUnavailable, gsnWalletInfoSeen, purchaseParticipationTokens } = props;
+    const {
+      initializeGsnWallet,
+      gsnUnavailable,
+      gsnWalletInfoSeen,
+      purchaseParticipationTokens,
+    } = props;
     if (gsnUnavailable && !gsnWalletInfoSeen) {
       initializeGsnWallet(() => {
         purchaseParticipationTokens(quantity, false, err => {
           if (err) console.log('ERR for purchaseParticipationTokens', err);
           props.closeModal();
         });
-      })
+      });
     } else {
       purchaseParticipationTokens(quantity, false, err => {
         if (err) console.log('ERR for purchaseParticipationTokens', err);
@@ -134,9 +138,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     },
     {
       label: transactionLabel,
-      value: GsnEnabled
-        ? displayGasInDai(gasLimit)
-        : gasEstimateInEth,
+      value: GsnEnabled ? displayGasInDai(gasLimit) : gasEstimateInEth,
       denomination: GsnEnabled ? 'DAI' : 'ETH',
       showDenomination: true,
     },
@@ -157,21 +159,18 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
         <Breakdown rows={items} />
         <InitializeWalletModalNotice />
       </div>
-      <ModalActions
-        buttons={[
-          {
-            label: 'cancel',
-            action: closeModal,
-            type: 'gray',
-          },
-          {
-            label: 'buy',
-            action: submitForm,
-            type: 'purple',
-            isDisabled: !isValid,
-          },
-        ]}
-      />
+      <div className={Styles.ActionButtons}>
+        <button className={Styles.Secondary} onClick={() => closeModal()}>
+          cancel
+        </button>
+        <button
+          className={Styles.Primary}
+          disabled={!isValid}
+          onClick={() => submitForm()}
+        >
+          buy
+        </button>
+      </div>
     </section>
   );
 };
