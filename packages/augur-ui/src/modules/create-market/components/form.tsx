@@ -33,7 +33,7 @@ import {
   TEMPLATE_INPUTS,
   TEMPLATE,
   ExchangeClosingMessage,
-  MovieWednesdayAfterOpeningMessage, AugurMarketsContent, EventDetailsContent,
+  MovieWednesdayAfterOpeningMessage, AugurMarketsContent, EventDetailsContent, ReviewContent,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -816,15 +816,20 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
 
-    const explainerBlockContents = explainerBlockTitle === EventDetailsContent().explainerBlockTitle && [{
-      title: EventDetailsContent().explainerBlockTitle,
-      subtexts: EventDetailsContent().explainerBlockSubtexts,
-      useBullets: EventDetailsContent().useBullets,
-    }, {
-      title: AugurMarketsContent().explainerBlockTitle,
-      subtexts: AugurMarketsContent().explainerBlockSubtexts,
-      useBullets: AugurMarketsContent().useBullets,
-    }];
+    const explainerBlockContents = (explainerBlockTitle ===
+      EventDetailsContent().explainerBlockTitle ||
+      explainerBlockTitle === ReviewContent.explainerBlockTitle) && [
+      {
+        title: explainerBlockTitle,
+        subtexts: explainerBlockSubtexts,
+        useBullets: useBullets,
+      },
+      {
+        title: AugurMarketsContent().explainerBlockTitle,
+        subtexts: AugurMarketsContent().explainerBlockSubtexts,
+        useBullets: AugurMarketsContent().useBullets,
+      },
+    ];
 
     return (
       <div
