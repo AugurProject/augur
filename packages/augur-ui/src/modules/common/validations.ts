@@ -8,11 +8,13 @@ import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from './constants';
 import { NewMarketPropertiesValidations } from 'modules/types';
-import {
-  ValidationType,
-  TemplateInputType,
-  TemplateInput,
+import type {
   UserInputDateTime,
+  TemplateInput,
+  TemplateInputType,
+  ValidationType,
+} '@augurproject/templates'
+import {
   tellOnHoliday,
   ValidationTemplateInputType,
 } from '@augurproject/templates';

@@ -7,20 +7,22 @@ import {
 import deepClone from 'utils/deep-clone';
 import { Getters } from '@augurproject/sdk';
 import { formatDai } from 'utils/format-number';
-import {
-  TEMPLATES,
-  TEMPLATE_VALIDATIONS,
-  RETIRED_TEMPLATES,
+import type {
   Categories,
   Template,
   TemplateInput,
   ResolutionRules,
   CategoryTemplate,
   TemplateInputType,
+  TimeOffset
+} from '@augurproject/templates';
+import {
+  TEMPLATES,
+  TEMPLATE_VALIDATIONS,
+  RETIRED_TEMPLATES,
   REQUIRED,
   CHOICE,
   getTemplateExchangeClosingWithBuffer,
-  TimeOffset,
 } from '@augurproject/templates';
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
 import { YES_NO, CATEGORICAL, SCALAR, YES_NO_OUTCOMES, SCALAR_OUTCOMES } from 'modules/common/constants';

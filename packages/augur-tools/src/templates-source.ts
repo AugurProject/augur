@@ -68,12 +68,9 @@ import {
   SUMMER,
   TEAM_A,
   TEAM_B,
-  TemplateInputType,
   TENNIS,
-  TEXT_PLACEHOLDERS,
   TV_MOVIES,
   US_POLITICS,
-  ValidationType,
   WEEK_NO,
   WINTER,
   WNBA,
@@ -82,7 +79,8 @@ import {
   SOCIAL_MEDIA,
   TWITTER,
   INSTAGRAM,
-} from './templates-template';
+} from '@augurproject/sdk-lite';
+import { TemplateInputType, TEXT_PLACEHOLDERS, ValidationType } from './templates-template';
 
 const YES_NO = 'YesNo';
 const CATEGORICAL = 'Categorical';
@@ -149,6 +147,9 @@ export const TEMPLATES = {
                 {
                   text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "Draw/No Contest" should be the winning outcome.`,
                 },
+                {
+                  text: 'new rule here'
+                }
               ],
             },
           },
