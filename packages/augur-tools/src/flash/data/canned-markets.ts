@@ -1,40 +1,44 @@
-import { formatBytes32String } from 'ethers/utils';
 import {
-  today,
-  thisYear,
-  inOneMonths,
-  inTwoMonths,
-  inThreeMonths,
-  inFiveMonths,
-  inSixMonths,
-  inTenMonths,
-  midnightTomorrow,
-} from '../time';
-import moment from 'moment';
-import {
-  TEMPLATES,
-  POLITICS,
-  US_POLITICS,
-  Template,
-  REQUIRED,
-  FINANCE,
-  INDEXES,
   AMERICAN_FOOTBALL,
-  SPORTS,
-  NFL,
-  SOCCER,
-  MENS_LEAGUES,
-  GOLF,
-  PGA,
+  BASKETBALL,
   CRYPTO,
   ETHEREUM,
-  BASKETBALL,
+  FINANCE,
+  GOLF,
+  INDEXES,
+  MENS_LEAGUES,
   NBA,
+  NFL,
   NFL_DRAFT,
   ENTERTAINMENT,
   SOCIAL_MEDIA,
   TWITTER,
+  PGA,
+  POLITICS,
+  SOCCER,
+  SPORTS,
+  Template,
+  TEMPLATES,
+  US_POLITICS,
+  HOCKEY,
+  groupTypes,
+  MMA,
 } from '@augurproject/artifacts';
+import { formatBytes32String } from 'ethers/utils';
+import moment from 'moment';
+import { buildExtraInfo, getFilledInputs, fillInQuestion, getLongDescription } from '../../libs/templates';
+import {
+  inFiveMonths,
+  inOneMonths,
+  inSixMonths,
+  inTenMonths,
+  inThreeMonths,
+  inTwoMonths,
+  midnightTomorrow,
+  thisYear,
+  today,
+} from '../time';
+import { LIST_VALUES } from '../../templates-lists';
 
 interface AskBid {
   shares: string;
@@ -362,6 +366,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     endTime: inTenMonths.getTime() / 1000,
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.01',
+
     extraInfo: {
       categories: [POLITICS, US_POLITICS],
       description: fillInQuestion(template1, usInputValues),
@@ -373,6 +378,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         inputs: getFilledInputs(template1, usInputValues),
       },
     },
+
     orderBook: yesNoOrderBook,
   });
 
@@ -392,17 +398,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     endTime: finUnixEndTime,
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.015',
-    extraInfo: {
-      categories: [FINANCE, INDEXES],
-      description: fillInQuestion(finTemplate, finInputValues),
-      tags: [],
-      longDescription: getLongDescription(finTemplate),
-      template: {
-        hash: finTemplate.hash,
-        question: finTemplate.question,
-        inputs: getFilledInputs(finTemplate, finInputValues),
-      },
-    },
+    extraInfo: buildExtraInfo(finTemplate, finInputValues, [FINANCE, INDEXES]),
     orderBook: yesNoOrderBook,
   });
 
@@ -419,17 +415,11 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     endTime: unixEndTime,
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.01',
-    extraInfo: {
-      categories: [SPORTS, AMERICAN_FOOTBALL, NFL],
-      description: fillInQuestion(fbTemplate, inputValues),
-      tags: [],
-      longDescription: getLongDescription(fbTemplate),
-      template: {
-        hash: fbTemplate.hash,
-        question: fbTemplate.question,
-        inputs: getFilledInputs(fbTemplate, inputValues),
-      },
-    },
+    extraInfo: buildExtraInfo(fbTemplate, inputValues, [
+      SPORTS,
+      AMERICAN_FOOTBALL,
+      NFL,
+    ]),
     orderBook: yesNoOrderBook,
   });
 
@@ -457,17 +447,11 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         'Draw',
         'Unofficial game/Cancelled',
       ],
-      extraInfo: {
-        categories: [SPORTS, SOCCER, MENS_LEAGUES],
-        description: fillInQuestion(socTemplate, socInputValues),
-        tags: [],
-        longDescription: getLongDescription(socTemplate),
-        template: {
-          hash: socTemplate.hash,
-          question: socTemplate.question,
-          inputs: getFilledInputs(socTemplate, socInputValues),
-        },
-      },
+      extraInfo: buildExtraInfo(socTemplate, socInputValues, [
+        SPORTS,
+        SOCCER,
+        MENS_LEAGUES,
+      ]),
       orderBook: {
         1: {
           buy: singleOutcomeBids,
@@ -491,17 +475,14 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
 
   markets.push(convertedMarkets[0]);
 
-  const draftTemplates = TEMPLATES[SPORTS].children[AMERICAN_FOOTBALL].children[NFL_DRAFT]
-  .templates as Template[];
+  const draftTemplates = TEMPLATES[SPORTS].children[AMERICAN_FOOTBALL].children[
+    NFL_DRAFT
+  ].templates as Template[];
   const draftTemplate: Template = draftTemplates[1];
   const draftExpDate = moment().add(4, 'weeks');
   const draftEstTime = draftExpDate.unix();
   const draftEndTime = draftExpDate.add(50, 'hours').unix();
-  const draftInputValues = [
-    '2020',
-    'Wide Receiver',
-    String(draftEstTime),
-  ];
+  const draftInputValues = ['2020', 'Wide Receiver', String(draftEstTime)];
 
   const draftMarkets = massageMarkets([
     {
@@ -509,24 +490,12 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
       endTime: draftEndTime,
       affiliateFeeDivisor: 0,
       creatorFeeDecimal: '0.01',
-      outcomes: [
-        'Jonny B',
-        'Eric C',
-        'Mac D',
-        'Linny Q',
-        'Other (Field)'
-      ],
-      extraInfo: {
-        categories: [SPORTS, AMERICAN_FOOTBALL, NFL_DRAFT],
-        description: fillInQuestion(draftTemplate, draftInputValues),
-        tags: [],
-        longDescription: getLongDescription(draftTemplate),
-        template: {
-          hash: draftTemplate.hash,
-          question: draftTemplate.question,
-          inputs: getFilledInputs(draftTemplate, draftInputValues),
-        },
-      },
+      outcomes: ['Jonny B', 'Eric C', 'Mac D', 'Linny Q', 'Other (Field)'],
+      extraInfo: buildExtraInfo(draftTemplate, draftInputValues, [
+        SPORTS,
+        AMERICAN_FOOTBALL,
+        NFL_DRAFT,
+      ]),
       orderBook: {
         1: {
           buy: singleOutcomeBids,
@@ -572,17 +541,11 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         'Other (Field)',
         'No winner/Event cancelled',
       ],
-      extraInfo: {
-        categories: [SPORTS, GOLF, PGA],
-        description: fillInQuestion(golfTemplate, golfInputValues),
-        tags: [],
-        longDescription: getLongDescription(golfTemplate),
-        template: {
-          hash: golfTemplate.hash,
-          question: golfTemplate.question,
-          inputs: getFilledInputs(golfTemplate, golfInputValues),
-        },
-      },
+      extraInfo: buildExtraInfo(golfTemplate, golfInputValues, [
+        SPORTS,
+        GOLF,
+        PGA,
+      ]),
       orderBook: {
         1: {
           buy: singleOutcomeBids,
@@ -677,17 +640,11 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     tickSize: '0.1',
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.01',
-    extraInfo: {
-      categories: [SPORTS, BASKETBALL, NBA],
-      description: fillInQuestion(bbTemplate, bbInputValues),
-      tags: [],
-      longDescription: getLongDescription(bbTemplate),
-      template: {
-        hash: bbTemplate.hash,
-        question: bbTemplate.question,
-        inputs: getFilledInputs(bbTemplate, bbInputValues),
-      },
-    },
+    extraInfo: buildExtraInfo(bbTemplate, bbInputValues, [
+      SPORTS,
+      BASKETBALL,
+      NBA,
+    ]),
     orderBook: {
       2: {
         buy: [
@@ -707,24 +664,149 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
   return markets;
 };
 
-const fillInQuestion = (template, values) => {
-  let description = template.question;
-  template.inputs.forEach(input => {
-    let value = values[input.id];
-    description = description.replace(`[${input.id}]`, `${value}`);
-  });
-  return description;
-};
+const calcDailyHockeyMarket = (): CannedMarket[] => {
+  const estStartTime = moment().add(3, 'weeks');
+  const unixEstStartTime = estStartTime.unix();
+  const endTime = estStartTime.add(6, 'hours').unix();
+  const hockeyTemplates = TEMPLATES[SPORTS].children[HOCKEY].templates as Template[];
+  const teamA = LIST_VALUES.NHL_TEAMS[0];
+  const teamB = LIST_VALUES.NHL_TEAMS[1];
+  const moneyLine = hockeyTemplates.find(t => t.groupName === groupTypes.DAILY_MONEY_LINE);
+  const spread = hockeyTemplates.find(t => t.groupName === groupTypes.DAILY_SPREAD);
+  const overUnder = hockeyTemplates.find(t => t.groupName === groupTypes.DAILY_OVER_UNDER);
+  const daily = [moneyLine, spread, overUnder];
+  const inputValues = [
+    [teamA, teamB, unixEstStartTime],
+    [teamA, "2", teamB, unixEstStartTime],
+    [teamA, teamB, "4", unixEstStartTime]
+  ]
 
-const getLongDescription = template => {
-  return template.resolutionRules[REQUIRED].map(m => m.text).join('\n');
-};
+  const outcomeValues = [
+    [teamA, teamB, `No Winner`],
+    [`${teamA} -2.5`, `${teamB} +2.5`, `No Winner`],
+    [`Over 4.5`, `Under 4.5`, `No Winner`],
+  ]
 
-const getFilledInputs = (template, values) => {
-  return values.map((value, index) => ({
-    id: template.inputs[index].id,
-    type: template.inputs[index].type,
-    value,
-    timestamp: !isNaN(value) ? value : null,
+  return daily.map((template, index) => ({
+      marketType: 'categorical',
+      endTime,
+      affiliateFeeDivisor: 0,
+      creatorFeeDecimal: '0.01',
+      extraInfo: buildExtraInfo(template, inputValues[index], [
+        SPORTS,
+        HOCKEY,
+        'Daily'
+      ]),
+      outcomes: outcomeValues[index],
+      orderBook: {
+        1: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        2: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+        3: {
+          buy: singleOutcomeBids,
+          sell: singleOutcomeAsks,
+        },
+      },
+    }));
+}
+
+const calcFuturesHockeyMarket = (): CannedMarket[] => {
+  const estStartTime = moment().add(3, 'weeks');
+  const endTime = estStartTime.unix();
+  const hockeyTemplates = TEMPLATES[SPORTS].children[HOCKEY].templates as Template[];
+  const templates = hockeyTemplates.filter(t => t.groupName === groupTypes.FUTURES);
+  const inputValues = [
+    [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_EVENT[0]],
+    [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_AWARD[0]]
+  ];
+  const outcomes = [
+    [...LIST_VALUES.NHL_TEAMS.slice(0,5), 'Other (Field)'],
+    ['Joe Pavelski', 'Jonathan Toews', 'Carey Price', 'Erik Karlsson', 'Drew Doughty', 'Other (Field)'],
+  ]
+  return templates.map((template, index) => ({
+    marketType: 'categorical',
+    endTime,
+    affiliateFeeDivisor: 0,
+    creatorFeeDecimal: '0.01',
+    extraInfo: buildExtraInfo(template, inputValues[index], [
+      SPORTS,
+      HOCKEY,
+    ]),
+    outcomes: outcomes[index],
+    orderBook: {
+      1: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+      2: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+      3: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+    },
   }));
+}
+
+const calcMMAMarkets = (): CannedMarket[] => {
+  const estStartTime = moment().add(3, 'weeks');
+  const unixEstStartTime = estStartTime.unix();
+  const endTime = estStartTime.add(9, 'hours').unix();
+  const templates = TEMPLATES[SPORTS].children[MMA].templates as Template[];
+  const fighterA = 'Donald Cerrone';
+  const fighterB = 'Anthony Pettis';
+  const inputValues = [
+    [fighterA, fighterB, unixEstStartTime],
+    [fighterA, fighterB, '2', unixEstStartTime],
+    [fighterA, fighterB, unixEstStartTime],
+    [fighterA, fighterB, unixEstStartTime],
+    [fighterA, fighterB, unixEstStartTime],
+  ];
+  const outcomes = [
+    [fighterA, fighterB, 'Draw/No Contest'],
+    ['Over 2.5', 'Under 2.5', 'No Contest'],
+    [`${fighterA} by KO/TKO`, `${fighterA} by Submission`, `${fighterA} by Points`, `${fighterB} by KO/TKO`, `${fighterB} by Submission`, `${fighterB} by Points`, `Draw/No Contest`],
+    ['KO/TKO', 'Submission', 'Points', 'No Contest'],
+    ['Round 1', 'Round 2', 'Round 3', 'Round 4', 'Round 5', 'Goes the distance', 'No Contest'],
+  ]
+
+  return templates.map((template, index) => ({
+    marketType: 'categorical',
+    endTime,
+    affiliateFeeDivisor: 0,
+    creatorFeeDecimal: '0.01',
+    extraInfo: buildExtraInfo(template, inputValues[index], [
+      SPORTS,
+      MMA,
+    ]),
+    outcomes: outcomes[index],
+    orderBook: {
+      1: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+      2: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+      3: {
+        buy: singleOutcomeBids,
+        sell: singleOutcomeAsks,
+      },
+    },
+  }));
+}
+
+export const templatedCannedBettingMarkets = (): CannedMarket[] => {
+  const markets = calcDailyHockeyMarket();
+  const hockeyFutures = calcFuturesHockeyMarket();
+  const mmaMarkets = calcMMAMarkets();
+  return massageMarkets(markets.concat(hockeyFutures).concat(mmaMarkets));
 };

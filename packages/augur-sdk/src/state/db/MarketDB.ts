@@ -1,29 +1,32 @@
+import { getGroupHashInfo, isTemplateMarket } from '@augurproject/artifacts';
+import { ParsedLog } from '@augurproject/types';
+import { BigNumber } from 'bignumber.js';
 import * as _ from 'lodash';
+import { OrderBook } from '../../api/Liquidity';
 import { Augur } from '../../Augur';
-import { DerivedDB } from './DerivedDB';
-import { DB } from './DB';
 import {
   CLAIM_GAS_COST,
+  DEFAULT_GAS_PRICE_IN_GWEI,
   EULERS_NUMBER,
   INVALID_OUTCOME,
+  MarketReportingState,
   MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI,
+  orderTypes,
   SECONDS_IN_A_DAY,
   SECONDS_IN_A_YEAR,
+  SubscriptionEventName,
   WORST_CASE_FILL,
-  DEFAULT_GAS_PRICE_IN_GWEI,
-  MAX_TRADE_GAS_PERCENTAGE_DIVISOR,
-  orderTypes,
-  MarketReportingState,
 } from '../../constants';
-import { NewBlock } from "../../events";
-import { MarketData, MarketType, OrderTypeHex, TimestampSetLog, UnixTimestamp } from '../logs/types';
-import { BigNumber } from 'bignumber.js';
-import { OrderBook } from '../../api/Liquidity';
-import { ParsedLog } from '@augurproject/types';
-import { QUINTILLION, padHex } from '../../utils';
-import { SubscriptionEventName } from '../../constants';
-import { Block } from 'ethereumjs-blockstream';
-import { isTemplateMarket, getGroupHashInfo } from '@augurproject/artifacts';
+import { NewBlock } from '../../events';
+import { padHex, QUINTILLION } from '../../utils';
+import {
+  MarketData,
+  OrderTypeHex,
+  TimestampSetLog,
+  UnixTimestamp,
+} from '../logs/types';
+import { DB } from './DB';
+import { DerivedDB } from './DerivedDB';
 
 interface MarketOrderBookData {
   _id: string;
@@ -48,31 +51,47 @@ export class MarketDB extends DerivedDB {
   private readonly docProcessMap;
 
   constructor(db: DB, networkId: number, augur: Augur) {
-    super(db, networkId, 'Markets', [
-      'MarketCreated',
-      'MarketVolumeChanged',
-      'MarketOIChanged',
-      'InitialReportSubmitted',
-      'DisputeCrowdsourcerCompleted',
-      'MarketFinalized',
-      'MarketParticipantsDisavowed',
-      'MarketMigrated',
-    ], augur);
+    super(
+      db,
+      networkId,
+      'Markets',
+      [
+        'MarketCreated',
+        'MarketVolumeChanged',
+        'MarketOIChanged',
+        'InitialReportSubmitted',
+        'DisputeCrowdsourcerCompleted',
+        'MarketFinalized',
+        'MarketParticipantsDisavowed',
+        'MarketMigrated',
+      ],
+      augur
+    );
 
     this.docProcessMap = {
-      'MarketCreated': this.processMarketCreated.bind(this),
-      'InitialReportSubmitted': this.processInitialReportSubmitted,
-      'DisputeCrowdsourcerCompleted': this.processDisputeCrowdsourcerCompleted.bind(this),
-      'MarketFinalized': this.processMarketFinalized,
-      'MarketVolumeChanged': this.processMarketVolumeChanged,
-      'MarketOIChanged': this.processMarketOIChanged,
-      'MarketParticipantsDisavowed': this.processMarketParticipantsDisavowed,
-      'MarketMigrated': this.processMarketMigrated,
+      MarketCreated: this.processMarketCreated.bind(this),
+      InitialReportSubmitted: this.processInitialReportSubmitted,
+      DisputeCrowdsourcerCompleted: this.processDisputeCrowdsourcerCompleted.bind(
+        this
+      ),
+      MarketFinalized: this.processMarketFinalized,
+      MarketVolumeChanged: this.processMarketVolumeChanged,
+      MarketOIChanged: this.processMarketOIChanged,
+      MarketParticipantsDisavowed: this.processMarketParticipantsDisavowed,
+      MarketMigrated: this.processMarketMigrated,
     };
 
-    this.augur.events.subscribe('DB:updated:ZeroXOrders', (orderEvents) => this.markMarketLiquidityAsDirty(orderEvents.market));
-    this.augur.events.subscribe(SubscriptionEventName.NewBlock, this.processNewBlock);
-    this.augur.events.subscribe(SubscriptionEventName.TimestampSet, this.processTimestampSet);
+    this.augur.events.subscribe('DB:updated:ZeroXOrders', orderEvents =>
+      this.markMarketLiquidityAsDirty(orderEvents.market)
+    );
+    this.augur.events.subscribe(
+      SubscriptionEventName.NewBlock,
+      this.processNewBlock
+    );
+    this.augur.events.subscribe(
+      SubscriptionEventName.TimestampSet,
+      this.processTimestampSet
+    );
 
     // Don't call this interval during tests
     if (process.env.NODE_ENV !== 'test') {
@@ -85,7 +104,7 @@ export class MarketDB extends DerivedDB {
             await this.syncOrderBooks(marketIdsToCheck);
             liquidityDirty.clear();
           }
-        },ONE_MIN_IN_MS);
+        }, ONE_MIN_IN_MS);
       }
     }
   }
@@ -96,7 +115,7 @@ export class MarketDB extends DerivedDB {
       marketDocs = marketDocs.slice(0, marketDocs.length);
       await this.augur.syncableFlexSearch.addMarketCreatedDocs(marketDocs);
     }
-  }
+  };
 
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
     this.syncing = true;
@@ -110,9 +129,10 @@ export class MarketDB extends DerivedDB {
   }
 
   async handleMergeEvent(
-    blocknumber: number, logs: ParsedLog[],
-    syncing = false): Promise<number> {
-
+    blocknumber: number,
+    logs: ParsedLog[],
+    syncing = false
+  ): Promise<number> {
     const result = await super.handleMergeEvent(blocknumber, logs, syncing);
 
     await this.syncOrderBooks([]);
@@ -122,9 +142,14 @@ export class MarketDB extends DerivedDB {
     return result;
   }
 
-  syncOrderBooks = async (marketIds: string[], isFirstSync = false): Promise<void> => {
+  syncOrderBooks = async (
+    marketIds: string[],
+    isFirstSync = false
+  ): Promise<void> => {
     let ids = marketIds;
-    const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(this.dbName);
+    const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(
+      this.dbName
+    );
     const documents = [];
 
     let marketsData;
@@ -132,17 +157,27 @@ export class MarketDB extends DerivedDB {
       marketsData = await this.allDocs();
       ids = marketsData.map(data => data.market);
     } else {
-      marketsData = await this.table.where('market').anyOf(marketIds).toArray();
+      marketsData = await this.table
+        .where('market')
+        .anyOf(marketIds)
+        .toArray();
     }
 
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
     // TODO Get ETH -> DAI price via uniswap when we integrate that as an oracle
-    const ETHInAttoDAI = new BigNumber(200).multipliedBy(10**18);
+    const ETHInAttoDAI = new BigNumber(200).multipliedBy(10 ** 18);
 
     const marketDataById = _.keyBy(marketsData, 'market');
     for (const marketId of ids) {
       if (Object.keys(marketDataById).includes(marketId)) {
-        const doc = await this.getOrderBookData(this.augur, marketId, marketDataById[marketId], reportingFeeDivisor, ETHInAttoDAI, isFirstSync);
+        const doc = await this.getOrderBookData(
+          this.augur,
+          marketId,
+          marketDataById[marketId],
+          reportingFeeDivisor,
+          ETHInAttoDAI,
+          isFirstSync
+        );
         // This is needed to make rollbacks work properly
         doc['blockNumber'] = highestSyncedBlockNumber;
         doc['market'] = marketId;
@@ -152,30 +187,49 @@ export class MarketDB extends DerivedDB {
 
     await this.saveDocuments(documents);
 
-    if (marketIds.length > 0) this.augur.events.emit(SubscriptionEventName.OrderBooksSynced, {
-      marketIds
-    });
+    if (marketIds.length > 0)
+      this.augur.events.emit(SubscriptionEventName.OrderBooksSynced, {
+        marketIds,
+      });
   };
 
   markMarketLiquidityAsDirty(marketId: string) {
     liquidityDirty.add(marketId);
   }
 
-  async getOrderBookData(augur: Augur, marketId: string, marketData: MarketData, reportingFeeDivisor: BigNumber, ETHInAttoDAI: BigNumber, isFirstSync: Boolean): Promise<MarketOrderBookData> {
-    const numOutcomes = marketData.outcomes && marketData.outcomes.length > 0 ? marketData.outcomes.length + 1 : 3;
+  async getOrderBookData(
+    augur: Augur,
+    marketId: string,
+    marketData: MarketData,
+    reportingFeeDivisor: BigNumber,
+    ETHInAttoDAI: BigNumber,
+    isFirstSync: Boolean
+  ): Promise<MarketOrderBookData> {
+    const numOutcomes =
+      marketData.outcomes && marketData.outcomes.length > 0
+        ? marketData.outcomes.length + 1
+        : 3;
     const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes];
-    const estimatedGasCost = ETHInAttoDAI.multipliedBy(DEFAULT_GAS_PRICE_IN_GWEI).div(10**9);
-    const estimatedTradeGasCostInAttoDai = estimatedGasCost.multipliedBy(estimatedTradeGasCost);
-    const estimatedClaimGasCostInAttoDai = estimatedGasCost.multipliedBy(CLAIM_GAS_COST);
+    const estimatedGasCost = ETHInAttoDAI.multipliedBy(
+      DEFAULT_GAS_PRICE_IN_GWEI
+    ).div(10 ** 9);
+    const estimatedTradeGasCostInAttoDai = estimatedGasCost.multipliedBy(
+      estimatedTradeGasCost
+    );
+    const estimatedClaimGasCostInAttoDai = estimatedGasCost.multipliedBy(
+      CLAIM_GAS_COST
+    );
     const feePerCashInAttoCash = new BigNumber(marketData.feePerCashInAttoCash);
     const feeDivisor = new BigNumber(marketData.feeDivisor);
     const numTicks = new BigNumber(marketData.numTicks);
-    const feeMultiplier = new BigNumber(1).minus(new BigNumber(1).div(reportingFeeDivisor)).minus(new BigNumber(1).div(feeDivisor));
+    const feeMultiplier = new BigNumber(1)
+      .minus(new BigNumber(1).div(reportingFeeDivisor))
+      .minus(new BigNumber(1).div(feeDivisor));
     const orderBook = await this.getOrderBook(marketData, numOutcomes);
 
     // since zeroX orders will not be hydrated on first sync, we will need to pre-populate
     // liquidty filter data based off the last stored state of the MaraketDB (if avaiable)
-    if(isFirstSync && marketData) {
+    if (isFirstSync && marketData) {
       return {
         _id: marketId,
         invalidFilter: marketData.invalidFilter ? 1 : 0,
@@ -185,7 +239,13 @@ export class MarketDB extends DerivedDB {
       };
     }
 
-    const invalidFilter = await this.recalcInvalidFilter(orderBook, marketData, feeMultiplier, estimatedTradeGasCostInAttoDai, estimatedClaimGasCostInAttoDai);
+    const invalidFilter = await this.recalcInvalidFilter(
+      orderBook,
+      marketData,
+      feeMultiplier,
+      estimatedTradeGasCostInAttoDai,
+      estimatedClaimGasCostInAttoDai
+    );
 
     let marketOrderBookData = {
       _id: marketId,
@@ -206,39 +266,60 @@ export class MarketDB extends DerivedDB {
         spread,
         estimatedTradeGasCostInAttoDai,
       });
-      marketOrderBookData.liquidity[spread] = liquidity.toFixed().padStart(30, '0');
+      marketOrderBookData.liquidity[spread] = liquidity
+        .toFixed()
+        .padStart(30, '0');
     }
 
     const spread10 = new BigNumber(marketOrderBookData.liquidity[10]);
     const spread15 = new BigNumber(marketOrderBookData.liquidity[15]);
-    const lastSpread10 = marketData.liquidity ? new BigNumber(marketData.liquidity[10]) : new BigNumber(0);
-    const lastSpread15 = marketData.liquidity ? new BigNumber(marketData.liquidity[15]) : new BigNumber(0);
+    const lastSpread10 = marketData.liquidity
+      ? new BigNumber(marketData.liquidity[10])
+      : new BigNumber(0);
+    const lastSpread15 = marketData.liquidity
+      ? new BigNumber(marketData.liquidity[15])
+      : new BigNumber(0);
 
-    const passesSpreadCheck = (spread10.gt(0) || spread15.gt(0));
+    const passesSpreadCheck = spread10.gt(0) || spread15.gt(0);
     // Keep track when a market has under a 15% spread. Used for `hasRecentlyDepletedLiquidity`
     if (passesSpreadCheck) {
       const now = Math.floor(Date.now() / 1000);
       marketOrderBookData.lastPassingLiquidityCheck = now;
     } else if (lastSpread10.gt(0) || lastSpread15.gt(0)) {
-      marketOrderBookData.lastPassingLiquidityCheck = marketData.lastPassingLiquidityCheck;
+      marketOrderBookData.lastPassingLiquidityCheck =
+        marketData.lastPassingLiquidityCheck;
     } else if (marketData.hasRecentlyDepletedLiquidity) {
-      marketOrderBookData.lastPassingLiquidityCheck = marketData.lastPassingLiquidityCheck;
+      marketOrderBookData.lastPassingLiquidityCheck =
+        marketData.lastPassingLiquidityCheck;
     }
 
     const prevInvalidFilter = marketData.invalidFilter;
-    const prevHasRecentlyDepletedLiquidity = marketData.hasRecentlyDepletedLiquidity;
+    const prevHasRecentlyDepletedLiquidity =
+      marketData.hasRecentlyDepletedLiquidity;
     const currentIvalidFilter = marketOrderBookData.invalidFilter;
 
     // Add markets that recently became invalid to Recently Depleted Liquidity
     if (passesSpreadCheck) {
-      if (!prevInvalidFilter && currentIvalidFilter ||
-          (prevInvalidFilter && currentIvalidFilter && prevHasRecentlyDepletedLiquidity)) {
+      if (
+        (!prevInvalidFilter && currentIvalidFilter) ||
+        (prevInvalidFilter &&
+          currentIvalidFilter &&
+          prevHasRecentlyDepletedLiquidity)
+      ) {
         marketOrderBookData.hasRecentlyDepletedLiquidity = true;
       } else {
-        marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(marketData, marketOrderBookData.liquidity, marketOrderBookData.lastPassingLiquidityCheck);
+        marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(
+          marketData,
+          marketOrderBookData.liquidity,
+          marketOrderBookData.lastPassingLiquidityCheck
+        );
       }
     } else {
-      marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(marketData, marketOrderBookData.liquidity, marketOrderBookData.lastPassingLiquidityCheck);
+      marketOrderBookData.hasRecentlyDepletedLiquidity = await this.hasRecentlyDepletedLiquidity(
+        marketData,
+        marketOrderBookData.liquidity,
+        marketOrderBookData.lastPassingLiquidityCheck
+      );
     }
 
     return marketOrderBookData;
@@ -251,7 +332,10 @@ export class MarketDB extends DerivedDB {
       .sortBy('endTime');
   }
 
-  async getOrderBook(marketData: MarketData, numOutcomes: number): Promise<OrderBook> {
+  async getOrderBook(
+    marketData: MarketData,
+    numOutcomes: number
+  ): Promise<OrderBook> {
     let outcomes = ['0x00', '0x01', '0x02'];
 
     if (marketData.outcomes && marketData.outcomes.length > 0) {
@@ -265,35 +349,52 @@ export class MarketDB extends DerivedDB {
 
     for (const outcome of outcomes) {
       for (const orderType of orderTypes) {
-        allOutcomesAllOrderTypes = allOutcomesAllOrderTypes.concat([[marketData.market, outcome, orderType]]);
+        allOutcomesAllOrderTypes = allOutcomesAllOrderTypes.concat([
+          [marketData.market, outcome, orderType],
+        ]);
       }
     }
 
-    const currentOrdersResponse = await this.stateDB.ZeroXOrders
-      .where('[market+outcome+orderType]')
+    const currentOrdersResponse = await this.stateDB.ZeroXOrders.where(
+      '[market+outcome+orderType]'
+    )
       .anyOf(allOutcomesAllOrderTypes)
-      .and((order) => order.amount > '0x00')
-      .and((order) => {
-        const expirationTimeSeconds = Number(order.signedOrder.expirationTimeSeconds);
+      .and(order => order.amount > '0x00')
+      .and(order => {
+        const expirationTimeSeconds = Number(
+          order.signedOrder.expirationTimeSeconds
+        );
         const nowInSeconds = Math.round(+new Date() / 1000);
         return expirationTimeSeconds - nowInSeconds > 70;
       })
       .toArray();
 
-    const currentOrdersByOutcome = _.groupBy(currentOrdersResponse, (order) => new BigNumber(order.outcome).toNumber());
+    const currentOrdersByOutcome = _.groupBy(currentOrdersResponse, order =>
+      new BigNumber(order.outcome).toNumber()
+    );
     for (let outcome = 0; outcome < numOutcomes; outcome++) {
-      if (currentOrdersByOutcome[outcome] === undefined) currentOrdersByOutcome[outcome] = [];
+      if (currentOrdersByOutcome[outcome] === undefined)
+        currentOrdersByOutcome[outcome] = [];
     }
 
-    const outcomeBidAskOrders = Object.keys(currentOrdersByOutcome).map((outcomeOrders) => {
-      const groupedByOrderType = _.groupBy(currentOrdersByOutcome[outcomeOrders], 'orderType');
-      const bids = groupedByOrderType ? _.reverse(_.sortBy(groupedByOrderType[OrderTypeHex.Bid], 'price')) : [];
-      const asks = groupedByOrderType ? _.sortBy(groupedByOrderType[OrderTypeHex.Ask], 'price') : [];
-      return {
-        bids,
-        asks,
-      };
-    });
+    const outcomeBidAskOrders = Object.keys(currentOrdersByOutcome).map(
+      outcomeOrders => {
+        const groupedByOrderType = _.groupBy(
+          currentOrdersByOutcome[outcomeOrders],
+          'orderType'
+        );
+        const bids = groupedByOrderType
+          ? _.reverse(_.sortBy(groupedByOrderType[OrderTypeHex.Bid], 'price'))
+          : [];
+        const asks = groupedByOrderType
+          ? _.sortBy(groupedByOrderType[OrderTypeHex.Ask], 'price')
+          : [];
+        return {
+          bids,
+          asks,
+        };
+      }
+    );
 
     const data = outcomeBidAskOrders.map(order => {
       if (order.bids === undefined) {
@@ -310,28 +411,55 @@ export class MarketDB extends DerivedDB {
   }
 
   // A Market is marked as True in the invalidFilter if the any bid for Invalid on the book would be profitable to take were the market Valid
-  async recalcInvalidFilter(orderbook: OrderBook, marketData: MarketData, feeMultiplier: BigNumber, estimatedTradeGasCostInAttoDai: BigNumber, estimatedClaimGasCostInAttoDai: BigNumber): Promise<number> {
+  async recalcInvalidFilter(
+    orderbook: OrderBook,
+    marketData: MarketData,
+    feeMultiplier: BigNumber,
+    estimatedTradeGasCostInAttoDai: BigNumber,
+    estimatedClaimGasCostInAttoDai: BigNumber
+  ): Promise<number> {
     if (orderbook[INVALID_OUTCOME].bids.length < 1) return 0;
 
-    let timeTillMarketFinalizesInSeconds = new BigNumber(marketData.endTime).minus((new Date).getTime()/1000);
-    if (timeTillMarketFinalizesInSeconds.lt(0)) timeTillMarketFinalizesInSeconds = new BigNumber(0);
-    const timeTillMarketFinalizesInYears = timeTillMarketFinalizesInSeconds.div(SECONDS_IN_A_YEAR);
+    let timeTillMarketFinalizesInSeconds = new BigNumber(
+      marketData.endTime
+    ).minus(new Date().getTime() / 1000);
+    if (timeTillMarketFinalizesInSeconds.lt(0))
+      timeTillMarketFinalizesInSeconds = new BigNumber(0);
+    const timeTillMarketFinalizesInYears = timeTillMarketFinalizesInSeconds.div(
+      SECONDS_IN_A_YEAR
+    );
 
     const numTicks = new BigNumber(marketData.numTicks);
 
     let baseRevenue = numTicks.multipliedBy(feeMultiplier);
-    baseRevenue = baseRevenue.multipliedBy((EULERS_NUMBER ** timeTillMarketFinalizesInYears.multipliedBy(-.15).precision(14).toNumber()).toPrecision(14));
+    baseRevenue = baseRevenue.multipliedBy(
+      (
+        EULERS_NUMBER **
+        timeTillMarketFinalizesInYears
+          .multipliedBy(-0.15)
+          .precision(14)
+          .toNumber()
+      ).toPrecision(14)
+    );
 
-    let baseCost = estimatedTradeGasCostInAttoDai.plus(estimatedClaimGasCostInAttoDai);
+    let baseCost = estimatedTradeGasCostInAttoDai.plus(
+      estimatedClaimGasCostInAttoDai
+    );
 
     for (const order of orderbook[INVALID_OUTCOME].bids) {
       const bidAmount = new BigNumber(order.amount);
       const bidPrice = new BigNumber(order.price);
 
       const validRevenue = bidAmount.multipliedBy(baseRevenue);
-      const validCost = baseCost.plus(bidAmount.multipliedBy(numTicks.minus(bidPrice)));
+      const validCost = baseCost.plus(
+        bidAmount.multipliedBy(numTicks.minus(bidPrice))
+      );
 
-      if ((validRevenue.minus(validCost)).gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI)) {
+      if (
+        validRevenue
+          .minus(validCost)
+          .gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI)
+      ) {
         return 1;
       }
     }
@@ -343,16 +471,18 @@ export class MarketDB extends DerivedDB {
     const processFunc = this.docProcessMap[log.name];
     if (processFunc) {
       return processFunc({
-        ...log
+        ...log,
       });
     }
     return {
-      ...log
+      ...log,
     };
   }
 
   private processMarketCreated = (log: ParsedLog): ParsedLog => {
-    log['isWarpSync'] = log.marketCreator.toLowerCase() === this.augur.config.addresses.WarpSync.toLowerCase();
+    log['isWarpSync'] =
+      log.marketCreator.toLowerCase() ===
+      this.augur.config.addresses.WarpSync.toLowerCase();
     log['reportingState'] = MarketReportingState.PreReporting;
     log['finalized'] = 0;
     log['invalidFilter'] = 0;
@@ -366,17 +496,26 @@ export class MarketDB extends DerivedDB {
       10: '000000000000000000000000000000',
       15: '000000000000000000000000000000',
       20: '000000000000000000000000000000',
-      100: '000000000000000000000000000000'
-    }
+      100: '000000000000000000000000000000',
+    };
     log['lastPassingLiquidityCheck'] = 0;
-    log['feeDivisor'] = new BigNumber(1).dividedBy(new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)).toNumber();
-    log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16).div(QUINTILLION).toNumber();
+    log['feeDivisor'] = new BigNumber(1)
+      .dividedBy(
+        new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)
+      )
+      .toNumber();
+    log['feePercent'] = new BigNumber(log['feePerCashInAttoCash'], 16)
+      .div(QUINTILLION)
+      .toNumber();
     log['lastTradedTimestamp'] = 0;
     log['timestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
     log['creationTime'] = log['timestamp'];
     log['endTime'] = new BigNumber(log['endTime'], 16).toNumber();
-    log['outcomes'] = _.map(log['outcomes'], (rawOutcome) => {
-      return Buffer.from(rawOutcome.replace('0x', ''), 'hex').toString().trim().replace(/\0/g, '');
+    log['outcomes'] = _.map(log['outcomes'], rawOutcome => {
+      return Buffer.from(rawOutcome.replace('0x', ''), 'hex')
+        .toString()
+        .trim()
+        .replace(/\0/g, '');
     });
 
     try {
@@ -386,19 +525,33 @@ export class MarketDB extends DerivedDB {
     }
     try {
       if (log['extraInfo'].categories)
-        log['extraInfo'].categories = log['extraInfo'].categories.map((category) => category.toLowerCase());
+        log['extraInfo'].categories = log['extraInfo'].categories.map(
+          category => category.toLowerCase()
+        );
     } catch (err) {
       log['extraInfo'].categories = [];
     }
     try {
-      if(log['extraInfo'].template) {
+      if (log['extraInfo'].template) {
         let errors = [];
-        log['isTemplate'] = isTemplateMarket(log['extraInfo'].description, log['extraInfo'].template, log['outcomes'], log['extraInfo'].longDescription, log['endTime'], errors);
-        if (errors.length > 0) console.error(log['extraInfo'].description, errors);
+        log['isTemplate'] = isTemplateMarket(
+          log['extraInfo'].description,
+          log['extraInfo'].template,
+          log['outcomes'],
+          log['extraInfo'].longDescription,
+          log['endTime'],
+          errors
+        );
+        if (errors.length > 0)
+          console.error(log['extraInfo'].description, errors);
 
         if (log['isTemplate']) {
-          const groupHashInfo = getGroupHashInfo(log['extraInfo'].template);
-          console.log(groupHashInfo);
+          const { groupLine, groupType, hashKeyInputValues } = getGroupHashInfo(
+            log['extraInfo'].template
+          );
+          log['templateGroupHash'] = hashKeyInputValues;
+          log['templateGroupType'] = groupType;
+          if (groupLine) log['templateGroupLine'] = groupLine;
         }
       }
     } catch (err) {
@@ -406,22 +559,26 @@ export class MarketDB extends DerivedDB {
     }
 
     if (this.augur.syncableFlexSearch) {
-      this.augur.syncableFlexSearch.addMarketCreatedDocs([log as unknown as MarketData]);
+      this.augur.syncableFlexSearch.addMarketCreatedDocs([
+        (log as unknown) as MarketData,
+      ]);
     }
     return log;
-  }
+  };
 
   private processInitialReportSubmitted(log: ParsedLog): ParsedLog {
     log['reportingState'] = MarketReportingState.CrowdsourcingDispute;
     log['totalRepStakedInMarket'] = padHex(log['amountStaked']);
-    log['tentativeWinningPayoutNumerators'] = log['payoutNumerators']
+    log['tentativeWinningPayoutNumerators'] = log['payoutNumerators'];
     log['disputeRound'] = '0x01';
     return log;
   }
 
   private processDisputeCrowdsourcerCompleted(log: ParsedLog): ParsedLog {
     const pacingOn: boolean = log['pacingOn'];
-    log['reportingState'] = pacingOn ? MarketReportingState.AwaitingNextWindow : MarketReportingState.CrowdsourcingDispute;
+    log['reportingState'] = pacingOn
+      ? MarketReportingState.AwaitingNextWindow
+      : MarketReportingState.CrowdsourcingDispute;
     log['tentativeWinningPayoutNumerators'] = log['payoutNumerators'];
     log['totalRepStakedInMarket'] = padHex(log['totalRepStakedInMarket']);
     return log;
@@ -457,22 +614,31 @@ export class MarketDB extends DerivedDB {
   }
 
   processNewBlock = async (block: NewBlock): Promise<void> => {
-    await this.processTimestamp(block.timestamp, block.highestAvailableBlockNumber);
+    await this.processTimestamp(
+      block.timestamp,
+      block.highestAvailableBlockNumber
+    );
   };
 
   processTimestampSet = async (log: TimestampSetLog): Promise<void> => {
     const timestamp = new BigNumber(log.newTimestamp).toNumber();
-    await this.processTimestamp(timestamp, log.blockNumber)
+    await this.processTimestamp(timestamp, log.blockNumber);
   };
 
-  private async processTimestamp(timestamp: UnixTimestamp, blockNumber: number): Promise<void> {
-    const eligibleMarketDocs = await this.table.where("reportingState").anyOfIgnoreCase([
-      MarketReportingState.PreReporting,
-      MarketReportingState.DesignatedReporting,
-      MarketReportingState.CrowdsourcingDispute,
-      MarketReportingState.AwaitingNextWindow,
-    ]).toArray();
-    const eligibleMarketsData = eligibleMarketDocs as unknown as MarketData[];
+  private async processTimestamp(
+    timestamp: UnixTimestamp,
+    blockNumber: number
+  ): Promise<void> {
+    const eligibleMarketDocs = await this.table
+      .where('reportingState')
+      .anyOfIgnoreCase([
+        MarketReportingState.PreReporting,
+        MarketReportingState.DesignatedReporting,
+        MarketReportingState.CrowdsourcingDispute,
+        MarketReportingState.AwaitingNextWindow,
+      ])
+      .toArray();
+    const eligibleMarketsData = (eligibleMarketDocs as unknown) as MarketData[];
     const updateDocs = [];
 
     for (const marketData of eligibleMarketsData) {
@@ -480,14 +646,29 @@ export class MarketDB extends DerivedDB {
       const marketEnd = marketData.endTime;
       const openReportingStart = marketEnd + SECONDS_IN_A_DAY.toNumber() + 1;
 
-      if (marketData.nextWindowEndTime && timestamp >= marketData.nextWindowEndTime) {
+      if (
+        marketData.nextWindowEndTime &&
+        timestamp >= marketData.nextWindowEndTime
+      ) {
         reportingState = MarketReportingState.AwaitingFinalization;
-      } else if (marketData.nextWindowStartTime && timestamp >= marketData.nextWindowStartTime) {
+      } else if (
+        marketData.nextWindowStartTime &&
+        timestamp >= marketData.nextWindowStartTime
+      ) {
         reportingState = MarketReportingState.CrowdsourcingDispute;
-      } else if ((marketData.reportingState === MarketReportingState.PreReporting || marketData.reportingState === MarketReportingState.DesignatedReporting) && timestamp >= openReportingStart) {
-          reportingState = MarketReportingState.OpenReporting;
-      } else if (marketData.reportingState === MarketReportingState.PreReporting && timestamp >= marketEnd && timestamp < openReportingStart) {
-          reportingState = MarketReportingState.DesignatedReporting;
+      } else if (
+        (marketData.reportingState === MarketReportingState.PreReporting ||
+          marketData.reportingState ===
+            MarketReportingState.DesignatedReporting) &&
+        timestamp >= openReportingStart
+      ) {
+        reportingState = MarketReportingState.OpenReporting;
+      } else if (
+        marketData.reportingState === MarketReportingState.PreReporting &&
+        timestamp >= marketEnd &&
+        timestamp < openReportingStart
+      ) {
+        reportingState = MarketReportingState.DesignatedReporting;
       }
 
       if (reportingState && reportingState !== marketData.reportingState) {
@@ -502,31 +683,38 @@ export class MarketDB extends DerivedDB {
 
     if (updateDocs.length > 0) {
       await this.saveDocuments(updateDocs);
-      this.augur.events.emitAfter(SubscriptionEventName.NewBlock, SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
+      this.augur.events.emitAfter(
+        SubscriptionEventName.NewBlock,
+        SubscriptionEventName.ReportingStateChanged,
+        { data: updateDocs }
+      );
     }
   }
 
   // A market's liquidity is considered recently depleted if it had liquidity under
   // a 15% spread in the last 24 hours, but doesn't currently have liquidity
-  async hasRecentlyDepletedLiquidity(marketData: MarketData, currentLiquiditySpreads, currentLastPassingLiquidityCheck): Promise<boolean>  {
-    const moreThantwentyFourHoursAgo = (date) => {
-      const twentyFourHours = Date.now() - (60 * 60 * 24 * 1000);
+  async hasRecentlyDepletedLiquidity(
+    marketData: MarketData,
+    currentLiquiditySpreads,
+    currentLastPassingLiquidityCheck
+  ): Promise<boolean> {
+    const moreThantwentyFourHoursAgo = date => {
+      const twentyFourHours = Date.now() - 60 * 60 * 24 * 1000;
       return twentyFourHours > date;
-    }
+    };
 
     const lastPassingLiquidityCheck = currentLastPassingLiquidityCheck * 1000;
     const liquidity15Percent = new BigNumber(currentLiquiditySpreads[10]);
     const liquidity10Percent = new BigNumber(currentLiquiditySpreads[15]);
-    const currentlyHasLiquidity = liquidity10Percent.gt(0) || liquidity15Percent.gt(0)
+    const currentlyHasLiquidity =
+      liquidity10Percent.gt(0) || liquidity15Percent.gt(0);
     let hadLiquidityInLast24Hour = false;
 
     if (marketData.lastPassingLiquidityCheck === 0) {
       hadLiquidityInLast24Hour = false;
-    }
-    else if (moreThantwentyFourHoursAgo(lastPassingLiquidityCheck)) {
+    } else if (moreThantwentyFourHoursAgo(lastPassingLiquidityCheck)) {
       hadLiquidityInLast24Hour = false;
-    }
-    else if (!moreThantwentyFourHoursAgo(lastPassingLiquidityCheck)) {
+    } else if (!moreThantwentyFourHoursAgo(lastPassingLiquidityCheck)) {
       hadLiquidityInLast24Hour = true;
     }
 

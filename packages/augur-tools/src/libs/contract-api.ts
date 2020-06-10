@@ -1,11 +1,11 @@
-import { WSClient } from '@0x/mesh-rpc-client';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
   Augur,
-  BrowserMesh,
   Connectors,
   CreateCategoricalMarketParams,
+  createClient,
   CreateScalarMarketParams,
   CreateYesNoMarketParams,
   DisputeWindow,
@@ -15,17 +15,14 @@ import {
   PlaceTradeDisplayParams,
   SimulateTradeData,
   WarpSyncData,
-  ZeroX,
   ZeroXPlaceTradeDisplayParams,
   ZeroXSimulateTradeData,
 } from '@augurproject/sdk';
-import { createClient } from '@augurproject/sdk/build';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
+import moment from 'moment';
 import { Account } from '../constants';
 import { makeSigner } from './blockchain';
-import { SDKConfiguration } from '@augurproject/artifacts';
-import moment from 'moment';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const MAX_APPROVAL = new BigNumber(2).pow(256).minus(1);
@@ -54,8 +51,7 @@ export class ContractAPI {
       accounts.map(account =>
         ContractAPI.userWrapper(account, provider, config, connector)
       )
-        )
-      ;
+    );
   }
 
   constructor(
@@ -850,6 +846,13 @@ export class ContractAPI {
   async getMarkets(): Promise<Getters.Markets.MarketList> {
     const universe = this.augur.contracts.universe.address;
     return this.augur.getMarkets({ universe });
+  }
+
+  async getBettingMarkets(
+    params = {}
+  ): Promise<Getters.Markets.MarketList> {
+    const universe = this.augur.contracts.universe.address;
+    return this.augur.getMarkets({ universe, templateFilter: Getters.Markets.TemplateFilters.sportsBook });
   }
 
   async getInitialReporterStake(
