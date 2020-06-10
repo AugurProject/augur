@@ -9,7 +9,7 @@ beforeAll(async () => {
 
 const templateValidations = [
   {
-    skip: false,
+    skip: true,
     title:
       'PGA: Which team will win the 2020 Presidents Cup?',
     templateInfo:
@@ -23,7 +23,7 @@ const templateValidations = [
       'success',
   },
   {
-    skip: false,
+    skip: true,
     title:
       'PGA: Which team will win the 2020 Presidents Cup?',
     templateInfo:
@@ -37,7 +37,7 @@ const templateValidations = [
       'error: no additioanl outcomes is a requirement, only required outcomes are allowed',
   },
   {
-    skip: false,
+    skip: true,
     title:
       'NFL Week 1: Will the Atlanta Falcons & Arizona Cardinals score 1 or more combined points?',
     templateInfo:
@@ -50,7 +50,7 @@ const templateValidations = [
       'error: estimated schedule date time is after market event expiration endTime',
   },
   {
-    skip: false,
+    skip: true,
     title:
       'Will there be 1000 or more total confirmed deaths from Coronavirus (Covid-19) in Canada by April 1, 2020 according to https://www.worldometers.info/coronavirus/country?',
     templateInfo:
@@ -62,12 +62,21 @@ const templateValidations = [
     'start date in question is not the required number of days before market event expiration endTime',
   },
   {
-    skip: false,
+    skip: true,
     title: 'Twitter: Will @realDonaldTrump have 1999.9 Thousand or more twitter followers on June 18, 2020, according to www.socialblade.com?',
     templateInfo: '{"hash":"0x528d5c82bef2c4cc9808751b8c86c4e474a7df4cdd5cd3af23752181610d9b9c","question":"Twitter: Will @[0] have [1] [2] or more twitter followers on [3], according to www.socialblade.com?","inputs":[{"id":0,"type":"TEXT","value":"realDonaldTrump","timestamp":null},{"id":1,"type":"TEXT","value":"1999.9","timestamp":"1999.9"},{"id":2,"type":"DROPDOWN","value":"Thousand","timestamp":null},{"id":3,"type":"DATESTART","value":"June 18, 2020","timestamp":1592496396}]}',
     endTime: '1592582796',
     resolutionRules: 'To find the results: In the header of the page. Select \"Twitter\" from the drop down menu. Then enter the twitter handle in the search bar. Scroll down the page until you reach the section that says \"Twitter Stats Summary/ User Statistics for (account named). Find the date named in the market question and get the larger number under the \"Followers\" section (number will not have a +/-). Settlement should be based off of this number.\nIf the twitter handle named in the market does not exist, the market should resolve as \"Invalid\".',
     result: 'numeric input is outside of valid numeric range'
+  },
+  {
+    skip: false,
+    title: 'Will the Dow Jones Industrial Average close on or above 25000 on June 09, 2020?',
+    templateInfo: '{"hash":"0x581ce39fbc678b07c215f78e90e3c11124185cddbf39974720a1090a698ad8f1","question":"Will the [0] close on or above [1] on [2]?","inputs":[{"id":0,"type":"DROPDOWN","value":"Dow Jones Industrial Average","timestamp":null},{"id":1,"type":"TEXT","value":"25000","timestamp":"25000"},{"id":2,"type":"DATEYEAR","value":"June 09, 2020","timestamp":null}]}',
+    endTime: '1591821234',
+    creationTime: '1591796053',
+    resolutionRules: `Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded\nIf trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
+    result: 'event expiration can not be before exchange close time, or market creation after exchange close time',
   }
 ];
 

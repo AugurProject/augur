@@ -709,9 +709,10 @@ export function getTemplateExchangeClosingWithBuffer(
   return closingDateTime.unix();
 }
 
-function closingDateDependencies(
+function closingDateDependenciesCheck(
   inputs: ExtraInfoTemplateInput[],
   endTime: number,
+  creationTime: number,
   closingDateDependencies: DateInputDependencies[]
 ) {
   if (!closingDateDependencies) return true;
@@ -719,7 +720,7 @@ function closingDateDependencies(
   const result = deps.reduce((p, d) => {
     const dateYearSource = inputs.find(i => i.id === d.inputDateYearId);
     const exchangeValue = inputs.find(i => i.id === d.inputSourceId);
-    if (!dateYearSource || !exchangeValue) return false;
+    if (!dateYearSource || !exchangeValue || !dateYearSource.timestamp) return false;
     const timeOffset = d.inputTimeOffset[exchangeValue.value] as TimeOffset;
     if (timeOffset) {
       const closingDateTime = getTemplateExchangeClosingWithBuffer(
@@ -728,7 +729,7 @@ function closingDateDependencies(
         timeOffset.minutes,
         timeOffset.offset
       );
-      if (closingDateTime > endTime) {
+      if (closingDateTime > endTime || creationTime > closingDateTime) {
         return false;
       }
     }
@@ -910,13 +911,14 @@ export const isTemplateMarket = (
     }
 
     if (
-      !closingDateDependencies(
+      !closingDateDependenciesCheck(
         template.inputs,
         new BigNumber(endTime).toNumber(),
+        new BigNumber(creationTime).toNumber(),
         validation.closingDateDependencies
       )
     ) {
-      errors.push('event expiration can not be before exchange close time');
+      errors.push('event expiration can not be before exchange close time, or market creation after exchange close time');
       return false;
     }
 

@@ -386,17 +386,27 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
   const wed = 3;
   const finExpDate = moment()
     .day(wed)
-    .add(3, 'weeks')
+    .add(1, 'weeks')
     .add(6, 'hours');
   const date = finExpDate.format('MMMM DD, YYYY');
-  const finUnixEndTime = finExpDate.unix();
-  const finInputValues = ['Dow Jones Industrial Average', '25000', date];
+  const finInputValues = ['Dow Jones Industrial Average', '15000', date];
+  let finInputs = getFilledInputs(finTemplate, finInputValues);
+  finInputs[2].timestamp = finExpDate.unix();
   markets.push({
     marketType: 'yesNo',
-    endTime: finUnixEndTime,
+    endTime: finExpDate.add(1, 'days').unix(),
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.015',
-    extraInfo: buildExtraInfo(finTemplate, finInputValues, [FINANCE, INDEXES]),
+    extraInfo: {
+      categories: [FINANCE, INDEXES, 'Dow Jones Industrial Average'],
+      description: fillInQuestion(finTemplate, finInputValues),
+      longDescription: getLongDescription(finTemplate),
+      template: {
+        hash: finTemplate.hash,
+        question: finTemplate.question,
+        inputs: finInputs
+      }
+    },
     orderBook: yesNoOrderBook,
   });
 
@@ -578,7 +588,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
   const cryptoTemplates = TEMPLATES[CRYPTO].children[ETHEREUM]
     .templates as Template[];
   const cryptoTemplate: Template = cryptoTemplates[2];
-  const cryptoExpDate = moment(); //.add(1, 'weeks');
+  const cryptoExpDate = moment().add(1, 'weeks');
   const cryptoInputValues = [
     'ETH/USD',
     cryptoExpDate.format('MMMM DD, YYYY'),
@@ -588,7 +598,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
   cryptoInputs[1].timestamp = cryptoExpDate.unix();
   markets.push({
     marketType: 'scalar',
-    endTime: cryptoExpDate.add(2, 'days').unix(),
+    endTime: cryptoExpDate.add(1, 'days').unix(),
     minPrice: '120',
     maxPrice: '200',
     tickSize: '0.01',
