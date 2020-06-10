@@ -16,6 +16,8 @@ console.log(`
   BUILD INFORMATION
 
     branch            -- ${process.env.CURRENT_BRANCH}
+    commit            -- ${process.env.CURRENT_COMMITHASH}
+                      -- https://github.com/AugurProject/augur/commit/${process.env.CURRENT_COMMITHASH}
     network           -- ${process.env.ETHEREUM_NETWORK}
   -------------------------------------------
   ATTACHED PROPERTIES

@@ -48,6 +48,27 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, market, categ
     assert marketData.numTicks == 400000
     assert marketData.displayPrices == [-10 * 10 **18, 30 * 10 ** 18]
 
+def test_hot_loading_bulk(kitchenSinkFixture, augur, cash, categoricalMarket, scalarMarket):
+    hotLoading = kitchenSinkFixture.contracts["HotLoading"]
+    fillOrder = kitchenSinkFixture.contracts["FillOrder"]
+    orders = kitchenSinkFixture.contracts["Orders"]
+    account = kitchenSinkFixture.accounts[0]
+
+    markets = [categoricalMarket.address, scalarMarket.address]
+
+    # Get the market hot load data
+    marketsData = getMarketsData(hotLoading, augur, markets, fillOrder, orders)
+
+    marketData = marketsData[0]
+    assert marketData.marketType == 1 # CATEGORICAL
+    assert marketData.numOutcomes == 4
+    outcomeLabel = stringToBytes(" ")
+    assert marketData.outcomes == [outcomeLabel, outcomeLabel, outcomeLabel]
+
+    marketData = marketsData[1]
+    assert marketData.marketType == 2 # SCALAR
+    assert marketData.numTicks == 400000
+    assert marketData.displayPrices == [-10 * 10 **18, 30 * 10 ** 18]
 
 def test_trading(kitchenSinkFixture, augur, cash, market):
     hotLoading = kitchenSinkFixture.contracts["HotLoading"]
@@ -205,6 +226,10 @@ class MarketData:
 
 def getMarketData(hotLoading, augur, market, fillOrder, orders):
     return MarketData(hotLoading.getMarketData(augur.address, market.address, fillOrder.address, orders.address))
+
+def getMarketsData(hotLoading, augur, markets, fillOrder, orders):
+    rawMarketsData = hotLoading.getMarketsData(augur.address, markets, fillOrder.address, orders.address)
+    return [MarketData(rawMarketData) for rawMarketData in rawMarketsData]
 
 class DisputeWindowData:
 

@@ -233,12 +233,20 @@ export class Augur<TProvider extends Provider = Provider> {
     this.dependencies.setUseRelay(useRelay);
   }
 
+  setUseDesiredEthBalance(useDesiredEthBalance: boolean): void {
+    this.dependencies.setUseDesiredEthBalance(useDesiredEthBalance);
+  }
+
   getUseWallet(): boolean {
     return this.dependencies.useWallet;
   }
 
   getUseRelay(): boolean {
     return this.dependencies.useRelay;
+  }
+
+  getUseDesiredEthBalance(): boolean {
+    return this.dependencies.useDesiredSignerETHBalance;
   }
 
   async getGasStation() {

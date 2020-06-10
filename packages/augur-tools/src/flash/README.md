@@ -213,34 +213,40 @@ error: `no validation found for hash`
 "Will the [0] close on or above [1] on [2]?" template string has input indexes the template.inputs fill in the indexes to produce a calculated market title "Will the CAC 40 close on or above 5200 on December 6, 2019?" given that the values are 0: 'CAC 40' 1: '5200' 2: 'December 6, 2019'
 error: `populated title does not match title given`
 
-5. For some templates they use ESTDATETIME input type, which is a timestamp for the estimated time the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime)
+5. For a few templates inputs have to fall within a numeric range. If template inputs are outside of the numeric range this error will occur
+error: `numeric input is outside of valid numeric range`
+
+6. For some templates they use ESTDATETIME input type, which is a timestamp for the estimated time the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime)
 error: `estimated schedule date time is after market event expiration endTime`
 
-6. For some markets there is are a number of required days between date in market question and market's event expiration.
+7. For some markets there is are a number of required days between date in market question and market's event expiration.
 error: `start date in question is not the required number of days before market event expiration endTime`
 
-7. For some templates the DATEYEAR input type can not be on a weekend.
+8. For some templates the DATEYEAR input type can not be on a weekend.
 error: `market question date can not be on weekend or on a holiday`
 
-8. There are templates that give date range in the market question. These templates can not have the end date before the start date.
+9. There are templates that give date range in the market question. These templates can not have the end date before the start date.
 error: `market question end date can not be after start date`
 
-9. For templates that rely on identifying a stock or index traded on exchange the market event expiration needs to be 1 hour after the latest possible time the exchange closes. Example part of the year NASDAQ closes at UTC -4 and other part UTC -5, with a one hour buffer and assuming the lastest closing time UTC -4 the market event expiration needs to be at UTC -3.
-error: `event expiration can not be before exchange close time`
+10. For templates that rely on identifying a stock or index traded on exchange the market event expiration needs to be 1 hour after the latest possible time the exchange closes. Example part of the year NASDAQ closes at UTC -4 and other part UTC -5, with a one hour buffer and assuming the lastest closing time UTC -4 the market event expiration needs to be at UTC -3.
+error: `event expiration can not be before exchange close time, or market creation after exchange close time`
 
-10. For movie total gross for opening weekend, the market event expiration needs to have a buffer. The earilest market event expiration time is the Wednesday after opening weekend.
+11. For movie total gross for opening weekend, the market event expiration needs to have a buffer. The earilest market event expiration time is the Wednesday after opening weekend.
 error: `event expiration can not be before Wednesday after movie opening weekend and/or opening day must be a friday`
 
-11. For some templates they use DATESTART input type, which is a timestamp for the day the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime)
+12. For some templates they use DATESTART input type, which is a timestamp for the day the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime)
 error: `start date is after market event expiration endTime`
 
-12. Template inputs can not have duplicate values
+13. For markets on a certain day the market creation time can not be before the date of event, error is
+error: `start date can not be before market creationTime`
+
+14. Template inputs can not have duplicate values
 error: `template input values have duplicates`
 
-13. Outcome values can not have duplicate values
+15. Outcome values can not have duplicate values
 error: `outcome array has duplicates`
 
-14. Validations have a regex for Market questions (title) based on input values needed to populated the market question template. Example, `Will the CAC 40 close on or above 5200 on December 6, 2019?` has to meet the following regex.
+16. Validations have a regex for Market questions (title) based on input values needed to populated the market question template. Example, `Will the CAC 40 close on or above 5200 on December 6, 2019?` has to meet the following regex.
 
 ```
 ^Will the (S&P 500 Index|Dow Jones Industrial Average|Nasdaq Composite|Wilshire 5000|Russell 1000|NYSE Composite|MSCI World Index|FTSE All-World Index|Dow Jones Global Titans 50|S&P Global 100 Index|FTSE 100|DAX|Shanghai SE Composite|Hang Seng|Nikkei 225|S&P/TSX Composite|CAC 40|All Ordinaries|BSE Sensex 30|KOSPI Index|VIX) close on or above [0-9]+.*[0-9]* on (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9]){2}, 20|([0-9]{2})\\?$
@@ -248,22 +254,22 @@ error: `outcome array has duplicates`
 Notice that dropdown values are included and specific date format has to be met.
 error: `populated market question does not match regex`
 
-15. Most categorical templates have required outcomes, for example, "Other (Field)" is required so that a market can resolve with a valid outcome of the winning outcome isn't listed explicitly.
+17. Most categorical templates have required outcomes, for example, "Other (Field)" is required so that a market can resolve with a valid outcome of the winning outcome isn't listed explicitly.
 error: `required outcomes are missing`
 
-16. Some categorical templates do not allow additional user outcomes, for example, there are a few Golf templates that all required outcomes are the only allowed outcomes to be on the templated market.
+18. Some categorical templates do not allow additional user outcomes, for example, there are a few Golf templates that all required outcomes are the only allowed outcomes to be on the templated market.
 error: `no additioanl outcomes is a requirement, only required outcomes are allowed`
 
-17. Special data dropdown dependencies have to be met, for example, a crypto BTC/USD market can not use BTC/EUR source for market resolution.
+19. Special data dropdown dependencies have to be met, for example, a crypto BTC/USD market can not use BTC/EUR source for market resolution.
 error: `market question dropdown dependencies values are incorrect`
 
-18. There is also possible Special data dropdown dependencies for outcomes, if an American Football market is for AFC football championship. NFC teams can not be used as outcomes.
+20. There is also possible Special data dropdown dependencies for outcomes, if an American Football market is for AFC football championship. NFC teams can not be used as outcomes.
 error: `outcome dependencies are incorrect`
 
-19. There are categorical markets that use market question inputs in outcomes. These values need to match, example Point Spread markets have the team name and points in the outcome. `[Team A] -[Whole #].5` gets updated with the team choice and points from market question to produce the outcome. example `Arizona Cardinals -4.5`
+21. There are categorical markets that use market question inputs in outcomes. These values need to match, example Point Spread markets have the team name and points in the outcome. `[Team A] -[Whole #].5` gets updated with the team choice and points from market question to produce the outcome. example `Arizona Cardinals -4.5`
 error: `outcomes values from substituted market question inputs are incorrect`
 
-20. The resolution rules hash of passed in resolution rules needs to match the hash of the resolution rules in the validation structure.
+22. The resolution rules hash of passed in resolution rules needs to match the hash of the resolution rules in the validation structure.
 error: `hash of resolution details is different than validation resolution rules hash`
 
-21. For unexpected result like a crash error will be formated like `unknown, ...` with catch exception.
+23. For unexpected result like a crash error will be formated like `unknown, ...` with catch exception.

@@ -68,6 +68,7 @@ export enum TemplateFilters {
   all = 'all',
   templateOnly = 'templateOnly',
   customOnly = 'customOnly',
+  sportsBook = 'sportsBook',
 }
 // Valid market liquidity spreads
 export enum MaxLiquiditySpread {
@@ -177,6 +178,9 @@ export interface MarketInfo {
   mostLikelyInvalid: boolean;
   isWarpSync: boolean;
   passDefaultLiquiditySpread: boolean;
+  sportsBookGroupId: string;
+  sportsBookType: string;
+  sportsBookLine: string;
 }
 
 export interface DisputeInfo {
@@ -679,6 +683,11 @@ export class Markets {
             market.isTemplate
           )
             return false;
+          if (
+              params.templateFilter === TemplateFilters.sportsBook &&
+              !market.templateGroupHash
+            )
+              return false;
         }
         // Apply designatedReporter
         if (
@@ -1440,6 +1449,9 @@ async function getMarketsInfo(
       mostLikelyInvalid: marketData.invalidFilter,
       isWarpSync: marketData.isWarpSync,
       passDefaultLiquiditySpread,
+      sportsBookGroupId: marketData.templateGroupHash,
+      sportsBookType: marketData.templateGroupType,
+      sportsBookLine: marketData.templateGroupLine,
     };
   });
 }

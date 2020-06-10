@@ -54,11 +54,12 @@ import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { AppStatus } from 'modules/app/store/app-status';
+import getPrecision from 'utils/get-number-precision';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
-function getInfo(params: any, status: string, marketInfo: MarketData) {
+export function getInfo(params: any, status: string, marketInfo: MarketData, isOrder: boolean = true) {
   const outcome = new BigNumber(params.outcome || params._outcome).toString();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
   let orderType =
@@ -80,17 +81,25 @@ function getInfo(params: any, status: string, marketInfo: MarketData) {
     onChainMinPrice,
     onChainMaxPrice
   );
-  const price = convertOnChainPriceToDisplayPrice(
-    createBigNumber(params._price || params.price),
-    onChainMinPrice,
-    tickSize
-  ).toString(10);
+  const price = isOrder
+    ? createBigNumber(params._price || params.price)
+        .times(tickSize)
+        .toString(10)
+    : convertOnChainPriceToDisplayPrice(
+        createBigNumber(params._price || params.price),
+        onChainMinPrice,
+        tickSize
+      ).toString(10);
+
   const amount = convertOnChainAmountToDisplayAmount(
     createBigNumber(params.amount || params._amount),
     tickSize
   ).toString();
 
+  const priceFormatted = formatDai(price, {decimals: getPrecision(String(tickSize), 2)})
+
   return {
+    priceFormatted,
     price,
     amount,
     orderType: toCapitalizeCase(orderType),

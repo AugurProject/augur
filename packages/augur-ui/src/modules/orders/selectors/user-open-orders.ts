@@ -2,8 +2,6 @@ import memoize from 'memoizee';
 import { createBigNumber } from 'utils/create-big-number';
 import store from 'appStore';
 
-import { isOrderOfUser } from 'modules/orders/helpers/is-order-of-user';
-
 import {
   BUY_INDEX,
   SELL_INDEX,
@@ -11,6 +9,7 @@ import {
   BUY,
   YES_NO,
 } from 'modules/common/constants';
+import { TXEventName } from '@augurproject/sdk';
 import {
   TXEventName
 } from '@augurproject/sdk';
@@ -100,42 +99,40 @@ const userOpenOrders = memoize(
   (
     marketId,
     outcomeId,
-    loginAccount,
-    userMarketOpenOrders,
-    orderCancellation,
+    orderData,
+    orderCancellation = {},
     marketDescription,
     name,
-    marketType
+    marketType,
+    tickSize
   ) => {
-    const orderData = userMarketOpenOrders[outcomeId];
-
     const userBids =
       orderData == null || orderData[BUY_INDEX] == null
         ? []
         : getUserOpenOrders(
             marketId,
-            userMarketOpenOrders[outcomeId],
-            BUY_INDEX,
             outcomeId,
-            loginAccount.address,
+            orderData,
+            BUY_INDEX,
             orderCancellation,
             marketDescription,
             name,
-            marketType
+            marketType,
+            tickSize
           );
     const userAsks =
       orderData == null || orderData[SELL_INDEX] == null
         ? []
         : getUserOpenOrders(
             marketId,
-            userMarketOpenOrders[outcomeId],
-            SELL_INDEX,
             outcomeId,
-            loginAccount.address,
+            orderData,
+            SELL_INDEX,
             orderCancellation,
             marketDescription,
             name,
-            marketType
+            marketType,
+            tickSize
           );
 
     const orders = userAsks.concat(userBids);
@@ -148,20 +145,19 @@ const userOpenOrders = memoize(
 
 function getUserOpenOrders(
   marketId,
+  outcomeId,
   orders,
   orderType,
-  outcomeId,
-  userId,
   orderCancellation = {},
   marketDescription = '',
   name = '',
   marketType = YES_NO,
+  tickSize = '0.01'
 ) {
   const typeOrders = orders[orderType];
 
   return Object.keys(typeOrders)
     .map(orderId => typeOrders[orderId])
-    .filter(order => isOrderOfUser(order, userId))
     .sort((order1, order2) =>
       createBigNumber(order2.salt, 10).comparedTo(
         createBigNumber(order1.salt, 10)
@@ -174,17 +170,22 @@ function getUserOpenOrders(
       outcomeId,
       creationTime: convertSaltToFormattedDate(order.salt),
       expiry: convertUnixToFormattedDate(order.expirationTimeSeconds),
-      pending: !!orderCancellation[order.orderId] && orderCancellation[order.orderId] !== TXEventName.Failure,
+      pending:
+        !!orderCancellation[order.orderId] &&
+        orderCancellation[order.orderId] !== TXEventName.Failure,
       status: order.orderState,
       orderCancellationStatus: orderCancellation[order.orderId],
       originalShares: formatNone(),
-      avgPrice: formatDai(order.fullPrecisionPrice),
+      avgPrice: formatDai(order.fullPrecisionPrice, {
+        decimals: getPrecision(String(tickSize), 2),
+        decimalsRounded: getPrecision(String(tickSize), 2),
+      }),
       matchedShares: formatNone(),
       unmatchedShares: formatMarketShares(marketType, order.amount),
       tokensEscrowed: formatDai(order.tokensEscrowed),
       sharesEscrowed: formatMarketShares(marketType, order.sharesEscrowed),
       marketDescription,
       name,
-      cancelOrder: (order) => store.dispatch(cancelOrder(order))
+      cancelOrder: order => store.dispatch(cancelOrder(order)),
     }));
 }

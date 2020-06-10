@@ -15,7 +15,9 @@ import {
   TemplateIcon,
   YellowTemplateIcon,
   ArchivedIcon,
-  ExclamationCircle
+  ExclamationCircle,
+  FilledCheckbox,
+  EmptyCheckbox
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -38,6 +40,7 @@ import {
   CLOSED_SHORT,
   MODAL_INVALID_MARKET_RULES,
   GWEI_CONVERSION,
+  AUTO_ETH_REPLENISH,
 } from 'modules/common/constants';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
@@ -60,6 +63,7 @@ import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
 import { getEthReserve } from 'modules/auth/helpers/get-eth-reserve';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
+import { augurSdk } from 'services/augursdk';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -306,6 +310,7 @@ interface TemplateShieldProps {
 
 export const TemplateShield = ({ market }: TemplateShieldProps) => {
   const { theme } = useAppStatusStore();
+  if (!market.isTemplate) return null;
   const yellowShield = hasTemplateTextInputs(market.template.hash, market.marketType === CATEGORICAL);
   return (
     <>
@@ -803,7 +808,7 @@ interface TransactionFeeLabelProps {
 }
 
 const mapStateToPropsTransactionFeeLabel = (state: AppState) => ({
-  label: getTransactionLabel(state)
+  label: getTransactionLabel()
 });
 
 export const TransactionFeeLabelCmp = ({
@@ -1049,18 +1054,18 @@ interface PendingLabelProps {
   status?: string;
 }
 
-export const PendingLabel = (props: PendingLabelProps) => (
+export const PendingLabel = ({ status }: PendingLabelProps) => (
   <span
     className={classNames(Styles.PendingLabel, {
-      [Styles.Failure]: props.status && props.status === TXEventName.Failure,
+      [Styles.Failure]: status === TXEventName.Failure,
     })}
     data-tip
     data-for={'processing'}
     data-iscapture={true}
   >
-    {(!props.status ||
-      props.status === TXEventName.Pending ||
-      props.status === TXEventName.AwaitingSigning) && (
+    {(!status ||
+      status === TXEventName.Pending ||
+      status === TXEventName.AwaitingSigning) && (
       <>
         <span>
           Processing <ClipLoader size={8} color="#ffffff" />
@@ -1078,7 +1083,7 @@ export const PendingLabel = (props: PendingLabelProps) => (
         </ReactTooltip>
       </>
     )}
-    {props.status && props.status === TXEventName.Failure && (
+    {status === TXEventName.Failure && (
       <span>Failed</span>
     )}
   </span>
@@ -1513,7 +1518,7 @@ const mapStateToPropsEthReserve = (state: AppState, ownProps) => {
     }
   }
 
-  const ethInReserve = getEthReserve(state);
+  const ethInReserve = getEthReserve();
   const gasPrice =
     gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const estTransactionFee = createBigNumber(
@@ -1574,6 +1579,36 @@ export const EthReserveNotice = connect(
   mapStateToPropsEthReserve
 )(EthReserveNoticeCmp);
 
+export const EthReserveAutomaticTopOff = () => {
+  const { loginAccount: { balances }, env: { gsn } } = useAppStatusStore();
+  // top off buffer is used to determine to show automatic top off checkbox
+  const topoffBuffer = createBigNumber(1.2);
+  const tradingAccountDai = createBigNumber(balances.dai);
+  const signerEth = createBigNumber(balances.signerBalances.eth);
+  const aboveCutoff = tradingAccountDai.gt(createBigNumber(gsn.minDaiForSignerETHBalanceInDAI));
+  const aboveTopOff = signerEth.gt(createBigNumber(gsn.desiredSignerBalanceInETH).times(topoffBuffer));
+  const show = aboveCutoff && !aboveTopOff;
+  // using useState b/c lag in setting/getting property from sdk.
+  const [checked, setChecked] = useState(augurSdk?.client?.getUseDesiredEthBalance());
+  if (!show) return null;
+  return (
+    <div
+      className={classNames(Styles.Checkbox, {
+        [Styles.CheckboxChecked]: checked,
+      })}
+      role="button"
+      onClick={e => {
+        if (checked !== null) {
+          augurSdk?.client?.setUseDesiredEthBalance(!checked);
+          setChecked(!checked);
+        }
+      }}
+    >
+      {checked ? FilledCheckbox : EmptyCheckbox}
+      {AUTO_ETH_REPLENISH}
+    </div>
+  );
+};
 
 export const AutoCancelOrdersNotice = () => (
     <div className={classNames(Styles.ModalMessageAutoCancel)}>

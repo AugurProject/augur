@@ -540,9 +540,10 @@ div.LinearPropertyViewTransaction {
   flex-flow: row nowrap;
   align-items: center;
 
-  &.MarketScalarLabel {
+  &.MarketScalarLabel {   
     background: var(--color-scalar-20);
     color: var(--color-scalar);
+    display: inline-block;
 
     > svg {
       fill: none;
@@ -1346,5 +1347,37 @@ span.PendingLabel {
 
   > div {
     padding: @size-5;
+  }
+}
+
+.Checkbox {
+  .text-10;
+
+  align-items: center;
+  color: var(--color-primary-text);
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: @size-40 auto @size-16;
+  width: 304px;
+  padding: 0 0 @size-8;
+
+  > svg {
+    margin: 0 @size-12;
+    width: @size-20;
+
+    > rect {
+      stroke: var(--color-secondary-action-outline);
+    }
+
+    > path {
+      stroke: var(--color-primary-text);
+    }
+  }
+}
+
+.CheckboxChecked {
+  > svg > rect {
+    fill: var(--color-secondary-action);
+    fill-opacity: 0.3;
   }
 }

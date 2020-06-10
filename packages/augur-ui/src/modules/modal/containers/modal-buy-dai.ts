@@ -48,7 +48,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   },
   analyticsEvent: () => dP.track(BUY_DAI, {}),
   showTransferMyDai: sP.signerHasDAI,
-  showBuyDaiModal: () => dP.showBuyDaiModal(),
+  showAugurP2PModal: () => dP.showAugurP2PModal(),
   linkContent: [
     {
       content:

@@ -35,12 +35,13 @@ import {
   formatNumber,
 } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
+import { Trade, MarketData, OutcomeFormatted } from 'modules/types';
 import {
   LinearPropertyLabel,
   EthReserveNotice,
   TransactionFeeLabelToolTip,
+  EthReserveAutomaticTopOff,
 } from 'modules/common/labels';
-import { Trade, MarketData, OutcomeFormatted } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
 import { ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
 import { TXEventName } from '@augurproject/sdk/src';
@@ -208,9 +209,11 @@ export const Confirm = ({
     if (
       !isNaN(numTrades) &&
       numTrades > 0 &&
-      ((potentialDaiProfit.value !== 0 &&
+      ((potentialDaiProfit &&
+        potentialDaiProfit.value !== 0 &&
         createBigNumber(gasCostDai).gt(potentialDaiProfit.value)) ||
-        (orderShareProfit.value !== 0 &&
+        (orderShareProfit &&
+          orderShareProfit.value !== 0 &&
           createBigNumber(gasCostDai).gt(orderShareProfit.value))) &&
       !tradingTutorial
     ) {
@@ -448,6 +451,7 @@ export const Confirm = ({
           )}
         </div>
       )}
+      {numFills > 0 && <EthReserveAutomaticTopOff />}
       {messages && (
         <div
           className={classNames(Styles.MessageContainer, {
@@ -472,11 +476,7 @@ export const Confirm = ({
           )}
           {messages.type !== ERROR && !messages.button && (
             <button
-              onClick={
-                messages.callback
-                  ? () => messages.callback()
-                  : null
-              }
+              onClick={messages.callback ? () => messages.callback() : null}
             >
               {XIcon}
             </button>

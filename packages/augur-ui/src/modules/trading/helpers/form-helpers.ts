@@ -71,7 +71,7 @@ export const testPrice = (
       errors[INPUT_TYPES.PRICE].push(`Enter a valid percentage`);
     } else {
       errors[INPUT_TYPES.PRICE].push(
-        `Price must be between ${minPrice} and ${maxPrice}`
+        `Price must be above ${minPrice} and below ${maxPrice}`
       );
     }
   }

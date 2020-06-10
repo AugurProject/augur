@@ -1,18 +1,22 @@
-import { SupportedProvider } from 'ethereum-types';
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { Augur, Connectors, EmptyConnector, ZeroX } from '@augurproject/sdk';
-import { SubscriptionEventName } from '@augurproject/sdk';
+import {
+  Augur,
+  Connectors,
+  SubscriptionEventName,
+  ZeroX,
+} from '@augurproject/sdk';
 import { createClient } from '@augurproject/sdk/build';
 import { Controller } from '@augurproject/sdk/build/state/Controller';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
+import { API } from '@augurproject/sdk/build/state/getter/API';
 import { BlockAndLogStreamerSyncStrategy } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import { SupportedProvider } from 'ethereum-types';
 import { Account } from '../constants';
 import { makeSigner } from './blockchain';
 import { ContractAPI } from './contract-api';
 import { makeDbMock } from './MakeDbMock';
-import { API } from '@augurproject/sdk/build/state/getter/API';
 
 export class TestContractAPI extends ContractAPI {
   protected bulkSyncStrategy: BulkSyncStrategy;
@@ -24,7 +28,7 @@ export class TestContractAPI extends ContractAPI {
     account: Account,
     provider: EthersProvider,
     config: SDKConfiguration,
-    connector: Connectors.BaseConnector = new EmptyConnector(),
+    connector: Connectors.DirectConnector = new Connectors.DirectConnector(),
     dbPrefix: string = undefined,
     createBrowserMesh?: (
       config: SDKConfiguration,
@@ -43,6 +47,8 @@ export class TestContractAPI extends ContractAPI {
     );
 
     const db = await makeDbMock(dbPrefix).makeDB(client);
+
+    connector.initialize(client, db);
 
     return new TestContractAPI(client, provider, account, db, config);
   }

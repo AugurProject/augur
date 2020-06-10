@@ -154,13 +154,13 @@ const SideNav = ({
                   <label
                     className={classNames(Styles.SideNavMigrateTooltipHint)}
                     data-tip
-                    data-for={'migrateRep'}
+                    data-for={'tooltip--mobileMigrateRep'}
                     data-iscapture={true}
                   >
                     {helpIcon}
                   </label>
                   <ReactTooltip
-                    id={'migrateRep'}
+                    id={'tooltip--mobileMigrateRep'}
                     className={TooltipStyles.Tooltip}
                     effect="solid"
                     place="top"
@@ -170,7 +170,9 @@ const SideNav = ({
                   >
                     <p>
                       {
-                        'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2'
+                        Number(balances.legacyRep)
+                          ? 'You have V1 REP in your trading account. Migrate it to V2 REP to use it in Augur V2.'
+                          : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'
                       }
                     </p>
                   </ReactTooltip>
