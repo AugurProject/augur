@@ -10,9 +10,6 @@ import {
   NBA,
   NFL,
   NFL_DRAFT,
-  ENTERTAINMENT,
-  SOCIAL_MEDIA,
-  TWITTER,
   PGA,
   POLITICS,
   SOCCER,
@@ -23,6 +20,9 @@ import {
   HOCKEY,
   groupTypes,
   MMA,
+  ENTERTAINMENT,
+  SOCIAL_MEDIA,
+  TWITTER,
 } from '@augurproject/artifacts';
 import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';
@@ -366,7 +366,6 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     endTime: inTenMonths.getTime() / 1000,
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.01',
-
     extraInfo: {
       categories: [POLITICS, US_POLITICS],
       description: fillInQuestion(template1, usInputValues),
@@ -378,7 +377,6 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         inputs: getFilledInputs(template1, usInputValues),
       },
     },
-
     orderBook: yesNoOrderBook,
   });
 
@@ -388,17 +386,27 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
   const wed = 3;
   const finExpDate = moment()
     .day(wed)
-    .add(3, 'weeks')
+    .add(1, 'weeks')
     .add(6, 'hours');
   const date = finExpDate.format('MMMM DD, YYYY');
-  const finUnixEndTime = finExpDate.unix();
-  const finInputValues = ['Dow Jones Industrial Average', '25000', date];
+  const finInputValues = ['Dow Jones Industrial Average', '15000', date];
+  let finInputs = getFilledInputs(finTemplate, finInputValues);
+  finInputs[2].timestamp = finExpDate.unix();
   markets.push({
     marketType: 'yesNo',
-    endTime: finUnixEndTime,
+    endTime: finExpDate.add(1, 'days').unix(),
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.015',
-    extraInfo: buildExtraInfo(finTemplate, finInputValues, [FINANCE, INDEXES]),
+    extraInfo: {
+      categories: [FINANCE, INDEXES, 'Dow Jones Industrial Average'],
+      description: fillInQuestion(finTemplate, finInputValues),
+      longDescription: getLongDescription(finTemplate),
+      template: {
+        hash: finTemplate.hash,
+        question: finTemplate.question,
+        inputs: finInputs
+      }
+    },
     orderBook: yesNoOrderBook,
   });
 
