@@ -80,7 +80,6 @@ import {
 import {
   buildformattedDate,
   convertUnixToFormattedDate,
-  timestampComponents,
 } from 'utils/format-date';
 import TemplatePicker from 'modules/create-market/containers/template-picker';
 
@@ -110,12 +109,10 @@ import {
 } from 'modules/routes/constants/param-names';
 import {
   TemplateInputType,
-  TimeOffset,
-  getTemplateExchangeClosingWithBuffer,
   ValidationType,
   TemplateInput,
   getTemplateWednesdayAfterOpeningDay,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 
 interface FormProps {
   newMarket: NewMarket;

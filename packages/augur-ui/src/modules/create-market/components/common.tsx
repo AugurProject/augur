@@ -47,10 +47,12 @@ import {
   TemplateInputType,
   Template,
   UserInputDateTime,
+  ValidationType,
+} from '@augurproject/templates';
+import {
   CHOICE,
   REQUIRED,
-  ValidationType,
-} from '@augurproject/artifacts';
+} from '@augurproject/sdk-lite'
 import {
   TemplateBannerText,
   SelectEventNoticeText,

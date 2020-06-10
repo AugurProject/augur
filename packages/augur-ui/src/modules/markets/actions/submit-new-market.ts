@@ -20,7 +20,7 @@ import {
   TemplateInputType,
   TemplateInput,
   UserInputDateTime,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 
 export function submitNewMarket(
   market: NewMarket,

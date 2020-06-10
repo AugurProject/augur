@@ -8,7 +8,7 @@ import {
   ExtraInfoTemplate,
   getTemplatePlaceholderById,
   hasTemplateTextInputs,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 import Styles from 'modules/market/components/common/market-common.styles.less';
 import classNames from 'classnames';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
