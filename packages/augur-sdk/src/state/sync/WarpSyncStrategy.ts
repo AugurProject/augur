@@ -61,11 +61,11 @@ export class WarpSyncStrategy {
         return undefined;
       }
 
-      const maxBlock = await this.processFile(logs);
-
       // Blow it all away and refresh.
       await this.warpSyncController.destroyAndRecreateDB();
       await this.warpSyncController.createInitialCheckpoint();
+
+      const maxBlock = await this.processFile(logs);
 
       // Update the WarpSync checkpoint db.
       await this.db.warpCheckpoints.createCheckpoint(
