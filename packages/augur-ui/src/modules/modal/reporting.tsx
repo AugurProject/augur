@@ -40,7 +40,7 @@ import Styles from 'modules/modal/modal.styles.less';
 import { Getters, TXEventName } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
 import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
-import { ExplainerBlock } from 'modules/create-market/components/common';
+import { ExplainerBlock, MultipleExplainerBlock } from 'modules/create-market/components/common';
 import {
   AugurMarketsContent,
   EventDetailsContent,
@@ -377,11 +377,6 @@ export default class ModalReporting extends Component<
       radioButtons,
     } = this.state;
     const { description, marketType, details, isTemplate, marketId } = market;
-    const {
-      explainerBlockTitle,
-      explainerBlockSubtexts,
-      useBullets,
-    } = EventDetailsContent();
 
     return (
       <div className={Styles.ModalReporting}>
@@ -391,20 +386,21 @@ export default class ModalReporting extends Component<
             <Error header={WarpSyncErrorHeader} subheader={WarpSyncErrorSubheader} />
           }
           {migrateRep && <MigrateRepInfo />}
-          {explainerBlockTitle && explainerBlockSubtexts && (
-            <ExplainerBlock
-              title={explainerBlockTitle}
-              subtexts={explainerBlockSubtexts}
-              useBullets={useBullets}
-            />
-          )}
-          {AugurMarketsContent && (
-            <ExplainerBlock
-              title={AugurMarketsContent().explainerBlockTitle}
-              subtexts={AugurMarketsContent().explainerBlockSubtexts}
-              useBullets={AugurMarketsContent().useBullets}
-            />
-          )}
+          <MultipleExplainerBlock
+            isModal
+            contents={[
+              {
+                title: EventDetailsContent().explainerBlockTitle,
+                subtexts: EventDetailsContent().explainerBlockSubtexts,
+                useBullets: EventDetailsContent().useBullets,
+              },
+              {
+                title: AugurMarketsContent().explainerBlockTitle,
+                subtexts: AugurMarketsContent().explainerBlockSubtexts,
+                useBullets: AugurMarketsContent().useBullets,
+              },
+            ]}
+          />
           <div>
             <section>
               <MarketTypeLabel

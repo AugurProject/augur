@@ -6,11 +6,15 @@
 
     > div {
     	max-width: 750px;
+
+      > div[class*="ContentBlock"] {
+        width: 100%;
+      }
     }
 
     @media @breakpoint-mobile {
         margin-top: 0;
-        
+
         > div {
             max-width: calc(~"100% - @{size-10}");
             align-items: center;
