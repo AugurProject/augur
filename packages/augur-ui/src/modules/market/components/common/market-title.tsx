@@ -4,8 +4,10 @@ import { buildMarketDescription } from 'modules/create-market/get-template';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import {
   TemplateInput,
-  TemplateInputType,
   ExtraInfoTemplate,
+} from '@augurproject/templates';
+import {
+  TemplateInputType,
   getTemplatePlaceholderById,
   hasTemplateTextInputs,
 } from '@augurproject/templates';
