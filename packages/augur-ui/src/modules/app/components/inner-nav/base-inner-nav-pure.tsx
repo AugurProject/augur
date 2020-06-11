@@ -208,6 +208,9 @@ const BaseInnerNavPure = ({
         <CategoryFilters />
         <MarketsListSortBy {...sortProps} /> {/* MOBILE ONLY */}
         <MarketsListFilters {...filterProps} />
+        {/* This div is needed for Firefox not to glitch */
+          <div></div>
+        }
       </ul>
       {showMainMenu && showApply && (
         <div>
