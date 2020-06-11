@@ -75,6 +75,7 @@ import { MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { useMarketsStore } from 'modules/markets/store/markets';
+import { hasStakeInMarket } from 'modules/account/helpers/common';
 
 export interface PercentProps {
   percent: number;
@@ -218,7 +219,9 @@ export const DisputeOutcome = ({
   marketId,
   isWarpSync,
 }: DisputeOutcomeProps) => {
-  const { actions: {setModal}} = useAppStatusStore();
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
   const stakeCurrent = stake && formatAttoRep(stake.stakeCurrent);
   const bondSizeCurrent = stake && formatAttoRep(stake.bondSizeCurrent);
 
@@ -292,12 +295,14 @@ export const DisputeOutcome = ({
                 secondaryButton
                 disabled={!canDispute}
                 text={buttonText}
-                action={() => setModal({
-                  type: MODAL_REPORTING,
-                  marketId: marketId,
-                  selectedOutcome: id.toString(),
-                  isInvalid: invalid
-                })}
+                action={() =>
+                  setModal({
+                    type: MODAL_REPORTING,
+                    marketId: marketId,
+                    selectedOutcome: id.toString(),
+                    isInvalid: invalid,
+                  })
+                }
               />
             )}
           </div>
@@ -312,12 +317,14 @@ export const DisputeOutcome = ({
           secondaryButton
           disabled={!canDispute}
           text={buttonText}
-          action={() => setModal({
-            type: MODAL_REPORTING,
-            marketId: marketId,
-            selectedOutcome: id.toString(),
-            isInvalid: invalid
-          })}
+          action={() =>
+            setModal({
+              type: MODAL_REPORTING,
+              marketId: marketId,
+              selectedOutcome: id.toString(),
+              isInvalid: invalid,
+            })
+          }
         />
       )}
     </div>
@@ -337,7 +344,9 @@ export const ScalarBlankDisputeOutcome = ({
   market,
   otherOutcomes,
 }: ScalarBlankDisputeOutcomeProps) => {
-  const { actions: { setModal }} = useAppStatusStore();
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
   return (
     <div className={classNames(Styles.DisputeOutcome, Styles[`Outcome-1`])}>
       <span>{`Dispute current Tentative Winner with new ${denomination} value`}</span>
@@ -351,12 +360,14 @@ export const ScalarBlankDisputeOutcome = ({
           small
           disabled={!canDispute}
           text={'Dispute Tentative Winner'}
-          action={() => setModal({
-            type: MODAL_REPORTING,
-            market,
-            selectedOutcome: null,
-            isInvalid: false,
-          })}
+          action={() =>
+            setModal({
+              type: MODAL_REPORTING,
+              market,
+              selectedOutcome: null,
+              isInvalid: false,
+            })
+          }
         />
       </div>
     </div>
@@ -918,7 +929,7 @@ export const OutcomeGroup = ({
     id,
     reportingState,
     creationTimeFormatted,
-    isWarpSync
+    isWarpSync,
   } = market;
 
   const inDispute =
@@ -1017,7 +1028,8 @@ export const OutcomeGroup = ({
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
             ((!expanded && index < showOutcomeNumber) ||
-              expanded || marketType === YES_NO) &&
+              expanded ||
+              marketType === YES_NO) &&
             (inDispute &&
             !!stakes.find(stake => parseFloat(stake.outcome) === outcome.id) ? (
               <Fragment key={id + outcome.id + index}>
@@ -1323,19 +1335,16 @@ export const TopRow = ({ market, categoriesWithClick }) => {
 
 export interface InfoIconsProps {
   market: MarketData;
-  hasPosition?: boolean;
-  hasStaked?: boolean;
 }
 
-export const InfoIcons = ({
-  market,
-  hasPosition,
-  hasStaked,
-}: InfoIconsProps) => {
+export const InfoIcons = ({ market }: InfoIconsProps) => {
   const {
     loginAccount: { address },
+    accountPositions,
   } = useAppStatusStore();
   const { id, designatedReporter, author } = market;
+  const hasPosition = !!accountPositions[id];
+  const hasStaked = hasStakeInMarket(id);
   return (
     <>
       {address && isSameAddress(address, author) && (
@@ -1377,19 +1386,12 @@ export const InfoIcons = ({
 export interface TradingSideSectionProps {
   market: MarketData;
   condensed: boolean;
-  hasPosition: boolean;
-  hasStaked: boolean;
 }
 
 export const TradingSideSection = ({
   market,
   condensed,
-  hasPosition,
-  hasStaked,
-}) => {
-  const {
-    loginAccount: { address },
-  } = useAppStatusStore();
+}: TradingSideSectionProps) => {
   const {
     disputeInfo,
     endTimeFormatted,
@@ -1423,11 +1425,7 @@ export const TradingSideSection = ({
         />
       )}
       <div className={Styles.hoverIconTray}>
-        <InfoIcons
-          market={market}
-          hasPosition={hasPosition}
-          hasStaked={hasStaked}
-        />
+        <InfoIcons market={market} />
       </div>
       <MarketProgress
         reportingState={reportingState}
