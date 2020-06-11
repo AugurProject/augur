@@ -46,7 +46,6 @@ className={classNames(Styles.MarketCard, {
 
 interface MarketCardProps {
   market: MarketData;
-  location: Location;
   condensed?: boolean;
   expandedView?: boolean;
   loading?: boolean;

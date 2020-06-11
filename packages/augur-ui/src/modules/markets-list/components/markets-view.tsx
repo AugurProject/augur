@@ -198,7 +198,6 @@ const MarketsView = () => {
     limit,
     offset,
     showPagination,
-    selectedMarketCardType,
   } = state;
 
   function updateFilteredMarkets() {
@@ -270,23 +269,14 @@ const MarketsView = () => {
       !displayFee ? '“Fee”' : '“Liquidity Spread”'
     } filter is set to “All”. This puts you at risk of trading on invalid markets.`;
   }
-
+  // console.log("Market View Markets", filterSortedMarkets);
   return (
     <section className={Styles.MarketsView} ref={componentWrapper}>
       <HelmetTag {...MARKETS_VIEW_HEAD_TAGS} />
       {!isLogged && !restoredAccount && <LandingHero />}
       {isTrading && (
         <>
-          <MarketsHeader
-            headerTitle={headerTitle}
-            location={location}
-            isSearchingMarkets={isSearching}
-            filter={marketFilter}
-            sort={marketSort}
-            history={history}
-            selectedCategory={selectedCategories}
-            search={search}
-          />
+          <MarketsHeader headerTitle={headerTitle} />
 
           <section
             className={classNames({
@@ -311,11 +301,7 @@ const MarketsView = () => {
         <section>
           <h2>{headerTitle}</h2>
           <FilterDropDowns />
-          <FilterSearch
-            isSearchingMarkets={isSearching}
-            search={search}
-            selectedCategory={selectedCategories}
-          />
+          <FilterSearch search={search} />
           <FilterButton />
         </section>
       )}
@@ -389,14 +375,10 @@ const MarketsView = () => {
         showPagination={showPagination && !isSearching}
         filteredMarkets={filterSortedMarkets}
         marketCount={marketCount}
-        location={location}
-        history={history}
-        linkType={TYPE_TRADE}
         limit={limit}
         updateLimit={updateLimit}
         offset={offset}
         setOffset={setPageNumber}
-        isSearchingMarkets={isSearching}
         marketCardFormat={marketCardFormat}
       />
 
