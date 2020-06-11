@@ -42,11 +42,13 @@ import {
   createTemplateValueList,
   getEventExpirationForExchange,
 } from 'modules/create-market/get-template';
-import {
+import type {
   TemplateInput,
-  TemplateInputType,
   Template,
   UserInputDateTime,
+} from '@augurproject/templates';
+import {
+  TemplateInputType,
   ValidationType,
 } from '@augurproject/templates';
 import {

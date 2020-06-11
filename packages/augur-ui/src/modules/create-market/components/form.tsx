@@ -32,7 +32,6 @@ import {
   TEMPLATE_PICKER,
   TEMPLATE_INPUTS,
   TEMPLATE,
-  ExchangeClosingMessage,
   MovieWednesdayAfterOpeningMessage, AugurMarketsContent, EventDetailsContent, ReviewContent,
 } from 'modules/create-market/constants';
 import {
@@ -52,7 +51,7 @@ import {
   ExplainerBlock,
   ContentBlock, MultipleExplainerBlock,
 } from 'modules/create-market/components/common';
-import { NewMarket, Drafts, OutcomeFormatted } from 'modules/types';
+import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/containers/form-details';
 import Review from 'modules/create-market/containers/review';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
@@ -94,8 +93,6 @@ import {
   getFormattedOutcomes,
 } from 'modules/create-market/get-template';
 import deepClone from 'utils/deep-clone';
-
-import { Getters } from '@augurproject/sdk';
 import {
   TEMPLATE_CONTENT_PAGES,
   NO_CAT_TEMPLATE_CONTENT_PAGES,
@@ -107,10 +104,12 @@ import {
   CREATE_MARKET_FORM_PARAM_NAME,
   CREATE_MARKET_PORTFOLIO,
 } from 'modules/routes/constants/param-names';
+import type {
+  TemplateInput,
+} from '@augurproject/templates';
 import {
   TemplateInputType,
   ValidationType,
-  TemplateInput,
   getTemplateWednesdayAfterOpeningDay,
 } from '@augurproject/templates';
 

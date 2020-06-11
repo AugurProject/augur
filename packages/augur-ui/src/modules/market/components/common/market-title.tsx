@@ -2,7 +2,7 @@ import React from 'react';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { buildMarketDescription } from 'modules/create-market/get-template';
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import {
+import type {
   TemplateInput,
   ExtraInfoTemplate,
 } from '@augurproject/templates';
