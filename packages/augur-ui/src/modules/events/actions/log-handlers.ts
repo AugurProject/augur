@@ -29,13 +29,11 @@ import { augurSdk } from 'services/augursdk';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import {
-  CANCELORDER,
   CLAIMTRADINGPROCEEDS,
   CONTRIBUTE,
   CREATEMARKET,
   DOINITIALREPORT,
   PUBLICFILLORDER,
-  PUBLICTRADE,
   REDEEMSTAKE,
   CREATE_MARKET,
   MODAL_GAS_PRICE,
@@ -80,6 +78,7 @@ import { updateAppStatus, WALLET_STATUS, Ox_STATUS } from 'modules/app/actions/u
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { logger } from '@augurproject/utils';
+import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 
 const handleAlert = (
   log: any,
@@ -246,6 +245,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   // update ETH/REP rate and gasPrice each block
   dispatch(getEthToDaiRate());
   dispatch(getRepToDaiRate());
+  dispatch(loadGasPriceInfo());
 
   if (log.logs && log.logs.length > 0){
     console.log(log.logs);
