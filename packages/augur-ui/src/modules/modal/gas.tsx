@@ -17,7 +17,6 @@ import classNames from 'classnames';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
-import { closeModal } from './actions/close-modal';
 
 export const getEthTradeCost = (gasPrice: number) => {
   return formatEtherEstimate(
@@ -30,7 +29,7 @@ export const getEthTradeCost = (gasPrice: number) => {
 };
 
 export const Gas = () => {
-  const { gasPriceInfo, modal, actions: {updateGasPriceInfo} } = useAppStatusStore();
+  const { gasPriceInfo, modal, actions: { closeModal, updateGasPriceInfo } } = useAppStatusStore();
   const { feeTooLow } = modal;
   const closeAction = () => closeModal();
   const saveAction = (userDefinedGasPrice: number, average: number) => {
