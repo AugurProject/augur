@@ -10,7 +10,6 @@ import { IsJsonRpcRequest } from './IsJsonRpcRequest';
 import { JsonRpcRequest } from './getter/types';
 import { MakeJsonRpcError, JsonRpcErrorCode } from './MakeJsonRpcError';
 import { MakeJsonRpcResponse } from './MakeJsonRpcResponse';
-import { Subscriptions } from '../subscriptions';
 import { SubscriptionEventName } from '../constants';
 import { SDKConfiguration } from '@augurproject/artifacts';
 
@@ -37,7 +36,7 @@ export function runWssServer(api: API, app: express.Application, config: SDKConf
 
 function setupServer(server: WebSocket.Server, api: API) {
   server.on('connection', (websocket: WebSocket): void => {
-    const subscriptions = new Subscriptions(augurEmitter);
+    const subscriptions = api.augur.events;
     const pingInterval = setInterval(() => safePing(websocket), 12000);
 
     websocket.on('message', (data: WebSocket.Data): void => {
@@ -58,7 +57,7 @@ function setupServer(server: WebSocket.Server, api: API) {
 
           try {
             const subscription: string = subscriptions.subscribe(eventName, (data: {}): void => {
-              safeSend(websocket, MakeJsonRpcResponse(null, { subscription, result: data }));
+              safeSend(websocket, MakeJsonRpcResponse(null, { eventName, subscription, result: data }));
             });
             safeSend(websocket, MakeJsonRpcResponse(message.id, { subscription }));
           } catch (exc) {
@@ -67,10 +66,7 @@ function setupServer(server: WebSocket.Server, api: API) {
 
           if (eventName === SubscriptionEventName.SDKReady && api.augur.sdkReady) {
             console.log('immediately sending SDKReady event to new connection');
-            safeSend(websocket, JSON.stringify({
-              eventName: SubscriptionEventName.SDKReady,
-              result: [ 'ignoreme' ],
-            }));
+            safeSend(websocket, MakeJsonRpcResponse(null, { eventName: SubscriptionEventName.SDKReady }));
           }
 
         } else if (message.method === 'unsubscribe') {
