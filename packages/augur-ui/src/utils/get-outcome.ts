@@ -5,14 +5,14 @@ import {
   YES_NO_YES_ID,
   YES_NO_NO_OUTCOME_NAME,
   INVALID_OUTCOME_ID,
-  SCALAR
+  SCALAR,
+  INVALID_OUTCOME_LABEL
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
-import { INVALID_OUTCOME } from 'modules/create-market/constants';
-import { MarketInfo } from '@augurproject/sdk/src/state/getter/Markets';
+import { Getters } from '@augurproject/sdk';
 
 const getOutcomeName = (
-  market: MarketData | MarketInfo,
+  market: MarketData | Getters.Markets.MarketInfo,
   outcomeId: number,
   isInvalid: boolean = false,
   showScalarOutcome: boolean = false
@@ -23,7 +23,7 @@ const getOutcomeName = (
   // default to handle app loading
   if (!marketType) return YES_NO_YES_OUTCOME_NAME;
 
-  if ((marketType !== SCALAR && outcomeId === INVALID_OUTCOME_ID) || isInvalid) return INVALID_OUTCOME;
+  if ((marketType !== SCALAR && outcomeId === INVALID_OUTCOME_ID) || isInvalid) return INVALID_OUTCOME_LABEL;
 
   switch (marketType) {
     case YES_NO: {

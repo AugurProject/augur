@@ -48,7 +48,6 @@ import {
   SOCIAL_MEDIA,
 } from '@augurproject/artifacts';
 
-export const INVALID_OUTCOME = 'Invalid';
 
 // Button Types
 export const BACK = 'back';

@@ -18,7 +18,7 @@ import {
 import {
   SCALAR,
   REPORTING_STATE,
-  INVALID_OUTCOME_NAME,
+  INVALID_OUTCOME_LABEL,
   SUBMIT_REPORT,
   SUBMIT_DISPUTE,
   MARKETMIGRATED,
@@ -40,7 +40,7 @@ import Styles from 'modules/modal/modal.styles.less';
 import { Getters, TXEventName } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
 import ReleasableRepNotice from 'modules/reporting/containers/releasable-rep-notice';
-import { ExplainerBlock, MultipleExplainerBlock } from 'modules/create-market/components/common';
+import { MultipleExplainerBlock } from 'modules/create-market/components/common';
 import {
   AugurMarketsContent,
   EventDetailsContent,
@@ -212,7 +212,7 @@ export default class ModalReporting extends Component<
       const denomination = market.scalarDenomination;
       disputeInfo.stakes.forEach(stake => {
         const populatedHeader = stake.isInvalidOutcome
-          ? INVALID_OUTCOME_NAME
+          ? INVALID_OUTCOME_LABEL
           : `${stake.outcome} ${denomination}`;
         radioButtons.push({
           id: String(stake.outcome),
