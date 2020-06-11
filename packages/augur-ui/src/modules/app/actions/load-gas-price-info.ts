@@ -13,6 +13,7 @@ import {
   DEFAULT_FALLBACK_GAS_FAST,
 } from 'modules/common/constants';
 import { augurSdk } from 'services/augursdk';
+import { checkIfMainnet } from './check-if-mainnet';
 
 export function loadGasPriceInfo(
   callback: NodeStyleCallback = logError
@@ -23,15 +24,16 @@ export function loadGasPriceInfo(
   ) => {
     const { loginAccount } = getState();
     if (!loginAccount.address) return callback(null);
-    const networkId = getNetworkId();
 
-    getGasPriceRanges(networkId, result => {
-      dispatch(
-        updateGasPriceInfo({
-          ...result,
-        })
-      );
-    });
+    if (checkIfMainnet()) {
+      getGasPriceRanges(getNetworkId(), result => {
+        dispatch(
+          updateGasPriceInfo({
+            ...result,
+          })
+        );
+      });
+    }
   };
 }
 
