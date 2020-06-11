@@ -5,7 +5,7 @@ import { formatDai, calcPercentageFromPrice, formatMarketShares } from 'utils/fo
 import {
   COLUMN_TYPES,
   SCALAR,
-  INVALID_OUTCOME_NAME,
+  INVALID_OUTCOME_COMPARE,
 } from 'modules/common/constants';
 
 import Row from 'modules/common/row';
@@ -25,7 +25,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const orderType = filledOrder.type;
 
   const originalQuantity = formatMarketShares(filledOrder.marketType, filledOrder.originalQuantity);
-  const usePercent = filledOrder.outcome === INVALID_OUTCOME_NAME && filledOrder.marketType === SCALAR;
+  const usePercent = filledOrder.outcome === INVALID_OUTCOME_COMPARE && filledOrder.marketType === SCALAR;
   if (usePercent) {
     const market = sP.marketInfos[filledOrder.marketId];
     const orderPricePercent = calcPercentageFromPrice(

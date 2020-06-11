@@ -742,7 +742,7 @@ export const InvalidLabel = ({
 
   return (
     <span className={Styles.InvalidLabel}>
-      {text}
+      {constants.INVALID_OUTCOME_LABEL}
       <label
         data-tip
         data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}

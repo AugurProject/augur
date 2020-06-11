@@ -394,7 +394,8 @@ export const MARKET_FULLY_LOADED = 'MARKET_FULLY_LOADED';
 
 // # Market Outcome Constants
 export const INVALID_OUTCOME_ID = 0;
-export const INVALID_OUTCOME_NAME = 'Invalid';
+export const INVALID_OUTCOME_COMPARE = 'Invalid';
+export const INVALID_OUTCOME_LABEL = 'Invalid Market';
 export const YES_NO_NO_ID = 1;
 export const YES_NO_NO_OUTCOME_NAME = 'No';
 export const YES_NO_YES_ID = 2;
@@ -987,7 +988,7 @@ export const NON_EXISTENT = 'N/A';
 export const YES_NO_OUTCOMES = [
   {
     id: 0,
-    description: 'Invalid',
+    description: INVALID_OUTCOME_LABEL,
     isTradeable: true,
   },
   {
@@ -1005,7 +1006,7 @@ export const YES_NO_OUTCOMES = [
 export const SCALAR_OUTCOMES = [
   {
     id: 0,
-    description: 'Invalid',
+    description: INVALID_OUTCOME_LABEL,
     isTradeable: true,
   },
   {
@@ -1218,7 +1219,7 @@ export const TUTORIAL_PRICE = 0.4;
 export const TRADING_TUTORIAL_OUTCOMES = [
   {
     id: 0,
-    description: 'Invalid',
+    description: INVALID_OUTCOME_LABEL,
     isTradeable: true,
   },
   {

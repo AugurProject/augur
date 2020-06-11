@@ -8,7 +8,7 @@ import {
   SCALAR_UP_ID,
   YES_NO,
   ZERO,
-  INVALID_OUTCOME_NAME,
+  INVALID_OUTCOME_LABEL,
   SUBMIT_DISPUTE,
   SCALAR_DOWN_ID,
   SCALAR_INVALID_BEST_BID_ALERT_VALUE as INVALID_ALERT_PERCENTAGE,
@@ -135,7 +135,7 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
       <span>
         {props.isWarpSync && !props.invalid
           ? props.stake.warpSyncHash
-          : props.description}
+          : props.invalid ? INVALID_OUTCOME_LABEL : props.description}
       </span>
       {!props.forkingMarket && (
         <>
@@ -494,7 +494,7 @@ export const ResolvedOutcomes = (props: ResolvedOutcomesProps) => {
       <span>Winning Outcome {CheckCircleIcon} </span>
       <span>
         {props.consensusFormatted.invalid
-          ? INVALID_OUTCOME_NAME
+          ? INVALID_OUTCOME_LABEL
           : props.consensusFormatted.outcomeName}
       </span>
       {props.expanded && (
@@ -532,7 +532,7 @@ export const TentativeWinner = (props: TentativeWinnerProps) => {
           <span>Tentative Winner</span>
           <span>
             {props.tentativeWinner.isInvalidOutcome
-              ? INVALID_OUTCOME_NAME
+              ? INVALID_OUTCOME_LABEL
               : getOutcomeNameWithOutcome(
                   props.market,
                   props.tentativeWinner.outcome,
