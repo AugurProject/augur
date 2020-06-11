@@ -6,7 +6,7 @@ import { PrimaryButton, ExternalLinkButton } from 'modules/common/buttons';
 import { MarketTypeLabel } from 'modules/common/labels';
 import { HELP_CENTER_SCALAR_MARKETS, SCALAR, SCALAR_MODAL_SEEN } from 'modules/common/constants';
 import Styles from 'modules/modal/modal.styles';
-import { closeModal } from './actions/close-modal';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface ScalarProps {
   cb?: Function;
@@ -14,6 +14,7 @@ interface ScalarProps {
 
 // Used n Betting UI
 export const Scalar = ({ cb = () => { } }: ScalarProps) => {
+  const {actions: {closeModal}} = useAppStatusStore();
   const [checked, setChecked] = useState(false);
   const handleclose = e => {
     e && e.preventDefault();

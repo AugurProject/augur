@@ -25,7 +25,6 @@ import { PillSelection } from 'modules/common/selection';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { SDKConfiguration } from '@augurproject/artifacts';
-import { closeModal } from './actions/close-modal';
 
 interface AddFundsProps {
   autoSelect?: boolean;
@@ -57,7 +56,7 @@ export const AddFunds = ({
   autoSelect = false,
   fundType = DAI,
 }: AddFundsProps) => {
-  const { loginAccount, modal } = useAppStatusStore();
+  const { loginAccount, modal, actions: {closeModal} } = useAppStatusStore();
   const isRelayDown = false;
   const showTransfer = modal.showTransfer || false;
 

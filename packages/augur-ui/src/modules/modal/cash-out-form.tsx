@@ -28,12 +28,11 @@ import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getEthReserve } from 'modules/auth/helpers/get-eth-reserve';
 import { getAccountFunds } from 'modules/auth/helpers/login-account';
 import { withdrawAllFundsEstimateGas, withdrawAllFunds } from 'modules/contracts/actions/contractCalls';
-import { closeModal } from './actions/close-modal';
 
 const GAS_EST_MULTIPLIER = 4;
 
 export const ModalCashOut = () => {
-  const { loginAccount, ethToDaiRate, modal, gasPriceInfo } = useAppStatusStore();
+  const { loginAccount, ethToDaiRate, modal, gasPriceInfo, actions: {closeModal} } = useAppStatusStore();
   const { address: account, totalOpenOrdersFrozenFunds } = loginAccount;
 
   const ethReserveAmount: FormattedNumber = getEthReserve();
