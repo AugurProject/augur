@@ -4,20 +4,25 @@ import { Title } from 'modules/modal/common';
 import { Checkbox } from 'modules/common/form';
 import { PrimaryButton, ExternalLinkButton } from 'modules/common/buttons';
 import { MarketTypeLabel } from 'modules/common/labels';
-import { HELP_CENTER_SCALAR_MARKETS, SCALAR } from 'modules/common/constants';
+import { HELP_CENTER_SCALAR_MARKETS, SCALAR, SCALAR_MODAL_SEEN } from 'modules/common/constants';
 import Styles from 'modules/modal/modal.styles';
+import { closeModal } from './actions/close-modal';
 
 interface ScalarProps {
-  closeAction: Function;
   cb?: Function;
 }
 
 // Used n Betting UI
-export const Scalar = ({ closeAction, cb = () => {} }: ScalarProps) => {
+export const Scalar = ({ cb = () => { } }: ScalarProps) => {
   const [checked, setChecked] = useState(false);
   const handleclose = e => {
     e && e.preventDefault();
-    closeAction(checked);
+    const localStorageRef =
+      typeof window !== 'undefined' && window.localStorage;
+    if (localStorageRef && localStorageRef.setItem) {
+      localStorageRef.setItem(SCALAR_MODAL_SEEN, String(checked));
+    }
+    closeModal();
     cb();
   };
   return (
