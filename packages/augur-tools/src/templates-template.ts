@@ -750,11 +750,16 @@ export function getGroupHashInfo({
   hash,
   inputs,
 }: ExtraInfoTemplate): TemplateGroupInfo {
-  if (!hash || !inputs) return null;
+  const defaultValues = {
+    hashKeyInputValues: undefined,
+    groupType: undefined,
+    groupLine: undefined,
+  }
+  if (!hash || !inputs) return defaultValues;
   const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find(g => g[hash]);
-  if (!hashGroup) return null;
+  if (!hashGroup) return defaultValues;
   const group = hashGroup[hash];
-  const keyValues = group.keys.map(k => String(inputs[k.id].value));
+  const keyValues = group.keys.map(key => String(inputs.find(i => i.id === key.id).value));
   const hashKeyInputValues = hashGroupKeyValues(keyValues);
   const groupLine = group?.groupLineId ? inputs[group.groupLineId].value : undefined;
 
