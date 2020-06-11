@@ -11,11 +11,11 @@ import { NewMarketPropertiesValidations } from 'modules/types';
 import type {
   UserInputDateTime,
   TemplateInput,
-  TemplateInputType,
-  ValidationType,
 } from '@augurproject/templates'
 import {
   tellOnHoliday,
+  TemplateInputType,
+  ValidationType,
   ValidationTemplateInputType,
 } from '@augurproject/templates';
 import moment from 'moment';
