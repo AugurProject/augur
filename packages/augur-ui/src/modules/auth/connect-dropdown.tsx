@@ -24,11 +24,11 @@ import {
   Pencil,
   v2AugurLogo,
   ClipboardCopy,
+  DirectionArrow,
 } from 'modules/common/icons';
 import { EthReserveAutomaticTopOff } from 'modules/common/labels';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatDai, formatEther, formatRep } from 'utils/format-number';
-import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 import {
   displayGasInDai,
@@ -36,8 +36,9 @@ import {
 } from 'modules/app/actions/get-ethToDai-rate';
 import { logout } from 'modules/auth/actions/logout';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
+import CommonModalStyles from 'modules/modal/common.styles.less';
 import Styles from 'modules/auth/connect-dropdown.styles.less';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getEthReserve } from 'modules/auth/helpers/login-account';
 import TransferMyDai from 'modules/modal/containers/transfer-my-dai';
@@ -248,7 +249,13 @@ const ConnectDropdown = () => {
   return (
     <div onClick={event => event.stopPropagation()}>
       {showMetaMaskHelper && (
-        <ModalMetaMaskFinder handleClick={() => setShowMetaMaskHelper(false)} />
+        <article onClick={() => setShowMetaMaskHelper(false)} className={CommonModalStyles.ModalMetaMaskFinder}>
+          <div>
+            <img src="images/metamask-help.png" />
+          </div>
+          <div>Click the Metamask logo to open your wallet</div>
+          <div>{DirectionArrow}</div>
+        </article>
       )}
       <div className={Styles.AccountInfo}>
         <div className={Styles.MobileAddFunds}>

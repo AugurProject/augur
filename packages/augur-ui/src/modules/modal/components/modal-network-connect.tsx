@@ -1,17 +1,15 @@
-import React, { useState } from "react";
-import classNames from "classnames";
+import React, { useState } from 'react';
+import classNames from 'classnames';
 
-import { InputErrorIcon } from "modules/common/icons";
-import { Input } from "modules/common/form";
-import Styles from "modules/modal/components/common/common.styles.less";
-import ModalActions from "modules/modal/components/common/modal-actions";
-import { windowRef } from "utils/window-ref";
-import { editEndpointParams } from "utils/edit-endpoint-params";
-import { MODAL_NETWORK_CONNECT } from "modules/common/constants";
-import { WindowApp } from "modules/types";
-import { SDKConfiguration } from "@augurproject/artifacts";
+import { InputErrorIcon } from 'modules/common/icons';
+import { Input } from 'modules/common/form';
+import Styles from 'modules/modal/common.styles.less';
+import { windowRef } from 'utils/window-ref';
+import { editEndpointParams } from 'utils/edit-endpoint-params';
+import { MODAL_NETWORK_CONNECT } from 'modules/common/constants';
+import { WindowApp } from 'modules/types';
+import { SDKConfiguration } from '@augurproject/artifacts';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-
 
 interface ModalNetworkConnectProps {
   modal: {
@@ -23,10 +21,10 @@ interface ModalNetworkConnectProps {
   isConnectedThroughWeb3: boolean;
 }
 
-const types = { IPC: "ipc", HTTP: "http", WS: "ws" };
+const types = { IPC: 'ipc', HTTP: 'http', WS: 'ws' };
 
 function calcProtocol(uri) {
-  if (typeof uri === "string" && uri.length && uri.includes("://")) {
+  if (typeof uri === 'string' && uri.length && uri.includes('://')) {
     if (uri.includes(types.IPC)) return types.IPC;
     if (uri.includes(types.WS)) return types.WS;
     if (uri.includes(types.HTTP)) return types.HTTP;
@@ -43,9 +41,7 @@ function getInitialEthereumNode(env) {
 }
 
 function isFormInvalid(isConnectedThroughWeb3, ethereumNode) {
-  return !(
-    (ethereumNode.length || isConnectedThroughWeb3)
-  );
+  return !(ethereumNode.length || isConnectedThroughWeb3);
 }
 
 const ModalNetworkConnect = ({
@@ -61,7 +57,7 @@ const ModalNetworkConnect = ({
   const formInvalid = isFormInvalid(isConnectedThroughWeb3, ethereumNode);
 
   function validateEthNode(value) {
-    const updatedFormErrors = { ethereumNode:[] };
+    const updatedFormErrors = { ethereumNode: [] };
     if (!value || value.length === 0)
       updatedFormErrors.ethereumNode.push(`This field is required.`);
     setFormErrors(updatedFormErrors);
@@ -79,15 +75,15 @@ const ModalNetworkConnect = ({
     // because we prioritize, lets wipe out all previous connection options but not remove things like timeout.
     const updatedEnv = {
       ...env,
-      "ethereum": {
-        ...env["ethereum"],
-        http: "",
+      ethereum: {
+        ...env['ethereum'],
+        http: '',
         ...ethNode,
       },
     };
     const endpoints = {
-      ethereumNodeHTTP: updatedEnv["ethereum"]?.http,
-      ethereumNodeWS: null
+      ethereumNodeHTTP: updatedEnv['ethereum']?.http,
+      ethereumNodeWS: null,
     };
 
     // reloads window
@@ -98,50 +94,49 @@ const ModalNetworkConnect = ({
   }
   return (
     <form
-        className={classNames(Styles.ModalForm, {
-          [`${Styles.ModalContainer}`]: modal.type === MODAL_NETWORK_CONNECT,
-        })}
-      >
-        <h1>Connect to Augur</h1>
-        <label htmlFor="modal__ethNode-input">Ethereum Node address:</label>
-        {isConnectedThroughWeb3 && (
-          <div>
-            You are already connected to an Ethereum Node through Metamask. If
-            you would like to specify a node, please disable Metamask.
-          </div>
-        )}
-        {!isConnectedThroughWeb3 && (
-          // @ts-ignore
-          <Input
-            id="modal__ethNode-input"
-            type="text"
-            className={classNames({
-              [`${Styles.ErrorField}`]: ethereumNodeInValid,
-            })}
-            value={ethereumNode}
-            placeholder="Enter the Ethereum Node address you would like to connect to."
-            onChange={(value) => validateEthNode(value)}
-            required
-          />
-        )}
-        {!isConnectedThroughWeb3 &&
-          ethereumNodeInValid &&
-          formErrors.ethereumNode.map((error) => (
-            <p key={error} className={Styles.Error}>
-              {InputErrorIcon()} {error}
-            </p>
-          ))}
-        <ModalActions
-          buttons={[
-            {
-              label: "Connect",
-              isDisabled: formInvalid,
-              type: "purple",
-              action: (e) => handleSubmitForm(e),
-            },
-          ]}
+      className={classNames(Styles.ModalForm, {
+        [`${Styles.ModalContainer}`]: modal.type === MODAL_NETWORK_CONNECT,
+      })}
+    >
+      <h1>Connect to Augur</h1>
+      <label htmlFor="modal__ethNode-input">Ethereum Node address:</label>
+      {isConnectedThroughWeb3 && (
+        <div>
+          You are already connected to an Ethereum Node through Metamask. If you
+          would like to specify a node, please disable Metamask.
+        </div>
+      )}
+      {!isConnectedThroughWeb3 && (
+        // @ts-ignore
+        <Input
+          id="modal__ethNode-input"
+          type="text"
+          className={classNames({
+            [`${Styles.ErrorField}`]: ethereumNodeInValid,
+          })}
+          value={ethereumNode}
+          placeholder="Enter the Ethereum Node address you would like to connect to."
+          onChange={value => validateEthNode(value)}
+          required
         />
-      </form>
+      )}
+      {!isConnectedThroughWeb3 &&
+        ethereumNodeInValid &&
+        formErrors.ethereumNode.map(error => (
+          <p key={error} className={Styles.Error}>
+            {InputErrorIcon()} {error}
+          </p>
+        ))}
+      <div className={Styles.ActionButtons}>
+        <button
+          className={Styles.Primary}
+          disabled={formInvalid}
+          onClick={e => handleSubmitForm(e)}
+        >
+          Connect
+        </button>
+      </div>
+    </form>
   );
 };
 

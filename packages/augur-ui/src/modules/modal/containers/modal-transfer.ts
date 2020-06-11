@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { TransferForm } from 'modules/modal/transfer-form';
 import { AppState } from 'appStore';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import {
   transferFunds,
   TRANSFER_ETH_GAS_COST,
@@ -46,7 +45,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   transferFundsGasEstimate: (amount: string, asset: string, to: string) =>
     transferFundsGasEstimate(amount, asset, to),
   transferFunds: (amount: string, asset: string, to: string, useSigner: boolean, useTopOff: boolean) => {

@@ -5,7 +5,6 @@ import {
   formatDai,
   formatEther,
 } from 'utils/format-number';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { Proceeds } from 'modules/modal/proceeds';
 import {
   MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,
@@ -49,7 +48,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   startClaimingMarketsProceeds: (
     marketIds: string[],
     account: string,

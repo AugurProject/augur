@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Onboarding } from 'modules/modal/onboarding';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -11,7 +10,7 @@ import { MARKETS } from 'modules/routes/constants/views';
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({

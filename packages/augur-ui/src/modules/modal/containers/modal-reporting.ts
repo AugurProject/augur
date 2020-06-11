@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import ModalReporting from 'modules/modal/reporting';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import {
@@ -13,7 +12,6 @@ import { formatRep } from 'utils/format-number';
 import { AppState } from 'appStore';
 import { AppStatus } from 'modules/app/store/app-status';
 import { addPendingReport, addPendingData, removePendingData, addPendingDispute } from 'modules/pending-queue/actions/pending-queue-management';
-import { Markets } from 'modules/markets/store/markets';
 import { selectMarket } from 'modules/markets/selectors/market';
 
 const mapStateToProps = (state: AppState, ownProps) => {
@@ -46,7 +44,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   getRepModal: () => AppStatus.actions.setModal({ type: MODAL_ADD_FUNDS, fundType: REP }),
   addPendingData: (pendingId, queueName, status,hash, info) => addPendingData(pendingId, queueName, status,hash, info),
   removePendingData: (pendingId, queueName) => removePendingData(pendingId, queueName),

@@ -1,18 +1,18 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Onboarding } from 'modules/modal/onboarding';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { FINISHED_TEST_TRADE, track } from 'services/analytics/helpers';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   track: (eventName, payload) => track(eventName, payload),
 });
 

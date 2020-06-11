@@ -3,14 +3,10 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import ModalSignTransaction from 'modules/modal/containers/modal-sign-transaction';
 import ModalReporting from 'modules/modal/containers/modal-reporting';
-import ModalConfirm from 'modules/modal/components/modal-confirm';
-import ModalReview from 'modules/modal/components/modal-review';
 import ModalRepFaucet from 'modules/modal/containers/modal-rep-faucet';
-import ModalGsnFaucet from 'modules/modal/containers/modal-gsn-faucet';
 import ModalCreateMarket from 'modules/modal/containers/modal-create-market';
 import ModalDaiFaucet from 'modules/modal/containers/modal-dai-faucet';
 import ModalCreationHelp from 'modules/modal/containers/modal-creation-help';
-import ModalDeposit from 'modules/modal/containers/modal-deposit';
 import ModalWithdraw from 'modules/modal/containers/modal-transfer';
 import ModalCashOut from 'modules/modal/containers/modal-cash-out';
 import ModalMigrateRep from 'modules/modal/containers/modal-migrate-rep';
@@ -19,11 +15,9 @@ import ModalTransactions from 'modules/modal/containers/modal-transactions';
 import ModalUnsignedOrders from 'modules/modal/containers/modal-unsigned-orders';
 import ModalNetworkMismatch from 'modules/modal/containers/modal-mismatch';
 import ModalNetworkDisconnected from 'modules/modal/containers/modal-network-disconnected';
-import ModalApproval from 'modules/modal/containers/modal-approval';
 import ModalFinalize from 'modules/modal/containers/modal-finalize';
 import ModalBuyDai from 'modules/modal/containers/modal-buy-dai';
 import ModalDiscard from 'modules/modal/containers/modal-discard';
-import ModalMarketReview from 'modules/modal/containers/modal-market-review';
 import ModalClaimFees from 'modules/modal/containers/modal-claim-fees';
 import ModalParticipate from 'modules/modal/containers/modal-participate';
 import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect';
@@ -32,9 +26,6 @@ import { Gas as ModalGasPrice} from 'modules/modal/gas';
 import ModalClaimMarketsProceeds from 'modules/modal/containers/modal-claim-markets-proceeds';
 import ModalOpenOrders from 'modules/modal/containers/modal-open-orders';
 import ModalMarketLoading from 'modules/modal/containers/modal-market-loading';
-import ModalContent from 'modules/modal/containers/modal-content';
-import ModalCategories from 'modules/modal/containers/modal-categories';
-import ModalMarketType from 'modules/modal/containers/modal-market-type';
 import ModalDrQuickGuide from 'modules/modal/containers/modal-dr-quick-guide';
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market';
 import ModalAddFunds from 'modules/modal/containers/modal-add-funds';
@@ -53,23 +44,16 @@ import ModalScalar from 'modules/modal/containers/modal-scalar';
 import ModalInvalidMarketRules from 'modules/modal/containers/modal-invalid-market-rules';
 import ModalInitializeAccounts from 'modules/modal/containers/modal-initialize-account';
 import ModalHelp from 'modules/modal/containers/modal-help';
-import ModalMarketNotFound from 'modules/modal/containers/modal-market-not-found';
 import ModalOdds from 'modules/modal/containers/modal-odds';
 
 import * as TYPES from 'modules/common/constants';
 
-import Styles from 'modules/modal/components/common/common.styles.less';
+import Styles from 'modules/modal/common.styles.less';
 
 const ESCAPE_KEYCODE = 27;
 
 function selectModal(type, props, closeModal, modal) {
   switch (type) {
-    case TYPES.MODAL_MARKET_TYPE:
-      return <ModalMarketType {...props} />;
-    case TYPES.MODAL_CATEGORIES:
-      return <ModalCategories {...props} />;
-    case TYPES.MODAL_CONTENT:
-      return <ModalContent {...props} />;
     case TYPES.MODAL_CLAIM_MARKETS_PROCEEDS:
       return <ModalClaimMarketsProceeds {...props} />;
     case TYPES.MODAL_GAS_PRICE:
@@ -82,8 +66,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTransactions />;
     case TYPES.MODAL_REP_FAUCET:
       return <ModalRepFaucet />;
-    case TYPES.MODAL_GSN_FAUCET:
-      return <ModalGsnFaucet />;
     case TYPES.MODAL_CREATE_MARKET:
       return <ModalCreateMarket />;
     case TYPES.MODAL_ADD_FUNDS:
@@ -100,18 +82,12 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalDaiFaucet />;
     case TYPES.MODAL_CREATION_HELP:
       return <ModalCreationHelp {...modal} />;
-    case TYPES.MODAL_DEPOSIT:
-      return <ModalDeposit />;
     case TYPES.MODAL_TRANSFER:
       return <ModalWithdraw />;
     case TYPES.MODAL_CASHOUT:
       return <ModalCashOut />;
     case TYPES.MODAL_MIGRATE_REP:
       return <ModalMigrateRep />;
-    case TYPES.MODAL_CONFIRM:
-      return <ModalConfirm {...modal} closeModal={closeModal} />;
-    case TYPES.MODAL_REVIEW:
-      return <ModalReview {...modal} />;
     case TYPES.MODAL_LEDGER:
     case TYPES.MODAL_TREZOR:
       return <ModalSignTransaction {...modal} />;
@@ -133,20 +109,12 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalBuyDai />;
     case TYPES.MODAL_DISCARD:
       return <ModalDiscard />;
-    case TYPES.MODAL_MARKET_REVIEW:
-      return <ModalMarketReview {...modal} />;
-    case TYPES.MODAL_ACCOUNT_APPROVAL:
-      return <ModalApproval />;
-    case TYPES.MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET:
-      return <ModalClaimReportingFeesForkedMarket {...modal} />;
     case TYPES.MODAL_CLAIM_FEES:
       return <ModalClaimFees {...modal} />;
     case TYPES.MODAL_DISCLAIMER:
       return <ModalDisclaimer {...modal} />;
     case TYPES.MODAL_MARKET_LOADING:
       return <ModalMarketLoading />;
-    case TYPES.MODAL_MARKET_NOT_FOUND:
-      return <ModalMarketNotFound />;
     case TYPES.MODAL_DR_QUICK_GUIDE:
       return <ModalDrQuickGuide />;
     case TYPES.MODAL_MIGRATE_MARKET:
@@ -258,7 +226,7 @@ const ModalView = ({
     <section className={Styles.ModalView}>
       <div
         className={classNames({
-          [`${Styles['ModalView__content--taller']}`]:
+          [Styles.Taller]:
             modal.type === TYPES.MODAL_DISCLAIMER,
         })}
       >

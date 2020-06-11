@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { CashOutForm } from 'modules/modal/cash-out-form';
 import { AppState } from 'appStore';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import {
@@ -52,7 +51,7 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   withdrawAllFunds: (destination: string) => withdrawAllFunds(destination),
   withdrawAllFundsEstimateGas: (destination: string) => withdrawAllFundsEstimateGas(destination),
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   transferFunds: (amount: string, destination: string) => transferFunds(amount, DAI, destination, false, false),
   transferFundsGasEstimate: (amount: string, asset: string, to: string) => transferFundsGasEstimate(amount, asset, to),
 });

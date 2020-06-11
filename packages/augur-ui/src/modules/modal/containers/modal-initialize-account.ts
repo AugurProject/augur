@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Message } from 'modules/modal/message';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
 import { GSN_WALLET_SEEN } from 'modules/common/constants';
@@ -32,7 +31,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: any) => ({
   closeModal: () => {
-    closeModal();
+    AppStatus.actions.closeModal();
 
     const localStorageRef =
       typeof window !== 'undefined' && window.localStorage;

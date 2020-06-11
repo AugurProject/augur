@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { SignIn } from 'modules/modal/signin';
 import { AppState } from 'appStore';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import isMetaMaskPresent from 'modules/auth/helpers/is-meta-mask';
@@ -40,7 +39,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
-  const { setModal } = AppStatus.actions;
+  const { setModal, closeModal } = AppStatus.actions;
   return {
     closeModal: () => closeModal(),
     loginModal: () => setModal({ type: MODAL_LOGIN }),

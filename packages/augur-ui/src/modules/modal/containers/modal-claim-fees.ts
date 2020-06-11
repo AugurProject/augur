@@ -8,7 +8,6 @@ import {
   formatEther,
   formatBlank,
 } from 'utils/format-number';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { Proceeds } from 'modules/modal/proceeds';
 import { ActionRowsProps } from 'modules/modal/common';
 import {
@@ -52,7 +51,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   redeemStake: (options, callback) => redeemStake(options, callback),
   redeemStakeGas: options => redeemStakeGas(options),
   disavowMarket: marketId => disavowMarket(marketId),

@@ -2,7 +2,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Message } from "modules/modal/message";
 import { AppState } from "appStore";
-import { closeModal } from "modules/modal/actions/close-modal";
 import getRep from "modules/account/actions/get-rep";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
@@ -13,7 +12,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   getRep: () => dispatch(getRep()),
 });
 

@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { ModalParticipate } from 'modules/modal/components/modal-participate';
 import { purchaseParticipationTokens } from 'modules/reporting/actions/participation-tokens-management';
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -50,7 +49,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
       customAction,
       type: MODAL_INITIALIZE_ACCOUNT,
     }),
-  closeModal: () => closeModal(),
+  closeModal: () => AppStatus.actions.closeModal(),
   purchaseParticipationTokens: (amount, gasEstimate, callback) =>
     dispatch(purchaseParticipationTokens(amount, gasEstimate, callback)),
 });

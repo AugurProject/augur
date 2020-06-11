@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import { useLocation, useHistory } from 'react-router';
 import Media from 'react-media';
 
-import { closeModal } from 'modules/modal/actions/close-modal';
 import { MarketHeader } from 'modules/market/components/market-header/market-header';
 import MarketOrdersPositionsTable from 'modules/market/components/market-orders-positions-table/market-orders-positions-table';
 import MarketOutcomesList from "modules/market/components/market-outcomes-list/market-outcomes-list";
@@ -122,7 +121,7 @@ const MarketView = ({
     isConnected: connected,
     canHotload,
     blockchain: { currentAugurTimestamp },
-    actions: { setModal }
+    actions: { setModal, closeModal }
   } = useAppStatusStore();
   const { marketInfos, orderBooks, actions: { updateOrderBook, bulkMarketTradingHistory, updateMarketsData } } = useMarketsStore();
   const location = useLocation();
