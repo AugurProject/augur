@@ -49,9 +49,10 @@ import {
   DismissableNotice,
   DismissableNoticeProps,
 } from 'modules/reporting/common';
-import { EventDetailsContent } from 'modules/create-market/constants';
-import { ExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/templates';
+import { AugurMarketsContent, EventDetailsContent } from 'modules/create-market/constants';
+import { ExplainerBlock, MultipleExplainerBlock } from 'modules/create-market/components/common';
+import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
@@ -734,12 +735,6 @@ export const InvalidLabel = ({
   openInvalidMarketRulesModal,
   tooltipPositioning,
 }: InvalidLabelProps) => {
-  const {
-    explainerBlockTitle,
-    explainerBlockSubtexts,
-    useBullets,
-  } = EventDetailsContent();
-
   const openModal = event => {
     event.preventDefault();
     event.stopPropagation();
@@ -769,10 +764,19 @@ export const InvalidLabel = ({
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
-        <ExplainerBlock
-          title={explainerBlockTitle}
-          subtexts={explainerBlockSubtexts}
-          useBullets={useBullets}
+        <MultipleExplainerBlock
+          contents={[
+            {
+              title: EventDetailsContent().explainerBlockTitle,
+              subtexts: EventDetailsContent().explainerBlockSubtexts,
+              useBullets: EventDetailsContent().useBullets,
+            },
+            {
+              title: AugurMarketsContent().explainerBlockTitle,
+              subtexts: AugurMarketsContent().explainerBlockSubtexts,
+              useBullets: AugurMarketsContent().useBullets,
+            },
+          ]}
         />
       </ReactTooltip>
     </span>

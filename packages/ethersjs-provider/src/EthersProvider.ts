@@ -46,7 +46,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   gasLimit: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(
     10000000
   );
-  gasEstimateIncreasePercentage: BigNumber | null = new BigNumber(34);
+  gasEstimateIncreasePercentage: BigNumber | null = new BigNumber(10);
   private contractMapping: ContractMapping = {};
   private performQueue: AsyncQueue<PerformQueueTask>;
   readonly provider: ethers.providers.JsonRpcProvider;

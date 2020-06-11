@@ -7,6 +7,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
+import { TestBet } from 'modules/modal/common';
 
 const mapStateToProps = (state: AppState) => ({});
 
@@ -15,6 +16,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
+  icon: TestBet,
   largeHeader: 'Welcome to our test market',
   condensed: true,
   smallHeader: "Here we're going to take you through each step of placing a trade on Augur. You can exit this walkthrough at any time and access it again via the help menu",
