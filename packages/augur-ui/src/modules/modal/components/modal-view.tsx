@@ -49,6 +49,8 @@ import ModalOdds from 'modules/modal/containers/modal-odds';
 import * as TYPES from 'modules/common/constants';
 
 import Styles from 'modules/modal/common.styles.less';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { MODAL } from 'modules/app/store/constants';
 
 const ESCAPE_KEYCODE = 27;
 
@@ -175,6 +177,7 @@ const ModalView = ({
   history,
 }: ModalViewProps) => {
   const [locationKeys, setLocationKeys] = useState([]);
+
   const handleKeyDown = e => {
     if (e.keyCode === ESCAPE_KEYCODE) {
       if (modal && modal.cb) {
@@ -183,6 +186,8 @@ const ModalView = ({
       closeModal();
     }
   };
+
+  const appStatus = useAppStatusStore();
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -215,11 +220,13 @@ const ModalView = ({
     });
   }, [locationKeys]);
 
+  const currentModal = appStatus[MODAL] || modal;
+
   const Modal = selectModal(
-    modal.type,
-    { modal, closeModal, trackModalViewed },
+     currentModal.type,
+    {  currentModal, closeModal, trackModalViewed },
     closeModal,
-    modal
+    currentModal
   );
 
   return (

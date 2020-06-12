@@ -1,25 +1,23 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { AppStatus } from 'modules/app/store/app-status';
+
 import { Onboarding } from 'modules/modal/onboarding';
-import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import { MODAL_AUGUR_USES_DAI } from 'modules/common/constants';
 import { OnboardingCheckIcon } from 'modules/common/icons';
 import { ACCOUNT_CREATED, track } from 'services/analytics/helpers';
-import { AppStatus } from 'modules/app/store/app-status';
-import { getOnboardingStep } from './modal-p2p-trading';
+import { getOnboardingStep } from 'modules/modal/containers/modal-p2p-trading';
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = state => ({});
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
+const mapDispatchToProps = dispatch => ({
   augurUsesDaiModal: () =>
     AppStatus.actions.setModal({ type: MODAL_AUGUR_USES_DAI }),
   track: (eventName, payload) => track(eventName, payload),
   gotoOnboardingStep: (step) => AppStatus.actions.setModal({ type: getOnboardingStep(step) }),
 });
 
-const mergeProps = (sP: any, dP: any, oP: any) => ({
+const mergeProps = (sP, dP, oP) => ({
   icon: OnboardingCheckIcon,
   analyticsEvent: () => dP.track(ACCOUNT_CREATED, {}),
   largeHeader: 'Log-in created',

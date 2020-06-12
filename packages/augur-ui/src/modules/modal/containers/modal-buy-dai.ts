@@ -1,9 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Onboarding } from 'modules/modal/onboarding';
-import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import {
   MODAL_ADD_FUNDS,
   MODAL_AUGUR_P2P,
@@ -15,7 +12,7 @@ import { BUY_DAI, track } from 'services/analytics/helpers';
 import { AppStatus } from 'modules/app/store/app-status';
 import { getOnboardingStep } from './modal-p2p-trading';
 
-const mapStateToProps = (state: AppState) => {
+const mapStateToProps = state => {
   const {
     loginAccount: {
       balances: {
@@ -26,7 +23,7 @@ const mapStateToProps = (state: AppState) => {
   return { signerHasDAI: dai !== '0' };
 };
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
+const mapDispatchToProps = dispatch => {
   const { setModal, closeModal } = AppStatus.actions;
   return {
     closeModal: () => closeModal(),
@@ -37,7 +34,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
   };
 };
 
-const mergeProps = (sP: any, dP: any, oP: any) => ({
+const mergeProps = (sP, dP, oP) => ({
   icon: sP.signerHasDAI ? null : OnboardingPaymentIcon,
   largeHeader: 'Add Dai to your trading account',
   showAccountStatus: true,
@@ -76,7 +73,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       text: 'Do it later',
       action: () => {
         dP.showAugurP2PModal();
-        dP.closeModal();
       },
     },
   ],

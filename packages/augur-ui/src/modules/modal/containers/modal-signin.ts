@@ -47,14 +47,16 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => {
       setModal({ type: MODAL_HARDWARE_WALLET, isLogin }),
     signupModal: () => setModal({ type: MODAL_SIGNUP }),
     accountCreatedModal: () => setModal({ type: MODAL_ACCOUNT_CREATED }),
-    loadingModal: (message, callback, showMetaMaskHelper = false) =>
+    loadingModal: (message, callback, showMetaMaskHelper = false) => {
       setModal({
         type: MODAL_LOADING,
         message,
         showMetaMaskHelper,
         callback,
         showCloseAfterDelay: true,
-      }),
+      });
+    },
+
     connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
     connectPortis: showRegister => dispatch(loginWithPortis(showRegister)),
     connectTorus: () => dispatch(loginWithTorus()),
@@ -170,6 +172,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         dP.loadingModal(msg, () => login(), showMetaMaskHelper);
         try {
           await dP.connectMetaMask();
+          login();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.WEB3WALLET);
         }

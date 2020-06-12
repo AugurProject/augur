@@ -84,7 +84,7 @@ export const updateSdk = (
   }
 };
 
-export const createFundedGsnWallet = () => async () => {
+export const createFundedGsnWallet = async () => {
   const { setWalletStatus } = AppStatus.actions;
   try {
     addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending);
