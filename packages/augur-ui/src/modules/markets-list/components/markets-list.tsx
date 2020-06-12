@@ -4,6 +4,7 @@ import { Pagination } from 'modules/common/pagination';
 import NullStateMessage from 'modules/common/null-state-message';
 import { MARKET_CARD_FORMATS, THEMES } from 'modules/common/constants';
 import MarketCard from 'modules/market-cards/market-card';
+import SportsMarketCard from 'modules/market-cards/sports-market-card';
 import { MarketData } from 'modules/types';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { MagnifyingGlass } from 'modules/common/icons';
@@ -78,11 +79,10 @@ const MarketsList = ({
       );
   } else if (theme === THEMES.SPORTS) {
     testFilteredMarkets.map(sportsGroup => {
-      const SportsID = sportsGroup.id;
-      sportMarketCards.push(
-        <MarketCard
-          market={sportMarketCards.markets}
-          key={SportsID}
+      marketCards.push(
+        <SportsMarketCard
+          sportsGroup={sportsGroup}
+          key={sportsGroup.id}
           loading={isSearchingMarkets}
         />
       );
@@ -91,6 +91,7 @@ const MarketsList = ({
     filteredMarkets.map(id => {
       const market = markets.find((market: MarketData) => market.id === id);
       if (market) {
+        // console.log(market.outcomes);
         marketCards.push(
           <MarketCard
             market={market}
@@ -109,7 +110,6 @@ const MarketsList = ({
   //   'marketList filteredMarkets:',
   //   filteredMarkets,
   //   testFilteredMarkets,
-  //   sportMarketCards,
   //   marketCards
   // );
 

@@ -1,0 +1,75 @@
+@import (reference) '~assets/styles/shared';
+
+.SportsMarketCard {
+  background: var(--color-module-background);
+  border-radius: @border-radius-default;
+  border: @size-1 solid var(--color-dark-grey);
+  margin: @size-4 0;
+  display: grid;
+  grid-template-columns: 102px auto;
+  grid-template-rows: auto;
+  padding-right: @size-12;
+
+  @media @breakpoint-mobile-tablet {
+    grid-template-rows: auto;
+  }
+
+  &.Scalar {
+    grid-template-rows: auto;
+  }
+
+  > div.InfoIcons {
+    display: none;
+  }
+
+  > h3 {
+    grid-column: 1 / 2;
+  }
+
+  > section[class*="MultiMarketTable"] {
+    grid-column: span 2;
+    grid-row: 3;
+  }
+
+  > section[class*="SubMarketCollapsible"] {
+    grid-column: span 2;
+    display: none;
+  }
+
+  > span {
+    grid-row: auto;
+  }
+
+  > button:last-of-type {
+    grid-row: auto;
+    grid-column: 2;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    > svg {
+      width: @size-10;
+      height: @size-6;
+      margin-right: @size-4;
+
+      > path {
+        fill: var(--color-primary-text);
+      }
+    }
+  }
+
+  &.ShowMore {
+    > section[class*="SubMarketCollapsible"] {
+      display: flex;
+    }
+
+    > button:last-of-type > svg {
+      transform: rotate(.5turn);
+    }
+  }
+
+  > section[class*="MultiOutcomeMarketTable"],
+  > section[class*="MultiOutcomeMarketGrid"] {
+    grid-column: span 2;
+  }
+}

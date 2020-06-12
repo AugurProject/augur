@@ -51,8 +51,8 @@ interface MarketCardProps {
   loading?: boolean;
 }
 
-const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;
-const MARKET_CARD_FOLD_OUTCOME_COUNT = 2;
+export const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;
+export const MARKET_CARD_FOLD_OUTCOME_COUNT = 2;
 
 export const MarketCard = ({
   market,
