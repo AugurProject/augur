@@ -4,28 +4,20 @@ import { LoadingEllipse, DirectionArrow } from 'modules/common/icons';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { CloseButton, ExternalLinkButton } from 'modules/common/buttons';
-
-interface LoadingProps {
-  shouldClose: boolean;
-  message: string;
-  showMetaMaskHelper: boolean;
-  callback: Function;
-  closeModal: Function;
-  showCloseAfterDelay?: boolean;
-  showLearnMore?: boolean;
-}
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const FIFTEEN_SECONDS = 15000;
 
-export const Loading = ({
-  showMetaMaskHelper,
-  shouldClose,
-  callback,
-  message,
-  closeModal,
-  showCloseAfterDelay,
-  showLearnMore,
-}: LoadingProps) => {
+export const Loading = () => {
+  const { isLogged, modal, loginAccount, actions: {closeModal} } = useAppStatusStore();
+  const shouldClose = isLogged && loginAccount.meta && !loginAccount.meta.preloaded;
+  const {
+    message,
+    callback,
+    showMetaMaskHelper,
+    showCloseAfterDelay,
+    showLearnMore
+  } = modal;
   if (shouldClose) {
     callback();
   }
