@@ -67,9 +67,6 @@ const EVENTS = {
   [SubscriptionEventName.OrderEvent]: wrapLogHandler(
     handleOrderLog
   ),
-  [SubscriptionEventName.DBUpdatedZeroXOrders]: wrapLogHandler(
-    handleDBUpdatedZeroXOrders
-  ),
 
   [TXEventName.AwaitingSigning]: wrapLogHandler(handleTxAwaitingSigning),
   [TXEventName.Success]: wrapLogHandler(handleTxSuccess),
@@ -92,7 +89,7 @@ export const listenForStartUpEvents = (augur: Augur<Provider>) => (
 ) =>
   Object.keys(START_UP_EVENTS).map((eventName) => {
     const eventCallback = START_UP_EVENTS[eventName];
-    augur.on(eventName, log => dispatch(eventCallback(log)));
+    augur.on(eventName, (log) => dispatch(eventCallback(log)));
   });
 
 export const unListenToEvents = (augur: Augur<Provider>) => {

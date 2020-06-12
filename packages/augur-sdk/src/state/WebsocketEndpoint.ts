@@ -67,6 +67,11 @@ function setupServer(server: WebSocket.Server, api: API) {
           if (eventName === SubscriptionEventName.SDKReady && api.augur.sdkReady) {
             console.log('immediately sending SDKReady event to new connection');
             safeSend(websocket, MakeJsonRpcResponse(null, { eventName: SubscriptionEventName.SDKReady }));
+          } else if (eventName === SubscriptionEventName.ZeroXStatusSynced) {
+            // The UI needs to believe that the 0x orders database is synced for it to process bulk orders.
+            // Since the SDK runs continuously, we assume it's synced when the client connects.
+            console.log('immediately sending ZeroXStatusSynced event to new connection');
+            safeSend(websocket, MakeJsonRpcResponse(null, { eventName: SubscriptionEventName.ZeroXStatusSynced }));
           }
 
         } else if (message.method === 'unsubscribe') {
