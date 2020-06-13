@@ -4,24 +4,23 @@ import moment from 'moment';
 
 export enum groupTypes {
   MONEY_LINE = 'MONEY_LINE',
-  DAILY_MONEY_LINE = 'DAILY_MONEY_LINE',
+  COMBO_MONEY_LINE = 'COMBO_MONEY_LINE',
   OVER_UNDER = 'OVER_UNDER',
-  DAILY_OVER_UNDER = 'DAILY_OVER_UNDER',
+  COMBO_OVER_UNDER = 'COMBO_OVER_UNDER',
   SPREAD = 'SPREAD',
-  DAILY_SPREAD = 'DAILY_SPREAD',
-  FUTURES = 'FUTURES'
+  COMBO_SPREAD = 'COMBO_SPREAD',
+  FUTURES = 'FUTURES',
+  ADDITIONAL = 'ADDITIONAL'
 }
 
 export const LEAGUE_NAME = 'LEAGUE_NAME';
 export const GENDER = 'GENDER';
-export const WEEK_NO = 'WEEK_NO';
 export const TEAM_A = 'TEAM_A';
 export const TEAM_B = 'TEAM_B';
 export const START_TIME = 'START_TIME';
 export const YEAR = 'YEAR';
 export const EVENT = 'EVENT';
 export const SUB_EVENT = 'SUB_EVENT';
-export const SET_GAME = 'SET_GAME';
 
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
@@ -229,7 +228,6 @@ export interface TemplateValidationHash {
 }
 export interface Template {
   hash: string;
-  categories: Categories;
   marketType: string;
   question: string;
   example: string;
@@ -240,8 +238,10 @@ export interface Template {
   minPrice?: number;
   maxPrice?: number;
   noAdditionalUserOutcomes?: boolean;
-  groupName: groupTypes;
-  groupLineId: number;
+  groupName?: groupTypes; // type of group
+  groupLineId?: number; // over under and spread markets to differentiate liquidity pools
+  header?: string; // header for money line markets and top level markets
+  title?: string; // market title for futures or non money line markets
 }
 
 export interface TemplateInput {
@@ -263,16 +263,16 @@ export interface TemplateInput {
   eventExpEndNextMonth?: boolean;
   yearDropdown?: number;
   monthDropdown?: number;
-  inputDestValues: {
+  inputDestValues?: {
     // dropdown source data structure to use to set target input list values
     [key: string]: string[];
   };
-  inputTimeOffset: {
+  inputTimeOffset?: {
     [key: string]: TimeOffset;
   };
   setEndTime?: number;
   inputDateYearId?: number;
-  hoursAfterEst: number;
+  hoursAfterEst?: number;
   holidayClosures?: {
     [key: string]: {
       [year: number]: {
@@ -281,13 +281,13 @@ export interface TemplateInput {
       }[];
     };
   };
-  noSort: boolean;
-  daysAfterDateStart: number;
-  denomination: {
+  noSort?: boolean;
+  daysAfterDateStart?: number;
+  denomination?: {
     [key: string]: string;
   };
-  groupKey: string;
-  numberRange: number[];
+  groupKey?: string;
+  numberRange?: number[];
 }
 
 export interface RetiredTemplate {

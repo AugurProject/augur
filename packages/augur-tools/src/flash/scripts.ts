@@ -446,10 +446,16 @@ export function addScripts(flash: FlashSession) {
         abbr: 'o',
         flag: true,
         description: 'create orders on markets',
+      },
+      {
+        name: 'transfer',
+        abbr: 't',
+        description: 'account to transfer the markets to'
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const withOrders = args.orders ? Boolean(args.orders) : false;
+      const transfer = args.transfer ? String(args.transfer) : null;
       let user = await this.createUser(this.getAccount(), this.config);
       const million = QUINTILLION.multipliedBy(1e7);
       await user.faucetRepUpTo(million, million);
@@ -457,6 +463,13 @@ export function addScripts(flash: FlashSession) {
       await user.approveIfNecessary();
 
       const markets = await createTemplatedMarkets(user, false);
+      if (transfer) {
+        for(let i = 0; i < markets.length; i++) {
+          const canned = markets[i];
+          console.log('transferring market', canned.market.address);
+          await canned.market.transferOwnership(transfer);
+        }
+      }
       if (withOrders) {
         this.pushConfig({
           zeroX: {

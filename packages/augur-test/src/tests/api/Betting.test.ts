@@ -85,15 +85,15 @@ describe('Betting', () => {
     );
 
     const [megaMoneyLineTemplate] = nflTemplates.filter(
-      item => item.groupName === groupTypes.DAILY_MONEY_LINE
+      item => item.groupName === groupTypes.COMBO_MONEY_LINE
     );
 
     const [megaSpreadTemplate] = nflTemplates.filter(
-      item => item.groupName === groupTypes.DAILY_SPREAD
+      item => item.groupName === groupTypes.COMBO_SPREAD
     );
 
     const [megaOverUnderMegaTemplate] = nflTemplates.filter(
-      item => item.groupName === groupTypes.DAILY_OVER_UNDER
+      item => item.groupName === groupTypes.COMBO_OVER_UNDER
     );
 
     const currentTime = await john.getTimestamp();
