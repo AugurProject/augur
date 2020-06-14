@@ -221,7 +221,9 @@ describe('Betting', () => {
 
     expect(market.id).toEqual(moneyLineMarket.address);
     expect(market.isTemplate).toEqual(true);
-    await expect(market.sportsBookGroupId).not.toBeUndefined();
+    await expect(market.sportsBook.groupId).not.toBeUndefined();
+    await expect(market.sportsBook.groupType).not.toBeUndefined();
+    await expect(market.sportsBook.header).not.toBeUndefined();
     market.outcomes.map(outcome => expect(['Invalid', teamA, teamB, tieNoWinner].includes(outcome.description)).toEqual(true));
   });
 });

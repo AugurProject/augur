@@ -218,6 +218,9 @@ export interface TemplateValidation {
 export interface TemplateGroupKeys {
   groupType: string;
   groupLineId: number;
+  estInputId?: number;
+  header: string;
+  title?: string;
   keys: { key: string; id: number }[];
 }
 export interface TemplateGroup {
@@ -299,6 +302,9 @@ export interface TemplateGroupInfo {
   hashKeyInputValues: string;
   groupType: string;
   groupLine?: string;
+  estTimestamp?: string;
+  header: string;
+  title?: string;
 }
 
 export enum ValidationType {
@@ -746,6 +752,12 @@ function isRetiredAutofail(hash: string) {
   return found.autoFail;
 }
 
+export const populateTemplateTitle = (templateString, inputs) => {
+  return inputs.reduce((acc, input) => {
+    return acc.replace(`[${input.id}]`, `${input.value}`);
+  }, templateString);
+}
+
 export function getGroupHashInfo({
   hash,
   inputs,
@@ -754,6 +766,9 @@ export function getGroupHashInfo({
     hashKeyInputValues: undefined,
     groupType: undefined,
     groupLine: undefined,
+    header: undefined,
+    title: undefined,
+    estTimestamp: undefined,
   }
   if (!hash || !inputs) return defaultValues;
   const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find(g => g[hash]);
@@ -762,11 +777,17 @@ export function getGroupHashInfo({
   const keyValues = group.keys.map(key => String(inputs.find(i => i.id === key.id).value));
   const hashKeyInputValues = hashGroupKeyValues(keyValues);
   const groupLine = group?.groupLineId ? inputs[group.groupLineId].value : undefined;
+  const estTimestamp = group?.estInputId ? inputs[group.estInputId].timestamp : undefined;
+  const header = group.header ? populateTemplateTitle(group.header, inputs) : undefined;
+  const title = group.title ? populateTemplateTitle(group.title, inputs) : undefined;
 
   return {
     hashKeyInputValues,
     groupType: group.groupType,
-    groupLine
+    groupLine,
+    estTimestamp,
+    header,
+    title
   };
 }
 

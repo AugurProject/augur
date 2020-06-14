@@ -207,10 +207,10 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
+                  text: `If a fighter is substituted before the fight begins the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `For settlement purposes where a half round is stated, 2 minutes 30 seconds of the respective round will define the half to determine over or under. Example: If Total Rounds 2.5 (O/U) is in market question, the midway point in Round 3 is the under/over line. If the fight is stopped at exactly 2 minutes 30 seconds of the round named in the market "over" should be the winning outcome.`,
@@ -364,16 +364,16 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
+                  text: `If a fighter is substituted before the fight begins the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "No Contest".`,
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`,
+                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, 'No Contest' should be the winning outcome.`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`,
@@ -456,13 +456,13 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
+                  text: `If a fighter is substituted before the fight begins the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`,
+                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, 'No Contest' should be the winning outcome.`,
                 },
                 {
                   text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`,
@@ -583,10 +583,10 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
+                  text: `If a fighter is substituted before the fight begins the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `For settlement purposes where a half round is stated a new round must be started to determine over or under. For Example: If Total Rounds 8.5 (O/U) is quoted, then Round 9 must start for Over to win. If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round.`,
@@ -740,13 +740,13 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
+                  text: `If a fighter is substituted before the fight begins the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "No Contest".`,
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `If the fight is determined to be a draw, market should resolve as "Points".`,
@@ -821,10 +821,10 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
+                  text: `If a fighter is substituted before the fight begins the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`,
@@ -885,7 +885,7 @@ export const TEMPLATES = {
                   text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`,
                 },
                 {
-                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`,
+                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all finishing positions.`,
@@ -894,7 +894,7 @@ export const TEMPLATES = {
                   text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`,
                 },
                 {
-                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`,
+                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as 'Other (Field)'.`,
                 },
               ],
             },
@@ -956,7 +956,7 @@ export const TEMPLATES = {
                   text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`,
                 },
                 {
-                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`,
+                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all Head to head match-ups and finishing positions.`,
@@ -965,13 +965,13 @@ export const TEMPLATES = {
                   text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`,
                 },
                 {
-                  text: `Both drivers must start the race for head to head match-ups to be considered action. If one or both drivers do not start the race the market should resolve as "No Contest".`,
+                  text: `Both drivers must start the race for head to head match-ups to be considered action. If one or both drivers do not start the race the market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `If a driver does not finish the race for any reason (including disqualifications), the opposing driver should be declared the winner.`,
                 },
                 {
-                  text: `If both Drivers do not finish the race for any reason (including disqualifications), the driver who completed more laps should be declared the winner. If both racers were disqualified at the same time or come in at same place (tie), the market should resolve as "No Contest"`,
+                  text: `If both Drivers do not finish the race for any reason (including disqualifications), the driver who completed more laps should be declared the winner. If both racers were disqualified at the same time or come in at same place (tie), the market should resolve as 'No Contest'`,
                 },
               ],
             },
@@ -999,7 +999,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`,
+                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as 'Other (Field)'.`,
                 },
                 {
                   text: `The NASCAR Cup Series Drivers' Championship is awarded to the most successful NASCAR Cup Series racing car driver over a season, as determined by a points system based on race results. The winner can only be determined after the completion of the final race of the year and points for the season have been calculated.`,
@@ -1155,20 +1155,20 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text:
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                   ],
                 },
@@ -1191,7 +1191,7 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event cancelled`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 2,
@@ -1207,7 +1207,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text: `Only one team can be listed per outcome, if not then the market should resolve as 'Invalid'`,
@@ -1359,20 +1359,20 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text:
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                   ],
                 },
@@ -1405,13 +1405,13 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text: `Only one team can be listed per outcome, if not then the market should resolve as 'Invalid'`,
@@ -1540,20 +1540,20 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text:
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                   ],
                 },
@@ -1709,7 +1709,7 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
@@ -1718,10 +1718,10 @@ export const TEMPLATES = {
                   text: `Include Regulation, overtime and any shoot-outs.`,
                 },
                 {
-                  text: `The game must go 55 minutes or more to be considered official, if not market should resolve as 'No Winner'`,
+                  text: `The game must go 55 minutes or more to be considered official, if not market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If game is not played market should resolve as 'No Winner'`,
+                  text: `If game is not played market should resolve as 'No Contest'`,
                 },
               ],
             },
@@ -1774,19 +1774,19 @@ export const TEMPLATES = {
               {
                 id: 6,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the game is not played market should resolve as 'No Winner'`,
+                  text: `If the game is not played market should resolve as 'No Contest'`,
                 },
                 {
                   text: `Include Regulation, overtime and any shoot-outs`,
                 },
                 {
-                  text: `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No winner'`,
+                  text: `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No Contest'`,
                 },
               ],
             },
@@ -1830,7 +1830,7 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
               {
                 id: 5,
@@ -1846,13 +1846,13 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the game is not played market should resolve as 'No Winner'`,
+                  text: `If the game is not played market should resolve as 'No Contest'`,
                 },
                 {
                   text: `Include Regulation, overtime and any shoot-outs`,
                 },
                 {
-                  text: `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No winner'`,
+                  text: `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No Contest'`,
                 },
               ],
             },
@@ -1895,7 +1895,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the season is officially cancelled and the event named in market is not played, this market should resolve as 'Invalid'`,
@@ -1939,7 +1939,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -2058,16 +2058,16 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the winning horse is not one of the outcomes listed, market should resolve as "Other (Field)"`,
+                  text: `If the winning horse is not one of the outcomes listed, market should resolve as 'Other (Field)'`,
                 },
                 {
-                  text: `If the Race is cancelled for any reason or is postponed and will not be completed before the event expiration time for this market starts, market should resolve as 'No Winner'`,
+                  text: `If the Race is cancelled for any reason or is postponed and will not be completed before the event expiration time for this market starts, market should resolve as 'No Contest'`,
                 },
                 {
                   text: `If a horse is disqualified after being determined the winner: If the disqualification occurs before the market's event expiration time begins, and another horse is named the winner, the new horse should be reported the official winner.`,
@@ -2171,7 +2171,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -2180,10 +2180,10 @@ export const TEMPLATES = {
                       text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
-                      text: `If a Tournament or Event is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'`,
+                      text: `If a Tournament or Event is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -2235,7 +2235,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Not Played`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -2250,13 +2250,13 @@ export const TEMPLATES = {
                       text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
                     },
                     {
-                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No winner/Not Played'.`,
+                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No Contest'.`,
                     },
                     {
-                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No winner/Not Played'.`,
+                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No Contest'.`,
                     },
                     {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No winner/Not Played'`,
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -2322,7 +2322,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Not Played`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 8,
@@ -2345,10 +2345,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the match is not played for any reason the market should resolve as 'No winner/Not Played'`,
+                      text: `If the match is not played for any reason the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No winner/Not Played'`,
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Contest'`,
                     },
                     {
                       text: `If the match is started and a player is disqualified or withdraws for any reason, and a player/team moves forward or is declared the winner, the final results should be based off of when the match was stopped.`,
@@ -2412,7 +2412,7 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event Cancelled`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 7,
@@ -2425,10 +2425,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No winner/Event Cancelled'`,
+                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No winner/Event Cancelled'`,
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Contest'`,
                     },
                     {
                       text: `If a player is disqualified or withdraws during the set named in the market question, the player moving forward to the next round should be declared the winner`,
@@ -2527,7 +2527,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -2536,13 +2536,13 @@ export const TEMPLATES = {
                       text: `If either pairing is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid.'`,
                     },
                     {
-                      text: `If a Tournament or Event is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'`,
+                      text: `If a Tournament or Event is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -2594,7 +2594,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Not Played`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -2610,16 +2610,16 @@ export const TEMPLATES = {
                       text: `If either pairing is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
                     },
                     {
-                      text: `If either pairing fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No winner/Not Played'.`,
+                      text: `If either pairing fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No Contest'.`,
                     },
                     {
-                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No winner/Not Played'.`,
+                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner/Not Played'`,
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Contest/Not Played'`,
                     },
                   ],
                 },
@@ -2685,7 +2685,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Not Played`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 8,
@@ -2708,16 +2708,16 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the match is not played for any reason the market should resolve as 'No winner/Not Played'`,
+                      text: `If the match is not played for any reason the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No winner/Not Played'`,
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Contest'`,
                     },
                     {
                       text: `If the match is started and a player is disqualified or withdraws for any reason, and a player/team moves forward or is declared the winner, the final results should be based off of when the match was stopped.`,
                     },
                     {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner/Not Played'`,
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Contest/Not Played'`,
                     },
                   ],
                 },
@@ -2777,7 +2777,7 @@ export const TEMPLATES = {
                   {
                     id: 6,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Not Played`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 7,
@@ -2790,16 +2790,16 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No winner/Not Played'`,
+                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No winner/Not Played'`,
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Contest'`,
                     },
                     {
                       text: `If a team is disqualified or withdraws during the set named in the market question, the team moving forward to the next round should be declared the winner`,
                     },
                     {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner/Not Played'`,
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Contest/Not Played'`,
                     },
                   ],
                 },
@@ -2862,7 +2862,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -2884,10 +2884,10 @@ export const TEMPLATES = {
                       text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as 'Draw'.`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'.`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'.`,
                     },
                     {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -2955,7 +2955,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -2964,13 +2964,13 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time and does include any Overtime or Penalty shoot-out.`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'.`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3038,7 +3038,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -3047,13 +3047,13 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'`,
                     },
                     {
                       text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3097,7 +3097,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -3109,10 +3109,10 @@ export const TEMPLATES = {
                       text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as 'Draw'.`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'.`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'.`,
                     },
                     {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3163,7 +3163,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -3172,13 +3172,13 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'.`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3229,7 +3229,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -3238,13 +3238,13 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'`,
                     },
                     {
                       text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3470,7 +3470,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 3,
@@ -3486,7 +3486,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Winner'`,
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3522,7 +3522,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 4,
@@ -3548,7 +3548,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Winner'`,
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3592,7 +3592,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 5,
@@ -3611,7 +3611,7 @@ export const TEMPLATES = {
                       text: `Include Regulation and Overtime`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Winner'`,
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3655,7 +3655,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and event named in the market is not played, this market should resolve as 'Invalid'`,
@@ -3702,7 +3702,7 @@ export const TEMPLATES = {
                       text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason, by the start of event expiration, this market should resolve as 'Invalid'`,
@@ -3755,7 +3755,7 @@ export const TEMPLATES = {
                       text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled, the statistic at the time the league officially stopped should be used to determine the resolution of the market.`,
@@ -3855,7 +3855,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -3903,7 +3903,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -4189,7 +4189,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 2,
@@ -4205,7 +4205,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Winner'`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -4241,7 +4241,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 4,
@@ -4267,7 +4267,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Winner'`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -4311,7 +4311,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 5,
@@ -4328,7 +4328,7 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Winner'`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -4362,7 +4362,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
@@ -4409,7 +4409,7 @@ export const TEMPLATES = {
                       text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -4462,7 +4462,7 @@ export const TEMPLATES = {
                       text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled, the statistic at the time the league officially stopped should be used to determine the resolution of the market.`,
@@ -4781,7 +4781,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -4790,10 +4790,10 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Winner'`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If game is not played market should resolve as 'No Winner'`,
+                      text: `If game is not played market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -4843,7 +4843,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -4862,10 +4862,10 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Winner'`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If game is not played market should resolve as 'No Winner'`,
+                      text: `If game is not played market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -4916,7 +4916,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -4935,7 +4935,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Winner'`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -4988,7 +4988,7 @@ export const TEMPLATES = {
                       text: `The winner is determined by the team who wins their conference tournament championship game`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
@@ -5045,7 +5045,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
@@ -5138,19 +5138,19 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
+                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If the game is not played market should resolve as 'No Winner'`,
+                  text: `If the game is not played market should resolve as 'No Contest'`,
                 },
                 {
                   text: `Extra innings count towards settlement purposes`,
@@ -5196,7 +5196,7 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
               {
                 id: 5,
@@ -5212,13 +5212,13 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
+                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If the game is not played market should resolve as 'No Winner'`,
+                  text: `If the game is not played market should resolve as 'No Contest'`,
                 },
                 {
                   text: `Extra innings count towards settlement purposes`,
@@ -5265,7 +5265,7 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
               {
                 id: 5,
@@ -5281,13 +5281,13 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
+                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If the game is not played market should resolve as 'No Winner'`,
+                  text: `If the game is not played market should resolve as 'No Contest'`,
                 },
                 {
                   text: `Extra innings count towards settlement purposes`,
@@ -5333,7 +5333,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
@@ -5377,7 +5377,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -6415,17 +6415,17 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Tie/No Winner`,
+                    placeholder: `Tie/No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Contest"`,
                     },
                     {
-                      text: `If the game is not played market should resolve as "Tie/No Winner"`,
+                      text: `If the game is not played market should resolve as "Tie/No Contest"`,
                     },
                   ],
                 },
@@ -6475,7 +6475,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -6492,10 +6492,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If the game is not played market should resolve as 'No Winner'`,
+                      text: `If the game is not played market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -6546,7 +6546,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -6563,10 +6563,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If the game is not played market should resolve as 'No Winner'`,
+                      text: `If the game is not played market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -6610,7 +6610,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
@@ -6654,7 +6654,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -6747,7 +6747,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -6796,7 +6796,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -6844,7 +6844,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -7155,17 +7155,17 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO Winner' as Team A did NOT win vs. team B`,
+                      text: `If the game is not played, the market should resolve as "No Contest' as Team A did NOT win vs. team B`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -7215,7 +7215,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -7232,10 +7232,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as 'No Winner'`,
+                      text: `If the game is not played, the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -7286,7 +7286,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -7303,10 +7303,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as 'NO Winner'`,
+                      text: `If the game is not played, the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -7348,7 +7348,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
@@ -7656,7 +7656,7 @@ export const TEMPLATES = {
                   text: `The winning party will win the majority of 270 electoral votes.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7684,7 +7684,7 @@ export const TEMPLATES = {
                   text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7724,7 +7724,7 @@ export const TEMPLATES = {
                   text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7758,7 +7758,7 @@ export const TEMPLATES = {
                   text: `The winning outcome is the party which controls the majority of seats, according to the results of the election, not determined by the current controlling party at event expiration.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7802,7 +7802,7 @@ export const TEMPLATES = {
                   text: `The winning outcome is the party which controls the majority of seats, following the results of the election, not determined by the current controlling party at event expiration`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7838,19 +7838,19 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No winner/Event cancelled`,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the primary does not take place the market should resolve as "No winner/Event cancelled"`,
+                  text: `If the primary does not take place the market should resolve as 'No Contest'`,
                 },
                 {
                   text: `The winner of the primary is the candidate recognized and/or announced by the state`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7886,19 +7886,19 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No winner/Event cancelled`,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the caucus does not take place the market should resolve as "No winner/Event cancelled"`,
+                  text: `If the caucus does not take place the market should resolve as 'No Contest'`,
                 },
                 {
                   text: `The winner of the caucus is the candidate recognized and/or announced by the political party`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8046,7 +8046,7 @@ export const TEMPLATES = {
                   text: `If location/country does not have the stated position in market, market should resolve as "Invalid"`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the country named in the market question has multiple people with the same title, the market should resolve as 'Invalid'`,
@@ -8574,7 +8574,7 @@ export const TEMPLATES = {
                     'The market should resolve as "multiple hosts" if more than one of the possible outcomes hosts the event. If only one of the potential outcomes hosts with multiple people, then the individual outcome would be the winner.',
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: ` If the event does not take place or if the results of the event do not occur by the Event Expiration time, this market should resolve as "Invalid"`,
@@ -8618,7 +8618,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: ` If the event does not take place or if the results of the event do not occur by the Event Expiration time, this market should resolve as "Invalid"`,
