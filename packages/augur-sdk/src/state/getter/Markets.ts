@@ -1462,6 +1462,7 @@ async function getMarketsInfo(
         marketLine: marketData.templateGroupLine,
         header: marketData.templateGroupHeader,
         title: marketData.templateGroupTitle,
+        estTimestamp: marketData.templateGroupEst,
       }
     };
   });

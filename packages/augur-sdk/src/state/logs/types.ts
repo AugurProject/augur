@@ -465,6 +465,7 @@ export interface MarketData extends Log {
   templateGroupLine?: string;
   templateGroupHeader?: string;
   templateGroupTitle?: string;
+  templateGroupEst?: string;
 }
 
 export interface DisputeDoc extends Log {
