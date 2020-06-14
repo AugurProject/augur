@@ -547,7 +547,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         'Rory Mcllroy',
         'Jason Day',
         'Other (Field)',
-        'No winner/Event cancelled',
+        'No Contest',
       ],
       extraInfo: buildExtraInfo(golfTemplate, golfInputValues, [
         SPORTS,
@@ -690,9 +690,9 @@ const calcDailyHockeyMarket = (): CannedMarket[] => {
   ]
 
   const outcomeValues = [
-    [teamA, teamB, `No Winner`],
-    [`${teamA} -2.5`, `${teamB} +2.5`, `No Winner`],
-    [`Over 4.5`, `Under 4.5`, `No Winner`],
+    [teamA, teamB, `No Contest`],
+    [`${teamA} -2.5`, `${teamB} +2.5`, `No Contest`],
+    [`Over 4.5`, `Under 4.5`, `No Contest`],
   ]
 
   return daily.map((template, index) => ({

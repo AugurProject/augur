@@ -16,9 +16,9 @@ const templateValidations = [
       '{"hash":"0x32005caba2639c59cba6d6b661c2623eefb32b4457d47188709b52570e61e25b","question":"PGA: Which team will win the [0] Presidents Cup?","inputs":[{"id":0,"value":"2020","type":"DROPDOWN","timestamp":null}]}',
     endTime: '1582588800',
     creationTime: '1582578800',
-    outcomes: 'No winner/Event cancelled,United States Team,International Team',
+    outcomes: 'No Contest,United States Team,International Team',
     resolutionRules:
-      "If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.\nOnly one team can be listed per outcome, if not then the market should resolve as 'Invalid'\nThis market is intended to have two teams, United States verse International, if not the case this market should resolve as 'Invalid'\nIncludes regulation, any play-offs and sudden death",
+      "If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'.\nOnly one team can be listed per outcome, if not then the market should resolve as 'Invalid'\nThis market is intended to have two teams, United States verse International, if not the case this market should resolve as 'Invalid'\nIncludes regulation, any play-offs and sudden death",
     result:
       'success',
   },
@@ -30,9 +30,9 @@ const templateValidations = [
       '{"hash":"0x32005caba2639c59cba6d6b661c2623eefb32b4457d47188709b52570e61e25b","question":"PGA: Which team will win the [0] Presidents Cup?","inputs":[{"id":0,"value":"2020","type":"DROPDOWN","timestamp":null}]}',
     endTime: '1582588800',
     creationTime: '1582578800',
-    outcomes: 'No winner/Event cancelled,United States Team,International Team,Bad Outcome',
+    outcomes: 'No Contest,United States Team,International Team,Bad Outcome',
     resolutionRules:
-      "If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.\nOnly one team can be listed per outcome, if not then the market should resolve as 'Invalid'\nThis market is intended to have two teams, United States verse International, if not the case this market should resolve as 'Invalid'\nIncludes regulation, any play-offs and sudden death",
+      "If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'.\nOnly one team can be listed per outcome, if not then the market should resolve as 'Invalid'\nThis market is intended to have two teams, United States verse International, if not the case this market should resolve as 'Invalid'\nIncludes regulation, any play-offs and sudden death",
     result:
       'error: no additioanl outcomes is a requirement, only required outcomes are allowed',
   },

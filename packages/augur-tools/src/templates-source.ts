@@ -528,9 +528,9 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1] (O/U), [2].5 Rounds?`,
+            question: `Boxing: [0] vs. [1] (O/U), [3].5 Rounds?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki (O/U), 5.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            title: `Over/Under [2].5 Rounds`,
+            title: `Over/Under [3].5 Rounds`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.OVER_UNDER,
             groupLineId: 3,
@@ -1732,6 +1732,7 @@ export const TEMPLATES = {
             example: `NHL (Goal Spread): St Louis Blues to win by more than 2.5 goals over the NY Rangers?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             title: `Spread [1].5`,
             header: `[0] vs. [2]`,
+            groupLineId: 1,
             groupName: groupTypes.COMBO_SPREAD,
             inputs: [
               {
@@ -3497,6 +3498,7 @@ export const TEMPLATES = {
                 example: `NBA (Point Spread): Brooklyn Nets to win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[0] vs. [2]`,
                 title: `Spread [1].5`,
+                groupLineId: 1,
                 groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
                   {
@@ -4216,6 +4218,7 @@ export const TEMPLATES = {
                 example: `WNBA (Point Spread): Phoenix Mercury to win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[0] vs. [2]`,
                 title: `Spread [1].5`,
+                groupLineId: 1,
                 groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
                   {
@@ -4804,6 +4807,7 @@ export const TEMPLATES = {
                 example: `NCAA Men's BB (Point Spread): Duke to win by more than 10.5 points over Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[1] vs. [3]`,
                 title: `Spread [2].5`,
+                groupLineId: 2,
                 groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
                   {
@@ -5164,6 +5168,7 @@ export const TEMPLATES = {
             example: `MLB (Run Spread): NY Yankees to win by more than 2.5 runs over the Boston Red Sox?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             header: `[0] vs. [2]`,
             title: `Spread [1].5`,
+            groupLineId: 1,
             groupName: groupTypes.COMBO_SPREAD,
             inputs: [
               {
@@ -6436,6 +6441,7 @@ export const TEMPLATES = {
                 example: `NFL (Point Spread) Week 1: Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [3]`,
                 title: `Spread [2].5`,
+                groupLineId: 2,
                 groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
                   {
@@ -7176,6 +7182,7 @@ export const TEMPLATES = {
                 example: `NCAA FB (Point Spread) Week 1: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [3]`,
                 title: `Spread [2].5`,
+                groupLineId: 2,
                 groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
                   {
