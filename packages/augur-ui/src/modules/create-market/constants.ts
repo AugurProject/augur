@@ -125,6 +125,7 @@ export const InvalidRules = [
   'The outcome was not known at event expiration time.',
   'It can resolve without at least one of the outcomes listed being the winner, unless it is explicitly stated how the market will otherwise resolve in the resolution details.',
   'The title, details and outcomes are in direct conflict with each other.',
+  'Any outcome duplicates',
   'The market can resolve with more than one winning outcome.',
   'Any of the outcomes don’t answer the market question ONLY. (outcomes cannot introduce a secondary question)',
   'If using a resolution source (a source is a noun that reports on or decides the result of a market), the source\'s URL or full name is NOT in the Market Question, regardless of it being in the resolution details.',
@@ -133,7 +134,8 @@ export const InvalidRules = [
 ];
 export const AugurMarkets = [
   'Should resolve using general knowledge if the market does not have a resolution source in market question.',
-  'Cover events that occur between market start time and end time in the market question. If start time is not specificed in the market quetion, market creation date/time is used. If no end time is specified in market question, the event expiration is to be used. If the event occurs outside of these bounds, the market should resolve as invalid'
+  'Cover events that occur between market start time and end time in the market question. If start time is not specificed in the market quetion, market creation date/time is used. If no end time is specified in market question, the event expiration is to be used. If the event occurs outside of these bounds, the market should resolve as invalid',
+  'Outcomes must be unique from one and other within a market.  If multiple outcomes share a common name, they must be easily distinguishable (ie. Serena Williams and Venus Williams)',
 ];
 export const AugurMarketsContent = () => ({
   explainerBlockTitle: 'Augur Markets:',
