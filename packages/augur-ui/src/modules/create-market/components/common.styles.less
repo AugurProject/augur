@@ -354,7 +354,11 @@
   > ul {
     list-style-position: outside;
     list-style-type: disc;
-    margin: 0 @size-16;
+    margin: 0 @size-16 @size-16;
+
+    &:last-of-type {
+      margin: 0 @size-16;
+    }
 
     &.NotBulleted {
       margin: 0;
@@ -381,11 +385,13 @@
 
   &.ModalStyling {
     padding: 0;
-    margin-bottom: 0;
+    margin-bottom: @size-16;
     border: 0;
 
     > h5 {
       .text-14-bold;
+
+      margin-bottom: @size-16;
     }
 
     > p,

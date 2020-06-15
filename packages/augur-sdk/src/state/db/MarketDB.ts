@@ -24,6 +24,7 @@ import {
   OrderTypeHex,
   TimestampSetLog,
   UnixTimestamp,
+  MarketType,
 } from '../logs/types';
 import { DB } from './DB';
 import { DerivedDB } from './DerivedDB';
@@ -546,16 +547,20 @@ export class MarketDB extends DerivedDB {
         if (errors.length > 0)
           console.error(log['extraInfo'].description, errors);
 
-        if (log['isTemplate']) {
-          const { groupLine, groupType, hashKeyInputValues } = getGroupHashInfo(
+        if (log['isTemplate'] && log['marketType'] === MarketType.Categorical) {
+          const { groupLine, groupType, hashKeyInputValues, header, title, estTimestamp } = getGroupHashInfo(
             log['extraInfo'].template
           );
           log['templateGroupHash'] = hashKeyInputValues;
           log['templateGroupType'] = groupType;
-          if (groupLine) log['templateGroupLine'] = groupLine;
+          log['templateGroupLine'] = groupLine;
+          log['templateGroupHeader'] = header;
+          log['templateGroupTitle'] = title;
+          log['templateGroupEst'] = estTimestamp
         }
       }
     } catch (err) {
+      console.error(err, log['extraInfo']);
       log['extraInfo'].isTemplate = false;
     }
 

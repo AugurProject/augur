@@ -67,13 +67,13 @@ describe('State API :: Users :: PL :: ', () => {
       // Outcomes		              Position Type	  Quantity	  Avg Price	  Total Cost  Last Price  Total Returns ($)	Total Returns (%)	Winning Outcome
       // Chicago Bulls -2.5		    Short	          20	        $0.60	      $8.00		    $1.00	      -$8.00	          -100.00%	        Bulls
       // Cleveland Cavaliers +2.5	Long	          50	        $0.30	      $15.00		  $0.00	      -$15.00	          -100.00%
-      // No Winner							                                                      $0.00	      $0.0              -100.00%
+      // No Contest							                                                      $0.00	      $0.0              -100.00%
       // Invalid							                                                        $0.00	      $0.00
       // 								                                                                          -$23.00
       const market = await createCategoricalMarket(john, {
         description:
           'NBA (Point Spread): Chicago Bulls to win by more than 2.5 points over the Cleveland Cavaliers?',
-        outcomes: ['Chicago Bulls', 'Cleveland Cavaliers', 'No Winner'],
+        outcomes: ['Chicago Bulls', 'Cleveland Cavaliers', 'No Contest'],
       });
       const [maker, taker] = [mary, bob];
 
@@ -134,13 +134,13 @@ describe('State API :: Users :: PL :: ', () => {
       // Outcomes		    Position Type	Quantity	Avg Price	Total Cost	Last Price 	Total Returns ($)	Total Returns (%)	Winning Outcome
       // SF 49ers		    Short	        100	      $0.10	    $90.00	    $1.00	      -$90.00 	        -100.00%	        SF 49ers
       // NO Saints						                                        $0.00     	$0.00
-      // Tie/No Winner					                                     	$0.00	      $0.00
+      // Tie/No Contest					                                     	$0.00	      $0.00
       // Invalid					                                           	$0.00	      $0.00
       // 					                                                		            -$90.00
       const market = await createCategoricalMarket(john, {
         description:
           'Week 1: Which NFL Team will win: San Francisco 49ers vs. New Orleans Saints?',
-        outcomes: ['SF 49ers', 'NO Saints', 'Tie/No Winner'],
+        outcomes: ['SF 49ers', 'NO Saints', 'Tie/No Contest'],
       });
       const [maker, taker] = [mary, bob];
 
@@ -255,7 +255,7 @@ describe('State API :: Users :: PL :: ', () => {
       // Jordan Spieth			              		                                 	$0.00	      $0.00
       // Dustin Johnson			          		                                     	$0.00	      $0.00
       // Other(field)		          Short	        50	      0.1	      45	        $1.00	      -$45.00	          -100.00%	        Other(field)
-      // No Winner/Event Cancelled					        	                          $0.00	      $0.00
+      // No Contest					        	                          $0.00	      $0.00
       // Invalid
       //        						                                                  	-$30.50   	-27.60%
       const market = await createCategoricalMarket(john, {
@@ -267,7 +267,7 @@ describe('State API :: Users :: PL :: ', () => {
           'Jordan Spieth',
           'Dustin Johnson',
           'Other(field)',
-          'No Winner/Event Cancelled',
+          'No Contest',
         ],
       });
       const [maker, taker] = [mary, bob];
@@ -337,13 +337,13 @@ describe('State API :: Users :: PL :: ', () => {
       // Outcomes		     Position Type	Quantity	Avg Price	Total Cost	Last Price 	Total Returns ($)	Total Returns (%)	Winning Outcome
       // LA Chargers		  Short	        50	      $0.60	    $20.00	    $0.00	      $30.00	          150.00%
       // Denver Broncos	  Short	        200	      $0.30	    $140.00	    $1.00     	-$140.00	        -100.00%	        Denver Broncos
-      // Tie/No Winner				                                      		$0.00	      $0.00	            -68.75%
+      // Tie/No Contest				                                      		$0.00	      $0.00	            -68.75%
       // Invalid						                                            $0.00	      $0.00
       // 							                                                             -$110.00
       const market = await createCategoricalMarket(john, {
         description:
           'Week 5: Which NFL Team will win: Los Angeles Chargers vs. Denver Broncos?',
-        outcomes: ['LA Chargers', 'Denver Broncos', 'Tie/No Winner'],
+        outcomes: ['LA Chargers', 'Denver Broncos', 'Tie/No Contest'],
       });
       const [maker, taker] = [mary, bob];
 
