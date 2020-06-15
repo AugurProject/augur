@@ -38,95 +38,93 @@ export const getOnboardingStep = (step: number): string => {
   }
 };
 
-const mapStateToProps = (state: AppState) => {
-  const balances = state.loginAccount.balances;
-  const daiHighValueAmount =
-    state.env.gsn?.minDaiForSignerETHBalanceInDAI || DAI_HIGH_VALUE_AMOUNT;
-  const ethInReserveAmount =
-    state.env.gsn?.desiredSignerBalanceInETH || RESERVE_IN_ETH;
-  const ethRate = state.appStatus.ethToDaiRate?.value || 0;
-  const reserveInDai = formatDai(
-    createBigNumber(ethInReserveAmount).multipliedBy(ethRate)
-  );
 
-  return {
-    walletStatus: state.appStatus.walletStatus,
-    pendingQueue: state.pendingQueue,
-    highBalance: balances.dai > daiHighValueAmount,
-    reserveInDai,
-    daiHighValueAmount,
-  };
-};
+const mapStateToProps = state => ({});
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
+const mapDispatchToProps = dispatch => ({
   testBet: () => AppStatus.actions.setModal({ type: MODAL_TEST_BET }),
   track: (eventName, payload) => track(eventName, payload),
   gotoOnboardingStep: step => AppStatus.actions.setModal({ type: getOnboardingStep(step) }),
   createFundedGsnWallet: () => createFundedGsnWallet(),
 });
 
-const mergeProps = (sP: any, dP: any, oP: any) => ({
-  icon: null,
-  largeHeader: 'Augur runs on a peer-to-peer network',
-  showAccountStatus: true,
-  currentStep: 4,
-  showActivationButton:
-    sP.walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE ||
-    (sP.walletStatus === WALLET_STATUS_VALUES.CREATED &&
-      sP.pendingQueue[TRANSACTIONS] &&
-      sP.pendingQueue[TRANSACTIONS][CREATEAUGURWALLET] &&
-      sP.pendingQueue[TRANSACTIONS][CREATEAUGURWALLET].status === 'Success'),
-  analyticsEvent: () => dP.track(AUGUR_IS_P2P, {}),
-  createFundedGsnWallet: () => dP.createFundedGsnWallet(),
-  changeCurrentStep: step => {
-    dP.gotoOnboardingStep(step);
-  },
-  linkContent: [
-    {
-      content:
-        'This network requires transaction fees to operate which are paid in ETH. This goes entirely to the network and Augur doesn’t collect any of these fees.',
+const mergeProps = (sP, dP, oP) => {
+  const { env, loginAccount, pendingQueue, ethToDaiRate, walletStatus } = AppStatus.get();
+  const { balances } = loginAccount;
+
+  const daiHighValueAmount =
+    env.gsn?.minDaiForSignerETHBalanceInDAI || DAI_HIGH_VALUE_AMOUNT;
+  const ethInReserveAmount =
+    env.gsn?.desiredSignerBalanceInETH || RESERVE_IN_ETH;
+  const ethRate = ethToDaiRate?.value || 0;
+  const reserveInDai = formatDai(
+    createBigNumber(ethInReserveAmount).multipliedBy(ethRate)
+  );
+  const highBalance = balances.dai > daiHighValueAmount;
+
+  return {
+    icon: null,
+    largeHeader: 'Augur runs on a peer-to-peer network',
+    showAccountStatus: true,
+    currentStep: 4,
+    showActivationButton:
+      walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE ||
+      (walletStatus === WALLET_STATUS_VALUES.CREATED &&
+        pendingQueue[TRANSACTIONS] &&
+        pendingQueue[TRANSACTIONS][CREATEAUGURWALLET] &&
+        pendingQueue[TRANSACTIONS][CREATEAUGURWALLET].status === 'Success'),
+    analyticsEvent: () => dP.track(AUGUR_IS_P2P, {}),
+    createFundedGsnWallet: () => dP.createFundedGsnWallet(),
+    changeCurrentStep: step => {
+      dP.gotoOnboardingStep(step);
     },
-    {
-      content: `Account activation is required before making your first transaction.There will be a small transaction fee to activate your account. ${
-        sP.highBalance
-          ? `$${sP.reserveInDai.formattedValue} worth of ETH, from your total funds will be held in your Fee reserve to cover further transactions.`
-          : `If your account balance exceeds $${sP.daiHighValueAmount}, a portion of this equivilant to 0.04ETH will be held in your Fee reserve to cover further transactions.`
-      }`,
-    },
-    {
-      content: `So long as your available account balance remains over $${sP.daiHighValueAmount} Dai, your Fee reserve will replenish automatically.`,
-    },
-    {
-      content: 'Your Fee reserve can easily be cashed out at anytime.',
-    },
-    {
-      content: 'LEARN MORE',
-      link: HELP_CENTER_LEARN_ABOUT_ADDRESS,
-    },
-  ],
-  buttons:
-    sP.walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE
-      ? [
-          {
-            text: '',
-            // Activate Account placeholder
-          },
-          {
-            text: 'Do it later',
-            action: () => {
-              dP.testBet();
+    linkContent: [
+      {
+        content:
+          'This network requires transaction fees to operate which are paid in ETH. This goes entirely to the network and Augur doesn’t collect any of these fees.',
+      },
+      {
+        content: `Account activation is required before making your first transaction.There will be a small transaction fee to activate your account. ${
+          highBalance
+            ? `$${reserveInDai.formattedValue} worth of ETH, from your total funds will be held in your Fee reserve to cover further transactions.`
+            : `If your account balance exceeds $${daiHighValueAmount}, a portion of this equivilant to 0.04ETH will be held in your Fee reserve to cover further transactions.`
+        }`,
+      },
+      {
+        content: `So long as your available account balance remains over $${daiHighValueAmount} Dai, your Fee reserve will replenish automatically.`,
+      },
+      {
+        content: 'Your Fee reserve can easily be cashed out at anytime.',
+      },
+      {
+        content: 'LEARN MORE',
+        link: HELP_CENTER_LEARN_ABOUT_ADDRESS,
+      },
+    ],
+    buttons:
+      walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE
+        ? [
+            {
+              text: '',
+              // Activate Account placeholder
             },
-          },
-        ]
-      : [
-          {
-            text: 'Continue',
-            action: () => {
-              dP.testBet();
+            {
+              text: 'Do it later',
+              action: () => {
+                dP.testBet();
+              },
             },
-          },
-        ],
-});
+          ]
+        : [
+            {
+              text: 'Continue',
+              action: () => {
+                dP.testBet();
+              },
+            },
+          ],
+  }
+}
 
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, mergeProps)(Onboarding)

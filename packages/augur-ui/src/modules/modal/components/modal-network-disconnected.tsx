@@ -1,20 +1,12 @@
 import React, { useState } from 'react';
 import { PulseLoader } from 'react-spinners';
-import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect';
+import ModalNetworkConnect from 'modules/modal/components/modal-network-connect';
 import commonStyles from 'modules/modal/common.styles.less';
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
-interface ModalNetworkDisconnectedProps {
-  modal: {
-    config: SDKConfiguration;
-    connection: {
-      isConnected: boolean;
-    };
-  };
-}
-
-const ModalNetworkDisconnected = ({ modal }: ModalNetworkDisconnectedProps) => {
+const ModalNetworkDisconnected = () => {
+  const { modal } = useAppStatusStore();
   const [showEnvForm, setShowEnvForm] = useState(false);
   const {
     actions: { setIsReconnectionPaused },

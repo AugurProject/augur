@@ -1,9 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Onboarding } from 'modules/modal/onboarding';
-import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import {
   TRADING_TUTORIAL,
 } from 'modules/common/constants';
@@ -21,17 +18,17 @@ import {
 import { getOnboardingStep } from './modal-p2p-trading';
 import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = state=> ({
   isTablet: window.innerWidth <= 1280,
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
+const mapDispatchToProps = dispatch => ({
   closeModal: () => AppStatus.actions.closeModal(),
   track: (eventName, payload) => track(eventName, payload),
   gotoOnboardingStep: (step) => AppStatus.actions.setModal({ type: getOnboardingStep(step) }),
 });
 
-const mergeProps = (sP: any, dP: any, oP: any) => ({
+const mergeProps = (sP, dP, oP) => ({
   icon: TestBet,
   analyticsEvent: () => dP.track(DO_A_TEST_BET, {}),
   largeHeader: sP.isTablet

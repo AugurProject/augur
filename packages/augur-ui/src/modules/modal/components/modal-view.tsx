@@ -9,20 +9,20 @@ import ModalDaiFaucet from 'modules/modal/containers/modal-dai-faucet';
 import ModalCreationHelp from 'modules/modal/containers/modal-creation-help';
 import { TransferForm as ModalWithdraw } from 'modules/modal/transfer-form';
 import { ModalCashOut } from 'modules/modal/cash-out-form';
-import ModalMigrateRep from 'modules/modal/containers/modal-migrate-rep';
+import { MigrateRep as ModalMigrateRep } from 'modules/modal/migrate-rep';
 import ModalNetworkDisabled from 'modules/modal/containers/modal-network-disabled';
 import { Transactions as ModalTransactions } from "modules/modal/transactions";
 import ModalUnsignedOrders from 'modules/modal/containers/modal-unsigned-orders';
 import ModalNetworkMismatch from 'modules/modal/containers/modal-mismatch';
-import ModalNetworkDisconnected from 'modules/modal/containers/modal-network-disconnected';
+import ModalNetworkDisconnected from "modules/modal/components/modal-network-disconnected";
 import ModalFinalize from 'modules/modal/containers/modal-finalize';
 import ModalBuyDai from 'modules/modal/containers/modal-buy-dai';
 import ModalDiscard from 'modules/modal/containers/modal-discard';
 import ModalClaimFees from 'modules/modal/containers/modal-claim-fees';
 import ModalParticipate from 'modules/modal/containers/modal-participate';
-import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect';
-import ModalDisclaimer from 'modules/modal/containers/modal-disclaimer';
-import { Gas as ModalGasPrice} from 'modules/modal/gas';
+import ModalNetworkConnect from 'modules/modal/components/modal-network-connect';
+import ModalDisclaimer from 'modules/modal/components/modal-disclaimer';
+import { Gas as ModalGasPrice } from 'modules/modal/gas';
 import ModalClaimMarketsProceeds from 'modules/modal/containers/modal-claim-markets-proceeds';
 import ModalOpenOrders from 'modules/modal/containers/modal-open-orders';
 import ModalMarketLoading from 'modules/modal/containers/modal-market-loading';
@@ -45,6 +45,7 @@ import ModalInvalidMarketRules from 'modules/modal/containers/modal-invalid-mark
 import ModalInitializeAccounts from 'modules/modal/containers/modal-initialize-account';
 import ModalHelp from 'modules/modal/containers/modal-help';
 import ModalOdds from 'modules/modal/containers/modal-odds';
+import { useHistory } from 'react-router';
 
 import * as TYPES from 'modules/common/constants';
 
@@ -126,7 +127,7 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_HELP:
       return <ModalHelp {...props} />;
     case TYPES.MODAL_ODDS:
-        return <ModalOdds {...props} />;
+      return <ModalOdds {...props} />;
     case TYPES.MODAL_SIGNUP:
       return <ModalSignin {...props} isLogin={false} />;
     case TYPES.MODAL_LOADING:
@@ -154,29 +155,17 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_INVALID_MARKET_RULES:
       return <ModalInvalidMarketRules />;
     case TYPES.MODAL_INITIALIZE_ACCOUNT:
-       return <ModalInitializeAccounts />;
+      return <ModalInitializeAccounts />;
     default:
       return <div />;
   }
 }
 
-interface ModalViewProps {
-  modal: {
-    cb: Function;
-    type: string;
-  };
-  closeModal: Function;
-  trackModalViewed: Function;
-  history: History;
-}
-
-const ModalView = ({
-  modal,
-  closeModal,
-  trackModalViewed,
-  history,
-}: ModalViewProps) => {
+const ModalView = () => {
+  const history = useHistory();
+  const { modal, actions: { closeModal } } = useAppStatusStore();
   const [locationKeys, setLocationKeys] = useState([]);
+
   const handleKeyDown = e => {
     if (e.keyCode === ESCAPE_KEYCODE) {
       if (modal && modal.cb) {
@@ -188,8 +177,7 @@ const ModalView = ({
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
-
-    trackModalViewed(modal.type, {
+    track(modal.type + ' - ' + MODAL_VIEWED, {
       modal: modal.type,
       from: window.location.href,
     });
@@ -216,10 +204,11 @@ const ModalView = ({
       }
     });
   }, [locationKeys]);
+  const trackModalViewed = (modalName, payload) => track(modalName + ' - ' + MODAL_VIEWED, payload);
 
   const Modal = selectModal(
-    modal.type,
-    { modal, closeModal, trackModalViewed },
+     modal.type,
+    {  modal, closeModal, trackModalViewed },
     closeModal,
     modal
   );

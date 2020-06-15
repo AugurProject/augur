@@ -137,47 +137,6 @@ const TopNav = ({
                   </span>
                 </li>
               )}
-              {index === SPREAD_INDEX && showCreateAccountButton && (
-                <li className={Styles.CreatAccountButton}>
-                  <div className={Styles.MigrateRep}>
-                    <ProcessingButton
-                      text={
-                        walletBalances.dai === 0
-                          ? 'Waiting for Funding'
-                          : 'Initiaize GSN Wallet'
-                      }
-                      action={() => createFundedGsnWallet()}
-                      disabled={walletBalances.dai === 0}
-                      queueName={CREATEAUGURWALLET}
-                      queueId={CREATEAUGURWALLET}
-                    />
-                  </div>
-                  <span>
-                    <label
-                      className={classNames(TooltipStyles.TooltipHint)}
-                      data-tip
-                      data-for={'accountCreation'}
-                    >
-                      {helpIcon}
-                    </label>
-                    <ReactTooltip
-                      id={'accountCreation'}
-                      className={TooltipStyles.Tooltip}
-                      effect="solid"
-                      place="top"
-                      type="light"
-                    >
-                      <p>
-                        {
-                          Number(walletBalances.legacyRep) > 0
-                            ? 'You have V1 REP in your trading account. Migrate it to V2 REP to use it in Augur V2.'
-                            : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'
-                        }
-                      </p>
-                    </ReactTooltip>
-                  </span>
-                </li>
-              )}
               <li
                 className={classNames({
                   [Styles['Selected']]: selected,
