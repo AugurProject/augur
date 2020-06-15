@@ -133,24 +133,25 @@ const MarketsView = () => {
   const [state, setState] = useState({
     filterSortedMarkets: [],
     marketCount: 0,
-    limit: PAGINATION_COUNT,
-    offset: 1,
     showPagination: false,
     selectedMarketCardType: 0,
   });
+
+  const [offset, setOffset] = useState(1);
+  const [limit, setLimit] = useState(PAGINATION_COUNT);
+
   const {
     actions: { updateOrderBook, updateMarketsData },
   } = useMarketsStore();
 
   useEffect(() => {
-    if (state.offset !== 1) {
-      setState({ ...state, offset: 1 });
+    if (offset !== 1) {
+      setOffset(1);
     }
     updateFilteredMarkets();
   }, [
     isConnected,
     isLogged,
-    marketsInReportingState.length,
     search,
     selectedCategories,
     maxLiquiditySpread,
@@ -160,6 +161,17 @@ const MarketsView = () => {
     templateFilter,
     includeInvalidMarkets,
   ]);
+
+  const {
+    filterSortedMarkets,
+    marketCount,
+    showPagination,
+    selectedMarketCardType,
+  } = state;
+
+  useEffect(() => {
+    updateFilteredMarkets();
+  }, [marketsInReportingState.length]);
 
   const headerTitle = getHeaderTitleFromProps(
     search,
@@ -178,7 +190,7 @@ const MarketsView = () => {
       templateFilter,
       includeInvalidMarkets,
       state.marketCount,
-      state.offset
+      offset
     );
   }, [
     search,
@@ -189,17 +201,9 @@ const MarketsView = () => {
     maxFee,
     templateFilter,
     includeInvalidMarkets,
-    state.offset,
+    offset,
     state.marketCount,
   ]);
-  const {
-    filterSortedMarkets,
-    marketCount,
-    limit,
-    offset,
-    showPagination,
-    selectedMarketCardType,
-  } = state;
 
   function updateFilteredMarkets() {
     window.scrollTo(0, 1);
@@ -247,16 +251,17 @@ const MarketsView = () => {
   }
 
   function updateLimit(limit) {
-    setState({
-      ...state,
-      limit,
-      offset: 1,
-    });
+    setOffset(1);
+    setLimit(limit);
   }
 
   function setPageNumber(offset) {
-    setState({ ...state, offset });
+    setOffset(offset);
   }
+
+  useEffect(() => {
+    updateFilteredMarkets();
+  }, [limit, offset]);
 
   const isTrading = theme === THEMES.TRADING;
   const displayFee = maxFee !== MAX_FEE_100_PERCENT;
