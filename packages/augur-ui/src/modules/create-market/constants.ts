@@ -125,7 +125,7 @@ export const InvalidRules = [
   'The outcome was not known at event expiration time.',
   'It can resolve without at least one of the outcomes listed being the winner, unless it is explicitly stated how the market will otherwise resolve in the resolution details.',
   'The title, details and outcomes are in direct conflict with each other.',
-  'Any outcome duplicates',
+  'Any of the outcomes are duplicates',
   'The market can resolve with more than one winning outcome.',
   'Any of the outcomes don’t answer the market question ONLY. (outcomes cannot introduce a secondary question)',
   'If using a resolution source (a source is a noun that reports on or decides the result of a market), the source\'s URL or full name is NOT in the Market Question, regardless of it being in the resolution details.',
