@@ -11,6 +11,7 @@ import {
   INVALID_OUTCOME_ID,
   ARCHIVED_MARKET_LENGTH,
   SCALAR_UP_ID,
+  INVALID_OUTCOME_LABEL,
 } from 'modules/common/constants';
 import { convertUnixToFormattedDate, getDurationBetween } from './format-date';
 import {
@@ -25,7 +26,6 @@ import { keyBy } from './key-by';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import moment = require('moment');
 import deepClone from './deep-clone';
-import { INVALID_OUTCOME } from 'modules/create-market/constants';
 
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo,
@@ -243,7 +243,7 @@ function processConsensus(
       ...market.consensus,
       winningOutcome: market.consensus.outcome,
       outcomeName: isScalar
-        ? market.consensus.invalid ? INVALID_OUTCOME : market.consensus.outcome
+        ? market.consensus.invalid ? INVALID_OUTCOME_LABEL : market.consensus.outcome
         : getOutcomeNameWithOutcome(
             market,
             market.consensus.outcome,
@@ -260,7 +260,7 @@ function processConsensus(
       ...winning,
       winningOutcome: winning.outcome,
       outcomeName: isScalar
-        ? winning.isInvalidOutcome ? INVALID_OUTCOME : winning.outcome
+        ? winning.isInvalidOutcome ? INVALID_OUTCOME_LABEL : winning.outcome
         : getOutcomeNameWithOutcome(
             market,
             winning.outcome,

@@ -52,8 +52,8 @@ import {
   DismissableNotice,
   DismissableNoticeProps,
 } from 'modules/reporting/common';
-import { EventDetailsContent } from 'modules/create-market/constants';
-import { ExplainerBlock } from 'modules/create-market/components/common';
+import { AugurMarketsContent, EventDetailsContent } from 'modules/create-market/constants';
+import { ExplainerBlock, MultipleExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
@@ -725,8 +725,8 @@ export const InvalidLabel = ({
 }: InvalidLabelProps) => {
   const { theme, actions: { setModal }} = useAppStatusStore();
   const {
-    explainerBlockTitle,
-    explainerBlockSubtexts,
+    explainerBlockTitle: title,
+    explainerBlockSubtexts: subtexts,
     useBullets,
   } = EventDetailsContent();
 
@@ -738,7 +738,7 @@ export const InvalidLabel = ({
 
   return (
     <span className={Styles.InvalidLabel}>
-      {text}
+      {constants.INVALID_OUTCOME_LABEL}
       <label
         data-tip
         data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
@@ -759,10 +759,19 @@ export const InvalidLabel = ({
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
-        <ExplainerBlock
-          title={explainerBlockTitle}
-          subtexts={explainerBlockSubtexts}
-          useBullets={useBullets}
+        <MultipleExplainerBlock
+          contents={[
+            {
+              title,
+              subtexts,
+              useBullets,
+            },
+            {
+              title: AugurMarketsContent().explainerBlockTitle,
+              subtexts: AugurMarketsContent().explainerBlockSubtexts,
+              useBullets: AugurMarketsContent().useBullets,
+            },
+          ]}
         />
       </ReactTooltip>
     </span>

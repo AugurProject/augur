@@ -24,7 +24,6 @@ import {
   CREATEMARKET,
   DOINITIALREPORT,
   PUBLICFILLORDER,
-  PUBLICTRADE,
   REDEEMSTAKE,
   CREATE_MARKET,
   MODAL_GAS_PRICE,
@@ -78,6 +77,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 import { logger } from '@augurproject/utils';
 import { PendingOrders } from 'modules/app/store/pending-orders';
+import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 
 const handleAlert = (
   log: any,
@@ -214,6 +214,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
   // update ETH/REP rate and gasPrice each block
   getEthToDaiRate();
   getRepToDaiRate();
+  loadGasPriceInfo();
 
   if (log.logs && log.logs.length > 0) {
     const eventLogs = log.logs.reduce(
