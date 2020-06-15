@@ -15,7 +15,6 @@ import {
   handleWarpSyncHashUpdatedLog,
   handleZeroStatusUpdated,
   handleBulkOrdersLog,
-  handleDBUpdatedZeroXOrders,
   handleOrderLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
