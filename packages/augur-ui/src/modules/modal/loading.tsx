@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { LoadingEllipse, DirectionArrow } from 'modules/common/icons';
 
 import Styles from 'modules/modal/modal.styles.less';
+import CommentStyles from 'modules/modal/common.styles.less';
 import { CloseButton, ExternalLinkButton } from 'modules/common/buttons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
@@ -42,7 +43,7 @@ export const Loading = () => {
   return (
     <div className={Styles.Loading}>
       {showHelper && (
-        <article onClick={() => setshowHelper(false)} className={Styles.ModalMetaMaskFinder}>
+        <article onClick={() => setshowHelper(false)} className={CommentStyles.ModalMetaMaskFinder}>
           <div>
             <img src="images/metamask-help.png" />
           </div>

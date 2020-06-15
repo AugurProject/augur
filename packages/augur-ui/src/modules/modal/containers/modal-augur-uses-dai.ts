@@ -1,27 +1,24 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { AppStatus } from 'modules/app/store/app-status';
 import { Onboarding } from 'modules/modal/onboarding';
-import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import {
   MODAL_BUY_DAI,
   HELP_CENTER_WHAT_IS_DAI,
 } from 'modules/common/constants';
 import { OnboardingDollarDaiIcon } from 'modules/common/icons';
 import { AUGUR_USES_DAI, track } from 'services/analytics/helpers';
-import { AppStatus } from 'modules/app/store/app-status';
 import { getOnboardingStep } from './modal-p2p-trading';
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = state => ({});
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
+const mapDispatchToProps = dispatch => ({
   buyDaiModal: () => AppStatus.actions.setModal({ type: MODAL_BUY_DAI }),
   track: (eventName, payload) => track(eventName, payload),
   gotoOnboardingStep: (step) => AppStatus.actions.setModal({ type: getOnboardingStep(step) })
 });
 
-const mergeProps = (sP: any, dP: any, oP: any) => ({
+const mergeProps = (sP, dP, oP) => ({
   icon: OnboardingDollarDaiIcon,
   largeHeader: 'Augur uses Dai for betting',
   showAccountStatus: true,

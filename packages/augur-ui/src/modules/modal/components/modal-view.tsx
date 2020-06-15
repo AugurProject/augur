@@ -165,6 +165,7 @@ const ModalView = () => {
   const history = useHistory();
   const { modal, actions: { closeModal } } = useAppStatusStore();
   const [locationKeys, setLocationKeys] = useState([]);
+
   const handleKeyDown = e => {
     if (e.keyCode === ESCAPE_KEYCODE) {
       if (modal && modal.cb) {
@@ -206,8 +207,8 @@ const ModalView = () => {
   const trackModalViewed = (modalName, payload) => track(modalName + ' - ' + MODAL_VIEWED, payload);
 
   const Modal = selectModal(
-    modal.type,
-    { modal, closeModal, trackModalViewed },
+     modal.type,
+    {  modal, closeModal, trackModalViewed },
     closeModal,
     modal
   );
