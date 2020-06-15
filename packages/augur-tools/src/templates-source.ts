@@ -355,7 +355,7 @@ export const TEMPLATES = {
               {
                 id: 6,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
+                placeholder: `Draw/No Contest`,
               },
             ],
             resolutionRules: {
@@ -731,7 +731,7 @@ export const TEMPLATES = {
               {
                 id: 6,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
+                placeholder: `Draw/No Contest`,
               },
             ],
             resolutionRules: {
@@ -8994,13 +8994,13 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -9143,13 +9143,13 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -9292,13 +9292,13 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
-                type: TemplateInputType.DATEYEAR,
+                type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {

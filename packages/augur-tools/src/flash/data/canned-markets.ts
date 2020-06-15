@@ -453,7 +453,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         'Liverpool',
         'Manchester United',
         'Draw',
-        'Unofficial game/Cancelled',
+        'No Contest',
       ],
       extraInfo: buildExtraInfo(socTemplate, socInputValues, [
         SPORTS,
@@ -781,7 +781,7 @@ const calcMMAMarkets = (): CannedMarket[] => {
     [fighterA, fighterB, 'Draw/No Contest'],
     ['Over 2.5', 'Under 2.5', 'No Contest'],
     [`${fighterA} by KO/TKO`, `${fighterA} by Submission`, `${fighterA} by Points`, `${fighterB} by KO/TKO`, `${fighterB} by Submission`, `${fighterB} by Points`, `Draw/No Contest`],
-    ['KO/TKO', 'Submission', 'Points', 'No Contest'],
+    ['KO/TKO', 'Submission', 'Points', 'Draw/No Contest'],
     ['Round 1', 'Round 2', 'Round 3', 'Round 4', 'Round 5', 'Goes the distance', 'No Contest'],
   ]
 
