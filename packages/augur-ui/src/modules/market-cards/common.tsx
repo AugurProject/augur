@@ -13,7 +13,7 @@ import {
   SCALAR_UP_ID,
   YES_NO,
   ZERO,
-  INVALID_OUTCOME_NAME,
+  INVALID_OUTCOME_LABEL,
   SUBMIT_DISPUTE,
   SCALAR_DOWN_ID,
   THEMES,
@@ -1157,7 +1157,7 @@ export const ResolvedOutcomes = ({
       <span>Winning Outcome {CheckCircleIcon} </span>
       <span>
         {consensusFormatted.invalid
-          ? INVALID_OUTCOME_NAME
+          ? INVALID_OUTCOME_LABEL
           : consensusFormatted.outcomeName}
       </span>
       {expanded && (
@@ -1205,7 +1205,7 @@ export const TentativeWinner = ({
           <span>Tentative Winner</span>
           <span>
             {tentativeWinner.isInvalidOutcome
-              ? INVALID_OUTCOME_NAME
+              ? INVALID_OUTCOME_LABEL
               : getOutcomeNameWithOutcome(
                   market,
                   tentativeWinner.outcome,

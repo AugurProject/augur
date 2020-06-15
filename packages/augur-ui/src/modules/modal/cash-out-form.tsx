@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Breakdown } from 'modules/modal/common';
-import { formatDai, formatGasCostToEther } from 'utils/format-number';
+import { formatDai, formatGasCostToEther, formatEther } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
@@ -12,7 +12,7 @@ import {
   ProcessingButton,
   SecondaryButton,
 } from 'modules/common/buttons';
-import { TRANSFER_DAI_GAS_COST } from 'modules/auth/actions/transfer-funds';
+import { TRANSFER_DAI_GAS_COST, transferFundsGasEstimate, transferFunds } from 'modules/auth/actions/transfer-funds';
 import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
   WITHDRAWALLFUNDSASDAI,
@@ -25,55 +25,35 @@ import {
 import { AutoCancelOrdersNotice } from 'modules/common/labels';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
-
-interface CashOutFormProps {
-  closeAction: Function;
-  withdrawAllFunds: Function;
-  transferFunds: Function;
-  withdrawAllFundsEstimateGas: Function;
-  transferFundsGasEstimate: Function;
-  account: string;
-  gasPrice: number;
-  totalOpenOrderFundsFormatted: FormattedNumber;
-  availableFundsFormatted: FormattedNumber;
-  reserveInDaiFormatted: FormattedNumber;
-  totalDaiFormatted: FormattedNumber;
-  tradingAccountEthFormatted: FormattedNumber;
-  totalDai: string;
-  accountFunds: any;
-  ethReserveAmount: any;
-  signerEth: string;
-}
+import { getEthReserve } from 'modules/auth/helpers/get-eth-reserve';
+import { getAccountFunds } from 'modules/auth/helpers/login-account';
+import { withdrawAllFundsEstimateGas, withdrawAllFunds } from 'modules/contracts/actions/contractCalls';
 
 const GAS_EST_MULTIPLIER = 4;
 
-export const CashOutForm = ({
-  closeAction,
-  accountFunds,
-  withdrawAllFunds,
-  ethReserveAmount,
-  transferFunds,
-  withdrawAllFundsEstimateGas,
-  transferFundsGasEstimate,
-  account,
-  gasPrice,
-  totalOpenOrderFundsFormatted,
-  availableFundsFormatted,
-  tradingAccountEthFormatted,
-  totalDai,
-  signerEth,
-}: CashOutFormProps) => {
+export const ModalCashOut = () => {
+  const { loginAccount, ethToDaiRate, modal, gasPriceInfo, actions: {closeModal} } = useAppStatusStore();
+  const { address: account, totalOpenOrdersFrozenFunds } = loginAccount;
+
+  const ethReserveAmount: FormattedNumber = getEthReserve();
+  const accountFunds = getAccountFunds(loginAccount);
+  const totalOpenOrderFundsFormatted: FormattedNumber = formatDai(totalOpenOrdersFrozenFunds || 0);
+  const availableFundsFormatted = formatDai(accountFunds.totalAvailableTradingBalance);
+  const reserveInDaiFormatted = ethToDai(ethReserveAmount.value || 0, createBigNumber(ethToDaiRate?.value || 0));
+  const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(accountFunds.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
+  const tradingAccountEthFormatted = formatEther(loginAccount.balances.eth);
+  const totalDai = loginAccount.balances.dai;
+  const signerEth = loginAccount.balances.signerBalances.eth;
+
+
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
+
   const [gasCosts, setGasCosts] = useState(
     createBigNumber(TRANSFER_DAI_GAS_COST)
   );
   const [address, setAddress] = useState('');
   const [errors, setErrors] = useState('');
   const [signerPays, setSignerPays] = useState(true);
-
-  const { ethToDaiRate, loginAccount: { totalOpenOrdersFrozenFunds } } = useAppStatusStore();
-
-  const reserveInDaiFormatted = ethToDai(ethReserveAmount.value || 0, createBigNumber(ethToDaiRate?.value || 0));
-  const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(accountFunds.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
 
   async function getGasCost(account) {
     let gas = gasCosts;
@@ -184,7 +164,7 @@ export const CashOutForm = ({
     <div className={Styles.WithdrawForm}>
       <header>
         <div>
-          <CloseButton action={() => closeAction()} />
+          <CloseButton action={() => closeModal()} />
         </div>
         <div>
           <h1>Withdraw all funds</h1>
@@ -223,7 +203,7 @@ export const CashOutForm = ({
           disabled={!isValid}
         />
 
-        <SecondaryButton text={'Cancel'} action={closeAction} />
+        <SecondaryButton text={'Cancel'} action={closeModal} />
       </div>
     </div>
   );

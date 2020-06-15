@@ -1,10 +1,7 @@
 import logError from 'utils/log-error';
 import { formatGasCostGwei } from 'utils/format-number';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { AppState } from 'appStore';
 import { DataCallback, NodeStyleCallback, GasPriceInfo } from 'modules/types';
-import { ThunkAction, ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import {
   GAS_PRICE_BACKUP_API_ENDPOINT,
   DEFAULT_FALLBACK_GAS_SAFELOW,
@@ -12,23 +9,21 @@ import {
   DEFAULT_FALLBACK_GAS_FAST,
 } from 'modules/common/constants';
 import { augurSdk } from 'services/augursdk';
-import { AppStatus } from '../store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
+import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
 
-export function loadGasPriceInfo(
+export const loadGasPriceInfo = (
   callback: NodeStyleCallback = logError
-): ThunkAction<any, any, any, any> {
-  return (
-    dispatch: ThunkDispatch<void, any, Action>,
-    getState: () => AppState
-  ) => {
+) => {
     const { loginAccount } = AppStatus.get();
     if (!loginAccount.address) return callback(null);
-    const networkId = getNetworkId();
-
-    getGasPriceRanges(networkId, result => {
-      console.log('gettingGasInfo', result);
-      AppStatus.actions.updateGasPriceInfo(result);
-    });
+    if (checkIfMainnet()) {
+      const networkId = getNetworkId();
+      getGasPriceRanges(networkId, result => {
+        console.log('gettingGasInfo', result);
+        AppStatus.actions.updateGasPriceInfo(result);
+      });
+    }
   };
 
 async function getGasPriceRanges(networkId: string, callback: DataCallback) {

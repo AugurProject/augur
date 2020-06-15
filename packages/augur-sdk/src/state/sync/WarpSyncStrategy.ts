@@ -48,21 +48,22 @@ export class WarpSyncStrategy {
       highestSyncedBlock.timestamp - mostRecentWarpSync.end.timestamp >
         BULKSYNC_HORIZON
     ) {
-      // Blow it all away and refresh.
-      await this.warpSyncController.destroyAndRecreateDB();
-      await this.warpSyncController.createInitialCheckpoint();
 
       let logs;
       let endBlockNumber;
 
       try {
-      const checkpoint = await this.warpSyncController.getCheckpointFile(ipfsRootHash);
-      logs = checkpoint.logs;
-      endBlockNumber = checkpoint.endBlockNumber;
+        const checkpoint = await this.warpSyncController.getCheckpointFile(ipfsRootHash);
+        logs = checkpoint.logs;
+        endBlockNumber = checkpoint.endBlockNumber;
       } catch(e) {
         console.error(`Couldn't get checkpoint file: ${e}`);
         return undefined;
       }
+
+      // Blow it all away and refresh.
+      await this.warpSyncController.destroyAndRecreateDB();
+      await this.warpSyncController.createInitialCheckpoint();
 
       const maxBlock = await this.processFile(logs);
 

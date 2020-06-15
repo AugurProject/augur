@@ -53,7 +53,7 @@ div.Tooltip {
 }
 
 div.TooltipInvalidRules {
-  max-width: @size-472;
+  max-width: 40%;
   width: 100%;
   border-radius: @size-1;
   padding: 0;
@@ -62,6 +62,14 @@ div.TooltipInvalidRules {
     border-radius: @size-1;
     margin-bottom: 0;
     background-color: var(--color-dark-grey);
+  }
+
+  @media @breakpoint-max-desktop {
+    max-width: 65%;
+  }
+
+  @media @breakpoint-mobile-tablet {
+    max-width: 75%;
   }
 }
 

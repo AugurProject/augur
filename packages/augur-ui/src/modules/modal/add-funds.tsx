@@ -27,26 +27,48 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { SDKConfiguration } from '@augurproject/artifacts';
 
 interface AddFundsProps {
-  closeAction: Function;
   autoSelect?: boolean;
-  isRelayDown?: boolean;
   fundType: string;
-  loginAccount: LoginAccount;
-  addFundsTorus: Function;
-  addFundsFortmatic: Function;
-  showTransfer: boolean;
 }
 
+const addFundsPortis = async amount => {
+  // TODO
+};
+
+const addFundsFortmatic = async (amount, crypto, address) => {
+  await fm.user.deposit({
+    amount: amount.toNumber(),
+    crypto,
+    address,
+  });
+};
+
+const addFundsTorus = async (amount, address) => {
+  await window.torus.initiateTopup('wyre', {
+    selectedCurrency: 'USD',
+    selectedAddress: address,
+    fiatValue: amount.toNumber(),
+    selectedCryptoCurrency: 'DAI',
+  });
+};
+
 export const AddFunds = ({
-  closeAction,
   autoSelect = false,
   fundType = DAI,
-  loginAccount,
-  isRelayDown = false,
-  addFundsTorus,
-  addFundsFortmatic,
-  showTransfer = false,
 }: AddFundsProps) => {
+  const { loginAccount, modal, actions: {closeModal} } = useAppStatusStore();
+  const isRelayDown = false;
+  const showTransfer = modal.showTransfer || false;
+
+    //analyticsEvent: () => dP.track(ADD_FUNDS, {}),
+  const closeAction = () => {
+    if (modal.cb) {
+      modal.cb();
+    }
+    closeModal();
+  };
+    
+
   const [amountToBuy, setAmountToBuy] = useState(createBigNumber(0));
   const [isAmountValid, setIsAmountValid] = useState(false);
   const [poolSelected, setPoolSelected] = useState(false);
@@ -254,8 +276,8 @@ export const AddFunds = ({
             <CreditCard
               accountMeta={accountMeta}
               walletAddress={walletAddress}
-              addFundsTorus={addFundsTorus}
-              addFundsFortmatic={addFundsFortmatic}
+              addFundsTorus={() => addFundsTorus}
+              addFundsFortmatic={() => addFundsFortmatic}
               fundTypeLabel={fundTypeLabel}
               fundTypeToUse={fundTypeToUse}
               validateAndSet={validateAndSet}

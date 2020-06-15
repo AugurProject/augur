@@ -67,8 +67,10 @@ export class GSN {
 
       const useWallet = this.augur.getUseWallet();
       const useRelay = this.augur.getUseRelay();
+      const useEthreserve = this.augur.getUseDesiredEthBalance();
       this.augur.setUseWallet(false);
       this.augur.setUseRelay(false);
+      this.augur.setUseDesiredEthBalance(false);
 
       const ethBalance = this.augur.config.gsn.desiredSignerBalanceInETH * 10 ** 18;
       const signerEthBalance = await this.augur.getEthBalance(signerAddress);
@@ -80,6 +82,7 @@ export class GSN {
 
       this.augur.setUseWallet(useWallet);
       this.augur.setUseRelay(useRelay);
+      this.augur.setUseDesiredEthBalance(useEthreserve);
     }
 
   async withdrawAllFundsEstimateGas(
@@ -91,8 +94,10 @@ export class GSN {
 
       const useWallet = this.augur.getUseWallet();
       const useRelay = this.augur.getUseRelay();
+      const useEthreserve = this.augur.getUseDesiredEthBalance();
       this.augur.setUseWallet(false);
       this.augur.setUseRelay(false);
+      this.augur.setUseDesiredEthBalance(false);
       let estimateGas = new BigNumber(0);
 
       try {
@@ -106,6 +111,7 @@ export class GSN {
       } finally {
         this.augur.setUseWallet(useWallet);
         this.augur.setUseRelay(useRelay);
+        this.augur.setUseDesiredEthBalance(useEthreserve);
       }
 
       return estimateGas;

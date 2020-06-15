@@ -25,8 +25,14 @@ import {
   DescriptionWithLink,
   DescriptionWithLinkProps,
 } from 'modules/modal/common';
-import { ExplainerBlock } from 'modules/create-market/components/common';
-import { EventDetailsContent } from 'modules/create-market/constants';
+import {
+  ExplainerBlock,
+  MultipleExplainerBlock,
+} from 'modules/create-market/components/common';
+import {
+  AugurMarketsContent,
+  EventDetailsContent,
+} from 'modules/create-market/constants';
 import {
   LinearPropertyLabelProps,
   DiscordLink,
@@ -109,12 +115,23 @@ export const Message = ({
       {depositInfo && <DepositInfo {...depositInfo} />}
       {marketReview && <MarketReview {...marketReview} />}
       {checkbox && <CheckboxCTA {...checkbox} />}
-      {invalidMarketRules && <ExplainerBlock
-          title={EventDetailsContent().explainerBlockTitle}
-          subtexts={EventDetailsContent().explainerBlockSubtexts}
-          useBullets={EventDetailsContent().useBullets}
+      {invalidMarketRules && (
+        <MultipleExplainerBlock
           isModal
-      />}
+          contents={[
+            {
+              title: EventDetailsContent().explainerBlockTitle,
+              subtexts: EventDetailsContent().explainerBlockSubtexts,
+              useBullets: EventDetailsContent().useBullets,
+            },
+            {
+              title: AugurMarketsContent().explainerBlockTitle,
+              subtexts: AugurMarketsContent().explainerBlockSubtexts,
+              useBullets: AugurMarketsContent().useBullets,
+            },
+          ]}
+        />
+      )}
     </main>
     {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
   </div>

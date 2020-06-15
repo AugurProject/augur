@@ -4,7 +4,7 @@ import Styles from 'modules/market/components/market-header/market-header-report
 import {
   REPORTING_STATE,
   SCALAR,
-  INVALID_OUTCOME_NAME,
+  INVALID_OUTCOME_LABEL,
   SUBMIT_REPORT,
   SUBMIT_DISPUTE,
   PROCEEDS_TO_CLAIM_TITLE,
@@ -95,7 +95,7 @@ export const MarketHeaderReporting = ({
           <span>Winning Outcome</span>
           <span>
             {consensusFormatted.invalid
-              ? INVALID_OUTCOME_NAME
+              ? INVALID_OUTCOME_LABEL
               : consensusFormatted.outcomeName}
           </span>
         </div>
@@ -140,8 +140,8 @@ export const MarketHeaderReporting = ({
               <span>
                 {tentativeWinner &&
                   (tentativeWinner.isInvalidOutcome
-                    ? 'Invalid'
-                    : marketSelected === SCALAR
+                    ? INVALID_OUTCOME_LABEL
+                    : market.marketType === SCALAR
                     ? tentativeWinner.outcome
                     : getOutcomeNameWithOutcome(
                         marketSelected,
