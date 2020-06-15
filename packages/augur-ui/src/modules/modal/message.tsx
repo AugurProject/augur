@@ -43,6 +43,10 @@ import Styles from 'modules/modal/modal.styles.less';
 import { HelpMenu } from 'modules/app/components/help-resources';
 import * as classNames from 'classnames';
 import { OptionsMenus } from 'modules/app/components/odds-menu';
+import {
+  DismissableNotice,
+  DismissableNoticeProps,
+} from 'modules/reporting/common';
 
 interface MessageProps {
   closeAction: Function;
@@ -68,6 +72,8 @@ interface MessageProps {
   showAddFundsModal?: Function;
   showHelp?: Boolean;
   showOdds?: Boolean;
+  migrateMarket?: Boolean;
+  dismissableNotice?: DismissableNoticeProps;
 }
 
 export const Message = ({
@@ -93,9 +99,16 @@ export const Message = ({
   walletType,
   showAddFundsModal,
   showHelp,
-  showOdds
+  showOdds,
+  migrateMarket,
+  dismissableNotice,
 }: MessageProps) => (
-  <div className={classNames(Styles.Message, {[Styles.Help]: showHelp || showOdds})}>
+  <div
+    className={classNames(Styles.Message, {
+      [Styles.Help]: showHelp || showOdds,
+      [Styles.ModalMigrateMarket]: migrateMarket,
+    })}
+  >
     <Title title={title} closeAction={closeAction} />
     <main>
       {alertMessage && <AlertMessage {...alertMessage} />}
@@ -106,8 +119,15 @@ export const Message = ({
       {descriptionWithLink && <DescriptionWithLink {...descriptionWithLink} />}
       {showHelp && <HelpMenu />}
       {showOdds && <OptionsMenus />}
-      {showAddFundsHelp && <AddFundsHelp showAddFundsModal={showAddFundsModal} walletType={walletType} />}
-      {showDiscordLink && <DiscordLink label='Please try again. If the issue persists please report it on ' /> }
+      {showAddFundsHelp && (
+        <AddFundsHelp
+          showAddFundsModal={showAddFundsModal}
+          walletType={walletType}
+        />
+      )}
+      {showDiscordLink && (
+        <DiscordLink label="Please try again. If the issue persists please report it on " />
+      )}
       {subheader && <Subheader subheaderContent={subheader} />}
       {subheader_2 && <Subheader subheaderContent={subheader_2} />}
       {breakdown && <Breakdown rows={breakdown} />}
@@ -132,6 +152,7 @@ export const Message = ({
           ]}
         />
       )}
+      {dismissableNotice && <DismissableNotice {...dismissableNotice} />}
     </main>
     {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
   </div>

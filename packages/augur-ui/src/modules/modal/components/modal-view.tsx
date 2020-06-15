@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import classNames from 'classnames';
 import ModalSignTransaction from 'modules/modal/containers/modal-sign-transaction';
-import ModalReporting from 'modules/modal/containers/modal-reporting';
+import ModalReporting from 'modules/modal/reporting';
 import ModalRepFaucet from 'modules/modal/containers/modal-rep-faucet';
 import ModalCreateMarket from 'modules/modal/containers/modal-create-market';
 import ModalDaiFaucet from 'modules/modal/containers/modal-dai-faucet';
@@ -19,7 +19,7 @@ import ModalFinalize from 'modules/modal/containers/modal-finalize';
 import ModalBuyDai from 'modules/modal/containers/modal-buy-dai';
 import ModalDiscard from 'modules/modal/containers/modal-discard';
 import ModalClaimFees from 'modules/modal/containers/modal-claim-fees';
-import ModalParticipate from 'modules/modal/containers/modal-participate';
+import { ModalParticipate } from 'modules/modal/components/modal-participate';
 import ModalNetworkConnect from 'modules/modal/components/modal-network-connect';
 import ModalDisclaimer from 'modules/modal/components/modal-disclaimer';
 import { Gas as ModalGasPrice } from 'modules/modal/gas';

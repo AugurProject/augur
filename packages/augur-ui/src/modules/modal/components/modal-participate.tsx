@@ -7,6 +7,8 @@ import {
   BUY_PARTICIPATION_TOKENS_GAS_LIMIT,
   REP,
   GWEI_CONVERSION,
+  GSN_WALLET_SEEN,
+  MODAL_INITIALIZE_ACCOUNT,
 } from 'modules/common/constants';
 import {
   Title,
@@ -16,31 +18,41 @@ import {
 } from '../common';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { InitializeWalletModalNotice } from 'modules/common/labels';
+import getValueFromlocalStorage from 'utils/get-local-storage-value';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
+import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
+import { purchaseParticipationTokens } from 'modules/reporting/actions/participation-tokens-management';
 
-interface ModalParticipateProps {
-  rep: string;
-  gasPrice: number;
-  closeModal: (...args: any[]) => any;
-  purchaseParticipationTokens: Function;
-  messages: AlertMessageProps[];
-  title: string;
-  GsnEnabled: boolean;
-  gsnWalletInfoSeen: boolean;
-  gsnUnavailable: boolean;
-  initializeGsnWallet: Function;
-  transactionLabel: string;
-}
-
-export const ModalParticipate = (props: ModalParticipateProps) => {
+export const ModalParticipate = () => {
+  const gsnWalletInfoSeen =
+    getValueFromlocalStorage(GSN_WALLET_SEEN) === 'true' ? true : false;
   const {
-    closeModal,
-    gasPrice,
-    messages,
-    title,
-    GsnEnabled,
-    transactionLabel,
-  } = props;
+    loginAccount: {
+      balances: { rep },
+    },
+    modal,
+    gsnEnabled: GsnEnabled,
+    gasPriceInfo,
+    actions: { closeModal, setModal }
+  } = useAppStatusStore();
 
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
+  const messages = [
+    {
+      key: 'quant',
+      preText: 'Quantity (1 token @ 1 REP)',
+    },
+  ];
+  const title = 'Buy Participation Tokens';
+  const gsnUnavailable = isGSNUnavailable();
+  const transactionLabel = getTransactionLabel();
+
+  const initializeGsnWallet = (customAction = null) =>
+    setModal({
+      customAction,
+      type: MODAL_INITIALIZE_ACCOUNT,
+    });
   const [isValid, setIsValid] = useState(false);
   const [quantity, setQuantity] = useState('');
   const [gasLimit, setGasLimit] = useState(BUY_PARTICIPATION_TOKENS_GAS_LIMIT);
@@ -55,7 +67,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
   );
 
   useEffect(() => {
-    props.purchaseParticipationTokens(1, true, (err, gasLimit) => {
+    purchaseParticipationTokens(1, true, (err, gasLimit) => {
       if (!err && gasLimit) {
         setGasLimit(gasLimit);
       }
@@ -63,29 +75,22 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
   }, []);
 
   const submitForm = () => {
-    const {
-      initializeGsnWallet,
-      gsnUnavailable,
-      gsnWalletInfoSeen,
-      purchaseParticipationTokens,
-    } = props;
     if (gsnUnavailable && !gsnWalletInfoSeen) {
       initializeGsnWallet(() => {
         purchaseParticipationTokens(quantity, false, err => {
           if (err) console.log('ERR for purchaseParticipationTokens', err);
-          props.closeModal();
+          closeModal();
         });
       });
     } else {
       purchaseParticipationTokens(quantity, false, err => {
         if (err) console.log('ERR for purchaseParticipationTokens', err);
-        props.closeModal();
+        closeModal();
       });
     }
   };
 
   const validateForm = quantity => {
-    const { rep } = props;
     const bnRep = createBigNumber(rep, 10);
     const errors: string[] = [];
     let isValid = true;
