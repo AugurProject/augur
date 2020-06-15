@@ -23,7 +23,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
   networkId: string
-) => async (dispatch: ThunkDispatch<void, any, Action>) => {
+) => async () => {
   if (!loginAccount || !loginAccount.address || !loginAccount.meta) return;
   if (!augurSdk.sdk) return;
 
@@ -61,7 +61,7 @@ export const updateSdk = (
         address: toChecksumAddress(walletAddress),
       };
     }
-    dispatch(loadAccountDataFromLocalStorage(newAccount.address));
+    loadAccountDataFromLocalStorage(newAccount.address);
     await augurSdk.syncUserData(
       newAccount.mixedCaseAddress,
       newAccount.meta.signer,
