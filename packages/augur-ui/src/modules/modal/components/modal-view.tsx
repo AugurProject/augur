@@ -161,22 +161,18 @@ function selectModal(type, props, closeModal, modal) {
 }
 
 interface ModalViewProps {
-  modal: {
-    cb: Function;
-    type: string;
-  };
   closeModal: Function;
   trackModalViewed: Function;
   history: History;
 }
 
 const ModalView = ({
-  modal,
   closeModal,
   trackModalViewed,
   history,
 }: ModalViewProps) => {
   const [locationKeys, setLocationKeys] = useState([]);
+  const { modal } = useAppStatusStore();
 
   const handleKeyDown = e => {
     if (e.keyCode === ESCAPE_KEYCODE) {
@@ -186,8 +182,6 @@ const ModalView = ({
       closeModal();
     }
   };
-
-  const appStatus = useAppStatusStore();
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -220,13 +214,11 @@ const ModalView = ({
     });
   }, [locationKeys]);
 
-  const currentModal = appStatus[MODAL] || modal;
-
   const Modal = selectModal(
-     currentModal.type,
-    {  currentModal, closeModal, trackModalViewed },
+     modal.type,
+    {  modal, closeModal, trackModalViewed },
     closeModal,
-    currentModal
+    modal
   );
 
   return (

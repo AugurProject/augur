@@ -710,10 +710,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
         dispatch({ type: SET_CATEGORY_STATS, categoryStats }),
       updateFilterSortOptions: filterSortOptions =>
         dispatch({ type: UPDATE_FILTER_SORT_OPTIONS, filterSortOptions }),
-      setModal: modal => {
-        dispatch({ type: CLOSE_MODAL });
-        dispatch({ type: SET_MODAL, modal });
-      },
+      setModal: modal => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
       updateUniverse: universe => dispatch({ type: UPDATE_UNIVERSE, universe }),
       switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
