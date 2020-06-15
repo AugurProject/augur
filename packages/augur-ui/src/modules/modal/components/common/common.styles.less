@@ -45,7 +45,7 @@
   background: @color-module-background;
   color: @color-primary-text;
   max-width: 35rem;
-  padding: @size-24 0;
+  padding: 0 0 @size-24;
   position: relative;
   text-align: left;
   width: 100%;
@@ -60,6 +60,10 @@
     }
 
     padding: @size-24
+  }
+
+  @media @breakpoint-mobile {
+    padding: 0 0 @size-16;
   }
 }
 
