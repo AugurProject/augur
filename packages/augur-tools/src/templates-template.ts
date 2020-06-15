@@ -569,22 +569,20 @@ function daysRequiredAfterMonthDate(
   } else return true;
 }
 
-function dateStartAfterMarketEndTime(
+function isDateInQuestionValid(
   inputs: ExtraInfoTemplateInput[],
-  endTime: number
-) {
-  const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
-  if (!input) return false;
-  return Number(input.timestamp) >= Number(endTime);
-}
-
-function dateStartAfterMarketCreation(
-  inputs: ExtraInfoTemplateInput[],
+  endTime: number,
   creationTime: number
 ): boolean {
-  const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
-  if (!input) return true;
-  return Number(creationTime) < Number(input.timestamp);
+  const filteredInputs = inputs.filter(i => [String(TemplateInputType.DATEYEAR), String(TemplateInputType.DATESTART), String(TemplateInputType.DATETIME), String(TemplateInputType.ESTDATETIME)].includes(i.type));
+  if (!filteredInputs || filteredInputs.length === 0) return true;
+  return filteredInputs.reduce((p, input) => {
+    if (!input.timestamp) return false;
+    if (Number(input.timestamp) > Number(endTime) || Number(creationTime) > Number(input.timestamp)) {
+      return false;
+    }
+    return p;
+  }, true);
 }
 
 function wednesdayAfterOpeningNoFriday(
@@ -894,27 +892,17 @@ export const isTemplateMarket = (
       return false;
     }
 
-    // check DATESTART isn't after market event expiration
+    // check DATEYEAR, DATESTART, ... isn't after market creation date and endTime isn't before
     if (
-      dateStartAfterMarketEndTime(
+      !isDateInQuestionValid(
         template.inputs,
-        new BigNumber(endTime).toNumber()
+        new BigNumber(endTime).toNumber(),
+        new BigNumber(creationTime).toNumber(),
       )
     ) {
-      errors.push('start date is after market event expiration endTime');
+      errors.push('date in market question can not be before market creationTime or after event expiration');
       return false;
     }
-
-      // check DATESTART isn't after market creation date
-      if (
-        !dateStartAfterMarketCreation(
-          template.inputs,
-          new BigNumber(creationTime).toNumber()
-        )
-      ) {
-        errors.push('start date can not be before market creationTime');
-        return false;
-      }
 
     // check DATE isn't on weekend or holiday
     if (
