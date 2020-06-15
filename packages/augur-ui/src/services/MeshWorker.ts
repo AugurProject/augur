@@ -19,12 +19,6 @@ const {
 
 const loadMesh = async () => loadMeshStreamingWithURLAsync('zerox.wasm');
 Comlink.expose({
-  loadMesh: () =>
-    new Promise((resolve, reject) =>
-      retry(5, loadMesh, (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-      })
-    ),
+  loadMesh,
   Mesh,
 });

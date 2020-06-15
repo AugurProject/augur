@@ -178,6 +178,9 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
   getState: () => AppState
 ) => {
   const { env } = getState();
+  if (status === ZEROX_STATUSES.ERROR) {
+    console.error("ZeroX Error", log.error)
+  }
   if (log && log.error && log.error.message.includes("too many blocks")) {
     console.error('too many blocks behind, reloading UI')
     env.showReloadModal ?
