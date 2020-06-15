@@ -29,7 +29,7 @@ import ModalMarketLoading from 'modules/modal/containers/modal-market-loading';
 import ModalDrQuickGuide from 'modules/modal/containers/modal-dr-quick-guide';
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market';
 import { AddFunds as ModalAddFunds } from 'modules/modal/add-funds';
-import ModalSignin from 'modules/modal/containers/modal-signin';
+import { SignIn as ModalSignin } from 'modules/modal/signin';
 import { Loading as ModalLoading } from 'modules/modal/loading';
 import { ModalUniverseSelector } from 'modules/modal/components/modal-universe-selector';
 import ModalTestBet from 'modules/modal/containers/modal-test-bet';
