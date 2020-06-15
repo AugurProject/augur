@@ -51,7 +51,7 @@ import * as TYPES from 'modules/common/constants';
 
 import Styles from 'modules/modal/common.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { track } from 'services/analytics/helpers';
+import { track, MODAL_VIEWED } from 'services/analytics/helpers';
 
 const ESCAPE_KEYCODE = 27;
 
@@ -203,6 +203,7 @@ const ModalView = () => {
       }
     });
   }, [locationKeys]);
+  const trackModalViewed = (modalName, payload) => track(modalName + ' - ' + MODAL_VIEWED, payload);
 
   const Modal = selectModal(
     modal.type,
