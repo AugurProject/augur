@@ -405,14 +405,6 @@ export const handleBulkOrdersLog = (data: {
   }
 };
 
-export const handleDBUpdatedZeroXOrders = (log: StoredOrder) =>
-(dispatch: ThunkDispatch<void, any, Action>) => {
-  const { market } = log;
-  if (isCurrentMarket(market)) {
-    dispatch(updateMarketOrderBook(market));
-  }
-};
-
 export const handleOrderLog = (log: any) =>
 (dispatch: ThunkDispatch<void, any, Action>) => {
   const type = log.eventType;
