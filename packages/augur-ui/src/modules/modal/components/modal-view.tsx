@@ -30,8 +30,8 @@ import ModalDrQuickGuide from 'modules/modal/containers/modal-dr-quick-guide';
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market';
 import { AddFunds as ModalAddFunds } from 'modules/modal/add-funds';
 import ModalSignin from 'modules/modal/containers/modal-signin';
-import ModalLoading from 'modules/modal/containers/modal-loading';
-import ModalUniverseSelector from 'modules/modal/containers/modal-universe-selector';
+import { Loading as ModalLoading } from 'modules/modal/loading';
+import { ModalUniverseSelector } from 'modules/modal/components/modal-universe-selector';
 import ModalTestBet from 'modules/modal/containers/modal-test-bet';
 import ModalAugurP2P from 'modules/modal/containers/modal-p2p-trading';
 import ModalGlobalChat from 'modules/modal/containers/modal-global-chat';
@@ -49,6 +49,8 @@ import ModalOdds from 'modules/modal/containers/modal-odds';
 import * as TYPES from 'modules/common/constants';
 
 import Styles from 'modules/modal/common.styles.less';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { track, MODAL_VIEWED } from 'services/analytics/helpers';
 
 const ESCAPE_KEYCODE = 27;
 
