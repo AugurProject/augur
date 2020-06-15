@@ -20,11 +20,10 @@ import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pendi
 import { addAlert } from 'modules/alerts/actions/alerts';
 import { AppStatus } from 'modules/app/store/app-status';
 
-export const updateSdk = (
+export const updateSdk = async (
   loginAccount: Partial<LoginAccount>,
   networkId: string
 ) => {
-  (async () => {
     if (!loginAccount || !loginAccount.address || !loginAccount.meta) return;
     if (!augurSdk.sdk) return;
 
@@ -86,7 +85,7 @@ export const updateSdk = (
         error,
       });
     }
-  })();
+  
 };
 
 export const createFundedGsnWallet = async () => {
