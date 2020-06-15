@@ -169,6 +169,9 @@ const addTemplates = (
           [t.hash]: {
             groupType: groupName,
             groupLineId: t.groupLineId,
+            estInputId: t.inputs.find(i => i.type === TemplateInputType.ESTDATETIME)?.id,
+            header: t.header,
+            title: t.title,
             keys
           }
         }

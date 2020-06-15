@@ -24,7 +24,7 @@ const OVEREAD_RELAY_GAS = 500000;
 const UNISWAP_MAX_GAS_COST = 150000;
 const REFRESH_INTERVAL_MS = 10000; // 10 seconds
 const GAS_PRICE_MULTIPLIER = 1.1;
-const GAS_COST_MULTIPLIER = 1.1;
+const GAS_COST_MULTIPLIER = 1.05;
 
 const GSN_RELAY_CALL_STATUS = {
   0: 'OK', // The transaction was successfully relayed and execution successful - never included in the event

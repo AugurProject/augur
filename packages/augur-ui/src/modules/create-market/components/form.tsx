@@ -32,7 +32,11 @@ import {
   TEMPLATE_PICKER,
   TEMPLATE_INPUTS,
   TEMPLATE,
+  ExchangeClosingMessage,
   MovieWednesdayAfterOpeningMessage,
+  AugurMarketsContent,
+  EventDetailsContent,
+  ReviewContent,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -54,6 +58,7 @@ import {
   LargeHeader,
   ExplainerBlock,
   ContentBlock,
+  MultipleExplainerBlock,
 } from 'modules/create-market/components/common';
 import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/components/form-details';
@@ -298,10 +303,7 @@ const saveDraft = (isTemplate, templateFormStarts) => {
       updated: createdDate,
     });
   }
-  marketCreationSaved(
-    newMarket?.template?.name,
-    isTemplate
-  );
+  marketCreationSaved(newMarket?.template?.name, isTemplate);
 };
 
 const onError = (name, error) => {
@@ -528,9 +530,12 @@ export const Form = ({ isTemplate, updatePage }) => {
   }, [newMarket.currentStep]);
   useEffect(() => {
     return () => {
-      if (!blockShown && parsePath(history.location.pathname)[0] !== CREATE_MARKET) unblock(isTemplate, templateFormStarts,
-        history);
-    }
+      if (
+        !blockShown &&
+        parsePath(history.location.pathname)[0] !== CREATE_MARKET
+      )
+        unblock(isTemplate, templateFormStarts, history);
+    };
   });
   const templateFormStarts = hasNoTemplateCategoryChildren(
     newMarket.navCategories[0]

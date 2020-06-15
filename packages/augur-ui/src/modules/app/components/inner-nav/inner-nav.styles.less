@@ -196,6 +196,11 @@
     position: fixed;
     height: 100%;
     bottom: 0;
+    min-height: calc(100% + @chrome-address-bar);
+
+    > ul > div:last-of-type {
+      height: @chrome-address-bar;
+    }
 
     &.mobileShow {
       left: 0;

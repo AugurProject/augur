@@ -8,6 +8,8 @@ import {
   SMALL_MOBILE,
   MIN_QUANTITY,
   GWEI_CONVERSION,
+  INVALID_OUTCOME_COMPARE,
+  INVALID_OUTCOME_LABEL,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';

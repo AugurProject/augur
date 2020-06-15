@@ -139,6 +139,15 @@ export interface MarketInfoOutcome {
   isInvalid: boolean;
 }
 
+export interface SportsBookInfo {
+  groupId: string;
+  groupType: string;
+  marketLine: string;
+  estTimestamp?: string;
+  header: string;
+  title?: string;
+}
+
 export interface MarketInfo {
   id: Address;
   universe: Address;
@@ -178,9 +187,7 @@ export interface MarketInfo {
   mostLikelyInvalid: boolean;
   isWarpSync: boolean;
   passDefaultLiquiditySpread: boolean;
-  sportsBookGroupId: string;
-  sportsBookType: string;
-  sportsBookLine: string;
+  sportsBook: SportsBookInfo;
 }
 
 export interface DisputeInfo {
@@ -1449,9 +1456,14 @@ async function getMarketsInfo(
       mostLikelyInvalid: marketData.invalidFilter,
       isWarpSync: marketData.isWarpSync,
       passDefaultLiquiditySpread,
-      sportsBookGroupId: marketData.templateGroupHash,
-      sportsBookType: marketData.templateGroupType,
-      sportsBookLine: marketData.templateGroupLine,
+      sportsBook: {
+        groupId: marketData.templateGroupHash,
+        groupType: marketData.templateGroupType,
+        marketLine: marketData.templateGroupLine,
+        header: marketData.templateGroupHeader,
+        title: marketData.templateGroupTitle,
+        estTimestamp: marketData.templateGroupEst,
+      }
     };
   });
 }

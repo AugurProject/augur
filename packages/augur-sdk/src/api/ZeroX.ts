@@ -24,6 +24,7 @@ import {
 import { SubscriptionEventName, OrderEventType } from '../constants';
 import { BigNumber as BN} from 'ethers/utils';
 
+export const MAX_PROTOCOL_FEE_MULTIPLIER = 1.1;
 
 export enum Verbosity {
   Panic = 0,
@@ -122,6 +123,7 @@ export interface MatchingOrders {
   signatures: string[];
   orderIds: string[];
   loopLimit: BigNumber;
+  gasLimit: BigNumber;
 }
 
 export interface SignedOrder {
@@ -287,7 +289,7 @@ export class ZeroX {
 
     const account = await this.client.getAccount();
 
-    const { orders, signatures, orderIds, loopLimit } = await this.getMatchingOrders(
+    const { orders, signatures, orderIds, loopLimit, gasLimit } = await this.getMatchingOrders(
       params,
       ignoreOrders
     );
@@ -317,12 +319,15 @@ export class ZeroX {
     const exchangeFeeMultiplier = await this.client.contracts.zeroXExchange.protocolFeeMultiplier_();
     const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(new BigNumber(loopLimit));
     const walletEthBalance = await this.client.getEthBalance(account);
+    const remainingToPay = protocolFee.gt(walletEthBalance) ? protocolFee.minus(walletEthBalance) : new BigNumber(0);
+    let maxProtocolFeeInDai = remainingToPay.multipliedBy(this.client.dependencies.maxExchangeRate).div(QUINTILLION);
+    maxProtocolFeeInDai = maxProtocolFeeInDai.multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER).decimalPlaces(0);
 
     const result: Event[] = await this.client.contracts.ZeroXTrade.trade(
       params.amount,
       params.fingerprint,
       params.tradeGroupId,
-      new BigNumber(10**18).multipliedBy(new BigNumber(loopLimit)), // TODO: This is the param indicating the maximum amount of DAI to spend to cover the 0x protocol fee. Should be calculated and likely far lower
+      maxProtocolFeeInDai,
       new BigNumber(loopLimit), // This is the maximum number of trades to actually make. This lets us put in more orders than we could fill with the gasLimit but handle failures and still fill the desired amount
       orders,
       signatures,
@@ -650,7 +655,7 @@ export class ZeroX {
     });
 
     if (_.size(zeroXOrders) < 1) {
-      return { orders: [], signatures: [], orderIds: [], loopLimit: new BigNumber(0)};
+      return { orders: [], signatures: [], orderIds: [], loopLimit: new BigNumber(0), gasLimit: new BigNumber(0)};
     }
 
     let ordersMap = [];
@@ -669,7 +674,7 @@ export class ZeroX {
       return price === 0 ? b.amount - a.amount : price;
     });
 
-    const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params);
+    const { loopLimit, gasLimit } = this.getTradeTransactionLimits(params, sortedOrders.length);
     const numOrdersToPotentiallyFill = 10;
     const ordersData =
       params.direction === 0
@@ -703,7 +708,7 @@ export class ZeroX {
       return orderData.signature;
     });
 
-    return { orders, signatures, orderIds, loopLimit };
+    return { orders, signatures, orderIds, loopLimit, gasLimit };
   }
 
   async checkIfTradeValid(
@@ -778,18 +783,22 @@ export class ZeroX {
   }
 
   getTradeTransactionLimits(
-    params: NativePlaceTradeChainParams
+    params: NativePlaceTradeChainParams,
+    numOrders: number,
   ): TradeTransactionLimits {
     let loopLimit = new BigNumber(1);
     let gasLimit = constants.WORST_CASE_FILL[params.numOutcomes];
+    numOrders--;
     while (
       gasLimit
         .plus(constants.WORST_CASE_FILL[params.numOutcomes])
         .lt(constants.MAX_GAS_LIMIT_FOR_TRADE) &&
-      loopLimit.lt(constants.MAX_FILLS_PER_TX)
+      loopLimit.lt(constants.MAX_FILLS_PER_TX) &&
+      numOrders > 0
     ) {
       loopLimit = loopLimit.plus(1);
       gasLimit = gasLimit.plus(constants.WORST_CASE_FILL[params.numOutcomes]);
+      numOrders--;
     }
     gasLimit = gasLimit.plus(constants.TRADE_GAS_BUFFER);
     return {
@@ -802,8 +811,21 @@ export class ZeroX {
     params: ZeroXPlaceTradeDisplayParams
   ): Promise<BigNumber> {
     const onChainTradeParams = this.getOnChainTradeParams(params);
+
+    const orderType = params.direction === 0 ? '1' : '0';
+    const price = new BN(onChainTradeParams.price.toString()).toHexString().substr(2);
+
+    const zeroXOrders = await this.client.getZeroXOrders({
+      marketId: params.market,
+      outcome: params.outcome,
+      orderType,
+      matchPrice: `0x${price.padStart(20, '0')}`,
+      ignoreOrders: [],
+    });
+
     const { gasLimit } = await this.getTradeTransactionLimits(
-      onChainTradeParams
+      onChainTradeParams,
+      _.size(zeroXOrders)
     );
     return gasLimit;
   }

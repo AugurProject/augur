@@ -17,7 +17,7 @@ import {
 import {
   SCALAR,
   REPORTING_STATE,
-  INVALID_OUTCOME_NAME,
+  INVALID_OUTCOME_LABEL,
   SUBMIT_REPORT,
   SUBMIT_DISPUTE,
   MARKETMIGRATED,
@@ -39,8 +39,13 @@ import Styles from 'modules/modal/modal.styles.less';
 import { Getters, TXEventName } from '@augurproject/sdk';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
 import { ReleasableRepNotice } from 'modules/reporting/common';
-import { ExplainerBlock } from 'modules/create-market/components/common';
-import { EventDetailsContent, WarpSyncErrorHeader, WarpSyncErrorSubheader } from 'modules/create-market/constants';
+import { MultipleExplainerBlock } from 'modules/create-market/components/common';
+import {
+  AugurMarketsContent,
+  EventDetailsContent,
+  WarpSyncErrorHeader,
+  WarpSyncErrorSubheader
+} from 'modules/create-market/constants';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import MarketLink from 'modules/market/components/market-link/market-link';
@@ -206,7 +211,7 @@ export default class ModalReporting extends Component<
       const denomination = market.scalarDenomination;
       disputeInfo.stakes.forEach(stake => {
         const populatedHeader = stake.isInvalidOutcome
-          ? INVALID_OUTCOME_NAME
+          ? INVALID_OUTCOME_LABEL
           : `${stake.outcome} ${denomination}`;
         radioButtons.push({
           id: String(stake.outcome),
@@ -371,11 +376,6 @@ export default class ModalReporting extends Component<
       radioButtons,
     } = this.state;
     const { description, marketType, details, isTemplate, marketId } = market;
-    const {
-      explainerBlockTitle,
-      explainerBlockSubtexts,
-      useBullets,
-    } = EventDetailsContent();
 
     return (
       <div className={Styles.ModalReporting}>
@@ -385,13 +385,21 @@ export default class ModalReporting extends Component<
             <Error header={WarpSyncErrorHeader} subheader={WarpSyncErrorSubheader} />
           }
           {migrateRep && <MigrateRepInfo />}
-          {explainerBlockTitle && explainerBlockSubtexts && (
-            <ExplainerBlock
-              title={explainerBlockTitle}
-              subtexts={explainerBlockSubtexts}
-              useBullets={useBullets}
-            />
-          )}
+          <MultipleExplainerBlock
+            isModal
+            contents={[
+              {
+                title: EventDetailsContent().explainerBlockTitle,
+                subtexts: EventDetailsContent().explainerBlockSubtexts,
+                useBullets: EventDetailsContent().useBullets,
+              },
+              {
+                title: AugurMarketsContent().explainerBlockTitle,
+                subtexts: AugurMarketsContent().explainerBlockSubtexts,
+                useBullets: AugurMarketsContent().useBullets,
+              },
+            ]}
+          />
           <div>
             <section>
               <MarketTypeLabel

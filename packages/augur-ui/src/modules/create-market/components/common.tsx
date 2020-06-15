@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useReducer } from 'react';
+import React, { Component, useState, useEffect, useReducer, Fragment } from 'react';
 import classNames from 'classnames';
 
 import { SecondaryButton } from 'modules/common/buttons';
@@ -389,6 +389,44 @@ export const ExplainerBlock = ({
         );
       })}
     </ul>
+  </div>
+);
+
+interface ContentProps {
+  title: string;
+  subtexts: string[];
+  useBullets: boolean;
+}
+
+export interface MultipleExplainerBlockProps {
+  contents: ContentProps[];
+  isModal?: boolean;
+}
+
+export const MultipleExplainerBlock = ({contents, isModal}: MultipleExplainerBlockProps) => (
+  <div
+    className={classNames(Styles.ExplainerBlock, {
+      [Styles.ModalStyling]: isModal,
+    })}
+  >
+    {contents?.length && contents.map(({title, subtexts, useBullets}, index) => (
+      <Fragment key={index}>
+        <h5>{title}</h5>
+        <ul
+          className={classNames({
+            [Styles.NotBulleted]: !useBullets,
+          })}
+        >
+          {subtexts?.length && subtexts.map((subtext, index) => {
+            return useBullets ? (
+              <li key={index}>{subtext}</li>
+            ) : (
+              <p key={index}>{subtext}</p>
+            );
+          })}
+        </ul>
+      </Fragment>
+    ))}
   </div>
 );
 
