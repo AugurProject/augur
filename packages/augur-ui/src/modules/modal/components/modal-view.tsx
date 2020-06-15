@@ -161,11 +161,10 @@ function selectModal(type, props, closeModal, modal) {
   }
 }
 
-  const ModalView = () => {
-    const history = useHistory();
-    const { modal, actions: { closeModal } } = useAppStatusStore();
-    const [locationKeys, setLocationKeys] = useState([]);
-    const { modal } = useAppStatusStore();
+const ModalView = () => {
+  const history = useHistory();
+  const { modal, actions: { closeModal } } = useAppStatusStore();
+  const [locationKeys, setLocationKeys] = useState([]);
 
   const handleKeyDown = e => {
     if (e.keyCode === ESCAPE_KEYCODE) {
