@@ -3308,136 +3308,136 @@ div.ButtonsRow:last-of-type {
       }
     }
   }
+}
 
-  .ModalReporting {
-    .Message;
+.ModalReporting {
+  .Message;
 
-    max-width: 750px;
+  max-width: 750px;
 
-    > main {
+  > main {
+    display: flex;
+    flex-direction: column;
+    padding: @size-16 0 0;
+
+    > section {
+      margin: 0 @size-16;
+    }
+
+    > div:first-of-type,
+    > div[class*='ExplainerBlock'],
+    > section[class*='MigrateRepInfo'] {
+      margin: @size-8 @size-16 @size-24;
+      padding: @size-24;
+      border: none;
+      background-color: var(--color-table-header);
+    }
+
+    > section[class*='MigrateRepInfo'] {
+      margin-bottom: @size-8;
+    }
+
+    > div:nth-of-type(2) {
+      border-bottom: @size-1 solid var(--color-dark-grey);
+      border-top: @size-1 solid var(--color-dark-grey);
       display: flex;
       flex-direction: column;
-      padding: @size-16 0 0;
+      padding: @size-24 @size-40 0;
 
       > section {
-        margin: 0 @size-16;
-      }
-
-      > div:first-of-type,
-      > div[class*='ExplainerBlock'],
-      > section[class*='MigrateRepInfo'] {
-        margin: @size-8 @size-16 @size-24;
-        padding: @size-24;
-        border: none;
-        background-color: var(--color-table-header);
-      }
-
-      > section[class*='MigrateRepInfo'] {
-        margin-bottom: @size-8;
-      }
-
-      > div:nth-of-type(2) {
-        border-bottom: @size-1 solid var(--color-dark-grey);
-        border-top: @size-1 solid var(--color-dark-grey);
+        max-height: @size-16;
+        height: @size-16;
         display: flex;
-        flex-direction: column;
-        padding: @size-24 @size-40 0;
+        flex-flow: row nowrap;
 
-        > section {
-          max-height: @size-16;
-          height: @size-16;
-          display: flex;
-          flex-flow: row nowrap;
-
-          > label {
-            margin-bottom: 0;
-            margin-left: @size-8;
-          }
-
-          > span {
-            display: flex;
-            align-items: center;
-            height: @size-16;
-          }
+        > label {
+          margin-bottom: 0;
+          margin-left: @size-8;
         }
 
-      > span > a > span {
-        &:hover {
-          text-decoration: underline;
+        > span {
+          display: flex;
+          align-items: center;
+          height: @size-16;
         }
       }
 
-      .Details {
-        .text-12;
+    > span > a > span {
+      &:hover {
+        text-decoration: underline;
+      }
+    }
 
-          color: var(--color-secondary-text);
+    .Details {
+      .text-12;
 
-          > h2 {
-            .text-10;
-          }
+        color: var(--color-secondary-text);
+
+        > h2 {
+          .text-10;
         }
+      }
 
-        > span:nth-of-type(1) {
-          .text-24-bold;
+      > span:nth-of-type(1) {
+        .text-24-bold;
 
-          color: var(--color-primary-text);
-          margin-top: @size-14;
-          margin-bottom: @size-16;
-          word-break: break-word;
-        }
+        color: var(--color-primary-text);
+        margin-top: @size-14;
+        margin-bottom: @size-16;
+        word-break: break-word;
+      }
 
-        > div:first-of-type > div:first-of-type > div:first-of-type {
-          margin: @size-12 0;
+      > div:first-of-type > div:first-of-type > div:first-of-type {
+        margin: @size-12 0;
+      }
+      @media @breakpoint-mobile {
+        div:nth-of-type(2) {
+          padding: @size-12 0;
         }
-        @media @breakpoint-mobile {
-          div:nth-of-type(2) {
-            padding: @size-12 0;
-          }
-        }
+      }
+    }
+
+    > div:nth-of-type(3) {
+      border-bottom: @size-1 solid var(--color-dark-grey);
+      display: flex;
+      padding: @size-16 @size-40;
+
+      > button {
+        margin-left: @size-38;
+      }
+    }
+
+    > div:last-of-type {
+      padding: @size-32 @size-40;
+    }
+
+    > div[class*='DismissableNotice'] {
+      margin: @size-10 @size-32 0;
+      width: unset;
+      padding-left: @size-16;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    height: 100vh;
+    max-height: 100vh;
+    max-width: 100vw;
+  }
+
+  @media @breakpoint-mobile-mid {
+    > main {
+      > div:nth-of-type(2) {
+        padding: 0 @size-16;
+        min-height: min-content;
       }
 
       > div:nth-of-type(3) {
-        border-bottom: @size-1 solid var(--color-dark-grey);
-        display: flex;
-        padding: @size-16 @size-40;
-
-        > button {
-          margin-left: @size-38;
-        }
+        padding: @size-16;
       }
 
       > div:last-of-type {
-        padding: @size-32 @size-40;
-      }
-
-      > div[class*='DismissableNotice'] {
-        margin: @size-10 @size-32 0;
-        width: unset;
-        padding-left: @size-16;
-      }
-    }
-
-    @media @breakpoint-mobile {
-      height: 100vh;
-      max-height: 100vh;
-      max-width: 100vw;
-    }
-
-    @media @breakpoint-mobile-mid {
-      > main {
-        > div:nth-of-type(2) {
-          padding: 0 @size-16;
-          min-height: min-content;
-        }
-
-        > div:nth-of-type(3) {
-          padding: @size-16;
-        }
-
-        > div:last-of-type {
-          min-height: min-content;
-          padding: @size-16;
-        }
+        min-height: min-content;
+        padding: @size-16;
       }
     }
   }

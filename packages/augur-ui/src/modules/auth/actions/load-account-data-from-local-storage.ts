@@ -21,10 +21,7 @@ import isAddress from 'modules/auth/helpers/is-address';
 
 export const loadAccountDataFromLocalStorage = (
   address: string
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+): ThunkAction<any, any, any, any> => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
   const { universe, filterSortOptions } = AppStatus.get();
 
@@ -106,20 +103,18 @@ export const loadAccountDataFromLocalStorage = (
             }, [])
           )
         ) as string[];
-        dispatch(
-          loadMarketsInfoIfNotLoaded(marketIds, () => {
-            alerts.map(n => updateAlert(n.id, n, true));
-          })
-        );
+        loadMarketsInfoIfNotLoaded(marketIds, () => {
+          alerts.map(n => updateAlert(n.id, n, true));
+        });
       }
       if (pendingLiquidityOrders) {
-        dispatch(loadPendingLiquidityOrders(pendingLiquidityOrders));
+        loadPendingLiquidityOrders(pendingLiquidityOrders);
       }
       if (analytics) {
         loadAnalytics(analytics, 0);
       }
       if (pendingOrders && Object.keys(pendingOrders).length > 0) {
-        dispatch(loadPendingOrdersTransactions(pendingOrders));
+        loadPendingOrdersTransactions(pendingOrders);
       }
       if (pendingQueue) {
         loadPendingQueue(pendingQueue);

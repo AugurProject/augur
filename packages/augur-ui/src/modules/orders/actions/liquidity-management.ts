@@ -21,7 +21,7 @@ import { PendingOrders } from 'modules/app/store/pending-orders';
 
 export const loadPendingLiquidityOrders = (
   pendingLiquidityOrders: Getters.Markets.OutcomeOrderBook
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
+) => {
   const ordersWithHashes = [];
   Object.keys(pendingLiquidityOrders).map((txMarketHashId: string) => {
     Object.keys(pendingLiquidityOrders[txMarketHashId]).map(outcomeId => {

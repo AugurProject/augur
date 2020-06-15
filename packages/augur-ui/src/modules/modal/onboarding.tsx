@@ -10,7 +10,7 @@ import {
   Stepper,
 } from 'modules/modal/common';
 import { AccountStatusTracker } from 'modules/modal/common';
-import TransferMyDai from 'modules/modal/containers/transfer-my-dai';
+import { TransferMyDai } from 'modules/modal/common';
 import { LinkContent } from 'modules/types';
 import classNames from 'classnames';
 import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET } from 'modules/common/constants';
