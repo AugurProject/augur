@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { useHistory } from 'react-router';
 import isWindows from 'utils/is-windows';
-import Modal from 'modules/modal/containers/modal-view';
+import ModalView from "modules/modal/components/modal-view";
 import TopBar from 'modules/app/components/top-bar';
 import SideNav from 'modules/app/components/side-nav/side-nav';
 import TopNav from 'modules/app/components/top-nav/top-nav';
@@ -252,7 +252,7 @@ const AppView = ({
   return (
     <main>
       <HelmetTag {...APP_HEAD_TAGS} />
-      {ModalShowing && <Modal />}
+      {ModalShowing && <ModalView />}
       <ToastsContainer onTradingTutorial={onTradingTutorial} />
       <div
         className={classNames({
