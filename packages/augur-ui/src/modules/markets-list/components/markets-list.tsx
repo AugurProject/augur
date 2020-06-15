@@ -28,19 +28,32 @@ interface MarketsListProps {
   updateLimit?: Function;
   marketCount?: number;
 }
+const SPORTS_MARKET_TYPES = {
+  DAILY: 'DAILY',
+  FUTURES: 'FUTURES',
+  COMBO: 'COMBO',
+};
+
+const determineSportsbookType = ({ sportsBook: { groupType } }) =>
+  groupType.includes(SPORTS_MARKET_TYPES.COMBO)
+    ? SPORTS_MARKET_TYPES.COMBO
+    : groupType === SPORTS_MARKET_TYPES.FUTURES
+    ? SPORTS_MARKET_TYPES.FUTURES
+    : SPORTS_MARKET_TYPES.DAILY;
 
 const groupSportsMarkets = (filteredMarkets, markets) => {
   return filteredMarkets.reduce((accumulator, marketId) => {
     const market = markets.find((market: MarketData) => market.id === marketId);
-    const SportsID = market?.sportsBookGroupId;
-    if (!!SportsID) {
+    if (!!market && market.sportsBook.groupId) {
+      const { groupId } = market.sportsBook;
       const existingGroup = accumulator.find(
-        sportsGroupObject => sportsGroupObject.id === SportsID
+        sportsGroupObject => sportsGroupObject.id === groupId
       );
       if (existingGroup) {
         existingGroup.markets.push(market);
       } else {
-        accumulator.push({ id: SportsID, markets: [market] });
+        const type = determineSportsbookType(market);
+        accumulator.push({ type, id: groupId, markets: [market] });
       }
     }
     return accumulator;
@@ -91,7 +104,6 @@ const MarketsList = ({
     filteredMarkets.map(id => {
       const market = markets.find((market: MarketData) => market.id === id);
       if (market) {
-        // console.log(market.outcomes);
         marketCards.push(
           <MarketCard
             market={market}
@@ -105,13 +117,7 @@ const MarketsList = ({
     });
   }
   const hasMarkets = marketCards.length > 0;
-
-  // console.log(
-  //   'marketList filteredMarkets:',
-  //   filteredMarkets,
-  //   testFilteredMarkets,
-  //   marketCards
-  // );
+  if (theme === THEMES.SPORTS) console.log('marketList testFilteredMarkets:', testFilteredMarkets);
 
   return (
     <article className={Styles.MarketsList} data-testid={testid}>

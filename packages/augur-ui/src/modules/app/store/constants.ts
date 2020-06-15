@@ -1,4 +1,4 @@
-import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_FAST, DEFAULT_FALLBACK_GAS_SAFELOW, MOBILE_MENU_STATES, MARKET_OPEN, MARKET_SORT_PARAMS, MAX_FEE_02_PERCENT, MAX_SPREAD_ALL_SPREADS, DAY, ZERO, TIME_FORMATS } from 'modules/common/constants';
+import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_FAST, DEFAULT_FALLBACK_GAS_SAFELOW, MOBILE_MENU_STATES, MARKET_OPEN, MARKET_SORT_PARAMS, MAX_FEE_02_PERCENT, MAX_SPREAD_ALL_SPREADS, DAY, ZERO, TIME_FORMATS, MARKET_CARD_FORMATS } from 'modules/common/constants';
 import { MARKETS } from "modules/routes/constants/views";
 import { DEFAULT_SDK_CONFIGURATION, SDKConfiguration } from '@augurproject/artifacts';
 import { formatGasCostGwei, formatAttoDai } from 'utils/format-number';
@@ -195,7 +195,7 @@ const DEFAULT_MARKETS_LIST_STATE: MarketsList = {
   meta: null,
   selectedCategories: [],
   selectedCategory: null,
-  marketCardFormat: null,
+  marketCardFormat: MARKET_CARD_FORMATS.CLASSIC,
   isSearchInPlace: false
 };
 

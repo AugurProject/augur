@@ -32,6 +32,7 @@ const MarketsView = () => {
     universe: { id },
     categoryStats,
     isLogged,
+    theme,
     restoredAccount,
     actions: { setModal },
   } = useAppStatusStore();
@@ -56,7 +57,7 @@ const MarketsView = () => {
     if (isConnected) {
      updateFilteredMarkets();
     }
-  }, [isConnected, marketCategory])
+  }, [isConnected, marketCategory, theme])
 
   function updateFilteredMarkets() {
     const { marketCategory } = state;

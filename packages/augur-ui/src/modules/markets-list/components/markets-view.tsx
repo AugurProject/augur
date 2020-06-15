@@ -159,6 +159,7 @@ const MarketsView = () => {
     maxFee,
     templateFilter,
     includeInvalidMarkets,
+    theme,
   ]);
 
   const headerTitle = getHeaderTitleFromProps(
@@ -192,6 +193,7 @@ const MarketsView = () => {
     state.offset,
     state.marketCount,
   ]);
+
   const {
     filterSortedMarkets,
     marketCount,
