@@ -11,30 +11,27 @@ import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
   V1_REP_MIGRATE_ESTIMATE, HELP_CENTER_LEARN_ABOUT_ADDRESS, HELP_CENTER_MIGRATE_REP, GWEI_CONVERSION,
 } from 'modules/common/constants';
+import convertV1ToV2, {
+  convertV1ToV2Estimate,
+} from 'modules/account/actions/convert-v1-rep-to-v2';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
-interface MigrateRepForm {
-  closeAction: Function;
-  loginAccount: LoginAccount;
-  convertV1ToV2: Function;
-  GsnEnabled: boolean;
-  convertV1ToV2Estimate: Function;
-  gasPrice: number;
-  showForSafeWallet: boolean;
-}
-
-export const MigrateRep = (props: MigrateRepForm) => {
+export const MigrateRep = () => {
   const {
-    closeAction,
-    convertV1ToV2,
     loginAccount,
-    GsnEnabled,
-    convertV1ToV2Estimate,
-    gasPrice,
-    showForSafeWallet,
-  } = props;
+    modal,
+    gsnEnabled: GsnEnabled,
+    gasPriceInfo,
+    actions: { closeModal }
+  } = useAppStatusStore();
+
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
+  const walletBalances = loginAccount.balances;
+  const showForSafeWallet = walletBalances.legacyRep > 0;
+
 
   const [gasLimit, setGasLimit] = useState(V1_REP_MIGRATE_ESTIMATE);
 
@@ -59,7 +56,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
         <span>{formatRep(loginAccount.balances.legacyRep).formattedValue}</span>
       </div>
       <div>
-      <TransactionFeeLabel gasCostDai={displayGasInDai(gasLimit)} />
+        <TransactionFeeLabel gasCostDai={displayGasInDai(gasLimit)} />
       </div>
       <div>
         {InfoIcon} Your wallet will need to sign <span>2</span> transactions
@@ -87,7 +84,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
     >
       <Title
         title={showForSafeWallet ? 'Migrate Rep' : 'Migrate V1 REP'}
-        closeAction={closeAction}
+        closeAction={closeModal}
       />
 
       <main>
@@ -131,16 +128,16 @@ export const MigrateRep = (props: MigrateRepForm) => {
             text: showForSafeWallet ? 'Migrate' : 'OK',
             action: showForSafeWallet
               ? () => {
-                  closeAction();
-                  convertV1ToV2();
-                }
-              : () => closeAction(),
+                closeModal();
+                convertV1ToV2();
+              }
+              : () => closeModal(),
             disabled:
               formatRep(loginAccount.balances.legacyRep).fullPrecision < 0,
           },
           {
             text: 'Close',
-            action: closeAction,
+            action: closeModal,
           },
         ]}
       />
