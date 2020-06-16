@@ -118,19 +118,16 @@ export async function createClient(
     enableFlexSearch
   );
 
-  // Delay loading of the browser mesh until we're finished syncing
-  client.events.once(SubscriptionEventName.BulkSyncComplete, () => {
-    if (!config?.sdk?.enabled && config.zeroX?.mesh?.enabled && createBrowserMesh) {
-      // This function is passed in and takes care of assigning it to the
-      // zeroX instance. This is largely due to the need to have special
-      // casing for if the mesh dies and we want to restart it. This is
-      // passed in as a function so all we need in this file is an
-      // interface instead of actually import @0x/mesh-browser -- since
-      // that would attempt to start the wasm client in nodejs and cause
-      // everything to die.
-      createBrowserMesh(config, ethersProvider, zeroX);
-    }
-  });
+  if (!config?.sdk?.enabled && config.zeroX?.mesh?.enabled && createBrowserMesh) {
+    // This function is passed in and takes care of assigning it to the
+    // zeroX instance. This is largely due to the need to have special
+    // casing for if the mesh dies and we want to restart it. This is
+    // passed in as a function so all we need in this file is an
+    // interface instead of actually import @0x/mesh-browser -- since
+    // that would attempt to start the wasm client in nodejs and cause
+    // everything to die.
+    createBrowserMesh(config, ethersProvider, zeroX);
+  }
 
   return client;
 }
