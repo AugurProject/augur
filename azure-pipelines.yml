@@ -610,15 +610,15 @@ jobs:
           set -euo pipefail
           sudo apt update
           sudo apt install golang-go -y
-          curl -l https://dist.ipfs.io/go-ipfs/v0.4.22/go-ipfs_v0.4.22_linux-amd64.tar.gz | tar xvzf -
+          curl -l https://dist.ipfs.io/go-ipfs/v0.5.1/go-ipfs_v0.5.1_linux-amd64.tar.gz | tar xvzf -
           sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
         displayName: install ipfs
       - bash: |
           set -euo pipefail
           ipfs init > /dev/null 2>&1
-          ipfs add -r -Q packages/augur-ui/build | tee augur_ipfs_hash.txt
-          IPFS_HASH=$(cat augur_ipfs_hash.txt)
-          mv augur_ipfs_hash.txt $IPFS_HASH.ipfs
+          IPFS_HASH=$(ipfs add -r -Q packages/augur-ui/build)
+          echo $IPFS_HASH
+          touch $IPFS_HASH.ipfs
         displayName: ipfs hash of build dir
       - task: CopyFiles@2
         inputs:
@@ -638,7 +638,7 @@ jobs:
           gitHubConnection: 'GitHub OAuth'
           tagSource: userSpecifiedTag
           tag: $(Build.SourceBranchName)
-          title: Augur v$(Build.SourceBranchName)
+          title: Augur $(Build.SourceBranchName)
           releaseNotesSource: inline
           assets: '$(Build.ArtifactStagingDirectory)/*'
           isDraft: true
