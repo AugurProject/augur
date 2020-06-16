@@ -13,13 +13,13 @@ const DEFAULT_STATE: LoginAccount = {
     rep: '0',
     dai: '0',
     legacyRep: '0',
-    legacyRepNonSafe: '0',
     attoRep: '0',
     legacyAttoRep: '0',
     signerBalances: {
       eth: null,
       rep: '0',
       dai: '0',
+      legacyRep: '0',
     }
   },
   reporting: {
