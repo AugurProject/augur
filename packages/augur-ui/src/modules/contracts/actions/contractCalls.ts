@@ -7,9 +7,7 @@
 import { augurSdk } from 'services/augursdk';
 import {
   formatAttoRep,
-  formatAttoEth,
   formatAttoDai,
-  formatRep,
   formatPercent,
 } from 'utils/format-number';
 import {
@@ -117,14 +115,19 @@ export async function convertV1ToV2Approve(useSigningWallet: boolean = false) {
   );
   let response = null;
   const useWallet = dependencies.useWallet;
+  const useRelay = dependencies.useRelay;
   try {
-    if (useSigningWallet) dependencies.setUseWallet(false);
+    if (useSigningWallet) {
+      dependencies.setUseWallet(false);
+      dependencies.setUseRelay(false);
+    }
     const getReputationToken = await contracts.universe.getReputationToken_();
-    response = contracts.legacyReputationToken.approve(getReputationToken, allowance);
+    response = await contracts.legacyReputationToken.approve(getReputationToken, allowance);
   } catch (e) {
     console.error(e);
   } finally {
     dependencies.setUseWallet(useWallet);
+    dependencies.setUseRelay(useRelay);
   }
   return response;
 }
@@ -133,13 +136,18 @@ export async function convertV1ToV2(useSigningWallet: boolean = false) {
   const { contracts, dependencies } = augurSdk.get();
   let response = false;
   const useWallet = dependencies.useWallet;
+  const useRelay = dependencies.useRelay;
   try {
-    if (useSigningWallet) dependencies.setUseWallet(false);
+    if (useSigningWallet) {
+      dependencies.setUseWallet(false);
+      dependencies.setUseRelay(false);
+    }
     response = await contracts.reputationToken.migrateFromLegacyReputationToken();
   } catch (e) {
     console.error(e);
   } finally {
     dependencies.setUseWallet(useWallet);
+    dependencies.setUseRelay(useRelay);
   }
   return response;
 }
