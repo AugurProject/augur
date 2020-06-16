@@ -8,20 +8,13 @@ import { updateEnv } from 'modules/app/actions/update-env';
 import { connectAugur } from 'modules/app/actions/init-augur';
 import { isWeb3Transport } from 'modules/contracts/actions/contractCalls';
 import { SDKConfiguration } from '@augurproject/artifacts';
+import { AppState } from 'appStore/index';
 
-interface StateProps {
-  modal: {
-    type: string;
-    config: SDKConfiguration;
-  };
-  connection: string;
-  isConnectedThroughWeb3: boolean;
-}
-
-const mapStateToProps = (state: StateProps) => ({
+const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   connection: state.connection,
   isConnectedThroughWeb3: isWeb3Transport(),
+  env: state.env,
 });
 
 const mapDispatchToProps = (dispatch) => ({

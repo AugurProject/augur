@@ -50,7 +50,7 @@ const mapStateToProps = (state: AppState) => {
     walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING ||
     walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
   const showMigrateRepButton =
-    balances.legacyRep !== "0" || balances.legacyRepNonSafe !== "0" || !!pending;
+    balances.legacyRep !== "0" || balances.signerBalances.legacyRep !== "0" || !!pending;
   const ethReserveInDai = getEthReserveInDai(state);
 
   return {

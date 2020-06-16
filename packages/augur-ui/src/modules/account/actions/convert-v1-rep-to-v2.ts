@@ -11,13 +11,13 @@ import { V1_REP_MIGRATE_ESTIMATE, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/com
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { TXEventName } from '@augurproject/sdk';
 
-export default function(callback: NodeStyleCallback = logError) {
+export const approveAndConvertV1ToV2 = (useSigningWallet: boolean = false, callback: NodeStyleCallback = logError) => {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
     dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Pending));
-    await convertV1ToV2Approve().catch((err: Error) => {
+    await convertV1ToV2Approve(useSigningWallet).catch((err: Error) => {
       dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Failure));
     });
-    await convertV1ToV2().catch((err: Error) => {
+    await convertV1ToV2(useSigningWallet).catch((err: Error) => {
       logError(new Error('convertV1ToV2'));
       dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Failure));
     });
@@ -25,9 +25,9 @@ export default function(callback: NodeStyleCallback = logError) {
   };
 }
 
-export const convertV1ToV2Estimate = async () => {
+export const convertV1ToV2Estimate = async (useSigningWallet: boolean = false) => {
   try {
-    return await convertV1ToV2_estimate();
+    return await convertV1ToV2_estimate(useSigningWallet);
   }
   catch(error) {
     console.error('error could estimate gas', error);
