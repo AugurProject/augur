@@ -3371,6 +3371,19 @@ export const SOCCER_LEAGUE_DEP_TEAMS = {
   'Superliga Argentina': LIST_VALUES.SOCCER_LEAGUE_ARGENTINA,
 };
 
+export const SOCCER_LEAGUE_DEP_YEARS = {
+  'English Premier League': LIST_VALUES.YEAR_RANGE,
+  'Serie A (Italy)': LIST_VALUES.YEAR_RANGE,
+  'La Liga (Spain)': LIST_VALUES.YEAR_RANGE,
+  'Ligue 1 (France)': LIST_VALUES.YEAR_RANGE,
+  'Bundesliga (Germany)': LIST_VALUES.YEAR_RANGE,
+  'Primeira Liga (Portugal)': LIST_VALUES.YEAR_RANGE,
+  'MLS (USA)': LIST_VALUES.YEARS,
+  'EFL Championship': LIST_VALUES.YEAR_RANGE,
+  'Eredivisie (Dutch)': LIST_VALUES.YEAR_RANGE,
+  'Superliga Argentina': LIST_VALUES.YEAR_RANGE,
+};
+
 export const FIN_EXCHANGES_CLOSING_OFFSETS = {
   [LIST_VALUES.FIN_STOCK_EXCHANGES[NY_STOCK_EXCHANGE_INDEX]]: {
     offset: -4,

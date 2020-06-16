@@ -508,7 +508,7 @@ function isDependencyOutcomesCorrect(
 
   if (validationDep) {
     const input = inputs.find(i => i.id === validationDep.inputSourceId);
-    if (!input) result = false;
+    if (!input) return false;
     const correctValues = validationDep.values[input.value] || [];
     result =
       testOutcomes.filter(o => correctValues.includes(o)).length ===

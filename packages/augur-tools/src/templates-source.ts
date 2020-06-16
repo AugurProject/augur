@@ -19,6 +19,7 @@ import {
   SOCCER_LEAGUE_DEP_TEAMS,
   TENNIS_DOUBLES_EVENTS,
   TENNIS_SINGLES_EVENTS,
+  SOCCER_LEAGUE_DEP_YEARS,
 } from './templates-lists';
 import {
   AMERICAN_FOOTBALL,
@@ -3055,6 +3056,63 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `Men's [0] [1] Champion?`,
+                example: `Men's English Premier League Champion?`,
+                header: `Men's [0] [1] Champion`,
+                groupName: groupTypes.FUTURES,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `League`,
+                    groupKey: LEAGUE_NAME,
+                    inputDestIds: [1],
+                    values: LIST_VALUES.SOCCER_LEAGUES,
+                    inputDestValues: SOCCER_LEAGUE_DEP_YEARS,
+                    categoryDestId: 2,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    groupKey: YEAR,
+                    defaultLabel: `Select League First`,
+                    inputSourceId: 0,
+                    values: [],
+                  },
+                  {
+                    id: 2,
+                    type:
+                      TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 0,
+                    placeholder: `Select Team`,
+                    values: SOCCER_LEAGUE_DEP_TEAMS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'.`,
+                    },
+                    {
+                      text: `If the season is officially cancelled and the league/event in the market question is not played, this market should resolve as 'Invalid'.`,
+                    },
+                    {
+                      text: `If the league or Governing Organization suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
+                    },
+                    {
+                      text: `If the league or Governing Organization suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
