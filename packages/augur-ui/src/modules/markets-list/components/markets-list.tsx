@@ -2,7 +2,11 @@ import React from 'react';
 
 import { Pagination } from 'modules/common/pagination';
 import NullStateMessage from 'modules/common/null-state-message';
-import { MARKET_CARD_FORMATS, THEMES, SPORTS_GROUP_TYPES } from 'modules/common/constants';
+import {
+  MARKET_CARD_FORMATS,
+  THEMES,
+  SPORTS_GROUP_TYPES,
+} from 'modules/common/constants';
 import MarketCard from 'modules/market-cards/market-card';
 import SportsMarketCard from 'modules/market-cards/sports-market-card';
 import { MarketData } from 'modules/types';
@@ -29,37 +33,37 @@ interface MarketsListProps {
   marketCount?: number;
 }
 
-const {
-  COMBO,
-  FUTURES,
-  DAILY
-} = SPORTS_GROUP_TYPES;
+const { COMBO, FUTURES, DAILY } = SPORTS_GROUP_TYPES;
 
 const determineSportsbookType = ({ sportsBook: { groupType } }) =>
-  groupType.includes(COMBO)
-    ? COMBO
-    : groupType === FUTURES
-    ? FUTURES
-    : DAILY;
+  groupType.includes(COMBO) ? COMBO : groupType === FUTURES ? FUTURES : DAILY;
 
-const groupSportsMarkets = (filteredMarkets, markets) => {
-  return filteredMarkets.reduce((accumulator, marketId) => {
+const groupSportsMarkets = (filteredMarkets, markets) =>
+  filteredMarkets.reduce((accumulator, marketId) => {
     const market = markets.find((market: MarketData) => market.id === marketId);
     if (!!market && market.sportsBook.groupId) {
       const { groupId } = market.sportsBook;
       const existingGroup = accumulator.find(
         sportsGroupObject => sportsGroupObject.id === groupId
       );
+      const uniqueType = `${market.sportsBook.groupType}-${market.sportsBook.title}`;
       if (existingGroup) {
         existingGroup.markets.push(market);
+        if (!existingGroup.marketTypes.includes(uniqueType)) {
+          existingGroup.marketTypes.push(uniqueType);
+        }
       } else {
         const type = determineSportsbookType(market);
-        accumulator.push({ type, id: groupId, markets: [market] });
+        accumulator.push({
+          type,
+          id: groupId,
+          marketTypes: [uniqueType],
+          markets: [market],
+        });
       }
     }
     return accumulator;
   }, []);
-};
 
 const MarketsList = ({
   filteredMarkets,
@@ -78,7 +82,6 @@ const MarketsList = ({
     marketsList: { isSearching: isSearchingMarkets },
   } = useAppStatusStore();
   let marketCards = [];
-  let sportMarketCards = [];
   const testFilteredMarkets =
     theme === THEMES.SPORTS
       ? groupSportsMarkets(filteredMarkets, markets)

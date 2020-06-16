@@ -7,7 +7,7 @@ import {
 } from 'modules/market-cards/common';
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
-import { HEADER_TYPE } from 'modules/common/constants';
+import { HEADER_TYPE, SPORTS_GROUP_TYPES } from 'modules/common/constants';
 import { MarketProgress } from 'modules/common/progress';
 import Styles from 'modules/market-cards/sports-market-card.styles.less';
 import MarketTitle from 'modules/market/components/common/market-title';
@@ -21,9 +21,15 @@ interface SportsMarketCardProps {
     id: string;
     type: string;
     markets: Array<MarketInfos>;
+    marketTypes: Array<string>;
   },
   loading: boolean;
 }
+
+const {
+  FUTURES,
+  COMBO,
+} = SPORTS_GROUP_TYPES;
 
 export const SportsMarketCard = ({ sportsGroup, loading }: SportsMarketCardProps) => {
   const [showMore, setShowMore] = useState(false);
@@ -34,9 +40,12 @@ export const SportsMarketCard = ({ sportsGroup, loading }: SportsMarketCardProps
   }
   // TODO: do this better when i have any idea of how this will work...
   // for now just grab the first market for major stats.
-  const market = sportsGroup.markets[0];
+  const { type, markets, marketTypes } = sportsGroup;
+  const market = markets[0];
   const { categories, reportingState, disputeInfo, endTimeFormatted } = market;
-
+  
+  const showMoreButtonVisible = type === COMBO ? marketTypes.length > 3 : marketTypes.length > 1;
+  
   const headerType =
     location.pathname === makePath(DISPUTING)
       ? HEADER_TYPE.H2
@@ -61,7 +70,7 @@ export const SportsMarketCard = ({ sportsGroup, loading }: SportsMarketCardProps
         endTimeFormatted={endTimeFormatted}
         reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
       />
-      {sportsGroup.markets.length > 1 && (
+      {showMoreButtonVisible && (
         <button onClick={() => setShowMore(!showMore)}>
           {ThickChevron} {`${showMore ? 'Show Less' : 'More Wagers'}`}
         </button>
