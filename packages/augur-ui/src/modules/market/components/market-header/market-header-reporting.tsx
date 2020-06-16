@@ -63,6 +63,7 @@ export const MarketHeaderReporting = ({
     id,
     consensusFormatted,
     designatedReporter,
+    designatedReporterType
   } = marketSelected;
 
   const isDesignatedReporter = preview
