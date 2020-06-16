@@ -9,6 +9,7 @@ import {
   spreadFilters,
   TEMPLATE_FILTER,
   templateFilterValues,
+  INVALID_OUTCOME_LABEL,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/inner-nav/markets-list-filters.styles.less';
 import { FilterIcon, helpIcon } from 'modules/common/icons';
@@ -186,7 +187,7 @@ const MarketsListFilters = ({
               <span>Invalid Markets</span>
               {generateTooltip(
                 'Filters markets where the current best bid/offer would profit as a result of a market resolving as invalid',
-                'invalid'
+                INVALID_OUTCOME_LABEL
               )}
             </div>
 

@@ -67,8 +67,10 @@ export class GSN {
 
       const useWallet = this.augur.getUseWallet();
       const useRelay = this.augur.getUseRelay();
+      const useEthreserve = this.augur.getUseDesiredEthBalance();
       this.augur.setUseWallet(false);
       this.augur.setUseRelay(false);
+      this.augur.setUseDesiredEthBalance(false);
 
       const ethBalance = this.augur.config.gsn.desiredSignerBalanceInETH * 10 ** 18;
       const signerEthBalance = await this.augur.getEthBalance(signerAddress);
@@ -80,6 +82,7 @@ export class GSN {
 
       this.augur.setUseWallet(useWallet);
       this.augur.setUseRelay(useRelay);
+      this.augur.setUseDesiredEthBalance(useEthreserve);
     }
 
   async withdrawAllFundsEstimateGas(
@@ -88,13 +91,29 @@ export class GSN {
       const signerAddress = await this.augur.dependencies.signer.getAddress();
       const walletAddress = await this.calculateWalletAddress(signerAddress);
       const wallet = this.augur.contracts.augurWalletFromAddress(walletAddress);
+
+      const useWallet = this.augur.getUseWallet();
+      const useRelay = this.augur.getUseRelay();
+      const useEthreserve = this.augur.getUseDesiredEthBalance();
       this.augur.setUseWallet(false);
       this.augur.setUseRelay(false);
-      const minExchangeRateInDai = this.augur.dependencies.ethToDaiRate.multipliedBy(MIN_EXCHANGE_RATE_MULTIPLIER).decimalPlaces(0);
-      const ethBalance = await this.augur.getEthBalance(signerAddress);
-      const ethTxCost = WITHDRAW_GAS_COST_MAX.multipliedBy((await this.augur.dependencies.provider.getGasPrice()).toString());
-      const ethAmount = new BigNumber(ethBalance).minus(ethTxCost);
-      const estimateGas = await wallet.withdrawAllFundsAsDai_estimateGas(destination, minExchangeRateInDai, {attachedEth: ethAmount});
+      this.augur.setUseDesiredEthBalance(false);
+      let estimateGas = new BigNumber(0);
+
+      try {
+        const minExchangeRateInDai = this.augur.dependencies.ethToDaiRate.multipliedBy(MIN_EXCHANGE_RATE_MULTIPLIER).decimalPlaces(0);
+        const ethBalance = await this.augur.getEthBalance(signerAddress);
+        const ethTxCost = WITHDRAW_GAS_COST_MAX.multipliedBy((await this.augur.dependencies.provider.getGasPrice()).toString());
+        const ethAmount = new BigNumber(ethBalance).minus(ethTxCost);
+        estimateGas = await wallet.withdrawAllFundsAsDai_estimateGas(destination, minExchangeRateInDai, {attachedEth: ethAmount});
+      } catch (e) {
+        throw e;
+      } finally {
+        this.augur.setUseWallet(useWallet);
+        this.augur.setUseRelay(useRelay);
+        this.augur.setUseDesiredEthBalance(useEthreserve);
+      }
+
       return estimateGas;
     }
 }

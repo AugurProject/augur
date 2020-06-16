@@ -23,7 +23,7 @@ import {
   LoadingEllipse,
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
-import { CUSTOM, SCALAR, ZERO, CATEGORY_PARAM_NAME } from 'modules/common/constants';
+import { CUSTOM, SCALAR, ZERO, CATEGORY_PARAM_NAME, INVALID_OUTCOME_LABEL } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
 import { formatAttoRep, formatNumber } from 'utils/format-number';
@@ -1015,7 +1015,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
         }}
       >
         {checked ? FilledRadio : EmptyRadio}
-        <h5>{header}</h5>
+        <h5>{isInvalid ? INVALID_OUTCOME_LABEL : header}</h5>
         <div onClick={e => e.stopPropagation()}>
           {isDisputing && ( // for disputing or for scalar
             <>

@@ -1,12 +1,11 @@
 import {
-  INVALID_OUTCOME,
   OUTCOME_MAX_LENGTH,
   SATURDAY_DAY_OF_WEEK,
   SUNDAY_DAY_OF_WEEK,
 } from 'modules/create-market/constants';
 import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
-import { ZERO } from './constants';
+import { ZERO, INVALID_OUTCOME_COMPARE } from './constants';
 import { NewMarketPropertiesValidations } from 'modules/types';
 import {
   ValidationType,
@@ -157,7 +156,7 @@ export function checkOutcomesArray(value) {
     const invalid = value.findIndex(
       outcome =>
         outcome &&
-        outcome.trim().toLowerCase() === INVALID_OUTCOME.toLowerCase()
+        outcome.trim().toLowerCase() === INVALID_OUTCOME_COMPARE.toLowerCase()
     );
     if (invalid !== -1)
       errors[invalid] = ['Can\'t enter "Market is Invalid" as an outcome'];
@@ -213,6 +212,11 @@ export function checkForUserInputFilled(
       isPositive(input.userInput)
     ) {
       return 'Must be a whole positive number';
+    } else if (
+      (input.validationType === ValidationType.NUMBER || input.validationType === ValidationType.NUMBER_ONE_DECIMAL) && input.numberRange &&
+      (checkValidNumber(input.userInput) || Number(input.userInput) < input.numberRange[0] || Number(input.userInput) > input.numberRange[1])
+    ) {
+      return `value range is ${input.numberRange[0]} to ${input.numberRange[1]}`;
     } else if (
       (input.validationType === ValidationType.NUMBER || input.validationType === ValidationType.NUMBER_ONE_DECIMAL) &&
       checkValidNumber(input.userInput)

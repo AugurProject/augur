@@ -23,7 +23,7 @@ import {
   TimeOffset,
 } from '@augurproject/artifacts';
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
-import { YES_NO, CATEGORICAL, SCALAR, YES_NO_OUTCOMES, SCALAR_OUTCOMES } from 'modules/common/constants';
+import { YES_NO, CATEGORICAL, SCALAR, YES_NO_OUTCOMES, SCALAR_OUTCOMES, INVALID_OUTCOME_LABEL } from 'modules/common/constants';
 import { NameValuePair } from 'modules/common/selection';
 import { OutcomeFormatted, DateTimeComponents } from 'modules/types';
 import { timestampComponents } from 'utils/format-date';
@@ -305,7 +305,7 @@ export const getFormattedOutcomes = (
     }));
     outcomesFormatted.unshift({
       id: 0,
-      description: 'Invalid',
+      description: INVALID_OUTCOME_LABEL,
       isTradeable: true,
     });
   } else if (marketType === SCALAR) {

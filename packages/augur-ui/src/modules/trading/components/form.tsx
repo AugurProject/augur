@@ -12,6 +12,8 @@ import {
   SMALL_MOBILE,
   MIN_ORDER_LIFESPAN,
   MIN_QUANTITY,
+  INVALID_OUTCOME_COMPARE,
+  INVALID_OUTCOME_LABEL,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
@@ -470,7 +472,7 @@ class Form extends Component<FromProps, FormState> {
         errors[this.INPUT_TYPES.PRICE].push(`Enter a valid percentage`);
       } else {
         errors[this.INPUT_TYPES.PRICE].push(
-          `Price must be between ${minPrice} and ${maxPrice}`
+          `Price must be above ${minPrice} and below ${maxPrice}`
         );
       }
     }
@@ -871,7 +873,7 @@ class Form extends Component<FromProps, FormState> {
             options={sortedOutcomes
               .filter(outcome => outcome.isTradeable)
               .map(outcome => ({
-                label: outcome.description,
+                label: outcome.description === INVALID_OUTCOME_COMPARE ? INVALID_OUTCOME_LABEL : outcome.description,
                 value: outcome.id,
               }))}
             large

@@ -74,7 +74,6 @@ describe('Augur API :: ZeroX :: ', () => {
       await mary.approve();
 
       maryBrowserMesh.addOtherBrowserMeshToMockNetwork(johnBrowserMesh);
-      johnBrowserMesh.addOtherBrowserMeshToMockNetwork(maryBrowserMesh);
     });
 
     test('State API :: ZeroX :: getOrders', async () => {

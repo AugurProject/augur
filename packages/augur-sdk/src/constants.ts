@@ -104,7 +104,7 @@ export enum ControlMessageType {
 
 export const ETHER = new ethersUtils.BigNumber(10).pow(18);
 
-export const TRADE_GAS_BUFFER = new BigNumber('600000', 10);
+export const TRADE_GAS_BUFFER = new BigNumber('200000', 10);
 
 export const MAX_FILLS_PER_TX = new BigNumber('3', 10);
 

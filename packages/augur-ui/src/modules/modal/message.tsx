@@ -25,8 +25,14 @@ import {
   DescriptionWithLink,
   DescriptionWithLinkProps,
 } from 'modules/modal/common';
-import { ExplainerBlock } from 'modules/create-market/components/common';
-import { EventDetailsContent } from 'modules/create-market/constants';
+import {
+  ExplainerBlock,
+  MultipleExplainerBlock,
+} from 'modules/create-market/components/common';
+import {
+  AugurMarketsContent,
+  EventDetailsContent,
+} from 'modules/create-market/constants';
 import {
   LinearPropertyLabelProps,
   DiscordLink,
@@ -84,9 +90,9 @@ export const Message = ({
   showAddFundsHelp = false,
   walletType,
   showAddFundsModal,
-  showHelp
+  showHelp,
 }: MessageProps) => (
-  <div className={classNames(Styles.Message, {[Styles.Help]: showHelp})}>
+  <div className={classNames(Styles.Message, { [Styles.Help]: showHelp })}>
     <Title title={title} closeAction={closeAction} />
     <main>
       {alertMessage && <AlertMessage {...alertMessage} />}
@@ -96,8 +102,15 @@ export const Message = ({
       {description && <Description description={description} />}
       {descriptionWithLink && <DescriptionWithLink {...descriptionWithLink} />}
       {showHelp && <HelpMenu />}
-      {showAddFundsHelp && <AddFundsHelp showAddFundsModal={showAddFundsModal} walletType={walletType} />}
-      {showDiscordLink && <DiscordLink label='Please try again. If the issue persists please report it on ' /> }
+      {showAddFundsHelp && (
+        <AddFundsHelp
+          showAddFundsModal={showAddFundsModal}
+          walletType={walletType}
+        />
+      )}
+      {showDiscordLink && (
+        <DiscordLink label="Please try again. If the issue persists please report it on " />
+      )}
       {subheader && <Subheader subheaderContent={subheader} />}
       {subheader_2 && <Subheader subheaderContent={subheader_2} />}
       {breakdown && <Breakdown rows={breakdown} />}
@@ -105,12 +118,23 @@ export const Message = ({
       {depositInfo && <DepositInfo {...depositInfo} />}
       {marketReview && <MarketReview {...marketReview} />}
       {checkbox && <CheckboxCTA {...checkbox} />}
-      {invalidMarketRules && <ExplainerBlock
-          title={EventDetailsContent().explainerBlockTitle}
-          subtexts={EventDetailsContent().explainerBlockSubtexts}
-          useBullets={EventDetailsContent().useBullets}
+      {invalidMarketRules && (
+        <MultipleExplainerBlock
           isModal
-      />}
+          contents={[
+            {
+              title: EventDetailsContent().explainerBlockTitle,
+              subtexts: EventDetailsContent().explainerBlockSubtexts,
+              useBullets: EventDetailsContent().useBullets,
+            },
+            {
+              title: AugurMarketsContent().explainerBlockTitle,
+              subtexts: AugurMarketsContent().explainerBlockSubtexts,
+              useBullets: AugurMarketsContent().useBullets,
+            },
+          ]}
+        />
+      )}
     </main>
     {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
   </div>

@@ -21,8 +21,8 @@ export class WarpSyncStrategy {
   }
 
   async start(
+    currentBlock: Block,
     ipfsRootHash?: string,
-    highestBlockToSync?: Block
   ): Promise<number | undefined> {
     await this.warpSyncController.createInitialCheckpoint();
 
@@ -31,7 +31,7 @@ export class WarpSyncStrategy {
       ipfsRootHash &&
       ipfsRootHash !== 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51'
     ) {
-      return this.loadCheckpoints(ipfsRootHash, highestBlockToSync);
+      return this.loadCheckpoints(ipfsRootHash, currentBlock);
     } else {
       // No hash, nothing more to do!
       return undefined;
@@ -40,22 +40,29 @@ export class WarpSyncStrategy {
 
   async loadCheckpoints(
     ipfsRootHash: string,
-    highestSyncedBlock?: Block
+    currentBlock?: Block
   ): Promise<number | undefined> {
     const mostRecentWarpSync = await this.warpSyncController.getMostRecentWarpSync();
     if (
       !mostRecentWarpSync ||
-      highestSyncedBlock.timestamp - mostRecentWarpSync.end.timestamp >
-        BULKSYNC_HORIZON
+      currentBlock.timestamp - mostRecentWarpSync.end.timestamp >
+      BULKSYNC_HORIZON && mostRecentWarpSync.hash !== ipfsRootHash
     ) {
+      let logs;
+      let endBlockNumber;
+
+      try {
+        const checkpoint = await this.warpSyncController.getCheckpointFile(ipfsRootHash);
+        logs = checkpoint.logs;
+        endBlockNumber = checkpoint.endBlockNumber;
+      } catch(e) {
+        console.error(`Couldn't get checkpoint file: ${e}`);
+        return undefined;
+      }
+
       // Blow it all away and refresh.
       await this.warpSyncController.destroyAndRecreateDB();
       await this.warpSyncController.createInitialCheckpoint();
-
-      const {
-        logs,
-        endBlockNumber,
-      } = await this.warpSyncController.getCheckpointFile(ipfsRootHash);
 
       const maxBlock = await this.processFile(logs);
 

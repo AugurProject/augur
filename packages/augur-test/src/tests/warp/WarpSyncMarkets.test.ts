@@ -323,7 +323,7 @@ describe('Warp Sync markets', () => {
 
       const currentBlock = await john.provider.getBlock('latest');
 
-      await otherJohn.warpSyncStrategy.start(hash, currentBlock);
+      await otherJohn.warpSyncStrategy.start(currentBlock, hash);
 
       let johnLogs = {};
       let otherJohnLogs = {};
@@ -411,8 +411,8 @@ describe('Warp Sync markets', () => {
       );
 
       await otherJohn.warpSyncStrategy.start(
-        newHash,
-        await provider.getBlock('latest')
+        await provider.getBlock('latest'),
+        newHash
       );
 
       johnLogs = {};

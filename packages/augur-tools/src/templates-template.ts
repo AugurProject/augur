@@ -1,24 +1,26 @@
 import { ethers } from 'ethers';
-import moment from 'moment';
 import { BigNumber } from 'ethers/utils';
+import moment from 'moment';
 
-export const FUTURES = 'FUTURES';
-export const MONEY_LINE = 'MONEY_LINE';
-export const MONEY_LINE_MEGA = 'MONEY_LINE_MEGA';
-export const OVER_UNDER = 'OVER_UNDER';
-export const OVER_UNDER_MEGA = 'OVER_UNDER_MEGA';
-export const SPREAD = 'SPREAD';
-export const SPREAD_MEGA = 'SPREAD_MEGA';
+export enum groupTypes {
+  MONEY_LINE = 'MONEY_LINE',
+  COMBO_MONEY_LINE = 'COMBO_MONEY_LINE',
+  OVER_UNDER = 'OVER_UNDER',
+  COMBO_OVER_UNDER = 'COMBO_OVER_UNDER',
+  SPREAD = 'SPREAD',
+  COMBO_SPREAD = 'COMBO_SPREAD',
+  FUTURES = 'FUTURES',
+  ADDITIONAL = 'ADDITIONAL'
+}
+
 export const LEAGUE_NAME = 'LEAGUE_NAME';
 export const GENDER = 'GENDER';
-export const WEEK_NO = 'WEEK_NO';
 export const TEAM_A = 'TEAM_A';
 export const TEAM_B = 'TEAM_B';
 export const START_TIME = 'START_TIME';
 export const YEAR = 'YEAR';
 export const EVENT = 'EVENT';
 export const SUB_EVENT = 'SUB_EVENT';
-export const SET_GAME = 'SET_GAME';
 
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
@@ -35,7 +37,7 @@ export const EUR = 'EUR';
 
 // Market Subtemplates
 export const SOCCER = 'Football (Soccer)';
-export const MENS_LEAGUES = 'Men\'s Leagues';
+export const MENS_LEAGUES = "Men's Leagues";
 export const CUSTOMIZED = 'Customized';
 export const SUMMER = 'SUMMER';
 export const WINTER = 'WINTER';
@@ -70,8 +72,8 @@ export const NFL_DRAFT = 'NFL Draft';
 export const PGA = 'PGA';
 export const LPGA = 'LPGA';
 export const EURO_TOUR = 'Euro Tour';
-export const MENS = 'Men\'s';
-export const WOMENS = 'Women\'s';
+export const MENS = "Men's";
+export const WOMENS = "Women's";
 export const SINGLES = 'Singles';
 export const DOUBLES = 'Doubles';
 export const AWARDS = 'Awards';
@@ -190,6 +192,10 @@ export interface DateInputDependencies {
     [key: string]: TimeOffset;
   };
 }
+
+export interface NumberRangeValues {
+  [id: number]: number[];
+}
 export interface TemplateValidation {
   templateValidation: string;
   templateValidationResRules: string;
@@ -206,22 +212,25 @@ export interface TemplateValidation {
   daysAfterStartDate: number;
   eventExpEndNextMonthValues: EventExpEndNextMonth[];
   categoricalOutcomes: CategoricalOutcomes;
+  numberRangeValues: NumberRangeValues;
 }
 
 export interface TemplateGroupKeys {
   groupType: string;
   groupLineId: number;
-  keys: { key: string, id: number }[]
+  estInputId?: number;
+  header: string;
+  title?: string;
+  keys: { key: string; id: number }[];
 }
 export interface TemplateGroup {
-  [hash: string] : TemplateGroupKeys
+  [hash: string]: TemplateGroupKeys;
 }
 export interface TemplateValidationHash {
   [hash: string]: TemplateValidation;
 }
 export interface Template {
   hash: string;
-  categories: Categories;
   marketType: string;
   question: string;
   example: string;
@@ -232,8 +241,10 @@ export interface Template {
   minPrice?: number;
   maxPrice?: number;
   noAdditionalUserOutcomes?: boolean;
-  groupName: string;
-  groupLineId: number;
+  groupName?: groupTypes; // type of group
+  groupLineId?: number; // over under and spread markets to differentiate liquidity pools
+  header?: string; // header for money line markets and top level markets
+  title?: string; // market title for futures or non money line markets
 }
 
 export interface TemplateInput {
@@ -255,16 +266,16 @@ export interface TemplateInput {
   eventExpEndNextMonth?: boolean;
   yearDropdown?: number;
   monthDropdown?: number;
-  inputDestValues: {
+  inputDestValues?: {
     // dropdown source data structure to use to set target input list values
     [key: string]: string[];
   };
-  inputTimeOffset: {
+  inputTimeOffset?: {
     [key: string]: TimeOffset;
   };
   setEndTime?: number;
   inputDateYearId?: number;
-  hoursAfterEst: number;
+  hoursAfterEst?: number;
   holidayClosures?: {
     [key: string]: {
       [year: number]: {
@@ -273,12 +284,13 @@ export interface TemplateInput {
       }[];
     };
   };
-  noSort: boolean;
-  daysAfterDateStart: number;
-  denomination: {
+  noSort?: boolean;
+  daysAfterDateStart?: number;
+  denomination?: {
     [key: string]: string;
-  }
-  groupKey: string;
+  };
+  groupKey?: string;
+  numberRange?: number[];
 }
 
 export interface RetiredTemplate {
@@ -290,6 +302,9 @@ export interface TemplateGroupInfo {
   hashKeyInputValues: string;
   groupType: string;
   groupLine?: string;
+  estTimestamp?: string;
+  header: string;
+  title?: string;
 }
 
 export enum ValidationType {
@@ -377,8 +392,16 @@ export let TEMPLATE_GROUPS = [];
 export function hasTemplateTextInputs(hash: string, isCategorical: boolean) {
   const validation = TEMPLATE_VALIDATIONS[hash] as TemplateValidation;
   if (isCategorical) {
-    if (!validation || (!validation.placeholderValues && Object.keys(validation.categoricalOutcomes).length > 0)) return false;
-    return Object.keys(validation.placeholderValues).length > 0 || Object.keys(validation.categoricalOutcomes).length === 0;
+    if (
+      !validation ||
+      (!validation.placeholderValues &&
+        Object.keys(validation.categoricalOutcomes).length > 0)
+    )
+      return false;
+    return (
+      Object.keys(validation.placeholderValues).length > 0 ||
+      Object.keys(validation.categoricalOutcomes).length === 0
+    );
   } else {
     if (!validation || !validation.placeholderValues) return false;
     return Object.keys(validation.placeholderValues).length > 0;
@@ -464,7 +487,9 @@ function hasMarketQuestionDependencies(
   const input = inputs.find(i => i.id === validationDep.inputSourceId);
   if (!input) return false;
   const correctValues = validationDep.values[input.value] || [];
-  const testValues = inputs.filter(i => validationDep.inputDestIds.includes(i.id));
+  const testValues = inputs.filter(i =>
+    validationDep.inputDestIds.includes(i.id)
+  );
   if (!testValues) return false;
   return (
     testValues.length ===
@@ -501,7 +526,7 @@ function estimatedDateTimeAfterMarketEndTime(
   if (!input) return false;
   // add number of hours to estimated start timestamp then compare to market event expiration
   const secondsAfterEst = hoursAfterEstimatedStartTime * 60 * 60;
-  return (Number(input.timestamp) + secondsAfterEst) > Number(endTime);
+  return Number(input.timestamp) + secondsAfterEst > Number(endTime);
 }
 function daysRequiredAfterStartDate(
   inputs: ExtraInfoTemplateInput[],
@@ -512,7 +537,7 @@ function daysRequiredAfterStartDate(
   if (!input || !daysAfterStartDate) return true;
   // add number of hours to estimated start timestamp then compare to market event expiration
   const secondsAfterStartDate = SECONDS_IN_A_DAY * daysAfterStartDate;
-  return (Number(input.timestamp) + secondsAfterStartDate) >= Number(endTime);
+  return Number(input.timestamp) + secondsAfterStartDate >= Number(endTime);
 }
 
 function daysRequiredAfterMonthDate(
@@ -521,26 +546,43 @@ function daysRequiredAfterMonthDate(
   endTime: number
 ) {
   if (eventExpEndNextMonthValues.length === 0) return true;
-  const monthId = eventExpEndNextMonthValues.find(i => i.yearDropdown !== undefined);
-  const yearId = eventExpEndNextMonthValues.find(i => i.monthDropdown !== undefined);
+  const monthId = eventExpEndNextMonthValues.find(
+    i => i.yearDropdown !== undefined
+  );
+  const yearId = eventExpEndNextMonthValues.find(
+    i => i.monthDropdown !== undefined
+  );
 
   const monthInput = monthId && inputs.find(i => i.id === monthId.id);
   const yearInput = yearId && inputs.find(i => i.id === yearId.id);
 
   if (!monthInput || !yearInput) return false;
-  const newEndTime = moment().utc().month(monthInput.value).year(Number(yearInput.value)).add(1, 'M').endOf('month').unix();
+  const newEndTime = moment()
+    .utc()
+    .month(monthInput.value)
+    .year(Number(yearInput.value))
+    .add(1, 'M')
+    .endOf('month')
+    .unix();
   if (newEndTime !== Number(endTime)) {
     return false;
   } else return true;
 }
 
-function dateStartAfterMarketEndTime(
+function isDateInQuestionValid(
   inputs: ExtraInfoTemplateInput[],
-  endTime: number
-) {
-  const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
-  if (!input) return false;
-  return Number(input.timestamp) >= Number(endTime);
+  endTime: number,
+  creationTime: number
+): boolean {
+  const filteredInputs = inputs.filter(i => [String(TemplateInputType.DATEYEAR), String(TemplateInputType.DATESTART), String(TemplateInputType.DATETIME), String(TemplateInputType.ESTDATETIME)].includes(i.type));
+  if (!filteredInputs || filteredInputs.length === 0) return true;
+  return filteredInputs.reduce((p, input) => {
+    if (!input.timestamp) return false;
+    if (Number(input.timestamp) > Number(endTime) || Number(creationTime) > Number(input.timestamp)) {
+      return false;
+    }
+    return p;
+  }, true);
 }
 
 function wednesdayAfterOpeningNoFriday(
@@ -549,12 +591,15 @@ function wednesdayAfterOpeningNoFriday(
   ids: number[]
 ) {
   if (!ids || ids.length === 0) return true;
-  const afterTuesday: ExtraInfoTemplateInput = inputs.find(i =>
-    ids && ids.includes(i.id)
+  const afterTuesday: ExtraInfoTemplateInput = inputs.find(
+    i => ids && ids.includes(i.id)
   );
   const noFriday = inputs.find(i => i.type === TemplateInputType.DATEYEAR);
   if (!afterTuesday && !noFriday) return true;
-  if (noFriday && moment.unix(Number(noFriday.timestamp)).weekday() !== FRIDAY_DAY_OF_WEEK) {
+  if (
+    noFriday &&
+    moment.unix(Number(noFriday.timestamp)).weekday() !== FRIDAY_DAY_OF_WEEK
+  ) {
     return false;
   } else {
     const wednesdayDatetime = getTemplateWednesdayAfterOpeningDay(
@@ -580,7 +625,10 @@ export function tellOnHoliday(
     if (holidayClosuresPerYear) {
       const userTimestamp = moment.unix(Number(input.timestamp));
       holidayClosuresPerYear.forEach(holiday => {
-        const holidayDate = moment(`${holiday.date} ${inputYear}`, 'MMM DD YYYY').startOf('day');
+        const holidayDate = moment(
+          `${holiday.date} ${inputYear}`,
+          'MMM DD YYYY'
+        ).startOf('day');
         const sameDay = userTimestamp.isSame(holidayDate, 'day');
         if (sameDay) {
           holidayPresent = holiday;
@@ -634,14 +682,12 @@ function dateComparisonDependencies(
   return true;
 }
 
-export function getTemplateWednesdayAfterOpeningDay(
-  openingDay: number,
-) {
+export function getTemplateWednesdayAfterOpeningDay(openingDay: number) {
   const wednesdayOfNextWeekOpeningDay = moment
     .unix(openingDay)
     .add(1, 'week')
     .utc()
-    .day("Wednesday")
+    .day('Wednesday')
     .startOf('day');
 
   return wednesdayOfNextWeekOpeningDay.unix();
@@ -667,9 +713,10 @@ export function getTemplateExchangeClosingWithBuffer(
   return closingDateTime.unix();
 }
 
-function closingDateDependencies(
+function closingDateDependenciesCheck(
   inputs: ExtraInfoTemplateInput[],
   endTime: number,
+  creationTime: number,
   closingDateDependencies: DateInputDependencies[]
 ) {
   if (!closingDateDependencies) return true;
@@ -677,7 +724,7 @@ function closingDateDependencies(
   const result = deps.reduce((p, d) => {
     const dateYearSource = inputs.find(i => i.id === d.inputDateYearId);
     const exchangeValue = inputs.find(i => i.id === d.inputSourceId);
-    if (!dateYearSource || !exchangeValue) return false;
+    if (!dateYearSource || !exchangeValue || !dateYearSource.timestamp) return false;
     const timeOffset = d.inputTimeOffset[exchangeValue.value] as TimeOffset;
     if (timeOffset) {
       const closingDateTime = getTemplateExchangeClosingWithBuffer(
@@ -686,7 +733,7 @@ function closingDateDependencies(
         timeOffset.minutes,
         timeOffset.offset
       );
-      if (closingDateTime > endTime) {
+      if (closingDateTime > endTime || creationTime > closingDateTime) {
         return false;
       }
     }
@@ -703,20 +750,56 @@ function isRetiredAutofail(hash: string) {
   return found.autoFail;
 }
 
-export function getGroupHashInfo({ hash, inputs }: ExtraInfoTemplate): TemplateGroupInfo {
-  if (!hash || !inputs) return null;
+export const populateTemplateTitle = (templateString, inputs) => {
+  return inputs.reduce((acc, input) => {
+    return acc.replace(`[${input.id}]`, `${input.value}`);
+  }, templateString);
+}
+
+export function getGroupHashInfo({
+  hash,
+  inputs,
+}: ExtraInfoTemplate): TemplateGroupInfo {
+  const defaultValues = {
+    hashKeyInputValues: undefined,
+    groupType: undefined,
+    groupLine: undefined,
+    header: undefined,
+    title: undefined,
+    estTimestamp: undefined,
+  }
+  if (!hash || !inputs) return defaultValues;
   const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find(g => g[hash]);
-  if (!hashGroup) return null;
+  if (!hashGroup) return defaultValues;
   const group = hashGroup[hash];
-  const keyValues = group.keys.map(k => String(inputs[k.id].value));
+  const keyValues = group.keys.map(key => String(inputs.find(i => i.id === key.id).value));
   const hashKeyInputValues = hashGroupKeyValues(keyValues);
   const groupLine = group?.groupLineId ? inputs[group.groupLineId].value : undefined;
+  const estTimestamp = group?.estInputId ? inputs[group.estInputId].timestamp : undefined;
+  const header = group.header ? populateTemplateTitle(group.header, inputs) : undefined;
+  const title = group.title ? populateTemplateTitle(group.title, inputs) : undefined;
 
   return {
     hashKeyInputValues,
     groupType: group.groupType,
-    groupLine
-  }
+    groupLine,
+    estTimestamp,
+    header,
+    title
+  };
+}
+
+function inputWithinNumericRange(inputs: ExtraInfoTemplateInput[], numberRangeValues: NumberRangeValues) {
+  let passes = true;
+  if (!numberRangeValues || Object.keys(numberRangeValues).length === 0) return passes;
+  Object.keys(numberRangeValues).forEach(index => {
+    const input = inputs.find(i => String(i.id) === String(index));
+    const range = numberRangeValues[index];
+    if (Number(input.value) < Number(range[0]) || Number(input.value) > Number(range[1])) {
+      passes = false;
+    }
+  })
+  return passes;
 }
 
 export const isTemplateMarket = (
@@ -725,6 +808,7 @@ export const isTemplateMarket = (
   outcomes: string[],
   longDescription: string,
   endTime: string,
+  creationTime: string,
   errors: string[] = []
 ) => {
   if (
@@ -732,9 +816,10 @@ export const isTemplateMarket = (
     !template.hash ||
     !template.question ||
     template.inputs.length === 0 ||
-    !endTime
+    !endTime ||
+    !creationTime
   ) {
-    errors.push('value missing template | hash | question | inputs | endTime');
+    errors.push('value missing template | hash | question | inputs | endTime | creationTime');
     return false;
   }
 
@@ -755,13 +840,19 @@ export const isTemplateMarket = (
     // check market title/question matches built template question
     let checkMarketTitle = template.question;
     template.inputs.map((i: ExtraInfoTemplateInput) => {
-      checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, i.value.trim());
+      checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, String(i.value).trim());
     });
     if (checkMarketTitle !== title) {
       errors.push('populated title does not match title given');
       return false;
     }
 
+    if (!inputWithinNumericRange(template.inputs, validation.numberRangeValues)) {
+      errors.push(
+        'numeric input is outside of valid numeric range'
+      );
+      return false;
+    }
     // check ESTDATETIME isn't after market event expiration or is within required hour buffer
     if (
       estimatedDateTimeAfterMarketEndTime(
@@ -801,14 +892,15 @@ export const isTemplateMarket = (
       return false;
     }
 
-    // check DATESTART isn't after market event expiration
+    // check DATEYEAR, DATESTART, ... isn't after market creation date and endTime isn't before
     if (
-      dateStartAfterMarketEndTime(
+      !isDateInQuestionValid(
         template.inputs,
-        new BigNumber(endTime).toNumber()
+        new BigNumber(endTime).toNumber(),
+        new BigNumber(creationTime).toNumber(),
       )
     ) {
-      errors.push('start date is after market event expiration endTime');
+      errors.push('date in market question can not be before market creationTime or after event expiration');
       return false;
     }
 
@@ -833,13 +925,14 @@ export const isTemplateMarket = (
     }
 
     if (
-      !closingDateDependencies(
+      !closingDateDependenciesCheck(
         template.inputs,
         new BigNumber(endTime).toNumber(),
+        new BigNumber(creationTime).toNumber(),
         validation.closingDateDependencies
       )
     ) {
-      errors.push('event expiration can not be before exchange close time');
+      errors.push('event expiration can not be before exchange close time, or market creation after exchange close time');
       return false;
     }
 
@@ -850,7 +943,9 @@ export const isTemplateMarket = (
         validation.afterTuesdayDateNoFriday
       )
     ) {
-      errors.push('event expiration can not be before Wednesday after movie opening weekend and/or opening day must be a friday');
+      errors.push(
+        'event expiration can not be before Wednesday after movie opening weekend and/or opening day must be a friday'
+      );
       return false;
     }
 
@@ -882,8 +977,13 @@ export const isTemplateMarket = (
     }
 
     // check no additional outcomes is a requirement
-    if (validation.noAdditionalOutcomes && validation.requiredOutcomes.length !== outcomes.length) {
-      errors.push('no additioanl outcomes is a requirement, only required outcomes are allowed');
+    if (
+      validation.noAdditionalOutcomes &&
+      validation.requiredOutcomes.length !== outcomes.length
+    ) {
+      errors.push(
+        'no additioanl outcomes is a requirement, only required outcomes are allowed'
+      );
       return false;
     }
 

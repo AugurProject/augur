@@ -29,6 +29,7 @@ const mapStateToProps = (state: AppState) => {
   const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(accountFunds.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
   const tradingAccountEthFormatted = formatEther(loginAccount.balances.eth);
   const totalDai = loginAccount.balances.dai;
+  const signerEth = loginAccount.balances.signerBalances.eth;
 
   return {
     account: address,
@@ -39,7 +40,8 @@ const mapStateToProps = (state: AppState) => {
     reserveInDaiFormatted,
     totalDaiFormatted,
     tradingAccountEthFormatted,
-    totalDai
+    totalDai,
+    signerEth,
   }
 };
 
@@ -47,7 +49,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   withdrawAllFunds: (destination: string) => withdrawAllFunds(destination),
   withdrawAllFundsEstimateGas: (destination: string) => withdrawAllFundsEstimateGas(destination),
   closeModal: () => dispatch(closeModal()),
-  transferFunds: (amount: string, destination: string) => transferFunds(amount, DAI, destination),
+  transferFunds: (amount: string, destination: string) => transferFunds(amount, DAI, destination, false, false),
   transferFundsGasEstimate: (amount: string, asset: string, to: string) => transferFundsGasEstimate(amount, asset, to),
 });
 
