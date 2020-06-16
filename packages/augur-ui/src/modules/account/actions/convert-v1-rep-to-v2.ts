@@ -11,7 +11,7 @@ import { V1_REP_MIGRATE_ESTIMATE, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/com
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { TXEventName } from '@augurproject/sdk';
 
-export default function(useSigningWallet: boolean = false, callback: NodeStyleCallback = logError) {
+export const approveAndConvertV1ToV2 = (useSigningWallet: boolean = false, callback: NodeStyleCallback = logError) => {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
     dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Pending));
     await convertV1ToV2Approve(useSigningWallet).catch((err: Error) => {

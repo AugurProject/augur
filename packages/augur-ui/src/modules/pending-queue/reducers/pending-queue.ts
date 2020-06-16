@@ -61,13 +61,10 @@ export default function(pendingQueue: PendingQueue = deepClone<PendingQueue>(DEF
       };
     }
     case REMOVE_PENDING_DATA: {
-      const { pendingId, queueName, pendingIds } = data;
+      const { pendingId, queueName } = data;
       let pending = pendingQueue;
       if (pendingQueue[queueName] && pendingQueue[queueName][pendingId]) {
         delete pending[queueName][pendingId];
-      }
-      if (pendingQueue[queueName] && pendingIds) {
-        pendingIds.map(pendingId => delete pending[queueName][pendingId]);
       }
       return {
         ...pending,

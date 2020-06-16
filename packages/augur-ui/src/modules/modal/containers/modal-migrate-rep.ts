@@ -5,8 +5,9 @@ import { AppState } from 'appStore';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import convertV1ToV2, {
+import {
   convertV1ToV2Estimate,
+  approveAndConvertV1ToV2,
 } from 'modules/account/actions/convert-v1-rep-to-v2';
 
 const mapStateToProps = (state: AppState) => ({
@@ -20,7 +21,8 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  convertV1ToV2: useSigningWallet => dispatch(convertV1ToV2(useSigningWallet)),
+  convertV1ToV2: useSigningWallet =>
+    dispatch(approveAndConvertV1ToV2(useSigningWallet)),
   convertV1ToV2Estimate: useSigningWallet =>
     convertV1ToV2Estimate(useSigningWallet),
 });
