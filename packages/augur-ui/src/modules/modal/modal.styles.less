@@ -411,10 +411,6 @@ div.Onboarding {
     margin: @size-24 @size-24 0;
   }
 
-  @media @breakpoint-mobile {
-    padding: @size-8 @size-16 @size-16;
-  }
-
   > h1 {
     .text-12;
 
@@ -437,6 +433,7 @@ div.Onboarding {
   > button:first-of-type {
     display: flex;
     justify-content: flex-end;
+
     > svg {
       height: @size-12;
       width: @size-12;
@@ -444,6 +441,19 @@ div.Onboarding {
       > path {
         stroke: @color-primary-text;
       }
+    }
+  }
+
+  @media @breakpoint-mobile {
+    padding: @size-16;
+    position: relative;
+
+    > button:first-of-type {
+      padding: @size-16;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 }
@@ -2376,7 +2386,7 @@ div.ButtonsRow:last-of-type {
 
   @media @breakpoint-mobile {
     margin: 0;
-    padding: @size-16;
+    padding: 0 @size-16 @size-16;
   }
 
   > section:first-of-type {
