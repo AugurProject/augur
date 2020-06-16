@@ -85,7 +85,9 @@ export class WarpTestContractApi extends TestContractAPI {
 
       console.log('warpSyncHash', JSON.stringify(warpSyncHash));
 
+      const currentBlock = await this.provider.getBlock('latest');
       const highestSyncedBlock = await this.warpSyncStrategy.start(
+        currentBlock,
         warpSyncHash
       );
       await this.bulkSyncStrategy.start(
