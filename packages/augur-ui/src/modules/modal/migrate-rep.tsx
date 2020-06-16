@@ -99,7 +99,7 @@ export const MigrateRep = ({
           transaction fee
         </span>
       )}
-      {!hasEnoughDaiForGas && inTradingWallet && (
+      {!hasEnoughDaiForGas && !hasEnoughEthForGas && inTradingWallet && (
         <span className={Styles.Error}>
           ${formatDai(gasInDai).formatted} DAI is needed for transaction fee
         </span>
@@ -161,7 +161,7 @@ export const MigrateRep = ({
             (walletBalances.legacyRep === '0' &&
               walletBalances.signerBalances.legacyRep === '0') ||
             (inSigningWallet && !hasEnoughEthForGas) ||
-            (inTradingWallet && !hasEnoughDaiForGas)
+            (inTradingWallet && !hasEnoughDaiForGas && !hasEnoughEthForGas)
           }
         />
         <SecondaryButton text={'Cancel'} action={closeAction} />
