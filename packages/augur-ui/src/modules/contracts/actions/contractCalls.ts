@@ -109,13 +109,6 @@ export async function getMaxMarketEndTime(): Promise<number> {
   return new BigNumber(maxEndTime).toNumber();
 }
 
-export async function convertV1ToV2Allowance(account: string): Promise<BigNumber> {
-  const { contracts } = augurSdk.get();
-  const getReputationToken = await contracts.universe.getReputationToken_();
-  const allowance = contracts.legacyReputationToken.allowance_(getReputationToken, account);
-  return allowance;
-}
-
 export async function convertV1ToV2Approve(useSigningWallet: boolean = false) {
   const { contracts, dependencies } = augurSdk.get();
 
