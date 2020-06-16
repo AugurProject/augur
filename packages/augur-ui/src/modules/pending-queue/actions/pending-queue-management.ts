@@ -117,9 +117,10 @@ const updatePendingDataHash = (
 export const removePendingData = (
   pendingId: string,
   queueName: string,
+  pendingIds: string[] = [],
 ): BaseAction => ({
   type: REMOVE_PENDING_DATA,
-  data: { pendingId, queueName },
+  data: { pendingId, queueName, pendingIds },
 });
 
 export const removePendingDataByHash = (

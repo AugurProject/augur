@@ -634,13 +634,13 @@ export interface AccountBalances {
   rep: string;
   dai: string;
   legacyRep: string;
-  legacyRepNonSafe: string;
   attoRep: string;
   legacyAttoRep: string;
   signerBalances: {
     eth: string;
     rep: string;
     dai: string;
+    legacyRep: string;
   }
 }
 

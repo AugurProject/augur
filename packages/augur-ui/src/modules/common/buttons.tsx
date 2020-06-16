@@ -250,9 +250,18 @@ const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
   const { pendingQueue } = state;
   let disabled = false;
 
-  const pendingData =
+  let pendingData = null;
+
+  if (ownProps.queueId) {
+    pendingData =
     pendingQueue[ownProps.queueName] &&
     pendingQueue[ownProps.queueName][ownProps.queueId];
+  }
+
+  if (ownProps.queueIds && pendingQueue[ownProps.queueName]) {
+    const key = Object.keys(pendingQueue[ownProps.queueName]).find(key => ownProps.queueIds.includes(key));
+    pendingData = key && pendingQueue[ownProps.queueName][key];
+  }
 
   let status = pendingData && pendingData.status;
   if (pendingData) {
@@ -274,7 +283,7 @@ const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
 
 const mapDispatchToPropsProcessingButton = (dispatch, ownProps) => ({
   cancel: () =>
-    dispatch(removePendingData(ownProps.queueId, ownProps.queueName)),
+    dispatch(removePendingData(ownProps.queueId, ownProps.queueName, ownProps.queueIds)),
 });
 
 export const ProcessingButton = connect(

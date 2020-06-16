@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
 import { ButtonsRow, Title, AccountAddressDisplay } from 'modules/modal/common';
-import { formatRep, formatGasCostToEther } from 'utils/format-number';
+import { formatRep, formatGasCostToEther, formatEther } from 'utils/format-number';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { LoginAccount } from 'modules/types';
-import { ExternalLinkButton } from 'modules/common/buttons';
+import { LoginAccount, AccountBalances } from 'modules/types';
+import { ExternalLinkButton, ProcessingButton, SecondaryButton } from 'modules/common/buttons';
 import { LinearPropertyLabel, TransactionFeeLabel } from 'modules/common/labels';
 import { InfoIcon } from 'modules/common/icons';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
-  V1_REP_MIGRATE_ESTIMATE, HELP_CENTER_LEARN_ABOUT_ADDRESS, HELP_CENTER_MIGRATE_REP, GWEI_CONVERSION,
+  V1_REP_MIGRATE_ESTIMATE, HELP_CENTER_LEARN_ABOUT_ADDRESS, HELP_CENTER_MIGRATE_REP, GWEI_CONVERSION, TRANSACTIONS, APPROVE, MIGRATE_FROM_LEG_REP_TOKEN,
 } from 'modules/common/constants';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -17,26 +17,27 @@ import { createBigNumber } from 'utils/create-big-number';
 
 interface MigrateRepForm {
   closeAction: Function;
-  loginAccount: LoginAccount;
+  tradingAccount: string;
   convertV1ToV2: Function;
   GsnEnabled: boolean;
   convertV1ToV2Estimate: Function;
   gasPrice: number;
-  showForSafeWallet: boolean;
+  walletBalances: AccountBalances;
 }
 
-export const MigrateRep = (props: MigrateRepForm) => {
-  const {
-    closeAction,
-    convertV1ToV2,
-    loginAccount,
-    GsnEnabled,
-    convertV1ToV2Estimate,
-    gasPrice,
-    showForSafeWallet,
-  } = props;
+export const MigrateRep = ({
+  closeAction,
+  convertV1ToV2,
+  tradingAccount,
+  GsnEnabled,
+  convertV1ToV2Estimate,
+  gasPrice,
+  walletBalances,
+}: MigrateRepForm) => {
 
   const [gasLimit, setGasLimit] = useState(V1_REP_MIGRATE_ESTIMATE);
+  const showForSafeWallet = walletBalances.signerBalances.legacyRep !== '0';
+  const ethForGas = walletBalances.signerBalances.eth;
 
   useEffect(() => {
     if (GsnEnabled) {
@@ -52,15 +53,20 @@ export const MigrateRep = (props: MigrateRepForm) => {
     createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
   );
 
+  const hasEnoughEthForGas = createBigNumber(ethForGas).gte(
+    createBigNumber(gasEstimateInEth)
+  );
+
   const safeWalletContent = (
     <>
       <div>
         <span>V1 REP to migrate</span>
-        <span>{formatRep(loginAccount.balances.legacyRep).formattedValue}</span>
+        <span>{showForSafeWallet ? formatRep(walletBalances.signerBalances.legacyRep).formattedValue : formatRep(walletBalances.legacyRep).formattedValue}</span>
       </div>
       <div>
       <TransactionFeeLabel gasCostDai={displayGasInDai(gasLimit)} />
       </div>
+      {!hasEnoughEthForGas && <span className={Styles.Error}>{formatEther(gasEstimateInEth).formatted} ETH is needed for transaction fee</span>}
       <div>
         {InfoIcon} Your wallet will need to sign <span>2</span> transactions
       </div>
@@ -72,7 +78,7 @@ export const MigrateRep = (props: MigrateRepForm) => {
       <h3>Trading account</h3>
       <AccountAddressDisplay
         copyable
-        address={toChecksumAddress(loginAccount.address)}
+        address={toChecksumAddress(tradingAccount)}
       />
       <ExternalLinkButton
         URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
@@ -125,25 +131,23 @@ export const MigrateRep = (props: MigrateRepForm) => {
 
         {showForSafeWallet ? safeWalletContent : mainWalletContent}
       </main>
-      <ButtonsRow
-        buttons={[
-          {
-            text: showForSafeWallet ? 'Migrate' : 'OK',
-            action: showForSafeWallet
-              ? () => {
-                  closeAction();
-                  convertV1ToV2();
-                }
-              : () => closeAction(),
-            disabled:
-              formatRep(loginAccount.balances.legacyRep).fullPrecision < 0,
-          },
-          {
-            text: 'Close',
-            action: closeAction,
-          },
-        ]}
-      />
+      <div className={Styles.ButtonsRow}>
+          <ProcessingButton
+            small
+            text={'Migrate'}
+            action={() =>  convertV1ToV2(showForSafeWallet)}
+            queueName={TRANSACTIONS}
+            queueIds={[APPROVE, MIGRATE_FROM_LEG_REP_TOKEN]}
+            disabled={formatRep(walletBalances.legacyRep).fullPrecision === 0 ||
+              formatRep(walletBalances.signerBalances.legacyRep)
+                .fullPrecision === 0 ||
+              !hasEnoughEthForGas}
+          />
+          <SecondaryButton
+            text={'Cancel'}
+            action={closeAction}
+          />
+        </div>
     </div>
   );
 };
