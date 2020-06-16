@@ -82,10 +82,10 @@ export class Liquidity {
     // filter out orders based on current gas trade cost
     Object.keys(params.orderBook).map((outcomeId) => {
       Object.keys(params.orderBook[outcomeId]).forEach(orderType => {
-          // Cut out orders where gas costs > 2% of the trade
+          // Cut out orders where gas costs > 5% of the trade
           params.orderBook[outcomeId][orderType] = _.filter(params.orderBook[outcomeId][orderType], (order) => {
             const gasCost = new BigNumber(order.amount).multipliedBy(params.numTicks).div(MAX_TRADE_GAS_PERCENTAGE_DIVISOR);
-            const maxGasCost = gasCost.multipliedBy(2); // 2%
+            const maxGasCost = gasCost.multipliedBy(5); // 5%
             return maxGasCost.gte(params.estimatedTradeGasCostInAttoDai);
           });
       })

@@ -57,7 +57,6 @@ import {
   PGA,
   POLITICS,
   REQUIRED,
-  SET_GAME,
   SINGLES,
   SOCCER,
   SPORTS,
@@ -74,7 +73,6 @@ import {
   TV_MOVIES,
   US_POLITICS,
   ValidationType,
-  WEEK_NO,
   WINTER,
   WNBA,
   WORLD,
@@ -105,6 +103,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MMA: [0] vs. [1], Who will win?`,
             example: `MMA: Donald Cerrone vs. Conor McGregor, Who will win?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            header: `[0] vs. [1]`,
             groupName: groupTypes.MONEY_LINE,
             inputs: [
               {
@@ -156,6 +155,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MMA: [0] vs. [1] (O/U), [2].5 Rounds?`,
             example: `MMA: Donald Cerrone vs. Conor McGregor (O/U), 1.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            title: `Over/Under [2].5 Rounds`,
+            header: `[0] vs. [1]`,
             groupName: groupTypes.OVER_UNDER,
             groupLineId: 2,
             inputs: [
@@ -206,10 +207,10 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
+                  text: `If a fighter is substituted before the fight begins the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `For settlement purposes where a half round is stated, 2 minutes 30 seconds of the respective round will define the half to determine over or under. Example: If Total Rounds 2.5 (O/U) is in market question, the midway point in Round 3 is the under/over line. If the fight is stopped at exactly 2 minutes 30 seconds of the round named in the market "over" should be the winning outcome.`,
@@ -221,7 +222,9 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MMA: [0] vs. [1], Method of victory?`,
             example: `MMA: Donald Cerrone vs. Conor McGregor, Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: groupTypes.FUTURES,
+            title: `Method of victory`,
+            header: `[0] vs. [1]`,
+            groupName: groupTypes.ADDITIONAL,
             inputs: [
               {
                 id: 0,
@@ -311,7 +314,9 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MMA: [0] vs. [1], How will fight end?`,
             example: `MMA UFC: Donald Cerrone vs. Conor McGregor, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: groupTypes.FUTURES,
+            title: `How will fight end`,
+            header: `[0] vs. [1]`,
+            groupName: groupTypes.ADDITIONAL,
             inputs: [
               {
                 id: 0,
@@ -350,7 +355,7 @@ export const TEMPLATES = {
               {
                 id: 6,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
+                placeholder: `Draw/No Contest`,
               },
             ],
             resolutionRules: {
@@ -359,16 +364,16 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
+                  text: `If a fighter is substituted before the fight begins the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as "No Contest".`,
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by KO/TKO. If both fighters are disqualified the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`,
+                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, 'No Contest' should be the winning outcome.`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `If the fight goes to the judges scorecard before the scheduled number of rounds is completed then it should resolve as a "Points" victory to the winner.`,
@@ -386,7 +391,9 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MMA: [0] vs. [1], What round will the fight end?`,
             example: `MMA: Donald Cerrone vs. Conor McGregor, What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: groupTypes.FUTURES,
+            title: `What round will the fight end`,
+            header: `[0] vs. [1]`,
+            groupName: groupTypes.ADDITIONAL,
             inputs: [
               {
                 id: 0,
@@ -449,13 +456,13 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
+                  text: `If a fighter is substituted before the fight begins the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
+                  text: `If the fight is cancelled or will not be complete by the Event Expiration Time for any reason, the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, "No Contest" should be the winning outcome.`,
+                  text: `A draw can occur when the fight is either stopped before completion or after all rounds are completed and goes to the judges scorecards for decision. If the judges can not determine a winner, 'No Contest' should be the winning outcome.`,
                 },
                 {
                   text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`,
@@ -471,6 +478,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Boxing: [0] vs. [1], Who will win?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki, Who will win?\nEstimated schedule start time: Feb 10, 2020 8:20 pm EST`,
+            header: `[0] vs. [1]`,
             groupName: groupTypes.MONEY_LINE,
             inputs: [
               {
@@ -520,10 +528,12 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1] (O/U), [2].5 Rounds?`,
+            question: `Boxing: [0] vs. [1] (O/U), [3].5 Rounds?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki (O/U), 5.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            title: `Over/Under [3].5 Rounds`,
+            header: `[0] vs. [1]`,
             groupName: groupTypes.OVER_UNDER,
-            groupLineId: 2,
+            groupLineId: 3,
             inputs: [
               {
                 id: 0,
@@ -573,10 +583,10 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
+                  text: `If a fighter is substituted before the fight begins the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `For settlement purposes where a half round is stated a new round must be started to determine over or under. For Example: If Total Rounds 8.5 (O/U) is quoted, then Round 9 must start for Over to win. If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round.`,
@@ -588,7 +598,9 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Boxing: [0] vs. [1], Method of victory?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki, Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: groupTypes.FUTURES,
+            title: `Method of victory`,
+            header: `[0] vs. [1]`,
+            groupName: groupTypes.ADDITIONAL,
             inputs: [
               {
                 id: 0,
@@ -678,7 +690,9 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Boxing: [0] vs. [1], How will fight end?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: groupTypes.FUTURES,
+            title: `How will fight end`,
+            header: `[0] vs. [1]`,
+            groupName: groupTypes.ADDITIONAL,
             inputs: [
               {
                 id: 0,
@@ -717,7 +731,7 @@ export const TEMPLATES = {
               {
                 id: 6,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
+                placeholder: `Draw/No Contest`,
               },
             ],
             resolutionRules: {
@@ -726,13 +740,13 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
+                  text: `If a fighter is substituted before the fight begins the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as "No Contest".`,
+                  text: `If a fighter is disqualified during the fight, the opposing fighter should be declared the winner by TKO. If both fighters are Disqualified the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `If the fight is determined to be a draw, market should resolve as "Points".`,
@@ -747,7 +761,9 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Boxing: [0] vs. [1], What round will the fight end?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki, What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            groupName: groupTypes.FUTURES,
+            title: `What round will the fight end`,
+            header: `[0] vs. [1]`,
+            groupName: groupTypes.ADDITIONAL,
             inputs: [
               {
                 id: 0,
@@ -805,10 +821,10 @@ export const TEMPLATES = {
                   text: `Market resolves based on the official result immediately following the fight. Later announcements, enquirers, or changes to the official result will not affect market settlement.`,
                 },
                 {
-                  text: `If a fighter is substituted before the fight begins the market should resolve as "No Contest".`,
+                  text: `If a fighter is substituted before the fight begins the market should resolve as 'No Contest'.`,
                 },
                 {
-                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as "No Contest".`,
+                  text: `If the Fight is cancelled or will not be completed by the Event Expiration Time for any reason, the market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `This is determined by any method when the fight ends. (e.g. KO, TKO, withdrawal, disqualification). If a fighter withdraws during the period between rounds, the fight is deemed to have ended in the previous round. If the fight completes all rounds and goes the the judges scorecards for decision, the market should resolve as "Goes the distance".`,
@@ -824,6 +840,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NASCAR [0] [1]: Winner?`,
             example: `NASCAR 2020 Daytona 500: Winner?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+            header: `NASCAR [0] [1] winner`,
             groupName: groupTypes.MONEY_LINE,
             inputs: [
               {
@@ -868,7 +885,7 @@ export const TEMPLATES = {
                   text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`,
                 },
                 {
-                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`,
+                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all finishing positions.`,
@@ -877,7 +894,7 @@ export const TEMPLATES = {
                   text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`,
                 },
                 {
-                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`,
+                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as 'Other (Field)'.`,
                 },
               ],
             },
@@ -886,7 +903,9 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NASCAR [0] [1]: [2] vs. [3]: Who will finish better?`,
             example: `NASCAR 2020 Daytona 500: Who will finish better?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-            groupName: groupTypes.FUTURES,
+            title: `Who will finish better`,
+            header: `[2] vs. [3]`,
+            groupName: groupTypes.ADDITIONAL,
             inputs: [
               {
                 id: 0,
@@ -937,7 +956,7 @@ export const TEMPLATES = {
                   text: `Market settlement can be effected by event being shortened due to weather conditions or other situations if deemed by official governing association.`,
                 },
                 {
-                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as "No Contest".`,
+                  text: `If the Race is cancelled or is postponed for any reason and will not be completed before the event expiration time for this market, market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `If an alternate driver replaces a driver during the race, then the new driver will replace the old driver in all Head to head match-ups and finishing positions.`,
@@ -946,13 +965,13 @@ export const TEMPLATES = {
                   text: `Should an event/race/session/lap/heat be restarted from the beginning, markets will stand and should be settled according to the result issued after the restart.`,
                 },
                 {
-                  text: `Both drivers must start the race for head to head match-ups to be considered action. If one or both drivers do not start the race the market should resolve as "No Contest".`,
+                  text: `Both drivers must start the race for head to head match-ups to be considered action. If one or both drivers do not start the race the market should resolve as 'No Contest'.`,
                 },
                 {
                   text: `If a driver does not finish the race for any reason (including disqualifications), the opposing driver should be declared the winner.`,
                 },
                 {
-                  text: `If both Drivers do not finish the race for any reason (including disqualifications), the driver who completed more laps should be declared the winner. If both racers were disqualified at the same time or come in at same place (tie), the market should resolve as "No Contest"`,
+                  text: `If both Drivers do not finish the race for any reason (including disqualifications), the driver who completed more laps should be declared the winner. If both racers were disqualified at the same time or come in at same place (tie), the market should resolve as 'No Contest'`,
                 },
               ],
             },
@@ -961,6 +980,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NASCAR [0] CUP Series Championship Winner?`,
             example: `NASCAR 2020 CUP Series Championship Winner?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+            header: `NASCAR [0] CUP Series Championship winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -979,7 +999,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as "Other (Field)".`,
+                  text: `If the winning Racer is not one of the outcomes listed, market should resolve as 'Other (Field)'.`,
                 },
                 {
                   text: `The NASCAR Cup Series Drivers' Championship is awarded to the most successful NASCAR Cup Series racing car driver over a season, as determined by a points system based on race results. The winner can only be determined after the completion of the final race of the year and points for the season have been calculated.`,
@@ -1109,6 +1129,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `PGA: Which golfer will win the [0] [1]?`,
                 example: `PGA: Which golfer will win the 2020 PGA Championship?`,
+                header: `[0] [1] winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -1134,20 +1155,20 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text:
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                   ],
                 },
@@ -1156,6 +1177,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `PGA: Which team will win the [0] Presidents Cup?`,
                 example: `PGA: Which team will win the 2020 Presidents Cup?`,
+                header: `[0] Presidents Cup winner`,
                 groupName: groupTypes.FUTURES,
                 noAdditionalUserOutcomes: true,
                 inputs: [
@@ -1169,7 +1191,7 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event cancelled`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 2,
@@ -1185,7 +1207,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text: `Only one team can be listed per outcome, if not then the market should resolve as 'Invalid'`,
@@ -1311,6 +1333,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Euro Tour: Which golfer will win the [0] [1]?`,
                 example: `Euro Tour: Which golfer will win the 2020 Omega Dubai Dessert Classic?`,
+                header: `[0] [1] winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -1336,20 +1359,20 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text:
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                   ],
                 },
@@ -1358,6 +1381,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Euro Tour: Which golf team will win the [0] Ryders Cup?`,
                 example: `Euro Tour: Which golf team will win the 2020 Ryders Cup?`,
+                header: `[0] Ryders Cup winner`,
                 groupName: groupTypes.FUTURES,
                 noAdditionalUserOutcomes: true,
                 inputs: [
@@ -1381,13 +1405,13 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text: `Only one team can be listed per outcome, if not then the market should resolve as 'Invalid'`,
@@ -1490,6 +1514,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `LPGA: Which golfer will win the [0] [1]?`,
                 example: `LPGA: Which golfer will win the 2020 U.S. Women's Open?`,
+                header: `[0] [1] winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -1515,20 +1540,20 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'.`,
+                      text: `If a tournament or match is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text:
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                   ],
                 },
@@ -1657,7 +1682,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NHL: Which team will win: [0] vs. [1]?`,
             example: `NHL: Which Team will win: NY Rangers vs. NJ Devils?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-            groupName: groupTypes.DAILY_MONEY_LINE,
+            header: `[0] vs. [1]`,
+            groupName: groupTypes.COMBO_MONEY_LINE,
             inputs: [
               {
                 id: 0,
@@ -1683,7 +1709,7 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
@@ -1692,10 +1718,10 @@ export const TEMPLATES = {
                   text: `Include Regulation, overtime and any shoot-outs.`,
                 },
                 {
-                  text: `The game must go 55 minutes or more to be considered official, if not market should resolve as 'No Winner'`,
+                  text: `The game must go 55 minutes or more to be considered official, if not market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If game is not played market should resolve as 'No Winner'`,
+                  text: `If game is not played market should resolve as 'No Contest'`,
                 },
               ],
             },
@@ -1704,7 +1730,10 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NHL (Goal Spread): [0] to win by more than [1].5 goals over the [2]?`,
             example: `NHL (Goal Spread): St Louis Blues to win by more than 2.5 goals over the NY Rangers?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-            groupName: groupTypes.DAILY_SPREAD,
+            title: `Spread [1].5`,
+            header: `[0] vs. [2]`,
+            groupLineId: 1,
+            groupName: groupTypes.COMBO_SPREAD,
             inputs: [
               {
                 id: 0,
@@ -1746,19 +1775,19 @@ export const TEMPLATES = {
               {
                 id: 6,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the game is not played market should resolve as 'No Winner'`,
+                  text: `If the game is not played market should resolve as 'No Contest'`,
                 },
                 {
                   text: `Include Regulation, overtime and any shoot-outs`,
                 },
                 {
-                  text: `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No winner'`,
+                  text: `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No Contest'`,
                 },
               ],
             },
@@ -1767,7 +1796,9 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NHL (O/U): [0] vs. [1]: Total goals scored; Over/Under [2].5?`,
             example: `NHL (O/U): St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-            groupName: groupTypes.DAILY_OVER_UNDER,
+            title: `Over/Under [2].5`,
+            header: `[0] vs. [1]`,
+            groupName: groupTypes.COMBO_OVER_UNDER,
             groupLineId: 2,
             inputs: [
               {
@@ -1800,7 +1831,7 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
               {
                 id: 5,
@@ -1816,13 +1847,13 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the game is not played market should resolve as 'No Winner'`,
+                  text: `If the game is not played market should resolve as 'No Contest'`,
                 },
                 {
                   text: `Include Regulation, overtime and any shoot-outs`,
                 },
                 {
-                  text: `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No winner'`,
+                  text: `The game must go 55 minutes or more to be considered official if not, market should resolve as 'No Contest'`,
                 },
               ],
             },
@@ -1831,6 +1862,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which NHL team will win the [0] [1]?`,
             example: `Which NHL team will win the 2019-20 Stanley Cup?`,
+            header: `[0] [1] winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -1864,7 +1896,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the season is officially cancelled and the event named in market is not played, this market should resolve as 'Invalid'`,
@@ -1882,6 +1914,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which NHL player will win the [0] [1]?`,
             example: `Which NHL player will win the 2019-20 Calder Trophy?`,
+            header: `[0] [1] winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -1907,7 +1940,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -2000,6 +2033,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which horse will win the [0] [1]?`,
             example: `Which horse will win the 2020 Kentucky Derby?`,
+            header: `[0] [1] winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -2025,16 +2059,16 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the winning horse is not one of the outcomes listed, market should resolve as "Other (Field)"`,
+                  text: `If the winning horse is not one of the outcomes listed, market should resolve as 'Other (Field)'`,
                 },
                 {
-                  text: `If the Race is cancelled for any reason or is postponed and will not be completed before the event expiration time for this market starts, market should resolve as 'No Winner'`,
+                  text: `If the Race is cancelled for any reason or is postponed and will not be completed before the event expiration time for this market starts, market should resolve as 'No Contest'`,
                 },
                 {
                   text: `If a horse is disqualified after being determined the winner: If the disqualification occurs before the market's event expiration time begins, and another horse is named the winner, the new horse should be reported the official winner.`,
@@ -2102,6 +2136,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Singles Tennis: Which player will win the [1] [2]?`,
                 example: `Men's Singles Tennis: Which player will win the 2020 Australian Open?`,
+                header: `[0] Singles [1] [2] winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -2137,7 +2172,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -2146,18 +2181,19 @@ export const TEMPLATES = {
                       text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
-                      text: `If a Tournament or Event is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'`,
+                      text: `If a Tournament or Event is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] Singles Tennis [1] [2]: Who will win Set number [3], [4] vs. [5]?`,
-                example: `Men's Singles Tennis 2020 French Open: Who will win Set number 3, Novak Djokovic vs. Rafael Nadal?`,
+                question: `[0] Single Tennis: [1] [2] Match play winner: [3] vs. [4]?`,
+                example: `Men's Single Tennis: 2020 Wimbledon Match play winner between Roger Federer vs. Rafael Nadal?`,
+                header: `[3] vs. [4]`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
@@ -2187,47 +2223,41 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Set Number`,
-                    groupKey: SET_GAME,
-                    values: LIST_VALUES.TENNIS_MATCH_SETS,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Player A`,
+                    groupKey: TEAM_A,
                   },
                   {
                     id: 4,
                     type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    groupKey: TEAM_A,
-                    placeholder: `Player A`,
+                    placeholder: `Player B`,
+                    groupKey: TEAM_B,
                   },
                   {
                     id: 5,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    groupKey: TEAM_B,
-                    placeholder: `Player B`,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Contest`,
                   },
-
                   {
                     id: 6,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event Cancelled`,
-                  },
-                  {
-                    id: 7,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 9,
-                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No winner/Event Cancelled'`,
+                      text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
                     },
                     {
-                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No winner/Event Cancelled'`,
+                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No Contest'.`,
                     },
                     {
-                      text: `If a player is disqualified or withdraws during the set named in the market question, the player moving forward to the next round should be declared the winner`,
+                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No Contest'.`,
+                    },
+                    {
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -2236,6 +2266,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Singles Tennis [1] [2] (O/U), [3] vs. [4]: Total [5] played in a match; Over/Under [6].5?`,
                 example: `Men's Singles Tennis 2020 French Open (O/U), Novak Djokovic vs. Rafael Nadal: Total games played in a match; Over/Under 15.5?`,
+                header: `[3] vs. [4]`,
+                title: `Over/Under [6].5`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 6,
                 inputs: [
@@ -2281,7 +2313,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `games/sets`,
                     values: LIST_VALUES.TENNIS_GAMES_SETS,
-                    groupKey: SET_GAME,
                   },
                   {
                     id: 6,
@@ -2292,7 +2323,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Not Played`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 8,
@@ -2315,10 +2346,10 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the match is not played for any reason the market should resolve as 'No winner/Not Played'`,
+                      text: `If the match is not played for any reason the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No winner/Not Played'`,
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Contest'`,
                     },
                     {
                       text: `If the match is started and a player is disqualified or withdraws for any reason, and a player/team moves forward or is declared the winner, the final results should be based off of when the match was stopped.`,
@@ -2328,9 +2359,12 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] Single Tennis: [1] [2] Match play winner: [3] vs. [4]?`,
-                example: `Men's Single Tennis: 2020 Wimbledon Match play winner between Roger Federer vs. Rafael Nadal?`,
-                groupName: groupTypes.FUTURES,
+                question: `[0] Singles Tennis [1] [2]: Who will win Set number [3], [4] vs. [5]?`,
+                example: `Men's Singles Tennis 2020 French Open: Who will win Set number 3, Novak Djokovic vs. Rafael Nadal?`,
+                title: `Set number [3] winner`,
+                header: `[4] vs. [5]`,
+                groupName: groupTypes.ADDITIONAL,
+                groupLineId: 3,
                 inputs: [
                   {
                     id: 0,
@@ -2359,41 +2393,46 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    placeholder: `Player A`,
-                    groupKey: TEAM_A,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Set Number`,
+                    values: LIST_VALUES.TENNIS_MATCH_SETS,
                   },
                   {
                     id: 4,
                     type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    placeholder: `Player B`,
-                    groupKey: TEAM_B,
+                    groupKey: TEAM_A,
+                    placeholder: `Player A`,
                   },
                   {
                     id: 5,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Not Played`,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    groupKey: TEAM_B,
+                    placeholder: `Player B`,
                   },
+
                   {
                     id: 6,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Contest`,
+                  },
+                  {
+                    id: 7,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 9,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If a player fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No winner/Not Played'.`,
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No winner/Not Played'.`,
-                    },
-                    {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No winner/Not Played'`,
+                      text: `If a player is disqualified or withdraws during the set named in the market question, the player moving forward to the next round should be declared the winner`,
                     },
                   ],
                 },
@@ -2453,6 +2492,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Doubles Tennis: Which player/player will win the [1] [2]?`,
                 example: `Men's Doubles Tennis: Which player/player will win the 2020 Australian Open?`,
+                header: `[0] Doubles [1] [2] winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -2488,7 +2528,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Event Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -2497,21 +2537,22 @@ export const TEMPLATES = {
                       text: `If either pairing is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid.'`,
                     },
                     {
-                      text: `If a Tournament or Event is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No winner/Event Cancelled'`,
+                      text: `If a Tournament or Event is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] Doubles Tennis [1] [2]: Who will win Set number [3], [4] vs. [5]?`,
-                example: `Men's Doubles Tennis 2020 French Open: Who will win Set number 3, Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan?`,
+                question: `[0] Doubles Tennis: [1] [2] Match play winner: [3] vs. [4]?`,
+                example: `Men's Doubles Tennis: 2020 Wimbledon Match play winner between Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan?`,
+                header: `[3] vs. [4]`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
@@ -2533,7 +2574,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
-                    defaultLabel: `Select Men's/Women's First`,
+                    defaultLabel: `Select Men's/Women's/Mixed First`,
                     placeholder: `Event`,
                     groupKey: EVENT,
                     categoryDestId: 2,
@@ -2541,30 +2582,23 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Set Number`,
-                    groupKey: SET_GAME,
-                    values: LIST_VALUES.TENNIS_MATCH_SETS,
-                  },
-                  {
-                    id: 4,
                     type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
                     placeholder: `Player/Player A`,
                     groupKey: TEAM_A,
                   },
                   {
-                    id: 5,
+                    id: 4,
                     type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
                     placeholder: `Player/Player B`,
                     groupKey: TEAM_B,
                   },
                   {
-                    id: 6,
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Not Played`,
+                    placeholder: `No Contest`,
                   },
                   {
-                    id: 7,
+                    id: 6,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 9,
                     groupKey: START_TIME,
@@ -2574,16 +2608,19 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No winner/Not Played'`,
+                      text: `If either pairing is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
                     },
                     {
-                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No winner/Not Played'`,
+                      text: `If either pairing fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No Contest'.`,
                     },
                     {
-                      text: `If a team is disqualified or withdraws during the set named in the market question, the team moving forward to the next round should be declared the winner`,
+                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No Contest'.`,
                     },
                     {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner/Not Played'`,
+                      text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`,
+                    },
+                    {
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Contest/Not Played'`,
                     },
                   ],
                 },
@@ -2592,6 +2629,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Doubles Tennis [1] [2] (O/U), [3] vs. [4]: Total [5] played in a match; Over/Under [6].5?`,
                 example: `Men's Doubles Tennis 2020 French Open (O/U), Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan: Total games played in a match; Over/Under 15.5?`,
+                header: `[3] vs. [4]`,
+                title: `Over/Under [6].5`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 6,
                 inputs: [
@@ -2636,7 +2675,6 @@ export const TEMPLATES = {
                     id: 5,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `games/sets`,
-                    groupKey: SET_GAME,
                     values: LIST_VALUES.TENNIS_GAMES_SETS,
                   },
                   {
@@ -2648,7 +2686,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Not Played`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 8,
@@ -2671,25 +2709,28 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If the match is not played for any reason the market should resolve as 'No winner/Not Played'`,
+                      text: `If the match is not played for any reason the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No winner/Not Played'`,
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Contest'`,
                     },
                     {
                       text: `If the match is started and a player is disqualified or withdraws for any reason, and a player/team moves forward or is declared the winner, the final results should be based off of when the match was stopped.`,
                     },
                     {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner/Not Played'`,
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Contest/Not Played'`,
                     },
                   ],
                 },
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] Doubles Tennis: [1] [2] Match play winner: [3] vs. [4]?`,
-                example: `Men's Doubles Tennis: 2020 Wimbledon Match play winner between Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan?`,
-                groupName: groupTypes.MONEY_LINE,
+                question: `[0] Doubles Tennis [1] [2]: Who will win Set number [3], [4] vs. [5]?`,
+                example: `Men's Doubles Tennis 2020 French Open: Who will win Set number 3, Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan?`,
+                title: `Set number [3] winner`,
+                header: `[4] vs. [5]`,
+                groupName: groupTypes.ADDITIONAL,
+                groupLineId: 3,
                 inputs: [
                   {
                     id: 0,
@@ -2710,7 +2751,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
-                    defaultLabel: `Select Men's/Women's/Mixed First`,
+                    defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
                     groupKey: EVENT,
                     categoryDestId: 2,
@@ -2718,23 +2759,29 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Set Number`,
+                    values: LIST_VALUES.TENNIS_MATCH_SETS,
+                  },
+                  {
+                    id: 4,
                     type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
                     placeholder: `Player/Player A`,
                     groupKey: TEAM_A,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
                     placeholder: `Player/Player B`,
                     groupKey: TEAM_B,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No winner/Not Played`,
+                    placeholder: `No Contest`,
                   },
                   {
-                    id: 6,
+                    id: 7,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 9,
                     groupKey: START_TIME,
@@ -2744,19 +2791,16 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If either pairing is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner.`,
+                      text: `If the set named in the market question is not played for any reason, the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If either pairing fails to start a tournament or a match, or the match was not able to start for any reason, the market should resolve as 'No winner/Not Played'.`,
+                      text: `If a match is started and is postponed for any reason and will not be completed before the Event Expiration begins the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If the match is not played for any reason, or is terminated prematurely with both players willing and able to play, the market should resolve as 'No winner/Not Played'.`,
+                      text: `If a team is disqualified or withdraws during the set named in the market question, the team moving forward to the next round should be declared the winner`,
                     },
                     {
-                      text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid'.`,
-                    },
-                    {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Winner/Not Played'`,
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No Contest/Not Played'`,
                     },
                   ],
                 },
@@ -2773,6 +2817,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0]: Which team will win: [1] vs. [2]?`,
                 example: `Men's English Premier League: Which team will win: Manchester City vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                header: `Men's [0] [1] vs. [2]`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
@@ -2818,7 +2863,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -2840,10 +2885,10 @@ export const TEMPLATES = {
                       text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as 'Draw'.`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'.`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'.`,
                     },
                     {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -2852,6 +2897,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] (Point Spread): [1] to win by more than [2].5 goals over [3]?`,
                 example: `Men's Ligue 1 (France): Marseille to win by more than 1.5 goals over Lyon?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                header: `Men's [0] [1] vs. [3]`,
+                title: `Spread [2].5`,
                 groupName: groupTypes.SPREAD,
                 groupLineId: 2,
                 inputs: [
@@ -2909,7 +2956,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -2918,13 +2965,13 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time and does include any Overtime or Penalty shoot-out.`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'.`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -2933,6 +2980,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] (O/U): [1] vs. [2]: Total goals scored; Over/Under [3].5?`,
                 example: `Men's MLS (USA) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                header: `Men's [0] [1] vs. [2]`,
+                title: `Over/Under [3].5`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 3,
                 inputs: [
@@ -2990,7 +3039,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -2999,13 +3048,13 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'`,
                     },
                     {
                       text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3049,7 +3098,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -3061,10 +3110,10 @@ export const TEMPLATES = {
                       text: `If the match concludes and is deemed an official game, meaning more than 90% of the scheduled match has been completed and the score ends in a tie, the market should resolve as 'Draw'.`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'.`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'.`,
                     },
                     {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3115,7 +3164,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -3124,13 +3173,13 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out.`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'.`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'.`,
                     },
                     {
                       text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3181,7 +3230,7 @@ export const TEMPLATES = {
                   {
                     id: 7,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Unofficial game/Cancelled`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -3190,13 +3239,13 @@ export const TEMPLATES = {
                       text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
                     },
                     {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'`,
                     },
                     {
                       text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
                     },
                     {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'Unofficial game/Cancelled'`,
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3402,7 +3451,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NBA: Which team will win: [0] vs. [1]?`,
                 example: `NBA: Which Team will win: Brooklyn Nets vs. NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: groupTypes.DAILY_MONEY_LINE,
+                header: `[0] vs. [1]`,
+                groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
@@ -3421,7 +3471,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 3,
@@ -3437,7 +3487,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Winner'`,
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3446,7 +3496,10 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NBA (Point Spread): [0] to win by more than [1].5 points over the [2]?`,
                 example: `NBA (Point Spread): Brooklyn Nets to win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: groupTypes.DAILY_SPREAD,
+                header: `[0] vs. [2]`,
+                title: `Spread [1].5`,
+                groupLineId: 1,
+                groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
                   {
                     id: 0,
@@ -3471,7 +3524,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 4,
@@ -3497,7 +3550,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Winner'`,
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3506,7 +3559,9 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NBA (O/U): [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
                 example: `NBA (O/U): Brooklyn Nets vs. NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.DAILY_OVER_UNDER,
+                header: `[0] vs. [1]`,
+                title: `Over/Under [2].5`,
+                groupName: groupTypes.COMBO_OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
                   {
@@ -3539,7 +3594,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 5,
@@ -3558,7 +3613,7 @@ export const TEMPLATES = {
                       text: `Include Regulation and Overtime`,
                     },
                     {
-                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Winner'`,
+                      text: `At least 43 minutes of play must have elapsed for the game to be deemed official. If the game is not played or if less than 43 minutes of play have been completed, the game is not considered an official game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -3567,6 +3622,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NBA team will win the [0] [1]?`,
                 example: `Which NBA team will win the 2019-20 Western Conference Finals?`,
+                header: `NBA: [0] [1] winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -3601,7 +3657,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and event named in the market is not played, this market should resolve as 'Invalid'`,
@@ -3619,6 +3675,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NBA player will win the [0] [1] award?`,
                 example: `Which NBA player will win the 2019-20 Most Valuable Player award?`,
+                header: `NBA: [0] [1] winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -3647,7 +3704,7 @@ export const TEMPLATES = {
                       text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason, by the start of event expiration, this market should resolve as 'Invalid'`,
@@ -3659,6 +3716,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NBA: Which Player will have the most [0] at the end of the the [1] regular season?`,
                 example: `NBA: Which Player will have the most Points scored at the end of the the 2019-20 regular season?`,
+                header: `NBA: [1] regular season most [0]`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -3699,7 +3757,7 @@ export const TEMPLATES = {
                       text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled, the statistic at the time the league officially stopped should be used to determine the resolution of the market.`,
@@ -3763,6 +3821,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NBA Draft: Who will be the [1] overall pick?`,
                 example: `2020 NBA Draft: Who will be the 1st overall pick?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                header: `[0] NBA Draft: [1] overall pick`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -3798,7 +3857,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -3810,6 +3869,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NBA Draft: The First draft pick by the [1]?`,
                 example: `2020 NBA Draft: The First draft pick by the LA Lakers?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                header: `[0] NBA Draft: [1] first pick`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -3845,7 +3905,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -3857,6 +3917,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NBA Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
                 example: `2020 NBA Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                header: `[0] NBA Draft: When will [1] be selected`,
+                title: `Over/Under [2].5`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
@@ -4109,7 +4171,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA: Which team will win: [0] vs. [1]?`,
                 example: `WNBA: Which Team will win: Phoenix Mercury vs. Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: groupTypes.DAILY_MONEY_LINE,
+                header: `[0] vs. [1]`,
+                groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
@@ -4128,7 +4191,7 @@ export const TEMPLATES = {
                   {
                     id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 2,
@@ -4144,7 +4207,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Winner'`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -4153,7 +4216,10 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA (Point Spread): [0] to win by more than [1].5 points over the [2]?`,
                 example: `WNBA (Point Spread): Phoenix Mercury to win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: groupTypes.DAILY_SPREAD,
+                header: `[0] vs. [2]`,
+                title: `Spread [1].5`,
+                groupLineId: 1,
+                groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
                   {
                     id: 0,
@@ -4178,7 +4244,7 @@ export const TEMPLATES = {
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 4,
@@ -4204,7 +4270,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Winner'`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -4213,7 +4279,9 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA (O/U): [0] vs. [1]: Total Points scored; Over/Under [2].5?`,
                 example: `WNBA (O/U): Phoenix Mercury vs. Seattle Storm: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.DAILY_OVER_UNDER,
+                header: `[0] vs. [1]`,
+                title: `Over/Under [2].5`,
+                groupName: groupTypes.COMBO_OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
                   {
@@ -4246,7 +4314,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 5,
@@ -4263,7 +4331,7 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Winner'`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If game is not played or if less than 35 minutes of play have been completed, the game is not considered an official game the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -4272,6 +4340,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which WNBA team will win the [0] Championship?`,
                 example: `Which WNBA team will win the 2019-20 Championship?`,
+                header: `[0] Championship winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -4296,7 +4365,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
@@ -4314,6 +4383,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which WNBA player will win the [0] [1] award?`,
                 example: `Which WNBA player will win the 2019-20 Most Valuable Player award?`,
+                header: `[0] [1] award winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -4342,7 +4412,7 @@ export const TEMPLATES = {
                       text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -4354,6 +4424,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA: Which Player will have the most [0] at the end of the the [1] regular season?`,
                 example: `WNBA: Which Player will have the most Points scored at the end of the the 2019-20 regular season?`,
+                header: `[1] regular season [0] winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -4394,7 +4465,7 @@ export const TEMPLATES = {
                       text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled, the statistic at the time the league officially stopped should be used to determine the resolution of the market.`,
@@ -4679,7 +4750,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB: Which team will win: [1] vs. [2]?`,
                 example: `NCAA Men's BB: Which Team will win: Duke vs. Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: groupTypes.DAILY_MONEY_LINE,
+                header: `[1] vs. [2]`,
+                groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
@@ -4712,7 +4784,7 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
@@ -4721,10 +4793,10 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Winner'`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If game is not played market should resolve as 'No Winner'`,
+                      text: `If game is not played market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -4733,7 +4805,10 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB (Point Spread): [1] to win by more than [2].5 points over [3]?`,
                 example: `NCAA Men's BB (Point Spread): Duke to win by more than 10.5 points over Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                groupName: groupTypes.DAILY_SPREAD,
+                header: `[1] vs. [3]`,
+                title: `Spread [2].5`,
+                groupLineId: 2,
+                groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
                   {
                     id: 0,
@@ -4772,7 +4847,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -4791,10 +4866,10 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Winner'`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If game is not played market should resolve as 'No Winner'`,
+                      text: `If game is not played market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -4803,7 +4878,9 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB (O/U): [1] vs. [2]: Total Points scored; Over/Under [3].5?`,
                 example: `NCAA Men's BB (O/U): Duke vs. Arizona: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.DAILY_OVER_UNDER,
+                header: `[1] vs. [2]`,
+                title: `Over/Under [3].5`,
+                groupName: groupTypes.COMBO_OVER_UNDER,
                 groupLineId: 3,
                 inputs: [
                   {
@@ -4843,7 +4920,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -4862,7 +4939,7 @@ export const TEMPLATES = {
                       text: `Includes Regulation and Overtime`,
                     },
                     {
-                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Winner'`,
+                      text: `At least 35 minutes of play must have elapsed for the game to be deemed official. If less than 35 minutes of play have been completed, the game is not considered official game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -4871,6 +4948,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB: Which college basketball team will win the [1] [2] tournament?`,
                 example: `NCAA Men's BB: Which college basketball team will win the 2020 ACC tournament?`,
+                header: `[1] [2] tournament winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -4914,7 +4992,7 @@ export const TEMPLATES = {
                       text: `The winner is determined by the team who wins their conference tournament championship game`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
@@ -4931,7 +5009,8 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB: Which college basketball team will win the [1] D1 National Championship?`,
-                example: `NCAA Men's BB: Which college basketball team will win the 2020 National Championship?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                example: `NCAA Men's BB: Which college basketball team will win the 2020 D1 National Championship?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                header: `[0] [1] D1 National Championship winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -4970,7 +5049,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
@@ -5036,7 +5115,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB: Which team will win: [0] vs. [1]?`,
             example: `MLB: Which Team will win: Yankees vs. Red Sox?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-            groupName: groupTypes.DAILY_MONEY_LINE,
+            header: `[0] vs. [1]`,
+            groupName: groupTypes.COMBO_MONEY_LINE,
             inputs: [
               {
                 id: 0,
@@ -5062,19 +5142,19 @@ export const TEMPLATES = {
               {
                 id: 3,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
+                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If the game is not played market should resolve as 'No Winner'`,
+                  text: `If the game is not played market should resolve as 'No Contest'`,
                 },
                 {
                   text: `Extra innings count towards settlement purposes`,
@@ -5086,7 +5166,10 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB (Run Spread): [0] to win by more than [1].5 runs over the [2]?`,
             example: `MLB (Run Spread): NY Yankees to win by more than 2.5 runs over the Boston Red Sox?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-            groupName: groupTypes.DAILY_SPREAD,
+            header: `[0] vs. [2]`,
+            title: `Spread [1].5`,
+            groupLineId: 1,
+            groupName: groupTypes.COMBO_SPREAD,
             inputs: [
               {
                 id: 0,
@@ -5118,7 +5201,7 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
               {
                 id: 5,
@@ -5134,13 +5217,13 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
+                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If the game is not played market should resolve as 'No Winner'`,
+                  text: `If the game is not played market should resolve as 'No Contest'`,
                 },
                 {
                   text: `Extra innings count towards settlement purposes`,
@@ -5152,7 +5235,9 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB (O/U): [0] vs. [1]: Total Runs scored; Over/Under [2].5?`,
             example: `MLB (O/U): NY Yankees vs. Boston Red Sox: Total Runs scored; Over/Under 9.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-            groupName: groupTypes.DAILY_OVER_UNDER,
+            header: `[0] vs. [1]`,
+            title: `Over/Under [2].5`,
+            groupName: groupTypes.COMBO_OVER_UNDER,
             groupLineId: 2,
             inputs: [
               {
@@ -5185,7 +5270,7 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Winner`,
+                placeholder: `No Contest`,
               },
               {
                 id: 5,
@@ -5201,13 +5286,13 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Winner'`,
+                  text: `In the event of a shortened game, results are official after (and, unless otherwise stated, bets shall be settled subject to the completion of) 5 innings of play, or 4.5 innings should the home team be leading at the commencement of the bottom of the 5th innings. Should a game be called, if the result is official in accordance with this rule, the winner will be determined by the score/stats after the last full inning completed (unless the home team score to tie, or take the lead in the bottom half of the inning, in which circumstances the winner is determined by the score/stats at the time the game is suspended). If the game does not reach the "official time limit", or ends in a tie, the market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Winner'`,
+                  text: `If event is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
                 },
                 {
-                  text: `If the game is not played market should resolve as 'No Winner'`,
+                  text: `If the game is not played market should resolve as 'No Contest'`,
                 },
                 {
                   text: `Extra innings count towards settlement purposes`,
@@ -5219,6 +5304,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which MLB team will win the [0] [1]?`,
             example: `Which MLB team will win the 2020 World Series?`,
+            header: `[0] [1] winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -5252,7 +5338,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
@@ -5270,6 +5356,7 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB: Which player will win the [0] [1]?`,
             example: `MLB: Which Player will win the 2019 American League Cy Young award?`,
+            header: `[0] [1] winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -5295,7 +5382,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -5554,6 +5641,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics: Which country will win the most [0] medals at the [1] Summer Olympics?`,
                 example: `Olympics: Which country will win the most Gold medals at the 2020 Summer Olympics`,
+                header: `[1] Summer Olympics most [0] metals`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -5597,6 +5685,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics [0]: Which country will win the Gold medal in [1] at the [2] Summer Olympics?`,
                 example: `Olympics Tennis: Which country will win the Gold medal in Singles (Men/Women) at the 2020 Summer Olympics`,
+                header: `[2] Summer Olympics [0] [1] gold metal`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -5896,6 +5985,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics: Which country will win the most [0] medals at the [1] Winter Olympics?`,
                 example: `Olympics: Which country will win the most Gold medals at the 2020 Winter Olympics`,
+                header: `[1] Winter Olympics most [0] metals`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -5939,6 +6029,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics [0]: Which country will win the Gold medal in [1] at the [2] Winter Olympics?`,
                 example: `Olympics Curling: Which country will win the Gold medal in mens at the 2020 Winter Olympics`,
+                header: `[2] Winter Olympics [0] [1] gold metal`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6295,11 +6386,11 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0]: Which NFL Team will win: [1] vs. [2]?`,
                 example: ` Week 1: Which NFL Team will win: NY Giants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.DAILY_MONEY_LINE,
+                header: `[1] vs. [2]`,
+                groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
-                    groupKey: WEEK_NO,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Week #`,
                     noSort: true,
@@ -6329,17 +6420,17 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Tie/No Winner`,
+                    placeholder: `Tie/No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Winner"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Contest"`,
                     },
                     {
-                      text: `If the game is not played market should resolve as "Tie/No Winner"`,
+                      text: `If the game is not played market should resolve as "Tie/No Contest"`,
                     },
                   ],
                 },
@@ -6348,11 +6439,13 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NFL (Point Spread) [0]: [1] to win by more than [2].5 points over [3]?`,
                 example: `NFL (Point Spread) Week 1: Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.DAILY_SPREAD,
+                header: `[1] vs. [3]`,
+                title: `Spread [2].5`,
+                groupLineId: 2,
+                groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
                   {
                     id: 0,
-                    groupKey: WEEK_NO,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Week #`,
                     noSort: true,
@@ -6388,7 +6481,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -6405,10 +6498,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If the game is not played market should resolve as 'No Winner'`,
+                      text: `If the game is not played market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -6417,14 +6510,15 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NFL (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
                 example: `NFL (O/U) Week 1: NY Giants vs. Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.DAILY_OVER_UNDER,
+                header: `[1] vs. [2]`,
+                title: `Over/Under [3].5`,
+                groupName: groupTypes.COMBO_OVER_UNDER,
                 groupLineId: 3,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Week #`,
-                    groupKey: WEEK_NO,
                     noSort: true,
                     values: LIST_VALUES.NFL_WEEK_NUM,
                   },
@@ -6458,7 +6552,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -6475,10 +6569,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If the game is not played market should resolve as 'No Winner'`,
+                      text: `If the game is not played market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -6487,6 +6581,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NFL team will win the [0] [1]?`,
                 example: `Which NFL team will win the 2020 AFC Championship game?`,
+                header: `[0] [1] winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6521,7 +6616,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
@@ -6539,6 +6634,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NFL player will win the [0] season [1] award?`,
                 example: `Which NFL player will win the 2019-20 season Most Valuable Player award?`,
+                header: `[0] season [1] award winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6564,7 +6660,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -6622,6 +6718,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft: Who will be the [1] overall pick?`,
                 example: `2020 NFL Draft: Who will be the 1st overall pick?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                header: `[0] NFL Draft [1] overall pick`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6656,7 +6753,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -6668,6 +6765,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft: Who will be the first [1] selected?`,
                 example: `2020 NFL Draft: Who will be the first Quarterback selected?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                header: `[0] NFL Draft first [1] selected`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6704,7 +6802,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -6716,6 +6814,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft: The First draft pick by the [1]?`,
                 example: `2020 NFL Draft: The First draft pick by the NY Giants?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                header: `[0] NFL Draft [1] first draft pick`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6751,7 +6850,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -6763,6 +6862,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft(O/U): [1].5 Total [2] drafted in Round 1?`,
                 example: `2020 NFL Draft(O/U): 5.5 Total Quarterbacks drafted in Round 1?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                header: `[0] NFL Draft [2] drafted in Round 1`,
+                title: `Over/Under [1].5`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 1,
                 inputs: [
@@ -6820,6 +6921,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
                 example: `2020 NFL Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
+                header: `[0] NFL Draft [1] pick selection`,
+                title: `Over/Under [2].5`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
@@ -7024,13 +7127,13 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA FB [0]: Which College Football Team will win: [1] vs. [2]?`,
                 example: `NCAA FB Week 1: Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.DAILY_MONEY_LINE,
+                header: `[1] vs. [2]`,
+                groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Week #`,
-                    groupKey: WEEK_NO,
                     noSort: true,
                     values: LIST_VALUES.NCAA_WEEK_NUM,
                   },
@@ -7058,17 +7161,17 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as "NO Winner' as Team A did NOT win vs. team B`,
+                      text: `If the game is not played, the market should resolve as "No Contest' as Team A did NOT win vs. team B`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -7077,13 +7180,15 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA FB (Point Spread) [0]: [1] to win by more than [2].5 points over [3]?`,
                 example: `NCAA FB (Point Spread) Week 1: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.DAILY_SPREAD,
+                header: `[1] vs. [3]`,
+                title: `Spread [2].5`,
+                groupLineId: 2,
+                groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Week #`,
-                    groupKey: WEEK_NO,
                     noSort: true,
                     values: LIST_VALUES.NCAA_WEEK_NUM,
                   },
@@ -7117,7 +7222,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -7134,10 +7239,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as 'No Winner'`,
+                      text: `If the game is not played, the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -7146,14 +7251,15 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA FB (O/U) [0]: [1] vs. [2]: Total points scored; Over/Under [3].5?`,
                 example: `NCAA FB (O/U) Week 1: Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                groupName: groupTypes.DAILY_OVER_UNDER,
+                header: `[1] vs. [2]`,
+                title: `Over/Under [3].5`,
+                groupName: groupTypes.COMBO_OVER_UNDER,
                 groupLineId: 3,
                 inputs: [
                   {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Week #`,
-                    groupKey: WEEK_NO,
                     noSort: true,
                     values: LIST_VALUES.NCAA_WEEK_NUM,
                   },
@@ -7187,7 +7293,7 @@ export const TEMPLATES = {
                   {
                     id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Winner`,
+                    placeholder: `No Contest`,
                   },
                   {
                     id: 6,
@@ -7204,10 +7310,10 @@ export const TEMPLATES = {
                   [REQUIRED]: [
                     { text: `Includes Regulation and Overtime` },
                     {
-                      text: `If the game is not played, the market should resolve as 'NO Winner'`,
+                      text: `If the game is not played, the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Winner'`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official.  If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -7216,6 +7322,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which college football team will win [0] National Championship?`,
                 example: `Which college football team will win 2020 National Championship?`,
+                header: `[0] National Championship winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7248,7 +7355,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
@@ -7266,6 +7373,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which college football player will win the [0] Heisman Trophy?`,
                 example: `Which college football player will win the 2020 Heisman Trophy?`,
+                header: `[0] Heisman Trophy winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7555,7 +7663,7 @@ export const TEMPLATES = {
                   text: `The winning party will win the majority of 270 electoral votes.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7583,7 +7691,7 @@ export const TEMPLATES = {
                   text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7623,7 +7731,7 @@ export const TEMPLATES = {
                   text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7657,7 +7765,7 @@ export const TEMPLATES = {
                   text: `The winning outcome is the party which controls the majority of seats, according to the results of the election, not determined by the current controlling party at event expiration.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7701,7 +7809,7 @@ export const TEMPLATES = {
                   text: `The winning outcome is the party which controls the majority of seats, following the results of the election, not determined by the current controlling party at event expiration`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7737,19 +7845,19 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No winner/Event cancelled`,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the primary does not take place the market should resolve as "No winner/Event cancelled"`,
+                  text: `If the primary does not take place the market should resolve as 'No Contest'`,
                 },
                 {
                   text: `The winner of the primary is the candidate recognized and/or announced by the state`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7785,19 +7893,19 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No winner/Event cancelled`,
+                placeholder: `No Contest`,
               },
             ],
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If the caucus does not take place the market should resolve as "No winner/Event cancelled"`,
+                  text: `If the caucus does not take place the market should resolve as 'No Contest'`,
                 },
                 {
                   text: `The winner of the caucus is the candidate recognized and/or announced by the political party`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -7945,7 +8053,7 @@ export const TEMPLATES = {
                   text: `If location/country does not have the stated position in market, market should resolve as "Invalid"`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the country named in the market question has multiple people with the same title, the market should resolve as 'Invalid'`,
@@ -8473,7 +8581,7 @@ export const TEMPLATES = {
                     'The market should resolve as "multiple hosts" if more than one of the possible outcomes hosts the event. If only one of the potential outcomes hosts with multiple people, then the individual outcome would be the winner.',
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: ` If the event does not take place or if the results of the event do not occur by the Event Expiration time, this market should resolve as "Invalid"`,
@@ -8517,7 +8625,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as "Other (Field)"`,
+                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: ` If the event does not take place or if the results of the event do not occur by the Event Expiration time, this market should resolve as "Invalid"`,
@@ -8886,13 +8994,13 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -9035,13 +9143,13 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -9184,13 +9292,13 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
-                type: TemplateInputType.DATEYEAR,
+                type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {

@@ -238,7 +238,8 @@
   padding: @size-8 @size-12;
 
   &:disabled {
-    background: @color-inactive-text;
+    background: fade(@color-secondary-hover, 25%);
+    color: fade(@color-primary-text, 25%);
   }
 
   &:hover:enabled {

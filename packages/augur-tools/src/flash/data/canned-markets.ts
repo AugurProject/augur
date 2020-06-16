@@ -453,7 +453,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         'Liverpool',
         'Manchester United',
         'Draw',
-        'Unofficial game/Cancelled',
+        'No Contest',
       ],
       extraInfo: buildExtraInfo(socTemplate, socInputValues, [
         SPORTS,
@@ -547,7 +547,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         'Rory Mcllroy',
         'Jason Day',
         'Other (Field)',
-        'No winner/Event cancelled',
+        'No Contest',
       ],
       extraInfo: buildExtraInfo(golfTemplate, golfInputValues, [
         SPORTS,
@@ -679,9 +679,9 @@ const calcDailyHockeyMarket = (): CannedMarket[] => {
   const hockeyTemplates = TEMPLATES[SPORTS].children[HOCKEY].templates as Template[];
   const teamA = LIST_VALUES.NHL_TEAMS[0];
   const teamB = LIST_VALUES.NHL_TEAMS[1];
-  const moneyLine = hockeyTemplates.find(t => t.groupName === groupTypes.DAILY_MONEY_LINE);
-  const spread = hockeyTemplates.find(t => t.groupName === groupTypes.DAILY_SPREAD);
-  const overUnder = hockeyTemplates.find(t => t.groupName === groupTypes.DAILY_OVER_UNDER);
+  const moneyLine = hockeyTemplates.find(t => t.groupName === groupTypes.COMBO_MONEY_LINE);
+  const spread = hockeyTemplates.find(t => t.groupName === groupTypes.COMBO_SPREAD);
+  const overUnder = hockeyTemplates.find(t => t.groupName === groupTypes.COMBO_OVER_UNDER);
   const daily = [moneyLine, spread, overUnder];
   const inputValues = [
     [teamA, teamB, unixEstStartTime],
@@ -690,9 +690,9 @@ const calcDailyHockeyMarket = (): CannedMarket[] => {
   ]
 
   const outcomeValues = [
-    [teamA, teamB, `No Winner`],
-    [`${teamA} -2.5`, `${teamB} +2.5`, `No Winner`],
-    [`Over 4.5`, `Under 4.5`, `No Winner`],
+    [teamA, teamB, `No Contest`],
+    [`${teamA} -2.5`, `${teamB} +2.5`, `No Contest`],
+    [`Over 4.5`, `Under 4.5`, `No Contest`],
   ]
 
   return daily.map((template, index) => ({
@@ -781,7 +781,7 @@ const calcMMAMarkets = (): CannedMarket[] => {
     [fighterA, fighterB, 'Draw/No Contest'],
     ['Over 2.5', 'Under 2.5', 'No Contest'],
     [`${fighterA} by KO/TKO`, `${fighterA} by Submission`, `${fighterA} by Points`, `${fighterB} by KO/TKO`, `${fighterB} by Submission`, `${fighterB} by Points`, `Draw/No Contest`],
-    ['KO/TKO', 'Submission', 'Points', 'No Contest'],
+    ['KO/TKO', 'Submission', 'Points', 'Draw/No Contest'],
     ['Round 1', 'Round 2', 'Round 3', 'Round 4', 'Round 5', 'Goes the distance', 'No Contest'],
   ]
 
