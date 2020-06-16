@@ -220,7 +220,7 @@ function getDropdownDependencies(
     i => i.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP
   );
   if (hasDepend) {
-    listValues = listValues = getDependencies(hasDepend, hasDepend.values);
+    listValues = getDependencies(hasDepend, hasDepend.values);
   }
   return listValues;
 }
@@ -290,7 +290,7 @@ function getDependencies(
   sourceValues: object
 ): DropdownDependencies {
   return {
-    inputSourceId: input.inputSourceId || input.id,
+    inputSourceId: input.inputSourceId !== undefined ? input.inputSourceId : input.id,
     inputDestIds: input.inputDestIds,
     values: Object.keys(sourceValues).reduce((p, key) => {
       p[key] = sourceValues[key];
