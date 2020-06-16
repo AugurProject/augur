@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
-import { ButtonsRow, Title, AccountAddressDisplay } from 'modules/modal/common';
+import { Title, AccountAddressDisplay } from 'modules/modal/common';
 import { formatRep, formatGasCostToEther, formatEther } from 'utils/format-number';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { LoginAccount, AccountBalances } from 'modules/types';
+import { AccountBalances } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton, SecondaryButton } from 'modules/common/buttons';
-import { LinearPropertyLabel, TransactionFeeLabel } from 'modules/common/labels';
+import { TransactionFeeLabel } from 'modules/common/labels';
 import { InfoIcon } from 'modules/common/icons';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
@@ -37,6 +37,7 @@ export const MigrateRep = ({
 
   const [gasLimit, setGasLimit] = useState(V1_REP_MIGRATE_ESTIMATE);
   const showForSafeWallet = walletBalances.signerBalances.legacyRep !== '0';
+  const intradingWallet = walletBalances.legacyRep !== '0';
   const ethForGas = walletBalances.signerBalances.eth;
 
   useEffect(() => {

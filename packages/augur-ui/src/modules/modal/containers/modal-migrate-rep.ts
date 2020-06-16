@@ -8,7 +8,6 @@ import { Action } from 'redux';
 import convertV1ToV2, {
   convertV1ToV2Estimate,
 } from 'modules/account/actions/convert-v1-rep-to-v2';
-import { convertV1ToV2Allowance } from 'modules/contracts/actions/contractCalls';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -24,7 +23,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   convertV1ToV2: useSigningWallet => dispatch(convertV1ToV2(useSigningWallet)),
   convertV1ToV2Estimate: useSigningWallet =>
     convertV1ToV2Estimate(useSigningWallet),
-  convertV1ToV2Allowance: account => convertV1ToV2Allowance(account),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
