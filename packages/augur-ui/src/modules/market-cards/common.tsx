@@ -1253,7 +1253,6 @@ export const TopRow = ({ market, categoriesWithClick }) => {
   }, [market.id, market.author]);
   const { theme, isLogged } = useAppStatusStore();
   const {
-    settlementFeePercent,
     marketType,
     id,
     description,
