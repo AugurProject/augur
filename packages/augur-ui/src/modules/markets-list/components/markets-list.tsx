@@ -117,7 +117,6 @@ const MarketsList = ({
     });
   }
   const hasMarkets = marketCards.length > 0;
-  if (theme === THEMES.SPORTS) console.log('marketList testFilteredMarkets:', testFilteredMarkets);
 
   return (
     <article className={Styles.MarketsList} data-testid={testid}>

@@ -752,6 +752,10 @@
 		grid-row: 1;
 		padding-left: 0;
 
+		> label {
+			margin-bottom: 0;
+		}
+
 		@media @breakpoint-mobile-tablet {
 			grid-template-columns: @size-20 1fr 0fr 0fr 0fr;
 			margin-bottom: 0;
@@ -819,8 +823,11 @@
 	}
 
 	.MatchedLine {
-    .text-12;
-    color: var(--color-secondary-text);
+		.text-12;
+
+		align-items: center;
+		color: var(--color-secondary-text);
+		display: flex;
 		height: @size-18;
 		
 		@media @breakpoint-mobile-tablet {
@@ -837,8 +844,9 @@
   .RulesButton {
     .text-10-semi-bold;
 
+		align-items: center;
     color: var(--color-primary-text);
-    display: flex;
+		display: flex;
     flex-flow: row nowrap;
 		height: @size-18;
 		
@@ -1118,13 +1126,15 @@
 
 :root[theme="SPORTS"] {
 	.TopRow {
+		> label:first-of-type {
+			margin-right: @size-8;
+		}
+
 		span[class*="MarketTypeLabel"] {
 			display: none;
 		}
 	}
-}
 
-:root[theme="SPORTS"] {
 	div.ReportedOutcome {
 		max-width: @size-106;
 

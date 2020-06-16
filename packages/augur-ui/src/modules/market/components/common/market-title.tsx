@@ -14,6 +14,8 @@ import classNames from 'classnames';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ReactTooltip from 'react-tooltip';
 import { selectMarket } from 'modules/markets/selectors/market';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { THEMES } from 'modules/common/constants';
 
 interface MarketTitleProps {
   id: string;
@@ -33,6 +35,7 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
   noLink,
   headerType,
 }) => {
+  const { theme } = useAppStatusStore();
   const marketId = id;
   const market = selectMarket(marketId);
   if (!market) return <div />;
@@ -41,22 +44,21 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
   const isTemplate = market.isTemplate;
   const template = market.template;
 
-  return (
-    <>
-      {isTemplate ? (
-        <MarketLink
-          className={Styles.MarketTemplateTitle}
-          id={noLink ? null : id}
-          headerType={headerType}
-        >
-          <MarketTemplateTitle template={template} />
-        </MarketLink>
-      ) : (
-        <MarketLink id={noLink ? null : id} headerType={headerType}>
-          {isWrapped ? wrapMarketName(description) : description}
-        </MarketLink>
-      )}
-    </>
+  const marketHeader =
+    theme === THEMES.SPORTS ? market.sportsBook.header : description;
+
+  return isTemplate && theme !== THEMES.SPORTS ? (
+    <MarketLink
+      className={Styles.MarketTemplateTitle}
+      id={noLink ? null : id}
+      headerType={headerType}
+    >
+      <MarketTemplateTitle template={template} market={market} />
+    </MarketLink>
+  ) : (
+    <MarketLink id={noLink ? null : id} headerType={headerType}>
+      {isWrapped ? wrapMarketName(marketHeader) : marketHeader}
+    </MarketLink>
   );
 };
 

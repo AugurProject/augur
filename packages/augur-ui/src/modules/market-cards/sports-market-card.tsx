@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import {
-  OutcomeGroup,
-  ResolvedOutcomes,
-  TentativeWinner,
   TopRow,
   getCategoriesWithClick,
+  SportsGroupMarkets,
 } from 'modules/market-cards/common';
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
@@ -15,7 +13,6 @@ import {
 } from 'modules/common/constants';
 import { MarketProgress } from 'modules/common/progress';
 import ChevronFlip from 'modules/common/chevron-flip';
-import { MarketData } from 'modules/types';
 import Styles from 'modules/market-cards/sports-market-card.styles.less';
 import MarketTitle from 'modules/market/components/common/market-title';
 import { ThickChevron } from 'modules/common/icons';
@@ -76,7 +73,7 @@ export const SportsMarketCard = ({
         categoriesWithClick={getCategoriesWithClick(categories)}
       />
       <MarketTitle id={market.id} headerType={headerType} />
-      <section>Outcome groups will go here...</section>
+      <SportsGroupMarkets markets={sportsGroup.markets} />
       <MarketProgress
         reportingState={reportingState}
         endTimeFormatted={endTimeFormatted}

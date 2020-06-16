@@ -8,7 +8,7 @@
   display: grid;
   grid-template-columns: 102px auto;
   grid-template-rows: auto;
-  padding-right: @size-12;
+  padding: @size-12;
 
   @media @breakpoint-mobile-tablet {
     grid-template-rows: auto;
@@ -23,7 +23,7 @@
   }
 
   > h3 {
-    grid-column: 1 / 2;
+    grid-column: span 2;
   }
 
   > section[class*="MultiMarketTable"] {

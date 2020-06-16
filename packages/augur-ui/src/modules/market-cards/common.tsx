@@ -901,6 +901,15 @@ export const SportsOutcome = ({
   </div>
 );
 
+export interface SportsGroupMarketsProps {
+  markets: Array<MarketData>;
+}
+
+export const SportsGroupMarkets = ({ markets }) => {
+  console.log("SportsGroupMarkets", markets);
+  return <div />;
+}
+
 export interface OutcomeGroupProps {
   market: MarketData;
   expanded?: Boolean;
@@ -940,17 +949,6 @@ export const OutcomeGroup = ({
   const { orderBooks } = useMarketsStore();
   const orderBook = orderBooks[id]?.orderBook;
 
-  if (theme === THEMES.SPORTS) {
-    return (
-      <MultiMarketTable
-        orderBook={orderBook}
-        outcomes={outcomesFormatted}
-        min={minPriceBigNumber}
-        max={maxPriceBigNumber}
-        description={description}
-      />
-    );
-  }
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     marketType,
     outcomesFormatted,
@@ -1295,7 +1293,6 @@ export const TopRow = ({ market, categoriesWithClick }) => {
         <>
           <span className={Styles.MatchedLine}>
             Matched<b>{` ${volumeFormatted.full}`}</b>
-            {` (${settlementFeePercent.full} fee)`}
           </span>
           <button
             className={Styles.RulesButton}
