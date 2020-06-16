@@ -16,7 +16,7 @@ import ModalUnsignedOrders from 'modules/modal/containers/modal-unsigned-orders'
 import ModalNetworkMismatch from 'modules/modal/containers/modal-mismatch';
 import ModalNetworkDisconnected from "modules/modal/components/modal-network-disconnected";
 import ModalFinalize from 'modules/modal/containers/modal-finalize';
-import ModalBuyDai from 'modules/modal/containers/modal-buy-dai';
+import { ModalBuyDai } from 'modules/modal/onboarding-modals';
 import ModalDiscard from 'modules/modal/containers/modal-discard';
 import ModalClaimFees from 'modules/modal/containers/modal-claim-fees';
 import { ModalParticipate } from 'modules/modal/components/modal-participate';
@@ -32,14 +32,13 @@ import { AddFunds as ModalAddFunds } from 'modules/modal/add-funds';
 import { SignIn as ModalSignin } from 'modules/modal/signin';
 import { Loading as ModalLoading } from 'modules/modal/loading';
 import { ModalUniverseSelector } from 'modules/modal/components/modal-universe-selector';
-import ModalTestBet from 'modules/modal/containers/modal-test-bet';
-import ModalAugurP2P from 'modules/modal/containers/modal-p2p-trading';
+import { ModalTestBet } from 'modules/modal/onboarding-modals';
+import { ModalAugurP2P } from 'modules/modal/onboarding-modals';
 import ModalGlobalChat from 'modules/modal/containers/modal-global-chat';
-import ModalAccountCreated from 'modules/modal/containers/modal-account-created';
 import ModalWalletError from 'modules/modal/containers/modal-wallet-error';
-import ModalAugurUsesDai from 'modules/modal/containers/modal-augur-uses-dai';
-import ModalTutorialOutro from 'modules/modal/containers/modal-tutorial-outro';
-import ModalTutorialIntro from 'modules/modal/containers/modal-tutorial-intro';
+import { ModalAugurUsesDai } from 'modules/modal/onboarding-modals';
+import { ModalTutorialOutro } from 'modules/modal/onboarding-modals';
+import { ModalTutorialIntro } from 'modules/modal/onboarding-modals';
 import { Scalar as ModalScalar } from 'modules/modal/scalar';
 import ModalInvalidMarketRules from 'modules/modal/containers/modal-invalid-market-rules';
 import ModalInitializeAccounts from 'modules/modal/containers/modal-initialize-account';
@@ -52,6 +51,7 @@ import * as TYPES from 'modules/common/constants';
 import Styles from 'modules/modal/common.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { track, MODAL_VIEWED } from 'services/analytics/helpers';
+import { ModalAccountCreated } from 'modules/modal/onboarding-modals';
 
 const ESCAPE_KEYCODE = 27;
 
