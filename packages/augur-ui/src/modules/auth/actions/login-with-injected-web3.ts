@@ -18,85 +18,85 @@ import { AppState } from 'appStore';
 import { AppStatus } from 'modules/app/store/app-status';
 
 // MetaMask, dapper, Mobile wallets
-export const loginWithInjectedWeb3 = () => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const { setModal, closeModal, setIsLogged } = AppStatus.actions;
-  const failure = error => {
-    closeModal();
-    throw error;
-  };
-  const success = async (account: string, refresh: boolean) => {
-    if (!account) return failure('No Account');
-    
-    if (refresh) setIsLogged(false);
+export const loginWithInjectedWeb3 = () => {
+  (async () => {
+    const { setModal, closeModal, setIsLogged } = AppStatus.actions;
+    const failure = error => {
+      closeModal();
+      throw error;
+    };
+    const success = async (account: string, refresh: boolean) => {
+      if (!account) return failure('No Account');
 
-    dispatch(login(account));
+      if (refresh) setIsLogged(false);
 
-    const web3 = windowRef.web3;
+      login(account);
 
-    if (web3 && web3.currentProvider?.publicConfigStore?.on) {
-      web3.currentProvider.publicConfigStore.on('update', config => {
-        if (augurSdk.networkId !== config.networkVersion) {
-          console.log(
-            'web3 updated, network changed to',
-            config.networkVersion
-          );
-          setModal({
-            type: MODAL_NETWORK_MISMATCH,
-            expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)],
-          });
-        }
-      });
-    }
+      const web3 = windowRef.web3;
 
-    // Listen for MetaMask account switch
-    if (windowRef.ethereum?.on) {
-      windowRef.ethereum.on('accountsChanged', async accounts => {
-        const { loginAccount } = AppStatus.get();
-        if (loginAccount.address) {
-          const initWeb3 = async account => {
-            const message = account ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
-            const showMetaMaskHelper = account ? false : true;
+      if (web3 && web3.currentProvider?.publicConfigStore?.on) {
+        web3.currentProvider.publicConfigStore.on('update', config => {
+          if (augurSdk.networkId !== config.networkVersion) {
+            console.log(
+              'web3 updated, network changed to',
+              config.networkVersion
+            );
             setModal({
-              type: MODAL_LOADING,
-              message,
-              showMetaMaskHelper,
-              callback: () => closeModal(),
+              type: MODAL_NETWORK_MISMATCH,
+              expectedNetwork: NETWORK_NAMES[Number(augurSdk.networkId)],
             });
+          }
+        });
+      }
 
-            await dispatch(loginWithInjectedWeb3());
-          };
+      // Listen for MetaMask account switch
+      if (windowRef.ethereum?.on) {
+        windowRef.ethereum.on('accountsChanged', async accounts => {
+          const { loginAccount } = AppStatus.get();
+          if (loginAccount.address) {
+            const initWeb3 = async account => {
+              const message = account
+                ? SIGNIN_LOADING_TEXT
+                : SIGNIN_SIGN_WALLET;
+              const showMetaMaskHelper = account ? false : true;
+              setModal({
+                type: MODAL_LOADING,
+                message,
+                showMetaMaskHelper,
+                callback: () => closeModal(),
+              });
 
-          console.log('refreshing account to', accounts[0]);
-          await logout();
+              await loginWithInjectedWeb3();
+            };
 
-          initWeb3(accounts[0]);
-        }
-      });
+            console.log('refreshing account to', accounts[0]);
+            await logout();
+
+            initWeb3(accounts[0]);
+          }
+        });
+      }
+    };
+
+    try {
+      // This is equivalent to ethereum.enable()
+      // Handle connecting, per EIP 1102
+      const request = await windowRef.ethereum.send('eth_requestAccounts');
+      const address = request.result[0];
+      success(address, false);
+    } catch (err) {
+      return windowRef.ethereum
+        .enable()
+        .then((resolve: string[]) => success(resolve[0], false), failure);
     }
-  };
-
-  try {
-    // This is equivalent to ethereum.enable()
-    // Handle connecting, per EIP 1102
-    const request = await windowRef.ethereum.send('eth_requestAccounts');
-    const address = request.result[0];
-    success(address, false);
-  } catch (err) {
-    return windowRef.ethereum
-      .enable()
-      .then((resolve: string[]) => success(resolve[0], false), failure);
-  }
+  })();
 };
 
-const login = (account: string) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+const login = (account: string) => {
   const provider = getWeb3Provider(windowRef);
-  const networkId = windowRef.web3?.currentProvider?.networkVersion || AppStatus.get().env['networkId'];
+  const networkId =
+    windowRef.web3?.currentProvider?.networkVersion ||
+    AppStatus.get().env['networkId'];
   const address = toChecksumAddress(account);
   const accountObject = {
     address,
@@ -111,10 +111,11 @@ const login = (account: string) => (
       isWeb3: true,
     },
   };
-  dispatch(updateSdk(accountObject, networkId));
+  updateSdk(accountObject, networkId);
 };
 
-
-export const getWeb3Provider = (windowRef) => {
-  return new Web3Provider('ethereum' in window ? windowRef.ethereum : windowRef.web3.currentProvider);
-}
+export const getWeb3Provider = windowRef => {
+  return new Web3Provider(
+    'ethereum' in window ? windowRef.ethereum : windowRef.web3.currentProvider
+  );
+};
