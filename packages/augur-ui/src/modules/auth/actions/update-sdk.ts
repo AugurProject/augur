@@ -86,8 +86,10 @@ export const createFundedGsnWallet = () => async (
   getState: () => AppState
 ) => {
   try {
+    const affiliate = getState().loginAccount.affiliate;
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending));
 
+    augurSdk.client.dependencies.setReferralAddress(affiliate);
     await augurSdk.client.gsn.initializeWallet();
 
     dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
