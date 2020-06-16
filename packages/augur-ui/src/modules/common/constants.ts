@@ -53,10 +53,15 @@ export const ODDS_TYPE = {
   PERCENT: 'Percent',
 };
 
-
 export const TIME_FORMATS = {
   TWENTY_FOUR: '24h',
   AM_PM: 'AM / PM',
+};
+
+export const SPORTS_GROUP_TYPES = {
+  DAILY: 'DAILY',
+  FUTURES: 'FUTURES',
+  COMBO: 'COMBO',
 };
 
 export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Pagination } from 'modules/common/pagination';
 import NullStateMessage from 'modules/common/null-state-message';
-import { MARKET_CARD_FORMATS, THEMES } from 'modules/common/constants';
+import { MARKET_CARD_FORMATS, THEMES, SPORTS_GROUP_TYPES } from 'modules/common/constants';
 import MarketCard from 'modules/market-cards/market-card';
 import SportsMarketCard from 'modules/market-cards/sports-market-card';
 import { MarketData } from 'modules/types';
@@ -28,18 +28,19 @@ interface MarketsListProps {
   updateLimit?: Function;
   marketCount?: number;
 }
-const SPORTS_MARKET_TYPES = {
-  DAILY: 'DAILY',
-  FUTURES: 'FUTURES',
-  COMBO: 'COMBO',
-};
+
+const {
+  COMBO,
+  FUTURES,
+  DAILY
+} = SPORTS_GROUP_TYPES;
 
 const determineSportsbookType = ({ sportsBook: { groupType } }) =>
-  groupType.includes(SPORTS_MARKET_TYPES.COMBO)
-    ? SPORTS_MARKET_TYPES.COMBO
-    : groupType === SPORTS_MARKET_TYPES.FUTURES
-    ? SPORTS_MARKET_TYPES.FUTURES
-    : SPORTS_MARKET_TYPES.DAILY;
+  groupType.includes(COMBO)
+    ? COMBO
+    : groupType === FUTURES
+    ? FUTURES
+    : DAILY;
 
 const groupSportsMarkets = (filteredMarkets, markets) => {
   return filteredMarkets.reduce((accumulator, marketId) => {

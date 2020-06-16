@@ -27,6 +27,7 @@ import {
   ODDS_TYPE,
   SCALAR_INVALID_BEST_BID_ALERT_VALUE as INVALID_ALERT_PERCENTAGE,
   MODAL_REPORTING,
+  SPORTS_GROUP_TYPES,
 } from 'modules/common/constants';
 import { convertToOdds } from 'utils/get-odds';
 import { MARKET_LIST_CARD, marketLinkCopied } from 'services/analytics/helpers';
@@ -86,6 +87,66 @@ export const Percent = ({ percent }: PercentProps) => (
     <span style={{ width: percent + '%' }}></span>
   </div>
 );
+
+const FUTURES_GRID_MOCK_DATA = (addBet, marketId, description) => [
+  {
+    title: 'Man City',
+    topLabel: null,
+    action: () => addBet(marketId, description, '+310', 'Man City', '0'),
+    label: '+310',
+    volume: '$100.43',
+  },
+  {
+    title: 'Liverpool',
+    topLabel: null,
+    action: () => addBet(marketId, description, '+530', 'Liverpool', '0'),
+    label: '+530',
+    volume: '$100.43',
+  },
+  {
+    title: 'Bayern Munich',
+    topLabel: null,
+    action: () => addBet(marketId, description, '+440', 'Bayern Munich', '0'),
+    label: '+440',
+    volume: '$100.43',
+  },
+  {
+    title: 'Barcelona',
+    topLabel: null,
+    action: () => addBet(marketId, description, '+550', 'Barcelona', '0'),
+    label: '+550',
+    volume: '$100.43',
+  },
+  {
+    title: 'PSG',
+    topLabel: null,
+    action: () => addBet(marketId, description, '+540', 'PSG', '0'),
+    label: '+540',
+    volume: '$100.43',
+  },
+  {
+    title: 'Juventus',
+    topLabel: null,
+    action: () => addBet(marketId, description, '+730', 'Juventus', '0'),
+    label: '+730',
+    volume: '$100.43',
+  },
+  {
+    title: 'Other',
+    topLabel: null,
+    action: () => addBet(marketId, description, '+490', 'Other', '0'),
+    label: '+490',
+    volume: '$100.43',
+  },
+  {
+    title: 'Event Canceled',
+    topLabel: null,
+    action: () =>
+      addBet(marketId, description, '+1000', 'Event Canceled', '0'),
+    label: '+1000',
+    volume: '$100.43',
+  },
+];
 
 export interface BettingOutcomeProps {
   description: string;
@@ -618,65 +679,22 @@ function processMultiOutcomeMarketGridData(
   description
 ) {
   const marketId = outcomes[0].marketId;
-  const data = [
-    {
-      title: 'Man City',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+310', 'Man City', '0'),
-      label: '+310',
-      volume: '$100.43',
-    },
-    {
-      title: 'Liverpool',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+530', 'Liverpool', '0'),
-      label: '+530',
-      volume: '$100.43',
-    },
-    {
-      title: 'Bayern Munich',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+440', 'Bayern Munich', '0'),
-      label: '+440',
-      volume: '$100.43',
-    },
-    {
-      title: 'Barcelona',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+550', 'Barcelona', '0'),
-      label: '+550',
-      volume: '$100.43',
-    },
-    {
-      title: 'PSG',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+540', 'PSG', '0'),
-      label: '+540',
-      volume: '$100.43',
-    },
-    {
-      title: 'Juventus',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+730', 'Juventus', '0'),
-      label: '+730',
-      volume: '$100.43',
-    },
-    {
-      title: 'Other',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+490', 'Other', '0'),
-      label: '+490',
-      volume: '$100.43',
-    },
-    {
-      title: 'Event Canceled',
-      topLabel: null,
-      action: () =>
-        addBet(marketId, description, '+1000', 'Event Canceled', '0'),
-      label: '+1000',
-      volume: '$100.43',
-    },
-  ];
+  console.log("in processMultiOutcomeMarketGridData", outcomes, orderBook);
+  let data = [];
+  if (outcomes.length > 0) {
+    outcomes.forEach(outcome => {
+      // addBet: (marketId, description, odds, outcome, wager = "0")
+      data.push({
+        title: outcome.description,
+        topLabel: null,
+        action: () => addBet(marketId, description, '0', outcome.description, '0'),
+        label: '-',
+        volume: outcome.volumeFormatted.full
+      })
+    });
+  } else {
+    data = FUTURES_GRID_MOCK_DATA(addBet, marketId, description);
+  }
   return data;
 }
 
@@ -902,13 +920,53 @@ export const SportsOutcome = ({
 );
 
 export interface SportsGroupMarketsProps {
-  markets: Array<MarketData>;
+  sportsGroup: {
+    markets: Array<MarketData>;
+    id: string;
+    type: string;
+  };
 }
 
-export const SportsGroupMarkets = ({ markets }) => {
-  console.log("SportsGroupMarkets", markets);
+export const SportsGroupMarkets = ({ sportsGroup: { id, type, markets } }) => {
+  const { orderBooks } = useMarketsStore();
+  const {
+    actions: { addBet },
+  } = useBetslipStore();
+  const { FUTURES, DAILY, COMBO } = SPORTS_GROUP_TYPES;
+  let marketGroups = [];
+  // console.log("SportsGroupMarkets", type, markets);
+  if (type === FUTURES) {
+    markets.forEach(market => {
+      const {
+        id,
+        outcomesFormatted,
+        minPriceBigNumber: min,
+        maxPriceBigNumber: max,
+        description,
+      } = market;
+      const orderBook = orderBooks[id]?.orderBook;
+      const multiOutcomeMarketGridData = processMultiOutcomeMarketGridData(
+        orderBook,
+        outcomesFormatted,
+        min,
+        max,
+        addBet,
+        description
+      );
+      // console.log(multiOutcomeMarketGridData);
+      marketGroups.push(
+        <MultiOutcomeMarketGrid
+          key={id}
+          multiOutcomeMarketGridData={multiOutcomeMarketGridData}
+        />
+      );
+    });
+  }
+  if (marketGroups.length > 0) {
+    return <>{marketGroups.map(item => item)}</>;
+  }
   return <div />;
-}
+};
 
 export interface OutcomeGroupProps {
   market: MarketData;

@@ -73,7 +73,7 @@ export const SportsMarketCard = ({
         categoriesWithClick={getCategoriesWithClick(categories)}
       />
       <MarketTitle id={market.id} headerType={headerType} />
-      <SportsGroupMarkets markets={sportsGroup.markets} />
+      <SportsGroupMarkets sportsGroup={sportsGroup} />
       <MarketProgress
         reportingState={reportingState}
         endTimeFormatted={endTimeFormatted}
