@@ -86,6 +86,11 @@ const FRIDAY_DAY_OF_WEEK = 5;
 const SATURDAY_DAY_OF_WEEK = 6;
 const SUNDAY_DAY_OF_WEEK = 0;
 const SECONDS_IN_A_DAY = 86400;
+
+const ReplaceAbbreviations = {
+  [MENS] : 'M',
+  [WOMENS]: 'W'
+}
 interface TimezoneDateObject {
   formattedUtc: string;
   formattedTimezone: string;
@@ -428,7 +433,7 @@ function hasSubstituteOutcomes(
     return true; // nothing to validate
   }
   let result = true;
-  substituteDependencies.forEach((outcomeTemplate: string) => {
+substituteDependencies.forEach((outcomeTemplate: string) => {
     if (!result) return;
     const outcomeValue = inputs.reduce(
       (p, input: ExtraInfoTemplateInput) =>
@@ -508,7 +513,7 @@ function isDependencyOutcomesCorrect(
 
   if (validationDep) {
     const input = inputs.find(i => i.id === validationDep.inputSourceId);
-    if (!input) result = false;
+    if (!input) return false;
     const correctValues = validationDep.values[input.value] || [];
     result =
       testOutcomes.filter(o => correctValues.includes(o)).length ===
@@ -750,10 +755,14 @@ function isRetiredAutofail(hash: string) {
   return found.autoFail;
 }
 
-export const populateTemplateTitle = (templateString, inputs) => {
-  return inputs.reduce((acc, input) => {
+export const populateTemplateTitle = (templateString, inputs, useAbbrivations) => {
+  let title = inputs.reduce((acc, input) => {
     return acc.replace(`[${input.id}]`, `${input.value}`);
   }, templateString);
+  if (useAbbrivations) {
+    title = Object.keys(ReplaceAbbreviations).reduce((p, abbr) => p.replace(abbr, ReplaceAbbreviations[abbr]), title);
+  }
+  return title;
 }
 
 export function getGroupHashInfo({
@@ -776,8 +785,8 @@ export function getGroupHashInfo({
   const hashKeyInputValues = hashGroupKeyValues(keyValues);
   const groupLine = group?.groupLineId ? inputs[group.groupLineId].value : undefined;
   const estTimestamp = group?.estInputId ? inputs[group.estInputId].timestamp : undefined;
-  const header = group.header ? populateTemplateTitle(group.header, inputs) : undefined;
-  const title = group.title ? populateTemplateTitle(group.title, inputs) : undefined;
+  const header = group.header ? populateTemplateTitle(group.header, inputs, true) : undefined;
+  const title = group.title ? populateTemplateTitle(group.title, inputs, true) : undefined;
 
   return {
     hashKeyInputValues,
