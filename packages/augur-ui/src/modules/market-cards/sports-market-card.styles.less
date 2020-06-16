@@ -45,11 +45,15 @@
   }
 
   > button:last-of-type {
+    .text-10-semi-bold;
+
+    color: var(--color-primary-text);
     grid-row: auto;
     grid-column: 2;
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
+    justify-content: flex-end;
 
     > svg {
       width: @size-10;
@@ -75,5 +79,9 @@
   > section[class*="MultiOutcomeMarketTable"],
   > section[class*="MultiOutcomeMarketGrid"] {
     grid-column: span 2;
+  }
+
+  > span[class*="ProgressLabel"] {
+    flex-flow: row nowrap;
   }
 }

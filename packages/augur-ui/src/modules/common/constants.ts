@@ -63,6 +63,17 @@ export const SPORTS_GROUP_TYPES = {
   FUTURES: 'FUTURES',
   COMBO: 'COMBO',
 };
+// DAILY
+//   MONEY_LINE,
+//   OVER_UNDER,
+//   SPREAD,
+//   ADDITIONAL,
+// COMBO
+//   COMBO_MONEY_LINE,
+//   COMBO_OVER_UNDER,
+//   COMBO_SPREAD,
+// FUTURES
+//   FUTURES,
 
 export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');
 // # Network Constants

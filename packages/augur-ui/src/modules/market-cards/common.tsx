@@ -679,11 +679,12 @@ function processMultiOutcomeMarketGridData(
   description
 ) {
   const marketId = outcomes[0].marketId;
-  console.log("in processMultiOutcomeMarketGridData", outcomes, orderBook);
   let data = [];
-  if (outcomes.length > 0) {
-    outcomes.forEach(outcome => {
+  let outcomesCopy = outcomes.slice(0);
+  if (outcomesCopy.length > 0) {
+    outcomesCopy.forEach(outcome => {
       // addBet: (marketId, description, odds, outcome, wager = "0")
+      if (outcome.isInvalid) return;
       data.push({
         title: outcome.description,
         topLabel: null,
@@ -934,7 +935,6 @@ export const SportsGroupMarkets = ({ sportsGroup: { id, type, markets } }) => {
   } = useBetslipStore();
   const { FUTURES, DAILY, COMBO } = SPORTS_GROUP_TYPES;
   let marketGroups = [];
-  // console.log("SportsGroupMarkets", type, markets);
   if (type === FUTURES) {
     markets.forEach(market => {
       const {
@@ -953,7 +953,6 @@ export const SportsGroupMarkets = ({ sportsGroup: { id, type, markets } }) => {
         addBet,
         description
       );
-      // console.log(multiOutcomeMarketGridData);
       marketGroups.push(
         <MultiOutcomeMarketGrid
           key={id}
