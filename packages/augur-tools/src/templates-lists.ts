@@ -203,6 +203,20 @@ export const LIST_VALUES = {
     'Eredivisie (Dutch)',
     'Superliga Argentina',
   ],
+  SOCCER_CUSTOM_WOMENS_EVENTS: [
+    'World Cup'
+  ],
+  SOCCER_CUSTOM_MENS_EVENTS: [
+    'World Cup',
+    'UEFA Champions League',
+    'UEFA Europa League',
+    'Copa America',
+    'AFC Asian Cup',
+    'AFC Champions League',
+    'CONCACAF Gold Cup',
+    'CONCACAF Champions League',
+    'Friendlies'
+  ],
   BASEBALL_AWARDS: [
     'NL Rookie of the Year',
     'AL Rookie of the Year',
@@ -3382,6 +3396,11 @@ export const SOCCER_LEAGUE_DEP_YEARS = {
   'EFL Championship': LIST_VALUES.YEAR_RANGE,
   'Eredivisie (Dutch)': LIST_VALUES.YEAR_RANGE,
   'Superliga Argentina': LIST_VALUES.YEAR_RANGE,
+};
+
+export const SOCCER_GENDER_EVENTS = {
+  "Men's": LIST_VALUES.SOCCER_CUSTOM_MENS_EVENTS,
+  "Women's": LIST_VALUES.SOCCER_CUSTOM_WOMENS_EVENTS,
 };
 
 export const FIN_EXCHANGES_CLOSING_OFFSETS = {

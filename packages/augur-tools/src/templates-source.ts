@@ -20,6 +20,7 @@ import {
   TENNIS_DOUBLES_EVENTS,
   TENNIS_SINGLES_EVENTS,
   SOCCER_LEAGUE_DEP_YEARS,
+  SOCCER_GENDER_EVENTS,
 } from './templates-lists';
 import {
   AMERICAN_FOOTBALL,
@@ -2818,7 +2819,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0]: Which team will win: [1] vs. [2]?`,
                 example: `Men's English Premier League: Which team will win: Manchester City vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                header: `Men's [0] [1] vs. [2]`,
+                header: `(Men's) [0] [1] vs. [2]`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
@@ -2898,7 +2899,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] (Point Spread): [1] to win by more than [2].5 goals over [3]?`,
                 example: `Men's Ligue 1 (France): Marseille to win by more than 1.5 goals over Lyon?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                header: `Men's [0] [1] vs. [3]`,
+                header: `(Men's) [0] [1] vs. [3]`,
                 title: `Spread [2].5`,
                 groupName: groupTypes.SPREAD,
                 groupLineId: 2,
@@ -2981,7 +2982,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] (O/U): [1] vs. [2]: Total goals scored; Over/Under [3].5?`,
                 example: `Men's MLS (USA) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                header: `Men's [0] [1] vs. [2]`,
+                header: `(Men's) [0] [1] vs. [2]`,
                 title: `Over/Under [3].5`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 3,
@@ -3064,7 +3065,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] [1] Champion?`,
                 example: `Men's English Premier League Champion?`,
-                header: `Men's [0] [1] Champion`,
+                header: `(Men's) [0] [1] Champion`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -3123,38 +3124,55 @@ export const TEMPLATES = {
             templates: [
               {
                 marketType: CATEGORICAL,
-                question: `[0] Football (Soccer): Which team will win: [1] vs. [2]?`,
-                example: `Men's Football (Soccer): Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `[0] [1]: Which team will win: [2] vs. [3]?`,
+                example: `Men's World Cup: Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                header: `([0]) [2] vs. [3]`,
+                groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's / Women's`,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Men's/Women's`,
+                    groupKey: GENDER,
+                    inputDestIds: [1],
                     values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: SOCCER_GENDER_EVENTS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    placeholder: `Team A`,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
+                    placeholder: `Event`,
+                    groupKey: EVENT,
+                    categoryDestId: 2,
+                    values: [],
                   },
                   {
                     id: 2,
                     type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    placeholder: `Team B`,
+                    placeholder: `Team A`,
+                    groupKey: TEAM_A,
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 6,
-                    placeholder: `Date time`,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team B`,
+                    groupKey: TEAM_B,
                   },
                   {
                     id: 4,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
+                    groupKey: START_TIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Draw`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Contest`,
                   },
@@ -5053,7 +5071,7 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
-                      text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
+                      text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
@@ -5399,7 +5417,7 @@ export const TEMPLATES = {
                   text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
-                  text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
+                  text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
                 },
                 {
                   text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
@@ -6677,7 +6695,7 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
-                      text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
+                      text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
