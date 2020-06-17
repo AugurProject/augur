@@ -558,7 +558,7 @@ export const VALIDATION_ATTRIBUTES = {
     checkFilledNumber: true,
     checkFee: true,
     min: 0,
-    max: 50,
+    max: 15,
   },
   [AFFILIATE_FEE]: {
     label: AFFILIATE_FEE,
