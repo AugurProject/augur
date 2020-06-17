@@ -379,7 +379,7 @@ export default class FormDetails extends React.Component<
                 listItems={[
                   'If entering a date and time in Resolution Details, enter a date and time in the UTC-0 timezone.',
                   'If using a resolution source in the Resolution Details it must match and not contradict what is used in the Market Question.',
-                  'A backup resolution source can be listed in the Resolution Details, as long as primary resolution source is used in the Market Question.'
+                  'A backup resolution source can be listed in the Resolution Details in addition to the primary resolution source, as long as the primary resolution source is used in the Market Question.'
                 ]}
               />
               <TextInput
