@@ -378,7 +378,8 @@ export default class FormDetails extends React.Component<
                 subHeading={'Describe what users need to know to determine the outcome of the event.'}
                 listItems={[
                   'If entering a date and time in Resolution Details, enter a date and time in the UTC-0 timezone.',
-                  'Do not enter a resolution source in Resolution Details, it must be entered in the Market Question.'
+                  'If using a resolution source in the Resolution Details it must match and not contradict what is used in the Market Question.',
+                  'A backup resolution source can be listed in the Resolution Details, as long as primary resolution source is used in the Market Question.'
                 ]}
               />
               <TextInput
