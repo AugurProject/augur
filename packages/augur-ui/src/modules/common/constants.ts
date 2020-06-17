@@ -312,6 +312,7 @@ export enum MARKET_SORT_PARAMS {
   RECENTLY_TRADED = 'recentlyTraded',
   OPEN_INTEREST = 'openInterest',
   LIQUIDITY = 'liquidity',
+  FEES_GENERATED = 'feesGenerated',
 }
 
 export const SORT_OPTIONS = [
@@ -321,6 +322,7 @@ export const SORT_OPTIONS = [
   { value: MARKET_SORT_PARAMS.CREATION_TIME, header: 'Recently created' },
   { value: MARKET_SORT_PARAMS.END_DATE, header: 'Ending soon ' },
   { value: MARKET_SORT_PARAMS.RECENTLY_TRADED, header: 'Recently Traded' },
+  { value: MARKET_SORT_PARAMS.FEES_GENERATED, header: 'Fees Generated' },
 ];
 
 export enum MARKET_CARD_FORMATS {

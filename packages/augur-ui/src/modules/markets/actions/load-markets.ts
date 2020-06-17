@@ -87,6 +87,12 @@ export const loadMarketsByFilter = (
   const reportingStates: string[] = organizeReportingStates(filterOptions.filter);
   const sort: SortOptions = {};
   switch (filterOptions.sort) {
+    case MARKET_SORT_PARAMS.FEES_GENERATED: {
+      // Sort By Fees Generated:
+      sort.sortBy = Getters.Markets.GetMarketsSortBy.feesGenerated;
+      sort.isSortDescending = true;
+      break;
+    }
     case MARKET_SORT_PARAMS.RECENTLY_TRADED: {
       // Sort By Recently Traded:
       sort.sortBy = GetMarketsSortBy.lastTradedTimestamp;
