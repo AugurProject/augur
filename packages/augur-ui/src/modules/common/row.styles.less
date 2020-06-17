@@ -439,7 +439,8 @@ div.SingleRow3 {
   }
 
   .Row4 {
-    grid-template-columns: 2fr repeat(5, 1fr);
+    grid-template-columns: @size-110 repeat(5, 1fr);
+    grid-template-columns: minmax(@size-110, 2fr) repeat(5, 1fr);
     padding: @size-12;
 
     &::before {
