@@ -88,6 +88,37 @@ export const Percent = ({ percent }: PercentProps) => (
   </div>
 );
 
+const DAILY_MOCK_DATA = (addBet, marketId, description) => [
+  {
+    title: 'Team A',
+    action: () => addBet(marketId, description, '+132', 'Team A', '0'),
+    topLabel: null,
+    label: '+132',
+    volume: '$100.43',
+  },
+  {
+    title: 'Draw',
+    action: () => addBet(marketId, description, '+200', 'Draw', '0'),
+    topLabel: null,
+    label: '+200',
+    volume: '$100.43',
+  },
+  {
+    title: 'Team B',
+    action: () => addBet(marketId, description, '+150', 'Team B', '0'),
+    topLabel: null,
+    label: '+150',
+    volume: '$100.43',
+  },
+  {
+    title: 'Game Canceled',
+    action: () => addBet(marketId, description, '+200', 'Game Canceled', '0'),
+    topLabel: null,
+    label: '+200',
+    volume: '$100.43',
+  },
+];
+
 const FUTURES_GRID_MOCK_DATA = (addBet, marketId, description) => [
   {
     title: 'Man City',
@@ -628,7 +659,7 @@ const processMultiMarketTableData = (
   return data;
 };
 
-function processMultiOutcomeMarketTableData(
+function processDailyMarketData(
   orderBook,
   outcomes,
   min,
@@ -637,40 +668,27 @@ function processMultiOutcomeMarketTableData(
   description
 ) {
   const marketId = outcomes[0].marketId;
-  const data = [
-    {
-      title: 'Team A',
-      action: () => addBet(marketId, description, '+132', 'Team A', '0'),
-      topLabel: null,
-      label: '+132',
-      volume: '$100.43',
-    },
-    {
-      title: 'Draw',
-      action: () => addBet(marketId, description, '+200', 'Draw', '0'),
-      topLabel: null,
-      label: '+200',
-      volume: '$100.43',
-    },
-    {
-      title: 'Team B',
-      action: () => addBet(marketId, description, '+150', 'Team B', '0'),
-      topLabel: null,
-      label: '+150',
-      volume: '$100.43',
-    },
-    {
-      title: 'Game Canceled',
-      action: () => addBet(marketId, description, '+200', 'Game Canceled', '0'),
-      topLabel: null,
-      label: '+200',
-      volume: '$100.43',
-    },
-  ];
+  // console.log(outcomes, orderBook);
+  let data = [];
+  if (outcomes.length > 0) {
+    outcomes.forEach(outcome => {
+      // addBet: (marketId, description, odds, outcome, wager = "0")
+      if (outcome.isInvalid) return;
+      data.push({
+        title: outcome.description,
+        topLabel: null,
+        action: () => addBet(marketId, description, '0', outcome.description, '0'),
+        label: '-',
+        volume: outcome.volumeFormatted.full
+      })
+    });
+  } else {
+    data = DAILY_MOCK_DATA(addBet, marketId, description);
+  }
   return data;
 }
 
-function processMultiOutcomeMarketGridData(
+function processFuturesGridData(
   orderBook,
   outcomes,
   min,
@@ -680,9 +698,8 @@ function processMultiOutcomeMarketGridData(
 ) {
   const marketId = outcomes[0].marketId;
   let data = [];
-  let outcomesCopy = outcomes.slice(0);
-  if (outcomesCopy.length > 0) {
-    outcomesCopy.forEach(outcome => {
+  if (outcomes.length > 0) {
+    outcomes.forEach(outcome => {
       // addBet: (marketId, description, odds, outcome, wager = "0")
       if (outcome.isInvalid) return;
       data.push({
@@ -763,12 +780,12 @@ export const ReportedOutcome = ({
   );
 };
 
-export const MultiOutcomeMarketTable = ({ multiOutcomeMarketTableData }) => (
+export const MultiOutcomeMarketTable = ({ marketTitle, multiOutcomeMarketTableData }) => (
   <section className={Styles.MultiOutcomeMarketTable}>
+    <h5>{marketTitle}</h5>
     <ul>
-      {multiOutcomeMarketTableData.map(({ title, ...outcomeData }) => (
-        <li>
-          <h3>{title}</h3>
+      {multiOutcomeMarketTableData.map(({ ...outcomeData }) => (
+        <li key={outcomeData.title}>
           <SportsOutcome {...outcomeData} />
         </li>
       ))}
@@ -903,6 +920,7 @@ export interface SportsOutcomeProps {
   topLabel?: string;
   label?: string;
   volume?: string;
+  title?: string;
 }
 
 export const SportsOutcome = ({
@@ -910,8 +928,10 @@ export const SportsOutcome = ({
   topLabel,
   label,
   volume,
+  title,
 }: SportsOutcomeProps) => (
   <div className={Styles.SportsOutcome}>
+    {title && <h6>{title}</h6>}
     <button onClick={() => action()}>
       {topLabel && <span>{topLabel}</span>}
       <span>{label}</span>
@@ -945,7 +965,7 @@ export const SportsGroupMarkets = ({ sportsGroup: { id, type, markets } }) => {
         description,
       } = market;
       const orderBook = orderBooks[id]?.orderBook;
-      const multiOutcomeMarketGridData = processMultiOutcomeMarketGridData(
+      const multiOutcomeMarketGridData = processFuturesGridData(
         orderBook,
         outcomesFormatted,
         min,
@@ -961,10 +981,30 @@ export const SportsGroupMarkets = ({ sportsGroup: { id, type, markets } }) => {
       );
     });
   }
+  if (type === DAILY) {
+    // TODO: fix to use a constant for money line
+    const mainMarket = markets.find(market => market.sportsBook.groupType === 'MONEY_LINE');
+    const mainMarketId = mainMarket.id;
+    const dailyMarketData = processDailyMarketData(
+      orderBooks[mainMarketId]?.orderBook,
+      mainMarket.outcomesFormatted,
+      mainMarket.minPriceBigNumber,
+      mainMarket.maxPriceBigNumber,
+      addBet,
+      mainMarket.description
+    );
+    marketGroups.push(
+      <MultiOutcomeMarketTable
+        key={id}
+        marketTitle={mainMarket.description}
+        multiOutcomeMarketTableData={dailyMarketData}
+      />
+    );
+  }
   if (marketGroups.length > 0) {
     return <>{marketGroups.map(item => item)}</>;
   }
-  return <div />;
+  return <section />;
 };
 
 export interface OutcomeGroupProps {

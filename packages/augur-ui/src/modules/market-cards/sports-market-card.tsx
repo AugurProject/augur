@@ -27,7 +27,6 @@ interface SportsMarketCardProps {
 }
 
 const {
-  FUTURES,
   COMBO,
 } = SPORTS_GROUP_TYPES;
 
