@@ -4,7 +4,6 @@ import {
   loadMeshStreamingWithURLAsync,
   Mesh,
 } from '@0x/mesh-browser-lite';
-import { OrderEvent } from '@0x/mesh-rpc-client';
 import {
   ContractAddresses,
   NetworkId,
@@ -29,7 +28,7 @@ function createBrowserMeshConfig(
   verbosity = 5,
   useBootstrapList: boolean,
   bootstrapList: string[],
-  forceIgnoreCustomAddresses = false,
+  forceIgnoreCustomAddresses = false
 ) {
   const meshConfig: Config = {
     ethereumChainID,
@@ -60,9 +59,9 @@ function createBrowserMeshConfig(
   meshConfig.customOrderFilter = {
     properties: {
       makerAssetData: {
-        pattern: `.*${contractAddresses.ZeroXTrade.slice(2).toLowerCase()}.*`
-      }
-    }
+        pattern: `.*${contractAddresses.ZeroXTrade.slice(2).toLowerCase()}.*`,
+      },
+    },
   };
 
   return meshConfig;
@@ -74,10 +73,12 @@ function createBrowserMeshRestartFunction(
   zeroX: ZeroX,
   sdkConfig: SDKConfiguration
 ) {
-  return err => {
+  return (err) => {
     console.error('Browser mesh error: ', err.message, err.stack);
     console.log('Restarting Mesh Sync');
-    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {error: err});
+    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {
+      error: err,
+    });
 
     // Passing `true` as the last parameter to make sure the config doesn't include custom addresses on retry
     const mesh = new Mesh(
@@ -92,10 +93,17 @@ function createBrowserMeshRestartFunction(
         true
       )
     );
-    mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, sdkConfig));
+    mesh.onError(
+      createBrowserMeshRestartFunction(
+        meshConfig,
+        web3Provider,
+        zeroX,
+        sdkConfig
+      )
+    );
     mesh.startAsync().then(() => {
       zeroX.mesh = mesh;
-    })
+    });
   };
 }
 
@@ -105,7 +113,11 @@ export async function createBrowserMeshWorker(
   zeroX: ZeroX
 ) {
   if (!config.zeroX?.mesh?.enabled) {
-    throw new Error(`Attempting to create browser mesh without it being enabled in config ${JSON.stringify(config)}`);
+    throw new Error(
+      `Attempting to create browser mesh without it being enabled in config ${JSON.stringify(
+        config
+      )}`
+    );
   }
 
   try {
@@ -116,33 +128,56 @@ export async function createBrowserMeshWorker(
       config.addresses,
       config.zeroX.mesh.verbosity || 5,
       config.zeroX.mesh.useBootstrapList,
-      config.zeroX.mesh.bootstrapList,
+      config.zeroX.mesh.bootstrapList
     );
 
-    const meshWorker = new Worker('./MeshWorker', {type:'module'} );
+    const meshWorker = new Worker('./MeshWorker', { type: 'module' });
 
-    const {Mesh: MeshWorker, loadMesh} = Comlink.wrap(meshWorker);
+    const {
+      getOrdersAsync,
+      startAsync,
+      startMesh,
+      loadMesh,
+      onOrderEvents,
+      addOrdersAsync,
+      onError,
+    } = Comlink.wrap(meshWorker);
     await loadMesh();
-    const mesh = await new MeshWorker(meshConfig);
 
-    const wrappedMesh = new Proxy(mesh, {
-      get(target: any, prop: any): any {
-        if(prop === "onOrderEvents") {
-          return new Proxy(target[prop], {
-            apply(target: any, thisArg: any, argArray = []): any {
-              const [cb, ...rest] = argArray;
-              return target(Comlink.proxy(cb), ...rest);
-            }
-          });
-        }
-        return target[prop];
+    await startMesh(
+      {
+        ...meshConfig,
+        web3Provider: undefined,
+      },
+      Comlink.proxy(web3Provider.sendAsync.bind(web3Provider))
+    );
+
+    const wrappedMesh = new Proxy(
+      {
+        getOrdersAsync,
+        onOrderEvents,
+        addOrdersAsync,
+        onError,
+      },
+      {
+        get(target: any, prop: any): any {
+          if (prop === 'onOrderEvents') {
+            return new Proxy(target[prop], {
+              apply(target: any, thisArg: any, argArray = []): any {
+                const [cb, ...rest] = argArray;
+                return target(Comlink.proxy(cb), ...rest);
+              },
+            });
+          }
+          return target[prop];
+        },
       }
-    })
+    );
 
-    await mesh.startAsync();
+    await startAsync();
     zeroX.mesh = wrappedMesh;
-  } catch(error) {
-    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {error});
+  } catch (error) {
+    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, { error });
 
     throw error;
   }
@@ -154,7 +189,11 @@ export async function createBrowserMesh(
   zeroX: ZeroX
 ) {
   if (!config.zeroX?.mesh?.enabled) {
-    throw new Error(`Attempting to create browser mesh without it being enabled in config ${JSON.stringify(config)}`);
+    throw new Error(
+      `Attempting to create browser mesh without it being enabled in config ${JSON.stringify(
+        config
+      )}`
+    );
   }
 
   try {
@@ -169,7 +208,8 @@ export async function createBrowserMesh(
       retry(5, loadMesh, (err, result) => {
         if (err) reject(err);
         resolve(result);
-      }));
+      })
+    );
 
     const meshConfig = createBrowserMeshConfig(
       config.ethereum.http,
@@ -178,7 +218,7 @@ export async function createBrowserMesh(
       config.addresses,
       config.zeroX.mesh.verbosity || 5,
       config.zeroX.mesh.useBootstrapList,
-      config.zeroX.mesh.bootstrapList,
+      config.zeroX.mesh.bootstrapList
     );
 
     console.time(newMeshTimerLabel);
@@ -190,15 +230,17 @@ export async function createBrowserMesh(
 
       // Only want to get this once and `once` doesn't seem to be working.
       zeroX.client.events.off(SubscriptionEventName.ZeroXStatusSynced, cb);
-    }
+    };
 
     zeroX.client.events.on(SubscriptionEventName.ZeroXStatusSynced, cb);
 
-    mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
+    mesh.onError(
+      createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config)
+    );
     await mesh.startAsync();
     zeroX.mesh = mesh;
-  } catch(error) {
-    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {error});
+  } catch (error) {
+    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, { error });
     throw error;
   }
 }
