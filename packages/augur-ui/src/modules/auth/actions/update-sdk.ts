@@ -18,7 +18,7 @@ import { updateAssets } from 'modules/auth/actions/update-assets';
 import { NetworkId } from '@augurproject/artifacts';
 import { AppState } from 'appStore';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET, SUCCESS } from 'modules/common/constants';
+import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET, SUCCESS, NULL_ADDRESS } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { addAlert } from 'modules/alerts/actions/alerts';
@@ -89,7 +89,7 @@ export const createFundedGsnWallet = () => async (
     const affiliate = getState().loginAccount.affiliate;
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending));
 
-    augurSdk.client.dependencies.setReferralAddress(affiliate);
+    augurSdk.client.dependencies.setReferralAddress(affiliate || NULL_ADDRESS);
     await augurSdk.client.gsn.initializeWallet();
 
     dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));
