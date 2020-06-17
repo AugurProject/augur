@@ -8105,8 +8105,9 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.TEXT,
-                placeholder: `Location`,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Country`,
+                values: LIST_VALUES.OLYMPIC_COUNTRIES,
               },
               {
                 id: 3,
@@ -8204,8 +8205,9 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: `Location`,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Country`,
+                values: LIST_VALUES.OLYMPIC_COUNTRIES,
               },
               {
                 id: 2,
