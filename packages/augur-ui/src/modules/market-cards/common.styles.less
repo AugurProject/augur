@@ -837,7 +837,8 @@
     > b {
       .text-12-bold;
 
-      color: var(--color-primary-text);
+			color: var(--color-primary-text);
+			margin-left: @size-4;
     }
   }
 
@@ -939,7 +940,6 @@
 	}
 
 	.SubMarketCollapsible {
-		display: flex;
 		flex-flow: column nowrap;
 		flex: 1;
 		border: @size-1 solid var(--color-outline);
@@ -980,8 +980,10 @@
 			}
 
 			> button {
+				align-items: center;
 				display: flex;
 				height: @size-16;
+				justify-content: center;
 				width: @size-16;
 
 				> svg {
@@ -1007,6 +1009,10 @@
 				.OutcomeArticle;
 
 				flex: .325;
+			}
+
+			> section {
+				width: 100%;
 			}
 		}
 	}

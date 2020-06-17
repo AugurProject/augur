@@ -8,7 +8,7 @@ import {
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import { HEADER_TYPE, SPORTS_GROUP_TYPES } from 'modules/common/constants';
-import { MarketProgress } from 'modules/common/progress';
+import { CountdownProgress, formatTime } from 'modules/common/progress';
 import Styles from 'modules/market-cards/sports-market-card.styles.less';
 import MarketTitle from 'modules/market/components/common/market-title';
 import { ThickChevron } from 'modules/common/icons';
@@ -28,6 +28,7 @@ interface SportsMarketCardProps {
 
 const {
   COMBO,
+  FUTURES,
 } = SPORTS_GROUP_TYPES;
 
 export const SportsMarketCard = ({ sportsGroup, loading }: SportsMarketCardProps) => {
@@ -41,7 +42,7 @@ export const SportsMarketCard = ({ sportsGroup, loading }: SportsMarketCardProps
   // for now just grab the first market for major stats.
   const { type, markets, marketTypes } = sportsGroup;
   const market = markets[0];
-  const { categories, reportingState, disputeInfo, endTimeFormatted } = market;
+  const { categories, reportingState, endTimeFormatted } = market;
   
   const showMoreButtonVisible = type === COMBO ? marketTypes.length > 3 : marketTypes.length > 1;
   
@@ -64,10 +65,10 @@ export const SportsMarketCard = ({ sportsGroup, loading }: SportsMarketCardProps
       />
       <MarketTitle id={market.id} headerType={headerType} />
       <SportsGroupMarkets sportsGroup={sportsGroup} />
-      <MarketProgress
+      <CountdownProgress
+        label={type === FUTURES ? 'Event Expiration Date' : 'Estimated Start Time'}
+        time={type === FUTURES ? endTimeFormatted : formatTime(market.sportsBook.estTimestamp)} 
         reportingState={reportingState}
-        endTimeFormatted={endTimeFormatted}
-        reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
       />
       {showMoreButtonVisible && (
         <button onClick={() => setShowMore(!showMore)}>

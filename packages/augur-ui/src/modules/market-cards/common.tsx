@@ -65,7 +65,7 @@ import {
   TemplateShield,
   InvalidLabel,
 } from 'modules/common/labels';
-import Styles from 'modules/market-cards/common.styles.less';
+import Styles, { subMarketCollapsible } from 'modules/market-cards/common.styles.less';
 import { MarketCard } from 'modules/market-cards/market-card';
 import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
@@ -175,6 +175,31 @@ const FUTURES_GRID_MOCK_DATA = (addBet, marketId, description) => [
     action: () =>
       addBet(marketId, description, '+1000', 'Event Canceled', '0'),
     label: '+1000',
+    volume: '$100.43',
+  },
+];
+
+const SUB_MARKET_MOCK_DATA = (addBet, marketId, description) => [
+  {
+    title: 'O 230.5',
+    action: () => addBet(marketId, description, '-105', 'O 230.5', '0'),
+    topLabel: null,
+    label: '-105',
+    volume: '$100.43',
+  },
+  {
+    title: 'U 230.5',
+    action: () => addBet(marketId, description, '-115', 'U 230.5', '0'),
+    topLabel: null,
+    label: '-115',
+    volume: '$100.43',
+  },
+  {
+    title: 'Game Cancelled',
+    action: () =>
+      addBet(marketId, description, '-128', 'Game Cancelled', '0'),
+    topLabel: null,
+    label: '-128',
     volume: '$100.43',
   },
 ];
@@ -725,30 +750,22 @@ function processSubMarketCollapsibleData(
   description
 ) {
   const marketId = outcomes[0].marketId;
-  const data = [
-    {
-      title: 'O 230.5',
-      action: () => addBet(marketId, description, '-105', 'O 230.5', '0'),
-      topLabel: null,
-      label: '-105',
-      volume: '$100.43',
-    },
-    {
-      title: 'U 230.5',
-      action: () => addBet(marketId, description, '-115', 'U 230.5', '0'),
-      topLabel: null,
-      label: '-115',
-      volume: '$100.43',
-    },
-    {
-      title: 'Game Cancelled',
-      action: () =>
-        addBet(marketId, description, '-128', 'Game Cancelled', '0'),
-      topLabel: null,
-      label: '-128',
-      volume: '$100.43',
-    },
-  ];
+  let data = [];
+  if (outcomes.length > 0) {
+    outcomes.forEach(outcome => {
+      // addBet: (marketId, description, odds, outcome, wager = "0")
+      if (outcome.isInvalid) return;
+      data.push({
+        title: outcome.description,
+        topLabel: null,
+        action: () => addBet(marketId, description, '0', outcome.description, '0'),
+        label: '-',
+        volume: outcome.volumeFormatted.full
+      })
+    });
+  } else {
+    data = SUB_MARKET_MOCK_DATA(addBet, marketId, description);
+  }
   return data;
 }
 
@@ -889,8 +906,9 @@ export const MultiMarketTable = ({
   );
 };
 
-export const SubMarketCollapsible = ({ title, SubMarketCollapsibleData }) => {
+export const SubMarketCollapsible = ({ marketId, title, SubMarketCollapsibleData }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
+  // console.log('subMarketcollapsable', SubMarketCollapsibleData, SubMarketCollapsibleData.length);
   return (
     <section
       className={classNames(Styles.SubMarketCollapsible, {
@@ -904,12 +922,19 @@ export const SubMarketCollapsible = ({ title, SubMarketCollapsibleData }) => {
         </button>
       </div>
       <div>
-        {SubMarketCollapsibleData.map(({ title, ...outcomeData }) => (
-          <article key={title}>
-            <h3>{title}</h3>
-            <SportsOutcome {...outcomeData} />
-          </article>
-        ))}
+        {
+        SubMarketCollapsibleData.length <= 3 ? 
+          SubMarketCollapsibleData.map(({ title, ...outcomeData }) => (
+            <article key={title}>
+              <h3>{title}</h3>
+              <SportsOutcome {...outcomeData} />
+            </article>
+          ))
+        : <MultiOutcomeMarketGrid
+            key={marketId}
+            multiOutcomeMarketGridData={SubMarketCollapsibleData}
+          />
+        }
       </div>
     </section>
   );
@@ -996,10 +1021,31 @@ export const SportsGroupMarkets = ({ sportsGroup: { id, type, markets } }) => {
     marketGroups.push(
       <MultiOutcomeMarketTable
         key={id}
-        marketTitle={mainMarket.description}
+        marketTitle={mainMarket.sportsBook.title || mainMarket.description}
         multiOutcomeMarketTableData={dailyMarketData}
       />
     );
+    markets.forEach(market => {
+      if (market.id === mainMarketId) return;
+      const {
+        id,
+        outcomesFormatted,
+        minPriceBigNumber: min,
+        maxPriceBigNumber: max,
+        description,
+        sportsBook,
+      } = market;
+      const orderBook = orderBooks[id]?.orderBook;
+      const subMarketData = processSubMarketCollapsibleData(orderBook,
+        outcomesFormatted,
+        min,
+        max,
+        addBet,
+        description);
+      marketGroups.push(
+        <SubMarketCollapsible key={id} marketId={id} title={sportsBook.title || description} SubMarketCollapsibleData={subMarketData} />
+      );
+    });
   }
   if (marketGroups.length > 0) {
     return <>{marketGroups.map(item => item)}</>;
