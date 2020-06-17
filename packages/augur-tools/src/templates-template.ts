@@ -310,6 +310,8 @@ export interface TemplateGroupInfo {
   estTimestamp?: string;
   header: string;
   title?: string;
+  canPoolLiquidity: boolean,
+  liquidityPoolId: string,
 }
 
 export enum ValidationType {
@@ -776,6 +778,8 @@ export function getGroupHashInfo({
     header: undefined,
     title: undefined,
     estTimestamp: undefined,
+    canPoolLiquidity: false,
+    liquidityPoolId: undefined,
   }
   if (!hash || !inputs) return defaultValues;
   const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find(g => g[hash]);
@@ -787,6 +791,11 @@ export function getGroupHashInfo({
   const estTimestamp = group?.estInputId ? inputs[group.estInputId].timestamp : undefined;
   const header = group.header ? populateTemplateTitle(group.header, inputs, true) : undefined;
   const title = group.title ? populateTemplateTitle(group.title, inputs, true) : undefined;
+  let liquidityPoolId = undefined;
+  const canPoolLiquidity = !hasTemplateTextInputs(hash, true);
+  if (canPoolLiquidity) {
+    liquidityPoolId = hashGroupKeyValues({...keyValues, 'hash': hash, 'groupLine': groupLine});
+  }
 
   return {
     hashKeyInputValues,
@@ -794,7 +803,9 @@ export function getGroupHashInfo({
     groupLine,
     estTimestamp,
     header,
-    title
+    title,
+    canPoolLiquidity,
+    liquidityPoolId,
   };
 }
 

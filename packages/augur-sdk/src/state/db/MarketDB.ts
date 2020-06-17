@@ -548,7 +548,8 @@ export class MarketDB extends DerivedDB {
           console.error(log['extraInfo'].description, errors);
 
         if (log['isTemplate'] && log['marketType'] === MarketType.Categorical) {
-          const { groupLine, groupType, hashKeyInputValues, header, title, estTimestamp } = getGroupHashInfo(
+          const { groupLine, groupType, hashKeyInputValues, header, title, estTimestamp,
+            canPoolLiquidity, liquidityPoolId } = getGroupHashInfo(
             log['extraInfo'].template
           );
           log['templateGroupHash'] = hashKeyInputValues;
@@ -556,7 +557,8 @@ export class MarketDB extends DerivedDB {
           log['templateGroupLine'] = groupLine;
           log['templateGroupHeader'] = header;
           log['templateGroupTitle'] = title;
-          log['templateGroupEst'] = estTimestamp
+          log['templateGroupEst'] = estTimestamp;
+          log['templateLiquidityPool'] = canPoolLiquidity ? liquidityPoolId : log['market'];
         }
       }
     } catch (err) {

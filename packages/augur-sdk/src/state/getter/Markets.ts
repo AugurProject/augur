@@ -146,6 +146,7 @@ export interface SportsBookInfo {
   estTimestamp?: string;
   header: string;
   title?: string;
+  liquidityPool: string;
 }
 
 export interface MarketInfo {
@@ -1463,6 +1464,7 @@ async function getMarketsInfo(
         header: marketData.templateGroupHeader,
         title: marketData.templateGroupTitle,
         estTimestamp: marketData.templateGroupEst,
+        liquidityPool: marketData.templateLiquidityPool
       }
     };
   });
