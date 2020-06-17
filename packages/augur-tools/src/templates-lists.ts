@@ -203,11 +203,8 @@ export const LIST_VALUES = {
     'Eredivisie (Dutch)',
     'Superliga Argentina',
   ],
-  SOCCER_CUSTOM_WOMENS_EVENTS: [
-    'World Cup'
-  ],
   SOCCER_CUSTOM_MENS_EVENTS: [
-    'World Cup',
+    'FIFA World Cup',
     'UEFA Champions League',
     'UEFA Europa League',
     'Copa America',
@@ -3141,7 +3138,7 @@ export const LIST_VALUES = {
   ETH_CURRENCY_PAIRS: ['ETH/USD', 'ETH/USDT', 'ETH/EUR'],
   LTC_CURRENCY_PAIRS: ['LTC/USD', 'LTC/USDT', 'LTC/EUR'],
   AMOUNT_UNITS: ['Thousand', 'Million', 'Billion'],
-  SOCCER_CUSTOM_EVENTS: [
+  SOCCER_CUSTOM_FUTURES_EVENTS: [
     'FIFA World Cup',
     'UEFA Champions League',
     'UEFA Europa League',
@@ -3150,6 +3147,17 @@ export const LIST_VALUES = {
     'AFC Champions League',
     'CONCACAF Gold Cup',
     'CONCACAF Champions League',
+  ],
+  SOCCER_CUSTOM_DAILY_EVENTS: [
+    'World Cup',
+    'UEFA Champions League',
+    'UEFA Europa League',
+    'Copa America',
+    'AFC Asian Cup',
+    'AFC Champions League',
+    'CONCACAF Gold Cup',
+    'CONCACAF Champions League',
+    'Friendlies'
   ],
   SOCCER_LEAGUE_GERMANY: [
     'Bayern Munich',
@@ -3413,20 +3421,21 @@ export const SOCCER_CUSTOM_DEP_YEARS = {
   'FIFA World Cup': ['2022', '2026', '2030'],
   'UEFA Champions League': LIST_VALUES.YEAR_RANGE,
   'UEFA Europa League': LIST_VALUES.YEAR_RANGE,
-  'Copa America': LIST_VALUES.YEARS,
+  'Copa America': ['2021', '2024', '2028'],
   'AFC Asian Cup': ['2023', '2027', '2031'],
   'AFC Champions League': LIST_VALUES.YEARS,
   'CONCACAF Gold Cup': ['2021', '2023', '2025'],
   'CONCACAF Champions League': LIST_VALUES.YEARS,
 };
+
 export const SOCCER_CUSTOM_GENDER_EVENTS = {
-  "Men's": LIST_VALUES.SOCCER_CUSTOM_EVENTS,
+  "Men's": LIST_VALUES.SOCCER_CUSTOM_FUTURES_EVENTS,
   "Women's": ['FIFA World Cup'],
 };
 
 export const SOCCER_GENDER_EVENTS = {
-  "Men's": LIST_VALUES.SOCCER_CUSTOM_MENS_EVENTS,
-  "Women's": LIST_VALUES.SOCCER_CUSTOM_WOMENS_EVENTS,
+  "Men's": LIST_VALUES.SOCCER_CUSTOM_DAILY_EVENTS,
+  "Women's": 'World Cup',
 };
 
 export const FIN_EXCHANGES_CLOSING_OFFSETS = {
