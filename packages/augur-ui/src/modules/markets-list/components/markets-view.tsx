@@ -307,70 +307,75 @@ const MarketsView = () => {
           <FilterButton />
         </section>
       )}
-      <FilterTags
-        maxLiquiditySpread={maxLiquiditySpread}
-        maxFee={maxFee}
-        removeFeeFilter={() =>
-          updateFilterSortOptions({ [MARKET_MAX_FEES]: MAX_FEE_100_PERCENT })
-        }
-        removeLiquiditySpreadFilter={() =>
-          updateFilterSortOptions({
-            [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS,
-          })
-        }
-        updateQuery={(param, value) =>
-          updateQuery(param, value, location, history)
-        }
-      />
-      <FilterNotice
-        show={includeInvalidMarkets === 'show'}
-        showDismissButton={true}
-        updateLoginAccountSettings={settings =>
-          updateLoginAccountSettings(settings)
-        }
-        settings={{
-          propertyName: 'showInvalidMarketsBannerHideOrShow',
-          propertyValue: showInvalidMarketsBannerHideOrShow,
-        }}
-        content={
-          <span>
-            Invalid markets are no longer hidden. This puts you at risk of
-            trading on invalid markets.{' '}
-            <a
-              href={HELP_CENTER_INVALID_MARKETS}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn more
-            </a>
-          </span>
-        }
-      />
+      {isTrading && (
+        <>
+          <FilterTags
+            maxLiquiditySpread={maxLiquiditySpread}
+            maxFee={maxFee}
+            removeFeeFilter={() =>
+              updateFilterSortOptions({
+                [MARKET_MAX_FEES]: MAX_FEE_100_PERCENT,
+              })
+            }
+            removeLiquiditySpreadFilter={() =>
+              updateFilterSortOptions({
+                [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS,
+              })
+            }
+            updateQuery={(param, value) =>
+              updateQuery(param, value, location, history)
+            }
+          />
+          <FilterNotice
+            show={includeInvalidMarkets === 'show'}
+            showDismissButton={true}
+            updateLoginAccountSettings={settings =>
+              updateLoginAccountSettings(settings)
+            }
+            settings={{
+              propertyName: 'showInvalidMarketsBannerHideOrShow',
+              propertyValue: showInvalidMarketsBannerHideOrShow,
+            }}
+            content={
+              <span>
+                Invalid markets are no longer hidden. This puts you at risk of
+                trading on invalid markets.{' '}
+                <a
+                  href={HELP_CENTER_INVALID_MARKETS}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Learn more
+                </a>
+              </span>
+            }
+          />
 
-      <FilterNotice
-        show={!displayFee || !displayLiquiditySpread}
-        showDismissButton={true}
-        updateLoginAccountSettings={settings =>
-          updateLoginAccountSettings(settings)
-        }
-        settings={{
-          propertyName: 'showInvalidMarketsBannerFeesOrLiquiditySpread',
-          propertyValue: showInvalidMarketsBannerFeesOrLiquiditySpread,
-        }}
-        content={
-          <span>
-            {feesLiquidityMessage}{' '}
-            <a
-              href={HELP_CENTER_INVALID_MARKETS}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn more
-            </a>
-          </span>
-        }
-      />
-
+          <FilterNotice
+            show={!displayFee || !displayLiquiditySpread}
+            showDismissButton={true}
+            updateLoginAccountSettings={settings =>
+              updateLoginAccountSettings(settings)
+            }
+            settings={{
+              propertyName: 'showInvalidMarketsBannerFeesOrLiquiditySpread',
+              propertyValue: showInvalidMarketsBannerFeesOrLiquiditySpread,
+            }}
+            content={
+              <span>
+                {feesLiquidityMessage}{' '}
+                <a
+                  href={HELP_CENTER_INVALID_MARKETS}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Learn more
+                </a>
+              </span>
+            }
+          />
+        </>
+      )}
       <MarketsList
         testid="markets"
         markets={markets}
@@ -385,7 +390,7 @@ const MarketsView = () => {
       />
 
       <FilterNotice
-        show={!isSearching && filteredOutCount && filteredOutCount > 0}
+        show={!isSearching && filteredOutCount && filteredOutCount > 0 && isTrading}
         content={
           <span>
             There are {filteredOutCount} additional markets outside of the
