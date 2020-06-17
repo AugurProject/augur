@@ -955,7 +955,7 @@ export const LiquidityDepletedLabel = ({
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         No longer passing the Liquidity spread filter, add more liquidity to
-        have your market seen.
+        have your market seen. Liquidity indicator updates every minute.
       </ReactTooltip>
     </span>
   );
