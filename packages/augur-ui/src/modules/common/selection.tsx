@@ -223,7 +223,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         <button
           className={classNames(Styles.label, {
             [Styles.SelectedLabel]: selected,
-            [Styles.invalidColor]: selected.value === INVALID_OUTCOME_ID,
+            [Styles.invalidColor]: selected?.value === INVALID_OUTCOME_ID,
           })}
         >
           <span ref={ref => (this.labelRef = ref)}>
@@ -243,7 +243,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
                 value={option.value}
                 onClick={() => this.dropdownSelect(option)}
                 className={classNames({
-                  [Styles.invalidColor]: option.value === INVALID_OUTCOME_ID,
+                  [Styles.invalidColor]: option?.value === INVALID_OUTCOME_ID,
                 })}
               >
                 {option.label}
