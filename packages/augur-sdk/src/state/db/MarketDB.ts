@@ -552,13 +552,13 @@ export class MarketDB extends DerivedDB {
             canPoolLiquidity, liquidityPoolId } = getGroupHashInfo(
             log['extraInfo'].template
           );
-          log['templateGroupHash'] = hashKeyInputValues;
-          log['templateGroupType'] = groupType;
-          log['templateGroupLine'] = groupLine;
-          log['templateGroupHeader'] = header;
-          log['templateGroupTitle'] = title;
-          log['templateGroupEst'] = estTimestamp;
-          log['templateLiquidityPool'] = canPoolLiquidity ? liquidityPoolId : log['market'];
+          log['groupHash'] = hashKeyInputValues;
+          log['groupType'] = groupType;
+          log['groupLine'] = groupLine;
+          log['groupHeader'] = header;
+          log['groupTitle'] = title;
+          log['groupEstDatetime'] = estTimestamp;
+          log['liquidityPool'] = canPoolLiquidity ? liquidityPoolId : log['market'];
         }
       }
     } catch (err) {

@@ -65,6 +65,7 @@ import { Users } from './state/getter/Users';
 import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
 import { Subscriptions } from './subscriptions';
+import { LiquidityPool } from './state/getter/LiquidityPool';
 
 export class Augur<TProvider extends Provider = Provider> {
   syncableFlexSearch: SyncableFlexSearch;
@@ -545,9 +546,11 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.hotLoading.getCurrentDisputeWindowData(params);
   }
 
-  async getBestOffers(params: GetBestOffersParams): Promise<BestOffersOrders> {
-    return this.bestOffer.getBestOffers(params);
-  }
+  getMarketOutcomeBestOffer = (
+    params: Parameters<typeof LiquidityPool.getMarketOutcomeBestOffer>[2]
+  ): ReturnType<typeof LiquidityPool.getMarketOutcomeBestOffer> => {
+    return this.bindTo(LiquidityPool.getMarketOutcomeBestOffer)(params);
+  };
 
   async simulateTrade(
     params: PlaceTradeDisplayParams
