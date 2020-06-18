@@ -28,6 +28,11 @@ import {
   CreateYesNoMarketParams,
   Market,
 } from './api/Market';
+import {
+  BestOffer,
+  GetBestOffersParams,
+  BestOffersOrders
+} from './api/BestOffer';
 import { OnChainTrade } from './api/OnChainTrade';
 import { PlaceTradeDisplayParams, SimulateTradeData, Trade } from './api/Trade';
 import { Uniswap } from './api/Uniswap';
@@ -76,6 +81,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly universe: Universe;
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
+  readonly bestOffer: BestOffer;
   readonly events: Subscriptions;
 
   private _sdkReady = false;
@@ -139,6 +145,7 @@ export class Augur<TProvider extends Provider = Provider> {
       );
     this.warpSync = new WarpSync(this);
     this.hotLoading = new HotLoading(this);
+    this.bestOffer = new BestOffer(this);
     this.onChainTrade = new OnChainTrade(this);
     this.trade = new Trade(this);
     if (enableFlexSearch && !this.syncableFlexSearch) {
@@ -536,6 +543,10 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async getDisputeWindow(params: GetDisputeWindowParams): Promise<DisputeWindow> {
     return this.hotLoading.getCurrentDisputeWindowData(params);
+  }
+
+  async getBestOffers(params: GetBestOffersParams): Promise<BestOffersOrders> {
+    return this.bestOffer.getBestOffers(params);
   }
 
   async simulateTrade(

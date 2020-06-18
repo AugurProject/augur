@@ -76,7 +76,7 @@ export async function createCatZeroXOrders(
   user: ContractAPI,
   market: string,
   skipFaucetApproval: boolean,
-  numOutcomes: number,
+  numOutcomes: number = 3,
 ) {
   if (!skipFaucetApproval) {
     await user.faucetCashUpTo(MILLION, MILLION);
@@ -131,7 +131,7 @@ export async function createCatZeroXOrders(
         direction: 0,
         market,
         numTicks: new BigNumber(100),
-        numOutcomes: 3,
+        numOutcomes: numOutcomes,
         outcome,
         tradeGroupId,
         fingerprint: formatBytes32String('11'),
@@ -168,6 +168,46 @@ export async function createCatZeroXOrders(
   await user.placeZeroXOrders(orders).catch(console.error);
 }
 
+export async function createSingleCatZeroXOrder(
+  user: ContractAPI,
+  market: string,
+  skipFaucetApproval: boolean,
+  numOutcomes: number,
+  direction: number,
+  price: string,
+  shares: string,
+  outcome: number,
+) {
+  if (!skipFaucetApproval) {
+    await user.faucetCashUpTo(MILLION, MILLION);
+    await user.approve();
+  }
+
+  const timestamp = await user.getTimestamp();
+  const tradeGroupId = String(Date.now());
+  const oneHundredDays = new BigNumber(8640000);
+  const expirationTime = new BigNumber(timestamp).plus(oneHundredDays);
+  const orders = [];
+  console.log(`creating ${direction} order, ${shares} @ ${price}`);
+  orders.push({
+    direction,
+    market,
+    numTicks: new BigNumber(100),
+    numOutcomes: numOutcomes,
+    outcome,
+    tradeGroupId,
+    fingerprint: formatBytes32String('11'),
+    doNotCreateOrders: false,
+    displayMinPrice: new BigNumber(0),
+    displayMaxPrice: new BigNumber(1),
+    displayAmount: new BigNumber(shares),
+    displayPrice: new BigNumber(price),
+    displayShares: new BigNumber(0),
+    expirationTime,
+  });
+
+  await user.placeZeroXOrders(orders).catch(console.error);
+}
 
 export async function createScalarZeroXOrders(
   user: ContractAPI,
