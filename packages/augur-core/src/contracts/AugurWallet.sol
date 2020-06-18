@@ -34,13 +34,13 @@ contract AugurWallet is Initializable, IAugurWallet {
     bytes32 public domainSeparator;
     IERC20 public cash;
 
-    function initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, address _legacyRegistry, IERC20 _cash, IAffiliates _affiliates, IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade) external beforeInitialized {
+    function initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, address _registry, address _registryV2, IERC20 _cash, IAffiliates _affiliates, IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade) external beforeInitialized {
         endInitialization();
         domainSeparator = keccak256(abi.encode(DOMAIN_SEPARATOR_TYPEHASH, this));
         owner = _owner;
-        registry = IAugurWalletRegistry(msg.sender);
-        authorizedProxies[msg.sender] = true;
-        authorizedProxies[_legacyRegistry] = true;
+        registry = IAugurWalletRegistry(_registryV2);
+        authorizedProxies[_registry] = true;
+        authorizedProxies[_registryV2] = true;
         cash = _cash;
 
         _cash.approve(_augur, MAX_APPROVAL_AMOUNT);
