@@ -48,7 +48,6 @@ export class BestOffer {
   determineBestOfferForLiquidityPool(orders: {
     logs: Logs.ParsedOrderEventLog[];
   }) {
-    console.log('order events', orders);
     const onlyOffers = orders.logs.filter(
       o => String(o.orderType) === OrderTypeHex.Ask
     );
@@ -82,11 +81,12 @@ export class BestOffer {
         {}
       );
 
-      this.augur.events.emit(
-        SubscriptionEventName.LiquidityPoolUpdated,
-        liquiditPoolsUpdated
-      );
-      console.log('best offer', liquiditPoolsUpdated);
+      if (_.keys(liquiditPoolsUpdated).length > 0) {
+        this.augur.events.emit(
+          SubscriptionEventName.LiquidityPoolUpdated,
+          liquiditPoolsUpdated
+        );
+      }
     });
   }
 
