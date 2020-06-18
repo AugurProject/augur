@@ -173,8 +173,7 @@ const FUTURES_GRID_MOCK_DATA = (addBet, marketId, description) => [
   {
     title: 'Event Canceled',
     topLabel: null,
-    action: () =>
-      addBet(marketId, description, '+1000', 'Event Canceled', '0'),
+    action: () => addBet(marketId, description, '+1000', 'Event Canceled', '0'),
     label: '+1000',
     volume: '$100.43',
   },
@@ -197,8 +196,7 @@ const SUB_MARKET_MOCK_DATA = (addBet, marketId, description) => [
   },
   {
     title: 'Game Cancelled',
-    action: () =>
-      addBet(marketId, description, '-128', 'Game Cancelled', '0'),
+    action: () => addBet(marketId, description, '-128', 'Game Cancelled', '0'),
     topLabel: null,
     label: '-128',
     volume: '$100.43',
@@ -619,6 +617,171 @@ export interface MultiMarketTable {
   }>;
 }
 
+const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
+  const {
+    COMBO_MONEY_LINE,
+    COMBO_OVER_UNDER,
+    COMBO_SPREAD,
+  } = SPORTS_GROUP_MARKET_TYPES;
+  const moneyLineMarket = markets.find(
+    market => market.sportsBook.groupType === COMBO_MONEY_LINE
+  );
+  const spreadMarket = markets.find(
+    market => market.sportsBook.groupType === COMBO_SPREAD
+  );
+  const overUnderMarket = markets.find(
+    market => market.sportsBook.groupType === COMBO_OVER_UNDER
+  );
+  let data = [];
+  if (!moneyLineMarket && !spreadMarket && !overUnderMarket) {
+    data = COMBO_MOCK_DATA(markets[0].id, addBet, markets[0].description);
+  } else {
+    if (moneyLineMarket) {
+      moneyLineMarket.outcomesFormatted.forEach(outcome => {
+        if (outcome.isInvalid) return;
+        const outcomeObject = {
+          title: outcome.description,
+          spread: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                spreadMarket.id,
+                spreadMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+          },
+          moneyLine: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                moneyLineMarket.id,
+                moneyLineMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+          },
+          overUnder: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                overUnderMarket.id,
+                overUnderMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+          },
+        };
+        data.push(outcomeObject);
+      });
+    } else if (spreadMarket) {
+      spreadMarket.outcomesFormatted.forEach(outcome => {
+        if (outcome.isInvalid) return;
+        const outcomeObject = {
+          title: outcome.description,
+          spread: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                spreadMarket.id,
+                spreadMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+          },
+          moneyLine: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                moneyLineMarket.id,
+                moneyLineMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+          },
+          overUnder: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                overUnderMarket.id,
+                overUnderMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+          },
+        };
+        data.push(outcomeObject);
+      });
+    } else if (overUnderMarket) => {
+      overUnderMarket.outcomesFormatted.forEach(outcome => {
+        if (outcome.isInvalid) return;
+        const outcomeObject = {
+          title: outcome.description,
+          spread: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                spreadMarket.id,
+                spreadMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+          },
+          moneyLine: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                moneyLineMarket.id,
+                moneyLineMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+          },
+          overUnder: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                overUnderMarket.id,
+                overUnderMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+          },
+        };
+        data.push(outcomeObject);
+      });
+    }
+  }
+  return data;
+};
+
 const processMultiMarketTableData = (
   orderBook,
   outcomes,
@@ -702,10 +865,11 @@ function processDailyMarketData(
       data.push({
         title: outcome.description,
         topLabel: null,
-        action: () => addBet(marketId, description, '0', outcome.description, '0'),
+        action: () =>
+          addBet(marketId, description, '0', outcome.description, '0'),
         label: '-',
-        volume: outcome.volumeFormatted.full
-      })
+        volume: outcome.volumeFormatted.full,
+      });
     });
   } else {
     data = DAILY_MOCK_DATA(addBet, marketId, description);
@@ -730,10 +894,11 @@ function processFuturesGridData(
       data.push({
         title: outcome.description,
         topLabel: null,
-        action: () => addBet(marketId, description, '0', outcome.description, '0'),
+        action: () =>
+          addBet(marketId, description, '0', outcome.description, '0'),
         label: '-',
-        volume: outcome.volumeFormatted.full
-      })
+        volume: outcome.volumeFormatted.full,
+      });
     });
   } else {
     data = FUTURES_GRID_MOCK_DATA(addBet, marketId, description);
@@ -758,10 +923,11 @@ function processSubMarketCollapsibleData(
       data.push({
         title: outcome.description,
         topLabel: null,
-        action: () => addBet(marketId, description, '0', outcome.description, '0'),
+        action: () =>
+          addBet(marketId, description, '0', outcome.description, '0'),
         label: '-',
-        volume: outcome.volumeFormatted.full
-      })
+        volume: outcome.volumeFormatted.full,
+      });
     });
   } else {
     data = SUB_MARKET_MOCK_DATA(addBet, marketId, description);
@@ -797,7 +963,10 @@ export const ReportedOutcome = ({
   );
 };
 
-export const MultiOutcomeMarketTable = ({ marketTitle, multiOutcomeMarketTableData }) => (
+export const MultiOutcomeMarketTable = ({
+  marketTitle,
+  multiOutcomeMarketTableData,
+}) => (
   <section className={Styles.MultiOutcomeMarketTable}>
     <h5>{marketTitle}</h5>
     <ul>
@@ -821,92 +990,35 @@ export const MultiOutcomeMarketGrid = ({ multiOutcomeMarketGridData }) => (
   </section>
 );
 
-export const MultiMarketTable = ({
-  orderBook,
-  outcomes,
-  min,
-  max,
-  description,
-}) => {
-  const { actions } = useBetslipStore();
-  const multiMarketTableData = processMultiMarketTableData(
-    orderBook,
-    outcomes,
-    min,
-    max,
-    actions.addBet,
-    description
-  );
-  const multiOutcomeMarketGridData = processMultiOutcomeMarketGridData(
-    orderBook,
-    outcomes,
-    min,
-    max,
-    actions.addBet,
-    description
-  );
-  const multiOutcomeMarketTableData = processMultiOutcomeMarketTableData(
-    orderBook,
-    outcomes,
-    min,
-    max,
-    actions.addBet,
-    description
-  );
-  const SubMarketCollapsibleData = processSubMarketCollapsibleData(
-    orderBook,
-    outcomes,
-    min,
-    max,
-    actions.addBet,
-    description
-  );
+export const MultiMarketTable = ({ comboMarketData }) => {
   return (
-    <>
-      <section className={classNames(Styles.MultiMarketTable)}>
-        <div>
-          <ul>
-            <li>Spread</li>
-            <li>Moneyline</li>
-            <li>Over / Under</li>
-          </ul>
-        </div>
-        <>
-          {multiMarketTableData.map(
-            ({ title, spread, moneyLine, overUnder }) => (
-              <article key={title}>
-                <h3>{title}</h3>
-                <SportsOutcome {...spread} />
-                <SportsOutcome {...moneyLine} />
-                <SportsOutcome {...overUnder} />
-              </article>
-            )
-          )}
-        </>
-      </section>
-      <MultiOutcomeMarketGrid
-        multiOutcomeMarketGridData={multiOutcomeMarketGridData}
-      />
-      <MultiOutcomeMarketTable
-        multiOutcomeMarketTableData={multiOutcomeMarketTableData}
-      />
-      <SubMarketCollapsible
-        title="over / under 230.5"
-        SubMarketCollapsibleData={SubMarketCollapsibleData}
-      />
-      <SubMarketCollapsible
-        title="over / under 230.5"
-        SubMarketCollapsibleData={SubMarketCollapsibleData}
-      />
-      <SubMarketCollapsible
-        title="over / under 230.5"
-        SubMarketCollapsibleData={SubMarketCollapsibleData}
-      />
-    </>
+    <section className={classNames(Styles.MultiMarketTable)}>
+      <div>
+        <ul>
+          <li>Spread</li>
+          <li>Moneyline</li>
+          <li>Over / Under</li>
+        </ul>
+      </div>
+      <>
+        {comboMarketData.map(({ title, spread, moneyLine, overUnder }) => (
+          <article key={title}>
+            <h3>{title}</h3>
+            <SportsOutcome {...spread} />
+            <SportsOutcome {...moneyLine} />
+            <SportsOutcome {...overUnder} />
+          </article>
+        ))}
+      </>
+    </section>
   );
 };
 
-export const SubMarketCollapsible = ({ marketId, title, SubMarketCollapsibleData }) => {
+export const SubMarketCollapsible = ({
+  marketId,
+  title,
+  SubMarketCollapsibleData,
+}) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   // console.log('subMarketcollapsable', SubMarketCollapsibleData, SubMarketCollapsibleData.length);
   return (
@@ -922,19 +1034,19 @@ export const SubMarketCollapsible = ({ marketId, title, SubMarketCollapsibleData
         </button>
       </div>
       <div>
-        {
-        SubMarketCollapsibleData.length <= 3 ? 
+        {SubMarketCollapsibleData.length <= 3 ? (
           SubMarketCollapsibleData.map(({ title, ...outcomeData }) => (
             <article key={title}>
               <h3>{title}</h3>
               <SportsOutcome {...outcomeData} />
             </article>
           ))
-        : <MultiOutcomeMarketGrid
+        ) : (
+          <MultiOutcomeMarketGrid
             key={marketId}
             multiOutcomeMarketGridData={SubMarketCollapsibleData}
           />
-        }
+        )}
       </div>
     </section>
   );
@@ -965,10 +1077,14 @@ export const SportsOutcome = ({
   </div>
 );
 
-export const prepareSportsGroup = ({ id, type, markets }, orderBooks, addBet) => {
+export const prepareSportsGroup = (
+  { id, type, markets },
+  orderBooks,
+  addBet
+) => {
   const { FUTURES, DAILY, COMBO } = SPORTS_GROUP_TYPES;
   let marketGroups = [];
-  switch(type) {
+  switch (type) {
     case FUTURES: {
       markets.forEach(market => {
         const {
@@ -998,7 +1114,10 @@ export const prepareSportsGroup = ({ id, type, markets }, orderBooks, addBet) =>
     }
     case DAILY: {
       // TODO: fix to use a constant for money line
-      const mainMarket = markets.find(market => market.sportsBook.groupType === SPORTS_GROUP_MARKET_TYPES.MONEY_LINE);
+      const mainMarket = markets.find(
+        market =>
+          market.sportsBook.groupType === SPORTS_GROUP_MARKET_TYPES.MONEY_LINE
+      );
       const mainMarketId = mainMarket.id;
       const dailyMarketData = processDailyMarketData(
         orderBooks[mainMarketId]?.orderBook,
@@ -1026,27 +1145,39 @@ export const prepareSportsGroup = ({ id, type, markets }, orderBooks, addBet) =>
           sportsBook,
         } = market;
         const orderBook = orderBooks[id]?.orderBook;
-        const subMarketData = processSubMarketCollapsibleData(orderBook,
+        const subMarketData = processSubMarketCollapsibleData(
+          orderBook,
           outcomesFormatted,
           min,
           max,
           addBet,
-          description);
+          description
+        );
         marketGroups.push(
-          <SubMarketCollapsible key={id} marketId={id} title={sportsBook.title || description} SubMarketCollapsibleData={subMarketData} />
+          <SubMarketCollapsible
+            key={id}
+            marketId={id}
+            title={sportsBook.title || description}
+            SubMarketCollapsibleData={subMarketData}
+          />
         );
       });
       break;
     }
     case COMBO: {
-      console.log('combo activated!', { type, markets });
+      const data = processComboMarketData(
+        { id, type, markets },
+        orderBooks,
+        addBet
+      );
+      marketGroups.push(<MultiMarketTable key={id} comboMarketData={data} />);
       break;
     }
     default:
       break;
   }
   return marketGroups;
-}
+};
 
 export interface SportsGroupMarketsProps {
   sportsGroup: {
