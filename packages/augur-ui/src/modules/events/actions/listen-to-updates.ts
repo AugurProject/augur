@@ -15,7 +15,6 @@ import {
   handleWarpSyncHashUpdatedLog,
   handleZeroStatusUpdated,
   handleBulkOrdersLog,
-  handleOrderLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
@@ -62,9 +61,6 @@ const EVENTS = {
   ),
   [SubscriptionEventName.WarpSyncHashUpdated]: wrapLogHandler(
     handleWarpSyncHashUpdatedLog
-  ),
-  [SubscriptionEventName.OrderEvent]: wrapLogHandler(
-    handleOrderLog
   ),
 
   [TXEventName.AwaitingSigning]: wrapLogHandler(handleTxAwaitingSigning),
