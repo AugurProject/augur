@@ -10,15 +10,10 @@ import { MODAL_NETWORK_CONNECT } from 'modules/common/constants';
 import { WindowApp } from 'modules/types';
 import { SDKConfiguration } from '@augurproject/artifacts';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { isWeb3Transport } from 'modules/contracts/actions/contractCalls';
 
 interface ModalNetworkConnectProps {
-  modal: {
-    type: string;
-    isInitialConnection?: boolean;
-    config: SDKConfiguration;
-  };
   submitForm: Function;
-  isConnectedThroughWeb3: boolean;
 }
 
 const types = { IPC: 'ipc', HTTP: 'http', WS: 'ws' };
@@ -45,11 +40,10 @@ function isFormInvalid(isConnectedThroughWeb3, ethereumNode) {
 }
 
 const ModalNetworkConnect = ({
-  modal,
-  isConnectedThroughWeb3,
   submitForm,
 }: ModalNetworkConnectProps) => {
-  const { env } = useAppStatusStore();
+  const isConnectedThroughWeb3 = isWeb3Transport();
+  const { env, modal } = useAppStatusStore();
   const ethereumNode = getInitialEthereumNode(env);
   const [formErrors, setFormErrors] = useState({ ethereumNode: [] });
 
@@ -90,7 +84,8 @@ const ModalNetworkConnect = ({
     editEndpointParams(windowRef as WindowApp, endpoints);
 
     // this.props.submitForm used as a hook for disconnection modal, normally just preventsDefault
-    submitForm(e);
+    !submitForm && e.preventDefault();
+    submitForm && submitForm();
   }
   return (
     <form

@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { ModalMigrateMarket } from 'modules/modal/components/modal-migrate-market';
 import { migrateMarketThroughOneFork } from 'modules/forking/actions/migrate-through-one-fork';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
@@ -12,6 +11,7 @@ import {
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import getGasPrice from 'modules/auth/helpers/get-gas-price';
 import { AppStatus } from 'modules/app/store/app-status';
+import { Message } from '../message';
 
 const mapStateToProps = (state: AppState) => ({
   modal: AppStatus.get().modal,
@@ -39,6 +39,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     dP.migrateMarketThroughOneFork(marketId, payoutNumerators, description, estimateGas)
   };
   return {
+    migrateMarket: true,
     title: 'Migrate Market',
     description: ['This market will be migrated to the winning universe and will no longer be viewable in the current universe.'],
     marketId: sP.modal.market.id,
@@ -79,5 +80,5 @@ export default withRouter(
     mapStateToProps,
     mapDispatchToProps,
     mergeProps,
-  )(ModalMigrateMarket)
+  )(Message)
 );

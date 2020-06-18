@@ -41,7 +41,7 @@ import Styles from 'modules/auth/connect-dropdown.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getEthReserve } from 'modules/auth/helpers/login-account';
-import TransferMyDai from 'modules/modal/containers/transfer-my-dai';
+import { TransferMyDai } from 'modules/modal/common';
 
 const useGasInfo = () => {
   const {

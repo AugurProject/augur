@@ -25,14 +25,30 @@ import {
   LinearPropertyLabelProps,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS, DAI, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS, ON_BORDING_STATUS_STEP, WALLET_STATUS_VALUES } from 'modules/common/constants';
+import {
+  PENDING,
+  SUCCESS,
+  DAI,
+  FAILURE,
+  ACCOUNT_TYPES,
+  ETH,
+  HELP_CENTER_ADD_FUNDS,
+  HELP_CENTER_LEARN_ABOUT_ADDRESS,
+  ON_BORDING_STATUS_STEP,
+  WALLET_STATUS_VALUES,
+  MODAL_TRANSFER,
+} from 'modules/common/constants';
 import { LinkContent, LoginAccount, FormattedNumber } from 'modules/types';
-import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
+import {
+  DismissableNotice,
+  DISMISSABLE_NOTICE_BUTTON_TYPES,
+} from 'modules/reporting/common';
 import { toChecksumAddress } from 'ethereumjs-util';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ReactTooltip from 'react-tooltip';
 import { BigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { formatDai } from 'utils/format-number';
 
 export interface TitleProps {
   title: string;
@@ -189,7 +205,7 @@ export interface CategorySelectionState {
 export class CategorySelection extends Component<
   CategorySelectionProps,
   CategorySelectionState
-  > {
+> {
   state: CategorySelectionState = {
     showText: false,
     subCategory: '',
@@ -260,13 +276,11 @@ export const Title = (props: TitleProps) => (
   <header
     className={classNames(Styles.TitleHeader, {
       [Styles.Bright]: props.bright,
-      [Styles.ShortBorder]: props.subheader
+      [Styles.ShortBorder]: props.subheader,
     })}
   >
     <h1>{props.title}</h1>
-    {props.subheader &&
-      <h2>{props.subheader}</h2>
-    }
+    {props.subheader && <h2>{props.subheader}</h2>}
     {props.closeAction && (
       <button onClick={() => props.closeAction()}>{XIcon}</button>
     )}
@@ -274,27 +288,35 @@ export const Title = (props: TitleProps) => (
 );
 
 export const Description = (props: DescriptionProps) => {
-  return props.description.toString().split('\n').map((descriptionText: string) => (
-    <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
-      {descriptionText}
-    </p>
-  ));
-}
+  return props.description
+    .toString()
+    .split('\n')
+    .map((descriptionText: string) => (
+      <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
+        {descriptionText}
+      </p>
+    ));
+};
 
 export const DescriptionWithLink = (props: DescriptionWithLinkProps) => {
-  const description = props.description.toString().split('\n').map((descriptionText: string) => (
-    <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
-      {descriptionText}
-    </p>
-  ));
+  const description = props.description
+    .toString()
+    .split('\n')
+    .map((descriptionText: string) => (
+      <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
+        {descriptionText}
+      </p>
+    ));
 
   return (
     <div className={Styles.DescriptionWithLink}>
       {description}
-      <a href={props.link} target="_blank">{props.label}</a>
+      <a href={props.link} target="_blank">
+        {props.label}
+      </a>
     </div>
   );
-}
+};
 
 export const ButtonsRow = (props: ButtonsRowProps) => (
   <div className={Styles.ButtonsRow}>
@@ -360,7 +382,9 @@ export interface LinkContentSectionProps {
   linkContent: LinkContent[];
 }
 
-export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => (
+export const LinkContentSection = ({
+  linkContent,
+}: LinkContentSectionProps) => (
   <div className={Styles.LinkContentSection}>
     {linkContent.map((content, idx) => (
       <div key={idx}>
@@ -376,12 +400,16 @@ export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => 
 );
 
 interface StepperProps {
-  currentStep: number,
-  maxSteps: number,
+  currentStep: number;
+  maxSteps: number;
   changeCurrentStep?: Function;
 }
 
-export const Stepper = ({ currentStep, maxSteps, changeCurrentStep = null }: StepperProps) => (
+export const Stepper = ({
+  currentStep,
+  maxSteps,
+  changeCurrentStep = null,
+}: StepperProps) => (
   <div className={Styles.Stepper}>
     {[...Array(maxSteps).keys()]
       .map(key => key + 1)
@@ -396,13 +424,35 @@ export const Stepper = ({ currentStep, maxSteps, changeCurrentStep = null }: Ste
 );
 
 interface TransferMyDaiProps {
-  walletType: string;
-  daiAmount: FormattedNumber;
-  showTransferModal: Function;
-  isCondensed: boolean;
+  condensed: boolean;
+  callBack: Function;
 }
 
-export const TransferMyDai = ({ walletType, daiAmount, showTransferModal, isCondensed = false }: TransferMyDaiProps) => {
+export const TransferMyDai = ({ condensed, callBack }: TransferMyDaiProps) => {
+  const {
+    actions: { setModal },
+    loginAccount: {
+      meta: { accountType: walletType },
+      balances: {
+        signerBalances: { dai },
+      },
+    },
+    walletStatus,
+  } = useAppStatusStore();
+  const isCondensed = condensed || false;
+  const daiAmount = formatDai(dai || 0);
+  const showTransferModal = () => {
+    setModal({
+      type: MODAL_TRANSFER,
+      useSigner: true,
+      cb: () => {
+        if (callBack) {
+          setTimeout(() => callBack());
+        }
+      },
+    });
+  };
+
   if (isCondensed) {
     return (
       <div className={Styles.TransferMyDaiCondensed}>
@@ -421,7 +471,9 @@ export const TransferMyDai = ({ walletType, daiAmount, showTransferModal, isCond
   return (
     <div className={Styles.TransferMyDai}>
       <div>
-        <span>{daiAmount.formattedValue} Dai in your {walletType} wallet</span>
+        <span>
+          {daiAmount.formattedValue} Dai in your {walletType} wallet
+        </span>
         <span>Transfer any amount to your trading account.</span>
       </div>
       <PrimaryButton
@@ -430,7 +482,7 @@ export const TransferMyDai = ({ walletType, daiAmount, showTransferModal, isCond
       />
     </div>
   );
-}
+};
 
 export const AccountStatusTracker = () => {
   const { walletStatus } = useAppStatusStore();
@@ -438,30 +490,41 @@ export const AccountStatusTracker = () => {
 
   if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE) {
     accountStatusTracker = ON_BORDING_STATUS_STEP.TWO;
-  }
-  else if (walletStatus === WALLET_STATUS_VALUES.CREATED) {
+  } else if (walletStatus === WALLET_STATUS_VALUES.CREATED) {
     accountStatusTracker = ON_BORDING_STATUS_STEP.THREE;
   }
 
   return (
     <div className={Styles.AccountStatusTracker}>
       <div>
-        <div className={classNames(Styles.AccountStep, {
-          [Styles.AccountStepCompleted]: accountStatusTracker >= ON_BORDING_STATUS_STEP.ONE
-        })}>
-          {accountStatusTracker >= ON_BORDING_STATUS_STEP.ONE && OnboardingCheckIcon}
+        <div
+          className={classNames(Styles.AccountStep, {
+            [Styles.AccountStepCompleted]:
+              accountStatusTracker >= ON_BORDING_STATUS_STEP.ONE,
+          })}
+        >
+          {accountStatusTracker >= ON_BORDING_STATUS_STEP.ONE &&
+            OnboardingCheckIcon}
         </div>
         <div className={Styles.line} />
-        <div className={classNames(Styles.AccountStep, {
-          [Styles.AccountStepCompleted]: accountStatusTracker >= ON_BORDING_STATUS_STEP.TWO
-        })}>
-          {accountStatusTracker >= ON_BORDING_STATUS_STEP.TWO && OnboardingCheckIcon}
+        <div
+          className={classNames(Styles.AccountStep, {
+            [Styles.AccountStepCompleted]:
+              accountStatusTracker >= ON_BORDING_STATUS_STEP.TWO,
+          })}
+        >
+          {accountStatusTracker >= ON_BORDING_STATUS_STEP.TWO &&
+            OnboardingCheckIcon}
         </div>
         <div className={Styles.line} />
-        <div className={classNames(Styles.AccountStep, {
-          [Styles.AccountStepCompleted]: accountStatusTracker === ON_BORDING_STATUS_STEP.THREE
-        })}>
-          {accountStatusTracker === ON_BORDING_STATUS_STEP.THREE && OnboardingCheckIcon}
+        <div
+          className={classNames(Styles.AccountStep, {
+            [Styles.AccountStepCompleted]:
+              accountStatusTracker === ON_BORDING_STATUS_STEP.THREE,
+          })}
+        >
+          {accountStatusTracker === ON_BORDING_STATUS_STEP.THREE &&
+            OnboardingCheckIcon}
         </div>
       </div>
 
@@ -470,10 +533,9 @@ export const AccountStatusTracker = () => {
         <div>Add funds</div>
         <div>Activate account</div>
       </div>
-
     </div>
   );
-}
+};
 
 export const DaiGraphic = () => (
   <div className={Styles.DaiGraphic}>
@@ -494,16 +556,27 @@ export interface DaiEthSelectorProps {
   handleClick: Function;
 }
 
-export const DaiEthSelector = ({ handleClick, daiSelected }: DaiEthSelectorProps) => (
+export const DaiEthSelector = ({
+  handleClick,
+  daiSelected,
+}: DaiEthSelectorProps) => (
   <div className={Styles.DaiEthSelector}>
-    <div onClick={() => handleClick(true)} className={classNames({ [Styles.selected]: daiSelected })}>{DaiLogoIcon} DAI</div>
-    <div onClick={() => handleClick(false)} className={classNames({ [Styles.selected]: !daiSelected })}>{EthIcon} ETH</div>
+    <div
+      onClick={() => handleClick(true)}
+      className={classNames({ [Styles.selected]: daiSelected })}
+    >
+      {DaiLogoIcon} DAI
+    </div>
+    <div
+      onClick={() => handleClick(false)}
+      className={classNames({ [Styles.selected]: !daiSelected })}
+    >
+      {EthIcon} ETH
+    </div>
   </div>
 );
 
-export const TestBet = (
-  <img height='141px' src='images/test-bet.png' />
-);
+export const TestBet = <img height="141px" src="images/test-bet.png" />;
 
 export const AlertMessage = (props: AlertMessageProps) => (
   <div className={Styles.AlertMessage}>
@@ -547,10 +620,7 @@ export const ActionRows = ({ rows }: ActionRowsProps) => {
         estimates => {
           const newRows = [...rows];
           estimates.map((estimate, index) => {
-            newRows[index].properties = [
-              ...rows[index].properties,
-              estimate,
-            ];
+            newRows[index].properties = [...rows[index].properties, estimate];
           });
           setEstimatedRows(newRows);
         }
@@ -559,40 +629,44 @@ export const ActionRows = ({ rows }: ActionRowsProps) => {
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-    estimatedRows.map((row: ActionRow) => (
-      <section key={row.title} className={Styles.ActionRow}>
-        <section>
-          <MarketTitle title={row.title} />
-          <div>
-            {row.properties.map(property => (
-              <React.Fragment key={row.title + ' ' + property.label}>
-                <LinearPropertyLabel
-                  label={property.label}
-                  value={property.value}
-                />
-                {property.addExtraSpace && <span />}
-              </React.Fragment>
-            ))}
-          </div>
-        </section>
+  return estimatedRows.map((row: ActionRow) => (
+    <section key={row.title} className={Styles.ActionRow}>
+      <section>
+        <MarketTitle title={row.title} />
         <div>
-          {row.action &&
-            <ProcessingButton
-              text={row.text}
-              queueName={row.queueName}
-              queueId={row.queueId}
-              action={row.action}
-              submitTextButtton={true}
-            />
-          }
+          {row.properties.map(property => (
+            <React.Fragment key={row.title + ' ' + property.label}>
+              <LinearPropertyLabel
+                label={property.label}
+                value={property.value}
+              />
+              {property.addExtraSpace && <span />}
+            </React.Fragment>
+          ))}
         </div>
-        {row.notice && <DismissableNotice title={row.notice} description={''} show={true} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
       </section>
-    ))
-  )
-}
-
+      <div>
+        {row.action && (
+          <ProcessingButton
+            text={row.text}
+            queueName={row.queueName}
+            queueId={row.queueId}
+            action={row.action}
+            submitTextButtton={true}
+          />
+        )}
+      </div>
+      {row.notice && (
+        <DismissableNotice
+          title={row.notice}
+          description={''}
+          show={true}
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+        />
+      )}
+    </section>
+  ));
+};
 
 export const ReadableAddress = (props: ReadableAddressProps) => (
   <div className={Styles.ReadableAddress}>
@@ -657,14 +731,14 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
     timeoutId = setTimeout(() => {
       setIsCopied(false);
     }, 2000);
-  }
+  };
 
   useEffect(() => {
     new Clipboard('#copy_address');
 
-    return function () {
+    return function() {
       clearTimeout(timeoutId);
-    }
+    };
   }, []);
 
   return (
@@ -673,7 +747,7 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
       {copyable && (
         <>
           <button
-            id='copy_address'
+            id="copy_address"
             data-clipboard-text={address}
             onClick={() => copyClicked()}
             className={isCopied ? Styles.ShowConfirmaiton : null}
@@ -684,7 +758,7 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
       )}
     </span>
   );
-}
+};
 
 interface FundsHelpProps {
   fundType: string;
@@ -694,8 +768,12 @@ export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <p>Need help?</p>
     <div>
-      <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your trading account.</span>
-      <ExternalLinkButton URL={HELP_CENTER_ADD_FUNDS} label='Learn More' />
+      <span>
+        Learn how to buy {fundType === DAI ? `Dai ($)` : fundType}{' '}
+        {fundType === DAI ? generateDaiTooltip() : ''} and send it to your
+        trading account.
+      </span>
+      <ExternalLinkButton URL={HELP_CENTER_ADD_FUNDS} label="Learn More" />
     </div>
   </div>
 );
@@ -704,7 +782,7 @@ export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
 export class MarketReview extends Component<
   MarketReviewProps,
   MarketReviewState
-  > {
+> {
   state = {
     readMore: false,
   };
@@ -804,12 +882,11 @@ export class CheckboxCTA extends Component<CheckboxCTAProps, CheckboxCTAState> {
   }
 }
 
-
 interface CreditCardProps {
   accountMeta: LoginAccount['meta'];
   walletAddress: string;
-  addFundsTorus: Function,
-  addFundsFortmatic: Function,
+  addFundsTorus: Function;
+  addFundsFortmatic: Function;
   fundTypeLabel: string;
   fundTypeToUse: string;
   validateAndSet: Function;
@@ -818,7 +895,6 @@ interface CreditCardProps {
   amountToBuy: BigNumber;
   isAmountValid: boolean;
 }
-
 
 export const CreditCard = ({
   accountMeta,
@@ -833,69 +909,75 @@ export const CreditCard = ({
   amountToBuy,
   isAmountValid,
 }: CreditCardProps) => (
-    <>
-      <h1>Credit/debit card</h1>
-      <h2>
-        Add {fundTypeLabel} {fundTypeToUse === DAI ? generateDaiTooltip() : null}{' '}
+  <>
+    <h1>Credit/debit card</h1>
+    <h2>
+      Add {fundTypeLabel} {fundTypeToUse === DAI ? generateDaiTooltip() : null}{' '}
       instantly
     </h2>
 
-      <h3>Amount</h3>
-      <TextInput
-        placeholder='0'
-        onChange={value => validateAndSet(Number(value))}
-        value={String(amountToBuy)}
-        innerLabel={fundTypeToUse === DAI ? 'USD' : fundTypeToUse}
+    <h3>Amount</h3>
+    <TextInput
+      placeholder="0"
+      onChange={value => validateAndSet(Number(value))}
+      value={String(amountToBuy)}
+      innerLabel={fundTypeToUse === DAI ? 'USD' : fundTypeToUse}
+    />
+    {amountToBuy.gt(0) && !isAmountValid && (
+      <div className={Styles.AddFundsError}>
+        Sorry, amount must be between ${BUY_MIN} and ${BUY_MAX}.
+      </div>
+    )}
+
+    {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
+      <a
+        href="https://wallet.portis.io/buy/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <PrimaryButton
+          action={() => null}
+          text={`Buy with ${accountMeta.accountType}`}
+        />
+      </a>
+    )}
+    {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
+      <PrimaryButton
+        disabled={!isAmountValid}
+        action={() =>
+          addFundsTorus(amountToBuy, toChecksumAddress(walletAddress))
+        }
+        text={`Buy with ${accountMeta.accountType}`}
       />
-      {amountToBuy.gt(0) && !isAmountValid && (
-        <div className={Styles.AddFundsError}>
-          Sorry, amount must be between ${BUY_MIN} and ${BUY_MAX}.
+    )}
+    {accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC && (
+      <PrimaryButton
+        disabled={!isAmountValid}
+        action={() =>
+          addFundsFortmatic(
+            amountToBuy,
+            fundTypeToUse,
+            toChecksumAddress(walletAddress)
+          )
+        }
+        text={`Buy with ${accountMeta.accountType}`}
+      />
+    )}
+    <h4>
+      {[
+        ACCOUNT_TYPES.PORTIS,
+        ACCOUNT_TYPES.TORUS,
+        ACCOUNT_TYPES.FORTMATIC,
+      ].includes(accountMeta.accountType) && (
+        <div>
+          Buy {fundTypeLabel} with our secure payments partner,{' '}
+          {accountMeta.accountType}. Funds will appear in your User account when
+          payment finalizes.
         </div>
       )}
-
-      {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
-        <a href='https://wallet.portis.io/buy/' target='_blank' rel="noopener noreferrer">
-          <PrimaryButton
-            action={() => null}
-            text={`Buy with ${accountMeta.accountType}`}
-          />
-        </a>
-      )}
-      {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
-        <PrimaryButton
-          disabled={!isAmountValid}
-          action={() => addFundsTorus(amountToBuy, toChecksumAddress(walletAddress))}
-          text={`Buy with ${accountMeta.accountType}`}
-        />
-      )}
-      {accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC && (
-        <PrimaryButton
-          disabled={!isAmountValid}
-          action={() =>
-            addFundsFortmatic(
-              amountToBuy,
-              fundTypeToUse,
-              toChecksumAddress(walletAddress)
-            )
-          }
-          text={`Buy with ${accountMeta.accountType}`}
-        />
-      )}
-      <h4>
-        {[
-          ACCOUNT_TYPES.PORTIS,
-          ACCOUNT_TYPES.TORUS,
-          ACCOUNT_TYPES.FORTMATIC,
-        ].includes(accountMeta.accountType) && (
-            <div>
-              Buy {fundTypeLabel} with our secure payments partner,{' '}
-              {accountMeta.accountType}. Funds will appear in your User account
-          when payment finalizes.
-            </div>
-          )}
-      </h4>
-    </>
-  );
+    </h4>
+  </>
+);
 
 interface CoinbaseProps {
   walletAddress: string;
@@ -904,51 +986,54 @@ interface CoinbaseProps {
   accountLabel: string;
 }
 
-
 export const Coinbase = ({
   fundTypeToUse,
   fundTypeLabel,
   walletAddress,
   accountLabel,
 }: CoinbaseProps) => (
-    <>
-      <h1>Coinbase</h1>
-      <h2>
-        Add{' '}
-        {fundTypeToUse === DAI ? (
-          <>
-            {fundTypeLabel} {generateDaiTooltip()}
-          </>
-        ) : (
-            fundTypeLabel
-          )}{' '}
+  <>
+    <h1>Coinbase</h1>
+    <h2>
+      Add{' '}
+      {fundTypeToUse === DAI ? (
+        <>
+          {fundTypeLabel} {generateDaiTooltip()}
+        </>
+      ) : (
+        fundTypeLabel
+      )}{' '}
       using a Coinbase account
     </h2>
-      <ol>
-        <li>
-          Login to your account at{' '}
-          <a href='https://www.coinbase.com' target='_blank' rel="noopener noreferrer">
-            www.coinbase.com
+    <ol>
+      <li>
+        Login to your account at{' '}
+        <a
+          href="https://www.coinbase.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          www.coinbase.com
         </a>
-        </li>
-        <li>Buy the cryptocurrency {fundTypeLabel}</li>
-        <li>
-          Send the {fundTypeLabel} to your {accountLabel} account
       </li>
-      </ol>
-      <h3>{accountLabel} account</h3>
-      <AccountAddressDisplay
-        copyable
-        address={toChecksumAddress(walletAddress)}
+      <li>Buy the cryptocurrency {fundTypeLabel}</li>
+      <li>
+        Send the {fundTypeLabel} to your {accountLabel} account
+      </li>
+    </ol>
+    <h3>{accountLabel} account</h3>
+    <AccountAddressDisplay
+      copyable
+      address={toChecksumAddress(walletAddress)}
+    />
+    {fundTypeToUse !== ETH && (
+      <ExternalLinkButton
+        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
+        label={'Learn about your address'}
       />
-      {fundTypeToUse !== ETH && (
-        <ExternalLinkButton
-          URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
-          label={'Learn about your address'}
-        />
-      )}
-    </>
-  );
+    )}
+  </>
+);
 
 interface TransferProps {
   walletAddress: string;
@@ -963,44 +1048,44 @@ export const Transfer = ({
   walletAddress,
   accountLabel,
 }: TransferProps) => (
-    <>
-      <h1>Transfer</h1>
-      <h2>
-        Send {fundTypeToUse === ETH ? fundTypeLabel : 'funds'} to your{' '}
-        {accountLabel} account
+  <>
+    <h1>Transfer</h1>
+    <h2>
+      Send {fundTypeToUse === ETH ? fundTypeLabel : 'funds'} to your{' '}
+      {accountLabel} account
     </h2>
-      <ol>
-        <li>
-          Buy{' '}
-          {fundTypeToUse === DAI ? (
-            <>
-              {fundTypeLabel} {generateDaiTooltip()}
-            </>
-          ) : (
-              fundTypeLabel
-            )}{' '}
+    <ol>
+      <li>
+        Buy{' '}
+        {fundTypeToUse === DAI ? (
+          <>
+            {fundTypeLabel} {generateDaiTooltip()}
+          </>
+        ) : (
+          fundTypeLabel
+        )}{' '}
         using an app or exchange (see our list of{' '}
-          <a target='_blank' href={HELP_CENTER_ADD_FUNDS}>
-            popular ways to buy {fundTypeLabel})
+        <a target="_blank" href={HELP_CENTER_ADD_FUNDS}>
+          popular ways to buy {fundTypeLabel})
         </a>
-        </li>
-        <li>
-          Transfer the {fundTypeLabel} to your {accountLabel} account
       </li>
-      </ol>
-      <h3>{accountLabel} account</h3>
-      <AccountAddressDisplay
-        copyable
-        address={toChecksumAddress(walletAddress)}
+      <li>
+        Transfer the {fundTypeLabel} to your {accountLabel} account
+      </li>
+    </ol>
+    <h3>{accountLabel} account</h3>
+    <AccountAddressDisplay
+      copyable
+      address={toChecksumAddress(walletAddress)}
+    />
+    {fundTypeToUse !== ETH && (
+      <ExternalLinkButton
+        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
+        label={'Learn about your address'}
       />
-      {fundTypeToUse !== ETH && (
-        <ExternalLinkButton
-          URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
-          label={'Learn about your address'}
-        />
-      )}
-    </>
-  );
+    )}
+  </>
+);
 
 export const generateDaiTooltip = (
   tipText = 'Augur requires deposits in DAI ($), a currency pegged 1 to 1 to the US Dollar.'
@@ -1010,17 +1095,17 @@ export const generateDaiTooltip = (
       <label
         className={classNames(TooltipStyles.TooltipHint)}
         data-tip
-        data-for='tooltip--confirm'
+        data-for="tooltip--confirm"
         data-iscapture={true}
       >
         {helpIcon}
       </label>
       <ReactTooltip
-        id='tooltip--confirm'
+        id="tooltip--confirm"
         className={TooltipStyles.Tooltip}
-        effect='solid'
-        place='top'
-        type='light'
+        effect="solid"
+        place="top"
+        type="light"
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >

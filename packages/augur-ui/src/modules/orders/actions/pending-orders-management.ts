@@ -59,9 +59,7 @@ const updatePendingOrderStatusWithBlockNumber = (
   });
 };
 
-export const loadPendingOrdersTransactions = (pendingOrders: UIOrder[]) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
+export const loadPendingOrdersTransactions = (pendingOrders: UIOrder[]) => {
   if (!pendingOrders || Object.keys(pendingOrders).length === 0) return;
   Object.keys(pendingOrders).map(async marketId => {
     const orders = pendingOrders[marketId];
@@ -70,8 +68,8 @@ export const loadPendingOrdersTransactions = (pendingOrders: UIOrder[]) => (
       if (!o.hash) return;
       const confirmed = await isTransactionConfirmed(o.hash);
       confirmed
-        ? dispatch(removePendingOrder(o.id, marketId))
-        : dispatch(addPendingOrder(o, marketId));
+        ? removePendingOrder(o.id, marketId)
+        : addPendingOrder(o, marketId);
     });
   });
 };

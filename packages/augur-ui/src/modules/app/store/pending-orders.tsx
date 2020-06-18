@@ -31,4 +31,4 @@ export const PendingOrdersProvider = ({ children }) => {
   );
 };
 
-export const usePendingOrdeersStore = () => useContext(PendingOrdersContext);
+export const usePendingOrdersStore = () => useContext(PendingOrdersContext);
