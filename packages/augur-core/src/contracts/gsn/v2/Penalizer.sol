@@ -7,18 +7,14 @@ import "ROOT/gsn/v1/ECDSA.sol";
 import "ROOT/gsn/v2/utils/RLPReader.sol";
 import "ROOT/gsn/v2/utils/GsnUtils.sol";
 import "ROOT/gsn/v2/interfaces/IRelayHub.sol";
+import "ROOT/gsn/v2/interfaces/IPenalizer.sol";
 
-contract Penalizer {
+
+contract Penalizer is IPenalizer{
+
+    string public versionPenalizer = "2.0.0-alpha.1+opengsn.penalizer.ipenalizer";
+
     using ECDSA for bytes32;
-
-    struct Transaction {
-        uint256 nonce;
-        uint256 gasPrice;
-        uint256 gasLimit;
-        address to;
-        uint256 value;
-        bytes data;
-    }
 
     function decodeTransaction(bytes memory rawTransaction) private pure returns (Transaction memory transaction) {
         (transaction.nonce,
@@ -37,7 +33,8 @@ contract Penalizer {
         bytes memory unsignedTx2,
         bytes memory signature2,
         IRelayHub hub
-    ) public
+    )
+    public
     {
         // Can be called by anyone.
         // If a relay attacked the system by signing multiple transactions with the same nonce
@@ -79,12 +76,16 @@ contract Penalizer {
         bytes memory unsignedTx,
         bytes memory signature,
         IRelayHub hub
-    ) public {
+    )
+    public
+    {
         Transaction memory decodedTx = decodeTransaction(unsignedTx);
         if (decodedTx.to == address(hub)) {
             bytes4 selector = GsnUtils.getMethodSig(decodedTx.data);
+            bool isWrongMethodCall = selector != IRelayHub(address(0)).relayCall.selector;
+            bool isGasLimitWrong = GsnUtils.getParam(decodedTx.data, 3) != decodedTx.gasLimit;
             require(
-                selector != hub.relayCall.selector,
+                isWrongMethodCall || isGasLimitWrong,
                 "Legal relay transaction");
         }
         address relay = keccak256(abi.encodePacked(unsignedTx)).recover(signature);

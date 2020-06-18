@@ -530,7 +530,7 @@ class ContractsFixture:
     def deployRelayHubV2(self):
         penalizer = self.upload("../src/contracts/gsn/v2/Penalizer.sol")
         stakeManager = self.upload("../src/contracts/gsn/v2/StakeManager.sol")
-        relayHubV2 = self.upload("../src/contracts/gsn/v2/RelayHubV2.sol", constructorArgs=[68, stakeManager.address, penalizer.address])
+        relayHubV2 = self.upload("../src/contracts/gsn/v2/RelayHubV2.sol", constructorArgs=[stakeManager.address, penalizer.address])
         self.contracts['AugurTrading'].registerContract("RelayHubV2".ljust(32, '\x00').encode('utf-8'), relayHubV2.address)
 
     def doAugurTradingApprovals(self):

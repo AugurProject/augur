@@ -7,6 +7,8 @@ import "ROOT/gsn/v2/interfaces/IStakeManager.sol";
 
 contract StakeManager is IStakeManager {
 
+    string public versionSM = "2.0.0-alpha.1+opengsn.stakemanager.istakemanager";
+
     /// maps relay managers to their stakes
     mapping(address => StakeInfo) public stakes;
     function getStakeInfo(address relayManager) external view returns (StakeInfo memory stakeInfo) {

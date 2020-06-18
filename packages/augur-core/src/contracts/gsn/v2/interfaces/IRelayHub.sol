@@ -2,10 +2,9 @@
 pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
-import "ROOT/gsn/v2/utils/EIP712Sig.sol";
+import "ROOT/gsn/v2/interfaces/ISignatureVerifier.sol";
 
 interface IRelayHub {
-
 
     /// Emitted when a relay server registers or updates its details
     /// Looking at these events lets a client discover relay servers
@@ -36,17 +35,15 @@ interface IRelayHub {
         uint256 amount
     );
 
-    // Emitted when an attempt to relay a call failed. This can happen due to incorrect relayCall arguments, or the
-    // recipient not accepting the relayed call.
-    // The actual relayed call was not executed, and the recipient not charged.
-    // The reason field contains an error code: values 1-10 correspond to CanRelayStatus entries, and values over 10
-    // are custom recipient error codes returned from acceptRelayedCall.
-    event CanRelayFailed(
+    /// Emitted when an attempt to relay a call fails and Paymaster does not accept the transaction.
+    /// The actual relayed call was not executed, and the recipient not charged.
+    /// @param reason contains a revert reason returned from acceptRelayedCall.
+    event TransactionRejectedByPaymaster(
         address indexed relayManager,
-        address indexed relayWorker,
+        address indexed paymaster,
         address indexed from,
         address to,
-        address paymaster,
+        address relayWorker,
         bytes4 selector,
         string reason);
 
@@ -112,62 +109,33 @@ interface IRelayHub {
 
     // Relaying
 
-    // Check if the RelayHub will accept a relayed operation. Multiple things must be true for this to happen:
-    //  - all arguments must be signed for by the sender (from)
-    //  - the sender's nonce must be the current one
-    //  - the recipient must accept this transaction (via acceptRelayedCall)
-    // Returns true on success (and recipient context), or false with error string
-    // it returns one in acceptRelayedCall.
-    function canRelay(
-        GSNTypes.RelayRequest calldata relayRequest,
-        uint256 maxPossibleGas,
-        uint256 acceptRelayedCallGasLimit,
-        bytes calldata signature,
-        bytes calldata approvalData
-    )
-    external
-    view
-    returns (bool success, string memory returnValue);
 
     /// Relays a transaction. For this to succeed, multiple conditions must be met:
-    ///  - canRelay must return CanRelayStatus.OK
-    ///  - the sender must be a registered relayWorker
-    ///  - the transaction's gas price must be larger or equal to the one that was requested by the sender
+    ///  - Paymaster's "acceptRelayCall" method must succeed and not revert
+    ///  - the sender must be a registered Relay Worker that the user signed
+    ///  - the transaction's gas price must be equal or larger than the one that was signed by the sender
     ///  - the transaction must have enough gas to run all internal transactions if they use all gas available to them
-    ///  - the sponsor must have enough balance to pay the relayWorker for the scenario when all gas is spent
+    ///  - the Paymaster must have enough balance to pay the Relay Worker for the scenario when all gas is spent
     ///
     /// If all conditions are met, the call will be relayed and the recipient charged.
     ///
     /// Arguments:
-    /// @param relayRequest - all details of the requested relayWorker call
-    /// @param signature - client's signature over all previous params, plus the relayWorker and RelayHub addresses
+    /// @param relayRequest - all details of the requested relayed call
+    /// @param signature - client's EIP-712 signature over the relayRequest struct
     /// @param approvalData: dapp-specific data forwarded to acceptRelayedCall.
-    ///        This value is *not* verified by the Hub. For example, it can be used to pass a signature to the sponsor.
+    ///        This value is *not* verified by the Hub. For example, it can be used to pass a signature to the Paymaster
+    /// @param externalGasLimit - the value passed as gasLimit to the transaction.
     ///
     /// Emits a TransactionRelayed event.
     function relayCall(
-        GSNTypes.RelayRequest calldata relayRequest,
+        ISignatureVerifier.RelayRequest calldata relayRequest,
         bytes calldata signature,
-        bytes calldata approvalData
-    ) external;
+        bytes calldata approvalData,
+        uint externalGasLimit
+    )
+    external
+    returns (bool paymasterAccepted, string memory returnValue);
 
-    // Relay penalization. Any account can penalize relays, removing them from the system immediately, and rewarding the
-    // reporter with half of the relayWorker's stake. The other half is burned so that, even if the relayWorker penalizes itself, it
-    // still loses half of its stake.
-
-    // Penalize a relayWorker that signed two transactions using the same nonce (making only the first one valid) and
-    // different data (gas price, gas limit, etc. may be different). The (unsigned) transaction data and signature for
-    // both transactions must be provided.
-    /*function penalizeRepeatedNonce(
-        bytes calldata unsignedTx1,
-        bytes calldata signature1,
-        bytes calldata unsignedTx2,
-        bytes calldata signature2)
-    external;
-
-    // Penalize a relayWorker that sent a transaction that didn't target RelayHub's registerRelay or relayCall.
-    function penalizeIllegalTransaction(bytes calldata unsignedTx, bytes calldata signature) external;
-*/
     function penalize(address relayWorker, address payable beneficiary) external;
 
     function getHubOverhead() external view returns (uint256);
@@ -175,9 +143,9 @@ interface IRelayHub {
     /// The fee is expressed as a base fee in wei plus percentage on actual charge.
     /// E.g. a value of 40 stands for a 40% fee, so the recipient will be
     /// charged for 1.4 times the spent amount.
-    function calculateCharge(uint256 gasUsed, GSNTypes.GasData calldata gasData) external view returns (uint256);
+    function calculateCharge(uint256 gasUsed, ISignatureVerifier.GasData calldata gasData) external view returns (uint256);
 
-    function getVersion() external view returns (string memory);
+    function versionHub() external view returns (string memory);
 
 }
 

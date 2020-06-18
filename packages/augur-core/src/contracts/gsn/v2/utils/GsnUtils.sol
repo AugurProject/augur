@@ -3,8 +3,6 @@
 pragma solidity 0.5.15;
 
 import "ROOT/gsn/v2/0x/LibBytesV06.sol";
-import "ROOT/gsn/v2/utils/GSNTypes.sol";
-
 
 library GsnUtils {
 

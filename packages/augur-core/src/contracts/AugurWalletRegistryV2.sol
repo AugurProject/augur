@@ -3,8 +3,10 @@ pragma experimental ABIEncoderV2;
 
 import 'ROOT/gsn/v2/BaseRelayRecipient.sol';
 import 'ROOT/gsn/v2/BasePaymaster.sol';
-import 'ROOT/gsn/v2/TrustedForwarder.sol';
+import 'ROOT/gsn/v2/Forwarder.sol';
 import 'ROOT/gsn/v2/interfaces/IRelayHub.sol';
+import 'ROOT/gsn/v2/interfaces/ISignatureVerifier.sol';
+import 'ROOT/gsn/v2/interfaces/IPaymaster.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/IAugurWallet.sol';
 import 'ROOT/AugurWallet.sol';
@@ -21,13 +23,15 @@ import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
 import 'ROOT/uniswap/interfaces/IWETH.sol';
 
 
-contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForwarder {
+contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, Forwarder {
     using LibBytes for bytes;
     using ContractExists for address;
 
     using SafeMathUint256  for uint256;
 
     event ExecuteTransactionStatus(bool success, bool fundingSuccess);
+
+    string public versionRecipient = "augur-wallet-registry-2";
 
     IRelayHub internal relayHub;
 
@@ -88,8 +92,8 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
         return true;
     }
 
-    function getGasLimits() external pure returns (GSNTypes.GasLimits memory limits) {
-        return GSNTypes.GasLimits(
+    function getGasLimits() external pure returns (IPaymaster.GasLimits memory limits) {
+        return IPaymaster.GasLimits(
             ACCEPT_RELAYED_CALL_GAS_LIMIT,
             PRE_RELAYED_CALL_GAS_LIMIT,
             POST_RELAYED_CALL_GAS_LIMIT
@@ -100,7 +104,7 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
         return address(relayHub);
     }
 
-    function acceptRelayedCall(GSNTypes.RelayRequest calldata relayRequest, bytes calldata approvalData, uint256 maxPossibleGas) external view returns (bytes memory context) {
+    function acceptRelayedCall(ISignatureVerifier.RelayRequest calldata relayRequest, bytes calldata signature, bytes calldata approvalData, uint256 maxPossibleGas) external view returns (bytes memory context) {
         (approvalData);
         // executeWalletTransaction is the only encodedFunction that can succesfully be called through the relayHub
         uint256 _payment = getPaymentFromEncodedFunction(relayRequest.encodedFunction);
@@ -122,7 +126,7 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
         return true;
     }
 
-    function postRelayedCall(bytes calldata context, bool success, bytes32 preRetVal, uint256 gasUseWithoutPost, GSNTypes.GasData calldata gasData) external relayHubOnly returns (bool) {
+    function postRelayedCall(bytes calldata context, bool success, bytes32 preRetVal, uint256 gasUseWithoutPost, ISignatureVerifier.GasData calldata gasData) external relayHubOnly returns (bool) {
         (success, preRetVal);
         (address _walletAddress, uint256 _payment) = abi.decode(context, (address, uint256));
 
