@@ -89,7 +89,7 @@ export const loadMarketsByFilter = (
   switch (filterOptions.sort) {
     case MARKET_SORT_PARAMS.FEES_GENERATED: {
       // Sort By Fees Generated:
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.feesGenerated;
+      sort.sortBy = Getters.Markets.GetMarketsSortBy.numberOfTrades;
       sort.isSortDescending = true;
       break;
     }

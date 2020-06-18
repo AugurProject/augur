@@ -57,7 +57,7 @@ export enum MarketReportingState {
   Finalized = 'Finalized',
   Forking = 'Forking',
   AwaitingForkMigration = 'AwaitingForkMigration',
-  feesGenerated = 'feesGenerated',
+  numberOfTrades = 'numberOfTrades',
 }
 
 export enum MarketType {

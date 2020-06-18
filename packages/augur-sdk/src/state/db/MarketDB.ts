@@ -490,6 +490,7 @@ export class MarketDB extends DerivedDB {
     log['disputeRound'] = '0x00';
     log['totalRepStakedInMarket'] = '0x00';
     log['hasRecentlyDepletedLiquidity'] = 0;
+    log['numberOfTrades'] = 0;
     log['liquidity'] = {
       0: '000000000000000000000000000000',
       10: '000000000000000000000000000000',
@@ -602,6 +603,7 @@ export class MarketDB extends DerivedDB {
   private processMarketVolumeChanged(log: ParsedLog): ParsedLog {
     log['volume'] = padHex(log['volume']);
     log['lastTradedTimestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
+    log['numberOfTrades'] = log['totalTrades'] || 10; // TODO remove placeholder '10' when contracts are updated
     return log;
   }
 
