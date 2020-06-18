@@ -1,14 +1,26 @@
-import { React } from 'react';
+import React from 'react';
 
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { Message } from "modules/modal/message";
 import { submitNewMarket } from 'modules/markets/actions/submit-new-market';
 import { MARKET_CREATION_COPY } from 'modules/create-market/constants';
-import { getDai, getRep } from 'modules/contracts/actions/contractCalls';
-import { REPORTING_GUIDE, DISPUTING_GUIDE, MODAL_LEDGER, MODAL_TREZOR } from 'modules/common/constants';
+import { getDai, getRep, getGasPrice } from 'modules/contracts/actions/contractCalls';
+import {
+  REPORTING_GUIDE,
+  DISPUTING_GUIDE,
+  MODAL_LEDGER,
+  MODAL_TREZOR,
+  MODAL_ADD_FUNDS,
+  MIGRATE_MARKET_GAS_ESTIMATE,
+  GSN_WALLET_SEEN,
+} from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { sendFinalizeMarket } from 'modules/markets/actions/finalize-market';
 import isMetaMask from 'modules/auth/helpers/is-meta-mask';
+import { Message } from './message';
+import { formatGasCostToEther, formatAttoEth, formatDai } from 'utils/format-number';
+import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
+import { FormattedNumber } from 'modules/types';
+import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
 
 export const ModalCreateMarket = () => {
   const {
@@ -368,26 +380,195 @@ export const ModalMarketLoading = () => {
 };
 
 export const ModalNetworkMismatch = () => {
-  const {
-    modal,
-  } = useAppStatusStore();
+  const { modal } = useAppStatusStore();
 
   const { expectedNetwork } = modal;
   const description: Array<string> | undefined = [];
   if (isMetaMask()) {
-    description.push(`MetaMask is connected to the wrong Ethereum network. Please set the MetaMask network to: ${expectedNetwork}.`);
+    description.push(
+      `MetaMask is connected to the wrong Ethereum network. Please set the MetaMask network to: ${expectedNetwork}.`
+    );
   } else {
     description.push(
-      `Your Ethereum node and Augur node are connected to different networks.`,
+      `Your Ethereum node and Augur node are connected to different networks.`
     );
     description.push(`Please connect to a ${expectedNetwork} Ethereum node.`);
   }
 
   return (
     <Message
-      title={"Network Mismatch"}
+      title={'Network Mismatch'}
       buttons={[]}
       description={description}
+    />
+  );
+};
+
+export const ModalNetworkDisabled = () => {
+  const { modal } = useAppStatusStore();
+
+  return (
+    <Message
+      title={'Network Disabled'}
+      description={['Connecting to mainnet through this UI is disabled.']}
+    />
+  );
+};
+
+export const ModalWalletError = () => {
+  const {
+    modal,
+    actions: { closeModal, setModal },
+  } = useAppStatusStore();
+
+  const linkContent = {
+    link: modal.link,
+    label: modal.linkLabel,
+    description: modal.error,
+  };
+
+  return (
+    <Message
+      title={modal.title ? modal.title : 'Something went wrong'}
+      buttons={[{ text: 'Close', action: () => closeModal() }]}
+      description={modal.link ? null : [modal.error ? modal.error : '']}
+      descriptionWithLink={modal.link ? linkContent : null}
+      showDiscordLink={modal.showDiscordLink}
+      showAddFundsHelp={modal.showAddFundsHelp}
+      walletType={modal.walletType}
+      closeAction={() => closeModal()}
+      showAddFundsModal={() => setModal({ type: MODAL_ADD_FUNDS })}
+    />
+  );
+};
+
+export const ModalMigrateMarket = () => {
+  const {
+    modal,
+    actions: { closeModal },
+  } = useAppStatusStore();
+
+  const gasCost = formatGasCostToEther(
+    MIGRATE_MARKET_GAS_ESTIMATE.toFixed(),
+    { decimalsRounded: 4 },
+    getGasPrice()
+  );
+
+  const marketId = modal.market.id;
+  const payoutNumerators = [];
+  const description = '';
+  const estimateGas = false;
+  const migrateMarketThroughOneFork = () => {
+    migrateMarketThroughOneFork(
+      marketId,
+      payoutNumerators,
+      description,
+      estimateGas
+    );
+  };
+
+  return (
+    <Message
+      migrateMarket={true}
+      title={'Migrate Market'}
+      description={[
+        'This market will be migrated to the winning universe and will no longer be viewable in the current universe.',
+      ]}
+      marketId={modal.market.id}
+      marketTitle={modal.market.description}
+      type={modal.marketType}
+      closeModal={() => closeModal()}
+      breakdown={[
+        {
+          label: 'Total Gas Cost (Est)',
+          // @ts-ignore
+          value: formatEther(gasCost).full,
+        },
+      ]}
+      dismissableNotice={{
+        title: 'You may need to sign multiple transactions',
+        buttonType: DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE,
+        show: true,
+      }}
+      buttons={[
+        {
+          text: 'Migrate Market',
+          action: () => {
+            migrateMarketThroughOneFork();
+            closeModal();
+          },
+        },
+        {
+          text: 'Close',
+          action: () => closeModal(),
+        },
+      ]}
+    />
+  );
+};
+
+export const ModalInitializeAccounts = () => {
+  const {
+    modal,
+    env: {
+      gsn: { desiredSignerBalanceInETH },
+    },
+    ethToDaiRate: { roundedValue: ethToDaiRate },
+    actions: { closeModal },
+  } = useAppStatusStore();
+
+  const desiredSignerEthBalance = formatAttoEth(
+    desiredSignerBalanceInETH * 10 ** 18
+  ).value;
+  const reserveAmount: FormattedNumber = formatDai(
+    ethToDaiRate.multipliedBy(desiredSignerEthBalance)
+  );
+
+  const closeAction = () => {
+    closeModal();
+
+    const localStorageRef =
+      typeof window !== 'undefined' && window.localStorage;
+    if (localStorageRef && localStorageRef.setItem) {
+      localStorageRef.setItem(GSN_WALLET_SEEN, 'true');
+    }
+  };
+
+  return (
+    <Message
+      title={'Activate Account'}
+      description={[
+        `Augur is a peer-to-peer system, and certain actions require paying a small fee to other users of the system. The cost of these fees will be included in the total fees displayed when taking that action. Trades, Creating Markets, and Reporting on the market outcome are examples of such actions.\n Augur will reserve $${reserveAmount.formattedValue} of your funds in order to pay these fees, but your total balance can be cashed out at any time. To see the total amount reserved for fees, click on the Account menu.\n Until the account is activated you will be unable to place an order.`,
+      ]}
+      buttons={
+        modal.customAction
+          ? [
+              {
+                text: 'OK',
+                action: () => {
+                  if (modal.customAction) {
+                    modal.customAction();
+                  }
+                  closeAction();
+                },
+              },
+            ]
+          : [
+              {
+                text: 'Activate Account',
+                action: () => {
+                  closeAction();
+                  createFundedGsnWallet();
+                },
+              },
+              {
+                text: 'Do it later',
+                action: () => {
+                  closeAction();
+                },
+              },
+            ]
+      }
     />
   );
 };

@@ -5,7 +5,6 @@ import ModalReporting from 'modules/modal/reporting';
 import { TransferForm as ModalWithdraw } from 'modules/modal/transfer-form';
 import { ModalCashOut } from 'modules/modal/cash-out-form';
 import { MigrateRep as ModalMigrateRep } from 'modules/modal/migrate-rep';
-import ModalNetworkDisabled from 'modules/modal/containers/modal-network-disabled';
 import { Transactions as ModalTransactions } from "modules/modal/transactions";
 import ModalNetworkDisconnected from "modules/modal/components/modal-network-disconnected";
 import { ModalBuyDai } from 'modules/modal/onboarding-modals';
@@ -15,7 +14,6 @@ import { ModalParticipate } from 'modules/modal/components/modal-participate';
 import ModalNetworkConnect from 'modules/modal/components/modal-network-connect';
 import ModalDisclaimer from 'modules/modal/components/modal-disclaimer';
 import { Gas as ModalGasPrice } from 'modules/modal/gas';
-import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market';
 import { AddFunds as ModalAddFunds } from 'modules/modal/add-funds';
 import { SignIn as ModalSignin } from 'modules/modal/signin';
 import { Loading as ModalLoading } from 'modules/modal/loading';
@@ -23,12 +21,10 @@ import { ModalUniverseSelector } from 'modules/modal/components/modal-universe-s
 import { ModalTestBet } from 'modules/modal/onboarding-modals';
 import { ModalAugurP2P } from 'modules/modal/onboarding-modals';
 import ModalGlobalChat from 'modules/modal/containers/modal-global-chat';
-import ModalWalletError from 'modules/modal/containers/modal-wallet-error';
 import { ModalAugurUsesDai } from 'modules/modal/onboarding-modals';
 import { ModalTutorialOutro } from 'modules/modal/onboarding-modals';
 import { ModalTutorialIntro } from 'modules/modal/onboarding-modals';
 import { Scalar as ModalScalar } from 'modules/modal/scalar';
-import ModalInitializeAccounts from 'modules/modal/containers/modal-initialize-account';
 import { useHistory } from 'react-router';
 
 import * as TYPES from 'modules/common/constants';
@@ -37,7 +33,7 @@ import Styles from 'modules/modal/common.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { track, MODAL_VIEWED } from 'services/analytics/helpers';
 import { ModalAccountCreated } from 'modules/modal/onboarding-modals';
-import { ModalCreateMarket, ModalDaiFaucet, ModalCreationHelp, ModalFinalize, ModalDiscard, ModalDrQuickGuide, ModalHelp, ModalRepFaucet, ModalSignTransaction, ModalMarketLoading, ModalOdds, ModalInvalidMarketRules, ModalNetworkMismatch } from '../message-modals';
+import { ModalCreateMarket, ModalDaiFaucet, ModalCreationHelp, ModalFinalize, ModalDiscard, ModalDrQuickGuide, ModalHelp, ModalRepFaucet, ModalSignTransaction, ModalMarketLoading, ModalOdds, ModalInvalidMarketRules, ModalNetworkMismatch, ModalNetworkDisabled, ModalMigrateMarket, ModalWalletError, ModalInitializeAccounts } from '../message-modals';
 
 const ESCAPE_KEYCODE = 27;
 
