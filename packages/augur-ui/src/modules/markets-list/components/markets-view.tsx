@@ -1,7 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router';
 import MarketsHeader from 'modules/markets-list/components/markets-header';
-import MarketsList from 'modules/markets-list/components/markets-list';
+import {
+  MarketsList,
+  determineSportsbookType,
+  groupSportsMarkets,
+} from 'modules/markets-list/components/markets-list';
 import Styles from 'modules/markets-list/components/markets-view.styles.less';
 import { FilterTags } from 'modules/common/filter-tags';
 import { FilterNotice } from 'modules/common/filter-notice';
@@ -17,6 +21,7 @@ import {
   THEMES,
   CATEGORY_PARAM_NAME,
   MARKET_CARD_FORMATS,
+  SPORTS_GROUP_TYPES,
 } from 'modules/common/constants';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
@@ -235,11 +240,25 @@ const MarketsView = () => {
             const filterSortedMarkets = result.markets.map(m => m.id);
             const marketCount = result.meta.marketCount;
             const showPagination = marketCount > limit;
+            const isSportsBook = theme === THEMES.SPORTS;
+            const sportsGroups = groupSportsMarkets(
+              filterSortedMarkets,
+              result.markets
+            );
+            const sportsFilterSortedMarkets = sportsGroups.map(
+              sportGroup => sportGroup.id
+            );
+            const sportsGroupCount = sportsGroups.length;
+            const sportsShowPagination = sportsGroupCount > limit;
             setState({
               ...state,
-              filterSortedMarkets,
-              marketCount,
-              showPagination,
+              filterSortedMarkets: isSportsBook
+                ? sportsFilterSortedMarkets
+                : filterSortedMarkets,
+              marketCount: isSportsBook ? sportsGroupCount : marketCount,
+              showPagination: isSportsBook
+                ? sportsShowPagination
+                : showPagination,
             });
             filterSortedMarkets.forEach(marketId =>
               updateOrderBook(marketId, null, loadMarketOrderBook(marketId))
@@ -395,7 +414,9 @@ const MarketsView = () => {
       />
 
       <FilterNotice
-        show={!isSearching && filteredOutCount && filteredOutCount > 0 && isTrading}
+        show={
+          !isSearching && filteredOutCount && filteredOutCount > 0 && isTrading
+        }
         content={
           <span>
             There are {filteredOutCount} additional markets outside of the

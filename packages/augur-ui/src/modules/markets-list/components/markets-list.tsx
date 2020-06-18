@@ -35,10 +35,10 @@ interface MarketsListProps {
 
 const { COMBO, FUTURES, DAILY } = SPORTS_GROUP_TYPES;
 
-const determineSportsbookType = ({ sportsBook: { groupType } }) =>
+export const determineSportsbookType = ({ sportsBook: { groupType } }) =>
   groupType.includes(COMBO) ? COMBO : groupType === FUTURES ? FUTURES : DAILY;
 
-const groupSportsMarkets = (filteredMarkets, markets) =>
+export const groupSportsMarkets = (filteredMarkets, markets) =>
   filteredMarkets.reduce((accumulator, marketId) => {
     const market = markets.find((market: MarketData) => market.id === marketId);
     if (!!market && market.sportsBook.groupId) {
@@ -65,7 +65,23 @@ const groupSportsMarkets = (filteredMarkets, markets) =>
     return accumulator;
   }, []);
 
-const MarketsList = ({
+export const getSportsGroupsFromSportsIDs = (filteredSportsGroupIds, markets) => 
+  filteredSportsGroupIds.reduce((accumulator, sportsGroupId) => {
+    const sportsGroupMarkets = markets.filter(market => market.sportsBook.groupId === sportsGroupId);
+    const type = determineSportsbookType(sportsGroupMarkets[0]);
+    const marketTypes = [];
+    sportsGroupMarkets.forEach(market => {
+      const uniqueType = `${market.sportsBook.groupType}-${market.sportsBook.title}`;
+      if (!marketTypes.includes(uniqueType)) {
+        marketTypes.push(uniqueType);
+      }
+    })
+    accumulator.push({ id: sportsGroupId, markets: sportsGroupMarkets, type, marketTypes });
+    return accumulator;
+  }, []);
+  
+
+export const MarketsList = ({
   filteredMarkets,
   markets,
   testid = null,
@@ -83,9 +99,9 @@ const MarketsList = ({
   } = useAppStatusStore();
   let marketCards = [];
   const testFilteredMarkets =
-    theme === THEMES.SPORTS
-      ? groupSportsMarkets(filteredMarkets, markets)
-      : filteredMarkets;
+    (theme === THEMES.SPORTS && filteredMarkets[0] && filteredMarkets[0].length > 42)
+      ? getSportsGroupsFromSportsIDs(filteredMarkets, markets)
+      : groupSportsMarkets(filteredMarkets, markets);
 
   const loadingLimit = 10;
   if (isSearchingMarkets) {
