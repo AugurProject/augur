@@ -1,4 +1,5 @@
-import { Getters, SubscriptionEventName } from '@augurproject/sdk';
+import { Getters, SubscriptionEventName, Events, Logs, TXEventName, OrderEventType, StoredOrder } from '@augurproject/sdk';
+import { logger } from '@augurproject/utils';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import {
   loadAllAccountPositions,
@@ -21,7 +22,6 @@ import { Action } from 'redux';
 import { AppState } from 'appStore';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { isSameAddress } from 'utils/isSameAddress';
-import { Events, Logs, TXEventName, OrderEventType } from '@augurproject/sdk';
 import {
   addUpdateTransaction,
 } from 'modules/events/actions/add-update-transaction';
@@ -77,7 +77,7 @@ import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { updateAppStatus, WALLET_STATUS, Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
-import { logger } from '@augurproject/utils';
+
 import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 
 const handleAlert = (

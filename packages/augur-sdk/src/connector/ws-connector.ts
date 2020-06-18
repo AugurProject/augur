@@ -40,12 +40,12 @@ export class WebsocketConnector extends BaseConnector {
   }
 
   messageReceived(message) {
-    // TODO why test for result here? SDKReady event doesn't really have one
-    if (message?.result) {
-      if (this.subscriptions[message.eventName]) {
-        this.subscriptions[message.eventName].callback(message.result);
-      }
-    }
+    if (!message?.result?.eventName) return; // TODO throw an error?
+    const { result, eventName } = message.result;
+
+    if (!this.subscriptions[eventName]) return; // TODO throw an error?
+
+    this.subscriptions[eventName].callback(result);
   }
 
   async disconnect(): Promise<any> {
