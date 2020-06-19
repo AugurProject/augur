@@ -53,6 +53,7 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     uint256 private constant MAX_TX_FEE_IN_ETH = 10**17;
 
     function initialize(IAugur _augur, IAugurTrading _augurTrading) public payable beforeInitialized returns (bool) {
+        require(msg.value >= MAX_TX_FEE_IN_ETH, "Must provide initial Max TX Fee Deposit");
         endInitialization();
         augur = _augur;
         cash = IERC20(_augur.lookup("Cash"));
