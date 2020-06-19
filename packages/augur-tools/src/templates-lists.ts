@@ -28,7 +28,7 @@ export const LIST_VALUES = {
   PRES_YEARS: ['2020', '2024', '2028'],
   SUMMER_OLYMPIC_YEARS: ['2021', '2024', '2028'],
   WINTER_OLYMPIC_YEARS: ['2022', '2026', '2030'],
-  YEAR_RANGE: ['2017-18', '2018-19', '2019-20', '2020-21', '2021-22', '2022-23'],
+  YEAR_RANGE: ['2020-21', '2021-22', '2022-23'],
   MMA_ROUNDS: ['1', '2', '3', '4'],
   BOXING_ROUNDS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
   NASCAR_EVENTS: [
