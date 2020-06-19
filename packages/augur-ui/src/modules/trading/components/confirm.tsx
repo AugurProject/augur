@@ -485,14 +485,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               value={potentialDaiLoss}
               showDenomination={true}
             />
-
-            {gasCostDai.roundedValue.gt(0) > 0 &&
-              numFills > 0 && (
-              <TransactionFeeLabelToolTip
-                isError={createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
-                gasCostDai={gasCostDai}
-              />
-              )}
+            <TransactionFeeLabelToolTip
+              isError={createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
+              gasCostDai={gasCostDai}
+            />
           </div>
         )}
         {numFills > 0 && <EthReserveAutomaticTopOff />}
