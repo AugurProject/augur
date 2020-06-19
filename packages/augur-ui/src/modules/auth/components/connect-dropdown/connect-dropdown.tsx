@@ -140,7 +140,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       value: formatDai(balances.dai, {
         zeroStyled: false,
         decimalsRounded: 2,
-      }).formattedValue,
+      }).formatted,
       name: 'DAI',
       logo: DaiLogoIcon,
       disabled: false,
@@ -149,7 +149,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       value: formatEther(balances.eth, {
         zeroStyled: false,
         decimalsRounded: 4,
-      }).formattedValue,
+      }).formatted,
       name: 'ETH',
       logo: EthIcon,
       disabled: GsnEnabled ? balances.eth === "0" : false,
@@ -160,7 +160,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       value: formatRep(balances.rep, {
         zeroStyled: false,
         decimalsRounded: 4,
-      }).formattedValue,
+      }).formatted,
       disabled: GsnEnabled ? balances.rep === "0" : false,
     },
   ];
