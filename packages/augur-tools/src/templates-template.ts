@@ -864,7 +864,7 @@ function inputWithinNumericRange(
   return passes;
 }
 
-function isValidYearYearRangeInQuestion(
+export function isValidYearYearRangeInQuestion(
   inputs: ExtraInfoTemplateInput[],
   yearYearRangeInputs: number[],
   endTime: number,
@@ -874,8 +874,8 @@ function isValidYearYearRangeInQuestion(
     yearYearRangeInputs.includes(input.id)
   );
   if (!yearInputs || yearInputs.length === 0) return true;
-  const endTimeYear = moment.unix(endTime).year();
-  const creationTimeYear = moment.unix(creationTime).year();
+  const endTimeYear = moment.unix(endTime).utc().year();
+  const creationTimeYear = moment.unix(creationTime).utc().year();
   return yearInputs.reduce((p, input: ExtraInfoTemplateInput) => {
     const years = input.value
       ?.split('-')
