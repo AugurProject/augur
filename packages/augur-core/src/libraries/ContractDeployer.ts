@@ -22,6 +22,7 @@ import {
   ZeroXTrade,
   WarpSync,
   AugurWalletRegistry,
+  AugurWalletFactory,
   RepOracle,
   AuditFunds,
   // 0x
@@ -85,6 +86,7 @@ Deploying to: ${env}
         const blockNumber = await this.getBlockNumber();
         this.augur = await this.uploadAugur();
         this.augurTrading = await this.uploadAugurTrading();
+        await this.uploadAugurWalletFactory();
         await this.uploadAllContracts();
 
         const externalAddresses = this.configuration.deploy.externalAddresses;
@@ -341,6 +343,12 @@ Deploying to: ${env}
         return contract.address;
     };
 
+    private async uploadAugurWalletFactory(): Promise<void> {
+        console.log('Uploading Augur Wallet Factory...');
+        const contract = await this.contracts.get('AugurWalletFactory');
+        contract.address = await this.uploadAndAddToAugur(contract, "AugurWalletFactory");
+    }
+
     private async uploadAugur(): Promise<Augur> {
         console.log('Uploading augur...');
         const contract = await this.contracts.get('Augur');
@@ -466,7 +474,7 @@ Deploying to: ${env}
         const stakeManagerContract = await this.contracts.get('StakeManager');
         stakeManagerContract.address = await this.uploadAndAddToAugur(stakeManagerContract, 'StakeManager');
         const relayHubContract = await this.contracts.get('RelayHubV2');
-        relayHubContract.address = await this.uploadAndAddToAugur(relayHubContract, 'RelayHubV2', ["0x44", stakeManagerContract.address, penalizerContract.address]);
+        relayHubContract.address = await this.uploadAndAddToAugur(relayHubContract, 'RelayHubV2', [stakeManagerContract.address, penalizerContract.address]);
         return relayHubContract.address;
     }
 
@@ -505,6 +513,7 @@ Deploying to: ${env}
         if (contractName === 'Cash') return;
         if (contractName === 'CashFaucet') return;
         if (contractName === 'CashFaucetProxy') return;
+        if (contractName === 'AugurWalletFactory') return;
         // 0x
         if ([
           'ERC20Proxy',

@@ -53,6 +53,8 @@ export class TimeControlled extends c.TimeControlled<BigNumber> {
 }
 export class WarpSync extends c.WarpSync<BigNumber> {
 }
+export class AugurWalletFactory extends c.AugurWalletFactory<BigNumber> {
+}
 export class DisputeCrowdsourcerFactory extends c.DisputeCrowdsourcerFactory<BigNumber> {
 }
 export class DisputeWindowFactory extends c.DisputeWindowFactory<BigNumber> {
