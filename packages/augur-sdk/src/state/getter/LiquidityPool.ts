@@ -77,7 +77,7 @@ export class LiquidityPool {
     const liqPool = await LiquidityPool.getPoolsOfMarkets(db, [
       params.marketId,
     ]);
-    if (!liqPool) return null;
+    if (!liqPool || _.keys(liqPool).length === 0) return null;
 
     // market can only be in one liquidity pool
     const liquidityPoolId = _.first(_.keys(liqPool));

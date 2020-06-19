@@ -65,7 +65,7 @@ export class BestOffer {
           outcome: order.outcome,
         });
         if (
-          poolBestPrice &&
+          poolBestPrice && _.keys(poolBestPrice).length > 0 &&
           new BigNumber(
             poolBestPrice[_.first(_.keys(poolBestPrice))][order.outcome].price
           ).eq(new BigNumber(order.price))
