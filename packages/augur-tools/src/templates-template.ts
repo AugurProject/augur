@@ -201,6 +201,7 @@ export interface DateInputDependencies {
 export interface NumberRangeValues {
   [id: number]: number[];
 }
+
 export interface TemplateValidation {
   templateValidation: string;
   templateValidationResRules: string;
@@ -218,6 +219,7 @@ export interface TemplateValidation {
   eventExpEndNextMonthValues: EventExpEndNextMonth[];
   categoricalOutcomes: CategoricalOutcomes;
   numberRangeValues: NumberRangeValues;
+  yrs: number[];
 }
 
 export interface TemplateGroupKeys {
@@ -321,6 +323,7 @@ export enum ValidationType {
   NOWEEKEND_HOLIDAYS = 'NOWEEKEND_HOLIDAYS',
   EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY = 'EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY',
   SOCIAL = 'SOCIAL', // social media username/handle
+  YEAR_YEAR_RANGE = 'YEAR_YEAR_RANGE',
 }
 
 export enum TEXT_PLACEHOLDERS {
