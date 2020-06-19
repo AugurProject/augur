@@ -73,7 +73,6 @@ function setupServer(server: WebSocket.Server, api: API) {
           const eventName: string = message.params.shift();
 
           try {
-<<<<<<< HEAD
             const subscription: string = subscriptions.subscribe(
               eventName,
               (data: {}): void => {
@@ -87,12 +86,6 @@ function setupServer(server: WebSocket.Server, api: API) {
               websocket,
               MakeJsonRpcResponse(message.id, { subscription })
             );
-=======
-            const subscription: string = subscriptions.subscribe(eventName, (data: {}): void => {
-              safeSend(websocket, MakeJsonRpcResponse(null, { eventName, subscription, result: data }));
-            });
-            safeSend(websocket, MakeJsonRpcResponse(message.id, { subscription }));
->>>>>>> origin/master
           } catch (exc) {
             safeSend(
               websocket,
@@ -110,22 +103,12 @@ function setupServer(server: WebSocket.Server, api: API) {
             api.augur.sdkReady
           ) {
             console.log('immediately sending SDKReady event to new connection');
-<<<<<<< HEAD
-            safeSend(
-              websocket,
-              JSON.stringify({
-                eventName: SubscriptionEventName.SDKReady,
-                result: ['ignoreme'],
-              })
-            );
-=======
             safeSend(websocket, MakeJsonRpcResponse(null, { eventName: SubscriptionEventName.SDKReady }));
           } else if (eventName === SubscriptionEventName.ZeroXStatusSynced) {
             // The UI needs to believe that the 0x orders database is synced for it to process bulk orders.
             // Since the SDK runs continuously, we assume it's synced when the client connects.
             console.log('immediately sending ZeroXStatusSynced event to new connection');
             safeSend(websocket, MakeJsonRpcResponse(null, { eventName: SubscriptionEventName.ZeroXStatusSynced }));
->>>>>>> origin/master
           }
         } else if (message.method === 'unsubscribe') {
           const subscription: string = message.params.shift();
