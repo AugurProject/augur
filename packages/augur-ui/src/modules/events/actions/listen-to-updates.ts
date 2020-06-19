@@ -15,6 +15,7 @@ import {
   handleWarpSyncHashUpdatedLog,
   handleZeroStatusUpdated,
   handleBulkOrdersLog,
+  handleLiquidityPoolUpdatedLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
@@ -43,6 +44,7 @@ const START_UP_EVENTS = {
     () => handleZeroStatusUpdated(ZEROX_STATUSES.SYNCED)
   ),
   [SubscriptionEventName.BulkOrderEvent]: wrapLogHandler(handleBulkOrdersLog),
+  [SubscriptionEventName.LiquidityPoolUpdated]: wrapLogHandler(handleLiquidityPoolUpdatedLog),
 };
 
 const EVENTS = {

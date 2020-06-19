@@ -405,6 +405,10 @@ export const handleBulkOrdersLog = (data: {
   }
 };
 
+export const handleLiquidityPoolUpdatedLog = (data: Logs.LiquidityPoolUpdated) => {
+  console.log(data);
+}
+
 export const handleOrderLog = (log: any) =>
 (dispatch: ThunkDispatch<void, any, Action>) => {
   const type = log.eventType;
