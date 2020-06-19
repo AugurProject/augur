@@ -43,9 +43,9 @@ import Media from 'react-media';
 const DEFAULT_TRADE_INTERVAL = new BigNumber(10 ** 17);
 
 enum ADVANCED_OPTIONS {
-  GOOD_TILL = '0',
   EXPIRATION = '1',
   FILL = '2',
+  POST = '3',
 }
 
 const advancedDropdownOptions = [
@@ -54,12 +54,12 @@ const advancedDropdownOptions = [
     value: ADVANCED_OPTIONS.EXPIRATION,
   },
   {
-    label: 'Good till cancelled',
-    value: ADVANCED_OPTIONS.GOOD_TILL,
-  },
-  {
     label: 'Fill only',
     value: ADVANCED_OPTIONS.FILL,
+  },
+  {
+    label: 'Post only',
+    value: ADVANCED_OPTIONS.POST,
   },
 ];
 
@@ -67,10 +67,6 @@ const liqAdvancedDropdownOptions = [
   {
     label: 'Order expiration',
     value: ADVANCED_OPTIONS.EXPIRATION,
-  },
-  {
-    label: 'Good till cancelled',
-    value: ADVANCED_OPTIONS.GOOD_TILL,
   },
 ];
 
@@ -1137,7 +1133,7 @@ class Form extends Component<FromProps, FormState> {
                 onChange={value => {
                   const remainingTime = calcOrderExpirationTimeRemaining(this.props.endTime, this.props.currentTimestamp);
                   const timestamp =
-                    value === ADVANCED_OPTIONS.EXPIRATION
+                    (value === ADVANCED_OPTIONS.EXPIRATION || value === ADVANCED_OPTIONS.POST)
                       ? calcOrderExpirationTime(this.props.endTime, this.props.currentTimestamp)
                       : null;
                   this.updateAndValidate(
@@ -1155,7 +1151,7 @@ class Form extends Component<FromProps, FormState> {
                   });
                 }}
               />
-              {s.advancedOption === ADVANCED_OPTIONS.EXPIRATION && (
+              {(s.advancedOption === ADVANCED_OPTIONS.EXPIRATION || s.advancedOption === ADVANCED_OPTIONS.POST) && (
                 <>
                   <div>
                     {s.expirationDateOption !==
