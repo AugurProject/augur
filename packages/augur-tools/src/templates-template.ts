@@ -877,14 +877,13 @@ function isValidYearYearRangeInQuestion(
   const endTimeYear = moment.unix(endTime).year();
   const creationTimeYear = moment.unix(creationTime).year();
   return yearInputs.reduce((p, input: ExtraInfoTemplateInput) => {
-    const years = input.value?.split('-');
-    const testYears = years.map(year => year.length === 2 ? `20 ${year}` : year);
-    if (Number(testYears[0]) < creationTimeYear) return false;
-    if (testYears.length === 1) {
-      if (Number(testYears[0]) > endTimeYear) return false;
-    } else {
-      if (Number(testYears[1]) > endTimeYear) return false;
-    }
+    const years = input.value
+      ?.split('-')
+      .map(year => (year.length === 2 ? `20${year}` : year));
+    const testYear = years.length === 1 ? years[0] : years[1];
+    if (!testYear) return false;
+    if (Number(testYear) < creationTimeYear) return false;
+    if (Number(testYear) > endTimeYear) return false;
     return p;
   }, true);
 }
@@ -1002,7 +1001,7 @@ export const isTemplateMarket = (
         template.inputs,
         validation.yrs,
         new BigNumber(endTime).toNumber(),
-        new BigNumber(creationTime).toNumber(),
+        new BigNumber(creationTime).toNumber()
       )
     ) {
       errors.push(
