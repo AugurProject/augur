@@ -35,7 +35,7 @@ import { spawn, spawnSync } from 'child_process';
 import { perfSetup } from './perf-setup';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import { ContractAPI, deployContracts, startGanacheServer } from '..';
-import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
+import { NumOutcomes } from '@augurproject/sdk';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
 import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';

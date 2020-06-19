@@ -1,14 +1,30 @@
-import { BaseAction, CreateMarketData, PendingOrders, PendingQueue } from "modules/types";
-import { TransactionMetadata } from "contract-dependencies-ethers/build";
-import { isTransactionConfirmed, transactionConfirmations, doReportDisputeAddStake } from 'modules/contracts/actions/contractCalls';
-import { TXEventName } from '@augurproject/sdk';
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { TRANSACTIONS, CANCELORDER, TX_CHECK_BLOCKNUMBER_LIMIT, SUBMIT_REPORT, SUBMIT_DISPUTE } from "modules/common/constants";
-import { AppState } from "appStore";
-import { updatePendingOrderStatus } from "modules/orders/actions/pending-orders-management";
+import { TXEventName } from '@augurproject/sdk-lite';
+import { calculatePayoutNumeratorsArray, } from '@augurproject/utils';
+import { AppState } from 'appStore';
+import { TransactionMetadata } from 'contract-dependencies-ethers/build';
+import {
+  CANCELORDER,
+  SUBMIT_DISPUTE,
+  SUBMIT_REPORT,
+  TRANSACTIONS,
+  TX_CHECK_BLOCKNUMBER_LIMIT,
+} from 'modules/common/constants';
+import {
+  doReportDisputeAddStake,
+  isTransactionConfirmed,
+  transactionConfirmations,
+} from 'modules/contracts/actions/contractCalls';
+import { updatePendingOrderStatus } from 'modules/orders/actions/pending-orders-management';
+import {
+  BaseAction,
+  CreateMarketData,
+  PendingOrders,
+  PendingQueue,
+} from 'modules/types';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 import { generateTxParameterIdFromString } from 'utils/generate-tx-parameter-id';
-import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
+
 export const ADD_PENDING_DATA = "ADD_PENDING_DATA";
 export const REMOVE_PENDING_DATA = "REMOVE_PENDING_DATA";
 export const REMOVE_PENDING_DATA_BY_HASH = 'REMOVE_PENDING_DATA_BY_HASH';

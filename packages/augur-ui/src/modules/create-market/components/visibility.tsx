@@ -16,7 +16,7 @@ import {
   convertDisplayPriceToOnChainPrice,
   marketNameToType,
   convertDisplayAmountToOnChainAmount,
-} from '@augurproject/sdk';
+} from '@augurproject/utils';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import logError from 'utils/log-error';
 import { NodeStyleCallback } from 'modules/types';

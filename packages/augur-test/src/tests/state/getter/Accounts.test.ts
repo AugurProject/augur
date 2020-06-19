@@ -5,7 +5,7 @@ import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../../libs';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/utils';
 
 describe('State API :: Accounts :: ', () => {
   let john: TestContractAPI;

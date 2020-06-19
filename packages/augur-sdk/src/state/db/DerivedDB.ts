@@ -1,10 +1,9 @@
+import { SubscriptionEventName } from '@augurproject/sdk-lite';
+import { ParsedLog } from '@augurproject/types';
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
-import { SubscriptionEventName } from '../../constants';
 import { BaseDocument } from './AbstractTable';
-import { Log, ParsedLog } from '@augurproject/types';
 import { DB } from './DB';
-import { sleep } from '../utils/utils';
 import { RollbackTable } from './RollbackTable';
 
 export interface Document extends BaseDocument {
@@ -33,18 +32,27 @@ export class DerivedDB extends RollbackTable {
     this.stateDB = db;
     this.name = name;
 
-    augur.events.once(SubscriptionEventName.BulkSyncComplete, this.onBulkSyncComplete.bind(this));
+    augur.events.once(
+      SubscriptionEventName.BulkSyncComplete,
+      this.onBulkSyncComplete.bind(this)
+    );
 
     // Binding here because we need to use call the parent method.
     this.handleMergeEvent = this.handleMergeEvent.bind(this);
   }
 
   async delete() {
-    this.stateDB.unregisterEventListener(this.mergeEventNames, this.handleMergeEvent);
+    this.stateDB.unregisterEventListener(
+      this.mergeEventNames,
+      this.handleMergeEvent
+    );
   }
 
   async onBulkSyncComplete() {
-    this.stateDB.registerEventListener(this.mergeEventNames, this.handleMergeEvent);
+    this.stateDB.registerEventListener(
+      this.mergeEventNames,
+      this.handleMergeEvent
+    );
   }
 
   async sync(highestAvailableBlockNumber: number): Promise<void> {
@@ -70,7 +78,11 @@ export class DerivedDB extends RollbackTable {
         const resultsById = _.groupBy(result, this.getIDValue.bind(this));
         _.forEach(resultsById, (documents, documentId) => {
           const latestDoc = documents.reduce((val, doc) => {
-            if (val.blockNumber < doc.blockNumber || (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex)) {
+            if (
+              val.blockNumber < doc.blockNumber ||
+              (val.blockNumber === doc.blockNumber &&
+                val.logIndex < doc.logIndex)
+            ) {
               return doc;
             }
             return val;
@@ -97,12 +109,18 @@ export class DerivedDB extends RollbackTable {
     await this.syncStatus.updateSyncingToFalse(this.dbName);
   }
 
-  async getEvents(highestSyncedBlockNumber: number, eventName: string): Promise<BaseDocument[]> {
-    return await this.stateDB.dexieDB[eventName].where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
+  async getEvents(
+    highestSyncedBlockNumber: number,
+    eventName: string
+  ): Promise<BaseDocument[]> {
+    return await this.stateDB.dexieDB[eventName]
+      .where('blockNumber')
+      .aboveOrEqual(highestSyncedBlockNumber)
+      .toArray();
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
-  async handleMergeEvent (
+  async handleMergeEvent(
     blocknumber: number,
     logs: ParsedLog[],
     syncing = false
@@ -111,16 +129,21 @@ export class DerivedDB extends RollbackTable {
     if (logs.length > 0) {
       const documentsById = _.groupBy(logs, this.getIDValue.bind(this));
       documentsByIdByTopic = _.flatMap(documentsById, idDocuments => {
-        const mostRecentTopics = _.flatMap(_.groupBy(idDocuments, 'topics[0]'), documents => {
-          return documents.reduce((val, doc) => {
-              if (val.blockNumber < doc.blockNumber || (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex)) {
+        const mostRecentTopics = _.flatMap(
+          _.groupBy(idDocuments, 'topics[0]'),
+          documents => {
+            return documents.reduce((val, doc) => {
+              if (
+                val.blockNumber < doc.blockNumber ||
+                (val.blockNumber === doc.blockNumber &&
+                  val.logIndex < doc.logIndex)
+              ) {
                 return doc;
               }
               return val;
-            },
-            documents[0]
-          );
-        });
+            }, documents[0]);
+          }
+        );
 
         return _.map(mostRecentTopics, this.processDoc.bind(this));
       });
@@ -134,11 +157,15 @@ export class DerivedDB extends RollbackTable {
       syncing
     );
     if (logs.length > 0 && !this.syncing) {
-      this.augur.events.emitAfter(SubscriptionEventName.NewBlock, `DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
+      this.augur.events.emitAfter(
+        SubscriptionEventName.NewBlock,
+        `DerivedDB:updated:${this.name}`,
+        { data: documentsByIdByTopic }
+      );
     }
 
     return blocknumber;
-  };
+  }
 
   // No-op by default. Can be overriden to provide custom document processing before being upserted into the DB.
   protected processDoc(log: ParsedLog): ParsedLog {

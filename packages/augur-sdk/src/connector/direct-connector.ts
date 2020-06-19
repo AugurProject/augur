@@ -1,9 +1,9 @@
+import { SDKConfiguration } from '@augurproject/utils';
+import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { Augur } from '../Augur';
-import { SDKConfiguration } from '@augurproject/artifacts';
-import { SubscriptionEventName } from '../constants';
 import { Callback } from '../events';
-import { BaseConnector } from './base-connector';
 import { DB } from '../state/db/DB';
+import { BaseConnector } from './base-connector';
 
 export class DirectConnector extends BaseConnector {
   db: DB;
@@ -13,11 +13,9 @@ export class DirectConnector extends BaseConnector {
     this.db = db;
   }
 
-  async connect(config: SDKConfiguration, account?: string): Promise<void> {
-  }
+  async connect(config: SDKConfiguration, account?: string): Promise<void> {}
 
-  async disconnect(): Promise<void> {
-  }
+  async disconnect(): Promise<void> {}
 
   // bind API calls
   bindTo<R, P>(

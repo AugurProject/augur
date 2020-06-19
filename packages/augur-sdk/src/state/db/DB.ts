@@ -1,10 +1,3 @@
-import Dexie from 'dexie';
-import { Augur } from '../../Augur';
-import { SECONDS_IN_A_DAY } from '../../constants';
-import {
-  LogCallbackType,
-  LogFilterAggregatorInterface,
-} from '../logs/LogFilterAggregator';
 import {
   CancelZeroXOrderLog,
   CompleteSetsPurchasedLog,
@@ -32,7 +25,9 @@ import {
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   ProfitLossChangedLog,
+  ReportingFeeChangedLog,
   ReportingParticipantDisavowedLog,
+  SECONDS_IN_A_DAY,
   ShareTokenBalanceChangedLog,
   TimestampSetLog,
   TokenBalanceChangedLog,
@@ -43,8 +38,13 @@ import {
   TransferSingleLog,
   UniverseCreatedLog,
   UniverseForkedLog,
-  ReportingFeeChangedLog,
-} from '../logs/types';
+} from '@augurproject/sdk-lite';
+import Dexie from 'dexie';
+import { Augur } from '../../Augur';
+import {
+  LogCallbackType,
+  LogFilterAggregatorInterface,
+} from '../logs/LogFilterAggregator';
 import { BaseSyncableDB } from './BaseSyncableDB';
 import { DelayedSyncableDB } from './DelayedSyncableDB';
 import { DisputeDatabase } from './DisputeDB';

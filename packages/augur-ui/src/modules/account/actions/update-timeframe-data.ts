@@ -1,11 +1,11 @@
-import { updateLoginAccount } from 'modules/account/actions/login-account';
-import logError from 'utils/log-error';
-import { NodeStyleCallback } from 'modules/types';
+import type { Getters } from '@augurproject/sdk';
 import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
+import { NodeStyleCallback } from 'modules/types';
 import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 import { augurSdk } from 'services/augursdk';
-import { Getters } from '@augurproject/sdk';
+import logError from 'utils/log-error';
 
 export const updateTimeframeData = (
   options: { startTime: number },

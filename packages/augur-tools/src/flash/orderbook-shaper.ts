@@ -3,7 +3,7 @@ import {
   MarketOrderBook,
   MarketOrderBookOrder,
   OutcomeOrderBook,
-} from '@augurproject/sdk/src/state/getter/Markets';
+} from '@augurproject/sdk';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ZeroXPlaceTradeDisplayParams } from '@augurproject/sdk';

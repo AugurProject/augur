@@ -1,25 +1,24 @@
-import React, { Component } from 'react';
+import type { Getters } from '@augurproject/sdk';
+import classNames from 'classnames';
+import {
+  HELP_CENTER_INVALID_MARKETS,
+  MAX_FEE_100_PERCENT,
+  TYPE_TRADE,
+} from 'modules/common/constants';
+import { FilterNotice } from 'modules/common/filter-notice';
+import MarketCardFormatSwitcher
+  from 'modules/filter-sort/components/market-card-format-switcher';
+import MarketTypeFilter
+  from 'modules/filter-sort/components/market-type-filter';
+import FilterDropDowns from 'modules/filter-sort/containers/filter-dropdowns';
 import MarketsHeader from 'modules/markets-list/components/markets-header';
 import MarketsList from 'modules/markets-list/components/markets-list';
 import Styles from 'modules/markets-list/components/markets-view.styles.less';
-import { FilterTags } from 'modules/common/filter-tags';
-import { FilterNotice } from 'modules/common/filter-notice';
-import FilterDropDowns from 'modules/filter-sort/containers/filter-dropdowns';
-import MarketTypeFilter from 'modules/filter-sort/components/market-type-filter';
-import MarketCardFormatSwitcher from 'modules/filter-sort/components/market-card-format-switcher';
-import updateQuery from 'modules/routes/helpers/update-query';
-import {
-  TYPE_TRADE,
-  MAX_FEE_100_PERCENT,
-  MAX_SPREAD_ALL_SPREADS,
-  HELP_CENTER_INVALID_MARKETS,
-} from 'modules/common/constants';
-import { MarketData } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
-import classNames from 'classnames';
 import LandingHero from 'modules/markets-list/containers/landing-hero';
-import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKETS_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { HelmetTag } from 'modules/seo/helmet-tag';
+import { MarketData } from 'modules/types';
+import React, { Component } from 'react';
 
 const PAGINATION_COUNT = 10;
 

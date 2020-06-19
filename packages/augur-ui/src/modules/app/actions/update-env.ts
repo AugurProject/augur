@@ -1,4 +1,4 @@
-import { SDKConfiguration } from '@augurproject/artifacts';
+import type { SDKConfiguration } from '@augurproject/artifacts';
 
 export const UPDATE_ENV = 'UPDATE_ENV';
 

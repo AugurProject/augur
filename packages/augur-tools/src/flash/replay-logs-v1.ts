@@ -7,7 +7,7 @@ import { ContractAddresses } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { ethers } from 'ethers';
 import { inOneMonths, today } from './time';
-import { SDKConfiguration } from "@augurproject/artifacts/build";
+import { SDKConfiguration } from "@augurproject/artifacts";
 
 interface AddressMapping { [addr1: string]: string; }
 interface IdMapping { [id1: string]: string; }

@@ -1,5 +1,5 @@
 import { UIOrder } from 'modules/types';
-import { Getters, convertOnChainPriceToDisplayPrice, convertOnChainAmountToDisplayAmount, numTicksToTickSize, convertDisplayValuetoAttoValue } from '@augurproject/sdk';
+import type { Getters, convertOnChainPriceToDisplayPrice, convertOnChainAmountToDisplayAmount, numTicksToTickSize, convertDisplayValuetoAttoValue } from '@augurproject/sdk';
 import { SELL, BUY, TX_TRADE_GROUP_ID, TX_MARKET_ID, TX_OUTCOME_ID, TX_PRICE, TX_AMOUNT, TX_DIRECTION } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 

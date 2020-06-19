@@ -1,17 +1,13 @@
-import { createSelector } from 'reselect';
-import { Getters } from '@augurproject/sdk';
+import type { Getters } from '@augurproject/sdk';
 import {
-  selectLoginAccountReportingState,
   selectLoginAccountBalancesState,
+  selectLoginAccountReportingState,
 } from 'appStore/select-state';
-import { AccountBalances } from 'modules/types';
-import {
-  formatAttoRep,
-  formatPercent,
-  formatRep
-} from 'utils/format-number';
 import { ZERO } from 'modules/common/constants';
+import { AccountBalances } from 'modules/types';
+import { createSelector } from 'reselect';
 import { createBigNumber } from 'utils/create-big-number';
+import { formatAttoRep, formatPercent, formatRep } from 'utils/format-number';
 
 export const selectReportingBalances = createSelector(
   selectLoginAccountReportingState,

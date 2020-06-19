@@ -1,10 +1,10 @@
+import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { ParsedLog } from '@augurproject/types';
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
 import { BaseDocument } from './AbstractTable';
 import { DB } from './DB';
 import { RollbackTable } from './RollbackTable';
-import { SubscriptionEventName } from '../../constants';
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -21,7 +21,7 @@ export class BaseSyncableDB extends RollbackTable {
     protected db: DB,
     networkId: number,
     eventName: string,
-    dbName: string = eventName,
+    dbName: string = eventName
   ) {
     super(networkId, augur, dbName, db);
     this.eventName = eventName;
@@ -49,23 +49,26 @@ export class BaseSyncableDB extends RollbackTable {
       // If this is a table which is keyed by fields (meaning we are doing updates to a value instead of pulling in a history of events) we only want the most recent document for any given id
       if (this.idFields.length > 0) {
         documents = _.values(
-          _.mapValues(_.groupBy(logs, this.getIDValue.bind(this)), idDocuments => {
-            return _.reduce(
-              idDocuments,
-              (val, doc) => {
-                if (val.blockNumber < doc.blockNumber) {
-                  val = doc;
-                } else if (
-                  val.blockNumber === doc.blockNumber &&
-                  val.logIndex < doc.logIndex
-                ) {
-                  val = doc;
-                }
-                return val;
-              },
-              idDocuments[0]
-            );
-          })
+          _.mapValues(
+            _.groupBy(logs, this.getIDValue.bind(this)),
+            idDocuments => {
+              return _.reduce(
+                idDocuments,
+                (val, doc) => {
+                  if (val.blockNumber < doc.blockNumber) {
+                    val = doc;
+                  } else if (
+                    val.blockNumber === doc.blockNumber &&
+                    val.logIndex < doc.logIndex
+                  ) {
+                    val = doc;
+                  }
+                  return val;
+                },
+                idDocuments[0]
+              );
+            }
+          )
         );
       }
 
@@ -73,7 +76,8 @@ export class BaseSyncableDB extends RollbackTable {
     }
     if (documents && (documents as any[]).length && !this.syncing) {
       _.each(documents, (document: any) => {
-        this.augur.events.emitAfter(SubscriptionEventName.NewBlock,
+        this.augur.events.emitAfter(
+          SubscriptionEventName.NewBlock,
           this.eventName,
           {
             eventName: this.eventName,
@@ -83,11 +87,14 @@ export class BaseSyncableDB extends RollbackTable {
       });
     }
 
-    await this.syncStatus.setHighestSyncBlock(this.dbName, blocknumber,
-      this.syncing);
+    await this.syncStatus.setHighestSyncBlock(
+      this.dbName,
+      blocknumber,
+      this.syncing
+    );
 
     return blocknumber;
-  };
+  }
 
   async sync(highestAvailableBlockNumber: number): Promise<void> {
     // This is a no-op for generic dbs.

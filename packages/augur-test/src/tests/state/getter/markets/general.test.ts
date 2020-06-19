@@ -1,5 +1,5 @@
 import { WSClient } from '@0x/mesh-rpc-client';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/utils';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import {
   BrowserMesh,

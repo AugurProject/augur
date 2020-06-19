@@ -1,25 +1,24 @@
-import { sortOptions } from "./types";
-import { DB } from "../db/DB";
-import * as _ from "lodash";
+import {
+  Address,
+  MarketData,
+  OrderEventType,
+  ParsedOrderEventLog,
+} from '@augurproject/sdk-lite';
+import { BigNumber } from 'bignumber.js';
+import Dexie from 'dexie';
+
+import * as t from 'io-ts';
+import * as _ from 'lodash';
 import {
   Augur,
-  convertDisplayPriceToOnChainPrice,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
   numTicksToTickSize,
-} from "../../index";
-import { BigNumber } from "bignumber.js";
-import { Getter } from "./Router";
-import {
-  Address,
-  OrderEventType,
-  ParsedOrderEventLog,
-  MarketData,
-} from "../logs/types";
-
-import * as t from "io-ts";
-import Dexie from "dexie";
-import { ZeroXOrdersGetters, ZeroXOrders } from "./ZeroXOrdersGetters";
+} from '../../index';
+import { DB } from '../db/DB';
+import { Getter } from './Router';
+import { sortOptions } from './types';
+import { ZeroXOrders, ZeroXOrdersGetters } from './ZeroXOrdersGetters';
 
 const ZERO = new BigNumber(0);
 
@@ -43,9 +42,9 @@ export const OutcomeParam = t.keyof({
 });
 
 export const makerTakerValues = {
-  'either': 'either',
-  'maker': 'maker',
-  'taker': 'taker',
+  either: 'either',
+  maker: 'maker',
+  taker: 'taker',
 };
 
 export const makerTaker = t.keyof(makerTakerValues);
@@ -164,33 +163,40 @@ export class OnChainTrading {
 
     let orderFilledCollection: Dexie.Collection<ParsedOrderEventLog, any>;
     if (params.marketIds) {
-      orderFilledCollection = db.ParsedOrderEvent.where("market").anyOf(params.marketIds);
+      orderFilledCollection = db.ParsedOrderEvent.where('market').anyOf(
+        params.marketIds
+      );
     } else {
-      orderFilledCollection = db.ParsedOrderEvent.where("orderCreator").equals(params.account).or("orderFiller").equals(params.account);
+      orderFilledCollection = db.ParsedOrderEvent.where('orderCreator')
+        .equals(params.account)
+        .or('orderFiller')
+        .equals(params.account);
     }
 
-    const formattedOutcome = params.outcome ? `0x${params.outcome.toString(16)}` : "";
+    const formattedOutcome = params.outcome
+      ? `0x${params.outcome.toString(16)}`
+      : '';
 
-    orderFilledCollection = orderFilledCollection.and((log) => {
+    orderFilledCollection = orderFilledCollection.and(log => {
       if (log.eventType !== OrderEventType.Fill) return false;
       if (params.universe && log.universe !== params.universe) return false;
       if (params.outcome && log.outcome !== formattedOutcome) return false;
       return true;
     });
-    if (params.limit) orderFilledCollection = orderFilledCollection.limit(params.limit);
-    if (params.offset) orderFilledCollection = orderFilledCollection.offset(params.offset);
+    if (params.limit)
+      orderFilledCollection = orderFilledCollection.limit(params.limit);
+    if (params.offset)
+      orderFilledCollection = orderFilledCollection.offset(params.offset);
     const orderFilledResponse = await orderFilledCollection.toArray();
 
     const orderIds = _.map(orderFilledResponse, 'orderId');
-    const ordersResponse = await db.ParsedOrderEvent.where("orderId").anyOf(orderIds).toArray();
+    const ordersResponse = await db.ParsedOrderEvent.where('orderId')
+      .anyOf(orderIds)
+      .toArray();
     const orders = _.keyBy(ordersResponse, 'orderId');
 
     const marketIds = _.map(orderFilledResponse, 'market');
-    const markets = await getMarkets(
-      marketIds,
-      db,
-      params.filterFinalized
-    );
+    const markets = await getMarkets(marketIds, db, params.filterFinalized);
 
     return orderFilledResponse.reduce(
       (trades: MarketTradingHistory, orderFilledDoc) => {
@@ -261,7 +267,7 @@ export class OnChainTrading {
     }
 
     return ZeroXOrdersGetters.getZeroXOrders(augur, db, params);
-  };
+  }
 
   @Getter('GetOrdersParams')
   static async getOpenOnChainOrders(
@@ -272,46 +278,81 @@ export class OnChainTrading {
     let currentOrdersResponse: ParsedOrderEventLog[];
 
     if (params.universe) {
-      currentOrdersResponse = await db.CurrentOrders.where('orderCreator').equals(params.account).or('orderFiller').equals(params.account).and((log) => {
-        return log.universe === params.universe;
-      }).and((log) => {
-        if (params.orderState === OrderState.OPEN && log.amount === "0x00") return false;
-        if (params.orderState === OrderState.CANCELED && log.eventType !== OrderEventType.Cancel) return false;
-        if (params.orderState === OrderState.FILLED && log.eventType !== OrderEventType.Fill) return false;
-        return true;
-      }).toArray();
+      currentOrdersResponse = await db.CurrentOrders.where('orderCreator')
+        .equals(params.account)
+        .or('orderFiller')
+        .equals(params.account)
+        .and(log => {
+          return log.universe === params.universe;
+        })
+        .and(log => {
+          if (params.orderState === OrderState.OPEN && log.amount === '0x00')
+            return false;
+          if (
+            params.orderState === OrderState.CANCELED &&
+            log.eventType !== OrderEventType.Cancel
+          )
+            return false;
+          if (
+            params.orderState === OrderState.FILLED &&
+            log.eventType !== OrderEventType.Fill
+          )
+            return false;
+          return true;
+        })
+        .toArray();
     } else {
-      currentOrdersResponse = await db.CurrentOrders.where('[market+outcome+orderType]').between([
-        params.marketId,
-        params.outcome ? `0x0${params.outcome}` : Dexie.minKey,
-        params.orderType ? params.orderType : Dexie.minKey
-      ], [
-        params.marketId,
-        params.outcome ? `0x0${params.outcome}` : Dexie.maxKey,
-        params.orderType ? params.orderType : Dexie.maxKey
-      ]).and((log) => {
-        if (params.account) {
-          if (log.orderCreator != params.account && log.orderFiller != params.account) return false;
-        }
+      currentOrdersResponse = await db.CurrentOrders.where(
+        '[market+outcome+orderType]'
+      )
+        .between(
+          [
+            params.marketId,
+            params.outcome ? `0x0${params.outcome}` : Dexie.minKey,
+            params.orderType ? params.orderType : Dexie.minKey,
+          ],
+          [
+            params.marketId,
+            params.outcome ? `0x0${params.outcome}` : Dexie.maxKey,
+            params.orderType ? params.orderType : Dexie.maxKey,
+          ]
+        )
+        .and(log => {
+          if (params.account) {
+            if (
+              log.orderCreator != params.account &&
+              log.orderFiller != params.account
+            )
+              return false;
+          }
 
-        if (params.orderState === OrderState.OPEN && log.amount === "0x00") return false;
-        if (params.orderState === OrderState.CANCELED && log.eventType !== OrderEventType.Cancel) return false;
-        if (params.orderState === OrderState.FILLED && log.eventType !== OrderEventType.Fill) return false;
+          if (params.orderState === OrderState.OPEN && log.amount === '0x00')
+            return false;
+          if (
+            params.orderState === OrderState.CANCELED &&
+            log.eventType !== OrderEventType.Cancel
+          )
+            return false;
+          if (
+            params.orderState === OrderState.FILLED &&
+            log.eventType !== OrderEventType.Fill
+          )
+            return false;
 
-        return true;
-      }).toArray();
+          return true;
+        })
+        .toArray();
     }
 
     const orderIds = _.map(currentOrdersResponse, 'orderId');
-    const originalOrdersResponse = await db.ParsedOrderEvent.where("orderId").anyOf(orderIds).and((log) => log.eventType === OrderEventType.Create).toArray();
+    const originalOrdersResponse = await db.ParsedOrderEvent.where('orderId')
+      .anyOf(orderIds)
+      .and(log => log.eventType === OrderEventType.Create)
+      .toArray();
     const originalOrders = _.keyBy(originalOrdersResponse, 'orderId');
 
     const marketIds = _.map(currentOrdersResponse, 'market');
-    const markets = await getMarkets(
-      marketIds,
-      db,
-      true
-    );
+    const markets = await getMarkets(marketIds, db, true);
 
     return currentOrdersResponse.reduce(
       (orders: Orders, orderEventDoc: ParsedOrderEventLog) => {
@@ -344,8 +385,8 @@ export class OnChainTrading {
           tickSize
         ).toString(10);
         const tokensEscrowed = new BigNumber(orderEventDoc.tokensEscrowed, 16)
-        .dividedBy(10 ** 18)
-        .toString(10);
+          .dividedBy(10 ** 18)
+          .toString(10);
         let orderState = OrderState.OPEN;
         if (orderEventDoc.eventType === OrderEventType.Fill) {
           orderState = OrderState.FILLED;
@@ -388,9 +429,9 @@ export class OnChainTrading {
               : 0,
             originalFullPrecisionAmount: originalOrderDoc
               ? convertOnChainAmountToDisplayAmount(
-                new BigNumber(originalOrderDoc.amount, 16),
-                tickSize
-              ).toString(10)
+                  new BigNumber(originalOrderDoc.amount, 16),
+                  tickSize
+                ).toString(10)
               : 0,
           }
         ) as Order;
@@ -408,11 +449,16 @@ export async function getMarkets(
 ): Promise<_.Dictionary<MarketData>> {
   let marketsData: MarketData[];
   if (filterFinalized) {
-    marketsData = await db.Markets.where("market").anyOf(marketIds).and((log) => {
-      return !log.finalized;
-    }).toArray();
+    marketsData = await db.Markets.where('market')
+      .anyOf(marketIds)
+      .and(log => {
+        return !log.finalized;
+      })
+      .toArray();
   } else {
-    marketsData = await db.Markets.where("market").anyOf(marketIds).toArray();
+    marketsData = await db.Markets.where('market')
+      .anyOf(marketIds)
+      .toArray();
   }
   const markets = _.keyBy(marketsData, 'market');
   return markets;

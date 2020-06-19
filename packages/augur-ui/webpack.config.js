@@ -12,7 +12,7 @@ let baseConfig = require("./config/webpack.common.config");
 
 // DEVELOPMENT CONFIG
 if (process.env.NODE_ENV === "development") {
-  console.log(`Using Environment '${process.env.ETHEREUM_NETWORK || "local"}'`);
+  console.log(`Using Environment '${process.env.AUGUR_ENV || process.env.ETHEREUM_NETWORK || "local"}'`);
   // PRODUCTION DEBUG CONFIG (unminified build + more specific source maps + no hot reload)
   baseConfig = merge(baseConfig, {
     devtool: process.env.DEBUG_BUILD ? "eval-source-map" : "eval"
@@ -22,8 +22,8 @@ if (process.env.NODE_ENV === "development") {
   baseConfig = merge(baseConfig, {
     mode: "production",
     optimization: {
-      removeAvailableModules: false,
-      removeEmptyChunks: false,
+      removeAvailableModules: true,
+      removeEmptyChunks: true,
       minimize: true,
       minimizer: [
         new TerserPlugin({

@@ -1,13 +1,19 @@
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import type { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
 import {
   encodeNumberAsBase10String,
   encodeNumberAsJSNumber,
   unfix,
 } from '@augurproject/utils';
-import { ZERO, TEN, ETHER, GWEI_CONVERSION, SCALAR } from 'modules/common/constants';
-import addCommas from 'utils/add-commas-to-number';
+import {
+  ETHER,
+  GWEI_CONVERSION,
+  SCALAR,
+  TEN,
+  ZERO,
+} from 'modules/common/constants';
 import { FormattedNumber, FormattedNumberOptions } from 'modules/types';
-import { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
+import addCommas from 'utils/add-commas-to-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import getPrecision from 'utils/get-number-precision';
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

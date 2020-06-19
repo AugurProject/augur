@@ -9,7 +9,9 @@ import {
   INVALID_OUTCOME_LABEL
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
+import { INVALID_OUTCOME } from 'modules/create-market/constants';
+import type { MarketInfo } from '@augurproject/sdk';
+import type { Getters } from '@augurproject/sdk';
 
 const getOutcomeName = (
   market: MarketData | Getters.Markets.MarketInfo,

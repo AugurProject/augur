@@ -50,6 +50,9 @@
       "path": "../augur-sdk"
     },
     {
+      "path": "../augur-sdk-lite"
+    },
+    {
       "path": "../augur-utils"
     }
 

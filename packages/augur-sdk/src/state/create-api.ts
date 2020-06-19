@@ -1,6 +1,7 @@
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/utils';
 import { EthersSigner } from '@augurproject/contract-dependencies-ethers';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { logger, LoggerLevels } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { SupportedProvider } from 'ethereum-types';
@@ -9,7 +10,6 @@ import { ContractEvents } from '../api/ContractEvents';
 import { ZeroX } from '../api/ZeroX';
 import { Augur } from '../Augur';
 import { BaseConnector, EmptyConnector } from '../connector';
-import { SubscriptionEventName } from '../constants';
 import { ContractDependenciesGSN } from '../lib/contract-deps';
 import { WarpController } from '../warp/WarpController';
 import { Controller } from './Controller';

@@ -9,7 +9,13 @@
       "path": "./packages/augur-types"
     },
     {
+      "path": "./packages/augur-templates"
+    },
+    {
       "path": "./packages/augur-sdk"
+    },
+    {
+      "path": "./packages/augur-sdk-lite"
     },
     {
       "path": "./packages/ethersjs-provider"
@@ -19,12 +25,6 @@
     },
     {
       "path": "./packages/augur-contract-dependencies-ethers"
-    },
-    {
-      "path": "./packages/augur-test"
-    },
-    {
-      "path": "./packages/augur-tools"
     },
     {
       "path": "./packages/augur-utils"

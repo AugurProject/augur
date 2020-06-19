@@ -10,7 +10,7 @@ import PaginationStyles from 'modules/common/pagination.styles.less';
 import Styles from 'modules/reporting/components/markets-in-dispute.styles.less';
 
 import { MarketData, ReportingListState } from 'modules/types';
-import { Getters } from '@augurproject/sdk/src';
+import type { Getters } from '@augurproject/sdk';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { Pagination } from 'modules/common/pagination';
 import { REPORTING_STATE, SMALL_MOBILE } from 'modules/common/constants';

@@ -4,9 +4,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WorkerPlugin = require('worker-plugin');
-
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
-const gitRevisionPlugin = new GitRevisionPlugin();
+const { buildConfig } = require('@augurproject/artifacts');
+const { serializeConfig } = require('@augurproject/utils');
+
 
 const PATHS = {
   APP: path.resolve(__dirname, '../src'),
@@ -18,12 +19,19 @@ const PATHS = {
   ORBIT: path.resolve(__dirname, '../../orbit-web'),
 };
 
+const AUGUR_ENV = process.env.AUGUR_ENV || process.env.ETHEREUM_NETWORK || 'local';
+
+const gitRevisionPlugin = new GitRevisionPlugin({
+  branch: true
+});
+
 module.exports = {
   mode: 'development',
   entry: {
     // 'assets/styles/styles': `${PATHS.APP}/styles`,
     augur: [
       `${PATHS.APP}/web-workers-exit`,
+      'react-dates/initialize',
       'react',
       'react-dom',
       'redux',
@@ -215,57 +223,22 @@ module.exports = {
         return order.indexOf(b.names[0]) + order.indexOf(a.names[0]);
       },
     }),
-    new GitRevisionPlugin({
-      branch: true,
-    }),
+    gitRevisionPlugin,
     new webpack.DefinePlugin({
       'process.env': {
-        IPFS_STABLE_LOADER_HASH: process.env.IPFS_STABLE_LOADER_HASH,
-        ETHEREUM_NETWORK: JSON.stringify(
-          process.env.ETHEREUM_NETWORK || 'local'
-        ),
+        AUGUR_ENV: JSON.stringify(AUGUR_ENV),
         AUTO_LOGIN: process.env.AUTO_LOGIN || false,
+        CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
+        CURRENT_COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
+        ETHEREUM_NETWORK: JSON.stringify(AUGUR_ENV),
+        IPFS_STABLE_LOADER_HASH: JSON.stringify(process.env.IPFS_STABLE_LOADER_HASH),
 
         // Set this var to remove code that is problematic for us to host.
         // Will need to be negated in the relevant conditionals.
         AUGUR_HOSTED: process.env.AUGUR_HOSTED || false,
         ENABLE_MAINNET: process.env.ENABLE_MAINNET || false,
-        CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
-        CURRENT_COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
 
-        // Config overrides
-        NETWORK_ID: process.env.NETWORK_ID,
-
-        ETHEREUM_HTTP: process.env.ETHEREUM_HTTP,
-        ETHEREUM_WS: process.env.ETHEREUM_WS,
-        ETHEREUM_RPC_RETRY_COUNT: process.env.ETHEREUM_RPC_RETRY_COUNT,
-        ETHEREUM_RPC_RETRY_INTERVAL: process.env.ETHEREUM_RPC_RETRY_INTERVAL,
-        ETHEREUM_RPC_CONCURRENCY: process.env.ETHEREUM_RPC_CONCURRENCY,
-
-        GAS_LIMIT: process.env.GAS_LIMIT,
-        GAS_PRICE: process.env.GAS_PRICE,
-
-        ENABLE_FAUCETS: process.env.ENABLE_FAUCETS,
-        NORMAL_TIME: process.env.NORMAL_TIME,
-        ETHEREUM_PRIVATE_KEY: process.env.ETHEREUM_PRIVATE_KEY,
-        SAVE_PRIVATE_KEY: process.env.SAVE_PRIVATE_KEY,
-        CONTRACT_INPUT_PATH: process.env.CONTRACT_INPUT_PATH,
-        WRITE_ARTIFACTS: process.env.WRITE_ARTIFACTS,
-
-        GSN_ENABLED: process.env.GSN_ENABLED,
-
-        ZEROX_RPC_ENABLED: process.env.ZEROX_RPC_ENABLED,
-        ZEROX_RPC_WS: process.env.ZEROX_RPC_WS,
-        ZEROX_MESH_ENABLED: process.env.ZEROX_MESH_ENABLED,
-        ZEROX_USE_BOOTSTRAP_LIST: process.env.ZEROX_USE_BOOTSTRAP_LIST,
-        ZEROX_MESH_BOOTSTRAP_LIST: process.env.ZEROX_MESH_BOOTSTRAP_LIST,
-
-        SDK_ENABLED: process.env.SDK_ENABLED,
-        SDK_WS: process.env.SDK_WS,
-
-        UPLOAD_BLOCK_NUMBER: process.env.UPLOAD_BLOCK_NUMBER,
-
-        ADDRESSES: process.env.ADDRESSES,
+        CONFIGURATION: serializeConfig(buildConfig(AUGUR_ENV))
       },
     }),
   ],
@@ -275,4 +248,5 @@ module.exports = {
     tls: 'empty',
     child_process: 'empty',
   },
+  devtool: 'source-map',
 };

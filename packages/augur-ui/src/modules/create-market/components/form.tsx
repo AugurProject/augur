@@ -1,121 +1,117 @@
-import React from 'react';
 import classNames from 'classnames';
-
-import { LocationDisplay, Error } from 'modules/common/form';
-import {
-  BACK,
-  NEXT,
-  CREATE,
-  CUSTOM_CONTENT_PAGES,
-  REVIEW,
-  FORM_DETAILS,
-  TEMPLATE_FORM_DETAILS,
-  LANDING,
-  FEES_LIQUIDITY,
-  DESCRIPTION,
-  END_TIME,
-  HOUR,
-  DESIGNATED_REPORTER_ADDRESS,
-  VALIDATION_ATTRIBUTES,
-  CATEGORIES,
-  OUTCOMES,
-  SCRATCH,
-  DENOMINATION,
-  MIN_PRICE,
-  MAX_PRICE,
-  TICK_SIZE,
-  AFFILIATE_FEE,
-  SETTLEMENT_FEE,
-  SUB_CATEGORIES,
-  MARKET_TYPE,
-  EMPTY_STATE,
-  TEMPLATE_PICKER,
-  TEMPLATE_INPUTS,
-  TEMPLATE,
-  ExchangeClosingMessage,
-  MovieWednesdayAfterOpeningMessage, AugurMarketsContent, EventDetailsContent, ReviewContent,
-} from 'modules/create-market/constants';
-import {
-  CATEGORICAL,
-  SCALAR,
-  DESIGNATED_REPORTER_SPECIFIC,
-  YES_NO_OUTCOMES,
-  SCALAR_OUTCOMES,
-  NON_EXISTENT,
-  ZERO,
-  ONE,
-  WALLET_STATUS_VALUES,
-} from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
-  LargeHeader,
-  ExplainerBlock,
-  ContentBlock, MultipleExplainerBlock,
-} from 'modules/create-market/components/common';
-import { NewMarket, Drafts, OutcomeFormatted } from 'modules/types';
-import FormDetails from 'modules/create-market/containers/form-details';
-import Review from 'modules/create-market/containers/review';
-import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
-import SubCategories from 'modules/create-market/containers/sub-categories';
-import { MarketType } from 'modules/create-market/components/market-type';
-import makePath from 'modules/routes/helpers/make-path';
-import { CREATE_MARKET, MY_POSITIONS } from 'modules/routes/constants/views';
+  CATEGORICAL,
+  DESIGNATED_REPORTER_SPECIFIC,
+  NON_EXISTENT,
+  ONE,
+  SCALAR,
+  SCALAR_OUTCOMES,
+  WALLET_STATUS_VALUES,
+  YES_NO_OUTCOMES,
+  ZERO,
+} from 'modules/common/constants';
+
+import { Error, LocationDisplay } from 'modules/common/form';
+import { BulkTxLabel } from 'modules/common/labels';
 import {
+  checkAddress,
+  checkCategoriesArray,
+  checkForUserInputFilled,
+  checkOutcomesArray,
+  dateGreater,
+  dividedBy,
   isBetween,
+  isCheckWholeNumber,
   isFilledNumber,
   isFilledString,
-  checkCategoriesArray,
-  checkOutcomesArray,
   isLessThan,
   isMoreThan,
   isPositive,
-  moreThanDecimals,
-  checkAddress,
-  dividedBy,
-  dateGreater,
   isValidFee,
-  checkForUserInputFilled,
-  isCheckWholeNumber,
+  moreThanDecimals,
 } from 'modules/common/validations';
 import {
-  buildformattedDate,
-  convertUnixToFormattedDate,
-  timestampComponents,
-} from 'utils/format-date';
-import TemplatePicker from 'modules/create-market/containers/template-picker';
+  ContentBlock,
+  ExplainerBlock,
+  LargeHeader,
+} from 'modules/create-market/components/common';
 
 import Styles from 'modules/create-market/components/form.styles.less';
-
-import MarketView from 'modules/market/components/market-view/market-view';
-import { BulkTxLabel } from 'modules/common/labels';
+import { MarketType } from 'modules/create-market/components/market-type';
+import {
+  AFFILIATE_FEE,
+  BACK,
+  CATEGORIES,
+  CREATE,
+  CUSTOM_CONTENT_PAGES,
+  DENOMINATION,
+  DESCRIPTION,
+  DESIGNATED_REPORTER_ADDRESS,
+  EMPTY_STATE,
+  END_TIME,
+  FEES_LIQUIDITY,
+  FORM_DETAILS,
+  HOUR,
+  LANDING,
+  MARKET_TYPE,
+  MAX_PRICE,
+  MIN_PRICE,
+  MovieWednesdayAfterOpeningMessage,
+  NEXT,
+  OUTCOMES,
+  REVIEW,
+  SCRATCH,
+  SETTLEMENT_FEE,
+  SUB_CATEGORIES,
+  TEMPLATE,
+  TEMPLATE_FORM_DETAILS,
+  TEMPLATE_INPUTS,
+  TEMPLATE_PICKER,
+  TICK_SIZE,
+  VALIDATION_ATTRIBUTES,
+} from 'modules/create-market/constants';
+import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
+import FormDetails from 'modules/create-market/containers/form-details';
+import Review from 'modules/create-market/containers/review';
+import SubCategories from 'modules/create-market/containers/sub-categories';
+import TemplatePicker from 'modules/create-market/containers/template-picker';
 import {
   buildResolutionDetails,
+  getFormattedOutcomes,
   hasNoTemplateCategoryChildren,
   hasNoTemplateCategoryTertiaryChildren,
-  getFormattedOutcomes,
 } from 'modules/create-market/get-template';
-import deepClone from 'utils/deep-clone';
-
-import { Getters } from '@augurproject/sdk';
 import {
-  TEMPLATE_CONTENT_PAGES,
   NO_CAT_TEMPLATE_CONTENT_PAGES,
+  TEMPLATE_CONTENT_PAGES,
 } from 'modules/create-market/template-navigation';
+
+import MarketView from 'modules/market/components/market-view/market-view';
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
-import { createBigNumber } from 'utils/create-big-number';
-import makeQuery from 'modules/routes/helpers/make-query';
 import {
   CREATE_MARKET_FORM_PARAM_NAME,
   CREATE_MARKET_PORTFOLIO,
 } from 'modules/routes/constants/param-names';
+import { CREATE_MARKET, MY_POSITIONS } from 'modules/routes/constants/views';
+import makePath from 'modules/routes/helpers/make-path';
+import makeQuery from 'modules/routes/helpers/make-query';
+import { Drafts, NewMarket } from 'modules/types';
+import React from 'react';
+import { createBigNumber } from 'utils/create-big-number';
+import deepClone from 'utils/deep-clone';
+import {
+  buildformattedDate,
+  convertUnixToFormattedDate,
+} from 'utils/format-date';
+import type {
+  TemplateInput,
+} from '@augurproject/templates';
 import {
   TemplateInputType,
-  TimeOffset,
-  getTemplateExchangeClosingWithBuffer,
   ValidationType,
-  TemplateInput,
   getTemplateWednesdayAfterOpeningDay,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -537,7 +533,11 @@ export default class Form extends React.Component<FormProps, FormState> {
       checkDecimals ? moreThanDecimals(value, decimals) : '',
       checkForAddress ? checkAddress(value) : '',
       checkUserInputFilled
-        ? checkForUserInputFilled(value, newMarket.endTimeFormatted, currentTimestamp)
+        ? checkForUserInputFilled(
+            value,
+            newMarket.endTimeFormatted,
+            currentTimestamp
+          )
         : '',
       checkWholeNumber ? isCheckWholeNumber(value) : '',
     ];
@@ -773,7 +773,8 @@ export default class Form extends React.Component<FormProps, FormState> {
       useBullets,
     } = contentPages[currentStep];
 
-    const disableCreate = walletStatus !== WALLET_STATUS_VALUES.CREATED || this.state.disableCreate;
+    const disableCreate =
+      walletStatus !== WALLET_STATUS_VALUES.CREATED || this.state.disableCreate;
     let savedDraft = drafts[uniqueId];
     if (savedDraft) savedDraft.validations = [];
     let comparableNewMarket = deepClone<NewMarket>(newMarket);
@@ -814,7 +815,7 @@ export default class Form extends React.Component<FormProps, FormState> {
           }),
         });
       });
-    }
+    };
 
     const explainerBlockContents = (explainerBlockTitle ===
       EventDetailsContent().explainerBlockTitle ||
@@ -969,10 +970,12 @@ export default class Form extends React.Component<FormProps, FormState> {
                       disabled={disableCreate}
                       action={() => {
                         gsnUnavailable && !gsnWalletInfoSeen
-                        ? initializeGsnWallet(() => setTimeout(() => {
-                          openCreateMarketModal(createModalCallback);
-                        }))
-                        : openCreateMarketModal(createModalCallback);
+                          ? initializeGsnWallet(() =>
+                              setTimeout(() => {
+                                openCreateMarketModal(createModalCallback);
+                              })
+                            )
+                          : openCreateMarketModal(createModalCallback);
                       }}
                     />
                   )}

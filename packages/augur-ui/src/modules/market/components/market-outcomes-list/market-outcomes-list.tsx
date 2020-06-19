@@ -1,16 +1,20 @@
-import React, { Component } from 'react';
+import type { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
-import Media from 'react-media';
-
-import MarketOutcomesListOutcome from 'modules/market/containers/market-outcome';
-
-import Styles from 'modules/market/components/market-outcomes-list/market-outcomes-list.styles.less';
-import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
-import HeaderStyles from 'modules/portfolio/components/common/data-table-header.styles.less';
-import { OutcomeFormatted } from 'modules/types';
 import { ToggleExtendButton } from 'modules/common/buttons';
 import { SMALL_MOBILE } from 'modules/common/constants';
-import { Getters } from '@augurproject/sdk';
+import SharedStyles
+  from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
+
+import Styles
+  from 'modules/market/components/market-outcomes-list/market-outcomes-list.styles.less';
+
+import MarketOutcomesListOutcome
+  from 'modules/market/containers/market-outcome';
+import HeaderStyles
+  from 'modules/portfolio/components/common/data-table-header.styles.less';
+import { OutcomeFormatted } from 'modules/types';
+import React from 'react';
+import Media from 'react-media';
 
 interface MarketOutcomesListProps {
   outcomesFormatted: OutcomeFormatted[];

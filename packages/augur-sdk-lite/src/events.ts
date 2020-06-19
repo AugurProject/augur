@@ -1,9 +1,6 @@
-import { TXEventName } from './constants';
-import { ParsedLog } from '@augurproject/types/types';
-import { TransactionMetadata } from '@augurproject/contract-dependencies-ethers';
-
-type Address = string;
-type Bytes32 = string;
+import { ParsedLog } from '@augurproject/types';
+import { TXStatus } from './constants';
+import { Address, Bytes32 } from './logs';
 
 export interface Event {
   eventName: string;
@@ -171,15 +168,6 @@ export interface MarketOIChanged extends FormattedEventLog {
   marketOI: number;
 }
 
-export interface NewBlock extends FormattedEventLog {
-  blocksBehindCurrent: number;
-  highestAvailableBlockNumber: number;
-  lastSyncedBlockNumber: number;
-  percentSynced: string;
-  timestamp: number;
-  logs: ParsedLog[];
-}
-
 // @TODO:: TODO - verify eventType and orderType somehow
 export interface OrderEvent extends FormattedEventLog {
   universe: Address;
@@ -262,10 +250,12 @@ export interface TokensTransferred extends FormattedEventLog {
   tokenType: string;
   market: Address;
 }
+
 export interface ReportingFeeChanged extends FormattedEventLog {
   universe: Address;
   reportingFee: string;
 }
+
 export interface TradingProceedsClaimed extends FormattedEventLog {
   universe: Address;
   shareToken;
@@ -289,13 +279,6 @@ export interface UniverseForked extends FormattedEventLog {
   address: Address;
   universe: Address;
   forkingMarket: Address;
-}
-
-export interface TXStatus {
-  transaction: TransactionMetadata;
-  eventName: TXEventName;
-  hash?: string;
-  reason?: string;
 }
 
 export type SubscriptionType =
@@ -330,3 +313,12 @@ export type SubscriptionType =
   | TimestampSet
   | NewBlock
   | TXStatus;
+
+export interface NewBlock extends FormattedEventLog {
+  blocksBehindCurrent: number;
+  highestAvailableBlockNumber: number;
+  lastSyncedBlockNumber: number;
+  percentSynced: string;
+  timestamp: number;
+  logs: ParsedLog[];
+}

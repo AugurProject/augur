@@ -1,4 +1,4 @@
-import { NetworkId } from '@augurproject/artifacts';
+import { NetworkId } from '@augurproject/utils';
 import {
   EthersProvider as EProvider,
   Transaction,

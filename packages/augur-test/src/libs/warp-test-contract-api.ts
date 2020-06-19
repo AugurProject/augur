@@ -1,4 +1,4 @@
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/utils';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
   Augur,

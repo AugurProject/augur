@@ -1,8 +1,8 @@
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import { Log } from '@augurproject/types';
 import { Block } from 'ethers/providers';
 import _ from 'lodash';
-import { SECONDS_IN_A_DAY } from '../../constants';
 import { WarpController } from '../../warp/WarpController';
 import { DB } from '../db/DB';
 

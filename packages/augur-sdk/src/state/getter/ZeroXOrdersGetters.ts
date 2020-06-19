@@ -1,19 +1,19 @@
-import { DB } from '../db/DB';
+import { MarketData } from '@augurproject/sdk-lite';
+import { BigNumber } from 'bignumber.js';
+import Dexie from 'dexie';
+import { getAddress } from 'ethers/utils/address';
+import * as t from 'io-ts';
 import * as _ from 'lodash';
 import {
   Augur,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
-  numTicksToTickSize
+  numTicksToTickSize,
 } from '../../index';
-import { BigNumber } from 'bignumber.js';
-import { Getter } from './Router';
-import { getMarkets, Order, OrderState } from './OnChainTrading';
+import { DB } from '../db/DB';
 import { StoredOrder } from '../db/ZeroXOrders';
-import Dexie from 'dexie';
-import * as t from 'io-ts';
-import { getAddress } from 'ethers/utils/address';
-import { MarketData } from '../logs/types';
+import { getMarkets, Order, OrderState } from './OnChainTrading';
+import { Getter } from './Router';
 
 export interface ZeroXOrder extends Order {
   expirationTimeSeconds: BigNumber;
@@ -68,7 +68,9 @@ export class ZeroXOrdersGetters {
     db: DB,
     params: t.TypeOf<typeof ZeroXOrdersGetters.GetZeroXOrderParams>
   ): Promise<ZeroXOrder> {
-    const storedOrder: StoredOrder = await db.ZeroXOrders.where('orderHash').equals(params.orderHash).last();
+    const storedOrder: StoredOrder = await db.ZeroXOrders.where('orderHash')
+      .equals(params.orderHash)
+      .last();
     const markets = await getMarkets([storedOrder.market], db, false);
     return ZeroXOrdersGetters.storedOrderToZeroXOrder(markets, storedOrder);
   }
@@ -81,25 +83,23 @@ export class ZeroXOrdersGetters {
     db: DB,
     params: t.TypeOf<typeof ZeroXOrdersGetters.GetZeroXOrdersParams>
   ): Promise<ZeroXOrders> {
-
     if (!params.marketId && !params.account) {
-      throw new Error("'getOrders' requires 'marketId' or 'account' param be provided");
+      throw new Error(
+        "'getOrders' requires 'marketId' or 'account' param be provided"
+      );
     }
 
-    const outcome = params.outcome
-      ? `0x0${params.outcome.toString()}`
-      : null;
+    const outcome = params.outcome ? `0x0${params.outcome.toString()}` : null;
     const orderType = params.orderType ? `0x0${params.orderType}` : null;
     const account = params.account ? getAddress(params.account) : null;
 
     let storedOrders: StoredOrder[];
     if (!params.marketId && account) {
-      storedOrders = await db.ZeroXOrders.where({orderCreator: account})
-        .toArray();
+      storedOrders = await db.ZeroXOrders.where({
+        orderCreator: account,
+      }).toArray();
     } else if (!outcome || !orderType) {
-      storedOrders = await db.ZeroXOrders.where(
-        '[market+outcome+orderType]'
-      )
+      storedOrders = await db.ZeroXOrders.where('[market+outcome+orderType]')
         .between(
           [params.marketId, Dexie.minKey, Dexie.minKey],
           [params.marketId, Dexie.maxKey, Dexie.maxKey]
@@ -116,67 +116,94 @@ export class ZeroXOrdersGetters {
     }
 
     if (params.matchPrice) {
-      if (!params.orderType) throw new Error('Cannot specify match price without order type');
+      if (!params.orderType)
+        throw new Error('Cannot specify match price without order type');
 
       const price = new BigNumber(params.matchPrice, 16);
       storedOrders = _.filter(storedOrders, storedOrder => {
         // 0 == "buy"
         const orderPrice = new BigNumber(storedOrder.price, 16);
-        return params.orderType === '0' ? orderPrice.gte(price) : orderPrice.lte(price);
+        return params.orderType === '0'
+          ? orderPrice.gte(price)
+          : orderPrice.lte(price);
       });
     }
 
-    const marketIds: string[] = await storedOrders
-      .reduce((ids, order) => Array.from(new Set([...ids, order.market])), []);
+    const marketIds: string[] = await storedOrders.reduce(
+      (ids, order) => Array.from(new Set([...ids, order.market])),
+      []
+    );
     const markets = await getMarkets(marketIds, db, false);
 
     return ZeroXOrdersGetters.mapStoredToZeroXOrders(
       markets,
       storedOrders,
       params.ignoreOrders || [],
-      typeof params.expirationCutoffSeconds === 'number' ? params.expirationCutoffSeconds : 0,
-      );
+      typeof params.expirationCutoffSeconds === 'number'
+        ? params.expirationCutoffSeconds
+        : 0
+    );
   }
 
-  static mapStoredToZeroXOrders(markets: _.Dictionary<MarketData>, storedOrders: StoredOrder[], ignoredOrderIds: string[], expirationCutoffSeconds: number): ZeroXOrders {
-    let orders = storedOrders.map((storedOrder) => {
+  static mapStoredToZeroXOrders(
+    markets: _.Dictionary<MarketData>,
+    storedOrders: StoredOrder[],
+    ignoredOrderIds: string[],
+    expirationCutoffSeconds: number
+  ): ZeroXOrders {
+    let orders = storedOrders.map(storedOrder => {
       return {
         storedOrder,
-        zeroXOrder: ZeroXOrdersGetters.storedOrderToZeroXOrder(markets, storedOrder)
-      }
+        zeroXOrder: ZeroXOrdersGetters.storedOrderToZeroXOrder(
+          markets,
+          storedOrder
+        ),
+      };
     });
     // Remove orders somehow belonging to unknown markets
-    orders = orders.filter((order) => order.zeroXOrder !== null);
+    orders = orders.filter(order => order.zeroXOrder !== null);
     // Remove intentionally ignored orders.
-    orders = orders.filter((order) => ignoredOrderIds.indexOf(order.zeroXOrder.orderId) === -1);
+    orders = orders.filter(
+      order => ignoredOrderIds.indexOf(order.zeroXOrder.orderId) === -1
+    );
     // Remove orders soon to expire.
     const now = Math.floor(new Date().valueOf() / 1000);
     const expirationCutoffTimestamp = now + expirationCutoffSeconds;
-    orders = orders.filter((order) => order.zeroXOrder.expirationTimeSeconds.toNumber() > expirationCutoffTimestamp);
+    orders = orders.filter(
+      order =>
+        order.zeroXOrder.expirationTimeSeconds.toNumber() >
+        expirationCutoffTimestamp
+    );
     // Shape orders into market-order-type tree.
-    return orders.reduce((orders: ZeroXOrders, order): ZeroXOrders => {
-      const { storedOrder, zeroXOrder } = order;
-      const { market } = storedOrder;
-      const { orderId } = zeroXOrder;
-      const outcome = new BigNumber(storedOrder.outcome).toNumber();
-      const orderType = new BigNumber(storedOrder.orderType).toNumber();
+    return orders.reduce(
+      (orders: ZeroXOrders, order): ZeroXOrders => {
+        const { storedOrder, zeroXOrder } = order;
+        const { market } = storedOrder;
+        const { orderId } = zeroXOrder;
+        const outcome = new BigNumber(storedOrder.outcome).toNumber();
+        const orderType = new BigNumber(storedOrder.orderType).toNumber();
 
-      if (!orders[market]) {
-        orders[market] = {};
-      }
-      if (!orders[market][outcome]) {
-        orders[market][outcome] = {};
-      }
-      if (!orders[market][outcome][orderType]) {
-        orders[market][outcome][orderType] = {};
-      }
+        if (!orders[market]) {
+          orders[market] = {};
+        }
+        if (!orders[market][outcome]) {
+          orders[market][outcome] = {};
+        }
+        if (!orders[market][outcome][orderType]) {
+          orders[market][outcome][orderType] = {};
+        }
 
-      orders[market][outcome][orderType][orderId] = zeroXOrder;
-      return orders;
-    }, {} as ZeroXOrders)
+        orders[market][outcome][orderType][orderId] = zeroXOrder;
+        return orders;
+      },
+      {} as ZeroXOrders
+    );
   }
 
-  static storedOrderToZeroXOrder(markets: _.Dictionary<MarketData>, storedOrder: StoredOrder): ZeroXOrder {
+  static storedOrderToZeroXOrder(
+    markets: _.Dictionary<MarketData>,
+    storedOrder: StoredOrder
+  ): ZeroXOrder {
     const market = markets[storedOrder.market];
     if (!market) {
       return null; // cannot convert orders unaffiliated with any known market
@@ -209,7 +236,9 @@ export class ZeroXOrdersGetters {
       price,
       amount,
       amountFilled,
-      expirationTimeSeconds: new BigNumber(storedOrder.signedOrder.expirationTimeSeconds),
+      expirationTimeSeconds: new BigNumber(
+        storedOrder.signedOrder.expirationTimeSeconds
+      ),
       fullPrecisionPrice: price,
       fullPrecisionAmount: amount,
       originalFullPrecisionAmount: '0',
@@ -227,21 +256,20 @@ export class ZeroXOrdersGetters {
       senderAddress: storedOrder.signedOrder.senderAddress,
       makerFee: storedOrder.signedOrder.makerFee,
       takerFee: storedOrder.signedOrder.takerFee,
-    } as ZeroXOrder ; // TODO this is hiding some missing properties
+    } as ZeroXOrder; // TODO this is hiding some missing properties
   }
 }
 
-
 export function flattenZeroXOrders(orders): ZeroXOrder[] {
   const collapsed: ZeroXOrder[] = [];
-  _.forOwn(orders, (market) => {
-    _.forOwn(market, (outcome) => {
-      _.forOwn(outcome, (orderType) => {
-        _.forOwn(orderType, (order) => {
+  _.forOwn(orders, market => {
+    _.forOwn(market, outcome => {
+      _.forOwn(outcome, orderType => {
+        _.forOwn(orderType, order => {
           collapsed.push(order);
-        })
-      })
-    })
+        });
+      });
+    });
   });
   return collapsed;
 }

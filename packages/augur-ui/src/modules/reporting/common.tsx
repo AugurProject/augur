@@ -62,7 +62,7 @@ import Styles, { userRepDisplay } from 'modules/reporting/common.styles.less';
 import {
   convertDisplayValuetoAttoValue,
   convertAttoValueToDisplayValue,
-} from '@augurproject/sdk';
+} from '@augurproject/utils';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
 import MarketTitle from 'modules/market/containers/market-title';

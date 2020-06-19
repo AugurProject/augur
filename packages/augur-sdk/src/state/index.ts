@@ -1,7 +1,6 @@
 import * as Getters from './getter';
-import * as Logs from './logs/types';
 
-export { UnixTimestamp } from './logs/types';
-export { Getters, Logs };
+export { Getters };
 
 export * from './create-api';
+export { UnixTimestamp } from '@augurproject/sdk-lite';

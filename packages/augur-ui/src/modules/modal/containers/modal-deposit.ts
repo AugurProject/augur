@@ -1,16 +1,17 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Message } from 'modules/modal/message';
-import { assetDataUtils } from '@0x/order-utils';
 import { BigNumber } from 'ethers/utils';
-import { NETWORK_IDS } from 'modules/common/constants';
-import { closeModal } from 'modules/modal/actions/close-modal';
+import { NETWORK_IDS, NULL_ADDRESS } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
+import { closeModal } from 'modules/modal/actions/close-modal';
+import { Message } from 'modules/modal/message';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 import { augurSdk } from 'services/augursdk';
-import { NULL_ADDRESS } from '@augurproject/sdk/src';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -24,7 +25,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     const { contracts } = augurSdk.get();
     const repTokenAddress = contracts.getReputationToken();
 
-    const assetData = assetDataUtils.encodeERC20AssetData(repTokenAddress.address);
+    const { assetDataUtils } = await import('@0x/order-utils');
+    const assetData = {};
     const networkSettings = [
       {
         orderSource: [

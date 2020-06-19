@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import { bignum } from "./bignum";
 import { padLeft } from "./pad-left";
-import { prefixHex } from "./prefix-hex";
+import { prefixHex } from "./hex";
 import { BYTES_32, UINT256_MAX_VALUE } from "./constants";
 
 export function unfork(forked, prefix = false) {

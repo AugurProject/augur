@@ -1,16 +1,19 @@
-import * as _ from 'lodash';
+import { BigNumber, OrderEvent, OrderInfo } from '@0x/mesh-rpc-client';
+import {
+  MarketData,
+  MarketType,
+  OrderEventType,
+  SubscriptionEventName,
+} from '@augurproject/sdk-lite';
 import { logger, LoggerLevels } from '@augurproject/utils';
-import { AbstractTable, BaseDocument } from './AbstractTable';
-import { SyncStatus } from './SyncStatus';
-import { Augur } from '../../Augur';
-import { DB } from './DB';
-import { MarketData, MarketType } from '../logs/types';
-import { OrderEventType, SubscriptionEventName } from '../../constants';
-import { getTradeInterval, convertDisplayAmountToOnChainAmount } from '../../utils';
-import { OrderInfo, OrderEvent, BigNumber } from '@0x/mesh-rpc-client';
+import { BigNumber as BN, defaultAbiCoder, ParamType } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
-import { defaultAbiCoder, ParamType } from 'ethers/utils';
-import { BigNumber as BN} from 'ethers/utils';
+import * as _ from 'lodash';
+import { Augur } from '../../Augur';
+import { getTradeInterval } from '../../utils';
+import { AbstractTable, BaseDocument } from './AbstractTable';
+import { DB } from './DB';
+import { SyncStatus } from './SyncStatus';
 
 // This database clears its contents on every sync.
 // The primary purposes for even storing this data are:

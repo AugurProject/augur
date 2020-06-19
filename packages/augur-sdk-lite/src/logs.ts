@@ -1,5 +1,5 @@
-import { MarketReportingState } from '../../constants';
-import { ExtraInfoTemplate } from '@augurproject/artifacts';
+import type { ExtraInfoTemplate } from './templates/types';
+import { MarketReportingState, MarketType, OrderEventType } from './constants';
 
 export type Address = string;
 export type Bytes32 = string;
@@ -25,9 +25,8 @@ export interface TimestampedLog extends Log {
   timestamp: LogTimestamp;
 }
 
-
 export interface MarketsUpdatedLog {
-  data: MarketData[]
+  data: MarketData[];
 }
 
 export interface CompleteSetsPurchasedLog extends TimestampedLog {
@@ -62,8 +61,7 @@ export interface DisputeCrowdsourcerCompletedLog extends Log {
   disputeRound: string;
 }
 
-export interface DisputeCrowdsourcerContributionLog
-  extends TimestampedLog {
+export interface DisputeCrowdsourcerContributionLog extends TimestampedLog {
   universe: Address;
   reporter: Address;
   market: Address;
@@ -158,28 +156,6 @@ export interface MarketMigratedLog extends Log {
   newUniverse: Address;
 }
 
-export enum MarketType {
-  YesNo = 0,
-  Categorical = 1,
-  Scalar = 2,
-}
-
-export enum MarketTypeName {
-  YesNo = 'YesNo',
-  Categorical = 'Categorical',
-  Scalar = 'Scalar',
-}
-
-export enum CommonOutcomes {
-  Malformed = 'malformed outcome',
-  Invalid = 'Invalid',
-}
-
-export enum YesNoOutcomes {
-  No = 'No',
-  Yes = 'Yes',
-}
-
 export type TradeDirection = 0 | 1;
 export type NumOutcomes = 3 | 4 | 5 | 6 | 7 | 8;
 export type OutcomeNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -247,7 +223,7 @@ export interface CurrentOrder extends ParsedOrderEventLog {
 }
 
 export interface CancelZeroXOrderLog extends Log {
-  universe: Address,
+  universe: Address;
   account: Address;
   market: Address;
   price: string;
@@ -268,22 +244,11 @@ export enum OrderTypeHex {
   Ask = '0x01',
 }
 
-export enum OrderEventType {
-  Create = 0,
-  Cancel = 1,
-  Fill = 2,
-}
-
 export enum OrderState {
   ALL = 'ALL',
   OPEN = 'OPEN',
   FILLED = 'FILLED',
   CANCELED = 'CANCELED',
-}
-
-export enum OrderEventAddressValue {
-  orderCreator = 0,
-  orderFiller = 1,
 }
 
 export enum OrderEventUint256Value {
@@ -298,19 +263,6 @@ export enum OrderEventUint256Value {
   sharesEscrowed = 8,
   tokensEscrowed = 9,
 }
-
-export const ORDER_EVENT_CREATOR = 'addressData.0';
-export const ORDER_EVENT_FILLER = 'addressData.1';
-export const ORDER_EVENT_PRICE = 'uint256Data.0';
-export const ORDER_EVENT_AMOUNT = 'uint256Data.1';
-export const ORDER_EVENT_OUTCOME = 'uint256Data.2';
-export const ORDER_EVENT_TOKEN_REFUND = 'uint256Data.3';
-export const ORDER_EVENT_SHARES_REFUND = 'uint256Data.4';
-export const ORDER_EVENT_FEES = 'uint256Data.5';
-export const ORDER_EVENT_AMOUNT_FILLED = 'uint256Data.6';
-export const ORDER_EVENT_TIMESTAMP = 'uint256Data.7';
-export const ORDER_EVENT_SHARES_ESCROWED = 'uint256Data.8';
-export const ORDER_EVENT_TOKENS_ESCROWED = 'uint256Data.9';
 
 export interface ParticipationTokensRedeemedLog extends TimestampedLog {
   universe: Address;
@@ -352,7 +304,8 @@ export interface ReportingFeeChangedLog extends Log {
   universe: Address;
   reportingFee: string;
 }
-export interface TokensMinted extends Log {
+
+export interface TokensMintedLog extends Log {
   universe: Address;
   token: Address;
   target: Address;

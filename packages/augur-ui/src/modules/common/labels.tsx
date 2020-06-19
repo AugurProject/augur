@@ -43,15 +43,16 @@ import {
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import { formatNumber, formatBlank, formatGasCostToEther, formatAttoEth } from 'utils/format-number';
 import { DateFormattedObject, FormattedNumber, SizeTypes, MarketData } from 'modules/types';
-import { Getters, TXEventName } from '@augurproject/sdk';
+import type { Getters } from '@augurproject/sdk';
+import { TXEventName } from '@augurproject/sdk-lite';
 import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
   DismissableNotice,
   DismissableNoticeProps,
 } from 'modules/reporting/common';
+import { hasTemplateTextInputs } from '@augurproject/templates';
 import { AugurMarketsContent, EventDetailsContent } from 'modules/create-market/constants';
 import { ExplainerBlock, MultipleExplainerBlock } from 'modules/create-market/components/common';
-import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';

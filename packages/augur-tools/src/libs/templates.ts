@@ -1,4 +1,5 @@
-import { REQUIRED, TemplateInput } from '@augurproject/artifacts';
+import { TemplateInput } from '@augurproject/templates';
+import { REQUIRED } from '@augurproject/sdk-lite';
 import { formatBytes32String } from 'ethers/utils';
 
 export const fillInString = (str: string, inputs: TemplateInput[], values) => {

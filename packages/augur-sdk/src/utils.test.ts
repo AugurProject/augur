@@ -1,4 +1,12 @@
 import {
+  CommonOutcomes,
+  MarketData,
+  MarketType,
+  MarketTypeName,
+  YesNoOutcomes,
+} from '@augurproject/sdk-lite';
+import BigNumber from 'bignumber.js';
+import {
   calculatePayoutNumeratorsValue,
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
@@ -18,66 +26,69 @@ import {
   numTicksToTickSizeWithDisplayPrices,
   PayoutNumeratorValue,
 } from './utils';
-import {
-  CommonOutcomes,
-  MarketCreatedLog,
-  MarketType,
-  MarketTypeName,
-  YesNoOutcomes,
-  MarketData
-} from './state/logs/types';
-import { formatBytes32String } from 'ethers/utils';
-import BigNumber from 'bignumber.js';
-
 
 test('numTicksToTickSize', () => {
   const minPrice = new BigNumber(0);
   const maxPrice = new BigNumber(1e18).times(10);
   const numTicks = new BigNumber(10000);
-  expect(numTicksToTickSize(numTicks, minPrice, maxPrice).toString()).toEqual('0.001');
+  expect(numTicksToTickSize(numTicks, minPrice, maxPrice).toString()).toEqual(
+    '0.001'
+  );
 });
 
 test('numTicksToTickSizeWithDisplayPrices', () => {
   const minPrice = new BigNumber(0);
   const maxPrice = new BigNumber(10);
   const numTicks = new BigNumber(10000);
-  expect(numTicksToTickSizeWithDisplayPrices(numTicks, minPrice, maxPrice).toString()).toEqual('0.001');
+  expect(
+    numTicksToTickSizeWithDisplayPrices(numTicks, minPrice, maxPrice).toString()
+  ).toEqual('0.001');
 });
 
 test('convertOnChainAmountToDisplayAmount', () => {
   const onChainAmount = new BigNumber(1e18).times(23);
   const tickSize = new BigNumber('0.001');
-  expect(convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toString()).toEqual('23000');
+  expect(
+    convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toString()
+  ).toEqual('23000');
 });
 
 test('convertDisplayAmountToOnChainAmount', () => {
   const displayAmount = new BigNumber(23);
   const tickSize = new BigNumber('0.001');
-  expect(convertDisplayAmountToOnChainAmount(displayAmount, tickSize).toString()).toEqual('23000000000000000');
+  expect(
+    convertDisplayAmountToOnChainAmount(displayAmount, tickSize).toString()
+  ).toEqual('23000000000000000');
 });
 
 test('convertOnChainPriceToDisplayPrice', () => {
   const onChainPrice = new BigNumber(20000);
   const minPrice = new BigNumber(1e18).times(3);
   const tickSize = new BigNumber('0.001');
-  expect(convertOnChainPriceToDisplayPrice(onChainPrice, minPrice, tickSize).toString()).toEqual('23');
+  expect(
+    convertOnChainPriceToDisplayPrice(
+      onChainPrice,
+      minPrice,
+      tickSize
+    ).toString()
+  ).toEqual('23');
 });
 
 test('convertDisplayPriceToOnChainPrice', () => {
   const displayPrice = new BigNumber(23);
   const minPrice = new BigNumber(3);
   const tickSize = new BigNumber('0.001');
-  expect(convertDisplayPriceToOnChainPrice(displayPrice, minPrice, tickSize).toString()).toEqual('20000');
+  expect(
+    convertDisplayPriceToOnChainPrice(
+      displayPrice,
+      minPrice,
+      tickSize
+    ).toString()
+  ).toEqual('20000');
 });
 
 test('calculate payout numerators value : malformed : no payout', () => {
-  const value = calculatePayoutNumeratorsValue(
-    '',
-    '',
-    '10000',
-    '',
-    []
-  );
+  const value = calculatePayoutNumeratorsValue('', '', '10000', '', []);
   expect(value).toEqual({ outcome: null, malformed: true });
 });
 
@@ -164,7 +175,7 @@ test('calculate payout numerators value : yes/no : malformed', () => {
     '',
     '',
     MarketTypeName.YesNo,
-    ['3000', '4000', '3000',]
+    ['3000', '4000', '3000']
   );
   expect(value).toEqual({ outcome: null, malformed: true });
 });
@@ -205,11 +216,15 @@ test('is well-formed categorical', () => {
   expect(isWellFormedCategorical([])).toEqual(false);
   expect(isWellFormedCategorical(['1'])).toEqual(false);
   expect(isWellFormedCategorical(['1', '0'])).toEqual(false);
-  expect(isWellFormedCategorical(['1', '0', '0', '0', '0', '0', '0', '0', '0'])).toEqual(false);
+  expect(
+    isWellFormedCategorical(['1', '0', '0', '0', '0', '0', '0', '0', '0'])
+  ).toEqual(false);
 
   expect(isWellFormedCategorical(['1', '0', '0'])).toEqual(true);
   expect(isWellFormedCategorical(['0', '1', '0'])).toEqual(true);
-  expect(isWellFormedCategorical(['0', '0', '0', '0', '0', '0', '0', '1110'])).toEqual(true);
+  expect(
+    isWellFormedCategorical(['0', '0', '0', '0', '0', '0', '0', '1110'])
+  ).toEqual(true);
 });
 
 test('is well-formed scalar', () => {
@@ -240,28 +255,36 @@ test('describe yes-no outcome', () => {
 
 test('describe categorical outcome', () => {
   const outcomes = ['real', 'a dream', 'a trick'];
-  expect(describeCategoricalOutcome(0, outcomes)).toEqual(CommonOutcomes.Invalid);
+  expect(describeCategoricalOutcome(0, outcomes)).toEqual(
+    CommonOutcomes.Invalid
+  );
   expect(describeCategoricalOutcome(1, outcomes)).toEqual('real');
   expect(describeCategoricalOutcome(2, outcomes)).toEqual('a dream');
   expect(describeCategoricalOutcome(3, outcomes)).toEqual('a trick');
 });
 
 test('describe scalar outcome', () => {
-  expect(describeScalarOutcome(0, ['-10', '10'])).toEqual(CommonOutcomes.Invalid);
+  expect(describeScalarOutcome(0, ['-10', '10'])).toEqual(
+    CommonOutcomes.Invalid
+  );
   expect(describeScalarOutcome(1, ['-10', '10'])).toEqual('-10');
   expect(describeScalarOutcome(2, ['-10', '10'])).toEqual('10');
 });
 
 test('describe universe outcome : malformed', () => {
   const outcome: PayoutNumeratorValue = { outcome: null, malformed: true };
-  const marketData= {} as MarketData;
-  expect(describeUniverseOutcome(outcome, marketData)).toEqual(CommonOutcomes.Malformed);
+  const marketData = {} as MarketData;
+  expect(describeUniverseOutcome(outcome, marketData)).toEqual(
+    CommonOutcomes.Malformed
+  );
 });
 
 test('describe universe outcome : invalid', () => {
   const outcome: PayoutNumeratorValue = { outcome: '0', invalid: true };
-  const marketData= {} as MarketData;
-  expect(describeUniverseOutcome(outcome, marketData)).toEqual(CommonOutcomes.Invalid);
+  const marketData = {} as MarketData;
+  expect(describeUniverseOutcome(outcome, marketData)).toEqual(
+    CommonOutcomes.Invalid
+  );
 });
 
 test('describe universe outcome : yes-no : no', () => {
@@ -269,7 +292,9 @@ test('describe universe outcome : yes-no : no', () => {
   const marketData = {
     marketType: MarketType.YesNo,
   } as MarketData;
-  expect(describeUniverseOutcome(outcome, marketData)).toEqual(YesNoOutcomes.No);
+  expect(describeUniverseOutcome(outcome, marketData)).toEqual(
+    YesNoOutcomes.No
+  );
 });
 
 test('describe universe outcome : yes-no : yes', () => {
@@ -277,7 +302,9 @@ test('describe universe outcome : yes-no : yes', () => {
   const marketData = {
     marketType: MarketType.YesNo,
   } as MarketData;
-  expect(describeUniverseOutcome(outcome, marketData)).toEqual(YesNoOutcomes.Yes);
+  expect(describeUniverseOutcome(outcome, marketData)).toEqual(
+    YesNoOutcomes.Yes
+  );
 });
 
 test('describe universe outcome : categorical', () => {
@@ -300,7 +327,9 @@ test('describe universe outcome : scalar', () => {
 test('describe market outcome : invalid', () => {
   const marketData = {} as MarketData;
   expect(describeMarketOutcome(0, marketData)).toEqual(CommonOutcomes.Invalid);
-  expect(describeMarketOutcome('0x00', marketData)).toEqual(CommonOutcomes.Invalid);
+  expect(describeMarketOutcome('0x00', marketData)).toEqual(
+    CommonOutcomes.Invalid
+  );
 });
 
 test('describe market outcome : yes-no', () => {
@@ -330,7 +359,8 @@ test('describe market outcome : scalar', () => {
 
 test('market type to name', async () => {
   expect(marketTypeToName(MarketType.YesNo)).toEqual(MarketTypeName.YesNo);
-  expect(marketTypeToName(MarketType.Categorical)).toEqual(MarketTypeName.Categorical);
+  expect(marketTypeToName(MarketType.Categorical)).toEqual(
+    MarketTypeName.Categorical
+  );
   expect(marketTypeToName(MarketType.Scalar)).toEqual(MarketTypeName.Scalar);
 });
-

@@ -12,11 +12,10 @@ import {
   CREATE_MARKET_FORM_PARAM_NAME,
 } from './routes/constants/param-names';
 import { AnyAction } from 'redux';
-import { EthersSigner } from 'augur-contract-dependencies-ethers/build/ContractDependenciesEthers';
-import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
-import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
-import { BigNumber } from 'utils/create-big-number';
-import { Template } from '@augurproject/artifacts';
+import type { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
+import type { TransactionMetadataParams, EthersSigner } from '@augurproject/contract-dependencies-ethers';
+import type { BigNumber } from 'utils/create-big-number';
+import type { Template } from '@augurproject/templates';
 
 export enum SizeTypes {
   SMALL = 'small',
