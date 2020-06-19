@@ -738,6 +738,10 @@ export class Markets {
       })
       .toArray();
 
+    marketData =
+      params.templateFilter === TemplateFilters.sportsBook
+        ? await getAllMarketsInGroups(db, marketData)
+        : marketData;
     const filteredOutCount = numMarketDocs - marketData.length;
 
     const meta = {
@@ -1532,6 +1536,16 @@ function formatStakeDetails(
     }
   }
   return formattedStakeDetails;
+}
+
+async function getAllMarketsInGroups(
+  db: DB,
+  marketsResults: MarketData[]
+): Promise<MarketData[]> {
+  const groupHashes = _.map(marketsResults, 'groupHash');
+  return await db.Markets.where('groupHash')
+  .anyOfIgnoreCase(groupHashes)
+  .toArray();
 }
 
 function getMarketsCategoriesMeta(
