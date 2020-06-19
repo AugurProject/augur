@@ -90,16 +90,17 @@ test('WebsocketConnector :: Should route correctly and handle events', async don
   // this should invoke the callback ... if not done won't be called
   setTimeout(() => {
     connector.messageReceived({
-      eventName: SubscriptionEventName.NewBlock,
-      result: [
-        {
-          eventName: SubscriptionEventName.NewBlock,
-          highestAvailableBlockNumber: 88,
-          lastSyncedBlockNumber: 88,
-          blocksBehindCurrent: 0,
-          percentSynced: '0.0000',
-        },
-      ],
-    });
+      result: {
+        eventName: SubscriptionEventName.NewBlock,
+        result: [
+          {
+            eventName: SubscriptionEventName.NewBlock,
+            highestAvailableBlockNumber: 88,
+            lastSyncedBlockNumber: 88,
+            blocksBehindCurrent: 0,
+            percentSynced: '0.0000',
+          },
+        ],
+    }});
   }, 0);
-});
+}, 30000);

@@ -65,6 +65,7 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
     dispatch(
       updateModal({
         type: MODAL_ERROR,
+        error: 'Please try logging in with your wallet provider again.',
       })
     );
   };
