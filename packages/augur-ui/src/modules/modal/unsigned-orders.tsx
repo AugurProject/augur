@@ -117,7 +117,7 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
       <span>{formatMarketShares(marketType, quantity).formatted}</span>
       <span>{formatDai(Number(price)).formatted}</span>
       <span>{formatDai(Number(orderEstimate)).formatted}</span>
-      <span>{status && <PendingLabel status={status} clear={} />}</span>
+      <span>{status && <PendingLabel status={status} />}</span>
       <div>
         {buttons.map((Button: DefaultButtonProps, index: number) => {
           if (index === 0)
