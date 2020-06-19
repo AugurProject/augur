@@ -10,7 +10,7 @@ export enum groupTypes {
   SPREAD = 'SPREAD',
   COMBO_SPREAD = 'COMBO_SPREAD',
   FUTURES = 'FUTURES',
-  ADDITIONAL = 'ADDITIONAL'
+  ADDITIONAL = 'ADDITIONAL',
 }
 
 export const LEAGUE_NAME = 'LEAGUE_NAME';
@@ -88,9 +88,9 @@ const SUNDAY_DAY_OF_WEEK = 0;
 const SECONDS_IN_A_DAY = 86400;
 
 const ReplaceAbbreviations = {
-  [MENS] : 'M',
-  [WOMENS]: 'W'
-}
+  [MENS]: 'M',
+  [WOMENS]: 'W',
+};
 interface TimezoneDateObject {
   formattedUtc: string;
   formattedTimezone: string;
@@ -201,6 +201,7 @@ export interface DateInputDependencies {
 export interface NumberRangeValues {
   [id: number]: number[];
 }
+
 export interface TemplateValidation {
   templateValidation: string;
   templateValidationResRules: string;
@@ -218,6 +219,7 @@ export interface TemplateValidation {
   eventExpEndNextMonthValues: EventExpEndNextMonth[];
   categoricalOutcomes: CategoricalOutcomes;
   numberRangeValues: NumberRangeValues;
+  yrs: number[]; // input ids of year and year ranges
 }
 
 export interface TemplateGroupKeys {
@@ -310,8 +312,8 @@ export interface TemplateGroupInfo {
   estTimestamp?: string;
   header: string;
   title?: string;
-  canPoolLiquidity: boolean,
-  liquidityPoolId: string,
+  canPoolLiquidity: boolean;
+  liquidityPoolId: string;
 }
 
 export enum ValidationType {
@@ -321,6 +323,7 @@ export enum ValidationType {
   NOWEEKEND_HOLIDAYS = 'NOWEEKEND_HOLIDAYS',
   EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY = 'EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY',
   SOCIAL = 'SOCIAL', // social media username/handle
+  YEAR_YEAR_RANGE = 'YEAR_YEAR_RANGE',
 }
 
 export enum TEXT_PLACEHOLDERS {
@@ -337,7 +340,7 @@ export enum TEXT_PLACEHOLDERS {
   INDIVIDUAL_STOCK_OR_ETF_NAME = 'Individual Stock or ETF Name',
   INDIVIDUAL_STOCK_OR_ETF_SYMBOL = 'Individual Stock or ETF Ticker Symbol',
   TWITTER_HANDLE = 'Twitter Handle',
-  INSTAGRAM_ACCOUNT = 'Instagram Account'
+  INSTAGRAM_ACCOUNT = 'Instagram Account',
 }
 
 export enum TemplateInputType {
@@ -435,7 +438,7 @@ function hasSubstituteOutcomes(
     return true; // nothing to validate
   }
   let result = true;
-substituteDependencies.forEach((outcomeTemplate: string) => {
+  substituteDependencies.forEach((outcomeTemplate: string) => {
     if (!result) return;
     const outcomeValue = inputs.reduce(
       (p, input: ExtraInfoTemplateInput) =>
@@ -581,11 +584,21 @@ function isDateInQuestionValid(
   endTime: number,
   creationTime: number
 ): boolean {
-  const filteredInputs = inputs.filter(i => [String(TemplateInputType.DATEYEAR), String(TemplateInputType.DATESTART), String(TemplateInputType.DATETIME), String(TemplateInputType.ESTDATETIME)].includes(i.type));
+  const filteredInputs = inputs.filter(i =>
+    [
+      String(TemplateInputType.DATEYEAR),
+      String(TemplateInputType.DATESTART),
+      String(TemplateInputType.DATETIME),
+      String(TemplateInputType.ESTDATETIME),
+    ].includes(i.type)
+  );
   if (!filteredInputs || filteredInputs.length === 0) return true;
   return filteredInputs.reduce((p, input) => {
     if (!input.timestamp) return false;
-    if (Number(input.timestamp) > Number(endTime) || Number(creationTime) > Number(input.timestamp)) {
+    if (
+      Number(input.timestamp) > Number(endTime) ||
+      Number(creationTime) > Number(input.timestamp)
+    ) {
       return false;
     }
     return p;
@@ -731,7 +744,8 @@ function closingDateDependenciesCheck(
   const result = deps.reduce((p, d) => {
     const dateYearSource = inputs.find(i => i.id === d.inputDateYearId);
     const exchangeValue = inputs.find(i => i.id === d.inputSourceId);
-    if (!dateYearSource || !exchangeValue || !dateYearSource.timestamp) return false;
+    if (!dateYearSource || !exchangeValue || !dateYearSource.timestamp)
+      return false;
     const timeOffset = d.inputTimeOffset[exchangeValue.value] as TimeOffset;
     if (timeOffset) {
       const closingDateTime = getTemplateExchangeClosingWithBuffer(
@@ -757,15 +771,22 @@ function isRetiredAutofail(hash: string) {
   return found.autoFail;
 }
 
-export const populateTemplateTitle = (templateString, inputs, useAbbrivations) => {
+export const populateTemplateTitle = (
+  templateString,
+  inputs,
+  useAbbrivations
+) => {
   let title = inputs.reduce((acc, input) => {
     return acc.replace(`[${input.id}]`, `${input.value}`);
   }, templateString);
   if (useAbbrivations) {
-    title = Object.keys(ReplaceAbbreviations).reduce((p, abbr) => p.replace(abbr, ReplaceAbbreviations[abbr]), title);
+    title = Object.keys(ReplaceAbbreviations).reduce(
+      (p, abbr) => p.replace(abbr, ReplaceAbbreviations[abbr]),
+      title
+    );
   }
   return title;
-}
+};
 
 export function getGroupHashInfo({
   hash,
@@ -780,21 +801,35 @@ export function getGroupHashInfo({
     estTimestamp: undefined,
     canPoolLiquidity: false,
     liquidityPoolId: undefined,
-  }
+  };
   if (!hash || !inputs) return defaultValues;
   const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find(g => g[hash]);
   if (!hashGroup) return defaultValues;
   const group = hashGroup[hash];
-  const keyValues = group.keys.map(key => String(inputs.find(i => i.id === key.id).value));
+  const keyValues = group.keys.map(key =>
+    String(inputs.find(i => i.id === key.id).value)
+  );
   const hashKeyInputValues = hashGroupKeyValues(keyValues);
-  const groupLine = group?.groupLineId ? inputs[group.groupLineId].value : undefined;
-  const estTimestamp = group?.estInputId ? inputs[group.estInputId].timestamp : undefined;
-  const header = group.header ? populateTemplateTitle(group.header, inputs, true) : undefined;
-  const title = group.title ? populateTemplateTitle(group.title, inputs, true) : undefined;
+  const groupLine = group?.groupLineId
+    ? inputs[group.groupLineId].value
+    : undefined;
+  const estTimestamp = group?.estInputId
+    ? inputs[group.estInputId].timestamp
+    : undefined;
+  const header = group.header
+    ? populateTemplateTitle(group.header, inputs, true)
+    : undefined;
+  const title = group.title
+    ? populateTemplateTitle(group.title, inputs, true)
+    : undefined;
   let liquidityPoolId = undefined;
   const canPoolLiquidity = !hasTemplateTextInputs(hash, true);
   if (canPoolLiquidity) {
-    liquidityPoolId = hashGroupKeyValues({...keyValues, 'hash': hash, 'groupLine': groupLine});
+    liquidityPoolId = hashGroupKeyValues({
+      ...keyValues,
+      hash: hash,
+      groupLine: groupLine,
+    });
   }
 
   return {
@@ -809,17 +844,48 @@ export function getGroupHashInfo({
   };
 }
 
-function inputWithinNumericRange(inputs: ExtraInfoTemplateInput[], numberRangeValues: NumberRangeValues) {
+function inputWithinNumericRange(
+  inputs: ExtraInfoTemplateInput[],
+  numberRangeValues: NumberRangeValues
+) {
   let passes = true;
-  if (!numberRangeValues || Object.keys(numberRangeValues).length === 0) return passes;
+  if (!numberRangeValues || Object.keys(numberRangeValues).length === 0)
+    return passes;
   Object.keys(numberRangeValues).forEach(index => {
     const input = inputs.find(i => String(i.id) === String(index));
     const range = numberRangeValues[index];
-    if (Number(input.value) < Number(range[0]) || Number(input.value) > Number(range[1])) {
+    if (
+      Number(input.value) < Number(range[0]) ||
+      Number(input.value) > Number(range[1])
+    ) {
       passes = false;
     }
-  })
+  });
   return passes;
+}
+
+export function isValidYearYearRangeInQuestion(
+  inputs: ExtraInfoTemplateInput[],
+  yearYearRangeInputs: number[],
+  endTime: number,
+  creationTime: number
+) {
+  const yearInputs = inputs.filter(input =>
+    yearYearRangeInputs.includes(input.id)
+  );
+  if (!yearInputs || yearInputs.length === 0) return true;
+  const endTimeYear = moment.unix(endTime).utc().year();
+  const creationTimeYear = moment.unix(creationTime).utc().year();
+  return yearInputs.reduce((p, input: ExtraInfoTemplateInput) => {
+    const years = input.value
+      ?.split('-')
+      .map(year => (year.length === 2 ? `20${year}` : year));
+    const testYear = years.length === 1 ? years[0] : years[1];
+    if (!testYear) return false;
+    if (Number(testYear) < creationTimeYear) return false;
+    if (Number(testYear) > endTimeYear) return false;
+    return p;
+  }, true);
 }
 
 export const isTemplateMarket = (
@@ -839,7 +905,9 @@ export const isTemplateMarket = (
     !endTime ||
     !creationTime
   ) {
-    errors.push('value missing template | hash | question | inputs | endTime | creationTime');
+    errors.push(
+      'value missing template | hash | question | inputs | endTime | creationTime'
+    );
     return false;
   }
 
@@ -860,17 +928,20 @@ export const isTemplateMarket = (
     // check market title/question matches built template question
     let checkMarketTitle = template.question;
     template.inputs.map((i: ExtraInfoTemplateInput) => {
-      checkMarketTitle = checkMarketTitle.replace(`[${i.id}]`, String(i.value).trim());
+      checkMarketTitle = checkMarketTitle.replace(
+        `[${i.id}]`,
+        String(i.value).trim()
+      );
     });
     if (checkMarketTitle !== title) {
       errors.push('populated title does not match title given');
       return false;
     }
 
-    if (!inputWithinNumericRange(template.inputs, validation.numberRangeValues)) {
-      errors.push(
-        'numeric input is outside of valid numeric range'
-      );
+    if (
+      !inputWithinNumericRange(template.inputs, validation.numberRangeValues)
+    ) {
+      errors.push('numeric input is outside of valid numeric range');
       return false;
     }
     // check ESTDATETIME isn't after market event expiration or is within required hour buffer
@@ -917,10 +988,25 @@ export const isTemplateMarket = (
       !isDateInQuestionValid(
         template.inputs,
         new BigNumber(endTime).toNumber(),
-        new BigNumber(creationTime).toNumber(),
+        new BigNumber(creationTime).toNumber()
       )
     ) {
-      errors.push('date in market question can not be before market creationTime or after event expiration');
+      errors.push(
+        'date in market question can not be before market creationTime or after event expiration'
+      );
+      return false;
+    }
+    if (
+      !isValidYearYearRangeInQuestion(
+        template.inputs,
+        validation.yrs,
+        new BigNumber(endTime).toNumber(),
+        new BigNumber(creationTime).toNumber()
+      )
+    ) {
+      errors.push(
+        'year in market question can not be before market creationTime year or after event expiration year'
+      );
       return false;
     }
 
@@ -952,7 +1038,9 @@ export const isTemplateMarket = (
         validation.closingDateDependencies
       )
     ) {
-      errors.push('event expiration can not be before exchange close time, or market creation after exchange close time');
+      errors.push(
+        'event expiration can not be before exchange close time, or market creation after exchange close time'
+      );
       return false;
     }
 
