@@ -22,6 +22,7 @@ import {
   ZeroXTrade,
   WarpSync,
   AugurWalletRegistry,
+  AugurWalletRegistryV2,
   AugurWalletFactory,
   RepOracle,
   AuditFunds,
@@ -33,7 +34,6 @@ import {
   // Uniswap
   UniswapV2Factory,
   UniswapV2Pair,
-  UniswapV2Router01,
   WETH9
 } from './ContractInterfaces';
 import { Contracts, ContractData } from './Contracts';
@@ -661,11 +661,18 @@ Deploying to: ${env}
                 return contract.initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) });
             },
             async () => {
-                const contract = new AugurWalletRegistry(this.dependencies, await this.getContractAddress('AugurWalletRegistryV2'));
+                const contract = new AugurWalletRegistryV2(this.dependencies, await this.getContractAddress('AugurWalletRegistryV2'));
                 if (await contract.getInitialized_()) {
                     return true;
                 }
                 return contract.initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) });
+            },
+            async () => {
+                const contract = new AugurWalletFactory(this.dependencies, await this.getContractAddress('AugurWalletFactory'));
+                if (await contract.getInitialized_()) {
+                    return true;
+                }
+                return contract.initialize(this.augur!.address, this.augurTrading!.address);
             },
         ];
 

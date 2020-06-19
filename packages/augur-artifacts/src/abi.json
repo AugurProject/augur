@@ -11279,21 +11279,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "affiliates",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "augur",
 			"outputs": [
 				{
@@ -11343,21 +11328,6 @@
 			"outputs": [
 				{
 					"internalType": "contract IERC20",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "createOrder",
-			"outputs": [
-				{
-					"internalType": "address",
 					"name": "",
 					"type": "address"
 				}
@@ -11434,21 +11404,6 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "fillOrder",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -11736,42 +11691,12 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "shareToken",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "token0IsCash",
 			"outputs": [
 				{
 					"internalType": "bool",
 					"name": "",
 					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "zeroXTrade",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -16206,8 +16131,8 @@
 					"type": "bool"
 				}
 			],
-			"payable": true,
-			"stateMutability": "payable",
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{

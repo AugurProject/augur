@@ -9,7 +9,6 @@ import 'ROOT/AugurWallet.sol';
 import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
-import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/LibBytes.sol';
 import 'ROOT/libraries/ContractExists.sol';
@@ -37,12 +36,6 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     IAugurTrading public augurTrading;
 
     IERC20 public cash;
-    address public affiliates;
-    address public shareToken;
-    address public createOrder;
-    address public fillOrder;
-    address public zeroXTrade;
-
     IUniswapV2Pair public ethExchange;
     IWETH public WETH;
     bool public token0IsCash;
@@ -57,13 +50,8 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         endInitialization();
         augur = _augur;
         cash = IERC20(_augur.lookup("Cash"));
-        affiliates = augur.lookup("Affiliates");
-        shareToken = augur.lookup("ShareToken");
 
         augurTrading = _augurTrading;
-        createOrder = _augurTrading.lookup("CreateOrder");
-        fillOrder = _augurTrading.lookup("FillOrder");
-        zeroXTrade = _augurTrading.lookup("ZeroXTrade");
         WETH = IWETH(_augurTrading.lookup("WETH9"));
         augurWalletFactory = IAugurWalletFactory(_augurTrading.lookup("AugurWalletFactory"));
         IUniswapV2Factory _uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));

@@ -25,7 +25,7 @@ contract AugurWalletFactory is Initializable {
     address public augurWalletRegistry;
     address public augurWalletRegistryV2;
 
-    function initialize(IAugur _augur, IAugurTrading _augurTrading) public payable beforeInitialized returns (bool) {
+    function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized returns (bool) {
         endInitialization();
         augur = _augur;
         cash = IERC20(_augur.lookup("Cash"));
