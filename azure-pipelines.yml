@@ -588,7 +588,7 @@ jobs:
       and
       (
         succeeded(),
-        startsWith(variables['build.sourceBranch'], 'refs/heads/release')
+        startsWith(variables['build.sourceBranch'], 'refs/tags')
       )
     pool:
       vmImage: $(VM_IMAGE)
