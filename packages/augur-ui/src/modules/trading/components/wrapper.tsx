@@ -23,6 +23,7 @@ import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-prof
 import { formatDai } from 'utils/format-number';
 import { Moment } from 'moment';
 import { calcOrderExpirationTime } from 'utils/format-date';
+import { flap } from '../../../../../../node_modules/fp-ts/lib/Functor';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
@@ -72,6 +73,7 @@ interface WrapperState {
   gasCostEst: string;
   selectedNav: string;
   doNotCreateOrders: boolean;
+  postOnlyOrder: boolean;
   expirationDate: Moment;
   trade: any;
   simulateQueue: any[];
@@ -121,6 +123,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       selectedNav: props.selectedOrderProperties.selectedNav || BUY,
       doNotCreateOrders:
         props.selectedOrderProperties.doNotCreateOrders || false,
+      postOnlyOrder: false,
       expirationDate: props.selectedOrderProperties.expirationDate || null,
       trade: Wrapper.getDefaultTrade(props),
       simulateQueue: []
@@ -228,6 +231,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           orderEscrowdDai: '',
           gasCostEst: '',
           doNotCreateOrders: false,
+          postOnlyOrder: false,
           expirationDate,
           trade,
         }
@@ -477,6 +481,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       doNotCreateOrders,
       expirationDate,
       trade,
+      postOnlyOrder,
     } = this.state;
     const insufficientFunds =
       trade &&
@@ -514,7 +519,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           }
         }}
         disabled={
-          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds
+          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || (postOnlyOrder && trade.numFills > 0)
         }
       />
     );
@@ -627,6 +632,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               maxPrice={maxPriceBigNumber}
               minPrice={minPriceBigNumber}
               trade={trade}
+              postOnlyOrder={postOnlyOrder}
               gasPrice={gasPrice}
               gasLimit={trade.gasLimit}
               selectedOutcomeId={selectedOutcome.id}

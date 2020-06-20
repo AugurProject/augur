@@ -95,7 +95,6 @@ interface FromProps {
   orderBook: Getters.Markets.OutcomeOrderBook;
   availableDai: BigNumber;
   currentTimestamp: number;
-  Ox_ENABLED: boolean;
   tradingTutorial?: boolean;
   gasCostEst: string;
   orderPriceEntered: Function;
@@ -123,6 +122,7 @@ interface FormState {
   expirationDate?: Moment;
   percentage: string;
   confirmationTimeEstimation: number;
+  postOnlyOrderType: boolean
 }
 
 class Form extends Component<FromProps, FormState> {
@@ -134,6 +134,7 @@ class Form extends Component<FromProps, FormState> {
     EST_DAI: string;
     SELECTED_NAV: string;
     EXPIRATION_DATE: string;
+    POST_ONLY_ORDER: string;
   };
 
   MINIMUM_TRADE_VALUE: BigNumber;
@@ -146,6 +147,7 @@ class Form extends Component<FromProps, FormState> {
       QUANTITY: 'orderQuantity',
       PRICE: 'orderPrice',
       DO_NOT_CREATE_ORDERS: 'doNotCreateOrders',
+      POST_ONLY_ORDER: 'postOnlyOrder',
       EST_DAI: 'orderDaiEstimate',
       SELECTED_NAV: 'selectedNav',
       EXPIRATION_DATE: 'expirationDate',
@@ -161,6 +163,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.QUANTITY]: props.orderQuantity,
       [this.INPUT_TYPES.PRICE]: props.orderPrice,
       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: props.doNotCreateOrders,
+      [this.INPUT_TYPES.POST_ONLY_ORDER]: false,
       [this.INPUT_TYPES.EXPIRATION_DATE]: props.expirationDate || calcOrderExpirationTime(props.endTime, props.currentTimestamp),
       [this.INPUT_TYPES.SELECTED_NAV]: props.selectedNav,
       [this.INPUT_TYPES.EST_DAI]: props.orderDaiEstimate,
@@ -775,6 +778,7 @@ class Form extends Component<FromProps, FormState> {
       [this.INPUT_TYPES.QUANTITY]: '',
       [this.INPUT_TYPES.PRICE]: '',
       [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: false,
+      [this.INPUT_TYPES.POST_ONLY_ORDER]: false,
       [this.INPUT_TYPES.EXPIRATION_DATE]: calcOrderExpirationTime(this.props.endTime, this.props.currentTimestamp),
       [this.INPUT_TYPES.SELECTED_NAV]: selectedNav,
       [this.INPUT_TYPES.EST_DAI]: '',
@@ -828,7 +832,6 @@ class Form extends Component<FromProps, FormState> {
       sortedOutcomes,
       initialLiquidity,
       currentTimestamp,
-      Ox_ENABLED,
       tradingTutorial,
       orderPriceEntered,
       orderAmountEntered,
@@ -1128,7 +1131,7 @@ class Form extends Component<FromProps, FormState> {
               })}
             >
               <SquareDropdown
-                defaultValue={advancedOptions[0].value}
+                defaultValue={s.advancedOption}
                 options={advancedOptions}
                 onChange={value => {
                   const remainingTime = calcOrderExpirationTimeRemaining(this.props.endTime, this.props.currentTimestamp);
@@ -1143,6 +1146,8 @@ class Form extends Component<FromProps, FormState> {
                   updateState({
                     [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]:
                       value === ADVANCED_OPTIONS.FILL,
+                    [this.INPUT_TYPES.POST_ONLY_ORDER]:
+                      value === ADVANCED_OPTIONS.POST,
                   });
                   this.setState({
                     advancedOption: value,
