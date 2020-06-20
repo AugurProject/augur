@@ -858,7 +858,6 @@ const calcSoccerMarkets = (): CannedMarket[] => {
     extraInfo: buildExtraInfo(template, inputValues[index], [
       SPORTS,
       SOCCER,
-      inputValues[1]
     ]),
     outcomes: outcomeValues[index],
     orderBook: {
