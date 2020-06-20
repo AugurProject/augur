@@ -23,7 +23,6 @@ import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-prof
 import { formatDai } from 'utils/format-number';
 import { Moment } from 'moment';
 import { calcOrderExpirationTime } from 'utils/format-date';
-import { flap } from '../../../../../../node_modules/fp-ts/lib/Functor';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
