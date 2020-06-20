@@ -3435,7 +3435,7 @@ export const SOCCER_CUSTOM_GENDER_EVENTS = {
 
 export const SOCCER_GENDER_EVENTS = {
   "Men's": LIST_VALUES.SOCCER_CUSTOM_DAILY_EVENTS,
-  "Women's": 'World Cup',
+  "Women's": ['World Cup'],
 };
 
 export const FIN_EXCHANGES_CLOSING_OFFSETS = {

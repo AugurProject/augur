@@ -639,7 +639,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     .add(2, 'weeks')
     .add(8, 'hours');
   const bbDateYear = bbExpDate.format('YY');
-  const bbYears = `20${bbDateYear}-${Number(bbDateYear) + 1}`;
+  const bbYears = `20${Number(bbDateYear)-1}-${bbDateYear}`;
   const bbInputValues = ['LA Lakers', bbYears];
   markets.push({
     marketType: 'scalar',
@@ -858,7 +858,6 @@ const calcSoccerMarkets = (): CannedMarket[] => {
     extraInfo: buildExtraInfo(template, inputValues[index], [
       SPORTS,
       SOCCER,
-      inputValues[1]
     ]),
     outcomes: outcomeValues[index],
     orderBook: {
