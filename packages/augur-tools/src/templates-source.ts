@@ -108,6 +108,7 @@ export const TEMPLATES = {
             question: `MMA: [0] vs. [1], Who will win?`,
             example: `MMA: Donald Cerrone vs. Conor McGregor, Who will win?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             header: `[0] vs. [1]`,
+            title: `Money Line`,
             groupName: groupTypes.MONEY_LINE,
             inputs: [
               {
@@ -483,6 +484,7 @@ export const TEMPLATES = {
             question: `Boxing: [0] vs. [1], Who will win?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki, Who will win?\nEstimated schedule start time: Feb 10, 2020 8:20 pm EST`,
             header: `[0] vs. [1]`,
+            title: `Money Line`,
             groupName: groupTypes.MONEY_LINE,
             inputs: [
               {
@@ -845,6 +847,7 @@ export const TEMPLATES = {
             question: `NASCAR [0] [1]: Winner?`,
             example: `NASCAR 2020 Daytona 500: Winner?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
             header: `NASCAR [0] [1] winner`,
+            title: `Money Line`,
             groupName: groupTypes.MONEY_LINE,
             inputs: [
               {
@@ -852,6 +855,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -916,6 +920,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -992,6 +997,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -1040,6 +1046,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1082,6 +1089,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1115,6 +1123,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                 ],
@@ -1141,6 +1150,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1190,6 +1200,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1244,6 +1255,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1286,6 +1298,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1319,6 +1332,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                 ],
@@ -1345,6 +1359,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1394,6 +1409,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1448,6 +1464,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1490,6 +1507,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1526,6 +1544,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1665,6 +1684,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year Range`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEAR_RANGE,
               },
             ],
@@ -1874,6 +1894,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEAR_RANGE,
               },
               {
@@ -1926,6 +1947,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year Range`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEAR_RANGE,
               },
               {
@@ -1971,6 +1993,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year Range`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEAR_RANGE,
               },
             ],
@@ -2012,6 +2035,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -2045,6 +2069,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -2111,6 +2136,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2157,6 +2183,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2198,6 +2225,7 @@ export const TEMPLATES = {
                 question: `[0] Single Tennis: [1] [2] Match play winner: [3] vs. [4]?`,
                 example: `Men's Single Tennis: 2020 Wimbledon Match play winner between Roger Federer vs. Rafael Nadal?`,
                 header: `[3] vs. [4]`,
+                title: `Money Line`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
@@ -2214,6 +2242,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2289,6 +2318,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2384,6 +2414,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2467,6 +2498,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2513,6 +2545,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2557,6 +2590,7 @@ export const TEMPLATES = {
                 question: `[0] Doubles Tennis: [1] [2] Match play winner: [3] vs. [4]?`,
                 example: `Men's Doubles Tennis: 2020 Wimbledon Match play winner between Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan?`,
                 header: `[3] vs. [4]`,
+                title: `Money Line`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
@@ -2573,6 +2607,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2652,6 +2687,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2750,6 +2786,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2822,6 +2859,7 @@ export const TEMPLATES = {
                 question: `Men's [0]: Which team will win: [1] vs. [2]?`,
                 example: `Men's English Premier League: Which team will win: Manchester City vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `(Men's) [0] [1] vs. [2]`,
+                title: `Money Line`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
@@ -3086,6 +3124,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     defaultLabel: `Select League First`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     inputSourceId: 0,
                     values: [],
                   },
@@ -3129,6 +3168,7 @@ export const TEMPLATES = {
                 question: `[0] [1]: Which team will win: [2] vs. [3]?`,
                 example: `Men's World Cup: Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `([0]) [2] vs. [3]`,
+                title: `Money Line`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
@@ -3397,6 +3437,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     defaultLabel: `Select Event First`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     inputSourceId: 0,
                     values: [],
                   },
@@ -3566,6 +3607,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                 ],
@@ -3597,6 +3639,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -3803,6 +3846,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -3856,6 +3900,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -3904,6 +3949,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -3963,6 +4009,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                 ],
@@ -4002,6 +4049,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -4050,6 +4098,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -4101,6 +4150,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     noSort: true,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -4286,6 +4336,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                 ],
@@ -4317,6 +4368,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -4521,6 +4573,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -4564,6 +4617,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -4612,6 +4666,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -4671,6 +4726,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                 ],
@@ -4857,6 +4913,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                 ],
@@ -4895,6 +4952,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -5136,6 +5194,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -5198,6 +5257,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -5258,6 +5318,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -5485,6 +5546,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -5537,6 +5599,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -5582,6 +5645,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
             ],
@@ -5642,6 +5706,7 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5687,6 +5752,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5734,6 +5800,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5790,6 +5857,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5829,6 +5897,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                   {
@@ -5884,6 +5953,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                   {
@@ -5934,6 +6004,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5986,6 +6057,7 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
@@ -6031,6 +6103,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
@@ -6078,6 +6151,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
@@ -6134,6 +6208,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
@@ -6173,6 +6248,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                   {
@@ -6228,6 +6304,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                   {
@@ -6278,6 +6355,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
@@ -6468,6 +6546,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                 ],
@@ -6533,7 +6612,8 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year/Year`,
+                    placeholder: `Year Range`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -6762,6 +6842,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -6815,6 +6896,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -6860,6 +6942,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                 ],
@@ -6899,6 +6982,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -6946,6 +7030,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -6995,6 +7080,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -7046,6 +7132,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     noSort: true,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -7105,6 +7192,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     noSort: true,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -7503,6 +7591,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -7554,6 +7643,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -7592,6 +7682,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                 ],
@@ -7639,6 +7730,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
             ],
@@ -7667,6 +7759,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7734,6 +7827,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
             ],
@@ -7812,6 +7906,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7850,6 +7945,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7884,6 +7980,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -7924,6 +8021,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7958,6 +8056,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -7996,6 +8095,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -8044,6 +8144,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -8267,6 +8368,7 @@ export const TEMPLATES = {
                 placeholder: `Year`,
                 eventExpEndNextMonth: true,
                 values: LIST_VALUES.YEARS,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 monthDropdown: 0,
               },
               {
@@ -8314,6 +8416,7 @@ export const TEMPLATES = {
                 placeholder: `Year`,
                 eventExpEndNextMonth: true,
                 values: LIST_VALUES.YEARS,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 monthDropdown: 0,
               },
             ],
@@ -8643,6 +8746,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -8693,6 +8797,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -8729,6 +8834,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -8780,6 +8886,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {

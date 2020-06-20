@@ -43,19 +43,15 @@ import { orderFirehose } from './order-firehose';
 import {
   AccountCreator,
   createOrders,
-  FINNEY,
   getAllMarkets,
-  setupMarkets,
   setupOrderBookShapers,
   setupOrders,
   setupPerfConfigAndZeroX,
-  setupUsers,
   takeOrder,
   takeOrders
 } from './performance';
 import { simpleOrderbookShaper } from './orderbook-shaper';
 import {
-  awaitUserInput,
   formatAddress,
   getOrCreateMarket,
   sleep,
@@ -65,7 +61,8 @@ import {
 import {
   createCatZeroXOrders,
   createScalarZeroXOrders,
-  createYesNoZeroXOrders
+  createYesNoZeroXOrders,
+  createSingleCatZeroXOrder
 } from './create-orders';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { getMarketIds } from './get-market-ids';
@@ -635,6 +632,61 @@ export function addScripts(flash: FlashSession) {
         await createScalarZeroXOrders(user, market, skipFaucetOrApproval, onInvalid, numTicks, minPrice, maxPrice);
       }
     },
+  });
+
+  flash.addScript({
+    name: 'new-offer',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        required: true,
+        description: 'market to create zeroX orders on',
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: '1 is default, outcomeId to add offer',
+      },
+      {
+        name: 'numOutcomes',
+        abbr: 'n',
+        description: '3 id default, number of valid outcomes available in the market. max is 7',
+      },
+      {
+        name: 'skipFaucetOrApproval',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
+      },
+      {
+        name: 'price',
+        abbr: 'p',
+        description: 'add new offer at this price, 0.4 is default'
+      },
+      {
+        name: 'shares',
+        abbr: 's',
+        description: 'number of shares on order 100 is default.'
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const market = String(args.marketId);
+      const numOutcomes = Number(args.numOutcomes || 3);
+      const price = String(args.price || '0.4');
+      const shares = String(args.shares || '100');
+      const outcome = Number(args.outcome || 1);
+      const skipFaucetOrApproval = Boolean(args.skipFaucetOrApproval);
+      const ask = 1;
+      this.pushConfig({
+        zeroX: {
+          rpc: { enabled: true },
+          mesh: { enabled: false },
+        },
+      });
+      if (!market) throw new Error('marketId is required');
+      const user = await this.createUser(this.getAccount(), this.config);
+      await createSingleCatZeroXOrder(user, market, skipFaucetOrApproval, numOutcomes, ask, price, shares, outcome);
+    }
   });
 
   flash.addScript({

@@ -460,13 +460,13 @@ export interface MarketData extends Log {
   finalized: boolean;
   lastTradedTimestamp: UnixTimestamp;
   isWarpSync: boolean;
-  templateGroupHash?: string;
-  templateGroupType?: string;
-  templateGroupLine?: string;
-  templateGroupHeader?: string;
-  templateGroupTitle?: string;
-  templateGroupEst?: string;
-  templateLiquidityPool?: string;
+  groupHash?: string;
+  groupType?: string;
+  groupLine?: string;
+  groupHeader?: string;
+  groupTitle?: string;
+  groupEstDatetime?: string;
+  liquidityPool?: string;
 }
 
 export interface DisputeDoc extends Log {

@@ -17,7 +17,7 @@ import {
   CategoricalOutcomes,
   EventExpEndNextMonth,
   TemplateGroup,
-  NumberRangeValues
+  NumberRangeValues,
 } from '../templates-template';
 import { TEMPLATES, TEMPLATES2 } from '../templates-source';
 import { retiredTemplates } from '../templates-retired';
@@ -108,6 +108,7 @@ const generateValidations = (
     daysAfterStartDate: null,
     eventExpEndNextMonthValues: null,
     numberRangeValues: null,
+    yrs: null,
   };
   const newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
@@ -157,6 +158,7 @@ const addTemplates = (
         noAdditionalOutcomes: t.noAdditionalUserOutcomes,
         eventExpEndNextMonthValues: getEventExpEndNextMonth(t.inputs),
         numberRangeValues: getNumberRangeValues(t.inputs),
+        yrs: getYearYearRangeValues(t.inputs),
       };
 
       const groupName = t.groupName;
@@ -359,6 +361,16 @@ function getNumberRangeValues(inputs: TemplateInput[]): NumberRangeValues {
         ? { ...p, [i.id]: i.numberRange }
         : p,
     {}
+  );
+}
+
+function getYearYearRangeValues(inputs: TemplateInput[]): number[] {
+  return inputs.reduce(
+    (p, i) =>
+    i.validationType === ValidationType.YEAR_YEAR_RANGE
+        ? [...p, i.id ]
+        : p,
+    []
   );
 }
 
