@@ -1,12 +1,16 @@
+import { buildConfig } from '@augurproject/artifacts';
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { Connectors } from '@augurproject/sdk';
+import {
+  AllOrders,
+  Order,
+} from '@augurproject/sdk-lite';
+import { ACCOUNTS, TestContractAPI } from '@augurproject/tools';
+import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
+import { SDKConfiguration } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from 'ethers/providers';
 import * as _ from 'lodash';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { Connectors } from '@augurproject/sdk';
-import { ACCOUNTS, TestContractAPI } from '@augurproject/tools';
-import { AllOrders, Order, } from '@augurproject/sdk/build/state/getter/OnChainTrading';
-import { stringTo32ByteHex, } from '@augurproject/tools/build/libs/Utils';
-import { buildConfig, SDKConfiguration } from '@augurproject/artifacts';
 
 describe('3rd Party :: GSN :: ', () => {
   let john: TestContractAPI;

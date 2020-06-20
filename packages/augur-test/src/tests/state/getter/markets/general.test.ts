@@ -1,16 +1,11 @@
 import { WSClient } from '@0x/mesh-rpc-client';
-import { SDKConfiguration } from '@augurproject/utils';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
-import {
-  BrowserMesh,
-  Connectors,
-  MarketReportingState,
-  ZeroX,
-} from '@augurproject/sdk';
+import { BrowserMesh, Connectors } from '@augurproject/sdk';
 import {
   GetMarketsSortBy,
   MarketList,
-} from '@augurproject/sdk/build/state/getter/Markets';
+  MarketReportingState,
+} from '@augurproject/sdk-lite';
 import {
   ACCOUNTS,
   defaultSeedPath,
@@ -22,8 +17,8 @@ import {
   NULL_ADDRESS,
   stringTo32ByteHex,
 } from '@augurproject/tools/build/libs/Utils';
+import { SDKConfiguration } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
-import { SupportedProvider } from 'ethereum-types';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
 import { makeProvider } from '../../../../libs';

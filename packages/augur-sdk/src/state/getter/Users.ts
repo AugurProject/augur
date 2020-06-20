@@ -11,11 +11,13 @@ import {
   ParsedOrderEventLog,
   ProfitLossChangedLog,
 } from '@augurproject/sdk-lite';
+import { Order } from '@augurproject/sdk-lite/build';
 import {
   DisputeCrowdsourcerRedeemed,
   OrderEvent,
   ProfitLossChanged,
 } from '@augurproject/sdk-lite/build/events';
+import { MarketTradingHistory } from '@augurproject/sdk-lite/build/onChainTrading';
 import { BigNumber } from 'bignumber.js';
 import Dexie from 'dexie';
 import * as t from 'io-ts';
@@ -34,9 +36,8 @@ import { AccountReportingHistory, Accounts } from './Accounts';
 import { Markets } from './Markets';
 import {
   getMarkets,
-  MarketTradingHistory,
   OnChainTrading,
-  Order,
+
 } from './OnChainTrading';
 import { Getter } from './Router';
 import { sortOptions } from './types';

@@ -26,12 +26,6 @@ export const getFilledInputs = (template, values) => {
   }));
 };
 
-export const getOutcomes = (template, values) =>
-  template.inputs
-    .filter(input => input.type.match(/_OUTCOME$/) !== null)
-    .map(input => fillInString(input.placeholder, template.inputs, values))
-    .map(formatBytes32String);
-
 export const buildExtraInfo = (template, inputValues, categories = []) => ({
   categories,
   description: fillInQuestion(template, inputValues),
@@ -42,13 +36,4 @@ export const buildExtraInfo = (template, inputValues, categories = []) => ({
     question: template.question,
     inputs: getFilledInputs(template, inputValues),
   },
-});
-
-export const buildTemplateMarketCreationObject = (
-  template,
-  inputValues,
-  categories = []
-) => ({
-  outcomes: getOutcomes(template, inputValues),
-  extraInfo: JSON.stringify(buildExtraInfo(template, inputValues, categories)),
 });

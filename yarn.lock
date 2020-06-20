@@ -275,17 +275,16 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser-lite@9.4.0", "@0x/mesh-browser-lite@^9.4.0":
-  version "9.4.0"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser-lite/-/mesh-browser-lite-9.4.0.tgz#bc40bd262fe2417a099f8b1b0379e253a0502a49"
-  integrity sha512-yXMYRs54fzd1qxaUE/XxeYOzuCD4ptg0lJQjXpIz0QPjjveKK2EmeemEpm9nbmPcTw59Qp9cnVt9mj8v+yFHRw==
+"@0x/mesh-browser-lite@10.0.0-unstable-2", "@0x/mesh-browser-lite@^9.4.0", "@0x/mesh-browser-lite@v10.0.0-unstable-2":
+  version "10.0.0-unstable-2"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser-lite/-/mesh-browser-lite-10.0.0-unstable-2.tgz#9422cfdcc9b0f908c1241c371bec5fd48da07c03"
+  integrity sha512-OdwcK9FwibhY6/dk0ZX1ayf7rqHG4QnV/mCxOucGpkL2eZQOOA7DnpPthbDhc+AxUw5JrPhj6Qjc+JLYLlAPLQ==
   dependencies:
-    "@0x/contract-addresses" "^4.9.0"
     "@0x/order-utils" "^10.2.0"
     "@0x/utils" "^5.4.0"
     ajv "^6.12.2"
     base64-arraybuffer "^0.2.0"
-    browserfs "^1.4.3"
+    dexie "^3.0.1"
     ethereum-types "^3.0.0"
 
 "@0x/mesh-browser@9.4.0":
@@ -9604,7 +9603,7 @@ detective@^5.2.0:
     defined "^1.0.0"
     minimist "^1.1.1"
 
-dexie@*:
+dexie@*, dexie@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.1.tgz#faafeb94be0d5e18b25d700546a2c05725511cfc"
   integrity sha512-/s4KzlaerQnCad/uY1ZNdFckTrbdMVhLlziYQzz62Ff9Ick1lHGomvTXNfwh4ApEZATyXRyVk5F6/y8UU84B0w==

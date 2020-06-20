@@ -7,7 +7,8 @@ import type {
   SDKConfiguration,
 } from '@augurproject/artifacts';
 
-import type { SubscriptionEventName, ZeroX } from '@augurproject/sdk';
+import { SubscriptionEventName } from '@augurproject/sdk-lite';
+import type { ZeroX } from '@augurproject/sdk';
 
 import { NetworkId } from "@augurproject/utils";
 import { retry } from 'async';

@@ -1,4 +1,5 @@
 import { MarketData } from '@augurproject/sdk-lite';
+import { Order, OrderState } from '@augurproject/sdk-lite/build';
 import { BigNumber } from 'bignumber.js';
 import Dexie from 'dexie';
 import { getAddress } from 'ethers/utils/address';
@@ -12,7 +13,7 @@ import {
 } from '../../index';
 import { DB } from '../db/DB';
 import { StoredOrder } from '../db/ZeroXOrders';
-import { getMarkets, Order, OrderState } from './OnChainTrading';
+import { getMarkets} from './OnChainTrading';
 import { Getter } from './Router';
 
 export interface ZeroXOrder extends Order {

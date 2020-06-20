@@ -1,5 +1,4 @@
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
-import { MarketReportingState } from '@augurproject/sdk/build/constants';
+import { MarketReportingState, SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import {
   ACCOUNTS,
   ContractAPI,

@@ -32,6 +32,7 @@
     "@augurproject/artifacts": "2.0.0-alpha.2",
     "@augurproject/core": "2.0.0-alpha.2",
     "@augurproject/sdk": "2.0.0-alpha.2",
+    "@augurproject/sdk-lite": "2.0.0-alpha.2",
     "@augurproject/tools": "2.0.0-alpha.2",
     "ethereumjs-util": "6.1.0",
     "ethers": "4.0.47",

@@ -1,4 +1,3 @@
-import { SDKConfiguration } from '@augurproject/utils';
 import { ContractInterfaces } from '@augurproject/core';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
@@ -10,7 +9,6 @@ import {
   CreateYesNoMarketParams,
   DisputeWindow,
   EmptyConnector,
-  Getters,
   HotLoadMarketInfo,
   PlaceTradeDisplayParams,
   SimulateTradeData,
@@ -18,6 +16,12 @@ import {
   ZeroXPlaceTradeDisplayParams,
   ZeroXSimulateTradeData,
 } from '@augurproject/sdk';
+import {
+  MarketInfo,
+  MarketList,
+  TemplateFilters,
+} from '@augurproject/sdk-lite';
+import { SDKConfiguration } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';
@@ -838,21 +842,21 @@ export class ContractAPI {
 
   async getMarketInfo(
     marketIds: string | string[]
-  ): Promise<Getters.Markets.MarketInfo[]> {
+  ): Promise<MarketInfo[]> {
     marketIds = Array.isArray(marketIds) ? marketIds : [marketIds];
     return this.augur.getMarketsInfo({ marketIds });
   }
 
-  async getMarkets(): Promise<Getters.Markets.MarketList> {
+  async getMarkets(): Promise<MarketList> {
     const universe = this.augur.contracts.universe.address;
     return this.augur.getMarkets({ universe });
   }
 
   async getBettingMarkets(
     params = {}
-  ): Promise<Getters.Markets.MarketList> {
+  ): Promise<MarketList> {
     const universe = this.augur.contracts.universe.address;
-    return this.augur.getMarkets({ universe, templateFilter: Getters.Markets.TemplateFilters.sportsBook });
+    return this.augur.getMarkets({ universe, templateFilter: TemplateFilters.sportsBook });
   }
 
   async getInitialReporterStake(

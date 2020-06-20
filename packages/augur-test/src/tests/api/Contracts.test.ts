@@ -1,4 +1,4 @@
-import { ContractAddresses } from '@augurproject/artifacts';
+import { ContractAddresses } from '@augurproject/utils';
 import { GenericAugurInterfaces } from '@augurproject/core';
 import { TestNetReputationToken } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { Contracts } from '@augurproject/sdk';

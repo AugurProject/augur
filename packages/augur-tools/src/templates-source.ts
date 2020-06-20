@@ -74,7 +74,6 @@ import {
   TENNIS,
   TV_MOVIES,
   US_POLITICS,
-  ValidationType,
   WINTER,
   WNBA,
   WORLD,
@@ -83,8 +82,8 @@ import {
   TWITTER,
   INSTAGRAM,
 } from '@augurproject/sdk-lite';
-import { TemplateInputType, TEXT_PLACEHOLDERS, ValidationType } from './templates-template';
 
+import { TemplateInputType, TEXT_PLACEHOLDERS, ValidationType } from './templates-template';
 const YES_NO = 'YesNo';
 const CATEGORICAL = 'Categorical';
 const SCALAR = 'Scalar';

@@ -39,6 +39,8 @@
     "@augurproject/artifacts": "2.0.0-alpha.2",
     "@augurproject/core": "2.0.0-alpha.2",
     "@augurproject/sdk": "2.0.0-alpha.2",
+    "@augurproject/sdk-lite": "2.0.0-alpha.2",
+    "@augurproject/utils": "2.0.0-alpha.2",
     "@openzeppelin/gsn-helpers": "0.2.3",
     "commander": "4.1.0",
     "deepmerge": "4.2.2",

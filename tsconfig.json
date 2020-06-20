@@ -27,6 +27,12 @@
       "path": "./packages/augur-contract-dependencies-ethers"
     },
     {
+      "path": "./packages/augur-test"
+    },
+    {
+      "path": "./packages/augur-tools"
+    },
+    {
       "path": "./packages/augur-utils"
     }
   ]

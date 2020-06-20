@@ -1,17 +1,12 @@
-import { SDKConfiguration } from '@augurproject/utils';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import {
-  Augur,
-  Connectors,
-  SubscriptionEventName,
-  ZeroX,
-} from '@augurproject/sdk';
-import { createClient } from '@augurproject/sdk/build';
+import { Augur, Connectors, createClient, ZeroX } from '@augurproject/sdk';
+import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { Controller } from '@augurproject/sdk/build/state/Controller';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { BlockAndLogStreamerSyncStrategy } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
+import { SDKConfiguration } from '@augurproject/utils';
 import { SupportedProvider } from 'ethereum-types';
 import { Account } from '../constants';
 import { makeSigner } from './blockchain';

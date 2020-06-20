@@ -1,5 +1,4 @@
-import { ORDER_TYPES } from '@augurproject/sdk';
-import { ContractAPI } from '@augurproject/tools';
+import { ORDER_TYPES } from '@augurproject/sdk-lite';
 import { TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';

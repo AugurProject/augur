@@ -14,6 +14,7 @@ const PATHS = {
   BUILD: path.resolve(__dirname, '../build'),
   TEST: path.resolve(__dirname, '../test'),
   WASM: path.resolve(__dirname, '../../../node_modules/@0x/mesh-browser/wasm'),
+  ROOT_MONOREPO: path.resolve(__dirname, "../../../"),
   ROOT_UI: path.resolve(__dirname, '../'),
   SITEMAP: path.resolve(__dirname, '../src/modules/sitemap'),
   ORBIT: path.resolve(__dirname, '../../orbit-web'),
@@ -146,7 +147,7 @@ module.exports = {
       },
       {
         test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
+        exclude: /.*(node_modules|orbit-web).*/,
         include: PATHS.SITEMAP,
         use: {
           loader: 'babel-loader',
@@ -176,7 +177,7 @@ module.exports = {
         to: path.resolve(PATHS.BUILD, 'StableIPFSLoader.html'),
       },
       {
-        from: path.resolve(PATHS.WASM, 'main.wasm'),
+        from: path.resolve(PATHS.ROOT_MONOREPO, 'zerox.wasm'),
         to: path.resolve(PATHS.BUILD, 'zerox.wasm'),
       },
       {

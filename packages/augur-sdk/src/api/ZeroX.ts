@@ -172,7 +172,7 @@ export class ZeroX {
     this._rpc = client;
     this._rpc.subscribeToOrdersAsync((orderEvents: OrderEvent[]) => {
       if (!this._mesh && this.client) {
-        this.client.events.emit('ZeroX:RPC:OrderEvent', orderEvents);
+        this.client.events.emit(SubscriptionEventName.ZeroXRPCOrderEvent, orderEvents);
       }
     }).catch((err) => {
       if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXStatusError, {});
@@ -199,8 +199,9 @@ export class ZeroX {
     if (!this._mesh) return;
 
     this._mesh.onOrderEvents((orderEvents: OrderEvent[]) => {
+      console.log("Got OrderEvents: ", orderEvents.length)
       if (this.client && orderEvents.length > 0) {
-        this.client.events.emit('ZeroX:Mesh:OrderEvent', orderEvents);
+        this.client.events.emit(SubscriptionEventName.ZeroXMeshOrderEvent, orderEvents);
       }
     });
 

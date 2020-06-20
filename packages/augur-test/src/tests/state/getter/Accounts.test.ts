@@ -1,4 +1,4 @@
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import { Action, Coin } from '@augurproject/sdk/build/state/getter/Accounts';
 import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';

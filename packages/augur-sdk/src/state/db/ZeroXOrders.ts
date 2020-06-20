@@ -120,6 +120,7 @@ export class ZeroXOrders extends AbstractTable {
   ) {
     super(networkId, 'ZeroXOrders', db.dexieDB);
     this.handleOrderEvent = this.handleOrderEvent.bind(this);
+    this.cacheOrdersAndSync = this.cacheOrdersAndSync.bind(this);
     this.syncStatus = db.syncStatus;
     this.stateDB = db;
     this.augur = augur;
@@ -131,8 +132,6 @@ export class ZeroXOrders extends AbstractTable {
     this.takerAssetData = `0xa7cb5fb7000000000000000000000000${this.tradeTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
 
     this.subscribeToOrderEvents();
-    this.clearDBAndCacheOrders();
-    this.augur.events.on(SubscriptionEventName.ZeroXStatusReady, this.clearDBAndCacheOrders.bind(this));
   }
 
   protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
@@ -144,25 +143,22 @@ export class ZeroXOrders extends AbstractTable {
     return zeroXOrders;
   }
 
-  async clearDBAndCacheOrders(): Promise<void> {
-    // Note: This does mean if a user reloads before syncing the old orders could be lost if they previous to that had not broadcast their orders completely somehow
+  async cacheOrdersAndSync(): Promise<void> {
     this.pastOrders = Object.assign(this.pastOrders, _.keyBy(await this.allDocs(), 'orderHash'));
-
-    if (this.augur.zeroX.isReady()) {
-      this.sync();
-    }
+    await this.sync();
   }
 
   subscribeToOrderEvents() {
     // This only works if `zeroX` has been set on the augur instance and
     // it doesn't get over-written so... something.
-    this.augur.events.on('ZeroX:Mesh:OrderEvent', this.handleOrderEvent);
-    this.augur.events.on('ZeroX:RPC:OrderEvent', this.handleOrderEvent);
+    this.augur.events.on(SubscriptionEventName.ZeroXMeshOrderEvent, this.handleOrderEvent);
+    this.augur.events.on(SubscriptionEventName.ZeroXRPCOrderEvent, this.handleOrderEvent);
   }
 
   delete() {
-    this.augur.events.off('ZeroX:Mesh:OrderEvent', this.handleOrderEvent);
-    this.augur.events.off('ZeroX:RPC:OrderEvent', this.handleOrderEvent);
+    this.augur.events.off(SubscriptionEventName.ZeroXStatusReady, this.cacheOrdersAndSync);
+    this.augur.events.off(SubscriptionEventName.ZeroXMeshOrderEvent, this.handleOrderEvent);
+    this.augur.events.off(SubscriptionEventName.ZeroXRPCOrderEvent, this.handleOrderEvent);
   }
 
   async handleOrderEvent(orderEvents: OrderEvent[]): Promise<void> {

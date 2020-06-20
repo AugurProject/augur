@@ -136,7 +136,10 @@ export enum SubscriptionEventName {
   ZeroXStatusStarted = 'ZeroX:Status:Started',
   ZeroXStatusRestarting = 'ZeroX:Status:Restarting',
   ZeroXStatusError = 'ZeroX:Status:Error',
+  ZeroXMeshOrderEvent = 'ZeroX:Mesh:OrderEvent',
+  ZeroXRPCOrderEvent = 'ZeroX:Mesh:OrderEvent',
   WarpSyncHashUpdated = 'WarpSyncHashUpdated',
+  LiquidityPoolUpdated = 'LiquidityPoolUpdated',
   DBUpdatedZeroXOrders = 'DB:updated:ZeroXOrders',
 }
 

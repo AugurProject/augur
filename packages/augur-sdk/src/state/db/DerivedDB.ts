@@ -1,6 +1,7 @@
 import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { ParsedLog } from '@augurproject/types';
 import * as _ from 'lodash';
+import Dexie from "dexie";
 import { Augur } from '../../Augur';
 import { BaseDocument } from './AbstractTable';
 import { DB } from './DB';
@@ -46,6 +47,7 @@ export class DerivedDB extends RollbackTable {
       this.mergeEventNames,
       this.handleMergeEvent
     );
+    return Dexie.delete(this.dbName);
   }
 
   async onBulkSyncComplete() {

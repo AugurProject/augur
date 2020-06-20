@@ -25,6 +25,7 @@ import {
   StakeDetails,
   TemplateFilters,
 } from '@augurproject/sdk-lite';
+import { Order, Orders, OrderState } from '@augurproject/sdk-lite/build';
 import { BigNumber } from 'bignumber.js';
 import Dexie from 'dexie';
 import { SearchResults } from 'flexsearch';
@@ -44,9 +45,6 @@ import { DB } from '../db/DB';
 import { MarketFields } from '../db/SyncableFlexSearch';
 import {
   OnChainTrading,
-  Order,
-  Orders,
-  OrderState,
   OutcomeParam,
 } from './OnChainTrading';
 import { Getter } from './Router';
