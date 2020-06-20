@@ -76,6 +76,7 @@ interface ConfirmProps {
   selectedOutcomeId: number;
   updateWalletStatus: Function;
   sweepStatus: string;
+  postOnlyOrder: boolean;
 }
 
 interface ConfirmState {
@@ -111,6 +112,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableDai,
       walletStatus,
       sweepStatus,
+      postOnlyOrder,
     } = this.props;
     if (
       JSON.stringify({
@@ -118,12 +120,14 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         numShares: trade.numShares,
         limitPrice: trade.limitPrice,
         numFills: trade.numFills,
+        postOnlyOrder: postOnlyOrder
       }) !==
         JSON.stringify({
           side: prevProps.trade.side,
           numShares: prevProps.trade.numShares,
           limitPrice: prevProps.trade.limitPrice,
           numFills: prevProps.trade.numFills,
+          postOnlyOrder : prevProps.postOnlyOrder
         }) ||
       walletStatus !== prevProps.walletStatus ||
       sweepStatus !== prevProps.sweepStatus ||
@@ -156,6 +160,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       marketType,
       selectedOutcomeId,
       sweepStatus,
+      postOnlyOrder,
     } = props || this.props;
 
     const {
@@ -307,6 +312,19 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
+    if (
+      !isNaN(numTrades) &&
+      numTrades > 0 &&
+      postOnlyOrder &&
+      !tradingTutorial
+    ) {
+      messages = {
+        header: 'POST ONLY ORDER',
+        type: ERROR,
+        message: `Can not match existing order.`,
+      };
+    }
+
     return messages;
   }
 
@@ -326,6 +344,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasPrice,
       GsnEnabled,
       initialLiquidity,
+      postOnlyOrder,
     } = this.props;
 
     const {
@@ -487,11 +506,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
             <TransactionFeeLabelToolTip
               isError={createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
-              gasCostDai={gasCostDai}
+              gasCostDai={postOnlyOrder ? `0.00` : gasCostDai}
             />
           </div>
         )}
-        {numFills > 0 && <EthReserveAutomaticTopOff />}
+        {numFills > 0 && !postOnlyOrder && <EthReserveAutomaticTopOff />}
         {messages && (
           <div
             className={classNames(Styles.MessageContainer, {
@@ -522,7 +541,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             )}
           </div>
         )}
-        <EthReserveNotice gasLimit={gasLimit} />
+        {!postOnlyOrder && <EthReserveNotice gasLimit={gasLimit} />}
       </section>
     );
   }
