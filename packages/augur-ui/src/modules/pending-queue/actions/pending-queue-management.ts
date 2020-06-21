@@ -1,5 +1,5 @@
 import { TXEventName } from '@augurproject/sdk-lite';
-import { calculatePayoutNumeratorsArray, } from '@augurproject/utils';
+import { calculatePayoutNumeratorsArray, } from '@augurproject/sdk';
 import { AppState } from 'appStore';
 import { TransactionMetadata } from 'contract-dependencies-ethers/build';
 import {

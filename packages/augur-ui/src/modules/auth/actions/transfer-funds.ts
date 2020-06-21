@@ -1,4 +1,4 @@
-import * as utils from '@augurproject/utils';
+import * as utils from '@augurproject/sdk-lite';
 import { DAI, ETH, REP } from 'modules/common/constants';
 import {
   sendDai,
