@@ -10,8 +10,8 @@ import {
 import * as _ from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from 'appStore';
-import type { Getters, MarketReportingState } from '@augurproject/sdk';
-import { GetMarketsSortBy } from '@augurproject/sdk-lite'
+import type { Getters } from '@augurproject/sdk';
+import { GetMarketsSortBy, MarketReportingState } from '@augurproject/sdk-lite'
 import { addUpdateMarketInfos, UpdateMarketsAction, } from 'modules/markets/actions/update-markets-data';
 import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 import { updateReportingList } from 'modules/reporting/actions/update-reporting-list';

@@ -35,6 +35,7 @@ import {
   ContentBlock,
   ExplainerBlock,
   LargeHeader,
+  MultipleExplainerBlock,
 } from 'modules/create-market/components/common';
 
 import Styles from 'modules/create-market/components/form.styles.less';
@@ -70,6 +71,9 @@ import {
   TEMPLATE_PICKER,
   TICK_SIZE,
   VALIDATION_ATTRIBUTES,
+  EventDetailsContent,
+  ReviewContent,
+  AugurMarketsContent,
 } from 'modules/create-market/constants';
 import FeesLiquidity from 'modules/create-market/containers/fees-liquidity';
 import FormDetails from 'modules/create-market/containers/form-details';

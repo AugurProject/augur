@@ -52,7 +52,7 @@ import {
 } from 'modules/reporting/common';
 import { hasTemplateTextInputs } from '@augurproject/templates';
 import { AugurMarketsContent, EventDetailsContent } from 'modules/create-market/constants';
-import { ExplainerBlock, MultipleExplainerBlock } from 'modules/create-market/components/common';
+import { MultipleExplainerBlock } from 'modules/create-market/components/common';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';

@@ -1,8 +1,8 @@
-import type { Getters, MarketReportingType } from '@augurproject/sdk';
+import type { Getters } from '@augurproject/sdk';
 import { Pagination } from 'modules/common/pagination';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import { LoadingMarketCard } from 'modules/market-cards/common';
-
+import { MarketReportingState } from '@augurproject/sdk-lite';
 import Styles from 'modules/reporting/common.styles.less';
 import ReportingCardContainer
   from 'modules/reporting/containers/reporting-card';
