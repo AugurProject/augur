@@ -17,6 +17,7 @@ import {
   MODAL_ERROR,
   SUCCESS,
   WALLET_STATUS_VALUES,
+  NULL_ADDRESS,
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
