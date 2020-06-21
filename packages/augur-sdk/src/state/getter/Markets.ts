@@ -738,55 +738,9 @@ export class Markets {
       })
       .toArray();
 
-    marketData =
-      params.templateFilter === TemplateFilters.sportsBook
-        ? await getAllMarketsInGroups(db, marketData)
-        : marketData;
-    const filteredOutCount = numMarketDocs - marketData.length;
-
-    const meta = {
-      filteredOutCount,
-      marketCount: marketData.length,
-    };
-
-    if (params.sortBy) {
-      const sortBy = params.sortBy;
-      marketData = _.orderBy(
-        marketData,
-        item =>
-          sortBy === 'liquidity'
-            ? item[sortBy][params.maxLiquiditySpread]
-            : item[sortBy],
-        params.isSortDescending ? 'desc' : 'asc'
-      );
-    }
-
-    // If returning Recently Depleted Liquidity (spread===0)
-    if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
-      // Have invalid markets appear at the bottom
-      marketData = _.sortBy(marketData, 'invalidFilter');
-    }
-
-    // Get category meta data before slicing for pagination
-    const categories = getMarketsCategoriesMeta(marketData);
-
-    marketData = marketData.slice(params.offset, params.offset + params.limit);
-
-    // Get markets info to return
-    const marketsInfo: MarketInfo[] = await getMarketsInfo(
-      db,
-      marketData,
-      reportingFeeDivisor,
-      augur
-    );
-
-    return {
-      markets: marketsInfo,
-      meta: {
-        ...meta,
-        categories,
-      },
-    };
+    return params.templateFilter === TemplateFilters.sportsBook
+      ? await processSportsbookMarketData(augur, db, marketData, reportingFeeDivisor, params)
+      : await processTradingMarketData(augur, db, marketData, numMarketDocs, reportingFeeDivisor, params);
   }
 
   @Getter('getMarketOrderBookParams')
@@ -1538,14 +1492,123 @@ function formatStakeDetails(
   return formattedStakeDetails;
 }
 
-async function getAllMarketsInGroups(
+async function processTradingMarketData(
+  augur: Augur,
   db: DB,
-  marketsResults: MarketData[]
-): Promise<MarketData[]> {
-  const groupHashes = _.map(marketsResults, 'groupHash');
-  return await db.Markets.where('groupHash')
-  .anyOfIgnoreCase(groupHashes)
-  .toArray();
+  marketData: MarketData[],
+  numMarketDocs: number,
+  reportingFeeDivisor: BigNumber,
+  params: t.TypeOf<typeof Markets.getMarketsParams>,
+): Promise<MarketList> {
+
+const filteredOutCount = numMarketDocs - marketData.length;
+
+const meta = {
+  filteredOutCount,
+  marketCount: marketData.length,
+};
+
+if (params.sortBy) {
+  const sortBy = params.sortBy;
+  marketData = _.orderBy(
+    marketData,
+    item =>
+      sortBy === 'liquidity'
+        ? item[sortBy][params.maxLiquiditySpread]
+        : item[sortBy],
+    params.isSortDescending ? 'desc' : 'asc'
+  );
+}
+
+// If returning Recently Depleted Liquidity (spread===0)
+if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
+  // Have invalid markets appear at the bottom
+  marketData = _.sortBy(marketData, 'invalidFilter');
+}
+
+// Get category meta data before slicing for pagination
+const categories = getMarketsCategoriesMeta(marketData);
+
+marketData = marketData.slice(params.offset, params.offset + params.limit);
+
+// Get markets info to return
+const marketsInfo: MarketInfo[] = await getMarketsInfo(
+  db,
+  marketData,
+  reportingFeeDivisor,
+  augur
+);
+
+return {
+  markets: marketsInfo,
+  meta: {
+    ...meta,
+    categories,
+  },
+};
+}
+
+async function processSportsbookMarketData(
+  augur: Augur,
+  db: DB,
+  marketData: MarketData[],
+  reportingFeeDivisor: BigNumber,
+  params: t.TypeOf<typeof Markets.getMarketsParams>,
+): Promise<MarketList> {
+  const categories = getMarketsCategoriesMeta(marketData);
+  const groupHashes = _.uniq(_.map(marketData, 'groupHash'));
+  const groupMarkets = params.reportingStates
+    ? await db.Markets.filter(
+        item =>
+          !!item.groupHash &&
+          item.reportingState === String(params.reportingStates)
+      ).toArray()
+    : await db.Markets.filter(item => !!item.groupHash).distinct().toArray();
+  const keyedGroupedMarkets = _.keyBy(groupMarkets, 'groupHash');
+  const numMarketDocs = _.keys(keyedGroupedMarkets).length;
+
+  // removed Invalid filter for sportsbook
+  // TODO: add sorts specifically for sportsbook
+  if (params.sortBy) {
+    const sortBy = params.sortBy;
+    marketData = _.orderBy(
+      marketData,
+      item =>
+        sortBy === 'liquidity'
+          ? item[sortBy][params.maxLiquiditySpread]
+          : item[sortBy],
+      params.isSortDescending ? 'desc' : 'asc'
+    );
+  }
+
+  const allMarketsInGroups  = await db.Markets.where('groupHash')
+    .anyOfIgnoreCase(groupHashes)
+    .toArray();
+
+  // filter based on reportingState
+  const filteredOutCount = numMarketDocs - groupHashes.length;
+
+  const meta = {
+    filteredOutCount,
+    marketCount: marketData.length,
+  };
+
+  marketData = marketData.slice(params.offset, params.offset + params.limit);
+
+  const marketsInfo: MarketInfo[] = await getMarketsInfo(
+    db,
+    allMarketsInGroups,
+    reportingFeeDivisor,
+    augur
+  );
+
+  return {
+    markets: marketsInfo,
+    meta: {
+      ...meta,
+      categories,
+    },
+  };
 }
 
 function getMarketsCategoriesMeta(
