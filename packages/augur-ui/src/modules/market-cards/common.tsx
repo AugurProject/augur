@@ -1118,22 +1118,24 @@ export const prepareSportsGroup = (
         market =>
           market.sportsBook.groupType === SPORTS_GROUP_MARKET_TYPES.MONEY_LINE
       );
-      const mainMarketId = mainMarket.id;
-      const dailyMarketData = processDailyMarketData(
-        orderBooks[mainMarketId]?.orderBook,
-        mainMarket.outcomesFormatted,
-        mainMarket.minPriceBigNumber,
-        mainMarket.maxPriceBigNumber,
-        addBet,
-        mainMarket.description
-      );
-      marketGroups.push(
-        <MultiOutcomeMarketTable
-          key={id}
-          marketTitle={mainMarket.sportsBook.title || mainMarket.description}
-          multiOutcomeMarketTableData={dailyMarketData}
-        />
-      );
+      const mainMarketId = mainMarket?.id;
+      if (mainMarketId) {
+        const dailyMarketData = processDailyMarketData(
+          orderBooks[mainMarketId]?.orderBook,
+          mainMarket.outcomesFormatted,
+          mainMarket.minPriceBigNumber,
+          mainMarket.maxPriceBigNumber,
+          addBet,
+          mainMarket.description
+        );
+        marketGroups.push(
+          <MultiOutcomeMarketTable
+            key={id}
+            marketTitle={mainMarket.sportsBook.title || mainMarket.description}
+            multiOutcomeMarketTableData={dailyMarketData}
+          />
+        );
+      }
       markets.forEach(market => {
         if (market.id === mainMarketId) return;
         const {
