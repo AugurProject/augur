@@ -1100,6 +1100,10 @@
 				> span:first-of-type {
 					display: none;
 				}
+
+				> span:last-of-type {
+					display: block;
+				}
 			}
 
 			> span {
@@ -1107,7 +1111,7 @@
 
 				color: var(--color-primary-text);
 
-				&:last-of-type {
+				&:first-of-type:not(:last-of-type) {
 					.text-12;
 				}
 			}

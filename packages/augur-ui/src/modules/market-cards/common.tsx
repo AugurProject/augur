@@ -888,17 +888,40 @@ function processFuturesGridData(
   const marketId = outcomes[0].marketId;
   let data = [];
   if (outcomes.length > 0) {
+    // TODO: This section can probably be reused for all sports outcome creation.
     outcomes.forEach(outcome => {
       // addBet: (marketId, description, odds, outcome, wager = "0")
       if (outcome.isInvalid) return;
-      data.push({
+      const bestAsk = orderBook[outcome.id]?.asks[0];
+      const outcomeData = {
         title: outcome.description,
-        topLabel: null,
-        action: () =>
-          addBet(marketId, description, '0', outcome.description, '0'),
-        label: '-',
+        disabled: !bestAsk,
         volume: outcome.volumeFormatted.full,
-      });
+        topLabel: null,
+      };
+      if (!bestAsk) {
+        data.push({
+          ...outcomeData,
+          action: () =>
+            addBet(marketId, description, '0', outcome.description, '0'),
+          label: '-',
+        });
+      } else {
+        const { cumulativeShares, price } = bestAsk;
+        const odds = convertToOdds({
+          price,
+          min,
+          max,
+          type: ASKS,
+        });
+        const OddToUse = odds[ODDS_TYPE.AMERICAN];
+        data.push({
+          ...outcomeData,
+          action: () =>
+            addBet(marketId, description, OddToUse, outcome.description, cumulativeShares),
+          label: OddToUse,
+        });
+      }
     });
   } else {
     data = FUTURES_GRID_MOCK_DATA(addBet, marketId, description);
@@ -1058,6 +1081,7 @@ export interface SportsOutcomeProps {
   label?: string;
   volume?: string;
   title?: string;
+  disabled?: boolean;
 }
 
 export const SportsOutcome = ({
@@ -1066,10 +1090,15 @@ export const SportsOutcome = ({
   label,
   volume,
   title,
+  disabled = false,
 }: SportsOutcomeProps) => (
   <div className={Styles.SportsOutcome}>
     {title && <h6>{title}</h6>}
-    <button onClick={() => action()}>
+    <button
+      title={disabled ? 'No available bets at the moment' : 'add bet to betslip'}
+      onClick={action}
+      disabled={disabled}
+    >
       {topLabel && <span>{topLabel}</span>}
       <span>{label}</span>
     </button>
