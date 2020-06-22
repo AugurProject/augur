@@ -1473,6 +1473,11 @@ export function addScripts(flash: FlashSession) {
         name: 'creationTime',
         description: 'market creation time, timestamp of the block market is created in',
         required: true,
+      },
+      {
+        name: 'categories',
+        description: 'market categories, they need to match templates categories',
+        required: true,
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -1484,7 +1489,8 @@ export function addScripts(flash: FlashSession) {
         const resolutionRules = args.resolutionRules as string;
         const endTime = Number(args.endTime);
         const creationTime = Number(args.creationTime);
-        result = validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime, creationTime);
+        const categories = args.categories as string;
+        result = validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime, creationTime, categories);
         console.log(result);
       } catch (e) {
         console.log(e);

@@ -1,4 +1,4 @@
-import * as utils from '@augurproject/sdk-lite';
+import { formatEthereumAddress } from '@augurproject/utils';
 import { DAI, ETH, REP } from 'modules/common/constants';
 import {
   sendDai,
@@ -22,7 +22,7 @@ export async function transferFunds(
   useSigner = false,
   useTopoff = true,
 ) {
-  const to = utils.formatEthereumAddress(toAddress);
+  const to = formatEthereumAddress(toAddress);
   const sendFunds = async (currency) => {
     switch (currency) {
       case DAI:
@@ -83,7 +83,7 @@ export function transferFundsGasEstimate(
   currency: string,
   toAddress: string
 ) {
-  const to = utils.formatEthereumAddress(toAddress);
+  const to = formatEthereumAddress(toAddress);
   try {
     switch (currency) {
       case DAI:

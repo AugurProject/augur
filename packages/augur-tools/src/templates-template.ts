@@ -122,6 +122,9 @@ export interface NumberRangeValues {
   [id: number]: number[];
 }
 
+export interface TemplateValidations {
+  [hash: string]: TemplateValidation;
+}
 export interface TemplateValidation {
   templateValidation: string;
   templateValidationResRules: string;
@@ -140,6 +143,7 @@ export interface TemplateValidation {
   categoricalOutcomes: CategoricalOutcomes;
   numberRangeValues: NumberRangeValues;
   yrs: number[]; // input ids of year and year ranges
+  reqCats: string[];
 }
 
 export interface TemplateGroupKeys {
@@ -525,7 +529,7 @@ function isDateInQuestionValid(
   }, true);
 }
 
-function wednesdayAfterOpeningNoFriday(
+function IsOnOrAfterWednesdayAfterOpeningOnOpeningFriday(
   inputs: ExtraInfoTemplateInput[],
   endTime: number,
   ids: number[]
@@ -534,18 +538,18 @@ function wednesdayAfterOpeningNoFriday(
   const afterTuesday: ExtraInfoTemplateInput = inputs.find(
     i => ids && ids.includes(i.id)
   );
-  const noFriday = inputs.find(i => i.type === TemplateInputType.DATEYEAR);
-  if (!afterTuesday && !noFriday) return true;
+  const onFridayOpening = inputs.find(i => i.type === TemplateInputType.DATEYEAR);
+  if (!afterTuesday && !onFridayOpening) return true;
   if (
-    noFriday &&
-    moment.unix(Number(noFriday.timestamp)).weekday() !== FRIDAY_DAY_OF_WEEK
+    onFridayOpening &&
+    moment.unix(Number(onFridayOpening.timestamp)).weekday() !== FRIDAY_DAY_OF_WEEK
   ) {
     return false;
   } else {
     const wednesdayDatetime = getTemplateWednesdayAfterOpeningDay(
       Number(afterTuesday.timestamp)
     );
-    return endTime < wednesdayDatetime;
+    return wednesdayDatetime <= endTime;
   }
 }
 
@@ -808,6 +812,21 @@ export function isValidYearYearRangeInQuestion(
   }, true);
 }
 
+function isMarketInAllCorrectCategories(
+  categories: string[],
+  requiredCategories: string[]
+): boolean {
+  if ((!categories || categories.length === 0) && requiredCategories.length > 0)
+    return false;
+  return requiredCategories.reduce(
+    (p, c, index) =>
+      String(c).toLowerCase() !== String(categories[index]).toLowerCase()
+        ? false
+        : p,
+    true
+  );
+}
+
 export const isTemplateMarket = (
   title,
   template: ExtraInfoTemplate,
@@ -815,6 +834,7 @@ export const isTemplateMarket = (
   longDescription: string,
   endTime: string,
   creationTime: string,
+  categories: string[],
   errors: string[] = []
 ) => {
   if (
@@ -965,7 +985,7 @@ export const isTemplateMarket = (
     }
 
     if (
-      !wednesdayAfterOpeningNoFriday(
+      !IsOnOrAfterWednesdayAfterOpeningOnOpeningFriday(
         template.inputs,
         new BigNumber(endTime).toNumber(),
         validation.afterTuesdayDateNoFriday
@@ -1059,6 +1079,13 @@ export const isTemplateMarket = (
         'hash of resolution details is different than validation resolution rules hash'
       );
       return false;
+    }
+
+    // verify template market is in correct categories
+    if (!isMarketInAllCorrectCategories(categories, validation.reqCats)) {
+      errors.push(
+        'templated market does not have correct categories'
+      );
     }
 
     return true;
