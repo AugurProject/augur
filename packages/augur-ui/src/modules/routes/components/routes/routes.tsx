@@ -20,7 +20,7 @@ import { THEMES } from 'modules/common/constants';
 const mapStateToProps = (state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  page: (eventName, payload) => dispatch(page(eventName, payload)),
+  page: (eventName, payload) => page(eventName, payload),
 });
 
 const Routes = p => {
