@@ -9,7 +9,7 @@ import {
   stringTo32ByteHex,
   tickSizeToNumTickWithDisplayPrices,
   convertDisplayValuetoAttoValue,
-} from '@augurproject/sdk-lite';
+} from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import {
   SCALAR,

@@ -5,7 +5,7 @@ import { isTransactionConfirmed } from 'modules/contracts/actions/contractCalls'
 import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
-} from '@augurproject/sdk';
+} from '@augurproject/utils';
 import { createBigNumber } from 'utils/create-big-number';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';

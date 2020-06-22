@@ -1,8 +1,10 @@
 import {
+  calculatePayoutNumeratorsValue,
   Address,
   ExtraInfoTemplate,
   MarketReportingStateByNum,
   MarketTypeName,
+  PayoutNumeratorValue,
   SubscriptionEventName,
 } from '@augurproject/sdk-lite';
 import { MarketInfoOutcome } from '@augurproject/sdk-lite';
@@ -14,7 +16,6 @@ import {
   numTicksToTickSize,
   QUINTILLION,
 } from '../index';
-import { calculatePayoutNumeratorsValue, PayoutNumeratorValue } from '../utils';
 
 export interface GetDisputeWindowParams {
   augur: Address;

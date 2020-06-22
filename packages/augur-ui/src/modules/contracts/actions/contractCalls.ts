@@ -11,8 +11,7 @@ import type {
   PlaceTradeDisplayParams,
   SimulateTradeData,
 } from '@augurproject/sdk';
-import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
-import { ExtraInfoTemplate } from '@augurproject/sdk-lite';
+import { ExtraInfoTemplate, calculatePayoutNumeratorsArray  } from '@augurproject/sdk-lite';
 import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,

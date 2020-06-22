@@ -1,4 +1,8 @@
 import {
+  calculatePayoutNumeratorsValue,
+  describeMarketOutcome,
+  describeUniverseOutcome,
+  marketTypeToName,
   CancelZeroXOrderLog,
   CommonOutcomes,
   CompleteSetsPurchasedLog,
@@ -15,24 +19,18 @@ import {
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   TradingProceedsClaimedLog,
+  PayoutNumeratorValue,
 } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import Dexie from 'dexie';
 import * as t from 'io-ts';
 import * as _ from 'lodash';
-import {
-  Augur,
-  calculatePayoutNumeratorsValue,
-  convertOnChainAmountToDisplayAmount,
-  describeMarketOutcome,
-  describeUniverseOutcome,
-  marketTypeToName,
-  PayoutNumeratorValue,
-} from '../../index';
+import { Augur } from '../../index';
 import {
   compareObjects,
   convertAttoValueToDisplayValue,
   convertOnChainPriceToDisplayPrice,
+  convertOnChainAmountToDisplayAmount,
   numTicksToTickSize,
   QUINTILLION,
 } from '../../utils';

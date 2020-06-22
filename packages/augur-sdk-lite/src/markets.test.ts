@@ -1,18 +1,15 @@
+import BigNumber from 'bignumber.js';
+import {
+  MarketData,
+} from './logs';
 import {
   CommonOutcomes,
-  MarketData,
   MarketType,
   MarketTypeName,
   YesNoOutcomes,
-} from '@augurproject/sdk-lite';
-import BigNumber from 'bignumber.js';
+} from './constants';
 import {
   calculatePayoutNumeratorsValue,
-  convertDisplayAmountToOnChainAmount,
-  convertDisplayPriceToOnChainPrice,
-  convertOnChainAmountToDisplayAmount,
-  convertOnChainPriceToDisplayPrice,
-  countNonZeroes,
   describeCategoricalOutcome,
   describeMarketOutcome,
   describeScalarOutcome,
@@ -22,9 +19,18 @@ import {
   isWellFormedScalar,
   isWellFormedYesNo,
   marketTypeToName,
+  PayoutNumeratorValue,
+} from './markets';
+import {
+  convertDisplayAmountToOnChainAmount,
+  convertDisplayPriceToOnChainPrice,
+  convertOnChainAmountToDisplayAmount,
+  convertOnChainPriceToDisplayPrice,
   numTicksToTickSize,
   numTicksToTickSizeWithDisplayPrices,
-  PayoutNumeratorValue,
+} from '@augurproject/utils';
+import {
+  countNonZeroes,
 } from './utils';
 
 test('numTicksToTickSize', () => {
