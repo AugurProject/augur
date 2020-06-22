@@ -25,19 +25,19 @@ export class SyncableFlexSearch {
         id: 'market',
         field: {
           market: {
-            encode: 'fast',
+            encode: 'icase',
           },
           universe: {
-            encode: 'fast',
+            encode: 'icase',
           },
           category1: {
-            encode: 'fast',
+            profile: 'fast',
           },
           category2: {
-            encode: 'fast',
+            profile: 'fast',
           },
           category3: {
-            encode: 'fast',
+            profile: 'fast',
           },
           content: {
             encode: 'extra',
