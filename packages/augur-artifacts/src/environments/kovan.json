@@ -39,18 +39,6 @@
       "enabled": true,
       "useBootstrapList": true,
       "bootstrapList": [
-        "/ip4/157.245.119.108/tcp/60558/ipfs/16Uiu2HAmNiUFpexTLsur1RdGtQDACi41MoQoA2bQE2VFDWeArCPT",
-        "/ip4/157.245.119.108/tcp/60559/ws/ipfs/16Uiu2HAmNiUFpexTLsur1RdGtQDACi41MoQoA2bQE2VFDWeArCPT",
-        "/ip4/134.209.40.218/tcp/60558/ipfs/16Uiu2HAmVCeTcAGpYWeKdM6k1a46XwAGi1Kx7B8HKi9udYAS8aNm",
-        "/ip4/134.209.40.218/tcp/60559/ws/ipfs/16Uiu2HAmVCeTcAGpYWeKdM6k1a46XwAGi1Kx7B8HKi9udYAS8aNm",
-        "/ip4/167.71.13.150/tcp/60558/ipfs/16Uiu2HAmHC2vnGs272SVmF81fJ31pEdWLdj2uEhRc4jbpiRjcuDy",
-        "/ip4/167.71.13.150/tcp/60559/ws/ipfs/16Uiu2HAmHC2vnGs272SVmF81fJ31pEdWLdj2uEhRc4jbpiRjcuDy",
-        "/ip4/159.203.104.170/tcp/60558/ipfs/16Uiu2HAmQRA13MDc7c687VRemiM2HRZDBNLjbwPMab9J3Sh5QKwH",
-        "/ip4/159.203.104.170/tcp/60559/ws/ipfs/16Uiu2HAmQRA13MDc7c687VRemiM2HRZDBNLjbwPMab9J3Sh5QKwH",
-        "/ip4/64.225.57.111/tcp/1024/ipfs/16Uiu2HAmApD67frnyrNKj5ZZtET1Y1JZPNFk2XcKNtW88URdeRyM",
-        "/ip4/64.225.57.111/tcp/60558/ipfs/16Uiu2HAmApD67frnyrNKj5ZZtET1Y1JZPNFk2XcKNtW88URdeRyM",
-        "/ip4/64.225.57.111/tcp/60558/ipfs/16Uiu2HAmApD67frnyrNKj5ZZtET1Y1JZPNFk2XcKNtW88URdeRyM",
-        "/ip4/64.225.57.111/tcp/60559/ws/ipfs/16Uiu2HAmApD67frnyrNKj5ZZtET1Y1JZPNFk2XcKNtW88URdeRyM"
       ]
     }
   },
