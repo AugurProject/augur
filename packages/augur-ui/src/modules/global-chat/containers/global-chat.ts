@@ -4,8 +4,8 @@ import { GlobalChat } from 'modules/global-chat/components/global-chat.tsx';
 import { initialize3box } from 'modules/global-chat/actions/initialize-3box';
 import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = ({ initialized3box }) => {
-  const { loginAccount, env } = AppStatus.get();
+const mapStateToProps = () => {
+  const { loginAccount, env, initialized3box } = AppStatus.get();
   const signer = loginAccount.meta?.signer;
 
   const defaultGlobalChatProps = {

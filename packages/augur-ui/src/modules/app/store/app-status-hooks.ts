@@ -43,6 +43,7 @@ import {
   DRAFTS,
   NEW_MARKET,
   MARKETS_LIST,
+  INITIALIZED_3BOX
 } from 'modules/app/store/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import { ZERO, NEW_ORDER_GAS_ESTIMATE } from 'modules/common/constants';
@@ -75,6 +76,7 @@ const {
   UPDATE_GAS_PRICE_INFO,
   SET_MOBILE_MENU_STATE,
   SET_CURRENT_BASE_PATH,
+  SET_INITIALIZED_3BOX,
   UPDATE_BLOCKCHAIN,
   SET_CATEGORY_STATS,
   UPDATE_FILTER_SORT_OPTIONS,
@@ -251,6 +253,9 @@ export function AppStatusReducer(state, action) {
     case SET_ENV: {
       updatedState[ENV] = action.env;
       break;
+    }
+    case SET_INITIALIZED_3BOX: {
+      updatedState[INITIALIZED_3BOX] = action.initialized3Box;
     }
     case UPDATE_GAS_PRICE_INFO: {
       updatedState[GAS_PRICE_INFO] = {
@@ -725,6 +730,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       updateAlert: (id, alert) => dispatch({ type: UPDATE_ALERT, alert, id }),
       removeAlert: (id, name) => dispatch({ type: REMOVE_ALERT, id, name }),
       clearAlerts: level => dispatch({ type: CLEAR_ALERTS, level }),
+      setInitialized3Box: initialized3Box => dispatch({ type: SET_INITIALIZED_3BOX, initialized3Box }),
       addPendingData: ({
         pendingId,
         queueName,
