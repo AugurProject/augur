@@ -1,4 +1,4 @@
-import { Dexie } from 'dexie';
+import Dexie from 'dexie';
 import * as _ from 'lodash';
 
 export type PrimitiveID = string | number | Date;
