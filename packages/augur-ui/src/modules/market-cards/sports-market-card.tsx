@@ -7,7 +7,11 @@ import {
 } from 'modules/market-cards/common';
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
-import { HEADER_TYPE, SPORTS_GROUP_TYPES } from 'modules/common/constants';
+import {
+  HEADER_TYPE,
+  SPORTS_GROUP_TYPES,
+  SPORTS_GROUP_MARKET_TYPES,
+} from 'modules/common/constants';
 import { CountdownProgress, formatTime } from 'modules/common/progress';
 import Styles from 'modules/market-cards/sports-market-card.styles.less';
 import MarketTitle from 'modules/market/components/common/market-title';
@@ -22,19 +26,26 @@ interface SportsMarketCardProps {
     type: string;
     markets: Array<MarketInfos>;
     marketTypes: Array<string>;
-  },
+  };
   loading: boolean;
 }
 
-const {
-  COMBO,
-  FUTURES,
-} = SPORTS_GROUP_TYPES;
+const { COMBO, FUTURES, DAILY } = SPORTS_GROUP_TYPES;
 
-export const SportsMarketCard = ({ sportsGroup, loading }: SportsMarketCardProps) => {
-  const [showMore, setShowMore] = useState(false);
+const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
+
+const determineStartState = ({ type, marketTypes }) => {
+    if (type !== DAILY) return false;
+    const hasMoneyLineMarket = marketTypes.find(uniqueType => uniqueType.includes(MONEY_LINE));
+    return !hasMoneyLineMarket;
+}
+
+export const SportsMarketCard = ({
+  sportsGroup,
+  loading,
+}: SportsMarketCardProps) => {
+  const [showMore, setShowMore] = useState(determineStartState(sportsGroup));
   const location = useLocation();
-
   if (loading) {
     return <LoadingCard />;
   }
@@ -43,9 +54,10 @@ export const SportsMarketCard = ({ sportsGroup, loading }: SportsMarketCardProps
   const { type, markets, marketTypes } = sportsGroup;
   const market = markets[0];
   const { categories, reportingState, endTimeFormatted } = market;
-  
-  const showMoreButtonVisible = type === COMBO ? marketTypes.length > 3 : marketTypes.length > 1;
-  
+
+  const showMoreButtonVisible =
+    type === COMBO ? marketTypes.length > 3 : marketTypes.length > 1;
+
   const headerType =
     location.pathname === makePath(DISPUTING)
       ? HEADER_TYPE.H2
@@ -66,8 +78,14 @@ export const SportsMarketCard = ({ sportsGroup, loading }: SportsMarketCardProps
       <MarketTitle id={market.id} headerType={headerType} />
       <SportsGroupMarkets sportsGroup={sportsGroup} />
       <CountdownProgress
-        label={type === FUTURES ? 'Event Expiration Date' : 'Estimated Start Time'}
-        time={type === FUTURES ? endTimeFormatted : formatTime(market.sportsBook.estTimestamp)} 
+        label={
+          type === FUTURES ? 'Event Expiration Date' : 'Estimated Start Time'
+        }
+        time={
+          type === FUTURES
+            ? endTimeFormatted
+            : formatTime(market.sportsBook.estTimestamp)
+        }
         reportingState={reportingState}
       />
       {showMoreButtonVisible && (

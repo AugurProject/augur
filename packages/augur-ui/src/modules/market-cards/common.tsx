@@ -907,7 +907,7 @@ function processFuturesGridData(
           label: '-',
         });
       } else {
-        const { cumulativeShares, price } = bestAsk;
+        const { shares, price } = bestAsk;
         const odds = convertToOdds({
           price,
           min,
@@ -918,7 +918,7 @@ function processFuturesGridData(
         data.push({
           ...outcomeData,
           action: () =>
-            addBet(marketId, description, OddToUse, outcome.description, cumulativeShares),
+            addBet(marketId, description, OddToUse, outcome.description, shares),
           label: OddToUse,
         });
       }
