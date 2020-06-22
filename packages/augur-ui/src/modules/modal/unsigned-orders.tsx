@@ -1,19 +1,19 @@
 /* eslint react/prop-types: 0 */
-import React from "react";
+import React from 'react';
 
 import {
-  DefaultButtonProps,
   CancelTextButton,
+  DefaultButtonProps,
   SubmitTextButton,
-} from "modules/common/buttons";
+} from 'modules/common/buttons';
 import {
-  Title,
-  DescriptionProps,
-  Description,
-  ButtonsRow,
-  MarketTitle,
   Breakdown,
-} from "modules/modal/common";
+  ButtonsRow,
+  Description,
+  DescriptionProps,
+  MarketTitle,
+  Title,
+} from 'modules/modal/common';
 import {
   LinearPropertyLabelProps, PendingLabel, BulkTxLabel, ModalLabelNotice,
 } from "modules/common/labels";
@@ -74,7 +74,7 @@ const orderRow = (
   const { outcomeId, outcomeName, type, quantity, price, orderEstimate, index, status } = order;
   const buttons = [
     {
-      text: "cancel",
+      text: 'cancel',
       action: () =>
         removeLiquidityOrder({
           transactionHash,
@@ -83,7 +83,7 @@ const orderRow = (
         }),
     },
     {
-      text: "submit",
+      text: 'submit',
       action: () =>
         sendLiquidityOrder({
           zeroXEnabled,
@@ -114,8 +114,20 @@ const orderRow = (
       <div>
         {buttons.map((Button: DefaultButtonProps, index: number) => {
           if (index === 0)
-            return <CancelTextButton key={Button.text} {...Button} disabled={status && status !== TXEventName.Failure} />;
-          return <SubmitTextButton key={Button.text} {...Button} disabled={status && status !== TXEventName.Failure} />;
+            return (
+              <CancelTextButton
+                key={Button.text}
+                {...Button}
+                disabled={status && status !== TXEventName.Failure}
+              />
+            );
+          return (
+            <SubmitTextButton
+              key={Button.text}
+              {...Button}
+              disabled={status && status !== TXEventName.Failure}
+            />
+          );
         })}
       </div>
     </div>

@@ -14,6 +14,7 @@ import {
   UserInputDateTime,
   tellOnHoliday,
   ValidationTemplateInputType,
+  isValidYearYearRangeInQuestion
 } from '@augurproject/artifacts';
 import moment from 'moment';
 import { datesOnSameDay } from 'utils/format-date';
@@ -305,9 +306,19 @@ export function checkForUserInputFilled(
         return 'No repeats allowed';
       } else if (!validText) {
         return 'Input is not valid format';
-      } else {
-        return '';
       }
+      const hasYearValidations = input.validationType && input.validationType === ValidationType.YEAR_YEAR_RANGE;
+      if (hasYearValidations && endTimeFormatted?.timestamp) {
+        return isValidYearYearRangeInQuestion(
+          [{ id: input.id, value: input.userInput }],
+          [input.id],
+          endTimeFormatted.timestamp,
+          moment().utc().unix(),
+        )
+          ? ''
+          : 'Year(s) is outside of market timeframe';
+      }
+      return '';
     } else if (input.type === TemplateInputType.DATESTART) {
       if (input.setEndTime === null) {
         return 'Choose a date';

@@ -15,6 +15,7 @@ export const FORM_INPUT_TYPES = {
   TRADE: 'trade',
   SIMULATE_QUEUE: 'simulateQueue',
   GAS_COST_EST: 'gasCostEst',
+  POST_ONLY_ORDER: 'postOnlyOrder',
 };
 
 export const BET_TYPE = {

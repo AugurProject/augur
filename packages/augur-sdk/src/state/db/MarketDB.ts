@@ -82,7 +82,7 @@ export class MarketDB extends DerivedDB {
       MarketMigrated: this.processMarketMigrated,
     };
 
-    this.augur.events.subscribe('DB:updated:ZeroXOrders', orderEvents =>
+    this.augur.events.subscribe(SubscriptionEventName.DBUpdatedZeroXOrders, orderEvents =>
       this.markMarketLiquidityAsDirty(orderEvents.market)
     );
     this.augur.events.subscribe(
@@ -548,15 +548,17 @@ export class MarketDB extends DerivedDB {
           console.error(log['extraInfo'].description, errors);
 
         if (log['isTemplate'] && log['marketType'] === MarketType.Categorical) {
-          const { groupLine, groupType, hashKeyInputValues, header, title, estTimestamp } = getGroupHashInfo(
+          const { groupLine, groupType, hashKeyInputValues, header, title, estTimestamp,
+            canPoolLiquidity, liquidityPoolId } = getGroupHashInfo(
             log['extraInfo'].template
           );
-          log['templateGroupHash'] = hashKeyInputValues;
-          log['templateGroupType'] = groupType;
-          log['templateGroupLine'] = groupLine;
-          log['templateGroupHeader'] = header;
-          log['templateGroupTitle'] = title;
-          log['templateGroupEst'] = estTimestamp
+          log['groupHash'] = hashKeyInputValues;
+          log['groupType'] = groupType;
+          log['groupLine'] = groupLine;
+          log['groupHeader'] = header;
+          log['groupTitle'] = title;
+          log['groupEstDatetime'] = estTimestamp;
+          log['liquidityPool'] = canPoolLiquidity ? liquidityPoolId : log['market'];
         }
       }
     } catch (err) {

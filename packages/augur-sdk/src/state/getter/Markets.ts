@@ -146,6 +146,7 @@ export interface SportsBookInfo {
   estTimestamp?: string;
   header: string;
   title?: string;
+  liquidityPool: string;
 }
 
 export interface MarketInfo {
@@ -692,7 +693,7 @@ export class Markets {
             return false;
           if (
               params.templateFilter === TemplateFilters.sportsBook &&
-              !market.templateGroupHash
+              !market.groupHash
             )
               return false;
         }
@@ -1457,12 +1458,13 @@ async function getMarketsInfo(
       isWarpSync: marketData.isWarpSync,
       passDefaultLiquiditySpread,
       sportsBook: {
-        groupId: marketData.templateGroupHash,
-        groupType: marketData.templateGroupType,
-        marketLine: marketData.templateGroupLine,
-        header: marketData.templateGroupHeader,
-        title: marketData.templateGroupTitle,
-        estTimestamp: marketData.templateGroupEst,
+        groupId: marketData.groupHash,
+        groupType: marketData.groupType,
+        marketLine: marketData.groupLine,
+        header: marketData.groupHeader,
+        title: marketData.groupTitle,
+        estTimestamp: marketData.groupEstDatetime,
+        liquidityPool: marketData.liquidityPool
       }
     };
   });

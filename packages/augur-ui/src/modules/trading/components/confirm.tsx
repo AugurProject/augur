@@ -69,6 +69,7 @@ interface ConfirmProps {
   selectedOutcome: OutcomeFormatted;
   tradingTutorial?: boolean;
   initialLiquidity?: boolean;
+  postOnlyOrder
 }
 
 export const Confirm = ({
@@ -77,6 +78,7 @@ export const Confirm = ({
   selectedOutcome,
   tradingTutorial,
   initialLiquidity,
+  postOnlyOrder,
 }: ConfirmProps) => {
   const {
     newMarket,
@@ -290,6 +292,19 @@ export const Confirm = ({
       };
     }
 
+    if (
+      !isNaN(numTrades) &&
+      numTrades > 0 &&
+      postOnlyOrder &&
+      !tradingTutorial
+    ) {
+      messages = {
+        header: 'POST ONLY ORDER',
+        type: ERROR,
+        message: `Can not match existing order.`,
+      };
+    }
+
     return messages;
   };
   const messages = constructMessages();
@@ -378,7 +393,7 @@ export const Confirm = ({
               isError={createBigNumber(gasCostDai.value).gt(
                 createBigNumber(orderShareProfit.value)
               )}
-              gasCostDai={gasCostDai}
+              gasCostDai={postOnlyOrder ? `0.00` : gasCostDai}
             />
           )}
           <LinearPropertyLabel
@@ -446,12 +461,12 @@ export const Confirm = ({
               isError={createBigNumber(gasCostDai.value).gt(
                 createBigNumber(potentialDaiProfit.value)
               )}
-              gasCostDai={gasCostDai}
+              gasCostDai={postOnlyOrder ? `0.00` : gasCostDai}
             />
           )}
         </div>
       )}
-      {numFills > 0 && <EthReserveAutomaticTopOff />}
+      {numFills > 0 && !postOnlyOrder && <EthReserveAutomaticTopOff />}
       {messages && (
         <div
           className={classNames(Styles.MessageContainer, {
@@ -463,7 +478,7 @@ export const Confirm = ({
           <div>
             {messages.message}
             {messages.link && (
-              <ExternalLinkButton URL={messages.link} label={'LEARN MORE'} />
+              <ExternalLinkButton URL={messages.link} label="LEARN MORE" />
             )}
           </div>
           {messages.button && (
@@ -483,7 +498,7 @@ export const Confirm = ({
           )}
         </div>
       )}
-      <EthReserveNotice gasLimit={gasLimit} />
+      {!postOnlyOrder && <EthReserveNotice gasLimit={gasLimit} />}
     </section>
   );
 };

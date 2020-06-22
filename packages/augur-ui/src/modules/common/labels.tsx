@@ -951,7 +951,7 @@ export const LiquidityDepletedLabel = ({
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         No longer passing the Liquidity spread filter, add more liquidity to
-        have your market seen.
+        have your market seen. Liquidity indicator updates every minute.
       </ReactTooltip>
     </span>
   );
@@ -1520,8 +1520,8 @@ export const InitializeWalletModalNotice = connect(
 const mapStateToPropsEthReserve = (state: AppState, ownProps) => {
   const gasLimit = ownProps.gasLimit;
   const { gasPriceInfo, loginAccount: { balances: { dai }}, env } = AppStatus.get();
-  const aboveCutoff = createBigNumber(dai).isGreaterThan(createBigNumber(env.gsn.minDaiForSignerETHBalanceInDAI * 10**18))
-  if (!aboveCutoff) {
+  const aboveCutoff = createBigNumber(dai).isGreaterThan(createBigNumber(env.gsn.minDaiForSignerETHBalanceInDAI))
+  if (aboveCutoff) {
     return {
       show: false
     }

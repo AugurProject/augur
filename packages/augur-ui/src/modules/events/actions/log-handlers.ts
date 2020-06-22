@@ -1,4 +1,12 @@
-import { Getters, SubscriptionEventName } from '@augurproject/sdk';
+import {
+  Getters,
+  SubscriptionEventName,
+  Events,
+  Logs,
+  TXEventName,
+  OrderEventType,
+} from '@augurproject/sdk';
+import { logger } from '@augurproject/utils';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import {
   loadAllAccountPositions,
@@ -37,7 +45,6 @@ import {
   DOINITIALREPORTWARPSYNC,
   ZEROX_STATUSES,
   MODAL_ERROR,
-  TRANSFER,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -79,11 +86,7 @@ import { logger } from '@augurproject/utils';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 
-const handleAlert = (
-  log: any,
-  name: string,
-  toast: boolean,
-) => {
+const handleAlert = (log: any, name: string, toast: boolean) => {
   const {
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
@@ -118,8 +121,7 @@ const loadUserOpenOrders = _.throttle(
   { leading: true }
 );
 const throttleLoadMarketOrders = marketId => loadOrderBook(marketId);
-const throttleLoadUserOpenOrders = () =>
-  loadUserOpenOrders();
+const throttleLoadUserOpenOrders = () => loadUserOpenOrders();
 const BLOCKS_BEHIND_RELOAD_THRESHOLD = 60; // 60 blocks.
 let blocksBehindTimer = null;
 
@@ -130,7 +132,9 @@ const updateMarketOrderBook = (marketId: string) => {
 };
 
 export const handleTxEvents = (txStatus: Events.TXStatus) => {
-  console.log(`${txStatus.eventName} for ${txStatus.transaction.name} Transaction.`);
+  console.log(
+    `${txStatus.eventName} for ${txStatus.transaction.name} Transaction.`
+  );
   if (txStatus.eventName === 'Success') {
     AppStatus.actions.setWalletStatus(WALLET_STATUS_VALUES.CREATED);
     updateAssets();
@@ -378,7 +382,15 @@ export const handleBulkOrdersLog = (data: {
   }
 };
 
-export const handleOrderLog = (log: any) => {
+export const handleLiquidityPoolUpdatedLog = (
+  data: Logs.LiquidityPoolUpdated
+) => {
+  console.log(data);
+};
+
+export const handleOrderLog = (log: any) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
   const type = log.eventType;
   switch (type) {
     case OrderEventType.Create:
@@ -419,7 +431,8 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => {
   }
 };
 
-const handleOrderCanceledLogs = logs => logs.map(log => handleOrderCanceledLog(log));
+const handleOrderCanceledLogs = logs =>
+  logs.map(log => handleOrderCanceledLog(log));
 
 export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => {
   const {
@@ -463,8 +476,7 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => {
   if (isUserDataUpdate && isLogged) {
     orderFilled(marketId, log, isSameAddress(log.orderCreator, address));
     throttleLoadUserOpenOrders();
-    if (log.orderFiller)
-      handleAlert(log, PUBLICFILLORDER, true);
+    if (log.orderFiller) handleAlert(log, PUBLICFILLORDER, true);
     removePendingOrder(log.tradeGroupId, marketId);
   }
 };
@@ -560,13 +572,7 @@ export const handleParticipationTokensRedeemedLog = (
     loginAccount: { address },
   } = AppStatus.get();
   if (logs.filter(log => isSameAddress(log.account, address)).length > 0) {
-    logs.map(log =>
-      handleAlert(
-        { ...log, marketId: 1 },
-        REDEEMSTAKE,
-        false
-      )
-    );
+    logs.map(log => handleAlert({ ...log, marketId: 1 }, REDEEMSTAKE, false));
     loadAccountReportingHistory();
     removePendingTransaction(REDEEMSTAKE);
   }
@@ -666,9 +672,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = (
   const userLogs = logs.filter(log => isSameAddress(log.reporter, address));
   if (userLogs.length > 0) {
     loadAccountReportingHistory();
-    userLogs.map(log =>
-      handleAlert(log, REDEEMSTAKE, false)
-    );
+    userLogs.map(log => handleAlert(log, REDEEMSTAKE, false));
   }
   removePendingTransaction(REDEEMSTAKE);
 };

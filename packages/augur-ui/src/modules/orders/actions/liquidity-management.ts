@@ -125,7 +125,7 @@ export const startOrderSending = ({
   });
 
   if (!chunkOrders) {
-    createZeroXLiquidityOrders(market, orders, dispatch);
+    await createZeroXLiquidityOrders(market, orders, dispatch);
   } else {
     // MAX_BULK_ORDER_COUNT number of orders in each creation bulk group
     let i = 0;

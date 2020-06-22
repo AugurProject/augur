@@ -82,11 +82,11 @@ function updateBalances(
       eth,
       legacyAttoRep,
       legacyRep,
-      legacyRepNonSafe,
       signerBalances: {
         eth: ethNonSafe,
         dai: daiNonSafe,
         rep: repNonSafe,
+        legacyRep: legacyRepNonSafe,
       },
     };
     addedDaiEvent(dai);

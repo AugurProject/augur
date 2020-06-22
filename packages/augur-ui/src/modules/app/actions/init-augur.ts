@@ -21,7 +21,10 @@ import { Action } from 'redux';
 import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
-import { loginWithInjectedWeb3, getWeb3Provider } from 'modules/auth/actions/login-with-injected-web3';
+import {
+  loginWithInjectedWeb3,
+  getWeb3Provider,
+} from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
@@ -54,8 +57,9 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   const errorModal = () => {
     logout();
     setModal({
-        type: MODAL_ERROR,
-      });
+      type: MODAL_ERROR,
+      error: 'Please try logging in with your wallet provider again.',
+    });
   };
   try {
     if (loggedInAccount) {
@@ -63,11 +67,11 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
         if (!windowRef.ethereum.selectedAddress) {
           // show metamask signer
           setModal({
-              type: MODAL_LOADING,
-              message: SIGNIN_SIGN_WALLET,
-              showMetaMaskHelper: true,
-              callback: () => closeModal(),
-            });
+            type: MODAL_LOADING,
+            message: SIGNIN_SIGN_WALLET,
+            showMetaMaskHelper: true,
+            callback: () => closeModal(),
+          });
         }
         await dispatch(loginWithInjectedWeb3());
       }
@@ -96,8 +100,8 @@ function pollForNetwork() {
       const isMainnet = checkIfMainnet();
       if (isMainnet && isEmpty(modal)) {
         setModal({
-            type: MODAL_NETWORK_DISABLED,
-          });
+          type: MODAL_NETWORK_DISABLED,
+        });
       } else if (!isMainnet && modal.type === MODAL_NETWORK_DISABLED) {
         closeModal();
       }
@@ -108,16 +112,14 @@ function pollForNetwork() {
 export function connectAugur(
   config: SDKConfiguration,
   isInitialConnection = false,
-  callback: NodeStyleCallback = logError,
+  callback: NodeStyleCallback = logError
 ) {
-  return async (
-    dispatch: ThunkDispatch<void, any, Action>,
-  ) => {
+  return async (dispatch: ThunkDispatch<void, any, Action>) => {
     const { modal, loginAccount } = AppStatus.get();
     const windowApp = windowRef as WindowApp;
     const loggedInUser = getLoggedInUserFromLocalStorage();
-    const loggedInAccount = (loggedInUser?.address) || null;
-    const loggedInAccountType = (loggedInUser?.type) || null;
+    const loggedInAccount = loggedInUser?.address || null;
+    const loggedInAccountType = loggedInUser?.type || null;
 
     // Preload Account
     const preloadAccount = accountType => {
@@ -213,9 +215,9 @@ export function connectAugur(
       if (provider._network && config.networkId !== provider._network.chainId) {
         const { setModal } = AppStatus.actions;
         return setModal({
-            type: MODAL_NETWORK_MISMATCH,
-            expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
-          });
+          type: MODAL_NETWORK_MISMATCH,
+          expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
+        });
       } else {
         return callback('SDK could not be created', { config });
       }

@@ -79,6 +79,10 @@
         white-space: nowrap;
         width: 100%;
 
+        &.invalidColor {
+          color: var(--color-outcome-invalid);
+        }
+
         &:hover {
           background-color: var(--color-secondary-action-outline);
         }
@@ -101,6 +105,10 @@
 
 .SelectedLabel {
   color: var(--color-primary-text);
+
+  &.invalidColor {
+    color: var(--color-outcome-invalid);
+  }
 }
 
 .Disabled {
@@ -757,7 +765,7 @@
     height: @size-32;
     padding: @size-8 @size-12;
     outline: none;
-    
+
     &:not(:last-of-type) {
       &::after {
         content: "";

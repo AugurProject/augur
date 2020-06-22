@@ -155,7 +155,7 @@ export const Gas = () => {
             quick
           />
         </button>
-        {(showAdvanced || !doesGasPriceMatchPresets(amount)) && (
+        {showAdvanced && (
           <div>
             <div>
               <label>Gas Price (GWEI)</label>

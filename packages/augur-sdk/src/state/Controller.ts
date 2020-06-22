@@ -2,14 +2,11 @@ import { ParsedLog } from '@augurproject/types';
 import { Block } from 'ethers/providers';
 import * as fp from 'lodash/fp';
 import { Augur } from '../Augur';
-import { ZeroXStats } from '../api/ZeroX';
 import { SubscriptionEventName, NULL_ADDRESS } from '../constants';
 import { Subscriptions } from '../subscriptions';
 import { DB } from './db/DB';
 import { Markets } from './getter/Markets';
 import { LogFilterAggregatorInterface } from './logs/LogFilterAggregator';
-
-const settings = require('./settings.json');
 
 export class Controller {
   private static latestBlock: Block;
