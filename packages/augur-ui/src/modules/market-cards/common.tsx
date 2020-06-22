@@ -653,6 +653,7 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
+            disabled: true,
           },
           moneyLine: {
             topLabel: null,
@@ -666,6 +667,7 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
+            disabled: true,
           },
           overUnder: {
             topLabel: null,
@@ -679,6 +681,7 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
+            disabled: true,
           },
         };
         data.push(outcomeObject);
@@ -700,6 +703,7 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
+            disabled: true,
           },
           moneyLine: {
             topLabel: null,
@@ -713,6 +717,7 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
+            disabled: true,
           },
           overUnder: {
             topLabel: null,
@@ -726,6 +731,7 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
+            disabled: true,
           },
         };
         data.push(outcomeObject);
@@ -747,6 +753,7 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
+            disabled: true,
           },
           moneyLine: {
             topLabel: null,
@@ -760,6 +767,7 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
+            disabled: true,
           },
           overUnder: {
             topLabel: null,
@@ -773,6 +781,7 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
+            disabled: true,
           },
         };
         data.push(outcomeObject);
@@ -869,6 +878,7 @@ function processDailyMarketData(
           addBet(marketId, description, '0', outcome.description, '0'),
         label: '-',
         volume: outcome.volumeFormatted.full,
+        disabled: true
       });
     });
   } else {
@@ -950,6 +960,7 @@ function processSubMarketCollapsibleData(
           addBet(marketId, description, '0', outcome.description, '0'),
         label: '-',
         volume: outcome.volumeFormatted.full,
+        disabled: true,
       });
     });
   } else {
@@ -1043,7 +1054,6 @@ export const SubMarketCollapsible = ({
   SubMarketCollapsibleData,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
-  // console.log('subMarketcollapsable', SubMarketCollapsibleData, SubMarketCollapsibleData.length);
   return (
     <section
       className={classNames(Styles.SubMarketCollapsible, {
