@@ -47,7 +47,6 @@ export class DerivedDB extends RollbackTable {
       this.mergeEventNames,
       this.handleMergeEvent
     );
-    return Dexie.delete(this.dbName);
   }
 
   async onBulkSyncComplete() {
