@@ -23,13 +23,15 @@ import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted } from 'modules/types';
+import type { Getters } from "@augurproject/sdk";
 import {
-  convertDisplayAmountToOnChainAmount,
-  tickSizeToNumTickWithDisplayPrices,
   getTradeInterval,
+} from '@augurproject/sdk-lite';
+import {
+  tickSizeToNumTickWithDisplayPrices,
+  convertDisplayAmountToOnChainAmount,
   QUINTILLION,
-  Getters,
-} from '@augurproject/sdk';
+} from '@augurproject/utils';
 import {
   CancelTextButton,
   SecondaryButton,

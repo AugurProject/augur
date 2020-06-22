@@ -3,30 +3,51 @@ import classNames from 'classnames';
 
 import { SecondaryButton } from 'modules/common/buttons';
 import {
-  TextInput,
-  DatePicker,
-  TimeSelector,
-  TimezoneDropdown,
-  FormDropdown,
-  RadioBarGroup,
-} from 'modules/common/form';
-import { XIcon, AddIcon, helpIcon } from 'modules/common/icons';
-import ReactTooltip from 'react-tooltip';
-import TooltipStyles from 'modules/common/tooltip.styles.less';
-import Link from 'modules/create-market/containers/link';
-import Styles from 'modules/create-market/components/common.styles.less';
-import {
-  FormattedNumber,
-  DateFormattedObject,
-  NewMarket,
-  TimezoneDateObject,
-} from 'modules/types';
-import moment, { Moment } from 'moment';
-import {
   CATEGORICAL,
   CATEGORICAL_OUTCOMES_MIN_NUM,
   REP,
 } from 'modules/common/constants';
+import {
+  DatePicker,
+  FormDropdown,
+  RadioBarGroup,
+  TextInput,
+  TimeSelector,
+  TimezoneDropdown,
+} from 'modules/common/form';
+import { AddIcon, helpIcon, XIcon } from 'modules/common/icons';
+import MarkdownRenderer from 'modules/common/markdown-renderer';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
+import Styles from 'modules/create-market/components/common.styles.less';
+import {
+  FRIDAY_DAY_OF_WEEK,
+  MARKET_COPY_LIST,
+  SelectEventNoticeText,
+  TemplateBannerText,
+} from 'modules/create-market/constants';
+import Link from 'modules/create-market/containers/link';
+import {
+  buildMarketDescription,
+  createTemplateOutcomes,
+  createTemplateValueList,
+  getEventExpirationForExchange,
+  substituteUserOutcome,
+} from 'modules/create-market/get-template';
+import PreviewMarketTitle
+  from 'modules/market/components/common/PreviewMarketTitle';
+import {
+  DISMISSABLE_NOTICE_BUTTON_TYPES,
+  DismissableNotice,
+} from 'modules/reporting/common';
+import {
+  DateFormattedObject,
+  FormattedNumber,
+  NewMarket,
+  TimezoneDateObject,
+} from 'modules/types';
+import moment, { Moment } from 'moment';
+import React, { Component, useEffect, useReducer, useState } from 'react';
+import ReactTooltip from 'react-tooltip';
 import {
   buildformattedDate,
   convertUnixToFormattedDate,
@@ -42,15 +63,19 @@ import {
   createTemplateValueList,
   getEventExpirationForExchange,
 } from 'modules/create-market/get-template';
-import {
+import type {
   TemplateInput,
-  TemplateInputType,
   Template,
   UserInputDateTime,
+} from '@augurproject/templates';
+import {
+  TemplateInputType,
+  ValidationType,
+} from '@augurproject/templates';
+import {
   CHOICE,
   REQUIRED,
-  ValidationType,
-} from '@augurproject/artifacts';
+} from '@augurproject/sdk-lite'
 import {
   TemplateBannerText,
   SelectEventNoticeText,
@@ -62,7 +87,7 @@ import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
 } from 'modules/reporting/common';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 
 export interface HeaderProps {
   text: string;

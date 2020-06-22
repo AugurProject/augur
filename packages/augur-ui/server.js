@@ -22,6 +22,9 @@ if (process.env.NODE_ENV === "development") {
     devMiddleware(compiler, {
       publicPath: config.output.publicPath,
       compress: true,
+      watchOptions: {
+        ignored: /node_modules/
+      },
       stats: {
         colors: true
       }

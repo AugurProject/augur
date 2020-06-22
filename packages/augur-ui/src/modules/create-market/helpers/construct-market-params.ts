@@ -1,13 +1,15 @@
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { NewMarket } from 'modules/types';
-import {
+import type {
   CreateYesNoMarketParams,
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
+} from '@augurproject/sdk';
+import {
   stringTo32ByteHex,
   tickSizeToNumTickWithDisplayPrices,
   convertDisplayValuetoAttoValue,
-} from '@augurproject/sdk';
+} from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import {
   SCALAR,

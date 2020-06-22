@@ -17,7 +17,6 @@ import {
   TEMPLATE_FILTER,
 } from 'modules/common/constants';
 import { FilterSortOptions, BaseAction, INVALID_OPTIONS } from 'modules/types';
-import { Getters } from '@augurproject/sdk/src';
 
 const DEFAULT_STATE: FilterSortOptions = {
   [MARKET_FILTER]: MARKET_OPEN,
@@ -26,7 +25,7 @@ const DEFAULT_STATE: FilterSortOptions = {
   [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS,
   [MARKET_SHOW_INVALID]: INVALID_OPTIONS.Hide,
   [TRANSACTION_PERIOD]: DAY,
-  [TEMPLATE_FILTER]: Getters.Markets.TemplateFilters.templateOnly,
+  [TEMPLATE_FILTER]: "templateOnly"
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);

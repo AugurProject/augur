@@ -1,50 +1,51 @@
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import MarketView from 'modules/market/components/market-view/market-view';
+import type { Getters } from '@augurproject/sdk';
+import { AppState } from 'appStore';
+import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
+import { getAddress } from 'ethers/utils/address';
+import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
+import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 import {
-  loadMarketsInfo
-} from "modules/markets/actions/load-markets-info";
+  CATEGORICAL,
+  MARKET_REVIEW_SEEN,
+  MODAL_MARKET_LOADING,
+  MODAL_MARKET_NOT_FOUND,
+  MODAL_MARKET_REVIEW,
+  SCALAR_MODAL_SEEN,
+  TRADING_TUTORIAL,
+  TRADING_TUTORIAL_OUTCOMES,
+  TUTORIAL_ORDER_BOOK,
+  TUTORIAL_TRADING_HISTORY,
+  ZEROX_STATUSES,
+} from 'modules/common/constants';
+import { EMPTY_STATE } from 'modules/create-market/constants';
+import MarketView from 'modules/market/components/market-view/market-view';
+import { hotloadMarket } from 'modules/markets/actions/load-markets';
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
+import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 import {
   selectMarket,
   selectSortedMarketOutcomes,
 } from 'modules/markets/selectors/market';
-import parseQuery from 'modules/routes/helpers/parse-query';
+import { closeModal } from 'modules/modal/actions/close-modal';
+import { updateModal } from 'modules/modal/actions/update-modal';
+import {
+  clearOrderBook,
+  loadMarketOrderBook,
+} from 'modules/orders/actions/load-market-orderbook';
 import {
   MARKET_ID_PARAM_NAME,
   OUTCOME_ID_PARAM_NAME,
 } from 'modules/routes/constants/param-names';
-import {
-  MODAL_MARKET_REVIEW,
-  MARKET_REVIEW_SEEN,
-  MODAL_MARKET_LOADING,
-  TRADING_TUTORIAL,
-  CATEGORICAL,
-  TRADING_TUTORIAL_OUTCOMES,
-  TUTORIAL_ORDER_BOOK,
-  TUTORIAL_TRADING_HISTORY,
-  SCALAR_MODAL_SEEN,
-  ZEROX_STATUSES,
-  MODAL_MARKET_NOT_FOUND,
-} from 'modules/common/constants';
-import { windowRef } from 'utils/window-ref';
-import { getAddress } from 'ethers/utils/address';
-import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
-import { updateModal } from 'modules/modal/actions/update-modal';
-import { closeModal } from 'modules/modal/actions/close-modal';
-import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
-import { EMPTY_STATE } from 'modules/create-market/constants';
+import parseQuery from 'modules/routes/helpers/parse-query';
 import { NewMarket } from 'modules/types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import deepClone from 'utils/deep-clone';
-import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
-import { hotloadMarket } from 'modules/markets/actions/load-markets';
 import {
-  getMarketAgeInDays,
   convertUnixToFormattedDate,
+  getMarketAgeInDays,
 } from 'utils/format-date';
-import { AppState } from 'appStore';
-import { loadMarketOrderBook, clearOrderBook } from 'modules/orders/actions/load-market-orderbook';
-import { Getters } from '@augurproject/sdk';
-import { Ox_STATUS } from 'modules/app/actions/update-app-status';
+import { windowRef } from 'utils/window-ref';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { connection, universe, modal, loginAccount, orderBooks, appStatus } = state;

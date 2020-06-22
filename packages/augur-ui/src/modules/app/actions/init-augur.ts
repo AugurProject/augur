@@ -1,3 +1,6 @@
+import type { SDKConfiguration } from '@augurproject/artifacts';
+import { isDevNetworkId, mergeConfig } from "@augurproject/utils";
+import { augurSdk } from "services/augursdk";
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import { updateEnv } from 'modules/app/actions/update-env';
@@ -23,7 +26,6 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { NodeStyleCallback, WindowApp } from 'modules/types';
-import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { loginWithInjectedWeb3, getWeb3Provider } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
@@ -37,21 +39,13 @@ import {
 } from 'modules/auth/actions/auth-status';
 import { logout } from 'modules/auth/actions/logout';
 import { updateCanHotload } from 'modules/app/actions/update-connection';
-import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { tryToPersistStorage } from 'utils/storage-manager';
-import {
-  isDevNetworkId,
-  SDKConfiguration,
-  serializeConfig,
-  mergeConfig,
-  validConfigOrDie,
-} from '@augurproject/artifacts';
 import { getNetwork } from 'utils/get-network-name';
-import { buildConfig } from '@augurproject/artifacts';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { isGoogleBot } from 'utils/is-google-bot';
+import { isMobileSafari } from 'utils/is-safari';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -218,18 +212,25 @@ export function connectAugur(
 
     // Disable mesh/gsn for googleBot
     if (isGoogleBot()) {
-      config = validConfigOrDie(
-        mergeConfig(config, {
-          zeroX: { mesh: { enabled: false } },
-          gsn: { enabled: false },
-          useWarpSync: false,
-        })
-      );
+      config = mergeConfig(config, {
+        zeroX: { mesh: { enabled: false } },
+        gsn: { enabled: false },
+        useWarpSync: false,
+      })
     }
 
-    let sdk: Augur<Provider> = null;
+    if (isMobileSafari()) {
+      config = mergeConfig(config, {
+        warpSync: {
+          autoReport: false,
+          enabled: false,
+        },
+      })
+    }
+
+    let Augur = null;
     try {
-      sdk = await augurSdk.makeClient(provider, config);
+      Augur = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
       if (provider._network && config.networkId !== provider._network.chainId) {
@@ -245,7 +246,7 @@ export function connectAugur(
     }
 
     let universeId =
-      config.addresses?.Universe || sdk.contracts.universe.address;
+      config.addresses?.Universe || Augur.contracts.universe.address;
     if (
       windowApp.localStorage &&
       windowApp.localStorage.getItem &&
@@ -274,11 +275,10 @@ export function connectAugur(
     }
 
     // wire up start up events for sdk
-    dispatch(listenForStartUpEvents(sdk));
+    dispatch(listenForStartUpEvents(Augur));
     dispatch(updateCanHotload(true));
 
     await augurSdk.connect();
-
     callback(null);
   };
 }
@@ -304,8 +304,7 @@ export function initAugur(
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ) => {
-    // const config: SDKConfiguration = environments[`${process.env.ETHEREUM_NETWORK}`];
-    const config = buildConfig(process.env.ETHEREUM_NETWORK || 'local');
+    const config: SDKConfiguration = process.env.CONFIGURATION;
 
     config.ethereum.useWeb3Transport = useWeb3Transport;
 
@@ -317,11 +316,6 @@ export function initAugur(
       config.sdk.ws = sdkEndpoint;
     }
 
-    console.log(
-      '******** CONFIGURATION ***********\n' +
-        serializeConfig(config) +
-        '\n**********************************'
-    );
     // cache fingerprint
     getFingerprint();
     dispatch(updateEnv(config));

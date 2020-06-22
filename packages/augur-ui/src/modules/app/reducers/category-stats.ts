@@ -1,6 +1,6 @@
 import { UPDATE_STATS } from "modules/app/actions/update-stats";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { Getters } from "@augurproject/sdk";
+import type { Getters } from "@augurproject/sdk";
 
 
 export default function(

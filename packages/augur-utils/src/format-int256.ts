@@ -1,5 +1,5 @@
 import { padLeft } from "./pad-left";
-import { prefixHex } from "./prefix-hex";
+import { prefixHex } from "./hex";
 import { strip0xPrefix } from "./strip-0x-prefix";
 import { unfork } from "./unfork";
 

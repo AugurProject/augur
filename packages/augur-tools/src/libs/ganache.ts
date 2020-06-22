@@ -1,17 +1,15 @@
-import * as ganache from 'ganache-core';
-import { ethers } from 'ethers';
-import memdown from 'memdown';
-import { MemDown } from 'memdown';
-import {
-  Contracts as compilerOutput,
-  ContractAddresses,
-} from '@augurproject/artifacts';
-import { Account } from '../constants';
-import crypto from 'crypto';
+const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-const levelup = require('levelup');
-import * as path from 'path';
+import { ContractAddresses } from '@augurproject/utils';
 import * as fs from 'async-file';
+import crypto from 'crypto';
+import { ethers } from 'ethers';
+import * as ganache from 'ganache-core';
+import memdown, { MemDown } from 'memdown';
+import * as path from 'path';
+import { Account } from '../constants';
+
+const levelup = require('levelup');
 
 interface Metadata {
   [item: string]: any;

@@ -1,4 +1,4 @@
-import { TEMPLATES, CategoryTemplate, isTemplateMarket, ExtraInfoTemplate, Template } from '@augurproject/artifacts';
+import { TEMPLATES, CategoryTemplate, isTemplateMarket, ExtraInfoTemplate, Template } from '@augurproject/templates';
 import { stringTo32ByteHex } from '@augurproject/sdk';
 import { BigNumber } from 'ethers/utils';
 

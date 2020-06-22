@@ -14,8 +14,6 @@ import {
   POLITICS,
   SOCCER,
   SPORTS,
-  Template,
-  TEMPLATES,
   US_POLITICS,
   HOCKEY,
   groupTypes,
@@ -24,7 +22,11 @@ import {
   SOCIAL_MEDIA,
   TWITTER,
   CUSTOMIZED,
-} from '@augurproject/artifacts';
+} from '@augurproject/sdk-lite';
+import {
+  Template,
+  TEMPLATES,
+} from '@augurproject/templates';
 import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';
 import { buildExtraInfo, getFilledInputs, fillInQuestion, getLongDescription } from '../../libs/templates';

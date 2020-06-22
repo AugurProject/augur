@@ -7,7 +7,7 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { updateEnv } from 'modules/app/actions/update-env';
 import { connectAugur } from 'modules/app/actions/init-augur';
 import { isWeb3Transport } from 'modules/contracts/actions/contractCalls';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import type { SDKConfiguration } from '@augurproject/utils';
 import { AppState } from 'appStore/index';
 
 const mapStateToProps = (state: AppState) => ({

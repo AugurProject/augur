@@ -1,6 +1,6 @@
 import { SortedGroup } from 'modules/types';
 import { CUSTOM } from 'modules/common/constants';
-import { BITCOIN, USD, USDT, EUR, ETHEREUM, LITECOIN } from '@augurproject/artifacts/build';
+import { BITCOIN, USD, USDT, EUR, ETHEREUM, LITECOIN } from '@augurproject/sdk-lite';
 
 export const setCategories: SortedGroup[] = [
   {

@@ -4,7 +4,7 @@ import Styles from 'modules/market/components/market-view/market-view.styles.les
 import { Initialized3box } from 'modules/types';
 
 const ThreeBoxComments = lazy(() =>
-  import('modules/market/components/common/comments/three-box-comments')
+  import(/* webpackChunkName: '3box-comments' */ 'modules/market/components/common/comments/three-box-comments')
 );
 
 interface MarketCommentsProps {

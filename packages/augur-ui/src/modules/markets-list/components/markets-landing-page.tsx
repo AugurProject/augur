@@ -1,17 +1,15 @@
+import type { Getters } from '@augurproject/sdk';
+import { CategoryButtons, PrimaryButton } from 'modules/common/buttons';
+import { MARKET_CARD_FORMATS, TYPE_TRADE } from 'modules/common/constants';
+import { CategorySelector } from 'modules/common/selection';
+import Styles
+  from 'modules/markets-list/components/markets-landing-page.styles.less';
+import MarketsList from 'modules/markets-list/components/markets-list';
+import { MARKETS } from 'modules/routes/constants/views';
+import makePath from 'modules/routes/helpers/make-path';
+import { MarketData } from 'modules/types';
 import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
-import MarketsList from 'modules/markets-list/components/markets-list';
-import Styles from 'modules/markets-list/components/markets-landing-page.styles.less';
-import {
-  TYPE_TRADE,
-  MARKET_CARD_FORMATS,
-} from 'modules/common/constants';
-import { MarketData } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
-import { PrimaryButton, CategoryButtons } from 'modules/common/buttons';
-import makePath from 'modules/routes/helpers/make-path';
-import { MARKETS } from 'modules/routes/constants/views';
-import { CategorySelector } from 'modules/common/selection';
 
 interface MarketsViewProps {
   isLogged: boolean;

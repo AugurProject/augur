@@ -1,15 +1,15 @@
-import { analytics } from './analytics';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
-import { Action } from 'redux';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { AppState } from 'appStore';
-import { createBigNumber } from 'utils/create-big-number';
-import { Analytic } from 'modules/types';
-import { isLocalHost } from 'utils/is-localhost';
+import { getInfo } from 'modules/alerts/actions/set-alert-text';
 import { BUY_INDEX, SELL_INDEX } from 'modules/common/constants';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { getInfo } from 'modules/alerts/actions/set-alert-text';
-import { TXEventName } from '@augurproject/sdk';
+import { Analytic } from 'modules/types';
+import { Action } from 'redux';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { createBigNumber } from 'utils/create-big-number';
+import { isLocalHost } from 'utils/is-localhost';
+import { analytics } from './analytics';
 
 export const page = (eventName, payload): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,

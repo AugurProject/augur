@@ -1,10 +1,3 @@
-import Dexie from 'dexie';
-import { Augur } from '../../Augur';
-import { SECONDS_IN_A_DAY } from '../../constants';
-import {
-  LogCallbackType,
-  LogFilterAggregatorInterface,
-} from '../logs/LogFilterAggregator';
 import {
   CancelZeroXOrderLog,
   CompleteSetsPurchasedLog,
@@ -32,8 +25,11 @@ import {
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   ProfitLossChangedLog,
+  ReportingFeeChangedLog,
   ReportingParticipantDisavowedLog,
+  SECONDS_IN_A_DAY,
   ShareTokenBalanceChangedLog,
+  SubscriptionEventName,
   TimestampSetLog,
   TokenBalanceChangedLog,
   TokensMinted,
@@ -43,8 +39,13 @@ import {
   TransferSingleLog,
   UniverseCreatedLog,
   UniverseForkedLog,
-  ReportingFeeChangedLog,
-} from '../logs/types';
+} from '@augurproject/sdk-lite';
+import Dexie from 'dexie';
+import { Augur } from '../../Augur';
+import {
+  LogCallbackType,
+  LogFilterAggregatorInterface,
+} from '../logs/LogFilterAggregator';
 import { BaseSyncableDB } from './BaseSyncableDB';
 import { DelayedSyncableDB } from './DelayedSyncableDB';
 import { DisputeDatabase } from './DisputeDB';
@@ -163,7 +164,8 @@ export class DB {
     readonly dexieDB: Dexie,
     readonly logFilters: LogFilterAggregatorInterface,
     private augur: Augur,
-    private networkId: number,
+    private networkId: number,  // NB: Should pass in the config object here for simplicity
+    private uploadBlockNumber: number,
     private enableZeroX: boolean
   ) {
     logFilters.listenForBlockRemoved(this.rollback.bind(this));
@@ -180,6 +182,7 @@ export class DB {
    */
   static createAndInitializeDB(
     networkId: number,
+    uploadBlockNumber: number,
     logFilterAggregator: LogFilterAggregatorInterface,
     augur: Augur,
     enableZeroX = false
@@ -190,6 +193,7 @@ export class DB {
       logFilterAggregator,
       augur,
       networkId,
+      uploadBlockNumber,
       enableZeroX
     );
 
@@ -203,14 +207,14 @@ export class DB {
    * @param uploadBlockNumber
    * @return {Promise<void>}
    */
-  async initializeDB(uploadBlockNumber = 0): Promise<DB> {
+  async initializeDB(): Promise<DB> {
     const schemas = this.generateSchemas();
 
     this.dexieDB.version(1).stores(schemas);
 
     await this.dexieDB.open();
 
-    this.syncStatus = new SyncStatus(this.networkId, uploadBlockNumber, this);
+    this.syncStatus = new SyncStatus(this.networkId, this.uploadBlockNumber, this);
     this.warpCheckpoints = new WarpSyncCheckpointsDB(this.networkId, this);
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
@@ -267,18 +271,25 @@ export class DB {
       this.augur
     );
 
-    if (this.enableZeroX) {
+    if (this.enableZeroX && !this.zeroXOrders) {
       this.zeroXOrders = ZeroXOrders.create(this, this.networkId, this.augur);
+      if (this.augur.zeroX?.isReady()) {
+        this.zeroXOrders.cacheOrdersAndSync(); // Don't await here -- this happens in the background
+      } else {
+        this.augur.events.once(SubscriptionEventName.ZeroXStatusReady, this.zeroXOrders.cacheOrdersAndSync);
+      }
     }
 
     // Always start syncing from 10 blocks behind the lowest
     // last-synced block (in case of restarting after a crash)
-    const startSyncBlockNumber = await this.getSyncStartingBlock();
+    const startSyncBlockNumber = await this.getSyncStartingBlock() - 1;
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
       console.log(
-        'Performing rollback of block ' + (startSyncBlockNumber - 1) + ' onward'
+        `Performing rollback block ${startSyncBlockNumber} onward`
       );
-      await this.rollback(startSyncBlockNumber - 1);
+      await this.rollback(startSyncBlockNumber);
+    } else {
+      console.log()
     }
 
     const universeCreatedLogCount = await this.UniverseCreated.count();
@@ -292,7 +303,7 @@ export class DB {
       if (currentUniverseCreateLogCount === 0) {
         // Need to reset the db if we have universe created logs from a previous deployment.
         await this.delete();
-        await this.initializeDB(uploadBlockNumber);
+        await this.initializeDB();
       }
     }
 
@@ -307,17 +318,21 @@ export class DB {
 
     this.syncableDatabases = {};
 
-    delete this.disputeDatabase;
-    delete this.currentOrdersDatabase;
-    delete this.marketDatabase;
-    delete this.parsedOrderEventDatabase;
+    await Promise.all([
+      this.syncStatus.delete(),
+      this.warpCheckpoints.delete(),
+      this.disputeDatabase.delete(),
+      this.currentOrdersDatabase.delete(),
+      this.marketDatabase.delete(),
+      this.parsedOrderEventDatabase.delete(),
+    ]);
 
-    if (this.zeroXOrders) {
-      delete this.zeroXOrders;
-    }
+    this.disputeDatabase = undefined;
+    this.currentOrdersDatabase = undefined;
+    this.marketDatabase = undefined;
+    this.parsedOrderEventDatabase = undefined;
 
-    // Destroy all the tables.
-    await this.dexieDB.delete();
+    this.dexieDB.close();
   }
 
   generateSchemas(): Schemas {

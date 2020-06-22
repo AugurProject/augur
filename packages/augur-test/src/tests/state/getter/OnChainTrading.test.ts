@@ -1,15 +1,15 @@
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import {
+  OrderState, SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import {
   MarketTradingHistory,
   Orders,
-  OrderState,
-} from '@augurproject/sdk/build/state/getter/OnChainTrading';
+} from '@augurproject/sdk-lite';
 import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../../libs';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/utils';
 
 describe('State API :: Trading :: ', () => {
   let john: TestContractAPI;

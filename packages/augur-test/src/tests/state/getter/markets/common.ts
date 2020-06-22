@@ -1,4 +1,4 @@
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import {
   ACCOUNTS,
   defaultSeedPath,

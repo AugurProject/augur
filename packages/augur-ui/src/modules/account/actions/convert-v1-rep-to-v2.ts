@@ -1,15 +1,18 @@
-import logError from 'utils/log-error';
+import { TXEventName } from '@augurproject/sdk-lite';
 import {
-  convertV1ToV2Approve,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  V1_REP_MIGRATE_ESTIMATE,
+} from 'modules/common/constants';
+import {
   convertV1ToV2,
   convertV1ToV2_estimate,
+  convertV1ToV2Approve,
 } from 'modules/contracts/actions/contractCalls';
+import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
+import { NodeStyleCallback } from 'modules/types';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { NodeStyleCallback } from 'modules/types';
-import { V1_REP_MIGRATE_ESTIMATE, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
-import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
-import { TXEventName } from '@augurproject/sdk';
+import logError from 'utils/log-error';
 
 export const approveAndConvertV1ToV2 = (useSigningWallet: boolean = false, callback: NodeStyleCallback = logError) => {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {

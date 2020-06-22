@@ -45,6 +45,11 @@ export abstract class AbstractTable {
     return results;
   }
 
+  async delete() {
+    await this.table.clear();
+    return Dexie.delete(this.dbName);
+  }
+
   async getDocumentCount(): Promise<number> {
     return this.table.count();
   }

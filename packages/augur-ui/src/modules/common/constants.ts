@@ -1,4 +1,3 @@
-import { Getters, Logs, MarketReportingState } from '@augurproject/sdk';
 import {
   CategorySports,
   CategoryPolitics,
@@ -10,23 +9,43 @@ import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
 import * as d3 from 'd3-time';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatShares, formatDai } from 'utils/format-number';
+import {
+  MarketReportingState,
+  MarketTypeName,
+  MaxLiquiditySpread,
+  TemplateFilters,
+} from '@augurproject/sdk-lite';
 
 // Help Center links
 export const HELP_CENTER = 'https://help.augur.net/';
-export const HELP_CENTER_ADD_FUNDS = 'https://help.augur.net/getting-started/adding-funds';
-export const HELP_CENTER_HOW_TO_TRADE = 'https://help.augur.net/trading/how-to-make-a-trade';
-export const HELP_CENTER_HOW_TO_DISPUTE = 'https://help.augur.net/disputing-explained#how-to-dispute';
-export const HELP_CENTER_SCALAR_MARKETS = 'https://help.augur.net/trading/trading-faq#how-do-scalar-markets-work';
-export const HELP_CENTER_PARTICIPATION_TOKENS = 'https://help.augur.net/reporting-or-disputing-faq#what-are-participation-tokens';
-export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://help.augur.net/prediction-markets/augur-faq#what-is-my-account-address';
-export const HELP_CENTER_MIGRATE_REP = 'https://help.augur.net/prediction-markets/migrating-rep-v1-greater-than-v2';
-export const HELP_CENTER_THIRD_PARTY_COOKIES = 'https://www.whatismybrowser.com/guides/how-to-enable-cookies';
-export const HELP_CENTER_INVALID_MARKETS = 'https://help.augur.net/trading/trading-faq#what-does-invalid-mean';
-export const HELP_CENTER_HOW_DO_I_SHORT_AN_OUTCOME = 'https://help.augur.net/trading/trading-faq#how-do-i-short-an-outcome';
-export const HELP_CENTER_DISPUTING_QUICK_GUIDE = 'https://help.augur.net/disputing-explained#dispute-rounds';
-export const HELP_CENTER_REPORTING_QUICK_GUIDE = 'https://help.augur.net/disputing-explained';
-export const HELP_CENTER_RESOLUTION_SOURCE = 'https://help.augur.net/trading/trading-page-explained#8-resolution-source';
-export const HELP_CENTER_WHAT_IS_DAI = 'https://help.augur.net/prediction-markets/augur-faq#what-is-dai';
+export const HELP_CENTER_ADD_FUNDS =
+  'https://help.augur.net/getting-started/adding-funds';
+export const HELP_CENTER_HOW_TO_TRADE =
+  'https://help.augur.net/trading/how-to-make-a-trade';
+export const HELP_CENTER_HOW_TO_DISPUTE =
+  'https://help.augur.net/disputing-explained#how-to-dispute';
+export const HELP_CENTER_SCALAR_MARKETS =
+  'https://help.augur.net/trading/trading-faq#how-do-scalar-markets-work';
+export const HELP_CENTER_PARTICIPATION_TOKENS =
+  'https://help.augur.net/reporting-or-disputing-faq#what-are-participation-tokens';
+export const HELP_CENTER_LEARN_ABOUT_ADDRESS =
+  'https://help.augur.net/prediction-markets/augur-faq#what-is-my-account-address';
+export const HELP_CENTER_MIGRATE_REP =
+  'https://help.augur.net/prediction-markets/migrating-rep-v1-greater-than-v2';
+export const HELP_CENTER_THIRD_PARTY_COOKIES =
+  'https://www.whatismybrowser.com/guides/how-to-enable-cookies';
+export const HELP_CENTER_INVALID_MARKETS =
+  'https://help.augur.net/trading/trading-faq#what-does-invalid-mean';
+export const HELP_CENTER_HOW_DO_I_SHORT_AN_OUTCOME =
+  'https://help.augur.net/trading/trading-faq#how-do-i-short-an-outcome';
+export const HELP_CENTER_DISPUTING_QUICK_GUIDE =
+  'https://help.augur.net/disputing-explained#dispute-rounds';
+export const HELP_CENTER_REPORTING_QUICK_GUIDE =
+  'https://help.augur.net/disputing-explained';
+export const HELP_CENTER_RESOLUTION_SOURCE =
+  'https://help.augur.net/trading/trading-page-explained#8-resolution-source';
+export const HELP_CENTER_WHAT_IS_DAI =
+  'https://help.augur.net/prediction-markets/augur-faq#what-is-dai';
 
 // # MISC Constants
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -69,12 +88,14 @@ export const NETWORK_IDS = {
 export const ARCHIVED_MARKET_LENGTH = 60;
 export const MIN_ORDER_LIFESPAN = 70;
 export const GAS_PRICE_BACKUP_API_ENDPOINT = {
-  [NETWORK_IDS.Mainnet]: 'https://api.etherscan.io/api?module=gastracker&action=gasoracle',
-}
+  [NETWORK_IDS.Mainnet]:
+    'https://api.etherscan.io/api?module=gastracker&action=gasoracle',
+};
 
 export const GAS_CONFIRM_ESTIMATE = {
-  [NETWORK_IDS.Mainnet]: 'https://api.etherscan.io/api?module=gastracker&action=gasestimate&gasprice=',
-}
+  [NETWORK_IDS.Mainnet]:
+    'https://api.etherscan.io/api?module=gastracker&action=gasestimate&gasprice=',
+};
 
 export const GAS_SPEED_LABELS = {
   STANDARD: 'Standard',
@@ -98,8 +119,8 @@ export const WALLET_STATUS_VALUES = {
 export const ON_BORDING_STATUS_STEP = {
   ONE: 1,
   TWO: 2,
-  THREE: 3
-}
+  THREE: 3,
+};
 
 // ethereumNodeHttp
 export const ETHEREUM_NODE_HTTP = 'ethereum_node_http';
@@ -218,24 +239,25 @@ export const feeFilters = [
   { header: '0-10%', value: MAX_FEE_10_PERCENT },
 ];
 
-export const TEMPLATE_FILTER_ALL = Getters.Markets.TemplateFilters.all;
+export const TEMPLATE_FILTER_ALL = TemplateFilters.all;
 export const templateFilterValues = [
-  { header: 'All', value: TEMPLATE_FILTER_ALL},
-  { header: 'Augur templates', value: Getters.Markets.TemplateFilters.templateOnly},
-  { header: 'Custom markets', value: Getters.Markets.TemplateFilters.customOnly},
-]
+  { header: 'All', value: TEMPLATE_FILTER_ALL },
+  {
+    header: 'Augur templates',
+    value: TemplateFilters.templateOnly,
+  },
+  {
+    header: 'Custom markets',
+    value: TemplateFilters.customOnly,
+  },
+];
 
 // # Valid Market Liquidity Spreads
-export const MAX_SPREAD_ALL_SPREADS =
-  Getters.Markets.MaxLiquiditySpread.OneHundredPercent;
-export const MAX_SPREAD_20_PERCENT =
-  Getters.Markets.MaxLiquiditySpread.TwentyPercent;
-export const MAX_SPREAD_15_PERCENT =
-  Getters.Markets.MaxLiquiditySpread.FifteenPercent;
-export const MAX_SPREAD_10_PERCENT =
-  Getters.Markets.MaxLiquiditySpread.TenPercent;
-export const MAX_SPREAD_RECENTLY_DEPLETED =
-  Getters.Markets.MaxLiquiditySpread.ZeroPercent;
+export const MAX_SPREAD_ALL_SPREADS = MaxLiquiditySpread.OneHundredPercent;
+export const MAX_SPREAD_20_PERCENT = MaxLiquiditySpread.TwentyPercent;
+export const MAX_SPREAD_15_PERCENT = MaxLiquiditySpread.FifteenPercent;
+export const MAX_SPREAD_10_PERCENT = MaxLiquiditySpread.TenPercent;
+export const MAX_SPREAD_RECENTLY_DEPLETED = MaxLiquiditySpread.ZeroPercent;
 
 export const spreadFilters = [
   { header: 'All', value: MAX_SPREAD_ALL_SPREADS },
@@ -257,7 +279,8 @@ export const invalidFilters = [
   { header: 'show', value: INVALID_SHOW },
 ];
 
-export const PROBABLE_INVALID_MARKET = 'This market has a high probability of resolving invalid';
+export const PROBABLE_INVALID_MARKET =
+  'This market has a high probability of resolving invalid';
 
 // # Sorting Options
 export const NEUTRAL = 'neutral';
@@ -406,9 +429,9 @@ export const INDETERMINATE_PLUS_ONE = '0.500000000000000001';
 export const INDETERMINATE_OUTCOME_NAME = 'Indeterminate';
 
 // # Market Types
-export const YES_NO = Logs.MarketTypeName.YesNo;
-export const CATEGORICAL = Logs.MarketTypeName.Categorical;
-export const SCALAR = Logs.MarketTypeName.Scalar;
+export const YES_NO = MarketTypeName.YesNo;
+export const CATEGORICAL = MarketTypeName.Categorical;
+export const SCALAR = MarketTypeName.Scalar;
 
 // # New Market Constraint Constants
 export const DESCRIPTION_MIN_LENGTH = 1;
@@ -696,8 +719,8 @@ export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
 export const CREATEAUGURWALLET = 'RUNPERIODICALS';
 export const WITHDRAWALLFUNDSASDAI = 'WITHDRAWALLFUNDSASDAI';
-export const SWAPEXACTTOKENSFORTOKENS = 'SWAPEXACTTOKENSFORTOKENS'
-export const SWAPETHFOREXACTTOKENS = 'SWAPETHFOREXACTTOKENS'
+export const SWAPEXACTTOKENSFORTOKENS = 'SWAPEXACTTOKENSFORTOKENS';
+export const SWAPETHFOREXACTTOKENS = 'SWAPETHFOREXACTTOKENS';
 export const ADDLIQUIDITY = 'ADDLIQUIDITY';
 export const ETH_RESERVE_INCREASE = 'ETH_RESERVE_INCREASE';
 // # Orders/Trade Constants
@@ -848,7 +871,7 @@ export const ZEROX_STATUSES = {
   RESTARTED: 'RESTARTED',
   ERROR: 'ERROR',
   SYNCED: 'SYNCED',
-}
+};
 
 export const ZEROX_STATUSES_TOOLTIP = {
   STARTING: 'Degraded Service',
@@ -857,8 +880,8 @@ export const ZEROX_STATUSES_TOOLTIP = {
   STARTED: 'Degraded Service',
   RESTARTING: 'Degraded Service',
   RESTARTED: 'Service Operational',
-  ERROR: 'Something went wrong, please refresh your page'
-}
+  ERROR: 'Something went wrong, please refresh your page',
+};
 
 // Account Summary - Your Overview
 export const YOUR_OVERVIEW_TITLE = 'Your Overview';
@@ -897,8 +920,9 @@ export const REPORTING_ENDS_SOON_TITLE = 'You need to report';
 export const SIGN_SEND_ORDERS = 'Sign to approve your orders';
 export const CLAIM_REPORTING_FEES_TITLE = 'Claim Stake and Fees';
 export const PROCEEDS_TO_CLAIM_TITLE = 'Claim Proceeds';
-export const CLAIM_ALL_TITLE = 'Claim All'
-export const MARKET_IS_MOST_LIKELY_INVALID_TITLE = 'Market is Failing Invalid Filter';
+export const CLAIM_ALL_TITLE = 'Claim All';
+export const MARKET_IS_MOST_LIKELY_INVALID_TITLE =
+  'Market is Failing Invalid Filter';
 export const OPEN_ORDERS_RESOLVED_MARKET = 'resolvedMarketsOpenOrders';
 export const REPORT_ON_MARKET = 'reportOnMarkets';
 export const MARKET_IN_DISPUTE = 'marketsInDispute';
@@ -1025,11 +1049,11 @@ export const POPULAR_CATEGORIES = [
 ];
 
 export const POPULAR_CATEGORIES_ICONS = {
-  'sports': CategorySports,
-  'politics': CategoryPolitics,
-  'entertainment': CategoryEntertainment,
-  'finance': CategoryFinance,
-  'crypto': CategoryCrypto,
+  sports: CategorySports,
+  politics: CategoryPolitics,
+  entertainment: CategoryEntertainment,
+  finance: CategoryFinance,
+  crypto: CategoryCrypto,
 };
 
 export const CATEGORIES_MAX = 8;
@@ -1095,23 +1119,26 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Select Outcome',
     subheader: [
       {
-        text: "Select the outcome you believe will be correct or appreciate in price.",
+        text:
+          'Select the outcome you believe will be correct or appreciate in price.',
       },
       {
-        text: "To learn why invalid is an outcome, see our",
-        linkText: "guide.",
+        text: 'To learn why invalid is an outcome, see our',
+        linkText: 'guide.',
         link: HELP_CENTER_INVALID_MARKETS,
       },
     ],
-  },[TRADING_TUTORIAL_STEPS.QUANTITY]: {
+  },
+  [TRADING_TUTORIAL_STEPS.QUANTITY]: {
     title: 'Quantity',
     subheader: [
       {
-        text: 'Enter the amount of shares you wish to buy. Remember each share is priced between $0.01 - $0.99'
+        text:
+          'Enter the amount of shares you wish to buy. Remember each share is priced between $0.01 - $0.99',
       },
       {
         text: 'Please enter a quantity of 100.',
-        lighten: true
+        lighten: true,
       },
     ],
   },
@@ -1119,25 +1146,28 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Limit Price',
     subheader: [
       {
-        text: 'The Limit Price is the price you’re willing to buy or sell per share. This value is between $0.01 and $0.99, which can also be thought of as a probabilty in percentage terms.'
+        text:
+          'The Limit Price is the price you’re willing to buy or sell per share. This value is between $0.01 and $0.99, which can also be thought of as a probabilty in percentage terms.',
       },
       {
-        text: 'For example predicting that there is a 40% chance of this outcome occurring, you would buy $0.40 per share. If your prediction is right, you stand to make a profit of $0.60 per share.'
+        text:
+          'For example predicting that there is a 40% chance of this outcome occurring, you would buy $0.40 per share. If your prediction is right, you stand to make a profit of $0.60 per share.',
       },
       {
         text: 'Enter a limit price of $0.40.',
-        lighten: true
-      }
+        lighten: true,
+      },
     ],
   },
   [TRADING_TUTORIAL_STEPS.ORDER_VALUE]: {
     title: 'Total Order Value',
     subheader: [
       {
-        text: "This shows the amount of money required to make this trade.",
+        text: 'This shows the amount of money required to make this trade.',
       },
       {
-        text: "You can change this value to control the total cost of your order, and the quantity will adjust to compensate for the new total order value. So if you want to bet $40, enter 40 in here.",
+        text:
+          'You can change this value to control the total cost of your order, and the quantity will adjust to compensate for the new total order value. So if you want to bet $40, enter 40 in here.',
       },
     ],
   },
@@ -1145,12 +1175,13 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Place your order',
     subheader: [
       {
-        text: "Review your order and make sure everything looks correct.",
+        text: 'Review your order and make sure everything looks correct.',
       },
       {
-        text: "Now go ahead and press the 'Place Buy Order' button or click next.",
+        text:
+          "Now go ahead and press the 'Place Buy Order' button or click next.",
         lighten: true,
-      }
+      },
     ],
   },
   [TRADING_TUTORIAL_STEPS.ORDER_BOOK]: {
@@ -1212,7 +1243,8 @@ export const EVENT_EXPIRATION_TOOLTIP = {
   header: 'Event expiration',
   content: 'This date time indicates when the settlement process begins.',
 };
-export const TOTAL_FUNDS_TOOLTIP = 'Your total funds does not include the Fee reserve';
+export const TOTAL_FUNDS_TOOLTIP =
+  'Your total funds does not include the Fee reserve';
 export const TUTORIAL_OUTCOME = 1;
 export const TUTORIAL_QUANTITY = 100;
 export const TUTORIAL_PRICE = 0.4;
@@ -1280,7 +1312,7 @@ export const DISPUTING_GUIDE = {
       header: 'Dispute Window',
       paragraphs: [
         'The dispute window is a week-long cycle. Reporting fees from settled shares are deposited into the next upcoming window.',
-        'At the end of the dispute window, those fees are allocated to REP holders who exchange their REP for participation tokens. When the disputing window ends, users can redeem their participation tokens for a proportional amount of the fees generated.'
+        'At the end of the dispute window, those fees are allocated to REP holders who exchange their REP for participation tokens. When the disputing window ends, users can redeem their participation tokens for a proportional amount of the fees generated.',
       ],
     },
   ],
@@ -1291,26 +1323,30 @@ export const DISPUTING_GUIDE = {
 
 export const REPORTING_GUIDE = {
   title: 'REPORTING QUICK GUIDE',
-  content: [{
-    header: 'Upcoming Designated Reporting',
-    paragraphs: [
-      'Markets in “Upcoming Designated Reporting” are about to enter the reporting phase. The UI displays how much time is remaining before the market will enter reporting'
-    ]
-  }, {
-    header: 'Designated Reporting',
-    paragraphs: [
-      'Once a market enters reporting, the Designated Reporter (DR) has 24 hours to submit a report on the market’s outcome. If the DR does not submit a report within 24 hours, the market will enter Open Reporting, and the market creator will not receive the No-Show Bond back.',
-      'The DR does not unilaterally decide on a market’s outcome. Once a DR submits an outcome, it is open to dispute. If the market ends up resolving to another outcome, the DR will lose their REP stake.'
-    ]
-  }, {
-    header: 'Open Reporting',
-    paragraphs: [
-      'A market enters Open Reporting if the Designated Reporter does not submit a report within 24 hours of a market’s Reporting Start Time. At this time, any user may report on the outcome and will receive the forfeited No-Show Bond if the market ends up resolving to the outcome that they report. Open Reporting does not require any staked REP on the part of the reporter.'
-    ]
-  }],
+  content: [
+    {
+      header: 'Upcoming Designated Reporting',
+      paragraphs: [
+        'Markets in “Upcoming Designated Reporting” are about to enter the reporting phase. The UI displays how much time is remaining before the market will enter reporting',
+      ],
+    },
+    {
+      header: 'Designated Reporting',
+      paragraphs: [
+        'Once a market enters reporting, the Designated Reporter (DR) has 24 hours to submit a report on the market’s outcome. If the DR does not submit a report within 24 hours, the market will enter Open Reporting, and the market creator will not receive the No-Show Bond back.',
+        'The DR does not unilaterally decide on a market’s outcome. Once a DR submits an outcome, it is open to dispute. If the market ends up resolving to another outcome, the DR will lose their REP stake.',
+      ],
+    },
+    {
+      header: 'Open Reporting',
+      paragraphs: [
+        'A market enters Open Reporting if the Designated Reporter does not submit a report within 24 hours of a market’s Reporting Start Time. At this time, any user may report on the outcome and will receive the forfeited No-Show Bond if the market ends up resolving to the outcome that they report. Open Reporting does not require any staked REP on the part of the reporter.',
+      ],
+    },
+  ],
   learnMoreButtonText: 'Learn more about reporting',
   learnMoreUrl: HELP_CENTER_REPORTING_QUICK_GUIDE,
-  closeButtonText: 'Close'
+  closeButtonText: 'Close',
 };
 
 function createOrder(disappear, price, quantity, id, outcomeId, type) {
@@ -1336,12 +1372,12 @@ function createOrder(disappear, price, quantity, id, outcomeId, type) {
 function createOutcomeOrders(outcomeId) {
   return [
     createOrder(true, TUTORIAL_PRICE, TUTORIAL_QUANTITY, 0, outcomeId, SELL),
-    createOrder(false, .5, 150, 1, outcomeId, SELL),
-    createOrder(false, .6, 200, 2, outcomeId, SELL),
-    createOrder(false, .3, 100, 3, outcomeId, BUY),
-    createOrder(false, .2, 150, 4, outcomeId, BUY),
-    createOrder(false, .1, 200, 5, outcomeId, BUY),
-  ]
+    createOrder(false, 0.5, 150, 1, outcomeId, SELL),
+    createOrder(false, 0.6, 200, 2, outcomeId, SELL),
+    createOrder(false, 0.3, 100, 3, outcomeId, BUY),
+    createOrder(false, 0.2, 150, 4, outcomeId, BUY),
+    createOrder(false, 0.1, 200, 5, outcomeId, BUY),
+  ];
 }
 
 export const TUTORIAL_ORDER_BOOK = {

@@ -1,11 +1,11 @@
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { SubscriptionEventName } from '@augurproject/sdk-lite';
+import { SDKConfiguration } from '@augurproject/utils';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
   Augur,
   Connectors,
   createClient,
   EmptyConnector,
-  SubscriptionEventName,
 } from '@augurproject/sdk';
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { WarpSyncStrategy } from '@augurproject/sdk/build/state/sync/WarpSyncStrategy';

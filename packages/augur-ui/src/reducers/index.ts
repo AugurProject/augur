@@ -1,62 +1,66 @@
-import accountPositions from 'modules/positions/reducers/account-positions';
+import type { SDKConfiguration } from '@augurproject/artifacts';
+import type { Getters } from '@augurproject/sdk';
+import alerts from 'modules/alerts/reducers/alerts';
+import analytics from 'modules/app/reducers/analytics';
 import appStatus from 'modules/app/reducers/app-status';
-import sidebarStatus from 'modules/app/reducers/sidebar-status';
-import authStatus from 'modules/auth/reducers/auth-status';
 import blockchain from 'modules/app/reducers/blockchain';
+import categoryStats from 'modules/app/reducers/category-stats';
 import connection from 'modules/app/reducers/connection';
 import env from 'modules/app/reducers/env';
-import favorites from 'modules/markets/reducers/favorites';
-import filterSortOptions from 'modules/filter-sort/reducers/filter-sort-options';
 import gasPriceInfo from 'modules/app/reducers/gas-price-info';
+import sidebarStatus from 'modules/app/reducers/sidebar-status';
+import authStatus from 'modules/auth/reducers/auth-status';
 import loginAccount from 'modules/auth/reducers/login-account';
-import marketTradingHistory from 'modules/markets/reducers/market-trading-history';
-import marketInfos from 'modules/markets/reducers/market-infos';
-import modal from 'modules/modal/reducers/modal';
-import newMarket from 'modules/markets/reducers/new-market';
-import alerts from 'modules/alerts/reducers/alerts';
-import pendingLiquidityOrders from 'modules/orders/reducers/liquidity-orders';
-import analytics from 'modules/app/reducers/analytics';
-import universe from 'modules/universe/reducers/universe';
-import categoryStats from 'modules/app/reducers/category-stats';
-import pendingOrders from 'modules/orders/reducers/pending-orders';
-import filledOrders from 'modules/orders/reducers/filled-orders';
-import readNotifications from 'modules/notifications/reducers/read-notifications';
-import pendingQueue from 'modules/pending-queue/reducers/pending-queue';
-import userOpenOrders from 'modules/orders/reducers/open-orders';
 import drafts from 'modules/create-market/reducers/drafts';
+import filterSortOptions
+  from 'modules/filter-sort/reducers/filter-sort-options';
+import initialized3box from 'modules/global-chat/reducers/initialized-3box';
 import marketsList from 'modules/markets-list/reducers/markets-list';
-import reportingListState from 'modules/reporting/reducers/reporting-list-state';
-import orderBooks from 'modules/orders/reducers/order-books'
-import initialized3box from 'modules/global-chat/reducers/initialized-3box'
+import favorites from 'modules/markets/reducers/favorites';
+import marketInfos from 'modules/markets/reducers/market-infos';
+import marketTradingHistory
+  from 'modules/markets/reducers/market-trading-history';
+import newMarket from 'modules/markets/reducers/new-market';
+import modal from 'modules/modal/reducers/modal';
+import readNotifications
+  from 'modules/notifications/reducers/read-notifications';
+import filledOrders from 'modules/orders/reducers/filled-orders';
+import pendingLiquidityOrders from 'modules/orders/reducers/liquidity-orders';
+import userOpenOrders from 'modules/orders/reducers/open-orders';
+import orderBooks from 'modules/orders/reducers/order-books';
+import pendingOrders from 'modules/orders/reducers/pending-orders';
+import pendingQueue from 'modules/pending-queue/reducers/pending-queue';
+import accountPositions from 'modules/positions/reducers/account-positions';
+import reportingListState
+  from 'modules/reporting/reducers/reporting-list-state';
 import {
-  LoginAccount,
   AccountPosition,
+  Alert,
+  Analytics,
   AppStatus,
   AuthStatus,
   Blockchain,
   Connection,
+  Drafts,
   Favorite,
+  FilledOrders,
   FilterSortOptions,
   GasPriceInfo,
-  MarketInfos,
-  NewMarket,
-  Alert,
-  Notification,
+  Initialized3box,
   LiquidityOrders,
+  LoginAccount,
+  MarketInfos,
+  MarketsList,
+  NewMarket,
+  Notification,
+  OpenOrders,
+  OrderBooks,
   PendingOrders,
   PendingQueue,
-  FilledOrders,
-  Universe,
-  OpenOrders,
-  Drafts,
-  MarketsList,
   ReportingListState,
-  Analytics,
-  OrderBooks,
-  Initialized3box
+  Universe,
 } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import universe from 'modules/universe/reducers/universe';
 
 export function createReducer() {
   return {

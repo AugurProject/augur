@@ -1,9 +1,3 @@
-import { getGroupHashInfo, isTemplateMarket } from '@augurproject/artifacts';
-import { ParsedLog } from '@augurproject/types';
-import { BigNumber } from 'bignumber.js';
-import * as _ from 'lodash';
-import { OrderBook } from '../../api/Liquidity';
-import { Augur } from '../../Augur';
 import {
   CLAIM_GAS_COST,
   DEFAULT_GAS_PRICE_IN_GWEI,
@@ -16,16 +10,20 @@ import {
   SECONDS_IN_A_YEAR,
   SubscriptionEventName,
   WORST_CASE_FILL,
-} from '../../constants';
-import { NewBlock } from '../../events';
-import { padHex, QUINTILLION } from '../../utils';
-import {
+  NewBlock,
+  MarketType,
   MarketData,
   OrderTypeHex,
   TimestampSetLog,
   UnixTimestamp,
-  MarketType,
-} from '../logs/types';
+} from '@augurproject/sdk-lite';
+import { getGroupHashInfo, isTemplateMarket } from '@augurproject/templates';
+import { ParsedLog } from '@augurproject/types';
+import { BigNumber } from 'bignumber.js';
+import * as _ from 'lodash';
+import { OrderBook } from '../../api/Liquidity';
+import { Augur } from '../../Augur';
+import { padHex, QUINTILLION } from '../../utils';
 import { DB } from './DB';
 import { DerivedDB } from './DerivedDB';
 
@@ -526,9 +524,9 @@ export class MarketDB extends DerivedDB {
     }
     try {
       if (log['extraInfo'].categories)
-        log['extraInfo'].categories = log['extraInfo'].categories.map(
-          category => category.toLowerCase()
-        );
+        log['extraInfo'].categories = log[
+          'extraInfo'
+        ].categories.map(category => category.toLowerCase());
     } catch (err) {
       log['extraInfo'].categories = [];
     }

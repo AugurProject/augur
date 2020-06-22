@@ -1,0 +1,70 @@
+{
+  "networkId": "12346",
+  "ethereum": {
+    "http": "http://localhost:8545",
+    "ws": "ws://localhost:8546",
+    "rpcRetryCount": 5,
+    "rpcRetryInterval": 0,
+    "rpcConcurrency": 40
+  },
+  "gas": {
+    "price": 1e9,
+    "limit": 95e5
+  },
+  "deploy": {
+    "isProduction": false,
+    "enableFaucets": true,
+    "normalTime": true,
+    "privateKey": "fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a",
+    "contractInputPath": "./contracts.json",
+    "writeArtifacts": true,
+    "serial": true
+  },
+  "warpSync": {
+    "enabled": false,
+    "autoReport": false
+  },
+  "uniswap": {
+    "exchangeRateBufferMultiplier": 1.075
+  },
+  "gsn": {
+    "enabled": true,
+    "minDaiForSignerETHBalanceInDAI": 40,
+    "desiredSignerBalanceInETH": 0.04
+  },
+  "zeroX": {
+    "rpc": {
+      "enabled": false,
+      "ws": "ws://localhost:60557"
+    },
+    "mesh": {
+      "enabled": true,
+      "useBootstrapList": true,
+      "bootstrapList": [
+        "/dns4/localhost/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y",
+        "/dns4/localhost/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
+      ]
+    }
+  },
+  "syncing": {
+    "enabled": true
+  },
+  "sdk": {
+    "enabled": false,
+    "ws": "ws://localhost:60557"
+  },
+  "server": {
+    "httpPort": 9003,
+    "startHTTP": true,
+    "httpsPort": 9004,
+    "startHTTPS": true,
+    "wsPort": 9001,
+    "startWS": true,
+    "wssPort": 9002,
+    "startWSS": true
+  },
+  "uploadBlockNumber": 0,
+  "logLevel": 3,
+  "showReloadModal": true,
+  "averageBlocktime": 2000
+}

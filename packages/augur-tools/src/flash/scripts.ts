@@ -1,45 +1,56 @@
-import { runChaosMonkey } from './chaos-monkey';
-import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarkets, createTemplatedMarkets, createTemplatedBettingMarkets } from './create-canned-markets-and-orders';
-import { _1_ETH, BASE_MNEMONIC } from '../constants';
-import {
-  Contracts as compilerOutput,
-  refreshSDKConfig,
-  abiV1,
-  buildConfig,
-  printConfig,
-  sanitizeConfig,
-} from '@augurproject/artifacts';
+import { abiV1, buildConfig, refreshSDKConfig } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
-import moment from 'moment';
-import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
-import { ethers } from 'ethers';
 import {
-  QUINTILLION,
+  ContractEvents,
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
-  stringTo32ByteHex,
   convertOnChainPriceToDisplayPrice,
   NativePlaceTradeDisplayParams,
+  QUINTILLION,
   startServer,
-  ContractEvents,
+  stringTo32ByteHex,
 } from '@augurproject/sdk';
-import { fork } from './fork';
-import { dispute } from './dispute';
-import {
-  MarketList,
-} from '@augurproject/sdk/build/state/getter/Markets';
-import { generateTemplateValidations } from './generate-templates';
-import { spawn, spawnSync } from 'child_process';
-import { perfSetup } from './perf-setup';
-import { showTemplateByHash, validateMarketTemplate } from './template-utils';
-import { ContractAPI, deployContracts, startGanacheServer } from '..';
-import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
+import { NumOutcomes } from '@augurproject/sdk-lite';
+import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
+import { MarketList } from '@augurproject/sdk-lite';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
-import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
+import {
+  createApp,
+  runHttpServer,
+  runHttpsServer,
+} from '@augurproject/sdk/build/state/HTTPEndpoint';
+import {
+  runWsServer,
+  runWssServer,
+} from '@augurproject/sdk/build/state/WebsocketEndpoint';
+import { printConfig, sanitizeConfig } from '@augurproject/utils';
+import { BigNumber } from 'bignumber.js';
+import { spawn, spawnSync } from 'child_process';
+import { ethers } from 'ethers';
+import { formatBytes32String } from 'ethers/utils';
+import moment from 'moment';
+import { ContractAPI, deployContracts, startGanacheServer } from '..';
+import { _1_ETH, BASE_MNEMONIC } from '../constants';
+import { runChaosMonkey } from './chaos-monkey';
+import {
+  createCannedMarkets,
+  createTemplatedBettingMarkets,
+  createTemplatedMarkets,
+} from './create-canned-markets-and-orders';
+import {
+  createCatZeroXOrders,
+  createScalarZeroXOrders,
+  createYesNoZeroXOrders,
+  createSingleCatZeroXOrder,
+} from './create-orders';
+import { dispute } from './dispute';
+import { FlashArguments, FlashSession } from './flash';
+import { fork } from './fork';
+import { generateTemplateValidations } from './generate-templates';
+import { getMarketIds } from './get-market-ids';
 import { orderFirehose } from './order-firehose';
+import { simpleOrderbookShaper } from './orderbook-shaper';
+import { perfSetup } from './perf-setup';
 import {
   AccountCreator,
   createOrders,
@@ -48,9 +59,9 @@ import {
   setupOrders,
   setupPerfConfigAndZeroX,
   takeOrder,
-  takeOrders
+  takeOrders,
 } from './performance';
-import { simpleOrderbookShaper } from './orderbook-shaper';
+import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import {
   formatAddress,
   getOrCreateMarket,
@@ -58,14 +69,7 @@ import {
   waitForSigint,
   waitForSync,
 } from './util';
-import {
-  createCatZeroXOrders,
-  createScalarZeroXOrders,
-  createYesNoZeroXOrders,
-  createSingleCatZeroXOrder
-} from './create-orders';
-import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
-import { getMarketIds } from './get-market-ids';
+const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({

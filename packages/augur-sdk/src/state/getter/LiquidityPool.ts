@@ -1,13 +1,13 @@
+import { Order, OrderState, MarketData, OrderType, OrderTypeHex } from '@augurproject/sdk-lite';
 import { DB } from '../db/DB';
 import * as _ from 'lodash';
 import { Augur } from '../../index';
 import { BigNumber } from 'bignumber.js';
 import { Getter } from './Router';
-import { getMarkets, Order, OrderState } from './OnChainTrading';
+import { getMarkets }  from './OnChainTrading';
 import { StoredOrder } from '../db/ZeroXOrders';
 import Dexie from 'dexie';
 import * as t from 'io-ts';
-import { MarketData, OrderType, OrderTypeHex } from '../logs/types';
 import { ZeroXOrdersGetters } from './ZeroXOrdersGetters';
 
 export interface BestOfferOrder {

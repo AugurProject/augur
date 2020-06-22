@@ -1,17 +1,13 @@
-import logError from 'utils/log-error';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
-import { AppState } from 'appStore';
-import { updateAccountPositionsData } from 'modules/positions/actions/account-positions';
-import {
-  AccountPositionAction,
-  AccountPosition,
-} from 'modules/types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
-import { augurSdk } from 'services/augursdk';
-import { Getters } from '@augurproject/sdk';
-import { updateUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
+import type { Getters } from '@augurproject/sdk';
 import { isSameAddress } from 'utils/isSameAddress';
+import { AppState } from 'appStore';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
+import { updateUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
+import { updateAccountPositionsData } from 'modules/positions/actions/account-positions';
+import { AccountPosition, AccountPositionAction } from 'modules/types';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { augurSdk } from 'services/augursdk';
 
 export const checkUpdateUserPositions = (marketIds: string[]) => (
   dispatch: ThunkDispatch<void, any, Action>,

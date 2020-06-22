@@ -9,7 +9,7 @@ import { windowRef } from "utils/window-ref";
 import { editEndpointParams } from "utils/edit-endpoint-params";
 import { MODAL_NETWORK_CONNECT } from "modules/common/constants";
 import { WindowApp } from "modules/types";
-import { SDKConfiguration } from "@augurproject/artifacts";
+import type { SDKConfiguration } from "@augurproject/artifacts";
 
 
 interface ModalNetworkConnectProps {

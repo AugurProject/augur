@@ -1,3 +1,9 @@
+import {
+  Log,
+  MarketReportingState,
+  NULL_ADDRESS,
+  SubscriptionEventName,
+} from '@augurproject/sdk-lite';
 import { Log as SerializedLog } from '@augurproject/types';
 import Dexie from 'dexie';
 import { Block } from 'ethers/providers';
@@ -6,13 +12,11 @@ import * as Unixfs from 'ipfs-unixfs';
 import { DAGNode } from 'ipld-dag-pb';
 import _ from 'lodash';
 import LZString from 'lz-string';
-import { Augur, MarketReportingState, NULL_ADDRESS, Provider } from '..';
-import { SubscriptionEventName } from '../constants';
+import { Augur, Provider } from '..';
 
 import { DB } from '../state/db/DB';
 import { IpfsInfo } from '../state/db/WarpSyncCheckpointsDB';
 import { Markets } from '../state/getter/Markets';
-import { Log } from '../state/logs/types';
 import { Checkpoints } from './Checkpoints';
 
 export const WARPSYNC_VERSION = '1';

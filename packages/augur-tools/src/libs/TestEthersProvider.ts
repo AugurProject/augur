@@ -1,4 +1,4 @@
-import { ContractAddresses, SDKConfiguration, RecursivePartial } from '@augurproject/artifacts';
+import { ContractAddresses, SDKConfiguration, RecursivePartial } from '@augurproject/utils';
 import { MemDown } from 'memdown';
 import { ethers } from 'ethers';
 import { createSeed } from './ganache';

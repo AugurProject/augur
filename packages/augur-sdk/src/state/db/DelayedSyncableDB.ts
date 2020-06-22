@@ -1,9 +1,9 @@
+import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import * as _ from 'lodash';
-import { BaseDocument } from './AbstractTable';
 import { Augur } from '../../Augur';
+import { BaseDocument } from './AbstractTable';
 import { BaseSyncableDB } from './BaseSyncableDB';
 import { DB } from './DB';
-import { SubscriptionEventName } from '../../constants';
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -23,7 +23,10 @@ export class DelayedSyncableDB extends BaseSyncableDB {
   ) {
     super(augur, db, networkId, eventName, dbName);
 
-    augur.events.once(SubscriptionEventName.BulkSyncComplete, this.onBulkSyncComplete.bind(this));
+    augur.events.once(
+      SubscriptionEventName.BulkSyncComplete,
+      this.onBulkSyncComplete.bind(this)
+    );
   }
 
   protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
@@ -42,23 +45,25 @@ export class DelayedSyncableDB extends BaseSyncableDB {
       this.dbName
     );
 
-    const result: Document = await this.db.dexieDB[this.eventName].where("blockNumber").aboveOrEqual(highestSyncedBlockNumber).toArray();
+    const result: Document = await this.db.dexieDB[this.eventName]
+      .where('blockNumber')
+      .aboveOrEqual(highestSyncedBlockNumber)
+      .toArray();
     const documentsById = _.groupBy(result, this.getIDValue.bind(this));
     const documents = _.flatMap(documentsById, documents => {
       return documents.reduce((val, doc) => {
-          if (val.blockNumber < doc.blockNumber || (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex)) {
-            return doc;
-          }
-          return val;
-        },
-        documents[0]
-      );
+        if (
+          val.blockNumber < doc.blockNumber ||
+          (val.blockNumber === doc.blockNumber && val.logIndex < doc.logIndex)
+        ) {
+          return doc;
+        }
+        return val;
+      }, documents[0]);
     });
 
     await this.saveDocuments(documents);
 
     this.syncing = false;
   }
-
-
 }

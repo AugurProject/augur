@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { ReportingBondsView } from 'modules/reporting/common';
-import { convertAttoValueToDisplayValue } from '@augurproject/sdk/src';
+import { convertAttoValueToDisplayValue } from '@augurproject/sdk-lite';
 import { ZERO, REPORTING_STATE, GSN_WALLET_SEEN, MODAL_INITIALIZE_ACCOUNT } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';

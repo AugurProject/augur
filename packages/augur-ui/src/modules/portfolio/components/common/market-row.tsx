@@ -1,15 +1,21 @@
-import React, { ReactNode } from 'react';
+import { TXEventName } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
+import { SubmitTextButton } from 'modules/common/buttons';
+import { SCALAR, SIGN_SEND_ORDERS } from 'modules/common/constants';
+import {
+  Archived,
+  LiquidityDepletedLabel,
+  MarketStatusLabel,
+  MarketTypeLabel,
+  TemplateShield,
+} from 'modules/common/labels';
 
 import ToggleRow from 'modules/common/toggle-row';
-import { MarketStatusLabel, TemplateShield, MarketTypeLabel, LiquidityDepletedLabel, Archived } from 'modules/common/labels';
-import { SCALAR, SIGN_SEND_ORDERS } from 'modules/common/constants';
 import MarketTitle from 'modules/market/containers/market-title';
-import { TXEventName } from '@augurproject/sdk';
-import { SubmitTextButton } from 'modules/common/buttons';
 
 import Styles from 'modules/portfolio/components/common/market-row.styles.less';
 import { MarketData } from 'modules/types';
+import React, { ReactNode } from 'react';
 
 export interface TimeObject {
   formattedUtcShortDate: string;
