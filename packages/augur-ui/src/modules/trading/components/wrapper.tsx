@@ -175,6 +175,7 @@ const Wrapper = ({
     orderDaiEstimate: '',
     orderEscrowdDai: '',
     gasCostEst: '',
+    postOnlyOrder: false,
     doNotCreateOrders: selectedOrderProperties.doNotCreateOrders || false,
     expirationDate: selectedOrderProperties.expirationDate || null,
     trade: getDefaultTrade({ market, selectedOutcome }),
@@ -215,6 +216,7 @@ const Wrapper = ({
           orderEscrowdDai: '',
           gasCostEst: '',
           doNotCreateOrders: false,
+          postOnlyOrder: false,
           expirationDate,
           trade: tradeUpdate,
         }
@@ -444,7 +446,7 @@ const Wrapper = ({
         disabled={
           !trade?.limitPrice ||
           (gsnUnavailable && isOpenOrder) ||
-          insufficientFunds
+          insufficientFunds || (state.postOnlyOrder && trade.numFills > 0)
         }
       />
     );
@@ -544,6 +546,7 @@ const Wrapper = ({
           selectedOutcome={selectedOutcome}
           market={market}
           trade={state.trade}
+          postOnlyOrder={state.postOnlyOrder}
           initialLiquidity={initialLiquidity}
           tradingTutorial={tradingTutorial}
         />

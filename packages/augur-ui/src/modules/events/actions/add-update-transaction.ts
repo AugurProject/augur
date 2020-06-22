@@ -30,6 +30,7 @@ import {
   FINALIZE,
   DOINITIALREPORT,
   CONTRIBUTE,
+  APPROVE,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import {
@@ -69,6 +70,7 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   TRANSFER,
   CLAIMMARKETSPROCEEDS,
   FINALIZE,
+  APPROVE,
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage =

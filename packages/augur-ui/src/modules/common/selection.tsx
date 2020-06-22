@@ -1,11 +1,11 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/common/selection.styles';
 import { ThickChevron, Chevron, ShareIcon, SlimArrow } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
-import { useEffect } from 'react';
+import { INVALID_OUTCOME_ID } from 'modules/common/constants';
 
 export interface NameValuePair {
   label: string;
@@ -238,6 +238,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         <button
           className={classNames(Styles.label, {
             [Styles.SelectedLabel]: selected,
+            [Styles.invalidColor]: selected?.value === INVALID_OUTCOME_ID,
           })}
         >
           <span ref={ref => (this.labelRef = ref)}>
@@ -256,6 +257,9 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
                 key={`${option.value}${option.label}`}
                 value={option.value}
                 onClick={() => this.dropdownSelect(option)}
+                className={classNames({
+                  [Styles.invalidColor]: option?.value === INVALID_OUTCOME_ID,
+                })}
               >
                 {option.label}
               </button>

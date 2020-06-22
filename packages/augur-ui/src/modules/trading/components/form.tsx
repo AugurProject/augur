@@ -52,9 +52,9 @@ import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import { augurSdk } from 'services/augursdk';
 
 enum ADVANCED_OPTIONS {
-  GOOD_TILL = '0',
   EXPIRATION = '1',
   FILL = '2',
+  POST = '3',
 }
 const advancedExpirationDateOptions = [
   {
@@ -81,12 +81,12 @@ const advancedDropdownOptions = [
     value: ADVANCED_OPTIONS.EXPIRATION,
   },
   {
-    label: 'Good till cancelled',
-    value: ADVANCED_OPTIONS.GOOD_TILL,
-  },
-  {
     label: 'Fill only',
     value: ADVANCED_OPTIONS.FILL,
+  },
+  {
+    label: 'Post only',
+    value: ADVANCED_OPTIONS.POST,
   },
 ];
 
@@ -94,10 +94,6 @@ const liqAdvancedDropdownOptions = [
   {
     label: 'Order expiration',
     value: ADVANCED_OPTIONS.EXPIRATION,
-  },
-  {
-    label: 'Good till cancelled',
-    value: ADVANCED_OPTIONS.GOOD_TILL,
   },
 ];
 
@@ -197,6 +193,7 @@ const calculateStartState = props => {
     [INPUT_TYPES.QUANTITY]: props.orderQuantity,
     [INPUT_TYPES.PRICE]: props.orderPrice,
     [INPUT_TYPES.DO_NOT_CREATE_ORDERS]: props.doNotCreateOrders,
+    [INPUT_TYPES.POST_ONLY_ORDER]: false,
     [INPUT_TYPES.EXPIRATION_DATE]:
       props.expirationDate ||
       calcOrderExpirationTime(props.endTime, props.currentTimestamp),
@@ -493,6 +490,7 @@ const Form = ({
       [INPUT_TYPES.QUANTITY]: '',
       [INPUT_TYPES.PRICE]: '',
       [INPUT_TYPES.DO_NOT_CREATE_ORDERS]: false,
+      [INPUT_TYPES.POST_ONLY_ORDER]: false,
       [INPUT_TYPES.EXPIRATION_DATE]: calcOrderExpirationTime(
         endTime,
         currentTimestamp
@@ -796,6 +794,7 @@ const Form = ({
               updateState({
                 [INPUT_TYPES.DO_NOT_CREATE_ORDERS]:
                   value === ADVANCED_OPTIONS.FILL,
+                [INPUT_TYPES.POST_ONLY_ORDER]: value === ADVANCED_OPTIONS.POST,
               });
               setState({
                 ...state,

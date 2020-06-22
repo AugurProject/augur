@@ -19,6 +19,10 @@ import {
   SOCCER_LEAGUE_DEP_TEAMS,
   TENNIS_DOUBLES_EVENTS,
   TENNIS_SINGLES_EVENTS,
+  SOCCER_LEAGUE_DEP_YEARS,
+  SOCCER_GENDER_EVENTS,
+  SOCCER_CUSTOM_GENDER_EVENTS,
+  SOCCER_CUSTOM_DEP_YEARS,
 } from './templates-lists';
 import {
   AMERICAN_FOOTBALL,
@@ -104,6 +108,7 @@ export const TEMPLATES = {
             question: `MMA: [0] vs. [1], Who will win?`,
             example: `MMA: Donald Cerrone vs. Conor McGregor, Who will win?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             header: `[0] vs. [1]`,
+            title: `Money Line`,
             groupName: groupTypes.MONEY_LINE,
             inputs: [
               {
@@ -355,7 +360,7 @@ export const TEMPLATES = {
               {
                 id: 6,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
+                placeholder: `Draw/No Contest`,
               },
             ],
             resolutionRules: {
@@ -479,6 +484,7 @@ export const TEMPLATES = {
             question: `Boxing: [0] vs. [1], Who will win?`,
             example: `Boxing: Robert Helenius vs. Adam Kownacki, Who will win?\nEstimated schedule start time: Feb 10, 2020 8:20 pm EST`,
             header: `[0] vs. [1]`,
+            title: `Money Line`,
             groupName: groupTypes.MONEY_LINE,
             inputs: [
               {
@@ -731,7 +737,7 @@ export const TEMPLATES = {
               {
                 id: 6,
                 type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `No Contest`,
+                placeholder: `Draw/No Contest`,
               },
             ],
             resolutionRules: {
@@ -841,6 +847,7 @@ export const TEMPLATES = {
             question: `NASCAR [0] [1]: Winner?`,
             example: `NASCAR 2020 Daytona 500: Winner?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
             header: `NASCAR [0] [1] winner`,
+            title: `Money Line`,
             groupName: groupTypes.MONEY_LINE,
             inputs: [
               {
@@ -848,6 +855,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -912,6 +920,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -988,6 +997,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -1036,6 +1046,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1078,6 +1089,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1111,6 +1123,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                 ],
@@ -1137,6 +1150,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1186,6 +1200,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1240,6 +1255,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1282,6 +1298,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1315,6 +1332,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                 ],
@@ -1341,6 +1359,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1390,6 +1409,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1444,6 +1464,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1486,6 +1507,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1522,6 +1544,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -1661,6 +1684,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year Range`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEAR_RANGE,
               },
             ],
@@ -1870,6 +1894,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEAR_RANGE,
               },
               {
@@ -1922,6 +1947,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year Range`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEAR_RANGE,
               },
               {
@@ -1967,6 +1993,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year Range`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEAR_RANGE,
               },
             ],
@@ -2008,6 +2035,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -2041,6 +2069,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -2107,6 +2136,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2153,6 +2183,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2194,6 +2225,7 @@ export const TEMPLATES = {
                 question: `[0] Single Tennis: [1] [2] Match play winner: [3] vs. [4]?`,
                 example: `Men's Single Tennis: 2020 Wimbledon Match play winner between Roger Federer vs. Rafael Nadal?`,
                 header: `[3] vs. [4]`,
+                title: `Money Line`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
@@ -2210,6 +2242,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2285,6 +2318,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2380,6 +2414,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2463,6 +2498,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2509,6 +2545,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2553,6 +2590,7 @@ export const TEMPLATES = {
                 question: `[0] Doubles Tennis: [1] [2] Match play winner: [3] vs. [4]?`,
                 example: `Men's Doubles Tennis: 2020 Wimbledon Match play winner between Kevin Krawietz/Andreas Mies vs. Bob Bryan/Mike Bryan?`,
                 header: `[3] vs. [4]`,
+                title: `Money Line`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
@@ -2569,6 +2607,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2648,6 +2687,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2746,6 +2786,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -2817,7 +2858,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0]: Which team will win: [1] vs. [2]?`,
                 example: `Men's English Premier League: Which team will win: Manchester City vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                header: `Men's [0] [1] vs. [2]`,
+                header: `(Men's) [0] [1] vs. [2]`,
+                title: `Money Line`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
@@ -2897,7 +2939,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] (Point Spread): [1] to win by more than [2].5 goals over [3]?`,
                 example: `Men's Ligue 1 (France): Marseille to win by more than 1.5 goals over Lyon?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                header: `Men's [0] [1] vs. [3]`,
+                header: `(Men's) [0] [1] vs. [3]`,
                 title: `Spread [2].5`,
                 groupName: groupTypes.SPREAD,
                 groupLineId: 2,
@@ -2980,7 +3022,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] (O/U): [1] vs. [2]: Total goals scored; Over/Under [3].5?`,
                 example: `Men's MLS (USA) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                header: `Men's [0] [1] vs. [2]`,
+                header: `(Men's) [0] [1] vs. [2]`,
                 title: `Over/Under [3].5`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 3,
@@ -3059,44 +3101,120 @@ export const TEMPLATES = {
                   ],
                 },
               },
+              {
+                marketType: CATEGORICAL,
+                question: `Men's [0] [1] Champion?`,
+                example: `Men's English Premier League Champion?`,
+                header: `(Men's) [0] [1] Champion`,
+                groupName: groupTypes.FUTURES,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `League`,
+                    groupKey: LEAGUE_NAME,
+                    inputDestIds: [1],
+                    values: LIST_VALUES.SOCCER_LEAGUES,
+                    inputDestValues: SOCCER_LEAGUE_DEP_YEARS,
+                    categoryDestId: 2,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    groupKey: YEAR,
+                    defaultLabel: `Select League First`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
+                    inputSourceId: 0,
+                    values: [],
+                  },
+                  {
+                    id: 2,
+                    type:
+                      TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 0,
+                    placeholder: `Select Team`,
+                    values: SOCCER_LEAGUE_DEP_TEAMS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'.`,
+                    },
+                    {
+                      text: `If the season is officially cancelled and the league/event in the market question is not played, this market should resolve as 'Invalid'.`,
+                    },
+                    {
+                      text: `If the league or Governing Organization suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
+                    },
+                    {
+                      text: `If the league or Governing Organization suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
+                  ],
+                },
+              },
             ],
           },
           [CUSTOMIZED]: {
             templates: [
               {
                 marketType: CATEGORICAL,
-                question: `[0] Football (Soccer): Which team will win: [1] vs. [2]?`,
-                example: `Men's Football (Soccer): Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                question: `[0] [1]: Which team will win: [2] vs. [3]?`,
+                example: `Men's World Cup: Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
+                header: `([0]) [2] vs. [3]`,
+                title: `Money Line`,
+                groupName: groupTypes.MONEY_LINE,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's / Women's`,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Men's/Women's`,
+                    groupKey: GENDER,
+                    inputDestIds: [1],
                     values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: SOCCER_GENDER_EVENTS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    placeholder: `Team A`,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
+                    placeholder: `Event`,
+                    groupKey: EVENT,
+                    categoryDestId: 2,
+                    values: [],
                   },
                   {
                     id: 2,
                     type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
-                    placeholder: `Team B`,
+                    placeholder: `Team A`,
+                    groupKey: TEAM_A,
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 6,
-                    placeholder: `Date time`,
+                    type: TemplateInputType.USER_DESCRIPTION_OUTCOME,
+                    placeholder: `Team B`,
+                    groupKey: TEAM_B,
                   },
                   {
                     id: 4,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
+                    groupKey: START_TIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 5,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Draw`,
                   },
                   {
-                    id: 5,
+                    id: 6,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Contest`,
                   },
@@ -3120,49 +3238,68 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] Football (Soccer) (Point Spread): [1] to win by more than [2].5 goals over [3]?`,
-                example: `Men's Football (Soccer) (Point Spread): Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `[0] [1] (Point Spread): [2] to win by more than [3].5 goals over [4]?`,
+                example: `Men's World Cup (Point Spread): Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                header: `([0]) [2] vs. [4]`,
+                title: `Spread [3].5`,
+                groupName: groupTypes.SPREAD,
+                groupLineId: 3,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's / Women's`,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Men's/Women's`,
+                    groupKey: GENDER,
+                    inputDestIds: [1],
                     values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: SOCCER_GENDER_EVENTS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team A`,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
+                    placeholder: `Event`,
+                    groupKey: EVENT,
+                    categoryDestId: 2,
+                    values: [],
                   },
                   {
                     id: 2,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team A`,
+                    groupKey: TEAM_A,
+                  },
+                  {
+                    id: 3,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 3,
+                    id: 4,
                     type: TemplateInputType.TEXT,
                     placeholder: `Team B`,
-                  },
-                  {
-                    id: 4,
-                    type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 6,
-                    placeholder: `Date time`,
+                    groupKey: TEAM_B,
                   },
                   {
                     id: 5,
-                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[1] -[2].5`,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
+                    groupKey: START_TIME,
+                    placeholder: `Date time`,
                   },
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `[3] +[2].5`,
+                    placeholder: `[2] -[3].5`,
                   },
                   {
                     id: 7,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `[4] +[3].5`,
+                  },
+                  {
+                    id: 8,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Contest`,
                   },
@@ -3186,49 +3323,66 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
-                question: `[0] Football (Soccer) (O/U): [1] vs. [2]: Total goals scored; Over/Under [3].5?`,
-                example: `Men's Football (Soccer) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                question: `[0] [1] (O/U): [2] vs. [3]: Total goals scored; Over/Under [4].5?`,
+                example: `Men's World Cup (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                header: `([0]) [2] vs. [3]`,
+                title: `Over/Under [4].5`,
+                groupName: groupTypes.OVER_UNDER,
+                groupLineId: 4,
                 inputs: [
                   {
                     id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Men's / Women's`,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Men's/Women's`,
+                    groupKey: GENDER,
+                    inputDestIds: [1],
                     values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: SOCCER_GENDER_EVENTS,
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team A`,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
+                    placeholder: `Event`,
+                    groupKey: EVENT,
+                    categoryDestId: 2,
+                    values: [],
                   },
                   {
                     id: 2,
                     type: TemplateInputType.TEXT,
-                    placeholder: `Team B`,
+                    placeholder: `Team A`,
                   },
                   {
                     id: 3,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 4,
                     type: TemplateInputType.TEXT,
                     validationType: ValidationType.WHOLE_NUMBER,
                     placeholder: `Whole #`,
                   },
                   {
-                    id: 4,
+                    id: 5,
                     type: TemplateInputType.ESTDATETIME,
                     hoursAfterEst: 6,
+                    groupKey: START_TIME,
                     placeholder: `Date time`,
-                  },
-                  {
-                    id: 5,
-                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `Over [3].5`,
                   },
                   {
                     id: 6,
                     type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `Under [3].5`,
+                    placeholder: `Over [4].5`,
                   },
                   {
                     id: 7,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [4].5`,
+                  },
+                  {
+                    id: 8,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `No Contest`,
                   },
@@ -3246,6 +3400,66 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `[0] [1] [2] Winner?`,
+                example: `Men's UEFA Europa League 2020/2021 Winner?`,
+                header: `([0]) [1] [2] Winner`,
+                groupName: groupTypes.FUTURES,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Men's/Women's`,
+                    groupKey: GENDER,
+                    inputDestIds: [1],
+                    values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: SOCCER_CUSTOM_GENDER_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Event`,
+                    defaultLabel: `Select Men's/Women's First`,
+                    groupKey: LEAGUE_NAME,
+                    inputDestIds: [2],
+                    values: [],
+                    inputDestValues: SOCCER_CUSTOM_DEP_YEARS,
+                    categoryDestId: 2,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    groupKey: YEAR,
+                    defaultLabel: `Select Event First`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
+                    inputSourceId: 0,
+                    values: [],
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'.`,
+                    },
+                    {
+                      text: `If the season is officially cancelled and the league/event in the market question is not played, this market should resolve as 'Invalid'.`,
+                    },
+                    {
+                      text: `If the league or Governing Organization suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
+                    },
+                    {
+                      text: `If the league or Governing Organization suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -3393,6 +3607,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                 ],
@@ -3424,6 +3639,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -3630,6 +3846,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -3683,6 +3900,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -3731,6 +3949,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -3790,6 +4009,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                 ],
@@ -3829,6 +4049,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -3877,6 +4098,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -3928,6 +4150,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     noSort: true,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -4113,6 +4336,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                 ],
@@ -4144,6 +4368,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -4348,6 +4573,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -4391,6 +4617,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -4439,6 +4666,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -4498,6 +4726,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                 ],
@@ -4684,6 +4913,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                 ],
@@ -4722,6 +4952,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -4963,6 +5194,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -4995,7 +5227,7 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
-                      text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
+                      text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
@@ -5025,6 +5257,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -5085,6 +5318,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -5312,6 +5546,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -5341,7 +5576,7 @@ export const TEMPLATES = {
                   text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                 },
                 {
-                  text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
+                  text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
                 },
                 {
                   text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
@@ -5364,6 +5599,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -5409,6 +5645,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
             ],
@@ -5469,6 +5706,7 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5514,6 +5752,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5561,6 +5800,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5617,6 +5857,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5656,6 +5897,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                   {
@@ -5711,6 +5953,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                   {
@@ -5761,6 +6004,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.SUMMER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5813,6 +6057,7 @@ export const TEMPLATES = {
                     id: 3,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5858,6 +6103,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5905,6 +6151,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
@@ -5961,6 +6208,7 @@ export const TEMPLATES = {
                     id: 4,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
@@ -6000,6 +6248,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                   {
@@ -6055,6 +6304,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                   {
@@ -6105,6 +6355,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.WINTER_OLYMPIC_YEARS,
                   },
                 ],
@@ -6295,6 +6546,7 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                 ],
@@ -6360,7 +6612,8 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year/Year`,
+                    placeholder: `Year Range`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -6589,6 +6842,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -6619,7 +6873,7 @@ export const TEMPLATES = {
                       text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
                     },
                     {
-                      text: `If the season is officially cancelled and the event in the market not is played, this market should resolve as 'Invalid'`,
+                      text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
@@ -6642,6 +6896,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEAR_RANGE,
                   },
                   {
@@ -6687,6 +6942,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                 ],
@@ -6726,6 +6982,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -6773,6 +7030,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -6822,6 +7080,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -6873,6 +7132,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     noSort: true,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -6932,6 +7192,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     noSort: true,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -7330,6 +7591,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -7381,6 +7643,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                   {
@@ -7419,6 +7682,7 @@ export const TEMPLATES = {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
                 ],
@@ -7466,6 +7730,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
             ],
@@ -7494,6 +7759,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7561,6 +7827,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
             ],
@@ -7639,6 +7906,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7677,6 +7945,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7711,6 +7980,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -7751,6 +8021,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7785,6 +8056,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -7823,6 +8095,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7871,6 +8144,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7932,8 +8206,9 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.TEXT,
-                placeholder: `Location`,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Country`,
+                values: LIST_VALUES.OLYMPIC_COUNTRIES,
               },
               {
                 id: 3,
@@ -8031,8 +8306,9 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: `Location`,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Country`,
+                values: LIST_VALUES.OLYMPIC_COUNTRIES,
               },
               {
                 id: 2,
@@ -8092,6 +8368,7 @@ export const TEMPLATES = {
                 placeholder: `Year`,
                 eventExpEndNextMonth: true,
                 values: LIST_VALUES.YEARS,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 monthDropdown: 0,
               },
               {
@@ -8139,6 +8416,7 @@ export const TEMPLATES = {
                 placeholder: `Year`,
                 eventExpEndNextMonth: true,
                 values: LIST_VALUES.YEARS,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 monthDropdown: 0,
               },
             ],
@@ -8468,6 +8746,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -8518,6 +8797,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -8554,6 +8834,7 @@ export const TEMPLATES = {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -8605,6 +8886,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -8994,13 +9276,13 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -9143,13 +9425,13 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
                 type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
@@ -9292,13 +9574,13 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATESTART,
-                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
-                type: TemplateInputType.DATEYEAR,
+                type: TemplateInputType.DATESTART,
+                daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
               {

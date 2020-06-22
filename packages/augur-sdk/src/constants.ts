@@ -60,6 +60,8 @@ export enum SubscriptionEventName {
   ZeroXStatusRestarting = 'ZeroX:Status:Restarting',
   ZeroXStatusError = 'ZeroX:Status:Error',
   WarpSyncHashUpdated = 'WarpSyncHashUpdated',
+  LiquidityPoolUpdated = 'LiquidityPoolUpdated',
+  DBUpdatedZeroXOrders = 'DB:updated:ZeroXOrders',
 }
 
 export enum TXEventName {

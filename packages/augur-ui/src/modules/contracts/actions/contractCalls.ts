@@ -7,7 +7,6 @@
 import { augurSdk } from 'services/augursdk';
 import {
   formatAttoRep,
-  formatAttoEth,
   formatAttoDai,
   formatPercent,
 } from 'utils/format-number';
@@ -107,37 +106,76 @@ export async function getMaxMarketEndTime(): Promise<number> {
   return new BigNumber(maxEndTime).toNumber();
 }
 
-export async function convertV1ToV2Approve() {
-  const { contracts } = augurSdk.get();
+export async function convertV1ToV2Approve(useSigningWallet: boolean = false) {
+  const { contracts, dependencies } = augurSdk.get();
 
   const allowance = createBigNumber(99999999999999999999).times(
     TEN_TO_THE_EIGHTEENTH_POWER
   );
-
-  const getReputationToken = await contracts.universe.getReputationToken_();
-  const response = contracts.legacyReputationToken.approve(getReputationToken, allowance);
+  let response = null;
+  const useWallet = dependencies.useWallet;
+  const useRelay = dependencies.useRelay;
+  try {
+    if (useSigningWallet) {
+      dependencies.setUseWallet(false);
+      dependencies.setUseRelay(false);
+    }
+    const getReputationToken = await contracts.universe.getReputationToken_();
+    response = await contracts.legacyReputationToken.approve(getReputationToken, allowance);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    dependencies.setUseWallet(useWallet);
+    dependencies.setUseRelay(useRelay);
+  }
   return response;
 }
 
-export async function convertV1ToV2() {
-  const { contracts } = augurSdk.get();
-
-  const response = await contracts.reputationToken.migrateFromLegacyReputationToken();
+export async function convertV1ToV2(useSigningWallet: boolean = false) {
+  const { contracts, dependencies } = augurSdk.get();
+  let response = false;
+  const useWallet = dependencies.useWallet;
+  const useRelay = dependencies.useRelay;
+  try {
+    if (useSigningWallet) {
+      dependencies.setUseWallet(false);
+      dependencies.setUseRelay(false);
+    }
+    response = await contracts.reputationToken.migrateFromLegacyReputationToken();
+  } catch (e) {
+    console.error(e);
+  } finally {
+    dependencies.setUseWallet(useWallet);
+    dependencies.setUseRelay(useRelay);
+  }
   return response;
 }
 
-export async function convertV1ToV2_estimate() {
-  const { contracts } = augurSdk.get();
+export async function convertV1ToV2_estimate(useSigningWallet: boolean = false) {
+  const { contracts, dependencies } = augurSdk.get();
+  const useWallet = dependencies.useWallet;
   const allowance = createBigNumber(99999999999999999999).times(
     TEN_TO_THE_EIGHTEENTH_POWER
   );
 
-  const getReputationToken = await contracts.universe.getReputationToken_();
-  const approvalGas = await contracts.legacyReputationToken.approve_estimateGas(
-    getReputationToken,
-    allowance
-  );
-  const migrationGas = await contracts.reputationToken.migrateFromLegacyReputationToken_estimateGas();
+  let approvalGas = ZERO;
+  let migrationGas = ZERO;
+
+  try {
+    if (useSigningWallet) dependencies.setUseWallet(false);
+
+    const getReputationToken = await contracts.universe.getReputationToken_();
+    approvalGas = await contracts.legacyReputationToken.approve_estimateGas(
+      getReputationToken,
+      allowance
+    );
+
+    migrationGas = await contracts.reputationToken.migrateFromLegacyReputationToken_estimateGas();
+  } catch (e) {
+    console.error(e);
+  } finally {
+    dependencies.setUseWallet(useWallet);
+  }
 
   return approvalGas.plus(migrationGas);
 }

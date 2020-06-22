@@ -258,7 +258,7 @@ export const getTemplateReadableDescription = (template: Template) => {
 
 export const buildMarketDescription = (question: string, inputs: TemplateInput[]) => {
   inputs.forEach((input: TemplateInput) => {
-    let value = (input.userInput && input.userInput.trim()) || `[${input.placeholder.trim()}]`;
+    let value = (input.userInput && String(input.userInput).trim()) || `[${String(input?.placeholder)?.trim()}]`;
     question = question.replace(`[${input.id}]`, `${value}`);
   });
 

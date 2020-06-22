@@ -1352,7 +1352,7 @@ export const ParticipationTokensView = () => {
         header="Participation Tokens Purchased"
         subheader={pastParticipationTokensPurchased.formatted}
         tooltipText={
-          "The total amount of unredeemed participation tokens you\ve purchased for past reporting minus any you've lost for incorrect reporting"
+          "The total amount of unredeemed participation tokens you've purchased for past reporting minus any you've lost for incorrect reporting"
         }
       />
       <Subheaders

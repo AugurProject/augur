@@ -1,7 +1,9 @@
-import { formatEthereumAddress } from "@augurproject/utils";
+import { formatEthereumAddress } from '@augurproject/utils';
+import parseQuery from 'modules/routes/helpers/parse-query';
 
 export const getTradePageMarketId = () => {
-  const locationHash = document.location.hash.split("id=");
-  if (locationHash.length <= 1) return false;
-  return formatEthereumAddress(locationHash[locationHash.length - 1]);
+  const [, search] = document.location.hash.split('?');
+  const query = parseQuery(search);
+  const addr = query['id'];
+  return formatEthereumAddress(addr);
 };

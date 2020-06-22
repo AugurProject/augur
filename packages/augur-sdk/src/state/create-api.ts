@@ -45,7 +45,7 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
       client.contracts.universe.address);
 
-    await warpSyncStrategy.start(warpSyncHash, currentBlock);
+    await warpSyncStrategy.start(currentBlock, warpSyncHash);
 
     if (config.warpSync && config.warpSync.enabled) {
       client.events.once(SubscriptionEventName.SDKReady, () => {
@@ -57,8 +57,8 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
       });
     }
 
-    const staringSyncBlock =  await (await db).getSyncStartingBlock() || uploadBlockNumber;
-    const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlock, currentBlockNumber);
+    const staringSyncBlockNumber =  await (await db).getSyncStartingBlock() || uploadBlockNumber;
+    const endBulkSyncBlockNumber = await bulkSyncStrategy.start(staringSyncBlockNumber, currentBlockNumber);
 
     const derivedSyncLabel = 'Syncing rollup and derived DBs';
     console.time(derivedSyncLabel);

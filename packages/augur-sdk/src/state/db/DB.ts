@@ -338,7 +338,7 @@ export class DB {
       schemas[genericEventDBDescription.EventName] = fields.join(',');
     }
     schemas['Markets'] =
-      'market,reportingState,universe,marketCreator,timestamp,finalized,blockNumber';
+      'market,reportingState,universe,marketCreator,timestamp,finalized,blockNumber,groupHash,liquidityPool';
     schemas['CurrentOrders'] =
       'orderId,[market+open],[market+outcome+orderType],orderCreator,orderFiller,blockNumber';
     schemas['Dispute'] = '[market+payoutNumerators],market,blockNumber';

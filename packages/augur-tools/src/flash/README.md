@@ -222,23 +222,23 @@ error: `estimated schedule date time is after market event expiration endTime`
 7. For some markets there is are a number of required days between date in market question and market's event expiration.
 error: `start date in question is not the required number of days before market event expiration endTime`
 
-8. For some templates the DATEYEAR input type can not be on a weekend.
+8. Templates with years in the question need to be validated so that the year is not before market creation or after market event expiration.
+error: `year in market question can not be before market creationTime year or after event expiration year`
+
+9. For some templates the DATEYEAR input type can not be on a weekend.
 error: `market question date can not be on weekend or on a holiday`
 
-9. There are templates that give date range in the market question. These templates can not have the end date before the start date.
+10. There are templates that give date range in the market question. These templates can not have the end date before the start date.
 error: `market question end date can not be after start date`
 
-10. For templates that rely on identifying a stock or index traded on exchange the market event expiration needs to be 1 hour after the latest possible time the exchange closes. Example part of the year NASDAQ closes at UTC -4 and other part UTC -5, with a one hour buffer and assuming the lastest closing time UTC -4 the market event expiration needs to be at UTC -3.
+11. For templates that rely on identifying a stock or index traded on exchange the market event expiration needs to be 1 hour after the latest possible time the exchange closes. Example part of the year NASDAQ closes at UTC -4 and other part UTC -5, with a one hour buffer and assuming the lastest closing time UTC -4 the market event expiration needs to be at UTC -3.
 error: `event expiration can not be before exchange close time, or market creation after exchange close time`
 
-11. For movie total gross for opening weekend, the market event expiration needs to have a buffer. The earilest market event expiration time is the Wednesday after opening weekend.
+12. For movie total gross for opening weekend, the market event expiration needs to have a buffer. The earilest market event expiration time is the Wednesday after opening weekend.
 error: `event expiration can not be before Wednesday after movie opening weekend and/or opening day must be a friday`
 
-12. For some templates they use DATESTART input type, which is a timestamp for the day the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime)
-error: `start date is after market event expiration endTime`
-
-13. For markets on a certain day the market creation time can not be before the date of event, error is
-error: `start date can not be before market creationTime`
+13. For some templates they use DATESTART or DATEYEAR or DATETIME or ESTDATETIME input type, which is a timestamp for the day the event is scheduled to start. that timestamp can not be before the market's expiration time (endTime) and market creation time can not be before the date of event
+error: `date in market question can not be before market creationTime or after event expiration`
 
 14. Template inputs can not have duplicate values
 error: `template input values have duplicates`

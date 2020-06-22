@@ -203,6 +203,17 @@ export const LIST_VALUES = {
     'Eredivisie (Dutch)',
     'Superliga Argentina',
   ],
+  SOCCER_CUSTOM_MENS_EVENTS: [
+    'FIFA World Cup',
+    'UEFA Champions League',
+    'UEFA Europa League',
+    'Copa America',
+    'AFC Asian Cup',
+    'AFC Champions League',
+    'CONCACAF Gold Cup',
+    'CONCACAF Champions League',
+    'Friendlies'
+  ],
   BASEBALL_AWARDS: [
     'NL Rookie of the Year',
     'AL Rookie of the Year',
@@ -3127,6 +3138,27 @@ export const LIST_VALUES = {
   ETH_CURRENCY_PAIRS: ['ETH/USD', 'ETH/USDT', 'ETH/EUR'],
   LTC_CURRENCY_PAIRS: ['LTC/USD', 'LTC/USDT', 'LTC/EUR'],
   AMOUNT_UNITS: ['Thousand', 'Million', 'Billion'],
+  SOCCER_CUSTOM_FUTURES_EVENTS: [
+    'FIFA World Cup',
+    'UEFA Champions League',
+    'UEFA Europa League',
+    'Copa America',
+    'AFC Asian Cup',
+    'AFC Champions League',
+    'CONCACAF Gold Cup',
+    'CONCACAF Champions League',
+  ],
+  SOCCER_CUSTOM_DAILY_EVENTS: [
+    'World Cup',
+    'UEFA Champions League',
+    'UEFA Europa League',
+    'Copa America',
+    'AFC Asian Cup',
+    'AFC Champions League',
+    'CONCACAF Gold Cup',
+    'CONCACAF Champions League',
+    'Friendlies'
+  ],
   SOCCER_LEAGUE_GERMANY: [
     'Bayern Munich',
     'Borussia Dortmund',
@@ -3369,6 +3401,41 @@ export const SOCCER_LEAGUE_DEP_TEAMS = {
   'EFL Championship': LIST_VALUES.SOCCER_LEAGUE_ENGLISH,
   'Eredivisie (Dutch)': LIST_VALUES.SOCCER_LEAGUE_DUTCH,
   'Superliga Argentina': LIST_VALUES.SOCCER_LEAGUE_ARGENTINA,
+};
+
+export const SOCCER_LEAGUE_DEP_YEARS = {
+  'English Premier League': LIST_VALUES.YEAR_RANGE,
+  'Serie A (Italy)': LIST_VALUES.YEAR_RANGE,
+  'La Liga (Spain)': LIST_VALUES.YEAR_RANGE,
+  'Ligue 1 (France)': LIST_VALUES.YEAR_RANGE,
+  'Bundesliga (Germany)': LIST_VALUES.YEAR_RANGE,
+  'Primeira Liga (Portugal)': LIST_VALUES.YEAR_RANGE,
+  'MLS (USA)': LIST_VALUES.YEARS,
+  'EFL Championship': LIST_VALUES.YEAR_RANGE,
+  'Eredivisie (Dutch)': LIST_VALUES.YEAR_RANGE,
+  'Superliga Argentina': LIST_VALUES.YEAR_RANGE,
+};
+
+
+export const SOCCER_CUSTOM_DEP_YEARS = {
+  'FIFA World Cup': ['2022', '2026', '2030'],
+  'UEFA Champions League': LIST_VALUES.YEAR_RANGE,
+  'UEFA Europa League': LIST_VALUES.YEAR_RANGE,
+  'Copa America': ['2021', '2024', '2028'],
+  'AFC Asian Cup': ['2023', '2027', '2031'],
+  'AFC Champions League': LIST_VALUES.YEARS,
+  'CONCACAF Gold Cup': ['2021', '2023', '2025'],
+  'CONCACAF Champions League': LIST_VALUES.YEARS,
+};
+
+export const SOCCER_CUSTOM_GENDER_EVENTS = {
+  "Men's": LIST_VALUES.SOCCER_CUSTOM_FUTURES_EVENTS,
+  "Women's": ['FIFA World Cup'],
+};
+
+export const SOCCER_GENDER_EVENTS = {
+  "Men's": LIST_VALUES.SOCCER_CUSTOM_DAILY_EVENTS,
+  "Women's": ['World Cup'],
 };
 
 export const FIN_EXCHANGES_CLOSING_OFFSETS = {
