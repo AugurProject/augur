@@ -12,20 +12,22 @@ import {
   formatDai,
 } from 'utils/format-number';
 import {
-  calculatePayoutNumeratorsValue,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
   convertPayoutNumeratorsToStrings,
-  MALFORMED_OUTCOME,
   convertDisplayValuetoAttoValue,
   numTicksToTickSize,
   convertAttoValueToDisplayValue,
+  calculatePayoutNumeratorsValue,
+} from '@augurproject/utils';
+import {
   TXEventName
 } from '@augurproject/sdk-lite';
 import {
   BUY,
   SELL,
   TEN_TO_THE_EIGHTEENTH_POWER,
+  MALFORMED_OUTCOME,
   CANCELORDER,
   CLAIMTRADINGPROCEEDS,
   BUYPARTICIPATIONTOKENS,
