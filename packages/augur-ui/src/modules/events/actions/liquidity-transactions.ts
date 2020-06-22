@@ -6,7 +6,6 @@ import { PendingOrders } from "modules/app/store/pending-orders";
 export function deleteMultipleLiquidityOrders(
   tx: Events.TXStatus,
   market: Getters.Markets.MarketInfo,
-  dispatch
 ) {
   const payloads = processMultipleLiquidityOrders(tx, market)
   payloads.map(payload => PendingOrders.actions.updateSuccessfulLiquidity(payload));
@@ -15,7 +14,6 @@ export function deleteMultipleLiquidityOrders(
 export function setLiquidityMultipleOrdersStatus(
   tx: Events.TXStatus,
   market: Getters.Markets.MarketInfo,
-  dispatch
 ) {
   const payloads = processMultipleLiquidityOrders(tx, market);
   payloads.map(payload => PendingOrders.actions.updateLiquidityStatus(payload));
