@@ -147,6 +147,7 @@ export interface SportsBookInfo {
   header: string;
   title?: string;
   liquidityPool: string;
+  liquidityRank: string;
 }
 
 export interface MarketInfo {
@@ -1422,7 +1423,8 @@ async function getMarketsInfo(
         header: marketData.groupHeader,
         title: marketData.groupTitle,
         estTimestamp: marketData.groupEstDatetime,
-        liquidityPool: marketData.liquidityPool
+        liquidityPool: marketData.liquidityPool,
+        liquidityRank: marketData.liquidity['10'],
       }
     };
   });
@@ -1557,6 +1559,8 @@ async function processSportsbookMarketData(
 ): Promise<MarketList> {
   const categories = getMarketsCategoriesMeta(marketData);
   const groupHashes = _.uniq(_.map(marketData, 'groupHash'));
+  // TODO: categories should be for liquidity pools not individual markets
+  // const liquidityPools = _.uniq(_.map(marketData, 'liquidityPool'));
   const groupMarkets = params.reportingStates
     ? await db.Markets.filter(
         item =>
