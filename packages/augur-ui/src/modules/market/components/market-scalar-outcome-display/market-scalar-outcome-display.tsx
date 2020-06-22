@@ -1,14 +1,16 @@
+import type { Getters } from '@augurproject/sdk';
+import { SCALAR_UP_ID } from 'modules/common/constants';
+import { DashlineLong } from 'modules/common/labels';
+import Styles
+  from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display.styles.less';
+import MarketOutcomeTradingIndicator
+  from 'modules/market/containers/market-outcome-trading-indicator';
+import { FormattedNumber } from 'modules/types';
 import React from 'react';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { formatDai } from 'utils/format-number';
 
 import getValue from 'utils/get-value';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import { DashlineLong } from 'modules/common/labels';
-import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
-import Styles from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display.styles.less';
-import { SCALAR_UP_ID } from 'modules/common/constants';
-import { formatDai } from 'utils/format-number';
-import { FormattedNumber } from 'modules/types';
-import { MarketInfoOutcome } from '@augurproject/sdk/src/state/getter/Markets';
 
 export function calculatePosition(
   min: BigNumber,
@@ -26,7 +28,7 @@ export function calculatePosition(
 };
 
 interface MarketScalarOutcomeDisplayProps {
-  outcomes: MarketInfoOutcome[],
+  outcomes: Getters.Markets.MarketInfoOutcome[],
   max: BigNumber,
   min: BigNumber,
   scalarDenomination?: string,

@@ -12,7 +12,8 @@ import {
   approveToTrade,
   placeTrade,
 } from 'modules/contracts/actions/contractCalls';
-import { Getters, TXEventName } from '@augurproject/sdk';
+import type { Getters } from '@augurproject/sdk';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { setLiquidityOrderStatus } from 'modules/events/actions/liquidity-transactions';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
@@ -218,7 +219,7 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
   });
 
   if (!chunkOrders) {
-    createZeroXLiquidityOrders(market, orders, dispatch);
+    await createZeroXLiquidityOrders(market, orders, dispatch);
   } else {
     // MAX_BULK_ORDER_COUNT number of orders in each creation bulk group
     let i = 0;

@@ -14,8 +14,6 @@ import {
   POLITICS,
   SOCCER,
   SPORTS,
-  Template,
-  TEMPLATES,
   US_POLITICS,
   HOCKEY,
   groupTypes,
@@ -24,7 +22,11 @@ import {
   SOCIAL_MEDIA,
   TWITTER,
   CUSTOMIZED,
-} from '@augurproject/artifacts';
+} from '@augurproject/sdk-lite';
+import {
+  Template,
+  TEMPLATES,
+} from '@augurproject/templates';
 import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';
 import { buildExtraInfo, getFilledInputs, fillInQuestion, getLongDescription } from '../../libs/templates';
@@ -639,7 +641,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     .add(2, 'weeks')
     .add(8, 'hours');
   const bbDateYear = bbExpDate.format('YY');
-  const bbYears = `20${bbDateYear}-${Number(bbDateYear) + 1}`;
+  const bbYears = `20${Number(bbDateYear)-1}-${bbDateYear}`;
   const bbInputValues = ['LA Lakers', bbYears];
   markets.push({
     marketType: 'scalar',
@@ -858,7 +860,6 @@ const calcSoccerMarkets = (): CannedMarket[] => {
     extraInfo: buildExtraInfo(template, inputValues[index], [
       SPORTS,
       SOCCER,
-      inputValues[1]
     ]),
     outcomes: outcomeValues[index],
     orderBook: {

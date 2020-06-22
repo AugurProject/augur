@@ -1,11 +1,11 @@
-import { ORDER_TYPES, SECONDS_IN_A_DAY } from '@augurproject/sdk';
-import { MarketReportingState } from '@augurproject/sdk/build/constants';
 import {
   MarketList,
   MarketOrderBook,
-} from '@augurproject/sdk/build/state/getter/Markets';
-import { ACCOUNTS } from '@augurproject/tools';
-import { TestContractAPI } from '@augurproject/tools';
+  MarketReportingState,
+  ORDER_TYPES,
+  SECONDS_IN_A_DAY,
+} from '@augurproject/sdk-lite';
+import { ACCOUNTS, TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';

@@ -26,7 +26,6 @@ import {
   DescriptionWithLinkProps,
 } from 'modules/modal/common';
 import {
-  ExplainerBlock,
   MultipleExplainerBlock,
 } from 'modules/create-market/components/common';
 import {

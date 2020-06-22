@@ -24,7 +24,7 @@ import { Swap } from 'modules/swap/components/swap';
 import { PillSelection } from 'modules/common/selection';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 // import { Pool } from 'modules/swap/components/pool';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import type { SDKConfiguration } from '@augurproject/artifacts';
 
 interface AddFundsProps {
   closeAction: Function;

@@ -39,8 +39,8 @@ import { Action } from 'redux';
 import {
   Events,
   TXEventName,
-  parseZeroXMakerAssetData,
-} from '@augurproject/sdk';
+} from '@augurproject/sdk-lite';
+import { parseZeroXMakerAssetData } from "@augurproject/utils";
 import {
   addPendingData,
   addUpdatePendingTransaction,

@@ -1,6 +1,6 @@
 import { chunk } from "./chunk";
 import { strip0xPrefix } from "./strip-0x-prefix";
-import { prefixHex } from "./prefix-hex";
+import { prefixHex } from "./hex";
 
 export function padRight(s, chunkLength = 64, hasPrefix = false) {
   s = strip0xPrefix(s);

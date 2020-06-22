@@ -2,8 +2,8 @@ import { Market } from '@augurproject/core/build/libraries/ContractInterfaces';
 import {
   ORDER_TYPES,
   SECONDS_IN_A_DAY,
-  stringTo32ByteHex,
-} from '@augurproject/sdk';
+} from '@augurproject/sdk-lite';
+import { stringTo32ByteHex } from '@augurproject/sdk';
 import { databasesToSync } from '@augurproject/sdk/build/warp/WarpController';
 import { ACCOUNTS, defaultSeedPath, loadSeed, Seed } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';

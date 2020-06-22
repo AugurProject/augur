@@ -1,4 +1,4 @@
-import { Getters } from "@augurproject/sdk/src";
+import type { Getters } from '@augurproject/sdk';
 
 export const UPDATE_STATS = "UPDATE_STATS";
 

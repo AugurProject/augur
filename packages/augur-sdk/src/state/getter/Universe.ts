@@ -1,24 +1,23 @@
-import { BigNumber } from 'bignumber.js';
-import * as t from 'io-ts';
-import { DB } from '../db/DB';
-import { Getter } from './Router';
+import { ContractInterfaces } from '@augurproject/core';
 import {
+  GENESIS,
+  MarketData,
   TokenType,
   UniverseCreatedLog,
   UniverseForkedLog,
-  MarketData
-} from '../logs/types';
+} from '@augurproject/sdk-lite';
+import { BigNumber } from 'bignumber.js';
+import * as t from 'io-ts';
 import {
   Augur,
   calculatePayoutNumeratorsValue,
   describeUniverseOutcome,
-  GENESIS,
-  marketTypeToName
-} from '../../index';
+  marketTypeToName,
+} from '../../';
+import { DB } from '../db/DB';
+import { Getter } from './Router';
 import { NULL_ADDRESS } from './types';
-import { ContractInterfaces } from '@augurproject/core';
 import { WarpSyncGetter } from './WarpSyncGetter';
-
 
 export interface NonForkingMigrationTotals {}
 export interface MigrationTotals {
@@ -72,7 +71,11 @@ export class Universe {
     const marketId = universeForkedLog.forkingMarket;
     const forkingMarketLog = await getMarket(db, marketId);
     const children = await getUniverseChildrenCreationLogs(db, address);
-    const outcomes = await getMigrationOutcomes(augur, forkingMarketLog, children);
+    const outcomes = await getMigrationOutcomes(
+      augur,
+      forkingMarketLog,
+      children
+    );
 
     return {
       marketId,
@@ -85,22 +88,32 @@ export class Universe {
     augur: Augur,
     db: DB,
     params: t.TypeOf<typeof Universe.getUniverseChildrenParams>
-  ): Promise<UniverseDetails|null> {
+  ): Promise<UniverseDetails | null> {
     const { universe, account } = params;
 
     const details = await getUniverseDetails(augur, db, universe, account);
     if (details === null) return null;
 
-    const childrenUniverseCreatedLogs = await getUniverseChildrenCreationLogs(db, universe);
-    details.children = await Promise.all(childrenUniverseCreatedLogs.map(async (child) => {
-      return getUniverseDetails(augur, db, child.childUniverse, account);
-    }));
+    const childrenUniverseCreatedLogs = await getUniverseChildrenCreationLogs(
+      db,
+      universe
+    );
+    details.children = await Promise.all(
+      childrenUniverseCreatedLogs.map(async child => {
+        return getUniverseDetails(augur, db, child.childUniverse, account);
+      })
+    );
 
     return details;
   }
 }
 
-async function getUniverseDetails(augur: Augur, db: DB, address: string, account: string): Promise<UniverseDetails> {
+async function getUniverseDetails(
+  augur: Augur,
+  db: DB,
+  address: string,
+  account: string
+): Promise<UniverseDetails> {
   const universe = await augur.contracts.universeFromAddress(address);
   const universeCreationLog = await getUniverseCreationLog(db, address);
   if (universeCreationLog === null) return null;
@@ -111,8 +124,14 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
   if (parentUniverse === NULL_ADDRESS) {
     outcomeName = GENESIS;
   } else {
-    const universeForkedLog = await getUniverseForkedLog(db, universeCreationLog.parentUniverse);
-    const forkingMarketLog = await getMarket(db, universeForkedLog.forkingMarket); // the market that created this universe
+    const universeForkedLog = await getUniverseForkedLog(
+      db,
+      universeCreationLog.parentUniverse
+    );
+    const forkingMarketLog = await getMarket(
+      db,
+      universeForkedLog.forkingMarket
+    ); // the market that created this universe
     outcomeName = getOutcomeNameFromLogs(universeCreationLog, forkingMarketLog);
   }
 
@@ -121,7 +140,11 @@ async function getUniverseDetails(augur: Augur, db: DB, address: string, account
   const totalRepSupply = (await getRepSupply(augur, universe)).toString();
   const totalOpenInterest = (await universe.getOpenInterestInAttoCash_()).toString();
   const numberOfMarkets = (await getMarketsForUniverse(db, address)).length;
-  const warpSyncObject = await WarpSyncGetter.getMostRecentWarpSync(augur, db, undefined);
+  const warpSyncObject = await WarpSyncGetter.getMostRecentWarpSync(
+    augur,
+    db,
+    undefined
+  );
   const warpSyncHash = warpSyncObject ? warpSyncObject.hash : undefined;
   const children = []; // don't recurse
 
@@ -143,7 +166,10 @@ function getOutcomeNameFromLogs(
   universeCreationLog: UniverseCreatedLog,
   forkingMarketLog: MarketData
 ): string {
-  const outcome = calculateOutcomeFromLogs(universeCreationLog, forkingMarketLog);
+  const outcome = calculateOutcomeFromLogs(
+    universeCreationLog,
+    forkingMarketLog
+  );
   return describeUniverseOutcome(outcome, forkingMarketLog);
 }
 
@@ -157,7 +183,7 @@ function calculateOutcomeFromLogs(
     prices[1],
     numTicks,
     marketTypeToName(marketType),
-    universeCreationLog.payoutNumerators.map((bn) => bn.toString())
+    universeCreationLog.payoutNumerators.map(bn => bn.toString())
   );
 }
 
@@ -169,30 +195,50 @@ async function getMigrationOutcomes(
   const marketTypeName = marketTypeToName(forkingMarket.marketType);
   const numTicks = Number(forkingMarket.numTicks).toString(10);
   const minPrice = Number(forkingMarket.prices[0]).toString(10);
-  const maxPrice = Number(forkingMarket.prices[forkingMarket.prices.length - 1]).toString(10);
+  const maxPrice = Number(
+    forkingMarket.prices[forkingMarket.prices.length - 1]
+  ).toString(10);
 
-  return Promise.all(children.map(async (child): Promise<MigrationOutcome> => {
-    const childUniverse = augur.contracts.universeFromAddress(child.childUniverse);
-    const payoutNumerators = child.payoutNumerators.map((hex) => Number(hex).toString(10));
-    const outcome = calculatePayoutNumeratorsValue(maxPrice, minPrice, numTicks, marketTypeName, payoutNumerators);
+  return Promise.all(
+    children.map(
+      async (child): Promise<MigrationOutcome> => {
+        const childUniverse = augur.contracts.universeFromAddress(
+          child.childUniverse
+        );
+        const payoutNumerators = child.payoutNumerators.map(hex =>
+          Number(hex).toString(10)
+        );
+        const outcome = calculatePayoutNumeratorsValue(
+          maxPrice,
+          minPrice,
+          numTicks,
+          marketTypeName,
+          payoutNumerators
+        );
 
-    return {
-      outcomeName: describeUniverseOutcome(outcome, forkingMarket),
-      outcome: outcome.outcome,
-      isMalformed: outcome.malformed,
-      isInvalid: outcome.invalid,
-      amount: (await getRepSupply(augur, childUniverse)).toFixed(),
-      payoutNumerators,
-    };
-  }));
+        return {
+          outcomeName: describeUniverseOutcome(outcome, forkingMarket),
+          outcome: outcome.outcome,
+          isMalformed: outcome.malformed,
+          isInvalid: outcome.invalid,
+          amount: (await getRepSupply(augur, childUniverse)).toFixed(),
+          payoutNumerators,
+        };
+      }
+    )
+  );
 }
 
-async function getUserRep(db: DB, universe: ContractInterfaces.Universe, account: string): Promise<BigNumber> {
-  const tokenChangedLogs = await db.TokenBalanceChangedRollup.where('[universe+owner+tokenType]').equals([
-    universe.address,
-    account,
-    TokenType.ReputationToken
-  ]).toArray();
+async function getUserRep(
+  db: DB,
+  universe: ContractInterfaces.Universe,
+  account: string
+): Promise<BigNumber> {
+  const tokenChangedLogs = await db.TokenBalanceChangedRollup.where(
+    '[universe+owner+tokenType]'
+  )
+    .equals([universe.address, account, TokenType.ReputationToken])
+    .toArray();
   if (tokenChangedLogs.length === 0) {
     return new BigNumber(0);
   } else {
@@ -201,22 +247,38 @@ async function getUserRep(db: DB, universe: ContractInterfaces.Universe, account
   }
 }
 
-async function getRepSupply(augur: Augur, universe: ContractInterfaces.Universe): Promise<BigNumber> {
+async function getRepSupply(
+  augur: Augur,
+  universe: ContractInterfaces.Universe
+): Promise<BigNumber> {
   const repTokenAddress = await universe.getReputationToken_();
-  const repToken = augur.contracts.reputationTokenFromAddress(repTokenAddress, augur.config.networkId);
+  const repToken = augur.contracts.reputationTokenFromAddress(
+    repTokenAddress,
+    augur.config.networkId
+  );
   return repToken.totalSupply_();
 }
 
-async function getMarket(db: DB, address: string): Promise<MarketData|null> {
+async function getMarket(db: DB, address: string): Promise<MarketData | null> {
   return db.Markets.get(address);
 }
 
-async function getMarketsForUniverse(db: DB, address: string): Promise<MarketData[]> {
-  return db.Markets.where('universe').equals(address).toArray();
+async function getMarketsForUniverse(
+  db: DB,
+  address: string
+): Promise<MarketData[]> {
+  return db.Markets.where('universe')
+    .equals(address)
+    .toArray();
 }
 
-async function getUniverseCreationLog(db: DB, address: string): Promise<UniverseCreatedLog|null> {
-  const universeCreatedLogs = await db.UniverseCreated.where('childUniverse').equals(address).toArray();
+async function getUniverseCreationLog(
+  db: DB,
+  address: string
+): Promise<UniverseCreatedLog | null> {
+  const universeCreatedLogs = await db.UniverseCreated.where('childUniverse')
+    .equals(address)
+    .toArray();
 
   if (universeCreatedLogs.length === 0) {
     return null; // no such universe
@@ -225,8 +287,13 @@ async function getUniverseCreationLog(db: DB, address: string): Promise<Universe
   return universeCreatedLogs[0];
 }
 
-async function getUniverseForkedLog(db: DB, address: string): Promise<UniverseForkedLog|null> {
-  const universeForkedLogs = await db.UniverseForked.where('universe').equals(address).toArray();
+async function getUniverseForkedLog(
+  db: DB,
+  address: string
+): Promise<UniverseForkedLog | null> {
+  const universeForkedLogs = await db.UniverseForked.where('universe')
+    .equals(address)
+    .toArray();
 
   if (universeForkedLogs.length === 0) {
     return null; // universe doesn't exist or hasn't forked
@@ -235,6 +302,11 @@ async function getUniverseForkedLog(db: DB, address: string): Promise<UniverseFo
   return universeForkedLogs[0];
 }
 
-async function getUniverseChildrenCreationLogs(db: DB, address: string): Promise<UniverseCreatedLog[]> {
-  return db.UniverseCreated.where('parentUniverse').equals(address).toArray();
+async function getUniverseChildrenCreationLogs(
+  db: DB,
+  address: string
+): Promise<UniverseCreatedLog[]> {
+  return db.UniverseCreated.where('parentUniverse')
+    .equals(address)
+    .toArray();
 }

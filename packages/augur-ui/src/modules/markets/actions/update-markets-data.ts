@@ -1,5 +1,5 @@
+import type { Getters } from '@augurproject/sdk';
 import { MarketInfos } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 

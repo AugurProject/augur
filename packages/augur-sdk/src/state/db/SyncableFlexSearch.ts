@@ -1,9 +1,9 @@
-import { MarketData } from '../logs/types';
+import { MarketData } from '@augurproject/sdk-lite';
+import Dexie from 'dexie';
+import { Index, SearchOptions, SearchResults } from 'flexsearch';
 
 // because flexsearch is a UMD type lib
 const flexSearch = require('flexsearch');
-import { Index, SearchOptions, SearchResults } from 'flexsearch';
-import Dexie from 'dexie';
 
 export interface MarketFields {
   market: string;
@@ -16,77 +16,93 @@ export interface MarketFields {
 export class SyncableFlexSearch {
   private flexSearchIndex: Index<MarketFields>;
   constructor() {
-    this.flexSearchIndex = flexSearch.create(
-      {
-        async: true,
-        cache: true,
-        worker: false, // TODO: Check impact on performance before enabling worker option in FlexSearch
-        profile: "match",
-        doc:
-        {
-          id: "market",
-          field: {
-            market: {
-              encode: "fast",
-            },
-            universe: {
-              encode: "fast",
-            },
-            category1: {
-              encode: "fast",
-            },
-            category2: {
-              encode: "fast",
-            },
-            category3: {
-              encode: "fast",
-            },
-            content: {
-              encode: "extra",
-              tokenize: "reverse",
-              threshold: 7,
-            },
+    this.flexSearchIndex = flexSearch.create({
+      async: true,
+      cache: true,
+      worker: false, // TODO: Check impact on performance before enabling worker option in FlexSearch
+      profile: 'match',
+      doc: {
+        id: 'market',
+        field: {
+          market: {
+            encode: 'fast',
+          },
+          universe: {
+            encode: 'fast',
+          },
+          category1: {
+            encode: 'fast',
+          },
+          category2: {
+            encode: 'fast',
+          },
+          category3: {
+            encode: 'fast',
+          },
+          content: {
+            encode: 'extra',
+            tokenize: 'reverse',
+            threshold: 7,
           },
         },
-      }
-    );
+      },
+    });
   }
 
-  async search(query: string, options?: SearchOptions): Promise<Array<SearchResults<MarketFields>>> {
+  async search(
+    query: string,
+    options?: SearchOptions
+  ): Promise<Array<SearchResults<MarketFields>>> {
     return this.flexSearchIndex.search({ query, ...options });
   }
 
-  async where(whereObj: {[key: string]: string}): Promise<Array<SearchResults<MarketFields>>> {
+  async where(whereObj: {
+    [key: string]: string;
+  }): Promise<Array<SearchResults<MarketFields>>> {
     return this.flexSearchIndex.where(whereObj);
   }
 
   async addMarketCreatedDocs(marketCreatedDocs: MarketData[]) {
     for (const marketCreatedDoc of marketCreatedDocs) {
-      let category1 = "";
-      let category2 = "";
-      let category3 = "";
-      let description = "";
-      let longDescription = "";
-      let _scalarDenomination = "";
-      let outcomes = "";
+      let category1 = '';
+      let category2 = '';
+      let category3 = '';
+      let description = '';
+      let longDescription = '';
+      let _scalarDenomination = '';
+      let outcomes = '';
 
       // Handle extraInfo
       const info = marketCreatedDoc.extraInfo;
 
       if (info) {
         if (Array.isArray(info.categories)) {
-          category1 = info.categories[0] ? info.categories[0].toString().toLowerCase() : "";
-          category2 = info.categories[1] ? info.categories[1].toString().toLowerCase() : "";
-          category3 = info.categories[2] ? info.categories[2].toString().toLowerCase() : "";
+          category1 = info.categories[0]
+            ? info.categories[0].toString().toLowerCase()
+            : '';
+          category2 = info.categories[1]
+            ? info.categories[1].toString().toLowerCase()
+            : '';
+          category3 = info.categories[2]
+            ? info.categories[2].toString().toLowerCase()
+            : '';
         }
-        description = info.description ? info.description : "";
-        longDescription = info.longDescription ? info.longDescription : "";
-        _scalarDenomination = info._scalarDenomination ? info._scalarDenomination : "";
+        description = info.description ? info.description : '';
+        longDescription = info.longDescription ? info.longDescription : '';
+        _scalarDenomination = info._scalarDenomination
+          ? info._scalarDenomination
+          : '';
       }
       if (marketCreatedDoc.outcomes) {
-        outcomes = marketCreatedDoc.outcomes.join(" ");
+        outcomes = marketCreatedDoc.outcomes.join(' ');
       }
-      const content = [outcomes, description, longDescription, _scalarDenomination, marketCreatedDoc.marketCreator].join(' ');
+      const content = [
+        outcomes,
+        description,
+        longDescription,
+        _scalarDenomination,
+        marketCreatedDoc.marketCreator,
+      ].join(' ');
       await this.flexSearchIndex.add({
         market: marketCreatedDoc.market,
         universe: marketCreatedDoc.universe,
@@ -99,7 +115,7 @@ export class SyncableFlexSearch {
   }
 
   async removeMarketCreatedDocs(marketCreatedDocs: Dexie.Collection<any, any>) {
-    await marketCreatedDocs.each(async (marketCreatedDoc) => {
+    await marketCreatedDocs.each(async marketCreatedDoc => {
       if (marketCreatedDoc.market) {
         await this.flexSearchIndex.remove(marketCreatedDoc.market);
       }

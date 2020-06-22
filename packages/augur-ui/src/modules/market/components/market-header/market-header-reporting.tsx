@@ -1,24 +1,26 @@
-import React from 'react';
+import type { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
-import Styles from 'modules/market/components/market-header/market-header-reporting.styles.less';
+import { ProcessingButton } from 'modules/common/buttons';
 import {
-  REPORTING_STATE,
-  SCALAR,
-  INVALID_OUTCOME_LABEL,
-  SUBMIT_REPORT,
-  SUBMIT_DISPUTE,
-  PROCEEDS_TO_CLAIM_TITLE,
-  TRANSACTIONS,
   CLAIMMARKETSPROCEEDS,
   FINALIZE,
+  INVALID_OUTCOME_NAME,
+  INVALID_OUTCOME_LABEL,
+  PROCEEDS_TO_CLAIM_TITLE,
+  REPORTING_STATE,
+  SCALAR,
+  SUBMIT_DISPUTE,
+  SUBMIT_REPORT,
+  TRANSACTIONS,
 } from 'modules/common/constants';
-import { ProcessingButton } from 'modules/common/buttons';
-import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import { MarketData } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
-import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { finalizeMarket } from 'modules/contracts/actions/contractCalls';
+import Styles
+  from 'modules/market/components/market-header/market-header-reporting.styles.less';
+import { MarketData } from 'modules/types';
+import React from 'react';
+import ReactTooltip from 'react-tooltip';
+import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 
 interface MarketHeaderReportingProps {
   market: MarketData;

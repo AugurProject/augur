@@ -3,7 +3,7 @@ import ConnectDropdown from 'modules/auth/components/connect-dropdown/connect-dr
 import { logout } from 'modules/auth/actions/logout';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, GAS_TIME_LEFT_LABELS, MODAL_ADD_FUNDS, MODAL_UNIVERSE_SELECTOR } from 'modules/common/constants';
-import { NULL_ADDRESS } from '@augurproject/sdk/src/state/getter/types';
+import { NULL_ADDRESS } from 'modules/common/constants';
 import { FormattedNumber } from 'modules/types';
 import { AppState } from 'appStore';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';

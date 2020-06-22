@@ -3,7 +3,7 @@ import {
   selectAccountPositionsState,
 } from "appStore/select-state";
 import { positionSummary } from "modules/positions/selectors/positions-summary";
-import { Getters } from "@augurproject/sdk";
+import type { Getters } from "@augurproject/sdk";
 import { selectMarket } from "modules/markets/selectors/market";
 import { MarketData } from "modules/types";
 

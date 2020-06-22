@@ -19,7 +19,7 @@ import { repeat } from '@augurproject/utils';
 import {
   MarketInfo,
   MarketList,
-} from '@augurproject/sdk/build/state/getter/Markets';
+} from '@augurproject/sdk-lite';
 
 const INVALID = 0;
 const NO = 1;

@@ -1,39 +1,40 @@
-import React, { Fragment } from 'react';
+import type { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
-
-import MarketLink from 'modules/market/components/market-link/market-link';
+import { ProcessingButton } from 'modules/common/buttons';
 import {
   INVALID_OUTCOME_ID,
-  SCALAR,
-  SCALAR_UP_ID,
-  YES_NO,
-  ZERO,
+  INVALID_OUTCOME_NAME,
   INVALID_OUTCOME_LABEL,
-  SUBMIT_DISPUTE,
+  SCALAR,
   SCALAR_DOWN_ID,
   SCALAR_INVALID_BEST_BID_ALERT_VALUE as INVALID_ALERT_PERCENTAGE,
+  SCALAR_UP_ID,
+  SUBMIT_DISPUTE,
+  YES_NO,
+  ZERO,
 } from 'modules/common/constants';
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import ReactTooltip from 'react-tooltip';
-import TooltipStyles from 'modules/common/tooltip.styles.less';
-import { CheckCircleIcon } from 'modules/common/icons';
-import {
-  FormattedNumber,
-  MarketData,
-  OutcomeFormatted,
-  ConsensusFormatted,
-} from 'modules/types';
-import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
-import { Getters } from '@augurproject/sdk';
 import InvalidLabel from 'modules/common/containers/labels';
-import { SecondaryButton, ProcessingButton } from 'modules/common/buttons';
+import { CheckCircleIcon } from 'modules/common/icons';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
+import { SmallSubheadersTooltip } from 'modules/create-market/components/common';
 
 import Styles from 'modules/market-cards/common.styles.less';
 import MarketCard from 'modules/market-cards/market-card';
-import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
+
+import MarketLink from 'modules/market/components/market-link/market-link';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
+import { selectSortedDisputingOutcomes } from 'modules/markets/selectors/market';
+import {
+  ConsensusFormatted,
+  FormattedNumber,
+  MarketData,
+  OutcomeFormatted,
+} from 'modules/types';
+import React, { Fragment } from 'react';
+import ReactTooltip from 'react-tooltip';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import { SmallSubheadersTooltip } from 'modules/create-market/components/common';
 
 export interface PercentProps {
   percent: number;

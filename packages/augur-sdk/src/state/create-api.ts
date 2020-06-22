@@ -1,6 +1,7 @@
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/utils';
 import { EthersSigner } from '@augurproject/contract-dependencies-ethers';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { logger, LoggerLevels } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { SupportedProvider } from 'ethereum-types';
@@ -9,7 +10,6 @@ import { ContractEvents } from '../api/ContractEvents';
 import { ZeroX } from '../api/ZeroX';
 import { Augur } from '../Augur';
 import { BaseConnector, EmptyConnector } from '../connector';
-import { SubscriptionEventName } from '../constants';
 import { ContractDependenciesGSN } from '../lib/contract-deps';
 import { WarpController } from '../warp/WarpController';
 import { Controller } from './Controller';
@@ -118,19 +118,16 @@ export async function createClient(
     enableFlexSearch
   );
 
-  // Delay loading of the browser mesh until we're finished syncing
-  client.events.once(SubscriptionEventName.BulkSyncComplete, () => {
-    if (!config?.sdk?.enabled && config.zeroX?.mesh?.enabled && createBrowserMesh) {
-      // This function is passed in and takes care of assigning it to the
-      // zeroX instance. This is largely due to the need to have special
-      // casing for if the mesh dies and we want to restart it. This is
-      // passed in as a function so all we need in this file is an
-      // interface instead of actually import @0x/mesh-browser -- since
-      // that would attempt to start the wasm client in nodejs and cause
-      // everything to die.
-      createBrowserMesh(config, ethersProvider, zeroX);
-    }
-  });
+  if (!config?.sdk?.enabled && config.zeroX?.mesh?.enabled && createBrowserMesh) {
+    // This function is passed in and takes care of assigning it to the
+    // zeroX instance. This is largely due to the need to have special
+    // casing for if the mesh dies and we want to restart it. This is
+    // passed in as a function so all we need in this file is an
+    // interface instead of actually import @0x/mesh-browser -- since
+    // that would attempt to start the wasm client in nodejs and cause
+    // everything to die.
+    createBrowserMesh(config, ethersProvider, zeroX);
+  }
 
   return client;
 }
@@ -172,6 +169,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
   );
   const db = DB.createAndInitializeDB(
     Number(config.networkId),
+    config.uploadBlockNumber,
     logFilterAggregator,
     client,
     config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled

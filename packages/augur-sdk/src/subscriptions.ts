@@ -55,7 +55,7 @@ export class Subscriptions extends EventEmitter {
   }
 
   off(event: string | symbol, listener: (...args: any[]) => void): this {
-    this.parentEmitter.on(event, listener);
+    this.parentEmitter.off(event, listener);
     super.off(event, listener);
     return this;
   }

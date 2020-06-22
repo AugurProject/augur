@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { bignum } from "./bignum";
-import { prefixHex } from "./prefix-hex";
+import { prefixHex } from "./hex";
 import { wrap } from "./wrap";
 
 import { FXP_ONE } from "./constants";

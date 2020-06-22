@@ -6,7 +6,7 @@ import * as constants from 'modules/common/constants';
 import Row from 'modules/common/row';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { TXEventName } from '@augurproject/sdk/src/constants';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { OPEN } from 'modules/common/constants';
 import { selectCancelingOrdersState } from 'appStore/select-state';
 import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';

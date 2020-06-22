@@ -1,26 +1,29 @@
+import type { Augur, Provider } from '@augurproject/sdk';
+import { SubscriptionEventName, TXEventName } from '@augurproject/sdk-lite';
+import { ZEROX_STATUSES } from 'modules/common/constants';
 import {
+  handleBulkOrdersLog,
   handleMarketMigratedLog,
   handleMarketsUpdatedLog,
   handleNewBlockLog,
+  handleReportingStateChanged,
+  handleSDKReadyEvent,
   handleTradingProceedsClaimedLog,
   handleTxAwaitingSigning,
   handleTxFailure,
+  handleTxFeeTooLow,
   handleTxPending,
+  handleTxRelayerDown,
   handleTxSuccess,
   handleUniverseForkedLog,
-  handleTxRelayerDown,
-  handleTxFeeTooLow,
-  handleSDKReadyEvent,
-  handleReportingStateChanged,
   handleWarpSyncHashUpdatedLog,
   handleZeroStatusUpdated,
   handleBulkOrdersLog,
+  handleLiquidityPoolUpdatedLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
-import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Augur, Provider, SubscriptionEventName, TXEventName, } from '@augurproject/sdk';
-import { ZEROX_STATUSES } from 'modules/common/constants';
+import { ThunkDispatch } from 'redux-thunk';
 
 const START_UP_EVENTS = {
   [SubscriptionEventName.SDKReady]: wrapLogHandler(handleSDKReadyEvent),
@@ -43,6 +46,7 @@ const START_UP_EVENTS = {
     () => handleZeroStatusUpdated(ZEROX_STATUSES.SYNCED)
   ),
   [SubscriptionEventName.BulkOrderEvent]: wrapLogHandler(handleBulkOrdersLog),
+  [SubscriptionEventName.LiquidityPoolUpdated]: wrapLogHandler(handleLiquidityPoolUpdatedLog),
 };
 
 const EVENTS = {

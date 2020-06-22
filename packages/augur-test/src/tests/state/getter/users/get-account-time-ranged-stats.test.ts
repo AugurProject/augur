@@ -1,4 +1,4 @@
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import { ACCOUNTS, TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';

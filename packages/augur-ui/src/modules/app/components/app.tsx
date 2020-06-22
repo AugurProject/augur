@@ -1,64 +1,65 @@
 // TODO -- this component needs to be broken up
-//         all logic related to sidebar(s) need to be housed w/in a separate component
+import type { SDKConfiguration } from '@augurproject/artifacts';
 
-import React, { Component } from 'react';
 import classNames from 'classnames';
-import isWindows from 'utils/is-windows';
-import Modal from 'modules/modal/containers/modal-view';
-import TopBar from 'modules/app/containers/top-bar';
-import SideNav from 'modules/app/components/side-nav/side-nav';
-import TopNav from 'modules/app/components/top-nav/top-nav';
-import Routes from 'modules/routes/components/routes/routes';
 import AlertsContainer from 'modules/alerts/containers/alerts-view';
 import ToastsContainer from 'modules/alerts/containers/toasts-view';
 
+import Styles from 'modules/app/components/app.styles.less';
+import SideNav from 'modules/app/components/side-nav/side-nav';
+import TopNav from 'modules/app/components/top-nav/top-nav';
+import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
+import TopBar from 'modules/app/containers/top-bar';
+import { ExternalLinkText } from 'modules/common/buttons';
 import {
-  MobileNavHamburgerIcon,
-  MobileNavCloseIcon,
-  XIcon,
-} from 'modules/common/icons';
-import parsePath from 'modules/routes/helpers/parse-path';
-import {
-  MARKETS,
-  ACCOUNT_SUMMARY,
-  MY_POSITIONS,
-  CREATE_MARKET,
-  DISPUTING,
-  REPORTING,
-  MARKET
-} from 'modules/routes/constants/views';
-import {
-  MODAL_NETWORK_CONNECT,
   MOBILE_MENU_STATES,
+  MODAL_NETWORK_CONNECT,
   TRADING_TUTORIAL,
   ZEROX_STATUSES,
 } from 'modules/common/constants';
 
-import Styles from 'modules/app/components/app.styles.less';
-import MarketsInnerNavContainer from 'modules/app/containers/markets-inner-nav';
 import {
-  Universe,
-  Blockchain,
-  LoginAccount,
-  Notification,
+  MobileNavCloseIcon,
+  MobileNavHamburgerIcon,
+  XIcon,
+} from 'modules/common/icons';
+import { StatusErrorMessage } from 'modules/common/labels';
+import Modal from 'modules/modal/containers/modal-view';
+import ForkingBanner from 'modules/reporting/containers/forking-banner';
+import Routes from 'modules/routes/components/routes/routes';
+import {
+  AFFILIATE_NAME,
+  MARKET_ID_PARAM_NAME,
+} from 'modules/routes/constants/param-names';
+import {
+  ACCOUNT_SUMMARY,
+  CREATE_MARKET,
+  DISPUTING,
+  MARKET,
+  MARKETS,
+  MY_POSITIONS,
+  REPORTING,
+} from 'modules/routes/constants/views';
+import makePath from 'modules/routes/helpers/make-path';
+import parsePath from 'modules/routes/helpers/parse-path';
+import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
+import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { HelmetTag } from 'modules/seo/helmet-tag';
+import {
   AccountBalances,
+  AppStatus,
+  Blockchain,
   CoreStats,
   FormattedNumber,
-  AppStatus,
+  LoginAccount,
+  Notification,
+  Universe,
 } from 'modules/types';
-import ForkingBanner from 'modules/reporting/containers/forking-banner';
-import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
-import {
-  MARKET_ID_PARAM_NAME,
-  AFFILIATE_NAME,
-} from 'modules/routes/constants/param-names';
-import makePath from 'modules/routes/helpers/make-path';
-import { ExternalLinkText } from 'modules/common/buttons';
-import { HelmetTag } from 'modules/seo/helmet-tag';
-import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
-import { SDKConfiguration } from '@augurproject/artifacts';
-import { StatusErrorMessage } from 'modules/common/labels';
+import React, { Component } from 'react';
+import isWindows from 'utils/is-windows';
 import { Ox_STATUS } from '../actions/update-app-status';
+
+//         all logic related to sidebar(s) need to be housed w/in a separate component
 
 interface AppProps {
   notifications: Notification[];
@@ -224,7 +225,7 @@ export default class AppView extends Component<AppProps> {
       updateCurrentBasePath,
       updateMobileMenuState,
       sidebarStatus,
-      modal
+      modal,
     } = this.props;
     if (isMobile !== prevProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
@@ -530,7 +531,8 @@ export default class AppView extends Component<AppProps> {
               className={classNames(Styles.Main__wrap, {
                 [Styles['Main__wrapMarkets']]: currentPath === MARKETS,
                 [Styles.StatusErrorShowing]: statusErrorShowing,
-                [Styles.StatusErrorShowingMarket]: statusErrorShowing && currentPath === MARKET,
+                [Styles.StatusErrorShowingMarket]:
+                  statusErrorShowing && currentPath === MARKET,
                 [Styles['TopBarOpen']]:
                   sidebarStatus.mobileMenuState ===
                   MOBILE_MENU_STATES.SIDEBAR_OPEN,

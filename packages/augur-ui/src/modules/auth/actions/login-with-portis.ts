@@ -30,8 +30,10 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
     try {
       // Use require instead of import for wallet SDK packages
       // to conditionally load web3 into the DOM
-      const Portis = require('@portis/web3');
-      const Web3 = require('web3');
+      const [{default: Portis}, {default: Web3}] = await Promise.all([
+        import(/* webpackChunkName: 'portis' */ '@portis/web3'),
+        import(/* webpackChunkName: 'web3' */ 'web3')
+      ]);
       const portis = new Portis(
         PORTIS_API_KEY,
         portisNetwork === 'localhost' ? localPortisNetwork : portisNetwork,
@@ -102,7 +104,7 @@ export const loginWithPortis = (forceRegisterPage = false) => async (
 
       await web3.eth.getAccounts();
     } catch (error) {
-      document.querySelector('.por_portis-container').remove();
+      document.querySelector('.por_portis-container')?.remove();
       throw error;
     }
   } else {

@@ -1,14 +1,14 @@
 import { CompilerOutput } from 'solc';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { EthersFastSubmitWallet } from '@augurproject/core';
-import { ContractAddresses } from '@augurproject/artifacts';
+import { ContractAddresses } from '@augurproject/utils';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import { ContractDeployer } from '@augurproject/core';
 import { HDNode } from 'ethers/utils';
 import { Wallet } from 'ethers';
 
 import { Account } from '../constants';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/utils';
 
 export interface UsefulContractObjects {
   addresses: ContractAddresses;

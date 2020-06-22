@@ -23,6 +23,10 @@ console.log(`
 
     app element       -- window.app
     state data        -- window.state
+  -------------------------------------------
+  Configuration
+
+  ${JSON.stringify(process.env.CONFIGURATION, null, 2)}
   *******************************************
 `);
 

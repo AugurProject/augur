@@ -1,5 +1,5 @@
-import { SDKConfiguration } from '@augurproject/artifacts';
-import { mergeConfig, validConfigOrDie } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/utils';
+import { mergeConfig, validConfigOrDie } from '@augurproject/utils';
 
 export * from '@augurproject/tools/build/libs/LocalAugur';
 export * from '@augurproject/tools/build/libs/MakeDbMock';
