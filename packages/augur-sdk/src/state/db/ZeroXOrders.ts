@@ -155,7 +155,7 @@ export class ZeroXOrders extends AbstractTable {
     this.augur.events.on(SubscriptionEventName.ZeroXRPCOrderEvent, this.handleOrderEvent);
   }
 
-  delete() {
+  async delete() {
     this.augur.events.off(SubscriptionEventName.ZeroXStatusReady, this.cacheOrdersAndSync);
     this.augur.events.off(SubscriptionEventName.ZeroXMeshOrderEvent, this.handleOrderEvent);
     this.augur.events.off(SubscriptionEventName.ZeroXRPCOrderEvent, this.handleOrderEvent);

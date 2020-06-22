@@ -319,6 +319,8 @@ export class DB {
     this.syncableDatabases = {};
 
     await Promise.all([
+      this.syncStatus.delete(),
+      this.warpCheckpoints.delete(),
       this.disputeDatabase.delete(),
       this.currentOrdersDatabase.delete(),
       this.marketDatabase.delete(),

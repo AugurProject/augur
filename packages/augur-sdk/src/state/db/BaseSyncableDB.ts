@@ -1,7 +1,6 @@
 import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { ParsedLog } from '@augurproject/types';
 import * as _ from 'lodash';
-import Dexie from "dexie";
 import { Augur } from '../../Augur';
 import { BaseDocument } from './AbstractTable';
 import { DB } from './DB';
@@ -33,7 +32,7 @@ export class BaseSyncableDB extends RollbackTable {
 
   async delete() {
     this.db.unregisterEventListener(this.eventName, this.addNewBlock);
-    return Dexie.delete(this.dbName);
+    return super.delete();
   }
 
   protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
