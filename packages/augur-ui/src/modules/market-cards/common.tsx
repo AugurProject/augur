@@ -1051,8 +1051,8 @@ export const SubMarketCollapsible = ({
       })}
     >
       <div>
-        <h6>{title}</h6>
         <button onClick={() => setIsCollapsed(!isCollapsed)}>
+          <h6>{title}</h6>
           {ThickChevron}
         </button>
       </div>
