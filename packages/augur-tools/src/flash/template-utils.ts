@@ -27,18 +27,25 @@ export const validateMarketTemplate = (
   longDescription: string,
   endTime: number,
   creationTime: number,
+  categoriesString: string,
 ): string => {
   try {
     const extraInfoTemplate = JSON.parse(templateInfo) as ExtraInfoTemplate;
     let outcomes = [];
+    let categories = [];
     if (outcomesString) {
       outcomes = outcomesString.split(',');
     }
+    if (categoriesString) {
+      categories = categoriesString.split(',');
+    }
+
     let details = longDescription;
     if (longDescription) {
       const splits = longDescription.split('\\n');
       details = splits.join('\n');
     }
+
     const endTimeHex = new BigNumber(endTime).toHexString();
     const creationTimeHex = new BigNumber(creationTime).toHexString();
     const errors = [];
@@ -49,6 +56,7 @@ export const validateMarketTemplate = (
       details,
       endTimeHex,
       creationTimeHex,
+      categories,
       errors
     );
 
