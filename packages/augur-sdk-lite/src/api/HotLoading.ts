@@ -8,14 +8,14 @@ import {
 } from '../constants';
 import {
   calculatePayoutNumeratorsValue,
-  convertOnChainPriceToDisplayPrice,
   marketTypeToName,
-  numTicksToTickSize,
   PayoutNumeratorValue,
-} from '../utils';
-import {
-  MarketInfoOutcome
+  MarketInfoOutcome,
 } from '../markets';
+import {
+  convertOnChainPriceToDisplayPrice,
+  numTicksToTickSize,
+} from '@augurproject/utils'
 
 export interface GetMarketDataParams {
   market: string;

@@ -1,6 +1,9 @@
 import { ContractInterfaces } from '@augurproject/core';
 import {
+  calculatePayoutNumeratorsValue,
+  describeUniverseOutcome,
   GENESIS,
+  marketTypeToName,
   MarketData,
   TokenType,
   UniverseCreatedLog,
@@ -10,9 +13,6 @@ import { BigNumber } from 'bignumber.js';
 import * as t from 'io-ts';
 import {
   Augur,
-  calculatePayoutNumeratorsValue,
-  describeUniverseOutcome,
-  marketTypeToName,
 } from '../../';
 import { DB } from '../db/DB';
 import { Getter } from './Router';

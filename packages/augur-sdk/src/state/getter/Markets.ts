@@ -1,4 +1,6 @@
 import {
+  calculatePayoutNumeratorsValue,
+  getOutcomeValue,
   CategoryStat,
   CategoryStats,
   defaultReportingFeeDivisor,
@@ -40,7 +42,6 @@ import {
   numTicksToTickSize,
   QUINTILLION,
 } from '../../index';
-import { calculatePayoutNumeratorsValue, getOutcomeValue } from '../../utils';
 import { DB } from '../db/DB';
 import { MarketFields } from '../db/SyncableFlexSearch';
 import {

@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === "development") {
       publicPath: config.output.publicPath,
       compress: true,
       watchOptions: {
-        ignored: /node_modules/
+        ignored: /node_modules\/(?!@augurproject)/
       },
       stats: {
         colors: true

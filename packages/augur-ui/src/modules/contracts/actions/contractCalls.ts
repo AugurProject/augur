@@ -11,8 +11,7 @@ import type {
   PlaceTradeDisplayParams,
   SimulateTradeData,
 } from '@augurproject/sdk';
-import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
-import { ExtraInfoTemplate } from '@augurproject/sdk-lite';
+import { ExtraInfoTemplate, calculatePayoutNumeratorsArray  } from '@augurproject/sdk-lite';
 import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
@@ -1117,6 +1116,8 @@ export async function migrateThroughOneFork(
   description: string = ''
 ) {
   try {
+    const Augur = augurSdk.get();
+    const market = Augur.getMarket(marketId);
     market.migrateThroughOneFork(payoutNumerators, description);
   } catch (e) {
     console.error('Could not migrate market', e);
