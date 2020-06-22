@@ -110,6 +110,7 @@ export interface SDKConfiguration {
   logLevel?: LoggerLevels,
   showReloadModal?: boolean,
   averageBlocktime?: number,
+  trackBestOffer?: boolean,
 };
 
 export interface ContractAddresses {
@@ -264,7 +265,8 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   uploadBlockNumber: 0,
   logLevel: LoggerLevels.warn,
   showReloadModal: true,
-  averageBlocktime: 2000
+  averageBlocktime: 2000,
+  trackBestOffer: false
 };
 
 export function sanitizeConfig(config: RecursivePartial<SDKConfiguration>): RecursivePartial<SDKConfiguration> {

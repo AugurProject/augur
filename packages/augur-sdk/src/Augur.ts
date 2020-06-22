@@ -150,14 +150,18 @@ export class Augur<TProvider extends Provider = Provider> {
     );
     this.warpSync = new WarpSync(this);
     this.hotLoading = new HotLoading(this);
-    this.bestOffer = new BestOffer(this);
     this.onChainTrade = new OnChainTrade(this);
     this.trade = new Trade(this);
+    this.gsn = new GSN(this.provider, this);
+    this.uniswap = new Uniswap(this);
+
+    if (this.config.trackBestOffer) {
+      this.bestOffer = new BestOffer(this);
+    }
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
     }
-    this.gsn = new GSN(this.provider, this);
-    this.uniswap = new Uniswap(this);
+
     this.registerTransactionStatusEvents();
   }
 

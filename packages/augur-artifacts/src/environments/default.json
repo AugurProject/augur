@@ -66,5 +66,6 @@
   "uploadBlockNumber": 0,
   "logLevel": 3,
   "showReloadModal": true,
-  "averageBlocktime": 2000
+  "averageBlocktime": 2000,
+  "trackBestOffer": false
 }
