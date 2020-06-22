@@ -15,8 +15,8 @@ const templateValidations = [
     endTime: '1593061200',
     creationTime: '1592844948',
     resolutionRules: 'Person named shall be indicted or otherwise formally charged with a U.S. federal crime, as publicly confirmed on or before date by 11:59PM eastern time (ET) in market question by an authorized representative of the charging agency(ies) or judicial venue(s).',
-    categories: 'Politics,US Politics',
-    result: 'success'
+    categories: 'Sports,Golf',
+    result: 'templated market does not have correct categories'
   },
 ];
 
