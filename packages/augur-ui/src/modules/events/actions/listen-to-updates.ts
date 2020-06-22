@@ -10,6 +10,7 @@ import {
   handleWarpSyncHashUpdatedLog,
   handleZeroStatusUpdated,
   handleBulkOrdersLog,
+  handleLiquidityPoolUpdatedLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { ThunkDispatch } from 'redux-thunk';
@@ -17,7 +18,7 @@ import { Action } from 'redux';
 import { Augur, Provider, SubscriptionEventName, TXEventName, } from '@augurproject/sdk';
 import { ZEROX_STATUSES } from 'modules/common/constants';
 
-const StartUpEvents = {
+const START_UP_EVENTS = {
   [SubscriptionEventName.SDKReady]: wrapLogHandler(handleSDKReadyEvent),
   [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
     handleMarketsUpdatedLog
@@ -38,6 +39,7 @@ const StartUpEvents = {
     () => handleZeroStatusUpdated(ZEROX_STATUSES.SYNCED)
   ),
   [SubscriptionEventName.BulkOrderEvent]: wrapLogHandler(handleBulkOrdersLog),
+  [SubscriptionEventName.LiquidityPoolUpdated]: wrapLogHandler(handleLiquidityPoolUpdatedLog),
 };
 
 const EVENTS = {
@@ -65,25 +67,27 @@ const EVENTS = {
   [TXEventName.FeeTooLow]: wrapLogHandler(handleTxEvents),
 };
 
-export const listenToUpdates = (Augur: Augur<Provider>) => (
+export const listenToUpdates = (augur: Augur<Provider>) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) =>
-  Object.keys(EVENTS).map(e => {
-    Augur.on(e, log => dispatch(EVENTS[e](log)));
+  Object.keys(EVENTS).map((eventName) => {
+    const eventCallback = EVENTS[eventName];
+    augur.on(eventName, (log) => dispatch(eventCallback(log)));
   });
 
-export const listenForStartUpEvents = (Augur: Augur<Provider>) => (
+export const listenForStartUpEvents = (augur: Augur<Provider>) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) =>
-  Object.keys(StartUpEvents).map(e => {
-    Augur.on(e, log => dispatch(StartUpEvents[e](log)));
+  Object.keys(START_UP_EVENTS).map((eventName) => {
+    const eventCallback = START_UP_EVENTS[eventName];
+    augur.on(eventName, (log) => dispatch(eventCallback(log)));
   });
 
-export const unListenToEvents = (Augur: Augur<Provider>) => {
-  Object.keys(EVENTS).map(e => {
-    Augur.off(e);
+export const unListenToEvents = (augur: Augur<Provider>) => {
+  Object.keys(EVENTS).map((eventName) => {
+    augur.off(eventName);
   });
-  Object.keys(StartUpEvents).map(e => {
-    Augur.off(e);
+  Object.keys(START_UP_EVENTS).map((eventName) => {
+    augur.off(eventName);
   });
 };

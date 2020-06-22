@@ -182,7 +182,7 @@ export class ZeroXOrders extends AbstractTable {
       const event = {eventType, orderId: d.orderHash, ...d};
       this.augur.events.emit('OrderEvent', event);
       bulkOrderEvents.push(event);
-      this.augur.events.emit('DB:updated:ZeroXOrders', event);
+      this.augur.events.emit(SubscriptionEventName.DBUpdatedZeroXOrders, event);
     }
     documents = documents.filter((d: StoredOrder) => !canceledOrders[d.orderHash]);
 
@@ -203,7 +203,7 @@ export class ZeroXOrders extends AbstractTable {
       const event = {eventType, orderId: d.orderHash,...d};
       this.augur.events.emit('OrderEvent', event);
       bulkOrderEvents.push(event);
-      this.augur.events.emit('DB:updated:ZeroXOrders', event);
+      this.augur.events.emit(SubscriptionEventName.DBUpdatedZeroXOrders, event);
     }
     if (bulkOrderEvents.length > 0) this.augur.events.emit(SubscriptionEventName.BulkOrderEvent, { logs: bulkOrderEvents });
   }
@@ -281,7 +281,7 @@ export class ZeroXOrders extends AbstractTable {
       const event = {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder};
       this.augur.events.emit('OrderEvent', event);
       this.augur.events.emit(SubscriptionEventName.BulkOrderEvent, { logs: [event] });
-      this.augur.events.emit('DB:updated:ZeroXOrders', event);
+      this.augur.events.emit(SubscriptionEventName.DBUpdatedZeroXOrders, event);
       return false;
     }
     return true;

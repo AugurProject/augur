@@ -353,6 +353,29 @@ export const FormDetails = ({ onChange, onError, isTemplate}: FormDetailsProps) 
               subHeading={'Describe what users need to know to determine the outcome of the event.'}
               listItems={[
                 'If entering a date and time in Resolution Details, enter a date and time in the UTC-0 timezone.',
+                'If using a resolution source in the Resolution Details it must match and not contradict what is used in the Market Question.',
+                'A backup resolution source can be listed in the Resolution Details in addition to the primary resolution source, as long as the primary resolution source is used in the Market Question.'
+              ]}
+            />
+            <TextInput
+              type="textarea"
+              placeholder="Describe how the event should be resolved under different scenarios."
+              rows="3"
+              value={detailsText}
+              onChange={(value: string) => onChange('detailsText', value)}
+            />
+          </>
+        )}
+
+        {!isTemplate && (
+          <>
+            <InputHeading
+              name={'resolution'}
+              heading={'Resolution details'}
+              copyType={MARKET_COPY_LIST.RESOLUTION_DETAILS}
+              subHeading={'Describe what users need to know to determine the outcome of the event.'}
+              listItems={[
+                'If entering a date and time in Resolution Details, enter a date and time in the UTC-0 timezone.',
                 'Do not enter a resolution source in Resolution Details, it must be entered in the Market Question.'
               ]}
             />

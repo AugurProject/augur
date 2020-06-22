@@ -1,8 +1,6 @@
 import logError from 'utils/log-error';
 import { augurSdk } from 'services/augursdk';
 import { LoginAccount } from 'modules/types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { loadAccountDataFromLocalStorage } from './load-account-data-from-local-storage';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
@@ -14,6 +12,7 @@ import {
   CREATEAUGURWALLET,
   SUCCESS,
   MODAL_LOADING,
+  NULL_ADDRESS,
 } from 'modules/common/constants';
 import { TXEventName } from '@augurproject/sdk';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
@@ -90,15 +89,18 @@ export const updateSdk = async (
 
 export const createFundedGsnWallet = async () => {
   const { setWalletStatus } = AppStatus.actions;
+  const {
+    blockchain: { currentAugurTimestamp },
+    loginAccount: { affiliate },
+  } = AppStatus.get();
   try {
     addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending);
 
+    augurSdk.client.dependencies.setReferralAddress(affiliate || NULL_ADDRESS);
     await augurSdk.client.gsn.initializeWallet();
 
     setWalletStatus(WALLET_STATUS_VALUES.CREATED);
-    const {
-      blockchain: { currentAugurTimestamp },
-    } = AppStatus.get();
+    
     const timestamp = currentAugurTimestamp * 1000;
     const alert = {
       name: CREATEAUGURWALLET,
