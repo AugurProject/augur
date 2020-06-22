@@ -273,3 +273,6 @@ error: `outcomes values from substituted market question inputs are incorrect`
 error: `hash of resolution details is different than validation resolution rules hash`
 
 23. For unexpected result like a crash error will be formated like `unknown, ...` with catch exception.
+
+24. Templated markets need to be in the correct categories. ie. if template is located in Sports, Hockey then the created market needs to be in Sports, Hockey.
+error: `templated market does not have correct categories`
