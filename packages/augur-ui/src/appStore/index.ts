@@ -45,7 +45,7 @@ if (process.env.NODE_ENV === 'production') {
 
 const rootReducers = createReducer();
 // middleware
-const store = createStore(combineReducers({ ...rootReducers }), middleware);
+const store = createStore(() => {}, middleware);
 
 export type AppState = AppStateInterface;
 
