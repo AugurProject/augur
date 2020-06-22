@@ -1557,19 +1557,23 @@ async function processSportsbookMarketData(
   reportingFeeDivisor: BigNumber,
   params: t.TypeOf<typeof Markets.getMarketsParams>,
 ): Promise<MarketList> {
-  const categories = getMarketsCategoriesMeta(marketData);
   const groupHashes = _.uniq(_.map(marketData, 'groupHash'));
-  // TODO: categories should be for liquidity pools not individual markets
-  // const liquidityPools = _.uniq(_.map(marketData, 'liquidityPool'));
-  const groupMarkets = params.reportingStates
+  const liquidityPools = _.uniq(_.map(marketData, 'liquidityPool'));
+  // categories should be for liquidity pools not individual markets
+  const pooledMarkets = await db.Markets.where('liquidityPool').anyOfIgnoreCase(liquidityPools).toArray();
+  const keyedPools = _.groupBy(pooledMarkets, 'liquidityPool');
+  const firstMarketOfPool = _.reduce(_.keys(keyedPools), (agg, key) => [...agg, keyedPools[key][0]], []);
+  const categories = getMarketsCategoriesMeta(firstMarketOfPool);
+
+  const marketsLiquidityPools = params.reportingStates
     ? await db.Markets.filter(
         item =>
-          !!item.groupHash &&
+          !!item.liquidityPool &&
           item.reportingState === String(params.reportingStates)
       ).toArray()
-    : await db.Markets.filter(item => !!item.groupHash).distinct().toArray();
-  const keyedGroupedMarkets = _.keyBy(groupMarkets, 'groupHash');
-  const numMarketDocs = _.keys(keyedGroupedMarkets).length;
+    : await db.Markets.filter(item => !!item.liquidityPool).distinct().toArray();
+  const keyedLiquidityPoolMarkets = _.keyBy(marketsLiquidityPools, 'liquidityPool');
+  const numPooledMarketDocs = _.keys(keyedLiquidityPoolMarkets).length;
 
   // removed Invalid filter for sportsbook
   // TODO: add sorts specifically for sportsbook
@@ -1590,11 +1594,11 @@ async function processSportsbookMarketData(
     .toArray();
 
   // filter based on reportingState
-  const filteredOutCount = numMarketDocs - groupHashes.length;
+  const filteredOutCount = numPooledMarketDocs - liquidityPools.length;
 
   const meta = {
     filteredOutCount,
-    marketCount: marketData.length,
+    marketCount: liquidityPools.length,
   };
 
   marketData = marketData.slice(params.offset, params.offset + params.limit);
