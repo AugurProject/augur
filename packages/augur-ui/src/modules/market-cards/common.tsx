@@ -736,7 +736,7 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
         };
         data.push(outcomeObject);
       });
-    } else if (overUnderMarket) => {
+    } else if (overUnderMarket) {
       overUnderMarket.outcomesFormatted.forEach(outcome => {
         if (outcome.isInvalid) return;
         const outcomeObject = {
