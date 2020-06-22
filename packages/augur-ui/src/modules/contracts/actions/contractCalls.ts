@@ -1117,6 +1117,8 @@ export async function migrateThroughOneFork(
   description: string = ''
 ) {
   try {
+    const Augur = augurSdk.get();
+    const market = Augur.getMarket(marketId);
     market.migrateThroughOneFork(payoutNumerators, description);
   } catch (e) {
     console.error('Could not migrate market', e);
