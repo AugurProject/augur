@@ -4,8 +4,8 @@ import { ModalGlobalChat } from 'modules/modal/components/modal-global-chat';
 import { initialize3box } from 'modules/global-chat/actions/initialize-3box';
 import { AppStatus } from 'modules/app/store/app-status';
 
-const mapStateToProps = ({ initialized3box }) => {
-  const { loginAccount, env, modal } = AppStatus.get();
+const mapStateToProps = () => {
+  const { loginAccount, env, modal, initialized3box } = AppStatus.get();
   const signer = loginAccount.meta?.signer;
 
   const defaultChatProps = {
@@ -22,7 +22,7 @@ const mapStateToProps = ({ initialized3box }) => {
 
 const mapDispatchToProps = dispatch => ({
   closeModal: () => AppStatus.actions.closeModal(),
-  initialize3box: (address, box, profile) => dispatch(initialize3box(address, box, profile)),
+  initialize3box: (address, box, profile) => initialize3box(address, box, profile),
 });
 
 export default withRouter(
