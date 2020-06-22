@@ -812,8 +812,19 @@ export function isValidYearYearRangeInQuestion(
   }, true);
 }
 
-function isMarketInAllCorrectCategories(categories: string[], requiredCategories: string[]): boolean {
-  return requiredCategories.reduce((p, c, index) => c.toLowerCase() !== categories[index].toLowerCase() ? false : p, true);
+function isMarketInAllCorrectCategories(
+  categories: string[],
+  requiredCategories: string[]
+): boolean {
+  if ((!categories || categories.length === 0) && requiredCategories.length > 0)
+    return false;
+  return requiredCategories.reduce(
+    (p, c, index) =>
+      String(c).toLowerCase() !== String(categories[index]).toLowerCase()
+        ? false
+        : p,
+    true
+  );
 }
 
 export const isTemplateMarket = (
