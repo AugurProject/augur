@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classNames';
+import classNames from 'classnames';
 
 import { Gear, CheckMark } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
