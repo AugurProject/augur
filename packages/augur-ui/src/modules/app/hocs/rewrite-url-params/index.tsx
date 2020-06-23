@@ -5,7 +5,7 @@ import { RouteComponentProps } from "react-router-dom";
 
 import makeQuery from "modules/routes/helpers/make-query";
 
-export const RewriteUrlParams = (windowRef: Window) => (BaseCmp: React.ComponentType) => {
+export const RewriteUrlParams = (windowRef: Window, BaseCmp: React.ComponentType) => {
   const WrapperCmp: React.FC<RouteComponentProps<{}>> = props => {
     const { location } = props;
     const searchValues = parseQuery(location.search);
