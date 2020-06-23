@@ -1,7 +1,5 @@
 import { updateSdk } from 'modules/auth/actions/update-sdk';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import { PersonalSigningWeb3Provider } from 'utils/personal-signing-web3-provider';
 import {
   ACCOUNT_TYPES,
@@ -10,7 +8,6 @@ import {
   HELP_CENTER_THIRD_PARTY_COOKIES,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
-import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
 import { AppStatus } from 'modules/app/store/app-status';
 

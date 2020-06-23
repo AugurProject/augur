@@ -73,18 +73,18 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
             callback: () => closeModal(),
           });
         }
-        await dispatch(loginWithInjectedWeb3());
+        await loginWithInjectedWeb3();
       }
       if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-        await dispatch(loginWithPortis(false));
+        await loginWithPortis(false);
       }
 
       if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
-        await dispatch(loginWithFortmatic());
+        await loginWithFortmatic();
       }
 
       if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
-        await dispatch(loginWithTorus());
+        await loginWithTorus();
       }
     }
   } catch (error) {

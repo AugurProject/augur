@@ -1,25 +1,23 @@
 import React, { lazy, Suspense, useState } from 'react';
 import Styles from 'modules/global-chat/components/global-chat.styles.less';
 import { SecondaryButton } from 'modules/common/buttons';
-import { Initialized3box } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { ThickChevron, Close } from 'modules/common/icons';
 import classNames from 'classnames';
+import { initialize3box } from '../actions/initialize-3box';
 
 const ThreeBoxChat = lazy(() =>
   import('modules/global-chat/components/three-box-chat')
 );
 
-export interface GlobalChatProps {
-  provider: any;
-  whichChatPlugin: string;
-  initialize3box: Function;
-  initialized3box: Initialized3box;
-}
-
-export const GlobalChat = ({ provider, whichChatPlugin, initialize3box, initialized3box }: GlobalChatProps) => {
-  const { theme, isLogged } = useAppStatusStore();
+export const GlobalChat = () => {
+  let { theme, isLogged, loginAccount, env, initialized3box } = useAppStatusStore();
   const [show, setShow] = useState(false);
+  const signer = loginAccount.meta?.signer;
+
+  const whichChatPlugin = env.plugins?.chat;
+  const provider = signer ? signer.provider?._web3Provider : false;
+  initialized3box = signer ? initialized3box : false;
 
   return (
     <div

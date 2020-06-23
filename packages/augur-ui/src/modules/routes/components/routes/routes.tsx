@@ -17,12 +17,6 @@ import { page } from 'services/analytics/helpers';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { THEMES } from 'modules/common/constants';
 
-const mapStateToProps = (state: AppState) => ({});
-
-const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  page: (eventName, payload) => dispatch(page(eventName, payload)),
-});
-
 const Routes = p => {
   const { theme } = useAppStatusStore();
 
@@ -73,9 +67,4 @@ const Routes = p => {
 
 export default isLocalHost()
   ? withRouter(Routes)
-  : withRouter(
-      connect(
-        mapStateToProps,
-        mapDispatchToProps
-      )(withPageAnalytic(Routes))
-    );
+  : withRouter(withPageAnalytic(Routes));

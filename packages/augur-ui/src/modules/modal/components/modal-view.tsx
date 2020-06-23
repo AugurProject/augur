@@ -20,7 +20,6 @@ import { Loading as ModalLoading } from 'modules/modal/loading';
 import { ModalUniverseSelector } from 'modules/modal/components/modal-universe-selector';
 import { ModalTestBet } from 'modules/modal/onboarding-modals';
 import { ModalAugurP2P } from 'modules/modal/onboarding-modals';
-import ModalGlobalChat from 'modules/modal/containers/modal-global-chat';
 import { ModalAugurUsesDai } from 'modules/modal/onboarding-modals';
 import { ModalTutorialOutro } from 'modules/modal/onboarding-modals';
 import { ModalTutorialIntro } from 'modules/modal/onboarding-modals';
@@ -34,6 +33,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { track, MODAL_VIEWED } from 'services/analytics/helpers';
 import { ModalAccountCreated } from 'modules/modal/onboarding-modals';
 import { ModalCreateMarket, ModalDaiFaucet, ModalCreationHelp, ModalFinalize, ModalDiscard, ModalDrQuickGuide, ModalHelp, ModalRepFaucet, ModalSignTransaction, ModalMarketLoading, ModalOdds, ModalInvalidMarketRules, ModalNetworkMismatch, ModalNetworkDisabled, ModalMigrateMarket, ModalWalletError, ModalInitializeAccounts } from '../message-modals';
+import { ModalGlobalChat } from './modal-global-chat';
 
 const ESCAPE_KEYCODE = 27;
 

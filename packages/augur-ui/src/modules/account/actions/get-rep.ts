@@ -1,6 +1,4 @@
 import logError from "utils/log-error";
-import { Action } from "redux";
-import { ThunkDispatch } from "redux-thunk";
 import { NodeStyleCallback } from "modules/types";
 import { getRep } from "modules/contracts/actions/contractCalls";
 

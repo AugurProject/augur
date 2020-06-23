@@ -9,7 +9,7 @@ import {
   ExternalLinkText,
   ProcessingButton,
 } from 'modules/common/buttons';
-import GlobalChat from 'modules/global-chat/containers/global-chat';
+import { GlobalChat } from 'modules/global-chat/components/global-chat.tsx';
 import { NavMenuItem } from 'modules/types';
 import { helpIcon, Dot } from 'modules/common/icons';
 import {

@@ -12,7 +12,7 @@ import TradingForm from 'modules/trading/components/trading-form';
 import MarketChartsPane from "modules/market-charts/components/market-charts-pane/market-charts-pane";
 import parseMarketTitle from 'modules/markets/helpers/parse-market-title';
 import MarketTradeHistory from 'modules/market/components/market-trade-history/market-trade-history';
-import MarketComments from 'modules/market/containers/market-comments';
+import { MarketComments } from 'modules/market/components/common/comments/market-comments';
 import {
   CATEGORICAL,
   BUY,

@@ -1,8 +1,6 @@
 import { windowRef } from 'utils/window-ref';
 import { updateSdk } from 'modules/auth/actions/update-sdk';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import { Web3Provider } from 'ethers/providers';
 import {
   ACCOUNT_TYPES,
@@ -14,7 +12,6 @@ import {
 } from 'modules/common/constants';
 import { augurSdk } from 'services/augursdk';
 import { logout } from 'modules/auth/actions/logout';
-import { AppState } from 'appStore';
 import { AppStatus } from 'modules/app/store/app-status';
 
 // MetaMask, dapper, Mobile wallets
