@@ -10,22 +10,18 @@ const ThreeBoxComments = lazy(() =>
   import('modules/market/components/common/comments/three-box-comments')
 );
 
-const DEFAULT_NUM_POSTS = 10;
-const COLOR_SCHEME = 'dark'; // this might change depending on themes
 const THREE_BOX_ADMIN_ACCOUNT = '0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb';
 
 export const MarketComments = () => {
-  let { isLogged, loginAccount, env, initialized3box: {numPosts, colorScheme} } = useAppStatusStore();
+  let { isLogged, loginAccount, env, initialized3box } = useAppStatusStore();
   const signer = loginAccount.meta?.signer;
-
+  const { numPosts, colorScheme } = initialized3box;
  
   const adminEthAddr = THREE_BOX_ADMIN_ACCOUNT;
-  colorScheme = colorScheme || COLOR_SCHEME;
   const networkId = getNetworkId();
-  numPosts = numPosts || DEFAULT_NUM_POSTS;
   const whichCommentPlugin = env.plugins?.comments;
   const provider = signer ? signer.provider?._web3Provider : false;
-  initialized3box = signer ? initialized3box : false;
+  const is3BoxInitialized = signer ? initialized3box : false;
 
   return isLogged ? (
     <section className={Styles.Comments}>
@@ -36,7 +32,7 @@ export const MarketComments = () => {
             adminEthAddr={adminEthAddr}
             provider={provider}
             initialize3box={initialize3box}
-            initialized3box={initialized3box}
+            initialized3box={is3BoxInitialized}
             marketId={marketId}
           />
         </Suspense>
