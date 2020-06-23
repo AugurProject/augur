@@ -120,6 +120,7 @@ jobs:
           key: 'contract | "$(Agent.OS)" | packages/augur-artifacts/src/contracts.json'
           path: /tmp/augur
         displayName: Cache seed file
+      - script: docker system prune -f
       - script: rm -rf /tmp/augur/seed.json
       - script: yarn test $(TEST_ARGS) --verbose --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
@@ -362,6 +363,7 @@ jobs:
       - script: |
           set -exuo pipefail
           export DOCKER_BUILDKIT=1
+          docker system prune -f
           docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg fake_time=$(FAKE_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
         displayName: 'build $(IMAGE_NAME) image'
       - task: Docker@1
