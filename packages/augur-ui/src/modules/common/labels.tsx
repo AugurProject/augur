@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
 import Styles from 'modules/common/labels.styles.less';
@@ -74,7 +73,6 @@ import { hasTemplateTextInputs } from '@augurproject/artifacts';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
-import { AppState } from 'appStore';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
 import { getEthReserve } from 'modules/auth/helpers/get-eth-reserve';

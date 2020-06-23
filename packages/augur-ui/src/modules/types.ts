@@ -11,7 +11,6 @@ import {
   OUTCOME_ID_PARAM_NAME,
   CREATE_MARKET_FORM_PARAM_NAME,
 } from './routes/constants/param-names';
-import { AnyAction } from 'redux';
 import { EthersSigner } from 'augur-contract-dependencies-ethers/build/ContractDependenciesEthers';
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
@@ -708,11 +707,6 @@ export type NodeStyleCallback = (
 ) => void;
 
 export type DataCallback = (result?: any) => void;
-
-export interface BaseAction extends AnyAction {
-  type: string;
-  data?: any;
-}
 
 export interface EthereumWallet {
   appId: string;
