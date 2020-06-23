@@ -1,5 +1,5 @@
 import { logger } from '@augurproject/utils';
-import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
+import { MarketInfo } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import { ContractAPI } from '..';
 import {

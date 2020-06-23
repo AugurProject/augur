@@ -1,16 +1,11 @@
-import { Provider } from '..';
+import { NULL_ADDRESS } from '@augurproject/sdk-lite';
+import { BigNumber } from 'bignumber.js';
 import { Augur } from '../Augur';
-import { BigNumber } from "bignumber.js";
-import { NULL_ADDRESS } from '../constants';
 
 const SECONDS_FROM_NOW_DEADLINE = 3600; // An hour
 
 export class Uniswap {
-
-  constructor(
-    private readonly augur: Augur,
-  ) {
-  }
+  constructor(private readonly augur: Augur) {}
 
   /**
    * @desc Adds liquidity to a normal token exchange
@@ -28,7 +23,16 @@ export class Uniswap {
   ): Promise<void> {
     const account = await this.augur.getAccount();
     const deadline = new BigNumber(Date.now() + SECONDS_FROM_NOW_DEADLINE);
-    await this.augur.contracts.uniswap.addLiquidity(token0, token1, amount0Desired, amount1Desired, amount0Min, amount1Min, account, deadline);
+    await this.augur.contracts.uniswap.addLiquidity(
+      token0,
+      token1,
+      amount0Desired,
+      amount1Desired,
+      amount0Min,
+      amount1Min,
+      account,
+      deadline
+    );
   }
 
   /**
@@ -47,7 +51,13 @@ export class Uniswap {
   ): Promise<void> {
     const account = await this.augur.getAccount();
     const deadline = new BigNumber(Date.now() + SECONDS_FROM_NOW_DEADLINE);
-    await this.augur.contracts.uniswap.swapTokensForExactTokens(exactToken1Amount, maxToken0Amount, [token0, token1], account, deadline);
+    await this.augur.contracts.uniswap.swapTokensForExactTokens(
+      exactToken1Amount,
+      maxToken0Amount,
+      [token0, token1],
+      account,
+      deadline
+    );
   }
 
   /**
@@ -66,7 +76,13 @@ export class Uniswap {
   ): Promise<void> {
     const account = await this.augur.getAccount();
     const deadline = new BigNumber(Date.now() + SECONDS_FROM_NOW_DEADLINE);
-    await this.augur.contracts.uniswap.swapExactTokensForTokens(exactToken0Amount, minToken1Amount, [token0, token1], account, deadline);
+    await this.augur.contracts.uniswap.swapExactTokensForTokens(
+      exactToken0Amount,
+      minToken1Amount,
+      [token0, token1],
+      account,
+      deadline
+    );
   }
 
   /**
@@ -84,10 +100,16 @@ export class Uniswap {
     const account = await this.augur.getAccount();
     const wethAddress = this.augur.contracts.weth.address;
     const deadline = new BigNumber(Date.now() + SECONDS_FROM_NOW_DEADLINE);
-    await this.augur.contracts.uniswap.swapTokensForExactETH(exactETHAmount, maxTokenAmount, [token, wethAddress], account, deadline);
+    await this.augur.contracts.uniswap.swapTokensForExactETH(
+      exactETHAmount,
+      maxTokenAmount,
+      [token, wethAddress],
+      account,
+      deadline
+    );
   }
 
-   /**
+  /**
    * @desc Swaps an exact number of tokens in exchange for a minimum amount of ETH
    * @param {string} token the token address
    * @param {BigNumber} exactTokenAmount the exact amount of tokens in
@@ -102,7 +124,13 @@ export class Uniswap {
     const account = await this.augur.getAccount();
     const wethAddress = this.augur.contracts.weth.address;
     const deadline = new BigNumber(Date.now() + SECONDS_FROM_NOW_DEADLINE);
-    await this.augur.contracts.uniswap.swapExactTokensForETH(exactTokenAmount, minETHAmount, [token, wethAddress], account, deadline);
+    await this.augur.contracts.uniswap.swapExactTokensForETH(
+      exactTokenAmount,
+      minETHAmount,
+      [token, wethAddress],
+      account,
+      deadline
+    );
   }
 
   /**
@@ -120,7 +148,13 @@ export class Uniswap {
     const account = await this.augur.getAccount();
     const wethAddress = this.augur.contracts.weth.address;
     const deadline = new BigNumber(Date.now() + SECONDS_FROM_NOW_DEADLINE);
-    await this.augur.contracts.uniswap.swapETHForExactTokens(exactTokenAmount, [wethAddress, token], account, deadline, {attachedEth: maxETHAmount});
+    await this.augur.contracts.uniswap.swapETHForExactTokens(
+      exactTokenAmount,
+      [wethAddress, token],
+      account,
+      deadline,
+      { attachedEth: maxETHAmount }
+    );
   }
 
   /**
@@ -129,21 +163,23 @@ export class Uniswap {
    * @param {string} token1 the second token address
    * @returns {Promise<BigNumber>}
    */
-  async getExchangeRate(
-    token0: string,
-    token1: string,
-  ): Promise<BigNumber> {
-    const exchangeAddress = await this.augur.contracts.uniswapV2Factory.getPair_(token0, token1);
+  async getExchangeRate(token0: string, token1: string): Promise<BigNumber> {
+    const exchangeAddress = await this.augur.contracts.uniswapV2Factory.getPair_(
+      token0,
+      token1
+    );
     if (exchangeAddress === NULL_ADDRESS) {
-        throw new Error("Exchange does not exist");
+      throw new Error('Exchange does not exist');
     }
-    const exchange = this.augur.contracts.uniswapExchangeFromAddress(exchangeAddress);
+    const exchange = this.augur.contracts.uniswapExchangeFromAddress(
+      exchangeAddress
+    );
     const realToken0 = await exchange.token0_();
     const reserves = await exchange.getReserves_();
     if (realToken0 === token0) {
-        return reserves[0].div(reserves[1]);
+      return reserves[0].div(reserves[1]);
     } else {
-        return reserves[1].div(reserves[0]);
+      return reserves[1].div(reserves[0]);
     }
   }
 }

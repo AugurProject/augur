@@ -1,26 +1,29 @@
-import { ContractAPI } from '..';
-import { BigNumber } from 'bignumber.js';
-import {
-  flatten,
-  mapPromises,
-  ReadiedPromise,
-  cycle,
-  sleep,
-  waitForFunding,
-  randomSelect
-} from './util';
-import { Account } from '../constants';
-import { SDKConfiguration, mergeConfig, validConfigOrDie } from '@augurproject/artifacts';
-import { WSClient } from '@0x/mesh-rpc-client';
 import { Market } from '@augurproject/core/build/libraries/ContractInterfaces';
+import { ZeroXPlaceTradeDisplayParams } from '@augurproject/sdk';
+import { MarketInfo } from '@augurproject/sdk-lite';
+import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
+import {
+  mergeConfig,
+  SDKConfiguration,
+  validConfigOrDie,
+} from '@augurproject/utils';
+import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
+import { ContractAPI } from '..';
+import { Account } from '../constants';
 import { HDWallet } from '../libs/blockchain';
+import { stringTo32ByteHex } from '../libs/Utils';
 import { createTightOrderBookConfig } from './order-firehose';
 import { OrderBookShaper } from './orderbook-shaper';
-import { ZeroXPlaceTradeDisplayParams } from '@augurproject/sdk';
-import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
-import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { stringTo32ByteHex } from '../libs/Utils';
+import {
+  cycle,
+  flatten,
+  mapPromises,
+  randomSelect,
+  ReadiedPromise,
+  sleep,
+  waitForFunding,
+} from './util';
 
 export const FINNEY = new BigNumber(1e16);
 

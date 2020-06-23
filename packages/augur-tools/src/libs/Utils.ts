@@ -1,4 +1,4 @@
-import { SDKConfiguration, serializeConfig } from '@augurproject/artifacts';
+import { SDKConfiguration, serializeConfig } from '@augurproject/utils';
 import { ethers, providers } from 'ethers';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 

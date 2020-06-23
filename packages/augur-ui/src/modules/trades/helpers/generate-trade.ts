@@ -1,14 +1,13 @@
-import { createBigNumber } from "utils/create-big-number";
-import memoize from "memoizee";
-import { formatDai, formatShares, formatMarketShares } from "utils/format-number";
+import { MAX_FILLS_PER_TX } from '@augurproject/sdk-lite';
+import memoize from 'memoizee';
+import * as constants from 'modules/common/constants';
 import {
   calcOrderProfitLossPercents,
   calcOrderShareProfitLoss,
   calculateTotalOrderValue,
-} from "modules/trades/helpers/calc-order-profit-loss-percents";
-import * as constants from "modules/common/constants";
-import { MAX_FILLS_PER_TX } from '@augurproject/sdk';
-
+} from 'modules/trades/helpers/calc-order-profit-loss-percents';
+import { createBigNumber } from 'utils/create-big-number';
+import { formatDai, formatMarketShares } from 'utils/format-number';
 
 export const generateTrade = memoize(
   (market, outcomeTradeInProgress) => {

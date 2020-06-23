@@ -1,6 +1,6 @@
-import { createSelector } from 'reselect';
-import { Getters } from '@augurproject/sdk';
+import type { Getters } from '@augurproject/sdk';
 import { selectLoginAccountReportingState } from 'appStore/select-state';
+import { createSelector } from 'reselect';
 
 export const hasStakeInMarket = (state, marketId: string) => {
   if (!marketId) return false;

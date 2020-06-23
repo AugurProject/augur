@@ -71,12 +71,9 @@ import {
   SUMMER,
   TEAM_A,
   TEAM_B,
-  TemplateInputType,
   TENNIS,
-  TEXT_PLACEHOLDERS,
   TV_MOVIES,
   US_POLITICS,
-  ValidationType,
   WINTER,
   WNBA,
   WORLD,
@@ -84,8 +81,9 @@ import {
   SOCIAL_MEDIA,
   TWITTER,
   INSTAGRAM,
-} from './templates-template';
+} from '@augurproject/sdk-lite';
 
+import { TemplateInputType, TEXT_PLACEHOLDERS, ValidationType } from './templates-template';
 const YES_NO = 'YesNo';
 const CATEGORICAL = 'Categorical';
 const SCALAR = 'Scalar';

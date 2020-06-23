@@ -6,9 +6,12 @@
     "experimentalDecorators": true
   },
   "include": [
-    "src/**/*",
+    "src/**/*"
   ],
   "references": [
+    {
+      "path": "../augur-artifacts"
+    },
     {
       "path": "../augur-utils"
     }

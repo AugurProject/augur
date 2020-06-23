@@ -25,7 +25,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const isForking = !!forkingInfo;
   const marketId = ownProps.marketId;
   const market = selectMarket(marketId);
-  const { reportingState, endTime } = market;
+  const { endTime } = market;
 
   let show = isForking;
   let canMigrateMarkets = false;
@@ -36,12 +36,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     endTime
   );
 
-  const hasForkPassed =
-    isForking &&
-    dateHasPassed(
-      blockchain.currentAugurTimestamp * 1000,
-      forkingInfo.forkEndTime
-    );
+  const hasForkPassed = forkingInfo && forkingInfo.isForkingMarketFinalized;
 
   if (
     isForking &&
@@ -56,10 +51,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
       canMigrateMarkets = true;
     }
   }
-
-  const marketNeedsMigrating =
-    hasForkPassed &&
-    reportingState !== REPORTING_STATE.FINALIZED;
 
   const releasableRep = selectReportingWinningsByMarket(state);
   let hasReleaseRep = releasableRep.totalUnclaimedRep.gt(ZERO);
@@ -81,8 +72,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
   let buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
   let queueName = '';
   let queueId = '';
-  
-  if (marketNeedsMigrating && canMigrateMarkets) {
+
+  if (hasForkPassed && canMigrateMarkets) {
     title =
       'Fork has finalized. Please migrate this market to the new universe.';
     description = 'This market will be migrated to the winning universe and will no longer be viewable in the current universe.';
@@ -96,7 +87,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     }
   }
 
-  if (marketNeedsMigrating && !canMigrateMarkets) {
+  if (hasForkPassed && !canMigrateMarkets) {
     title =
       'Fork has finalized. REP on Winning Universe is needed to migrate markets ';
     buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;

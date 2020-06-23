@@ -1,7 +1,7 @@
 import { Abi } from "ethereum";
 import { Block, BlockTag } from "ethers/providers";
 import { Filter, Log, LogValues } from "@augurproject/types";
-import { NetworkId } from "@augurproject/artifacts";
+import { NetworkId } from "@augurproject/utils";
 import { ethers } from "ethers";
 import { JSONRPCRequestPayload, JSONRPCErrorCallback } from "ethereum-types";
 

@@ -30,7 +30,7 @@ import {
 
 import Styles from 'modules/swap/components/index.styles.less';
 import { ProcessingButton } from 'modules/common/buttons';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import type { SDKConfiguration } from '@augurproject/artifacts';
 import { augurSdk } from 'services/augursdk';
 
 interface SwapProps {

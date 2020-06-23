@@ -1,47 +1,59 @@
-import React, { Component, useState, useEffect } from 'react';
+import type { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
 
 import ChevronFlip from 'modules/common/chevron-flip';
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { PulseLoader } from 'react-spinners';
 import {
+  CATEGORY_PARAM_NAME,
+  CUSTOM,
+  SCALAR,
+  ZERO,
+  INVALID_OUTCOME_LABEL
+} from 'modules/common/constants';
+
+import Styles from 'modules/common/form.styles.less';
+import {
+  Arrow,
+  Calendar,
+  CheckMark,
+  Chevron,
+  Clock,
+  DirectionArrow,
+  Ellipsis,
+  EmptyCheckbox,
+  EmptyRadio,
+  ExclamationCircle,
+  FilledCheckbox,
+  FilledRadio,
+  LoadingEllipse,
+  OutlineChevron,
   RightAngle,
   SearchIcon,
   XIcon,
-  CheckMark,
-  OutlineChevron,
-  Ellipsis,
-  EmptyRadio,
-  FilledRadio,
-  EmptyCheckbox,
-  FilledCheckbox,
-  Chevron,
-  DirectionArrow,
-  Calendar,
-  Clock,
-  Arrow,
-  LoadingEllipse,
 } from 'modules/common/icons';
-import debounce from 'utils/debounce';
-import { CUSTOM, SCALAR, ZERO, CATEGORY_PARAM_NAME, INVALID_OUTCOME_LABEL } from 'modules/common/constants';
-import { ExclamationCircle } from 'modules/common/icons';
-import { Subheaders, DisputingButtonView } from 'modules/reporting/common';
-import { formatAttoRep, formatNumber } from 'utils/format-number';
-import ReportingBondsView from 'modules/reporting/containers/reporting-bonds-view';
-import DisputingBondsView from 'modules/reporting/containers/disputing-bonds-view';
-
-import Styles from 'modules/common/form.styles.less';
-import 'react-dates/initialize';
-import 'react-dates/lib/css/_datepicker.css';
+import MarkdownRenderer from 'modules/common/markdown-renderer';
+import { NameValuePair, SquareDropdown } from 'modules/common/selection';
+import { DisputingButtonView, Subheaders } from 'modules/reporting/common';
+import DisputingBondsView
+  from 'modules/reporting/containers/disputing-bonds-view';
+import ReportingBondsView
+  from 'modules/reporting/containers/reporting-bonds-view';
+import makeQuery from 'modules/routes/helpers/make-query';
+import {
+  DisputeInputtedValues,
+  MarketData,
+  QueryEndpoints,
+  SortedGroup,
+} from 'modules/types';
+import React, { Component, useEffect, useState } from 'react';
 import { SingleDatePicker } from 'react-dates';
-import { SquareDropdown, NameValuePair } from 'modules/common/selection';
+
+import 'react-dates/lib/css/_datepicker.css';
+import { PulseLoader } from 'react-spinners';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import debounce from 'utils/debounce';
+import { formatAttoRep } from 'utils/format-number';
 import { getTimezones, UTC_Default } from 'utils/get-timezones';
 import noop from 'utils/noop';
-import { Getters } from '@augurproject/sdk';
-import { MarketData, DisputeInputtedValues, SortedGroup, QueryEndpoints } from 'modules/types';
-import MarkdownRenderer from 'modules/common/markdown-renderer';
-import parseQuery from 'modules/routes/helpers/parse-query';
-import makeQuery from 'modules/routes/helpers/make-query';
 
 interface CheckboxProps {
   id: string;

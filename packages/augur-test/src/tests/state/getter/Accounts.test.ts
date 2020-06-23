@@ -1,11 +1,10 @@
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import { Action, Coin } from '@augurproject/sdk/build/state/getter/Accounts';
 import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
-import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { makeProvider } from '../../../libs';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { SDKConfiguration, stringTo32ByteHex } from '@augurproject/utils';
 
 describe('State API :: Accounts :: ', () => {
   let john: TestContractAPI;

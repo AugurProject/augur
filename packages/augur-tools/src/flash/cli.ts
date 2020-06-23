@@ -7,11 +7,15 @@ import { computeAddress } from 'ethers/utils';
 import * as fs from 'fs';
 import {
   buildConfig,
+} from '@augurproject/artifacts';
+
+import {
   validConfigOrDie,
   SDKConfiguration,
   mergeConfig,
-  RecursivePartial
-} from '@augurproject/artifacts';
+  RecursivePartial,
+} from '@augurproject/utils';
+
 import { addWarpSyncScripts } from './warp-sync';
 
 async function processAccounts(flash: FlashSession, args: any) {

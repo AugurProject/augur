@@ -1,17 +1,17 @@
-import { createSelector } from 'reselect';
+import type { Getters } from '@augurproject/sdk';
 import {
-  selectMarketInfosState,
   selectLoginAccountReportingState,
+  selectMarketInfosState,
   selectUniverseForkingState,
 } from 'appStore/select-state';
-import { selectMarket } from 'modules/markets/selectors/market';
-import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from 'modules/common/constants';
-import { Getters } from '@augurproject/sdk';
+import { selectMarket } from 'modules/markets/selectors/market';
 import {
   MarketReportClaimableContracts,
   marketsReportingCollection,
 } from 'modules/types';
+import { createSelector } from 'reselect';
+import { createBigNumber } from 'utils/create-big-number';
 import { formatAttoDai, formatAttoRep } from 'utils/format-number';
 
 export const selectReportingWinningsByMarket = createSelector(

@@ -1,13 +1,13 @@
-import {
-  cancelZeroXOpenOrder,
-  cancelZeroXOpenBatchOrders,
-} from 'modules/contracts/actions/contractCalls';
-import { ThunkDispatch } from 'redux-thunk';
-import { CANCELORDER } from 'modules/common/constants';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { addAlert } from 'modules/alerts/actions/alerts';
-import { Action } from 'redux';
-import { TXEventName } from '@augurproject/sdk';
+import { CANCELORDER } from 'modules/common/constants';
+import {
+  cancelZeroXOpenBatchOrders,
+  cancelZeroXOpenOrder,
+} from 'modules/contracts/actions/contractCalls';
 import { addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 
 const BATCH_CANCEL_MAX = 4;
 

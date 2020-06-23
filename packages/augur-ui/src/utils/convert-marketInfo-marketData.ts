@@ -1,31 +1,36 @@
-import { Getters } from '@augurproject/sdk';
-import { MarketData, OutcomeFormatted, ConsensusFormatted } from 'modules/types';
+import type { Getters } from '@augurproject/sdk';
 import {
-  REPORTING_STATE,
-  MARKET_OPEN,
-  MARKET_CLOSED,
-  MARKET_REPORTING,
+  ARCHIVED_MARKET_LENGTH,
   CATEGORICAL,
+  INVALID_OUTCOME_ID,
+  MARKET_CLOSED,
+  MARKET_OPEN,
+  MARKET_REPORTING,
+  REPORTING_STATE,
   SCALAR,
   SCALAR_DOWN_ID,
-  INVALID_OUTCOME_ID,
-  ARCHIVED_MARKET_LENGTH,
   SCALAR_UP_ID,
   INVALID_OUTCOME_LABEL,
 } from 'modules/common/constants';
+import { INVALID_OUTCOME } from 'modules/create-market/constants';
+import {
+  ConsensusFormatted,
+  MarketData,
+  OutcomeFormatted,
+} from 'modules/types';
+import { createBigNumber } from './create-big-number';
+import deepClone from './deep-clone';
 import { convertUnixToFormattedDate, getDurationBetween } from './format-date';
 import {
-  formatPercent,
+  formatAttoRep,
   formatDai,
   formatNone,
   formatNumber,
-  formatAttoRep,
+  formatPercent,
 } from './format-number';
-import { createBigNumber } from './create-big-number';
-import { keyBy } from './key-by';
 import { getOutcomeNameWithOutcome } from './get-outcome';
+import { keyBy } from './key-by';
 import moment = require('moment');
-import deepClone from './deep-clone';
 
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo,

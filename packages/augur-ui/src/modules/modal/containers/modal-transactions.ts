@@ -6,7 +6,7 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import { ThunkDispatch } from "redux-thunk";
 import { NodeStyleCallback } from "modules/types";
 import { augurSdk } from "services/augursdk";
-import { Getters } from "@augurproject/sdk";
+import type { Getters } from "@augurproject/sdk";
 import { Action } from "redux";
 
 const mapStateToProps = (state: AppState) => ({

@@ -15,18 +15,15 @@ import {
   Title,
 } from 'modules/modal/common';
 import {
-  BulkTxLabel,
-  LinearPropertyLabelProps,
-  ModalLabelNotice,
-  PendingLabel,
-} from 'modules/common/labels';
-import { BUY } from 'modules/common/constants';
-import { formatDai, formatMarketShares } from 'utils/format-number';
-import Styles from 'modules/modal/modal.styles.less';
-import OpenOrdersTable from 'modules/market/components/market-orders-positions-table/open-orders-table';
-import { LiquidityOrder } from 'modules/types';
-import { TXEventName } from '@augurproject/sdk';
-import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
+  LinearPropertyLabelProps, PendingLabel, BulkTxLabel, ModalLabelNotice,
+} from "modules/common/labels";
+import { BUY } from "modules/common/constants";
+import { formatShares, formatDai, formatMarketShares } from "utils/format-number";
+import Styles from "modules/modal/modal.styles.less";
+import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
+import { LiquidityOrder } from "modules/types";
+import { TXEventName } from "@augurproject/sdk-lite";
+import { DISMISSABLE_NOTICE_BUTTON_TYPES } from "modules/reporting/common";
 
 interface UnsignedOrdersProps {
   closeAction: Function;

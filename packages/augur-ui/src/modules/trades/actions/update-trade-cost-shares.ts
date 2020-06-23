@@ -11,7 +11,7 @@ import {
   simulateTrade,
   simulateTradeGasLimit,
 } from 'modules/contracts/actions/contractCalls';
-import { Getters, SimulateTradeData } from '@augurproject/sdk';
+import type { Getters, SimulateTradeData } from '@augurproject/sdk';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated

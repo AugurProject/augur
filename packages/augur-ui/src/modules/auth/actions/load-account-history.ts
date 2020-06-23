@@ -1,14 +1,18 @@
-import { userPositionProcessing } from 'modules/positions/actions/load-account-positions';
-import { updateUserFilledOrders, bulkMarketTradingHistory, refreshUserOpenOrders } from 'modules/markets/actions/market-trading-history-management';
-import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
-import { Action } from 'redux';
+import type { Getters } from '@augurproject/sdk';
 import { AppState } from 'appStore';
-import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
-import { augurSdk } from 'services/augursdk';
-import { Getters } from '@augurproject/sdk';
-import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
+import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
+import {
+  bulkMarketTradingHistory,
+  refreshUserOpenOrders,
+  updateUserFilledOrders,
+} from 'modules/markets/actions/market-trading-history-management';
+import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
+import { userPositionProcessing } from 'modules/positions/actions/load-account-positions';
+import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
+import { Action } from 'redux';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { augurSdk } from 'services/augursdk';
 
 export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
   dispatch: ThunkDispatch<void, any, Action>,

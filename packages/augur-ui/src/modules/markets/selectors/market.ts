@@ -1,18 +1,21 @@
-import { formatNumber } from 'utils/format-number';
+import type { Getters } from '@augurproject/sdk';
+import store, { AppState } from 'appStore';
 import {
-  YES_NO,
-  SCALAR,
+  selectCurrentTimestamp,
+  selectMarketInfosState,
+} from 'appStore/select-state';
+import {
   INVALID_OUTCOME_ID,
+  SCALAR,
   SCALAR_DOWN_ID,
+  YES_NO,
   ZERO,
 } from 'modules/common/constants';
-import store, { AppState } from 'appStore';
-import { selectMarketInfosState, selectCurrentTimestamp } from 'appStore/select-state';
 import { MarketData, OutcomeFormatted } from 'modules/types';
-import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 import { createSelector } from 'reselect';
-import { Getters } from '@augurproject/sdk';
+import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 import { createBigNumber } from 'utils/create-big-number';
+import { formatNumber } from 'utils/format-number';
 
 function selectMarketsDataStateMarket(state, marketId) {
   return selectMarketInfosState(state)[marketId];

@@ -1,11 +1,13 @@
 import React from 'react';
 import { buildMarketDescription } from 'modules/create-market/get-template';
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import {
+import type {
   TemplateInput,
-  TemplateInputType,
   Template,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
+import {
+  TemplateInputType,
+} from '@augurproject/templates';
 import Styles from 'modules/market/components/common/market-common.styles.less';
 import { NewMarket } from 'modules/types';
 

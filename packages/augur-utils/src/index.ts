@@ -19,12 +19,11 @@ export {
 export { abiEncodeBytes } from './abi-encode-bytes';
 export { abiDecodeBytes } from './abi-decode-bytes';
 export { unfork } from './unfork';
-export { hex } from './hex';
 export { isHex } from './is-hex';
 export { formatInt256 } from './format-int256';
 export { formatEthereumAddress } from './format-ethereum-address';
 export { strip0xPrefix } from './strip-0x-prefix';
-export { prefixHex } from './prefix-hex';
+export { prefixHex } from './hex';
 export { bignum } from './bignum';
 export { fix } from './fix';
 export { unfix } from './unfix';
@@ -44,5 +43,10 @@ export {
 export { formatAbiRawDecodedData } from './format-abi-raw-decoded-data';
 export { chunkRange } from './generators';
 export { serialize } from './serialize';
+export * from './hex';
 export * from './logger';
 export * from './repeat';
+export * from './configuration';
+export * from './conversions';
+
+

@@ -1,30 +1,27 @@
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { UnsignedOrders } from 'modules/modal/unsigned-orders';
+import type { Getters } from '@augurproject/sdk';
+import { AppState } from 'appStore';
+import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import {
+  MAX_BULK_ORDER_COUNT,
+  NEW_ORDER_GAS_ESTIMATE,
+  ZERO,
+} from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { closeModal } from 'modules/modal/actions/close-modal';
+import { UnsignedOrders } from 'modules/modal/unsigned-orders';
 import {
   clearMarketLiquidityOrders,
   removeLiquidityOrder,
   sendLiquidityOrder,
   startOrderSending,
 } from 'modules/orders/actions/liquidity-management';
-import {
-  MAX_BULK_ORDER_COUNT,
-  NEW_ORDER_GAS_ESTIMATE,
-  ZERO,
-} from 'modules/common/constants';
-import { createBigNumber } from 'utils/create-big-number';
-import {
-  formatDai,
-  formatGasCostToEther,
-} from 'utils/format-number';
-import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import { CreateLiquidityOrders } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
-import { totalTradingBalance } from 'modules/auth/selectors/login-account';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { createBigNumber } from 'utils/create-big-number';
+import { formatDai, formatGasCostToEther } from 'utils/format-number';
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);

@@ -9,7 +9,13 @@
       "path": "./packages/augur-types"
     },
     {
+      "path": "./packages/augur-templates"
+    },
+    {
       "path": "./packages/augur-sdk"
+    },
+    {
+      "path": "./packages/augur-sdk-lite"
     },
     {
       "path": "./packages/ethersjs-provider"

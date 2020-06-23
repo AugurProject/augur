@@ -38,7 +38,8 @@
       "verbosity": 1,
       "enabled": true,
       "useBootstrapList": true,
-      "bootstrapList": []
+      "bootstrapList": [
+      ]
     }
   },
   "uploadBlockNumber": 18855705,

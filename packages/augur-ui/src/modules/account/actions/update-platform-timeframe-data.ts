@@ -1,10 +1,10 @@
-import { updateUniverse } from 'modules/universe/actions/update-universe';
-import logError from 'utils/log-error';
+import type { Getters } from '@augurproject/sdk';
 import { AppState } from 'appStore';
+import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { augurSdk } from 'services/augursdk';
-import { Getters } from '@augurproject/sdk';
+import logError from 'utils/log-error';
 
 export const updatePlatformTimeframeData = (
   options: any = {},

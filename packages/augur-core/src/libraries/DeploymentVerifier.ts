@@ -7,7 +7,7 @@ import { Contracts } from './Contracts';
 import { Dependencies, Contract, AbiFunction } from '../libraries/GenericContractInterfaces';
 import { stringTo32ByteHex } from './HelperFunctions';
 import { REGISTERED_INTERNAL_CONTRACTS, TRADING_CONTRACTS, REGISTERED_EXTERNAL_CONTRACTS, INITIALIZED_CONTRACTS } from './constants';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/utils';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ONE_ADDRESS = '0x0000000000000000000000000000000000000001';
