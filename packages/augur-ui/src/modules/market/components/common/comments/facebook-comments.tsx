@@ -9,7 +9,15 @@ interface FacebookCommentsProps {
   networkId: string;
 }
 
-export const FacebookComments = ({ marketId, colorScheme, numPosts, networkId }: FacebookCommentsProps) => {
+export const DEFAULT_NUM_POSTS = 10;
+export const COLOR_SCHEME = 'dark'; // this might change depending on themes
+
+export const FacebookComments = ({
+  marketId,
+  colorScheme = COLOR_SCHEME,
+  numPosts = DEFAULT_NUM_POSTS,
+  networkId,
+}: FacebookCommentsProps) => {
   const [error, setError] = useState(false);
   const { FB } = window;
 
@@ -36,13 +44,13 @@ export const FacebookComments = ({ marketId, colorScheme, numPosts, networkId }:
     <section className={Styles.Comments}>
       <span />
       <div
-        id='fb-comments'
-        className='fb-comments'
+        id="fb-comments"
+        className="fb-comments"
         data-colorscheme={colorScheme}
         data-href={fbCommentsUrl}
-        data-width='100%'
+        data-width="100%"
         data-numposts={numPosts.toString()}
-        data-order-by='social' // social is seen as "Top" in the select input
+        data-order-by="social" // social is seen as "Top" in the select input
       />
     </section>
   );

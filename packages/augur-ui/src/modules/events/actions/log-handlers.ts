@@ -630,7 +630,7 @@ export const handleMarketFinalizedLog = (logs: Logs.MarketFinalizedLog[]) => (
     }
   });
   const marketIds = logs.map(m => m.market);
-  dispatch(checkUpdateUserPositions(marketIds));
+  checkUpdateUserPositions(marketIds);
 };
 
 // ---- disputing ----- //

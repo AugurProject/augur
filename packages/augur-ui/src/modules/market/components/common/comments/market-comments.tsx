@@ -3,35 +3,25 @@ import { FacebookComments } from 'modules/market/components/common/comments/face
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { Initialized3box } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { initialize3box } from 'modules/global-chat/actions/initialize-3box';
+import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
 const ThreeBoxComments = lazy(() =>
   import('modules/market/components/common/comments/three-box-comments')
 );
 
-interface MarketCommentsProps {
-  adminEthAddr: string;
-  colorScheme: string;
-  marketId: string;
-  networkId: string;
-  numPosts: number;
-  provider: any;
-  whichCommentPlugin: string;
-  initialize3box: Function;
-  initialized3box: Initialized3box;
-}
+const THREE_BOX_ADMIN_ACCOUNT = '0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb';
 
-export const MarketComments = ({
-  adminEthAddr,
-  colorScheme,
-  marketId,
-  networkId,
-  numPosts,
-  provider,
-  whichCommentPlugin,
-  initialize3box,
-  initialized3box,
-}: MarketCommentsProps) => {
-  const { isLogged } = useAppStatusStore();
+export const MarketComments = () => {
+  let { isLogged, loginAccount, env, initialized3box } = useAppStatusStore();
+  const signer = loginAccount.meta?.signer;
+  const { numPosts, colorScheme } = initialized3box;
+ 
+  const adminEthAddr = THREE_BOX_ADMIN_ACCOUNT;
+  const networkId = getNetworkId();
+  const whichCommentPlugin = env.plugins?.comments;
+  const provider = signer ? signer.provider?._web3Provider : false;
+  const is3BoxInitialized = signer ? initialized3box : false;
 
   return isLogged ? (
     <section className={Styles.Comments}>
@@ -42,7 +32,7 @@ export const MarketComments = ({
             adminEthAddr={adminEthAddr}
             provider={provider}
             initialize3box={initialize3box}
-            initialized3box={initialized3box}
+            initialized3box={is3BoxInitialized}
             marketId={marketId}
           />
         </Suspense>
