@@ -139,6 +139,15 @@ export async function createBrowserMeshWorker(
       onError,
     } = Comlink.wrap(meshWorker);
     await loadMesh();
+    onError(function (err) {
+      console.error('Browser mesh error: ', err.message, err.stack);
+      console.log('Restarting Mesh Sync');
+      zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {
+        error: err,
+      });
+      meshWorker.terminate();
+      createBrowserMeshWorker(config, web3Provider, zeroX);
+    });
 
     await startMesh(
       {
@@ -230,7 +239,7 @@ export async function createBrowserMesh(
 
     zeroX.client.events.on(SubscriptionEventName.ZeroXStatusSynced, cb);
 
-    //mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
+    mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
     await mesh.startAsync();
     zeroX.mesh = mesh;
   } catch (error) {
