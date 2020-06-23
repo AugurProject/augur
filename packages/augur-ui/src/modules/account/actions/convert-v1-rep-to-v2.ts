@@ -13,6 +13,7 @@ import { NodeStyleCallback } from 'modules/types';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import logError from 'utils/log-error';
+import { updateAssets } from 'modules/auth/actions/update-assets';
 
 export const approveAndConvertV1ToV2 = (useSigningWallet: boolean = false, callback: NodeStyleCallback = logError) => {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
@@ -24,6 +25,7 @@ export const approveAndConvertV1ToV2 = (useSigningWallet: boolean = false, callb
       logError(new Error('convertV1ToV2'));
       dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Failure));
     });
+    dispatch(updateAssets(true));
     callback(null);
   };
 }

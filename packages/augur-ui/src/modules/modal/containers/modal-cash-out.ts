@@ -5,14 +5,14 @@ import { AppState } from 'appStore';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { withdrawAllFunds, withdrawAllFundsEstimateGas } from 'modules/contracts/actions/contractCalls';
+import { withdrawAllFundsEstimateGas } from 'modules/contracts/actions/contractCalls';
 import { FormattedNumber } from 'modules/types';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
 import { formatDai, formatEther } from 'utils/format-number';
 import { selectAccountFunds } from 'modules/auth/selectors/login-account';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { createBigNumber } from 'utils/create-big-number';
-import { transferFunds, transferFundsGasEstimate } from 'modules/auth/actions/transfer-funds';
+import { transferFunds, transferFundsGasEstimate, withdrawTransfer } from 'modules/auth/actions/transfer-funds';
 import { DAI } from 'modules/common/constants';
 
 const mapStateToProps = (state: AppState) => {
@@ -46,10 +46,10 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  withdrawAllFunds: (destination: string) => withdrawAllFunds(destination),
+  withdrawAllFunds: (destination: string) => dispatch(withdrawTransfer(destination)),
   withdrawAllFundsEstimateGas: (destination: string) => withdrawAllFundsEstimateGas(destination),
   closeModal: () => dispatch(closeModal()),
-  transferFunds: (amount: string, destination: string) => transferFunds(amount, DAI, destination, false, false),
+  transferFunds: (amount: string, destination: string) => dispatch(transferFunds(amount, DAI, destination, false, false)),
   transferFundsGasEstimate: (amount: string, asset: string, to: string) => transferFundsGasEstimate(amount, asset, to),
 });
 
