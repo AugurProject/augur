@@ -46,7 +46,8 @@ contract TokenPaymaster is BasePaymaster {
     }
 
     event Received(uint eth);
-    receive() external payable {
+
+    function() external payable {
         emit Received(msg.value);
     }
 
@@ -117,7 +118,7 @@ contract TokenPaymaster is BasePaymaster {
         }
         //solhint-disable-next-line
         uniswap.tokenToEthSwapOutput(ethActualCharge, uint(-1), block.timestamp+60*15);
-        relayHub.depositFor{value:ethActualCharge}(address(this));
+        relayHub.depositFor.value(ethActualCharge)(address(this));
         emit TokensCharged(gasUseWithoutPost, ethActualCharge, tokenActualCharge);
     }
 

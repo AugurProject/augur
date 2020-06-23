@@ -17,6 +17,7 @@ export const START_TIME = 'START_TIME';
 export const YEAR = 'YEAR';
 export const EVENT = 'EVENT';
 export const SUB_EVENT = 'SUB_EVENT';
+export const ENTITY = 'ENTITY';
 
 export const REQUIRED = 'REQUIRED';
 export const CHOICE = 'CHOICE';
