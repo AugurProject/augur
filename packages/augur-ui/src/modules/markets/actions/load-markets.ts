@@ -9,8 +9,6 @@ import {
   THEMES,
 } from 'modules/common/constants';
 import * as _ from 'lodash';
-import { ThunkAction } from 'redux-thunk';
-import { AppState } from 'appStore';
 import { Getters, MarketReportingState } from '@augurproject/sdk';
 import {
   addUpdateMarketInfos,
@@ -18,7 +16,6 @@ import {
 } from 'modules/markets/actions/update-markets-data';
 import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 import { LoadReportingMarketsOptions } from 'modules/types';
-import { Action } from 'redux';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from '../store/markets';
 
@@ -169,7 +166,7 @@ export const loadMarketsByFilter = async (
 export const loadNextWindowDisputingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, Action> => {
+) => {
   const params = {
     reportingStates: [MarketReportingState.AwaitingNextWindow],
     ...filterOptions,
@@ -180,7 +177,7 @@ export const loadNextWindowDisputingMarkets = (
 export const loadCurrentlyDisputingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, Action> => {
+) => {
   const params = {
     reportingStates: [MarketReportingState.CrowdsourcingDispute],
     ...filterOptions,
@@ -191,7 +188,7 @@ export const loadCurrentlyDisputingMarkets = (
 export const loadOpenReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, UpdateMarketsAction> => {
+) => {
   const params = {
     reportingStates: [MarketReportingState.OpenReporting],
     ...filterOptions,
@@ -202,7 +199,7 @@ export const loadOpenReportingMarkets = (
 export const loadUpcomingDesignatedReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, UpdateMarketsAction> => {
+) => {
   const {
     loginAccount: { address: designatedReporter },
     blockchain: { currentAugurTimestamp },
@@ -223,7 +220,7 @@ export const loadUpcomingDesignatedReportingMarkets = (
 export const loadDesignatedReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, UpdateMarketsAction> => {
+) => {
   const {
     loginAccount: { address: designatedReporter },
   } = AppStatus.get();
@@ -241,7 +238,7 @@ export const loadDesignatedReportingMarkets = (
 const loadReportingMarkets = (
   filterOptions: LoadReportingMarketsOptions,
   cb: Function = () => {}
-): ThunkAction<void, AppState, void, Action> => {
+) => {
   const { universe, isConnected } = AppStatus.get();
   if (!isConnected) return cb(null, []);
   if (!(universe && universe.id)) return cb(null, []);

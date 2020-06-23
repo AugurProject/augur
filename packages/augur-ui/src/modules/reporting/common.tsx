@@ -1,5 +1,4 @@
 import React, { Component, useState, useEffect } from 'react';
-import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import {

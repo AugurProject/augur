@@ -4,9 +4,6 @@ import { loadPendingOrdersTransactions } from 'modules/orders/actions/pending-or
 import { isNewFavoritesStyle } from 'modules/markets/helpers/favorites-processor';
 import { loadPendingQueue } from 'modules/pending-queue/actions/pending-queue-management';
 import { setSelectedUniverse } from './selected-universe-management';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
-import { Action } from 'redux';
-import { AppState } from 'appStore';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
@@ -21,7 +18,7 @@ import isAddress from 'modules/auth/helpers/is-address';
 
 export const loadAccountDataFromLocalStorage = (
   address: string
-): ThunkAction<any, any, any, any> => {
+) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
   const { universe, filterSortOptions } = AppStatus.get();
 

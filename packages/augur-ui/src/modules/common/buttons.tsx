@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import {
   ASCENDING,
   DESCENDING,
@@ -26,13 +25,13 @@ import {
   XIcon,
   BackIcon,
   AlternateDaiLogoIcon,
-  Chevron, ThickChevron,
+  Chevron,
+  ThickChevron,
 } from 'modules/common/icons';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
-import { AppState } from 'appStore';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
 import { Getters, TXEventName } from '@augurproject/sdk/src';
 import { addCategoryStats } from 'modules/create-market/get-template';
@@ -202,7 +201,29 @@ export const ChatButton = ({ action, disabled }: DefaultButtonProps) => (
   </button>
 );
 
-const ProcessingButtonComponent = (props: DefaultButtonProps) => {
+export const ProcessingButton = (props: DefaultButtonProps) => {
+  const { pendingQueue } = useAppStatusStore();
+  let disabled = false;
+
+  const pendingData =
+    pendingQueue[props.queueName] &&
+    pendingQueue[props.queueName][props.queueId];
+
+  let status = pendingData && pendingData.status;
+  if (pendingData) {
+    if (
+      (props.matchingId !== undefined &&
+        String(pendingData.data?.matchingId) !== String(props.matchingId)) ||
+      (props.nonMatchingIds &&
+        props.nonMatchingIds.length &&
+        props.nonMatchingIds.includes(pendingData.data.matchingId))
+    ) {
+      status = null;
+      disabled = true;
+    }
+  }
+
+  disabled = props.disabled || disabled;
   let isDisabled = props.disabled;
   let icon = props.icon;
   let buttonText = props.text;
@@ -224,8 +245,9 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
       buttonText = props.customConfirmedButtonText;
     }
   }
+  const cancel = () => removePendingData(props.queueId, props.queueName);
   if (failed || confirmed) {
-    buttonAction = e => props.cancel(e);
+    buttonAction = e => cancel(e);
     icon = XIcon;
     isDisabled = false;
   }
@@ -279,44 +301,6 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
     </>
   );
 };
-
-const mapStateToPropsProcessingButton = (state: AppState, ownProps) => {
-  const { pendingQueue } = AppStatus.get();
-  let disabled = false;
-
-  const pendingData =
-    pendingQueue[ownProps.queueName] &&
-    pendingQueue[ownProps.queueName][ownProps.queueId];
-
-  let status = pendingData && pendingData.status;
-  if (pendingData) {
-    if (
-      (ownProps.matchingId !== undefined &&
-        String(pendingData.data?.matchingId) !== String(ownProps.matchingId)) ||
-      (ownProps.nonMatchingIds &&
-        ownProps.nonMatchingIds.length &&
-        ownProps.nonMatchingIds.includes(pendingData.data.matchingId))
-    ) {
-      status = null;
-      disabled = true;
-    }
-  }
-
-  return {
-    disabled: ownProps.disabled || disabled,
-    status,
-  };
-};
-
-const mapDispatchToPropsProcessingButton = (dispatch, ownProps) => ({
-  cancel: () =>
-    removePendingData(ownProps.queueId, ownProps.queueName),
-});
-
-export const ProcessingButton = connect(
-  mapStateToPropsProcessingButton,
-  mapDispatchToPropsProcessingButton
-)(ProcessingButtonComponent);
 
 export const PrimarySignInButton = (props: DefaultButtonProps) => (
   <button
@@ -636,7 +620,7 @@ export const ViewTransactionDetailsButton = (
       [Styles.Light]: props.light,
     })}
   >
-    <EtherscanLink
+    <EtherscanLinkTSX
       showNonLink
       txhash={props.transactionHash}
       label={props.label ? props.label : 'View'}
@@ -829,7 +813,6 @@ export const BettingBackLayButton = ({
 );
 
 interface EtherscanLinkTSXProps {
-  baseUrl?: string | null;
   txhash: string;
   label: string;
   showNonLink?: boolean;
@@ -837,34 +820,11 @@ interface EtherscanLinkTSXProps {
 }
 
 const EtherscanLinkTSX = ({
-  baseUrl,
   txhash,
   label,
   showNonLink,
   showIcon,
-}: EtherscanLinkTSXProps) => (
-  <span>
-    {baseUrl && (
-      <a href={baseUrl + txhash} target="_blank" rel="noopener noreferrer">
-        {label}
-        {showIcon && ViewIcon}
-      </a>
-    )}
-    {!baseUrl && showNonLink && (
-      <span>
-        {label}
-        {showIcon && ViewIcon}
-      </span>
-    )}
-  </span>
-);
-
-EtherscanLinkTSX.defaultProps = {
-  baseUrl: null,
-  showNonLink: false,
-};
-
-const mapStateToPropsEtherScanLink = (state: AppState) => {
+}: EtherscanLinkTSXProps) => {
   const networkId = getNetworkId();
 
   if (!networkId) {
@@ -879,11 +839,27 @@ const mapStateToPropsEtherScanLink = (state: AppState) => {
     42: 'https://kovan.etherscan.io/tx/',
   };
 
-  return {
-    baseUrl: networkLink[networkId],
-  };
+  const baseUrl = networkLink[networkId];
+
+  return (
+    <span>
+      {baseUrl && (
+        <a href={baseUrl + txhash} target="_blank" rel="noopener noreferrer">
+          {label}
+          {showIcon && ViewIcon}
+        </a>
+      )}
+      {!baseUrl && showNonLink && (
+        <span>
+          {label}
+          {showIcon && ViewIcon}
+        </span>
+      )}
+    </span>
+  );
 };
 
-export const EtherscanLink = connect(mapStateToPropsEtherScanLink)(
-  EtherscanLinkTSX
-);
+EtherscanLinkTSX.defaultProps = {
+  baseUrl: null,
+  showNonLink: false,
+};

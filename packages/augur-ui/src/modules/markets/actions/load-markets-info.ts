@@ -2,7 +2,6 @@ import { isMarketLoaded } from "modules/markets/helpers/is-market-loaded";
 
 import logError from "utils/log-error";
 import { NodeStyleCallback } from "modules/types";
-import { ThunkAction } from "redux-thunk";
 import { augurSdk } from "services/augursdk";
 import { AppStatus } from "modules/app/store/app-status";
 import { Markets } from "../store/markets";
@@ -12,7 +11,7 @@ const NO_MARKET_INFOS = { marketInfos: {} };
 export const loadMarketsInfo = (
   marketIds: Array<string>,
   callback: NodeStyleCallback = logError,
-): ThunkAction<any, any, any, any> => async () => {
+) => async () => {
   if (!marketIds || marketIds === undefined || marketIds.length === 0) {
     callback(null, []);
     return NO_MARKET_INFOS;

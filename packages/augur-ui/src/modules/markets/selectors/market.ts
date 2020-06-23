@@ -6,7 +6,6 @@ import {
   SCALAR_DOWN_ID,
   ZERO,
 } from 'modules/common/constants';
-import store, { AppState } from 'appStore';
 import { MarketData, OutcomeFormatted } from 'modules/types';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
 import { Getters } from '@augurproject/sdk';

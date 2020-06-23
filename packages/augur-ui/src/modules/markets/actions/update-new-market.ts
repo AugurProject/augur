@@ -30,7 +30,7 @@ export function removeOrderFromNewMarket(order: UIOrder) {
   AppStatus.actions.removeOrderFromNewMarket(order);
 }
 
-export function updateNewMarket(newMarketData: NewMarket): BaseAction {
+export function updateNewMarket(newMarketData: NewMarket) {
   AppStatus.actions.updateNewMarket(newMarketData);
 }
 

@@ -16,6 +16,7 @@ import ToastsContainer from 'modules/alerts/components/toasts-view';
 import { Betslip } from 'modules/trading/betslip';
 import { BetslipProvider } from 'modules/trading/store/betslip';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { initAugur } from 'modules/app/actions/init-augur';
 
 import { MobileNavHamburgerIcon, XIcon } from 'modules/common/icons';
 import parsePath from 'modules/routes/helpers/parse-path';
@@ -54,10 +55,12 @@ import { MarketsProvider } from 'modules/markets/store/markets';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import isAddress from 'modules/auth/helpers/is-address';
 import { getNotifications } from 'modules/notifications/selectors/notification-state';
+import { withRouter } from 'react-router-dom';
+import { RewriteUrlParams } from '../hocs/rewrite-url-params/index';
+import { windowRef } from 'utils/window-ref';
 
 interface AppProps {
   config: SDKConfiguration;
-  initAugur: Function;
   location: Location;
   ethereumNodeHttp: string;
   ethereumNodeWs: string;
@@ -116,7 +119,6 @@ const AppView = ({
   ethereumNodeHttp = null,
   ethereumNodeWs = null,
   sdkEndpoint = null,
-  initAugur,
   location: locationProp,
 }: AppProps) => {
   const {
@@ -325,7 +327,7 @@ const AppView = ({
   );
 };
 
-export default AppView;
+export default withRouter(RewriteUrlParams(windowRef, AppView));
 
 const SideBarSection = ({
   renderMobileMenuButton,
