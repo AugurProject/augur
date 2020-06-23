@@ -13,9 +13,12 @@ import {
   handleLiquidityPoolUpdatedLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
-import { Augur, Provider, SubscriptionEventName, TXEventName, } from '@augurproject/sdk';
+import {
+  Augur,
+  Provider,
+  SubscriptionEventName,
+  TXEventName,
+} from '@augurproject/sdk';
 import { ZEROX_STATUSES } from 'modules/common/constants';
 
 const START_UP_EVENTS = {
@@ -23,23 +26,25 @@ const START_UP_EVENTS = {
   [SubscriptionEventName.MarketsUpdated]: wrapLogHandler(
     handleMarketsUpdatedLog
   ),
-  [SubscriptionEventName.ZeroXStatusReady]: wrapLogHandler(
-    () => handleZeroStatusUpdated(ZEROX_STATUSES.READY)
+  [SubscriptionEventName.ZeroXStatusReady]: wrapLogHandler(() =>
+    handleZeroStatusUpdated(ZEROX_STATUSES.READY)
   ),
-  [SubscriptionEventName.ZeroXStatusStarted]: wrapLogHandler(
-    () => handleZeroStatusUpdated(ZEROX_STATUSES.STARTED)
+  [SubscriptionEventName.ZeroXStatusStarted]: wrapLogHandler(() =>
+    handleZeroStatusUpdated(ZEROX_STATUSES.STARTED)
   ),
-  [SubscriptionEventName.ZeroXStatusRestarting]: wrapLogHandler(
-    () => handleZeroStatusUpdated(ZEROX_STATUSES.RESTARTING)
+  [SubscriptionEventName.ZeroXStatusRestarting]: wrapLogHandler(() =>
+    handleZeroStatusUpdated(ZEROX_STATUSES.RESTARTING)
   ),
-  [SubscriptionEventName.ZeroXStatusError]: wrapLogHandler(
-    (log: any) => handleZeroStatusUpdated(ZEROX_STATUSES.ERROR, log)
+  [SubscriptionEventName.ZeroXStatusError]: wrapLogHandler((log: any) =>
+    handleZeroStatusUpdated(ZEROX_STATUSES.ERROR, log)
   ),
-  [SubscriptionEventName.ZeroXStatusSynced]: wrapLogHandler(
-    () => handleZeroStatusUpdated(ZEROX_STATUSES.SYNCED)
+  [SubscriptionEventName.ZeroXStatusSynced]: wrapLogHandler(() =>
+    handleZeroStatusUpdated(ZEROX_STATUSES.SYNCED)
   ),
   [SubscriptionEventName.BulkOrderEvent]: wrapLogHandler(handleBulkOrdersLog),
-  [SubscriptionEventName.LiquidityPoolUpdated]: wrapLogHandler(handleLiquidityPoolUpdatedLog),
+  [SubscriptionEventName.LiquidityPoolUpdated]: wrapLogHandler(
+    handleLiquidityPoolUpdatedLog
+  ),
 };
 
 const EVENTS = {
@@ -67,20 +72,16 @@ const EVENTS = {
   [TXEventName.FeeTooLow]: wrapLogHandler(handleTxEvents),
 };
 
-export const listenToUpdates = (augur: Augur<Provider>) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) =>
+export const listenToUpdates = (augur: Augur<Provider>) =>
   Object.keys(EVENTS).map((eventName) => {
     const eventCallback = EVENTS[eventName];
-    augur.on(eventName, (log) => dispatch(eventCallback(log)));
+    augur.on(eventName, (log) => eventCallback(log));
   });
 
-export const listenForStartUpEvents = (augur: Augur<Provider>) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) =>
+export const listenForStartUpEvents = (augur: Augur<Provider>) =>
   Object.keys(START_UP_EVENTS).map((eventName) => {
     const eventCallback = START_UP_EVENTS[eventName];
-    augur.on(eventName, (log) => dispatch(eventCallback(log)));
+    augur.on(eventName, (log) => eventCallback(log));
   });
 
 export const unListenToEvents = (augur: Augur<Provider>) => {
