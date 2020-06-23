@@ -76,6 +76,9 @@ import rlp
 
 import web3
 
+# Remove Size check. We rely on output warnings for this instead
+eth.vm.forks.spurious_dragon.computation.EIP170_CODE_SIZE_LIMIT = 100000
+
 genesis_overrides = {
     'gas_limit': 1100000000
 }
@@ -319,14 +322,14 @@ class ContractsFixture:
         key = path.splitext(path.basename(relativePath))[0]
         resolvedPath = resolveRelativePath(relativePath)
         if self.coverageMode:
-            resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("src/", "coverageEnv/")
+            resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("src/", "coverageEnv/", 1)
         if key not in ContractsFixture.signatures:
             ContractsFixture.signatures[key] = self.generateSignature(resolvedPath)
 
     def upload(self, relativeFilePath, lookupKey = None, signatureKey = None, constructorArgs=[]):
         resolvedPath = resolveRelativePath(relativeFilePath)
         if self.coverageMode:
-            resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("src/", "coverageEnv/")
+            resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("src/", "coverageEnv/", 1)
         lookupKey = lookupKey if lookupKey else path.splitext(path.basename(resolvedPath))[0]
         signatureKey = signatureKey if signatureKey else lookupKey
         if lookupKey in self.contracts:
