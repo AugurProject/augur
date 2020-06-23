@@ -1,6 +1,4 @@
 import { UIOrder } from 'modules/types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import { isTransactionConfirmed } from 'modules/contracts/actions/contractCalls';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -9,7 +7,6 @@ import {
 import { createBigNumber } from 'utils/create-big-number';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
-import { AppState } from 'appStore';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 import { AppStatus } from 'modules/app/store/app-status';
 
@@ -33,7 +30,7 @@ export const updatePendingOrderStatus = (
 export const addPendingOrderWithBlockNumber = (
   pendingOrder: UIOrder,
   marketId: string
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => {
   const {
     blockchain: { currentBlockNumber },
   } = AppStatus.get();
@@ -46,7 +43,7 @@ const updatePendingOrderStatusWithBlockNumber = (
   marketId: string,
   status: string,
   hash: string
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => {
   const {
     blockchain: { currentBlockNumber },
   } = AppStatus.get();

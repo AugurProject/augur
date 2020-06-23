@@ -11,7 +11,7 @@ import { windowRef } from 'utils/window-ref';
 const mapStateToProps = state => ({});
 
 const mapDispatchToProps = dispatch => ({
-  initAugur: (overrides, cb) => dispatch(initAugur(overrides, cb)),
+  initAugur: (overrides, cb) => initAugur(overrides, cb),
 });
 
 const AppContainer = compose(

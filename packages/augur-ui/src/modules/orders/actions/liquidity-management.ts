@@ -2,9 +2,6 @@ import { createBigNumber } from 'utils/create-big-number';
 
 import { BUY, MAX_BULK_ORDER_COUNT, ZERO } from 'modules/common/constants';
 import { LiquidityOrder, CreateLiquidityOrders } from 'modules/types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
-import { AppState } from 'appStore';
 import {
   createLiquidityOrder,
   isTransactionConfirmed,
@@ -50,10 +47,7 @@ export const loadPendingLiquidityOrders = (
   });
 };
 
-export const sendLiquidityOrder = (options: any) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const sendLiquidityOrder = async (options: any) => {
   const { order, bnAllowance, marketId } = options;
   const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
@@ -77,11 +71,11 @@ export const sendLiquidityOrder = (options: any) => async (
   if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(orderEstimate))) {
     await approveToTrade();
     isZeroX
-      ? createZeroXLiquidityOrders(market, [options.order], dispatch)
+      ? createZeroXLiquidityOrders(market, [options.order])
       : sendOrder(options);
   } else {
     isZeroX
-      ? createZeroXLiquidityOrders(market, [options.order], dispatch)
+      ? createZeroXLiquidityOrders(market, [options.order])
       : sendOrder(options);
   }
 };
@@ -104,12 +98,9 @@ const sendOrder = async options => {
   orderCB();
 };
 
-export const startOrderSending = ({
+export const startOrderSending = async ({
   marketId,
-}: CreateLiquidityOrders) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+}: CreateLiquidityOrders) => {
   const { marketInfos } = Markets.get();
   const { pendingLiquidityOrders } = PendingOrders.get();
   const { loginAccount, gsnEnabled, zeroXEnabled } = AppStatus.get();
@@ -125,7 +116,7 @@ export const startOrderSending = ({
   });
 
   if (!chunkOrders) {
-    await createZeroXLiquidityOrders(market, orders, dispatch);
+    await createZeroXLiquidityOrders(market, orders);
   } else {
     // MAX_BULK_ORDER_COUNT number of orders in each creation bulk group
     let i = 0;
@@ -134,7 +125,7 @@ export const startOrderSending = ({
       groups.push(orders.slice(i, i + MAX_BULK_ORDER_COUNT));
     }
     try {
-      groups.map(group => createZeroXLiquidityOrders(market, group, dispatch));
+      groups.map(group => createZeroXLiquidityOrders(market, group));
     } catch (e) {
       console.error(e);
     }
@@ -144,7 +135,6 @@ export const startOrderSending = ({
 const createZeroXLiquidityOrders = async (
   market: Getters.Markets.MarketInfo,
   orders: LiquidityOrder[],
-  dispatch
 ) => {
   try {
     const fingerprint = undefined; // TODO: get this from state
