@@ -163,6 +163,7 @@ const BaseInnerNavPure = ({
     maxFeeFilter,
     maxSpreadFilter,
     showInvalidFilter,
+    marketTypeFilter,
     sortOptions,
   ]);
 
