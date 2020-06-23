@@ -1,4 +1,3 @@
-import store from 'appStore';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { selectMarketPositionsSummary } from 'modules/markets/selectors/select-market-position-summary';
 import { selectUserMarketPositions } from 'modules/markets/selectors/select-user-market-positions';
@@ -11,7 +10,7 @@ export default function() {
 
   const marketsWithPositions = markets.map(market => ({
     ...market,
-    userPositions: selectUserMarketPositions(store.getState(), market.id),
+    userPositions: selectUserMarketPositions(market.id),
     myPositionsSummary: selectMarketPositionsSummary(market.id),
   }));
 

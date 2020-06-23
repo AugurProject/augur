@@ -1,6 +1,5 @@
 import memoize from 'memoizee';
 import { createBigNumber } from 'utils/create-big-number';
-import store from 'appStore';
 
 import {
   BUY_INDEX,

@@ -18,7 +18,6 @@ import {
   addCanceledOrder,
   addCanceledOrder,
 } from 'modules/pending-queue/actions/pending-queue-management';
-import store from 'appStore';
 import { TXEventName } from '@augurproject/sdk/src/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { findUserFilledOrders } from 'modules/orders/selectors/filled-orders';

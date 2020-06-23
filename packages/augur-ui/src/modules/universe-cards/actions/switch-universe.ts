@@ -1,4 +1,3 @@
-import { ThunkAction } from 'redux-thunk';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';

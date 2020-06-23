@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import {
   ASCENDING,
   DESCENDING,
@@ -33,7 +32,6 @@ import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
-import { AppState } from 'appStore';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
 import { Getters, TXEventName } from '@augurproject/sdk/src';
 import { addCategoryStats } from 'modules/create-market/get-template';

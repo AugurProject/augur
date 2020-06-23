@@ -1,5 +1,3 @@
-import { ThunkAction } from 'redux-thunk';
-import { AppState } from '../../../appStore';
 import { AppStatus } from 'modules/app/store/app-status';
 
 
