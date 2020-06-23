@@ -1,6 +1,6 @@
 import { formatEthereumAddress } from "./format-ethereum-address";
 import { hex } from "./hex";
-import { prefixHex } from "./prefix-hex";
+import { prefixHex } from "./hex";
 import { formatInt256 } from "./format-int256";
 
 export function formatAbiRawDecodedData(inputType, decodedData) {

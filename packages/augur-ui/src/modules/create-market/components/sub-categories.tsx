@@ -8,7 +8,7 @@ import Styles from 'modules/create-market/components/sub-categories.styles.less'
 import {
   getTemplateRadioCards
 } from 'modules/create-market/get-template';
-import { Getters } from '@augurproject/sdk/src';
+import type { Getters } from '@augurproject/sdk';
 import { NewMarket } from 'modules/types';
 import { MARKET_COPY_LIST } from 'modules/create-market/constants';
 

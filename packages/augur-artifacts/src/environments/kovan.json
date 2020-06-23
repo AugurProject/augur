@@ -38,7 +38,8 @@
       "verbosity": 1,
       "enabled": true,
       "useBootstrapList": true,
-      "bootstrapList": []
+      "bootstrapList": [
+      ]
     }
   },
   "uploadBlockNumber": 18855705,
@@ -98,7 +99,7 @@
   },
   "sdk": {
     "enabled": false,
-    "ws": "ws://localhost:60557"
+    "ws": "ws://localhost:9001"
   },
   "warpSync": {
     "enabled": true,

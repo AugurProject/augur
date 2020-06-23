@@ -1,9 +1,3 @@
-import { getGroupHashInfo, isTemplateMarket } from '@augurproject/artifacts';
-import { ParsedLog } from '@augurproject/types';
-import { BigNumber } from 'bignumber.js';
-import * as _ from 'lodash';
-import { OrderBook } from '../../api/Liquidity';
-import { Augur } from '../../Augur';
 import {
   CLAIM_GAS_COST,
   DEFAULT_GAS_PRICE_IN_GWEI,
@@ -16,16 +10,20 @@ import {
   SECONDS_IN_A_YEAR,
   SubscriptionEventName,
   WORST_CASE_FILL,
-} from '../../constants';
-import { NewBlock } from '../../events';
-import { padHex, QUINTILLION } from '../../utils';
-import {
+  NewBlock,
+  MarketType,
   MarketData,
   OrderTypeHex,
   TimestampSetLog,
   UnixTimestamp,
-  MarketType,
-} from '../logs/types';
+} from '@augurproject/sdk-lite';
+import { getGroupHashInfo, isTemplateMarket } from '@augurproject/templates';
+import { ParsedLog } from '@augurproject/types';
+import { BigNumber } from 'bignumber.js';
+import * as _ from 'lodash';
+import { OrderBook } from '../../api/Liquidity';
+import { Augur } from '../../Augur';
+import { padHex, QUINTILLION } from '../../utils';
 import { DB } from './DB';
 import { DerivedDB } from './DerivedDB';
 
@@ -82,7 +80,7 @@ export class MarketDB extends DerivedDB {
       MarketMigrated: this.processMarketMigrated,
     };
 
-    this.augur.events.subscribe('DB:updated:ZeroXOrders', orderEvents =>
+    this.augur.events.subscribe(SubscriptionEventName.DBUpdatedZeroXOrders, orderEvents =>
       this.markMarketLiquidityAsDirty(orderEvents.market)
     );
     this.augur.events.subscribe(
@@ -526,9 +524,9 @@ export class MarketDB extends DerivedDB {
     }
     try {
       if (log['extraInfo'].categories)
-        log['extraInfo'].categories = log['extraInfo'].categories.map(
-          category => category.toLowerCase()
-        );
+        log['extraInfo'].categories = log[
+          'extraInfo'
+        ].categories.map(category => category.toLowerCase());
     } catch (err) {
       log['extraInfo'].categories = [];
     }
@@ -542,21 +540,24 @@ export class MarketDB extends DerivedDB {
           log['extraInfo'].longDescription,
           log['endTime'],
           log['timestamp'],
+          log['extraInfo'].categories,
           errors
         );
         if (errors.length > 0)
           console.error(log['extraInfo'].description, errors);
 
         if (log['isTemplate'] && log['marketType'] === MarketType.Categorical) {
-          const { groupLine, groupType, hashKeyInputValues, header, title, estTimestamp } = getGroupHashInfo(
+          const { groupLine, groupType, hashKeyInputValues, header, title, estTimestamp,
+            canPoolLiquidity, liquidityPoolId } = getGroupHashInfo(
             log['extraInfo'].template
           );
-          log['templateGroupHash'] = hashKeyInputValues;
-          log['templateGroupType'] = groupType;
-          log['templateGroupLine'] = groupLine;
-          log['templateGroupHeader'] = header;
-          log['templateGroupTitle'] = title;
-          log['templateGroupEst'] = estTimestamp
+          log['groupHash'] = hashKeyInputValues;
+          log['groupType'] = groupType;
+          log['groupLine'] = groupLine;
+          log['groupHeader'] = header;
+          log['groupTitle'] = title;
+          log['groupEstDatetime'] = estTimestamp;
+          log['liquidityPool'] = canPoolLiquidity ? liquidityPoolId : log['market'];
         }
       }
     } catch (err) {

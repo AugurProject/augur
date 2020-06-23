@@ -1,20 +1,25 @@
-import React from 'react';
+import type { Getters } from '@augurproject/sdk';
+import { SecondaryButton } from 'modules/common/buttons';
 
 import { RadioCardGroup } from 'modules/common/form';
 import {
-  LargeSubheaders,
   ContentBlock,
-  XLargeSubheaders,
+  LargeSubheaders,
   SmallHeaderLink,
+  XLargeSubheaders,
 } from 'modules/create-market/components/common';
-import { SecondaryButton } from 'modules/common/buttons';
-import { SCRATCH, TEMPLATE, MARKET_COPY_LIST, EMPTY_STATE } from 'modules/create-market/constants';
+import {
+  EMPTY_STATE,
+  MARKET_COPY_LIST,
+  SCRATCH,
+  TEMPLATE,
+} from 'modules/create-market/constants';
 import SavedDrafts from 'modules/create-market/containers/saved-drafts';
 
 import Styles from 'modules/create-market/landing.styles.less';
-import { getTemplateRadioCards } from './get-template';
-import { Getters } from '@augurproject/sdk';
 import { NewMarket } from 'modules/types';
+import React from 'react';
+import { getTemplateRadioCards } from './get-template';
 
 interface LandingProps {
   newMarket: NewMarket;

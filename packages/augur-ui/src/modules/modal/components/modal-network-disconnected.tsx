@@ -6,7 +6,7 @@ import ModalLoading from 'modules/modal/components/common/modal-loading';
 import commonStyles from 'modules/modal/components/common/common.styles.less';
 
 import getValue from 'utils/get-value';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import type { SDKConfiguration } from '@augurproject/artifacts';
 
 interface ModalNetworkDisconnectedProps {
   modal: {

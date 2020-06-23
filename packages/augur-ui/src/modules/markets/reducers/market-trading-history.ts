@@ -3,7 +3,7 @@ import {
  } from "modules/markets/actions/market-trading-history-management";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { BaseAction } from "modules/types";
-import { Getters } from "@augurproject/sdk";
+import type { Getters } from "@augurproject/sdk";
 
 const DEFAULT_STATE: Getters.Trading.MarketTradingHistory = {};
 

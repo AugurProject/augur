@@ -1,15 +1,15 @@
-import logError from 'utils/log-error';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { AppState } from 'appStore';
-import { NodeStyleCallback } from 'modules/types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
+import { BUYPARTICIPATIONTOKENS } from 'modules/common/constants';
 import {
   buyParticipationTokens,
   buyParticipationTokensEstimateGas,
 } from 'modules/contracts/actions/contractCalls';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
-import { BUYPARTICIPATIONTOKENS } from 'modules/common/constants';
-import { TXEventName } from '@augurproject/sdk';
+import { NodeStyleCallback } from 'modules/types';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import logError from 'utils/log-error';
 
 export const purchaseParticipationTokens = (
   amount: string,

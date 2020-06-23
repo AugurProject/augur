@@ -1,8 +1,8 @@
+const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 import {
-  Contracts as compilerOutput,
   SDKConfiguration,
-} from '@augurproject/artifacts';
-import { ContractAddresses } from '@augurproject/artifacts';
+  ContractAddresses
+} from '@augurproject/utils';
 import { Account, ACCOUNTS } from '../../constants';
 import { deployContracts } from '../blockchain';
 import { ContractAPI } from '../contract-api';

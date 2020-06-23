@@ -23,9 +23,15 @@
       "path": "../augur-types"
     },
     {
+      "path": "../augur-templates"
+    },
+    {
       "path": "../augur-contract-dependencies-ethers"
     },
     {
       "path": "../ethersjs-provider"
+    },
+    {
+      "path": "../augur-sdk-lite"
     }]
 }

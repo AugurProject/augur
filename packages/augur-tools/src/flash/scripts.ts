@@ -1,74 +1,75 @@
-import { runChaosMonkey } from './chaos-monkey';
-import { FlashSession, FlashArguments } from './flash';
-import { createCannedMarkets, createTemplatedMarkets, createTemplatedBettingMarkets } from './create-canned-markets-and-orders';
-import { _1_ETH, BASE_MNEMONIC } from '../constants';
-import {
-  Contracts as compilerOutput,
-  refreshSDKConfig,
-  abiV1,
-  buildConfig,
-  printConfig,
-  sanitizeConfig,
-} from '@augurproject/artifacts';
+import { abiV1, buildConfig, refreshSDKConfig } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
-import moment from 'moment';
-import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
-import { ethers } from 'ethers';
 import {
-  QUINTILLION,
+  ContractEvents,
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
-  stringTo32ByteHex,
   convertOnChainPriceToDisplayPrice,
   NativePlaceTradeDisplayParams,
+  QUINTILLION,
   startServer,
-  ContractEvents,
+  stringTo32ByteHex,
 } from '@augurproject/sdk';
-import { fork } from './fork';
-import { dispute } from './dispute';
-import {
-  MarketList,
-} from '@augurproject/sdk/build/state/getter/Markets';
-import { generateTemplateValidations } from './generate-templates';
-import { spawn, spawnSync } from 'child_process';
-import { perfSetup } from './perf-setup';
-import { showTemplateByHash, validateMarketTemplate } from './template-utils';
-import { ContractAPI, deployContracts, startGanacheServer } from '..';
-import { NumOutcomes } from '@augurproject/sdk/src/state/logs/types';
+import { NumOutcomes } from '@augurproject/sdk-lite';
+import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
+import { MarketList } from '@augurproject/sdk-lite';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
-import { runWsServer, runWssServer } from '@augurproject/sdk/build/state/WebsocketEndpoint';
-import { createApp, runHttpServer, runHttpsServer } from '@augurproject/sdk/build/state/HTTPEndpoint';
+import {
+  createApp,
+  runHttpServer,
+  runHttpsServer,
+} from '@augurproject/sdk/build/state/HTTPEndpoint';
+import {
+  runWsServer,
+  runWssServer,
+} from '@augurproject/sdk/build/state/WebsocketEndpoint';
+import { printConfig, sanitizeConfig } from '@augurproject/utils';
+import { BigNumber } from 'bignumber.js';
+import { spawn, spawnSync } from 'child_process';
+import { ethers } from 'ethers';
+import { formatBytes32String } from 'ethers/utils';
+import moment from 'moment';
+import { ContractAPI, deployContracts, startGanacheServer } from '..';
+import { _1_ETH, BASE_MNEMONIC } from '../constants';
+import { runChaosMonkey } from './chaos-monkey';
+import {
+  createCannedMarkets,
+  createTemplatedBettingMarkets,
+  createTemplatedMarkets,
+} from './create-canned-markets-and-orders';
+import {
+  createCatZeroXOrders,
+  createScalarZeroXOrders,
+  createYesNoZeroXOrders,
+  createSingleCatZeroXOrder,
+} from './create-orders';
+import { dispute } from './dispute';
+import { FlashArguments, FlashSession } from './flash';
+import { fork } from './fork';
+import { generateTemplateValidations } from './generate-templates';
+import { getMarketIds } from './get-market-ids';
 import { orderFirehose } from './order-firehose';
+import { simpleOrderbookShaper } from './orderbook-shaper';
+import { perfSetup } from './perf-setup';
 import {
   AccountCreator,
   createOrders,
-  FINNEY,
   getAllMarkets,
-  setupMarkets,
   setupOrderBookShapers,
   setupOrders,
   setupPerfConfigAndZeroX,
-  setupUsers,
   takeOrder,
-  takeOrders
+  takeOrders,
 } from './performance';
-import { simpleOrderbookShaper } from './orderbook-shaper';
+import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import {
-  awaitUserInput,
   formatAddress,
   getOrCreateMarket,
   sleep,
   waitForSigint,
   waitForSync,
 } from './util';
-import {
-  createCatZeroXOrders,
-  createScalarZeroXOrders,
-  createYesNoZeroXOrders
-} from './create-orders';
-import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
-import { getMarketIds } from './get-market-ids';
+const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -635,6 +636,61 @@ export function addScripts(flash: FlashSession) {
         await createScalarZeroXOrders(user, market, skipFaucetOrApproval, onInvalid, numTicks, minPrice, maxPrice);
       }
     },
+  });
+
+  flash.addScript({
+    name: 'new-offer',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        required: true,
+        description: 'market to create zeroX orders on',
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: '1 is default, outcomeId to add offer',
+      },
+      {
+        name: 'numOutcomes',
+        abbr: 'n',
+        description: '3 id default, number of valid outcomes available in the market. max is 7',
+      },
+      {
+        name: 'skipFaucetOrApproval',
+        flag: true,
+        description: 'do not faucet or approve, has already been done'
+      },
+      {
+        name: 'price',
+        abbr: 'p',
+        description: 'add new offer at this price, 0.4 is default'
+      },
+      {
+        name: 'shares',
+        abbr: 's',
+        description: 'number of shares on order 100 is default.'
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const market = String(args.marketId);
+      const numOutcomes = Number(args.numOutcomes || 3);
+      const price = String(args.price || '0.4');
+      const shares = String(args.shares || '100');
+      const outcome = Number(args.outcome || 1);
+      const skipFaucetOrApproval = Boolean(args.skipFaucetOrApproval);
+      const ask = 1;
+      this.pushConfig({
+        zeroX: {
+          rpc: { enabled: true },
+          mesh: { enabled: false },
+        },
+      });
+      if (!market) throw new Error('marketId is required');
+      const user = await this.createUser(this.getAccount(), this.config);
+      await createSingleCatZeroXOrder(user, market, skipFaucetOrApproval, numOutcomes, ask, price, shares, outcome);
+    }
   });
 
   flash.addScript({
@@ -1417,6 +1473,11 @@ export function addScripts(flash: FlashSession) {
         name: 'creationTime',
         description: 'market creation time, timestamp of the block market is created in',
         required: true,
+      },
+      {
+        name: 'categories',
+        description: 'market categories, they need to match templates categories',
+        required: true,
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -1428,7 +1489,8 @@ export function addScripts(flash: FlashSession) {
         const resolutionRules = args.resolutionRules as string;
         const endTime = Number(args.endTime);
         const creationTime = Number(args.creationTime);
-        result = validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime, creationTime);
+        const categories = args.categories as string;
+        result = validateMarketTemplate(title, templateInfo, outcomesString, resolutionRules, endTime, creationTime, categories);
         console.log(result);
       } catch (e) {
         console.log(e);

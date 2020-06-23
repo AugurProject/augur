@@ -1,12 +1,15 @@
-import React from 'react';
-
-import PositionsHeader from 'modules/portfolio/components/common/positions-header';
-import PositionRow from 'modules/portfolio/containers/position-row';
+import type { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
 
-import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
-import Styles from 'modules/portfolio/components/common/market-positions-table.styles.less';
-import { Getters } from '@augurproject/sdk';
+import SharedStyles
+  from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
+import Styles
+  from 'modules/portfolio/components/common/market-positions-table.styles.less';
+
+import PositionsHeader
+  from 'modules/portfolio/components/common/positions-header';
+import PositionRow from 'modules/portfolio/containers/position-row';
+import React from 'react';
 
 export interface MarketPositionsTableProps {
   positions: Getters.Users.TradingPosition[];

@@ -32,7 +32,6 @@ import {
   DESIGNATED_REPORTER_ADDRESS,
   CATEGORIES,
   OUTCOMES,
-  MARKET_TYPE_NAME,
   MARKET_COPY_LIST,
   DEFAULT_TICK_SIZE,
 } from 'modules/create-market/constants';
@@ -46,7 +45,7 @@ import {
   hasAutoFillCategory,
 } from 'modules/create-market/get-template';
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
-import { TemplateInputType } from '@augurproject/artifacts/src';
+import { TemplateInputType } from '@augurproject/templates';
 
 interface FormDetailsProps {
   newMarket: NewMarket;

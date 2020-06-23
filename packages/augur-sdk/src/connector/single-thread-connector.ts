@@ -1,10 +1,10 @@
-import { SDKConfiguration } from '@augurproject/artifacts';
-import { API } from '../state/getter/API';
-import { startServerFromClient } from '../state/create-api';
-import { BaseConnector } from './base-connector';
-import { SubscriptionEventName } from '../constants';
-import { Subscriptions } from '../subscriptions';
+import { SDKConfiguration } from '@augurproject/utils';
+import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { Callback } from '../events';
+import { startServerFromClient } from '../state/create-api';
+import { API } from '../state/getter/API';
+import { Subscriptions } from '../subscriptions';
+import { BaseConnector } from './base-connector';
 
 export class SingleThreadConnector extends BaseConnector {
   private get events(): Subscriptions {
@@ -24,13 +24,18 @@ export class SingleThreadConnector extends BaseConnector {
     this._api = null;
   }
 
-  bindTo<R, P>(f: (db: any, augur: any, params: P) => Promise<R>): (params: P) => Promise<R> {
+  bindTo<R, P>(
+    f: (db: any, augur: any, params: P) => Promise<R>
+  ): (params: P) => Promise<R> {
     return async (params: P): Promise<R> => {
       return this._api.route(f.name, params);
     };
   }
 
-  async on(eventName: SubscriptionEventName | string, callback: Callback): Promise<void> {
+  async on(
+    eventName: SubscriptionEventName | string,
+    callback: Callback
+  ): Promise<void> {
     const wrappedCallack = this.callbackWrapper(eventName, callback);
     const id: string = this.events.subscribe(eventName, wrappedCallack);
     this.subscriptions[eventName] = { id, callback: wrappedCallack };
@@ -43,4 +48,4 @@ export class SingleThreadConnector extends BaseConnector {
       return this.events.unsubscribe(subscription.id);
     }
   }
- }
+}

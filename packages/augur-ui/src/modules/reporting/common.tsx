@@ -62,7 +62,7 @@ import Styles, { userRepDisplay } from 'modules/reporting/common.styles.less';
 import {
   convertDisplayValuetoAttoValue,
   convertAttoValueToDisplayValue,
-} from '@augurproject/sdk';
+} from '@augurproject/sdk-lite';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
 import MarketTitle from 'modules/market/containers/market-title';
@@ -1374,7 +1374,7 @@ export const ParticipationTokensView = (
         header="Participation Tokens Purchased"
         subheader={pastParticipationTokensPurchased.formatted}
         tooltipText={
-          "The total amount of unredeemed participation tokens you\ve purchased for past reporting minus any you've lost for incorrect reporting"
+          "The total amount of unredeemed participation tokens you've purchased for past reporting minus any you've lost for incorrect reporting"
         }
       />
       <Subheaders

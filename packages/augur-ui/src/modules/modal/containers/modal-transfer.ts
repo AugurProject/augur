@@ -48,7 +48,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   transferFundsGasEstimate: (amount: string, asset: string, to: string) =>
     transferFundsGasEstimate(amount, asset, to),
   transferFunds: (amount: string, asset: string, to: string, useSigner: boolean, useTopOff: boolean) => {
-    transferFunds(amount, asset, to, useSigner, useTopOff);
+    dispatch(transferFunds(amount, asset, to, useSigner, useTopOff));
   },
 });
 

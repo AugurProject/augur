@@ -1,27 +1,23 @@
+const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
+import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { SDKConfiguration } from '@augurproject/utils';
+import * as fs from 'async-file';
+import { MemDown } from 'memdown';
 import {
-  loadSeed,
-  createSeed,
-  Seed,
-  hashContracts,
-  writeSeeds,
-  deployContracts,
-  startGanacheServer,
-  makeGanacheProvider,
   createDb,
+  createSeed,
+  deployContracts,
+  hashContracts,
+  loadSeed,
+  makeGanacheProvider,
+  Seed,
+  startGanacheServer,
+  writeSeeds,
 } from '..';
 import { generateDoubleDeploy } from '../libs/seeds/double-deploy';
 import { FlashArguments, FlashSession } from './flash';
-
-import * as ganache from 'ganache-core';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import {
-  SDKConfiguration,
-  Contracts as compilerOutput,
-} from '@augurproject/artifacts';
-import * as fs from 'async-file';
 import { LogReplayer } from './replay-logs';
 import { LogReplayerV1 } from './replay-logs-v1';
-import { MemDown } from 'memdown';
 import { sleep } from './util';
 
 export const defaultSeedPath = '/tmp/augur/seed.json';

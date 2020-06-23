@@ -1,27 +1,32 @@
-import logError from 'utils/log-error';
-import { augurSdk } from 'services/augursdk';
-import { LoginAccount } from 'modules/types';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
+import { TXEventName } from '@augurproject/sdk-lite';
+import { AppState } from 'appStore';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
+import { addAlert } from 'modules/alerts/actions/alerts';
 import {
-  updateAppStatus,
-  Ox_ENABLED,
   GSN_ENABLED,
+  Ox_ENABLED,
+  updateAppStatus,
   WALLET_STATUS,
 } from 'modules/app/actions/update-app-status';
-import { loadAccountDataFromLocalStorage } from './load-account-data-from-local-storage';
 import { IS_LOGGED, updateAuthStatus } from 'modules/auth/actions/auth-status';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { updateAssets } from 'modules/auth/actions/update-assets';
-import { NetworkId } from '@augurproject/artifacts';
-import { AppState } from 'appStore';
+import {
+  CREATEAUGURWALLET,
+  MODAL_ERROR,
+  SUCCESS,
+  WALLET_STATUS_VALUES,
+  NULL_ADDRESS,
+} from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_ERROR, WALLET_STATUS_VALUES, CREATEAUGURWALLET, SUCCESS } from 'modules/common/constants';
-import { TXEventName } from '@augurproject/sdk';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
-import { addAlert } from 'modules/alerts/actions/alerts';
+import { LoginAccount } from 'modules/types';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { augurSdk } from 'services/augursdk';
+import logError from 'utils/log-error';
+import { loadAccountDataFromLocalStorage } from './load-account-data-from-local-storage';
 
 export const updateSdk = (
   loginAccount: Partial<LoginAccount>,
@@ -31,12 +36,12 @@ export const updateSdk = (
   dispatch: ThunkDispatch<void, any, Action>,
 ) => {
   if (!loginAccount || !loginAccount.address || !loginAccount.meta) return;
-  if (!augurSdk.sdk) return;
+  if (!augurSdk.get()) return;
 
   let newAccount = { ...loginAccount };
 
   try {
-    dispatch(updateAppStatus(Ox_ENABLED, !!augurSdk.sdk.zeroX));
+    dispatch(updateAppStatus(Ox_ENABLED, !!augurSdk.get().zeroX));
     dispatch(updateAppStatus(GSN_ENABLED, useGSN));
     if (useGSN) {
       const hasWallet = await augurSdk.client.gsn.userHasInitializedWallet(newAccount.address);
@@ -62,14 +67,14 @@ export const updateSdk = (
     await augurSdk.syncUserData(
       newAccount.mixedCaseAddress,
       newAccount.meta.signer,
-      networkId as NetworkId,
+      networkId,
       useGSN
     );
 
     dispatch(updateLoginAccount(newAccount));
     dispatch(updateAuthStatus(IS_LOGGED, true));
     dispatch(loadAccountData());
-    dispatch(updateAssets());
+    dispatch(updateAssets(true));
   } catch (error) {
     logError(error);
     dispatch(
@@ -89,7 +94,7 @@ export const createFundedGsnWallet = () => async (
     const affiliate = getState().loginAccount.affiliate;
     dispatch(addUpdatePendingTransaction(CREATEAUGURWALLET, TXEventName.Pending));
 
-    augurSdk.client.dependencies.setReferralAddress(affiliate);
+    augurSdk.client.dependencies.setReferralAddress(affiliate || NULL_ADDRESS);
     await augurSdk.client.gsn.initializeWallet();
 
     dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.CREATED));

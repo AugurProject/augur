@@ -17,7 +17,8 @@ import {
   CategoricalOutcomes,
   EventExpEndNextMonth,
   TemplateGroup,
-  NumberRangeValues
+  NumberRangeValues,
+  TemplateValidations,
 } from '../templates-template';
 import { TEMPLATES, TEMPLATES2 } from '../templates-source';
 import { retiredTemplates } from '../templates-retired';
@@ -26,7 +27,7 @@ const templateString = '//##TEMPLATES##';
 const templateValidationString = '//##TEMPLATE_VALIDATIONS##';
 const templateRetiredTemplatesString = '//##RETIRED_TEMPLATES';
 const templateGroupsString = '//##TEMPLATE_GROUPS##';
-const templateArtifactsFile = '../augur-artifacts/src/templates.ts';
+const templateArtifactsFile = '../augur-templates/src/templates.ts';
 const templateTemplateFile = './src/templates-template.ts';
 
 export const generateTemplateValidations = async () => {
@@ -89,40 +90,24 @@ export const generateTemplateValidations = async () => {
 
 const generateValidations = (
   templates
-): { template: Template; validations: TemplateValidation; templateGroups: TemplateGroup[] } => {
+): { template: Template; validations: TemplateValidations; templateGroups: TemplateGroup[] } => {
   const templateGroups: TemplateGroup[] = [];
-  const validations: TemplateValidation = {
-    templateValidation: null,
-    templateValidationResRules: null,
-    requiredOutcomes: null,
-    outcomeDependencies: null,
-    substituteDependencies: null,
-    marketQuestionDependencies: null,
-    dateDependencies: null,
-    closingDateDependencies: null,
-    placeholderValues: null,
-    categoricalOutcomes: null,
-    afterTuesdayDateNoFriday: null,
-    noAdditionalOutcomes: false,
-    hoursAfterEstimatedStartTime: null,
-    daysAfterStartDate: null,
-    eventExpEndNextMonthValues: null,
-    numberRangeValues: null,
-  };
+  const validations: TemplateValidations = {};
   const newTemplates = JSON.parse(JSON.stringify(templates));
   const topCategories = Object.keys(newTemplates);
-  topCategories.map(c => addTemplates(newTemplates[c], validations, templateGroups));
+  topCategories.map(c => addTemplates([c], newTemplates[c], validations, templateGroups));
   return { template: newTemplates, validations, templateGroups };
 };
 
 const addTemplates = (
+  categories: string[],
   category: CategoryTemplate,
-  validations: TemplateValidation,
+  validations: TemplateValidations,
   templateGroups: TemplateGroup[]
 ) => {
   if (category.children) {
     return Object.keys(category.children).map(c =>
-      addTemplates(category.children[c], validations, templateGroups)
+      addTemplates(categories.concat(c), category.children[c], validations, templateGroups)
     );
   }
   if (category.templates) {
@@ -151,14 +136,15 @@ const addTemplates = (
         closingDateDependencies: getClosingDateDependencies(t.inputs),
         placeholderValues: getPlaceholderValues(t.inputs),
         categoricalOutcomes: getCategoricalOutcomes(t.inputs),
-        afterTuesdayDatenoFriday: getInputsAfterTuesdayDateNoFriday(t.inputs),
+        afterTuesdayDateNoFriday: getInputsAfterTuesdayDateNoFriday(t.inputs),
         hoursAfterEstimatedStartTime: getHoursAfterEstimatedStartTime(t.inputs),
         daysAfterStartDate: getHoursAfterStartdate(t.inputs),
         noAdditionalOutcomes: t.noAdditionalUserOutcomes,
         eventExpEndNextMonthValues: getEventExpEndNextMonth(t.inputs),
         numberRangeValues: getNumberRangeValues(t.inputs),
+        yrs: getYearYearRangeValues(t.inputs),
+        reqCats: categories,
       };
-
       const groupName = t.groupName;
       if (groupName) {
         const keys = t.inputs.reduce((p, i) =>
@@ -262,14 +248,12 @@ function getEventExpEndNextMonth(inputs: TemplateInput[]): EventExpEndNextMonth[
     }));
 }
 
-function getInputsAfterTuesdayDateNoFriday(inputs: TemplateInput[]): Array<{ id: number }> {
+function getInputsAfterTuesdayDateNoFriday(inputs: TemplateInput[]): number[] {
   return inputs
     .filter(
       i => i.type === TemplateInputType.DATEYEAR && i.validationType === ValidationType.EXP_DATE_TUESDAY_AFTER_MOVIE_NO_FRIDAY
     )
-    .map(i => ({
-      id: i.id,
-    }));
+    .map(i => i.id);
 }
 
 function getClosingDateDependencies(inputs: TemplateInput[]): DateInputDependencies[] {
@@ -359,6 +343,16 @@ function getNumberRangeValues(inputs: TemplateInput[]): NumberRangeValues {
         ? { ...p, [i.id]: i.numberRange }
         : p,
     {}
+  );
+}
+
+function getYearYearRangeValues(inputs: TemplateInput[]): number[] {
+  return inputs.reduce(
+    (p, i) =>
+    i.validationType === ValidationType.YEAR_YEAR_RANGE
+        ? [...p, i.id ]
+        : p,
+    []
   );
 }
 

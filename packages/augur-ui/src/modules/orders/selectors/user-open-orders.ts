@@ -1,28 +1,28 @@
-import memoize from 'memoizee';
-import { createBigNumber } from 'utils/create-big-number';
+import { TXEventName } from '@augurproject/sdk-lite';
 import store, { AppState } from 'appStore';
 import {
-  BUY_INDEX,
-  SELL_INDEX,
-  SELL,
+  selectCancelingOrdersState,
+  selectLoginAccountAddress,
+  selectMarketInfosState,
+  selectPendingOrdersState,
+  selectUserMarketOpenOrders,
+} from 'appStore/select-state';
+import memoize from 'memoizee';
+import {
   BUY,
+  BUY_INDEX,
+  SELL,
+  SELL_INDEX,
   YES_NO,
 } from 'modules/common/constants';
-import { TXEventName } from '@augurproject/sdk';
-import {
-  convertUnixToFormattedDate,
-  convertSaltToFormattedDate,
-} from 'utils/format-date';
-import { formatNone, formatDai, formatMarketShares } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
-import {
-  selectMarketInfosState,
-  selectUserMarketOpenOrders,
-  selectCancelingOrdersState,
-  selectPendingOrdersState,
-  selectLoginAccountAddress,
-} from 'appStore/select-state';
 import { createSelector } from 'reselect';
+import { createBigNumber } from 'utils/create-big-number';
+import {
+  convertSaltToFormattedDate,
+  convertUnixToFormattedDate,
+} from 'utils/format-date';
+import { formatDai, formatMarketShares, formatNone } from 'utils/format-number';
 import getPrecision from 'utils/get-number-precision';
 
 function selectMarketsDataStateMarket(state, marketId) {

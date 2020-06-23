@@ -1,4 +1,4 @@
-import { ORDER_TYPES, SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { ORDER_TYPES, SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import { TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';

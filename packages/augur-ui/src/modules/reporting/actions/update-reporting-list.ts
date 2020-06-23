@@ -1,13 +1,12 @@
-import { LoadReportingMarketsOptions } from 'modules/types';
-import { AppState } from 'appStore';
-import { MarketReportingState } from '@augurproject/sdk';
+import { MarketReportingState } from '@augurproject/sdk-lite';
 import {
   loadCurrentlyDisputingMarkets,
-  loadOpenReportingMarkets,
-  loadUpcomingDesignatedReportingMarkets,
   loadDesignatedReportingMarkets,
   loadNextWindowDisputingMarkets,
+  loadOpenReportingMarkets,
+  loadUpcomingDesignatedReportingMarkets,
 } from 'modules/markets/actions/load-markets';
+import { LoadReportingMarketsOptions } from 'modules/types';
 
 export const UPDATE_REPORTING_LIST = 'UPDATE_REPORTING_LIST';
 
@@ -15,7 +14,7 @@ export function updateReportingList(
   reportingState: string,
   marketIds: string[],
   params: Partial<LoadReportingMarketsOptions>,
-  isLoading: boolean,
+  isLoading: boolean
 ) {
   return {
     type: UPDATE_REPORTING_LIST,
@@ -35,7 +34,10 @@ const loadPerReportingState = {
   },
 };
 
-export const reloadReportingPage = (marketIds: string[]) => (dispatch, getState) => {
+export const reloadReportingPage = (marketIds: string[]) => (
+  dispatch,
+  getState
+) => {
   if (!getState) return;
   const states = Object.keys(loadPerReportingState.reporting);
   states.map(reportingState => {
@@ -45,7 +47,10 @@ export const reloadReportingPage = (marketIds: string[]) => (dispatch, getState)
   });
 };
 
-export const reloadDisputingPage = (marketIds: string[]) => (dispatch, getState) => {
+export const reloadDisputingPage = (marketIds: string[]) => (
+  dispatch,
+  getState
+) => {
   if (!getState) return;
   const states = Object.keys(loadPerReportingState.disputing);
   states.map(reportingState => {

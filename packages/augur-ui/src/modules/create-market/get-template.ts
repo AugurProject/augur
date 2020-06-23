@@ -1,32 +1,41 @@
+import type { Getters } from '@augurproject/sdk';
 import {
-  MARKET_TEMPLATES,
-  MARKET_SUB_TEMPLATES,
-  MARKET_TYPE_TEMPLATES,
-  MarketCardTemplate,
-} from 'modules/create-market/constants';
-import deepClone from 'utils/deep-clone';
-import { Getters } from '@augurproject/sdk';
-import { formatDai } from 'utils/format-number';
+  CATEGORICAL,
+  SCALAR,
+  SCALAR_OUTCOMES,
+  YES_NO,
+  YES_NO_OUTCOMES,
+} from 'modules/common/constants';
+import {
+  CategoricalMarketIcon,
+  ScalarMarketIcon,
+  YesNoMarketIcon,
+} from 'modules/common/icons';
 import {
   TEMPLATES,
   TEMPLATE_VALIDATIONS,
   RETIRED_TEMPLATES,
-  Categories,
-  Template,
-  TemplateInput,
-  ResolutionRules,
-  CategoryTemplate,
+  getTemplateExchangeClosingWithBuffer,
   TemplateInputType,
+  TimeOffset
+} from '@augurproject/templates';
+import {
   REQUIRED,
   CHOICE,
-  getTemplateExchangeClosingWithBuffer,
-  TimeOffset,
-} from '@augurproject/artifacts';
+} from '@augurproject/sdk-lite'
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
 import { YES_NO, CATEGORICAL, SCALAR, YES_NO_OUTCOMES, SCALAR_OUTCOMES, INVALID_OUTCOME_LABEL } from 'modules/common/constants';
 import { NameValuePair } from 'modules/common/selection';
-import { OutcomeFormatted, DateTimeComponents } from 'modules/types';
+import {
+  MARKET_SUB_TEMPLATES,
+  MARKET_TEMPLATES,
+  MARKET_TYPE_TEMPLATES,
+  MarketCardTemplate,
+} from 'modules/create-market/constants';
+import { DateTimeComponents, OutcomeFormatted } from 'modules/types';
+import deepClone from 'utils/deep-clone';
 import { timestampComponents } from 'utils/format-date';
+import { formatDai } from 'utils/format-number';
 
 const MarketTypeIcons = {
   [YES_NO]: YesNoMarketIcon,
@@ -258,7 +267,7 @@ export const getTemplateReadableDescription = (template: Template) => {
 
 export const buildMarketDescription = (question: string, inputs: TemplateInput[]) => {
   inputs.forEach((input: TemplateInput) => {
-    let value = (input.userInput && input.userInput.trim()) || `[${input.placeholder.trim()}]`;
+    let value = (input.userInput && String(input.userInput).trim()) || `[${String(input?.placeholder)?.trim()}]`;
     question = question.replace(`[${input.id}]`, `${value}`);
   });
 

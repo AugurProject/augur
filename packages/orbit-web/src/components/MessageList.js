@@ -48,7 +48,7 @@ function MessageList ({
   useLayoutEffect(checkBoundaries, [listRef])
   useLayoutEffect(stayAtBottom, [listRef, entryCount])
 
-  const checkBoundariesDebounced = useCallback(debounce(checkBoundaries, 40, { leading: true }), [
+  const checkBoundariesDebounced = useCallback(debounce(checkBoundaries, 40, { loading: true }), [
     listRef
   ])
 

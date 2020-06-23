@@ -31,7 +31,7 @@
     "@augurproject/types": "2.0.0-alpha.2",
     "@augurproject/contract-dependencies-ethers": "2.0.0-alpha.2",
     "ethereum-types": "2.1.6",
-    "ethers": "4.0.37"
+    "ethers": "4.0.47"
   },
   "devDependencies": {
     "ts-node": "7.0.1"

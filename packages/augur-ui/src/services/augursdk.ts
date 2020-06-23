@@ -1,23 +1,20 @@
-import { NetworkId, SDKConfiguration } from '@augurproject/artifacts';
-import { EthersSigner } from '@augurproject/contract-dependencies-ethers';
-import { EthersProvider } from '@augurproject/ethersjs-provider';
-import {
-  Augur,
-  Connectors,
-  createClient,
-  NULL_ADDRESS,
-} from '@augurproject/sdk';
-import { JsonRpcProvider } from 'ethers/providers';
+import type { SDKConfiguration }  from '@augurproject/artifacts';
+import type { Augur, Connectors } from '@augurproject/sdk';
+import type { EthersSigner } from '@augurproject/contract-dependencies-ethers';
+import type { JsonRpcProvider } from 'ethers/providers';
+
+import { AugurLite } from '@augurproject/sdk-lite';
+import { NetworkId } from '@augurproject/utils';
+
 import {
   listenToUpdates,
   unListenToEvents,
 } from 'modules/events/actions/listen-to-updates';
+import { NULL_ADDRESS } from 'modules/common/constants'
 import { BigNumber } from 'utils/create-big-number';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { isEmpty } from 'utils/is-empty';
 import { isLocalHost } from 'utils/is-localhost';
-import { isMobileSafari } from 'utils/is-safari';
-import { disableWarpSync } from '../../../augur-artifacts/src/helpers';
 import { analytics } from './analytics';
 import { createBrowserMeshWorker } from './browser-mesh';
 
@@ -26,17 +23,15 @@ window.BigNumber = BigNumber;
 export class SDK {
   client: Augur | null = null;
   isSubscribed = false;
-  networkId: NetworkId;
   private connector:Connectors.BaseConnector;
   private config: SDKConfiguration;
 
-  // Keeping this here for backward compatibility
-  get sdk() {
-    return this.client;
+  get networkId() {
+    return this.config?.networkId;
   }
 
-  connect(account: string = null):Promise<void> {
-    return this.connector.connect(this.config, account);
+  connect() {
+    return this.connector.connect(this.config);
   }
 
   async makeClient(
@@ -47,9 +42,9 @@ export class SDK {
     affiliate: string = NULL_ADDRESS,
     enableFlexSearch = true,
   ): Promise<Augur> {
-    this.config = isMobileSafari() ? disableWarpSync(config) : config;
+    const { Connectors, EthersProvider, createClient } = await import(/* webpackChunkName: 'augur-sdk' */ '@augurproject/sdk');
 
-    this.networkId = config.networkId;
+    this.config = config;
 
     const ethersProvider = new EthersProvider(
       provider,
@@ -60,7 +55,6 @@ export class SDK {
 
     if (this.config.sdk?.enabled) {
       this.connector = new Connectors.WebsocketConnector();
-      await this.connect();
     } else {
       this.connector = new Connectors.SingleThreadConnector();
     }
