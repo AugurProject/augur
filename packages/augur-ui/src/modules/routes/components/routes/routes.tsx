@@ -9,9 +9,6 @@ import * as COMPONENTS from 'modules/routes/constants/components';
 
 import { withPageAnalytic } from 'services/analytics';
 import { isLocalHost } from 'utils/is-localhost';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
-import { AppState } from 'appStore';
 import { connect } from 'react-redux';
 import { page } from 'services/analytics/helpers';
 import { useAppStatusStore } from 'modules/app/store/app-status';

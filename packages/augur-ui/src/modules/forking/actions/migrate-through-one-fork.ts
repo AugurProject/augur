@@ -8,7 +8,7 @@ export const migrateMarketThroughOneFork = (
   description = '',
   estimateGas = false,
   callback = logError
-) => (dispatch, getState) => {
+) => {
   console.log('in migrateThroughFork');
   if (estimateGas) {
     return migrateThroughOneForkEstimateGas(marketId, payoutNumerators, description);

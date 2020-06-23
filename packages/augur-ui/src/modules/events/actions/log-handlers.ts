@@ -18,9 +18,6 @@ import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
 import { MarketInfos } from 'modules/types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
-import { AppState } from 'appStore';
 import { isSameAddress } from 'utils/isSameAddress';
 import { Events, Logs, TXEventName, OrderEventType } from '@augurproject/sdk';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
@@ -166,12 +163,9 @@ export const handleZeroStatusUpdated = (status, log = undefined) => {
   }
 };
 
-export const handleSDKReadyEvent = () => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const handleSDKReadyEvent = () => {
   // wire up events for sdk
-  augurSdk.subscribe(dispatch);
+  augurSdk.subscribe();
 
   // app is connected when subscribed to sdk
   AppStatus.actions.setIsConnected(true);
@@ -180,10 +174,7 @@ export const handleSDKReadyEvent = () => (
   getCategoryStats();
 };
 
-export const handleNewBlockLog = (log: Events.NewBlock) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const handleNewBlockLog = async (log: Events.NewBlock) => {
   const {
     analytics,
     env: { averageBlocktime, showReloadModal },
@@ -227,7 +218,7 @@ export const handleNewBlockLog = (log: Events.NewBlock) => async (
     );
     Object.keys(eventLogs).map(event => {
       if (EventHandlers[event])
-        dispatch(EventHandlers[event](eventLogs[event]));
+        EventHandlers[event](eventLogs[event]);
     });
   }
 };
@@ -388,9 +379,7 @@ export const handleLiquidityPoolUpdatedLog = (
   console.log(data);
 };
 
-export const handleOrderLog = (log: any) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
+export const handleOrderLog = (log: any) => {
   const type = log.eventType;
   switch (type) {
     case OrderEventType.Create:
@@ -502,7 +491,7 @@ export const handleTradingProceedsClaimedLog = (
 // ---- initial reporting ----- //
 export const handleInitialReportSubmittedLog = (
   logs: Logs.InitialReportSubmittedLog[]
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
+) => {
   const {
     loginAccount: { address },
   } = AppStatus.get();
@@ -534,10 +523,7 @@ export const handleInitialReporterRedeemedLog = (
   }
 };
 
-export const handleInitialReporterTransferredLog = (logs: any) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const handleInitialReporterTransferredLog = (logs: any) => {
   const {
     loginAccount: { address },
   } = AppStatus.get();
@@ -605,20 +591,14 @@ export const handleMarketTransferredLog = (logs: any) => {
   Markets.actions.updateMarketsData(null, loadMarketsInfo(marketIds));
 };
 
-export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => {
   console.log('handleUniverseForkedLog');
   const { forkingMarket } = log;
   loadUniverseForkingInfo(forkingMarket);
   if (isOnDisputingPage()) reloadDisputingPage([]);
 };
 
-export const handleMarketFinalizedLog = (logs: Logs.MarketFinalizedLog[]) => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const handleMarketFinalizedLog = (logs: Logs.MarketFinalizedLog[]) => {
   const {
     universe: { forkingInfo },
   } = AppStatus.get();

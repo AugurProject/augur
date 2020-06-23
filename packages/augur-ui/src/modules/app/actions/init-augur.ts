@@ -15,9 +15,6 @@ import {
   NETWORK_NAMES,
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
-import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
@@ -49,7 +46,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
-async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
+async function loadAccountIfStored() {
   const loggedInUser = getLoggedInUserFromLocalStorage();
   const loggedInAccount = (loggedInUser && loggedInUser.address) || null;
   const loggedInAccountType = (loggedInUser && loggedInUser.type) || null;
@@ -109,157 +106,154 @@ function pollForNetwork() {
   }, NETWORK_ID_POLL_INTERVAL_DURATION);
 }
 
-export function connectAugur(
+export const connectAugur = async (
   config: SDKConfiguration,
   isInitialConnection = false,
   callback: NodeStyleCallback = logError
-) {
-  return async (dispatch: ThunkDispatch<void, any, Action>) => {
-    const { modal, loginAccount } = AppStatus.get();
-    const windowApp = windowRef as WindowApp;
-    const loggedInUser = getLoggedInUserFromLocalStorage();
-    const loggedInAccount = loggedInUser?.address || null;
-    const loggedInAccountType = loggedInUser?.type || null;
+) => {
+  const { modal, loginAccount } = AppStatus.get();
+  const windowApp = windowRef as WindowApp;
+  const loggedInUser = getLoggedInUserFromLocalStorage();
+  const loggedInAccount = loggedInUser?.address || null;
+  const loggedInAccountType = loggedInUser?.type || null;
 
-    // Preload Account
-    const preloadAccount = accountType => {
-      const address = toChecksumAddress(loggedInAccount);
-      const accountObject = {
+  // Preload Account
+  const preloadAccount = (accountType) => {
+    const address = toChecksumAddress(loggedInAccount);
+    const accountObject = {
+      address,
+      mixedCaseAddress: address,
+      meta: {
         address,
-        mixedCaseAddress: address,
-        meta: {
-          address,
-          signer: null,
-          email: null,
-          profileImage: null,
-          openWallet: null,
-          accountType,
-          isWeb3: true,
-          preloaded: true,
-        },
-      };
-      AppStatus.actions.setRestoredAccount(true);
-      AppStatus.actions.updateLoginAccount(accountObject);
+        signer: null,
+        email: null,
+        profileImage: null,
+        openWallet: null,
+        accountType,
+        isWeb3: true,
+        preloaded: true,
+      },
     };
-
-    if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
-      preloadAccount(ACCOUNT_TYPES.WEB3WALLET);
-    }
-
-    if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-      preloadAccount(ACCOUNT_TYPES.PORTIS);
-    }
-
-    if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
-      preloadAccount(ACCOUNT_TYPES.FORTMATIC);
-    }
-
-    if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
-      preloadAccount(ACCOUNT_TYPES.TORUS);
-    }
-
-    let provider = null;
-    const networkId = config.networkId;
-
-    if (networkId && !isDevNetworkId(networkId)) {
-      // Unless DEV, use the provider on window if it exists, otherwise use torus provider
-      if (windowRef.web3) {
-        // Use window provider
-        provider = getWeb3Provider(windowRef);
-      } else {
-        // Use torus provider
-
-        // Use import instead of import for wallet SDK packages
-        // to conditionally load web3 into the DOM.
-        //
-        // Note: This also creates a split point in webpack
-        const { default: Torus } = await import(
-          /* webpackChunkName: "torus" */ '@toruslabs/torus-embed'
-        );
-        const torus = new Torus({});
-
-        const host = getNetwork(networkId);
-        await torus.init({
-          network: { host },
-          showTorusButton: false,
-        });
-
-        // Tor.us cleanup
-        const torusWidget = document.querySelector('#torusWidget');
-        if (torusWidget) {
-          torusWidget.remove();
-        }
-        provider = new Web3Provider(torus.provider);
-      }
-    } else {
-      // In DEV, use local ethereum node
-      provider = new JsonRpcProvider(config.ethereum.http);
-    }
-
-    // Disable mesh/gsn for googleBot
-    if (isGoogleBot()) {
-      config = validConfigOrDie(
-        mergeConfig(config, {
-          zeroX: { mesh: { enabled: false } },
-          gsn: { enabled: false },
-          useWarpSync: false,
-        })
-      );
-    }
-
-    let sdk: Augur<Provider> = null;
-    try {
-      sdk = await augurSdk.makeClient(provider, config);
-    } catch (e) {
-      console.error(e);
-      if (provider._network && config.networkId !== provider._network.chainId) {
-        const { setModal } = AppStatus.actions;
-        return setModal({
-          type: MODAL_NETWORK_MISMATCH,
-          expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
-        });
-      } else {
-        return callback('SDK could not be created', { config });
-      }
-    }
-
-    let universeId =
-      config.addresses?.Universe || sdk.contracts.universe.address;
-    if (
-      windowApp.localStorage &&
-      windowApp.localStorage.getItem &&
-      loginAccount.address
-    ) {
-      const loginAddress =
-        (windowApp.localStorage.getItem &&
-          windowApp.localStorage.getItem(loginAccount.address)) ||
-        '';
-      const storedUniverseId = JSON.parse(loginAddress).selectedUniverse[
-        getNetworkId().toString()
-      ];
-      universeId = !storedUniverseId ? universeId : storedUniverseId;
-    }
-    AppStatus.actions.updateUniverse({ id: universeId });
-    // If the network disconnected modal is being shown, but we are now
-    // connected -- hide it.
-    if (modal?.type === MODAL_NETWORK_DISCONNECTED) {
-      AppStatus.actions.closeModal();
-    }
-
-    if (isInitialConnection) {
-      loadAccountIfStored(dispatch);
-      pollForNetwork();
-    }
-
-    // wire up start up events for sdk
-    dispatch(listenForStartUpEvents(sdk));
-    AppStatus.actions.setCanHotload(true);
-
-    await augurSdk.connect();
-
-    callback(null);
+    AppStatus.actions.setRestoredAccount(true);
+    AppStatus.actions.updateLoginAccount(accountObject);
   };
-}
+
+  if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
+    preloadAccount(ACCOUNT_TYPES.WEB3WALLET);
+  }
+
+  if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
+    preloadAccount(ACCOUNT_TYPES.PORTIS);
+  }
+
+  if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
+    preloadAccount(ACCOUNT_TYPES.FORTMATIC);
+  }
+
+  if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
+    preloadAccount(ACCOUNT_TYPES.TORUS);
+  }
+
+  let provider = null;
+  const networkId = config.networkId;
+
+  if (networkId && !isDevNetworkId(networkId)) {
+    // Unless DEV, use the provider on window if it exists, otherwise use torus provider
+    if (windowRef.web3) {
+      // Use window provider
+      provider = getWeb3Provider(windowRef);
+    } else {
+      // Use torus provider
+
+      // Use import instead of import for wallet SDK packages
+      // to conditionally load web3 into the DOM.
+      //
+      // Note: This also creates a split point in webpack
+      const { default: Torus } = await import(
+        /* webpackChunkName: "torus" */ '@toruslabs/torus-embed'
+      );
+      const torus = new Torus({});
+
+      const host = getNetwork(networkId);
+      await torus.init({
+        network: { host },
+        showTorusButton: false,
+      });
+
+      // Tor.us cleanup
+      const torusWidget = document.querySelector('#torusWidget');
+      if (torusWidget) {
+        torusWidget.remove();
+      }
+      provider = new Web3Provider(torus.provider);
+    }
+  } else {
+    // In DEV, use local ethereum node
+    provider = new JsonRpcProvider(config.ethereum.http);
+  }
+
+  // Disable mesh/gsn for googleBot
+  if (isGoogleBot()) {
+    config = validConfigOrDie(
+      mergeConfig(config, {
+        zeroX: { mesh: { enabled: false } },
+        gsn: { enabled: false },
+        useWarpSync: false,
+      })
+    );
+  }
+
+  let sdk: Augur<Provider> = null;
+  try {
+    sdk = await augurSdk.makeClient(provider, config);
+  } catch (e) {
+    console.error(e);
+    if (provider._network && config.networkId !== provider._network.chainId) {
+      const { setModal } = AppStatus.actions;
+      return setModal({
+        type: MODAL_NETWORK_MISMATCH,
+        expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
+      });
+    } else {
+      return callback('SDK could not be created', { config });
+    }
+  }
+
+  let universeId = config.addresses?.Universe || sdk.contracts.universe.address;
+  if (
+    windowApp.localStorage &&
+    windowApp.localStorage.getItem &&
+    loginAccount.address
+  ) {
+    const loginAddress =
+      (windowApp.localStorage.getItem &&
+        windowApp.localStorage.getItem(loginAccount.address)) ||
+      '';
+    const storedUniverseId = JSON.parse(loginAddress).selectedUniverse[
+      getNetworkId().toString()
+    ];
+    universeId = !storedUniverseId ? universeId : storedUniverseId;
+  }
+  AppStatus.actions.updateUniverse({ id: universeId });
+  // If the network disconnected modal is being shown, but we are now
+  // connected -- hide it.
+  if (modal?.type === MODAL_NETWORK_DISCONNECTED) {
+    AppStatus.actions.closeModal();
+  }
+
+  if (isInitialConnection) {
+    loadAccountIfStored();
+    pollForNetwork();
+  }
+
+  // wire up start up events for sdk
+  listenForStartUpEvents(sdk);
+  AppStatus.actions.setCanHotload(true);
+
+  await augurSdk.connect();
+
+  callback(null);
+};
 
 interface initAugurParams {
   ethereumNodeHttp: string | null;
@@ -268,7 +262,7 @@ interface initAugurParams {
   useWeb3Transport: boolean;
 }
 
-export function initAugur(
+export const initAugur = async (
   {
     ethereumNodeHttp,
     ethereumNodeWs /* unused */,
@@ -276,35 +270,31 @@ export function initAugur(
     useWeb3Transport,
   }: initAugurParams,
   callback: NodeStyleCallback = logError
-) {
-  return (
-    dispatch: ThunkDispatch<void, any, Action>,
-    getState: () => AppState
-  ) => {
-    // const config: SDKConfiguration = environments[`${process.env.ETHEREUM_NETWORK}`];
-    const config = buildConfig(process.env.ETHEREUM_NETWORK || 'local');
+) => {
+  // const config: SDKConfiguration = environments[`${process.env.ETHEREUM_NETWORK}`];
+  const config = buildConfig(process.env.ETHEREUM_NETWORK || 'local');
 
-    config.ethereum.useWeb3Transport = useWeb3Transport;
+  config.ethereum.useWeb3Transport = useWeb3Transport;
 
-    if (ethereumNodeHttp) {
-      config.ethereum.http = ethereumNodeHttp;
-    }
+  if (ethereumNodeHttp) {
+    config.ethereum.http = ethereumNodeHttp;
+  }
 
-    if (sdkEndpoint) {
-      config.sdk.ws = sdkEndpoint;
-    }
+  if (sdkEndpoint) {
+    config.sdk.ws = sdkEndpoint;
+  }
 
-    console.log(
-      '******** CONFIGURATION ***********\n' +
-        serializeConfig(config) +
-        '\n**********************************'
-    );
-    // cache fingerprint
-    getFingerprint();
-    AppStatus.actions.setEnv(config);
-    tryToPersistStorage();
-    connectAugur(config, true, callback)(dispatch);
+  console.log(
+    '******** CONFIGURATION ***********\n' +
+      serializeConfig(config) +
+      '\n**********************************'
+  );
+  // cache fingerprint
+  getFingerprint();
+  AppStatus.actions.setEnv(config);
+  tryToPersistStorage();
+  connectAugur(config, true, callback);
 
-    windowRef.showIndexedDbSize = showIndexedDbSize;
-  };
-}
+  windowRef.showIndexedDbSize = showIndexedDbSize;
+};
+

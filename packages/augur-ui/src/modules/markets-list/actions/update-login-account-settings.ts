@@ -1,6 +1,3 @@
-import {AppState} from 'appStore';
-import {ThunkDispatch} from 'redux-thunk';
-import {Action} from 'redux';
 import {LoginAccountSettings} from "modules/types";
 import { AppStatus } from 'modules/app/store/app-status';
 
