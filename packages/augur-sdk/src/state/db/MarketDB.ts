@@ -602,6 +602,7 @@ export class MarketDB extends DerivedDB {
   private processMarketVolumeChanged(log: ParsedLog): ParsedLog {
     log['volume'] = padHex(log['volume']);
     log['lastTradedTimestamp'] = new BigNumber(log['timestamp'], 16).toNumber();
+    log['numberOfTrades'] = new BigNumber(log['totalTrades'], 16).toNumber();
     return log;
   }
 

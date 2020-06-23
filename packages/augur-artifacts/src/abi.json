@@ -26430,6 +26430,12 @@
 				{
 					"indexed": false,
 					"internalType": "uint256",
+					"name": "totalTrades",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
 					"name": "timestamp",
 					"type": "uint256"
 				}
@@ -26688,6 +26694,11 @@
 					"internalType": "uint256[]",
 					"name": "_outcomeVolumes",
 					"type": "uint256[]"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_totalTrades",
+					"type": "uint256"
 				}
 			],
 			"name": "logMarketVolumeChanged",
@@ -27780,6 +27791,27 @@
 				}
 			],
 			"name": "marketOutcomeVolumes",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "marketTotalTrades",
 			"outputs": [
 				{
 					"internalType": "uint256",
