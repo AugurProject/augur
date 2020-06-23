@@ -97,6 +97,9 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
       if (loggedInAccountType === ACCOUNT_TYPES.TORUS) {
         await dispatch(loginWithTorus());
       }
+      if (loggedInAccountType === ACCOUNT_TYPES.WALLETCONNECT) {
+        await dispatch(loginWithWalletConnect());
+      }
     }
   } catch (error) {
     errorModal();
