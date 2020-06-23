@@ -634,7 +634,7 @@ export interface AccountBalances {
   dai: string;
   legacyRep: string;
   attoRep: string;
-  legacyAttoRep: string;
+  legacyAttoRep?: string;
   signerBalances: {
     eth: string;
     rep: string;
