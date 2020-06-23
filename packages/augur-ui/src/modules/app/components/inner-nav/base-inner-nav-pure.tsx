@@ -6,6 +6,7 @@ import {
   SHOW_INVALID_MARKETS_PARAM_NAME,
   SPREAD_PARAM_NAME,
   TEMPLATE_FILTER,
+  MARKET_TYPE_PARAM_NAME,
 } from 'modules/common/constants';
 import { XIcon } from 'modules/common/icons';
 import MarketsListFilters from 'modules/app/containers/markets-list-filters';
@@ -59,6 +60,7 @@ const BaseInnerNavPure = ({
   const [showApply, setShowApply] = useState(false);
   const [maxFeeFilter, setMaxFeeFilter] = useState();
   const [maxSpreadFilter, setMaxSpreadFilter] = useState();
+  const [marketTypeFilter, setMarketTypeFilter] = useState();
   const [showInvalidFilter, setShowInvalidFilter] = useState();
   const [templateOrCustomFilter, setTemplateOrCustomFilter] = useState();
   const [sortOptions, setSortOptions] = useState();
@@ -68,6 +70,7 @@ const BaseInnerNavPure = ({
     setMaxSpreadFilter,
     setShowInvalidFilter,
     setTemplateOrCustomFilter,
+    setMarketTypeFilter,
   };
 
   const sortProps = {
@@ -93,6 +96,12 @@ const BaseInnerNavPure = ({
         value: originalFilters
           ? originalFilterSortOptions.maxLiquiditySpread
           : maxSpreadFilter,
+      },
+      {
+        filterType: MARKET_TYPE_PARAM_NAME,
+        value: originalFilters
+          ? originalFilterSortOptions.marketTypeFilter
+          : marketTypeFilter,
       },
       {
         filterType: SHOW_INVALID_MARKETS_PARAM_NAME,
