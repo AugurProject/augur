@@ -139,7 +139,7 @@ export async function createBrowserMeshWorker(
       onError,
     } = Comlink.wrap(meshWorker);
     await loadMesh();
-    onError(function (err) {
+    onError(Comlink.proxy(function (err) {
       console.error('Browser mesh error: ', err.message, err.stack);
       console.log('Restarting Mesh Sync');
       zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, {
@@ -147,7 +147,7 @@ export async function createBrowserMeshWorker(
       });
       meshWorker.terminate();
       createBrowserMeshWorker(config, web3Provider, zeroX);
-    });
+    }));
 
     await startMesh(
       {
