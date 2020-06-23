@@ -47,7 +47,7 @@ function render(Root) {
 handleRender();
 
 function handleRender() {
-  const UpdatedRoot = require('modules/app/containers/app').default;
+  const UpdatedRoot = require('modules/app/components/app').default;
 
   // NOTE --  These are attached for convenience when built for development or debug
   if (process.env.NODE_ENV === 'development') {
