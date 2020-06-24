@@ -9,7 +9,9 @@ import {
   spreadFilters,
   TEMPLATE_FILTER,
   templateFilterValues,
+  marketTypeFilterValues,
   INVALID_OUTCOME_LABEL,
+  MARKET_TYPE_PARAM_NAME,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/inner-nav/markets-list-filters.styles.less';
 import { FilterIcon, helpIcon } from 'modules/common/icons';
@@ -26,6 +28,7 @@ interface MarketsListFiltersProps {
   maxLiquiditySpread: string;
   includeInvalidMarkets: INVALID_OPTIONS;
   allTemplateFilter: string;
+  marketTypeFilter: string;
   isSearching: boolean;
   updateMaxFee: Function;
   updateMaxSpread: Function;
@@ -40,6 +43,8 @@ interface MarketsListFiltersProps {
   settings: LoginAccountSettings;
   isMobile: boolean;
   updateSelectedCategories: Function;
+  setMarketTypeFilter: Function;
+  updateMarketTypeFilter: Function
 }
 
 const MarketsListFilters = ({
@@ -47,15 +52,18 @@ const MarketsListFilters = ({
   maxLiquiditySpread,
   includeInvalidMarkets,
   allTemplateFilter,
+  marketTypeFilter,
   isSearching,
   updateMaxFee,
   updateMaxSpread,
+  updateMarketTypeFilter,
   updateShowInvalid,
   updateTemplateFilter,
   history,
   location,
   setMaxFeeFilter,
   setMaxSpreadFilter,
+  setMarketTypeFilter,
   setShowInvalidFilter,
   setTemplateOrCustomFilter,
   settings,
@@ -79,6 +87,8 @@ const MarketsListFilters = ({
       settings.showInvalid;
     const categories =
       filterOptionsFromQuery.category;
+    const newMarketTypeFilter = filterOptionsFromQuery.type ||
+      settings.marketTypeFilter;
 
     if (newMaxFee && newMaxFee !== maxFee) {
       updateMaxFee(newMaxFee);
@@ -88,6 +98,9 @@ const MarketsListFilters = ({
     }
     if (newTemplateFilter && newTemplateFilter !== allTemplateFilter) {
       updateTemplateFilter(newTemplateFilter);
+    }
+    if (newMarketTypeFilter && newMarketTypeFilter !== marketTypeFilter) {
+      updateMarketTypeFilter(newMarketTypeFilter);
     }
     if (newShowInvalid && newShowInvalid !== includeInvalidMarkets) {
       updateShowInvalid(newShowInvalid);
@@ -118,6 +131,9 @@ const MarketsListFilters = ({
         break;
       case SPREAD_PARAM_NAME:
         updateMaxSpread(value);
+        break;
+      case MARKET_TYPE_PARAM_NAME:
+        updateMarketTypeFilter(value);
         break;
       case SHOW_INVALID_MARKETS_PARAM_NAME:
         updateShowInvalid(value);
@@ -182,6 +198,21 @@ const MarketsListFilters = ({
               defaultSelected={maxLiquiditySpread}
               onChange={(value: string) => isMobile ? setMaxSpreadFilter(value) : updateFilter(value, SPREAD_PARAM_NAME)}
             />
+
+            <div className={Styles.Filter}>
+              <span>Market Type</span>
+              {generateTooltip(
+                'Filters markets based on market type',
+                'type'
+              )}
+            </div>
+
+            <RadioBarGroup
+              radioButtons={marketTypeFilterValues}
+              defaultSelected={marketTypeFilter}
+              onChange={(value: string) => isMobile ? setMarketTypeFilter(value) : updateFilter(value, MARKET_TYPE_PARAM_NAME)}
+            />
+
 
             <div className={Styles.Filter}>
               <span>Invalid Markets</span>

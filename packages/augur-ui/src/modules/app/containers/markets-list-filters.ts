@@ -6,6 +6,7 @@ import {
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
   MARKET_SHOW_INVALID,
+  MARKET_TYPE_FILTER,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import MarketsListFilters from '../components/inner-nav/markets-list-filters';
 import { TEMPLATE_FILTER } from 'modules/common/constants';
@@ -24,6 +25,7 @@ const mapStateToProps = ({
     maxLiquiditySpread,
     includeInvalidMarkets,
     templateFilter,
+    marketTypeFilter,
   } = filterSortOptions;
   return {
     maxFee,
@@ -31,6 +33,7 @@ const mapStateToProps = ({
     includeInvalidMarkets,
     isSearching: marketsList.isSearching,
     allTemplateFilter: templateFilter,
+    marketTypeFilter: marketTypeFilter,
     settings: loginAccount.settings || {},
     isMobile: appStatus.isMobile,
   };
@@ -48,6 +51,9 @@ const mapDispatchToProps = dispatch => ({
   },
   updateTemplateFilter: templateFilter => {
     dispatch(updateFilterSortOptions(TEMPLATE_FILTER, templateFilter));
+  },
+  updateMarketTypeFilter: marketTypeFilter => {
+    dispatch(updateFilterSortOptions(MARKET_TYPE_FILTER, marketTypeFilter));
   },
   updateLoginAccount: settings => {
     dispatch(updateLoginAccount({ settings }));
@@ -76,6 +82,10 @@ const mergeProps = (sP, dP, oP) => {
     updateTemplateFilter: templateFilter => {
       dP.updateTemplateFilter(templateFilter);
       dP.updateLoginAccount(Object.assign({}, sP.settings, { templateFilter }));
+    },
+    updateMarketTypeFilter: marketTypeFilter => {
+      dP.updateMarketTypeFilter(marketTypeFilter);
+      dP.updateLoginAccount(Object.assign({}, sP.settings, { marketTypeFilter }));
     },
     updateSelectedCategories: (category) => dP.updateSelectedCategories(category),
   };

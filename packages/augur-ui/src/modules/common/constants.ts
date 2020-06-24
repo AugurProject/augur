@@ -14,6 +14,7 @@ import {
   MarketTypeName,
   MaxLiquiditySpread,
   TemplateFilters,
+  MarketTypeName,
 } from '@augurproject/sdk-lite';
 
 // Help Center links
@@ -239,9 +240,9 @@ export const feeFilters = [
   { header: '0-10%', value: MAX_FEE_10_PERCENT },
 ];
 
-export const TEMPLATE_FILTER_ALL = TemplateFilters.all;
+export const FILTER_ALL = TemplateFilters.all;
 export const templateFilterValues = [
-  { header: 'All', value: TEMPLATE_FILTER_ALL },
+  { header: 'All', value: FILTER_ALL },
   {
     header: 'Augur templates',
     value: TemplateFilters.templateOnly,
@@ -249,6 +250,22 @@ export const templateFilterValues = [
   {
     header: 'Custom markets',
     value: TemplateFilters.customOnly,
+  },
+];
+
+export const marketTypeFilterValues = [
+  { header: 'All', value: FILTER_ALL },
+  {
+    header: 'Yes/No',
+    value: MarketTypeName.YesNo,
+  },
+  {
+    header: 'Categorical',
+    value: MarketTypeName.Categorical,
+  },
+  {
+    header: 'Scalar',
+    value: MarketTypeName.Scalar,
   },
 ];
 
@@ -385,6 +402,7 @@ export const TAGS_PARAM_NAME = 'tags';
 export const CATEGORY_PARAM_NAME = 'category';
 export const MAXFEE_PARAM_NAME = 'maxFee';
 export const SPREAD_PARAM_NAME = 'spread';
+export const MARKET_TYPE_PARAM_NAME = 'type'
 export const SHOW_INVALID_MARKETS_PARAM_NAME = 'showInvalid';
 export const TEMPLATE_FILTER = 'templateFilter';
 

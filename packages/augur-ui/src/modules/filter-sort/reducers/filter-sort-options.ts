@@ -7,6 +7,7 @@ import {
   TRANSACTION_PERIOD,
   MARKET_MAX_SPREAD,
   MARKET_SHOW_INVALID,
+  MARKET_TYPE_FILTER,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import {
   MAX_FEE_02_PERCENT,
@@ -15,6 +16,7 @@ import {
   DAY,
   MAX_SPREAD_ALL_SPREADS,
   TEMPLATE_FILTER,
+  FILTER_ALL,
 } from 'modules/common/constants';
 import { FilterSortOptions, BaseAction, INVALID_OPTIONS } from 'modules/types';
 
@@ -24,6 +26,7 @@ const DEFAULT_STATE: FilterSortOptions = {
   [MARKET_MAX_FEES]: MAX_FEE_02_PERCENT,
   [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS,
   [MARKET_SHOW_INVALID]: INVALID_OPTIONS.Hide,
+  [MARKET_TYPE_FILTER]: FILTER_ALL,
   [TRANSACTION_PERIOD]: DAY,
   [TEMPLATE_FILTER]: "templateOnly"
 };
