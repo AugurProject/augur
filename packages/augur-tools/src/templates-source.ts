@@ -2005,13 +2005,16 @@ export const TEMPLATES = {
                   text: `Market should resolve as whole number value of wins`,
                 },
                 {
+                  text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                },
+                {
                   text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                 },
                 {
                   text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                 },
                 {
-                  text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                  text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                 },
               ],
             },
@@ -4021,13 +4024,16 @@ export const TEMPLATES = {
                       text: `Market should resolve as whole number value of wins`,
                     },
                     {
+                      text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                    },
+                    {
                       text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                      text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -4738,13 +4744,16 @@ export const TEMPLATES = {
                       text: `Market should resolve as whole number value of wins`,
                     },
                     {
+                      text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                    },
+                    {
                       text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                      text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -5657,13 +5666,16 @@ export const TEMPLATES = {
                   text: `Market should resolve as whole number value of wins`,
                 },
                 {
+                  text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                },
+                {
                   text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                 },
                 {
                   text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                 },
                 {
-                  text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                  text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                 },
               ],
             },
@@ -6954,13 +6966,16 @@ export const TEMPLATES = {
                       text: `Market should resolve as whole number value of wins`,
                     },
                     {
+                      text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                    },
+                    {
                       text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                      text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -7694,13 +7709,16 @@ export const TEMPLATES = {
                       text: `Market should resolve as whole number value of wins`,
                     },
                     {
+                      text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                    },
+                    {
                       text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                      text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },

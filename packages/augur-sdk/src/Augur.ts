@@ -472,6 +472,12 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(Users.getUserOpenOrders)(params);
   };
 
+  getUserFrozenFundsBreakdown = (
+    params: Parameters<typeof Users.getUserFrozenFundsBreakdown>[2]
+  ): ReturnType<typeof Users.getUserFrozenFundsBreakdown> => {
+    return this.bindTo(Users.getUserFrozenFundsBreakdown)(params);
+  };
+
   getMostRecentWarpSync = (): ReturnType<
     typeof WarpSyncGetter.getMostRecentWarpSync
   > => {
