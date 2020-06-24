@@ -163,6 +163,7 @@ export const ACCOUNT_TYPES = {
   LEDGER: 'Ledger',
   METAMASK: 'MetaMask',
   TREZOR: 'Trezor',
+  WALLETCONNECT: 'WalletConnect',
   WEB3WALLET: 'MetaMask / Web3', // Mobile Wallets + Extensions (MetaMask, Dapper, Trust, Coinbase)
   UNLOCKED_ETHEREUM_NODE: 'unlockedEthereumNode',
 };

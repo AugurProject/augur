@@ -27,6 +27,7 @@ import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
+import { loginWithWalletConnect } from 'modules/auth/actions/login-with-walletconnect';
 import {
   EmailLogin,
   GoogleLogin,
@@ -64,6 +65,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     dispatch(loginWithTorus()),
   connectFortmatic: () =>
     dispatch(loginWithFortmatic()),
+  connectWalletConnect: () =>
+    dispatch(loginWithWalletConnect()),
   errorModal: (error, title = null, link = null, linkLabel = null) => dispatch(
     updateModal({
       type: MODAL_ERROR,
@@ -177,6 +180,22 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           await dP.connectMetaMask();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.WEB3WALLET);
+        }
+      },
+    },
+    {
+      type: ACCOUNT_TYPES.WALLETCONNECT,
+      icon: MetaMaskLogin,
+      text: `${LOGIN_OR_SIGNUP} with ${ACCOUNT_TYPES.WALLETCONNECT}`,
+      subText: '',
+      disabled: false,
+      hidden: !isMetaMaskPresent(),
+      action: async () => {
+        dP.loadingModal(SIGNIN_SIGN_WALLET, () => login());
+        try {
+          await dP.connectWalletConnect();
+        } catch (error) {
+          onError(error, ACCOUNT_TYPES.WALLETCONNECT);
         }
       },
     },
