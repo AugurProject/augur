@@ -771,14 +771,19 @@ const determineTopLabel = ({ groupType, marketLine }, outcomeNumber, title) => {
 };
 
 const createOutcomesData = (
-  orderBook,
-  outcomes,
-  min,
-  max,
-  addBet,
-  description,
-  sportsBook
+  orderBooks,
+  market,
+  addBet
 ) => {
+  const {
+    id,
+    outcomesFormatted: outcomes,
+    minPriceBigNumber: min,
+    maxPriceBigNumber: max,
+    description,
+    sportsBook,
+  } = market;
+  const orderBook = orderBooks[id]?.orderBook;
   const marketId = outcomes[0].marketId;
   let data = [];
   outcomes.forEach((outcome, index) => {
@@ -984,27 +989,14 @@ export const prepareSportsGroup = (
   switch (type) {
     case FUTURES: {
       markets.forEach((market) => {
-        const {
-          id,
-          outcomesFormatted,
-          minPriceBigNumber: min,
-          maxPriceBigNumber: max,
-          description,
-          sportsBook,
-        } = market;
-        const orderBook = orderBooks[id]?.orderBook;
         const multiOutcomeMarketGridData = createOutcomesData(
-          orderBook,
-          outcomesFormatted,
-          min,
-          max,
+          orderBooks,
+          market,
           addBet,
-          description,
-          sportsBook
         );
         marketGroups.push(
           <MultiOutcomeMarketGrid
-            key={id}
+            key={market.id}
             multiOutcomeMarketGridData={multiOutcomeMarketGridData}
           />
         );
@@ -1013,53 +1005,55 @@ export const prepareSportsGroup = (
     }
     case DAILY: {
       // TODO: fix to use a constant for money line
-      const mainMarket = markets.find(
-        (market) =>
-          market.sportsBook.groupType === SPORTS_GROUP_MARKET_TYPES.MONEY_LINE
-      );
+      const {
+        MONEY_LINE
+      } = SPORTS_GROUP_MARKET_TYPES;
+      const sortedMarkets = Array.from(markets);
+      sortedMarkets.sort(
+        (
+          { sportsBook: { groupType: typeA, liquidityRank: rankA }}, 
+          { sportsBook: { groupType: typeB, liquidityRank: rankB }}
+        ) => {
+          // for now we only care about sorting moneyline to the top
+          if (typeA === MONEY_LINE && typeB !== MONEY_LINE) {
+            return -1;
+          } else if (typeB === MONEY_LINE && typeA !== MONEY_LINE) {
+            return +1;
+          } else {
+            if (typeB === typeA) {
+              return rankA - rankB;
+            }
+            return 0;
+          }
+      });
+      const mainMarket = sortedMarkets[0];
       const mainMarketId = mainMarket?.id;
       if (mainMarketId) {
         const dailyMarketData = createOutcomesData(
-          orderBooks[mainMarketId]?.orderBook,
-          mainMarket.outcomesFormatted,
-          mainMarket.minPriceBigNumber,
-          mainMarket.maxPriceBigNumber,
-          addBet,
-          mainMarket.description
+          orderBooks,
+          mainMarket,
+          addBet
         );
         marketGroups.push(
           <MultiOutcomeMarketTable
-            key={id}
+            key={mainMarketId}
             marketTitle={mainMarket.sportsBook.title || mainMarket.description}
             multiOutcomeMarketTableData={dailyMarketData}
           />
         );
       }
-      markets.forEach((market) => {
+      sortedMarkets.forEach((market) => {
         if (market.id === mainMarketId) return;
-        const {
-          id,
-          outcomesFormatted,
-          minPriceBigNumber: min,
-          maxPriceBigNumber: max,
-          description,
-          sportsBook,
-        } = market;
-        const orderBook = orderBooks[id]?.orderBook;
         const subMarketData = createOutcomesData(
-          orderBook,
-          outcomesFormatted,
-          min,
-          max,
-          addBet,
-          description,
-          sportsBook
+          orderBooks,
+          market,
+          addBet
         );
         marketGroups.push(
           <SubMarketCollapsible
-            key={id}
-            marketId={id}
-            title={sportsBook.title || description}
+            key={market.id}
+            marketId={market.id}
+            title={market.sportsBook.title || market.description}
             SubMarketCollapsibleData={subMarketData}
           />
         );
