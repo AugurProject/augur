@@ -147,6 +147,7 @@ export interface SportsBookInfo {
   header: string;
   title?: string;
   liquidityPool: string;
+  liquidityRank: string;
 }
 
 export interface MarketInfo {
@@ -738,51 +739,9 @@ export class Markets {
       })
       .toArray();
 
-    const filteredOutCount = numMarketDocs - marketData.length;
-
-    const meta = {
-      filteredOutCount,
-      marketCount: marketData.length,
-    };
-
-    if (params.sortBy) {
-      const sortBy = params.sortBy;
-      marketData = _.orderBy(
-        marketData,
-        item =>
-          sortBy === 'liquidity'
-            ? item[sortBy][params.maxLiquiditySpread]
-            : item[sortBy],
-        params.isSortDescending ? 'desc' : 'asc'
-      );
-    }
-
-    // If returning Recently Depleted Liquidity (spread===0)
-    if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
-      // Have invalid markets appear at the bottom
-      marketData = _.sortBy(marketData, 'invalidFilter');
-    }
-
-    // Get category meta data before slicing for pagination
-    const categories = getMarketsCategoriesMeta(marketData);
-
-    marketData = marketData.slice(params.offset, params.offset + params.limit);
-
-    // Get markets info to return
-    const marketsInfo: MarketInfo[] = await getMarketsInfo(
-      db,
-      marketData,
-      reportingFeeDivisor,
-      augur
-    );
-
-    return {
-      markets: marketsInfo,
-      meta: {
-        ...meta,
-        categories,
-      },
-    };
+    return params.templateFilter === TemplateFilters.sportsBook
+      ? await processSportsbookMarketData(augur, db, marketData, reportingFeeDivisor, params)
+      : await processTradingMarketData(augur, db, marketData, numMarketDocs, reportingFeeDivisor, params);
   }
 
   @Getter('getMarketOrderBookParams')
@@ -1464,7 +1423,8 @@ async function getMarketsInfo(
         header: marketData.groupHeader,
         title: marketData.groupTitle,
         estTimestamp: marketData.groupEstDatetime,
-        liquidityPool: marketData.liquidityPool
+        liquidityPool: marketData.liquidityPool,
+        liquidityRank: marketData.liquidity['10'],
       }
     };
   });
@@ -1532,6 +1492,131 @@ function formatStakeDetails(
     }
   }
   return formattedStakeDetails;
+}
+
+async function processTradingMarketData(
+  augur: Augur,
+  db: DB,
+  marketData: MarketData[],
+  numMarketDocs: number,
+  reportingFeeDivisor: BigNumber,
+  params: t.TypeOf<typeof Markets.getMarketsParams>,
+): Promise<MarketList> {
+
+const filteredOutCount = numMarketDocs - marketData.length;
+
+const meta = {
+  filteredOutCount,
+  marketCount: marketData.length,
+};
+
+if (params.sortBy) {
+  const sortBy = params.sortBy;
+  marketData = _.orderBy(
+    marketData,
+    item =>
+      sortBy === 'liquidity'
+        ? item[sortBy][params.maxLiquiditySpread]
+        : item[sortBy],
+    params.isSortDescending ? 'desc' : 'asc'
+  );
+}
+
+// If returning Recently Depleted Liquidity (spread===0)
+if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
+  // Have invalid markets appear at the bottom
+  marketData = _.sortBy(marketData, 'invalidFilter');
+}
+
+// Get category meta data before slicing for pagination
+const categories = getMarketsCategoriesMeta(marketData);
+
+marketData = marketData.slice(params.offset, params.offset + params.limit);
+
+// Get markets info to return
+const marketsInfo: MarketInfo[] = await getMarketsInfo(
+  db,
+  marketData,
+  reportingFeeDivisor,
+  augur
+);
+
+return {
+  markets: marketsInfo,
+  meta: {
+    ...meta,
+    categories,
+  },
+};
+}
+
+async function processSportsbookMarketData(
+  augur: Augur,
+  db: DB,
+  marketData: MarketData[],
+  reportingFeeDivisor: BigNumber,
+  params: t.TypeOf<typeof Markets.getMarketsParams>,
+): Promise<MarketList> {
+  const groupHashes = _.uniq(_.map(marketData, 'groupHash'));
+  const liquidityPools = _.uniq(_.map(marketData, 'liquidityPool'));
+  // categories should be for liquidity pools not individual markets
+  const pooledMarkets = await db.Markets.where('liquidityPool').anyOfIgnoreCase(liquidityPools).toArray();
+  const keyedPools = _.groupBy(pooledMarkets, 'liquidityPool');
+  const firstMarketOfPool = _.reduce(_.keys(keyedPools), (agg, key) => [...agg, keyedPools[key][0]], []);
+  const categories = getMarketsCategoriesMeta(firstMarketOfPool);
+
+  const marketsLiquidityPools = params.reportingStates
+    ? await db.Markets.filter(
+        item =>
+          !!item.liquidityPool &&
+          item.reportingState === String(params.reportingStates)
+      ).toArray()
+    : await db.Markets.filter(item => !!item.liquidityPool).distinct().toArray();
+  const keyedLiquidityPoolMarkets = _.keyBy(marketsLiquidityPools, 'liquidityPool');
+  const numPooledMarketDocs = _.keys(keyedLiquidityPoolMarkets).length;
+
+  // removed Invalid filter for sportsbook
+  // TODO: add sorts specifically for sportsbook
+  if (params.sortBy) {
+    const sortBy = params.sortBy;
+    marketData = _.orderBy(
+      marketData,
+      item =>
+        sortBy === 'liquidity'
+          ? item[sortBy][params.maxLiquiditySpread]
+          : item[sortBy],
+      params.isSortDescending ? 'desc' : 'asc'
+    );
+  }
+
+  const allMarketsInGroups  = await db.Markets.where('groupHash')
+    .anyOfIgnoreCase(groupHashes)
+    .toArray();
+
+  // filter based on reportingState
+  const filteredOutCount = numPooledMarketDocs - liquidityPools.length;
+
+  const meta = {
+    filteredOutCount,
+    marketCount: liquidityPools.length,
+  };
+
+  marketData = marketData.slice(params.offset, params.offset + params.limit);
+
+  const marketsInfo: MarketInfo[] = await getMarketsInfo(
+    db,
+    allMarketsInGroups,
+    reportingFeeDivisor,
+    augur
+  );
+
+  return {
+    markets: marketsInfo,
+    meta: {
+      ...meta,
+      categories,
+    },
+  };
 }
 
 function getMarketsCategoriesMeta(
