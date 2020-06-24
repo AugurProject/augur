@@ -340,14 +340,6 @@ export class Markets {
     params.limit = typeof params.limit === 'undefined' ? 10 : params.limit;
     params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
 
-    // Get Market docs for all markets with the specified filters
-    const numMarketDocs = params.reportingStates
-      ? await db.Markets.where('reportingState')
-          .anyOf(params.reportingStates)
-          .and(item => !params.includeWarpSyncMarkets && !item.isWarpSync)
-          .count()
-      : await db.Markets.count();
-
     let marketIds: string[] = [];
     const useMarketIds =
       params.search ||
@@ -439,6 +431,13 @@ export class Markets {
       );
       marketsCollection = db.Markets.toCollection();
     }
+
+    // Get Market docs for all markets with the specified filters
+    const numMarketDocs = usedReportingStates
+    ? await marketsCollection
+        .and(item => !params.includeWarpSyncMarkets && !item.isWarpSync)
+        .count()
+    : await db.Markets.count();
 
     // Prepare filter values before loop
     let feePercent = 0;
