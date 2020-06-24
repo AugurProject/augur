@@ -1128,7 +1128,7 @@ export class Users {
   ): Promise<UserTotalOnChainFrozenFunds> {
     if (!params.universe || !params.account) {
       throw new Error(
-        "'getTotalOnChainFrozenFunds' requires a 'universe' or 'account' param be provided"
+        "'getTotalOnChainFrozenFunds' requires a 'universe' and 'account' param be provided"
       );
     }
 
