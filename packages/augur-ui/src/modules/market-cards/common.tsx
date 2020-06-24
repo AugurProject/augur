@@ -870,7 +870,7 @@ function processDailyMarketData(
   if (outcomes.length > 0) {
     outcomes.forEach(outcome => {
       // addBet: (marketId, description, odds, outcome, wager = "0")
-      if (outcome.isInvalid) return;
+      if (outcome.isInvalid || !orderBook) return;
       data.push({
         title: outcome.description,
         topLabel: null,
@@ -901,7 +901,7 @@ function processFuturesGridData(
     // TODO: This section can probably be reused for all sports outcome creation.
     outcomes.forEach(outcome => {
       // addBet: (marketId, description, odds, outcome, wager = "0")
-      if (outcome.isInvalid) return;
+      if (outcome.isInvalid || !orderBook) return;
       const bestAsk = orderBook[outcome.id]?.asks[0];
       const outcomeData = {
         title: outcome.description,

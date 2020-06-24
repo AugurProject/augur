@@ -15,10 +15,11 @@ import { MagnifyingGlass } from 'modules/common/icons';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import Styles from 'modules/markets-list/components/markets-list-styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { getMarkets } from 'modules/markets/selectors/markets-all';
 
 interface MarketsListProps {
   testid?: string;
-  markets: MarketData[];
+  markets?: MarketData[];
   filteredMarkets: string[];
   pendingLiquidityOrders?: object;
   showDisputingCard?: boolean;
@@ -36,7 +37,7 @@ interface MarketsListProps {
 const { COMBO, FUTURES, DAILY } = SPORTS_GROUP_TYPES;
 
 export const determineSportsbookType = ({ sportsBook: { groupType } }) =>
-  groupType.includes(COMBO) ? COMBO : groupType === FUTURES ? FUTURES : DAILY;
+  groupType?.includes(COMBO) ? COMBO : groupType === FUTURES ? FUTURES : DAILY;
 
 export const groupSportsMarkets = (filteredMarkets, markets) =>
   filteredMarkets.reduce((accumulator, marketId) => {
@@ -68,6 +69,9 @@ export const groupSportsMarkets = (filteredMarkets, markets) =>
 export const getSportsGroupsFromSportsIDs = (filteredSportsGroupIds, markets) => 
   filteredSportsGroupIds.reduce((accumulator, sportsGroupId) => {
     const sportsGroupMarkets = markets.filter(market => market.sportsBook.groupId === sportsGroupId);
+    if (!sportsGroupMarkets[0]) {
+      return accumulator;
+    }
     const type = determineSportsbookType(sportsGroupMarkets[0]);
     const marketTypes = [];
     sportsGroupMarkets.forEach(market => {
@@ -83,8 +87,7 @@ export const getSportsGroupsFromSportsIDs = (filteredSportsGroupIds, markets) =>
 
 export const MarketsList = ({
   filteredMarkets,
-  markets,
-  testid = null,
+  testid = 'testid',
   marketCount,
   showPagination,
   limit,
@@ -97,6 +100,7 @@ export const MarketsList = ({
     theme,
     marketsList: { isSearching: isSearchingMarkets },
   } = useAppStatusStore();
+  const markets = getMarkets();
   let marketCards = [];
   const testFilteredMarkets =
     (theme === THEMES.SPORTS && filteredMarkets[0] && filteredMarkets[0].length > 42)

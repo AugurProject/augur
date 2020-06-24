@@ -53,8 +53,8 @@ const PAGINATION_COUNT = 10;
 
 const findMarketsInReportingState = (markets, reportingState) => {
   const reportingStates: String[] = organizeReportingStates(reportingState);
-  return markets.filter(market =>
-    reportingStates.find(state => state === market.reportingState)
+  return markets.filter((market) =>
+    reportingStates.find((state) => state === market.reportingState)
   );
 };
 
@@ -218,55 +218,62 @@ const MarketsView = () => {
       isSearching: true,
       isSearchInPlace: Boolean(search),
     });
-    updateMarketsData(
-      null,
-      loadMarketsByFilter(
-        {
-          categories: selectedCategories ? selectedCategories : [],
-          search,
-          filter: marketFilter,
-          sort: marketSort,
-          maxFee,
-          limit,
-          offset,
-          maxLiquiditySpread,
-          includeInvalidMarkets: includeInvalidMarkets === 'show',
-          templateFilter,
-        },
-        (err, result: Getters.Markets.MarketList) => {
-          if (err) return console.log('Error loadMarketsFilter:', err);
-          if (componentWrapper.current) {
-            // categories is also on results
-            const filterSortedMarkets = result.markets.map(m => m.id);
-            const marketCount = result.meta.marketCount;
-            const showPagination = marketCount > limit;
-            const isSportsBook = theme === THEMES.SPORTS;
-            const sportsGroups = groupSportsMarkets(
-              filterSortedMarkets,
-              result.markets
-            );
-            const sportsFilterSortedMarkets = sportsGroups.map(
-              sportGroup => sportGroup.id
-            );
-            const sportsGroupCount = sportsGroups.length;
-            const sportsShowPagination = sportsGroupCount > limit;
-            setState({
-              ...state,
-              filterSortedMarkets: isSportsBook
-                ? sportsFilterSortedMarkets
-                : filterSortedMarkets,
-              marketCount: isSportsBook ? sportsGroupCount : marketCount,
-              showPagination: isSportsBook
-                ? sportsShowPagination
-                : showPagination,
-            });
-            filterSortedMarkets.forEach(marketId =>
-              updateOrderBook(marketId, null, loadMarketOrderBook(marketId))
-            );
-            updateMarketsList({ isSearching: false, meta: result.meta });
-          }
+    loadMarketsByFilter(
+      {
+        categories: selectedCategories ? selectedCategories : [],
+        search,
+        filter: marketFilter,
+        sort: marketSort,
+        maxFee,
+        limit,
+        offset,
+        maxLiquiditySpread,
+        includeInvalidMarkets: includeInvalidMarkets === 'show',
+        templateFilter,
+      },
+      (err, result: Getters.Markets.MarketList) => {
+        if (err) return console.log('Error loadMarketsFilter:', err);
+        if (componentWrapper.current) {
+          // categories is also on results
+          const filterSortedMarkets = result.markets.map((m) => m.id);
+          const marketCount = result.meta.marketCount;
+          const showPagination = marketCount > limit;
+          const isSportsBook = theme === THEMES.SPORTS;
+          const sportsGroups = groupSportsMarkets(
+            filterSortedMarkets,
+            result.markets
+          );
+          const sportsFilterSortedMarkets = sportsGroups.map(
+            (sportGroup) => sportGroup.id
+          );
+          const sportsGroupCount = sportsGroups.length;
+          const sportsShowPagination = sportsGroupCount > limit;
+          const marketInfos = result.markets
+          .filter(marketHasData => marketHasData)
+          .reduce((p, marketData) => {
+            if (marketData === null || marketData.id == null) return p;
+            return {
+              ...p,
+              [marketData.id]: marketData
+            };
+          }, {});
+          updateMarketsData(marketInfos);
+          setState({
+            ...state,
+            filterSortedMarkets: isSportsBook
+              ? sportsFilterSortedMarkets
+              : filterSortedMarkets,
+            marketCount: isSportsBook ? sportsGroupCount : marketCount,
+            showPagination: isSportsBook
+              ? sportsShowPagination
+              : showPagination,
+          });
+          filterSortedMarkets.forEach((marketId) =>
+            updateOrderBook(marketId, null, loadMarketOrderBook(marketId))
+          );
+          updateMarketsList({ isSearching: false, meta: result.meta });
         }
-      )
+      }
     );
   }
 
@@ -312,7 +319,7 @@ const MarketsView = () => {
             <MarketTypeFilter
               isSearchingMarkets={isSearching}
               marketCount={marketCount}
-              updateMarketsFilter={filterOption =>
+              updateMarketsFilter={(filterOption) =>
                 updateFilterSortOptions({ [MARKET_FILTER]: filterOption })
               }
               marketFilter={marketFilter}
@@ -353,7 +360,7 @@ const MarketsView = () => {
           <FilterNotice
             show={includeInvalidMarkets === 'show'}
             showDismissButton={true}
-            updateLoginAccountSettings={settings =>
+            updateLoginAccountSettings={(settings) =>
               updateLoginAccountSettings(settings)
             }
             settings={{
@@ -378,7 +385,7 @@ const MarketsView = () => {
           <FilterNotice
             show={!displayFee || !displayLiquiditySpread}
             showDismissButton={true}
-            updateLoginAccountSettings={settings =>
+            updateLoginAccountSettings={(settings) =>
               updateLoginAccountSettings(settings)
             }
             settings={{
@@ -401,8 +408,6 @@ const MarketsView = () => {
         </>
       )}
       <MarketsList
-        testid="markets"
-        markets={markets}
         showPagination={showPagination && !isSearching}
         filteredMarkets={filterSortedMarkets}
         marketCount={marketCount}
