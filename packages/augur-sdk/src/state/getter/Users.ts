@@ -41,7 +41,7 @@ import {
 } from './OnChainTrading';
 import { Getter } from './Router';
 import { sortOptions } from './types';
-import { ZeroXOrders } from './ZeroXOrdersGetters';
+import { ZeroXOrders, collapseZeroXOrders } from './ZeroXOrdersGetters';
 
 const ONE_DAY = 1;
 const DAYS_IN_MONTH = 30;
@@ -83,6 +83,28 @@ const getProfitLossParams = t.intersection([
 export interface UserOpenOrders {
   orders: ZeroXOrders;
   totalOpenOrdersFrozenFunds: string;
+}
+
+export interface FrozenFundsBreakdown {
+  total: string,
+  createdMarkets: {
+    total: string;
+    markets: {
+      [marketId: string] : string;
+    }
+  },
+  positions: {
+    total: string;
+    markets: {
+      [marketId: string] : string;
+    }
+  },
+  openOrders: {
+    total: string;
+    markets: {
+      [marketId: string] : string;
+    }
+  }
 }
 
 export interface AccountTimeRangedStatsResult {
@@ -219,6 +241,7 @@ export class Users {
   static getProfitLossParams = getProfitLossParams;
   static getProfitLossSummaryParams = getProfitLossSummaryParams;
   static getUserAccountParams = getUserAccountParams;
+  static getUserFrozenFundsBreakdownParams = getUserAccountParams;
   static getTotalOnChainFrozenFundsParams = getUserAccountParams;
   static getUserPositionsPlusParams = getUserAccountParams;
 
@@ -407,6 +430,52 @@ export class Users {
       userPositions,
       userPositionTotals,
     };
+  }
+
+  @Getter('getUserFrozenFundsBreakdownParams')
+  static async getUserFrozenFundsBreakdown(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof Users.getUserFrozenFundsBreakdownParams>
+  ): Promise<FrozenFundsBreakdown> {
+    if (!params.account || !params.universe) {
+      throw new Error(
+        "'getUserFrozenFundsBreakdown' requires 'account' and 'universe' params to be provided"
+      );
+    }
+    let frozenFundsBreakdown = {}
+    // open orders
+    const userOpenOrders = await Users.getUserOpenOrders(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    });
+    const flattenOrders = collapseZeroXOrders(userOpenOrders.orders);
+    const groupedOrders = _.groupBy(flattenOrders, 'market');
+    frozenFundsBreakdown = {
+      openOrders: {
+        total: userOpenOrders.totalOpenOrdersFrozenFunds,
+        markets: _.reduce(
+          _.keys(groupedOrders),
+          (summed, marketId) => ({
+            ...summed,
+            [marketId]: String(
+              _.reduce(
+                groupedOrders[marketId],
+                (sum, order) => sum.plus(new BigNumber(order.tokensEscrowed)),
+                new BigNumber(0)
+              )
+            ),
+          }),
+          {}
+        ),
+      },
+    };
+
+    // positions
+
+    // created markets
+
+    return frozenFundsBreakdown as FrozenFundsBreakdown;
   }
 
   @Getter('getUserAccountParams')
