@@ -683,8 +683,7 @@ const calcDailyHockeyMarket = (): CannedMarket[] => {
     creatorFeeDecimal: '0.01',
     extraInfo: buildExtraInfo(template, inputValues[index], [
       SPORTS,
-      HOCKEY,
-      'Daily'
+      HOCKEY
     ]),
     outcomes: outcomeValues[index],
     orderBook: {
@@ -860,6 +859,7 @@ const calcSoccerMarkets = (): CannedMarket[] => {
     extraInfo: buildExtraInfo(template, inputValues[index], [
       SPORTS,
       SOCCER,
+      CUSTOMIZED,
     ]),
     outcomes: outcomeValues[index],
     orderBook: {

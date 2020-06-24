@@ -274,3 +274,22 @@ export function flattenZeroXOrders(orders): ZeroXOrder[] {
   });
   return collapsed;
 }
+
+export function collapseZeroXOrders(orders): ZeroXOrder[] {
+  const collapsed: ZeroXOrder[] = [];
+  _.forOwn(orders, (market, marketId) => {
+    _.forOwn(market, (outcome, outcomeId) => {
+      _.forOwn(outcome, (orderType, orderTypeId) => {
+        _.forOwn(orderType, order => {
+          collapsed.push({
+            ...order,
+            orderType: orderTypeId,
+            outcome: outcomeId,
+            market: marketId,
+          });
+        });
+      });
+    });
+  });
+  return collapsed;
+}
