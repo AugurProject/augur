@@ -26,8 +26,6 @@ module.exports = {
       `${PATHS.APP}/web-workers-exit`,
       'react',
       'react-dom',
-      'redux',
-      'redux-thunk',
       'react-datetime',
       `${PATHS.APP}/main`,
     ],
