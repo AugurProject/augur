@@ -7,6 +7,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
+import { windowRef } from 'utils/window-ref';
 import {
   ACCOUNT_TYPES,
   MODAL_ERROR,
@@ -24,6 +25,7 @@ export const loginWithWalletConnect = () => async (
     const provider = new WalletConnectProvider({
       infuraId: "27e484dcd9e3efcfd25a83a78777cdf1" 
     });
+    windowRef.walletConnect = provider;
     await provider.enable();
     const web3 = new Web3(provider);
     const networkId = getState().env['networkId'];
