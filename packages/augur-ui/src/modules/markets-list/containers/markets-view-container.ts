@@ -82,6 +82,7 @@ const mapStateToProps = (state: AppState, { location }) => {
       state.loginAccount.settings || {}
     ).showInvalidMarketsBannerFeesOrLiquiditySpread,
     templateFilter: state.filterSortOptions.templateFilter,
+    marketTypeFilter: state.filterSortOptions.marketTypeFilter
   };
 };
 
@@ -121,6 +122,7 @@ const mapDispatchToProps = (
     marketSort,
     maxFee,
     templateFilter,
+    marketTypeFilter,
     includeInvalidMarkets,
     resultCount,
     pageNumber
@@ -134,6 +136,7 @@ const mapDispatchToProps = (
         marketSort,
         maxFee,
         templateFilter,
+        marketTypeFilter,
         includeInvalidMarkets,
         resultCount,
         pageNumber
