@@ -443,7 +443,21 @@ export class Users {
         "'getUserFrozenFundsBreakdown' requires 'account' and 'universe' params to be provided"
       );
     }
-    let frozenFundsBreakdown = {}
+    let frozenFundsBreakdown = {
+      total: '0',
+      openOrders: {
+        total: '0',
+        markets: {}
+      },
+      positions: {
+        total: '0',
+        markets: {}
+      },
+      createdMarkets: {
+        total: '0',
+        markets: {}
+      }
+    }
     // open orders
     const userOpenOrders = await Users.getUserOpenOrders(augur, db, {
       account: params.account,
@@ -451,8 +465,7 @@ export class Users {
     });
     const flattenOrders = collapseZeroXOrders(userOpenOrders.orders);
     const groupedOrders = _.groupBy(flattenOrders, 'market');
-    frozenFundsBreakdown = {
-      openOrders: {
+    frozenFundsBreakdown.openOrders = {
         total: userOpenOrders.totalOpenOrdersFrozenFunds,
         markets: _.reduce(
           _.keys(groupedOrders),
@@ -468,13 +481,37 @@ export class Users {
           }),
           {}
         ),
-      },
     };
 
     // positions
 
     // created markets
-
+    const ownedMarketsResponse = await db.Markets.where('marketCreator')
+      .equals(params.account)
+      .and(log => !log.finalized)
+      .toArray();
+    const ownedMarkets = _.map(ownedMarketsResponse, 'market');
+    let createdMarkets = {
+      total: new BigNumber(0),
+      markets: {},
+    };
+    for(let i=0; i< ownedMarkets.length; i++) {
+      const marketId = ownedMarkets[i];
+      const validityBond = await augur.contracts.hotLoading.getTotalValidityBonds_(
+        [marketId]
+      );
+      createdMarkets.total = createdMarkets.total.plus(validityBond)
+      createdMarkets.markets[marketId] = String(convertAttoValueToDisplayValue(validityBond));
+    }
+    frozenFundsBreakdown.createdMarkets = {
+      total: String(convertAttoValueToDisplayValue(createdMarkets.total)),
+      markets: createdMarkets.markets
+    }
+    frozenFundsBreakdown.total = String(
+      new BigNumber(frozenFundsBreakdown.openOrders.total)
+        .plus(new BigNumber(frozenFundsBreakdown.positions.total))
+        .plus(new BigNumber(frozenFundsBreakdown.createdMarkets.total))
+    );
     return frozenFundsBreakdown as FrozenFundsBreakdown;
   }
 
