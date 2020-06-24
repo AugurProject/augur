@@ -7,8 +7,22 @@ const BetslipContext = React.createContext({
   actions: STUBBED_BETSLIP_ACTIONS,
 });
 
+export const Betslip = {
+  actionsSet: false,
+  get: () => ({ ...DEFAULT_BETSLIP_STATE }),
+  actions: STUBBED_BETSLIP_ACTIONS,
+};
+
 export const BetslipProvider = ({ children }) => {
   const state = useBetslip();
+
+  if (!Betslip.actionsSet) {
+    Betslip.actions = state.actions;
+    Betslip.actionsSet = true;
+  }
+  const readableState = { ...state };
+  delete readableState.actions;
+  Betslip.get = () => readableState;
 
   return (
     <BetslipContext.Provider value={state}>
