@@ -33,12 +33,13 @@ export const loginWithWalletConnect = () => async (
     const account = accounts[0];
     const address = toChecksumAddress(account);
     const signingProvider = new PersonalSigningWeb3Provider(provider);
+    debugger
     const accountObject = {
       address,
       mixedCaseAddress: address,
       meta: {
         address,
-        signer: signingProvider,
+        signer: provider,
         email: null,
         profileImage: null,
         openWallet: null,
