@@ -484,7 +484,11 @@ export class Users {
     };
 
     // positions
-
+    const frozenFundsPerMarket = await getFrozenFundsPerMarket(db, params.account, params.universe);
+    frozenFundsBreakdown.positions = {
+      total: String(convertAttoValueToDisplayValue(frozenFundsPerMarket.frozenFundsTotal)),
+      markets: frozenFundsPerMarket.frozenFundsPerMarket
+    }
     // created markets
     const ownedMarketsResponse = await db.Markets.where('marketCreator')
       .equals(params.account)
@@ -1122,74 +1126,13 @@ export class Users {
     db: DB,
     params: t.TypeOf<typeof Users.getTotalOnChainFrozenFundsParams>
   ): Promise<UserTotalOnChainFrozenFunds> {
-    if (!params.universe && !params.account) {
+    if (!params.universe || !params.account) {
       throw new Error(
         "'getTotalOnChainFrozenFunds' requires a 'universe' or 'account' param be provided"
       );
     }
 
-    const profitLossRecords = await db.ProfitLossChanged.where('account')
-      .equals(params.account)
-      .and(log => {
-        if (params.universe && log.universe !== params.universe) return false;
-        return true;
-      })
-      .toArray();
-
-    const profitLossResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
-      await getProfitLossRecordsByMarketAndOutcome(
-        db,
-        params.account,
-        profitLossRecords
-      )
-    );
-
-    const profitLossResultsByMarket = _.mapValues(
-      profitLossResultsByMarketAndOutcome,
-      _.values
-    );
-
-    const allProfitLossResults = _.flatten(_.values(profitLossResultsByMarket));
-
-    const totalFrozenFundsByMarket = _.mapValues(
-      profitLossResultsByMarket,
-      ffs => {
-        return _.reduce(
-          ffs,
-          (accumulator, ff) => accumulator.plus(ff.frozenFunds),
-          ZERO
-        );
-      }
-    );
-
-    const shareTokenBalances = await db.ShareTokenBalanceChangedRollup.where(
-      '[universe+account]'
-    )
-      .equals([params.universe, params.account])
-      .toArray();
-    const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, 'market');
-    const shareTokenBalancesByMarketAndOutcome = _.mapValues(
-      shareTokenBalancesByMarket,
-      marketShares => {
-        return _.keyBy(marketShares, 'outcome');
-      }
-    );
-
-    // if winning position value is less than frozen funds, market position is complete loss
-    // if complete loss then ignore profit loss in frozen funds
-    const fullTotalLossMarketsPositions = await getFullMarketPositionLoss(
-      db,
-      allProfitLossResults,
-      shareTokenBalancesByMarketAndOutcome
-    );
-
-    const frozenFunds = Object.entries(totalFrozenFundsByMarket)
-      .filter(
-        ([market, ff]) =>
-          ff.gt(ZERO) && !fullTotalLossMarketsPositions.includes(market)
-      )
-      .reduce((accum, [market, ff]) => accum.plus(ff), ZERO)
-      .dividedBy(QUINTILLION);
+    const frozenFundsPerMarket = await getFrozenFundsPerMarket(db, params.account, params.universe);
 
     // includes validity bonds for market creations
     const ownedMarketsResponse = await db.Markets.where('marketCreator')
@@ -1203,7 +1146,7 @@ export class Users {
 
     return {
       totalFrozenFunds: totalValidityBonds
-        .plus(frozenFunds)
+        .plus(frozenFundsPerMarket.frozenFundsTotal)
         .dividedBy(QUINTILLION)
         .toFixed(),
     };
@@ -1972,4 +1915,80 @@ async function getFullMarketPositionLoss(
     },
     []
   );
+}
+
+async function getFrozenFundsPerMarket(
+  db: DB,
+  account: string,
+  universe: string
+) {
+  const profitLossRecords = await db.ProfitLossChanged.where('account')
+    .equals(account)
+    .and((log) => {
+      if (universe && log.universe !== universe) return false;
+      return true;
+    })
+    .toArray();
+
+  const profitLossResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
+    await getProfitLossRecordsByMarketAndOutcome(db, account, profitLossRecords)
+  );
+  const profitLossResultsByMarket = _.mapValues(
+    profitLossResultsByMarketAndOutcome,
+    _.values
+  );
+
+  const allProfitLossResults = _.flatten(_.values(profitLossResultsByMarket));
+
+  const totalFrozenFundsByMarket = _.mapValues(
+    profitLossResultsByMarket,
+    (ffs) => {
+      return _.reduce(
+        ffs,
+        (accumulator, ff) => accumulator.plus(ff.frozenFunds),
+        ZERO
+      );
+    }
+  );
+
+  const shareTokenBalances = await db.ShareTokenBalanceChangedRollup.where(
+    '[universe+account]'
+  )
+    .equals([universe, account])
+    .toArray();
+  const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, 'market');
+  const shareTokenBalancesByMarketAndOutcome = _.mapValues(
+    shareTokenBalancesByMarket,
+    marketShares => {
+      return _.keyBy(marketShares, 'outcome');
+    }
+  );
+
+  // if winning position value is less than frozen funds, market position is complete loss
+  // if complete loss then ignore profit loss in frozen funds
+  const fullTotalLossMarketsPositions = await getFullMarketPositionLoss(
+    db,
+    allProfitLossResults,
+    shareTokenBalancesByMarketAndOutcome
+  );
+
+  const frozenFundsPerMarket = Object.entries(totalFrozenFundsByMarket)
+  .filter(
+    ([market, ff]) =>
+      ff.gt(ZERO) && !fullTotalLossMarketsPositions.includes(market)
+  )
+  .reduce((accum, [market, ff]) => ({...accum, [market]: String(convertAttoValueToDisplayValue(ff.div(QUINTILLION)))}), {})
+
+  const frozenFundsTotal = Object.entries(totalFrozenFundsByMarket)
+  .filter(
+    ([market, ff]) =>
+      ff.gt(ZERO) && !fullTotalLossMarketsPositions.includes(market)
+  )
+  .reduce((accum, [market, ff]) => accum.plus(ff), ZERO)
+  .dividedBy(QUINTILLION);
+
+  return {
+    frozenFundsTotal,
+    frozenFundsPerMarket
+  }
 }
