@@ -78,6 +78,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { hasStakeInMarket } from 'modules/account/helpers/common';
+import { concatSeries } from 'async';
 
 export interface PercentProps {
   percent: number;
@@ -830,6 +831,33 @@ const createOutcomesData = (
   return data;
 };
 
+const testCombo = (sportsGroup, orderBooks, addBet) => {
+  const {
+    COMBO_MONEY_LINE,
+    COMBO_OVER_UNDER,
+    COMBO_SPREAD,
+  } = SPORTS_GROUP_MARKET_TYPES;
+  const moneyLineMarkets = sportsGroup.markets
+    .filter(market => 
+      market.sportsBook.groupType === COMBO_MONEY_LINE)
+    .sort((a,b) => 
+      Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
+  );
+  const spreadMarkets = sportsGroup.markets
+    .filter(market => 
+      market.sportsBook.groupType === COMBO_SPREAD)
+    .sort((a,b) => 
+      Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
+  );
+  const overUnderMarkets = sportsGroup.markets
+    .filter(market => 
+      market.sportsBook.groupType === COMBO_OVER_UNDER)
+    .sort((a,b) => 
+      Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
+  );
+  // console.log(moneyLineMarkets, spreadMarkets, overUnderMarkets);
+}
+
 interface ReportedOutcomeProps {
   isTentative?: boolean;
   label?: string;
@@ -980,10 +1008,11 @@ export const SportsOutcome = ({
 );
 
 export const prepareSportsGroup = (
-  { id, type, markets },
+  sportsGroup,
   orderBooks,
   addBet
 ) => {
+  const { id, type, markets } = sportsGroup;
   const { FUTURES, DAILY, COMBO } = SPORTS_GROUP_TYPES;
   let marketGroups = [];
   switch (type) {
@@ -1066,7 +1095,7 @@ export const prepareSportsGroup = (
         orderBooks,
         addBet
       );
-
+      // testCombo(sportsGroup, orderBooks, addBet);
       marketGroups.push(<MultiMarketTable key={id} comboMarketData={data} />);
       break;
     }
