@@ -11,20 +11,21 @@ import "ROOT/gsn/v2/interfaces/IRelayRecipient.sol";
  */
 contract BaseRelayRecipient is IRelayRecipient {
 
-    /// the TrustedForwarder singleton we accept calls from.
-    // we trust it to verify the caller's signature, and pass the caller's address as last 20 bytes
+    /*
+     * Forwarder singleton we accept calls from
+     */
     address internal trustedForwarder;
 
     /*
      * require a function to be called through GSN only
      */
     modifier trustedForwarderOnly() {
-        require(msg.sender == address(trustedForwarder), "Function can only be called through trustedForwarder");
+        require(msg.sender == address(trustedForwarder), "Function can only be called through the trusted Forwarder");
         _;
     }
 
-    function getTrustedForwarder() public view returns(address) {
-        return trustedForwarder;
+    function isTrustedForwarder(address forwarder) public view returns(bool) {
+        return forwarder == trustedForwarder;
     }
 
     /**
@@ -34,7 +35,7 @@ contract BaseRelayRecipient is IRelayRecipient {
      * should be used in the contract anywhere instead of msg.sender
      */
     function _msgSender() internal view returns (address payable) {
-        if (msg.data.length >= 24 && msg.sender == address(getTrustedForwarder())) {
+        if (msg.data.length >= 24 && isTrustedForwarder(msg.sender)) {
             // At this point we know that the sender is a trusted forwarder,
             // so we trust that the last bytes of msg.data are the verified sender address.
             // extract sender address from the end of msg.data
