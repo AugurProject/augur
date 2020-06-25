@@ -174,7 +174,7 @@ export async function takeOrders(
     const trader = randomSelect(traders);
     const market = randomSelect(markets);
     const outcome = randomSelect(outcomes);
-    const direction = randomSelect([0, 1]);
+    const direction = randomSelect([1, 2]);
 
     // Try 10 positions before giving up and waiting for more orders.
     for (let i = 0; i < 10; i++) {
