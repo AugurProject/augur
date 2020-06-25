@@ -23,6 +23,7 @@ export const INTERNAL_CONTRACTS = [
     'Affiliates',
     'AffiliateValidator',
     'AugurWallet',
+    'AugurWalletFactory',
     'AugurWalletRegistry',
     'AugurWalletRegistryV2',
     'RepOracle',
@@ -53,6 +54,7 @@ export const TRADING_CONTRACTS = [
     'ProfitLoss',
     'SimulateTrade',
     'ZeroXExchange', // uses registration name, not addresses.json name
+    'AugurWalletFactory',
     'AugurWalletRegistry',
     'AugurWalletRegistryV2',
     'RelayHubV2',
@@ -136,6 +138,7 @@ export const REGISTERED_INTERNAL_CONTRACTS = [
     'OICash',
     'Affiliates',
     'AffiliateValidator',
+    'AugurWalletFactory',
     'AugurWalletRegistry',
     'AugurWalletRegistryV2',
     // utility
@@ -166,6 +169,7 @@ export const INITIALIZED_CONTRACTS = [
     'SimulateTrade',
     'ZeroXTrade',
     'WarpSync',
+    'AugurWalletFactory',
     'AugurWalletRegistry',
     'AugurWalletRegistryV2',
     'RepOracle'

@@ -5,7 +5,6 @@ import {
   CategoryStats,
   defaultReportingFeeDivisor,
   DisputeDoc,
-  ExtraInfoTemplate,
   GetMarketsSortBy,
   INIT_REPORTING_FEE_DIVISOR,
   MarketData,
@@ -26,6 +25,8 @@ import {
   ParsedOrderEventLog,
   StakeDetails,
   TemplateFilters,
+  MarketTypeName,
+  MarketType,
 } from '@augurproject/sdk-lite';
 import { Order, Orders, OrderState } from '@augurproject/sdk-lite/build';
 import { BigNumber } from 'bignumber.js';
@@ -63,6 +64,7 @@ const MaxLiquiditySpreadValue = {
 const getMarketsSortBy = t.keyof(GetMarketsSortBy);
 export const GetMaxLiquiditySpread = t.keyof(MaxLiquiditySpreadValue);
 export const GetTemplateFilterValue = t.keyof(TemplateFilters);
+export const GetMarketTypeFilterValue = t.keyof(MarketTypeName);
 
 const getMarketsParamsSpecific = t.intersection([
   t.type({
@@ -82,6 +84,7 @@ const getMarketsParamsSpecific = t.intersection([
     sortBy: getMarketsSortBy,
     userPortfolioAddress: t.string,
     templateFilter: GetTemplateFilterValue,
+    marketTypeFilter: GetMarketTypeFilterValue,
   }),
 ]);
 
@@ -337,14 +340,6 @@ export class Markets {
     params.limit = typeof params.limit === 'undefined' ? 10 : params.limit;
     params.offset = typeof params.offset === 'undefined' ? 0 : params.offset;
 
-    // Get Market docs for all markets with the specified filters
-    const numMarketDocs = params.reportingStates
-      ? await db.Markets.where('reportingState')
-          .anyOf(params.reportingStates)
-          .and(item => !params.includeWarpSyncMarkets && !item.isWarpSync)
-          .count()
-      : await db.Markets.count();
-
     let marketIds: string[] = [];
     const useMarketIds =
       params.search ||
@@ -437,6 +432,13 @@ export class Markets {
       marketsCollection = db.Markets.toCollection();
     }
 
+    // Get Market docs for all markets with the specified filters
+    const numMarketDocs = usedReportingStates
+    ? await marketsCollection
+        .and(item => !params.includeWarpSyncMarkets && !item.isWarpSync)
+        .count()
+    : await db.Markets.count();
+
     // Prepare filter values before loop
     let feePercent = 0;
 
@@ -505,6 +507,24 @@ export class Markets {
               !market.groupHash
             )
               return false;
+        }
+        // Apply market type
+        if (params.marketTypeFilter) {
+          if (
+            params.marketTypeFilter === MarketTypeName.YesNo &&
+            market.marketType !== MarketType.YesNo
+          )
+            return false;
+          if (
+            params.marketTypeFilter === MarketTypeName.Categorical &&
+            market.marketType !== MarketType.Categorical
+          )
+            return false;
+          if (
+            params.marketTypeFilter === MarketTypeName.Scalar &&
+            market.marketType !== MarketType.Scalar
+          )
+            return false;
         }
         // Apply designatedReporter
         if (

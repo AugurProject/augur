@@ -542,6 +542,7 @@ export interface FilterSortOptions {
   includeInvalidMarkets: INVALID_OPTIONS;
   transactionPeriod: string;
   templateFilter: string;
+  marketTypeFilter: string;
 }
 
 export interface Favorite {
@@ -659,6 +660,7 @@ export interface LoginAccountSettings {
   templateFilter?: boolean;
   maxFee?: boolean;
   spread?: boolean;
+  marketTypeFilter?: boolean;
   showInvalid?: boolean;
 }
 

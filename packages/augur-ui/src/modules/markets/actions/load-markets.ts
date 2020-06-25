@@ -6,6 +6,7 @@ import {
   MAX_FEE_100_PERCENT,
   MAX_SPREAD_ALL_SPREADS,
   REPORTING_STATE,
+  FILTER_ALL,
 } from 'modules/common/constants';
 import * as _ from 'lodash';
 import { ThunkAction } from 'redux-thunk';
@@ -34,6 +35,7 @@ export interface LoadMarketsFilterOptions {
   limit: number;
   offset: number;
   templateFilter?: string;
+  marketTypeFilter?: string;
 }
 
 export const organizeReportingStates = (reportingState) => {
@@ -142,12 +144,14 @@ export const loadMarketsByFilter = (
     maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread,
     ...sort,
     templateFilter: filterOptions.templateFilter as Getters.Markets.TemplateFilters,
+    marketTypeFilter: filterOptions.marketTypeFilter,
   };
 
   // not pass properties at their max value
   if (filterOptions.maxFee === MAX_FEE_100_PERCENT) delete params.maxFee;
   if (filterOptions.maxLiquiditySpread === MAX_SPREAD_ALL_SPREADS)
     delete params.maxLiquiditySpread;
+  if (filterOptions.marketTypeFilter === FILTER_ALL) delete params.marketTypeFilter;
 
   const marketList = await augur.getMarkets({ ...params });
   dispatch(addUpdateMarketInfos(marketList.markets));

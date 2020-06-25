@@ -14,6 +14,7 @@ import {
   MarketTypeName,
   MaxLiquiditySpread,
   TemplateFilters,
+  MarketTypeName,
 } from '@augurproject/sdk-lite';
 
 // Help Center links
@@ -157,7 +158,6 @@ export const ADD_FUNDS_SWAP = '3';
 
 // # Connect Constants
 export const ACCOUNT_TYPES = {
-  PORTIS: 'Portis',
   FORTMATIC: 'Fortmatic',
   TORUS: 'Torus',
   LEDGER: 'Ledger',
@@ -173,8 +173,6 @@ export const WALLET_TYPE = {
 };
 
 export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
-export const SIGNIN_LOADING_TEXT_PORTIS =
-  'Connecting to our partners at Portis to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_FORTMATIC =
   'Connecting to our partners at Fortmatic to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_TORUS =
@@ -197,7 +195,7 @@ export const ERROR_TYPES = {
   },
   UNSUPPORTED_NETWORK: {
     header: 'Unsupported Network',
-    subheader: 'Portis is only available on mainnet/kovan/localhost',
+    subheader: 'Only available on mainnet/kovan/localhost',
   },
 };
 
@@ -239,9 +237,9 @@ export const feeFilters = [
   { header: '0-10%', value: MAX_FEE_10_PERCENT },
 ];
 
-export const TEMPLATE_FILTER_ALL = TemplateFilters.all;
+export const FILTER_ALL = TemplateFilters.all;
 export const templateFilterValues = [
-  { header: 'All', value: TEMPLATE_FILTER_ALL },
+  { header: 'All', value: FILTER_ALL },
   {
     header: 'Augur templates',
     value: TemplateFilters.templateOnly,
@@ -249,6 +247,22 @@ export const templateFilterValues = [
   {
     header: 'Custom markets',
     value: TemplateFilters.customOnly,
+  },
+];
+
+export const marketTypeFilterValues = [
+  { header: 'All', value: FILTER_ALL },
+  {
+    header: 'Yes/No',
+    value: MarketTypeName.YesNo,
+  },
+  {
+    header: 'Categorical',
+    value: MarketTypeName.Categorical,
+  },
+  {
+    header: 'Scalar',
+    value: MarketTypeName.Scalar,
   },
 ];
 
@@ -385,6 +399,7 @@ export const TAGS_PARAM_NAME = 'tags';
 export const CATEGORY_PARAM_NAME = 'category';
 export const MAXFEE_PARAM_NAME = 'maxFee';
 export const SPREAD_PARAM_NAME = 'spread';
+export const MARKET_TYPE_PARAM_NAME = 'type'
 export const SHOW_INVALID_MARKETS_PARAM_NAME = 'showInvalid';
 export const TEMPLATE_FILTER = 'templateFilter';
 
@@ -1004,7 +1019,6 @@ export const COLUMN_TYPES = {
 // Login method variables
 export const TREZOR_MANIFEST_EMAIL = 'team@augur.net';
 export const TREZOR_MANIFEST_APPURL = 'https://dev.augur.net';
-export const PORTIS_API_KEY = 'ede221f9-710f-44c9-a429-ed28bbb54376';
 export const FORTMATIC_API_KEY = 'pk_live_8001A50CCA35D8CB';
 export const FORTMATIC_API_TEST_KEY = 'pk_test_5185BE42CA372148';
 

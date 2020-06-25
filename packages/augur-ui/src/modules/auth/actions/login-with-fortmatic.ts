@@ -8,7 +8,7 @@ import { windowRef } from 'utils/window-ref';
 import { AppState } from 'appStore';
 import { getNetwork } from 'utils/get-network-name';
 
-export const loginWithFortmatic = () => async (
+export const loginWithFortmatic = (withEmail = false) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
@@ -24,6 +24,12 @@ export const loginWithFortmatic = () => async (
       const provider = new PersonalSigningWeb3Provider(fm.getProvider());
 
       windowRef.fm = fm;
+
+      if (withEmail) {
+        await fm.configure({ primaryLoginOption: 'email' });
+      } else {
+        await fm.configure({ primaryLoginOption: 'phone' });
+      }
 
       const accounts = await fm.user.login();
 
