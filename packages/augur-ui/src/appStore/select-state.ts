@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { LoginAccount, MarketInfos, MarketsList, AccountBalances, ReportingListState } from 'modules/types';
 import { AppState } from 'appStore';
 import type { Getters } from '@augurproject/sdk';
-import { CANCELORDER, CANCELORDERS } from 'modules/common/constants';
+import { CANCELORDER } from 'modules/common/constants';
 
 export const selectAccountPositionsState = (state: AppState) =>
   state.accountPositions;
@@ -34,7 +34,7 @@ export const selectReadNotificationState = (state: AppState) =>
 export const selectPendingOrdersState = (state: AppState) =>
   state.pendingOrders;
 export const selectCancelingOrdersState = (state: AppState) =>
-  (state.pendingQueue && (state.pendingQueue[CANCELORDER] || state.pendingQueue[CANCELORDERS])) || [];
+  (state.pendingQueue && state.pendingQueue[CANCELORDER]) || [];
 export const selectMarketTradingHistoryState = (state: AppState) =>
   state.marketTradingHistory;
 export const selectUniverseState = (state: AppState) => state.universe;
