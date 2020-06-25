@@ -78,6 +78,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { hasStakeInMarket } from 'modules/account/helpers/common';
+import { CountdownProgress, formatTime } from 'modules/common/progress';
 
 export interface PercentProps {
   percent: number;
@@ -969,6 +970,103 @@ export const SubMarketCollapsible = ({
   );
 };
 
+export interface SportsMarketContainerProps {
+  marketId: string;
+  sportsGroup: any;
+  data: any;
+  market: any;
+  title?: string;
+  isCollapsable?: boolean;
+}
+export const SportsMarketContainer = ({
+  marketId,
+  sportsGroup,
+  data,
+  market,
+  title = '',
+  isCollapsable = false,
+}) => {
+  const { FUTURES, COMBO, DAILY } = SPORTS_GROUP_TYPES;
+  const { isLogged } = useAppStatusStore();
+  const [isCollapsed, setIsCollapsed] = useState(isCollapsable);
+  useEffect(() => {
+    if (sportsGroup.type === FUTURES) {
+      const clipboardMarketId = new Clipboard('#copy_marketId');
+      const clipboardAuthor = new Clipboard('#copy_author');
+    }
+  }, [market.id, market.author]);
+
+  let innerContent = null;
+  let headingContent = title;
+  // console.log(marketId, sportsGroup, data, title, isCollapsable, isCollapsed);
+  switch (sportsGroup.type) {
+    default: {
+      // futures
+      headingContent = (
+        <Fragment key={`${marketId}-heading`}>
+          <CountdownProgress
+            label="Event Expiration Date"
+            time={market.endTimeFormatted}
+            reportingState={market.reportingState}
+          />
+          <span className={Styles.MatchedLine}>
+            Matched<b>{market.volumeFormatted.full}</b>
+          </span>
+          {/* <FavoritesButton marketId={marketId} hideText disabled={!isLogged} /> */}
+          <DotSelection>
+            <SocialMediaButtons
+              listView
+              marketDescription={market.description}
+              marketAddress={marketId}
+            />
+            <div
+              id="copy_marketId"
+              data-clipboard-text={marketId}
+              onClick={() => marketLinkCopied(marketId, MARKET_LIST_CARD)}
+            >
+              {CopyAlternateIcon} {COPY_MARKET_ID}
+            </div>
+            <div id="copy_author" data-clipboard-text={market.author}>
+              {Person} {COPY_AUTHOR}
+            </div>
+          </DotSelection>
+        </Fragment>
+      );
+      innerContent = (
+        <MultiOutcomeMarketGrid
+          key={marketId}
+          multiOutcomeMarketGridData={data}
+        />
+      );
+      break;
+    }
+  }
+
+  return (
+    <section
+      className={classNames(Styles.SportsMarketContainer, {
+        [Styles.Collapsed]: isCollapsed,
+        [Styles.Futures]: sportsGroup.type === FUTURES,
+      })}
+    >
+      <header>
+        {headingContent}
+        {isCollapsable && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              isCollapsable ? setIsCollapsed(!isCollapsed) : null;
+            }}
+          >
+            {ThickChevron}
+          </button>
+        )}
+      </header>
+      <div>{innerContent}</div>
+    </section>
+  );
+};
+
 export interface SportsOutcomeProps {
   action: Function;
   topLabel?: string;
@@ -1008,16 +1106,20 @@ export const prepareSportsGroup = (sportsGroup, orderBooks, addBet) => {
   let marketGroups = [];
   switch (type) {
     case FUTURES: {
-      markets.forEach((market) => {
+      markets.forEach((market, index) => {
         const multiOutcomeMarketGridData = createOutcomesData(
           orderBooks,
           market,
           addBet
         );
         marketGroups.push(
-          <MultiOutcomeMarketGrid
+          <SportsMarketContainer
             key={market.id}
-            multiOutcomeMarketGridData={multiOutcomeMarketGridData}
+            data={multiOutcomeMarketGridData}
+            marketId={market.id}
+            market={market}
+            sportsGroup={sportsGroup}
+            isCollapsable={index !== 0}
           />
         );
       });
@@ -1084,8 +1186,10 @@ export const prepareSportsGroup = (sportsGroup, orderBooks, addBet) => {
       // );
       // // testCombo(sportsGroup, orderBooks, addBet);
       marketGroups.push(
-        <section key={id} style={{color: "red", padding: "16px 0"}}>
-          This is a Combinatorial Event and is currently under construction.There are Augur Markets that relate to this Event but we aren't ready to show you them yet. Please try again at a later date.
+        <section key={id} style={{ color: 'red', padding: '16px 0' }}>
+          This is a Combinatorial Event and is currently under
+          construction.There are Augur Markets that relate to this Event but we
+          aren't ready to show you them yet. Please try again at a later date.
         </section>
       );
       break;

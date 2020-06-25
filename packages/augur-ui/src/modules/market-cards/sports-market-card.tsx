@@ -54,9 +54,8 @@ export const SportsMarketCard = ({
   const { type, markets, marketTypes } = sportsGroup;
   const market = markets[0];
   const { categories, reportingState, endTimeFormatted } = market;
-
-  const showMoreButtonVisible =
-    type === COMBO ? marketTypes.length > 3 : marketTypes.length > 1;
+  const numExtraWagers = type === COMBO ? marketTypes.length - 3 : marketTypes.length - 1;
+  const showMoreButtonVisible = numExtraWagers > 0;
 
   const headerType =
     location.pathname === makePath(DISPUTING)
@@ -90,7 +89,7 @@ export const SportsMarketCard = ({
       />
       {showMoreButtonVisible && (
         <button onClick={() => setShowMore(!showMore)}>
-          {ThickChevron} {`${showMore ? 'Show Less' : 'More Wagers'}`}
+          {ThickChevron} {`${showMore ? 'Show Less' : 'More Wagers'} (${numExtraWagers})`}
         </button>
       )}
     </div>
