@@ -80,14 +80,14 @@ export class MarketDB extends DerivedDB {
       MarketMigrated: this.processMarketMigrated,
     };
 
-    this.augur.events.subscribe(SubscriptionEventName.DBUpdatedZeroXOrders, orderEvents =>
+    this.augur.events.on(SubscriptionEventName.DBUpdatedZeroXOrders, orderEvents =>
       this.markMarketLiquidityAsDirty(orderEvents.market)
     );
-    this.augur.events.subscribe(
+    this.augur.events.on(
       SubscriptionEventName.NewBlock,
       this.processNewBlock
     );
-    this.augur.events.subscribe(
+    this.augur.events.on(
       SubscriptionEventName.TimestampSet,
       this.processTimestampSet
     );
@@ -691,11 +691,9 @@ export class MarketDB extends DerivedDB {
 
     if (updateDocs.length > 0) {
       await this.saveDocuments(updateDocs);
-      this.augur.events.emitAfter(
-        SubscriptionEventName.NewBlock,
-        SubscriptionEventName.ReportingStateChanged,
-        { data: updateDocs }
-      );
+      this.augur.events.once(SubscriptionEventName.NewBlock, () => {
+        this.augur.events.emit(SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
+      })
     }
   }
 

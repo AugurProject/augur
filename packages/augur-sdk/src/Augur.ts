@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import type { SDKConfiguration } from '@augurproject/utils';
 import { NetworkId } from '@augurproject/utils';
 import {
@@ -52,7 +53,7 @@ import {
   SingleThreadConnector,
 } from './connector';
 import { Provider } from './ethereum/Provider';
-import { augurEmitter, Callback, TXStatusCallback } from './events';
+import { EventNameEmitter, Callback, TXStatusCallback } from './events';
 import { ContractDependenciesGSN } from './lib/contract-deps';
 import { SyncableFlexSearch } from './state/db/SyncableFlexSearch';
 import { Accounts } from './state/getter/Accounts';
@@ -65,7 +66,6 @@ import { Universe } from './state/getter/Universe';
 import { Users } from './state/getter/Users';
 import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
-import { Subscriptions } from './subscriptions';
 import { LiquidityPool } from './state/getter/LiquidityPool';
 
 export class Augur<TProvider extends Provider = Provider> {
@@ -84,7 +84,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
   readonly bestOffer: BestOffer;
-  readonly events: Subscriptions;
+  readonly events: EventEmitter;
 
   private _sdkReady = false;
 
@@ -129,7 +129,8 @@ export class Augur<TProvider extends Provider = Provider> {
         `Augur config must include addresses. Config=${JSON.stringify(config)}`
       );
 
-    this.events = new Subscriptions(augurEmitter);
+    this.events = new EventNameEmitter();
+    this.events.setMaxListeners(0);
     this.events.on(SubscriptionEventName.SDKReady, () => {
       this._sdkReady = true;
       logger.info('SDK is ready');
