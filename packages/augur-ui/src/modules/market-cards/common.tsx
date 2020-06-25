@@ -78,7 +78,6 @@ import makePath from 'modules/routes/helpers/make-path';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { hasStakeInMarket } from 'modules/account/helpers/common';
-import { concatSeries } from 'async';
 
 export interface PercentProps {
   percent: number;
@@ -748,7 +747,7 @@ const determineTopLabel = ({ groupType, marketLine }, outcomeNumber, title) => {
     OVER_UNDER,
     COMBO_OVER_UNDER,
     SPREAD,
-    COMBO_SPREAD
+    COMBO_SPREAD,
   } = SPORTS_GROUP_MARKET_TYPES;
   if (outcomeNumber > 2 || outcomeNumber === 0) {
     return null;
@@ -764,18 +763,16 @@ const determineTopLabel = ({ groupType, marketLine }, outcomeNumber, title) => {
     }
     case SPREAD:
     case COMBO_SPREAD: {
-      return title.indexOf('-') > -1 ? title.substring(title.indexOf('-')) : title.substring(title.indexOf('+'));
+      return title.indexOf('-') > -1
+        ? title.substring(title.indexOf('-'))
+        : title.substring(title.indexOf('+'));
     }
     default:
       return null;
   }
 };
 
-const createOutcomesData = (
-  orderBooks,
-  market,
-  addBet
-) => {
+const createOutcomesData = (orderBooks, market, addBet) => {
   const {
     id,
     outcomesFormatted: outcomes,
@@ -812,18 +809,16 @@ const createOutcomesData = (
         type: ASKS,
       });
       const OddToUse = odds[ODDS_TYPE.AMERICAN];
-      const topLabel = determineTopLabel(sportsBook, index, outcome.description);
+      const topLabel = determineTopLabel(
+        sportsBook,
+        index,
+        outcome.description
+      );
       data.push({
         ...outcomeData,
         topLabel,
         action: () =>
-          addBet(
-            marketId,
-            description,
-            OddToUse,
-            outcome.description,
-            shares
-          ),
+          addBet(marketId, description, OddToUse, outcome.description, shares),
         label: OddToUse,
       });
     }
@@ -838,25 +833,25 @@ const testCombo = (sportsGroup, orderBooks, addBet) => {
     COMBO_SPREAD,
   } = SPORTS_GROUP_MARKET_TYPES;
   const moneyLineMarkets = sportsGroup.markets
-    .filter(market => 
-      market.sportsBook.groupType === COMBO_MONEY_LINE)
-    .sort((a,b) => 
-      Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
-  );
+    .filter((market) => market.sportsBook.groupType === COMBO_MONEY_LINE)
+    .sort(
+      (a, b) =>
+        Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
+    );
   const spreadMarkets = sportsGroup.markets
-    .filter(market => 
-      market.sportsBook.groupType === COMBO_SPREAD)
-    .sort((a,b) => 
-      Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
-  );
+    .filter((market) => market.sportsBook.groupType === COMBO_SPREAD)
+    .sort(
+      (a, b) =>
+        Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
+    );
   const overUnderMarkets = sportsGroup.markets
-    .filter(market => 
-      market.sportsBook.groupType === COMBO_OVER_UNDER)
-    .sort((a,b) => 
-      Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
-  );
+    .filter((market) => market.sportsBook.groupType === COMBO_OVER_UNDER)
+    .sort(
+      (a, b) =>
+        Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
+    );
   // console.log(moneyLineMarkets, spreadMarkets, overUnderMarkets);
-}
+};
 
 interface ReportedOutcomeProps {
   isTentative?: boolean;
@@ -1007,11 +1002,7 @@ export const SportsOutcome = ({
   </div>
 );
 
-export const prepareSportsGroup = (
-  sportsGroup,
-  orderBooks,
-  addBet
-) => {
+export const prepareSportsGroup = (sportsGroup, orderBooks, addBet) => {
   const { id, type, markets } = sportsGroup;
   const { FUTURES, DAILY, COMBO } = SPORTS_GROUP_TYPES;
   let marketGroups = [];
@@ -1021,7 +1012,7 @@ export const prepareSportsGroup = (
         const multiOutcomeMarketGridData = createOutcomesData(
           orderBooks,
           market,
-          addBet,
+          addBet
         );
         marketGroups.push(
           <MultiOutcomeMarketGrid
@@ -1034,14 +1025,12 @@ export const prepareSportsGroup = (
     }
     case DAILY: {
       // TODO: fix to use a constant for money line
-      const {
-        MONEY_LINE
-      } = SPORTS_GROUP_MARKET_TYPES;
+      const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
       const sortedMarkets = Array.from(markets);
       sortedMarkets.sort(
         (
-          { sportsBook: { groupType: typeA, liquidityRank: rankA }}, 
-          { sportsBook: { groupType: typeB, liquidityRank: rankB }}
+          { sportsBook: { groupType: typeA, liquidityRank: rankA } },
+          { sportsBook: { groupType: typeB, liquidityRank: rankB } }
         ) => {
           // for now we only care about sorting moneyline to the top
           if (typeA === MONEY_LINE && typeB !== MONEY_LINE) {
@@ -1054,7 +1043,8 @@ export const prepareSportsGroup = (
             }
             return 0;
           }
-      });
+        }
+      );
       const mainMarket = sortedMarkets[0];
       const mainMarketId = mainMarket?.id;
       if (mainMarketId) {
@@ -1073,11 +1063,7 @@ export const prepareSportsGroup = (
       }
       sortedMarkets.forEach((market) => {
         if (market.id === mainMarketId) return;
-        const subMarketData = createOutcomesData(
-          orderBooks,
-          market,
-          addBet
-        );
+        const subMarketData = createOutcomesData(orderBooks, market, addBet);
         marketGroups.push(
           <SubMarketCollapsible
             key={market.id}
@@ -1090,13 +1076,18 @@ export const prepareSportsGroup = (
       break;
     }
     case COMBO: {
-      const data = processComboMarketData(
-        { id, type, markets },
-        orderBooks,
-        addBet
+      // TODO: Implement combos once we get more info from getters, for now skip
+      // const data = processComboMarketData(
+      //   { id, type, markets },
+      //   orderBooks,
+      //   addBet
+      // );
+      // // testCombo(sportsGroup, orderBooks, addBet);
+      marketGroups.push(
+        <section key={id} style={{color: "red", padding: "16px 0"}}>
+          This is a Combinatorial Event and is currently under construction.There are Augur Markets that relate to this Event but we aren't ready to show you them yet. Please try again at a later date.
+        </section>
       );
-      // testCombo(sportsGroup, orderBooks, addBet);
-      marketGroups.push(<MultiMarketTable key={id} comboMarketData={data} />);
       break;
     }
     default:
@@ -1161,8 +1152,6 @@ export const OutcomeGroup = ({
     reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
   const stakes = disputeInfo?.stakes;
   const { theme } = useAppStatusStore();
-  const { orderBooks } = useMarketsStore();
-  const orderBook = orderBooks[id]?.orderBook;
 
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     marketType,
