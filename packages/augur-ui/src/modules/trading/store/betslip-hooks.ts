@@ -64,18 +64,18 @@ export function BetslipReducer(state, action) {
       const currentHeader = updatedState.selected.header;
       updatedState.selected.header =
         currentHeader === BETSLIP ? MY_BETS : BETSLIP;
-      return updatedState;
+      break;
     }
     case TOGGLE_SUBHEADER: {
       const currentSubHeader = updatedState.selected.subHeader;
       updatedState.selected.subHeader =
         currentSubHeader === UNMATCHED ? MATCHED : UNMATCHED;
-      return updatedState;
+      break;
     }
     case TOGGLE_STEP: {
       const currentStep = updatedState.step;
       updatedState.step = currentStep === 0 ? 1 : 0;
-      return updatedState;
+      break;
     }
     case ADD_BET: {
       const { marketId, description, outcome, odds, wager } = action;
@@ -96,7 +96,7 @@ export function BetslipReducer(state, action) {
         dateUpdated: null,
       });
       updatedState.betslip.count++;
-      return updatedState;
+      break;
     }
     case SEND_BET: {
       // TODO: make this real, for now immediately to matched.
@@ -121,7 +121,7 @@ export function BetslipReducer(state, action) {
       }
       updatedState.betslip.count--;
       updatedState.matched.count++;
-      return updatedState;
+      break;
     }
     case SEND_ALL_BETS: {
       for (let [marketId, { description, orders }] of Object.entries(
@@ -146,7 +146,7 @@ export function BetslipReducer(state, action) {
         updatedState.matched.count += ordersAmount;
       }
       updatedState.betslip = EMPTY_BETSLIST;
-      return updatedState;
+      break;
     }
     case ADD_MATCHED: {
       const { fromList, marketId, description, order } = action;
@@ -165,7 +165,7 @@ export function BetslipReducer(state, action) {
       });
       updatedState.matched.count++;
       updatedState[fromList].count--;
-      return updatedState;
+      break;
     }
     case ADD_MULTIPLE_MATCHED: {
       const { fromList, marketId, description, orders } = action;
@@ -186,7 +186,7 @@ export function BetslipReducer(state, action) {
       });
       updatedState.matched.count += orders.length;
       updatedState[fromList].count -= orders.length;
-      return updatedState;
+      break;
     }
     case RETRY: {
       const { marketId, orderId } = action;
@@ -194,7 +194,7 @@ export function BetslipReducer(state, action) {
       const order = matchedItems[marketId].orders[orderId];
       order.status = PENDING;
       order.amountFilled = order.wager;
-      return updatedState;
+      break;
     }
     case CASH_OUT: {
       const { marketId, orderId } = action;
@@ -202,7 +202,7 @@ export function BetslipReducer(state, action) {
       const cashedOutOrder = matchedItems[marketId].orders[orderId];
       cashedOutOrder.status = CLOSED;
       cashedOutOrder.amountWon = cashedOutOrder.toWin;
-      return updatedState;
+      break;
     }
     case UPDATE_MATCHED: {
       const { marketId, orderId, updates } = action;
@@ -211,7 +211,7 @@ export function BetslipReducer(state, action) {
         ...updates,
         dateUpdated: updatedTime,
       };
-      return updatedState;
+      break;
     }
     case TRASH: {
       const { marketId, orderId } = action;
@@ -220,13 +220,13 @@ export function BetslipReducer(state, action) {
         delete matchedItems[marketId];
       }
       updatedState.matched.count--;
-      return updatedState;
+      break;
     }
     case MODIFY_BET: {
       const { marketId, orderId, order } = action;
       const toWin = getNewToWin(order.odds, order.wager);
       betslipItems[marketId].orders[orderId] = {...order, toWin };
-      return updatedState;
+      break;
     }
     case CANCEL_BET: {
       const { marketId, orderId } = action;
@@ -236,22 +236,24 @@ export function BetslipReducer(state, action) {
         delete betslipItems[marketId];
       }
       updatedState.betslip.count--;
-      return updatedState;
+      break;
     }
     case CANCEL_ALL_BETS: {
       delete updatedState.betslip;
       updatedState.betslip = { count: 0, items: {} };
-      return updatedState;
+      break;
     }
     case CANCEL_ALL_UNMATCHED: {
       // TODO: make this cancel all open orders
       delete updatedState.unmatched;
       updatedState.unmatched = { count: 0, items: {} };
-      return updatedState;
+      break;
     }
     default:
       throw new Error(`Error: ${action.type} not caught by Betslip reducer`);
   }
+  window.betslip = updatedState;
+  return updatedState;
 }
 
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
