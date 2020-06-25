@@ -24,9 +24,10 @@ export interface FilterBoxProps {
   normalOnMobile?: boolean;
   toggle?: Function;
   extend?: boolean;
-  hide?:boolean;
+  hide?: boolean;
   customClass?: string;
   showHeaderOnMobile?: boolean;
+  footer?: ReactNode;
 }
 
 interface FilterBoxState {
@@ -45,10 +46,7 @@ export default class FilterSwitchBox extends React.Component<
     view: false,
   };
 
-  componentDidUpdate(
-    prevProps: FilterBoxProps,
-    prevState: FilterBoxState
-  ) {
+  componentDidUpdate(prevProps: FilterBoxProps, prevState: FilterBoxState) {
     const { data } = prevProps;
     const { view } = prevState;
     if (
@@ -105,7 +103,8 @@ export default class FilterSwitchBox extends React.Component<
       extend,
       hide,
       customClass,
-      showHeaderOnMobile
+      showHeaderOnMobile,
+      footer,
     } = this.props;
 
     const { search, filteredData } = this.state;
@@ -138,6 +137,7 @@ export default class FilterSwitchBox extends React.Component<
             )}
             {filteredData.length > 0 &&
               filteredData.map(data => renderRows(data))}
+            {footer ? footer : null}
           </>
         }
       />
