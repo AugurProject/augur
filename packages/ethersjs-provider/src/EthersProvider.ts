@@ -67,10 +67,13 @@ export class EthersProvider extends ethers.providers.BaseProvider
   private _mostRecentLatestBlockHeaders: Promise<any> | null;
   private _callCache = new Map<any, Promise<any>>();
   private callCount = new Counter();
+  private cacheCount = new Counter();
 
   printOutAndClearCallCount = () => {
     logger.table(LoggerLevels.info, this.callCount.toTabularData());
     this.callCount.clear();
+    logger.table(LoggerLevels.info, this.cacheCount.toTabularData());
+    this.cacheCount.clear();
   };
 
   constructor(
@@ -95,10 +98,12 @@ export class EthersProvider extends ethers.providers.BaseProvider
             let result: Promise<any>;
             const itemString = JSON.stringify(item);
             if ((item.message === "call" ||
-                 item.message === "getBalance"
+                 item.message === "getBalance" ||
+                 (item.message === "getBlock" && item.params.blockTag !== 'latest')
                 ) &&
                 process.env.NODE_ENV !== 'test' &&
                 this._callCache.has(itemString)) {
+              this.cacheCount.increment(item.message);
               return this._callCache.get(itemString);
             }
             if (item.message === 'send') {
@@ -124,6 +129,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
                   );
                 } else {
                   this.callCount.decrement(method);
+                  this.cacheCount.increment("eth_getBlockByNumber");
                 }
                 return _this._mostRecentLatestBlockHeaders;
               }
@@ -132,7 +138,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
               const { blockTag, includeTransactions } = item.params;
               this.callCount.increment(item.message);
               if (
-                item.message === 'getBlock' &&
+                (item.message === 'getBlockNumber' || item.message === "getBlock") &&
                 blockTag === 'latest' &&
                 !!includeTransactions === false &&
                 _this.polling &&
@@ -145,13 +151,15 @@ export class EthersProvider extends ethers.providers.BaseProvider
                   );
                 } else {
                   this.callCount.decrement(item.message);
+                  this.cacheCount.increment(item.message);
                 }
                 return _this._mostRecentLatestBlockHeaders;
               }
               result = _this.providerPerform(item.message, item.params);
             }
             if ((item.message === "call" ||
-                item.message === "getBalance") &&
+                item.message === "getBalance" ||
+                (item.message === "getBlock" && item.params.blockTag !== 'latest')) &&
                 process.env.NODE_ENV !== 'test') {
               this._callCache.set(itemString, result);
             }

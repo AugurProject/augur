@@ -238,7 +238,7 @@ class Form extends Component<FromProps, FormState> {
       );
     }
 
-    if (prevProps.gasPrice !== this.props.gasPrice) {
+    if (prevProps.gasPrice !== this.props.gasPrice || prevProps.expirationDate !== this.props.expirationDate) {
       this.getGasConfirmEstimate();
     }
   }
@@ -279,6 +279,7 @@ class Form extends Component<FromProps, FormState> {
     try {
       const confirmationTimeEstimation = await this.props.getGasConfirmEstimate();
       this.setState({ confirmationTimeEstimation });
+      this.validateForm(this.INPUT_TYPES.EXPIRATION_DATE, this.state.expirationDate);
     } catch (error) {
       this.setState({ confirmationTimeEstimation: 0 });
     }
