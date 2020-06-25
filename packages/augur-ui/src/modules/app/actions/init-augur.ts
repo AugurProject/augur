@@ -28,7 +28,6 @@ import { Action } from 'redux';
 import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { loginWithInjectedWeb3, getWeb3Provider } from 'modules/auth/actions/login-with-injected-web3';
-import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { toChecksumAddress } from 'ethereumjs-util';
@@ -80,10 +79,6 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
 
         await dispatch(loginWithInjectedWeb3());
       }
-      if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-        await dispatch(loginWithPortis(false));
-      }
-
       if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
         await dispatch(loginWithFortmatic());
       }
@@ -158,10 +153,6 @@ export function connectAugur(
 
     if (isGlobalWeb3() && loggedInAccountType === ACCOUNT_TYPES.WEB3WALLET) {
       preloadAccount(ACCOUNT_TYPES.WEB3WALLET);
-    }
-
-    if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-      preloadAccount(ACCOUNT_TYPES.PORTIS);
     }
 
     if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {

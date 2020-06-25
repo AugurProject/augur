@@ -80,14 +80,14 @@ export class MarketDB extends DerivedDB {
       MarketMigrated: this.processMarketMigrated,
     };
 
-    this.augur.events.subscribe(SubscriptionEventName.DBUpdatedZeroXOrders, orderEvents =>
+    this.augur.events.on(SubscriptionEventName.DBUpdatedZeroXOrders, orderEvents =>
       this.markMarketLiquidityAsDirty(orderEvents.market)
     );
-    this.augur.events.subscribe(
+    this.augur.events.on(
       SubscriptionEventName.NewBlock,
       this.processNewBlock
     );
-    this.augur.events.subscribe(
+    this.augur.events.on(
       SubscriptionEventName.TimestampSet,
       this.processTimestampSet
     );
@@ -95,8 +95,8 @@ export class MarketDB extends DerivedDB {
     // Don't call this interval during tests
     if (process.env.NODE_ENV !== 'test') {
       if (!liquidityCheckInterval) {
-        // call recalc liquidity every min.
-        const ONE_MIN_IN_MS = 60000;
+        // call recalc liquidity every 30 seconds.
+        const ONE_MIN_IN_MS = 30000;
         liquidityCheckInterval = setInterval(async () => {
           if (liquidityDirty.size > 0) {
             const marketIdsToCheck = Array.from(liquidityDirty) as string[];
@@ -119,8 +119,6 @@ export class MarketDB extends DerivedDB {
   async doSync(highestAvailableBlockNumber: number): Promise<void> {
     this.syncing = true;
     await super.doSync(highestAvailableBlockNumber);
-    // If syncOrderBooks is being called on inital sync, we pass flag
-    await this.syncOrderBooks([], true);
     const timestamp = (await this.augur.getTimestamp()).toNumber();
     await this.processTimestamp(timestamp, highestAvailableBlockNumber);
     await this.syncFTS();
@@ -142,8 +140,7 @@ export class MarketDB extends DerivedDB {
   }
 
   syncOrderBooks = async (
-    marketIds: string[],
-    isFirstSync = false
+    marketIds: string[]
   ): Promise<void> => {
     let ids = marketIds;
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(
@@ -163,8 +160,7 @@ export class MarketDB extends DerivedDB {
     }
 
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
-    // TODO Get ETH -> DAI price via uniswap when we integrate that as an oracle
-    const ETHInAttoDAI = new BigNumber(200).multipliedBy(10 ** 18);
+    const ETHInAttoDAI = this.augur.dependencies.ethToDaiRate;
 
     const marketDataById = _.keyBy(marketsData, 'market');
     for (const marketId of ids) {
@@ -174,8 +170,7 @@ export class MarketDB extends DerivedDB {
           marketId,
           marketDataById[marketId],
           reportingFeeDivisor,
-          ETHInAttoDAI,
-          isFirstSync
+          ETHInAttoDAI
         );
         // This is needed to make rollbacks work properly
         doc['blockNumber'] = highestSyncedBlockNumber;
@@ -201,8 +196,7 @@ export class MarketDB extends DerivedDB {
     marketId: string,
     marketData: MarketData,
     reportingFeeDivisor: BigNumber,
-    ETHInAttoDAI: BigNumber,
-    isFirstSync: Boolean
+    ETHInAttoDAI: BigNumber
   ): Promise<MarketOrderBookData> {
     const numOutcomes =
       marketData.outcomes && marketData.outcomes.length > 0
@@ -225,18 +219,6 @@ export class MarketDB extends DerivedDB {
       .minus(new BigNumber(1).div(reportingFeeDivisor))
       .minus(new BigNumber(1).div(feeDivisor));
     const orderBook = await this.getOrderBook(marketData, numOutcomes);
-
-    // since zeroX orders will not be hydrated on first sync, we will need to pre-populate
-    // liquidty filter data based off the last stored state of the MaraketDB (if avaiable)
-    if (isFirstSync && marketData) {
-      return {
-        _id: marketId,
-        invalidFilter: marketData.invalidFilter ? 1 : 0,
-        hasRecentlyDepletedLiquidity: marketData.hasRecentlyDepletedLiquidity,
-        lastPassingLiquidityCheck: marketData.lastPassingLiquidityCheck,
-        liquidity: marketData.liquidity,
-      };
-    }
 
     const invalidFilter = await this.recalcInvalidFilter(
       orderBook,
@@ -691,11 +673,9 @@ export class MarketDB extends DerivedDB {
 
     if (updateDocs.length > 0) {
       await this.saveDocuments(updateDocs);
-      this.augur.events.emitAfter(
-        SubscriptionEventName.NewBlock,
-        SubscriptionEventName.ReportingStateChanged,
-        { data: updateDocs }
-      );
+      this.augur.events.once(SubscriptionEventName.NewBlock, () => {
+        this.augur.events.emit(SubscriptionEventName.ReportingStateChanged, { data: updateDocs });
+      })
     }
   }
 

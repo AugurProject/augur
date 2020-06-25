@@ -37,7 +37,7 @@ export class BestOffer {
   constructor(augur: Augur) {
     this.augur = augur;
 
-    this.augur.events.subscribe(
+    this.augur.events.on(
       SubscriptionEventName.BulkOrderEvent,
       orderEvents => this.determineBestOfferForLiquidityPool(orderEvents)
     );

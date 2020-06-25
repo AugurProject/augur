@@ -5,7 +5,6 @@ import http from 'http';
 import https from 'https';
 import WebSocket from 'ws';
 
-import { augurEmitter } from '../events';
 import { Subscriptions } from '../subscriptions';
 import { AddressFormatReviver } from './AddressFormatReviver';
 import { API } from './getter/API';
@@ -45,7 +44,7 @@ export function runWssServer(
 
 function setupServer(server: WebSocket.Server, api: API) {
   server.on('connection', (websocket: WebSocket): void => {
-    const subscriptions = api.augur.events;
+    const subscriptions = new Subscriptions(api.augur.events);
     const pingInterval = setInterval(() => safePing(websocket), 12000);
 
     websocket.on('message', (data: WebSocket.Data): void => {
