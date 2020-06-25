@@ -41,7 +41,7 @@ export function MarketsReducer(state, action) {
       updatedState.orderBooks = DEFAULT_MARKETS_STATE.orderBooks;
       break;
     }
-    case UPDATE_MARKETS_DATA:
+    case UPDATE_MARKETS_DATA: {
       if (action.marketInfos || action.payload?.marketInfos) {
         updatedState.marketInfos = {
           ...updatedState.marketInfos,
@@ -49,16 +49,19 @@ export function MarketsReducer(state, action) {
         };
       }
       break;
-    case REMOVE_MARKET:
+    }
+    case REMOVE_MARKET: {
       updatedState.marketInfos = immutableDelete(updatedState.marketInfos, action.marketId);
       break;
-    case BULK_MARKET_TRADING_HISTORY:
+    }
+    case BULK_MARKET_TRADING_HISTORY: {
       updatedState.marketTradingHistory = {
         ...updatedState.marketTradingHistory,
         ...action.keyedMarketTradingHistory || action.payload.keyedMarketTradingHistory
       };
       break;
-    case UPDATE_REPORTING_LIST: 
+    }
+    case UPDATE_REPORTING_LIST: {
         const { reportingState, marketIds, params, isLoading, payload } = action;
         if (marketIds || payload.marketIds) {
           updatedState.reportingListState = {
@@ -71,7 +74,8 @@ export function MarketsReducer(state, action) {
           };
         }
       break;
-    default:
+    }
+    default: 
       console.error(`Error: ${action.type} not caught by Markets reducer`);
   }
 

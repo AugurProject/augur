@@ -6,6 +6,7 @@ import {
   MAX_FEE_100_PERCENT,
   MAX_SPREAD_ALL_SPREADS,
   REPORTING_STATE,
+  THEMES,
 } from 'modules/common/constants';
 import * as _ from 'lodash';
 import { Getters, MarketReportingState } from '@augurproject/sdk';
@@ -70,8 +71,8 @@ export const loadMarketsByFilter = async (
   filterOptions: LoadMarketsFilterOptions,
   cb: Function = () => {}
 ) => {
-  console.log('loadMarketsByFilter called', filterOptions);
-  const { universe, isConnected } = AppStatus.get();
+  // console.log('loadMarketsByFilter called', filterOptions);
+  const { universe, isConnected, theme } = AppStatus.get();
   if (!(universe && universe.id)) return { marketInfos: {} };
 
   // Check to see if SDK is connected first
@@ -129,7 +130,13 @@ export const loadMarketsByFilter = async (
   }
 
   const paginationOffset = filterOptions.offset ? filterOptions.offset - 1 : 0;
-
+  let templateFilter = filterOptions.templateFilter as Getters.Markets.TemplateFilters;
+  if (theme === THEMES.SPORTS) {
+    filterOptions.maxFee = MAX_FEE_100_PERCENT;
+    filterOptions.includInvalidMarkets = false;
+    filterOptions.maxLiquiditySpread = MAX_SPREAD_ALL_SPREADS;
+    templateFilter = Getters.Markets.TemplateFilters.sportsBook;
+  }
   let params = {
     universe: universe.id,
     categories: filterOptions.categories,
@@ -141,7 +148,7 @@ export const loadMarketsByFilter = async (
     reportingStates,
     maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread,
     ...sort,
-    templateFilter: filterOptions.templateFilter as Getters.Markets.TemplateFilters,
+    templateFilter,
   };
 
   // not pass properties at their max value

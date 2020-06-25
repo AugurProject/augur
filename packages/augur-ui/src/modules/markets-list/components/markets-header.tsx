@@ -5,37 +5,35 @@ import MarketCardFormatSwitcher from 'modules/filter-sort/market-card-format-swi
 import Styles from 'modules/markets-list/components/markets-header.styles.less';
 import { FilterButton } from 'modules/common/buttons';
 import FilterDropDowns from 'modules/filter-sort/filter-dropdowns';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface MarketsHeaderProps {
-  filter: string;
-  sort: string;
-  isSearchingMarkets: boolean;
-  marketCardFormat: string;
-  updateMarketsListCardFormat: Function;
   headerTitle: string;
 }
 
-const MarketsHeader: React.FC<MarketsHeaderProps> = ({
-  isSearchingMarkets,
-  headerTitle,
-}) => (
-  <article
-    className={classNames(Styles.MarketsHeader, {
-      [Styles.DisableFilters]: isSearchingMarkets,
-    })}
-  >
-    <div>
-      <FilterSearch isSearchingMarkets={isSearchingMarkets} />
-      {/* MOBILE FILTERS TOGGLE */}
-      <FilterButton />
-    </div>
-    <div>
-      <h2>{headerTitle}</h2>
-      <FilterSearch isSearchingMarkets={isSearchingMarkets} />
-      <MarketCardFormatSwitcher />
-      <FilterDropDowns />
-    </div>
-  </article>
-);
+const MarketsHeader: React.FC<MarketsHeaderProps> = ({ headerTitle }) => {
+  const {
+    marketsList: { isSearching },
+  } = useAppStatusStore();
+  return (
+    <article
+      className={classNames(Styles.MarketsHeader, {
+        [Styles.DisableFilters]: isSearching,
+      })}
+    >
+      <div>
+        <FilterSearch />
+        {/* MOBILE FILTERS TOGGLE */}
+        <FilterButton />
+      </div>
+      <div>
+        <h2>{headerTitle}</h2>
+        <FilterSearch />
+        <MarketCardFormatSwitcher />
+        <FilterDropDowns />
+      </div>
+    </article>
+  );
+};
 
 export default MarketsHeader;
