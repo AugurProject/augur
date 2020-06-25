@@ -19,10 +19,10 @@ cd /augur
 # reloaded.
 # Until then -- Make sure changes work in BOTH scripts
 
-if [ "$FAKE_TIME" == "true" ]; then
-  yarn flash fake-all --createMarkets
-else
+if [ "$NORMAL_TIME" == "true" ]; then
   yarn flash normal-all --createMarkets
+else
+  yarn flash fake-all --createMarkets
 fi
 
 # Still need to double-check builds after deploy
