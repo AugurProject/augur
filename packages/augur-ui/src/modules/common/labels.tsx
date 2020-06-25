@@ -124,6 +124,9 @@ export interface LinearPropertyLabelProps {
   useValueLabel?: boolean;
   showDenomination?: boolean;
   useFull?: boolean;
+  underline?: boolean;
+  onValueClick?: Function;
+  regularCase?: boolean;
 }
 
 export interface LinearPropertyLabelTooltipProps {
@@ -870,6 +873,9 @@ export const LinearPropertyLabel = ({
   accentValue,
   value,
   useFull,
+  underline,
+  onValueClick,
+  regularCase,
 }: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
@@ -878,7 +884,11 @@ export const LinearPropertyLabel = ({
       [Styles.HighlightFirst]: highlightFirst,
     })}
   >
-    <span>{label}</span>
+    <span
+      className={classNames({
+        [Styles.RegularCase]: regularCase,
+    })}
+    >{label}</span>
     <DashlineNormal />
     {useValueLabel ? (
       <ValueLabel
@@ -890,7 +900,9 @@ export const LinearPropertyLabel = ({
       <span
         className={classNames({
           [Styles.isAccented]: accentValue,
+          [Styles.underline]: underline,
         })}
+        onClick={() => onValueClick && onValueClick()}
       >
         {value && value.formatted
           ? `${
