@@ -1,7 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router';
 import MarketsHeader from 'modules/markets-list/components/markets-header';
-import MarketsList from 'modules/markets-list/components/markets-list';
+import {
+  MarketsList,
+  determineSportsbookType,
+  groupSportsMarkets,
+} from 'modules/markets-list/components/markets-list';
 import Styles from 'modules/markets-list/components/markets-view.styles.less';
 import { FilterTags } from 'modules/common/filter-tags';
 import { FilterNotice } from 'modules/common/filter-notice';
@@ -17,6 +21,7 @@ import {
   THEMES,
   CATEGORY_PARAM_NAME,
   MARKET_CARD_FORMATS,
+  SPORTS_GROUP_TYPES,
 } from 'modules/common/constants';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
@@ -48,8 +53,8 @@ const PAGINATION_COUNT = 10;
 
 const findMarketsInReportingState = (markets, reportingState) => {
   const reportingStates: String[] = organizeReportingStates(reportingState);
-  return markets.filter(market =>
-    reportingStates.find(state => state === market.reportingState)
+  return markets.filter((market) =>
+    reportingStates.find((state) => state === market.reportingState)
   );
 };
 
@@ -160,6 +165,7 @@ const MarketsView = () => {
     maxFee,
     templateFilter,
     includeInvalidMarkets,
+    theme,
   ]);
 
   const {
@@ -212,41 +218,62 @@ const MarketsView = () => {
       isSearching: true,
       isSearchInPlace: Boolean(search),
     });
-    updateMarketsData(
-      null,
-      loadMarketsByFilter(
-        {
-          categories: selectedCategories ? selectedCategories : [],
-          search,
-          filter: marketFilter,
-          sort: marketSort,
-          maxFee,
-          limit,
-          offset,
-          maxLiquiditySpread,
-          includeInvalidMarkets: includeInvalidMarkets === 'show',
-          templateFilter,
-        },
-        (err, result: Getters.Markets.MarketList) => {
-          if (err) return console.log('Error loadMarketsFilter:', err);
-          if (componentWrapper.current) {
-            // categories is also on results
-            const filterSortedMarkets = result.markets.map(m => m.id);
-            const marketCount = result.meta.marketCount;
-            const showPagination = marketCount > limit;
-            setState({
-              ...state,
-              filterSortedMarkets,
-              marketCount,
-              showPagination,
-            });
-            filterSortedMarkets.forEach(marketId =>
-              updateOrderBook(marketId, null, loadMarketOrderBook(marketId))
-            );
-            updateMarketsList({ isSearching: false, meta: result.meta });
-          }
+    loadMarketsByFilter(
+      {
+        categories: selectedCategories ? selectedCategories : [],
+        search,
+        filter: marketFilter,
+        sort: marketSort,
+        maxFee,
+        limit,
+        offset,
+        maxLiquiditySpread,
+        includeInvalidMarkets: includeInvalidMarkets === 'show',
+        templateFilter,
+      },
+      (err, result: Getters.Markets.MarketList) => {
+        if (err) return console.log('Error loadMarketsFilter:', err);
+        if (componentWrapper.current) {
+          // categories is also on results
+          const filterSortedMarkets = result.markets.map((m) => m.id);
+          const marketCount = result.meta.marketCount;
+          const showPagination = marketCount > limit;
+          const isSportsBook = theme === THEMES.SPORTS;
+          const sportsGroups = groupSportsMarkets(
+            filterSortedMarkets,
+            result.markets
+          );
+          const sportsFilterSortedMarkets = sportsGroups.map(
+            (sportGroup) => sportGroup.id
+          );
+          const sportsGroupCount = sportsGroups.length;
+          const sportsShowPagination = sportsGroupCount > limit;
+          const marketInfos = result.markets
+          .filter(marketHasData => marketHasData)
+          .reduce((p, marketData) => {
+            if (marketData === null || marketData.id == null) return p;
+            return {
+              ...p,
+              [marketData.id]: marketData
+            };
+          }, {});
+          updateMarketsData(marketInfos);
+          setState({
+            ...state,
+            filterSortedMarkets: isSportsBook
+              ? sportsFilterSortedMarkets
+              : filterSortedMarkets,
+            marketCount: isSportsBook ? sportsGroupCount : marketCount,
+            showPagination: isSportsBook
+              ? sportsShowPagination
+              : showPagination,
+          });
+          filterSortedMarkets.forEach((marketId) =>
+            updateOrderBook(marketId, null, loadMarketOrderBook(marketId))
+          );
+          updateMarketsList({ isSearching: false, meta: result.meta });
         }
-      )
+      }
     );
   }
 
@@ -275,23 +302,14 @@ const MarketsView = () => {
       !displayFee ? '“Fee”' : '“Liquidity Spread”'
     } filter is set to “All”. This puts you at risk of trading on invalid markets.`;
   }
-
+  // console.log("Market View Markets", filterSortedMarkets);
   return (
     <section className={Styles.MarketsView} ref={componentWrapper}>
       <HelmetTag {...MARKETS_VIEW_HEAD_TAGS} />
       {!isLogged && !restoredAccount && <LandingHero />}
       {isTrading && (
         <>
-          <MarketsHeader
-            headerTitle={headerTitle}
-            location={location}
-            isSearchingMarkets={isSearching}
-            filter={marketFilter}
-            sort={marketSort}
-            history={history}
-            selectedCategory={selectedCategories}
-            search={search}
-          />
+          <MarketsHeader headerTitle={headerTitle} />
 
           <section
             className={classNames({
@@ -301,7 +319,7 @@ const MarketsView = () => {
             <MarketTypeFilter
               isSearchingMarkets={isSearching}
               marketCount={marketCount}
-              updateMarketsFilter={filterOption =>
+              updateMarketsFilter={(filterOption) =>
                 updateFilterSortOptions({ [MARKET_FILTER]: filterOption })
               }
               marketFilter={marketFilter}
@@ -316,97 +334,94 @@ const MarketsView = () => {
         <section>
           <h2>{headerTitle}</h2>
           <FilterDropDowns />
-          <FilterSearch
-            isSearchingMarkets={isSearching}
-            search={search}
-            selectedCategory={selectedCategories}
-          />
+          <FilterSearch search={search} />
           <FilterButton />
         </section>
       )}
-      <FilterTags
-        maxLiquiditySpread={maxLiquiditySpread}
-        maxFee={maxFee}
-        removeFeeFilter={() =>
-          updateFilterSortOptions({ [MARKET_MAX_FEES]: MAX_FEE_100_PERCENT })
-        }
-        removeLiquiditySpreadFilter={() =>
-          updateFilterSortOptions({
-            [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS,
-          })
-        }
-        updateQuery={(param, value) =>
-          updateQuery(param, value, location, history)
-        }
-      />
-      <FilterNotice
-        show={includeInvalidMarkets === 'show'}
-        showDismissButton={true}
-        updateLoginAccountSettings={settings =>
-          updateLoginAccountSettings(settings)
-        }
-        settings={{
-          propertyName: 'showInvalidMarketsBannerHideOrShow',
-          propertyValue: showInvalidMarketsBannerHideOrShow,
-        }}
-        content={
-          <span>
-            Invalid markets are no longer hidden. This puts you at risk of
-            trading on invalid markets.{' '}
-            <a
-              href={HELP_CENTER_INVALID_MARKETS}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn more
-            </a>
-          </span>
-        }
-      />
+      {isTrading && (
+        <>
+          <FilterTags
+            maxLiquiditySpread={maxLiquiditySpread}
+            maxFee={maxFee}
+            removeFeeFilter={() =>
+              updateFilterSortOptions({
+                [MARKET_MAX_FEES]: MAX_FEE_100_PERCENT,
+              })
+            }
+            removeLiquiditySpreadFilter={() =>
+              updateFilterSortOptions({
+                [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS,
+              })
+            }
+            updateQuery={(param, value) =>
+              updateQuery(param, value, location, history)
+            }
+          />
+          <FilterNotice
+            show={includeInvalidMarkets === 'show'}
+            showDismissButton={true}
+            updateLoginAccountSettings={(settings) =>
+              updateLoginAccountSettings(settings)
+            }
+            settings={{
+              propertyName: 'showInvalidMarketsBannerHideOrShow',
+              propertyValue: showInvalidMarketsBannerHideOrShow,
+            }}
+            content={
+              <span>
+                Invalid markets are no longer hidden. This puts you at risk of
+                trading on invalid markets.{' '}
+                <a
+                  href={HELP_CENTER_INVALID_MARKETS}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Learn more
+                </a>
+              </span>
+            }
+          />
 
-      <FilterNotice
-        show={!displayFee || !displayLiquiditySpread}
-        showDismissButton={true}
-        updateLoginAccountSettings={settings =>
-          updateLoginAccountSettings(settings)
-        }
-        settings={{
-          propertyName: 'showInvalidMarketsBannerFeesOrLiquiditySpread',
-          propertyValue: showInvalidMarketsBannerFeesOrLiquiditySpread,
-        }}
-        content={
-          <span>
-            {feesLiquidityMessage}{' '}
-            <a
-              href={HELP_CENTER_INVALID_MARKETS}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn more
-            </a>
-          </span>
-        }
-      />
-
+          <FilterNotice
+            show={!displayFee || !displayLiquiditySpread}
+            showDismissButton={true}
+            updateLoginAccountSettings={(settings) =>
+              updateLoginAccountSettings(settings)
+            }
+            settings={{
+              propertyName: 'showInvalidMarketsBannerFeesOrLiquiditySpread',
+              propertyValue: showInvalidMarketsBannerFeesOrLiquiditySpread,
+            }}
+            content={
+              <span>
+                {feesLiquidityMessage}{' '}
+                <a
+                  href={HELP_CENTER_INVALID_MARKETS}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Learn more
+                </a>
+              </span>
+            }
+          />
+        </>
+      )}
       <MarketsList
-        testid="markets"
-        markets={markets}
         showPagination={showPagination && !isSearching}
         filteredMarkets={filterSortedMarkets}
         marketCount={marketCount}
-        location={location}
-        history={history}
-        linkType={TYPE_TRADE}
         limit={limit}
         updateLimit={updateLimit}
         offset={offset}
         setOffset={setPageNumber}
-        isSearchingMarkets={isSearching}
         marketCardFormat={marketCardFormat}
       />
 
       <FilterNotice
-        show={!isSearching && filteredOutCount && filteredOutCount > 0}
+        show={
+          !isSearching && filteredOutCount && filteredOutCount > 0 && isTrading
+        }
         content={
           <span>
             There are {filteredOutCount} additional markets outside of the

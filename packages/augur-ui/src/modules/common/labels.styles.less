@@ -1170,7 +1170,9 @@ span.PendingLabel {
 }
 
 .YellowTemplate {
-  .Template > svg {
+  .Template;
+
+  > svg {
     > g {
       > path:first-of-type {
         fill: var(--color-highlight-template-text);
@@ -1186,6 +1188,10 @@ span.PendingLabel {
 
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
+  .YellowTemplate > svg > g > path:first-of-type {
+    fill: var(--color-scalar);
+  }
+
   label.RedFlag {
     .text-10-semi-bold;
 

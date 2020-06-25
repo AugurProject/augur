@@ -53,11 +53,38 @@ export const ODDS_TYPE = {
   PERCENT: 'Percent',
 };
 
-
 export const TIME_FORMATS = {
   TWENTY_FOUR: '24h',
   AM_PM: 'AM / PM',
 };
+
+export const SPORTS_GROUP_TYPES = {
+  DAILY: 'DAILY',
+  FUTURES: 'FUTURES',
+  COMBO: 'COMBO',
+};
+
+export const SPORTS_GROUP_MARKET_TYPES = {
+  MONEY_LINE: "MONEY_LINE",
+  OVER_UNDER: "OVER_UNDER",
+  SPREAD: "SPREAD",
+  ADDITIONAL: "ADDITIONAL",
+  COMBO_MONEY_LINE: "COMBO_MONEY_LINE",
+  COMBO_OVER_UNDER: "COMBO_OVER_UNDER",
+  COMBO_SPREAD: "COMBO_SPREAD",
+  FUTURES: "FUTURES",
+};
+// DAILY
+//   MONEY_LINE,
+//   OVER_UNDER,
+//   SPREAD,
+//   ADDITIONAL,
+// COMBO
+//   COMBO_MONEY_LINE,
+//   COMBO_OVER_UNDER,
+//   COMBO_SPREAD,
+// FUTURES
+//   FUTURES,
 
 export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');
 // # Network Constants

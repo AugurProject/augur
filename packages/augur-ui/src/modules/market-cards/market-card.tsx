@@ -9,7 +9,7 @@ import {
   TopRow,
   InfoIcons,
   TradingSideSection,
-  getCategoriesWithClick
+  getCategoriesWithClick,
 } from 'modules/market-cards/common';
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
@@ -26,34 +26,33 @@ import Styles from 'modules/market-cards/market-card.styles.less';
 import MarketTitle from 'modules/market/components/common/market-title';
 import { ThickChevron } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { hasStakeInMarket } from 'modules/account/helpers/common';
 import { MigrateMarketNotice } from 'modules/create-market/components/common';
 
-const LoadingCard = () => (<div
-className={classNames(Styles.MarketCard, {
-  [Styles.Loading]: true,
-})}
->
-  <div />
-  <div />
-  <div />
-  <div />
-  <div />
-  <div />
-  <div />
-</div>
+export const LoadingCard = () => (
+  <div
+    className={classNames(Styles.MarketCard, {
+      [Styles.Loading]: true,
+    })}
+  >
+    <div />
+    <div />
+    <div />
+    <div />
+    <div />
+    <div />
+    <div />
+  </div>
 );
 
 interface MarketCardProps {
   market: MarketData;
-  location: Location;
   condensed?: boolean;
   expandedView?: boolean;
   loading?: boolean;
 }
 
-const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;
-const MARKET_CARD_FOLD_OUTCOME_COUNT = 2;
+export const NON_DISPUTING_SHOW_NUM_OUTCOMES = 3;
+export const MARKET_CARD_FOLD_OUTCOME_COUNT = 2;
 
 export const MarketCard = ({
   market,
@@ -63,8 +62,13 @@ export const MarketCard = ({
 }: MarketCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [showMore, setShowMore] = useState(false);
-  const { theme, isLogged, accountPositions } = useAppStatusStore();
+  const { theme, isLogged } = useAppStatusStore();
   const location = useLocation();
+
+  if (loading) {
+    return <LoadingCard />;
+  }
+
   const {
     outcomesFormatted,
     marketType,
@@ -75,13 +79,6 @@ export const MarketCard = ({
     endTimeFormatted,
     consensusFormatted,
   } = market;
-  const hasStaked = hasStakeInMarket(id);
-  const hasPosition = !!accountPositions[id];
-
-  if (loading) {
-    return <LoadingCard />;
-  }
-
   const marketResolved = reportingState === REPORTING_STATE.FINALIZED;
   const isScalar = marketType === SCALAR;
   const inDispute =
@@ -121,16 +118,11 @@ export const MarketCard = ({
         [Styles.Nonexpanding]: !expandedOptionShowing || condensed,
         [Styles.Condensed]: condensed,
         [Styles.Scalar]: isScalar,
-        [Styles.ShowMore]: notTrading && showMore
+        [Styles.ShowMore]: notTrading && showMore,
       })}
     >
       <>
-        <TradingSideSection
-          market={market}
-          condensed={condensed}
-          hasPosition={hasPosition}
-          hasStaked={hasStaked}
-        />
+        <TradingSideSection market={market} condensed={condensed} />
         <TopRow
           market={market}
           categoriesWithClick={getCategoriesWithClick(categories)}
@@ -168,31 +160,22 @@ export const MarketCard = ({
           />
         )}
         {condensed && inDispute && (
-          <TentativeWinner
-            market={market}
-            canDispute={canDispute}
-          />
+          <TentativeWinner market={market} canDispute={canDispute} />
         )}
       </>
       <div className={Styles.InfoIcons}>
-        <InfoIcons
-          market={market}
-          hasPosition={hasPosition}
-          hasStaked={hasStaked}
-        />
+        <InfoIcons market={market} />
       </div>
       {notTrading && (
         <>
-        <MarketProgress
-          reportingState={reportingState}
-          endTimeFormatted={endTimeFormatted}
-          reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
-        />
-        <button
-          onClick={() => setShowMore(!showMore)}
-        >
-          {ThickChevron} {`${showMore ? 'Show Less' : 'Show More' }`}
-        </button>
+          <MarketProgress
+            reportingState={reportingState}
+            endTimeFormatted={endTimeFormatted}
+            reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+          />
+          <button onClick={() => setShowMore(!showMore)}>
+            {ThickChevron} {`${showMore ? 'Show Less' : 'Show More'}`}
+          </button>
         </>
       )}
     </div>

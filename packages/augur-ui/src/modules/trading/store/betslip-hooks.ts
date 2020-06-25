@@ -78,7 +78,7 @@ export function BetslipReducer(state, action) {
       break;
     }
     case ADD_BET: {
-      const { marketId, description, outcome, odds } = action;
+      const { marketId, description, outcome, odds, wager } = action;
       if (!betslipItems[marketId]) {
         betslipItems[marketId] = {
           description,
@@ -88,7 +88,7 @@ export function BetslipReducer(state, action) {
       betslipItems[marketId].orders.push({
         outcome,
         odds,
-        wager: '0',
+        wager,
         toWin: '0',
         amountFilled: '0',
         amountWon: '0',

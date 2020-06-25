@@ -1,4 +1,5 @@
 import { MarketData } from 'modules/types';
+import { useHistory } from 'react-router';
 import * as React from 'react';
 import * as classNames from 'classnames';
 import { LeftChevron, CopyAlternateIcon } from 'modules/common/icons';
@@ -16,7 +17,6 @@ import { FavoritesButton } from 'modules/common/buttons';
 import Styles from 'modules/market/components/common/common.styles.less';
 import { SCALAR } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { useRef } from 'react';
 
 interface HeadingBarProps {
   market: MarketData;
@@ -32,7 +32,6 @@ interface HeadingBarProps {
 export const HeadingBar = ({
   market,
   expandedDetails,
-  history,
   gotoFilter,
   showCopied,
   userAccount,
@@ -49,6 +48,7 @@ export const HeadingBar = ({
     disputeInfo
   } = market;
   const { isLogged } = useAppStatusStore();
+  const history = useHistory();
   const isScalar = marketType === SCALAR;
 
   const process = arr =>

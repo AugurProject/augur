@@ -11,17 +11,12 @@ import {
   SEARCH_FILTER_PLACHOLDER,
 } from 'modules/common/constants';
 import Styles from 'modules/filter-sort/filter-search.styles.less';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface FilterSearchProps {
-  location: Location;
-  history: History;
-  isSearchingMarkets?: boolean;
   placeholder?: string;
-}
-
-interface FilterSearchState {
-  search: string;
-  placeholder: string;
+  search?: string;
+  onChange?: Function;
 }
 
 // Show mobile placeholder on devices with 475px or lower screen width
@@ -31,11 +26,11 @@ const SEARCH_PLACEHOLDER =
     : SEARCH_FILTER_PLACHOLDER_MOBILE;
 
 export const FilterSearch = ({
-  isSearchingMarkets = false,
   placeholder: placeholderProp = SEARCH_PLACEHOLDER,
   search: searchProp = '',
   onChange: onChangeProp = value => {},
-}) => {
+}: FilterSearchProps) => {
+  const { marketsList: { isSearching: isSearchingMarkets }} = useAppStatusStore();
   const timeout = useRef(null);
   const parent = useRef(null);
   const location = useLocation();

@@ -110,8 +110,8 @@ const Review = ({ setDisableCreate }: ReviewProps) => {
   useEffect(() => {
       calculateMarketCreationCosts();
   }, [
-    newMarket.initialLiquidityDai.toFixed(),
-    newMarket.initialLiquidityGas.toFixed(),
+    newMarket.initialLiquidityDai,
+    newMarket.initialLiquidityGas,
     availableEthFormatted.value,
     availableRepFormatted.value,
     gasPrice

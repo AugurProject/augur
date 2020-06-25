@@ -6,7 +6,9 @@ import { MODAL_SIGNUP } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export const LandingHero = () => {
-  const { actions: { setModal }} = useAppStatusStore();
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
   return (
     <section className={Styles.LandingHero}>
       <div>
@@ -21,8 +23,8 @@ export const LandingHero = () => {
           />
           <ExternalLinkButton
             light
-            URL={'http://www.augur.net'}
-            label={'Learn more on augur.net'}
+            URL="http://www.augur.net"
+            label="Learn more on augur.net"
           />
         </div>
       </div>

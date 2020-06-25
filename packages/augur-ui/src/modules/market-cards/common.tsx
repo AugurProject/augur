@@ -27,6 +27,8 @@ import {
   ODDS_TYPE,
   SCALAR_INVALID_BEST_BID_ALERT_VALUE as INVALID_ALERT_PERCENTAGE,
   MODAL_REPORTING,
+  SPORTS_GROUP_TYPES,
+  SPORTS_GROUP_MARKET_TYPES,
 } from 'modules/common/constants';
 import { convertToOdds } from 'utils/get-odds';
 import { MARKET_LIST_CARD, marketLinkCopied } from 'services/analytics/helpers';
@@ -75,6 +77,8 @@ import { MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { useMarketsStore } from 'modules/markets/store/markets';
+import { hasStakeInMarket } from 'modules/account/helpers/common';
+import { CountdownProgress, formatTime } from 'modules/common/progress';
 
 export interface PercentProps {
   percent: number;
@@ -85,6 +89,72 @@ export const Percent = ({ percent }: PercentProps) => (
     <span style={{ width: percent + '%' }}></span>
   </div>
 );
+
+const COMBO_MOCK_DATA = (marketId, addBet, description) => [
+  {
+    title: 'Team A',
+    spread: {
+      topLabel: '+ 3.5',
+      label: '-110',
+      action: () => addBet(marketId, description, '-110', 'Team A', '0'),
+      volume: '$5,000.43',
+    },
+    moneyLine: {
+      topLabel: null,
+      label: '+132',
+      action: () => addBet(marketId, description, '+132', 'Team A', '0'),
+      volume: '$6,500.12',
+    },
+    overUnder: {
+      topLabel: 'O 227.5',
+      label: '-110',
+      action: () => addBet(marketId, description, '-110', 'Team A', '0'),
+      volume: '$2,542.00',
+    },
+  },
+  {
+    title: 'Team B',
+    spread: {
+      topLabel: '- 3.5',
+      label: '-110',
+      action: () => addBet(marketId, description, '-110', 'Team B', '0'),
+      volume: '$6,093.50',
+    },
+    moneyLine: {
+      topLabel: null,
+      label: '-156',
+      action: () => addBet(marketId, description, '-156', 'Team B', '0'),
+      volume: '$10,000.54',
+    },
+    overUnder: {
+      topLabel: 'U 227.5',
+      label: '-110',
+      action: () => addBet(marketId, description, '-110', 'Team B', '0'),
+      volume: '$5,000.18',
+    },
+  },
+  {
+    title: 'No Winner',
+    spread: {
+      topLabel: null,
+      label: '-110',
+      action: () => addBet(marketId, description, '-110', 'No Winner', '0'),
+      volume: '$500.70',
+    },
+    moneyLine: {
+      topLabel: null,
+      label: '-157',
+      action: () => addBet(marketId, description, '-157', 'No Winner', '0'),
+      volume: '$740.98',
+    },
+    overUnder: {
+      topLabel: null,
+      label: '-110',
+      action: () => addBet(marketId, description, '-110', 'No Winner', '0'),
+      volume: '$540.50',
+    },
+  },
+];
 
 export interface BettingOutcomeProps {
   description: string;
@@ -204,7 +274,6 @@ export interface DisputeOutcomeProps {
   isWarpSync?: boolean;
   forkingMarket?: boolean;
 }
-
 // TODO: needs a refactor. repeated Logic, overwrapped HTML.
 export const DisputeOutcome = ({
   description,
@@ -218,7 +287,9 @@ export const DisputeOutcome = ({
   marketId,
   isWarpSync,
 }: DisputeOutcomeProps) => {
-  const { actions: {setModal}} = useAppStatusStore();
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
   const stakeCurrent = stake && formatAttoRep(stake.stakeCurrent);
   const bondSizeCurrent = stake && formatAttoRep(stake.bondSizeCurrent);
 
@@ -292,12 +363,14 @@ export const DisputeOutcome = ({
                 secondaryButton
                 disabled={!canDispute}
                 text={buttonText}
-                action={() => setModal({
-                  type: MODAL_REPORTING,
-                  marketId: marketId,
-                  selectedOutcome: id.toString(),
-                  isInvalid: invalid
-                })}
+                action={() =>
+                  setModal({
+                    type: MODAL_REPORTING,
+                    marketId: marketId,
+                    selectedOutcome: id.toString(),
+                    isInvalid: invalid,
+                  })
+                }
               />
             )}
           </div>
@@ -312,12 +385,14 @@ export const DisputeOutcome = ({
           secondaryButton
           disabled={!canDispute}
           text={buttonText}
-          action={() => setModal({
-            type: MODAL_REPORTING,
-            marketId: marketId,
-            selectedOutcome: id.toString(),
-            isInvalid: invalid
-          })}
+          action={() =>
+            setModal({
+              type: MODAL_REPORTING,
+              marketId: marketId,
+              selectedOutcome: id.toString(),
+              isInvalid: invalid,
+            })
+          }
         />
       )}
     </div>
@@ -337,7 +412,9 @@ export const ScalarBlankDisputeOutcome = ({
   market,
   otherOutcomes,
 }: ScalarBlankDisputeOutcomeProps) => {
-  const { actions: { setModal }} = useAppStatusStore();
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
   return (
     <div className={classNames(Styles.DisputeOutcome, Styles[`Outcome-1`])}>
       <span>{`Dispute current Tentative Winner with new ${denomination} value`}</span>
@@ -351,12 +428,14 @@ export const ScalarBlankDisputeOutcome = ({
           small
           disabled={!canDispute}
           text={'Dispute Tentative Winner'}
-          action={() => setModal({
-            type: MODAL_REPORTING,
-            market,
-            selectedOutcome: null,
-            isInvalid: false,
-          })}
+          action={() =>
+            setModal({
+              type: MODAL_REPORTING,
+              market,
+              selectedOutcome: null,
+              isInvalid: false,
+            })
+          }
         />
       </div>
     </div>
@@ -401,72 +480,6 @@ export const ScalarOutcome = ({
   </MarketLink>
 );
 
-const mockData = (marketId, addBet, description) => [
-  {
-    title: 'Team A',
-    spread: {
-      topLabel: '+ 3.5',
-      label: '-110',
-      action: () => addBet(marketId, description, '-110', 'Team A', '0'),
-      volume: '$5,000.43',
-    },
-    moneyLine: {
-      topLabel: null,
-      label: '+132',
-      action: () => addBet(marketId, description, '+132', 'Team A', '0'),
-      volume: '$6,500.12',
-    },
-    overUnder: {
-      topLabel: 'O 227.5',
-      label: '-110',
-      action: () => addBet(marketId, description, '-110', 'Team A', '0'),
-      volume: '$2,542.00',
-    },
-  },
-  {
-    title: 'Team B',
-    spread: {
-      topLabel: '- 3.5',
-      label: '-110',
-      action: () => addBet(marketId, description, '-110', 'Team B', '0'),
-      volume: '$6,093.50',
-    },
-    moneyLine: {
-      topLabel: null,
-      label: '-156',
-      action: () => addBet(marketId, description, '-156', 'Team B', '0'),
-      volume: '$10,000.54',
-    },
-    overUnder: {
-      topLabel: 'U 227.5',
-      label: '-110',
-      action: () => addBet(marketId, description, '-110', 'Team B', '0'),
-      volume: '$5,000.18',
-    },
-  },
-  {
-    title: 'No Winner',
-    spread: {
-      topLabel: null,
-      label: '-110',
-      action: () => addBet(marketId, description, '-110', 'No Winner', '0'),
-      volume: '$500.70',
-    },
-    moneyLine: {
-      topLabel: null,
-      label: '-157',
-      action: () => addBet(marketId, description, '-157', 'No Winner', '0'),
-      volume: '$740.98',
-    },
-    overUnder: {
-      topLabel: null,
-      label: '-110',
-      action: () => addBet(marketId, description, '-110', 'No Winner', '0'),
-      volume: '$540.50',
-    },
-  },
-];
-
 export interface MultiMarketTable {
   multiMarketTableData: Array<{
     title: string;
@@ -490,7 +503,181 @@ export interface MultiMarketTable {
     };
   }>;
 }
-
+// combo markets new
+const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
+  const {
+    COMBO_MONEY_LINE,
+    COMBO_OVER_UNDER,
+    COMBO_SPREAD,
+  } = SPORTS_GROUP_MARKET_TYPES;
+  const moneyLineMarket = markets.find(
+    (market) => market.sportsBook.groupType === COMBO_MONEY_LINE
+  );
+  const spreadMarket = markets.find(
+    (market) => market.sportsBook.groupType === COMBO_SPREAD
+  );
+  const overUnderMarket = markets.find(
+    (market) => market.sportsBook.groupType === COMBO_OVER_UNDER
+  );
+  let data = [];
+  if (!moneyLineMarket && !spreadMarket && !overUnderMarket) {
+    data = COMBO_MOCK_DATA(markets[0].id, addBet, markets[0].description);
+  } else {
+    if (moneyLineMarket) {
+      moneyLineMarket.outcomesFormatted.forEach((outcome) => {
+        if (outcome.isInvalid) return;
+        const outcomeObject = {
+          title: outcome.description,
+          spread: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                spreadMarket.id,
+                spreadMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+            disabled: true,
+          },
+          moneyLine: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                moneyLineMarket.id,
+                moneyLineMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+            disabled: true,
+          },
+          overUnder: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                overUnderMarket.id,
+                overUnderMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+            disabled: true,
+          },
+        };
+        data.push(outcomeObject);
+      });
+    } else if (spreadMarket) {
+      spreadMarket.outcomesFormatted.forEach((outcome) => {
+        if (outcome.isInvalid) return;
+        const outcomeObject = {
+          title: outcome.description,
+          spread: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                spreadMarket.id,
+                spreadMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+            disabled: true,
+          },
+          moneyLine: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                moneyLineMarket.id,
+                moneyLineMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+            disabled: true,
+          },
+          overUnder: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                overUnderMarket.id,
+                overUnderMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+            disabled: true,
+          },
+        };
+        data.push(outcomeObject);
+      });
+    } else if (overUnderMarket) {
+      overUnderMarket.outcomesFormatted.forEach((outcome) => {
+        if (outcome.isInvalid) return;
+        const outcomeObject = {
+          title: outcome.description,
+          spread: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                spreadMarket.id,
+                spreadMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+            disabled: true,
+          },
+          moneyLine: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                moneyLineMarket.id,
+                moneyLineMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+            disabled: true,
+          },
+          overUnder: {
+            topLabel: null,
+            label: '-',
+            action: () =>
+              addBet(
+                overUnderMarket.id,
+                overUnderMarket.description,
+                '0',
+                outcome.description,
+                '0'
+              ),
+            volume: outcome.volumeFormatted.full,
+            disabled: true,
+          },
+        };
+        data.push(outcomeObject);
+      });
+    }
+  }
+  return data;
+};
+// combo markets old
 const processMultiMarketTableData = (
   orderBook,
   outcomes,
@@ -502,10 +689,10 @@ const processMultiMarketTableData = (
   const marketId = outcomes[0].marketId;
   if (!orderBook || orderBook?.asks) {
     // this might change, shortcut
-    return mockData(marketId, addBet, description);
+    return COMBO_MOCK_DATA(marketId, addBet, description);
   }
   let data = [];
-  outcomes.forEach(outcome => {
+  outcomes.forEach((outcome) => {
     const outcomeObject = {
       title: 'default',
       spread: {
@@ -556,154 +743,116 @@ const processMultiMarketTableData = (
   return data;
 };
 
-function processMultiOutcomeMarketTableData(
-  orderBook,
-  outcomes,
-  min,
-  max,
-  addBet,
-  description
-) {
-  const marketId = outcomes[0].marketId;
-  const data = [
-    {
-      title: 'Team A',
-      action: () => addBet(marketId, description, '+132', 'Team A', '0'),
-      topLabel: null,
-      label: '+132',
-      volume: '$100.43',
-    },
-    {
-      title: 'Draw',
-      action: () => addBet(marketId, description, '+200', 'Draw', '0'),
-      topLabel: null,
-      label: '+200',
-      volume: '$100.43',
-    },
-    {
-      title: 'Team B',
-      action: () => addBet(marketId, description, '+150', 'Team B', '0'),
-      topLabel: null,
-      label: '+150',
-      volume: '$100.43',
-    },
-    {
-      title: 'Game Canceled',
-      action: () => addBet(marketId, description, '+200', 'Game Canceled', '0'),
-      topLabel: null,
-      label: '+200',
-      volume: '$100.43',
-    },
-  ];
-  return data;
-}
+const determineTopLabel = ({ groupType, marketLine }, outcomeNumber, title) => {
+  const {
+    OVER_UNDER,
+    COMBO_OVER_UNDER,
+    SPREAD,
+    COMBO_SPREAD,
+  } = SPORTS_GROUP_MARKET_TYPES;
+  if (outcomeNumber > 2 || outcomeNumber === 0) {
+    return null;
+  }
+  switch (groupType) {
+    case OVER_UNDER:
+    case COMBO_OVER_UNDER: {
+      if (title && title.replace) {
+        return title.replace('Over', 'O').replace('Under', 'U');
+      }
+      // use fall back that is usually right.
+      return outcomeNumber === 1 ? `O ${marketLine}.5` : `U ${marketLine}.5`;
+    }
+    case SPREAD:
+    case COMBO_SPREAD: {
+      return title.indexOf('-') > -1
+        ? title.substring(title.indexOf('-'))
+        : title.substring(title.indexOf('+'));
+    }
+    default:
+      return null;
+  }
+};
 
-function processMultiOutcomeMarketGridData(
-  orderBook,
-  outcomes,
-  min,
-  max,
-  addBet,
-  description
-) {
+const createOutcomesData = (orderBooks, market, addBet) => {
+  const {
+    id,
+    outcomesFormatted: outcomes,
+    minPriceBigNumber: min,
+    maxPriceBigNumber: max,
+    description,
+    sportsBook,
+  } = market;
+  const orderBook = orderBooks[id]?.orderBook;
   const marketId = outcomes[0].marketId;
-  const data = [
-    {
-      title: 'Man City',
+  let data = [];
+  outcomes.forEach((outcome, index) => {
+    if (outcome.isInvalid || !orderBook) return;
+    const bestAsk = orderBook[outcome.id]?.asks[0];
+    const outcomeData = {
+      title: outcome.description,
+      disabled: !bestAsk,
+      volume: outcome.volumeFormatted.full,
       topLabel: null,
-      action: () => addBet(marketId, description, '+310', 'Man City', '0'),
-      label: '+310',
-      volume: '$100.43',
-    },
-    {
-      title: 'Liverpool',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+530', 'Liverpool', '0'),
-      label: '+530',
-      volume: '$100.43',
-    },
-    {
-      title: 'Bayern Munich',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+440', 'Bayern Munich', '0'),
-      label: '+440',
-      volume: '$100.43',
-    },
-    {
-      title: 'Barcelona',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+550', 'Barcelona', '0'),
-      label: '+550',
-      volume: '$100.43',
-    },
-    {
-      title: 'PSG',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+540', 'PSG', '0'),
-      label: '+540',
-      volume: '$100.43',
-    },
-    {
-      title: 'Juventus',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+730', 'Juventus', '0'),
-      label: '+730',
-      volume: '$100.43',
-    },
-    {
-      title: 'Other',
-      topLabel: null,
-      action: () => addBet(marketId, description, '+490', 'Other', '0'),
-      label: '+490',
-      volume: '$100.43',
-    },
-    {
-      title: 'Event Canceled',
-      topLabel: null,
-      action: () =>
-        addBet(marketId, description, '+1000', 'Event Canceled', '0'),
-      label: '+1000',
-      volume: '$100.43',
-    },
-  ];
+    };
+    if (!bestAsk) {
+      data.push({
+        ...outcomeData,
+        action: () =>
+          addBet(marketId, description, '0', outcome.description, '0'),
+        label: '-',
+      });
+    } else {
+      const { shares, price } = bestAsk;
+      const odds = convertToOdds({
+        price,
+        min,
+        max,
+        type: ASKS,
+      });
+      const OddToUse = odds[ODDS_TYPE.AMERICAN];
+      const topLabel = determineTopLabel(
+        sportsBook,
+        index,
+        outcome.description
+      );
+      data.push({
+        ...outcomeData,
+        topLabel,
+        action: () =>
+          addBet(marketId, description, OddToUse, outcome.description, shares),
+        label: OddToUse,
+      });
+    }
+  });
   return data;
-}
+};
 
-function processSubMarketCollapsibleData(
-  orderBook,
-  outcomes,
-  min,
-  max,
-  addBet,
-  description
-) {
-  const marketId = outcomes[0].marketId;
-  const data = [
-    {
-      title: 'O 230.5',
-      action: () => addBet(marketId, description, '-105', 'O 230.5', '0'),
-      topLabel: null,
-      label: '-105',
-      volume: '$100.43',
-    },
-    {
-      title: 'U 230.5',
-      action: () => addBet(marketId, description, '-115', 'U 230.5', '0'),
-      topLabel: null,
-      label: '-115',
-      volume: '$100.43',
-    },
-    {
-      title: 'Game Cancelled',
-      action: () =>
-        addBet(marketId, description, '-128', 'Game Cancelled', '0'),
-      topLabel: null,
-      label: '-128',
-      volume: '$100.43',
-    },
-  ];
-  return data;
-}
+const testCombo = (sportsGroup, orderBooks, addBet) => {
+  const {
+    COMBO_MONEY_LINE,
+    COMBO_OVER_UNDER,
+    COMBO_SPREAD,
+  } = SPORTS_GROUP_MARKET_TYPES;
+  const moneyLineMarkets = sportsGroup.markets
+    .filter((market) => market.sportsBook.groupType === COMBO_MONEY_LINE)
+    .sort(
+      (a, b) =>
+        Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
+    );
+  const spreadMarkets = sportsGroup.markets
+    .filter((market) => market.sportsBook.groupType === COMBO_SPREAD)
+    .sort(
+      (a, b) =>
+        Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
+    );
+  const overUnderMarkets = sportsGroup.markets
+    .filter((market) => market.sportsBook.groupType === COMBO_OVER_UNDER)
+    .sort(
+      (a, b) =>
+        Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
+    );
+  // console.log(moneyLineMarkets, spreadMarkets, overUnderMarkets);
+};
 
 interface ReportedOutcomeProps {
   isTentative?: boolean;
@@ -733,12 +882,15 @@ export const ReportedOutcome = ({
   );
 };
 
-export const MultiOutcomeMarketTable = ({ multiOutcomeMarketTableData }) => (
+export const MultiOutcomeMarketTable = ({
+  marketTitle,
+  multiOutcomeMarketTableData,
+}) => (
   <section className={Styles.MultiOutcomeMarketTable}>
+    <h5>{marketTitle}</h5>
     <ul>
-      {multiOutcomeMarketTableData.map(({ title, ...outcomeData }) => (
-        <li>
-          <h3>{title}</h3>
+      {multiOutcomeMarketTableData.map(({ ...outcomeData }) => (
+        <li key={outcomeData.title}>
           <SportsOutcome {...outcomeData} />
         </li>
       ))}
@@ -757,92 +909,35 @@ export const MultiOutcomeMarketGrid = ({ multiOutcomeMarketGridData }) => (
   </section>
 );
 
-export const MultiMarketTable = ({
-  orderBook,
-  outcomes,
-  min,
-  max,
-  description,
-}) => {
-  const { actions } = useBetslipStore();
-  const multiMarketTableData = processMultiMarketTableData(
-    orderBook,
-    outcomes,
-    min,
-    max,
-    actions.addBet,
-    description
-  );
-  const multiOutcomeMarketGridData = processMultiOutcomeMarketGridData(
-    orderBook,
-    outcomes,
-    min,
-    max,
-    actions.addBet,
-    description
-  );
-  const multiOutcomeMarketTableData = processMultiOutcomeMarketTableData(
-    orderBook,
-    outcomes,
-    min,
-    max,
-    actions.addBet,
-    description
-  );
-  const SubMarketCollapsibleData = processSubMarketCollapsibleData(
-    orderBook,
-    outcomes,
-    min,
-    max,
-    actions.addBet,
-    description
-  );
+export const MultiMarketTable = ({ comboMarketData }) => {
   return (
-    <>
-      <section className={classNames(Styles.MultiMarketTable)}>
-        <div>
-          <ul>
-            <li>Spread</li>
-            <li>Moneyline</li>
-            <li>Over / Under</li>
-          </ul>
-        </div>
-        <>
-          {multiMarketTableData.map(
-            ({ title, spread, moneyLine, overUnder }) => (
-              <article key={title}>
-                <h3>{title}</h3>
-                <SportsOutcome {...spread} />
-                <SportsOutcome {...moneyLine} />
-                <SportsOutcome {...overUnder} />
-              </article>
-            )
-          )}
-        </>
-      </section>
-      <MultiOutcomeMarketGrid
-        multiOutcomeMarketGridData={multiOutcomeMarketGridData}
-      />
-      <MultiOutcomeMarketTable
-        multiOutcomeMarketTableData={multiOutcomeMarketTableData}
-      />
-      <SubMarketCollapsible
-        title="over / under 230.5"
-        SubMarketCollapsibleData={SubMarketCollapsibleData}
-      />
-      <SubMarketCollapsible
-        title="over / under 230.5"
-        SubMarketCollapsibleData={SubMarketCollapsibleData}
-      />
-      <SubMarketCollapsible
-        title="over / under 230.5"
-        SubMarketCollapsibleData={SubMarketCollapsibleData}
-      />
-    </>
+    <section className={classNames(Styles.MultiMarketTable)}>
+      <div>
+        <ul>
+          <li>Spread</li>
+          <li>Moneyline</li>
+          <li>Over / Under</li>
+        </ul>
+      </div>
+      <>
+        {comboMarketData.map(({ title, spread, moneyLine, overUnder }) => (
+          <article key={title}>
+            <h3>{title}</h3>
+            <SportsOutcome {...spread} />
+            <SportsOutcome {...moneyLine} />
+            <SportsOutcome {...overUnder} />
+          </article>
+        ))}
+      </>
+    </section>
   );
 };
 
-export const SubMarketCollapsible = ({ title, SubMarketCollapsibleData }) => {
+export const SubMarketCollapsible = ({
+  marketId,
+  title,
+  SubMarketCollapsibleData,
+}) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   return (
     <section
@@ -851,19 +946,123 @@ export const SubMarketCollapsible = ({ title, SubMarketCollapsibleData }) => {
       })}
     >
       <div>
-        <h6>{title}</h6>
         <button onClick={() => setIsCollapsed(!isCollapsed)}>
+          <h6>{title}</h6>
           {ThickChevron}
         </button>
       </div>
       <div>
-        {SubMarketCollapsibleData.map(({ title, ...outcomeData }) => (
-          <article key={title}>
-            <h3>{title}</h3>
-            <SportsOutcome {...outcomeData} />
-          </article>
-        ))}
+        {SubMarketCollapsibleData.length <= 3 ? (
+          SubMarketCollapsibleData.map(({ title, ...outcomeData }) => (
+            <article key={title}>
+              <h3>{title}</h3>
+              <SportsOutcome {...outcomeData} />
+            </article>
+          ))
+        ) : (
+          <MultiOutcomeMarketGrid
+            key={marketId}
+            multiOutcomeMarketGridData={SubMarketCollapsibleData}
+          />
+        )}
       </div>
+    </section>
+  );
+};
+
+export interface SportsMarketContainerProps {
+  marketId: string;
+  sportsGroup: any;
+  data: any;
+  market: any;
+  title?: string;
+  isCollapsable?: boolean;
+}
+export const SportsMarketContainer = ({
+  marketId,
+  sportsGroup,
+  data,
+  market,
+  title = '',
+  isCollapsable = false,
+}) => {
+  const { FUTURES, COMBO, DAILY } = SPORTS_GROUP_TYPES;
+  const { isLogged } = useAppStatusStore();
+  const [isCollapsed, setIsCollapsed] = useState(isCollapsable);
+  useEffect(() => {
+    if (sportsGroup.type === FUTURES) {
+      const clipboardMarketId = new Clipboard('#copy_marketId');
+      const clipboardAuthor = new Clipboard('#copy_author');
+    }
+  }, [market.id, market.author]);
+
+  let innerContent = null;
+  let headingContent = title;
+  // console.log(marketId, sportsGroup, data, title, isCollapsable, isCollapsed);
+  switch (sportsGroup.type) {
+    default: {
+      // futures
+      headingContent = (
+        <Fragment key={`${marketId}-heading`}>
+          <CountdownProgress
+            label="Event Expiration Date"
+            time={market.endTimeFormatted}
+            reportingState={market.reportingState}
+          />
+          <span className={Styles.MatchedLine}>
+            Matched<b>{market.volumeFormatted.full}</b>
+          </span>
+          {/* <FavoritesButton marketId={marketId} hideText disabled={!isLogged} /> */}
+          <DotSelection>
+            <SocialMediaButtons
+              listView
+              marketDescription={market.description}
+              marketAddress={marketId}
+            />
+            <div
+              id="copy_marketId"
+              data-clipboard-text={marketId}
+              onClick={() => marketLinkCopied(marketId, MARKET_LIST_CARD)}
+            >
+              {CopyAlternateIcon} {COPY_MARKET_ID}
+            </div>
+            <div id="copy_author" data-clipboard-text={market.author}>
+              {Person} {COPY_AUTHOR}
+            </div>
+          </DotSelection>
+        </Fragment>
+      );
+      innerContent = (
+        <MultiOutcomeMarketGrid
+          key={marketId}
+          multiOutcomeMarketGridData={data}
+        />
+      );
+      break;
+    }
+  }
+
+  return (
+    <section
+      className={classNames(Styles.SportsMarketContainer, {
+        [Styles.Collapsed]: isCollapsed,
+        [Styles.Futures]: sportsGroup.type === FUTURES,
+      })}
+    >
+      <header>
+        {headingContent}
+        {isCollapsable && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              isCollapsable ? setIsCollapsed(!isCollapsed) : null;
+            }}
+          >
+            {ThickChevron}
+          </button>
+        )}
+      </header>
+      <div>{innerContent}</div>
     </section>
   );
 };
@@ -873,6 +1072,8 @@ export interface SportsOutcomeProps {
   topLabel?: string;
   label?: string;
   volume?: string;
+  title?: string;
+  disabled?: boolean;
 }
 
 export const SportsOutcome = ({
@@ -880,15 +1081,144 @@ export const SportsOutcome = ({
   topLabel,
   label,
   volume,
+  title,
+  disabled = false,
 }: SportsOutcomeProps) => (
   <div className={Styles.SportsOutcome}>
-    <button onClick={() => action()}>
+    {title && <h6>{title}</h6>}
+    <button
+      title={
+        disabled ? 'No available bets at the moment' : 'add bet to betslip'
+      }
+      onClick={action}
+      disabled={disabled}
+    >
       {topLabel && <span>{topLabel}</span>}
       <span>{label}</span>
     </button>
     <span>{volume}</span>
   </div>
 );
+
+export const prepareSportsGroup = (sportsGroup, orderBooks, addBet) => {
+  const { id, type, markets } = sportsGroup;
+  const { FUTURES, DAILY, COMBO } = SPORTS_GROUP_TYPES;
+  let marketGroups = [];
+  switch (type) {
+    case FUTURES: {
+      markets.forEach((market, index) => {
+        const multiOutcomeMarketGridData = createOutcomesData(
+          orderBooks,
+          market,
+          addBet
+        );
+        marketGroups.push(
+          <SportsMarketContainer
+            key={market.id}
+            data={multiOutcomeMarketGridData}
+            marketId={market.id}
+            market={market}
+            sportsGroup={sportsGroup}
+            isCollapsable={index !== 0}
+          />
+        );
+      });
+      break;
+    }
+    case DAILY: {
+      // TODO: fix to use a constant for money line
+      const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
+      const sortedMarkets = Array.from(markets);
+      sortedMarkets.sort(
+        (
+          { sportsBook: { groupType: typeA, liquidityRank: rankA } },
+          { sportsBook: { groupType: typeB, liquidityRank: rankB } }
+        ) => {
+          // for now we only care about sorting moneyline to the top
+          if (typeA === MONEY_LINE && typeB !== MONEY_LINE) {
+            return -1;
+          } else if (typeB === MONEY_LINE && typeA !== MONEY_LINE) {
+            return +1;
+          } else {
+            if (typeB === typeA) {
+              return rankA - rankB;
+            }
+            return 0;
+          }
+        }
+      );
+      const mainMarket = sortedMarkets[0];
+      const mainMarketId = mainMarket?.id;
+      if (mainMarketId) {
+        const dailyMarketData = createOutcomesData(
+          orderBooks,
+          mainMarket,
+          addBet
+        );
+        marketGroups.push(
+          <MultiOutcomeMarketTable
+            key={mainMarketId}
+            marketTitle={mainMarket.sportsBook.title || mainMarket.description}
+            multiOutcomeMarketTableData={dailyMarketData}
+          />
+        );
+      }
+      sortedMarkets.forEach((market) => {
+        if (market.id === mainMarketId) return;
+        const subMarketData = createOutcomesData(orderBooks, market, addBet);
+        marketGroups.push(
+          <SubMarketCollapsible
+            key={market.id}
+            marketId={market.id}
+            title={market.sportsBook.title || market.description}
+            SubMarketCollapsibleData={subMarketData}
+          />
+        );
+      });
+      break;
+    }
+    case COMBO: {
+      // TODO: Implement combos once we get more info from getters, for now skip
+      // const data = processComboMarketData(
+      //   { id, type, markets },
+      //   orderBooks,
+      //   addBet
+      // );
+      // // testCombo(sportsGroup, orderBooks, addBet);
+      marketGroups.push(
+        <section key={id} style={{ color: 'red', padding: '16px 0' }}>
+          This is a Combinatorial Event and is currently under
+          construction.There are Augur Markets that relate to this Event but we
+          aren't ready to show you them yet. Please try again at a later date.
+        </section>
+      );
+      break;
+    }
+    default:
+      break;
+  }
+  return marketGroups;
+};
+
+export interface SportsGroupMarketsProps {
+  sportsGroup: {
+    markets: Array<MarketData>;
+    id: string;
+    type: string;
+  };
+}
+
+export const SportsGroupMarkets = ({ sportsGroup }) => {
+  const { orderBooks } = useMarketsStore();
+  const {
+    actions: { addBet },
+  } = useBetslipStore();
+  const marketGroups = prepareSportsGroup(sportsGroup, orderBooks, addBet);
+  if (marketGroups.length > 0) {
+    return <>{marketGroups.map((item) => item)}</>;
+  }
+  return <section />;
+};
 
 export interface OutcomeGroupProps {
   market: MarketData;
@@ -918,7 +1248,7 @@ export const OutcomeGroup = ({
     id,
     reportingState,
     creationTimeFormatted,
-    isWarpSync
+    isWarpSync,
   } = market;
 
   const inDispute =
@@ -926,20 +1256,7 @@ export const OutcomeGroup = ({
     reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW;
   const stakes = disputeInfo?.stakes;
   const { theme } = useAppStatusStore();
-  const { orderBooks } = useMarketsStore();
-  const orderBook = orderBooks[id]?.orderBook;
 
-  if (theme === THEMES.SPORTS) {
-    return (
-      <MultiMarketTable
-        orderBook={orderBook}
-        outcomes={outcomesFormatted}
-        min={minPriceBigNumber}
-        max={maxPriceBigNumber}
-        description={description}
-      />
-    );
-  }
   const sortedStakeOutcomes = selectSortedDisputingOutcomes(
     marketType,
     outcomesFormatted,
@@ -955,7 +1272,7 @@ export const OutcomeGroup = ({
   if (inDispute) {
     if (isWarpSync) {
       disputingOutcomes = disputingOutcomes.filter(
-        o => o.id !== SCALAR_DOWN_ID
+        (o) => o.id !== SCALAR_DOWN_ID
       );
     } else if (!expanded) {
       disputingOutcomes.splice(showOutcomeNumber, showOutcomeNumber + 1);
@@ -1017,16 +1334,19 @@ export const OutcomeGroup = ({
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
             ((!expanded && index < showOutcomeNumber) ||
-              expanded || marketType === YES_NO) &&
+              expanded ||
+              marketType === YES_NO) &&
             (inDispute &&
-            !!stakes.find(stake => parseFloat(stake.outcome) === outcome.id) ? (
+            !!stakes.find(
+              (stake) => parseFloat(stake.outcome) === outcome.id
+            ) ? (
               <Fragment key={id + outcome.id + index}>
                 {marketType === SCALAR && index === 1 && expanded && (
                   <ScalarBlankDisputeOutcome
                     denomination={scalarDenomination}
                     canDispute={canDispute}
                     market={market}
-                    otherOutcomes={outcomesShow.map(o => String(o.id))}
+                    otherOutcomes={outcomesShow.map((o) => String(o.id))}
                   />
                 )}
                 <DisputeOutcome
@@ -1036,7 +1356,7 @@ export const OutcomeGroup = ({
                   invalid={outcome.isInvalid}
                   index={index > 2 ? index : index + 1}
                   stake={stakes.find(
-                    stake =>
+                    (stake) =>
                       parseFloat(stake.outcome) === outcome.id &&
                       stake.isInvalidOutcome === outcome.isInvalid
                   )}
@@ -1068,7 +1388,7 @@ export const OutcomeGroup = ({
           denomination={scalarDenomination}
           canDispute={canDispute}
           market={market}
-          otherOutcomes={outcomesShow.map(o => String(o.id))}
+          otherOutcomes={outcomesShow.map((o) => String(o.id))}
         />
       )}
     </div>
@@ -1137,7 +1457,7 @@ export const ResolvedOutcomes = ({
 }: ResolvedOutcomesProps) => {
   if (!consensusFormatted) return null;
   const outcomesFiltered = outcomes.filter(
-    outcome => String(outcome.id) !== consensusFormatted.outcome
+    (outcome) => String(outcome.id) !== consensusFormatted.outcome
   );
 
   return (
@@ -1180,7 +1500,7 @@ export const TentativeWinner = ({
     actions: { setModal },
   } = useAppStatusStore();
   const tentativeWinner = market.disputeInfo.stakes.find(
-    stake => stake.tentativeWinning
+    (stake) => stake.tentativeWinning
   );
   return (
     <div
@@ -1243,7 +1563,6 @@ export const TopRow = ({ market, categoriesWithClick }) => {
   }, [market.id, market.author]);
   const { theme, isLogged } = useAppStatusStore();
   const {
-    settlementFeePercent,
     marketType,
     id,
     description,
@@ -1283,7 +1602,6 @@ export const TopRow = ({ market, categoriesWithClick }) => {
         <>
           <span className={Styles.MatchedLine}>
             Matched<b>{` ${volumeFormatted.full}`}</b>
-            {` (${settlementFeePercent.full} fee)`}
           </span>
           <button
             className={Styles.RulesButton}
@@ -1323,19 +1641,16 @@ export const TopRow = ({ market, categoriesWithClick }) => {
 
 export interface InfoIconsProps {
   market: MarketData;
-  hasPosition?: boolean;
-  hasStaked?: boolean;
 }
 
-export const InfoIcons = ({
-  market,
-  hasPosition,
-  hasStaked,
-}: InfoIconsProps) => {
+export const InfoIcons = ({ market }: InfoIconsProps) => {
   const {
     loginAccount: { address },
+    accountPositions,
   } = useAppStatusStore();
   const { id, designatedReporter, author } = market;
+  const hasPosition = !!accountPositions[id];
+  const hasStaked = hasStakeInMarket(id);
   return (
     <>
       {address && isSameAddress(address, author) && (
@@ -1377,19 +1692,12 @@ export const InfoIcons = ({
 export interface TradingSideSectionProps {
   market: MarketData;
   condensed: boolean;
-  hasPosition: boolean;
-  hasStaked: boolean;
 }
 
 export const TradingSideSection = ({
   market,
   condensed,
-  hasPosition,
-  hasStaked,
-}) => {
-  const {
-    loginAccount: { address },
-  } = useAppStatusStore();
+}: TradingSideSectionProps) => {
   const {
     disputeInfo,
     endTimeFormatted,
@@ -1423,11 +1731,7 @@ export const TradingSideSection = ({
         />
       )}
       <div className={Styles.hoverIconTray}>
-        <InfoIcons
-          market={market}
-          hasPosition={hasPosition}
-          hasStaked={hasStaked}
-        />
+        <InfoIcons market={market} />
       </div>
       <MarketProgress
         reportingState={reportingState}
@@ -1440,7 +1744,7 @@ export const TradingSideSection = ({
 
 export function getCategoriesWithClick(categories) {
   const path = { pathname: makePath(MARKETS) };
-  const categoriesLowerCased = categories.map(item => item.toLowerCase());
+  const categoriesLowerCased = categories.map((item) => item.toLowerCase());
   const categoriesWithClick = categoriesLowerCased
     .filter(Boolean)
     .map((label, idx) => ({

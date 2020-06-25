@@ -42,6 +42,7 @@ import {
   DOINITIALREPORTWARPSYNC,
   ZEROX_STATUSES,
   MODAL_ERROR,
+  PUBLICTRADE,
 } from 'modules/common/constants';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
