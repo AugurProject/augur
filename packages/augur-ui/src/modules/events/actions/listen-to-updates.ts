@@ -2,7 +2,6 @@ import type { Augur, Provider } from '@augurproject/sdk';
 import { SubscriptionEventName, TXEventName } from '@augurproject/sdk-lite';
 import { ZEROX_STATUSES } from 'modules/common/constants';
 import {
-  handleBulkOrdersLog,
   handleMarketMigratedLog,
   handleMarketsUpdatedLog,
   handleNewBlockLog,
