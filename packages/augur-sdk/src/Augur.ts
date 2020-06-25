@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import type { SDKConfiguration } from '@augurproject/utils';
 import { NetworkId } from '@augurproject/utils';
 import {
@@ -7,6 +8,7 @@ import {
 } from '@augurproject/contract-dependencies-ethers';
 import { ContractInterfaces } from '@augurproject/core';
 import {
+  NETWORK_IDS,
   isSubscriptionEventName,
   NULL_ADDRESS,
   SubscriptionEventName,
@@ -16,7 +18,6 @@ import {
 import { logger, LoggerLevels } from '@augurproject/utils';
 import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
-
 import { TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
@@ -52,7 +53,7 @@ import {
   SingleThreadConnector,
 } from './connector';
 import { Provider } from './ethereum/Provider';
-import { augurEmitter, Callback, TXStatusCallback } from './events';
+import { EventNameEmitter, Callback, TXStatusCallback } from './events';
 import { ContractDependenciesGSN } from './lib/contract-deps';
 import { SyncableFlexSearch } from './state/db/SyncableFlexSearch';
 import { Accounts } from './state/getter/Accounts';
@@ -65,7 +66,6 @@ import { Universe } from './state/getter/Universe';
 import { Users } from './state/getter/Users';
 import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
-import { Subscriptions } from './subscriptions';
 import { LiquidityPool } from './state/getter/LiquidityPool';
 
 export class Augur<TProvider extends Provider = Provider> {
@@ -84,7 +84,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
   readonly bestOffer: BestOffer;
-  readonly events: Subscriptions;
+  readonly events: EventEmitter;
 
   private _sdkReady = false;
 
@@ -129,7 +129,8 @@ export class Augur<TProvider extends Provider = Provider> {
         `Augur config must include addresses. Config=${JSON.stringify(config)}`
       );
 
-    this.events = new Subscriptions(augurEmitter);
+    this.events = new EventNameEmitter();
+    this.events.setMaxListeners(0);
     this.events.on(SubscriptionEventName.SDKReady, () => {
       this._sdkReady = true;
       logger.info('SDK is ready');
@@ -270,6 +271,15 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async getGasStation() {
     try {
+      const networkId = this.config.networkId;
+
+      if (networkId !== NETWORK_IDS.Mainnet) {
+        return {
+          fast: '4000000000',
+          standard: '1000000000'
+        }
+      }
+
       const result = await axios.get(
         'https://safe-relay.gnosis.io/api/v1/gas-station/'
       );
@@ -280,16 +290,16 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getGasConfirmEstimate() {
-    var gasLevels = await this.getGasStation();
-    var recommended = parseInt(gasLevels['standard']) + 1000000000;
-    var fast = parseInt(gasLevels['fast']) + 1000000000;
-    var gasPrice = await this.getGasPrice();
-    var gasPriceNum = gasPrice.toNumber();
+    const gasLevels = await this.getGasStation();
+    const recommended = parseInt(gasLevels['standard']) + 1000000000;
+    const fast = parseInt(gasLevels['fast']) + 1000000000;
+    const gasPrice = await this.getGasPrice();
+    const gasPriceNum = gasPrice.toNumber();
 
     if (gasPriceNum >= fast) {
       return 60;
     }
-    if (gasPriceNum >= recommended) {
+    else if (gasPriceNum >= recommended) {
       return 180;
     } else {
       return 1800;
@@ -470,6 +480,12 @@ export class Augur<TProvider extends Provider = Provider> {
     params: Parameters<typeof Users.getUserOpenOrders>[2]
   ): ReturnType<typeof Users.getUserOpenOrders> => {
     return this.bindTo(Users.getUserOpenOrders)(params);
+  };
+
+  getUserFrozenFundsBreakdown = (
+    params: Parameters<typeof Users.getUserFrozenFundsBreakdown>[2]
+  ): ReturnType<typeof Users.getUserFrozenFundsBreakdown> => {
+    return this.bindTo(Users.getUserFrozenFundsBreakdown)(params);
   };
 
   getMostRecentWarpSync = (): ReturnType<

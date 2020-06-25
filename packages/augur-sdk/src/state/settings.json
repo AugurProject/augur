@@ -3,7 +3,7 @@
     "chunkSize": 100000,
     "ethNodeURLs": {
         "4": "https://eth-rinkeby.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
-        "42": "https://eth-kovan.alchemyapi.io/v2/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA"
+        "42": "https://kovan.augur.net/ethereum-http"
     },
     "meshClientURLs": {
         "12346": "ws://localhost:60557",

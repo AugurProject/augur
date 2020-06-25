@@ -76,15 +76,12 @@ export class BaseSyncableDB extends RollbackTable {
       await this.saveDocuments(documents);
     }
     if (documents && (documents as any[]).length && !this.syncing) {
-      _.each(documents, (document: any) => {
-        this.augur.events.emitAfter(
-          SubscriptionEventName.NewBlock,
-          this.eventName,
-          {
-            eventName: this.eventName,
-            ...document,
-          }
-        );
+      this.augur.events.once(SubscriptionEventName.NewBlock, () => {
+        _.each(documents, (document: any) => {
+          this.augur.events.emit(this.eventName, {
+            eventName: this.eventName, ...document
+          });
+        });
       });
     }
 
