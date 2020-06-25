@@ -72,6 +72,15 @@ export class ContractAPI {
     return await this.augur.sendETH(to, amount);
   }
 
+  async sendEtherUpTo(to: string, amount: BigNumber, extra = new BigNumber(0)): Promise<void> {
+    const balance = await this.getEthBalance(to);
+    const leftToSend = amount.minus(balance);
+    if (leftToSend.gt(0)) {
+      const totalToSend = leftToSend.plus(extra);
+      return await this.augur.sendETH(to, totalToSend);
+    }
+  }
+
   async approve(wei = MAX_APPROVAL): Promise<void> {
     const authority = this.augur.config.addresses.Augur;
     await this.augur.contracts.cash.approve(authority, wei);

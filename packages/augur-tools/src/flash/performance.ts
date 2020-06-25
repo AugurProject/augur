@@ -34,9 +34,10 @@ export async function setupUsers(accounts: Account[], ethSource: ContractAPI, fu
 export async function setupUser(account: Account, ethSource: ContractAPI, funding: BigNumber, baseConfig: SDKConfiguration): Promise<ContractAPI> {
   console.log(`Setting up account ${account.address}`);
   const { config } = setupPerfConfigAndZeroX(baseConfig);
+  await ethSource.sendEtherUpTo(account.address, funding, funding.times(0.2));
   await ethSource.augur.sendETH(account.address, funding);
   const user = await ContractAPI.userWrapper(account, ethSource.provider, config);
-  await waitForFunding(user)
+  await waitForFunding(user);
 
   if (config.flash?.useGSN) {
     console.log(`GSN enabled for ${account.address}`)
