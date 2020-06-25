@@ -30,6 +30,7 @@ import {
   SCALAR,
   TEN_TO_THE_EIGHTEENTH_POWER,
   ZERO,
+  NETWORK_IDS,
 } from 'modules/common/constants';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import {
@@ -85,8 +86,14 @@ export async function isUnlocked(address: string): Promise<boolean> {
 }
 
 export function getNetworkId(): string {
-  const Augur = augurSdk.get();
-  const networkId = Augur.networkId;
+  // default to mainnet most likely that's the case
+  let networkId = NETWORK_IDS.Mainnet;
+  try {
+    const Augur = augurSdk.get();
+    networkId = Augur.networkId;
+  } catch (e) {
+    console.error(e);
+  }
   return networkId;
 }
 
