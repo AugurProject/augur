@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { MovementLabel, LinearPropertyLabel } from 'modules/common/labels';
+import { LinearPropertyLabel } from 'modules/common/labels';
 import {
   AVAILABLE_TRADING_BALANCE,
   TOTAL_FROZEN_FUNDS,
@@ -14,12 +14,14 @@ export interface FundsProps {
   totalFrozenFunds: FormattedNumber;
   totalAvailableTradingBalance: FormattedNumber;
   totalAccountValue: FormattedNumber;
+  frozenFundsModal: Function;
 }
 
 const Funds = ({
   totalFrozenFunds,
   totalAvailableTradingBalance,
   totalAccountValue,
+  frozenFundsModal,
 }: FundsProps) => {
   return (
     <section className={Styles.Funds}>
@@ -31,7 +33,9 @@ const Funds = ({
       />
       <LinearPropertyLabel
         value={totalFrozenFunds.full}
+        underline
         label={TOTAL_FROZEN_FUNDS}
+        onValueClick={frozenFundsModal}
       />
     </section>
   );
