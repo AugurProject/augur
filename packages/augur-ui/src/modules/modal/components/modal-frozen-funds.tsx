@@ -32,7 +32,6 @@ const TOTAL_TITLES = {
 export const ModalFrozenFunds = ({
   closeAction,
   getUserFrozenFundsBreakdown,
-  markets,
 }: ModalFrozenFundsProps) => {
   const [breakdowns, setBreakdowns] = useState([]);
   const [total, setTotal] = useState(formatDai('0'));
@@ -46,7 +45,8 @@ export const ModalFrozenFunds = ({
         if (breakdown[key].total === '0') return p;
         const total = breakdown[key] ? formatDai(breakdown[key].total) : null;
         const rows = Object.keys(breakdown[key].markets).map(marketId => ({
-          marketTitle: markets[marketId],
+          key: `${marketId}${key}`,
+          marketId: marketId,
           showDenomination: true,
           label: `Frozen Funds`,
           value: formatDai(breakdown[key].markets[marketId]),
@@ -55,6 +55,7 @@ export const ModalFrozenFunds = ({
         return [
           ...p,
           {
+            key,
             rows,
             title: TITLES[key],
             footer: {
@@ -91,16 +92,16 @@ export const ModalFrozenFunds = ({
       <main>
         <section>
           {breakdowns.map(bk => (
-            <>
-              <div>{bk.title}</div>
+            <div className={Styles.BreakdownSection} key={bk.key}>
+              <span>{bk.title}</span>
               {bk.rows.map(row => (
-                <>
-                  <MarketTitle title={row.marketTitle} />
+                <div key={row.key}>
+                  <MarketTitle id={row.marketId} />
                   <LinearPropertyLabel {...row} />
-                </>
+                </div>
               ))}
               <LinearPropertyLabel {...bk.footer} />
-            </>
+            </div>
           ))}
 
           <Breakdown

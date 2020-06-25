@@ -3830,7 +3830,7 @@ div.ButtonsRow:last-of-type {
   background: @color-module-background;
   border-radius: @border-radius-extra-rounded;
   max-width: 432px;
-  min-height: @add-funds-height;
+  height: 565px;
 
   @media @breakpoint-mobile {
     height: 100vh;
@@ -3878,39 +3878,21 @@ div.ButtonsRow:last-of-type {
       padding: 0 @size-24;
     }
     > section {
+      color: @color-primary-text;
 
       > div {
         > h4 {
           .text-12-bold;
 
-          color: @color-primary-text;
           line-height: @size-15;
           margin: @size-24 0 @size-12;
         }
       }
-    }
-/*
-    > div:first-of-type {
-      border: 0;
-      margin: 0;
 
-      > div > label {
-        .mono-11-bold;
-
-        color: @color-primary-text;
-        text-transform: uppercase;
-      }
-
-      > div > div > div > input {
-        background: @color-dark-grey;
-        border: 1px solid @color-secondary-action;
+      > div:last-of-type {
+        margin-bottom: @size-12;
       }
     }
-
-    > div:last-of-type {
-      margin-bottom: @size-24;
-    }
-    */
   }
 
   > div:last-of-type {
@@ -3920,5 +3902,31 @@ div.ButtonsRow:last-of-type {
     @media @breakpoint-mobile {
       margin: @size-24;
     }
+  }
+}
+
+.BreakdownSection {
+  display: flex;
+  flex-flow: column;
+
+  > span {
+    .text-14-bold;
+
+    line-height: @size-16;
+    margin-top: @size-16;
+  }
+  > div {
+    margin-top: @size-16;
+
+    > span > a {
+      .text-12-bold;
+
+    }
+    > div:last-of-type {
+      margin-top: @size-6;
+    }
+  }
+  > div:last-of-type {
+    margin: @size-10 0;
   }
 }
