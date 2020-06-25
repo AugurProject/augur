@@ -25,23 +25,24 @@ class Contract():
         return encode_contract_function
 
     def get_contract_function(self, originalFunction, abiFunc):
-        def contract_function(*args, sender=self.w3.eth.accounts[0], value=0, getReturnData=True, commitTx=True, debug=False):
+        def contract_function(*args, sender=self.w3.eth.accounts[0], value=0, getReturnData=True, commitTx=True, debug=False, gas=1000000000):
             contractFunction = originalFunction(*self.processArgs(*args, abiFunc=abiFunc))
             retVal = True
             outputs = abiFunc['outputs']
             value = int(value)
+            gas = int(gas)
             # In coverage mode all functions change state through logs so we can't do this optimization
             if not self.coverageMode and len(outputs) == 1 and outputs[0]['type'] == 'bool':
                 getReturnData = False
             if getReturnData or abiFunc['constant'] or not commitTx:
                 try:
-                    retVal = contractFunction.call({'from': sender, 'value': value}, block_identifier='pending')
+                    retVal = contractFunction.call({'from': sender, 'value': value, 'gas': gas}, block_identifier='pending')
                 except TransactionFailed as e:
                     raise e
                 except: # There is a specific contract this is for where the expected return value is (bool, string)
                     retVal = True, ""
             if not abiFunc['constant'] and commitTx:
-                tx_hash = contractFunction.transact({'from': sender, 'value': value, 'gasPrice': 1, 'gas': 1000000000})
+                tx_hash = contractFunction.transact({'from': sender, 'value': value, 'gasPrice': 1, 'gas': gas})
                 receipt = self.w3.eth.waitForTransactionReceipt(tx_hash, 1)
                 if receipt.status == 0:
                     raise TransactionFailed

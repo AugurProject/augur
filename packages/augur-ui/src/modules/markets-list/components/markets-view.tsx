@@ -55,6 +55,7 @@ interface MarketsViewProps {
   showInvalidMarketsBannerFeesOrLiquiditySpread: boolean;
   showInvalidMarketsBannerHideOrShow: boolean;
   templateFilter: string;
+  marketTypeFilter: string;
   setMarketsListSearchInPlace: Function;
   marketListViewed: Function;
   marketsInReportingState: MarketData[];
@@ -112,6 +113,7 @@ export default class MarketsView extends Component<
       isConnected,
       isLogged,
       templateFilter,
+      marketTypeFilter,
       marketListViewed,
       marketsInReportingState
     } = this.props;
@@ -127,6 +129,7 @@ export default class MarketsView extends Component<
         marketSort !== prevProps.marketSort ||
         maxFee !== prevProps.maxFee ||
         templateFilter !== prevProps.templateFilter ||
+        marketTypeFilter !== prevProps.marketTypeFilter ||
         includeInvalidMarkets !== prevProps.includeInvalidMarkets)
     ) {
       marketListViewed(
@@ -137,6 +140,7 @@ export default class MarketsView extends Component<
         marketSort,
         maxFee,
         templateFilter,
+        marketTypeFilter,
         includeInvalidMarkets,
         this.state.marketCount,
         this.state.offset
@@ -156,6 +160,7 @@ export default class MarketsView extends Component<
       maxLiquiditySpread,
       includeInvalidMarkets,
       templateFilter,
+      marketTypeFilter,
       prevProps,
     });
 
@@ -183,6 +188,7 @@ export default class MarketsView extends Component<
     maxLiquiditySpread,
     includeInvalidMarkets,
     templateFilter,
+    marketTypeFilter,
     prevProps}) {
     return search !== prevProps.search
       || String(selectedCategories) !== String(prevProps.selectedCategories)
@@ -191,6 +197,7 @@ export default class MarketsView extends Component<
       || marketSort !== prevProps.marketSort
       || maxFee !== prevProps.maxFee
       || templateFilter !== prevProps.templateFilter
+      || marketTypeFilter !== prevProps.marketTypeFilter
       || includeInvalidMarkets !== prevProps.includeInvalidMarkets
   }
 
@@ -222,6 +229,7 @@ export default class MarketsView extends Component<
       marketFilter,
       marketSort,
       templateFilter,
+      marketTypeFilter,
     } = this.props;
 
     const { limit, offset } = this.state;
@@ -242,6 +250,7 @@ export default class MarketsView extends Component<
         maxLiquiditySpread,
         includeInvalidMarkets: includeInvalidMarkets === 'show',
         templateFilter,
+        marketTypeFilter,
       },
       (err, result: Getters.Markets.MarketList) => {
         if (err) return console.log('Error loadMarketsFilter:', err);

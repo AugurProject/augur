@@ -81,6 +81,7 @@ import {
   SOCIAL_MEDIA,
   TWITTER,
   INSTAGRAM,
+  ENTITY,
 } from '@augurproject/sdk-lite';
 
 import { TemplateInputType, TEXT_PLACEHOLDERS, ValidationType } from './templates-template';
@@ -1992,7 +1993,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year Range`,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
-                values: LIST_VALUES.YEAR_RANGE,
+                values: LIST_VALUES.YEAR_RANGE_ABBR,
               },
             ],
             resolutionRules: {
@@ -2004,13 +2005,16 @@ export const TEMPLATES = {
                   text: `Market should resolve as whole number value of wins`,
                 },
                 {
-                  text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                  text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                },
+                {
+                  text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                 },
                 {
                   text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                 },
                 {
-                  text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                  text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                 },
               ],
             },
@@ -4020,13 +4024,16 @@ export const TEMPLATES = {
                       text: `Market should resolve as whole number value of wins`,
                     },
                     {
-                      text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                      text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                      text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -4737,13 +4744,16 @@ export const TEMPLATES = {
                       text: `Market should resolve as whole number value of wins`,
                     },
                     {
-                      text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                      text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                      text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -5656,13 +5666,16 @@ export const TEMPLATES = {
                   text: `Market should resolve as whole number value of wins`,
                 },
                 {
-                  text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                  text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                },
+                {
+                  text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                 },
                 {
                   text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                 },
                 {
-                  text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                  text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                 },
               ],
             },
@@ -6953,13 +6966,16 @@ export const TEMPLATES = {
                       text: `Market should resolve as whole number value of wins`,
                     },
                     {
-                      text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                      text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                      text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -7693,13 +7709,16 @@ export const TEMPLATES = {
                       text: `Market should resolve as whole number value of wins`,
                     },
                     {
-                      text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                      text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                      text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -7899,12 +7918,15 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which party will win the [0] U.S. Presidential election?`,
             example: `Which party will win the 2020 U.S. Presidential election?`,
+            header: `[0] U.S. Presidential election party winner`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
+                groupKey: YEAR,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7938,12 +7960,15 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will win the [0] U.S. Presidential election?`,
             example: `Who will win the 2020 U.S. Presidential election?`,
+            header: `[0] U.S. Presidential election winner`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
+                groupKey: YEAR,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7967,11 +7992,14 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will be the [0] nominee for [1] [2]?`,
             example: `Who will be the Republican nominee for 2020 U.S. Vice-President?`,
+            header: `[1] [2] [0] nominee`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Party`,
+                groupKey: ENTITY,
                 values: LIST_VALUES.POL_PARTY,
               },
               {
@@ -7979,12 +8007,14 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
+                groupKey: YEAR,
                 values: LIST_VALUES.YEARS,
               },
               {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Office`,
+                groupKey: EVENT,
                 values: LIST_VALUES.PRES_OFFICES,
               },
               {
@@ -8008,11 +8038,14 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which party will win [0] in the [1] U.S. Presidential election?`,
             example: `Which party will win Michigan in the 2020 U.S. Presidential election?`,
+            header: `[1] U.S. Presidential election [0] party winner`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `State`,
+                groupKey: ENTITY,
                 values: LIST_VALUES.US_STATES,
               },
               {
@@ -8020,6 +8053,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
+                groupKey: YEAR,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -8043,11 +8077,14 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which party will control the [0] after the [1] election?`,
             example: `Which party will control the U.S House of Representatives after the 2020 election?`,
+            header: `[0] control after [1] election`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Office`,
+                groupKey: ENTITY,
                 values: LIST_VALUES.POL_HOUSE_SENATE_OFFICE,
               },
               {
@@ -8055,6 +8092,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
+                groupKey: YEAR,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -8088,11 +8126,14 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will win the [0] [1] [2] primary for U.S. Presidential election?`,
             example: `Who will win the 2020 South Carolina Democratic primary for U.S Presidential election?`,
+            header: `[0] [1] [2] primary for U.S. Presidential election winner`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                groupKey: YEAR,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
@@ -8100,12 +8141,14 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `State`,
+                groupKey: EVENT,
                 values: LIST_VALUES.US_STATES,
               },
               {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Party`,
+                groupKey: ENTITY,
                 values: LIST_VALUES.POL_PARTY,
               },
               {
@@ -8137,11 +8180,14 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will win the [0] [1] [2] caucus for U.S. Presidential election?`,
             example: `Who will win the 2020 South Carolina Democratic caucus for U.S Presidential election?`,
+            header: `U.S. Presidential election [0] [1] [2] caucus winner?`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                groupKey: YEAR,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
@@ -8149,12 +8195,14 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `State`,
+                groupKey: EVENT,
                 values: LIST_VALUES.US_STATES,
               },
               {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Party`,
+                groupKey: ENTITY,
                 values: LIST_VALUES.POL_PARTY,
               },
               {
@@ -8295,22 +8343,27 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will be [0] of [1] by [2]?`,
             example: `Who be Supreme Leader of North Korea on December 31, 2019 11:59 pm EST`,
+            header: `[0] of [1] by [2] winner`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Position`,
+                groupKey: ENTITY,
                 values: LIST_VALUES.POL_POSITION,
               },
               {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Country`,
+                groupKey: EVENT,
                 values: LIST_VALUES.OLYMPIC_COUNTRIES,
               },
               {
                 id: 2,
                 type: TemplateInputType.DATETIME,
+                groupKey: START_TIME,
                 placeholder: `Specific Datetime`,
                 label: `Specific Datetime`,
                 sublabel: `Specify date time for event`,

@@ -542,6 +542,7 @@ export interface FilterSortOptions {
   includeInvalidMarkets: INVALID_OPTIONS;
   transactionPeriod: string;
   templateFilter: string;
+  marketTypeFilter: string;
 }
 
 export interface Favorite {
@@ -634,7 +635,7 @@ export interface AccountBalances {
   dai: string;
   legacyRep: string;
   attoRep: string;
-  legacyAttoRep: string;
+  legacyAttoRep?: string;
   signerBalances: {
     eth: string;
     rep: string;
@@ -659,6 +660,7 @@ export interface LoginAccountSettings {
   templateFilter?: boolean;
   maxFee?: boolean;
   spread?: boolean;
+  marketTypeFilter?: boolean;
   showInvalid?: boolean;
 }
 

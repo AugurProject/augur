@@ -74,7 +74,7 @@ export const updateSdk = (
     dispatch(updateLoginAccount(newAccount));
     dispatch(updateAuthStatus(IS_LOGGED, true));
     dispatch(loadAccountData());
-    dispatch(updateAssets());
+    dispatch(updateAssets(true));
   } catch (error) {
     logError(error);
     dispatch(

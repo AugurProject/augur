@@ -9,9 +9,27 @@ const copydir = require('copy-dir');
 const replace = require('replace');
 const rimraf = require('rimraf');
 const fs = require('fs');
+const path = require('path');
 
 const COMPILE_COMMAND =
   'INPUT_PATH=coverageEnv OUTPUT_PATH=coverageEnv/build/ yarn build:contracts';
+
+const getAllFiles = function(dirPath, arrayOfFiles) {
+
+  files = fs.readdirSync(dirPath);
+  
+  arrayOfFiles = arrayOfFiles || [];
+  
+  files.forEach(function(file) {
+    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+      arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles);
+    } else {
+      arrayOfFiles.push(path.join(dirPath, "/", file));
+    }
+  })
+  
+  return arrayOfFiles;
+}
 
 const config = {
   dir: './src',
@@ -35,21 +53,38 @@ copydir.sync(
   './coverageEnv/solidity_test_helpers'
 );
 
+copydir.sync('./src/contracts/0x', './coverageEnv/contracts/0x');
+copydir.sync('./src/contracts/gsn', './coverageEnv/contracts/gsn');
+copydir.sync('./src/contracts/uniswap', './coverageEnv/contracts/uniswap');
+
 replace({
-  regex: ' view | pure ',
+  regex: ' view| pure',
   replacement: ' ',
-  paths: fs
-    .readdirSync('./coverageEnv/solidity_test_helpers')
-    .map(filename => './coverageEnv/solidity_test_helpers/' + filename),
+  paths: getAllFiles('./coverageEnv/contracts/uniswap'),
   silent: false,
 });
 
 replace({
-  regex: ' view | pure ',
+  regex: ' view| pure',
+  replacement: ' ',
+  paths: getAllFiles('./coverageEnv/contracts/gsn'),
+  silent: false,
+});
+
+replace({
+  regex: ' view| pure',
+  replacement: ' ',
+  paths: getAllFiles('./coverageEnv/contracts/0x'),
+  silent: false,
+});
+
+
+replace({
+  regex: ' view| pure',
   replacement: ' ',
   paths: fs
-    .readdirSync('./coverageEnv/solidity_test_helpers/ZeroX')
-    .map(filename => './coverageEnv/solidity_test_helpers/ZeroX/' + filename),
+    .readdirSync('./coverageEnv/solidity_test_helpers')
+    .map(filename => './coverageEnv/solidity_test_helpers/' + filename),
   silent: false,
 });
 

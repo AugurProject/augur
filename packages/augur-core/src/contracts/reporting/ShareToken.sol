@@ -79,6 +79,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
     function publicBuyCompleteSets(IMarket _market, uint256 _amount) external returns (bool) {
         buyCompleteSetsInternal(_market, msg.sender, _amount);
         augur.logCompleteSetsPurchased(_market.getUniverse(), _market, msg.sender, _amount);
+        return true;
     }
 
     /**
@@ -90,6 +91,7 @@ contract ShareToken is ITyped, Initializable, ERC1155, IShareToken, ReentrancyGu
      */
     function buyCompleteSets(IMarket _market, address _account, uint256 _amount) external returns (bool) {
         buyCompleteSetsInternal(_market, _account, _amount);
+        return true;
     }
 
     function buyCompleteSetsInternal(IMarket _market, address _account, uint256 _amount) internal returns (bool) {
