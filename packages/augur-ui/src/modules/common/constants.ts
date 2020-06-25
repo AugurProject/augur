@@ -604,6 +604,7 @@ export const MODAL_INITIALIZE_ACCOUNT = 'MODAL_INITIALIZE_ACCOUNT';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
 export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
 export const MODAL_DISCARD = 'MODAL_DISCARD';
+export const MODAL_FROZEN_FUNDS = 'MODAL_FROZEN_FUNDS';
 export const DISCLAIMER_SEEN = 'disclaimerSeen';
 export const GSN_WALLET_SEEN = 'gsnWalletInfoSeen';
 export const MARKET_REVIEW_SEEN = 'marketReviewSeen';

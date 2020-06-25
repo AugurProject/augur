@@ -3823,3 +3823,102 @@ div.ButtonsRow:last-of-type {
     }
   }
 }
+
+.FrozenFundsBreakdown {
+  .Message;
+
+  background: @color-module-background;
+  border-radius: @border-radius-extra-rounded;
+  max-width: 432px;
+  min-height: @add-funds-height;
+
+  @media @breakpoint-mobile {
+    height: 100vh;
+    max-height: 100vh;
+    max-width: 100vw;
+  }
+
+  > header {
+    margin: @size-32 @size-32 0;
+
+    @media @breakpoint-mobile {
+      margin: @size-24 @size-24 0;
+    }
+
+    > div:first-of-type {
+      > button {
+        position: absolute;
+        top: @size-24;
+        right: @size-24;
+      }
+    }
+
+    > div:last-of-type {
+      margin-bottom: @size-24;
+
+      > h1 {
+        .text-16-bold;
+
+        color: @color-primary-text;
+        text-transform: none;
+        margin: 0;
+      }
+    }
+  }
+
+  > main {
+    display: flex;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0 @size-24;
+    border: 1px solid @color-secondary-action;
+    align-items: flex-start;
+
+    @media @breakpoint-mobile {
+      padding: 0 @size-24;
+    }
+    > section {
+
+      > div {
+        > h4 {
+          .text-12-bold;
+
+          color: @color-primary-text;
+          line-height: @size-15;
+          margin: @size-24 0 @size-12;
+        }
+      }
+    }
+/*
+    > div:first-of-type {
+      border: 0;
+      margin: 0;
+
+      > div > label {
+        .mono-11-bold;
+
+        color: @color-primary-text;
+        text-transform: uppercase;
+      }
+
+      > div > div > div > input {
+        background: @color-dark-grey;
+        border: 1px solid @color-secondary-action;
+      }
+    }
+
+    > div:last-of-type {
+      margin-bottom: @size-24;
+    }
+    */
+  }
+
+  > div:last-of-type {
+    padding: 0;
+    margin: @size-24 @size-32 @size-32;
+
+    @media @breakpoint-mobile {
+      margin: @size-24;
+    }
+  }
+}

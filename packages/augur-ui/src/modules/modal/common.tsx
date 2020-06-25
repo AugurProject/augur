@@ -85,10 +85,11 @@ export interface CallToActionProps {
 }
 
 export interface BreakdownProps {
-  rows: LinearPropertyLabelProps[];
+  rows?: LinearPropertyLabelProps[];
   title?: string;
   short?: boolean;
   reverse?: boolean;
+  footer?: LinearPropertyLabelProps;
 }
 
 export interface MarketTitleProps {
@@ -547,9 +548,12 @@ export const Breakdown = (props: BreakdownProps) => (
     })}
   >
     {props.title && <h4>{props.title}</h4>}
-    {props.rows.map((row: LinearPropertyLabelProps) => (
+    {props.rows && props.rows.map((row: LinearPropertyLabelProps) => (
       <LinearPropertyLabel {...row} key={row.label} />
     ))}
+    {props.footer && (
+      <LinearPropertyLabel {...props.footer} key={props.footer.label} />
+    )}
   </div>
 );
 

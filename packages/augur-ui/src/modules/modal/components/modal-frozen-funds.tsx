@@ -1,0 +1,108 @@
+import React, { useEffect, useState } from 'react';
+
+import { Breakdown } from 'modules/modal/common';
+import { CloseButton, SecondaryButton } from 'modules/common/buttons';
+import Styles from 'modules/modal/modal.styles.less';
+import { formatDai, formatNumber } from 'utils/format-number';
+import type { Getters } from '@augurproject/sdk';
+
+interface ModalFrozenFundsProps {
+  closeAction: Function;
+  getUserFrozenFundsBreakdown: Function;
+  markets: {
+    [marketIds: string]: string;
+  };
+}
+
+const FROZEN_FUNDS_KEYS = ['openOrders', 'positions', 'createdMarkets'];
+const TITLES = {
+  [FROZEN_FUNDS_KEYS[0]]: `Open Orders`,
+  [FROZEN_FUNDS_KEYS[1]]: `Positions`,
+  [FROZEN_FUNDS_KEYS[2]]: `Validity Bonds`,
+};
+
+const TOTAL_TITLES = {
+  [FROZEN_FUNDS_KEYS[0]]: `Total Frozen Funds in Open Orders`,
+  [FROZEN_FUNDS_KEYS[1]]: `Total Frozen Funds in Positions`,
+  [FROZEN_FUNDS_KEYS[2]]: `Total Frozen Funds in Validity Bonds`,
+};
+
+export const ModalFrozenFunds = ({
+  closeAction,
+  getUserFrozenFundsBreakdown,
+  markets,
+}: ModalFrozenFundsProps) => {
+  const [breakdowns, setBreakdowns] = useState([]);
+  const [total, setTotal] = useState(formatDai('0'));
+
+  async function getBreakdown() {
+    try {
+      const breakdown: Getters.Users.FrozenFundsBreakdown = await getUserFrozenFundsBreakdown();
+      setTotal(formatDai(breakdown.total));
+      if (breakdown.total === '0') return;
+      const breakdowns = FROZEN_FUNDS_KEYS.reduce((p, key) => {
+        if (breakdown[key].total === '0') return p;
+        const total = breakdown[key] ? formatDai(breakdown[key].total) : null;
+        const rows = Object.keys(breakdown[key].markets).map(marketId => ({
+          label: markets[marketId],
+          showDenomination: true,
+          value: formatDai(breakdown[key].markets[marketId]),
+        }));
+        return [
+          ...p,
+          {
+            rows,
+            title: TITLES[key],
+            footer: {
+              label: TOTAL_TITLES[key],
+              showDenomination: true,
+              regularCase: true,
+              value: total,
+            },
+          },
+        ];
+      }, []);
+
+      setBreakdowns(breakdowns);
+    } catch (error) {
+      console.error('can not get frozen funds breakdown', error);
+    }
+  }
+
+  useEffect(() => {
+    getBreakdown();
+  }, []);
+
+  return (
+    <div className={Styles.FrozenFundsBreakdown}>
+      <header>
+        <div>
+          <CloseButton action={() => closeAction()} />
+        </div>
+        <div>
+          <h1>Frozen Funds</h1>
+        </div>
+      </header>
+
+      <main>
+        <section>
+          {breakdowns.forEach(bk => {
+            <Breakdown title={bk.title} rows={bk.rows} footer={bk.footer} />;
+          })}
+          <Breakdown
+            title={'Total'}
+            footer={{
+              label: 'Total Frozen Funds',
+              showDenomination: true,
+              regularCase: true,
+              value: total,
+            }}
+          />
+        </section>
+      </main>
+      <div className={Styles.ButtonsRow}>
+        <SecondaryButton text={'Cancel'} action={closeAction} />
+      </div>
+    </div>
+  );
+};

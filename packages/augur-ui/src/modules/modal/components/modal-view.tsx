@@ -55,6 +55,7 @@ import ModalInvalidMarketRules from 'modules/modal/containers/modal-invalid-mark
 import ModalInitializeAccounts from 'modules/modal/containers/modal-initialize-account';
 import ModalHelp from 'modules/modal/containers/modal-help';
 import ModalMarketNotFound from 'modules/modal/containers/modal-market-not-found';
+import FrozenFundsBreakdown from 'modules/modal/containers/modal-frozen-funds-breakdown';
 
 import * as TYPES from 'modules/common/constants';
 
@@ -184,7 +185,9 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_INVALID_MARKET_RULES:
       return <ModalInvalidMarketRules />;
     case TYPES.MODAL_INITIALIZE_ACCOUNT:
-       return <ModalInitializeAccounts />;
+      return <ModalInitializeAccounts />;
+    case TYPES.MODAL_FROZEN_FUNDS:
+      return <FrozenFundsBreakdown />;
     default:
       return <div />;
   }
