@@ -35,7 +35,6 @@ export async function setupUser(account: Account, ethSource: ContractAPI, fundin
   console.log(`Setting up account ${account.address}`);
   const { config } = setupPerfConfigAndZeroX(baseConfig);
   await ethSource.sendEtherUpTo(account.address, funding, funding.times(0.2));
-  await ethSource.augur.sendETH(account.address, funding);
   const user = await ContractAPI.userWrapper(account, ethSource.provider, config);
   await waitForFunding(user);
 
