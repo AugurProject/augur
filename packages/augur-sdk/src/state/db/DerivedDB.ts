@@ -158,11 +158,9 @@ export class DerivedDB extends RollbackTable {
       syncing
     );
     if (logs.length > 0 && !this.syncing) {
-      this.augur.events.emitAfter(
-        SubscriptionEventName.NewBlock,
-        `DerivedDB:updated:${this.name}`,
-        { data: documentsByIdByTopic }
-      );
+      this.augur.events.once(SubscriptionEventName.NewBlock, () => {
+        this.augur.events.emit(`DerivedDB:updated:${this.name}`, { data: documentsByIdByTopic });
+      });
     }
 
     return blocknumber;
