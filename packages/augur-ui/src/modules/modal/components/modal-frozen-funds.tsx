@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { Breakdown } from 'modules/modal/common';
 import { CloseButton, SecondaryButton } from 'modules/common/buttons';
 import Styles from 'modules/modal/modal.styles.less';
-import { formatDai, formatNumber } from 'utils/format-number';
+import { formatDai } from 'utils/format-number';
 import type { Getters } from '@augurproject/sdk';
+import { LinearPropertyLabel } from 'modules/common/labels';
+import MarketTitle from 'modules/market/containers/market-title';
 
 interface ModalFrozenFundsProps {
   closeAction: Function;
@@ -40,13 +42,15 @@ export const ModalFrozenFunds = ({
       const breakdown: Getters.Users.FrozenFundsBreakdown = await getUserFrozenFundsBreakdown();
       setTotal(formatDai(breakdown.total));
       if (breakdown.total === '0') return;
-      const breakdowns = FROZEN_FUNDS_KEYS.reduce((p, key) => {
+      const updateBreakdowns = FROZEN_FUNDS_KEYS.reduce((p, key) => {
         if (breakdown[key].total === '0') return p;
         const total = breakdown[key] ? formatDai(breakdown[key].total) : null;
         const rows = Object.keys(breakdown[key].markets).map(marketId => ({
-          label: markets[marketId],
+          marketTitle: markets[marketId],
           showDenomination: true,
+          label: `Frozen Funds`,
           value: formatDai(breakdown[key].markets[marketId]),
+          regularCase: true,
         }));
         return [
           ...p,
@@ -63,7 +67,7 @@ export const ModalFrozenFunds = ({
         ];
       }, []);
 
-      setBreakdowns(breakdowns);
+      setBreakdowns(updateBreakdowns);
     } catch (error) {
       console.error('can not get frozen funds breakdown', error);
     }
@@ -86,9 +90,19 @@ export const ModalFrozenFunds = ({
 
       <main>
         <section>
-          {breakdowns.forEach(bk => {
-            <Breakdown title={bk.title} rows={bk.rows} footer={bk.footer} />;
-          })}
+          {breakdowns.map(bk => (
+            <>
+              <div>{bk.title}</div>
+              {bk.rows.map(row => (
+                <>
+                  <MarketTitle title={row.marketTitle} />
+                  <LinearPropertyLabel {...row} />
+                </>
+              ))}
+              <LinearPropertyLabel {...bk.footer} />
+            </>
+          ))}
+
           <Breakdown
             title={'Total'}
             footer={{
