@@ -647,7 +647,6 @@ export function getTemplateExchangeClosingWithBuffer(
   const OneHourBuffer = 1;
   const closingDateTime = moment
     .unix(dayTimestamp)
-    .utc()
     .startOf('day');
 
   closingDateTime.set({
