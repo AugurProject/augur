@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import { formatDate } from 'utils/format-date';
-import { getNewToWin } from 'utils/get-odds';
+import { getNewToWin, convertToPrice } from 'utils/get-odds';
 
 import { ZERO } from 'modules/common/constants';
 import {
@@ -10,6 +10,8 @@ import {
   MOCK_BETSLIP_STATE,
   BETSLIP_ACTIONS,
 } from 'modules/trading/store/constants';
+import { Markets } from 'modules/markets/store/markets';
+import { placeTrade } from 'modules/contracts/actions/contractCalls';
 
 const {
   CASH_OUT,
@@ -78,7 +80,7 @@ export function BetslipReducer(state, action) {
       break;
     }
     case ADD_BET: {
-      const { marketId, description, outcome, odds, wager } = action;
+      const { marketId, description, outcome, odds, wager, outcomeId } = action;
       if (!betslipItems[marketId]) {
         betslipItems[marketId] = {
           description,
@@ -89,6 +91,7 @@ export function BetslipReducer(state, action) {
         outcome,
         odds,
         wager,
+        outcomeId,
         toWin: '0',
         amountFilled: '0',
         amountWon: '0',
@@ -135,6 +138,7 @@ export function BetslipReducer(state, action) {
           };
         }
         orders.forEach(order => {
+          placeBet(marketId, order);
           matchedItems[marketId].orders.push({
             ...order,
             amountFilled: order.wager,
@@ -256,6 +260,32 @@ export function BetslipReducer(state, action) {
   return updatedState;
 }
 
+export const placeBet = async (marketId, order) =>  {
+  const { marketInfos } = Markets.get();
+  const market = marketInfos[marketId];
+  console.log(order);
+  console.log(marketId);
+  // todo: need to add user shares, approval check? 
+  await placeTrade(
+          0,
+          marketId,
+          market.numOutcomes,
+          order.outcomeId,
+          false,
+          market.numTicks,
+          market.minPrice,
+          market.maxPrice,
+          order.wager,
+          convertToPrice({
+            odds: order.odds,
+            min: market.minPrice,
+            max: market.maxPrice
+          }),
+          0,
+          '0',
+          undefined
+        );
+}
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const [state, dispatch] = useReducer(BetslipReducer, defaultState);
   return {
@@ -270,8 +300,8 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
           dispatch({ type: TOGGLE_SUBHEADER });
       },
       toggleStep: () => dispatch({ type: TOGGLE_STEP }),
-      addBet: (marketId, description, odds, outcome, wager = "0") => {
-        dispatch({ type: ADD_BET, marketId, description, odds, outcome, wager });
+      addBet: (marketId, description, odds, outcome, wager = "0", outcomeId) => {
+        dispatch({ type: ADD_BET, marketId, description, odds, outcome, wager, outcomeId });
       },
       sendBet: (marketId, orderId, description, order) => {
         dispatch({ type: SEND_BET, marketId, orderId, description, order });
@@ -280,7 +310,9 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
         dispatch({ type: MODIFY_BET, marketId, orderId, order }),
       cancelBet: (marketId, order) =>
         dispatch({ type: CANCEL_BET, marketId, order }),
-      sendAllBets: () => dispatch({ type: SEND_ALL_BETS }),
+      sendAllBets: () => {
+        dispatch({ type: SEND_ALL_BETS })
+      },
       cancelAllBets: () => dispatch({ type: CANCEL_ALL_BETS }),
       retry: (marketId, orderId) =>
         dispatch({ type: RETRY, marketId, orderId }),
