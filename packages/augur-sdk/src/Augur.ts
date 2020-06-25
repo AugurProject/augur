@@ -7,6 +7,7 @@ import {
 } from '@augurproject/contract-dependencies-ethers';
 import { ContractInterfaces } from '@augurproject/core';
 import {
+  NETWORK_IDS,
   isSubscriptionEventName,
   NULL_ADDRESS,
   SubscriptionEventName,
@@ -16,7 +17,6 @@ import {
 import { logger, LoggerLevels } from '@augurproject/utils';
 import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
-
 import { TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
@@ -270,6 +270,15 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async getGasStation() {
     try {
+      const networkId = this.config.networkId;
+
+      if (networkId !== NETWORK_IDS.Mainnet) {
+        return {
+          fast: '4000000000',
+          standard: '1000000000'
+        }
+      }
+
       const result = await axios.get(
         'https://safe-relay.gnosis.io/api/v1/gas-station/'
       );
@@ -280,16 +289,16 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getGasConfirmEstimate() {
-    var gasLevels = await this.getGasStation();
-    var recommended = parseInt(gasLevels['standard']) + 1000000000;
-    var fast = parseInt(gasLevels['fast']) + 1000000000;
-    var gasPrice = await this.getGasPrice();
-    var gasPriceNum = gasPrice.toNumber();
+    const gasLevels = await this.getGasStation();
+    const recommended = parseInt(gasLevels['standard']) + 1000000000;
+    const fast = parseInt(gasLevels['fast']) + 1000000000;
+    const gasPrice = await this.getGasPrice();
+    const gasPriceNum = gasPrice.toNumber();
 
     if (gasPriceNum >= fast) {
       return 60;
     }
-    if (gasPriceNum >= recommended) {
+    else if (gasPriceNum >= recommended) {
       return 180;
     } else {
       return 1800;
