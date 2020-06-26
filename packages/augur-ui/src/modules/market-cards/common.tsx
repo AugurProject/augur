@@ -96,25 +96,25 @@ export const Percent = ({ percent }: PercentProps) => (
   </div>
 );
 
-const COMBO_MOCK_DATA = (marketId, addBet, description) => [
+const COMBO_MOCK_DATA = (marketId, addBet, description, outcomeId) => [
   {
     title: 'Team A',
     spread: {
       topLabel: '+ 3.5',
       label: '-110',
-      action: () => addBet(marketId, description, '-110', 'Team A', '0'),
+      action: () => addBet(marketId, description, '-110', 'Team A', '0', outcomeId, '0'),
       volume: '$5,000.43',
     },
     moneyLine: {
       topLabel: null,
       label: '+132',
-      action: () => addBet(marketId, description, '+132', 'Team A', '0'),
+      action: () => addBet(marketId, description, '+132', 'Team A', '0', outcomeId, '0'),
       volume: '$6,500.12',
     },
     overUnder: {
       topLabel: 'O 227.5',
       label: '-110',
-      action: () => addBet(marketId, description, '-110', 'Team A', '0'),
+      action: () => addBet(marketId, description, '-110', 'Team A', '0', outcomeId, '0'),
       volume: '$2,542.00',
     },
   },
@@ -123,19 +123,19 @@ const COMBO_MOCK_DATA = (marketId, addBet, description) => [
     spread: {
       topLabel: '- 3.5',
       label: '-110',
-      action: () => addBet(marketId, description, '-110', 'Team B', '0'),
+      action: () => addBet(marketId, description, '-110', 'Team B', '0', outcomeId, '0'),
       volume: '$6,093.50',
     },
     moneyLine: {
       topLabel: null,
       label: '-156',
-      action: () => addBet(marketId, description, '-156', 'Team B', '0'),
+      action: () => addBet(marketId, description, '-156', 'Team B', '0', outcomeId, '0'),
       volume: '$10,000.54',
     },
     overUnder: {
       topLabel: 'U 227.5',
       label: '-110',
-      action: () => addBet(marketId, description, '-110', 'Team B', '0'),
+      action: () => addBet(marketId, description, '-110', 'Team B', '0', outcomeId, '0'),
       volume: '$5,000.18',
     },
   },
@@ -144,19 +144,19 @@ const COMBO_MOCK_DATA = (marketId, addBet, description) => [
     spread: {
       topLabel: null,
       label: '-110',
-      action: () => addBet(marketId, description, '-110', 'No Winner', '0'),
+      action: () => addBet(marketId, description, '-110', 'No Winner', '0', outcomeId, '0'),
       volume: '$500.70',
     },
     moneyLine: {
       topLabel: null,
       label: '-157',
-      action: () => addBet(marketId, description, '-157', 'No Winner', '0'),
+      action: () => addBet(marketId, description, '-157', 'No Winner', '0', outcomeId, '0'),
       volume: '$740.98',
     },
     overUnder: {
       topLabel: null,
       label: '-110',
-      action: () => addBet(marketId, description, '-110', 'No Winner', '0'),
+      action: () => addBet(marketId, description, '-110', 'No Winner', '0', outcomeId, '0'),
       volume: '$540.50',
     },
   },
@@ -527,7 +527,7 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
   );
   let data = [];
   if (!moneyLineMarket && !spreadMarket && !overUnderMarket) {
-    data = COMBO_MOCK_DATA(markets[0].id, addBet, markets[0].description);
+    data = COMBO_MOCK_DATA(markets[0].id, addBet, markets[0].description, markets[0].id);
   } else {
     if (moneyLineMarket) {
       moneyLineMarket.outcomesFormatted.forEach((outcome) => {
@@ -543,7 +543,8 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 spreadMarket.description,
                 '0',
                 outcome.description,
-                '0'
+                '0', 
+                outcome.id
               ),
             volume: outcome.volumeFormatted.full,
             disabled: true,
@@ -557,6 +558,8 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 moneyLineMarket.description,
                 '0',
                 outcome.description,
+                '0',
+                outcome.id,
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
@@ -571,6 +574,8 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 overUnderMarket.description,
                 '0',
                 outcome.description,
+                '0',
+                outcome.id,
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
@@ -593,6 +598,8 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 spreadMarket.description,
                 '0',
                 outcome.description,
+                '0',
+                outcome.id,
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
@@ -607,6 +614,8 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 moneyLineMarket.description,
                 '0',
                 outcome.description,
+                '0',
+                outcome.id,
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
@@ -621,6 +630,8 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 overUnderMarket.description,
                 '0',
                 outcome.description,
+                '0',
+                outcome.id,
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
@@ -643,6 +654,8 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 spreadMarket.description,
                 '0',
                 outcome.description,
+                '0',
+                outcome.id,
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
@@ -657,6 +670,8 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 moneyLineMarket.description,
                 '0',
                 outcome.description,
+                '0',
+                outcome.id,
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
@@ -671,6 +686,8 @@ const processComboMarketData = ({ id, type, markets }, orderBooks, addBet) => {
                 overUnderMarket.description,
                 '0',
                 outcome.description,
+                '0',
+                outcome.id,
                 '0'
               ),
             volume: outcome.volumeFormatted.full,
@@ -705,21 +722,21 @@ const processMultiMarketTableData = (
         topLabel: null,
         label: '-110',
         action: () =>
-          addBet(marketId, description, '-110', outcome.description, '0'),
+          addBet(marketId, description, '-110', outcome.description, '0', outcome.id),
         volume: '$500.70',
       },
       moneyLine: {
         topLabel: null,
         label: '-157',
         action: () =>
-          addBet(marketId, description, '-157', outcome.description, '0'),
+          addBet(marketId, description, '-157', outcome.description, '0', outcome.id),
         volume: '$740.98',
       },
       overUnder: {
         topLabel: null,
         label: '-110',
         action: () =>
-          addBet(marketId, description, '-110', outcome.description, '0'),
+          addBet(marketId, description, '-110', outcome.description, '0', outcome.id),
         volume: '$540.50',
       },
     };
@@ -736,13 +753,13 @@ const processMultiMarketTableData = (
       outcomeObject.title = outcome.description;
       outcomeObject.spread.label = OddToUse;
       outcomeObject.spread.action = () =>
-        addBet(marketId, description, OddToUse, outcome.description, amount);
+        addBet(marketId, description, OddToUse, outcome.description, amount, outcome.id, price);
       outcomeObject.moneyLine.label = OddToUse;
       outcomeObject.moneyLine.action = () =>
-        addBet(marketId, description, OddToUse, outcome.description, amount);
+        addBet(marketId, description, OddToUse, outcome.description, amount, outcome.id, price);
       outcomeObject.overUnder.label = OddToUse;
       outcomeObject.overUnder.action = () =>
-        addBet(marketId, description, OddToUse, outcome.description, amount);
+        addBet(marketId, description, OddToUse, outcome.description, amount, outcome.id, price);
       data.push(outcomeObject);
     }
   });
@@ -804,7 +821,7 @@ const createOutcomesData = (orderBooks, market, addBet) => {
       data.push({
         ...outcomeData,
         action: () =>
-          addBet(marketId, description, '0', outcome.description, '0'),
+          addBet(marketId, description, '0', outcome.description, '0', outcome.id, '0'),
         label: '-',
       });
     } else {
@@ -825,7 +842,7 @@ const createOutcomesData = (orderBooks, market, addBet) => {
         ...outcomeData,
         topLabel,
         action: () =>
-          addBet(marketId, description, OddToUse, outcome.description, shares),
+          addBet(marketId, description, OddToUse, outcome.description, shares, outcome.id, price),
         label: OddToUse,
       });
     }
