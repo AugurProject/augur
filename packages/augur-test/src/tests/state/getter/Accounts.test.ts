@@ -548,7 +548,7 @@ describe('State API :: Accounts :: ', () => {
         outcomeDescription: null,
         price: '0',
         quantity: '0.000000000000000001',
-        total: '1',
+        total: '0.000000000000000001',
       },
     ]);
 
