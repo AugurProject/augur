@@ -1,6 +1,9 @@
+import { TXEventName } from '@augurproject/sdk-lite';
+import { addAlert } from 'modules/alerts/actions/alerts';
+import { CANCELORDER } from 'modules/common/constants';
 import {
-  cancelZeroXOpenOrder,
   cancelZeroXOpenBatchOrders,
+  cancelZeroXOpenOrder,
 } from 'modules/contracts/actions/contractCalls';
 import { CANCELORDER } from 'modules/common/constants';
 import { addAlert } from 'modules/alerts/actions/alerts';
@@ -32,6 +35,7 @@ export const cancelAllOpenOrders = async orders => {
 
   } catch (error) {
     console.error('Error canceling batch orders', error);
+    setCancelOrderStatus(orders.map(o => o.id), TXEventName.Failure);
     throw error;
   }
 };

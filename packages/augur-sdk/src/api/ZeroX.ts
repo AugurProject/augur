@@ -1,19 +1,34 @@
-import { ExchangeFillEvent, ValidationResults, GetOrdersResponse, Stats } from '@0x/mesh-browser-lite';
+import {
+  ExchangeFillEvent,
+  GetOrdersResponse,
+  Stats,
+  ValidationResults,
+} from '@0x/mesh-browser-lite';
 import { OrderEvent, OrderInfo, WSClient } from '@0x/mesh-rpc-client';
 import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
+import {
+  MAX_FILLS_PER_TX,
+  MAX_GAS_LIMIT_FOR_TRADE,
+  NULL_ADDRESS,
+  OrderEventLog,
+  OrderEventType,
+  OrderEventUint256Value,
+  OrderType,
+  SubscriptionEventName,
+  TRADE_GAS_BUFFER,
+  WORST_CASE_FILL,
+} from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
+import { BigNumber as BN } from 'ethers/utils';
 import * as _ from 'lodash';
-import * as constants from '../constants';
-import { NULL_ADDRESS, } from '../constants';
-import { OrderEventLog, OrderEventUint256Value, OrderType } from '../state/logs/types';
 import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
   convertOnChainAmountToDisplayAmount,
+  getTradeInterval,
   numTicksToTickSizeWithDisplayPrices,
   QUINTILLION,
-  getTradeInterval,
 } from '../utils';
 import { Augur } from './../Augur';
 import {
@@ -21,11 +36,8 @@ import {
   NativePlaceTradeDisplayParams,
   TradeTransactionLimits,
 } from './OnChainTrade';
-import { SubscriptionEventName, OrderEventType } from '../constants';
-import { BigNumber as BN} from 'ethers/utils';
 
 export const MAX_PROTOCOL_FEE_MULTIPLIER = 1.1;
-
 export enum Verbosity {
   Panic = 0,
   Fatal = 1,
@@ -160,7 +172,7 @@ export class ZeroX {
     this._rpc = client;
     this._rpc.subscribeToOrdersAsync((orderEvents: OrderEvent[]) => {
       if (!this._mesh && this.client) {
-        this.client.events.emit('ZeroX:RPC:OrderEvent', orderEvents);
+        this.client.events.emit(SubscriptionEventName.ZeroXRPCOrderEvent, orderEvents);
       }
     }).catch((err) => {
       if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXStatusError, {});
@@ -187,8 +199,9 @@ export class ZeroX {
     if (!this._mesh) return;
 
     this._mesh.onOrderEvents((orderEvents: OrderEvent[]) => {
+      console.log("Got OrderEvents: ", orderEvents.length)
       if (this.client && orderEvents.length > 0) {
-        this.client.events.emit('ZeroX:Mesh:OrderEvent', orderEvents);
+        this.client.events.emit(SubscriptionEventName.ZeroXMeshOrderEvent, orderEvents);
       }
     });
 
@@ -551,7 +564,15 @@ export class ZeroX {
 
   async batchCancelOrders(orders, signatures) {
     if (!this.client) throw new Error('To cancel ZeroX orders, make sure your Augur Client instance was initialized with it enabled.');
-    const maxProtocolFeeInDai = new BigNumber(10).pow(18); // TODO: Calc the real max based on order length, protocol fee and gas price
+
+    const gasPrice = await this.client.getGasPrice();
+    const exchangeFeeMultiplier = await this.client.contracts.zeroXExchange.protocolFeeMultiplier_();
+    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length);
+    const walletEthBalance = await this.client.getEthBalance(await this.client.getAccount());
+    const remainingToPay = protocolFee.gt(walletEthBalance) ? protocolFee.minus(walletEthBalance) : new BigNumber(0);
+    let maxProtocolFeeInDai = remainingToPay.multipliedBy(this.client.dependencies.maxExchangeRate).div(QUINTILLION);
+    maxProtocolFeeInDai = maxProtocolFeeInDai.multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER).decimalPlaces(0);
+
     return this.client.contracts.ZeroXTrade.cancelOrders(orders, signatures, maxProtocolFeeInDai);
   }
 
@@ -787,20 +808,20 @@ export class ZeroX {
     numOrders: number,
   ): TradeTransactionLimits {
     let loopLimit = new BigNumber(1);
-    let gasLimit = constants.WORST_CASE_FILL[params.numOutcomes];
+    let gasLimit = WORST_CASE_FILL[params.numOutcomes];
     numOrders--;
     while (
       gasLimit
-        .plus(constants.WORST_CASE_FILL[params.numOutcomes])
-        .lt(constants.MAX_GAS_LIMIT_FOR_TRADE) &&
-      loopLimit.lt(constants.MAX_FILLS_PER_TX) &&
+        .plus(WORST_CASE_FILL[params.numOutcomes])
+        .lt(MAX_GAS_LIMIT_FOR_TRADE) &&
+      loopLimit.lt(MAX_FILLS_PER_TX) &&
       numOrders > 0
     ) {
       loopLimit = loopLimit.plus(1);
-      gasLimit = gasLimit.plus(constants.WORST_CASE_FILL[params.numOutcomes]);
+      gasLimit = gasLimit.plus(WORST_CASE_FILL[params.numOutcomes]);
       numOrders--;
     }
-    gasLimit = gasLimit.plus(constants.TRADE_GAS_BUFFER);
+    gasLimit = gasLimit.plus(TRADE_GAS_BUFFER);
     return {
       loopLimit,
       gasLimit,

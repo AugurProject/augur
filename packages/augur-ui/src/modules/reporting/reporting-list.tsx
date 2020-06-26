@@ -6,7 +6,7 @@ import { Getters } from '@augurproject/sdk';
 import { Pagination } from 'modules/common/pagination';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import { LoadingMarketCard } from 'modules/market-cards/common';
-import { MarketReportingState } from '@augurproject/sdk/build';
+import { MarketReportingState } from '@augurproject/sdk-lite';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { useAppStatusStore } from 'modules/app/store/app-status';

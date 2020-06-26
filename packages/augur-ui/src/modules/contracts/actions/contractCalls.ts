@@ -3,44 +3,50 @@
  * 1. gas estimates on contract calls
  * 2. pending tx and how to support existing in-line processing feedbadk to user
  */
-// put all calls to contracts here that need conversion from display values to onChain values
-import { augurSdk } from 'services/augursdk';
-import {
-  formatAttoRep,
-  formatAttoDai,
-  formatPercent,
-} from 'utils/format-number';
-import {
-  PlaceTradeDisplayParams,
-  SimulateTradeData,
+import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
+import type {
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
+  Getters,
+  PlaceTradeDisplayParams,
+  SimulateTradeData,
+} from '@augurproject/sdk';
+import { ExtraInfoTemplate, calculatePayoutNumeratorsArray  } from '@augurproject/sdk-lite';
+import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
-  Getters,
-  numTicksToTickSizeWithDisplayPrices,
-  calculatePayoutNumeratorsArray,
   convertDisplayValuetoAttoValue,
-} from '@augurproject/sdk';
-import { generateTradeGroupId } from 'utils/generate-trade-group-id';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import {
-  NULL_ADDRESS,
-  FAKE_HASH,
-  SCALAR,
-  CATEGORICAL,
-  TEN_TO_THE_EIGHTEENTH_POWER,
-  BUY,
-  ZERO,
-  ETHER,
-  ONE,
-} from 'modules/common/constants';
+  numTicksToTickSizeWithDisplayPrices,
+} from '@augurproject/utils';
 import { TransactionResponse } from 'ethers/providers';
-import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
-import { CreateMarketData, LiquidityOrder, FormattedNumber } from 'modules/types';
 import { formatBytes32String } from 'ethers/utils';
+import {
+  BUY,
+  CATEGORICAL,
+  ETHER,
+  FAKE_HASH,
+  NULL_ADDRESS,
+  ONE,
+  SCALAR,
+  TEN_TO_THE_EIGHTEENTH_POWER,
+  ZERO,
+  NETWORK_IDS,
+} from 'modules/common/constants';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
-import { ExtraInfoTemplate } from '@augurproject/artifacts';
+import {
+  CreateMarketData,
+  FormattedNumber,
+  LiquidityOrder,
+} from 'modules/types';
+// put all calls to contracts here that need conversion from display values to onChain values
+import { augurSdk } from 'services/augursdk';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import {
+  formatAttoDai,
+  formatAttoRep,
+  formatPercent,
+} from 'utils/format-number';
+import { generateTradeGroupId } from 'utils/generate-trade-group-id';
 import { getFingerprint } from 'utils/get-fingerprint';
 
 export function isWeb3Transport(): boolean {
@@ -80,8 +86,14 @@ export async function isUnlocked(address: string): Promise<boolean> {
 }
 
 export function getNetworkId(): string {
-  const Augur = augurSdk.get();
-  const networkId = Augur.networkId;
+  // default to mainnet most likely that's the case
+  let networkId = NETWORK_IDS.Mainnet;
+  try {
+    const Augur = augurSdk.get();
+    networkId = Augur.networkId;
+  } catch (e) {
+    console.error(e);
+  }
   return networkId;
 }
 
@@ -477,7 +489,7 @@ export async function getCreateMarketBreakdown() {
   const { contracts } = augurSdk.get();
   const vBond = await contracts.universe.getOrCacheValidityBond_();
   const noShowBond = await contracts.universe.getOrCacheMarketRepBond_();
-  const validityBondFormatted = formatAttoDai(vBond);
+  const validityBondFormatted = formatAttoDai(vBond, { decimals: 2, decimalsRounded: 2});
   const noShowFormatted = formatAttoRep(noShowBond, {
     decimals: 4,
   });
@@ -1111,6 +1123,8 @@ export async function migrateThroughOneFork(
   description: string = ''
 ) {
   try {
+    const Augur = augurSdk.get();
+    const market = Augur.getMarket(marketId);
     market.migrateThroughOneFork(payoutNumerators, description);
   } catch (e) {
     console.error('Could not migrate market', e);

@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { isHex } from "./is-hex";
-import { prefixHex } from "./prefix-hex";
+import { prefixHex } from "./hex";
 import { wrap } from "./wrap";
 
 export function bignum(n, encoding="", isWrapped=false) {

@@ -56,11 +56,16 @@ export class ContractEvents {
   };
 
   parseLogs = (logs: Log[]): ParsedLog[] => {
-    return logs.map((log) => {
+    const parsedLogs = logs.map((log) => {
       const contractName: string|undefined = this.contractAddressToName[log.address];
       if (typeof contractName === 'undefined') {
         console.error('Could not find contract name for log, check ABI', log);
         throw new Error(`Recieved a log for an unknown contract at address ${log.address}. Double check that deployment is up to date and new ABIs have been committed.`);
+      }
+
+      // TODO: Remove when Kovan deploy occurs
+      if (log.topics[0] == "0xe9f0af820300e73bae76c8e76943abe7fbb4224b49cb133e2dadc6f71acf6370") {
+        return null;
       }
 
       const logValues = this.provider.parseLogValues(contractName, log);
@@ -79,5 +84,6 @@ export class ContractEvents {
         }
       );
     });
+    return parsedLogs.filter(log => log !== null);
   }
 }

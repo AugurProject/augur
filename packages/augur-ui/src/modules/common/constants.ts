@@ -1,4 +1,3 @@
-import { Getters, Logs, MarketReportingState } from '@augurproject/sdk';
 import {
   CategorySports,
   CategoryPolitics,
@@ -10,23 +9,44 @@ import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
 import * as d3 from 'd3-time';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatShares, formatDai } from 'utils/format-number';
+import {
+  MarketReportingState,
+  MarketTypeName,
+  MaxLiquiditySpread,
+  TemplateFilters,
+  MarketTypeName,
+} from '@augurproject/sdk-lite';
 
 // Help Center links
 export const HELP_CENTER = 'https://help.augur.net/';
-export const HELP_CENTER_ADD_FUNDS = 'https://help.augur.net/getting-started/adding-funds';
-export const HELP_CENTER_HOW_TO_TRADE = 'https://help.augur.net/trading/how-to-make-a-trade';
-export const HELP_CENTER_HOW_TO_DISPUTE = 'https://help.augur.net/disputing-explained#how-to-dispute';
-export const HELP_CENTER_SCALAR_MARKETS = 'https://help.augur.net/trading/trading-faq#how-do-scalar-markets-work';
-export const HELP_CENTER_PARTICIPATION_TOKENS = 'https://help.augur.net/reporting-or-disputing-faq#what-are-participation-tokens';
-export const HELP_CENTER_LEARN_ABOUT_ADDRESS = 'https://help.augur.net/prediction-markets/augur-faq#what-is-my-account-address';
-export const HELP_CENTER_MIGRATE_REP = 'https://help.augur.net/prediction-markets/migrating-rep-v1-greater-than-v2';
-export const HELP_CENTER_THIRD_PARTY_COOKIES = 'https://www.whatismybrowser.com/guides/how-to-enable-cookies';
-export const HELP_CENTER_INVALID_MARKETS = 'https://help.augur.net/trading/trading-faq#what-does-invalid-mean';
-export const HELP_CENTER_HOW_DO_I_SHORT_AN_OUTCOME = 'https://help.augur.net/trading/trading-faq#how-do-i-short-an-outcome';
-export const HELP_CENTER_DISPUTING_QUICK_GUIDE = 'https://help.augur.net/disputing-explained#dispute-rounds';
-export const HELP_CENTER_REPORTING_QUICK_GUIDE = 'https://help.augur.net/disputing-explained';
-export const HELP_CENTER_RESOLUTION_SOURCE = 'https://help.augur.net/trading/trading-page-explained#8-resolution-source';
-export const HELP_CENTER_WHAT_IS_DAI = 'https://help.augur.net/prediction-markets/augur-faq#what-is-dai';
+export const HELP_CENTER_ADD_FUNDS =
+  'https://help.augur.net/getting-started/adding-funds';
+export const HELP_CENTER_HOW_TO_TRADE =
+  'https://help.augur.net/trading/how-to-make-a-trade';
+export const HELP_CENTER_HOW_TO_DISPUTE =
+  'https://help.augur.net/disputing-explained#how-to-dispute';
+export const HELP_CENTER_SCALAR_MARKETS =
+  'https://help.augur.net/trading/trading-faq#how-do-scalar-markets-work';
+export const HELP_CENTER_PARTICIPATION_TOKENS =
+  'https://help.augur.net/reporting-or-disputing-faq#what-are-participation-tokens';
+export const HELP_CENTER_LEARN_ABOUT_ADDRESS =
+  'https://help.augur.net/prediction-markets/augur-faq#what-is-my-account-address';
+export const HELP_CENTER_MIGRATE_REP =
+  'https://help.augur.net/prediction-markets/migrating-rep-v1-greater-than-v2';
+export const HELP_CENTER_THIRD_PARTY_COOKIES =
+  'https://www.whatismybrowser.com/guides/how-to-enable-cookies';
+export const HELP_CENTER_INVALID_MARKETS =
+  'https://help.augur.net/trading/trading-faq#what-does-invalid-mean';
+export const HELP_CENTER_HOW_DO_I_SHORT_AN_OUTCOME =
+  'https://help.augur.net/trading/trading-faq#how-do-i-short-an-outcome';
+export const HELP_CENTER_DISPUTING_QUICK_GUIDE =
+  'https://help.augur.net/disputing-explained#dispute-rounds';
+export const HELP_CENTER_REPORTING_QUICK_GUIDE =
+  'https://help.augur.net/disputing-explained';
+export const HELP_CENTER_RESOLUTION_SOURCE =
+  'https://help.augur.net/trading/trading-page-explained#8-resolution-source';
+export const HELP_CENTER_WHAT_IS_DAI =
+  'https://help.augur.net/prediction-markets/augur-faq#what-is-dai';
 
 // # MISC Constants
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -147,8 +167,8 @@ export const WALLET_STATUS_VALUES = {
 export const ON_BORDING_STATUS_STEP = {
   ONE: 1,
   TWO: 2,
-  THREE: 3
-}
+  THREE: 3,
+};
 
 // ethereumNodeHttp
 export const ETHEREUM_NODE_HTTP = 'ethereum_node_http';
@@ -185,7 +205,6 @@ export const ADD_FUNDS_SWAP = '3';
 
 // # Connect Constants
 export const ACCOUNT_TYPES = {
-  PORTIS: 'Portis',
   FORTMATIC: 'Fortmatic',
   TORUS: 'Torus',
   LEDGER: 'Ledger',
@@ -201,8 +220,6 @@ export const WALLET_TYPE = {
 };
 
 export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
-export const SIGNIN_LOADING_TEXT_PORTIS =
-  'Connecting to our partners at Portis to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_FORTMATIC =
   'Connecting to our partners at Fortmatic to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_TORUS =
@@ -225,7 +242,7 @@ export const ERROR_TYPES = {
   },
   UNSUPPORTED_NETWORK: {
     header: 'Unsupported Network',
-    subheader: 'Portis is only available on mainnet/kovan/localhost',
+    subheader: 'Only available on mainnet/kovan/localhost',
   },
 };
 
@@ -267,30 +284,41 @@ export const feeFilters = [
   { header: '0-10%', value: MAX_FEE_10_PERCENT },
 ];
 
-export const TEMPLATE_FILTER_ALL = Getters.Markets.TemplateFilters.all;
+export const FILTER_ALL = TemplateFilters.all;
 export const templateFilterValues = [
-  { header: 'All', value: TEMPLATE_FILTER_ALL },
+  { header: 'All', value: FILTER_ALL },
   {
     header: 'Augur templates',
-    value: Getters.Markets.TemplateFilters.templateOnly,
+    value: TemplateFilters.templateOnly,
   },
   {
     header: 'Custom markets',
-    value: Getters.Markets.TemplateFilters.customOnly,
+    value: TemplateFilters.customOnly,
+  },
+];
+
+export const marketTypeFilterValues = [
+  { header: 'All', value: FILTER_ALL },
+  {
+    header: 'Yes/No',
+    value: MarketTypeName.YesNo,
+  },
+  {
+    header: 'Categorical',
+    value: MarketTypeName.Categorical,
+  },
+  {
+    header: 'Scalar',
+    value: MarketTypeName.Scalar,
   },
 ];
 
 // # Valid Market Liquidity Spreads
-export const MAX_SPREAD_ALL_SPREADS =
-  Getters.Markets.MaxLiquiditySpread.OneHundredPercent;
-export const MAX_SPREAD_20_PERCENT =
-  Getters.Markets.MaxLiquiditySpread.TwentyPercent;
-export const MAX_SPREAD_15_PERCENT =
-  Getters.Markets.MaxLiquiditySpread.FifteenPercent;
-export const MAX_SPREAD_10_PERCENT =
-  Getters.Markets.MaxLiquiditySpread.TenPercent;
-export const MAX_SPREAD_RECENTLY_DEPLETED =
-  Getters.Markets.MaxLiquiditySpread.ZeroPercent;
+export const MAX_SPREAD_ALL_SPREADS = MaxLiquiditySpread.OneHundredPercent;
+export const MAX_SPREAD_20_PERCENT = MaxLiquiditySpread.TwentyPercent;
+export const MAX_SPREAD_15_PERCENT = MaxLiquiditySpread.FifteenPercent;
+export const MAX_SPREAD_10_PERCENT = MaxLiquiditySpread.TenPercent;
+export const MAX_SPREAD_RECENTLY_DEPLETED = MaxLiquiditySpread.ZeroPercent;
 
 export const spreadFilters = [
   { header: 'All', value: MAX_SPREAD_ALL_SPREADS },
@@ -418,6 +446,8 @@ export const TAGS_PARAM_NAME = 'tags';
 export const CATEGORY_PARAM_NAME = 'category';
 export const MAXFEE_PARAM_NAME = 'maxFee';
 export const SPREAD_PARAM_NAME = 'spread';
+export const MARKET_TYPE_PARAM_NAME = 'type'
+export const MARKET_TYPE_FILTER = 'marketTypeFilter';
 export const SHOW_INVALID_MARKETS_PARAM_NAME = 'showInvalid';
 export const TEMPLATE_FILTER = 'templateFilter';
 
@@ -462,9 +492,9 @@ export const INDETERMINATE_PLUS_ONE = '0.500000000000000001';
 export const INDETERMINATE_OUTCOME_NAME = 'Indeterminate';
 
 // # Market Types
-export const YES_NO = Logs.MarketTypeName.YesNo;
-export const CATEGORICAL = Logs.MarketTypeName.Categorical;
-export const SCALAR = Logs.MarketTypeName.Scalar;
+export const YES_NO = MarketTypeName.YesNo;
+export const CATEGORICAL = MarketTypeName.Categorical;
+export const SCALAR = MarketTypeName.Scalar;
 
 // # New Market Constraint Constants
 export const DESCRIPTION_MIN_LENGTH = 1;
@@ -627,6 +657,7 @@ export const MODAL_INITIALIZE_ACCOUNT = 'MODAL_INITIALIZE_ACCOUNT';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
 export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
 export const MODAL_DISCARD = 'MODAL_DISCARD';
+export const MODAL_FROZEN_FUNDS = 'MODAL_FROZEN_FUNDS';
 export const DISCLAIMER_SEEN = 'disclaimerSeen';
 export const GSN_WALLET_SEEN = 'gsnWalletInfoSeen';
 export const MARKET_REVIEW_SEEN = 'marketReviewSeen';
@@ -741,8 +772,8 @@ export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
 export const CREATEAUGURWALLET = 'RUNPERIODICALS';
 export const WITHDRAWALLFUNDSASDAI = 'WITHDRAWALLFUNDSASDAI';
-export const SWAPEXACTTOKENSFORTOKENS = 'SWAPEXACTTOKENSFORTOKENS'
-export const SWAPETHFOREXACTTOKENS = 'SWAPETHFOREXACTTOKENS'
+export const SWAPEXACTTOKENSFORTOKENS = 'SWAPEXACTTOKENSFORTOKENS';
+export const SWAPETHFOREXACTTOKENS = 'SWAPETHFOREXACTTOKENS';
 export const ADDLIQUIDITY = 'ADDLIQUIDITY';
 export const ETH_RESERVE_INCREASE = 'ETH_RESERVE_INCREASE';
 // # Orders/Trade Constants
@@ -899,7 +930,7 @@ export const ZEROX_STATUSES = {
   RESTARTED: 'RESTARTED',
   ERROR: 'ERROR',
   SYNCED: 'SYNCED',
-}
+};
 
 export const ZEROX_STATUSES_TOOLTIP = {
   STARTING: 'Degraded Service',
@@ -908,8 +939,8 @@ export const ZEROX_STATUSES_TOOLTIP = {
   STARTED: 'Degraded Service',
   RESTARTING: 'Degraded Service',
   RESTARTED: 'Service Operational',
-  ERROR: 'Something went wrong, please refresh your page'
-}
+  ERROR: 'Something went wrong, please refresh your page',
+};
 
 // Account Summary - Your Overview
 export const YOUR_OVERVIEW_TITLE = 'Your Overview';
@@ -1069,7 +1100,6 @@ export const COLUMN_TYPES = {
 // Login method variables
 export const TREZOR_MANIFEST_EMAIL = 'team@augur.net';
 export const TREZOR_MANIFEST_APPURL = 'https://dev.augur.net';
-export const PORTIS_API_KEY = 'ede221f9-710f-44c9-a429-ed28bbb54376';
 export const FORTMATIC_API_KEY = 'pk_live_8001A50CCA35D8CB';
 export const FORTMATIC_API_TEST_KEY = 'pk_test_5185BE42CA372148';
 
@@ -1115,11 +1145,11 @@ export const POPULAR_CATEGORIES = [
 ];
 
 export const POPULAR_CATEGORIES_ICONS = {
-  'sports': CategorySports,
-  'politics': CategoryPolitics,
-  'entertainment': CategoryEntertainment,
-  'finance': CategoryFinance,
-  'crypto': CategoryCrypto,
+  sports: CategorySports,
+  politics: CategoryPolitics,
+  entertainment: CategoryEntertainment,
+  finance: CategoryFinance,
+  crypto: CategoryCrypto,
 };
 
 export const CATEGORIES_MAX = 8;
@@ -1189,8 +1219,8 @@ export const TRADING_TUTORIAL_COPY = {
           'Select the outcome you believe will be correct or appreciate in price.',
       },
       {
-        text: "To learn why invalid is an outcome, see our",
-        linkText: "guide.",
+        text: 'To learn why invalid is an outcome, see our',
+        linkText: 'guide.',
         link: HELP_CENTER_INVALID_MARKETS,
       },
     ],
@@ -1309,7 +1339,8 @@ export const EVENT_EXPIRATION_TOOLTIP = {
   header: 'Event expiration',
   content: 'This date time indicates when the settlement process begins.',
 };
-export const TOTAL_FUNDS_TOOLTIP = 'Your total funds does not include the Fee reserve';
+export const TOTAL_FUNDS_TOOLTIP =
+  'Your total funds does not include the Fee reserve';
 export const TUTORIAL_OUTCOME = 1;
 export const TUTORIAL_QUANTITY = 100;
 export const TUTORIAL_PRICE = 0.4;
@@ -1377,7 +1408,7 @@ export const DISPUTING_GUIDE = {
       header: 'Dispute Window',
       paragraphs: [
         'The dispute window is a week-long cycle. Reporting fees from settled shares are deposited into the next upcoming window.',
-        'At the end of the dispute window, those fees are allocated to REP holders who exchange their REP for participation tokens. When the disputing window ends, users can redeem their participation tokens for a proportional amount of the fees generated.'
+        'At the end of the dispute window, those fees are allocated to REP holders who exchange their REP for participation tokens. When the disputing window ends, users can redeem their participation tokens for a proportional amount of the fees generated.',
       ],
     },
   ],
@@ -1411,7 +1442,7 @@ export const REPORTING_GUIDE = {
   ],
   learnMoreButtonText: 'Learn more about reporting',
   learnMoreUrl: HELP_CENTER_REPORTING_QUICK_GUIDE,
-  closeButtonText: 'Close'
+  closeButtonText: 'Close',
 };
 
 function createOrder(disappear, price, quantity, id, outcomeId, type) {

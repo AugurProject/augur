@@ -18,7 +18,7 @@ import {
   addCanceledOrder,
   addCanceledOrder,
 } from 'modules/pending-queue/actions/pending-queue-management';
-import { TXEventName } from '@augurproject/sdk/src/constants';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { findUserFilledOrders } from 'modules/orders/selectors/filled-orders';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';

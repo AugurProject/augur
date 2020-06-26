@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { MovementLabel, LinearPropertyLabel } from 'modules/common/labels';
+import { LinearPropertyLabel } from 'modules/common/labels';
 import {
   AVAILABLE_TRADING_BALANCE,
   TOTAL_FROZEN_FUNDS,
   TOTAL_ACCOUNT_VALUE_IN_DAI,
 } from 'modules/common/constants';
-
+import { MODAL_FROZEN_FUNDS } from 'modules/common/constants';
 import Styles from 'modules/account/components/funds.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { formatPercent, formatDai } from 'utils/format-number';
@@ -15,7 +15,7 @@ import {
 } from "modules/auth/helpers/login-account";
 
 const Funds = () => {
-  const { loginAccount } = useAppStatusStore();
+  const { loginAccount, actions: { setModal } } = useAppStatusStore();
   const {
     totalFrozenFunds,
     totalAvailableTradingBalance,
@@ -25,13 +25,6 @@ const Funds = () => {
   return (
     <section className={Styles.Funds}>
       <h4>{TOTAL_ACCOUNT_VALUE_IN_DAI}</h4>
-      <MovementLabel
-        showPlusMinus
-        showIcon
-        showBrackets
-        value={formatPercent(tradingPositionsTotal.unrealizedRevenue24hChangePercent)}
-        useFull
-      />
       <div>{formatDai(totalAccountValue, { removeComma: true }).full}</div>
       <LinearPropertyLabel
         value={formatDai(totalAvailableTradingBalance, { removeComma: true }).full}
@@ -39,7 +32,9 @@ const Funds = () => {
       />
       <LinearPropertyLabel
         value={formatDai(totalFrozenFunds, { removeComma: true }).full}
+        underline
         label={TOTAL_FROZEN_FUNDS}
+        onValueClick={() => setModal({ type: MODAL_FROZEN_FUNDS })}
       />
     </section>
   );

@@ -71,12 +71,9 @@ import {
   SUMMER,
   TEAM_A,
   TEAM_B,
-  TemplateInputType,
   TENNIS,
-  TEXT_PLACEHOLDERS,
   TV_MOVIES,
   US_POLITICS,
-  ValidationType,
   WINTER,
   WNBA,
   WORLD,
@@ -84,8 +81,10 @@ import {
   SOCIAL_MEDIA,
   TWITTER,
   INSTAGRAM,
-} from './templates-template';
+  ENTITY,
+} from '@augurproject/sdk-lite';
 
+import { TemplateInputType, TEXT_PLACEHOLDERS, ValidationType } from './templates-template';
 const YES_NO = 'YesNo';
 const CATEGORICAL = 'Categorical';
 const SCALAR = 'Scalar';
@@ -1756,6 +1755,7 @@ export const TEMPLATES = {
             example: `NHL (Goal Spread): St Louis Blues to win by more than 2.5 goals over the NY Rangers?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             title: `Spread [1].5`,
             header: `[0] vs. [2]`,
+            outcomes: ['[0]','[2]','No Contest'],
             groupLineId: 1,
             groupName: groupTypes.COMBO_SPREAD,
             inputs: [
@@ -1822,6 +1822,7 @@ export const TEMPLATES = {
             example: `NHL (O/U): St Louis Blues vs. NY Rangers: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             title: `Over/Under [2].5`,
             header: `[0] vs. [1]`,
+            outcomes: ['[0]','[1]','No Contest'],
             groupName: groupTypes.COMBO_OVER_UNDER,
             groupLineId: 2,
             inputs: [
@@ -1994,7 +1995,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year Range`,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
-                values: LIST_VALUES.YEAR_RANGE,
+                values: LIST_VALUES.YEAR_RANGE_ABBR,
               },
             ],
             resolutionRules: {
@@ -2006,13 +2007,16 @@ export const TEMPLATES = {
                   text: `Market should resolve as whole number value of wins`,
                 },
                 {
-                  text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                  text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                },
+                {
+                  text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                 },
                 {
                   text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                 },
                 {
-                  text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                  text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                 },
               ],
             },
@@ -3714,6 +3718,7 @@ export const TEMPLATES = {
                 example: `NBA (Point Spread): Brooklyn Nets to win by more than 10.5 points over the NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[0] vs. [2]`,
                 title: `Spread [1].5`,
+                outcomes: ['[0]','[2]','No Contest'],
                 groupLineId: 1,
                 groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
@@ -3777,6 +3782,7 @@ export const TEMPLATES = {
                 example: `NBA (O/U): Brooklyn Nets vs. NY Knicks: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[0] vs. [1]`,
                 title: `Over/Under [2].5`,
+                outcomes: ['[0]','[1]','No Contest'],
                 groupName: groupTypes.COMBO_OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
@@ -4022,13 +4028,16 @@ export const TEMPLATES = {
                       text: `Market should resolve as whole number value of wins`,
                     },
                     {
-                      text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                      text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                      text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -4443,6 +4452,7 @@ export const TEMPLATES = {
                 example: `WNBA (Point Spread): Phoenix Mercury to win by more than 10.5 points over the Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[0] vs. [2]`,
                 title: `Spread [1].5`,
+                outcomes: ['[0]','[2]','No Contest'],
                 groupLineId: 1,
                 groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
@@ -4506,6 +4516,7 @@ export const TEMPLATES = {
                 example: `WNBA (O/U): Phoenix Mercury vs. Seattle Storm: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[0] vs. [1]`,
                 title: `Over/Under [2].5`,
+                outcomes: ['[0]','[1]','No Contest'],
                 groupName: groupTypes.COMBO_OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
@@ -4739,13 +4750,16 @@ export const TEMPLATES = {
                       text: `Market should resolve as whole number value of wins`,
                     },
                     {
-                      text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                      text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                      text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -5038,6 +5052,7 @@ export const TEMPLATES = {
                 example: `NCAA Men's BB (Point Spread): Duke to win by more than 10.5 points over Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[1] vs. [3]`,
                 title: `Spread [2].5`,
+                outcomes: ['[1]','[3]','No Contest'],
                 groupLineId: 2,
                 groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
@@ -5111,6 +5126,7 @@ export const TEMPLATES = {
                 example: `NCAA Men's BB (O/U): Duke vs. Arizona: Total Points scored: Over/Under 164.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [2]`,
                 title: `Over/Under [3].5`,
+                outcomes: ['[1]','[2]','No Contest'],
                 groupName: groupTypes.COMBO_OVER_UNDER,
                 groupLineId: 3,
                 inputs: [
@@ -5402,6 +5418,7 @@ export const TEMPLATES = {
             example: `MLB (Run Spread): NY Yankees to win by more than 2.5 runs over the Boston Red Sox?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             header: `[0] vs. [2]`,
             title: `Spread [1].5`,
+            outcomes: ['[0]','[2]','No Contest'],
             groupLineId: 1,
             groupName: groupTypes.COMBO_SPREAD,
             inputs: [
@@ -5471,6 +5488,7 @@ export const TEMPLATES = {
             example: `MLB (O/U): NY Yankees vs. Boston Red Sox: Total Runs scored; Over/Under 9.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
             header: `[0] vs. [1]`,
             title: `Over/Under [2].5`,
+            outcomes: ['[0]','[1]','No Contest'],
             groupName: groupTypes.COMBO_OVER_UNDER,
             groupLineId: 2,
             inputs: [
@@ -5658,13 +5676,16 @@ export const TEMPLATES = {
                   text: `Market should resolve as whole number value of wins`,
                 },
                 {
-                  text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                  text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                },
+                {
+                  text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                 },
                 {
                   text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                 },
                 {
-                  text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                  text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                 },
               ],
             },
@@ -6694,6 +6715,7 @@ export const TEMPLATES = {
                 example: `NFL (Point Spread) Week 1: Seattle Seahawks to win by more than 10.5 points over Dallas Cowboys?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [3]`,
                 title: `Spread [2].5`,
+                outcomes: ['[1]','[3]','No Contest'],
                 groupLineId: 2,
                 groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
@@ -6765,6 +6787,7 @@ export const TEMPLATES = {
                 example: `NFL (O/U) Week 1: NY Giants vs. Dallas Cowboys: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [2]`,
                 title: `Over/Under [3].5`,
+                outcomes: ['[1]','[2]','No Contest'],
                 groupName: groupTypes.COMBO_OVER_UNDER,
                 groupLineId: 3,
                 inputs: [
@@ -6955,13 +6978,16 @@ export const TEMPLATES = {
                       text: `Market should resolve as whole number value of wins`,
                     },
                     {
-                      text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                      text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                      text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -7443,6 +7469,7 @@ export const TEMPLATES = {
                 example: `NCAA FB (Point Spread) Week 1: Alabama to win by more than 10.5 points over Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [3]`,
                 title: `Spread [2].5`,
+                outcomes: ['[1]','[3]','No Contest'],
                 groupLineId: 2,
                 groupName: groupTypes.COMBO_SPREAD,
                 inputs: [
@@ -7514,6 +7541,7 @@ export const TEMPLATES = {
                 example: `NCAA FB (O/U) Week 1: Alabama vs. Michigan: Total points scored: Over/Under 56.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [2]`,
                 title: `Over/Under [3].5`,
+                outcomes: ['[1]','[2]','No Contest'],
                 groupName: groupTypes.COMBO_OVER_UNDER,
                 groupLineId: 3,
                 inputs: [
@@ -7695,13 +7723,16 @@ export const TEMPLATES = {
                       text: `Market should resolve as whole number value of wins`,
                     },
                     {
-                      text: `If the season is officially cancelled, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
+                      text: `If the season is officially cancelled prior to any official games being played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the season is officially cancelled, after an official game has been played, the number of wins at the time the league officially stopped should be used to determine the resolution of the market.`,
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, the total amount of games won at the conclusion of the regular season should be used, as long as the regular season concludes before the Market’s Event Expiration begins.`,
                     },
                     {
-                      text: `If the league's regular season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
+                      text: `If the league suspends play for the regular season  (but not officially cancelled) and the season will not conclude before the Market’s Event Expiration time begins for any reason, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -7901,12 +7932,15 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which party will win the [0] U.S. Presidential election?`,
             example: `Which party will win the 2020 U.S. Presidential election?`,
+            header: `[0] U.S. Presidential election party winner`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
+                groupKey: YEAR,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7940,12 +7974,15 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will win the [0] U.S. Presidential election?`,
             example: `Who will win the 2020 U.S. Presidential election?`,
+            header: `[0] U.S. Presidential election winner`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
+                groupKey: YEAR,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -7969,11 +8006,14 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will be the [0] nominee for [1] [2]?`,
             example: `Who will be the Republican nominee for 2020 U.S. Vice-President?`,
+            header: `[1] [2] [0] nominee`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Party`,
+                groupKey: ENTITY,
                 values: LIST_VALUES.POL_PARTY,
               },
               {
@@ -7981,12 +8021,14 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
+                groupKey: YEAR,
                 values: LIST_VALUES.YEARS,
               },
               {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Office`,
+                groupKey: EVENT,
                 values: LIST_VALUES.PRES_OFFICES,
               },
               {
@@ -8010,11 +8052,14 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which party will win [0] in the [1] U.S. Presidential election?`,
             example: `Which party will win Michigan in the 2020 U.S. Presidential election?`,
+            header: `[1] U.S. Presidential election [0] party winner`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `State`,
+                groupKey: ENTITY,
                 values: LIST_VALUES.US_STATES,
               },
               {
@@ -8022,6 +8067,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
+                groupKey: YEAR,
                 values: LIST_VALUES.PRES_YEARS,
               },
               {
@@ -8045,11 +8091,14 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which party will control the [0] after the [1] election?`,
             example: `Which party will control the U.S House of Representatives after the 2020 election?`,
+            header: `[0] control after [1] election`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Office`,
+                groupKey: ENTITY,
                 values: LIST_VALUES.POL_HOUSE_SENATE_OFFICE,
               },
               {
@@ -8057,6 +8106,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
+                groupKey: YEAR,
                 values: LIST_VALUES.YEARS,
               },
               {
@@ -8090,11 +8140,14 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will win the [0] [1] [2] primary for U.S. Presidential election?`,
             example: `Who will win the 2020 South Carolina Democratic primary for U.S Presidential election?`,
+            header: `[0] [1] [2] primary for U.S. Presidential election winner`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                groupKey: YEAR,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
@@ -8102,12 +8155,14 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `State`,
+                groupKey: EVENT,
                 values: LIST_VALUES.US_STATES,
               },
               {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Party`,
+                groupKey: ENTITY,
                 values: LIST_VALUES.POL_PARTY,
               },
               {
@@ -8139,11 +8194,14 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will win the [0] [1] [2] caucus for U.S. Presidential election?`,
             example: `Who will win the 2020 South Carolina Democratic caucus for U.S Presidential election?`,
+            header: `U.S. Presidential election [0] [1] [2] caucus winner?`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Year`,
+                groupKey: YEAR,
                 validationType: ValidationType.YEAR_YEAR_RANGE,
                 values: LIST_VALUES.PRES_YEARS,
               },
@@ -8151,12 +8209,14 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `State`,
+                groupKey: EVENT,
                 values: LIST_VALUES.US_STATES,
               },
               {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Party`,
+                groupKey: ENTITY,
                 values: LIST_VALUES.POL_PARTY,
               },
               {
@@ -8297,22 +8357,27 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will be [0] of [1] by [2]?`,
             example: `Who be Supreme Leader of North Korea on December 31, 2019 11:59 pm EST`,
+            header: `[0] of [1] by [2] winner`,
+            groupName: groupTypes.FUTURES,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Position`,
+                groupKey: ENTITY,
                 values: LIST_VALUES.POL_POSITION,
               },
               {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Country`,
+                groupKey: EVENT,
                 values: LIST_VALUES.OLYMPIC_COUNTRIES,
               },
               {
                 id: 2,
                 type: TemplateInputType.DATETIME,
+                groupKey: START_TIME,
                 placeholder: `Specific Datetime`,
                 label: `Specific Datetime`,
                 sublabel: `Specify date time for event`,

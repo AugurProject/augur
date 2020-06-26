@@ -1,5 +1,14 @@
-import React, { ReactNode } from 'react';
+import { TXEventName } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
+import { SubmitTextButton } from 'modules/common/buttons';
+import { SCALAR, SIGN_SEND_ORDERS } from 'modules/common/constants';
+import {
+  Archived,
+  LiquidityDepletedLabel,
+  MarketStatusLabel,
+  MarketTypeLabel,
+  TemplateShield,
+} from 'modules/common/labels';
 
 import ToggleRow from 'modules/common/toggle-row';
 import { MarketStatusLabel, TemplateShield, MarketTypeLabel, LiquidityDepletedLabel, Archived } from 'modules/common/labels';

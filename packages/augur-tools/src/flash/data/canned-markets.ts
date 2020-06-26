@@ -14,8 +14,6 @@ import {
   POLITICS,
   SOCCER,
   SPORTS,
-  Template,
-  TEMPLATES,
   US_POLITICS,
   HOCKEY,
   groupTypes,
@@ -24,7 +22,11 @@ import {
   SOCIAL_MEDIA,
   TWITTER,
   CUSTOMIZED,
-} from '@augurproject/artifacts';
+} from '@augurproject/sdk-lite';
+import {
+  Template,
+  TEMPLATES,
+} from '@augurproject/templates';
 import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';
 import { buildExtraInfo, getFilledInputs, fillInQuestion, getLongDescription } from '../../libs/templates';
@@ -681,8 +683,7 @@ const calcDailyHockeyMarket = (): CannedMarket[] => {
     creatorFeeDecimal: '0.01',
     extraInfo: buildExtraInfo(template, inputValues[index], [
       SPORTS,
-      HOCKEY,
-      'Daily'
+      HOCKEY
     ]),
     outcomes: outcomeValues[index],
     orderBook: {
@@ -858,6 +859,7 @@ const calcSoccerMarkets = (): CannedMarket[] => {
     extraInfo: buildExtraInfo(template, inputValues[index], [
       SPORTS,
       SOCCER,
+      CUSTOMIZED,
     ]),
     outcomes: outcomeValues[index],
     orderBook: {

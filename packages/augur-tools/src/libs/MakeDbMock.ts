@@ -37,6 +37,7 @@ export function makeDbMock(prefix = undefined) {
 
       const db = DB.createAndInitializeDB(
         prefix ? prefix : iterator.next().value,
+        0,
         logFilterAggregator,
         augur,
         !!augur.zeroX

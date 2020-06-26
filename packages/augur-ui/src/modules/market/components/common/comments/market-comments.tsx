@@ -7,7 +7,7 @@ import { initialize3box } from 'modules/global-chat/actions/initialize-3box';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
 const ThreeBoxComments = lazy(() =>
-  import('modules/market/components/common/comments/three-box-comments')
+  import(/* webpackChunkName: '3box-comments' */ 'modules/market/components/common/comments/three-box-comments')
 );
 
 const THREE_BOX_ADMIN_ACCOUNT = '0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb';

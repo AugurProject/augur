@@ -1,5 +1,5 @@
 import { encodeNumberAsBase10String } from "./encode-number-as-base10-string";
-import { prefixHex } from "./prefix-hex";
+import { prefixHex } from "./hex";
 import { unfixSigned } from "./unfix-signed";
 
 // Unroll an abi-encoded string into an array

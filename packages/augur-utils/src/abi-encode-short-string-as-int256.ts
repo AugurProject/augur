@@ -1,5 +1,5 @@
 import { padRight } from "./pad-right";
-import { prefixHex } from "./prefix-hex";
+import { prefixHex } from "./hex";
 
 export function abiEncodeShortStringAsInt256(shortString) {
   let encoded = shortString;

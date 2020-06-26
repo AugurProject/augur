@@ -2,9 +2,15 @@
 pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
-import "ROOT/gsn/v2/utils/EIP712Sig.sol";
+import "ROOT/gsn/v2/interfaces/ISignatureVerifier.sol";
 
 interface IPaymaster {
+
+    struct GasLimits {
+        uint256 acceptRelayedCallGasLimit;
+        uint256 preRelayedCallGasLimit;
+        uint256 postRelayedCallGasLimit;
+    }
 
     /**
      * return the relayHub of this contract.
@@ -24,7 +30,7 @@ interface IPaymaster {
     external
     view
     returns (
-        GSNTypes.GasLimits memory limits
+        GasLimits memory limits
     );
 
     /**
@@ -32,6 +38,7 @@ interface IPaymaster {
      * revert to signal the paymaster will NOT pay for this call.
      * Note: Accepting this call means paying for the tx whether the relayed call reverted or not.
      *  @param relayRequest - the full relay request structure
+     *  @param signature - user's EIP712-compatible signature of the {@link relayRequest}
      *  @param approvalData - extra dapp-specific data (e.g. signature from trusted party)
      *  @param maxPossibleGas - based on values returned from {@link getGasLimits},
      *         the RelayHub will calculate the maximum possible amount of gas the user may be charged for.
@@ -39,7 +46,8 @@ interface IPaymaster {
      *  @return a context to be passed to preRelayedCall and postRelayedCall.
      */
     function acceptRelayedCall(
-        GSNTypes.RelayRequest calldata relayRequest,
+        ISignatureVerifier.RelayRequest calldata relayRequest,
+        bytes calldata signature,
         bytes calldata approvalData,
         uint256 maxPossibleGas
     )
@@ -86,7 +94,8 @@ interface IPaymaster {
         bool success,
         bytes32 preRetVal,
         uint256 gasUseWithoutPost,
-        GSNTypes.GasData calldata gasData
+        ISignatureVerifier.GasData calldata gasData
     ) external;
 
+    function versionPaymaster() external view returns (string memory);
 }

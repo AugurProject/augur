@@ -1,8 +1,12 @@
-import logError from 'utils/log-error';
+import { TXEventName } from '@augurproject/sdk-lite';
 import {
-  convertV1ToV2Approve,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  V1_REP_MIGRATE_ESTIMATE,
+} from 'modules/common/constants';
+import {
   convertV1ToV2,
   convertV1ToV2_estimate,
+  convertV1ToV2Approve,
 } from 'modules/contracts/actions/contractCalls';
 import { NodeStyleCallback } from 'modules/types';
 import {
@@ -10,7 +14,7 @@ import {
   MIGRATE_FROM_LEG_REP_TOKEN,
 } from 'modules/common/constants';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
-import { TXEventName } from '@augurproject/sdk';
+import { updateAssets } from 'modules/auth/actions/update-assets';
 
 export const approveAndConvertV1ToV2 = async (
   useSigningWallet: boolean = false,
@@ -30,6 +34,7 @@ export const approveAndConvertV1ToV2 = async (
       TXEventName.Failure
     );
   });
+  updateAssets(true);
   callback(null);
 };
 

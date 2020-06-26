@@ -44,7 +44,7 @@ import {
 } from 'modules/common/labels';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
 import { ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
-import { TXEventName } from '@augurproject/sdk/src';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
@@ -221,7 +221,7 @@ export const Confirm = ({
     ) {
       messages = {
         header: 'UNPROFITABLE TRADE',
-        type: WARNING,
+        type: ERROR,
         message: `Est. TX Fee is higher than profit`,
       };
     }

@@ -1,10 +1,37 @@
-import { THEMES, ODDS_TYPE, DEFAULT_FALLBACK_GAS_AVERAGE, DEFAULT_FALLBACK_GAS_FAST, DEFAULT_FALLBACK_GAS_SAFELOW, MOBILE_MENU_STATES, MARKET_OPEN, MARKET_SORT_PARAMS, MAX_FEE_02_PERCENT, MAX_SPREAD_ALL_SPREADS, DAY, ZERO, TIME_FORMATS, MARKET_CARD_FORMATS } from 'modules/common/constants';
-import { MARKETS } from "modules/routes/constants/views";
-import { DEFAULT_SDK_CONFIGURATION, SDKConfiguration } from '@augurproject/artifacts';
+import {
+  THEMES,
+  ODDS_TYPE,
+  DEFAULT_FALLBACK_GAS_AVERAGE,
+  DEFAULT_FALLBACK_GAS_FAST,
+  DEFAULT_FALLBACK_GAS_SAFELOW,
+  MOBILE_MENU_STATES,
+  MARKET_OPEN,
+  MARKET_SORT_PARAMS,
+  MAX_FEE_02_PERCENT,
+  MAX_SPREAD_ALL_SPREADS,
+  DAY,
+  ZERO,
+  TIME_FORMATS,
+  MARKET_CARD_FORMATS,
+  FILTER_ALL,
+} from 'modules/common/constants';
+import { MARKETS } from 'modules/routes/constants/views';
+import {
+  DEFAULT_SDK_CONFIGURATION,
+  SDKConfiguration,
+} from '@augurproject/utils';
 import { formatGasCostGwei, formatAttoDai } from 'utils/format-number';
-import { GasPriceInfo, Blockchain, FilterSortOptions, INVALID_OPTIONS, Universe, LoginAccount, MarketsList } from 'modules/types';
-import * as moment from '../../../../../../node_modules/moment/moment';
-import { Getters } from '@augurproject/sdk/src';
+import {
+  GasPriceInfo,
+  Blockchain,
+  FilterSortOptions,
+  INVALID_OPTIONS,
+  Universe,
+  LoginAccount,
+  MarketsList,
+} from 'modules/types';
+import * as moment from 'moment';
+import { TemplateFilters } from '@augurproject/sdk-lite';
 import { EMPTY_STATE } from 'modules/create-market/constants';
 
 export const THEME = 'theme';
@@ -54,17 +81,23 @@ export const MARKETS_LIST = 'marketsList';
 export const DEFAULT_PENDING_ORDERS = {
   [PENDING_ORDERS]: {},
   [PENDING_LIQUIDITY_ORDERS]: {},
-}
+};
 
 export const STUBBED_PENDING_ORDERS_ACTIONS = {
   addLiquidity: ({ liquidityOrders, txParamHash }) => {},
   updateLiquidity: ({ order, updates, txParamHash, outcomeId }) => {},
   removeLiquidity: ({ txParamHash, outcomeId, orderId }) => {},
   clearLiquidity: () => {},
-  loadLiquidity: (pendingLiquidityOrders) => {},
+  loadLiquidity: pendingLiquidityOrders => {},
   clearAllMarketLiquidity: ({ txParamHash }) => {},
   updateLiquidityHash: ({ txParamHash, txHash }) => {},
-  updateLiquidityStatus: ({ txParamHash, outcomeId, type, price, eventName }) => {},
+  updateLiquidityStatus: ({
+    txParamHash,
+    outcomeId,
+    type,
+    price,
+    eventName,
+  }) => {},
   updateSuccessfulLiquidity: ({ txParamHash, outcomeId, type, price }) => {},
   updatePendingOrder: (marketId, order) => {},
   removePendingOrder: (marketId, orderId) => {},
@@ -96,8 +129,8 @@ export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
       eth: null,
       rep: '0',
       dai: '0',
-      legacyRep: '0'
-    }
+      legacyRep: '0',
+    },
   },
   reporting: {
     profitLoss: ZERO,
@@ -115,7 +148,8 @@ export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
   settings: {
     showInvalidMarketsBannerFeesOrLiquiditySpread: true,
     showInvalidMarketsBannerHideOrShow: true,
-    templateFilter: Getters.Markets.TemplateFilters.templateOnly,
+    marketTypeFilter: FILTER_ALL,
+    templateFilter: TemplateFilters.templateOnly,
     maxFee: MAX_FEE_02_PERCENT,
     maxLiquiditySpread: MAX_SPREAD_ALL_SPREADS,
     includeInvalidMarkets: INVALID_OPTIONS.Hide,
@@ -127,10 +161,12 @@ export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
     marketsTraded: 0,
     successfulDisputes: 0,
     redeemedPositions: 0,
-  }
+  },
 };
 
-const DEFAULT_ENV: SDKConfiguration = JSON.parse(JSON.stringify(DEFAULT_SDK_CONFIGURATION));
+const DEFAULT_ENV: SDKConfiguration = JSON.parse(
+  JSON.stringify(DEFAULT_SDK_CONFIGURATION)
+);
 const DEFAULT_GAS_PRICE_INFO: GasPriceInfo = {
   userDefinedGasPrice: null,
   average: formatGasCostGwei(DEFAULT_FALLBACK_GAS_AVERAGE, {}).value,
@@ -142,7 +178,7 @@ const DEFAULT_BLOCKCHAIN: Blockchain = {
   currentAugurTimestamp: moment().unix(), // default to user's time until new block comes in
   lastSyncedBlockNumber: 0,
   blocksBehindCurrent: 0,
-  percentSynced: "0"
+  percentSynced: '0',
 };
 const DEFAULT_UNIVERSE_STATE: Universe = {
   children: null,
@@ -171,13 +207,14 @@ const DEFAULT_UNIVERSE_STATE: Universe = {
     disputedMarkets: 0,
     volume: ZERO,
     amountStaked: ZERO,
-  }
+  },
 };
 export const MARKET_FILTER = 'marketFilter';
 export const MARKET_SORT = 'marketSort';
 export const MARKET_MAX_FEES = 'maxFee';
 export const MARKET_MAX_SPREAD = 'maxLiquiditySpread';
 export const MARKET_SHOW_INVALID = 'includeInvalidMarkets';
+export const MARKET_TYPE_FILTER = 'marketTypeFilter';
 export const TRANSACTION_PERIOD = 'transactionPeriod';
 export const TEMPLATE_FILTER = 'templateFilter';
 const DEFAULT_FILTER_SORT_OPTIONS: FilterSortOptions = {
@@ -186,8 +223,9 @@ const DEFAULT_FILTER_SORT_OPTIONS: FilterSortOptions = {
   [MARKET_MAX_FEES]: MAX_FEE_02_PERCENT,
   [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS,
   [MARKET_SHOW_INVALID]: INVALID_OPTIONS.Hide,
+  [MARKET_TYPE_FILTER]: FILTER_ALL,
   [TRANSACTION_PERIOD]: DAY,
-  [TEMPLATE_FILTER]: Getters.Markets.TemplateFilters.templateOnly,
+  [TEMPLATE_FILTER]: TemplateFilters.templateOnly,
 };
 
 const DEFAULT_MARKETS_LIST_STATE: MarketsList = {
@@ -196,7 +234,7 @@ const DEFAULT_MARKETS_LIST_STATE: MarketsList = {
   selectedCategories: [],
   selectedCategory: null,
   marketCardFormat: MARKET_CARD_FORMATS.CLASSIC,
-  isSearchInPlace: false
+  isSearchInPlace: false,
 };
 
 export const DEFAULT_APP_STATUS = {
@@ -296,11 +334,11 @@ export const APP_STATUS_ACTIONS = {
   ADD_UPDATE_DRAFT: 'ADD_UPDATE_DRAFT',
   REMOVE_DRAFT: 'REMOVE_DRAFT',
   LOAD_DRAFTS: 'LOAD_DRAFTS',
-  ADD_ORDER_TO_NEW_MARKET: "ADD_ORDER_TO_NEW_MARKET",
-  REMOVE_ORDER_FROM_NEW_MARKET: "REMOVE_ORDER_FROM_NEW_MARKET",
-  REMOVE_ALL_ORDER_FROM_NEW_MARKET: "REMOVE_ALL_ORDER_FROM_NEW_MARKET",
-  UPDATE_NEW_MARKET: "UPDATE_NEW_MARKET",
-  CLEAR_NEW_MARKET: "CLEAR_NEW_MARKET",
+  ADD_ORDER_TO_NEW_MARKET: 'ADD_ORDER_TO_NEW_MARKET',
+  REMOVE_ORDER_FROM_NEW_MARKET: 'REMOVE_ORDER_FROM_NEW_MARKET',
+  REMOVE_ALL_ORDER_FROM_NEW_MARKET: 'REMOVE_ALL_ORDER_FROM_NEW_MARKET',
+  UPDATE_NEW_MARKET: 'UPDATE_NEW_MARKET',
+  CLEAR_NEW_MARKET: 'CLEAR_NEW_MARKET',
   UPDATE_MARKETS_LIST: 'UPDATE_MARKETS_LIST',
 };
 
@@ -362,17 +400,17 @@ export const STUBBED_APP_STATUS_ACTIONS = {
     status,
   }) => {},
   removePendingData: ({ hash, queueName, pendingId }) => {},
-  refreshUserOpenOrders: (userOpenOrders) => {},
+  refreshUserOpenOrders: userOpenOrders => {},
   updateUserFilledOrders: (account, userFilledOrders) => {},
   updateAccountPositions: ({ positionData, marketId }) => {},
   addAnalytic: (id, analytic) => {},
-  removeAnalytic: (id) => {},
+  removeAnalytic: id => {},
   addUpdateDraft: (key, draft) => {},
-  removeDraft: (key) => {},
+  removeDraft: key => {},
   loadDrafts: drafts => {},
-  addOrderToNewMarket: (order) => {},
-  removeOrderFromNewMarket: (order) => {},
-  updateNewMarket: (newMarketData) => {},
+  addOrderToNewMarket: order => {},
+  removeOrderFromNewMarket: order => {},
+  updateNewMarket: newMarketData => {},
   removeAllOrdersFromNewMarket: () => {},
   clearNewMarket: () => {},
   updateMarketsList: data => {},

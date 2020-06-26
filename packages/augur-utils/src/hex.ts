@@ -1,8 +1,26 @@
 import BigNumber from "bignumber.js";
 import { abiEncodeBytes } from "./abi-encode-bytes";
 import { bignum } from "./bignum";
-import { prefixHex } from "./prefix-hex";
 import { wrap } from "./wrap";
+
+export function prefixHex(n) {
+  if (n === undefined || n === null || n === "") return n;
+  if (n.constructor === Number || BigNumber.isBigNumber(n)) {
+    n = n.toString(16);
+  }
+  if (n.constructor === String && n.slice(0, 2) !== "0x" && n.slice(0, 3) !== "-0x") {
+    if (n.slice(0, 1) === "-") {
+      n = "-0x" + n.slice(1);
+    } else {
+      n = "0x" + n;
+    }
+  }
+  return n;
+}
+
+export function padHex(hexString: string): string {
+  return `0x${hexString.substr(2).padStart(64, "0")}`;
+}
 
 export function hex(n, isWrapped=false) {
   let h;
@@ -49,4 +67,6 @@ export function hex(n, isWrapped=false) {
   return prefixHex(h);
 }
 
-
+export function stringTo32ByteHex(stringToEncode: string): string {
+    return `0x${Buffer.from(stringToEncode, 'utf8').toString('hex').padEnd(64, '0')}`;
+}

@@ -1,40 +1,63 @@
-import {
-  Getters,
-  SubscriptionEventName,
-  Events,
-  Logs,
-  TXEventName,
-  OrderEventType,
-} from '@augurproject/sdk';
-import { logger } from '@augurproject/utils';
 import { updateAlert } from 'modules/alerts/actions/alerts';
+import { loadAnalytics } from 'modules/app/actions/analytics-management';
+import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
+import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import {
   loadAllAccountPositions,
   loadAccountOnChainFrozenFundsTotals,
   checkUpdateUserPositions,
 } from 'modules/positions/actions/load-account-positions';
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 import { updateAssets } from 'modules/auth/actions/update-assets';
-import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
-import { MarketInfos } from 'modules/types';
 import { isSameAddress } from 'utils/isSameAddress';
-import { Events, Logs, TXEventName, OrderEventType } from '@augurproject/sdk';
+import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
+import {
+  DisputeCrowdsourcerCompletedLog,
+  DisputeCrowdsourcerContributionLog,
+  DisputeCrowdsourcerCreatedLog,
+  DisputeCrowdsourcerRedeemedLog,
+  DisputeWindowCreatedLog,
+  InitialReporterRedeemedLog,
+  InitialReportSubmittedLog,
+  MarketFinalizedLog,
+  MarketInfo,
+  NewBlock,
+  OrderEventType,
+  ParsedOrderEventLog,
+  ParticipationTokensRedeemedLog,
+  ProfitLossChangedLog,
+  ReportingParticipantDisavowedLog,
+  SubscriptionEventName,
+  TokenBalanceChangedLog,
+  TokensTransferredLog,
+  TokenType,
+  TradingProceedsClaimedLog,
+  TXEventName,
+  TXStatus,
+  UniverseForkedLog,
+} from '@augurproject/sdk-lite';
+import { logger } from '@augurproject/utils';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
+import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
+import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import {
+  BUYPARTICIPATIONTOKENS,
+  CLAIMMARKETSPROCEEDS,
   CLAIMTRADINGPROCEEDS,
   CONTRIBUTE,
+  CREATE_MARKET,
   CREATEMARKET,
+  DISAVOWCROWDSOURCERS,
   DOINITIALREPORT,
+  DOINITIALREPORTWARPSYNC,
+  MARKETMIGRATED,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  MODAL_ERROR,
+  MODAL_GAS_PRICE,
   PUBLICFILLORDER,
   REDEEMSTAKE,
-  CREATE_MARKET,
-  MODAL_GAS_PRICE,
-  SUBMIT_REPORT,
-  MIGRATE_FROM_LEG_REP_TOKEN,
-  BUYPARTICIPATIONTOKENS,
   SUBMIT_DISPUTE,
   CLAIMMARKETSPROCEEDS,
   DISAVOWCROWDSOURCERS,
@@ -43,21 +66,28 @@ import {
   ZEROX_STATUSES,
   MODAL_ERROR,
   PUBLICTRADE,
+  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
-import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
-import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
+import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import {
-  isOnDisputingPage,
-  isOnReportingPage,
-} from 'modules/trades/helpers/is-on-page';
+  removeMarket,
+  updateMarketsData,
+} from 'modules/markets/actions/update-markets-data';
+import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
+import {
+  constructPendingOrderid,
+  removePendingOrder,
+} from 'modules/orders/actions/pending-orders-management';
 import {
   reloadDisputingPage,
   reloadReportingPage,
 } from 'modules/reporting/actions/update-reporting-list';
-import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
-import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
-import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
-import { loadAnalytics } from 'modules/app/actions/analytics-management';
+import {
+  isOnDisputingPage,
+  isOnReportingPage,
+} from 'modules/trades/helpers/is-on-page';
+import { MarketInfos } from 'modules/types';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import * as _ from 'lodash';
 import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
@@ -69,18 +99,10 @@ import {
   removePendingTransaction,
   findAndSetTransactionsTimeouts,
 } from 'modules/pending-queue/actions/pending-queue-management';
-import {
-  removePendingOrder,
-  constructPendingOrderid,
-} from 'modules/orders/actions/pending-orders-management';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
-import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
-import { WALLET_STATUS_VALUES } from 'modules/common/constants';
-import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
-import { logger } from '@augurproject/utils';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 
@@ -240,7 +262,7 @@ export const handleMarketsUpdatedLog = ({
       {} as MarketInfos
     );
   } else {
-    const market = marketsInfo as Getters.Markets.MarketInfo;
+    const market = marketsInfo as MarketInfo;
     if (Object.keys(market).length === 0) return;
     marketsDataById[market.id] = market;
   }
