@@ -226,6 +226,8 @@ export function connectAugur(
     let Augur = null;
     try {
       await augurSdkLite.makeLiteClient(provider, config.addresses, config.networkId);
+      dispatch(updateCanHotload(true)); // Hotload now!
+
       Augur = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
@@ -272,7 +274,6 @@ export function connectAugur(
 
     // wire up start up events for sdk
     dispatch(listenForStartUpEvents(Augur));
-    dispatch(updateCanHotload(true));
 
     await augurSdk.connect();
     callback(null);
