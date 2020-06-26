@@ -283,8 +283,8 @@ export const Title = (props: TitleProps) => (
   </header>
 );
 
-export const Description = (props: DescriptionProps) => {
-  return props.description.toString().split('\n').map((descriptionText: string) => (
+export const Description = ({description}: DescriptionProps) => {
+  return description.join(' ').toString().split('\n').map((descriptionText: string) => (
     <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
       {descriptionText}
     </p>
