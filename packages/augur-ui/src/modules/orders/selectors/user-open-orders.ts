@@ -85,7 +85,6 @@ export const selectUserOpenOrders = createSelector(
         sharesEscrowed: formatMarketShares(market.marketType, 0, {
           zeroStyled: true,
         }),
-        pending: !!o.status, // TODO: can show status of transaction in the future
         status: o.status,
       }));
       userOpenOrderCollection = formatted.concat(userOpenOrderCollection);

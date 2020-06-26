@@ -263,6 +263,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
         setFilteredTransactions(filteredTransactions);
       }
     );
+    setPage(1);
   };
 
   const resetSearch = () => {
