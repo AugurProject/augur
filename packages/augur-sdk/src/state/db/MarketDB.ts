@@ -530,7 +530,7 @@ export class MarketDB extends DerivedDB {
 
         if (log['isTemplate'] && log['marketType'] === MarketType.Categorical) {
           const { groupLine, groupType, hashKeyInputValues, header, title, estTimestamp,
-            canPoolLiquidity, liquidityPoolId } = getGroupHashInfo(
+            canPoolLiquidity, liquidityPoolId, placeholderOutcomes } = getGroupHashInfo(
             log['extraInfo'].template
           );
           log['groupHash'] = hashKeyInputValues;
@@ -540,6 +540,7 @@ export class MarketDB extends DerivedDB {
           log['groupTitle'] = title;
           log['groupEstDatetime'] = estTimestamp;
           log['liquidityPool'] = canPoolLiquidity ? liquidityPoolId : log['market'];
+          if (placeholderOutcomes) log['groupPlaceholderOutcomes'] = placeholderOutcomes
         }
       }
     } catch (err) {

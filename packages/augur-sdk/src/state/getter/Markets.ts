@@ -1290,7 +1290,8 @@ async function getMarketsInfo(
         header: marketData.groupHeader,
         title: marketData.groupTitle,
         estTimestamp: marketData.groupEstDatetime,
-        liquidityPool: marketData.liquidityPool
+        liquidityPool: marketData.liquidityPool,
+        placeholderOutcomes: marketData.groupPlaceholderOutcomes,
       }
     };
   });
