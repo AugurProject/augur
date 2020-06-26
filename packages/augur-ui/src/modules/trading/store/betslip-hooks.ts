@@ -80,7 +80,7 @@ export function BetslipReducer(state, action) {
       break;
     }
     case ADD_BET: {
-      const { marketId, description, outcome, odds, wager, outcomeId } = action;
+      const { marketId, description, outcome, odds, wager, outcomeId, price } = action;
       if (!betslipItems[marketId]) {
         betslipItems[marketId] = {
           description,
@@ -92,6 +92,7 @@ export function BetslipReducer(state, action) {
         odds,
         wager,
         outcomeId,
+        price,
         toWin: '0',
         amountFilled: '0',
         amountWon: '0',
@@ -263,9 +264,7 @@ export function BetslipReducer(state, action) {
 export const placeBet = async (marketId, order) =>  {
   const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
-  console.log(order);
-  console.log(marketId);
-  // todo: need to add user shares, approval check? 
+  // todo: need to add user shares, approval check, pending queue
   await placeTrade(
           0,
           marketId,
@@ -276,11 +275,7 @@ export const placeBet = async (marketId, order) =>  {
           market.minPrice,
           market.maxPrice,
           order.wager,
-          convertToPrice({
-            odds: order.odds,
-            min: market.minPrice,
-            max: market.maxPrice
-          }),
+          order.price,
           0,
           '0',
           undefined
@@ -300,8 +295,8 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
           dispatch({ type: TOGGLE_SUBHEADER });
       },
       toggleStep: () => dispatch({ type: TOGGLE_STEP }),
-      addBet: (marketId, description, odds, outcome, wager = "0", outcomeId) => {
-        dispatch({ type: ADD_BET, marketId, description, odds, outcome, wager, outcomeId });
+      addBet: (marketId, description, odds, outcome, wager = "0", outcomeId, price = "0") => {
+        dispatch({ type: ADD_BET, marketId, description, odds, outcome, wager, outcomeId, price });
       },
       sendBet: (marketId, orderId, description, order) => {
         dispatch({ type: SEND_BET, marketId, orderId, description, order });

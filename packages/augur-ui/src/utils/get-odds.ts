@@ -72,28 +72,6 @@ export const convertToOdds = ({
   return getOddsObject(normalizedPrice, toDecimals);
 };
 
-export const convertToPrice = ({
-  odds,
-  min = 0,
-  max = 1,
-  type = BID,
-  toDecimals = 4,
-}) => {
-  const bnMin = createBigNumber(min);
-  const bnMax = createBigNumber(max);
-  let normalizedPrice = createBigNumber(odds).dividedBy(HUNDRED);
-  normalizedPrice =
-    type === BID ? normalizedPrice : createBigNumber(1).minus(normalizedPrice);
-  const price = normalizedPrice.times(bnMax.minus(bnMin)).plus(min);
-  // const bnMin = createBigNumber(min);
-  // const bnMax = createBigNumber(max);
-  // let normalizedOdds = bnOdds.times(bnMax.minus(bnMin)).plus(min);
-  // normalizedOdds =
-  //   type === BID ? normalizedOdds : createBigNumber(1).minus(normalizedOdds);
-console.log(price.toString());
-  return price;
-};
-
 export const getNewToWin = (odds, wager, toDecimals = 2) => {
   const fractional = convertAmericanToFractional(odds);
   const bnWager = createBigNumber(wager);
