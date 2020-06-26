@@ -1,3 +1,4 @@
+
 import logError from 'utils/log-error';
 import { NodeStyleCallback } from 'modules/types';
 import {
@@ -6,7 +7,7 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { BUYPARTICIPATIONTOKENS } from 'modules/common/constants';
-import { TXEventName } from '@augurproject/sdk';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export const purchaseParticipationTokens = async (

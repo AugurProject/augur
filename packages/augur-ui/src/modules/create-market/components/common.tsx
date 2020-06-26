@@ -1,23 +1,49 @@
 import React, { Component, useState, useEffect, useReducer, Fragment } from 'react';
 import classNames from 'classnames';
+import ReactTooltip from 'react-tooltip';
 
 import { SecondaryButton } from 'modules/common/buttons';
 import {
-  TextInput,
+  CATEGORICAL,
+  CATEGORICAL_OUTCOMES_MIN_NUM,
+  REP,
+} from 'modules/common/constants';
+import {
   DatePicker,
-  TimeSelector,
-  TimezoneDropdown,
   FormDropdown,
   RadioBarGroup,
+  TextInput,
+  TimeSelector,
+  TimezoneDropdown,
 } from 'modules/common/form';
-import { XIcon, AddIcon, helpIcon } from 'modules/common/icons';
-import ReactTooltip from 'react-tooltip';
+import { AddIcon, helpIcon, XIcon } from 'modules/common/icons';
+import MarkdownRenderer from 'modules/common/markdown-renderer';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Link from 'modules/create-market/link';
 import Styles from 'modules/create-market/components/common.styles.less';
 import {
-  FormattedNumber,
+  FRIDAY_DAY_OF_WEEK,
+  MARKET_COPY_LIST,
+  SelectEventNoticeText,
+  TemplateBannerText,
+} from 'modules/create-market/constants';
+import Link from 'modules/create-market/components/link';
+import {
+  buildMarketDescription,
+  createTemplateOutcomes,
+  createTemplateValueList,
+  getEventExpirationForExchange,
+  substituteUserOutcome,
+} from 'modules/create-market/get-template';
+import PreviewMarketTitle
+  from 'modules/market/components/common/PreviewMarketTitle';
+import {
+  DISMISSABLE_NOTICE_BUTTON_TYPES,
+  DismissableNotice,
+} from 'modules/reporting/common';
+import {
   DateFormattedObject,
+  FormattedNumber,
   NewMarket,
   TimezoneDateObject,
 } from 'modules/types';
@@ -51,15 +77,19 @@ import {
   createTemplateValueList,
   getEventExpirationForExchange,
 } from 'modules/create-market/get-template';
-import {
+import type {
   TemplateInput,
-  TemplateInputType,
   Template,
   UserInputDateTime,
+} from '@augurproject/templates';
+import {
+  TemplateInputType,
+  ValidationType,
+} from '@augurproject/templates';
+import {
   CHOICE,
   REQUIRED,
-  ValidationType,
-} from '@augurproject/artifacts';
+} from '@augurproject/sdk-lite'
 import {
   TemplateBannerText,
   SelectEventNoticeText,
@@ -71,7 +101,7 @@ import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
 } from 'modules/reporting/common';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';

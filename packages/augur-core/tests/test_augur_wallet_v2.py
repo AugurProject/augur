@@ -78,6 +78,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
         (account,
         nonce,
         relayer,
+        augurWalletRegistry.address,
         augurWalletRegistry.address)
     )
 
@@ -85,13 +86,11 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
 
     signature = signMessage(messageHash, accountKey)
 
-    maxPossibleGasLimit = 2000000
-    canAcceptRelayGasLimit = 100000
+    maxPossibleGasLimit = 4000000
 
-    success, failureReason = relayHub.canRelay(
+    success, failureReason, gasLimits = relayHub.canRelay(
         relayRequest,
         maxPossibleGasLimit,
-        canAcceptRelayGasLimit,
         signature,
         approvalData)
 
@@ -107,7 +106,9 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
             relayRequest,
             signature,
             approvalData,
-            sender=relayer
+            maxPossibleGasLimit,
+            sender=relayer,
+            gas=4100000
         )
 
     assert augurWalletRegistry.getWallet(account) == walletAddress
@@ -139,6 +140,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
         (account,
         nonce,
         relayer,
+        augurWalletRegistry.address,
         augurWalletRegistry.address)
     )
 
@@ -146,10 +148,9 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
 
     signature = signMessage(messageHash, accountKey)
 
-    success, failureReason = relayHub.canRelay(
+    success, failureReason, gasLimits = relayHub.canRelay(
         relayRequest,
         maxPossibleGasLimit,
-        canAcceptRelayGasLimit,
         signature,
         approvalData)
 
@@ -168,7 +169,9 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
                 relayRequest,
                 signature,
                 approvalData,
-                sender=relayer
+                maxPossibleGasLimit,
+                sender=relayer,
+                gas=4100000
             )
 
     # Lets try sending some eth with the wallet
@@ -192,6 +195,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
         (account,
         nonce,
         relayer,
+        augurWalletRegistry.address,
         augurWalletRegistry.address)
     )
 
@@ -199,10 +203,9 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
 
     signature = signMessage(messageHash, accountKey)
 
-    success, failureReason = relayHub.canRelay(
+    success, failureReason, gasLimits = relayHub.canRelay(
         relayRequest,
         maxPossibleGasLimit,
-        canAcceptRelayGasLimit,
         signature,
         approvalData)
 
@@ -216,7 +219,9 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
         relayRequest,
         signature,
         approvalData,
-        sender=relayer
+        maxPossibleGasLimit,
+        sender=relayer,
+        gas=4100000
     )
 
     assert contractsFixture.ethBalance(ethRecipient) == oldBalance + ethAmount
@@ -275,6 +280,7 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
     additionalFee = 10 # 10%
     gasPrice = 1
     gasLimit = 3000000
+    maxPossibleGasLimit = 4000000
     approvalData = ""
     baseFee = 0
 
@@ -288,6 +294,7 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
         (account,
         nonce,
         relayer,
+        augurWalletRegistry.address,
         augurWalletRegistry.address)
     )
 
@@ -301,7 +308,9 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
         relayRequest,
         signature,
         approvalData,
-        sender=relayer
+        maxPossibleGasLimit,
+        sender=relayer,
+        gas=4100000
     )
 
     assert augurWalletRegistry.getWallet(account) == walletAddress
@@ -360,6 +369,7 @@ def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, ca
     additionalFee = 10 # 10%
     gasPrice = 1
     gasLimit = 3000000
+    maxPossibleGasLimit = 4000000
     approvalData = ""
     baseFee = 0
 
@@ -373,6 +383,7 @@ def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, ca
         (account,
         nonce,
         relayer,
+        augurWalletRegistry.address,
         augurWalletRegistry.address)
     )
 
@@ -386,7 +397,9 @@ def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, ca
         relayRequest,
         signature,
         approvalData,
-        sender=relayer
+        maxPossibleGasLimit,
+        sender=relayer,
+        gas=4100000
     )
 
     assert augurWalletRegistry.getWallet(account) == walletAddress

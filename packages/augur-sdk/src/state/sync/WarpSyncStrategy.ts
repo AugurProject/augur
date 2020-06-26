@@ -1,8 +1,9 @@
+import { logger } from '@augurproject/utils';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import { Log } from '@augurproject/types';
 import { Block } from 'ethers/providers';
 import _ from 'lodash';
-import { SECONDS_IN_A_DAY } from '../../constants';
 import { WarpController } from '../../warp/WarpController';
 import { DB } from '../db/DB';
 
@@ -56,11 +57,12 @@ export class WarpSyncStrategy {
         logs = checkpoint.logs;
         endBlockNumber = checkpoint.endBlockNumber;
       } catch(e) {
-        console.error(`Couldn't get checkpoint file: ${e}`);
+        logger.error(`Couldn't get checkpoint file: ${e}`);
         return undefined;
       }
 
       // Blow it all away and refresh.
+      logger.debug("Applying Warp Sync File");
       await this.warpSyncController.destroyAndRecreateDB();
       await this.warpSyncController.createInitialCheckpoint();
 

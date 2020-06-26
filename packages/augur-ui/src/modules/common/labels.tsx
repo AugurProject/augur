@@ -55,7 +55,8 @@ import {
   SizeTypes,
   MarketData,
 } from 'modules/types';
-import { Getters, TXEventName } from '@augurproject/sdk';
+import type { Getters } from '@augurproject/sdk';
+import { TXEventName } from '@augurproject/sdk-lite';
 import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
   DismissableNotice,
@@ -69,7 +70,7 @@ import {
   ExplainerBlock,
   MultipleExplainerBlock,
 } from 'modules/create-market/components/common';
-import { hasTemplateTextInputs } from '@augurproject/artifacts';
+import { hasTemplateTextInputs } from '@augurproject/templates';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
@@ -140,6 +141,9 @@ export interface LinearPropertyLabelProps {
   useValueLabel?: boolean;
   showDenomination?: boolean;
   useFull?: boolean;
+  underline?: boolean;
+  onValueClick?: Function;
+  regularCase?: boolean;
 }
 
 export interface LinearPropertyLabelTooltipProps {
@@ -886,6 +890,9 @@ export const LinearPropertyLabel = ({
   accentValue,
   value,
   useFull,
+  underline,
+  onValueClick,
+  regularCase,
 }: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
@@ -894,7 +901,11 @@ export const LinearPropertyLabel = ({
       [Styles.HighlightFirst]: highlightFirst,
     })}
   >
-    <span>{label}</span>
+    <span
+      className={classNames({
+        [Styles.RegularCase]: regularCase,
+    })}
+    >{label}</span>
     <DashlineNormal />
     {useValueLabel ? (
       <ValueLabel
@@ -906,7 +917,9 @@ export const LinearPropertyLabel = ({
       <span
         className={classNames({
           [Styles.isAccented]: accentValue,
+          [Styles.underline]: underline,
         })}
+        onClick={() => onValueClick && onValueClick()}
       >
         {value && value.formatted
           ? `${

@@ -1,6 +1,6 @@
 import { Block, BlockTag } from 'ethers/providers';
 import { ContractEvents } from './ContractEvents';
-import { NetworkId } from '@augurproject/artifacts';
+import { NetworkId } from '@augurproject/utils';
 import { Filter, Log, LogValues, Provider } from '..';
 import { Abi } from 'ethereum';
 import { JSONRPCRequestPayload } from 'ethereum-types';

@@ -6,10 +6,12 @@ import {
   MAX_FEE_100_PERCENT,
   MAX_SPREAD_ALL_SPREADS,
   REPORTING_STATE,
+  FILTER_ALL,
   THEMES,
 } from 'modules/common/constants';
 import * as _ from 'lodash';
-import { Getters, MarketReportingState } from '@augurproject/sdk';
+import { Getters } from '@augurproject/sdk';
+import { GetMarketsSortBy, MarketReportingState, TemplateFilters } from '@augurproject/sdk-lite'
 import {
   addUpdateMarketInfos,
   UpdateMarketsAction,
@@ -20,7 +22,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from '../store/markets';
 
 interface SortOptions {
-  sortBy?: Getters.Markets.GetMarketsSortBy;
+  sortBy?: GetMarketsSortBy;
   isSortDescending?: boolean;
 }
 
@@ -35,6 +37,7 @@ export interface LoadMarketsFilterOptions {
   limit: number;
   offset: number;
   templateFilter?: string;
+  marketTypeFilter?: string;
 }
 
 export const organizeReportingStates = reportingState => {
@@ -88,54 +91,54 @@ export const loadMarketsByFilter = async (
   switch (filterOptions.sort) {
     case MARKET_SORT_PARAMS.RECENTLY_TRADED: {
       // Sort By Recently Traded:
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.lastTradedTimestamp;
+      sort.sortBy = GetMarketsSortBy.lastTradedTimestamp;
       sort.isSortDescending = true;
       break;
     }
     case MARKET_SORT_PARAMS.END_DATE: {
       // Sort By End Date (soonest first):
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.endTime;
+      sort.sortBy = GetMarketsSortBy.endTime;
       sort.isSortDescending = false;
       break;
     }
     case MARKET_SORT_PARAMS.VOLUME: {
       // Highest volume
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.volume;
+      sort.sortBy = GetMarketsSortBy.volume;
       sort.isSortDescending = true;
       break;
     }
     case MARKET_SORT_PARAMS.LIQUIDITY: {
       // Highest liquidity
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.liquidity;
+      sort.sortBy = GetMarketsSortBy.liquidity;
       sort.isSortDescending = true;
       break;
     }
     case MARKET_SORT_PARAMS.CREATION_TIME: {
       // Sort By Creation Date (most recent first):
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.timestamp;
+      sort.sortBy = GetMarketsSortBy.timestamp;
       sort.isSortDescending = true;
       break;
     }
     case MARKET_SORT_PARAMS.OPEN_INTEREST: {
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.marketOI;
+      sort.sortBy = GetMarketsSortBy.marketOI;
       sort.isSortDescending = true;
       break;
     }
     default: {
       // Sort By Recently Traded
-      sort.sortBy = Getters.Markets.GetMarketsSortBy.lastTradedTimestamp;
+      sort.sortBy = GetMarketsSortBy.lastTradedTimestamp;
       sort.isSortDescending = true;
       break;
     }
   }
 
   const paginationOffset = filterOptions.offset ? filterOptions.offset - 1 : 0;
-  let templateFilter = filterOptions.templateFilter as Getters.Markets.TemplateFilters;
+  let templateFilter = filterOptions.templateFilter as TemplateFilters;
   if (theme === THEMES.SPORTS) {
     filterOptions.maxFee = MAX_FEE_100_PERCENT;
     filterOptions.includInvalidMarkets = false;
     filterOptions.maxLiquiditySpread = MAX_SPREAD_ALL_SPREADS;
-    templateFilter = Getters.Markets.TemplateFilters.sportsBook;
+    templateFilter = TemplateFilters.sportsBook;
   }
   let params = {
     universe: universe.id,
@@ -149,12 +152,14 @@ export const loadMarketsByFilter = async (
     maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread,
     ...sort,
     templateFilter,
+    marketTypeFilter: filterOptions.marketTypeFilter,
   };
 
   // not pass properties at their max value
   if (filterOptions.maxFee === MAX_FEE_100_PERCENT) delete params.maxFee;
   if (filterOptions.maxLiquiditySpread === MAX_SPREAD_ALL_SPREADS)
     delete params.maxLiquiditySpread;
+  if (filterOptions.marketTypeFilter === FILTER_ALL) delete params.marketTypeFilter;
 
   const marketList = await augur.getMarkets({ ...params });
   const marketInfos = addUpdateMarketInfos(marketList.markets);
@@ -248,7 +253,7 @@ const loadReportingMarkets = (
    Markets.actions.updateReportingList(reportingState, [], filterOptions, true);
   }
   const params = {
-    sortBy: Getters.Markets.GetMarketsSortBy.endTime,
+    sortBy: GetMarketsSortBy.endTime,
     universe: universe.id,
     includeWarpSyncMarkets: true,
     ...filterOptions,
@@ -284,9 +289,10 @@ const getMarkets = (reportingState, params, cb) => async () => {
 
 const hotLoadMarket = _.throttle(
   marketId => {
-    const augur = augurSdk.get();
-    augur.hotloadMarket(marketId);
     console.log('Hot Loading Market', marketId);
+
+    const augur = augurSdk.get();
+    return augur.hotloadMarket(marketId);
   },
   1000,
   { leading: true }

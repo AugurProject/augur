@@ -25,7 +25,7 @@ import { ModalTutorialOutro } from 'modules/modal/onboarding-modals';
 import { ModalTutorialIntro } from 'modules/modal/onboarding-modals';
 import { Scalar as ModalScalar } from 'modules/modal/scalar';
 import { useHistory } from 'react-router';
-
+import { ModalFrozenFunds } from 'modules/modal/components/modal-frozen-funds';
 import * as TYPES from 'modules/common/constants';
 
 import Styles from 'modules/modal/common.styles.less';
@@ -138,6 +138,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalInvalidMarketRules />;
     case TYPES.MODAL_INITIALIZE_ACCOUNT:
       return <ModalInitializeAccounts />;
+    case TYPES.MODAL_FROZEN_FUNDS:
+      return <ModalFrozenFunds />;
     default:
       return <div />;
   }

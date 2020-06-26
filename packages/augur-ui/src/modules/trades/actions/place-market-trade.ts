@@ -10,12 +10,12 @@ import {
   placeTrade,
   approveToTrade,
 } from 'modules/contracts/actions/contractCalls';
+import type { Getters } from '@augurproject/sdk';
+import { TXEventName } from '@augurproject/sdk-lite'
 import {
-  Getters,
-  TXEventName,
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
-} from '@augurproject/sdk';
+} from "@augurproject/utils"
 import {
   addPendingOrder,
   updatePendingOrderStatus,

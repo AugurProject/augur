@@ -13,7 +13,7 @@ function LoadMore ({ parentElement, onActivate, ...rest }) {
     if (typeof onActivate === 'function') onActivate()
   }, [onActivate])
 
-  const debouncedActivate = React.useCallback(debounce(activate, 100, { leading: true }), [
+  const debouncedActivate = React.useCallback(debounce(activate, 100, { loading: true }), [
     activate
   ])
 

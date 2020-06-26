@@ -6,7 +6,7 @@ import { BUY_INDEX, SELL_INDEX } from 'modules/common/constants';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { getInfo } from 'modules/alerts/actions/set-alert-text';
-import { TXEventName } from '@augurproject/sdk';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export const page = (eventName, payload) => {
@@ -136,6 +136,7 @@ export const marketListViewed = (
   marketSort,
   maxFee,
   templateFilter,
+  marketTypeFilter,
   includeInvalidMarkets,
   resultCount,
   pageNumber

@@ -7,15 +7,17 @@ import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO, INVALID_OUTCOME_COMPARE } from './constants';
 import { NewMarketPropertiesValidations } from 'modules/types';
-import {
-  ValidationType,
-  TemplateInputType,
-  TemplateInput,
+import type {
   UserInputDateTime,
+  TemplateInput,
+} from '@augurproject/templates'
+import {
   tellOnHoliday,
+  TemplateInputType,
+  ValidationType,
   ValidationTemplateInputType,
   isValidYearYearRangeInQuestion
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 import moment from 'moment';
 import { datesOnSameDay } from 'utils/format-date';
 

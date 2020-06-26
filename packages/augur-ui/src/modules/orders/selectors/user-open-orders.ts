@@ -2,16 +2,26 @@ import memoize from 'memoizee';
 import { createBigNumber } from 'utils/create-big-number';
 
 import {
-  BUY_INDEX,
-  SELL_INDEX,
-  SELL,
+  selectCancelingOrdersState,
+  selectLoginAccountAddress,
+  selectMarketInfosState,
+  selectPendingOrdersState,
+  selectUserMarketOpenOrders,
+} from 'appStore/select-state';
+import memoize from 'memoizee';
+import {
   BUY,
+  BUY_INDEX,
+  SELL,
+  SELL_INDEX,
   YES_NO,
 } from 'modules/common/constants';
-import { TXEventName } from '@augurproject/sdk';
+import { cancelOrder } from 'modules/orders/actions/cancel-order';
+import { createSelector } from 'reselect';
+import { createBigNumber } from 'utils/create-big-number';
 import {
-  TXEventName
-} from '@augurproject/sdk';
+ TXEventName
+} from '@augurproject/sdk-lite';
 import { convertUnixToFormattedDate, convertSaltToFormattedDate } from 'utils/format-date';
 import { formatNone, formatDai, formatMarketShares } from 'utils/format-number';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
@@ -19,6 +29,7 @@ import { CANCELORDER } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 import { Markets } from 'modules/markets/store/markets';
+import getPrecision from 'utils/get-number-precision';
 
 export default function(marketId) {
   if (!marketId) return [];

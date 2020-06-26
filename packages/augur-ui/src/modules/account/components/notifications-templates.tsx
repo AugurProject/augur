@@ -1,15 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import { MarketReportingState } from '@augurproject/sdk-lite';
+import classNames from 'classnames';
+import Styles from 'modules/account/components/notification.styles.less';
+import { CancelTextButton, ProcessingButton } from 'modules/common/buttons';
+import {
+  DISPUTE_ENDS,
+  MARKET_IN_DISPUTE,
+  MARKET_STATUS_MESSAGES,
+  NOTIFICATION_TYPES,
+  REPORTING_ENDS,
+} from 'modules/common/constants';
 import {
   CountdownProgress,
   formatTime,
   MarketProgress,
 } from 'modules/common/progress';
-import { CancelTextButton, ProcessingButton } from 'modules/common/buttons';
+import { getWarpSyncRepReward } from 'modules/contracts/actions/contractCalls';
+import MarketTitle from 'modules/market/components/common/market-title';
 import {
   DateFormattedObject,
   MarketData,
   MarketReportClaimableContracts,
 } from 'modules/types';
+import React, { useEffect, useState } from 'react';
 import { formatDai } from 'utils/format-number';
 import Styles from 'modules/account/components/notification.styles.less';
 import {

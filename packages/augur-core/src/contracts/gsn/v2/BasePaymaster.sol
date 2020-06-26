@@ -2,10 +2,10 @@
 pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
-import "ROOT/gsn/v2/Ownable.sol";
-
+import "ROOT/gsn/v2/interfaces/ISignatureVerifier.sol";
 import "ROOT/gsn/v2/interfaces/IPaymaster.sol";
 import "ROOT/gsn/v2/interfaces/IRelayHub.sol";
+import "ROOT/gsn/v2/interfaces/IForwarder.sol";
 
 /**
  * Abstract base class to be inherited by a concrete Paymaster
@@ -14,9 +14,10 @@ import "ROOT/gsn/v2/interfaces/IRelayHub.sol";
  *  - preRelayedCall
  *  - postRelayedCall
  */
-contract BasePaymaster is IPaymaster, Ownable {
+contract BasePaymaster is IPaymaster {
 
     IRelayHub internal relayHub;
+    IForwarder internal trustedForwarder;
 
     function getHubAddr() public view returns (address) {
         return address(relayHub);
@@ -31,13 +32,24 @@ contract BasePaymaster is IPaymaster, Ownable {
     external
     view
     returns (
-        GSNTypes.GasLimits memory limits
+        IPaymaster.GasLimits memory limits
     ) {
-        return GSNTypes.GasLimits(
+        return IPaymaster.GasLimits(
             ACCEPT_RELAYED_CALL_GAS_LIMIT,
             PRE_RELAYED_CALL_GAS_LIMIT,
             POST_RELAYED_CALL_GAS_LIMIT
         );
+    }
+
+    function _verifySignature(
+        ISignatureVerifier.RelayRequest memory relayRequest,
+        bytes memory signature
+    )
+    public
+    view
+    {
+        require(address(trustedForwarder) == relayRequest.relayData.forwarder, "Forwarder is not trusted");
+        trustedForwarder.verify(relayRequest, signature);
     }
 
     /*
@@ -46,10 +58,6 @@ contract BasePaymaster is IPaymaster, Ownable {
     modifier relayHubOnly() {
         require(msg.sender == getHubAddr(), "Function can only be called by RelayHub");
         _;
-    }
-
-    function setRelayHub(IRelayHub hub) public onlyOwner {
-        relayHub = hub;
     }
 
     /// check current deposit on relay hub.
@@ -64,13 +72,8 @@ contract BasePaymaster is IPaymaster, Ownable {
     // any money moved into the paymaster is transferred as a deposit.
     // This way, we don't need to understand the RelayHub API in order to replenish
     // the paymaster.
-    function () external payable {
+    function() external payable {
         require(address(relayHub) != address(0), "relay hub address not set");
         relayHub.depositFor.value(msg.value)(address(this));
-    }
-
-    /// withdraw deposit from relayHub
-    function withdrawRelayHubDepositTo(uint amount, address payable target) public onlyOwner {
-        relayHub.withdraw(amount, target);
     }
 }

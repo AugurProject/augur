@@ -56,6 +56,8 @@ import { createBigNumber } from 'utils/create-big-number';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import type { Getters } from '@augurproject/sdk';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { StatusErrorMessage } from 'modules/common/labels';
@@ -77,7 +79,6 @@ import { hotloadMarket } from 'modules/markets/actions/load-markets';
 import {
   getMarketAgeInDays,
 } from 'utils/format-date';
-import { Getters } from '@augurproject/sdk/src';
 import { AppStatus } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';

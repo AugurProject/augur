@@ -14,9 +14,6 @@ import MarketTypeFilter from 'modules/filter-sort/market-type-filter';
 import MarketCardFormatSwitcher from 'modules/filter-sort/market-card-format-switcher';
 import updateQuery from 'modules/routes/helpers/update-query';
 import {
-  TYPE_TRADE,
-  MAX_FEE_100_PERCENT,
-  MAX_SPREAD_ALL_SPREADS,
   HELP_CENTER_INVALID_MARKETS,
   THEMES,
   CATEGORY_PARAM_NAME,
@@ -45,6 +42,8 @@ import {
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
   MARKET_FILTER,
+  MAX_FEE_100_PERCENT,
+  MAX_SPREAD_ALL_SPREADS,
 } from 'modules/app/store/constants';
 import { updateLoginAccountSettings } from '../actions/update-login-account-settings';
 import { marketListViewed } from 'services/analytics/helpers';
@@ -108,6 +107,7 @@ const MarketsView = () => {
       marketSort,
       templateFilter,
       includeInvalidMarkets,
+      marketTypeFilter,
     },
     isLogged,
     restoredAccount,
@@ -230,6 +230,7 @@ const MarketsView = () => {
         maxLiquiditySpread,
         includeInvalidMarkets: includeInvalidMarkets === 'show',
         templateFilter,
+        marketTypeFilter,
       },
       (err, result: Getters.Markets.MarketList) => {
         if (err) return console.log('Error loadMarketsFilter:', err);

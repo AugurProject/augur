@@ -3,7 +3,7 @@ import {
   AccountPosition,
 } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
-import { Getters } from '@augurproject/sdk';
+import type { Getters } from '@augurproject/sdk';
 import { AppStatus } from 'modules/app/store/app-status';
 import { isSameAddress } from 'utils/isSameAddress';
 import { Markets } from 'modules/markets/store/markets';

@@ -1,3 +1,6 @@
+import type { SDKConfiguration } from '@augurproject/artifacts';
+import { isDevNetworkId, mergeConfig } from "@augurproject/utils";
+import { augurSdk } from "services/augursdk";
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
@@ -16,32 +19,19 @@ import {
 } from 'modules/common/constants';
 import { windowRef } from 'utils/window-ref';
 import { NodeStyleCallback, WindowApp } from 'modules/types';
-import { augurSdk } from 'services/augursdk';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
-import {
-  loginWithInjectedWeb3,
-  getWeb3Provider,
-} from 'modules/auth/actions/login-with-injected-web3';
-import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
+import { loginWithInjectedWeb3, getWeb3Provider } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { logout } from 'modules/auth/actions/logout';
-import { Augur, Provider } from '@augurproject/sdk';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { tryToPersistStorage } from 'utils/storage-manager';
-import {
-  isDevNetworkId,
-  SDKConfiguration,
-  serializeConfig,
-  mergeConfig,
-  validConfigOrDie,
-} from '@augurproject/artifacts';
 import { getNetwork } from 'utils/get-network-name';
-import { buildConfig } from '@augurproject/artifacts';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { isGoogleBot } from 'utils/is-google-bot';
+import { isMobileSafari } from 'utils/is-safari';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -72,10 +62,6 @@ async function loadAccountIfStored() {
         }
         await loginWithInjectedWeb3();
       }
-      if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-        await loginWithPortis(false);
-      }
-
       if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
         await loginWithFortmatic();
       }
@@ -142,10 +128,6 @@ export const connectAugur = async (
     preloadAccount(ACCOUNT_TYPES.WEB3WALLET);
   }
 
-  if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-    preloadAccount(ACCOUNT_TYPES.PORTIS);
-  }
-
   if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
     preloadAccount(ACCOUNT_TYPES.FORTMATIC);
   }
@@ -194,18 +176,25 @@ export const connectAugur = async (
 
   // Disable mesh/gsn for googleBot
   if (isGoogleBot()) {
-    config = validConfigOrDie(
-      mergeConfig(config, {
-        zeroX: { mesh: { enabled: false } },
-        gsn: { enabled: false },
-        useWarpSync: false,
-      })
-    );
+    config = mergeConfig(config, {
+      zeroX: { mesh: { enabled: false } },
+      gsn: { enabled: false },
+      useWarpSync: false,
+    })
   }
 
-  let sdk: Augur<Provider> = null;
+  if (isMobileSafari()) {
+    config = mergeConfig(config, {
+      warpSync: {
+        autoReport: false,
+        enabled: false,
+      },
+    })
+  }
+
+  let Augur = null;
   try {
-    sdk = await augurSdk.makeClient(provider, config);
+    Augur = await augurSdk.makeClient(provider, config);
   } catch (e) {
     console.error(e);
     if (provider._network && config.networkId !== provider._network.chainId) {
@@ -217,9 +206,10 @@ export const connectAugur = async (
     } else {
       return callback('SDK could not be created', { config });
     }
+    provider = new Web3Provider(torus.provider);
   }
 
-  let universeId = config.addresses?.Universe || sdk.contracts.universe.address;
+  let universeId = config.addresses?.Universe || Augur.contracts.universe.address;
   if (
     windowApp.localStorage &&
     windowApp.localStorage.getItem &&
@@ -241,13 +231,8 @@ export const connectAugur = async (
     AppStatus.actions.closeModal();
   }
 
-  if (isInitialConnection) {
-    loadAccountIfStored();
-    pollForNetwork();
-  }
-
   // wire up start up events for sdk
-  listenForStartUpEvents(sdk);
+  listenForStartUpEvents(Augur);
   AppStatus.actions.setCanHotload(true);
 
   await augurSdk.connect();
@@ -271,8 +256,7 @@ export const initAugur = async (
   }: initAugurParams,
   callback: NodeStyleCallback = logError
 ) => {
-  // const config: SDKConfiguration = environments[`${process.env.ETHEREUM_NETWORK}`];
-  const config = buildConfig(process.env.ETHEREUM_NETWORK || 'local');
+  const config: SDKConfiguration = process.env.CONFIGURATION;
 
   config.ethereum.useWeb3Transport = useWeb3Transport;
 
@@ -283,12 +267,6 @@ export const initAugur = async (
   if (sdkEndpoint) {
     config.sdk.ws = sdkEndpoint;
   }
-
-  console.log(
-    '******** CONFIGURATION ***********\n' +
-      serializeConfig(config) +
-      '\n**********************************'
-  );
   // cache fingerprint
   getFingerprint();
   AppStatus.actions.setEnv(config);

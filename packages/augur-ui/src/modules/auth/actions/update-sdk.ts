@@ -23,68 +23,67 @@ export const updateSdk = async (
   loginAccount: Partial<LoginAccount>,
   networkId: string
 ) => {
-    if (!loginAccount || !loginAccount.address || !loginAccount.meta) return;
-    if (!augurSdk.sdk) return;
+  if (!loginAccount || !loginAccount.address || !loginAccount.meta) return;
+  if (!augurSdk.get()) return;
 
-    let newAccount = { ...loginAccount };
-    const { env } = AppStatus.get();
-    const {
-      setModal,
-      setGSNEnabled,
-      setOxEnabled,
-      setWalletStatus,
-      setIsLogged,
-      updateLoginAccount,
-      closeModal,
-    } = AppStatus.actions;
-    const useGSN = env.gsn?.enabled;
+  let newAccount = { ...loginAccount };
+  const { env } = AppStatus.get();
+  const {
+    setModal,
+    setGSNEnabled,
+    setOxEnabled,
+    setWalletStatus,
+    setIsLogged,
+    updateLoginAccount,
+    closeModal,
+  } = AppStatus.actions;
+  const useGSN = env.gsn?.enabled;
 
-    try {
-      setOxEnabled(!!augurSdk.sdk.zeroX);
-      setGSNEnabled(useGSN);
-      if (useGSN) {
-        const hasWallet = await augurSdk.client.gsn.userHasInitializedWallet(
-          newAccount.address
-        );
-        setWalletStatus(
-          hasWallet
-            ? WALLET_STATUS_VALUES.CREATED
-            : WALLET_STATUS_VALUES.WAITING_FOR_FUNDING
-        );
-        const walletAddress = await augurSdk.client.gsn.calculateWalletAddress(
-          newAccount.address
-        );
-        newAccount = {
-          ...loginAccount,
-          meta: {
-            ...loginAccount.meta,
-            address: toChecksumAddress(walletAddress),
-          },
-          mixedCaseAddress: toChecksumAddress(walletAddress),
-          address: toChecksumAddress(walletAddress),
-        };
-      }
-      loadAccountDataFromLocalStorage(newAccount.address);
-      await augurSdk.syncUserData(
-        newAccount.mixedCaseAddress,
-        newAccount.meta.signer,
-        networkId as NetworkId,
-        useGSN
+  try {
+    setOxEnabled(!!augurSdk.get().zeroX);
+    setGSNEnabled(useGSN);
+    if (useGSN) {
+      const hasWallet = await augurSdk.client.gsn.userHasInitializedWallet(
+        newAccount.address
       );
-
-      updateLoginAccount(newAccount);
-      setIsLogged(true);
-      loadAccountData();
-      updateAssets();
-      if (AppStatus.get().modal.type === MODAL_LOADING) closeModal();
-    } catch (error) {
-      logError(error);
-      setModal({
-        type: MODAL_ERROR,
-        error,
-      });
+      setWalletStatus(
+        hasWallet
+          ? WALLET_STATUS_VALUES.CREATED
+          : WALLET_STATUS_VALUES.WAITING_FOR_FUNDING
+      );
+      const walletAddress = await augurSdk.client.gsn.calculateWalletAddress(
+        newAccount.address
+      );
+      newAccount = {
+        ...loginAccount,
+        meta: {
+          ...loginAccount.meta,
+          address: toChecksumAddress(walletAddress),
+        },
+        mixedCaseAddress: toChecksumAddress(walletAddress),
+        address: toChecksumAddress(walletAddress),
+      };
     }
-  
+    loadAccountDataFromLocalStorage(newAccount.address);
+    await augurSdk.syncUserData(
+      newAccount.mixedCaseAddress,
+      newAccount.meta.signer,
+      networkId as NetworkId,
+      useGSN
+    );
+
+    updateLoginAccount(newAccount);
+    setIsLogged(true);
+    loadAccountData();
+    updateAssets(true);
+    if (AppStatus.get().modal.type === MODAL_LOADING) closeModal();
+  } catch (error) {
+    logError(error);
+    setModal({
+      type: MODAL_ERROR,
+      error,
+    });
+  }
 };
 
 export const createFundedGsnWallet = async () => {
@@ -100,7 +99,7 @@ export const createFundedGsnWallet = async () => {
     await augurSdk.client.gsn.initializeWallet();
 
     setWalletStatus(WALLET_STATUS_VALUES.CREATED);
-    
+
     const timestamp = currentAugurTimestamp * 1000;
     const alert = {
       name: CREATEAUGURWALLET,

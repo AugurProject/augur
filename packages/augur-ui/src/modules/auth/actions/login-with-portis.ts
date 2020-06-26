@@ -11,91 +11,89 @@ import { windowRef } from 'utils/window-ref';
 import { getNetwork } from 'utils/get-network-name';
 import { AppStatus } from 'modules/app/store/app-status';
 
-export const loginWithPortis = (forceRegisterPage = false) => {
-  (async () => {
-    const networkId: string = AppStatus.get().env.networkId;
-    const portisNetwork = getNetwork(networkId);
-    const localPortisNetwork = {
-      nodeUrl: 'http://localhost:8545',
-      chainId: networkId,
-    };
+export const loginWithPortis = async (forceRegisterPage = false) => {
+  const networkId: string = AppStatus.get().env.networkId;
+  const portisNetwork = getNetwork(networkId);
+  const localPortisNetwork = {
+    nodeUrl: 'http://localhost:8545',
+    chainId: networkId,
+  };
 
-    if (portisNetwork) {
-      try {
-        // Use require instead of import for wallet SDK packages
-        // to conditionally load web3 into the DOM
-        const Portis = require('@portis/web3');
-        const Web3 = require('web3');
-        const portis = new Portis(
-          PORTIS_API_KEY,
-          portisNetwork === 'localhost' ? localPortisNetwork : portisNetwork,
-          {
-            scope: ['email'],
-            registerPageByDefault: forceRegisterPage,
-          }
-        );
+  if (portisNetwork) {
+    try {
+      // Use require instead of import for wallet SDK packages
+      // to conditionally load web3 into the DOM
+      const Portis = require('@portis/web3');
+      const Web3 = require('web3');
+      const portis = new Portis(
+        PORTIS_API_KEY,
+        portisNetwork === 'localhost' ? localPortisNetwork : portisNetwork,
+        {
+          scope: ['email'],
+          registerPageByDefault: forceRegisterPage,
+        }
+      );
 
-        const web3 = new Web3(portis.provider);
-        const provider = new PersonalSigningWeb3Provider(portis.provider);
+      const web3 = new Web3(portis.provider);
+      const provider = new PersonalSigningWeb3Provider(portis.provider);
 
-        windowRef.portis = portis;
+      windowRef.portis = portis;
 
-        const initPortis = (portis, account, email = null) => {
-          const address = toChecksumAddress(account);
-          const accountObject = {
+      const initPortis = (portis, account, email = null) => {
+        const address = toChecksumAddress(account);
+        const accountObject = {
+          address: address,
+          mixedCaseAddress: address,
+          meta: {
             address: address,
-            mixedCaseAddress: address,
-            meta: {
-              address: address,
-              email,
-              profileImage: null,
-              signer: provider.getSigner(),
-              openWallet: () => portis.showPortis(),
-              accountType: ACCOUNT_TYPES.PORTIS,
-              isWeb3: true,
-            },
-          };
-
-          updateSdk(accountObject, undefined);
+            email,
+            profileImage: null,
+            signer: provider.getSigner(),
+            openWallet: () => portis.showPortis(),
+            accountType: ACCOUNT_TYPES.PORTIS,
+            isWeb3: true,
+          },
         };
 
-        portis.onLogin((account, email) => {
-          initPortis(portis, account, email);
-        });
+        updateSdk(accountObject, undefined);
+      };
 
-        portis.onError(error => {
-          document.querySelector('.por_portis-container').remove();
-          const { setModal } = AppStatus.actions;
-          if (
-            error.message &&
-            error.message.toLowerCase().indexOf('cookies') !== -1
-          ) {
-            setModal({
-              type: MODAL_ERROR,
-              title: 'Cookies are disabled',
-              error:
-                'Please enable cookies in your browser to proceed with Portis.',
-              link: HELP_CENTER_THIRD_PARTY_COOKIES,
-              linkLabel: 'Learn more.',
-            });
-          } else {
-            const errorMessage = `There was an error while attempting to log in with Portis. Please try again.\n\n${
-              error.message ? `Error: ${JSON.stringify(error.message)}` : ''
-            }`;
-            setModal({
-              type: MODAL_ERROR,
-              error: errorMessage,
-            });
-          }
-        });
+      portis.onLogin((account, email) => {
+        initPortis(portis, account, email);
+      });
 
-        await web3.eth.getAccounts();
-      } catch (error) {
+      portis.onError(error => {
         document.querySelector('.por_portis-container').remove();
-        throw error;
-      }
-    } else {
-      throw Error('Network currently not supported with Portis');
+        const { setModal } = AppStatus.actions;
+        if (
+          error.message &&
+          error.message.toLowerCase().indexOf('cookies') !== -1
+        ) {
+          setModal({
+            type: MODAL_ERROR,
+            title: 'Cookies are disabled',
+            error:
+              'Please enable cookies in your browser to proceed with Portis.',
+            link: HELP_CENTER_THIRD_PARTY_COOKIES,
+            linkLabel: 'Learn more.',
+          });
+        } else {
+          const errorMessage = `There was an error while attempting to log in with Portis. Please try again.\n\n${
+            error.message ? `Error: ${JSON.stringify(error.message)}` : ''
+          }`;
+          setModal({
+            type: MODAL_ERROR,
+            error: errorMessage,
+          });
+        }
+      });
+
+      await web3.eth.getAccounts();
+    } catch (error) {
+      document.querySelector('.por_portis-container').remove();
+      throw error;
     }
-  })();
+  } else {
+    throw Error('Network currently not supported with Portis');
+  }
 };

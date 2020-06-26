@@ -12,7 +12,7 @@ import {
   ProcessingButton,
   SecondaryButton,
 } from 'modules/common/buttons';
-import { TRANSFER_DAI_GAS_COST, transferFundsGasEstimate, transferFunds } from 'modules/auth/actions/transfer-funds';
+import { TRANSFER_DAI_GAS_COST, transferFundsGasEstimate, transferFunds, withdrawTransfer } from 'modules/auth/actions/transfer-funds';
 import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import {
   WITHDRAWALLFUNDSASDAI,
@@ -27,7 +27,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getEthReserve } from 'modules/auth/helpers/get-eth-reserve';
 import { getAccountFunds } from 'modules/auth/helpers/login-account';
-import { withdrawAllFundsEstimateGas, withdrawAllFunds } from 'modules/contracts/actions/contractCalls';
+import { withdrawAllFundsEstimateGas } from 'modules/contracts/actions/contractCalls';
 
 const GAS_EST_MULTIPLIER = 4;
 
@@ -85,7 +85,7 @@ export const ModalCashOut = () => {
 
   const action = (address, signerPays, amount) => {
     return signerPays
-      ? withdrawAllFunds(address)
+      ? withdrawTransfer(address)
       : transferFunds(amount, address);
   };
 

@@ -1,14 +1,23 @@
-import { NetworkId, SDKConfiguration } from '@augurproject/artifacts';
+import { EventEmitter } from 'events';
+import type { SDKConfiguration } from '@augurproject/sdk-lite';
+import { NetworkId } from '@augurproject/utils';
 import {
   EthersSigner,
   TransactionStatus,
   TransactionStatusCallback,
 } from '@augurproject/contract-dependencies-ethers';
 import { ContractInterfaces } from '@augurproject/core';
+import {
+  NETWORK_IDS,
+  isSubscriptionEventName,
+  NULL_ADDRESS,
+  SubscriptionEventName,
+  TXEventName,
+  TXStatus,
+} from '@augurproject/sdk-lite';
 import { logger, LoggerLevels } from '@augurproject/utils';
 import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
-
 import { TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
@@ -43,15 +52,8 @@ import {
   EmptyConnector,
   SingleThreadConnector,
 } from './connector';
-import {
-  isSubscriptionEventName,
-  NULL_ADDRESS,
-  SubscriptionEventName,
-  TXEventName,
-} from './constants';
 import { Provider } from './ethereum/Provider';
-import { TXStatus } from './event-handlers';
-import { augurEmitter, Callback, TXStatusCallback } from './events';
+import { EventNameEmitter, Callback, TXStatusCallback } from './events';
 import { ContractDependenciesGSN } from './lib/contract-deps';
 import { SyncableFlexSearch } from './state/db/SyncableFlexSearch';
 import { Accounts } from './state/getter/Accounts';
@@ -64,7 +66,6 @@ import { Universe } from './state/getter/Universe';
 import { Users } from './state/getter/Users';
 import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
-import { Subscriptions } from './subscriptions';
 import { LiquidityPool } from './state/getter/LiquidityPool';
 
 export class Augur<TProvider extends Provider = Provider> {
@@ -83,7 +84,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
   readonly bestOffer: BestOffer;
-  readonly events: Subscriptions;
+  readonly events: EventEmitter;
 
   private _sdkReady = false;
 
@@ -123,16 +124,20 @@ export class Augur<TProvider extends Provider = Provider> {
     if (!this.connector || connector.constructor.name !== 'EmptyConnector') {
       this.connector = connector;
     }
-    if (!config.addresses) throw Error(`Augur config must include addresses. Config=${JSON.stringify(config)}`)
+    if (!config.addresses)
+      throw Error(
+        `Augur config must include addresses. Config=${JSON.stringify(config)}`
+      );
 
-    this.events = new Subscriptions(augurEmitter);
+    this.events = new EventNameEmitter();
+    this.events.setMaxListeners(0);
     this.events.on(SubscriptionEventName.SDKReady, () => {
       this._sdkReady = true;
-      logger.info('SDK is ready')
+      logger.info('SDK is ready');
     });
 
     this.connector.client = this;
-    if(this.zeroX) this.zeroX.client = this;
+    if (this.zeroX) this.zeroX.client = this;
 
     // API
     this.contracts = new Contracts(this.config.addresses, this.dependencies);
@@ -142,18 +147,22 @@ export class Augur<TProvider extends Provider = Provider> {
       this.provider,
       this.config.addresses.Augur,
       this.config.addresses.AugurTrading,
-      this.config.addresses.ShareToken,
-      );
+      this.config.addresses.ShareToken
+    );
     this.warpSync = new WarpSync(this);
     this.hotLoading = new HotLoading(this);
-    this.bestOffer = new BestOffer(this);
     this.onChainTrade = new OnChainTrade(this);
     this.trade = new Trade(this);
+    this.gsn = new GSN(this.provider, this);
+    this.uniswap = new Uniswap(this);
+
+    if (this.config.trackBestOffer) {
+      this.bestOffer = new BestOffer(this);
+    }
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
     }
-    this.gsn = new GSN(this.provider, this);
-    this.uniswap = new Uniswap(this);
+
     this.registerTransactionStatusEvents();
   }
 
@@ -173,7 +182,7 @@ export class Augur<TProvider extends Provider = Provider> {
       zeroX,
       enableFlexSearch
     );
-    await client.contracts.setReputationToken(config.networkId)
+    await client.contracts.setReputationToken(config.networkId);
     return client;
   }
 
@@ -228,9 +237,12 @@ export class Augur<TProvider extends Provider = Provider> {
       to: address,
       data: '0x',
       value,
-      from: await this.dependencies.getDefaultAddress()
+      from: await this.dependencies.getDefaultAddress(),
     };
-    await this.dependencies.submitTransaction(transaction, {name: "Send Ether", params: {}});
+    await this.dependencies.submitTransaction(transaction, {
+      name: 'Send Ether',
+      params: {},
+    });
   }
 
   setUseWallet(useSafe: boolean): void {
@@ -259,27 +271,37 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async getGasStation() {
     try {
-      const result = await axios.get("https://safe-relay.gnosis.io/api/v1/gas-station/");
-      return result.data
+      const networkId = this.config.networkId;
+
+      if (networkId !== NETWORK_IDS.Mainnet) {
+        return {
+          fast: '4000000000',
+          standard: '1000000000'
+        }
+      }
+
+      const result = await axios.get(
+        'https://safe-relay.gnosis.io/api/v1/gas-station/'
+      );
+      return result.data;
     } catch (error) {
       throw error;
     }
   }
 
   async getGasConfirmEstimate() {
-    var gasLevels = await this.getGasStation();
-    var recommended = (parseInt(gasLevels["standard"]) + 1000000000);
-    var fast = (parseInt(gasLevels["fast"]) + 1000000000);
-    var gasPrice = await this.getGasPrice();
-    var gasPriceNum = gasPrice.toNumber();
+    const gasLevels = await this.getGasStation();
+    const recommended = parseInt(gasLevels['standard']) + 1000000000;
+    const fast = parseInt(gasLevels['fast']) + 1000000000;
+    const gasPrice = await this.getGasPrice();
+    const gasPriceNum = gasPrice.toNumber();
 
     if (gasPriceNum >= fast) {
       return 60;
     }
-    if (gasPriceNum >= recommended) {
+    else if (gasPriceNum >= recommended) {
       return 180;
-    }
-    else {
+    } else {
       return 1800;
     }
   }
@@ -299,8 +321,14 @@ export class Augur<TProvider extends Provider = Provider> {
     );
   }
 
-  convertGasEstimateToDaiCost(gasEstimate: BigNumber, manualGasPrice?: number): BigNumber {
-    return this.dependencies.getDisplayCostInDaiForGasEstimate(gasEstimate, manualGasPrice);
+  convertGasEstimateToDaiCost(
+    gasEstimate: BigNumber,
+    manualGasPrice?: number
+  ): BigNumber {
+    return this.dependencies.getDisplayCostInDaiForGasEstimate(
+      gasEstimate,
+      manualGasPrice
+    );
   }
 
   registerTransactionStatusCallback(
@@ -331,14 +359,14 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   /*
-  * Enums are not available at runtime. These acceptable values/meanings.
-  * debug = 0
-  * info  = 1
-  * warn  = 2
-  * error = 3
-  */
+   * Enums are not available at runtime. These acceptable values/meanings.
+   * debug = 0
+   * info  = 1
+   * warn  = 2
+   * error = 3
+   */
   setLoggerLevel(logLevel: LoggerLevels) {
-    if(0 >= logLevel && logLevel <= 3) {
+    if (0 >= logLevel && logLevel <= 3) {
       logger.logLevel = logLevel;
     }
   }
@@ -410,9 +438,9 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.dependencies.signer;
   }
 
-  set signer(signer: EthersSigner)  {
+  set signer(signer: EthersSigner) {
     this.dependencies.setSigner(signer);
-  };
+  }
 
   getTradingHistory = (
     params: Parameters<typeof OnChainTrading.getTradingHistory>[2]
@@ -454,22 +482,31 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(Users.getUserOpenOrders)(params);
   };
 
-  getMostRecentWarpSync = (
-  ): ReturnType<typeof WarpSyncGetter.getMostRecentWarpSync> => {
+  getUserFrozenFundsBreakdown = (
+    params: Parameters<typeof Users.getUserFrozenFundsBreakdown>[2]
+  ): ReturnType<typeof Users.getUserFrozenFundsBreakdown> => {
+    return this.bindTo(Users.getUserFrozenFundsBreakdown)(params);
+  };
+
+  getMostRecentWarpSync = (): ReturnType<
+    typeof WarpSyncGetter.getMostRecentWarpSync
+  > => {
     return this.bindTo(WarpSyncGetter.getMostRecentWarpSync)(undefined);
   };
 
   getPayoutFromWarpSyncHash = (hash: string): Promise<BigNumber[]> => {
-      return this.warpSync.getPayoutFromWarpSyncHash(hash);
+    return this.warpSync.getPayoutFromWarpSyncHash(hash);
   };
 
   getWarpSyncHashFromPayout = (payout: BigNumber[]): string => {
     return this.warpSync.getWarpSyncHashFromPayout(payout[2]);
   };
 
-  getWarpSyncMarket = (universe: string): Promise<ContractInterfaces.Market> => {
+  getWarpSyncMarket = (
+    universe: string
+  ): Promise<ContractInterfaces.Market> => {
     return this.warpSync.getWarpSyncMarket(universe);
-  }
+  };
   getProfitLoss = (
     params: Parameters<typeof Users.getProfitLoss>[2]
   ): ReturnType<typeof Users.getProfitLoss> => {
@@ -535,14 +572,16 @@ export class Augur<TProvider extends Provider = Provider> {
   getOrder = (
     params: Parameters<typeof ZeroXOrdersGetters.getZeroXOrder>[2]
   ): ReturnType<typeof ZeroXOrdersGetters.getZeroXOrder> => {
-    return this.bindTo(ZeroXOrdersGetters.getZeroXOrder)(params)
+    return this.bindTo(ZeroXOrdersGetters.getZeroXOrder)(params);
   };
 
   async hotloadMarket(marketId: string): Promise<HotLoadMarketInfo> {
     return this.hotLoading.getMarketDataParams({ market: marketId });
   }
 
-  async getDisputeWindow(params: GetDisputeWindowParams): Promise<DisputeWindow> {
+  async getDisputeWindow(
+    params: GetDisputeWindowParams
+  ): Promise<DisputeWindow> {
     return this.hotLoading.getCurrentDisputeWindowData(params);
   }
 
@@ -563,8 +602,8 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async cancelOrder(orderHash: string): Promise<void> {
-      const order = await this.getOrder({ orderHash });
-      await this.zeroX.cancelOrder(order, order.signature);
+    const order = await this.getOrder({ orderHash });
+    await this.zeroX.cancelOrder(order, order.signature);
   }
 
   async batchCancelOrders(orderHashes: string[]): Promise<void> {
@@ -573,7 +612,7 @@ export class Augur<TProvider extends Provider = Provider> {
     for (let index = 0; index < orderHashes.length; index++) {
       const order = await this.getOrder({ orderHash: orderHashes[index] });
       orders.push(order);
-      signatures.push(order.signature)
+      signatures.push(order.signature);
     }
     await this.zeroX.batchCancelOrders(orders, signatures);
   }
@@ -647,7 +686,7 @@ export class Augur<TProvider extends Provider = Provider> {
             transaction,
             eventName: TXEventName.Failure,
             hash,
-            reason
+            reason,
           } as TXStatus;
           this.txFailureCallback(txn);
         } else if (

@@ -9,7 +9,6 @@ import {
   transactionConfirmations,
   doReportDisputeAddStake,
 } from 'modules/contracts/actions/contractCalls';
-import { TXEventName } from '@augurproject/sdk';
 import {
   TRANSACTIONS,
   CANCELORDER,
@@ -21,7 +20,7 @@ import { updatePendingOrderStatus } from 'modules/orders/actions/pending-orders-
 import { AppStatus } from 'modules/app/store/app-status';
 
 import { generateTxParameterIdFromString } from 'utils/generate-tx-parameter-id';
-import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
+import { calculatePayoutNumeratorsArray, TXEventName } from '@augurproject/sdk-lite';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 export const ADD_PENDING_DATA = 'ADD_PENDING_DATA';
 export const REMOVE_PENDING_DATA = 'REMOVE_PENDING_DATA';

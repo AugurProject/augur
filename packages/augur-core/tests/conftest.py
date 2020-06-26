@@ -76,6 +76,9 @@ import rlp
 
 import web3
 
+# Remove Size check. We rely on output warnings for this instead
+eth.vm.forks.spurious_dragon.computation.EIP170_CODE_SIZE_LIMIT = 100000
+
 genesis_overrides = {
     'gas_limit': 1100000000
 }
@@ -138,7 +141,7 @@ def pytest_configure(config):
     # register an additional marker
     config.addinivalue_line("markers", "cover: use coverage contracts")
 
-TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','AugurWalletRegistry','AugurWalletRegistryV2']
+TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','AugurWalletRegistry','AugurWalletRegistryV2','AugurWalletFactory']
 
 class ContractsFixture:
     signatures = {}
@@ -319,14 +322,14 @@ class ContractsFixture:
         key = path.splitext(path.basename(relativePath))[0]
         resolvedPath = resolveRelativePath(relativePath)
         if self.coverageMode:
-            resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("src/", "coverageEnv/")
+            resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("src/", "coverageEnv/", 1)
         if key not in ContractsFixture.signatures:
             ContractsFixture.signatures[key] = self.generateSignature(resolvedPath)
 
     def upload(self, relativeFilePath, lookupKey = None, signatureKey = None, constructorArgs=[]):
         resolvedPath = resolveRelativePath(relativeFilePath)
         if self.coverageMode:
-            resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("src/", "coverageEnv/")
+            resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("src/", "coverageEnv/", 1)
         lookupKey = lookupKey if lookupKey else path.splitext(path.basename(resolvedPath))[0]
         signatureKey = signatureKey if signatureKey else lookupKey
         if lookupKey in self.contracts:
@@ -530,7 +533,7 @@ class ContractsFixture:
     def deployRelayHubV2(self):
         penalizer = self.upload("../src/contracts/gsn/v2/Penalizer.sol")
         stakeManager = self.upload("../src/contracts/gsn/v2/StakeManager.sol")
-        relayHubV2 = self.upload("../src/contracts/gsn/v2/RelayHubV2.sol", constructorArgs=[68, stakeManager.address, penalizer.address])
+        relayHubV2 = self.upload("../src/contracts/gsn/v2/RelayHubV2.sol", constructorArgs=[stakeManager.address, penalizer.address])
         self.contracts['AugurTrading'].registerContract("RelayHubV2".ljust(32, '\x00').encode('utf-8'), relayHubV2.address)
 
     def doAugurTradingApprovals(self):

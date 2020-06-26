@@ -1,24 +1,23 @@
-import * as t from 'io-ts';
-import { BigNumber } from 'bignumber.js';
-import { DB } from '../db/DB';
-import { Getter } from './Router';
-import { Augur } from '../../index';
-import Dexie from 'dexie';
-import * as _ from 'lodash';
 import {
   Address,
   DisputeCrowdsourcerContributionLog,
   DisputeCrowdsourcerRedeemedLog,
-  Log,
   MarketCreatedLog,
+  OrderEventType,
   ParsedOrderEventLog,
   ParticipationTokensRedeemedLog,
   TimestampedLog,
-  TradingProceedsClaimedLog
-} from "../logs/types";
-import { NULL_ADDRESS } from "./types";
+  TradingProceedsClaimedLog,
+} from '@augurproject/sdk-lite';
+import { BigNumber } from 'bignumber.js';
+import Dexie from 'dexie';
+import * as t from 'io-ts';
+import * as _ from 'lodash';
+import { Augur } from '../../index';
 import { convertAttoValueToDisplayValue } from '../../utils';
-import { OrderEventType } from '../../constants';
+import { DB } from '../db/DB';
+import { Getter } from './Router';
+import { NULL_ADDRESS } from './types';
 
 export interface PlatformActivityStatsResult {
   activeUsers: number;
@@ -44,7 +43,8 @@ export class Platform {
     t.partial({
       endTime: t.number,
       startTime: t.number,
-    })]);
+    }),
+  ]);
 
   @Getter('getPlatformActivityStatsParams')
   static async getPlatformActivityStats(
@@ -54,7 +54,9 @@ export class Platform {
   ): Promise<PlatformActivityStatsResult> {
     const { universe } = params;
     const startTime = params.startTime || 0;
-    const endTime = params.endTime || (await augur.contracts.augur.getTimestamp_()).toNumber();
+    const endTime =
+      params.endTime ||
+      (await augur.contracts.augur.getTimestamp_()).toNumber();
 
     if (Number(startTime) > Number(endTime)) {
       throw new Error('startTime must be less than or equal to endTime');
@@ -67,7 +69,12 @@ export class Platform {
       marketsCreated: await getMarketCount(universe, startTime, endTime, db),
       volume: await getVolume(universe, startTime, endTime, db),
       amountStaked: await getAmountStaked(universe, startTime, endTime, db),
-      disputedMarkets: await getDisputedMarkets(universe, startTime, endTime, db),
+      disputedMarkets: await getDisputedMarkets(
+        universe,
+        startTime,
+        endTime,
+        db
+      ),
     };
   }
 }
@@ -80,18 +87,36 @@ async function getActiveUsers(
 ): Promise<number> {
   const getField = makeGetField(universe, startTime, endTime);
   const users: Address[] = [
-    ...await getField<DisputeCrowdsourcerContributionLog>('reporter', db.DisputeCrowdsourcerContribution),
-    ...await getField<DisputeCrowdsourcerRedeemedLog>('reporter', db.DisputeCrowdsourcerRedeemed),
-    ...await getField<MarketCreatedLog>('marketCreator', db.MarketCreated),
+    ...(await getField<DisputeCrowdsourcerContributionLog>(
+      'reporter',
+      db.DisputeCrowdsourcerContribution
+    )),
+    ...(await getField<DisputeCrowdsourcerRedeemedLog>(
+      'reporter',
+      db.DisputeCrowdsourcerRedeemed
+    )),
+    ...(await getField<MarketCreatedLog>('marketCreator', db.MarketCreated)),
     // TODO should just get both fields at once
-    ...await getField<ParsedOrderEventLog>('orderCreator', db.ParsedOrderEvent),
-    ...await getField<ParsedOrderEventLog>('orderFiller', db.ParsedOrderEvent),
-    ...await getField<ParticipationTokensRedeemedLog>('account', db.ParticipationTokensRedeemed),
-    ...await getField<TradingProceedsClaimedLog>('sender', db.TradingProceedsClaimed),
+    ...(await getField<ParsedOrderEventLog>(
+      'orderCreator',
+      db.ParsedOrderEvent
+    )),
+    ...(await getField<ParsedOrderEventLog>(
+      'orderFiller',
+      db.ParsedOrderEvent
+    )),
+    ...(await getField<ParticipationTokensRedeemedLog>(
+      'account',
+      db.ParticipationTokensRedeemed
+    )),
+    ...(await getField<TradingProceedsClaimedLog>(
+      'sender',
+      db.TradingProceedsClaimed
+    )),
   ];
 
   // Filter out null address then remove duplicates.
-  return _.uniq(users.filter((user) => user !== NULL_ADDRESS)).length;
+  return _.uniq(users.filter(user => user !== NULL_ADDRESS)).length;
 }
 
 async function getTradeCount(
@@ -100,17 +125,26 @@ async function getTradeCount(
   endTime: number,
   db: DB
 ): Promise<number> {
-  const orderFilledLogs = await db.ParsedOrderEvent.where('timestamp').between(formatTimestamp(startTime), formatTimestamp(endTime), true, true).and((log) => {
-    // @ts-ignore // TODO fix typescipte error here
-    return log.eventType === OrderEventType.Fill && log.universe === universe;
-  }).toArray();
+  const orderFilledLogs = await db.ParsedOrderEvent.where('timestamp')
+    .between(formatTimestamp(startTime), formatTimestamp(endTime), true, true)
+    .and(log => {
+      // @ts-ignore // TODO fix typescipte error here
+      return log.eventType === OrderEventType.Fill && log.universe === universe;
+    })
+    .toArray();
 
-  return _.uniqWith(orderFilledLogs, (a: ParsedOrderEventLog, b: ParsedOrderEventLog) => {
-    return a.tradeGroupId === b.tradeGroupId;
-  }).length;
+  return _.uniqWith(
+    orderFilledLogs,
+    (a: ParsedOrderEventLog, b: ParsedOrderEventLog) => {
+      return a.tradeGroupId === b.tradeGroupId;
+    }
+  ).length;
 }
 
-async function getOpenInterest(universe: string, augur: Augur): Promise<BigNumber> {
+async function getOpenInterest(
+  universe: string,
+  augur: Augur
+): Promise<BigNumber> {
   const universeContract = augur.contracts.universeFromAddress(universe);
   return universeContract.getOpenInterestInAttoCash_();
 }
@@ -121,9 +155,12 @@ async function getMarketCount(
   endTime: number,
   db: DB
 ): Promise<number> {
-  const marketsCreatedLogs = await db.MarketCreated.where('timestamp').between(formatTimestamp(startTime), formatTimestamp(endTime), true, true).and((log) => {
-    return log.universe === universe;
-  }).toArray();
+  const marketsCreatedLogs = await db.MarketCreated.where('timestamp')
+    .between(formatTimestamp(startTime), formatTimestamp(endTime), true, true)
+    .and(log => {
+      return log.universe === universe;
+    })
+    .toArray();
   return marketsCreatedLogs.length;
 }
 
@@ -134,12 +171,16 @@ async function getVolume(
   db: DB
 ): Promise<BigNumber> {
   // TODO this is not an accurate measurement of volume in a time period if thats what this is supposed to be
-  const marketsLogs = await db.Markets.where('timestamp').between(formatTimestamp(startTime), formatTimestamp(endTime), true, true).and((log) => {
-    return log.universe === universe;
-  }).toArray();
+  const marketsLogs = await db.Markets.where('timestamp')
+    .between(formatTimestamp(startTime), formatTimestamp(endTime), true, true)
+    .and(log => {
+      return log.universe === universe;
+    })
+    .toArray();
   const volume = marketsLogs.reduce(
     (total, log) => total.plus(log.volume),
-    new BigNumber(0));
+    new BigNumber(0)
+  );
 
   return convertAttoValueToDisplayValue(volume);
 }
@@ -150,15 +191,23 @@ async function getAmountStaked(
   endTime: number,
   db: DB
 ): Promise<BigNumber> {
-  const initialReportLogs = await db.InitialReportSubmitted.where('timestamp').between(formatTimestamp(startTime), formatTimestamp(endTime), true, true).and((log) => {
-    return log.universe === universe;
-  }).toArray();
-  const disputeContributionLogs = await db.DisputeCrowdsourcerContribution.where('timestamp').between(formatTimestamp(startTime), formatTimestamp(endTime), true, true).and((log) => {
-    return log.universe === universe;
-  }).toArray();
+  const initialReportLogs = await db.InitialReportSubmitted.where('timestamp')
+    .between(formatTimestamp(startTime), formatTimestamp(endTime), true, true)
+    .and(log => {
+      return log.universe === universe;
+    })
+    .toArray();
+  const disputeContributionLogs = await db.DisputeCrowdsourcerContribution.where(
+    'timestamp'
+  )
+    .between(formatTimestamp(startTime), formatTimestamp(endTime), true, true)
+    .and(log => {
+      return log.universe === universe;
+    })
+    .toArray();
   return [
-    ...initialReportLogs.map((log) => new BigNumber(log.amountStaked)),
-    ...disputeContributionLogs.map((log) => new BigNumber(log.amountStaked)),
+    ...initialReportLogs.map(log => new BigNumber(log.amountStaked)),
+    ...disputeContributionLogs.map(log => new BigNumber(log.amountStaked)),
   ].reduce((previous, current) => previous.plus(current), new BigNumber(0));
 }
 
@@ -168,11 +217,19 @@ async function getDisputedMarkets(
   endTime: number,
   db: DB
 ): Promise<number> {
-  const disputeCrowdsourcerCompletedLogs = await db.DisputeCrowdsourcerCompleted.where('timestamp').between(formatTimestamp(startTime), formatTimestamp(endTime), true, true).and((log) => {
-    return log.universe === universe;
-  }).toArray();
+  const disputeCrowdsourcerCompletedLogs = await db.DisputeCrowdsourcerCompleted.where(
+    'timestamp'
+  )
+    .between(formatTimestamp(startTime), formatTimestamp(endTime), true, true)
+    .and(log => {
+      return log.universe === universe;
+    })
+    .toArray();
 
-  return _.uniqWith(disputeCrowdsourcerCompletedLogs, (a: any, b: any) => a.market === b.market).length;
+  return _.uniqWith(
+    disputeCrowdsourcerCompletedLogs,
+    (a: any, b: any) => a.market === b.market
+  ).length;
 }
 
 //
@@ -180,10 +237,12 @@ async function getDisputedMarkets(
 //
 
 interface TimeConstraint {
-  $and: Array<{timestamp: {
-    $gte?: string;
-    $lte?: string;
-  }}>;
+  $and: Array<{
+    timestamp: {
+      $gte?: string;
+      $lte?: string;
+    };
+  }>;
 }
 function timeConstraint(startTime: number, endTime: number): TimeConstraint {
   const formattedStartTime = formatTimestamp(startTime);
@@ -202,8 +261,15 @@ function formatTimestamp(timestamp: number): string {
 }
 
 function makeGetField(universe: Address, startTime: number, endTime: number) {
-  return async <L extends TimestampedLog>(field: keyof L & string, table: Dexie.Table<any, any>) => {
-    const logs = await table.where("timestamp").between(formatTimestamp(startTime), formatTimestamp(endTime), true, true).and((doc) => doc.universe === universe).toArray();
-    return logs.map((log) => String(log[field]));
+  return async <L extends TimestampedLog>(
+    field: keyof L & string,
+    table: Dexie.Table<any, any>
+  ) => {
+    const logs = await table
+      .where('timestamp')
+      .between(formatTimestamp(startTime), formatTimestamp(endTime), true, true)
+      .and(doc => doc.universe === universe)
+      .toArray();
+    return logs.map(log => String(log[field]));
   };
 }

@@ -19,7 +19,15 @@ import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
+import type { Getters } from "@augurproject/sdk";
+import {
+  getTradeInterval,
+} from '@augurproject/sdk-lite';
+import {
+  tickSizeToNumTickWithDisplayPrices,
+  convertDisplayAmountToOnChainAmount,
+  QUINTILLION,
+} from '@augurproject/utils';
 import { CancelTextButton, SecondaryButton } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
 import {

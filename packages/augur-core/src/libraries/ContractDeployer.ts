@@ -22,6 +22,8 @@ import {
   ZeroXTrade,
   WarpSync,
   AugurWalletRegistry,
+  AugurWalletRegistryV2,
+  AugurWalletFactory,
   RepOracle,
   AuditFunds,
   // 0x
@@ -32,12 +34,13 @@ import {
   // Uniswap
   UniswapV2Factory,
   UniswapV2Pair,
-  UniswapV2Router01,
   WETH9
 } from './ContractInterfaces';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from './GenericContractInterfaces';
-import { ContractAddresses, NetworkId, updateConfig, SDKConfiguration, mergeConfig } from '@augurproject/artifacts';
+import { NetworkId } from '@augurproject/utils';
+import { ContractAddresses, SDKConfiguration, mergeConfig } from '@augurproject/utils';
+import { updateConfig } from "@augurproject/artifacts";
 import { TRADING_CONTRACTS, RELAY_HUB_SIGNED_DEPLOY_TX, RELAY_HUB_DEPLOYER_ADDRESS, RELAY_HUB_ADDRESS } from './constants';
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -85,6 +88,7 @@ Deploying to: ${env}
         const blockNumber = await this.getBlockNumber();
         this.augur = await this.uploadAugur();
         this.augurTrading = await this.uploadAugurTrading();
+        await this.uploadAugurWalletFactory();
         await this.uploadAllContracts();
 
         const externalAddresses = this.configuration.deploy.externalAddresses;
@@ -341,6 +345,12 @@ Deploying to: ${env}
         return contract.address;
     };
 
+    private async uploadAugurWalletFactory(): Promise<void> {
+        console.log('Uploading Augur Wallet Factory...');
+        const contract = await this.contracts.get('AugurWalletFactory');
+        contract.address = await this.uploadAndAddToAugur(contract, "AugurWalletFactory");
+    }
+
     private async uploadAugur(): Promise<Augur> {
         console.log('Uploading augur...');
         const contract = await this.contracts.get('Augur');
@@ -466,7 +476,7 @@ Deploying to: ${env}
         const stakeManagerContract = await this.contracts.get('StakeManager');
         stakeManagerContract.address = await this.uploadAndAddToAugur(stakeManagerContract, 'StakeManager');
         const relayHubContract = await this.contracts.get('RelayHubV2');
-        relayHubContract.address = await this.uploadAndAddToAugur(relayHubContract, 'RelayHubV2', ["0x44", stakeManagerContract.address, penalizerContract.address]);
+        relayHubContract.address = await this.uploadAndAddToAugur(relayHubContract, 'RelayHubV2', [stakeManagerContract.address, penalizerContract.address]);
         return relayHubContract.address;
     }
 
@@ -505,6 +515,7 @@ Deploying to: ${env}
         if (contractName === 'Cash') return;
         if (contractName === 'CashFaucet') return;
         if (contractName === 'CashFaucetProxy') return;
+        if (contractName === 'AugurWalletFactory') return;
         // 0x
         if ([
           'ERC20Proxy',
@@ -652,11 +663,18 @@ Deploying to: ${env}
                 return contract.initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) });
             },
             async () => {
-                const contract = new AugurWalletRegistry(this.dependencies, await this.getContractAddress('AugurWalletRegistryV2'));
+                const contract = new AugurWalletRegistryV2(this.dependencies, await this.getContractAddress('AugurWalletRegistryV2'));
                 if (await contract.getInitialized_()) {
                     return true;
                 }
                 return contract.initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) });
+            },
+            async () => {
+                const contract = new AugurWalletFactory(this.dependencies, await this.getContractAddress('AugurWalletFactory'));
+                if (await contract.getInitialized_()) {
+                    return true;
+                }
+                return contract.initialize(this.augur!.address, this.augurTrading!.address);
             },
         ];
 

@@ -36,8 +36,8 @@ import { CreateMarketData } from 'modules/types';
 import {
   Events,
   TXEventName,
-  parseZeroXMakerAssetData,
-} from '@augurproject/sdk';
+  parseZeroXMakerAssetData
+} from '@augurproject/sdk-lite';
 import {
   addPendingData,
   addUpdatePendingTransaction,

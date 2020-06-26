@@ -1,5 +1,7 @@
 import { createBigNumber } from "utils/create-big-number";
-import { convertOnChainPriceToDisplayPrice, Events, Getters } from "@augurproject/sdk/build";
+import type { Getters } from "@augurproject/sdk";
+import type { TxStatus } from "@augurproject/sdk-lite"
+import { convertOnChainPriceToDisplayPrice } from "@augurproject/utils"
 import { TX_OUTCOMES, TX_PRICES, TX_TYPES, ZERO, BUY, SELL } from "modules/common/constants";
 import { PendingOrders } from "modules/app/store/pending-orders";
 

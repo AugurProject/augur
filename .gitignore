@@ -5,6 +5,7 @@ coverage/
 build/
 definitions/
 augur.db
+augur.zip
 tags
 
 junit.xml

@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import Styles from 'modules/portfolio/components/common/market-positions-table.styles.less';
-import { Getters } from '@augurproject/sdk';
+import type { Getters } from '@augurproject/sdk';
 import { selectUserMarketPositions } from 'modules/markets/selectors/select-user-market-positions';
 import { MarketData } from 'modules/types';
 

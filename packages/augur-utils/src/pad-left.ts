@@ -1,5 +1,5 @@
 import { chunk } from "./chunk";
-import { prefixHex } from "./prefix-hex";
+import { prefixHex } from "./hex";
 import { strip0xPrefix } from "./strip-0x-prefix";
 
 export function padLeft(s, chunkLength = 64, hasPrefix = false) {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Fragment } from 'react';
+import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 import Clipboard from 'clipboard';
 
@@ -9,8 +10,13 @@ import { MarketProgress } from 'modules/common/progress';
 import SocialMediaButtons from 'modules/market/components/common/social-media-buttons';
 import {
   INVALID_OUTCOME_ID,
+  INVALID_OUTCOME_NAME,
+  INVALID_OUTCOME_LABEL,
   SCALAR,
+  SCALAR_DOWN_ID,
+  SCALAR_INVALID_BEST_BID_ALERT_VALUE as INVALID_ALERT_PERCENTAGE,
   SCALAR_UP_ID,
+  SUBMIT_DISPUTE,
   YES_NO,
   ZERO,
   INVALID_OUTCOME_LABEL,
@@ -33,8 +39,6 @@ import {
 import { convertToOdds } from 'utils/get-odds';
 import { MARKET_LIST_CARD, marketLinkCopied } from 'services/analytics/helpers';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import {
   CheckCircleIcon,
@@ -50,11 +54,13 @@ import {
 } from 'modules/common/icons';
 import { isSameAddress } from 'utils/isSameAddress';
 import {
+  ConsensusFormatted,
   FormattedNumber,
   MarketData,
   OutcomeFormatted,
-  ConsensusFormatted,
 } from 'modules/types';
+
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
 import { ProcessingButton, BettingBackLayButton } from 'modules/common/buttons';

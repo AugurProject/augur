@@ -8,7 +8,7 @@ import {
   simulateTrade,
   simulateTradeGasLimit,
 } from 'modules/contracts/actions/contractCalls';
-import { Getters, SimulateTradeData } from '@augurproject/sdk';
+import type { Getters, SimulateTradeData } from '@augurproject/sdk';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';

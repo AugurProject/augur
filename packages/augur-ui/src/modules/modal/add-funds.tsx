@@ -31,10 +31,6 @@ interface AddFundsProps {
   fundType: string;
 }
 
-const addFundsPortis = async amount => {
-  // TODO
-};
-
 const addFundsFortmatic = async (amount, crypto, address) => {
   await fm.user.deposit({
     amount: amount.toNumber(),

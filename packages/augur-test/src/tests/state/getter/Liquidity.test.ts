@@ -9,7 +9,7 @@ import { formatBytes32String } from 'ethers/utils';
 import { makeProvider } from '../../../libs';
 import { MockBrowserMesh } from '../../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../../libs/MockMeshServer';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import { SDKConfiguration } from '@augurproject/utils';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 
 describe('State API :: Liquidity', () => {

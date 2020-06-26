@@ -2,13 +2,15 @@ import React from 'react';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { buildMarketDescription } from 'modules/create-market/get-template';
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import {
+import type {
   TemplateInput,
-  TemplateInputType,
   ExtraInfoTemplate,
+} from '@augurproject/templates';
+import {
+  TemplateInputType,
   getTemplatePlaceholderById,
   hasTemplateTextInputs,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 import Styles from 'modules/market/components/common/market-common.styles.less';
 import classNames from 'classnames';
 import TooltipStyles from 'modules/common/tooltip.styles.less';

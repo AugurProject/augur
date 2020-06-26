@@ -1,8 +1,8 @@
+import type { Getters } from '@augurproject/sdk';
 import memoize from 'memoizee';
-import { createBigNumber } from 'utils/create-big-number';
-import { BIDS, ASKS } from 'modules/common/constants';
-import { Getters } from '@augurproject/sdk';
+import { ASKS, BIDS } from 'modules/common/constants';
 import { QuantityOutcomeOrderBook } from 'modules/types';
+import { createBigNumber } from 'utils/create-big-number';
 import { calcPercentageFromPrice } from 'utils/format-number';
 
 function calculateQuantityScale(outOfBN, sharesBN) {
