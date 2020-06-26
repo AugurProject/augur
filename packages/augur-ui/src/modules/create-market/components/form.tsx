@@ -621,7 +621,8 @@ export default class Form extends React.Component<FormProps, FormState> {
       newMarket,
       removeAllOrdersFromNewMarket,
     } = this.props;
-    updateNewMarket({ [name]: value });
+
+    let updatedMarket = ({ [name]: value });
 
     if (name === 'outcomes') {
       const outcomesFormatted = getFormattedOutcomes(
@@ -629,7 +630,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         value,
         newMarket.scalarDenomination
       );
-      updateNewMarket({ outcomesFormatted });
+      updatedMarket = Object.assign(updatedMarket, { outcomesFormatted });
     } else if (name === 'marketType') {
       let outcomesFormatted = [];
       if (value === CATEGORICAL) {
@@ -651,7 +652,7 @@ export default class Form extends React.Component<FormProps, FormState> {
         this.onError('maxPrice', '');
         this.onError('scalarDenomination', '');
         this.onError('tickSize', '');
-        updateNewMarket({
+        updatedMarket = Object.assign(updatedMarket, {
           minPrice: 0,
           maxPrice: 1,
           minPriceBigNumber: ZERO,
@@ -661,12 +662,12 @@ export default class Form extends React.Component<FormProps, FormState> {
       if (value !== CATEGORICAL) {
         this.onError('outcomes', '');
       }
-      updateNewMarket({ outcomesFormatted });
+      updatedMarket = Object.assign(updatedMarket, { outcomesFormatted });
       removeAllOrdersFromNewMarket();
     } else if (name === 'scalarDenomination') {
       let outcomesFormatted = SCALAR_OUTCOMES;
       outcomesFormatted[1].description = value;
-      updateNewMarket({ outcomesFormatted });
+      updatedMarket = Object.assign(updatedMarket, { outcomesFormatted });
     } else if (
       name === 'setEndTime' ||
       name === 'hour' ||
@@ -711,7 +712,7 @@ export default class Form extends React.Component<FormProps, FormState> {
           offset
         );
       }
-      updateNewMarket({
+      updatedMarket = Object.assign(updatedMarket, {
         endTimeFormatted,
         endTime: endTimeFormatted.timestamp,
         setEndTime,
@@ -724,6 +725,9 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
     this.onError(name, '');
+    console.log(`[${name}]: ${value}`);
+    console.log(JSON.stringify(updatedMarket));
+    updateNewMarket(updatedMarket);
   };
 
   onError = (name, error) => {
