@@ -138,7 +138,6 @@ export class ZeroXOrders extends AbstractTable {
       // Spread this once to avoid extra copies
       const eventType = canceledOrders[d.orderHash].endState === "EXPIRED" ? OrderEventType.Expire : OrderEventType.Cancel;
       const event = {eventType, orderId: d.orderHash, ...d};
-      this.augur.events.emit('OrderEvent', event);
       bulkOrderEvents.push(event);
       this.augur.events.emit(SubscriptionEventName.DBUpdatedZeroXOrders, event);
     }
@@ -159,7 +158,6 @@ export class ZeroXOrders extends AbstractTable {
     for (const d of documents) {
       const eventType = filledOrders[d.orderHash] ? OrderEventType.Fill : OrderEventType.Create;
       const event = {eventType, orderId: d.orderHash,...d};
-      this.augur.events.emit('OrderEvent', event);
       bulkOrderEvents.push(event);
       this.augur.events.emit(SubscriptionEventName.DBUpdatedZeroXOrders, event);
     }
@@ -181,7 +179,6 @@ export class ZeroXOrders extends AbstractTable {
       for (const d of documents) {
         const event = {eventType: OrderEventType.Create, ...d};
         bulkOrderEvents.push(event);
-        this.augur.events.emit('OrderEvent', event);
       }
     }
     const chainId = Number(this.augur.config.networkId);
@@ -192,12 +189,6 @@ export class ZeroXOrders extends AbstractTable {
         takerFeeAssetData: '0x',
       }, order.signedOrder);
     });
-
-    if (ordersToAdd.length > 0) {
-      await this.augur.zeroX.addOrders(ordersToAdd);
-      bulkOrderEvents = [...bulkOrderEvents, ...ordersToAdd];
-    }
-    this.pastOrders = {};
 
     this.augur.events.emit(SubscriptionEventName.ZeroXStatusSynced, {});
     if (bulkOrderEvents.length > 0) this.augur.events.emit(SubscriptionEventName.BulkOrderEvent, { logs: bulkOrderEvents });
@@ -214,6 +205,14 @@ export class ZeroXOrders extends AbstractTable {
       logger.debug("Orders Per Market")
       logger.table(LoggerLevels.debug, _.countBy(documents, 'market'));
     });
+
+    if (ordersToAdd.length > 0) {
+      // PG: Purposefully not awaiting here
+      this.augur.zeroX.addOrders(ordersToAdd).catch((e) => {
+        console.error("Error adding cached orders: ", e);
+      })
+    }
+    this.pastOrders = {};
   }
 
   validateOrder(order: OrderInfo): boolean {
@@ -237,7 +236,6 @@ export class ZeroXOrders extends AbstractTable {
       console.log('Deleting filled order');
       this.table.where('orderHash').equals(storedOrder.orderHash).delete();
       const event = {eventType: OrderEventType.Fill, orderId: storedOrder.orderHash,...storedOrder};
-      this.augur.events.emit('OrderEvent', event);
       this.augur.events.emit(SubscriptionEventName.BulkOrderEvent, { logs: [event] });
       this.augur.events.emit(SubscriptionEventName.DBUpdatedZeroXOrders, event);
       return false;
