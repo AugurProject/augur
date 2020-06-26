@@ -289,7 +289,7 @@ export const Description = ({description}: DescriptionProps) => {
       {descriptionText}
     </p>
   ));
-}
+};
 
 export const DescriptionWithLink = (props: DescriptionWithLinkProps) => {
   const description = props.description.toString().split('\n').map((descriptionText: string) => (
@@ -304,7 +304,7 @@ export const DescriptionWithLink = (props: DescriptionWithLinkProps) => {
       <a href={props.link} target="_blank">{props.label}</a>
     </div>
   );
-}
+};
 
 export const ButtonsRow = (props: ButtonsRowProps) => (
   <div className={Styles.ButtonsRow}>
