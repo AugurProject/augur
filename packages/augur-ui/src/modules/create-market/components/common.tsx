@@ -19,12 +19,6 @@ import { AddIcon, helpIcon, XIcon } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/create-market/components/common.styles.less';
-import {
-  FRIDAY_DAY_OF_WEEK,
-  MARKET_COPY_LIST,
-  SelectEventNoticeText,
-  TemplateBannerText,
-} from 'modules/create-market/constants';
 import Link from 'modules/create-market/containers/link';
 import {
   buildMarketDescription,
@@ -46,7 +40,6 @@ import {
   TimezoneDateObject,
 } from 'modules/types';
 import moment, { Moment } from 'moment';
-import React, { Component, useEffect, useReducer, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
 import {
   buildformattedDate,
@@ -55,14 +48,6 @@ import {
   startOfTomorrow,
   timestampComponents,
 } from 'utils/format-date';
-import MarkdownRenderer from 'modules/common/markdown-renderer';
-import {
-  buildMarketDescription,
-  createTemplateOutcomes,
-  substituteUserOutcome,
-  createTemplateValueList,
-  getEventExpirationForExchange,
-} from 'modules/create-market/get-template';
 import type {
   TemplateInput,
   Template,
@@ -82,11 +67,6 @@ import {
   MARKET_COPY_LIST,
   FRIDAY_DAY_OF_WEEK,
 } from 'modules/create-market/constants';
-import {
-  DismissableNotice,
-  DISMISSABLE_NOTICE_BUTTON_TYPES,
-} from 'modules/reporting/common';
-import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 
 export interface HeaderProps {
