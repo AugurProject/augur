@@ -876,6 +876,7 @@ export const LinearPropertyLabel = ({
   underline,
   onValueClick,
   regularCase,
+  secondary,
 }: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
@@ -901,6 +902,7 @@ export const LinearPropertyLabel = ({
         className={classNames({
           [Styles.isAccented]: accentValue,
           [Styles.underline]: underline,
+          [Styles.isSecondary]: secondary,
         })}
         onClick={() => onValueClick && onValueClick()}
       >

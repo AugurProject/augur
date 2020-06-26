@@ -24,9 +24,9 @@ const TITLES = {
 };
 
 const TOTAL_TITLES = {
-  [FROZEN_FUNDS_KEYS[0]]: `Total Frozen Funds in Open Orders`,
-  [FROZEN_FUNDS_KEYS[1]]: `Total Frozen Funds in Positions`,
-  [FROZEN_FUNDS_KEYS[2]]: `Total Frozen Funds in Validity Bonds`,
+  [FROZEN_FUNDS_KEYS[0]]: `Total Frozen Funds of Open Orders`,
+  [FROZEN_FUNDS_KEYS[1]]: `Total Frozen Funds of Positions`,
+  [FROZEN_FUNDS_KEYS[2]]: `Total Frozen Funds of Validity Bonds`,
 };
 
 export const ModalFrozenFunds = ({
@@ -51,6 +51,7 @@ export const ModalFrozenFunds = ({
           label: `Frozen Funds`,
           value: formatDai(breakdown[key].markets[marketId]),
           regularCase: true,
+          secondary: true,
         }));
         return [
           ...p,
