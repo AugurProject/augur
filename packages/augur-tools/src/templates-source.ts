@@ -8716,6 +8716,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Index`,
                 values: LIST_VALUES.FIN_INDEXES,
+                categoryDestId: 2,
               },
               {
                 id: 1,
@@ -8761,6 +8762,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Index`,
                 values: LIST_VALUES.FIN_INDEXES,
+                categoryDestId: 2,
               },
               {
                 id: 2,

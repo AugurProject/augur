@@ -12,13 +12,6 @@ const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   account: state.loginAccount.address,
   universe: state.universe.id,
-  markets: Object.keys(state.marketInfos).reduce(
-    (agg, marketId) => ({
-      ...agg,
-      [marketId]: state.marketInfos[marketId].description,
-    }),
-    {}
-  ),
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
