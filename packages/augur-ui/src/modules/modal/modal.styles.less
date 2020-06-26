@@ -3832,18 +3832,8 @@ div.ButtonsRow:last-of-type {
   max-width: 432px;
   height: 565px;
 
-  @media @breakpoint-mobile {
-    height: 100vh;
-    max-height: 100vh;
-    max-width: 100vw;
-  }
-
   > header {
     margin: @size-32 @size-32 0;
-
-    @media @breakpoint-mobile {
-      margin: @size-24 @size-24 0;
-    }
 
     > div:first-of-type {
       > button {
@@ -3874,9 +3864,6 @@ div.ButtonsRow:last-of-type {
     border: 1px solid @color-secondary-action;
     align-items: flex-start;
 
-    @media @breakpoint-mobile {
-      padding: 0 @size-24;
-    }
     > section {
       color: @color-primary-text;
 
@@ -3920,8 +3907,9 @@ div.ButtonsRow:last-of-type {
 
     > span > a {
       .text-12-bold;
-
+      .limit-lines(1);
     }
+
     > div:last-of-type {
       margin-top: @size-6;
     }
