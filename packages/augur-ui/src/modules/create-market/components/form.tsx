@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import * as _ from 'lodash';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
   CATEGORICAL,
@@ -615,13 +616,18 @@ export default class Form extends React.Component<FormProps, FormState> {
     this.onError(label, '');
   };
 
+  throttleUpdateNewMarket = _.throttle(
+    (obj) => this.props.updateNewMarket(obj),
+    1000
+  );
+
   onChange = (name, value) => {
     const {
       updateNewMarket,
       newMarket,
       removeAllOrdersFromNewMarket,
     } = this.props;
-    updateNewMarket({ [name]: value });
+    this.throttleUpdateNewMarket({ [name]: value });
 
     if (name === 'outcomes') {
       const outcomesFormatted = getFormattedOutcomes(
