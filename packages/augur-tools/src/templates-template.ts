@@ -649,17 +649,18 @@ export function getTemplateExchangeClosingWithBuffer(
   dayTimestamp: number,
   hour: number,
   minutes: number,
-  offset: number
+  offset: number,
 ) {
   // one hour time buffer after lastest exchange closing is built in.
   const OneHourBuffer = 1;
   const closingDateTime = moment.unix(dayTimestamp).startOf('day');
-
+  // get local offset mul -1 b/c of how date returns timezone offset
+  const localOffset: number = (new Date().getTimezoneOffset() / 60) * -1;
   closingDateTime.set({
-    hour: hour - offset + OneHourBuffer,
+    hour: hour - offset + localOffset + OneHourBuffer,
     minute: minutes,
   });
-  return closingDateTime.unix();
+  return closingDateTime.utc().unix();
 }
 
 function closingDateDependenciesCheck(
