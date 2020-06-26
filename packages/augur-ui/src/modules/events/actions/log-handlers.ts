@@ -30,6 +30,7 @@ import { updateAlert } from 'modules/alerts/actions/alerts';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
+import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 import {
   Ox_STATUS,
   updateAppStatus,
@@ -110,7 +111,6 @@ import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import { augurSdk } from 'services/augursdk';
 import { isSameAddress } from 'utils/isSameAddress';
 import { wrapLogHandler } from './wrap-log-handler';
-import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 
 const handleAlert = (
   log: any,
@@ -312,7 +312,7 @@ export const handleMarketsUpdatedLog = ({
   marketsInfo: MarketInfo[] | MarketInfo;
 }) => (
   dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
+  getState?: () => AppState
 ) => {
   let marketsDataById = {};
   if (Array.isArray(marketsInfo)) {

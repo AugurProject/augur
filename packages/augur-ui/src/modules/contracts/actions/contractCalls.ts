@@ -43,6 +43,7 @@ import {
 } from 'modules/types';
 // put all calls to contracts here that need conversion from display values to onChain values
 import { augurSdk } from 'services/augursdk';
+import { augurSdkLite } from 'services/augursdklite';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import {
   formatAttoDai,
@@ -87,8 +88,8 @@ export function getNetworkId(): string {
   // default to mainnet most likely that's the case
   let networkId = NETWORK_IDS.Mainnet;
   try {
-    const Augur = augurSdk.get();
-    networkId = Augur.networkId;
+    const augur = augurSdkLite.get();
+    networkId = augur.networkId;
   } catch (e) {
     console.error(e);
   }

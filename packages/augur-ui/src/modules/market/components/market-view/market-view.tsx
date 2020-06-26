@@ -1,63 +1,67 @@
 /* eslint-disable jsx-a11y/no-static-element-interaction */
 
-import React, { Component } from 'react';
-import classNames from 'classnames';
-import Media from 'react-media';
-
-import MarketHeader from 'modules/market/containers/market-header';
-import MarketOrdersPositionsTable from 'modules/market/containers/market-orders-positions-table';
-import MarketOutcomesList from 'modules/market/containers/market-outcomes-list';
-import TradingForm from 'modules/trading/components/trading-form';
-import OrderBook from 'modules/market-charts/containers/order-book';
-import MarketChartsPane from 'modules/market-charts/containers/market-charts-pane';
-import parseMarketTitle from 'modules/markets/helpers/parse-market-title';
-import MarketTradeHistory from 'modules/market/containers/market-trade-history';
-import MarketComments from 'modules/market/containers/market-comments';
-import {
-  CATEGORICAL,
-  BUY,
-  PUBLICFILLORDER,
-  LONG,
-  SCALAR,
-  TRADING_TUTORIAL,
-  TRADING_TUTORIAL_STEPS,
-  TRADING_TUTORIAL_COPY,
-  MODAL_TUTORIAL_OUTRO,
-  MODAL_TUTORIAL_INTRO,
-  MODAL_SCALAR_MARKET,
-  TUTORIAL_QUANTITY,
-  TUTORIAL_PRICE,
-  TRADING_TUTORIAL_OUTCOMES,
-  TUTORIAL_OUTCOME,
-} from 'modules/common/constants';
-import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
-import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
-import PriceHistory from 'modules/market-charts/containers/price-history';
-import Styles from 'modules/market/components/market-view/market-view.styles.less';
-import { LeftChevron } from 'modules/common/icons';
-import { SMALL_MOBILE } from 'modules/common/constants';
-import {
-  MarketData,
-  OutcomeFormatted,
-  DefaultOrderProperties,
-  IndividualOutcomeOrderBook,
-  TestTradingOrder,
-  OutcomeTestTradingOrder,
-} from 'modules/types';
-import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { TutorialPopUp } from '../common/tutorial-pop-up';
-import { formatShares, formatDai } from 'utils/format-number';
-import { convertUnixToFormattedDate } from 'utils/format-date';
-import { createBigNumber } from 'utils/create-big-number';
-import makePath from 'modules/routes/helpers/make-path';
-import { MARKETS } from 'modules/routes/constants/views';
-import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import type { Getters } from '@augurproject/sdk';
 import { HotLoadMarketInfo, TXEventName } from '@augurproject/sdk-lite';
-import { HelmetTag } from 'modules/seo/helmet-tag';
+import classNames from 'classnames';
+import {
+  BUY,
+  CATEGORICAL,
+  LONG,
+  MODAL_SCALAR_MARKET,
+  MODAL_TUTORIAL_INTRO,
+  MODAL_TUTORIAL_OUTRO,
+  PUBLICFILLORDER,
+  SCALAR,
+  SMALL_MOBILE,
+  TRADING_TUTORIAL,
+  TRADING_TUTORIAL_COPY,
+  TRADING_TUTORIAL_OUTCOMES,
+  TRADING_TUTORIAL_STEPS,
+  TUTORIAL_OUTCOME,
+  TUTORIAL_PRICE,
+  TUTORIAL_QUANTITY,
+} from 'modules/common/constants';
+import { LeftChevron } from 'modules/common/icons';
+import { getNetworkId } from 'modules/contracts/actions/contractCalls';
+import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import MarketChartsPane
+  from 'modules/market-charts/containers/market-charts-pane';
+import OrderBook from 'modules/market-charts/containers/order-book';
+import PriceHistory from 'modules/market-charts/containers/price-history';
+import ModulePane
+  from 'modules/market/components/common/module-tabs/module-pane';
+import ModuleTabs
+  from 'modules/market/components/common/module-tabs/module-tabs';
+import Styles
+  from 'modules/market/components/market-view/market-view.styles.less';
+import MarketComments from 'modules/market/containers/market-comments';
+
+import MarketHeader from 'modules/market/containers/market-header';
+import MarketOrdersPositionsTable
+  from 'modules/market/containers/market-orders-positions-table';
+import MarketOutcomesList from 'modules/market/containers/market-outcomes-list';
+import MarketTradeHistory from 'modules/market/containers/market-trade-history';
+import parseMarketTitle from 'modules/markets/helpers/parse-market-title';
+import { MARKETS } from 'modules/routes/constants/views';
+import makePath from 'modules/routes/helpers/make-path';
 import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
-import { hotloadMarket } from 'modules/markets/actions/load-markets';
+import { HelmetTag } from 'modules/seo/helmet-tag';
+import TradingForm from 'modules/trading/components/trading-form';
+import {
+  DefaultOrderProperties,
+  IndividualOutcomeOrderBook,
+  MarketData,
+  OutcomeFormatted,
+  OutcomeTestTradingOrder,
+  TestTradingOrder,
+} from 'modules/types';
+import React, { Component } from 'react';
+import Media from 'react-media';
+import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
+import { createBigNumber } from 'utils/create-big-number';
+import { convertUnixToFormattedDate } from 'utils/format-date';
+import { formatDai, formatShares } from 'utils/format-number';
+import { TutorialPopUp } from '../common/tutorial-pop-up';
 
 interface MarketViewProps {
   isMarketLoading: boolean;
@@ -94,6 +98,7 @@ interface MarketViewProps {
   hasZeroXError: boolean;
   marketNotFound: boolean;
   showMarketNotFound: Function;
+  loadHotMarket: Function;
 }
 
 export interface DefaultOrderPropertiesMap {
@@ -223,12 +228,18 @@ export default class MarketView extends Component<
       updateModal,
       closeMarketLoadingModalOnly,
       preview,
+      loadHotMarket,
     } = prevProps;
     if (
       this.props.outcomeId !== prevProps.outcomeId &&
       this.props.outcomeId !== null
     ) {
       this.setState({ selectedOutcomeId: this.props.outcomeId });
+    }
+
+    if (this.props.canHotload && prevProps.canHotload !== this.props.canHotload  && !tradingTutorial && marketId) {
+      // This will only be called once on the 'canHotLoad' prop change.
+      loadHotMarket(marketId);
     }
 
     if (tradingTutorial) {
@@ -479,11 +490,9 @@ export default class MarketView extends Component<
       history,
       preview,
       tradingTutorial,
-      hotloadMarket,
       canHotload,
       orderBook,
       zeroXstatus,
-      showMarketNotFound,
     } = this.props;
     const {
       selectedOutcomeId,
@@ -495,15 +504,8 @@ export default class MarketView extends Component<
       tutorialStep,
       tutorialError,
       pane,
-      hotPromise,
     } = this.state;
-    if (isMarketLoading) {
-      if (canHotload && !tradingTutorial && marketId && !hotPromise) {
-        const newHotPromise = hotloadMarket(marketId).then(market => {
-          if (!market) showMarketNotFound(history);
-        });
-        this.setState({ hotPromise: newHotPromise });
-      }
+    if (isMarketLoading && !market) {
       return (
         <div
           ref={node => {

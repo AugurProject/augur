@@ -1,50 +1,54 @@
 import type { SDKConfiguration } from '@augurproject/artifacts';
-import { isDevNetworkId, mergeConfig } from "@augurproject/utils";
-import { augurSdk } from "services/augursdk";
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
-import { updateEnv } from 'modules/app/actions/update-env';
-import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
-import { updateUniverse } from 'modules/universe/actions/update-universe';
-import { updateModal } from 'modules/modal/actions/update-modal';
-import { closeModal } from 'modules/modal/actions/close-modal';
-import logError from 'utils/log-error';
+import { isDevNetworkId, mergeConfig } from '@augurproject/utils';
+import { AppState } from 'appStore';
+import { toChecksumAddress } from 'ethereumjs-util';
 import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
-import { isEmpty } from 'utils/is-empty';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
+import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
+import { updateCanHotload } from 'modules/app/actions/update-connection';
+import { updateEnv } from 'modules/app/actions/update-env';
 import {
-  MODAL_NETWORK_DISCONNECTED,
-  MODAL_NETWORK_DISABLED,
+  RESTORED_ACCOUNT,
+  updateAuthStatus,
+} from 'modules/auth/actions/auth-status';
+import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
+import {
+  getWeb3Provider,
+  loginWithInjectedWeb3,
+} from 'modules/auth/actions/login-with-injected-web3';
+import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
+import { logout } from 'modules/auth/actions/logout';
+import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
+import {
   ACCOUNT_TYPES,
-  MODAL_LOADING,
   MODAL_ERROR,
-  SIGNIN_SIGN_WALLET,
+  MODAL_LOADING,
+  MODAL_NETWORK_DISABLED,
+  MODAL_NETWORK_DISCONNECTED,
   MODAL_NETWORK_MISMATCH,
   NETWORK_NAMES,
+  SIGNIN_SIGN_WALLET,
 } from 'modules/common/constants';
-import { windowRef } from 'utils/window-ref';
-import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
-import { NodeStyleCallback, WindowApp } from 'modules/types';
+import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
-import { loginWithInjectedWeb3, getWeb3Provider } from 'modules/auth/actions/login-with-injected-web3';
-import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
-import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
-import { toChecksumAddress } from 'ethereumjs-util';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
-import {
-  updateAuthStatus,
-  RESTORED_ACCOUNT,
-} from 'modules/auth/actions/auth-status';
-import { logout } from 'modules/auth/actions/logout';
-import { updateCanHotload } from 'modules/app/actions/update-connection';
+import { closeModal } from 'modules/modal/actions/close-modal';
+import { updateModal } from 'modules/modal/actions/update-modal';
+import { NodeStyleCallback, WindowApp } from 'modules/types';
+import { updateUniverse } from 'modules/universe/actions/update-universe';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { augurSdk } from 'services/augursdk';
+import { augurSdkLite } from 'services/augursdklite';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
 import { getFingerprint } from 'utils/get-fingerprint';
-import { tryToPersistStorage } from 'utils/storage-manager';
 import { getNetwork } from 'utils/get-network-name';
-import { showIndexedDbSize } from 'utils/show-indexed-db-size';
+import { isEmpty } from 'utils/is-empty';
 import { isGoogleBot } from 'utils/is-google-bot';
 import { isMobileSafari } from 'utils/is-safari';
+import logError from 'utils/log-error';
+import { showIndexedDbSize } from 'utils/show-indexed-db-size';
+import { tryToPersistStorage } from 'utils/storage-manager';
+import { windowRef } from 'utils/window-ref';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -221,6 +225,7 @@ export function connectAugur(
 
     let Augur = null;
     try {
+      await augurSdkLite.makeLiteClient(provider, config.addresses, config.networkId);
       Augur = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
