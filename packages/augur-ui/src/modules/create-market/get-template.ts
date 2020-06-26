@@ -400,7 +400,7 @@ export function getEventExpirationForExchange(
       dateYearSource.setEndTime,
       timeOffset.hour,
       timeOffset.minutes,
-      timeOffset.offset,
+      timeOffset.offset
     );
     return timestampComponents(closingDateTime, timeOffset.offset, timeOffset.timezone);
   }
