@@ -13,7 +13,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { LinearPropertyLabel, PendingLabel } from 'modules/common/labels';
 import { MarketProgress } from 'modules/common/progress';
 import { END_TIME } from 'modules/common/constants';
-import { TXEventName } from '@augurproject/sdk';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { CancelTextButton, SubmitTextButton } from 'modules/common/buttons';
 import { CreatedMarketsIcon } from 'modules/common/icons';
 import { retrySubmitMarket } from 'modules/markets/actions/submit-new-market';

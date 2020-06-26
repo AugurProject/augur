@@ -1,4 +1,4 @@
-import { Dexie } from 'dexie';
+import Dexie from 'dexie';
 import * as _ from 'lodash';
 
 export type PrimitiveID = string | number | Date;
@@ -43,6 +43,11 @@ export abstract class AbstractTable {
       results.push(...batchResults);
     }
     return results;
+  }
+
+  async delete() {
+    await this.table.clear();
+    return Dexie.delete(this.dbName);
   }
 
   async getDocumentCount(): Promise<number> {

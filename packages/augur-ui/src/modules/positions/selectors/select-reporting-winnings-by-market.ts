@@ -1,10 +1,12 @@
 import { selectMarket } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO } from 'modules/common/constants';
-import { Getters } from '@augurproject/sdk';
+import { selectMarket } from 'modules/markets/selectors/market';
 import {
   marketsReportingCollection,
 } from 'modules/types';
+import { createSelector } from 'reselect';
+import { createBigNumber } from 'utils/create-big-number';
 import { formatAttoDai, formatAttoRep } from 'utils/format-number';
 import { AppStatus } from 'modules/app/store/app-status';
 

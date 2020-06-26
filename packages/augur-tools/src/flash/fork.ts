@@ -1,7 +1,7 @@
 import { NULL_ADDRESS } from '../constants';
 import { BigNumber } from 'bignumber.js';
 import { ContractAPI } from '..';
-import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
+import { MarketInfo } from '@augurproject/sdk-lite';
 import { calculatePayoutNumeratorsArray } from '@augurproject/sdk';
 import { ContractInterfaces } from '@augurproject/core';
 

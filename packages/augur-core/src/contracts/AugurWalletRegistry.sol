@@ -6,17 +6,16 @@ import 'ROOT/gsn/v1/IRelayHub.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/IAugurWallet.sol';
 import 'ROOT/AugurWallet.sol';
-import 'ROOT/IAugurWalletFactory.sol';
 import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/IERC1155.sol';
-import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/libraries/LibBytes.sol';
 import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
 import 'ROOT/uniswap/interfaces/IWETH.sol';
+import 'ROOT/factories/IAugurWalletFactory.sol';
 
 
 contract AugurWalletRegistry is Initializable, GSNRecipient {
@@ -37,16 +36,10 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     IAugurTrading public augurTrading;
 
     IERC20 public cash;
-    address public affiliates;
-    address public shareToken;
-    address public createOrder;
-    address public fillOrder;
-    address public zeroXTrade;
-    address public augurWalletRegistryV2;
-
     IUniswapV2Pair public ethExchange;
     IWETH public WETH;
     bool public token0IsCash;
+    IAugurWalletFactory public augurWalletFactory;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
@@ -57,15 +50,10 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
         endInitialization();
         augur = _augur;
         cash = IERC20(_augur.lookup("Cash"));
-        affiliates = augur.lookup("Affiliates");
-        shareToken = augur.lookup("ShareToken");
 
         augurTrading = _augurTrading;
-        createOrder = _augurTrading.lookup("CreateOrder");
-        fillOrder = _augurTrading.lookup("FillOrder");
-        zeroXTrade = _augurTrading.lookup("ZeroXTrade");
         WETH = IWETH(_augurTrading.lookup("WETH9"));
-        augurWalletRegistryV2 = _augurTrading.lookup("AugurWalletRegistryV2");
+        augurWalletFactory = IAugurWalletFactory(_augurTrading.lookup("AugurWalletFactory"));
         IUniswapV2Factory _uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
         address _ethExchangeAddress = _uniswapFactory.getPair(address(WETH), address(cash));
         if (_ethExchangeAddress == address(0)) {
@@ -186,11 +174,11 @@ contract AugurWalletRegistry is Initializable, GSNRecipient {
     }
 
     function createAugurWallet(address _referralAddress, bytes32 _fingerprint) private returns (IAugurWallet) {
-        return IAugurWalletFactory(augurWalletRegistryV2).trustedCreateAugurWallet(_msgSender(), _referralAddress, _fingerprint);
+        return augurWalletFactory.createAugurWallet(_msgSender(), _referralAddress, _fingerprint);
     }
 
     function getCreate2WalletAddress(address _owner) public view returns (address) {
-        return IAugurWalletFactory(augurWalletRegistryV2).getCreate2WalletAddress(_owner);
+        return augurWalletFactory.getCreate2WalletAddress(_owner);
     }
 
 /**

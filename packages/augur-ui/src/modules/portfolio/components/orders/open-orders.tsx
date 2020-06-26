@@ -5,6 +5,8 @@ import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-he
 import OrderMarketRow from 'modules/portfolio/components/common/order-market-row';
 import { MarketData, UIOrder } from 'modules/types';
 import selectMarketsOpenOrders from 'modules/portfolio/selectors/select-markets-open-orders';
+import { CancelTextButton } from 'modules/common/buttons';
+import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 
 const sortByOptions = [
   {
@@ -23,6 +25,7 @@ interface OpenOrdersProps {
   toggle?: () => void;
   extend?: boolean;
   hide?: boolean;
+  cancelAllOpenOrders: (orders: UIOrder[]) => void;
 }
 
 interface OpenOrdersState {
@@ -60,13 +63,13 @@ const OpenOrders = ({
         market={marketsObj[data.id]}
       />
     ) : (
-        <OpenOrder
-          key={'openOrder_' + data.id}
-          marketId={data.id}
-          openOrder={ordersObj[data.id]}
-          isSingle
-        />
-      );
+      <OpenOrder
+        key={'openOrder_' + data.id}
+        marketId={data.id}
+        openOrder={ordersObj[data.id]}
+        isSingle
+      />
+    );
   }
   return (
     <FilterSwitchBox
@@ -83,6 +86,17 @@ const OpenOrders = ({
         toggle={toggle}
         extend={extend}
         hide={hide}
+        footer={
+          openOrders.length > 0 ? (
+            <div className={Styles.PortfolioFooter}>
+              <CancelTextButton
+                action={() => cancelAllOpenOrders(openOrders)}
+                text="Cancel All"
+                disabled={hasPending}
+              />
+            </div>
+          ) : null
+        }
       />
   );
 };

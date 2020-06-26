@@ -1,5 +1,5 @@
 import { ContractInterfaces } from '@augurproject/core';
-import { ContractAddresses } from '@augurproject/artifacts';
+import { ContractAddresses } from '@augurproject/utils';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 
 export type SomeRepToken =

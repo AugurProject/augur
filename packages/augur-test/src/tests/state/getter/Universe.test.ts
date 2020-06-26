@@ -15,8 +15,8 @@ import { NULL_ADDRESS } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { makeProvider } from '../../../libs';
-import { SDKConfiguration } from '@augurproject/artifacts';
-import { MarketInfo } from "@augurproject/sdk/build/state/getter/Markets";
+import { SDKConfiguration } from '@augurproject/utils';
+import { MarketInfo } from "@augurproject/sdk-lite";
 
 describe('State API :: Universe :: ', () => {
   let john: TestContractAPI;

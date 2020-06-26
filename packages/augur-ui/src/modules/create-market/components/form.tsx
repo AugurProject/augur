@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import classNames from 'classnames';
+import * as _ from 'lodash';
 import { useHistory } from 'react-router';
 import { LocationDisplay, Error } from 'modules/common/form';
 import {
@@ -40,18 +41,18 @@ import {
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
-  SCALAR,
   DESIGNATED_REPORTER_SPECIFIC,
-  YES_NO_OUTCOMES,
-  SCALAR_OUTCOMES,
   NON_EXISTENT,
-  ZERO,
   ONE,
+  SCALAR,
+  SCALAR_OUTCOMES,
   WALLET_STATUS_VALUES,
   GSN_WALLET_SEEN,
   MODAL_DISCARD,
   MODAL_CREATE_MARKET,
   MODAL_INITIALIZE_ACCOUNT,
+  YES_NO_OUTCOMES,
+  ZERO,
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
@@ -60,66 +61,63 @@ import {
   ContentBlock,
   MultipleExplainerBlock,
 } from 'modules/create-market/components/common';
-import { NewMarket, Drafts } from 'modules/types';
 import FormDetails from 'modules/create-market/components/form-details';
 import Review from 'modules/create-market/components/review';
 import FeesLiquidity from 'modules/create-market/fees-liquidity';
 import SubCategories from 'modules/create-market/components/sub-categories';
-import { MarketType } from 'modules/create-market/components/market-type';
-import makePath from 'modules/routes/helpers/make-path';
 import { CREATE_MARKET, MY_POSITIONS } from 'modules/routes/constants/views';
 import {
+  checkAddress,
+  checkCategoriesArray,
+  checkForUserInputFilled,
+  checkOutcomesArray,
+  dateGreater,
+  dividedBy,
   isBetween,
+  isCheckWholeNumber,
   isFilledNumber,
   isFilledString,
-  checkCategoriesArray,
-  checkOutcomesArray,
   isLessThan,
   isMoreThan,
   isPositive,
-  moreThanDecimals,
-  checkAddress,
-  dividedBy,
-  dateGreater,
   isValidFee,
-  checkForUserInputFilled,
-  isCheckWholeNumber,
+  moreThanDecimals,
 } from 'modules/common/validations';
 import {
   buildformattedDate,
   convertUnixToFormattedDate,
 } from 'utils/format-date';
 import TemplatePicker from 'modules/create-market/components/template-picker';
-
-import Styles from 'modules/create-market/components/form.styles.less';
-
-import MarketView from 'modules/market/components/market-view/market-view';
 import { BulkTxLabel } from 'modules/common/labels';
+import Styles from 'modules/create-market/components/form.styles.less';
+import { MarketType } from 'modules/create-market/components/market-type';
 import {
   buildResolutionDetails,
+  getFormattedOutcomes,
   hasNoTemplateCategoryChildren,
   hasNoTemplateCategoryTertiaryChildren,
-  getFormattedOutcomes,
 } from 'modules/create-market/get-template';
-import deepClone from 'utils/deep-clone';
-
 import {
-  TEMPLATE_CONTENT_PAGES,
   NO_CAT_TEMPLATE_CONTENT_PAGES,
+  TEMPLATE_CONTENT_PAGES,
 } from 'modules/create-market/template-navigation';
+import MarketView from 'modules/market/components/market-view/market-view';
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
-import { createBigNumber } from 'utils/create-big-number';
-import makeQuery from 'modules/routes/helpers/make-query';
 import {
   CREATE_MARKET_FORM_PARAM_NAME,
   CREATE_MARKET_PORTFOLIO,
 } from 'modules/routes/constants/param-names';
+import makePath from 'modules/routes/helpers/make-path';
+import makeQuery from 'modules/routes/helpers/make-query';
+import { Drafts, NewMarket } from 'modules/types';
+import { createBigNumber } from 'utils/create-big-number';
+import deepClone from 'utils/deep-clone';
 import {
+  TemplateInput,
   TemplateInputType,
   ValidationType,
-  TemplateInput,
   getTemplateWednesdayAfterOpeningDay,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import {

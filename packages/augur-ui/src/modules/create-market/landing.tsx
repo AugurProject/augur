@@ -2,10 +2,10 @@ import React, { useRef, useEffect } from 'react';
 
 import { RadioCardGroup } from 'modules/common/form';
 import {
-  LargeSubheaders,
   ContentBlock,
-  XLargeSubheaders,
+  LargeSubheaders,
   SmallHeaderLink,
+  XLargeSubheaders,
 } from 'modules/create-market/components/common';
 import { SecondaryButton } from 'modules/common/buttons';
 import {

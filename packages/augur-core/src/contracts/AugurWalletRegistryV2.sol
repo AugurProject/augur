@@ -3,8 +3,10 @@ pragma experimental ABIEncoderV2;
 
 import 'ROOT/gsn/v2/BaseRelayRecipient.sol';
 import 'ROOT/gsn/v2/BasePaymaster.sol';
-import 'ROOT/gsn/v2/TrustedForwarder.sol';
+import 'ROOT/gsn/v2/Forwarder.sol';
 import 'ROOT/gsn/v2/interfaces/IRelayHub.sol';
+import 'ROOT/gsn/v2/interfaces/ISignatureVerifier.sol';
+import 'ROOT/gsn/v2/interfaces/IPaymaster.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/IAugurWallet.sol';
 import 'ROOT/AugurWallet.sol';
@@ -19,9 +21,10 @@ import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
 import 'ROOT/uniswap/interfaces/IWETH.sol';
+import 'ROOT/factories/IAugurWalletFactory.sol';
 
 
-contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForwarder {
+contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, Forwarder {
     using LibBytes for bytes;
     using ContractExists for address;
 
@@ -29,22 +32,19 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
 
     event ExecuteTransactionStatus(bool success, bool fundingSuccess);
 
+    string public versionRecipient = "augur-wallet-registry-2";
+
     IRelayHub internal relayHub;
 
     IAugur public augur;
     IAugurTrading public augurTrading;
 
     IERC20 public cash;
-    address public affiliates;
-    address public shareToken;
-    address public createOrder;
-    address public fillOrder;
-    address public zeroXTrade;
-    address public otherRegistry;
 
     IUniswapV2Pair public ethExchange;
     IWETH public WETH;
     bool public token0IsCash;
+    IAugurWalletFactory public augurWalletFactory;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
     uint256 private constant MAX_TX_FEE_IN_ETH = 10**17;
@@ -67,15 +67,10 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
         trustedForwarder = address(this);
         relayHub = IRelayHub(_augurTrading.lookup("RelayHubV2"));
         cash = IERC20(_augur.lookup("Cash"));
-        affiliates = augur.lookup("Affiliates");
-        shareToken = augur.lookup("ShareToken");
 
         augurTrading = _augurTrading;
-        createOrder = _augurTrading.lookup("CreateOrder");
-        fillOrder = _augurTrading.lookup("FillOrder");
-        zeroXTrade = _augurTrading.lookup("ZeroXTrade");
         WETH = IWETH(_augurTrading.lookup("WETH9"));
-        otherRegistry = _augurTrading.lookup("AugurWalletRegistry");
+        augurWalletFactory = IAugurWalletFactory(_augurTrading.lookup("AugurWalletFactory"));
         IUniswapV2Factory _uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
         address _ethExchangeAddress = _uniswapFactory.getPair(address(WETH), address(cash));
         if (_ethExchangeAddress == address(0)) {
@@ -88,8 +83,8 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
         return true;
     }
 
-    function getGasLimits() external pure returns (GSNTypes.GasLimits memory limits) {
-        return GSNTypes.GasLimits(
+    function getGasLimits() external pure returns (IPaymaster.GasLimits memory limits) {
+        return IPaymaster.GasLimits(
             ACCEPT_RELAYED_CALL_GAS_LIMIT,
             PRE_RELAYED_CALL_GAS_LIMIT,
             POST_RELAYED_CALL_GAS_LIMIT
@@ -100,7 +95,7 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
         return address(relayHub);
     }
 
-    function acceptRelayedCall(GSNTypes.RelayRequest calldata relayRequest, bytes calldata approvalData, uint256 maxPossibleGas) external view returns (bytes memory context) {
+    function acceptRelayedCall(ISignatureVerifier.RelayRequest calldata relayRequest, bytes calldata signature, bytes calldata approvalData, uint256 maxPossibleGas) external view returns (bytes memory context) {
         (approvalData);
         // executeWalletTransaction is the only encodedFunction that can succesfully be called through the relayHub
         uint256 _payment = getPaymentFromEncodedFunction(relayRequest.encodedFunction);
@@ -122,7 +117,7 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
         return true;
     }
 
-    function postRelayedCall(bytes calldata context, bool success, bytes32 preRetVal, uint256 gasUseWithoutPost, GSNTypes.GasData calldata gasData) external relayHubOnly returns (bool) {
+    function postRelayedCall(bytes calldata context, bool success, bytes32 preRetVal, uint256 gasUseWithoutPost, ISignatureVerifier.GasData calldata gasData) external relayHubOnly returns (bool) {
         (success, preRetVal);
         (address _walletAddress, uint256 _payment) = abi.decode(context, (address, uint256));
 
@@ -187,46 +182,12 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, TrustedForw
         amountIn = (numerator / denominator).add(1);
     }
 
-    function trustedCreateAugurWallet(address _owner, address _referralAddress, bytes32 _fingerprint) public returns (IAugurWallet) {
-        require(msg.sender == otherRegistry);
-        return createAugurWalletInternal(_owner, _referralAddress, _fingerprint);
-    }
-
     function createAugurWallet(address _referralAddress, bytes32 _fingerprint) private returns (IAugurWallet) {
-        address _owner = _msgSender();
-        return createAugurWalletInternal(_owner, _referralAddress, _fingerprint);
-    }
-
-    function createAugurWalletInternal(address _owner, address _referralAddress, bytes32 _fingerprint) private returns (IAugurWallet) {
-        // Create2 creation of wallet based on owner
-        address _walletAddress = getCreate2WalletAddress(_owner);
-        if (_walletAddress.exists()) {
-            return IAugurWallet(_walletAddress);
-        }
-        {
-            bytes32 _salt = keccak256(abi.encodePacked(_owner));
-            bytes memory _deploymentData = abi.encodePacked(type(AugurWallet).creationCode);
-            assembly {
-                _walletAddress := create2(0x0, add(0x20, _deploymentData), mload(_deploymentData), _salt)
-                if iszero(extcodesize(_walletAddress)) {
-                    revert(0, 0)
-                }
-            }
-        }
-        IAugurWallet _wallet = IAugurWallet(_walletAddress);
-        _wallet.initialize(_owner, _referralAddress, _fingerprint, address(augur), otherRegistry, cash, IAffiliates(affiliates), IERC1155(shareToken), createOrder, fillOrder, zeroXTrade);
-        return _wallet;
+        return augurWalletFactory.createAugurWallet(_msgSender(), _referralAddress, _fingerprint);
     }
 
     function getCreate2WalletAddress(address _owner) public view returns (address) {
-        bytes1 _const = 0xff;
-        bytes32 _salt = keccak256(abi.encodePacked(_owner));
-        return address(uint160(uint256(keccak256(abi.encodePacked(
-            _const,
-            address(this),
-            _salt,
-            keccak256(abi.encodePacked(type(AugurWallet).creationCode))
-        )))));
+        return augurWalletFactory.getCreate2WalletAddress(_owner);
     }
 
     /**

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PulseLoader } from 'react-spinners';
 import ModalNetworkConnect from 'modules/modal/components/modal-network-connect';
 import commonStyles from 'modules/modal/common.styles.less';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import type { SDKConfiguration } from '@augurproject/sdk-lite';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const ModalNetworkDisconnected = () => {

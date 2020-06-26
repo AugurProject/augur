@@ -22,7 +22,6 @@ import {
   MODAL_ERROR,
   ACCOUNT_TYPES,
   HELP_CENTER_THIRD_PARTY_COOKIES,
-  SIGNIN_LOADING_TEXT_PORTIS,
   SIGNIN_LOADING_TEXT_TORUS,
   SIGNIN_LOADING_TEXT_FORTMATIC,
   SIGNIN_LOADING_TEXT,
@@ -57,9 +56,8 @@ export const SignIn = ({ isLogin }) => {
   };
 
   const connectMetaMask = () => loginWithInjectedWeb3();
-  const connectPortis = showRegister => loginWithPortis(showRegister);
   const connectTorus = () => loginWithTorus();
-  const connectFortmatic = () => loginWithFortmatic();
+  const connectFortmatic = (withEmail) => loginWithFortmatic(withEmail);
   const errorModal = (error, title = null, link = null, linkLabel = null) =>
     setModal({
       type: MODAL_ERROR,
@@ -74,9 +72,6 @@ export const SignIn = ({ isLogin }) => {
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
 
-    const isPortisCancelError =
-      accountType === ACCOUNT_TYPES.PORTIS &&
-      error.message.indexOf('User denied login') !== -1;
     const isFortmaticCancelError =
       accountType === ACCOUNT_TYPES.FORTMATIC &&
       error.message.indexOf('User denied account access') !== -1;
@@ -87,7 +82,6 @@ export const SignIn = ({ isLogin }) => {
     // If the error we get back from the wallet SDK is "User denied access", aka Cancel/Close wallet window, we should just close the modal
     if (
       isTorusExitCancelError ||
-      isPortisCancelError ||
       isFortmaticCancelError
     ) {
       closeModal();
@@ -122,19 +116,18 @@ export const SignIn = ({ isLogin }) => {
 
   const connectMethods = [
     {
-      type: ACCOUNT_TYPES.PORTIS,
+      // type: ACCOUNT_TYPES.PORTIS,
       icon: EmailLogin,
       text: `${LOGIN_OR_SIGNUP} with Email`,
-      subText: `Powered by ${ACCOUNT_TYPES.PORTIS}`,
+      subText: `Powered by ${ACCOUNT_TYPES.FORMATIC}`,
       hidden: false,
       primary: true,
       action: async () => {
-        loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => login());
+        loadingModal(SIGNIN_LOADING_TEXT_FORMATIC, () => login());
         try {
-          const forceRegisterPage = isLogin ? false : true;
-          await connectPortis(forceRegisterPage);
+          await connectFortmatic(true);
         } catch (error) {
-          onError(error, ACCOUNT_TYPES.PORTIS);
+          onError(error, ACCOUNT_TYPES.FORMATIC);
         }
       },
     },
@@ -162,7 +155,7 @@ export const SignIn = ({ isLogin }) => {
       action: async () => {
         loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
         try {
-          await connectFortmatic();
+          await connectFortmatic(false);
         } catch (error) {
           onError(error, ACCOUNT_TYPES.FORTMATIC);
         }

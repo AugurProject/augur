@@ -1,5 +1,5 @@
 // TODO -- this component needs to be broken up
-//         all logic related to sidebar(s) need to be housed w/in a separate component
+import type { SDKConfiguration } from '@augurproject/artifacts';
 
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
@@ -21,14 +21,20 @@ import { initAugur } from 'modules/app/actions/init-augur';
 import { MobileNavHamburgerIcon, XIcon } from 'modules/common/icons';
 import parsePath from 'modules/routes/helpers/parse-path';
 import {
-  MARKETS,
   ACCOUNT_SUMMARY,
-  MY_POSITIONS,
   CREATE_MARKET,
   DISPUTING,
+  MARKET,
+  MARKETS,
+  MY_POSITIONS,
   REPORTING,
   MARKET,
 } from 'modules/routes/constants/views';
+import makePath from 'modules/routes/helpers/make-path';
+import parsePath from 'modules/routes/helpers/parse-path';
+import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
+import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { HelmetTag } from 'modules/seo/helmet-tag';
 import {
   MODAL_NETWORK_CONNECT,
   MOBILE_MENU_STATES,
@@ -58,6 +64,8 @@ import { getNotifications } from 'modules/notifications/selectors/notification-s
 import { withRouter } from 'react-router-dom';
 import { RewriteUrlParams } from '../hocs/rewrite-url-params/index';
 import { windowRef } from 'utils/window-ref';
+
+//         all logic related to sidebar(s) need to be housed w/in a separate component
 
 interface AppProps {
   config: SDKConfiguration;

@@ -1,6 +1,11 @@
 import React from 'react';
-import classNames from 'classnames';
 import Media from 'react-media';
+
+import classNames from 'classnames';
+import { ToggleExtendButton } from 'modules/common/buttons';
+import { SMALL_MOBILE } from 'modules/common/constants';
+import SharedStyles
+  from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 
 import { MarketOutcome } from 'modules/common/table-rows';
 
@@ -10,7 +15,7 @@ import HeaderStyles from 'modules/portfolio/components/common/data-table-header.
 import { OutcomeFormatted, MarketData } from 'modules/types';
 import { ToggleExtendButton } from 'modules/common/buttons';
 import { SMALL_MOBILE } from 'modules/common/constants';
-import { Getters } from '@augurproject/sdk';
+import type { Getters } from '@augurproject/sdk';
 import { selectSortedMarketOutcomes, selectMarket } from 'modules/markets/selectors/market';
 
 interface MarketOutcomesListProps {

@@ -8,6 +8,7 @@ variables:
   SOLC_MD5: 884dbc8c8ed01cc34799a6ffab11bc3a
   VM_IMAGE: 'ubuntu-18.04'
   YARN_REGISTRY: https://pkgs.dev.azure.com/augurproject/_packaging/npmPackages/npm/registry/
+  System.debug: false
 
 trigger:
   batch: false
@@ -17,6 +18,7 @@ trigger:
       - demo
       - release/*
       - azure/*
+      - refs/tags/*
 
 jobs:
   - job: PreFlightCheck
@@ -91,7 +93,7 @@ jobs:
         eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK'], 'true')
       )
     variables:
-      FAKE_TIME: false
+      NORMAL_TIME: true
       PRODUCTION: false
     pool: 'Default'
     workspace:
@@ -118,6 +120,7 @@ jobs:
           key: 'contract | "$(Agent.OS)" | packages/augur-artifacts/src/contracts.json'
           path: /tmp/augur
         displayName: Cache seed file
+      - script: docker system prune -f
       - script: rm -rf /tmp/augur/seed.json
       - script: yarn test $(TEST_ARGS) --verbose --ci --reporters=default --reporters=jest-junit
         displayName: yarn test
@@ -346,11 +349,11 @@ jobs:
         dev-pop-geth-v2:
           IMAGE_NAME: dev-pop-geth-v2
           NETWORK_ID: 102
-          FAKE_TIME: true
+          NORMAL_TIME: false
         dev-pop-normtime-geth-v2:
           IMAGE_NAME: dev-pop-normtime-geth-v2
           NETWORK_ID: 103
-          FAKE_TIME: false
+          NORMAL_TIME: true
     variables:
       ZEROX_RPC_ENABLED: false
       ZEROX_MESH_ENABLED: false
@@ -360,7 +363,8 @@ jobs:
       - script: |
           set -exuo pipefail
           export DOCKER_BUILDKIT=1
-          docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg fake_time=$(FAKE_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
+          docker system prune -f
+          docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
         displayName: 'build $(IMAGE_NAME) image'
       - task: Docker@1
         displayName: docker login
@@ -586,7 +590,7 @@ jobs:
       and
       (
         succeeded(),
-        startsWith(variables['build.sourceBranch'], 'refs/heads/release')
+        startsWith(variables['build.sourceBranch'], 'refs/tags')
       )
     pool:
       vmImage: $(VM_IMAGE)
@@ -610,15 +614,14 @@ jobs:
           set -euo pipefail
           sudo apt update
           sudo apt install golang-go -y
-          curl -l https://dist.ipfs.io/go-ipfs/v0.4.22/go-ipfs_v0.4.22_linux-amd64.tar.gz | tar xvzf -
+          curl -l https://dist.ipfs.io/go-ipfs/v0.5.1/go-ipfs_v0.5.1_linux-amd64.tar.gz | tar xvzf -
           sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
         displayName: install ipfs
       - bash: |
           set -euo pipefail
           ipfs init > /dev/null 2>&1
-          ipfs add -r -Q packages/augur-ui/build | tee augur_ipfs_hash.txt
-          IPFS_HASH=$(cat augur_ipfs_hash.txt)
-          mv augur_ipfs_hash.txt $IPFS_HASH.ipfs
+          IPFS_HASH=$(ipfs add -r -Q packages/augur-ui/build)
+          echo nothing > $IPFS_HASH.ipfs
         displayName: ipfs hash of build dir
       - task: CopyFiles@2
         inputs:
@@ -631,15 +634,14 @@ jobs:
           #overWrite: false # Optional
           #flattenFolders: false # Optional
           #preserveTimestamp: false # Optional
-
       - task: GitHubRelease@1
         displayName: 'GitHub release (create)'
         inputs:
-          gitHubConnection: 'GitHub OAuth'
-          tagSource: userSpecifiedTag
-          tag: $(Build.SourceBranchName)
-          title: Augur v$(Build.SourceBranchName)
-          releaseNotesSource: inline
+          gitHubConnection: 'Github OAuth'
+          tagSource: 'userSpecifiedTag'
+          tag: '$(Build.SourceBranchName)'
+          title: 'Augur $(Build.SourceBranchName)'
           assets: '$(Build.ArtifactStagingDirectory)/*'
+          releaseNotesSource: inline
           isDraft: true
           isPreRelease: true

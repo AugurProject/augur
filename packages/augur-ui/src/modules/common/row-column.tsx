@@ -13,7 +13,7 @@ import {
 import { CancelTextButton, CashoutButton } from 'modules/common/buttons';
 import OutcomeTradingIndicator from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator";
 import { DateFormattedObject, FormattedNumber } from 'modules/types';
-import { TXEventName } from '@augurproject/sdk/src';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { XIcon } from 'modules/common/icons';
 
 const { COLUMN_TYPES } = constants;

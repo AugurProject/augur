@@ -1,14 +1,15 @@
-import { SDKConfiguration, mergeConfig, RecursivePartial, validConfigOrDie } from '@augurproject/artifacts';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import {
-  Connectors,
-  createClient,
-  Events,
-  SubscriptionEventName,
-} from '@augurproject/sdk';
+import { Connectors, createClient } from '@augurproject/sdk';
+import { NewBlock, SubscriptionEventName } from '@augurproject/sdk-lite';
 import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
+import {
+  mergeConfig,
+  RecursivePartial,
+  SDKConfiguration,
+  validConfigOrDie,
+} from '@augurproject/utils';
+import { ContractAPI, makeSigner, providerFromConfig, Seed } from '..';
 import { Account } from '../constants';
-import { makeSigner, ContractAPI, providerFromConfig, Seed } from '..';
 
 configureDexieForNode(true);
 
@@ -148,7 +149,7 @@ export class FlashSession {
     return user;
   }
 
-  sdkNewBlock = (log: Events.NewBlock) => {
+  sdkNewBlock = (log: NewBlock) => {
     if (log.blocksBehindCurrent === 0) {
       this.sdkReady = true;
     } else {

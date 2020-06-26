@@ -1,14 +1,12 @@
-import { Augur } from '../Augur';
-import { BigNumber } from 'bignumber.js';
-import { SubscriptionEventName } from '../constants';
-import { Logs } from '../state';
-import { OrderTypeHex } from '../state/logs/types';
-import * as _ from 'lodash';
-import { MarketLiquidityPool } from '../state/getter/LiquidityPool';
+import { ParsedOrderEventLog, OrderTypeHex, SubscriptionEventName } from '@augurproject/sdk-lite';
 import {
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
-} from '../index';
+} from '@augurproject/utils';
+import { Augur } from '../Augur';
+import { BigNumber } from 'bignumber.js';
+import * as _ from 'lodash';
+import { MarketLiquidityPool } from '../state/getter/LiquidityPool';
 
 export interface LiquidityPoolUpdated {
   [liquidityPoolId: string]: {
@@ -39,20 +37,20 @@ export class BestOffer {
   constructor(augur: Augur) {
     this.augur = augur;
 
-    this.augur.events.subscribe(
+    this.augur.events.on(
       SubscriptionEventName.BulkOrderEvent,
       orderEvents => this.determineBestOfferForLiquidityPool(orderEvents)
     );
   }
 
   determineBestOfferForLiquidityPool(orders: {
-    logs: Logs.ParsedOrderEventLog[];
+    logs: ParsedOrderEventLog[];
   }) {
     const onlyOffers = orders.logs.filter(
       o => String(o.orderType) === OrderTypeHex.Ask
     );
     const bestBulkOrders = this.getBestPricePerOutcomeInMarket(onlyOffers);
-    const flatten: Logs.ParsedOrderEventLog[] = [];
+    const flatten: ParsedOrderEventLog[] = [];
     _.forOwn(bestBulkOrders, market => {
       _.forOwn(market, outcome => {
         flatten.push(outcome);
@@ -122,8 +120,8 @@ export class BestOffer {
     ),
   });
 
-  getBestPricePerOutcomeInMarket = (onlyOffers: Logs.ParsedOrderEventLog[]) => {
-    const marketIds: _.Dictionary<Logs.ParsedOrderEventLog[]> = _.groupBy(
+  getBestPricePerOutcomeInMarket = (onlyOffers: ParsedOrderEventLog[]) => {
+    const marketIds: _.Dictionary<ParsedOrderEventLog[]> = _.groupBy(
       onlyOffers,
       'market'
     );

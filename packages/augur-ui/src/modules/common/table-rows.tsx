@@ -30,7 +30,7 @@ import { useMarketsStore } from 'modules/markets/store/markets';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { OutcomeFormatted, UIOrder } from 'modules/types';
 import { Getters } from '@augurproject/sdk';
-import { TXEventName } from '@augurproject/sdk/src/constants';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { Properties } from './row-column';

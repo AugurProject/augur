@@ -30,6 +30,7 @@ import {
   DESIGNATED_REPORTER_ADDRESS,
   CATEGORIES,
   OUTCOMES,
+  MARKET_COPY_LIST,
   DEFAULT_TICK_SIZE,
   MARKET_COPY_LIST,
 } from 'modules/create-market/constants';
@@ -43,7 +44,7 @@ import {
   hasAutoFillCategory,
 } from 'modules/create-market/get-template';
 import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
-import { TemplateInputType } from '@augurproject/artifacts/src';
+import { TemplateInputType } from '@augurproject/templates';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface FormDetailsProps {

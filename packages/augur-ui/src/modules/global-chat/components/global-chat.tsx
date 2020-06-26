@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { initialize3box } from '../actions/initialize-3box';
 
 const ThreeBoxChat = lazy(() =>
-  import('modules/global-chat/components/three-box-chat')
+  import(/* webpackChunkName: '3box-chat' */ 'modules/global-chat/components/three-box-chat')
 );
 
 export const GlobalChat = () => {

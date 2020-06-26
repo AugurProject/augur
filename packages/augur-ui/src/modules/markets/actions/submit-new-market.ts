@@ -12,11 +12,13 @@ import {
 } from 'modules/create-market/helpers/construct-market-params';
 import { createMarketRetry } from 'modules/contracts/actions/contractCalls';
 import { buildResolutionDetails } from 'modules/create-market/get-template';
+import type {
+  TemplateInput,
+} from '@augurproject/templates';
 import {
   TemplateInputType,
-  TemplateInput,
   UserInputDateTime,
-} from '@augurproject/artifacts';
+} from '@augurproject/templates';
 import { AppStatus } from 'modules/app/store/app-status';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 

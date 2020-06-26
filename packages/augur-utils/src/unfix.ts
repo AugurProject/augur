@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { bignum } from "./bignum";
-import { prefixHex } from "./prefix-hex";
+import { prefixHex } from "./hex";
 import { FXP_ONE } from "./constants";
 
 export function unfix(n, encoding?) {

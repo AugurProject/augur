@@ -1,18 +1,25 @@
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import { MarketReportingState } from '@augurproject/sdk';
 import {
+  CANCELORDERS,
   CLAIM_REPORTING_FEES_TITLE,
+  CLAIMMARKETSPROCEEDS,
+  FINALIZE,
   MARKET_IS_MOST_LIKELY_INVALID_TITLE,
   NOTIFICATION_TYPES,
   PROCEEDS_TO_CLAIM_TITLE,
+  REDEEMSTAKE,
   REPORTING_ENDS_SOON_TITLE,
   REPORTING_STATE,
   RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
+  SIGN_SEND_ORDERS,
+  SUBMIT_DISPUTE,
+  SUBMIT_REPORT,
+  TRANSACTIONS,
   TYPE_DISPUTE,
   TYPE_REPORT,
   TYPE_VIEW_DETAILS,
   TYPE_VIEW_ORDERS,
-  SIGN_SEND_ORDERS,
   ZERO,
   REDEEMSTAKE,
   SUBMIT_DISPUTE,
@@ -22,6 +29,8 @@ import {
   CANCELORDERS,
   FINALIZE,
 } from 'modules/common/constants';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import {
   MarketClaimablePositions,
@@ -29,7 +38,11 @@ import {
 } from 'modules/types';
 import { getLoginAccountClaimableWinnings } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
-import { selectMarket } from 'modules/markets/selectors/market';
+import {
+  MarketClaimablePositions,
+  MarketReportClaimableContracts,
+} from 'modules/types';
+import { createSelector } from 'reselect';
 import { isSameAddress } from 'utils/isSameAddress';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';

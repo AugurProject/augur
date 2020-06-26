@@ -443,6 +443,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
     Trade.StoredContracts private storedContracts;
 
     mapping (address => uint256[]) public marketOutcomeVolumes;
+    mapping (address => uint256) public marketTotalTrades;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
@@ -584,7 +585,11 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
             _volume += tmpMarketOutcomeVolumes[i];
         }
 
-        _tradeData.contracts.augurTrading.logMarketVolumeChanged(_tradeData.contracts.universe, address(_market), _volume, tmpMarketOutcomeVolumes);
+        uint256 _totalTrades = marketTotalTrades[address(_market)].add(1);
+
+        marketTotalTrades[address(_market)] = _totalTrades;
+
+        _tradeData.contracts.augurTrading.logMarketVolumeChanged(_tradeData.contracts.universe, address(_market), _volume, tmpMarketOutcomeVolumes, _totalTrades);
     }
 
     function updateProfitLoss(Trade.Data memory _tradeData, uint256 _amountFilled) private returns (bool) {

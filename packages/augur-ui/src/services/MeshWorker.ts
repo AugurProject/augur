@@ -1,8 +1,7 @@
 import { retry } from 'async';
 import * as Comlink from 'comlink';
 import 'localstorage-polyfill';
-import { BrowserMesh, SignedOrder } from '../../../augur-sdk/src/api/ZeroX';
-
+import type { BrowserMesh } from '@augurproject/sdk';
 import './MeshTransferHandler';
 
 // @ts-ignore

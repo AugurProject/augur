@@ -1,5 +1,6 @@
-import { Augur, SubscriptionEventName } from '@augurproject/sdk';
-import { MarketInfo } from '@augurproject/sdk/build/state/getter/Markets';
+import { Augur } from '@augurproject/sdk';
+import { SubscriptionEventName } from '@augurproject/sdk-lite';
+import { MarketInfo } from '@augurproject/sdk-lite';
 import { MarketTradingPosition } from '@augurproject/sdk/build/state/getter/Users';
 import { BigNumber } from 'bignumber.js';
 import { ContractAPI } from '..';

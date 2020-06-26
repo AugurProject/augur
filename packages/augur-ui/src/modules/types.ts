@@ -11,9 +11,8 @@ import {
   OUTCOME_ID_PARAM_NAME,
   CREATE_MARKET_FORM_PARAM_NAME,
 } from './routes/constants/param-names';
-import { EthersSigner } from 'augur-contract-dependencies-ethers/build/ContractDependenciesEthers';
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
-import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
+import { TransactionMetadataParams, EthersSigner } from '@augurproject/contract-dependencies-ethers';
 import { BigNumber } from 'utils/create-big-number';
 import { Template } from '@augurproject/artifacts';
 
@@ -552,6 +551,7 @@ export interface FilterSortOptions {
   includeInvalidMarkets: INVALID_OPTIONS;
   transactionPeriod: string;
   templateFilter: string;
+  marketTypeFilter: string;
 }
 
 export interface Favorite {
@@ -629,7 +629,7 @@ export interface AccountBalances {
   dai: string;
   legacyRep: string;
   attoRep: string;
-  legacyAttoRep: string;
+  legacyAttoRep?: string;
   signerBalances: {
     eth: string;
     rep: string;
@@ -655,6 +655,9 @@ export interface LoginAccountSettings {
   maxFee?: string;
   maxLiquiditySpread?: INVALID_OPTIONS;
   includeInvalidMarkets?: string;
+  spread?: boolean;
+  marketTypeFilter?: boolean;
+  showInvalid?: boolean;
 }
 
 export interface LoginAccount {

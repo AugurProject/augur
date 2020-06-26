@@ -9,8 +9,11 @@ import {
   SPREAD_PARAM_NAME,
   spreadFilters,
   TEMPLATE_FILTER,
+  MARKET_TYPE_FILTER,
   templateFilterValues,
+  marketTypeFilterValues,
   INVALID_OUTCOME_LABEL,
+  MARKET_TYPE_PARAM_NAME,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/inner-nav/markets-list-filters.styles.less';
 import { FilterIcon, helpIcon } from 'modules/common/icons';
@@ -41,6 +44,7 @@ const MarketsListFilters = ({
       maxLiquiditySpread,
       includeInvalidMarkets,
       templateFilter: allTemplateFilter,
+      marketTypeFilter
     },
     actions: {
       updateFilterSortOptions,
@@ -66,6 +70,8 @@ const MarketsListFilters = ({
       settings.includeInvalidMarkets;
     const categories =
       filterOptionsFromQuery.category;
+    const newMarketTypeFilter = filterOptionsFromQuery.type ||
+      settings.marketTypeFilter;
 
     let filterUpdates = {};
     if (newMaxFee && newMaxFee !== maxFee) {
@@ -76,6 +82,9 @@ const MarketsListFilters = ({
     }
     if (newTemplateFilter && newTemplateFilter !== allTemplateFilter) {
       filterUpdates[TEMPLATE_FILTER] = newTemplateFilter;
+    }
+    if (newMarketTypeFilter && newMarketTypeFilter !== marketTypeFilter) {
+      filterUpdates[MARKET_TYPE_FILTER] = newMarketTypeFilter;
     }
     if (newShowInvalid && newShowInvalid !== includeInvalidMarkets) {
       filterUpdates[MARKET_SHOW_INVALID] = newShowInvalid;
@@ -157,6 +166,21 @@ const MarketsListFilters = ({
               defaultSelected={maxLiquiditySpread}
               onChange={(value: string) => isMobile ? setFilterSortState({ [MARKET_MAX_SPREAD]: value }) : updateFilter(value, SPREAD_PARAM_NAME)}
             />
+
+            <div className={Styles.Filter}>
+              <span>Market Type</span>
+              {generateTooltip(
+                'Filters markets based on market type',
+                'type'
+              )}
+            </div>
+
+            <RadioBarGroup
+              radioButtons={marketTypeFilterValues}
+              defaultSelected={marketTypeFilter}
+              onChange={(value: string) => isMobile ? setMarketTypeFilter(value) : updateFilter(value, MARKET_TYPE_PARAM_NAME)}
+            />
+
 
             <div className={Styles.Filter}>
               <span>Invalid Markets</span>

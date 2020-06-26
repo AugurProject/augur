@@ -1,7 +1,12 @@
+import type { Augur, Provider } from '@augurproject/sdk';
+import { SubscriptionEventName, TXEventName } from '@augurproject/sdk-lite';
+import { ZEROX_STATUSES } from 'modules/common/constants';
 import {
   handleMarketMigratedLog,
   handleMarketsUpdatedLog,
   handleNewBlockLog,
+  handleReportingStateChanged,
+  handleSDKReadyEvent,
   handleTradingProceedsClaimedLog,
   handleTxEvents,
   handleUniverseForkedLog,
@@ -13,11 +18,9 @@ import {
   handleLiquidityPoolUpdatedLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
-import {
+import type {
   Augur,
   Provider,
-  SubscriptionEventName,
-  TXEventName,
 } from '@augurproject/sdk';
 import { ZEROX_STATUSES } from 'modules/common/constants';
 

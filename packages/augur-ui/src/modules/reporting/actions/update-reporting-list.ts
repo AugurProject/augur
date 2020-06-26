@@ -1,10 +1,10 @@
-import { MarketReportingState } from '@augurproject/sdk';
+import { MarketReportingState } from '@augurproject/sdk-lite';
 import {
   loadCurrentlyDisputingMarkets,
-  loadOpenReportingMarkets,
-  loadUpcomingDesignatedReportingMarkets,
   loadDesignatedReportingMarkets,
   loadNextWindowDisputingMarkets,
+  loadOpenReportingMarkets,
+  loadUpcomingDesignatedReportingMarkets,
 } from 'modules/markets/actions/load-markets';
 import { Markets } from 'modules/markets/store/markets';
 
