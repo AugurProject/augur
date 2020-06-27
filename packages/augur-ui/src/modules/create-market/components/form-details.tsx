@@ -1,6 +1,5 @@
 import React from 'react';
 import classNames from 'classnames';
-import { debounce } from 'lodash';
 import {
   RadioCardGroup,
   TextInput,
@@ -69,11 +68,6 @@ export default class FormDetails extends React.Component<
     dateFocused: false,
     timeFocused: false,
   };
-
-  debounceOnChange = debounce(
-    (name, value) => this.props.onChange(name, value),
-    500
-  );
 
   render() {
     const {
@@ -210,7 +204,7 @@ export default class FormDetails extends React.Component<
               <TextInput
                 type="textarea"
                 placeholder={DESCRIPTION_PLACEHOLDERS[marketType]}
-                onChange={(value: string) => this.debounceOnChange('description', value)}
+                onChange={(value: string) => onChange('description', value)}
                 rows="3"
                 value={description}
                 errorMessage={
@@ -391,7 +385,7 @@ export default class FormDetails extends React.Component<
                 placeholder="Describe how the event should be resolved under different scenarios."
                 rows="3"
                 value={detailsText}
-                onChange={(value: string) => this.debounceOnChange('detailsText', value)}
+                onChange={(value: string) => onChange('detailsText', value)}
               />
             </>
           )}
