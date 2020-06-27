@@ -183,7 +183,7 @@ export function connectAugur(
         //
         // Note: This also creates a split point in webpack
         const { default: Torus } = await import(
-          /* webpackChunkName: "torus" */ '@toruslabs/torus-embed'
+          '@toruslabs/torus-embed'
         );
         const torus = new Torus({});
 
@@ -227,6 +227,7 @@ export function connectAugur(
     try {
       await augurSdkLite.makeLiteClient(provider, config.addresses, config.networkId);
       dispatch(updateCanHotload(true)); // Hotload now!
+
 
       Augur = await augurSdk.makeClient(provider, config);
     } catch (e) {
