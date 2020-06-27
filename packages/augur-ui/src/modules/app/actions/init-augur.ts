@@ -96,6 +96,41 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   }
 }
 
+
+async function createDefaultProvider(config: SDKConfiguration) {
+  if (config.networkId && isDevNetworkId(config.networkId)) {
+    // In DEV, use local ethereum node
+    provider = new JsonRpcProvider(config.ethereum.http);
+  } else if (windowRef.web3) {
+    // Use the provider on window if it exists, otherwise use torus provider
+    provider = getWeb3Provider(windowRef);
+  } else if (config.ui?.fallbackProvider === "jsonrpc" && config.ethereum.http) {
+    provider = new JsonRpcProvider(config.ethereum.http);
+  } else {
+    // Use torus provider
+
+    // Use import instead of import for wallet SDK packages
+    // to conditionally load web3 into the DOM.
+    //
+    // Note: This also creates a split point in webpack
+    const { default: Torus } = await import( /*webpackChunkName: 'torus'*/ '@toruslabs/torus-embed');
+    const torus = new Torus({});
+
+    const host = getNetwork(config.networkId);
+    await torus.init({
+      network: { host },
+      showTorusButton: false,
+    });
+
+    // Tor.us cleanup
+    const torusWidget = document.querySelector('#torusWidget');
+    if (torusWidget) {
+      torusWidget.remove();
+    }
+    provider = new Web3Provider(torus.provider);
+  }
+}
+
 function pollForNetwork(
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -161,41 +196,6 @@ export function connectAugur(
         break;
     }
 
-    let provider = null;
-    const networkId = config.networkId;
-
-    if (networkId && isDevNetworkId(networkId)) {
-      // In DEV, use local ethereum node
-      provider = new JsonRpcProvider(config.ethereum.http);
-    } else if (windowRef.web3) {
-      // Use the provider on window if it exists, otherwise use torus provider
-      provider = getWeb3Provider(windowRef);
-    } else if (config.ui?.fallbackProvider === "jsonrpc" && config.ethereum.http) {
-      provider = new JsonRpcProvider(config.ethereum.http);
-    } else {
-      // Use torus provider
-
-      // Use import instead of import for wallet SDK packages
-      // to conditionally load web3 into the DOM.
-      //
-      // Note: This also creates a split point in webpack
-      const { default: Torus } = await import( /*webpackChunkName: 'torus'*/ '@toruslabs/torus-embed');
-      const torus = new Torus({});
-
-      const host = getNetwork(networkId);
-      await torus.init({
-        network: { host },
-        showTorusButton: false,
-      });
-
-      // Tor.us cleanup
-      const torusWidget = document.querySelector('#torusWidget');
-      if (torusWidget) {
-        torusWidget.remove();
-      }
-      provider = new Web3Provider(torus.provider);
-    }
-
     // Disable mesh/gsn for googleBot
     if (isGoogleBot()) {
       config = mergeConfig(config, {
@@ -215,12 +215,31 @@ export function connectAugur(
         },
       })
     }
-    await augurSdkLite.makeLiteClient(provider, config.addresses, config.networkId);
+
+    // Optimize for the case where we can just use a JSON endpoint.
+    // If things aren't configured for that we'll create the default
+    // provider which may be slow.
+    let provider = config.ui?.liteProvider === "jsonrpc" ?
+      new JsonRpcProvider(config.ethereum.http) :
+      await createDefaultProvider(config);
+
+    await augurSdkLite.makeLiteClient(
+      provider,
+      config.addresses,
+      config.networkId
+    );
     dispatch(updateCanHotload(true)); // Hotload now!
+
+
+    // Since liteProvider and fallbackProvider can be the same
+    // we can re-use it if we already have made the same one. If not
+    // we need to make the default provider from the config.
+    if (config.ui?.fallbackProvider !== config.ui?.liteProvider) {
+      provider = await createDefaultProvider(config);
+    }
 
     let Augur = null;
     try {
-
       Augur = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);

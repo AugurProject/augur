@@ -110,7 +110,8 @@ export interface SDKConfiguration {
   ui?: {
     showReloadModal?: boolean,
     trackBestOffer?: boolean,
-    fallbackProvider?: "jsonrpc" | "torus"
+    fallbackProvider?: "jsonrpc" | "torus",
+    liteProvider?: "jsonrpc" | "default"
   }
 };
 
@@ -269,7 +270,8 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   ui: {
     showReloadModal: true,
     trackBestOffer: false,
-    fallbackProvider: "torus"
+    fallbackProvider: "torus",
+    liteProvider: "jsonrpc"
   }
 };
 

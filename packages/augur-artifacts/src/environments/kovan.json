@@ -108,6 +108,6 @@
   "ui": {
     "showReloadModal": true,
     "averageBlocktime": 2000,
-    "fallbackProvider": "jsonrpc"
+    "liteProvider": "jsonrpc"
   }
 }
