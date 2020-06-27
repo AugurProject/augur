@@ -100,12 +100,12 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
 async function createDefaultProvider(config: SDKConfiguration) {
   if (config.networkId && isDevNetworkId(config.networkId)) {
     // In DEV, use local ethereum node
-    provider = new JsonRpcProvider(config.ethereum.http);
+    return new JsonRpcProvider(config.ethereum.http);
   } else if (windowRef.web3) {
     // Use the provider on window if it exists, otherwise use torus provider
-    provider = getWeb3Provider(windowRef);
+    return getWeb3Provider(windowRef);
   } else if (config.ui?.fallbackProvider === "jsonrpc" && config.ethereum.http) {
-    provider = new JsonRpcProvider(config.ethereum.http);
+    return new JsonRpcProvider(config.ethereum.http);
   } else {
     // Use torus provider
 
@@ -127,7 +127,7 @@ async function createDefaultProvider(config: SDKConfiguration) {
     if (torusWidget) {
       torusWidget.remove();
     }
-    provider = new Web3Provider(torus.provider);
+    return new Web3Provider(torus.provider);
   }
 }
 
